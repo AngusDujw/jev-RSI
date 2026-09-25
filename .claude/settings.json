@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PROJECT_DIR=\"${CLAUDE_PROJECT_DIR:-$PWD}\"; if command -v python3 >/dev/null 2>&1 && [ -f \"$PROJECT_DIR/tools/session_check.py\" ]; then python3 \"$PROJECT_DIR/tools/session_check.py\" --hook; elif [ -f \"$PROJECT_DIR/bootstrap.md\" ]; then echo '{\"hookSpecificOutput\": {\"hookEventName\": \"SessionStart\", \"additionalContext\": \"[未初始化] 检测到 bootstrap.md（python3 不可用，降级提示）。请读取 bootstrap.md 并向用户完整呈现其 § 1–2，要求仅回复 A 或 B；完成初始化前不得执行任何 P-E-R 动作。\"}}'; else echo '{}'; fi",
+            "timeout": 10,
+            "statusMessage": "运行协议会话自检 (tools/session_check.py)..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PROJECT_DIR=\"${CLAUDE_PROJECT_DIR:-$PWD}\"; if command -v python3 >/dev/null 2>&1 && [ -f \"$PROJECT_DIR/tools/log_activity.py\" ]; then python3 \"$PROJECT_DIR/tools/log_activity.py\" --hook >/dev/null 2>&1; fi; exit 0",
+            "timeout": 5,
+            "statusMessage": "记录使用者流水 (tools/log_activity.py)..."
+          }
+        ]
+      }
+    ]
+  }
+}

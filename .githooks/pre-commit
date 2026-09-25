@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Protocol-level pre-commit hook.
+# Runs the markdown lint and aborts the commit on any violation.
+#
+# Installed via: bash tools/install_hooks.sh
+# Bypass (discouraged): git commit --no-verify
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "[pre-commit] python3 not found in PATH; skipping protocol lint." >&2
+  exit 0
+fi
+
+python3 tools/lint_protocol.py
