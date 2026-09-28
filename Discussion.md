@@ -101,6 +101,14 @@
 
 ---
 
+【Lead @User】【2026-09-29】
+指定 company-server-2 的 /root/yekangjie/project/jev_rsi 为第一步测试目录，复用既有 embodied-jev 与 RoboDojo，先以叠方块快速验证；先检查代码环境并报告具体测试计划。
+
+【Agent @Codex】【2026-09-29】
+检查发现两套已有环境可复用。embodied 3/3 场景初始化成功，stack 单起点六方向各 2 mm、0.6 s 的动作均方向正确，实际主轴位移 1.863–1.907 mm、目标误差 0.094–0.139 mm；模型调用 0 次。RoboDojo 依赖与控制器可导入，完整 Isaac 启动未重测。下一批先验收启动、复位、hold、平移与姿态保持；完整堆叠的接触与成功判据独立检查。详见 [EXP-2026W40-002](LOGS/2026-W40.md#exp-2026w40-002) 和 [环境报告](LOGS/2026-09-29-environment-audit.md)，本次不认定 0A 已全面通过。
+
+---
+
 ## Resolution（关闭议题时必填）
 
 > Status 切到 `Resolved` 时，本节必须全部填好；否则不许关闭。
