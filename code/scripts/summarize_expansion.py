@@ -33,6 +33,8 @@ def main():
             for group in ('all','stage:'+row['stage'],'error:'+bucket,'stage_error:'+row['stage']+':'+bucket):
                 groups[group].append(row)
         branches.extend(json.loads(s) for s in (folder/'branches.jsonl').read_text().splitlines())
+        for f in folder.rglob('*'):
+            if f.is_file(): hashes[str(f.relative_to(a.root))]=hashlib.sha256(f.read_bytes()).hexdigest()
     stats={}
     for name,rows in groups.items():
         confusion=np.zeros((3,3),int); probs=[]; cluster=defaultdict(lambda:[0,0]); cos=[]

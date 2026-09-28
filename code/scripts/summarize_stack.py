@@ -45,6 +45,8 @@ def main():
                 f=folder/did/name
                 hashes[str(f.relative_to(a.root))]=hashlib.sha256(f.read_bytes()).hexdigest()
         if len(linked)!=len(decisions): raise RuntimeError('Unexecuted model decisions require explicit failure analysis')
+        for f in folder.rglob('*'):
+            if f.is_file(): hashes[str(f.relative_to(a.root))]=hashlib.sha256(f.read_bytes()).hexdigest()
     stats={}
     for key,rows in groups.items():
         stats[key]=dict(decisions=len(rows),axis_correct=sum(r['axis_correct'] for r in rows),axes=3*len(rows),
