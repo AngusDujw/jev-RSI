@@ -3,7 +3,7 @@
 - `mode`: `expert`
 - `updated_at`: `2026-09-24 22:18`
 - `set_by`: `user（明确要求老手模式；bootstrap 初始化）`
-- `last_retro`: `2026-W39`
+- `last_retro`: `2026-W40`
 
 ---
 
