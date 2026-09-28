@@ -32,6 +32,7 @@ graph LR
   subgraph wk_2026_W40["2026-W40"]
     direction TB
     T_2026W40_001["🔀 jev-control-formulation<br/>用户纠正：Jev 输出末端 xyz/ypr…"]:::pivot
+    T_2026W40_002["📊 jev-control-formulation<br/>首批真值诊断：停稳54方向均正对齐，但近目…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -39,6 +40,7 @@ graph LR
   T_2026W39_004 ==> T_2026W39_005
   T_2026W39_005 --> T_2026W39_006
   T_2026W39_006 --> T_2026W40_001
+  T_2026W40_001 --> T_2026W40_002
   T_2026W39_005 ==> T_2026W40_001
 ```
 <!-- TIMELINE:GRAPH:END -->
@@ -61,6 +63,7 @@ graph LR
 | `T-2026W39-005` | 2026-09-24 | decision | jev-control-formulation | 用户明确首要目标为开坑型问题定义与理论框架论文；依据实验证据调整贡献层级，idea 采用独立纲领表述 | `DISC-2026W39-001`, `EXP-2026W39-003` | - |
 | `T-2026W39-006` | 2026-09-25 | note | jev-control-formulation | 补齐环境验收、Jev 有效性和闭环 feasibility 三项前置验证，衔接两个主实验；数值标准与资源待确认，尚未运行 | `DISC-2026W39-001`, `EXP-2026W39-004` | - |
 | `T-2026W40-001` | 2026-09-28 | pivot | jev-control-formulation | 用户纠正：Jev 输出末端 xyz/ypr 各轴方向，外部函数定幅度；取代关节接口口径，首阶段固定姿态验证 XYZ 位置控制 | `DISC-2026W39-001`, `EXP-2026W40-001` | - |
+| `T-2026W40-002` | 2026-09-29 | experiment | jev-control-formulation | 首批真值诊断：停稳54方向均正对齐，但近目标9状态在5/10mm下全部变差；支持继续研究幅度选择，尚无闭环算法优势证据 | `EXP-2026W40-005` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
