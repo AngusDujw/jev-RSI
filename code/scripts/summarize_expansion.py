@@ -58,19 +58,27 @@ def main():
             measurable_cosines=len(cos),positive_cosines=sum(c>0 for c in cos),
             all_hold=sum(r['metrics']['all_hold'] for r in rows),
             mean_multiclass_brier=float(np.mean(probs)),seed_clusters=len(vals),axis_accuracy_seed_bootstrap_95ci=ci)
-    amplitude=defaultdict(lambda:dict(n=0,progress=0,unstable=0,delta_mm=[]))
+    amplitude=defaultdict(lambda:dict(n=0,executed=0,rejected=0,progress=0,unstable=0,delta_mm=[],errors=Counter()))
     for b in branches:
         if b.get('kind')!='amplitude': continue
-        if 'goal_error_after_m' not in b: continue
         error=b['goal_error_before_m']*1000
         bucket=('<0.5' if error<.5 else '0.5-2' if error<2 else '2-5' if error<5 else '5-20' if error<20 else '>=20')
         g=amplitude[f'{bucket}:{b["amplitude_m"]*1000:g}mm']; g['n']+=1
+        if not b['reset_identical']: raise RuntimeError('Nonidentical paired initial state')
+        if 'goal_error_after_m' not in b:
+            if 'error_type' not in b: raise RuntimeError('Branch lacks result and failure record')
+            g['rejected']+=1; g['errors'][b['error_type']+': '+b.get('error','')]+=1
+            continue
+        g['executed']+=1
         delta=(b['goal_error_after_m']-b['goal_error_before_m'])*1000
         g['progress']+=int(delta<0); g['unstable']+=int(not b['stable']); g['delta_mm'].append(delta)
-        if not b['reset_identical']: raise RuntimeError('Nonidentical paired initial state')
-    for g in amplitude.values(): g['mean_delta_mm']=float(np.mean(g.pop('delta_mm')))
+    for g in amplitude.values():
+        values=g.pop('delta_mm'); g['mean_delta_mm']=float(np.mean(values)) if values else None
     result=dict(completed_runs=len(runs),runs=runs,groups=stats,amplitudes=dict(amplitude),
-                scope='Development trajectory samples, seed-cluster bootstrap; not uniform error coverage or whole-task Jev success')
+                amplitude_attempts=sum(g['n'] for g in amplitude.values()),
+                amplitude_executed=sum(g['executed'] for g in amplitude.values()),
+                amplitude_rejected=sum(g['rejected'] for g in amplitude.values()),
+                scope='Development trajectory samples, seed-cluster bootstrap; not uniform error coverage or whole-task Jev success; rejected amplitudes remain in progress denominators')
     a.output.mkdir(parents=True,exist_ok=True)
     (a.output/'analysis.json').write_text(json.dumps(result,indent=2)+'\n')
     (a.output/'sha256.json').write_text(json.dumps(hashes,indent=2)+'\n')
