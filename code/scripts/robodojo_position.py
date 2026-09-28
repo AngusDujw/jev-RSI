@@ -52,7 +52,7 @@ def run(rec, with_jev):
                OMNI_KIT_ACCEPT_EULA="YES", ACCEPT_EULA="Y",
                CUDA_VISIBLE_DEVICES=str(cfg["gpu"]), COMPANY_OBSERVATION="oracle",
                COMPANY_LAYOUT_PATH=str(layout.resolve()), COMPANY_LAYOUT_SHA256=case["layout_sha256"],
-               COMPANY_ORACLE_GEOMETRY="0", HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
+               COMPANY_ORACLE_GEOMETRY=str(int(cfg.get("robodojo_task_mode") == "stage_stack")), HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
     output = rec.folder/"simulator"
     output.mkdir()
     command = [cfg["robodojo_python"], "-B", "-u", "-m", "realman_jev.company_bridge",
@@ -91,6 +91,10 @@ def run(rec, with_jev):
                                 policy_version="jev_rsi_development_probe_v1")
             episode, tick = reset["episode_id"], reset["step_id"]
             dump(rec.folder/"reset.json", reset)
+            if cfg.get("robodojo_task_mode") == "stage_stack":
+                from robodojo_stack import run_stack
+                run_stack(rec, rpc, reset)
+                return
 
             def call(op, **kwargs):
                 return rpc.request(op, episode_id=episode, step_id=tick, **kwargs)
