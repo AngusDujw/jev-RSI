@@ -40,7 +40,7 @@ def main():
         values=[(amp,d['amplitudes'].get(f'{key}:{amp:g}mm')) for amp in (1,2,5,10)]
         values=[(amp,g) for amp,g in values if g]
         if values: ax.plot([v[0] for v in values],[v[1]['progress']/v[1]['n'] for v in values],marker='o',label=key+' mm')
-    ax.set(xlabel='Executed amplitude (mm)',ylabel='Fraction reducing target distance',ylim=(-.04,1.04),title='Paired amplitudes, same state and Jev output')
+    ax.set(xlabel='Requested amplitude (mm)',ylabel='Fraction reducing target distance',ylim=(-.04,1.04),title='Paired attempts; rejected commands remain in denominator')
     ax.legend(title='Initial error',fontsize=8)
     fig.suptitle(f'Embodied: {all_["decisions"]} decisions / {d["completed_runs"]} seed trajectories; hold tolerance 0.5 mm\nOracle state, supplied stage/goal; snapshots within each trajectory are correlated',fontsize=12)
     for ext in ('png','svg'): fig.savefig(a.output/f'direction-quality.{ext}',dpi=180)
