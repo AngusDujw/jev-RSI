@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+from batch_guard import record, stopped
 
 
 def main():
@@ -14,6 +15,7 @@ def main():
     p.add_argument('--output', required=True)
     p.add_argument('--start-seed', type=int, default=10)
     p.add_argument('--count', type=int, default=30)
+    p.add_argument('--coordinator')
     a = p.parse_args()
     root = Path(a.output).resolve()
     root.mkdir(parents=True, exist_ok=True)
@@ -21,7 +23,7 @@ def main():
     failures = 0
     for seed in range(a.start_seed, a.start_seed+a.count):
         folder = root/f'seed-{seed}'
-        if (root/'STOP').exists():
+        if (root/'STOP').exists() or stopped(a.coordinator):
             break
         if folder.exists():
             raise RuntimeError(f'Refusing overwrite: {folder}')
@@ -35,6 +37,7 @@ def main():
         with (root/'batch.jsonl').open('a') as stream:
             stream.write(json.dumps(row)+'\n')
         print(json.dumps(row), flush=True)
+        record(a.coordinator,row,result.returncode==0)
         failures = failures+1 if result.returncode else 0
         if failures >= 3:
             (root/'STOP').write_text('Three consecutive failures; user escalation required.\n')

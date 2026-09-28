@@ -13,7 +13,7 @@ def main():
     p.add_argument('--output',type=Path,required=True)
     a=p.parse_args()
     groups=defaultdict(list); runs=[]; hashes={}; branches=[]
-    for folder in sorted(a.root.glob('seed-*')):
+    for folder in sorted(a.root.rglob('seed-*')):
         if not folder.is_dir(): continue
         summary=folder/'summary.json'
         if not summary.exists(): continue

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
+from batch_guard import record, stopped
 
 
 def main():
@@ -12,12 +13,17 @@ def main():
     p.add_argument('--output',required=True)
     p.add_argument('--count',type=int,default=20)
     p.add_argument('--start',type=int,default=0)
+    p.add_argument('--coordinator')
+    p.add_argument('--gpu',type=int)
+    p.add_argument('--port',type=int)
     a=p.parse_args()
     root=Path(a.output).resolve(); root.mkdir(parents=True,exist_ok=True)
     cfg=json.loads(Path(a.config).read_text())
+    if a.gpu is not None: cfg['gpu']=a.gpu
+    if a.port is not None: cfg['port']=a.port
     failures=0
     for index in range(a.start,a.start+a.count):
-        if (root/'STOP').exists(): break
+        if (root/'STOP').exists() or stopped(a.coordinator): break
         folder=root/f'episode-{index:03d}'
         if folder.exists(): raise RuntimeError(f'Refusing overwrite: {folder}')
         case=dict(cfg,robodojo_layout_id=index%2)
@@ -35,6 +41,7 @@ def main():
                  started=start,finished=time.time(),stack=stack,consecutive_failures=failures)
         with (root/'batch.jsonl').open('a') as stream: stream.write(json.dumps(row)+'\n')
         print(json.dumps(row),flush=True)
+        record(a.coordinator,row,success)
         if failures>=3:
             (root/'STOP').write_text('Three consecutive task failures; user escalation required.\n')
             break
