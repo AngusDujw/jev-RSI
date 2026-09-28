@@ -58,7 +58,7 @@ def direction_metrics(position, target, signs, tolerance):
 
 class Recorder:
     def __init__(self, output, cfg):
-        self.folder = Path(output)
+        self.folder = Path(output).resolve()
         self.folder.mkdir(parents=True, exist_ok=False)
         self.cfg, self.started = cfg, time.monotonic()
         dump(self.folder / "protocol.json", cfg)

@@ -54,6 +54,7 @@ def run(rec, with_jev):
                COMPANY_LAYOUT_PATH=str(layout.resolve()), COMPANY_LAYOUT_SHA256=case["layout_sha256"],
                COMPANY_ORACLE_GEOMETRY="0", HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
     output = rec.folder/"simulator"
+    output.mkdir()
     command = [cfg["robodojo_python"], "-B", "-u", "-m", "realman_jev.company_bridge",
                "--task", "stack_blocks", "--eval-seed", str(case["eval_seed"]),
                "--output", str(output), "--port", str(port), "--headless", "--enable_cameras",
