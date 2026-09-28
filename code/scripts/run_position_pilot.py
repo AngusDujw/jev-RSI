@@ -273,12 +273,22 @@ def embodied(rec, with_jev):
             for fraction, sample in samples:
                 if len(rec.decisions) >= rec.cfg["max_jev_decisions"]:
                     return
+                # Samples along a scaffold motion are not initially quasi-static.
+                # Stop at that sampled pose BEFORE asking Jev or cloning branches.
+                preparation = motion(sample, sample.position.copy(), rec.cfg)
+                rec.event(dict(kind="sample_preparation", stage=stage, phase_index=phase_index,
+                               phase_fraction=fraction, result=preparation))
+                if not preparation["stable"]:
+                    rec.event(dict(kind="unsettled_sample_not_sent", stage=stage,
+                                   phase_index=phase_index, phase_fraction=fraction))
+                    continue
                 target = np.asarray(option.target)
                 state = state_for(sample.position, target, stage, rec.cfg,
                                   gripper="closed" if sample.closed else "open",
                                   orientation_matrix=sample.data.site_xmat[sample.tcp].reshape(3, 3).tolist())
                 decision = model.choose(state, dict(stage=stage, phase_index=phase_index,
                     seed=rec.cfg["seed"], phase_fraction=fraction, environment="embodied-jev",
+                    preparation=preparation,
                     trajectory_id=f"rule-scaffold-seed-{rec.cfg['seed']}"))
                 folder = rec.folder / decision["decision_id"]
                 saved, spec = freeze_world(sample, folder)
@@ -318,10 +328,13 @@ def main():
     parser.add_argument("--backend", choices=["embodied", "robodojo"], default="embodied")
     parser.add_argument("--with-jev", action="store_true")
     parser.add_argument("--max-decisions", type=int)
+    parser.add_argument("--seed", type=int)
     args = parser.parse_args()
     cfg = json.loads(args.config.read_text())
     if args.max_decisions is not None:
         cfg["max_jev_decisions"] = args.max_decisions
+    if args.seed is not None:
+        cfg["seed"] = args.seed
     rec = Recorder(args.output, cfg)
     dump(rec.folder / "provenance.json", dict(command=sys.argv, python=sys.executable,
         commit=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),

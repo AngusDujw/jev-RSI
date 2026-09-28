@@ -1,5 +1,5 @@
 {
-  "protocol": "oracle-local-position-pilot-v1",
+  "protocol": "oracle-local-position-pilot-v2-settled",
   "existing_root": "/root/yekangjie/project/robodojo-jev",
   "api_config": "/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json",
   "embodied_python": "/root/yekangjie/project/embodied-jev/.venv/bin/python",
