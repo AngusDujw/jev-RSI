@@ -1,0 +1,23 @@
+{
+  "protocol": "oracle-local-position-pilot-v1",
+  "existing_root": "/root/yekangjie/project/robodojo-jev",
+  "api_config": "/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json",
+  "embodied_python": "/root/yekangjie/project/embodied-jev/.venv/bin/python",
+  "robodojo_python": "/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python",
+  "amplitudes_m": [0.0, 0.001, 0.002, 0.005, 0.01],
+  "axis_tolerance_m": 0.0005,
+  "motion_seconds": 0.6,
+  "settle_max_seconds": 2.0,
+  "settle_window_seconds": 0.1,
+  "speed_threshold_m_s": 0.001,
+  "angular_speed_threshold_rad_s": 0.01,
+  "seed": 0,
+  "max_jev_decisions": 20,
+  "wall_limit_seconds": 1800,
+  "output_limit_mb": 500,
+  "port": 19429,
+  "gpu": 4,
+  "robodojo_layout_id": 0,
+  "robodojo_startup_timeout_seconds": 1200,
+  "robodojo_motion_ticks": 15
+}
