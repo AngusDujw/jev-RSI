@@ -264,7 +264,7 @@ def embodied(rec, with_jev):
             start_step, seen = world.steps, set()
             for _ in iterator:
                 fraction = (world.steps-start_step)/total_ticks
-                for threshold in (.50, .85):
+                for threshold in rec.cfg.get("phase_fractions", [.50, .85]):
                     if moving and fraction >= threshold and threshold not in seen:
                         samples.append((threshold, world.clone()))
                         seen.add(threshold)
