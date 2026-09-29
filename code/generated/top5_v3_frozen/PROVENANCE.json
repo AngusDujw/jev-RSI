@@ -1,0 +1,10 @@
+{
+  "author": "server gpt-6-astra",
+  "source_run": "code/runs/2026-09-30-gpt6-design-v3",
+  "snapshot": "generated through response-30; worker final pending",
+  "files": {
+    "controller.py": "e3016754d019b97489a21c2ae994dd651e40876d531d9deb9301437e211261e6",
+    "visual_evidence.py": "9767a0f43e70620c5ee8674989df77a2fcf31e606f9425f89d505946395edb63",
+    "__init__.py": "c01b65be4305a1f111761355d225fd3f9efdecae42cc34bffb0b28d2578a3718"
+  }
+}
