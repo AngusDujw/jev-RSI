@@ -71,12 +71,14 @@ def main():
     (args.output/'requirements.txt').write_text(text)
     started=time.monotonic()
     for index in range(args.rounds):
+        conversation.append(dict(role='user',content=f'Worker budget: {args.rounds-index} response rounds remain including this one. Finish required patches and concise documentation, then return a final answer before the budget ends.'))
         payload=dict(model=args.model,input=conversation,tools=functions,parallel_tool_calls=False,
             reasoning=dict(effort='high'),max_output_tokens=18000,store=False)
         response=request(payload,args.key_file,args.base_url)
         (args.output/f'response-{index:02d}.json').write_text(json.dumps(response,indent=2))
+        usage=response.get('usage') or {}
         print(json.dumps(dict(round=index,model=response.get('model'),status=response.get('status'),
-            seconds=round(time.monotonic()-started,1),usage=response.get('usage'))),flush=True)
+            seconds=round(time.monotonic()-started,1),usage={k:usage.get(k) for k in ('input_tokens','output_tokens','total_tokens')})),flush=True)
         if response.get('model') != args.model:
             raise RuntimeError('Unexpected model; no fallback authorized')
         outputs=response.get('output',[])
@@ -121,6 +123,7 @@ def main():
             except Exception as exc:
                 result=f'{type(exc).__name__}: {exc}'
             conversation.append(dict(type='function_call_output',call_id=call['call_id'],output=result))
+        (args.output/'conversation.json').write_text(json.dumps(conversation))
     raise RuntimeError('Worker round budget reached; review partial artifacts')
 
 
