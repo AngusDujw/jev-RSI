@@ -22,7 +22,7 @@ from run_position_pilot import Jev, dump, state_for
 def run(rec, with_jev):
     cfg = rec.cfg
     root = Path(cfg["existing_root"])
-    paths = [root/"controller/src", root/"GPT-as-Policy", root/"robodojo", root/"robodojo/XPolicyLab"]
+    paths = [Path(__file__).resolve().parent, root/"controller/src", root/"GPT-as-Policy", root/"robodojo", root/"robodojo/XPolicyLab"]
     for p in reversed(paths):
         sys.path.insert(0, str(p))
     from hybrid_rollout.robodojo.robodojo_server.protocol import RPCClient
@@ -50,12 +50,12 @@ def run(rec, with_jev):
                TORCH_EXTENSIONS_DIR=str(cache/"torch-extensions"),
                PYTHONDONTWRITEBYTECODE="1", PYTHONNOUSERSITE="1",
                OMNI_KIT_ACCEPT_EULA="YES", ACCEPT_EULA="Y",
-               CUDA_VISIBLE_DEVICES=str(cfg["gpu"]), COMPANY_OBSERVATION="oracle",
+               CUDA_VISIBLE_DEVICES=str(cfg["gpu"]), COMPANY_OBSERVATION=cfg.get("observation_mode", "oracle"),
                COMPANY_LAYOUT_PATH=str(layout.resolve()), COMPANY_LAYOUT_SHA256=case["layout_sha256"],
                COMPANY_ORACLE_GEOMETRY=str(int(cfg.get("robodojo_task_mode") == "stage_stack")), HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
     output = rec.folder/"simulator"
     output.mkdir()
-    command = [cfg["robodojo_python"], "-B", "-u", "-m", "realman_jev.company_bridge",
+    command = [cfg["robodojo_python"], "-B", "-u", "-m", cfg.get("bridge_module", "realman_jev.company_bridge"),
                "--task", "stack_blocks", "--eval-seed", str(case["eval_seed"]),
                "--output", str(output), "--port", str(port), "--headless", "--enable_cameras",
                "--device", "cuda:0",
@@ -64,7 +64,7 @@ def run(rec, with_jev):
                "--/app/updateOrder/checkForHydraRenderComplete=1000 "
                "--/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true"]
     dump(rec.folder/"launch.json", dict(command=command, cwd=str(root/"robodojo"),
-        observation="oracle", paired_amplitude_supported=False, note="Existing bridge permits exactly one fresh episode"))
+        observation=cfg.get("observation_mode", "oracle"), paired_amplitude_supported=False, note="Existing bridge permits exactly one fresh episode"))
     log_path = rec.folder/"simulator.log"
     rpc = model = None
     episode, tick = None, 0
@@ -91,6 +91,19 @@ def run(rec, with_jev):
                                 policy_version="jev_rsi_development_probe_v1")
             episode, tick = reset["episode_id"], reset["step_id"]
             dump(rec.folder/"reset.json", reset)
+            if cfg.get("robodojo_task_mode") == "rgbd_capture":
+                from PIL import Image
+                captured = rpc.request("rgbd_observation", episode_id=episode, step_id=tick)
+                for name, view in captured['cameras'].items():
+                    rgb, depth = view.pop('rgb'), view.pop('depth_m')
+                    Image.fromarray(rgb).save(rec.folder/f'{name}.png')
+                    np.save(rec.folder/f'{name}-depth.npy', depth)
+                    view.update(rgb_file=f'{name}.png', depth_file=f'{name}-depth.npy',
+                        depth_shape=list(depth.shape), finite_depth_pixels=int(np.isfinite(depth).sum()))
+                dump(rec.folder/'rgbd_capture.json', captured)
+                dump(rec.folder/'native_finish.json', rpc.request('finish_pilot', episode_id=episode,
+                    step_id=tick, reason='RGBD_sensor_capture_only_NOT_task_success'))
+                return
             if cfg.get("robodojo_task_mode") == "stage_stack":
                 from robodojo_stack import run_stack
                 run_stack(rec, rpc, reset)
