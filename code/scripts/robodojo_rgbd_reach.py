@@ -118,7 +118,8 @@ def run(rec, rpc, reset):
             if status=='native_ended':
                 break
         dump(rec.folder/'rgbd_reach_result.json', dict(status=status, decisions=len(rec.decisions),
-             final=rows[-1] if rows else None, scope='visual approach only, not grasp or whole-task success'))
+             last_valid_visual_frame=rows[-1] if rows else None,
+             native_step=tick, scope='visual approach only, not grasp or whole-task success'))
         dump(rec.folder/'native_finish.json', call('finish_pilot',reason='RGBD_approach_diagnostic'))
     finally:
         model.close()

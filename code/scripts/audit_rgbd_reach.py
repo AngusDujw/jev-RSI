@@ -60,13 +60,22 @@ def main():
             row['estimated_metrics'] = d['metrics']
         rows.append(row)
     measured = [r for r in rows if 'true_metrics' in r]
+    final_tick = max(snapshots)
+    final_snapshot = snapshots[final_tick]
+    final_target = targets(final_snapshot)[identity]
+    arm_i = int(first[0]>=0)
+    final_position = np.asarray(final_snapshot['robot']['nominal_grasp_points_m'][arm_i])
+    final_error = final_target-final_position
+    physical_final = dict(native_step=final_tick, actual_error_norm_m=float(np.linalg.norm(final_error)),
+        actual_error_max_axis_m=float(np.max(np.abs(final_error))), actual_error_xyz_m=final_error.tolist(),
+        note='Final executed state; may be later than last valid visual estimate after tracking loss')
     report = dict(audit_identity=identity, frames=len(rows), decisions=len(measured),
         axes_correct_against_truth=sum(sum(r['true_metrics']['axis_correct']) for r in measured),
         axes_correct_against_estimate=sum(sum(r['estimated_metrics']['axis_correct']) for r in measured),
-        axes=3*len(measured), final_true_within_tolerance=bool(rows[-1]['actual_error_max_axis_m']<=cfg['axis_tolerance_m']),
+        axes=3*len(measured), final_true_within_tolerance=bool(physical_final['actual_error_max_axis_m']<=cfg['axis_tolerance_m']),
         estimated_status=json.loads((a.run/'rgbd_reach_result.json').read_text())['status'],
         mean_target_error_mm=float(np.mean([r['target_estimation_error_m'] for r in rows])*1000),
-        initial=rows[0], final=rows[-1], rows=rows,
+        initial=rows[0], last_valid_visual_frame=rows[-1], physical_final=physical_final, rows=rows,
         scope='Post-run geometric audit for approach only; no physical grasp success claim')
     dump(a.run/'posthoc_truth_audit.json', report)
     print(json.dumps({k:v for k,v in report.items() if k not in ('rows','initial')}, default=lambda x:x.tolist()))
