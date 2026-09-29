@@ -79,3 +79,5 @@
 - 【Agent】【2026-09-29 18:54】[note] 核对ykj完整快照：17个实验/分析脚本、5个配置、4份专项报告、当周16个EXP块以及Discussion/Timeline/idea/method均已纳入Git。e05f466仅是两份流水的增量提交，不代表分支只有两个文件。最近一批6035原始文件本地全部存在；code/runs按.gitignore未上传GitHub。  ↪ `DISC-2026W39-001`
 - 【User】【2026-09-29 18:56】[prompt] 所以Discussion.md和idea.md等是否有修改，是否都同步到远程了呢  ↪ `DISC-2026W39-001`
 - 【Agent】【2026-09-29 18:56】[note] 核实本地HEAD与远程ykj均为34ed57d：Discussion/method/Timeline最近更新6e7898d，idea最近更新4d0ee6d（扩大验证及人话版）。最新视觉/控制器结论已在Discussion和周志，未逐条追加idea；研究目标/主指标未改。上述文件均包含在远程ykj快照。  ↪ `DISC-2026W39-001`
+- 【User】【2026-09-29 18:59】[prompt] 现在你说的会出现视觉有问题的这个是什么意思呢，比如夹爪挡到之后物体识别有问题之后jev还会继续给判断吗  ↪ `DISC-2026W39-001`
+- 【Agent】【2026-09-29 18:59】[note] 核实视觉失效控制顺序：第13次动作后原cam_high:1不在检测中，代码在model.choose之前以visual_identity_lost退出，没有第14次Jev请求。若错误检测仍保留原ID则当前代码会继续发送估计XYZ；未测试Jev在显式缺失/遮挡输入下的恢复判断。  ↪ `DISC-2026W39-001`
