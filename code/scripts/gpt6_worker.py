@@ -34,12 +34,18 @@ def main():
     p.add_argument('--base-url',default='https://sub2api.qinjiu8.com/v1')
     p.add_argument('--model',default='gpt-6-astra')
     p.add_argument('--rounds',type=int,default=16)
+    p.add_argument('--reference-generated',type=Path)
     args=p.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     args.generated.mkdir(parents=True,exist_ok=False)
     root=Path.cwd().resolve()
     upstream=Path('/root/yekangjie/project/robodojo-jev')
     allowed={str(x.resolve()) for x in (root/'code/scripts').glob('*.py')}
+    if args.reference_generated:
+        reference=args.reference_generated.resolve()
+        if not reference.is_relative_to(root/'code/generated'):
+            raise ValueError('Reference must be a project generated source directory')
+        allowed.update(str(x.resolve()) for x in reference.rglob('*') if x.is_file() and x.suffix in ('.py','.md'))
     allowed.update(str((upstream/x).resolve()) for x in (
         'controller/src/realman_jev/robodojo_rgb.py',
         'GPT-as-Policy/hybrid_rollout/robodojo/robodojo_server/kinematics.py',
