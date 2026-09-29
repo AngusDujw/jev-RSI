@@ -35,6 +35,7 @@ graph LR
     T_2026W40_002["📊 jev-control-formulation<br/>首批真值诊断：停稳54方向均正对齐，但近目…"]:::experiment
     T_2026W40_003["📊 jev-control-formulation<br/>原生RoboDojo三块堆叠及回原位首个开…"]:::experiment
     T_2026W40_004["📊 jev-control-formulation<br/>扩大验证完成：900状态保持类仅149/1…"]:::experiment
+    T_2026W40_005["📊 jev-control-formulation<br/>RGB-D初始方向可用但闭环追踪丢失；同1…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -45,6 +46,7 @@ graph LR
   T_2026W40_001 --> T_2026W40_002
   T_2026W40_002 --> T_2026W40_003
   T_2026W40_003 --> T_2026W40_004
+  T_2026W40_004 --> T_2026W40_005
   T_2026W39_005 ==> T_2026W40_001
 ```
 <!-- TIMELINE:GRAPH:END -->
@@ -70,6 +72,7 @@ graph LR
 | `T-2026W40-002` | 2026-09-29 | experiment | jev-control-formulation | 首批真值诊断：停稳54方向均正对齐，但近目标9状态在5/10mm下全部变差；支持继续研究幅度选择，尚无闭环算法优势证据 | `EXP-2026W40-005` | - |
 | `T-2026W40-003` | 2026-09-29 | experiment | jev-control-formulation | 原生RoboDojo三块堆叠及回原位首个开发回合成功：502/550步、148次Jev；规则提供阶段/几何/姿态/夹爪，固定配置重复验证待完成 | `EXP-2026W40-007` | - |
 | `T-2026W40-004` | 2026-09-29 | experiment | jev-control-formulation | 扩大验证完成：900状态保持类仅149/1235，幅度有90越界拒绝；外部阶段+Jev XYZ原生堆叠两布局20/20成功，下一步收敛公平闭环对照 | `EXP-2026W40-009`, `EXP-2026W40-010` | - |
+| `T-2026W40-005` | 2026-09-29 | experiment | jev-control-formulation | RGB-D初始方向可用但闭环追踪丢失；同10mm上限下阶段增益169次与统一增益170次近似，暂不支持阶段复杂化 | `EXP-2026W40-016` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
