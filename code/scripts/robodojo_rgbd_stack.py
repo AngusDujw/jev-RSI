@@ -221,6 +221,9 @@ def run(rec, rpc, reset):
             stage='return_home'
             execute(current,None,None,None,None,cfg['stack_home_ticks'],stage,joints=home)
             status='stages_finished'
+    except Exception as exc:
+        status=f'exception:{type(exc).__name__}'
+        raise
     finally:
         model.close()
         final=call('finish_pilot',reason=status)
