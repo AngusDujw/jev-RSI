@@ -1,0 +1,518 @@
+{
+  "source": "https://robodojo-benchmark.com/assets/index-B3guOgOG.js",
+  "retrieved": "2026-09-30",
+  "model": "GPT-6-Astra",
+  "ranking": "42 tasks; standard/random averaged equally",
+  "tasks": [
+    {
+      "task": "stack_blocks",
+      "success_rate": 86.0,
+      "score": 88.1,
+      "conditions": [
+        {
+          "score": 89.8,
+          "successRate": 88
+        },
+        {
+          "score": 86.4,
+          "successRate": 84
+        }
+      ]
+    },
+    {
+      "task": "general_pickup",
+      "success_rate": 84.0,
+      "score": 84.0,
+      "conditions": [
+        {
+          "score": 84,
+          "successRate": 84
+        }
+      ]
+    },
+    {
+      "task": "fold_clothes",
+      "success_rate": 72.0,
+      "score": 76.4,
+      "conditions": [
+        {
+          "score": 76.8,
+          "successRate": 72
+        },
+        {
+          "score": 76,
+          "successRate": 72
+        }
+      ]
+    },
+    {
+      "task": "press_by_number",
+      "success_rate": 70.0,
+      "score": 70.0,
+      "conditions": [
+        {
+          "score": 70,
+          "successRate": 70
+        }
+      ]
+    },
+    {
+      "task": "match_and_pick_from_conveyor",
+      "success_rate": 62.0,
+      "score": 62.0,
+      "conditions": [
+        {
+          "score": 62,
+          "successRate": 62
+        }
+      ]
+    },
+    {
+      "task": "stack_bowls",
+      "success_rate": 62.0,
+      "score": 66.5,
+      "conditions": [
+        {
+          "score": 68.8,
+          "successRate": 64
+        },
+        {
+          "score": 64.2,
+          "successRate": 60
+        }
+      ]
+    },
+    {
+      "task": "arrange_largest_number",
+      "success_rate": 60.0,
+      "score": 68.7,
+      "conditions": [
+        {
+          "score": 76,
+          "successRate": 68
+        },
+        {
+          "score": 61.4,
+          "successRate": 52
+        }
+      ]
+    },
+    {
+      "task": "push_T",
+      "success_rate": 60.0,
+      "score": 60.0,
+      "conditions": [
+        {
+          "score": 68,
+          "successRate": 68
+        },
+        {
+          "score": 52,
+          "successRate": 52
+        }
+      ]
+    },
+    {
+      "task": "classify_objects",
+      "success_rate": 56.0,
+      "score": 69.0,
+      "conditions": [
+        {
+          "score": 69,
+          "successRate": 56
+        }
+      ]
+    },
+    {
+      "task": "align_blocks",
+      "success_rate": 50.0,
+      "score": 50.0,
+      "conditions": [
+        {
+          "score": 50,
+          "successRate": 50
+        }
+      ]
+    },
+    {
+      "task": "cover_blocks",
+      "success_rate": 46.0,
+      "score": 49.3,
+      "conditions": [
+        {
+          "score": 49.3,
+          "successRate": 46
+        }
+      ]
+    },
+    {
+      "task": "solve_equation",
+      "success_rate": 40.0,
+      "score": 40.0,
+      "conditions": [
+        {
+          "score": 40,
+          "successRate": 40
+        }
+      ]
+    },
+    {
+      "task": "stack_blocks_by_language",
+      "success_rate": 40.0,
+      "score": 48.0,
+      "conditions": [
+        {
+          "score": 48,
+          "successRate": 40
+        }
+      ]
+    },
+    {
+      "task": "imitate_sorting_sequence",
+      "success_rate": 36.0,
+      "score": 58.9,
+      "conditions": [
+        {
+          "score": 58.9,
+          "successRate": 36
+        }
+      ]
+    },
+    {
+      "task": "classify_objects_by_language",
+      "success_rate": 30.0,
+      "score": 46.0,
+      "conditions": [
+        {
+          "score": 46,
+          "successRate": 30
+        }
+      ]
+    },
+    {
+      "task": "sort_nesting_dolls_by_size",
+      "success_rate": 18.0,
+      "score": 18.0,
+      "conditions": [
+        {
+          "score": 16,
+          "successRate": 16
+        },
+        {
+          "score": 20,
+          "successRate": 20
+        }
+      ]
+    },
+    {
+      "task": "swap_T",
+      "success_rate": 18.0,
+      "score": 18.0,
+      "conditions": [
+        {
+          "score": 18,
+          "successRate": 18
+        }
+      ]
+    },
+    {
+      "task": "fasten_screws",
+      "success_rate": 16.0,
+      "score": 36.4,
+      "conditions": [
+        {
+          "score": 36.4,
+          "successRate": 16
+        }
+      ]
+    },
+    {
+      "task": "put_bottles_into_dustbin",
+      "success_rate": 10.0,
+      "score": 35.3,
+      "conditions": [
+        {
+          "score": 35.3,
+          "successRate": 10
+        }
+      ]
+    },
+    {
+      "task": "play_Xylophone",
+      "success_rate": 8.0,
+      "score": 8.0,
+      "conditions": [
+        {
+          "score": 8,
+          "successRate": 8
+        }
+      ]
+    },
+    {
+      "task": "pick_from_conveyor_by_image",
+      "success_rate": 4.0,
+      "score": 4.0,
+      "conditions": [
+        {
+          "score": 4,
+          "successRate": 4
+        }
+      ]
+    },
+    {
+      "task": "pour_balls_into_vase",
+      "success_rate": 4.0,
+      "score": 4.0,
+      "conditions": [
+        {
+          "score": 4,
+          "successRate": 4
+        }
+      ]
+    },
+    {
+      "task": "pour_liquid_into_cup",
+      "success_rate": 4.0,
+      "score": 4.0,
+      "conditions": [
+        {
+          "score": 8,
+          "successRate": 8
+        },
+        {
+          "score": 0,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "sweep_blocks",
+      "success_rate": 4.0,
+      "score": 4.0,
+      "conditions": [
+        {
+          "score": 8,
+          "successRate": 8
+        },
+        {
+          "score": 0,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "build_tower",
+      "success_rate": 2.0,
+      "score": 16.4,
+      "conditions": [
+        {
+          "score": 16.4,
+          "successRate": 2
+        }
+      ]
+    },
+    {
+      "task": "deposit_coin",
+      "success_rate": 2.0,
+      "score": 16.0,
+      "conditions": [
+        {
+          "score": 16,
+          "successRate": 2
+        }
+      ]
+    },
+    {
+      "task": "fill_egg_holder",
+      "success_rate": 0.0,
+      "score": 5.5,
+      "conditions": [
+        {
+          "score": 5.5,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "fill_pen_holder",
+      "success_rate": 0.0,
+      "score": 5.0,
+      "conditions": [
+        {
+          "score": 5,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "hang_mugs",
+      "success_rate": 0.0,
+      "score": 0.8999999999999999,
+      "conditions": [
+        {
+          "score": 0.6,
+          "successRate": 0
+        },
+        {
+          "score": 1.2,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "insert_key",
+      "success_rate": 0.0,
+      "score": 14.4,
+      "conditions": [
+        {
+          "score": 14.4,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "insert_tubes",
+      "success_rate": 0.0,
+      "score": 6.0,
+      "conditions": [
+        {
+          "score": 6,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "make_kong",
+      "success_rate": 0.0,
+      "score": 0.0,
+      "conditions": [
+        {
+          "score": 0,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "make_toast",
+      "success_rate": 0.0,
+      "score": 0.5,
+      "conditions": [
+        {
+          "score": 0,
+          "successRate": 0
+        },
+        {
+          "score": 1,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "organize_table",
+      "success_rate": 0.0,
+      "score": 39.5,
+      "conditions": [
+        {
+          "score": 39.5,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "pack_objects_into_box",
+      "success_rate": 0.0,
+      "score": 11.6,
+      "conditions": [
+        {
+          "score": 11,
+          "successRate": 0
+        },
+        {
+          "score": 12.2,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "play_stacking_toy",
+      "success_rate": 0.0,
+      "score": 6.6,
+      "conditions": [
+        {
+          "score": 6.6,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "play_tic_tac_toe",
+      "success_rate": 0.0,
+      "score": 10.7,
+      "conditions": [
+        {
+          "score": 10.7,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "plug_in_charger",
+      "success_rate": 0.0,
+      "score": 0.0,
+      "conditions": [
+        {
+          "score": 0,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "pour_by_language",
+      "success_rate": 0.0,
+      "score": 0.4,
+      "conditions": [
+        {
+          "score": 0.4,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "store_laptop_and_headphones",
+      "success_rate": 0.0,
+      "score": 1.6,
+      "conditions": [
+        {
+          "score": 0.8,
+          "successRate": 0
+        },
+        {
+          "score": 2.4,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "store_tools_in_toolbox",
+      "success_rate": 0.0,
+      "score": 2.5,
+      "conditions": [
+        {
+          "score": 2.5,
+          "successRate": 0
+        }
+      ]
+    },
+    {
+      "task": "swap_blocks",
+      "success_rate": 0.0,
+      "score": 0.0,
+      "conditions": [
+        {
+          "score": 0,
+          "successRate": 0
+        }
+      ]
+    }
+  ]
+}
