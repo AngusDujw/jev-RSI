@@ -17,12 +17,16 @@ def request(payload, key_file, base_url, timeout=600):
     credential = Path(key_file).read_text().strip()
     req = urllib.request.Request(base_url.rstrip('/')+'/responses', data=json.dumps(payload).encode(),
         headers={'Authorization':'Bearer '+credential,'Content-Type':'application/json','User-Agent':'jev-rsi/1'})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as response:
-            return json.load(response)
-    except urllib.error.HTTPError as exc:
-        message = exc.read().decode(errors='replace').replace(credential,'[redacted]')
-        raise RuntimeError(f'Gateway HTTP {exc.code}: {message[:1000]}') from None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                return json.load(response)
+        except urllib.error.HTTPError as exc:
+            message = exc.read().decode(errors='replace').replace(credential,'[redacted]')
+            if exc.code in (502,503,504) and attempt<2:
+                time.sleep(2**attempt)
+                continue
+            raise RuntimeError(f'Gateway HTTP {exc.code}: {message[:1000]}') from None
 
 
 def main():
