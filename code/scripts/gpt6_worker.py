@@ -7,6 +7,7 @@ new generated output directory; no shell, credentials, layouts or audit access.
 import argparse
 import json
 import os
+import shutil
 from pathlib import Path
 import time
 import urllib.request
@@ -58,7 +59,13 @@ def main():
         parameters=dict(type='object',properties=dict(path=dict(type='string')),required=['path'],additionalProperties=False)),
         dict(type='function',name='write_generated',description='Write a NEW candidate source/document file under the generated directory; do not create test scripts.',
         parameters=dict(type='object',properties=dict(name=dict(type='string'),content=dict(type='string')),
-            required=['name','content'],additionalProperties=False))]
+            required=['name','content'],additionalProperties=False)),
+        dict(type='function',name='copy_reference',description='Copy one allowed reference source into the new candidate, preserving its contents.',
+        parameters=dict(type='object',properties=dict(path=dict(type='string'),name=dict(type='string')),
+            required=['path','name'],additionalProperties=False)),
+        dict(type='function',name='patch_generated',description='Replace one unique exact text span in a new candidate file. Read first; old must occur exactly once.',
+        parameters=dict(type='object',properties=dict(name=dict(type='string'),old=dict(type='string'),new=dict(type='string')),
+            required=['name','old','new'],additionalProperties=False))]
     text=args.requirements.read_text()+'\nAllowed source paths:\n'+'\n'.join(sorted(allowed))
     conversation=[dict(role='user',content=text)]
     (args.output/'requirements.txt').write_text(text)
@@ -89,13 +96,24 @@ def main():
                     if str(path) not in allowed:
                         raise PermissionError('Path not in source allowlist')
                     result=path.read_text()
-                elif call['name']=='write_generated':
+                elif call['name'] in ('write_generated','copy_reference','patch_generated'):
                     name=Path(data['name'])
                     if name.is_absolute() or '..' in name.parts or name.suffix not in ('.py','.json','.md'):
                         raise ValueError('Invalid generated file name')
                     path=args.generated/name
                     path.parent.mkdir(parents=True,exist_ok=True)
-                    path.write_text(data['content'])
+                    if call['name']=='copy_reference':
+                        source=Path(data['path']).resolve()
+                        if str(source) not in allowed: raise PermissionError('Source not allowed')
+                        if path.exists(): raise FileExistsError(path)
+                        shutil.copyfile(source,path)
+                    elif call['name']=='patch_generated':
+                        content=path.read_text()
+                        if not data['old'] or content.count(data['old'])!=1:
+                            raise ValueError('Old text must occur exactly once')
+                        path.write_text(content.replace(data['old'],data['new'],1))
+                    else:
+                        path.write_text(data['content'])
                     allowed.add(str(path.resolve()))
                     result=f'Written {path} ({path.stat().st_size} bytes)'
                 else:
