@@ -22,15 +22,17 @@ from run_position_pilot import Jev, dump, state_for
 def run(rec, with_jev):
     cfg = rec.cfg
     root = Path(cfg["existing_root"])
-    paths = [Path(__file__).resolve().parent, root/"controller/src", root/"GPT-as-Policy", root/"robodojo", root/"robodojo/XPolicyLab"]
+    runtime_root = Path(cfg.get('robodojo_root', root/'robodojo'))
+    paths = [Path(__file__).resolve().parent, root/"controller/src", root/"GPT-as-Policy", runtime_root, runtime_root/"XPolicyLab"]
     for p in reversed(paths):
         sys.path.insert(0, str(p))
     from hybrid_rollout.robodojo.robodojo_server.protocol import RPCClient
     from realman_jev.robodojo import targets_for
-    manifest = json.loads((root/"controller/config/company-assets-manifest.json").read_text())
-    case = next(c for c in manifest["cases"] if c["runtime_task"] == "stack_blocks"
+    manifest = json.loads(Path(cfg.get('assets_manifest',root/"controller/config/company-assets-manifest.json")).read_text())
+    task = cfg.get('runtime_task','stack_blocks')
+    case = next(c for c in manifest["cases"] if c["runtime_task"] == task
                 and c["layout_id"] == cfg["robodojo_layout_id"])
-    layout = root/"robodojo"/case["layout"]
+    layout = runtime_root/case["layout"]
     if hashlib.sha256(layout.read_bytes()).hexdigest() != case["layout_sha256"]:
         raise RuntimeError("Frozen RoboDojo layout hash mismatch")
     dump(rec.folder/"case.json", case)
@@ -56,20 +58,20 @@ def run(rec, with_jev):
     output = rec.folder/"simulator"
     output.mkdir()
     command = [cfg["robodojo_python"], "-B", "-u", "-m", cfg.get("bridge_module", "realman_jev.company_bridge"),
-               "--task", "stack_blocks", "--eval-seed", str(case["eval_seed"]),
+               "--task", task, "--eval-seed", str(case["eval_seed"]),
                "--output", str(output), "--port", str(port), "--headless", "--enable_cameras",
                "--device", "cuda:0",
                f"--kit_args=--/exts/omni.kit.registry.nucleus/cachePath={cache}/kit-extensions "
                f"--/renderer/activeGpu={cfg['gpu']} --/renderer/multiGpu/enabled=false "
                "--/app/updateOrder/checkForHydraRenderComplete=1000 "
                "--/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true"]
-    dump(rec.folder/"launch.json", dict(command=command, cwd=str(root/"robodojo"),
+    dump(rec.folder/"launch.json", dict(command=command, cwd=str(runtime_root),
         observation=cfg.get("observation_mode", "oracle"), paired_amplitude_supported=False, note="Existing bridge permits exactly one fresh episode"))
     log_path = rec.folder/"simulator.log"
     rpc = model = None
     episode, tick = None, 0
     with log_path.open("w") as logfile:
-        process = subprocess.Popen(command, cwd=root/"robodojo", env=env, stdout=logfile,
+        process = subprocess.Popen(command, cwd=runtime_root, env=env, stdout=logfile,
                                    stderr=subprocess.STDOUT, start_new_session=True)
         dump(rec.folder/"owned_process.json", dict(pid=process.pid, pgid=process.pid))
         try:
@@ -91,6 +93,10 @@ def run(rec, with_jev):
                                 policy_version="jev_rsi_development_probe_v1")
             episode, tick = reset["episode_id"], reset["step_id"]
             dump(rec.folder/"reset.json", reset)
+            if cfg.get("robodojo_task_mode") == "structured_task":
+                from structured_task_runner import run as run_structured_task
+                run_structured_task(rec, rpc, reset)
+                return
             if cfg.get("robodojo_task_mode") == "rgbd_stack":
                 from robodojo_rgbd_stack import run as run_rgbd_stack
                 run_rgbd_stack(rec, rpc, reset)
