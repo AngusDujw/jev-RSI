@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import time
 import urllib.request
 from urllib.parse import quote
 
@@ -40,11 +41,17 @@ def main():
         path.parent.mkdir(parents=True,exist_ok=True)
         url=f'https://huggingface.co/datasets/RoboDojo-Benchmark/RoboDojo/resolve/{revision}/{quote(name)}'
         partial=path.with_name(path.name+'.download')
-        with urllib.request.urlopen(url,timeout=90) as response,partial.open('wb') as output:
-            while True:
-                b=response.read(1048576)
-                if not b: break
-                output.write(b)
+        for attempt in range(4):
+            try:
+                with urllib.request.urlopen(url,timeout=90) as response,partial.open('wb') as output:
+                    while True:
+                        b=response.read(1048576)
+                        if not b: break
+                        output.write(b)
+                break
+            except (OSError,urllib.error.URLError):
+                if attempt==3: raise
+                time.sleep(2**attempt)
         if not valid(partial,e): raise ValueError('Asset checksum mismatch: '+name)
         partial.rename(path)
         return path

@@ -94,3 +94,4 @@
 - 【User】【2026-09-30 01:12】[decision] 用户确认测试五个新任务，不含已测叠方块：general_pickup、fold_clothes、press_by_number、match_and_pick_from_conveyor、stack_bowls。
 - 【User】【2026-09-30 01:30】[prompt] 继续
 - 【Agent】【2026-09-30 01:35】[op] 服务器GPT-6完成11轮实现五任务视觉适配器；审查并修复执行器空动作保持接口，新增general_pickup有界实测配置；所有Python AST检查通过。
+- 【Agent】【2026-09-30 01:37】[op] 已在company-server-2 GPU2启动general_pickup layout0新鲜视觉回合；资产下载SSL中断后新增4次有界重试，保留校验文件；新增独立运行目录组装与逐文件官方哈希校验工具。
