@@ -1,0 +1,11 @@
+# Remove unrelated-object global blocking; preserve v4 depth fix
+
+You are the user-requested server GPT-6 coding worker. Copy controller.py, visual_evidence.py, __init__.py and DESIGN.md from top5_v4 into this new candidate. Read relevant sources first, then make a minimal focused patch. You have 14 response rounds. Do not rewrite the policy or surface extraction. No tests or new privileged fields. Keep RGB-D/calibration/robot feedback/public instruction only; Jev owns nonzero XYZ signs and both schemas remain.
+
+Actual saved-frame replay of v4 verified the scissors top no longer jumps to the robot: frame0..4 all accepted scissors components remain near z0.775m, with bounded uncertainty about5–10mm instead of the erroneous v3 z0.939–1.016m. This fix must remain.
+
+But the Controller initial integration replay FAILS: its new global rejection guard stops on an unrelated distractor, with reason `unsupported current RGB-D surface; hold/reobserve: black-and-white rectangular item: fresh polygon has no dominant coherent surface`. The target mint green scissors is correctly observed and available. Do not start any physical episode with this known blocker.
+
+Make rejection handling depend on required task evidence/active identities rather than every segmented distractor. A failed unrelated record must not block a valid target. Failed active source/destination or required button/card/garment evidence must still hold/reobserve; missing required evidence must not silently select a different object. For conveyor temporal absence, rejection of the remembered target or relevant belt evidence cannot count as genuine disappearance. Do not relax surface separation thresholds to make unrelated records pass. Preserve existing finite-memory observed=False, uncertainty and TTL rules; never label missing or stale data as fresh. If necessary make rejection diagnostics carry visible label/category/appearance so task relevance can be assessed without hidden data.
+
+Retain all five adapters, public100mm lift, actual button counts and blue confirmation, first-object/departure/reappearance conveyor memory, three-bowl stack, existing flow. Finish concise documentation describing this scoped change, not a wholesale rewrite. Do not claim replay success yourself; the supervisor runs it.
