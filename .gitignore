@@ -10,6 +10,7 @@ __pycache__/
 venv/
 .env
 .env.local
+.private/
 
 # Jupyter
 .ipynb_checkpoints/
