@@ -20,7 +20,7 @@ def main():
     a = p.parse_args()
     cfg = json.loads(a.config.read_text())
     cfg.update(seed=a.seed, max_jev_decisions=1080, step_rollout_limit=60,
-               policies=['distance_07', 'stage_gain', 'feedback'], cap_m=.01,
+               policies=['distance_07', 'distance_10', 'stage_gain', 'feedback'], cap_m=.01,
                stage_gain=dict(approach=1., descend=1., lift=.7, carry=1., lower=1., withdraw=1.))
     sys.path.insert(0, '/root/yekangjie/project/embodied-jev/src')
     from embodied_jev.physics import RobotWorld
@@ -77,8 +77,8 @@ def main():
                     norm = np.linalg.norm(vector)
                     if norm:
                         vector /= norm
-                    gain = cfg['stage_gain'][stage] if policy == 'stage_gain' else .7
-                    amplitude = min(cfg['cap_m'], gain*np.linalg.norm(error))*scale
+                    gain = cfg['stage_gain'][stage] if policy == 'stage_gain' else (1. if policy == 'distance_10' else .7)
+                    amplitude = min(cfg['cap_m'], gain*np.linalg.norm(error)*scale)
                     before = float(np.linalg.norm(error))
                     outcome = motion(w, w.position+amplitude*vector, cfg)
                     after = float(np.linalg.norm(target-w.position))
