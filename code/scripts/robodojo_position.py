@@ -91,6 +91,10 @@ def run(rec, with_jev):
                                 policy_version="jev_rsi_development_probe_v1")
             episode, tick = reset["episode_id"], reset["step_id"]
             dump(rec.folder/"reset.json", reset)
+            if cfg.get("robodojo_task_mode") == "rgbd_reach":
+                from robodojo_rgbd_reach import run as run_rgbd_reach
+                run_rgbd_reach(rec, rpc, reset)
+                return
             if cfg.get("robodojo_task_mode") == "rgbd_capture":
                 from PIL import Image
                 captured = rpc.request("rgbd_observation", episode_id=episode, step_id=tick)
