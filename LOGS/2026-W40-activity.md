@@ -95,3 +95,4 @@
 - 【User】【2026-09-30 01:30】[prompt] 继续
 - 【Agent】【2026-09-30 01:35】[op] 服务器GPT-6完成11轮实现五任务视觉适配器；审查并修复执行器空动作保持接口，新增general_pickup有界实测配置；所有Python AST检查通过。
 - 【Agent】【2026-09-30 01:37】[op] 已在company-server-2 GPU2启动general_pickup layout0新鲜视觉回合；资产下载SSL中断后新增4次有界重试，保留校验文件；新增独立运行目录组装与逐文件官方哈希校验工具。
+- 【Agent】【2026-09-30 01:40】[op] 首个general_pickup回合146.54秒结束：视觉响应JSON缺闭括号，0动作/0Jev调用，原生success=false；保存全部原始响应，改用JSON输出约束并补齐公开任务语言传递，先重放验证再开新回合。

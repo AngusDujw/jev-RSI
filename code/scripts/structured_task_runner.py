@@ -75,14 +75,15 @@ def run(rec,rpc,reset):
             raise RuntimeError('Vision perception call budget exhausted')
         folder=rec.folder/f'perception-{vision_calls:04d}'
         folder.mkdir()
-        content=[dict(type='input_text',text=prompt)]
+        content=[dict(type='input_text',text=prompt+'\nPublic instruction (visible noun disambiguation only): '+str(observation.get('instruction','')))]
         for name,view in observation['cameras'].items():
             buff=io.BytesIO()
             Image.fromarray(np.asarray(view['rgb'])).save(buff,format='JPEG',quality=90)
             content.extend([dict(type='input_text',text=f'Camera: {name}; image pixel width/height {view["rgb"].shape[1]}/{view["rgb"].shape[0]}'),
                 dict(type='input_image',image_url='data:image/jpeg;base64,'+base64.b64encode(buff.getvalue()).decode())])
         payload=dict(model='gpt-6-astra',instructions='You are a visual measurement/OCR service. Return requested JSON of visible facts only. Do NOT plan robot actions, supply target waypoints, stages or movement directions. State missing observations explicitly.',
-            input=[dict(role='user',content=content)],reasoning=dict(effort='medium'),max_output_tokens=4000,store=False)
+            input=[dict(role='user',content=content)],reasoning=dict(effort='medium'),max_output_tokens=8000,
+            text=dict(format=dict(type='json_object')),store=False)
         dump(folder/'request.json',payload)
         vision_calls+=1
         response=request(payload,cfg['gpt6_key_file'],cfg['gpt6_base_url'])
