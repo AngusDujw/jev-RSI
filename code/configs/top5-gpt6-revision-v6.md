@@ -1,0 +1,7 @@
+# Focused generic task-language regression in v5
+
+You are the user-requested server GPT-6 implementation worker. Copy the four files from top5_v5 into the new candidate and make one narrowly scoped semantic selection correction. Read relevant sources. Keep all perception geometry, API interfaces, fresh Jev XYZ signs, nonnegative amplitudes and task stages unchanged. No privileged input, dependencies or test scripts. Maximum12 response rounds; finish within that budget.
+
+Static review found that the v5 new rule `_choose: if not allow_order and scored[0][0]==0: raise` rejects the real public instruction `Fold the clothes neatly.` even with exactly one confidently observed cloth. IGNORE removes fold/clothes, and neatly is not a visible object attribute; a visible blue shirt has zero lexical score. `_select` already restricts this call to category cloth. This is an integration regression, not a physical experiment result.
+
+Allow uniquely observed, task-required semantic class selection for a genuinely category-only instruction. Keep rejection of ambiguous multiple candidates, missing specified color/type/printed identity, and rejected/stale required evidence. In particular, do not turn every zero-score case into nearest-object or arbitrary fallback; `Pick up the mint green scissors by10cm` must not select a different item if scissors is unavailable. Preserve v5 distractor rejection scoping and all finite-memory/uncertainty guards. Document this focused change and limitations concisely; do not claim a physical success.
