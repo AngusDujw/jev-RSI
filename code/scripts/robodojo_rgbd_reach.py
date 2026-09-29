@@ -29,7 +29,7 @@ def run(rec, rpc, reset):
         return rpc.request(op, episode_id=episode, step_id=tick, **kw)
 
     try:
-        for index in range(13):
+        for index in range(cfg['max_jev_decisions']+1):
             rec.check_budget()
             captured = call('rgbd_observation')
             folder = rec.folder/f'frame-{index:03d}'
@@ -82,7 +82,7 @@ def run(rec, rpc, reset):
             dump(rec.folder/'visual_trajectory.json', rows)
             if np.max(np.abs(error)) <= cfg['axis_tolerance_m']:
                 status='estimated_target_reached'; break
-            if index>=12:
+            if index>=cfg['max_jev_decisions']:
                 break
             state = state_for(position, target, 'approach', cfg, visual_id=selected_id,
                 gripper_opening=float(obs['states'][arm_i*7+6]))
