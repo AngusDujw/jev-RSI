@@ -120,7 +120,7 @@ def run(rec,rpc,reset):
             if command.get('stop'):
                 status='controller_stop:'+str(command.get('reason','unspecified')); break
             arms=command.get('arms',{})
-            if not arms or set(arms)-{'left','right'}:
+            if not isinstance(arms,dict) or set(arms)-{'left','right'}:
                 raise ValueError('Invalid arm command')
             ticks=command.get('ticks')
             if not isinstance(ticks,int) or not 1<=ticks<=15:
@@ -149,7 +149,8 @@ def run(rec,rpc,reset):
                 decision_ids=[r['decision_id'] for r in rec.decisions[old_calls:]],command=command))
             acknowledgements=[]
             for _ in range(ticks):
-                proposal=call('eef_joint_target',targets=targets)
+                proposal=(call('eef_joint_target',targets=targets) if arms else
+                    dict(action=robot['states'],hold_current_joints=True))
                 action=np.asarray(proposal['action'],np.float32)
                 for i,name in enumerate(('left','right')):
                     if name not in arms:

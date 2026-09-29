@@ -69,8 +69,10 @@ def main():
                 for obj in objects:
                     folder='Clutter' if obj.get('type')=='cluttered' else kind
                     prefixes.add(f"Assets/Object/RoboDojo/{folder}/{category}/{obj['category_idx']:05d}/")
-        prefixes.update([f"Assets/Room/{scene['Room']['default']}/",f"Assets/Material/{scene['Table']['default']}/",
+        prefixes.update([f"Assets/Room/{scene['Room']['default']}/",
                          f"Assets/Material/{scene['Ground']['materials']['default']}/"])
+        if 'Table' in scene:
+            prefixes.add(f"Assets/Material/{scene['Table']['default']}/")
         exact.add('Assets/Background/'+scene['Background']['category_name'])
         for m in re.finditer(r'(?:\$\{?ASSETS_PATH\}?|\$Robo[Dd]ojo_ASSETS|Assets)/([^"\s]+)',json.dumps(scene)):
             name='Assets/'+m[1]

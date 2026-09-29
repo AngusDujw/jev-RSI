@@ -92,3 +92,5 @@
 - 【User】【2026-09-30 01:00】[intent] 用户授权切换到官方GPT-6控制成功率前五的RoboDojo任务，在company-server-2的jev_rsi项目调用服务器GPT-6设计实现Jev结构化输入，测试修正并以每任务超过20%成功率为阶段目标，之后扩大方向准确率测试；大规模阶段每小时检查一次。API使用用户指定v4090密钥文件及网关，密钥内容不入日志。
 - 【Agent】【2026-09-30 01:05】[op] 核实官方GPT-6全42任务SR数据，按标准/随机平均；网关gpt-6-astra真实连接返回READY。新增受限服务器GPT-6实现worker及输入/执行接口要求：不读布局/奖励/真值，生成至少两种结构化输入并保留Jev实际控制角色；密钥经SSH流直接转入远程git忽略目录。
 - 【User】【2026-09-30 01:12】[decision] 用户确认测试五个新任务，不含已测叠方块：general_pickup、fold_clothes、press_by_number、match_and_pick_from_conveyor、stack_bowls。
+- 【User】【2026-09-30 01:30】[prompt] 继续
+- 【Agent】【2026-09-30 01:35】[op] 服务器GPT-6完成11轮实现五任务视觉适配器；审查并修复执行器空动作保持接口，新增general_pickup有界实测配置；所有Python AST检查通过。
