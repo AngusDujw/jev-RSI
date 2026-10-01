@@ -119,3 +119,6 @@
 - 【Agent】【2026-10-01 20:16】[op] 离线复现确认第二次KeyError来自RGBEvidence输出日志需要eef_positions，而structured视觉回调payload不含robot；runner已补入当前机器人反馈给专用视觉适配器，未增加任何特权物体信息。
 - 【Agent】【2026-10-01 20:20】[op] 第三回合确认VisualEvidence只给专用视觉回调reference camera，RGBEvidence原实现固定遍历三相机导致KeyError；适配器改为按当前reference camera动态设置相机集合，仍不合成缺失视图。
 - 【Agent】【2026-10-01 20:24】[op] 完成EXP-2026W40-024：运行时GroundingDINO+SAM2、无GPT-6视觉调用的general_pickup有效回合0/1；20Jev/25动作/108步到contact后视觉不确定性超限。
+- 【Agent】【2026-10-01 20:51】[op] 在 company-server-2 删除本地 Qwen3.8-27B 与 qwen-venv，部署 LIBERO-Plus 源码和官方 assets.zip，建立独立 .venv-libero-plus，安装运行时依赖与系统 ImageMagick，修正 MuJoCo 2.3.7/RoboSuite 1.4.0 兼容性，并完成 libero_spatial task0 的 128x128 RGB-D reset/step smoke test。  ↪ `EXP-2026W40-023`
+- 【User】【2026-10-02 00:18】[decision] 授权腕部相机恢复；运行时可少量DeepSeek识别，优先本地算法；general_pickup最多20个开发回合，失败可修复继续（覆盖旧3次停止门槛），成功后同思路推广其他四任务。密钥不记入流水。
+- 【Agent】【2026-10-02 00:19】[op] 新增腕部多视角恢复候选：各相机独立RGB-D估计、语义与统一坐标距离关联，接触优先活动腕部；保存选择视角和关联证据。不平均视角中心。先重放再物理回合，最多20次授权。
