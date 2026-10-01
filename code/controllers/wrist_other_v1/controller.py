@@ -104,6 +104,13 @@ class Controller(Base):
             # changing partial-view top quantile. Current views verify visibility.
             anchor=np.asarray(self.plan['initial_grasp']).copy()
             anchor[2]+=.004
+            if self.task=='stack_bowls':
+                anchor[2]-=.009
+                head=self.vision.streams.get('cam_high')
+                candidates=[] if head is None else [r for r in head.tracks.values() if r['observed'] and r['category']=='bowl' and np.linalg.norm(r['center']-self.plan['source_initial'])<.07]
+                if len(candidates)==1:
+                    shift=candidates[0]['center']-self.plan['source_initial']; shift[2]=0
+                    anchor+=np.clip(shift,-.035,.035)
             arm=self.plan['arms'][0]
             targets={arm:anchor+np.array([0,0,.055 if self.stage=='approach' else 0])}
             self.debug['grasp_reference']=dict(source='initial visual grasp landmark; current multiview visibility required',
@@ -129,3 +136,15 @@ class Controller(Base):
                 scope='task instruction count memory; not a fresh visual measurement')
             return self.sequence
         return super()._press_sequence(instruction,rows)
+
+    def _movement(self,targets,uncertainty,opening,obs,ask_jev):
+        if self.stage=='press_stroke' and self.stage_age>=4 and self.last_motion:
+            arm=self.plan['arms'][0]
+            actual=np.linalg.norm(self.robot[arm]['grasp']-self.last_motion['grasp'][arm])
+            commanded=np.linalg.norm(self.last_motion['delta'][arm])
+            if commanded>.003 and actual<.0007:
+                self._transition('press_retract',dict(source='robot feedback after bounded downward stroke',
+                    actual_delta_m=float(actual),commanded_delta_m=float(commanded),
+                    inferred_contact_endstop=True,button_activation_verified=False))
+                targets,uncertainty,opening=self._targets()
+        return super()._movement(targets,uncertainty,opening,obs,ask_jev)
