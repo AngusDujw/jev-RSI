@@ -33,7 +33,13 @@ def visible_schema(detector, observation):
     payload['instruction'] = observation.get('instruction', '')
     for name, view in observation['cameras'].items():
         payload[name] = np.asarray(view['rgb'], dtype=np.uint8)
-    evidence = detector.observe(payload)
+    import realman_jev.robodojo_rgb as rgb_module
+    old_cameras = rgb_module.CAMERAS
+    rgb_module.CAMERAS = tuple(observation['cameras'])
+    try:
+        evidence = detector.observe(payload)
+    finally:
+        rgb_module.CAMERAS = old_cameras
     views = {}
     for name, view in evidence.get('views', {}).items():
         rows = []

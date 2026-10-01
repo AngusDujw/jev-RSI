@@ -117,3 +117,4 @@
 - 【Agent】【2026-10-01 20:10】[op] 按用户新口径改为运行时GroundingDINO+SAM2：新增local_rgbd_perception适配器，将RGBEvidence转换为结构化可见目标；配置runtime_perception明确禁用GPT-6视觉调用。准备仅跑general_pickup。
 - 【Agent】【2026-10-01 20:14】[op] 专用视觉general_pickup首回合未调用GPT-6，但适配器将视觉回调的局部payload误当作含robot字段，KeyError导致0Jev；修复为robot反馈可选，准备重跑。
 - 【Agent】【2026-10-01 20:16】[op] 离线复现确认第二次KeyError来自RGBEvidence输出日志需要eef_positions，而structured视觉回调payload不含robot；runner已补入当前机器人反馈给专用视觉适配器，未增加任何特权物体信息。
+- 【Agent】【2026-10-01 20:20】[op] 第三回合确认VisualEvidence只给专用视觉回调reference camera，RGBEvidence原实现固定遍历三相机导致KeyError；适配器改为按当前reference camera动态设置相机集合，仍不合成缺失视图。
