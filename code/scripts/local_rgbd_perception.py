@@ -36,6 +36,14 @@ def visible_schema(detector, observation):
     import re
     instruction=payload['instruction']
     match=re.search(r'pick up (.+?)(?: by |$)',instruction,re.I)
+    if 'fold' in instruction.lower():
+        detector.cfg['phrases']=['clothes','shirt','cloth']; detector.cfg['include_instruction']=False
+    elif 'bowl' in instruction.lower():
+        detector.cfg['phrases']=['bowl']; detector.cfg['include_instruction']=False
+    elif 'button' in instruction.lower():
+        detector.cfg['phrases']=['red button','blue button','number card']; detector.cfg['include_instruction']=False
+    elif 'conveyor' in instruction.lower():
+        detector.cfg['phrases']=['conveyor belt','object','toy','bottle','box']; detector.cfg['include_instruction']=False
     if match:
         target=match.group(1).strip().rstrip('.')
         detector.cfg['phrases']=[target]
@@ -61,7 +69,7 @@ def visible_schema(detector, observation):
                 category = 'number_card'
             elif 'bowl' in low:
                 category = 'bowl'
-            elif 'cloth' in low or 'shirt' in low or 'garment' in low or 'clothes' in low:
+            elif 'cloth' in low or 'shirt' in low or 'garment' in low or 'clothes' in low or 'clothing' in low:
                 category = 'cloth'
             elif 'conveyor' in low or 'belt' in low:
                 category = 'conveyor'
