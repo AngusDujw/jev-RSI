@@ -98,6 +98,8 @@ def run(rec,rpc,reset):
             dump(folder/'response.json', dict(source='local_detector_with_logged_bounded_deepseek_fallback', result=result))
             dump(folder/'measurements.json', result)
             return result
+        if cfg.get('forbid_runtime_gpt6',False):
+            raise RuntimeError('Runtime GPT-6 disabled by campaign policy')
         content=[dict(type='input_text',text=prompt+'\nPublic instruction (visible noun disambiguation only): '+str(observation.get('instruction','')))]
         for name,view in observation['cameras'].items():
             buff=io.BytesIO()

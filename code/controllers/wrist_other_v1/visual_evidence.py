@@ -285,7 +285,12 @@ class VisualEvidence:
         # Occlusion contributes error even when the retained surface is perfectly planar.
         # This is a conservative heuristic, not a calibrated confidence interval.
         error=max(.003,float(np.quantile(residual,.7))*.3+.002)+.025*excluded
-        if prior is not None: error=max(error,.5*shape_jump)
+        if prior is not None:
+            if row['category']=='cloth':
+                diagnostics['outline_change_m']=float(shape_jump)
+                diagnostics['outline_change_is_not_depth_noise']=True
+                error=max(error,.5*abs(float(top[2]-prior['top'][2])))
+            else: error=max(error,.5*shape_jump)
         diagnostics.update(selected_component=component,selected_samples=count,
             excluded_fraction=excluded,prior_id=None if prior is None else prior['id'],
             prior_age_steps=None if prior is None else self.call_index-prior['measurement_index'],
