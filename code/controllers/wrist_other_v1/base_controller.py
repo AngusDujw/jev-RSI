@@ -97,7 +97,7 @@ class Controller:
             if objects:
                 r=objects[0]
                 self.first_object=dict(label=r['label'],appearance=r['appearance'],text=r['text'],
-                    color=r['color'].copy(),category=r['category'],native_step=self.last_native,
+                    color=r['color'].copy(),visible_extent_m=(r['high']-r['low']).copy(),category=r['category'],native_step=self.last_native,
                     reference_camera=self.vision.reference_camera,
                     provenance='first uniquely visible item inside observed conveyor outline')
                 self._transition('conveyor_wait_departure',self.first_object)
@@ -110,7 +110,11 @@ class Controller:
             a=tokens(ref['label']+' '+ref['appearance'])-IGNORE
             b=tokens(r['label']+' '+r['appearance'])-IGNORE
             ca=np.asarray(ref['color']); cb=np.asarray(r['color'])
-            return (bool(a&b) and len(a&b)/max(1,len(a|b))>=.6 and r['text']==ref['text'] and
+            semantic=(bool(a&b) and len(a&b)/max(1,len(a|b))>=.6)
+            if not a and not b:
+                old=np.sort(np.asarray(ref['visible_extent_m'])[:2]); new=np.sort((r['high']-r['low'])[:2])
+                semantic=bool(np.max(np.abs(new-old)/np.maximum(old,.01))<.35)
+            return (semantic and r['text']==ref['text'] and
                     r['category']==ref['category'] and np.linalg.norm(ca/max(1,ca.sum())-cb/max(1,cb.sum()))<.12)
         same=[r for r in objects if matches(r)]
         self.debug['conveyor_memory']=dict(first=ref,matching_visible_ids=[r['id'] for r in same],
