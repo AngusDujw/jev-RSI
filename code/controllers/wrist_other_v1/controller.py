@@ -10,7 +10,7 @@ class MultiView:
         self.settings=settings; self.streams={}; self.tracks={}; self.next_id=0
         self.ttl=3; self.events=[]; self.last_cost={}; self.reference_camera='cam_high'
         self.call_index=0; self.last_semantic=0; self.surface_reobserve=False
-        self.stage='select'; self.active_arm='right'
+        self.stage='select'; self.active_arm='right'; self.active_id=None
 
     def update(self, observation, perceive, force=False):
         self.call_index+=1; self.events=[]; candidates=[]; calls=0; seconds=0.
@@ -39,6 +39,7 @@ class MultiView:
                 noun=(tokens(row['label']) & tokens(prev['label']))-{'the','a','object','small','green'}
                 distance=float(np.linalg.norm(row['center']-prev['center']))
                 if not noun or distance>.12: continue
+                if self.active_id is not None and oid!=self.active_id and row['views']!=['cam_high']: continue
                 # Preserve local identity when possible; reference changes are explicit.
                 score=row['uncertainty_m'] + .05*distance
                 if self.stage in ('contact','close','lift','verify_grasp') and preferred in row['views']: score-=.004
@@ -84,12 +85,14 @@ class Controller(Base):
         self.vision=MultiView(settings)
     def step(self,observation,ask_jev,perceive):
         self.vision.stage=self.stage
-        if self.plan: self.vision.active_arm=self.plan['arms'][0]
+        if self.plan:
+            self.vision.active_arm=self.plan['arms'][0]
+            self.vision.active_id=self.plan['source']
         return super().step(observation,ask_jev,perceive)
 
     def _targets(self):
         targets,uncertainty,opening=super()._targets()
-        if self.task=='general_pickup' and self.stage in ('approach','contact'):
+        if self.task in ('general_pickup','stack_bowls') and self.stage in ('approach','contact'):
             # Static pregrasp landmark comes from first measured surface, not a
             # changing partial-view top quantile. Current views verify visibility.
             anchor=np.asarray(self.plan['initial_grasp']).copy()
