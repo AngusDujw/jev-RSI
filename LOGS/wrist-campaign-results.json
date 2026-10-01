@@ -1,0 +1,548 @@
+[
+  {
+    "run": "code/runs/2026-10-02-wrist-attempt01",
+    "task": "general_pickup",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: required selection evidence unavailable; hold/reobserve: the mint green scissors",
+    "steps": 2,
+    "actions": 2,
+    "jev_calls": 0,
+    "visual_calls": 9,
+    "deepseek_calls": 0,
+    "wall_seconds": 45.863832131028175,
+    "commit": "816b24ac9d1997ac79f36a22ef14d6caf5f3ea05",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/company-general-wrist-v1.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-attempt01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "select"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-attempt02",
+    "task": "general_pickup",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_1",
+    "steps": 132,
+    "actions": 31,
+    "jev_calls": 24,
+    "visual_calls": 55,
+    "deepseek_calls": 0,
+    "wall_seconds": 160.37585292756557,
+    "commit": "089c73c931b4594fbaf45e73d4b89401816b665c",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/company-general-wrist-v1.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-attempt02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach",
+      "contact"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-attempt03",
+    "task": "general_pickup",
+    "success": true,
+    "reason": "native_episode_ended",
+    "steps": 126,
+    "actions": 30,
+    "jev_calls": 22,
+    "visual_calls": 49,
+    "deepseek_calls": 0,
+    "wall_seconds": 149.97096022963524,
+    "commit": "5169b5689faebb4e69bf17167f5f1bdfb594c77f",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/company-general-wrist-v1.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-attempt03",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-fold_clothes-attempt01",
+    "task": "fold_clothes",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: required selection evidence unavailable; hold/reobserve: clothes cloth; clothes",
+    "steps": 2,
+    "actions": 2,
+    "jev_calls": 0,
+    "visual_calls": 9,
+    "deepseek_calls": 0,
+    "wall_seconds": 42.20017544180155,
+    "commit": "4fc2468bf42a5b7fa1301ca52be680d8a973cb2e",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/fold_clothes.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-fold_clothes-attempt01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "select"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-fold_clothes-attempt02",
+    "task": "fold_clothes",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_1",
+    "steps": 46,
+    "actions": 12,
+    "jev_calls": 8,
+    "visual_calls": 27,
+    "deepseek_calls": 0,
+    "wall_seconds": 125.43042389675975,
+    "commit": "b6b7145cfa75fce9b0f2726363a935e3aeadcbf7",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/fold_clothes.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-fold_clothes-attempt02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-fold_clothes-attempt03",
+    "task": "fold_clothes",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_1",
+    "steps": 46,
+    "actions": 12,
+    "jev_calls": 8,
+    "visual_calls": 28,
+    "deepseek_calls": 0,
+    "wall_seconds": 122.63029838725924,
+    "commit": "4a406191044f038fc62fbbd48aa6b16a8386ca4d",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/fold_clothes.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-fold_clothes-attempt03",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-match_and_pick_from_conveyor-attempt01",
+    "task": "match_and_pick_from_conveyor",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: need one visible conveyor surface to identify passing items",
+    "steps": 2,
+    "actions": 2,
+    "jev_calls": 0,
+    "visual_calls": 9,
+    "deepseek_calls": 0,
+    "wall_seconds": 42.33014914765954,
+    "commit": "29e64c613032dfa13b376eea6399930651274799",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/match_and_pick_from_conveyor.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-match_and_pick_from_conveyor-attempt01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "select"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-match_and_pick_from_conveyor-attempt02",
+    "task": "match_and_pick_from_conveyor",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: need one visible conveyor surface to identify passing items",
+    "steps": 76,
+    "actions": 30,
+    "jev_calls": 0,
+    "visual_calls": 93,
+    "deepseek_calls": 0,
+    "wall_seconds": 88.97683918476105,
+    "commit": "b6b7145cfa75fce9b0f2726363a935e3aeadcbf7",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/match_and_pick_from_conveyor.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-match_and_pick_from_conveyor-attempt02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "conveyor_wait_departure"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-match_and_pick_from_conveyor-attempt03",
+    "task": "match_and_pick_from_conveyor",
+    "success": false,
+    "reason": "native_episode_ended",
+    "steps": 700,
+    "actions": 70,
+    "jev_calls": 0,
+    "visual_calls": 45,
+    "deepseek_calls": 0,
+    "wall_seconds": 174.98485766351223,
+    "commit": "d9d8144145369b97a2c645ddf30d04cae0bcdde3",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/match_and_pick_from_conveyor.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-match_and_pick_from_conveyor-attempt03",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "conveyor_wait_departure",
+      "conveyor_wait_repeat"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-press_by_number-attempt01",
+    "task": "press_by_number",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: need exactly two readable visible number cards",
+    "steps": 2,
+    "actions": 2,
+    "jev_calls": 0,
+    "visual_calls": 9,
+    "deepseek_calls": 0,
+    "wall_seconds": 39.266236044466496,
+    "commit": "29e64c613032dfa13b376eea6399930651274799",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/press_by_number.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-press_by_number-attempt01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "select"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-press_by_number-attempt02",
+    "task": "press_by_number",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: card/button nearest associations are not one-to-one",
+    "steps": 21,
+    "actions": 7,
+    "jev_calls": 3,
+    "visual_calls": 20,
+    "deepseek_calls": 0,
+    "wall_seconds": 108.25194162502885,
+    "commit": "b6b7145cfa75fce9b0f2726363a935e3aeadcbf7",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/press_by_number.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-press_by_number-attempt02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "press_approach"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-press_by_number-attempt03",
+    "task": "press_by_number",
+    "success": false,
+    "reason": "controller_stop:phase budget exhausted without verified progress",
+    "steps": 155,
+    "actions": 52,
+    "jev_calls": 50,
+    "visual_calls": 121,
+    "deepseek_calls": 0,
+    "wall_seconds": 195.6565928980708,
+    "commit": "4a406191044f038fc62fbbd48aa6b16a8386ca4d",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/press_by_number.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-press_by_number-attempt03",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "press_approach",
+      "press_contact",
+      "press_stroke"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-stack_bowls-attempt01",
+    "task": "stack_bowls",
+    "success": false,
+    "reason": "controller_stop:grasp not verified from after-action visual displacement",
+    "steps": 119,
+    "actions": 31,
+    "jev_calls": 18,
+    "visual_calls": 61,
+    "deepseek_calls": 0,
+    "wall_seconds": 213.7221614457667,
+    "commit": "4fc2468bf42a5b7fa1301ca52be680d8a973cb2e",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/stack_bowls.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-stack_bowls-attempt01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-stack_bowls-attempt02",
+    "task": "stack_bowls",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_3",
+    "steps": 66,
+    "actions": 16,
+    "jev_calls": 12,
+    "visual_calls": 30,
+    "deepseek_calls": 0,
+    "wall_seconds": 125.5080154761672,
+    "commit": "b6b7145cfa75fce9b0f2726363a935e3aeadcbf7",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/stack_bowls.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-stack_bowls-attempt02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach"
+    ]
+  },
+  {
+    "run": "code/runs/2026-10-02-wrist-stack_bowls-attempt03",
+    "task": "stack_bowls",
+    "success": false,
+    "reason": "controller_stop:grasp not verified from after-action visual displacement",
+    "steps": 137,
+    "actions": 37,
+    "jev_calls": 21,
+    "visual_calls": 61,
+    "deepseek_calls": 0,
+    "wall_seconds": 158.14695858582854,
+    "commit": "4a406191044f038fc62fbbd48aa6b16a8386ca4d",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/stack_bowls.json",
+      "--output",
+      "code/runs/2026-10-02-wrist-stack_bowls-attempt03",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp"
+    ]
+  },
+  {
+    "run": "code/runs/wrist-confirmation-layout1",
+    "task": "general_pickup",
+    "success": true,
+    "reason": "native_episode_ended",
+    "steps": 160,
+    "actions": 35,
+    "jev_calls": 30,
+    "visual_calls": 55,
+    "deepseek_calls": 0,
+    "wall_seconds": 164.46215653792024,
+    "commit": "d9d8144145369b97a2c645ddf30d04cae0bcdde3",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/company-general-wrist-layout1.json",
+      "--output",
+      "code/runs/wrist-confirmation-layout1",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift"
+    ]
+  },
+  {
+    "run": "code/runs/wrist-fold_clothes-attempt04",
+    "task": "fold_clothes",
+    "success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_1",
+    "steps": 101,
+    "actions": 23,
+    "jev_calls": 19,
+    "visual_calls": 51,
+    "deepseek_calls": 0,
+    "wall_seconds": 149.8879191428423,
+    "commit": "47941b54a61ab7f38f7543589b619989d89926de",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/fold_clothes.json",
+      "--output",
+      "code/runs/wrist-fold_clothes-attempt04",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach"
+    ]
+  },
+  {
+    "run": "code/runs/wrist-match_and_pick_from_conveyor-attempt04",
+    "task": "match_and_pick_from_conveyor",
+    "success": false,
+    "reason": "native_episode_ended",
+    "steps": 700,
+    "actions": 71,
+    "jev_calls": 0,
+    "visual_calls": 45,
+    "deepseek_calls": 0,
+    "wall_seconds": 173.07707949727774,
+    "commit": "47941b54a61ab7f38f7543589b619989d89926de",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/match_and_pick_from_conveyor.json",
+      "--output",
+      "code/runs/wrist-match_and_pick_from_conveyor-attempt04",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "select",
+      "conveyor_wait_departure",
+      "conveyor_wait_repeat"
+    ]
+  },
+  {
+    "run": "code/runs/wrist-press_by_number-attempt04",
+    "task": "press_by_number",
+    "success": false,
+    "reason": "controller_stop:phase budget exhausted without verified progress",
+    "steps": 155,
+    "actions": 52,
+    "jev_calls": 50,
+    "visual_calls": 121,
+    "deepseek_calls": 0,
+    "wall_seconds": 197.99843246862292,
+    "commit": "47941b54a61ab7f38f7543589b619989d89926de",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/press_by_number.json",
+      "--output",
+      "code/runs/wrist-press_by_number-attempt04",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "press_approach",
+      "press_contact",
+      "press_stroke"
+    ]
+  },
+  {
+    "run": "code/runs/wrist-stack_bowls-attempt04",
+    "task": "stack_bowls",
+    "success": false,
+    "reason": "controller_stop:grasp not verified from after-action visual displacement",
+    "steps": 181,
+    "actions": 43,
+    "jev_calls": 30,
+    "visual_calls": 71,
+    "deepseek_calls": 0,
+    "wall_seconds": 172.16932575404644,
+    "commit": "9744a2bb8b5c1031dc0b938719a67109cab0a046",
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/wrist-tasks/stack_bowls.json",
+      "--output",
+      "code/runs/wrist-stack_bowls-attempt04",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp"
+    ]
+  }
+]
