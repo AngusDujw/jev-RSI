@@ -1,7 +1,7 @@
 """Multiview recovery around the archived controller; no hidden scene inputs."""
 import copy
 import numpy as np
-from base_controller import Controller as Base
+from base_controller import Controller as Base, tool_quaternion
 from visual_evidence import VisualEvidence, tokens
 
 
@@ -99,3 +99,16 @@ class Controller(Base):
             self.debug['grasp_reference']=dict(source='initial visual grasp landmark; current multiview visibility required',
                 point=anchor.tolist(),not_current_surface_centroid=True)
         return targets,uncertainty,opening
+
+    def _select(self):
+        super()._select()
+        if self.task=='stack_bowls' and self.plan:
+            a=self.plan['arms'][0]; r=self.current[self.plan['source']]
+            radial=np.asarray(self.plan['initial_grasp'])-r['center']; radial[2]=0.
+            if np.linalg.norm(radial)>.005:
+                self.plan['quaternions'][a]=tool_quaternion([0,0,-1],radial)
+
+    def _grasp_point(self,row,arm):
+        point=super()._grasp_point(row,arm)
+        if row['category']=='bowl': point[2]-=min(.015,.25*float(row['high'][2]-row['low'][2]))
+        return point

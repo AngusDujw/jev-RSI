@@ -56,8 +56,11 @@ def visible_schema(detector, observation):
     finally:
         rgb_module.CAMERAS = old_cameras
     views = {}
+    if not hasattr(detector,'digit_ocr'):
+        from local_digit_ocr import DigitOCR
+        detector.digit_ocr=DigitOCR()
     for name, view in evidence.get('views', {}).items():
-        rows = []
+        rows = []; accepted_masks=[]
         for item in view.get('objects', []):
             contour = item.get('contour_uv01', [])
             if len(contour) < 3:
@@ -79,8 +82,17 @@ def visible_schema(detector, observation):
                 category = 'container'
             else:
                 category = 'object'
+            printed=''
+            if category=='number_card':
+                printed,_=detector.digit_ocr.read(observation['cameras'][name]['rgb'],contour)
+            # Suppress duplicate masks even if detector emitted synonymous labels.
+            import cv2
+            shape=observation['cameras'][name]['rgb'].shape[:2]
+            mask=np.zeros(shape,np.uint8); cv2.fillPoly(mask,[np.rint(np.asarray(contour)*[shape[1],shape[0]]).astype(np.int32)],1)
+            if any(prev_category==category and (mask&prev_mask).sum()/max(1,(mask|prev_mask).sum())>.65 for prev_category,prev_mask in accepted_masks): continue
+            accepted_masks.append((category,mask))
             rows.append(dict(category=category, label=label,
-                appearance=label, text='', confidence=float(item.get('confidence', .5)),
+                appearance=label, text=printed, confidence=float(item.get('confidence', .5)),
                 polygon_uv01=contour, keypoints={}))
         views[name] = dict(objects=rows)
     return dict(views=views, source='GroundingDINO+SAM2_RGB_only_no_runtime_GPT6',

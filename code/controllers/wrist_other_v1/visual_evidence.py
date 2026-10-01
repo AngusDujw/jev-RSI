@@ -309,6 +309,12 @@ class VisualEvidence:
                 rim.append(top_points[np.argmax(top_points[:,axis]*sign)].copy())
         corner_names=[f'tracked_corner_{i}' for i in range(4)]
         corners=[keys[k] for k in corner_names] if all(k in keys for k in corner_names) else []
+        if row['category']=='cloth' and len(corners)!=4:
+            rectangle=cv2.boxPoints(cv2.minAreaRect(points[:,:2].astype(np.float32)))
+            middle=rectangle.mean(0); targets=.8*rectangle+.2*middle
+            corners=[points[np.argmin(np.linalg.norm(points[:,:2]-xy,axis=1))].copy() for xy in targets]
+            corner_names=['tracked_corner_%d'%i for i in range(4)]
+            keys.update(dict(zip(corner_names,corners)))
         self.events.append(dict(kind='surface_component_measured',observed=True,**diagnostics))
         return dict(category=row['category'],label=row['label'],appearance=row['appearance'],text=row['text'],
             confidence=row['confidence'],image_center_uv01=image_center,
