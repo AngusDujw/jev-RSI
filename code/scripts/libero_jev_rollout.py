@@ -97,7 +97,7 @@ def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
             rec.event(dict(kind='stage',stage=stage,target=target.tolist() if target is not None else None))
             if target is None:
                 step([0,0,0,0,0,0,grip],16); snapshot(stage); continue
-            for iteration in range(30):
+            for iteration in range(40):
                 position=obs['robot0_eef_pos'].copy(); error=target-position
                 if np.max(np.abs(error))<.006: break
                 state=dict(task=task.language,stage=stage,position_m=position.tolist(),target_position_m=target.tolist(),
@@ -113,7 +113,9 @@ def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 rec.branch(dict(stage=stage,decision_id=decision['decision_id'],delta=delta,
                                 before=before,after=obs['robot0_eef_pos'].copy(),native_steps=ticks))
                 snapshot('step-%04d'%ticks)
-            else: raise RuntimeError('Stage motion budget exhausted: '+stage)
+            else:
+                if np.max(np.abs(target-obs['robot0_eef_pos'])) >= .006:
+                    raise RuntimeError('Stage motion budget exhausted: '+stage)
             snapshot(stage)
             if stage=='lift':
                 held=perceive(np.ascontiguousarray(obs[cam+'_image'][::-1]),
