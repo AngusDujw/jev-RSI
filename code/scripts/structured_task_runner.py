@@ -91,7 +91,10 @@ def run(rec,rpc,reset):
             vision_calls += 1
             detector_observation = dict(observation, robot=current['robot'])
             result = visible_schema(detector, detector_observation)
-            if fallback is not None and any('wrist' in name for name in observation['cameras']):
+            active_arm=(controller.plan or {}).get('arms',['right'])[0]
+            fallback_needed=(getattr(controller,'recovery_count',0)>0 and
+                'cam_'+active_arm+'_wrist' in observation['cameras'])
+            if fallback is not None and fallback_needed:
                 labels=[r for v in result['views'].values() for r in v['objects'] if r['confidence']>=.5 and 'gripper' not in r['label']]
                 if not labels and fallback.calls<fallback.limit:
                     result=fallback(prompt,observation,'wrist local detector has no confident non-robot instance')
