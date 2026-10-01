@@ -43,7 +43,7 @@ def perceive(rgb, depth, K, T, held_tcp=None):
     if not plates: raise RuntimeError('No unambiguous visible red plate')
     plate=max(plates,key=lambda o:o['area'])
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY)
-    object_area=tabletop if held_tcp is None else ((z>held_tcp[2]-.13)&(z<held_tcp[2]-.012)&(np.linalg.norm(xyz[:,:,:2]-held_tcp[:2],axis=2)<.11))
+    object_area=tabletop if held_tcp is None else ((z>held_tcp[2]-.13)&(z<held_tcp[2]+.020)&(np.linalg.norm(xyz[:,:,:2]-held_tcp[:2],axis=2)<.11))
     dark=((gray<85)&object_area).astype('uint8')*255
     dark=cv2.morphologyEx(dark,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
     contours,_=cv2.findContours(dark,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
