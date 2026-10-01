@@ -10,11 +10,12 @@ class MultiView:
         self.settings=settings; self.streams={}; self.tracks={}; self.next_id=0
         self.ttl=3; self.events=[]; self.last_cost={}; self.reference_camera='cam_high'
         self.call_index=0; self.last_semantic=0; self.surface_reobserve=False
-        self.stage='select'; self.active_arm='right'; self.active_id=None
+        self.stage='select'; self.active_arm='right'; self.active_id=None; self.belt_map=None
 
     def update(self, observation, perceive, force=False):
         self.call_index+=1; self.events=[]; candidates=[]; calls=0; seconds=0.
         names=list(observation['cameras'])
+        if 'conveyor' in observation.get('instruction','').lower(): names=['cam_high']
         # At contact both viewpoints are actually measured, not merely saved.
         preferred='cam_'+self.active_arm+'_wrist'
         for name in names:
@@ -70,6 +71,12 @@ class MultiView:
             self.next_id+=1; oid='mv_%d'%self.next_id; row['id']=oid; current[oid]=row
         for r in current.values():
             if r['observed']: r['global_seen']=self.call_index
+        if 'conveyor' in observation.get('instruction','').lower():
+            fresh=[r for r in current.values() if r['category']=='conveyor' and r['observed']]
+            if fresh: self.belt_map=copy.deepcopy(max(fresh,key=lambda r:r['samples']))
+            elif self.belt_map is not None:
+                remembered=dict(self.belt_map,observed=False,static_support_map=True,source='initial_static_belt_map_NOT_fresh',age_steps=self.call_index-self.belt_map['global_seen'])
+                current[remembered['id']]=remembered
         self.tracks=current
         return current
 

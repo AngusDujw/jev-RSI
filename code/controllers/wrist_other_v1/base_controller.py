@@ -307,7 +307,7 @@ class Controller:
         return sequence
 
     def _select(self):
-        rows=[r for r in self.current.values() if r['observed'] and r['uncertainty_m']<=.025]
+        rows=[r for r in self.current.values() if (r['observed'] or r.get('static_support_map',False)) and r['uncertainty_m']<=.025]
         instruction=self.instruction
         if self.task=='press_by_number':
             if self.sequence is None: self.sequence=self._press_sequence(instruction,rows)
@@ -716,7 +716,7 @@ class Controller:
                 raise EvidenceError('unsupported required RGB-D surface; hold/reobserve: '+
                     '; '.join(str(e.get('label',''))+': '+str(e.get('reason','')) for e in rejected)[:300])
             if self.task=='press_by_number' and self.sequence is not None:
-                rows=[r for r in self.current.values() if r['observed'] and r['uncertainty_m']<=.025]
+                rows=[r for r in self.current.values() if (r['observed'] or r.get('static_support_map',False)) and r['uncertainty_m']<=.025]
                 if self._press_sequence(self.instruction,rows)!=self.sequence:
                     raise EvidenceError('required button/card identities or counts changed; hold/reobserve')
             # Unrelated rejected polygons remain diagnostic-only. They need not
@@ -732,7 +732,7 @@ class Controller:
                     evidence=dict(first=self.first_object,departed=self.conveyor_departed,wait_observations=self.conveyor_wait),
                     translation='zero; Jev not called')
                 self.recovery_count=0
-                return self._result(reason='observe conveyor temporal sequence',ticks=3)
+                return self._result(reason='observe conveyor temporal sequence',ticks=10)
             if self.stage in ('press_contact','press_stroke','press_verify'):
                 row=self.current.get(self.plan['source'])
                 if row is not None and row['observed']:
