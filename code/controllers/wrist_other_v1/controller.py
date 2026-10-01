@@ -39,7 +39,7 @@ class MultiView:
                 noun=(tokens(row['label']) & tokens(prev['label']))-{'the','a','object','small','green'}
                 distance=float(np.linalg.norm(row['center']-prev['center']))
                 if not noun or distance>.12: continue
-                if self.active_id is not None and oid!=self.active_id and row['views']!=['cam_high']: continue
+                if (self.active_id is not None and oid!=self.active_id or prev['category']=='cloth') and row['views']!=['cam_high']: continue
                 # Preserve local identity when possible; reference changes are explicit.
                 score=row['uncertainty_m'] + .05*distance
                 if self.stage in ('contact','close','lift','verify_grasp') and preferred in row['views']: score-=.004
@@ -115,3 +115,10 @@ class Controller(Base):
         point=super()._grasp_point(row,arm)
         if row['category']=='bowl': point[2]-=min(.015,.25*float(row['high'][2]-row['low'][2]))
         return point
+
+    def _press_sequence(self,instruction,rows):
+        if self.sequence is not None:
+            self.debug['press_card_memory']=dict(source='initial locally OCR-read cards',
+                scope='task instruction count memory; not a fresh visual measurement')
+            return self.sequence
+        return super()._press_sequence(instruction,rows)
