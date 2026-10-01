@@ -86,3 +86,16 @@ class Controller(Base):
         self.vision.stage=self.stage
         if self.plan: self.vision.active_arm=self.plan['arms'][0]
         return super().step(observation,ask_jev,perceive)
+
+    def _targets(self):
+        targets,uncertainty,opening=super()._targets()
+        if self.task=='general_pickup' and self.stage in ('approach','contact'):
+            # Static pregrasp landmark comes from first measured surface, not a
+            # changing partial-view top quantile. Current views verify visibility.
+            anchor=np.asarray(self.plan['initial_grasp']).copy()
+            anchor[2]+=.004
+            arm=self.plan['arms'][0]
+            targets={arm:anchor+np.array([0,0,.055 if self.stage=='approach' else 0])}
+            self.debug['grasp_reference']=dict(source='initial visual grasp landmark; current multiview visibility required',
+                point=anchor.tolist(),not_current_surface_centroid=True)
+        return targets,uncertainty,opening
