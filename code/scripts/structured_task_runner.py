@@ -68,6 +68,13 @@ def run(rec,rpc,reset):
         append(rec.folder/'decisions.jsonl',row)
         return response
 
+    detector = None
+    detector_cfg = None
+    if cfg.get("runtime_perception") == "groundingdino_sam2":
+        from local_rgbd_perception import build_detector, visible_schema
+        detector, detector_cfg = build_detector(cfg, cfg["gpu"])
+        dump(rec.folder / "perception_config.json", detector_cfg)
+
     def perceive(prompt,observation):
         nonlocal vision_calls
         rec.check_budget()
@@ -75,6 +82,12 @@ def run(rec,rpc,reset):
             raise RuntimeError('Vision perception call budget exhausted')
         folder=rec.folder/f'perception-{vision_calls:04d}'
         folder.mkdir()
+        if detector is not None:
+            vision_calls += 1
+            result = visible_schema(detector, observation)
+            dump(folder/'response.json', dict(source='GroundingDINO+SAM2_RGB_only_no_runtime_GPT6', result=result))
+            dump(folder/'measurements.json', result)
+            return result
         content=[dict(type='input_text',text=prompt+'\nPublic instruction (visible noun disambiguation only): '+str(observation.get('instruction','')))]
         for name,view in observation['cameras'].items():
             buff=io.BytesIO()

@@ -111,3 +111,7 @@
 - 【Agent】【2026-09-30 02:28】[op] 第三general_pickup回合已启动；未部署v2/v3生成草稿已归档到各自code/runs，保留全部来源且仓库干净。静态发现v5零词匹配守卫会阻断类别型叠衣服指令，提交服务器GPT-6作独立v6最小修复，不改变正在运行的v5。
 - 【Agent】【2026-09-30 02:31】[stop] 触发AGENTS.md§10：五任务新意图开发回合EXP-2026W40-019、021及待记录023连续3次未完成（capture/离线重放不重置）；暂停新实验，已向用户请求是否允许修复目标身份关联后再最多3个回合。当前只归档和同步既有结果。
 - 【Agent】【2026-09-30 02:34】[op] 完成EXP-2026W40-023和§10停止记录；三个回合312个原始文件本地/服务器SHA256一致，确认自有仿真PID已退出。v6在暂停前已生成完毕，现仅静态归档、不执行新验证；重写状态报告避免旧进度混淆。
+- 【User】【2026-10-01 11:08】[prompt] 之前的实验都是在robodojo和embodied jev上跑的，我现在想看看在libero plus或pro跑的结果，你看看我应该用plus还是pro合适一点
+- 【Agent】【2026-10-01 17:36】[op] 完成 company-server-2 只读检查：确认仅有根盘与/dev/shm，存在 jev_rsi、robodojo-jev、embodied-jev；发现 embodied-jev 已有原版 LIBERO GPT-6/Jev 测试代码与结果，但没有 LIBERO-Plus 资产。LIBERO-Plus 官方资产包约6.40GB，根盘仅剩约46GB。  ↪ `EXP-2026W40-023`
+- 【Agent】【2026-10-01 17:45】[op] 复核 company-server-2：确认 jev_rsi 统一入口可切换 embodied/robodojo，但两者环境和后端实现不同；盘点发现 embodied-jev/.cache/models/Qwen3.8-27B 约52G、embodied-jev/runs约7.8G、robodojo-jev/.cache约15G、robodojo-jev/runs约8.3G、jev_rsi/code/runs约9.7G；发现旧company-20260926进程仍在运行，暂不建议删除其产物。  ↪ `EXP-2026W40-023`
+- 【Agent】【2026-10-01 20:10】[op] 按用户新口径改为运行时GroundingDINO+SAM2：新增local_rgbd_perception适配器，将RGBEvidence转换为结构化可见目标；配置runtime_perception明确禁用GPT-6视觉调用。准备仅跑general_pickup。
