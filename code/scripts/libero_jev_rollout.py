@@ -15,7 +15,7 @@ from run_position_pilot import Recorder, Jev, dump
 
 ROOT = '/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'
 
-def perceive(rgb, depth, K, T):
+def perceive(rgb, depth, K, T, held_tcp=None):
     """Task-specific colour/shape frontend, no simulator object data.
     Black bowl silhouette and red plate rim; nearest bowl to plate disambiguates
     the 'between plate and ramekin' task. This is a declared task scaffold.
@@ -43,7 +43,8 @@ def perceive(rgb, depth, K, T):
     if not plates: raise RuntimeError('No unambiguous visible red plate')
     plate=max(plates,key=lambda o:o['area'])
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY)
-    dark=((gray<85)&tabletop).astype('uint8')*255
+    object_area=tabletop if held_tcp is None else ((z>held_tcp[2]-.13)&(z<held_tcp[2]-.012)&(np.linalg.norm(xyz[:,:,:2]-held_tcp[:2],axis=2)<.11))
+    dark=((gray<85)&object_area).astype('uint8')*255
     dark=cv2.morphologyEx(dark,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
     contours,_=cv2.findContours(dark,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     bowls=[]
@@ -53,12 +54,13 @@ def perceive(rgb, depth, K, T):
             # Silhouette's top corresponds to bowl rim; include upper ellipse.
             mask=np.zeros(depth.shape,np.uint8)
             cv2.ellipse(mask,(int(x+w/2),int(y+h*.35)),(int(w*.44),int(h*.45)),0,0,360,255,-1)
-            pts=xyz[(mask>0)&tabletop]
+            pts=xyz[(mask>0)&object_area]
             if len(pts)<60: continue
             center=np.median(pts,axis=0)
             bowls.append(dict(pixel=[x+w/2,y+h*.35],position=center,top=float(np.quantile(pts[:,2],.90)),bbox=[x,y,w,h]))
     if not bowls: raise RuntimeError('No visible bowl')
-    bowl=min(bowls,key=lambda o:np.linalg.norm(o['position'][:2]-plate['position'][:2]))
+    anchor=plate['position'] if held_tcp is None else held_tcp
+    bowl=min(bowls,key=lambda o:np.linalg.norm(o['position'][:2]-anchor[:2]))
     return dict(bowl=bowl,plate=plate,table_z=table_z,candidates=bowls)
 
 
@@ -68,6 +70,8 @@ def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
     def snapshot(label):
         rgb=np.ascontiguousarray(obs['agentview_image'][::-1])
         cv2.imwrite(str(rec.folder/(label+'.png')),cv2.cvtColor(rgb,cv2.COLOR_RGB2BGR))
+        if not label.startswith('step-'):
+            np.save(rec.folder/(label+'-depth.npy'),depth_fn(env.sim,obs['agentview_depth'])[::-1].squeeze())
     def step(action,n):
         nonlocal obs,ticks
         for _ in range(n):
@@ -111,6 +115,15 @@ def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 snapshot('step-%04d'%ticks)
             else: raise RuntimeError('Stage motion budget exhausted: '+stage)
             snapshot(stage)
+            if stage=='lift':
+                held=perceive(np.ascontiguousarray(obs[cam+'_image'][::-1]),
+                      depth_fn(env.sim,obs[cam+'_depth'])[::-1].squeeze(),
+                      k_fn(env.sim,cam,384,384),t_fn(env.sim,cam),obs['robot0_eef_pos'])
+                offset=held['bowl']['position'][:2]-obs['robot0_eef_pos'][:2]
+                dump(rec.folder/'held-offset.json',dict(evidence=held,offset_xy=offset))
+                # Targets retain references in this stage list.
+                carry[:2]=plate['position'][:2]-offset
+                targets[5][1][:2]=carry[:2]
         # Evaluator-only predicate: never passed into Jev or the action policy.
         success=bool(env.check_success())
         dump(rec.folder/'result.json',dict(success=success,native_steps=ticks,jev_calls=len(rec.decisions),deepseek_calls=0))
