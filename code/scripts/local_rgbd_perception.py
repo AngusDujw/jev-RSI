@@ -29,7 +29,7 @@ def build_detector(cfg, device):
 
 
 def visible_schema(detector, observation):
-    payload = dict(observation['robot'])
+    payload = dict(observation.get('robot', {}))
     payload['instruction'] = observation.get('instruction', '')
     for name, view in observation['cameras'].items():
         payload[name] = np.asarray(view['rgb'], dtype=np.uint8)
