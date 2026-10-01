@@ -18,6 +18,13 @@ def build_detector(cfg, device):
     vcfg = dict(source['vision'])
     vcfg.update(device=f'cuda:{device}', include_instruction=True,
                 calibrated_robot_projection=False, max_instances=18)
+    cache = Path(vcfg['cache_dir'])
+    dino = next((p for p in (cache/'models--IDEA-Research--grounding-dino-tiny'/'snapshots').iterdir() if p.is_dir()), None)
+    sam = next((p for p in (cache/'models--facebook--sam2.1-hiera-tiny'/'snapshots').iterdir() if p.is_dir()), None)
+    if dino is None or sam is None:
+        raise FileNotFoundError('GroundingDINO/SAM2 local snapshot is missing')
+    vcfg['detector_model'] = str(dino)
+    vcfg['sam_model'] = str(sam)
     return RGBEvidence(vcfg), vcfg
 
 
