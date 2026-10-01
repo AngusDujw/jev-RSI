@@ -39,6 +39,7 @@ graph LR
     T_2026W40_006["🔀 jev-control-formulation<br/>用户明确转向官方GPT-6表现前五任务：服…"]:::pivot
     T_2026W40_007["📊 jev-control-formulation<br/>新任务视觉闭环18/18符合输入估计但任务…"]:::experiment
     T_2026W40_008["⛔ jev-control-formulation<br/>新任务视觉闭环连续3次未完成，按协议暂停；…"]:::blocker
+    T_2026W40_009["📊 jev-control-formulation<br/>腕部RGB-D恢复＋固定视觉抓取点：gen…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -53,6 +54,7 @@ graph LR
   T_2026W40_005 --> T_2026W40_006
   T_2026W40_006 --> T_2026W40_007
   T_2026W40_007 --> T_2026W40_008
+  T_2026W40_008 --> T_2026W40_009
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
 ```
@@ -83,6 +85,7 @@ graph LR
 | `T-2026W40-006` | 2026-09-30 | pivot | jev-control-formulation | 用户明确转向官方GPT-6表现前五任务：服务器GPT-6设计结构化观测，Jev闭环先验证每任务>20%再扩大方向测量；大规模每小时巡检 | `DISC-2026W39-001` | - |
 | `T-2026W40-007` | 2026-09-30 | experiment | jev-control-formulation | 新任务视觉闭环18/18符合输入估计但任务失败：机器人前景污染物体top，需先隔离感知错误 | `EXP-2026W40-021` | - |
 | `T-2026W40-008` | 2026-09-30 | blocker | jev-control-formulation | 新任务视觉闭环连续3次未完成，按协议暂停；等待用户授权继续身份关联修复和最多3个开发回合 | `EXP-2026W40-023` | - |
+| `T-2026W40-009` | 2026-10-02 | experiment | jev-control-formulation | 腕部RGB-D恢复＋固定视觉抓取点：general_pickup第3次原生成功，22Jev/126步，零运行时GPT-6/DeepSeek | `EXP-2026W40-027` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
