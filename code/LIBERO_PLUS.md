@@ -1,0 +1,44 @@
+# LIBERO-Plus Jev 开发抓放
+
+入口：[scripts/libero_jev_rollout.py](scripts/libero_jev_rollout.py)。运行于 company-server-2。
+
+选定 `libero_spatial` API 0-based task_id=988，classification ID=989，Language Instructions / difficulty=1。
+完整任务：`pick_up_the_black_bowl_between_the_plate_and_the_ramekin_and_place_it_on_the_plate_language_5_view_0_0_100_0_0_initstate_0`。
+它是Spatial任务族的Plus语言改写变体，不是已核实逐任务GPT-6得分的同一个Pro实例。Harness VLA Table21给出Spatial-T组100%，不能移作Plus成绩。
+
+## 信息与职责
+
+- 复用jev_rsi的Recorder/Jev和已有TypeSafe连接，实际返回jev-1.13.0。
+- 策略输入仅RGB-D、相机标定、本体反馈和任务指令。真值物体位姿、分割ID、奖励及成功谓词不进入策略。
+- 本地颜色/形状+深度前端有任务专用假设：红边盘、暗色碗；以距盘最近的碗实现between语义。这不是泛化语言理解。
+- 外部代码决定抓放阶段、固定姿态、夹爪、几何目标与幅度；Jev只选XYZ负/保持/正。幅度为min(25mm,0.65×逐轴误差)。方向概率完整保留。
+- 抓后一次RGB-D刷新估计碗-TCP偏移，再修正搬运/放置目标。抬升后的候选可能混入夹爪；仅通过离线过滤测试，未证明身份或偏移精度。
+- DeepSeek调用0次，未在本入口配置或保存用户凭据。当前没有额外模型回退。
+- 限制：900秒/120Jev/550原生步/400MiB；3tick不构成停稳认证。native success仅最终评价读取。
+
+## 环境与运行
+
+环境来自前一轮安装：Python3.10、MuJoCo2.3.7、Robosuite1.4.0、NumPy1.26.4、Torch2.2.2+cpu；本轮新增httpx0.28.1及其依赖。
+源码资产位于embodied-jev目录，只作为独立仿真依赖；实验策略和日志仍在jev_rsi。
+
+以下逐行执行，最后一行是一条完整命令，无需拆行。输出目录必须不存在。
+
+```bash
+cd /root/yekangjie/project/jev_rsi
+/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/libero_jev_rollout.py --task-id 988 --seed 0 --output code/runs/NEW-libero-jev
+```
+
+脚本在导入仿真前设置专用LIBERO_CONFIG_PATH、EGL GPU0、项目缓存路径。运行前检查GPU0是否有其它作业。`--capture-only`不调用模型。
+上面入口已按相同参数方式运行3次；当前最新的高度过滤修正版仅重放通过，需新鲜回合复验。
+
+## 本轮结果
+
+| 版本 | native success | Jev | 原生步 | 秒 | 失败说明 |
+|---|---:|---:|---:|---:|---|
+| v1 | false | 74 | 254 | 102.70 | 抓取搬运完成，碗偏在盘边 |
+| v2 | false | 42 | 126 | 87.88 | 最后动作到达容差后循环仍报超时；未夹取 |
+| v3 | false | 48 | 160 | 95.48 | 已抬升，抓后高度过滤拒绝碗轮廓 |
+
+开发总0/3，不是冻结评测；同一任务、init0、seed0重复调试。v3失败帧重放估计offset_xy=(-0.01669,-0.03389)m，0新增动作/模型调用。下一轮只能检验此候选能否真实改善放置，不可当作成功结果。
+
+证据：code/runs/2026-10-02-libero-jev-v1、v2、v3；完整Jev输入输出、原生步和阶段PNG均保存；v2/v3阶段另存深度。

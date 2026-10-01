@@ -40,6 +40,7 @@ graph LR
     T_2026W40_007["📊 jev-control-formulation<br/>新任务视觉闭环18/18符合输入估计但任务…"]:::experiment
     T_2026W40_008["⛔ jev-control-formulation<br/>新任务视觉闭环连续3次未完成，按协议暂停；…"]:::blocker
     T_2026W40_009["📊 jev-control-formulation<br/>腕部RGB-D恢复＋固定视觉抓取点：gen…"]:::experiment
+    T_2026W40_010["⛔ libero-plus-jev<br/>LIBERO-Plus抓放开发0/3：抓起…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -86,6 +87,7 @@ graph LR
 | `T-2026W40-007` | 2026-09-30 | experiment | jev-control-formulation | 新任务视觉闭环18/18符合输入估计但任务失败：机器人前景污染物体top，需先隔离感知错误 | `EXP-2026W40-021` | - |
 | `T-2026W40-008` | 2026-09-30 | blocker | jev-control-formulation | 新任务视觉闭环连续3次未完成，按协议暂停；等待用户授权继续身份关联修复和最多3个开发回合 | `EXP-2026W40-023` | - |
 | `T-2026W40-009` | 2026-10-02 | experiment | jev-control-formulation | 腕部RGB-D恢复＋固定视觉抓取点：general_pickup第3次原生成功，22Jev/126步，零运行时GPT-6/DeepSeek | `EXP-2026W40-027` | - |
+| `T-2026W40-010` | 2026-10-02 | blocker | libero-plus-jev | LIBERO-Plus抓放开发0/3：抓起已见，放置与抓后视觉未通过；离线过滤修正待新回合验证 | `EXP-2026W40-030` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
