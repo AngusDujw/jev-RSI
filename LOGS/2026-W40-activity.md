@@ -116,3 +116,4 @@
 - 【Agent】【2026-10-01 17:45】[op] 复核 company-server-2：确认 jev_rsi 统一入口可切换 embodied/robodojo，但两者环境和后端实现不同；盘点发现 embodied-jev/.cache/models/Qwen3.8-27B 约52G、embodied-jev/runs约7.8G、robodojo-jev/.cache约15G、robodojo-jev/runs约8.3G、jev_rsi/code/runs约9.7G；发现旧company-20260926进程仍在运行，暂不建议删除其产物。  ↪ `EXP-2026W40-023`
 - 【Agent】【2026-10-01 20:10】[op] 按用户新口径改为运行时GroundingDINO+SAM2：新增local_rgbd_perception适配器，将RGBEvidence转换为结构化可见目标；配置runtime_perception明确禁用GPT-6视觉调用。准备仅跑general_pickup。
 - 【Agent】【2026-10-01 20:14】[op] 专用视觉general_pickup首回合未调用GPT-6，但适配器将视觉回调的局部payload误当作含robot字段，KeyError导致0Jev；修复为robot反馈可选，准备重跑。
+- 【Agent】【2026-10-01 20:16】[op] 离线复现确认第二次KeyError来自RGBEvidence输出日志需要eef_positions，而structured视觉回调payload不含robot；runner已补入当前机器人反馈给专用视觉适配器，未增加任何特权物体信息。

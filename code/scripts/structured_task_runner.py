@@ -84,7 +84,8 @@ def run(rec,rpc,reset):
         folder.mkdir()
         if detector is not None:
             vision_calls += 1
-            result = visible_schema(detector, observation)
+            detector_observation = dict(observation, robot=current['robot'])
+            result = visible_schema(detector, detector_observation)
             dump(folder/'response.json', dict(source='GroundingDINO+SAM2_RGB_only_no_runtime_GPT6', result=result))
             dump(folder/'measurements.json', result)
             return result
