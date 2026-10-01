@@ -75,6 +75,11 @@ def run(rec,rpc,reset):
         detector, detector_cfg = build_detector(cfg, cfg["gpu"])
         dump(rec.folder / "perception_config.json", detector_cfg)
 
+    fallback = None
+    if cfg.get("deepseek_key_file"):
+        from deepseek_fallback import DeepSeekFallback
+        fallback = DeepSeekFallback(cfg,rec.folder)
+
     def perceive(prompt,observation):
         nonlocal vision_calls
         rec.check_budget()
@@ -86,7 +91,11 @@ def run(rec,rpc,reset):
             vision_calls += 1
             detector_observation = dict(observation, robot=current['robot'])
             result = visible_schema(detector, detector_observation)
-            dump(folder/'response.json', dict(source='GroundingDINO+SAM2_RGB_only_no_runtime_GPT6', result=result))
+            if fallback is not None and any('wrist' in name for name in observation['cameras']):
+                labels=[r for v in result['views'].values() for r in v['objects'] if r['confidence']>=.5 and 'gripper' not in r['label']]
+                if not labels and fallback.calls<fallback.limit:
+                    result=fallback(prompt,observation,'wrist local detector has no confident non-robot instance')
+            dump(folder/'response.json', dict(source='local_detector_with_logged_bounded_deepseek_fallback', result=result))
             dump(folder/'measurements.json', result)
             return result
         content=[dict(type='input_text',text=prompt+'\nPublic instruction (visible noun disambiguation only): '+str(observation.get('instruction','')))]
@@ -190,5 +199,5 @@ def run(rec,rpc,reset):
         final=call('finish_pilot',reason=status)
         dump(rec.folder/'native_finish.json',final)
         dump(rec.folder/'structured_result.json',dict(status=status,native=final,jev_calls=len(rec.decisions),
-            vision_calls=vision_calls,actions=actions,steps=tick,frames=frame_count,
+            vision_calls=vision_calls,deepseek_calls=fallback.calls if fallback else 0,actions=actions,steps=tick,frames=frame_count,
             task=cfg['runtime_task'],schema=cfg['schema_variant']))
