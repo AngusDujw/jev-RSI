@@ -43,6 +43,6 @@ class DigitOCR:
             for d,t in self.templates:
                 score=float((mask&t).sum()/max(1,(mask|t).sum()));scores[d]=max(scores[d],score)
             rank=sorted(scores.items(),key=lambda z:-z[1]);diagnostics.append(rank[:2])
-            if rank[0][1]<.48 or rank[0][1]-rank[1][1]<.025:return '',dict(reason='ambiguous_template',scores=diagnostics)
+            if rank[0][1]<.46 or rank[0][1]-rank[1][1]<.025:return '',dict(reason='ambiguous_template',scores=diagnostics)
             parts.append(rank[0][0])
         return ''.join(parts),dict(source='pixel_template_OCR',scores=diagnostics)

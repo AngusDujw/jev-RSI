@@ -94,6 +94,10 @@ def visible_schema(detector, observation):
             rows.append(dict(category=category, label=label,
                 appearance=label, text=printed, confidence=float(item.get('confidence', .5)),
                 polygon_uv01=contour, keypoints={}))
+        belts=[r for r in rows if r['category']=='conveyor']
+        if len(belts)>1:
+            largest=max(belts,key=lambda r:abs(cv2.contourArea(np.asarray(r['polygon_uv01'],np.float32))))
+            rows=[r for r in rows if r['category']!='conveyor' or r is largest]
         views[name] = dict(objects=rows)
     return dict(views=views, source='GroundingDINO+SAM2_RGB_only_no_runtime_GPT6',
                 detector_text=evidence.get('detector_text', ''),

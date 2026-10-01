@@ -60,7 +60,7 @@ class MultiView:
                     uncertainty_m=max(.026,prev['uncertainty_m']+.006),source='multiview_memory_NOT_current')
         for j,row in sorted(enumerate(candidates),key=lambda x:(x[1]['views']!=['cam_high'],x[1]['uncertainty_m'])):
             if j in consumed: continue
-            if old: continue  # recovery cannot introduce a new task identity
+            if old and 'conveyor' not in observation.get('instruction','').lower(): continue
             if row['views']!=['cam_high']: continue  # establish identity once from overview
             duplicate=next((r for r in current.values() if r['category']==row['category'] and
                 not set(r['views'])&set(row['views']) and (tokens(r['label'])&tokens(row['label']))-{'the','a','object','small'} and
