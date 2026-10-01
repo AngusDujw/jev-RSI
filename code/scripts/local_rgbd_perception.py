@@ -33,6 +33,13 @@ def visible_schema(detector, observation):
     payload['instruction'] = observation.get('instruction', '')
     for name, view in observation['cameras'].items():
         payload[name] = np.asarray(view['rgb'], dtype=np.uint8)
+    import re
+    instruction=payload['instruction']
+    match=re.search(r'pick up (.+?)(?: by |$)',instruction,re.I)
+    if match:
+        target=match.group(1).strip().rstrip('.')
+        detector.cfg['phrases']=[target]
+        detector.cfg['include_instruction']=False
     import realman_jev.robodojo_rgb as rgb_module
     old_cameras = rgb_module.CAMERAS
     rgb_module.CAMERAS = tuple(observation['cameras'])
@@ -49,6 +56,7 @@ def visible_schema(detector, observation):
                 continue
             label = str(item.get('label', 'object'))
             low = label.lower()
+            if 'gripper' in low or 'robot' in low: continue
             if 'number' in low or 'card' in low or 'sign' in low or 'placard' in low:
                 category = 'number_card'
             elif 'bowl' in low:

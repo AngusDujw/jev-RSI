@@ -53,5 +53,6 @@
   "max_outer_actions": 200,
   "runtime_perception": "groundingdino_sam2",
   "deepseek_key_file": "/root/yekangjie/project/jev_rsi/.private/deepseek.key",
-  "deepseek_max_calls": 3
+  "deepseek_max_calls": 0,
+  "deepseek_unavailable_reason": "preflight HTTP402 Payment Required"
 }

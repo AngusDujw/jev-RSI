@@ -106,7 +106,7 @@ class VisualEvidence:
                     poly=np.asarray(row['polygon_uv01'],float); confidence=float(row['confidence'])
                     if poly.ndim!=2 or poly.shape[1]!=2 or not 3<=len(poly)<=96: continue
                     if not np.isfinite(poly).all() or np.any(poly<0) or np.any(poly>1): continue
-                    if not np.isfinite(confidence) or not .5<=confidence<=1 or row['category'] not in categories: continue
+                    if not np.isfinite(confidence) or not .25<=confidence<=1 or row['category'] not in categories: continue
                     keys={}
                     for k,v in row.get('keypoints',{}).items():
                         p=np.asarray(v,float)
