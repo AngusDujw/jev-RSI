@@ -20,14 +20,14 @@ class MultiView:
         preferred='cam_'+self.active_arm+'_wrist'
         for name in names:
             if name not in self.streams:
-                self.streams[name]=VisualEvidence(dict(self.settings,reference_camera=name))
+                self.streams[name]=VisualEvidence(dict(self.settings,reference_camera=name,max_perception_calls=100))
             stream=self.streams[name]
             one=dict(observation,cameras={name:observation['cameras'][name]})
             try:
                 records=stream.update(one,perceive,force=force)
                 calls+=int(stream.last_cost.get('called',False)); seconds+=stream.last_cost.get('seconds',0.)
                 candidates.extend(copy.deepcopy(r) for r in records.values() if r['observed'])
-                self.events.extend(dict(e,stream=name) for e in stream.events if e.get('kind')!='surface_rejected')
+                self.events.extend(dict(e,stream=name,kind='per_view_surface_rejected' if e.get('kind')=='surface_rejected' else e.get('kind')) for e in stream.events)
             except Exception as exc:
                 self.events.append(dict(kind='view_unavailable',view=name,reason=str(exc)))
         self.last_cost=dict(called=bool(calls),calls=calls,seconds=seconds,source='local_multiview')
