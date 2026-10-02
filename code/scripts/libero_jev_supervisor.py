@@ -70,7 +70,21 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     def locate(reason):
         vv=views();ss=vision.recognize(vv,task.language,reason);gg={}
         for role in ['source','destination']:
-            x=ss[role];gg[role]=vision.measure(vv[x['camera']],x['bbox'],x['label'],reason+'-'+role)
+            x=ss[role];view=vv[x['camera']];gg[role]=vision.measure(view,x['bbox'],x['label'],reason+'-'+role)
+            if role=='destination' and x.get('receiver_kind')=='open_container':
+                # Opening is free space, not a physical surface: SAM often selects
+                # the far wall. Intersect the observed opening center ray with
+                # observed upper rim plane instead of treating wall centroid as goal.
+                box=np.asarray(x['bbox']);uv=(box[:2]+box[2:])/2
+                ray=view['T'][:3,:3]@np.linalg.solve(view['K'],np.r_[uv,1.])
+                origin=view['T'][:3,3];level=float(gg[role]['high'][2])
+                if abs(ray[2])<1e-4:raise RuntimeError('Receiver opening ray parallel to rim plane')
+                distance=(level-origin[2])/ray[2]
+                if not 0<distance<3:raise RuntimeError('Receiver plane intersection out of range')
+                point=origin+distance*ray
+                gg[role]['surface_mask_center']=gg[role]['center'].copy()
+                gg[role]['center']=point
+                gg[role]['center_source']='visible opening bbox ray intersect observed horizontal rim-height approximation'
         dump(rec.folder/(reason+'-geometry.json'),gg);return ss,gg['source'],gg['destination']
     def grasp_target():
         # Only robot geometry, public/proprioceptive; never object sim geom.
@@ -102,7 +116,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             uv=(v['K']@cp)[:2]/cp[2];size=np.clip(max(src['high']-src['low'])*v['K'][0,0]/cp[2],30,250)
             b=np.r_[uv-size*.65,uv+size*.65].clip(0,v['rgb'].shape[0]-1).tolist()
             if h is None:h=vision.measure(v,b,sem['source']['label'],'held-validation')
-            valid=bool(h['low'][2]-source_grasp[2]>.015 and h['high'][2]-h['low'][2]<max(.06,1.8*(src['high'][2]-src['low'][2])) and np.linalg.norm(h['center']-expected)<.06)
+            valid=bool(h['low'][2]-source_grasp[2]>.015 and h['high'][2]-h['low'][2]<max(.06,1.8*max(src['high'][2]-src['low'][2],initial_source_extent[2])) and np.linalg.norm(h['center']-expected)<.06)
             holding=dict(valid=valid,source='RGB-D co-motion proxy, not ground truth',measured=h,expected=expected,observed_tick=ticks)
             if valid:offset=h['center']-obs['robot0_eef_pos']
         except Exception as e:holding=dict(valid=False,reason=str(e),observed_tick=ticks)
