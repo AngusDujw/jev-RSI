@@ -64,14 +64,39 @@ def perceive(rgb, depth, K, T, held_tcp=None):
     return dict(bowl=bowl,plate=plate,table_z=table_z,candidates=bowls)
 
 
+def held_rim(rgb, depth, K, T, tcp, minimum_points=80):
+    """Fit visible yellow/olive bowl rim in world XY. Task-specific appearance.
+    Fresh camera pose, trimmed-depth points, radius/residual/arc checks; no truth.
+    """
+    vv,uu=np.indices(depth.shape)
+    points=np.stack([(uu-K[0,2])*depth/K[0,0],(vv-K[1,2])*depth/K[1,1],depth],-1)@T[:3,:3].T+T[:3,3]
+    hsv=cv2.cvtColor(rgb,cv2.COLOR_RGB2HSV)
+    mask=((hsv[:,:,0]>15)&(hsv[:,:,0]<45)&(hsv[:,:,1]>85)&(hsv[:,:,2]>65)
+          &(points[:,:,2]>tcp[2]-.08)&(points[:,:,2]<tcp[2]+.08)
+          &(np.linalg.norm(points[:,:,:2]-tcp[:2],axis=2)<.18))
+    pts=points[mask]
+    if len(pts)<minimum_points: raise RuntimeError('Insufficient visible held rim points')
+    bounds=np.quantile(pts[:,2],[.2,.8]); pts=pts[(pts[:,2]>=bounds[0])&(pts[:,2]<=bounds[1])]
+    xy=pts[:,:2]; fit=np.linalg.lstsq(np.c_[2*xy,np.ones(len(xy))],(xy*xy).sum(axis=1),rcond=None)[0]
+    radius=float(np.sqrt(max(0,fit[2]+sum(fit[:2]**2))))
+    residual=float(np.std(np.linalg.norm(xy-fit[:2],axis=1)))
+    angles=np.sort(np.arctan2(xy[:,1]-fit[1],xy[:,0]-fit[0])); arc=float(2*np.pi-np.max(np.diff(np.r_[angles,angles[0]+2*np.pi])))
+    if not (.025<radius<.09 and residual<.005 and arc>.7 and np.linalg.norm(fit[:2]-tcp[:2])<.10):
+        raise RuntimeError('Held rim fit failed geometric quality bounds')
+    return dict(center_xy=fit[:2],radius_m=radius,residual_m=residual,arc_radians=arc,
+                points=len(pts),offset_xy=fit[:2]-tcp[:2],source='RGB-D visible rim circle; task-specific colour prior')
+
+
 def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
     model=Jev(rec)
     ticks=0
     def snapshot(label):
-        rgb=np.ascontiguousarray(obs['agentview_image'][::-1])
-        cv2.imwrite(str(rec.folder/(label+'.png')),cv2.cvtColor(rgb,cv2.COLOR_RGB2BGR))
-        if not label.startswith('step-'):
-            np.save(rec.folder/(label+'-depth.npy'),depth_fn(env.sim,obs['agentview_depth'])[::-1].squeeze())
+        for camera,suffix in [('agentview',''),('robot0_eye_in_hand','-wrist')]:
+            rgb=np.ascontiguousarray(obs[camera+'_image'][::-1])
+            cv2.imwrite(str(rec.folder/(label+suffix+'.png')),cv2.cvtColor(rgb,cv2.COLOR_RGB2BGR))
+            if not label.startswith('step-'):
+                np.save(rec.folder/(label+suffix+'-depth.npy'),depth_fn(env.sim,obs[camera+'_depth'])[::-1].squeeze())
+                dump(rec.folder/(label+suffix+'-calibration.json'),dict(K=k_fn(env.sim,camera,384,384),T=t_fn(env.sim,camera),tcp=obs['robot0_eef_pos']))
     def step(action,n):
         nonlocal obs,ticks
         for _ in range(n):
@@ -101,8 +126,8 @@ def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 position=obs['robot0_eef_pos'].copy(); error=target-position
                 if np.max(np.abs(error))<.006: break
                 state=dict(task=task.language,stage=stage,position_m=position.tolist(),target_position_m=target.tolist(),
-                      hold_tolerance_m=.004, observation_source='RGB-D initial scene estimate plus live robot feedback',
-                      stage_source='external fixed pick-place scaffold',target_source='initial measured RGB-D with declared grasp offsets',
+                      hold_tolerance_m=.004, observation_source='external initial RGB-D; wrist rim offset after lift/carry; live robot feedback',
+                      stage_source='external fixed pick-place scaffold',target_source='RGB-D plate and wrist held-rim compensation with declared grasp offsets',
                       error_m=error.tolist(),frame='world XYZ metres',gripper=grip)
                 decision=model.choose(state,dict(stage=stage,iteration=iteration,environment='libero_plus'))
                 if decision is None: raise RuntimeError('Jev budget exhausted')
@@ -117,13 +142,20 @@ def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 if np.max(np.abs(target-obs['robot0_eef_pos'])) >= .006:
                     raise RuntimeError('Stage motion budget exhausted: '+stage)
             snapshot(stage)
-            if stage=='lift':
-                held=perceive(np.ascontiguousarray(obs[cam+'_image'][::-1]),
-                      depth_fn(env.sim,obs[cam+'_depth'])[::-1].squeeze(),
-                      k_fn(env.sim,cam,384,384),t_fn(env.sim,cam),obs['robot0_eef_pos'])
-                offset=held['bowl']['position'][:2]-obs['robot0_eef_pos'][:2]
-                dump(rec.folder/'held-offset.json',dict(evidence=held,offset_xy=offset))
-                # Targets retain references in this stage list.
+            if stage in ('lift','carry'):
+                estimates={}
+                for view,minimum in [('robot0_eye_in_hand',80),('agentview',8)]:
+                    try:
+                        estimates[view]=held_rim(np.ascontiguousarray(obs[view+'_image'][::-1]),
+                            depth_fn(env.sim,obs[view+'_depth'])[::-1].squeeze(),
+                            k_fn(env.sim,view,384,384),t_fn(env.sim,view),obs['robot0_eef_pos'],minimum)
+                    except RuntimeError as exc: estimates[view]=dict(error=str(exc))
+                wrist=estimates['robot0_eye_in_hand']; external=estimates['agentview']
+                dump(rec.folder/(stage+'-rim.json'),estimates)
+                if 'error' in wrist: raise RuntimeError('Wrist held rim unavailable: '+wrist['error'])
+                if 'error' not in external and np.linalg.norm(wrist['center_xy']-external['center_xy'])>.020:
+                    raise RuntimeError('Cross-view bowl center disagreement exceeds 20mm')
+                offset=wrist['offset_xy']
                 carry[:2]=plate['position'][:2]-offset
                 targets[5][1][:2]=carry[:2]
         # Evaluator-only predicate: never passed into Jev or the action policy.
