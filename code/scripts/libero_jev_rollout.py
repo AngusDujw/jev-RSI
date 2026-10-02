@@ -218,6 +218,7 @@ def main():
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
     p.add_argument('--legacy-vision', dest='generic_vision', action='store_false', help='Reproduce archived task-specific colour/rim policy only')
     p.add_argument('--task-id', type=int, default=988)
+    p.add_argument('--camera-size',type=int,choices=[384,768],default=384)
     p.add_argument('--suite', choices=['libero_spatial','libero_object','libero_goal','libero_10'], default='libero_spatial')
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--init-index', type=int, default=0)
@@ -228,7 +229,7 @@ def main():
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, geometry_profile=a.geometry_profile)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, geometry_profile=a.geometry_profile, camera_size=a.camera_size)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
@@ -244,7 +245,7 @@ def main():
     env = None
     try:
         env = ControlEnv(bddl_file_name=suite.get_task_bddl_file_path(a.task_id),
-             camera_names=['agentview','robot0_eye_in_hand'], camera_heights=384, camera_widths=384,
+             camera_names=['agentview','robot0_eye_in_hand'], camera_heights=a.camera_size, camera_widths=a.camera_size,
              camera_depths=True, control_freq=20, horizon=600, controller='OSC_POSE', initialization_noise=None)
         env.seed(a.seed); env.reset()
         obs = env.set_init_state(np.asarray(suite.get_task_init_states(a.task_id)[a.init_index],float))
@@ -254,7 +255,7 @@ def main():
             depth = get_real_depth_map(env.sim,obs[cam+'_depth'])[::-1].squeeze()
             cv2.imwrite(str(out/(cam+'.png')),cv2.cvtColor(rgb,cv2.COLOR_RGB2BGR))
             np.save(out/(cam+'-depth.npy'),depth)
-            dump(out/(cam+'-calibration.json'),dict(K=get_camera_intrinsic_matrix(env.sim,cam,384,384),T=get_camera_extrinsic_matrix(env.sim,cam)))
+            dump(out/(cam+'-calibration.json'),dict(K=get_camera_intrinsic_matrix(env.sim,cam,a.camera_size,a.camera_size),T=get_camera_extrinsic_matrix(env.sim,cam)))
         dump(out/'robot.json',dict(position=obs['robot0_eef_pos'],quaternion=obs['robot0_eef_quat']))
         if a.capture_only:
             rec.finish('capture_only'); return

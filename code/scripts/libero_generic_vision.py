@@ -35,13 +35,13 @@ class GenericVision:
         if reason in self.reasons:raise RuntimeError('Repeated semantic trigger disallowed')
         self.reasons.add(reason)
         self.calls+=1;p=self.rec.folder/f'semantic-{self.calls}';p.mkdir()
-        prompt='''Identify only visible objects required by the public pick-and-place instruction. No robot actions, trajectories, simulator truth or completion claims. Return JSON with source and destination. Each is {label:short plain noun phrase,camera:camera name,bbox:[x1,y1,x2,y2] in pixels,visible:boolean}. Resolve relational references from images. source is the object to move, destination the receiving object/surface. At pregrasp or stalled, locate the SAME source, preferably in wrist if visible; use previous identity description, do not switch instances. Reject ambiguity with visible=false. Bounding boxes enclose the whole visible object, exclude robot fingers and background. Coordinates are for the 384x384 provided images. Return concise evidence string. Do not infer invisible boundaries.'''
+        prompt='''Identify only visible objects required by the public pick-and-place instruction. No robot actions, trajectories, simulator truth or completion claims. Return JSON with source and destination. Each is {label:short plain noun phrase,camera:camera name,bbox:[x1,y1,x2,y2] in pixels,visible:boolean}. Resolve relational references from images. source is the object to move, destination the receiving object/surface. At pregrasp or stalled, locate the SAME source, preferably in wrist if visible; use previous identity description, do not switch instances. Reject ambiguity with visible=false. Bounding boxes enclose the whole visible object, exclude robot fingers and background. Coordinates are absolute pixels for the provided images; sizes are explicitly given for each camera. Return concise evidence string. Do not infer invisible boundaries.'''
         if self.rec.cfg.get('geometry_profile')=='observed_surfaces':
-            prompt += " For destination, bound only the VISIBLE receiving region: the interior opening of an open container (exclude outside walls and handles), or the exposed support surface. Report receiver_kind as open_container or support_surface in destination. This is visual region recognition only; do not propose robot motions or hidden bottom geometry."
+            prompt += " Carefully resolve exact product identity from visible packaging, especially when several similar objects exist. Describe visible distinguishing evidence; if identity is ambiguous set visible=false instead of choosing a convenient object. For destination, bound only the VISIBLE receiving region: the interior opening of an open container (exclude outside walls and handles), or the exposed support surface. Report receiver_kind as open_container or support_surface in destination. This is visual region recognition only; do not propose robot motions or hidden bottom geometry."
         content=[dict(type='input_text',text='Return JSON. '+json.dumps(dict(task=task,reason=reason,previous_identity=self.identity))) ]
         for name,v in views.items():
             buf=io.BytesIO();Image.fromarray(v['rgb']).save(buf,'PNG')
-            content.extend([dict(type='input_text',text='Camera '+name),dict(type='input_image',image_url='data:image/png;base64,'+base64.b64encode(buf.getvalue()).decode(),detail='high')])
+            content.extend([dict(type='input_text',text='Camera '+name+' size '+str(v['rgb'].shape[1])+'x'+str(v['rgb'].shape[0])),dict(type='input_image',image_url='data:image/png;base64,'+base64.b64encode(buf.getvalue()).decode(),detail='high')])
         request=dict(model='gpt-6-astra',instructions=prompt,input=[dict(role='user',content=content)],max_output_tokens=4000,store=False,text=dict(format=dict(type='json_object')))
         dump(p/'request.json',request);raw=self.api.post('/responses',request);dump(p/'response.json',raw)
         if raw.get('status')!='completed':raise RuntimeError('Semantic model incomplete')
@@ -51,7 +51,7 @@ class GenericVision:
             ob=result[role]
             if not ob['visible']:raise RuntimeError('Semantic evidence unavailable: '+role)
             b=np.asarray(ob['bbox'],float)
-            if ob['camera'] not in views or b.shape!=(4,) or not np.isfinite(b).all() or (b<0).any() or (b>384).any() or b[2]<=b[0] or b[3]<=b[1]:raise ValueError('Invalid semantic bounding box')
+            if ob['camera'] not in views or b.shape!=(4,) or not np.isfinite(b).all() or (b<0).any() or (b>np.array([views[ob['camera']]['rgb'].shape[1],views[ob['camera']]['rgb'].shape[0]]*2)).any() or b[2]<=b[0] or b[3]<=b[1]:raise ValueError('Invalid semantic bounding box')
         self.identity=result;dump(p/'objects.json',result);return result
     def measure(self,view,bbox,label,reason):
         self.refreshes+=1;p=self.rec.folder/f'mask-{self.refreshes}';p.mkdir();image=p/'rgb.png';cv2.imwrite(str(image),cv2.cvtColor(view['rgb'],cv2.COLOR_RGB2BGR));np.save(p/'depth.npy',view['depth']);dump(p/'calibration.json',dict(K=view['K'],T=view['T'],reason=reason))

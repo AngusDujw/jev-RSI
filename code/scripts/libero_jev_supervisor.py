@@ -54,7 +54,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     src=dst=sem=None;grasp=None;hover=None;offset=None;place=None;tcp_grasp=None;source_grasp=None
     last_verification_tick=-1;reobserved=False;start_tcp=obs['robot0_eef_pos'].copy();finished=False
     def views():
-        return {c:dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),depth=depth_fn(env.sim,obs[c+'_depth'])[::-1].squeeze(),K=k_fn(env.sim,c,384,384),T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
+        return {c:dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),depth=depth_fn(env.sim,obs[c+'_depth'])[::-1].squeeze(),K=k_fn(env.sim,c,obs[c+'_image'].shape[0],obs[c+'_image'].shape[1]),T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
     def save(label):
         for cam,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{label}-{cam}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))
     def locate(reason):
@@ -84,7 +84,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         try:
             if cp[2]<=.02:raise RuntimeError('projected object behind camera')
             uv=(v['K']@cp)[:2]/cp[2];size=np.clip(max(src['high']-src['low'])*v['K'][0,0]/cp[2],30,250)
-            b=np.r_[uv-size*.65,uv+size*.65].clip(0,383).tolist()
+            b=np.r_[uv-size*.65,uv+size*.65].clip(0,v['rgb'].shape[0]-1).tolist()
             h=vision.measure(v,b,sem['source']['label'],'held-validation')
             valid=bool(h['low'][2]-source_grasp[2]>.015 and h['high'][2]-h['low'][2]<max(.06,1.8*(src['high'][2]-src['low'][2])) and np.linalg.norm(h['center']-expected)<.06)
             holding=dict(valid=valid,source='RGB-D co-motion proxy, not ground truth',measured=h,expected=expected,observed_tick=ticks)
