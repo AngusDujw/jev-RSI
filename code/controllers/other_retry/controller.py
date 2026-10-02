@@ -16,6 +16,10 @@ class Controller(TaskController):
             oid=self.plan['source'];row=self.current.get(oid)
             if row and row['observed']:self.anchor_records[oid]=copy.deepcopy(row)
             if self.task in ('match_and_pick_from_conveyor','stack_bowls'):self.plan['lift_distance_m']=self.rules.get('lift_clearance_m',.12)
+            if self.task=='match_and_pick_from_conveyor' and row is not None:
+                size=row['high'][:2]-row['low'][:2]
+                if min(size)/max(max(size),.001)>.8:
+                    a=self.plan['arms'][0];self.plan['quaternions'][a]=tool_quaternion([0,0,-1])
     def _get(self,oid,fresh=False):
         row=self.current.get(oid)
         if row and row['observed'] and row['uncertainty_m']<=.012:
@@ -102,3 +106,12 @@ class Controller(TaskController):
         if ok:self.grasp_evidence.append(dict(native_step=self.last_native))
         else:self.grasp_evidence=[]
         return len(self.grasp_evidence)>=2,evidence
+
+    def _deadzone(self,uncertainty):
+        base=super()._deadzone(uncertainty)
+        if self.task=='match_and_pick_from_conveyor' and self.stage=='approach' and self.plan:
+            row=self.current.get(self.plan['source'])
+            if row and row['observed']:
+                width=float(min(row['high'][:2]-row['low'][:2]))
+                return max(base,min(.020,.35*width))
+        return base
