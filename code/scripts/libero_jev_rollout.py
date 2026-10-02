@@ -214,6 +214,7 @@ def main():
     p.add_argument('--jev-supervisor', action='store_true')
     p.add_argument('--schema', choices=['numeric','feedback'], default='numeric')
     p.add_argument('--grasp-fraction', type=float, default=.4)
+    p.add_argument('--geometry-profile',choices=['base','observed_surfaces'],default='base')
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
     p.add_argument('--legacy-vision', dest='generic_vision', action='store_false', help='Reproduce archived task-specific colour/rim policy only')
     p.add_argument('--task-id', type=int, default=988)
@@ -227,7 +228,7 @@ def main():
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, geometry_profile=a.geometry_profile)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',

@@ -36,6 +36,8 @@ class GenericVision:
         self.reasons.add(reason)
         self.calls+=1;p=self.rec.folder/f'semantic-{self.calls}';p.mkdir()
         prompt='''Identify only visible objects required by the public pick-and-place instruction. No robot actions, trajectories, simulator truth or completion claims. Return JSON with source and destination. Each is {label:short plain noun phrase,camera:camera name,bbox:[x1,y1,x2,y2] in pixels,visible:boolean}. Resolve relational references from images. source is the object to move, destination the receiving object/surface. At pregrasp or stalled, locate the SAME source, preferably in wrist if visible; use previous identity description, do not switch instances. Reject ambiguity with visible=false. Bounding boxes enclose the whole visible object, exclude robot fingers and background. Coordinates are for the 384x384 provided images. Return concise evidence string. Do not infer invisible boundaries.'''
+        if self.rec.cfg.get('geometry_profile')=='observed_surfaces':
+            prompt += " For destination, bound only the VISIBLE receiving region: the interior opening of an open container (exclude outside walls and handles), or the exposed support surface. Report receiver_kind as open_container or support_surface in destination. This is visual region recognition only; do not propose robot motions or hidden bottom geometry."
         content=[dict(type='input_text',text='Return JSON. '+json.dumps(dict(task=task,reason=reason,previous_identity=self.identity))) ]
         for name,v in views.items():
             buf=io.BytesIO();Image.fromarray(v['rgb']).save(buf,'PNG')

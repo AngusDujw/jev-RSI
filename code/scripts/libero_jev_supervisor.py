@@ -17,7 +17,7 @@ NOTES={
 'lift':'Lift with gripper closed. Advance only after reaching lift target AND valid fresh visual co-motion evidence. If evidence unavailable request reobserve or stop.',
 'carry':'Move held source above receiver; keep gripper closed. Advance after arrival and valid visual holding evidence.',
 'lower':'Lower held object to release pose, keep gripper closed. Advance after arrival; never open during transit.',
-'release':'Hold TCP still and open gripper. Continue until open commands executed for at least 16 native ticks, then advance.',
+'release':'Hold TCP still and open gripper. Continue until opening is at least 70mm and open commands executed for at least 24 native ticks, then advance.',
 'retreat':'Withdraw upward with gripper open. Advance after arrival to finish attempt. This is not a task success claim.'}
 
 class DecisionModel(Jev):
@@ -70,6 +70,8 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         extent=src['high']-src['low'];p=src['center'].copy();width=float(abs(axis)@extent[:2])
         if width>.065:p[:2]+=(1 if (start_tcp[:2]-p[:2])@axis>0 else -1)*.9*width/2*axis
         p[2]=src['low'][2]+rec.cfg.get('grasp_fraction',.4)*extent[2]
+        if rec.cfg.get('geometry_profile')=='observed_surfaces' and extent[2]<.025:
+            p[2]=src['high'][2]+.023  # empirical own gripper low-object clearance; visible estimate only
         dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=p,axis=axis,width=width,source='visible geometry + own gripper span'))
         return p
     def measure_held():
@@ -108,7 +110,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             state=dict(task=task.language,stage=stage,next_phase=PHASES[phase+1] if phase+1<len(PHASES) else 'finish_attempt',phase_contract=NOTES[stage],
                 position_m=position.tolist(),target_position_m=target.tolist(),error_m=error.tolist(),hold_tolerance_m=.004,arrival_tolerance_m=.008,
                 gripper_qpos_m=obs['robot0_gripper_qpos'].tolist(),last_gripper_command='open' if gripper==-1 else 'close',
-                current_phase_gripper_ticks=gripper_ticks,phase_native_ticks=stage_ticks,phase_decisions=stage_decisions,
+                current_phase_gripper_ticks=gripper_ticks,gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),phase_native_ticks=stage_ticks,phase_decisions=stage_decisions,
                 holding_evidence=holding if stage in ['lift','carry','lower','release','retreat'] else dict(valid=None,reason='not tested before lift'),
                 geometry_source='RGB-D visible masks, not true object poses',source_label=sem['source']['label'],destination_label=sem['destination']['label'],
                 recovery_remaining=not reobserved and vision.calls<3,last_progress_m=last_progress,stalls=stalls)
