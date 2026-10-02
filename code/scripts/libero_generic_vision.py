@@ -80,6 +80,7 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
     """Single-object pick/place only; semantic recognition never chooses actions."""
     from run_position_pilot import Jev
     vision=GenericVision(rec);model=Jev(rec);ticks=0;recovery_used=False
+    start_tcp=obs['robot0_eef_pos'].copy()
     def views():
         return {c:dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),depth=depth_fn(env.sim,obs[c+'_depth'])[::-1].squeeze(),K=k_fn(env.sim,c,384,384),T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
     def snapshot(stage):
@@ -123,9 +124,9 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
         if width>.065:
             # Wider than a comfortable pad span: pinch an observed boundary,
             # not the whole object center. Generic edge heuristic, not learned grasp.
-            sign=1 if np.dot(obs['robot0_eef_pos'][:2]-target[:2],perpendicular)>0 else -1
-            distance=max(0,.75*np.dot(np.abs(perpendicular),extent[:2])/2)
-            target[:2]+=sign*distance*perpendicular
+            sign=1 if np.dot(start_tcp[:2]-target[:2],axis)>0 else -1
+            distance=max(0,.90*width/2)
+            target[:2]+=sign*distance*axis
         target[2]=src['low'][2]+.40*extent[2]
         dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=target,closing_axis=axis,observed_width=width,
              source='visible extent plus own gripper span; generic boundary pinch heuristic'))
