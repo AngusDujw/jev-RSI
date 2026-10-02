@@ -293,7 +293,7 @@ class Controller(Geometry):
             phase_choice=answers.get('phase',{}).get('choice')
             if phase_choice=='stay':
                 action_questions={k:copy.deepcopy(v) for k,v in all_questions.items() if k!='phase'}
-                action_state={k:copy.deepcopy(state[k]) for k in ('task','instruction','stage','frame','stage_goal','robot','geometry','relations','alignment_facts','constraints','visibility','orientation_error_rad','recent_gripper_feedback','last_gripper_commands','feedback','phase_evidence','waypoint_reference','consecutive_contact_stalls') if k in state}
+                action_state={k:copy.deepcopy(state[k]) for k in ('task','instruction','stage','native_step','remaining_steps','active_arms','frame','stage_goal','robot','geometry','relations','alignment_facts','constraints','visibility','orientation_error_rad','recent_gripper_feedback','last_gripper_commands','feedback','phase_evidence','waypoint_reference','consecutive_contact_stalls') if k in state}
                 action_state.update(decision_role='current_stage_action_only',phase_decision='Jev chose STAY; current objective is not confirmed complete',
                     interpretation='No future-stage action. Current contact stage can still be centimetres above the object: examine alignment_facts, not the stage name.')
                 for key,q in action_questions.items():
@@ -330,7 +330,7 @@ class Controller(Geometry):
                 commands[a]=dict(delta_xyz_m=delta,quaternion_wxyz=q,gripper_opening=opening)
             if self.stage=='close' and self.plan.get('baseline') is None and any(c['gripper_opening']<.5 for c in commands.values()):self.plan['baseline']=self._baseline()
             if self.stage=='release' and any(c['gripper_opening']>.5 for c in commands.values()):self.plan['release_robot']={a:self.robot[a]['grasp'].copy() for a in self.plan['arms']}
-            self.debug.update(jev_request=dict(state=state,questions=questions),jev_response=raw,jev_choices=decisions,axis_amplitudes=amplitudes,
+            self.debug.update(jev_request=dict(composed_summary=True,state=state,questions=questions,actual_requests_saved_separately=True),jev_response=raw,jev_choices=decisions,axis_amplitudes=amplitudes,
                 phase_candidate=next_stage,phase_evidence=evidence,orientation_safety_gate=self.stage=='approach' and any(x>.15 for x in angles.values()))
             self.history.append(dict(event='Jev_decision',stage=self.stage,choices=decisions,native_step=self.last_native))
             if targets and phase=='stay':self.last_motion=dict(stage=self.stage,grasp={a:self.robot[a]['grasp'].copy() for a in targets},target=copy.deepcopy(targets),delta={a:commands[a]['delta_xyz_m'].copy() for a in targets})

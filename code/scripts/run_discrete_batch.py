@@ -50,7 +50,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
-    p.add_argument('--variant',choices=['numeric','relations','evidence'],default='numeric')
+    p.add_argument('--variant',choices=['numeric','relations','evidence','hierarchical'],default='numeric')
     p.add_argument('--processing',choices=['anchored','live','precision'],default='anchored');p.add_argument('--layout',type=int,default=0)
     p.add_argument('--gpu',type=int);p.add_argument('--frozen-from');p.add_argument('--layouts',nargs='+',type=int)
     args=p.parse_args()

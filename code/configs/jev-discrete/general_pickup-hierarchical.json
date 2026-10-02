@@ -62,6 +62,7 @@
   "jev_timeout_seconds": 90,
   "controller_settings": {
     "input_variant": "evidence",
-    "processing_variant": "precision"
+    "processing_variant": "precision",
+    "decision_mode": "phase_then_action"
   }
 }
