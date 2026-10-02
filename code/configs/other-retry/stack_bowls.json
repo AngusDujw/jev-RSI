@@ -58,5 +58,6 @@
   "robodojo_root": "/root/yekangjie/project/jev_rsi/code/runs/runtime-robodojo",
   "assets_manifest": "/root/yekangjie/project/jev_rsi/code/runs/2026-09-30-multitask-preflight/top5-assets-manifest.json",
   "forbid_runtime_gpt6": true,
-  "experience_enabled": true
+  "experience_enabled": true,
+  "jev_timeout_seconds": 90
 }

@@ -22,7 +22,9 @@ def run(rec,rpc,reset):
     cfg=rec.cfg
     sys.path.insert(0,cfg['existing_root']+'/controller/src')
     from realman_jev.api import API
-    api=API(json.loads(Path(cfg['api_config']).read_text())['jev'],rec.event,'jev')
+    api_settings=dict(json.loads(Path(cfg['api_config']).read_text())['jev'])
+    if 'jev_timeout_seconds' in cfg:api_settings['timeout_s']=cfg['jev_timeout_seconds']
+    api=API(api_settings,rec.event,'jev')
     directory=Path(cfg['generated_controller']).resolve().parent
     sys.path.insert(0,str(directory))
     spec=importlib.util.spec_from_file_location('server_generated_controller',cfg['generated_controller'])

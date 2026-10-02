@@ -34,6 +34,12 @@ class Controller(TaskController):
                 return result
         return super()._get(oid,fresh=fresh)
     def _movement(self,targets,uncertainty,opening,obs,ask_jev):
+        if self.task=='match_and_pick_from_conveyor' and self.stage=='contact':
+            row=self._get(self.plan['source'],fresh=True);arm=self.plan['arms'][0]
+            actual_target=np.asarray(self._grasp_point(row,arm));error=actual_target-self.robot[arm]['grasp']
+            _,angle=bounded_quaternion(self.robot[arm]['quaternion'],self.plan['quaternions'][arm])
+            self.debug['current_contact_alignment']=dict(error_m=error,waypoint_lead_not_used_for_closure=True,observed=row['observed'])
+            if row['observed'] and np.max(np.abs(error))<=self._deadzone(uncertainty) and angle<.15:return None
         if self.stage=='approach' and self.rules.get('orient_before_approach'):
             commands={};angles={}
             for a in targets:
