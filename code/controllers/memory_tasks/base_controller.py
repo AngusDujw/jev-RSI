@@ -90,6 +90,7 @@ class Controller:
         # Visible image membership; no simulator region or layout coordinates.
         import cv2
         objects=[r for r in rows if r['category'] in ('object','bowl') and
+                 np.all(r['center'][:2]>=belt['low'][:2]) and np.all(r['center'][:2]<=belt['high'][:2]) and
                  cv2.pointPolygonTest(polygon,tuple(map(float,r['image_center_uv01'])),False)>=0]
         semantic=self.vision.last_semantic==self.vision.call_index
         if self.first_object is None:
