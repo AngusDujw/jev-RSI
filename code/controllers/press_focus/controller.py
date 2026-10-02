@@ -76,3 +76,20 @@ class Controller(TaskController):
         if self.rules.get('spatial_press_order'):
             rows=sorted(rows,key=lambda r:float(r['image_center_uv01'][0]))
         return super()._press_sequence(instruction,rows)
+
+    def _read_robot(self,observation):
+        super()._read_robot(observation)
+        if not hasattr(self,'neutral_grasp'):
+            self.neutral_grasp={a:r['grasp'].copy() for a,r in self.robot.items()}
+    def _nearest_arm(self,point):
+        if self.rules.get('workspace_side_selection') and hasattr(self,'neutral_grasp'):
+            left=self.neutral_grasp['left'];right=self.neutral_grasp['right'];axis=right-left
+            length=float(np.linalg.norm(axis))
+            if length>.1:
+                side=float(np.dot(np.asarray(point)-.5*(left+right),axis/length))
+                if abs(side)>.04:
+                    selected='right' if side>0 else 'left'
+                    self.debug['arm_workspace_gate']=dict(rule='initial bilateral workspace heuristic',side_m=side,selected=selected,
+                        limitation='not a complete IK reachability proof',native_step=self.last_native)
+                    return selected
+        return super()._nearest_arm(point)
