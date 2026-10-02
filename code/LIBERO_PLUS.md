@@ -61,3 +61,7 @@ cd /root/yekangjie/project/jev_rsi
 ## 三任务迁移
 
 新增`--relation near_ramekin|table_center|near_plate`显式外部目标选择，只影响选择此参数的回合。`run_libero_transfer.py`冻结源码测试1030/1062/1282各init1–3；分别0/3、0/3、3/3。详见[迁移报告](../LOGS/2026-10-02-libero-transfer-results.md)。原task988控制不传此参数，旧20次结果不变。
+
+## 通用视觉首次成功（2026-10-02续测）
+
+通用默认路径e07f259在task1062/init1成功：69Jev、2GPT视觉、239步、177.97秒。抓点沿夹指闭合轴取可见边缘，不再用碗颜色/圆形拟合；仍是单物体抓放几何启发式。同版task1030/init1下降恢复失败。详见[完整报告](../LOGS/2026-10-02-libero-generic-validation.md)；旧80%不属于此通用版本。
