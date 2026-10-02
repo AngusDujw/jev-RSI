@@ -31,7 +31,7 @@ class GenericVision:
         if reason not in ('initial','pregrasp','stalled'):raise ValueError(reason)
         self.calls+=1;p=self.rec.folder/f'semantic-{self.calls}';p.mkdir()
         prompt='''Identify only visible objects required by the public pick-and-place instruction. No robot actions, trajectories, simulator truth or completion claims. Return JSON with source and destination. Each is {label:short plain noun phrase,camera:camera name,bbox:[x1,y1,x2,y2] in pixels,visible:boolean}. Resolve relational references from images. source is the object to move, destination the receiving object/surface. At pregrasp or stalled, locate the SAME source, preferably in wrist if visible; use previous identity description, do not switch instances. Reject ambiguity with visible=false. Bounding boxes enclose the whole visible object, exclude robot fingers and background. Coordinates are for the 384x384 provided images. Return concise evidence string. Do not infer invisible boundaries.'''
-        content=[dict(type='input_text',text=json.dumps(dict(task=task,reason=reason,previous_identity=self.identity))) ]
+        content=[dict(type='input_text',text='Return JSON. '+json.dumps(dict(task=task,reason=reason,previous_identity=self.identity))) ]
         for name,v in views.items():
             buf=io.BytesIO();Image.fromarray(v['rgb']).save(buf,'PNG')
             content.extend([dict(type='input_text',text='Camera '+name),dict(type='input_image',image_url='data:image/png;base64,'+base64.b64encode(buf.getvalue()).decode(),detail='high')])
