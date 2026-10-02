@@ -743,5 +743,101 @@
       "robodojo",
       "--with-jev"
     ]
+  },
+  "other-retry-fold_clothes-09": {
+    "experiment_id": "EXP-2026W40-105",
+    "task": "fold_clothes",
+    "attempt": 9,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:grasp not verified from after-action visual displacement",
+    "run": "code/runs/other-retry-fold_clothes-09",
+    "commit": "4278bac5e45f2ee80b09f04bff5fdf0bdf87fd69",
+    "steps": 132,
+    "actions": 32,
+    "jev_calls": 16,
+    "vision_calls": 78,
+    "wall_seconds": 237.49017886444926,
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/fold_clothes.json",
+      "--output",
+      "code/runs/other-retry-fold_clothes-09",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-match_and_pick_from_conveyor-09": {
+    "experiment_id": "EXP-2026W40-106",
+    "task": "match_and_pick_from_conveyor",
+    "attempt": 9,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:phase budget exhausted without verified progress",
+    "run": "code/runs/other-retry-match_and_pick_from_conveyor-09",
+    "commit": "4278bac5e45f2ee80b09f04bff5fdf0bdf87fd69",
+    "steps": 526,
+    "actions": 87,
+    "jev_calls": 43,
+    "vision_calls": 167,
+    "wall_seconds": 349.60675840452313,
+    "stages": [
+      "conveyor_wait_departure",
+      "conveyor_wait_repeat",
+      "approach",
+      "contact"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/conveyor-intercept.json",
+      "--output",
+      "code/runs/other-retry-match_and_pick_from_conveyor-09",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-stack_bowls-09": {
+    "experiment_id": "EXP-2026W40-107",
+    "task": "stack_bowls",
+    "attempt": 9,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:callback/controller error: ReadTimeout: The read operation timed out",
+    "run": "code/runs/other-retry-stack_bowls-09",
+    "commit": "4278bac5e45f2ee80b09f04bff5fdf0bdf87fd69",
+    "steps": 144,
+    "actions": 36,
+    "jev_calls": 20,
+    "vision_calls": 45,
+    "wall_seconds": 209.7159602716565,
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp",
+      "transport"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/stack_bowls.json",
+      "--output",
+      "code/runs/other-retry-stack_bowls-09",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
   }
 }
