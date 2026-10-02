@@ -3,11 +3,12 @@ import copy
 import numpy as np
 from task_controller import Controller as TaskController
 from base_controller import bounded_quaternion,tool_quaternion
+from visual_evidence import plain
 
 class Controller(TaskController):
     def __init__(self,task,settings):
         super().__init__(task,settings)
-        self.anchor_records={}
+        self.anchor_records={};self.preorient_count=0
     def _select(self):
         super()._select()
         if self.plan:
@@ -24,7 +25,7 @@ class Controller(TaskController):
                 result=copy.deepcopy(reference);result.update(observed=False,contact_reference=True,
                     source='short_lived_precontact_reference_NOT_current',age_steps=max(1,age//5))
                 self.debug['contact_reference']=dict(id=oid,age_native_steps=age,ttl_native_steps=ttl*5,observed_now=False)
-                return result
+                return plain(result)
         return super()._get(oid,fresh=fresh)
     def _movement(self,targets,uncertainty,opening,obs,ask_jev):
         if self.stage=='approach' and self.rules.get('orient_before_approach'):
@@ -32,7 +33,8 @@ class Controller(TaskController):
             for a in targets:
                 q,angle=bounded_quaternion(self.robot[a]['quaternion'],self.plan['quaternions'][a]);angles[a]=angle
                 commands[a]=dict(delta_xyz_m=[0.,0.,0.],quaternion_wxyz=q,gripper_opening=opening)
-            if max(angles.values())>.12:
+            if max(angles.values())>.12 and self.preorient_count<8:
+                self.preorient_count+=1
                 self.debug['preapproach_orientation']=dict(angles=angles,translation='none')
                 return self._result(commands,reason='orient before descending toward observed target',ticks=3)
         return super()._movement(targets,uncertainty,opening,obs,ask_jev)
@@ -53,4 +55,4 @@ class Controller(TaskController):
                 if angle>.10:arms[arm]=dict(delta_xyz_m=[0.,0.,0.],quaternion_wxyz=q,gripper_opening=1.)
             if arms:
                 result['arms']=arms;result['reason']='observe conveyor while orienting at initial safe height'
-        return result
+        return plain(result)

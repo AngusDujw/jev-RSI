@@ -202,7 +202,11 @@ def run(rec,rpc,reset):
         raise
     finally:
         api.close()
-        final=call('finish_pilot',reason=status)
+        try:
+            final=call('finish_pilot',reason=status)
+        except Exception as finish_error:
+            final=dict(success=None,evaluation_unavailable=True,reason=status,
+                finalization_error=str(finish_error),step_id=tick)
         dump(rec.folder/'native_finish.json',final)
         dump(rec.folder/'structured_result.json',dict(status=status,native=final,jev_calls=len(rec.decisions),
             vision_calls=vision_calls,deepseek_calls=fallback.calls if fallback else 0,actions=actions,steps=tick,frames=frame_count,
