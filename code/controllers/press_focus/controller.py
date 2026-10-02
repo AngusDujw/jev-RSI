@@ -4,7 +4,7 @@ from task_controller import Controller as TaskController
 
 class Controller(TaskController):
     def _deadzone(self,uncertainty):
-        if self.task=='press_by_number' and self.rules.get('bounded_press_cycle'):
+        if self.stage=='press_stroke' and self.rules.get('bounded_press_cycle'):
             return self.rules.get('tracking_tolerance_m',.002)
         return super()._deadzone(uncertainty)
     def _targets(self):
@@ -22,3 +22,13 @@ class Controller(TaskController):
             for q in questions.values():
                 q['instructions']+=' The target is an explicitly bounded probe waypoint. Perception uncertainty is separately recorded; use the stated tracking dead zone for waypoint arrival, and do not claim button activation.'
         return questions
+
+    def _movement(self,targets,uncertainty,opening,obs,ask_jev):
+        if self.stage=='press_stroke' and self.rules.get('bounded_press_cycle'):
+            arm=self.plan['arms'][0];normal=np.asarray(self.plan['normal'])
+            advancement=float(np.dot(self.plan['button_surface']-self.robot[arm]['grasp'],normal))
+            if advancement>=.5*self.rules['press_depth_m']:
+                self._transition('press_retract',dict(source='measured end-effector normal advancement',
+                    normal_advancement_m=advancement,button_activation_verified=False))
+                targets,uncertainty,opening=self._targets()
+        return super()._movement(targets,uncertainty,opening,obs,ask_jev)
