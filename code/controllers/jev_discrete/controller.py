@@ -69,7 +69,19 @@ class Controller(Geometry):
         targets,u,g=super()._targets()
         if self.task=='general_pickup' and self.processing=='anchored' and self.stage in ('approach','contact'):
             targets={self.plan['arms'][0]:self.plan['initial_grasp']+np.array([0,0,.004+(.055 if self.stage=='approach' else 0)])}
+        if self.processing=='precision' and self.stage in ('approach','contact') and self.task=='fold_clothes':
+            center=self.plan['source_initial']
+            targets={a:np.asarray(p).copy() for a,p in targets.items()}
+            for a,p in targets.items():
+                v=center[:2]-p[:2];p[:2]+=.010*v/max(np.linalg.norm(v),1e-9)
+                if self.stage=='contact':p[2]-=.004
+            self.debug['cloth_contact_processing']=dict(inset_m=.010,depth_offset_m=-.004,source='initial visual landmarks plus bounded contact hypothesis; no hidden geometry')
         return targets,u,g
+
+    def _deadzone(self,uncertainty):
+        if self.processing=='precision' and self.stage in ('contact','lower','press_contact','press_stroke'):
+            return .002  # waypoint tracking tolerance; perception uncertainty remains disclosed separately
+        return super()._deadzone(uncertainty)
 
     def _result(self,*args,**kwargs):
         result=super()._result(*args,**kwargs)
@@ -172,9 +184,11 @@ class Controller(Geometry):
             reobserve='Stay in stage, hold translation and gripper command; acquire another observation.',abort='Stop unsuccessful because available evidence cannot support safe progress.')
         if next_stage and not error:criteria['advance']=f'Enter {next_stage}; current stage requirements are satisfied by available evidence. No translation in the transition action; selected gripper command still executes.'
         questions['phase']=choice('YOU decide WHEN to change phase. The candidate is a possible next goal, NOT an instruction to advance now. Compare measured errors/opening/orientation and stage_goal. Advance only after current stage completion. In contact use current contact error if supplied. Missing evidence: reobserve; never use hidden simulation outcome. A verification requires at least two supporting observations. Select/temporal phases advance when candidate evidence is supported.',criteria)
-        if self.stage=='select' and next_stage=='approach' and not error:
+        if self.stage=='select' and next_stage in ('approach','press_approach') and not error:
             questions['phase']=choice('Decide whether to finish SELECT and begin APPROACH. Selection is complete if an instruction-relevant source and a feasible candidate plan are available from observed RGB-D. This phase requires NO robot movement, grasp, lift, or task success. Lack of grasp/lift evidence is irrelevant at SELECT.',
                 dict(advance='A source and a usable candidate plan are available: begin approaching it.',reobserve='A source or usable plan is missing or ambiguous: obtain another observation.'))
+        elif self.stage in ('select','conveyor_wait_first','conveyor_wait_departure','conveyor_wait_repeat') and self.task=='match_and_pick_from_conveyor' and next_stage:
+            questions['phase']=choice('Decide only the current temporal observation phase. If candidate is conveyor_wait_departure: a unique first object appearance is already remembered, advance to WAIT for departure (do not require it to have left yet). If candidate is conveyor_wait_repeat: evaluate repeated absence and boundary evidence. If candidate is approach: evaluate returned appearance and reachability. No grasp is required in these observation phases.',dict(advance='Current observation/memory supports entering the explicitly named NEXT observation or approach phase.',reobserve='Current observation or identity evidence is ambiguous; stay and observe.'))
         elif self.stage in MOVING:
             questions['phase']['instructions']='Decide ONLY if the CURRENT robot waypoint has been reached: compare geometry/relations with constraints.dead_zone_m and orientation_error_rad (<=0.15 rad). If outside tolerance, stay and execute motion. If inside tolerance, advance to the named next phase. Do not require future grasp/lift/release success. At contact on conveyor, use current_contact_error_m instead of the lead waypoint. '+CONTRACTS.get(self.stage,'')
         elif self.stage in ('close','release'):
