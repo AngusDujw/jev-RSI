@@ -5,7 +5,7 @@ import json,hashlib,time
 from pathlib import Path
 import cv2
 import numpy as np
-from run_position_pilot import Jev,dump,append,direction_metrics
+from run_position_pilot import Jev,dump,append,direction_metrics,serial
 from libero_generic_vision import GenericVision
 
 PHASES=['approach','align','descend','grasp','lift','carry','lower','release','retreat']
@@ -117,6 +117,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
                     recent_actions=history[-3:],gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),
                     feedback_note='valid=False holding is NOT success; gripper tick count is measured execution, not a recommended answer')
+            state=json.loads(json.dumps(state,default=serial,allow_nan=False))
             d=model.decide(state);stage_decisions+=1
             if d['transition']=='stop':raise RuntimeError('Jev elected stop')
             selected=d['gripper'];newgrip=gripper if selected=='keep' else -1 if selected=='open' else 1
