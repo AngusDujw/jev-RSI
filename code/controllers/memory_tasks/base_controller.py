@@ -171,7 +171,8 @@ class Controller:
         required=[]
         active=[]
         if self.plan:
-            for key in ('source','destination','stack_base'):
+            needed=('source','destination','stack_base') if self.stage in ('transport','lower','release','retreat','verify_release') else ('source',)
+            for key in needed:
                 oid=self.plan.get(key)
                 if oid is not None: active.append(self._get(oid))
         def resembles(a,b):

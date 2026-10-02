@@ -39,7 +39,7 @@ class MultiView:
                 if j in consumed or row['category']!=prev['category']: continue
                 noun=(tokens(row['label']) & tokens(prev['label']))-{'the','a','object','small','green'}
                 distance=float(np.linalg.norm(row['center']-prev['center']))
-                if not noun or distance>.12: continue
+                if not noun or distance>.09: continue
                 if row['category']=='button':
                     colors={'red','blue','green','yellow'}
                     if (tokens(row['appearance'])&colors)!=(tokens(prev['appearance'])&colors):continue
@@ -64,7 +64,7 @@ class MultiView:
                 self.events.append(dict(kind='multiview_identity',id=oid,chosen_view=row['views'],
                     previous_view=prev['views'],center_distance_m=distance,other_candidates=len(eligible)-1,
                     source='label and calibrated metric gate; no centroid averaging'))
-            elif self.call_index-prev.get('global_seen',0)<=self.ttl:
+            else:  # preserve symbolic identity; never claim stale geometry is observed
                 current[oid]=dict(prev,observed=False,age_steps=self.call_index-prev['global_seen'],
                     uncertainty_m=max(.026,prev['uncertainty_m']+.006),source='multiview_memory_NOT_current')
         for j,row in sorted(enumerate(candidates),key=lambda x:(x[1]['views']!=['cam_high'],x[1]['uncertainty_m'])):
