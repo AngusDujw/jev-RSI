@@ -18,9 +18,9 @@
   "speed_threshold_m_s": 0.001,
   "angular_speed_threshold_rad_s": 0.01,
   "seed": 0,
-  "max_jev_decisions": 240,
+  "max_jev_decisions": 480,
   "wall_limit_seconds": 1200,
-  "output_limit_mb": 1600,
+  "output_limit_mb": 2000,
   "port": 19513,
   "gpu": 3,
   "robodojo_layout_id": 0,
@@ -47,10 +47,10 @@
     "feedback_deadband_m": 0.0002
   },
   "runtime_task": "press_by_number",
-  "generated_controller": "/root/yekangjie/project/jev_rsi/code/controllers/jev_discrete_v5/controller.py",
+  "generated_controller": "/root/yekangjie/project/jev_rsi/code/controllers/jev_discrete_v6/controller.py",
   "schema_variant": "numeric",
-  "max_vision_calls": 300,
-  "max_outer_actions": 260,
+  "max_vision_calls": 480,
+  "max_outer_actions": 320,
   "runtime_perception": "groundingdino_sam2",
   "deepseek_key_file": "/root/yekangjie/project/jev_rsi/.private/deepseek.key",
   "deepseek_max_calls": 0,
@@ -63,6 +63,7 @@
   "controller_settings": {
     "input_variant": "evidence",
     "processing_variant": "anchored",
-    "decision_mode": "phase_then_action"
+    "decision_mode": "phase_then_action",
+    "decision_limit": 480
   }
 }
