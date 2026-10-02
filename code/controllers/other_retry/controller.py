@@ -76,6 +76,7 @@ class Controller(TaskController):
         return targets,u,g
 
     def step(self,observation,ask_jev,perceive):
+        if self.stage=='return_home':return self._home(observation,ask_jev)
         result=super().step(observation,ask_jev,perceive)
         if self.task=='match_and_pick_from_conveyor' and result['stage'].startswith('conveyor_wait_') and not result['stop']:
             arms={}
@@ -84,6 +85,9 @@ class Controller(TaskController):
                 if angle>.10:arms[arm]=dict(delta_xyz_m=[0.,0.,0.],quaternion_wxyz=q,gripper_opening=1.)
             if arms:
                 result['arms']=arms;result['reason']='observe conveyor while orienting at initial safe height'
+        if self.task in ('stack_bowls','fold_clothes') and result['stop'] and self.stage=='observed_operation_complete':
+            self.stopped=False;self.stop_reason='';self.stage='return_home'
+            return self._home(observation,ask_jev)
         return plain(result)
 
     def _appearance_candidates(self,observation,measured):
@@ -134,3 +138,29 @@ class Controller(TaskController):
                 width=float(min(row['high'][:2]-row['low'][:2]))
                 return max(base,min(.020,.35*width))
         return base
+
+    def _read_robot(self,observation):
+        super()._read_robot(observation)
+        if not hasattr(self,'initial_home'):
+            self.initial_home={a:dict(position=r['grasp'].copy(),quaternion=r['quaternion'].copy()) for a,r in self.robot.items()}
+    def _home(self,observation,ask_jev):
+        self._read_robot(observation);self.last_native=observation['native_step'];self.remaining=observation['remaining_steps']
+        geometry={a:dict(current_grasp_xyz_m=r['grasp'],target_xyz_m=self.initial_home[a]['position'],
+            target_minus_grasp_m=self.initial_home[a]['position']-r['grasp'],uncertainty_m=0.) for a,r in self.robot.items()}
+        quats={};angles={}
+        for a,r in self.robot.items():quats[a],angles[a]=bounded_quaternion(r['quaternion'],self.initial_home[a]['quaternion'])
+        aligned=all(np.max(np.abs(g['target_minus_grasp_m']))<.012 for g in geometry.values())
+        if aligned and max(angles.values())<.12:return self._result(stop=True,reason='open-gripper initial pose reached; native evaluation only',ticks=1)
+        answers={}
+        if not aligned:
+            state=plain(dict(task=self.task,stage='return_home',frame='environment_origin world axes',geometry=geometry,
+                constraints=dict(dead_zone_m=.012,max_delta_norm_m=.04),reference_source='initial robot proprioception; no object truth'))
+            questions={f'{a}_{x}':dict(type='choice',instructions=f'Choose the sign of {x} target minus current for {a} robot home waypoint; hold inside 0.012m.',criteria=dict(negative='decrease coordinate',hold='within dead zone',positive='increase coordinate')) for a in geometry for x in 'xyz'}
+            answers=ask_jev(state,questions)['answers']
+        commands={}
+        for a,g in geometry.items():
+            e=g['target_minus_grasp_m'];amp=np.minimum(.025,.7*np.abs(e));amp[np.abs(e)<.012]=0;delta=np.zeros(3)
+            if not aligned:delta=amp*np.array([{'negative':-1,'hold':0,'positive':1}[answers[f'{a}_{x}']['choice']] for x in 'xyz'])
+            delta*=min(1.,.04/max(np.linalg.norm(delta),1e-9))
+            commands[a]=dict(delta_xyz_m=delta,quaternion_wxyz=quats[a],gripper_opening=1.)
+        return self._result(commands,reason='return to own initial pose with open grippers',ticks=3)
