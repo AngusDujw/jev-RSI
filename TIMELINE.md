@@ -44,6 +44,7 @@ graph LR
     T_2026W40_011["📊 jev-control-formulation<br/>20次腕部开发收束：通用拾取2/4且两个布…"]:::experiment
     T_2026W40_012["📊 libero-plus-jev<br/>腕部RGB-D碗沿拟圆补偿后首次原生成功1…"]:::experiment
     T_2026W40_013["📊 jev-control-formulation<br/>general_pickup固定五布局3/…"]:::experiment
+    T_2026W40_014["📊 libero-plus-jev<br/>固定腕部策略20个未调试初态16/20=8…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -62,6 +63,7 @@ graph LR
   T_2026W40_009 --> T_2026W40_011
   T_2026W40_010 --> T_2026W40_012
   T_2026W40_011 --> T_2026W40_013
+  T_2026W40_012 --> T_2026W40_014
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
 ```
@@ -97,6 +99,7 @@ graph LR
 | `T-2026W40-011` | 2026-10-02 | experiment | jev-control-formulation | 20次腕部开发收束：通用拾取2/4且两个布局成功，其他四任务各0/4；停止扩测，保留未验证修复 | `EXP-2026W40-044` | - |
 | `T-2026W40-012` | 2026-10-02 | experiment | libero-plus-jev | 腕部RGB-D碗沿拟圆补偿后首次原生成功1/1：77Jev、263步、98.73秒，单开发初态 | `EXP-2026W40-045` | - |
 | `T-2026W40-013` | 2026-10-02 | experiment | jev-control-formulation | general_pickup固定五布局3/5；针对失败修复后layout3成功，layout2仍失败，确认4/5=80%开发比例 | `EXP-2026W40-052` | - |
+| `T-2026W40-014` | 2026-10-02 | experiment | libero-plus-jev | 固定腕部策略20个未调试初态16/20=80%；4次lift后拟合拒绝，完整封版 | `EXP-2026W40-050` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
