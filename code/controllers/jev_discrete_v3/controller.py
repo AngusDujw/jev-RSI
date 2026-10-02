@@ -325,13 +325,15 @@ class Controller(Geometry):
                     e=targets[a]-self.robot[a]['grasp'];amp=np.minimum(.025,.7*np.abs(e));amp[np.abs(e)<=self._deadzone(u)]=0
                     amp*=min(1.,self.max_step/max(np.linalg.norm(amp),1e-12))
                     delta=amp*np.array([{'positive':1.,'negative':-1.,'hold':0.}[decisions[a+'_'+x]] for x in AXES]);amplitudes[a]=amp
-                    if self.stage=='approach' and angles[a]>.15:delta*=0  # explicitly logged orientation safety gate
+                    if self.stage=='approach' and angles[a]>.15 and self.stage_age<=8:delta*=0
+                    elif self.stage=='approach' and angles[a]>.5:delta[2]=0
+                    self.debug.setdefault('orientation_motion_masks',{})[a]=dict(initial_rotation_only=self.stage=='approach' and angles[a]>.15 and self.stage_age<=8,descent_suppressed=self.stage=='approach' and angles[a]>.5,rule='at most 8 orientation-only observations, then Jev horizontal motion; Z waits below 0.5rad')
                 if phase!='stay':q=self.robot[a]['quaternion']
                 commands[a]=dict(delta_xyz_m=delta,quaternion_wxyz=q,gripper_opening=opening)
             if self.stage=='close' and self.plan.get('baseline') is None and any(c['gripper_opening']<.5 for c in commands.values()):self.plan['baseline']=self._baseline()
             if self.stage=='release' and any(c['gripper_opening']>.5 for c in commands.values()):self.plan['release_robot']={a:self.robot[a]['grasp'].copy() for a in self.plan['arms']}
             self.debug.update(jev_request=dict(composed_summary=True,state=state,questions=questions,actual_requests_saved_separately=True),jev_response=raw,jev_choices=decisions,axis_amplitudes=amplitudes,
-                phase_candidate=next_stage,phase_evidence=evidence,orientation_safety_gate=self.stage=='approach' and any(x>.15 for x in angles.values()))
+                phase_candidate=next_stage,phase_evidence=evidence,orientation_safety_gate=self.debug.get('orientation_motion_masks',{}))
             self.history.append(dict(event='Jev_decision',stage=self.stage,choices=decisions,native_step=self.last_native))
             if targets and phase=='stay':self.last_motion=dict(stage=self.stage,grasp={a:self.robot[a]['grasp'].copy() for a in targets},target=copy.deepcopy(targets),delta={a:commands[a]['delta_xyz_m'].copy() for a in targets})
             blocked=self._motion_guard(commands)
