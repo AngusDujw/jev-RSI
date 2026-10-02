@@ -17,3 +17,7 @@
 |match_and_pick_from_conveyor|2|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|80|40/40|controller_stop:external phase observation budget exhausted (40 decisions)|
 |press_by_number|2|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|200|40/40|controller_stop:external phase observation budget exhausted (40 decisions)|
 |stack_bowls|3|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|390|78/78|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|3|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|500|100/100|native_episode_ended|
+|match_and_pick_from_conveyor|3|{'input_variant': 'relations', 'processing_variant': 'anchored'}|0|False|570|109/109|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|3|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|205|41/41|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|4|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|205|41/41|controller_stop:external phase observation budget exhausted (40 decisions)|

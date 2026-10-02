@@ -35,7 +35,7 @@ for folder in sorted((ROOT/'code/runs').glob('jev-discrete-*-??')):
     eid=f'EXP-{y}W{w:02}-{number:03}';number+=1
     reason=result.get('status',str(summary.get('errors',summary.get('status'))))
     row=dict(experiment_id=eid,task=cfg['runtime_task'],attempt=int(folder.name[-2:]),variant=cfg.get('controller_settings'),layout=cfg['robodojo_layout_id'],
-        native_success=native,reason=reason,steps=result.get('steps',0),jev_requests=len(requests),jev_responses=len(responses),
+        frozen_reference=cfg.get('frozen_reference'),native_success=native,reason=reason,steps=result.get('steps',0),jev_requests=len(requests),jev_responses=len(responses),
         phase_choices=phase_counts,gripper_choices=gripper_counts,transition_owners=sorted(owners),forbidden_field_hits=permission,
         stages=list(dict.fromkeys(stages)),wall_seconds=summary['wall_seconds'],commit=prov['commit'],run=str(folder.relative_to(ROOT)),command=prov['command'])
     ledger[folder.name]=row
@@ -43,7 +43,7 @@ for folder in sorted((ROOT/'code/runs').glob('jev-discrete-*-??')):
 - 假设 (Hypothesis): {row['variant']}输入可支持{row['task']}联合离散决策闭环。
 - 是否被驳斥 (Falsified?): {'N' if native is True else 'Crashed' if not result or 'error' in reason or 'exception' in reason else 'Y'}
 - 驳斥/支持原因 (Why): {reason}；原生success={native}；None表示未取得评估，不能算成功。
-- Agent 动作 (What changed): 本轮第{row['attempt']}次开发；候选目标/姿态/幅度由算法提供，Jev独立选择阶段与夹爪；完整版本快照保留。
+- Agent 动作 (What changed): 本轮第{row['attempt']}次{'冻结验证' if row['frozen_reference'] else '开发'}；候选目标/姿态/幅度由算法提供，Jev独立选择阶段与夹爪；完整版本快照保留。
 - 复现信息 (Repro):
   - commit: {row['commit']}
   - seed: layout={row['layout']}/eval_seed0
@@ -59,7 +59,7 @@ for folder in sorted((ROOT/'code/runs').glob('jev-discrete-*-??')):
 '''
     with weekly.open('a') as f:f.write(block)
 ledger_path.write_text(json.dumps(ledger,ensure_ascii=False,indent=2)+'\n')
-lines=['# Jev夹爪/阶段联合决策开发记录','','开发混版本，不能作为最终冻结成功率。GPU/接口失败也计入每任务50次预算。','', '|任务|尝试|输入/处理|布局|原生成功|步数|Jev请求/响应|终止原因|','|---|---:|---|---:|---|---:|---:|---|']
-for r in ledger.values():lines.append(f"|{r['task']}|{r['attempt']}|{r['variant']}|{r['layout']}|{r['native_success']}|{r['steps']}|{r['jev_requests']}/{r['jev_responses']}|{r['reason']}|")
+lines=['# Jev夹爪/阶段联合决策开发记录','','开发混版本，不能作为最终冻结成功率。GPU/接口失败也计入每任务50次预算。','', '|任务|尝试|用途|输入/处理|布局|原生成功|步数|Jev请求/响应|终止原因|','|---|---:|---|---|---:|---|---:|---:|---|']
+for r in ledger.values():lines.append(f"|{r['task']}|{r['attempt']}|{'冻结验证' if r.get('frozen_reference') else '开发'}|{r['variant']}|{r['layout']}|{r['native_success']}|{r['steps']}|{r['jev_requests']}/{r['jev_responses']}|{r['reason']}|")
 (ROOT/'LOGS/jev-discrete-results.md').write_text('\n'.join(lines)+'\n')
 print('archived',len(ledger),'completed trials')
