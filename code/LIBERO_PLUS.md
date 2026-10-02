@@ -69,3 +69,7 @@ cd /root/yekangjie/project/jev_rsi
 ## 每版3次配对改进
 
 新入口`run_libero_generic_triplet.py`冻结源码运行task1062/init2–4。基线3/3，执行响应补偿1/3（已否决），恢复基线幅度＋放置前源/目的RGB-D复测3/3（默认保留，但未证明比基线更优）。每回合语义模型均2次。详见[配对报告](../LOGS/2026-10-02-libero-generic-triplets.md)。新增复测不依赖具体物体类别；3个初态已成为开发集，后续必须新初态验证。
+
+## 冻结通用流程跨任务
+
+增加`--suite`选择与`run_libero_generic_cross_tasks.py`，策略保持不变。Spatial1282盘旁碗1/3、Object1066奶酪0/3、Object1043汤罐0/3；详见[跨任务报告](../LOGS/2026-10-02-libero-generic-cross-tasks.md)。未证实稳定类别泛化。

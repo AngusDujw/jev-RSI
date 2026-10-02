@@ -51,6 +51,7 @@ graph LR
     T_2026W40_018["📊 libero-generic-vision<br/>通用语义框/SAM/RGB-D/Jev首次…"]:::experiment
     T_2026W40_019["⛔ jev-control-formulation<br/>单任务新增5次预算耗尽：按钮0/5；完整程…"]:::blocker
     T_2026W40_020["📊 libero-generic-vision<br/>配对3×3：基线3/3，响应补偿1/3否决…"]:::experiment
+    T_2026W40_021["📊 libero-generic-vision<br/>冻结跨任务：盘旁1/3、奶酪0/3、汤罐0…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -74,6 +75,7 @@ graph LR
   T_2026W40_016 --> T_2026W40_018
   T_2026W40_017 --> T_2026W40_019
   T_2026W40_018 --> T_2026W40_020
+  T_2026W40_020 --> T_2026W40_021
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
 ```
@@ -116,6 +118,7 @@ graph LR
 | `T-2026W40-018` | 2026-10-02 | experiment | libero-generic-vision | 通用语义框/SAM/RGB-D/Jev首次完整成功：桌中央69Jev+2GPT视觉；同版另一关系任务下降失败，有限可行性 | `EXP-2026W40-073` | - |
 | `T-2026W40-019` | 2026-10-02 | blocker | jev-control-formulation | 单任务新增5次预算耗尽：按钮0/5；完整程序序列不等于原生成功，工作区选臂候选未物理验证 | `EXP-2026W40-077` | - |
 | `T-2026W40-020` | 2026-10-02 | experiment | libero-generic-vision | 配对3×3：基线3/3，响应补偿1/3否决，放置前复测3/3但无已证增益；冻结9回合 | `EXP-2026W40-086` | - |
+| `T-2026W40-021` | 2026-10-02 | experiment | libero-generic-vision | 冻结跨任务：盘旁1/3、奶酪0/3、汤罐0/3；暴露关联/低矮抓取/容器放置限制，9回合封版 | `EXP-2026W40-111` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
