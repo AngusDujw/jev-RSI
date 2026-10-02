@@ -1,4 +1,5 @@
 """Same task execution infrastructure with or without frozen historical advice."""
+import copy
 from pathlib import Path
 import numpy as np
 from base_controller import Controller as Base,tool_quaternion,EvidenceError
@@ -10,7 +11,7 @@ class Controller(Base):
         super().__init__(task,settings)
         self.vision=MultiView(settings)
         self.memory=Experience(Path(__file__).resolve().parents[2]/'experience/task_transfer',settings['run_dir'],task,settings.get('experience_enabled',False))
-        self.rules=self.memory.rules();self.feedback=None;self.press_stall=0
+        self.rules=self.memory.rules();self.feedback=None;self.press_stall=0;self.fixture_map={}
     def step(self,observation,ask_jev,perceive):
         self.vision.stage=self.stage
         if self.plan:self.vision.active_arm=self.plan['arms'][0];self.vision.active_id=self.plan['source']
@@ -45,6 +46,8 @@ class Controller(Base):
         if self.sequence is not None:return self.sequence
         return super()._press_sequence(instruction,rows)
     def _select(self):
+        if self.task=='press_by_number' and not self.fixture_map:
+            self.fixture_map={k:copy.deepcopy(v) for k,v in self.current.items() if v['category']=='button' and v['observed']}
         super()._select()
         if self.plan and self.task=='stack_bowls' and self.rules.get('rim_circle'):
             arm=self.plan['arms'][0];r=self.current[self.plan['source']]
@@ -61,6 +64,9 @@ class Controller(Base):
         return p
     def _targets(self):
         targets,u,g=super()._targets()
+        if self.stage.startswith('press_') and self.rules.get('occluded_fixture_map'):
+            u=min(u,.008)
+            self.debug['fixture_map_uncertainty']=dict(value_m=u,assumption='fixed fixture established this episode; not fresh geometry',calibrated=False)
         if self.task=='stack_bowls' and self.rules.get('rim_circle') and self.stage in ('approach','contact'):
             a=self.plan['arms'][0];targets={a:self.plan['initial_grasp']+np.array([0,0,.055 if self.stage=='approach' else 0])}
         if self.task=='fold_clothes' and self.rules.get('cloth_keypoint_anchor') and self.stage in ('approach','contact'):
@@ -96,3 +102,14 @@ class Controller(Base):
             fold_height=min(.14,max(.05,float(max(spans))*.35)),rule='observed opposite garment edges with bilateral workspace gate')
         self.grasp_evidence=[];self.release_evidence=[]
         self._transition('approach',dict(memory='cloth-reference',workspace_penalty_m=penalty,source_points=src,destination_points=dst))
+
+    def _get(self,oid,fresh=False):
+        row=self.current.get(oid)
+        if self.task=='press_by_number' and self.rules.get('occluded_fixture_map') and oid in self.fixture_map:
+            if row is None or not row['observed'] or row['uncertainty_m']>.012:
+                remembered=copy.deepcopy(self.fixture_map[oid]); remembered.update(observed=False,
+                    fixture_map=True,source='initial_observed_stationary_button_reference_NOT_current',
+                    age_steps=0,uncertainty_m=.008)
+                self.debug.setdefault('fixture_references',[]).append(dict(id=oid,initial_native_step=remembered['native_step'],current_native_step=self.last_native,observed_now=False))
+                return remembered
+        return super()._get(oid,fresh=fresh)

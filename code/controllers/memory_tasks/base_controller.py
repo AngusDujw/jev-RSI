@@ -435,7 +435,7 @@ class Controller:
         if self.stage.startswith('press_'):
             arm=arms[0]; normal=plan['normal']
             if self.stage=='press_approach':
-                if not source['observed']: raise EvidenceError('button must be currently visible for approach')
+                if not source['observed'] and not source.get('fixture_map'): raise EvidenceError('button must be currently visible for approach')
                 plan['button_surface']=source['center'].copy(); plan['button_before']=source['center'].copy()
             gap={'press_approach':.030,'press_contact':.001,'press_stroke':-.006,'press_retract':.035}[self.stage]
             return {arm:plan['button_surface']+gap*normal},uncertainty,0.
