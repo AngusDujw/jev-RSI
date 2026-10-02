@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 TASKS=['general_pickup','stack_bowls','fold_clothes','press_by_number','match_and_pick_from_conveyor']
 
-def run(task,variant,processing,layout):
+def run(task,variant,processing,layout,gpu=None):
     folder=ROOT/'code/runs';old=sorted(folder.glob('jev-discrete-'+task+'-[0-9][0-9]'))
     numbers=[int(p.name[-2:]) for p in old];number=max(numbers,default=0)+1
     if number>50:raise RuntimeError('50 trial budget reached '+task)
@@ -12,6 +12,7 @@ def run(task,variant,processing,layout):
     output=folder/f'jev-discrete-{task}-{number:02d}'
     cfg=json.loads((ROOT/f'code/configs/jev-discrete/{task}-{variant}.json').read_text())
     cfg['controller_settings']['processing_variant']=processing;cfg['robodojo_layout_id']=layout
+    if gpu is not None:cfg['gpu']=gpu
     usage=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.used','--format=csv,noheader,nounits'],text=True)
     memory={int(r.split(',')[0]):int(r.split(',')[1]) for r in usage.splitlines()}
     if memory[cfg['gpu']]>1024:
@@ -33,8 +34,10 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
     p.add_argument('--variant',choices=['numeric','relations','evidence'],default='numeric')
     p.add_argument('--processing',choices=['anchored','live','precision'],default='anchored');p.add_argument('--layout',type=int,default=0)
+    p.add_argument('--gpu',type=int)
     args=p.parse_args()
+    if args.gpu is not None and len(args.tasks)!=1:p.error('--gpu requires exactly one task')
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
-        jobs=[pool.submit(run,t,args.variant,args.processing,args.layout) for t in args.tasks]
+        jobs=[pool.submit(run,t,args.variant,args.processing,args.layout,args.gpu) for t in args.tasks]
         codes=[j.result() for j in jobs]
     sys.exit(int(any(codes)))
