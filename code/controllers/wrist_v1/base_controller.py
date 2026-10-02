@@ -552,6 +552,11 @@ class Controller:
     def _movement(self,targets,uncertainty,opening,obs,ask_jev):
         self.debug['targets']=targets; dz=self._deadzone(uncertainty); self.debug['dead_zone_m']=dz
         if uncertainty>.025: raise EvidenceError('target uncertainty too large')
+        if self.stage=='lift':
+            arm=self.plan['arms'][0]; error=np.asarray(targets[arm])-self.robot[arm]['grasp']
+            if abs(float(error[2]))<=max(.015,2.5*uncertainty) and float(np.linalg.norm(error[:2]))<=.020:
+                self.debug['lift_convergence_gate']=dict(error_m=error.tolist(),rule='vertical error within 15mm/2.5 uncertainty and horizontal error <=20mm; transition to visual verification')
+                return None
         if self.stage in ('contact','lower','press_contact','press_stroke') and uncertainty>.012:
             raise EvidenceError('contact phase requires <=12 mm surface uncertainty')
         orientations={}; angles={}
