@@ -231,6 +231,29 @@ class Controller(Geometry):
                 if key.endswith('_gripper'):q['instructions']+=' At contact with XY alignment and repeated descent stall near the surface, closing is a permitted grasp probe; it is not proof of attachment.'
         if targets:
             questions['phase']['instructions']+=' IMPORTANT: alignment_facts lists every axis outside the required robot tracking band. Any listed axis means the waypoint is NOT reached. A phase name (contact/lift/etc.) names the current OBJECTIVE, not an achieved fact. Do not advance while listed axes remain, except an explicitly described bounded contact-stall probe.'
+        phase_q=questions['phase']
+        phase_q['instructions']=dict(question='What should happen to the CURRENT phase now?',current_phase=self.stage,
+            focus_paths=['alignment_facts','phase_evidence','recent_gripper_feedback','last_gripper_commands','waypoint_reference'],
+            policy=phase_q['instructions'],warning='A phase name is an objective, not an observation that it has happened. Future-stage goals are not completion evidence.')
+        for option,description in list(phase_q['criteria'].items()):
+            phase_q['criteria'][option]=dict(meaning=description)
+        if 'advance' in phase_q['criteria']:
+            phase_q['criteria']['advance']['not_when']=['a motion waypoint still has axes listed in alignment_facts.*.axes_outside_tracking_band (except a described contact probe)', 'the gripper operation has not yet executed', 'only a future objective or prior-stage history supports completion']
+        phase_q['criteria'].setdefault('stay',dict(meaning='Continue the current unfinished objective.'))
+        phase_q['criteria']['stay']['when']='Usable current/reference evidence is available and work toward the current objective remains.'
+        if 'reobserve' in phase_q['criteria']:
+            phase_q['criteria']['reobserve']['when']='A necessary observation is unavailable or ambiguous, and another observation could resolve it.'
+            phase_q['criteria']['reobserve']['not_when']='The reference waypoint is usable and simply has not yet been reached.'
+        for a in arms:
+            q=questions[a+'_gripper']
+            q['instructions']=dict(question=f'What command should the {a} gripper execute NOW in the current unfinished stage?',
+                current_stage=self.stage,focus_paths=[f'robot.{a}.opening',f'alignment_facts.{a}',f'last_gripper_commands.{a}','stage_goal'],
+                rule='Judge actual alignment and the current objective. The word contact does not mean the jaws have reached the object.',
+                example='During descent with 50mm contact error, keep jaws OPEN. At an established close/probe location, CLOSE. During lift/carry maintain the close command.')
+            q['criteria']=dict(
+                open=dict(action='fully open',when=['approaching or descending to the grasp site; jaws must straddle the object','releasing or retreating after release','recovering from a failed grasp'],not_when=['carrying a held object before placement','using closed fingertips to press a button']),
+                close=dict(action='fully close',when=['executing the close phase at the grasp site','a specifically supported near-surface grasp probe','using fingertips as a button-press tool'],not_when=['approach clearance waypoint','centimetres above the contact waypoint','release/retreat after placement']),
+                keep=dict(action='keep the last Jev-commanded endpoint',when=['that endpoint remains appropriate to the CURRENT objective'],not_when=['last command closed the jaws prematurely during approach or unfinished descent','current objective requires changing the previous endpoint']))
         return questions
 
     def _accept_phase(self,new,evidence):
@@ -298,7 +321,7 @@ class Controller(Geometry):
                     interpretation='No future-stage action. Current contact stage can still be centimetres above the object: examine alignment_facts, not the stage name.')
                 for key,q in action_questions.items():
                     if key.endswith('_gripper'):
-                        q['instructions']+=' Decide for the CURRENT unfinished phase only. During approach or descent to contact, open permits the jaws to straddle the object. Do not close centimetres above the contact waypoint. CLOSE stage is a separate objective. In lift/carry preserve the close command; release at RELEASE only.'
+                        q['instructions']['phase_dependency']='Jev already chose STAY in the first request; choose an action for this CURRENT unfinished phase, not a future phase.'
                 self.jev_calls+=1
                 action_raw=ask_jev(action_state,action_questions)
                 if set(action_raw.get('answers',{}))!=set(action_questions):raise ValueError('missing action answers')
