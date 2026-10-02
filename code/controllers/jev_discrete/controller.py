@@ -141,7 +141,7 @@ class Controller(Geometry):
         arms=list(targets) or (self.plan['arms'] if self.plan else [])
         if self.stage.startswith('conveyor_wait_') or self.stage=='select':arms=list(self.robot)
         state=dict(version='jev_discrete_v1',task=self.task,instruction=self.instruction,stage=self.stage,
-            input_variant=self.variant,processing_variant=self.processing,native_step=self.last_native,
+            input_variant=self.variant,processing_variant=self.processing,native_step=self.last_native,frame='world axes relative to environment origin; geometry/robot metres; relation error millimetres',
             remaining_steps=self.remaining,stage_age=self.stage_age,active_arms=arms,
             recent_gripper_feedback=self.gripper_observations[-4:],last_gripper_commands=self.last_grip,
             observation_permissions='RGB-D, calibrated cameras, robot feedback, public instruction; no object truth or native success',
@@ -155,7 +155,7 @@ class Controller(Geometry):
         geometry={a:dict(current_grasp_xyz_m=self.robot[a]['grasp'],target_xyz_m=p,target_minus_grasp_m=p-self.robot[a]['grasp']) for a,p in targets.items()}
         if self.variant=='relations':
             state['relations']={a:{axis:dict(relation='within_tolerance' if abs(e)<=self._deadzone(u) else 'target_higher' if e>0 else 'target_lower',
-                signed_distance_mm=float(e*1000)) for axis,e in zip(AXES,p-self.robot[a]['grasp'])} for a,p in targets.items()}
+                target_minus_current_grasp_mm=float(e*1000)) for axis,e in zip(AXES,p-self.robot[a]['grasp'])} for a,p in targets.items()}
         else:state['geometry']=geometry
         angles={}
         for a in arms:
@@ -176,7 +176,7 @@ class Controller(Geometry):
         questions={}
         for a in targets:
             for axis in AXES:
-                questions[f'{a}_{axis}']=choice(f'Choose next {a} world {axis} translation direction toward this phase waypoint. Hold inside dead zone or when evidence is unusable. Phase/gripper are decided separately.',
+                questions[f'{a}_{axis}']=choice(f'Choose next {a} world {axis} translation direction toward this phase waypoint. Use target minus CURRENT GRASP: positive difference means positive motion; negative means negative. In relations, target_minus_current_grasp_mm uses millimetres; dead_zone_m uses metres (multiply by 1000). Hold inside dead zone or when evidence is unusable. Phase/gripper are decided separately.',
                     dict(negative='decrease coordinate',hold='zero translation',positive='increase coordinate'))
         for a in arms:
             questions[f'{a}_gripper']=choice(f'Decide {a} gripper action from current phase goal, geometry and actual opening. open/close command the endpoint; keep preserves the LAST commanded endpoint, avoiding half-closed stalls. Close at supported contact, remain closed during lift/carry; release only at placement. For buttons use closed fingers as tool.',

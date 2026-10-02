@@ -268,5 +268,261 @@
       "robodojo",
       "--with-jev"
     ]
+  },
+  "jev-discrete-fold_clothes-02": {
+    "experiment_id": "EXP-2026W40-121",
+    "task": "fold_clothes",
+    "attempt": 2,
+    "variant": {
+      "input_variant": "evidence",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "controller_stop:external phase observation budget exhausted (40 decisions)",
+    "steps": 340,
+    "jev_requests": 68,
+    "jev_responses": 68,
+    "phase_choices": {
+      "advance": 5,
+      "stay": 23,
+      "reobserve": 40
+    },
+    "gripper_choices": {
+      "open": 41,
+      "keep": 91,
+      "close": 4
+    },
+    "transition_owners": [
+      "Jev"
+    ],
+    "forbidden_field_hits": [],
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp"
+    ],
+    "wall_seconds": 612.3304391168058,
+    "commit": "de0067042d6d21aa98b7ca04edfdaf57a043e021",
+    "run": "code/runs/jev-discrete-fold_clothes-02",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-fold_clothes-02.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-fold_clothes-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-general_pickup-03": {
+    "experiment_id": "EXP-2026W40-122",
+    "task": "general_pickup",
+    "attempt": 3,
+    "variant": {
+      "input_variant": "evidence",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": null,
+    "reason": "[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]",
+    "steps": 0,
+    "jev_requests": 0,
+    "jev_responses": 0,
+    "phase_choices": {},
+    "gripper_choices": {},
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [],
+    "wall_seconds": 0.3407834954559803,
+    "commit": "de0067042d6d21aa98b7ca04edfdaf57a043e021",
+    "run": "code/runs/jev-discrete-general_pickup-03",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-03.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-03",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-general_pickup-04": {
+    "experiment_id": "EXP-2026W40-123",
+    "task": "general_pickup",
+    "attempt": 4,
+    "variant": {
+      "input_variant": "evidence",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "native_episode_ended",
+    "steps": 200,
+    "jev_requests": 40,
+    "jev_responses": 40,
+    "phase_choices": {
+      "stay": 37,
+      "advance": 3
+    },
+    "gripper_choices": {
+      "keep": 26,
+      "close": 11,
+      "open": 4
+    },
+    "transition_owners": [
+      "Jev"
+    ],
+    "forbidden_field_hits": [],
+    "stages": [
+      "approach",
+      "contact",
+      "close"
+    ],
+    "wall_seconds": 333.2700346186757,
+    "commit": "de0067042d6d21aa98b7ca04edfdaf57a043e021",
+    "run": "code/runs/jev-discrete-general_pickup-04",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-04.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-04",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-match_and_pick_from_conveyor-02": {
+    "experiment_id": "EXP-2026W40-124",
+    "task": "match_and_pick_from_conveyor",
+    "attempt": 2,
+    "variant": {
+      "input_variant": "evidence",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "controller_stop:external phase observation budget exhausted (40 decisions)",
+    "steps": 80,
+    "jev_requests": 40,
+    "jev_responses": 40,
+    "phase_choices": {
+      "reobserve": 27,
+      "stay": 13
+    },
+    "gripper_choices": {
+      "keep": 80
+    },
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [
+      "select"
+    ],
+    "wall_seconds": 317.8623469248414,
+    "commit": "de0067042d6d21aa98b7ca04edfdaf57a043e021",
+    "run": "code/runs/jev-discrete-match_and_pick_from_conveyor-02",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-match_and_pick_from_conveyor-02.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-match_and_pick_from_conveyor-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-press_by_number-02": {
+    "experiment_id": "EXP-2026W40-125",
+    "task": "press_by_number",
+    "attempt": 2,
+    "variant": {
+      "input_variant": "evidence",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "controller_stop:external phase observation budget exhausted (40 decisions)",
+    "steps": 200,
+    "jev_requests": 40,
+    "jev_responses": 40,
+    "phase_choices": {
+      "reobserve": 40
+    },
+    "gripper_choices": {
+      "close": 80
+    },
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [
+      "select"
+    ],
+    "wall_seconds": 520.0083857998252,
+    "commit": "de0067042d6d21aa98b7ca04edfdaf57a043e021",
+    "run": "code/runs/jev-discrete-press_by_number-02",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-press_by_number-02.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-press_by_number-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-stack_bowls-03": {
+    "experiment_id": "EXP-2026W40-126",
+    "task": "stack_bowls",
+    "attempt": 3,
+    "variant": {
+      "input_variant": "evidence",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "controller_stop:external phase observation budget exhausted (40 decisions)",
+    "steps": 390,
+    "jev_requests": 78,
+    "jev_responses": 78,
+    "phase_choices": {
+      "stay": 33,
+      "advance": 5,
+      "reobserve": 40
+    },
+    "gripper_choices": {
+      "open": 21,
+      "keep": 56,
+      "close": 2
+    },
+    "transition_owners": [
+      "Jev"
+    ],
+    "forbidden_field_hits": [],
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp"
+    ],
+    "wall_seconds": 437.66346882656217,
+    "commit": "de0067042d6d21aa98b7ca04edfdaf57a043e021",
+    "run": "code/runs/jev-discrete-stack_bowls-03",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-stack_bowls-03.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-stack_bowls-03",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
   }
 }
