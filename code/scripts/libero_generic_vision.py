@@ -101,6 +101,27 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
             stall=stall+1 if np.linalg.norm(after-p)<.0008 and np.linalg.norm(err)>.015 else 0
             if stall>=3:raise RuntimeError('Physical stall: '+stage)
         if np.max(np.abs(target-obs['robot0_eef_pos']))>=.007:raise RuntimeError('Stage budget: '+stage)
+    def grasp_point(src):
+        # Own gripper pad geometry is robot proprioception, not object truth.
+        robot=env.robots[0]
+        names=robot.gripper.important_geoms
+        centers=[]
+        for key in ['left_fingerpad','right_fingerpad']:
+            centers.append(np.mean([env.sim.data.geom_xpos[env.sim.model.geom_name2id(n)] for n in names[key]],axis=0))
+        axis=np.asarray(centers[1])-centers[0];axis=axis[:2]/max(np.linalg.norm(axis[:2]),1e-9)
+        perpendicular=np.array([-axis[1],axis[0]])
+        extent=src['high']-src['low'];target=src['center'].copy()
+        width=float(np.dot(np.abs(axis),extent[:2]))
+        if width>.065:
+            # Wider than a comfortable pad span: pinch an observed boundary,
+            # not the whole object center. Generic edge heuristic, not learned grasp.
+            sign=1 if np.dot(obs['robot0_eef_pos'][:2]-target[:2],perpendicular)>0 else -1
+            distance=max(0,np.dot(np.abs(perpendicular),extent[:2])/2-.004)
+            target[:2]+=sign*distance*perpendicular
+        target[2]=src['high'][2]-.014
+        dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=target,closing_axis=axis,observed_width=width,
+             source='visible extent plus own gripper span; generic boundary pinch heuristic'))
+        return target
     def locate(reason):
         v=views();sem=vision.recognize(v,task.language,reason);geom={}
         for role in ['source','destination']:
@@ -113,16 +134,17 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
         move(np.r_[src['center'][:2],hover],'approach',-1)
         # Mandatory fresh wrist-inclusive localization before descending / closing.
         sem,g=locate('pregrasp');src=g['source'];dst=g['destination']
-        move(np.r_[src['center'][:2],hover],'align',-1)
-        target=np.r_[src['center'][:2],src['high'][2]-.008]
+        target=grasp_point(src)
+        move(np.r_[target[:2],hover],'align',-1)
         try:move(target,'descend',-1)
         except RuntimeError as exc:
             if 'Physical stall' not in str(exc):raise
             recovery_used=True
             move(obs['robot0_eef_pos']+np.array([0,0,.06]),'retract',-1)
             sem,g=locate('stalled');src=g['source'];dst=g['destination']
-            move(np.r_[src['center'][:2],obs['robot0_eef_pos'][2]],'realign',-1)
-            move(np.r_[src['center'][:2],src['high'][2]+.004],'descend_recovery',-1)
+            target=grasp_point(src)
+            move(np.r_[target[:2],obs['robot0_eef_pos'][2]],'realign',-1)
+            move(target,'descend_recovery',-1)
         # Every grasp uses newly localized geometry; explicit robot geometry offset.
         tcp_before=obs['robot0_eef_pos'].copy();source_before=src['center'].copy()
         step([0,0,0,0,0,0,1],16);snapshot('close')
@@ -135,7 +157,9 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
         uv=(K@cp)[:2]/cp[2];extent=np.clip(max(src['high']-src['low'])*K[0,0]/cp[2],30,250)
         box=np.r_[uv-extent*.65,uv+extent*.65].clip(0,383).tolist()
         held=vision.measure(v[cam],box,sem['source']['label'],'lift-association')
-        if held['center'][2]-source_before[2]<.05 or np.linalg.norm(held['center']-predicted)>.08:
+        if (held['low'][2]-src['low'][2]<.04 or
+            (held['high'][2]-held['low'][2])>max(.06,1.8*(src['high'][2]-src['low'][2])) or
+            np.linalg.norm(held['center']-predicted)>.06):
             raise RuntimeError('No reliable RGB-D evidence of lifted source')
         offset=held['center']-obs['robot0_eef_pos'];dump(rec.folder/'generic-held-offset.json',dict(offset=offset,held=held,predicted=predicted))
         move(np.r_[dst['center'][:2]-offset[:2],hover],'carry',1)
