@@ -220,7 +220,7 @@ def main():
     p.add_argument('--legacy-vision', dest='generic_vision', action='store_false', help='Reproduce archived task-specific colour/rim policy only')
     p.add_argument('--task-id', type=int, default=988)
     p.add_argument('--lift-check',action='store_true')
-    p.add_argument('--approach-mode',choices=['top','side'],default='top')
+    p.add_argument('--approach-mode',choices=['top','side','angled'],default='top')
     p.add_argument('--camera-size',type=int,choices=[384,768],default=384)
     p.add_argument('--suite', choices=['libero_spatial','libero_object','libero_goal','libero_10'], default='libero_spatial')
     p.add_argument('--seed', type=int, default=0)

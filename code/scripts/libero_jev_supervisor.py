@@ -53,7 +53,9 @@ class DecisionModel(Jev):
 def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     vision=GenericVision(rec);model=DecisionModel(rec)
     from scipy.spatial.transform import Rotation
-    side=rec.cfg.get('approach_mode')=='side'
+    side=rec.cfg.get('approach_mode') in ('side','angled')
+    tilt=np.pi/4 if rec.cfg.get('approach_mode')=='angled' else np.pi/2
+    entry_clearance=.055 if rec.cfg.get('approach_mode')=='angled' else .10
     phases=list(PHASES)
     if side:phases.insert(phases.index('grasp'),'insert')
     notes=dict(NOTES,insert='Insert horizontally at the observed grasp height with gripper open; advance when target reached. Do not close before arrival.')
@@ -125,13 +127,13 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         sem,src,dst=locate('initial');initial_source_extent=src['high']-src['low'];grasp=grasp_target();hover=max(src['high'][2],dst['high'][2])+.14
         if side:
             side_sign=1 if start_tcp[0]>src['center'][0] else -1
-            orientation_goal=(Rotation.from_rotvec([0,side_sign*np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix()
+            orientation_goal=(Rotation.from_rotvec([0,side_sign*tilt,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix()
         while phase<len(phases):
             stage=phases[phase];rec.check_budget()
             if ticks>=550 or stage_decisions>=45:raise RuntimeError('Stage/native budget: '+stage)
-            if stage=='approach':target=np.r_[src['center'][:2]+(np.array([side_sign*.10,0]) if side else 0),hover]
-            elif stage=='align':target=np.r_[grasp[:2]+(np.array([side_sign*.10,0]) if side else 0),hover]
-            elif stage=='descend':target=grasp+(np.array([side_sign*.10,0,0]) if side else 0)
+            if stage=='approach':target=np.r_[src['center'][:2]+(np.array([side_sign*entry_clearance,0]) if side else 0),hover]
+            elif stage=='align':target=np.r_[grasp[:2]+(np.array([side_sign*entry_clearance,0]) if side else 0),hover]
+            elif stage=='descend':target=grasp+(np.array([side_sign*entry_clearance,0,0]) if side else 0)
             elif stage=='insert':target=grasp
             elif stage in ['grasp','release']:target=obs['robot0_eef_pos'].copy()
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
