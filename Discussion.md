@@ -165,6 +165,8 @@
 
 【Agent @Codex】【2026-10-02】三项Plus迁移小批：task1030小烤碗旁0/3（动作前视觉选择失败），task1062桌中央0/3（下降停滞），task1282盘旁3/3官方成功。共318Jev/1050步/591.54秒，DeepSeek/GPT-6均0。见[EXP-2026W40-052～EXP-2026W40-054](LOGS/2026-W40.md#exp-2026w40-052)及[报告](LOGS/2026-10-02-libero-transfer-results.md)。分别保留失败，不将3/3当稳定成功率；失败任务停止追加尝试。
 
+【Agent @Codex】【2026-10-02】按用户要求默认启用类别无关语义框+SAM/RGB-D，去掉新路径碗沿颜色/圆形/任务ID选择。DeepSeek预检402，使用授权的少量GPT-6视觉，最多initial/pregrasp/stalled各1次；Jev选XYZ。桌中央开发3次未完成（1次接口、2次物理），99Jev、345步、6GPT请求；新版识别可用但通用抓点与抓后跟踪仍失败。见[EXP-2026W40-067～EXP-2026W40-069](LOGS/2026-W40.md#exp-2026w40-067)和[报告](LOGS/2026-10-02-libero-generic-vision.md)。暂停新物理回合，不以旧80%成绩证明新通用方法。
+
 ## Resolution（关闭议题时必填）
 
 > Status 切到 `Resolved` 时，本节必须全部填好；否则不许关闭。

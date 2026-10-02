@@ -1,5 +1,7 @@
 # LIBERO-Plus Jev 开发抓放
 
+**2026-10-02更新：入口默认启用通用语义视觉，不再调用下述历史碗专用前处理。新路径与失败开发结果见[通用视觉报告](../LOGS/2026-10-02-libero-generic-vision.md)。历史成绩必须显式使用`--legacy-vision`复现，不能移作通用版本成绩。**
+
 入口：[scripts/libero_jev_rollout.py](scripts/libero_jev_rollout.py)。运行于 company-server-2。
 
 选定 `libero_spatial` API 0-based task_id=988，classification ID=989，Language Instructions / difficulty=1。
@@ -25,7 +27,7 @@
 
 ```bash
 cd /root/yekangjie/project/jev_rsi
-/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/libero_jev_rollout.py --task-id 988 --seed 0 --output code/runs/NEW-libero-jev
+/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/libero_jev_rollout.py --legacy-vision --task-id 988 --seed 0 --output code/runs/NEW-libero-jev
 ```
 
 脚本在导入仿真前设置专用LIBERO_CONFIG_PATH、EGL GPU0、项目缓存路径。运行前检查GPU0是否有其它作业。`--capture-only`不调用模型。
