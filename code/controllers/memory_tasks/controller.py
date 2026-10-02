@@ -109,7 +109,7 @@ class Controller(Base):
             if row is None or not row['observed'] or row['uncertainty_m']>.012:
                 remembered=copy.deepcopy(self.fixture_map[oid]); remembered.update(observed=False,
                     fixture_map=True,source='initial_observed_stationary_button_reference_NOT_current',
-                    age_steps=0,uncertainty_m=.008)
+                    age_steps=max(0,self.step_index-remembered['measurement_index']),uncertainty_m=.008)
                 self.debug.setdefault('fixture_references',[]).append(dict(id=oid,initial_native_step=remembered['native_step'],current_native_step=self.last_native,observed_now=False))
                 return remembered
         return super()._get(oid,fresh=fresh)
