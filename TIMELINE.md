@@ -49,6 +49,7 @@ graph LR
     T_2026W40_016["⛔ libero-generic-vision<br/>通用语义框/SAM替代类别规则，3尝试未完…"]:::blocker
     T_2026W40_017["⛔ jev-control-formulation<br/>四任务经验开发各连续3次失败，正式off1…"]:::blocker
     T_2026W40_018["📊 libero-generic-vision<br/>通用语义框/SAM/RGB-D/Jev首次…"]:::experiment
+    T_2026W40_019["⛔ jev-control-formulation<br/>单任务新增5次预算耗尽：按钮0/5；完整程…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -70,6 +71,7 @@ graph LR
   T_2026W40_012 --> T_2026W40_014
   T_2026W40_013 --> T_2026W40_017
   T_2026W40_016 --> T_2026W40_018
+  T_2026W40_017 --> T_2026W40_019
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
 ```
@@ -110,6 +112,7 @@ graph LR
 | `T-2026W40-016` | 2026-10-02 | blocker | libero-generic-vision | 通用语义框/SAM替代类别规则，3尝试未完成：识别通过但抓取/抓后跟踪未通过；暂停新物理回合 | `EXP-2026W40-069` | - |
 | `T-2026W40-017` | 2026-10-02 | blocker | jev-control-formulation | 四任务经验开发各连续3次失败，正式off10/on10前提未满足；停止而非填充失败评测 | `EXP-2026W40-066` | - |
 | `T-2026W40-018` | 2026-10-02 | experiment | libero-generic-vision | 通用语义框/SAM/RGB-D/Jev首次完整成功：桌中央69Jev+2GPT视觉；同版另一关系任务下降失败，有限可行性 | `EXP-2026W40-073` | - |
+| `T-2026W40-019` | 2026-10-02 | blocker | jev-control-formulation | 单任务新增5次预算耗尽：按钮0/5；完整程序序列不等于原生成功，工作区选臂候选未物理验证 | `EXP-2026W40-077` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
