@@ -196,11 +196,16 @@ class VisualEvidence:
                     mask &= np.linalg.norm(chroma-ref,axis=-1)<.14
                 else:
                     mask &= image.mean(-1)>.4*proto.mean()
+        before_robot=int(mask.sum())
+        if hasattr(self,'robot_feedback'):
+            from self_mask import robot_pixels
+            mask &= ~robot_pixels(cloud,self.robot_feedback)
+        robot_removed=before_robot-int(mask.sum())
         total=int(mask.sum())
         diagnostics=dict(camera=name,label=row['label'],category=row['category'],
                          appearance=row['appearance'],text=row['text'],
                          image_center_uv01=np.mean(row['polygon'],axis=0).tolist(),
-                         polygon_samples=total,
+                         polygon_samples=total,robot_pixels_removed=robot_removed,
                          method='organized_8_neighbor_metric_discontinuity_components')
         def reject(reason):
             self.surface_reobserve=True
@@ -361,6 +366,7 @@ class VisualEvidence:
 
     def update(self,observation,perceive,force=False):
         self.call_index+=1; self.last_native=int(observation['native_step']); self.events=[]
+        self.robot_feedback=observation['robot']
         available=observation['cameras']
         if not available: raise EvidenceError('no cameras')
         # One view for the entire measurement path, including forced semantic refresh.
