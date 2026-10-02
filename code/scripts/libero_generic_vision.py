@@ -93,6 +93,7 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
             obs,_,_,_=env.step(np.asarray(action,float));ticks+=1
     def move(target,stage,grip):
         stall=0
+        response=np.ones(3);trust=1.0
         rec.event(dict(kind='stage',stage=stage,target=target.tolist()))
         for i in range(40):
             p=obs['robot0_eef_pos'].copy();err=target-p
@@ -102,10 +103,24 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
                        error_m=err.tolist(),frame='world metres',gripper=grip)
             d=model.choose(state,dict(stage=stage,iteration=i,environment='libero_plus_generic'))
             if d is None:raise RuntimeError('Jev budget')
-            delta=np.asarray(d['signs'])*np.minimum(.02,np.abs(err)*.5)
+            # Sign-preserving empirical response compensation, reset per stage.
+            delta=np.asarray(d['signs'])*np.minimum(.02,trust*.75*np.abs(err)/response)
             step(np.r_[delta/.05,0,0,0,grip],3)
             after=obs['robot0_eef_pos'].copy()
-            rec.branch(dict(stage=stage,decision_id=d['decision_id'],before=p,after=after,delta=delta,native_steps=ticks))
+            residual=target-after
+            progress=float(np.linalg.norm(err)-np.linalg.norm(residual))
+            command_response=response.copy();command_trust=trust
+            for axis in range(3):
+                if abs(delta[axis])>.001:
+                    observed=(after[axis]-p[axis])/delta[axis]
+                    if 0<observed<2:
+                        response[axis]=np.clip(.75*response[axis]+.25*observed,.5,1.5)
+            if progress<-.002:trust=max(.25,trust*.5)
+            elif progress>.002:trust=min(1.,trust*1.1)
+            rec.branch(dict(stage=stage,decision_id=d['decision_id'],before=p,after=after,delta=delta,native_steps=ticks,
+                command_response_gain=command_response,command_trust=command_trust,
+                next_response_gain=response.copy(),next_trust=trust,progress_m=progress,
+                amplitude_policy='online_positive_response_compensation_v1'))
             snapshot(stage)
             stall=stall+1 if np.linalg.norm(after-p)<.0008 and np.linalg.norm(err)>.015 else 0
             if stall>=3:raise RuntimeError('Physical stall: '+stage)
