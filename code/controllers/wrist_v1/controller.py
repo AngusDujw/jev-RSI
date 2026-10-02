@@ -84,7 +84,9 @@ class Controller(Base):
         self.vision=MultiView(settings)
     def step(self,observation,ask_jev,perceive):
         self.vision.stage=self.stage
-        if self.plan: self.vision.active_arm=self.plan['arms'][0]
+        if self.plan:
+            self.vision.active_arm=self.plan['arms'][0]
+            self.plan.setdefault('allow_grasp_retry', True)
         return super().step(observation,ask_jev,perceive)
 
     def _targets(self):
@@ -94,6 +96,7 @@ class Controller(Base):
             # changing partial-view top quantile. Current views verify visibility.
             anchor=np.asarray(self.plan['initial_grasp']).copy()
             anchor[2]+=.004
+            if self.plan.get('grasp_retry_used'): anchor[2]-=.008
             arm=self.plan['arms'][0]
             targets={arm:anchor+np.array([0,0,.055 if self.stage=='approach' else 0])}
             self.debug['grasp_reference']=dict(source='initial visual grasp landmark; current multiview visibility required',

@@ -223,6 +223,14 @@ class Controller:
         if len(scored)==1 or scored[0][0]>scored[1][0]: return scored[0][2]
         if allow_order:
             return sorted(rows,key=lambda r:(-np.linalg.norm(r['high'][:2]-r['low'][:2]),r['id']))[0]
+        # When the instruction exactly names one category/appearance but several
+        # identical instances remain, choose the reachable instance and record it.
+        if scored[0][0] == scored[-1][0] and scored[0][0] > 0 and self.task == 'general_pickup':
+            chosen=self._nearest_arm(scored[0][2]['top'])
+            selected=min((r for _,_,r in scored),key=lambda r:np.linalg.norm(self.robot[chosen]['grasp']-r['top']))
+            self.history.append(dict(event='reachable_instance_tiebreak',arm=chosen,
+                candidates=[r['id'] for _,_,r in scored],selected=selected['id'],rule='same visual noun; nearest active arm'))
+            return selected
         raise EvidenceError('instruction does not uniquely identify visible candidates')
 
     def _read_robot(self,obs):
@@ -744,6 +752,11 @@ class Controller:
                             self.completed.append(self.plan['source']); self._transition('observed_pickup_complete',evidence)
                             return self._result(stop=True,reason='visual lift verified twice; native outcome is evaluator-only',ticks=1)
                         self._transition('transport',evidence); continue
+                    if self.task=='general_pickup' and self.plan.get('allow_grasp_retry') and not self.plan.get('grasp_retry_used'):
+                        self.plan['grasp_retry_used']=True
+                        self.plan['grasp_retry_reason']='no visible object displacement after first lift; recontact 8mm lower'
+                        self._transition('contact',dict(reason=self.plan['grasp_retry_reason'],evidence=evidence))
+                        continue
                     if self.stage_age>=4: return self._result(stop=True,reason='grasp not verified from after-action visual displacement',ticks=1)
                     self.recovery_count=0; return self._fixed(0.,'hold closed for independent after-lift visual evidence',ticks=3)
                 if self.stage=='release':
