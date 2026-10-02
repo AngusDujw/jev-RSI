@@ -28,7 +28,7 @@ class DecisionModel(Jev):
         questions={a:dict(type='choice',instructions=f'Select {a.upper()} direction toward current phase goal using observed error. Hold within tolerance. During gripper-only phases grasp/release always hold all XYZ.',criteria=dict(negative='Decrease coordinate',hold='No displacement',positive='Increase coordinate')) for a in 'xyz'}
         if state.get('rotation_control'):
             for a in ['rx','ry','rz']:
-                questions[a]=dict(type='choice',instructions='Choose world axis-angle rotation direction to reduce the supplied rotation_error_rad for this axis. hold when absolute error <0.03 radians. This is rotation, not translation.',criteria=dict(negative='Negative world-axis rotation',hold='No rotation',positive='Positive world-axis rotation'))
+                questions[a]=dict(type='choice',instructions=f'For {a} read required_rotation_world_rad[{a}]. This is target relative to current (NOT current minus target). Positive value means choose positive rotation; negative value means negative rotation. hold if magnitude below 0.03 radians. Do NOT negate the supplied required rotation. Only this axis, not other axes.',criteria=dict(negative='Negative world-axis rotation',hold='No rotation',positive='Positive world-axis rotation'))
         questions['gripper']=dict(type='choice',instructions='You control the gripper. Open during approach/align/descend; close during grasp/lift/carry/lower; open during release/retreat. keep preserves last motor command. Choose based on current phase and feedback, not the next phase.',criteria=dict(open='Command open',close='Command close',keep='Keep prior commanded gripper state'))
         questions['transition']=dict(type='choice',instructions='You own the phase switch. Use the phase contract and measured feedback. Continue while target not reached or required gripper ticks incomplete. Advance only when the current contract is met. For stalled motion or missing visual holding evidence reobserve; if recovery budget unavailable stop. This choice is applied AFTER current actions, and does not declare task success.',criteria=dict(continue_phase='Remain in this phase and execute selected motion/gripper',advance='Finish current phase and enter next predefined phase',reobserve='Remain, refresh permitted visual measurement once if budget allows',stop='Terminate incomplete attempt'))
         payload=dict(model=self.api.cfg['model'],state=state,questions=questions)
@@ -57,6 +57,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     phases=list(PHASES)
     if side:phases.insert(phases.index('grasp'),'insert')
     notes=dict(NOTES,insert='Insert horizontally at the observed grasp height with gripper open; advance when target reached. Do not close before arrival.')
+    initial_source_extent=None
     orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
     ticks=0;phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
@@ -79,7 +80,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         extent=src['high']-src['low'];p=src['center'].copy();width=float(abs(axis)@extent[:2])
         if width>.065:p[:2]+=(1 if (start_tcp[:2]-p[:2])@axis>0 else -1)*.9*width/2*axis
         p[2]=src['low'][2]+rec.cfg.get('grasp_fraction',.4)*extent[2]
-        if rec.cfg.get('geometry_profile')=='observed_surfaces' and extent[2]<.025 and not side:
+        if rec.cfg.get('geometry_profile')=='observed_surfaces' and extent[2]<.025 and (initial_source_extent is None or initial_source_extent[2]<.025) and not side:
             p[2]=src['high'][2]+.023  # empirical own gripper low-object clearance; visible estimate only
         if side:p[2]=src['high'][2]+.004
         dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=p,axis=axis,width=width,source='visible geometry + own gripper span'))
@@ -92,17 +93,22 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         expected=source_grasp+(obs['robot0_eef_pos']-tcp_grasp)
         cp=v['T'][:3,:3].T@(expected-v['T'][:3,3])
         try:
+            if rec.cfg.get('lift_check') and 'lift_check' not in vision.reasons and vision.calls<3:
+                ss=vision.recognize(vv,task.language,'lift_check');o=ss['source'];cam=o['camera'];v=vv[cam]
+                h=vision.measure(v,o['bbox'],o['label'],'semantic-held-validation')
+            else:
+                h=None
             if cp[2]<=.02:raise RuntimeError('projected object behind camera')
             uv=(v['K']@cp)[:2]/cp[2];size=np.clip(max(src['high']-src['low'])*v['K'][0,0]/cp[2],30,250)
             b=np.r_[uv-size*.65,uv+size*.65].clip(0,v['rgb'].shape[0]-1).tolist()
-            h=vision.measure(v,b,sem['source']['label'],'held-validation')
+            if h is None:h=vision.measure(v,b,sem['source']['label'],'held-validation')
             valid=bool(h['low'][2]-source_grasp[2]>.015 and h['high'][2]-h['low'][2]<max(.06,1.8*(src['high'][2]-src['low'][2])) and np.linalg.norm(h['center']-expected)<.06)
             holding=dict(valid=valid,source='RGB-D co-motion proxy, not ground truth',measured=h,expected=expected,observed_tick=ticks)
             if valid:offset=h['center']-obs['robot0_eef_pos']
         except Exception as e:holding=dict(valid=False,reason=str(e),observed_tick=ticks)
         dump(rec.folder/f'holding-{ticks:04d}.json',holding)
     try:
-        sem,src,dst=locate('initial');grasp=grasp_target();hover=max(src['high'][2],dst['high'][2])+.14
+        sem,src,dst=locate('initial');initial_source_extent=src['high']-src['low'];grasp=grasp_target();hover=max(src['high'][2],dst['high'][2])+.14
         while phase<len(phases):
             stage=phases[phase];rec.check_budget()
             if ticks>=550 or stage_decisions>=45:raise RuntimeError('Stage/native budget: '+stage)
@@ -132,7 +138,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 state['measurement_status']=dict(target_arrival=bool(np.max(abs(error))<.008),holding_check=check_status,
                     gripper_actuation_complete=bool(gripper_ticks>=16),reobserve_available=state['recovery_remaining'],
                     observation_age_native_steps=ticks-(holding.get('observed_tick') or ticks))
-                state['decision_protocol']='At lift while still far from lift target, holding check not_checked_yet is normal: keep closed and move, not a failure. Reobserve only after at least 3 stalled actions or an actual failed visual check; do not reobserve because a future check is pending. Never request reobserve when unavailable. At grasp/release continue chosen close/open until measured ticks >=16. Advance is your choice when the current phase contract is met.'
+                state['decision_protocol']='At lift while still far from lift target, holding check not_checked_yet is normal: keep closed and move, not a failure. Reobserve only after at least 3 stalled actions or an actual failed visual check; do not reobserve because a future check is pending. Never request reobserve when unavailable. At grasp/release continue chosen close/open until the phase contract duration and aperture requirements are met. Advance is your choice when the current phase contract is met.'
                 state.update(error_mm=np.round(error*1000,2).tolist(),axis_relations={a:('within tolerance' if abs(e)<.004 else 'target higher coordinate' if e>0 else 'target lower coordinate') for a,e in zip('xyz',error)},
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
                     recent_actions=history[-3:],gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),
@@ -140,7 +146,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             rotation_error=np.zeros(3)
             if side:
                 rotation_error=Rotation.from_matrix(orientation_goal@Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
-                state.update(rotation_control=True,rotation_error_rad=dict(zip(['rx','ry','rz'],rotation_error.tolist())),rotation_tolerance_rad=.03,
+                state.update(rotation_control=True,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rotation_error.tolist())),rotation_relations={a:('hold' if abs(e)<.03 else 'target needs positive rotation' if e>0 else 'target needs negative rotation') for a,e in zip(['rx','ry','rz'],rotation_error)},rotation_tolerance_rad=.03,
                     orientation_arrived=bool(np.max(abs(rotation_error))<.03))
                 state['phase_contract']+=' Before advancing any positioning phase, also require orientation_arrived. Rotation is commanded by your rx/ry/rz choices.'
             state=json.loads(json.dumps(state,default=serial,allow_nan=False))
