@@ -113,6 +113,13 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 geometry_source='RGB-D visible masks, not true object poses',source_label=sem['source']['label'],destination_label=sem['destination']['label'],
                 recovery_remaining=not reobserved and vision.calls<3,last_progress_m=last_progress,stalls=stalls)
             if rec.cfg['schema']=='feedback':
+                observed=holding.get('observed_tick') is not None
+                check_status=('passed' if holding.get('valid') else 'failed') if observed else 'not_checked_yet'
+                if not observed:state['holding_evidence']=dict(valid=None,status=check_status,reason='Co-motion test becomes available on arrival at lift height, not before')
+                state['measurement_status']=dict(target_arrival=bool(np.max(abs(error))<.008),holding_check=check_status,
+                    gripper_actuation_complete=bool(gripper_ticks>=16),reobserve_available=state['recovery_remaining'],
+                    observation_age_native_steps=ticks-(holding.get('observed_tick') or ticks))
+                state['decision_protocol']='At lift while still far from lift target, holding check not_checked_yet is normal: keep closed and move, not a failure. Reobserve only after at least 3 stalled actions or an actual failed visual check; do not reobserve because a future check is pending. Never request reobserve when unavailable. At grasp/release continue chosen close/open until measured ticks >=16. Advance is your choice when the current phase contract is met.'
                 state.update(error_mm=np.round(error*1000,2).tolist(),axis_relations={a:('within tolerance' if abs(e)<.004 else 'target higher coordinate' if e>0 else 'target lower coordinate') for a,e in zip('xyz',error)},
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
                     recent_actions=history[-3:],gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),
