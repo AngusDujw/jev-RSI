@@ -26,6 +26,9 @@ class DecisionModel(Jev):
         if i>=self.rec.cfg['max_jev_decisions']:raise RuntimeError('Jev decision budget')
         folder=self.rec.folder/f'decision-{i:04d}';folder.mkdir()
         questions={a:dict(type='choice',instructions=f'Select {a.upper()} direction toward current phase goal using observed error. Hold within tolerance. During gripper-only phases grasp/release always hold all XYZ.',criteria=dict(negative='Decrease coordinate',hold='No displacement',positive='Increase coordinate')) for a in 'xyz'}
+        if state.get('rotation_control'):
+            for a in ['rx','ry','rz']:
+                questions[a]=dict(type='choice',instructions='Choose world axis-angle rotation direction to reduce the supplied rotation_error_rad for this axis. hold when absolute error <0.03 radians. This is rotation, not translation.',criteria=dict(negative='Negative world-axis rotation',hold='No rotation',positive='Positive world-axis rotation'))
         questions['gripper']=dict(type='choice',instructions='You control the gripper. Open during approach/align/descend; close during grasp/lift/carry/lower; open during release/retreat. keep preserves last motor command. Choose based on current phase and feedback, not the next phase.',criteria=dict(open='Command open',close='Command close',keep='Keep prior commanded gripper state'))
         questions['transition']=dict(type='choice',instructions='You own the phase switch. Use the phase contract and measured feedback. Continue while target not reached or required gripper ticks incomplete. Advance only when the current contract is met. For stalled motion or missing visual holding evidence reobserve; if recovery budget unavailable stop. This choice is applied AFTER current actions, and does not declare task success.',criteria=dict(continue_phase='Remain in this phase and execute selected motion/gripper',advance='Finish current phase and enter next predefined phase',reobserve='Remain, refresh permitted visual measurement once if budget allows',stop='Terminate incomplete attempt'))
         payload=dict(model=self.api.cfg['model'],state=state,questions=questions)
@@ -39,7 +42,7 @@ class DecisionModel(Jev):
                 a=answers[name];p=a['probabilities']
                 if a['choice'] not in q['criteria'] or set(p)!=set(q['criteria']) or not all(np.isfinite(x) and 0<=x<=1 for x in [a['confidence'],*p.values()]) or abs(sum(p.values())-1)>.02:raise ValueError('Invalid Jev decision')
             signs=[dict(negative=-1,hold=0,positive=1)[answers[a]['choice']] for a in 'xyz']
-            row.update(answers=answers,signs=signs,model=raw.get('model'),gripper=answers['gripper']['choice'],transition=answers['transition']['choice'],metrics=direction_metrics(state['position_m'],state['target_position_m'],signs,state['hold_tolerance_m']))
+            row.update(rotation_signs=[dict(negative=-1,hold=0,positive=1)[answers[a]['choice']] for a in ['rx','ry','rz']] if state.get('rotation_control') else [0,0,0],answers=answers,signs=signs,model=raw.get('model'),gripper=answers['gripper']['choice'],transition=answers['transition']['choice'],metrics=direction_metrics(state['position_m'],state['target_position_m'],signs,state['hold_tolerance_m']))
         except Exception as exc:
             row['error']=str(exc).replace(self.api.credential,'[redacted]');self.rec.errors.append(dict(type=type(exc).__name__));raise
         finally:
@@ -49,6 +52,12 @@ class DecisionModel(Jev):
 
 def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     vision=GenericVision(rec);model=DecisionModel(rec)
+    from scipy.spatial.transform import Rotation
+    side=rec.cfg.get('approach_mode')=='side'
+    phases=list(PHASES)
+    if side:phases.insert(phases.index('grasp'),'insert')
+    notes=dict(NOTES,insert='Insert horizontally at the observed grasp height with gripper open; advance when target reached. Do not close before arrival.')
+    orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
     ticks=0;phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
     src=dst=sem=None;grasp=None;hover=None;offset=None;place=None;tcp_grasp=None;source_grasp=None
@@ -70,8 +79,9 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         extent=src['high']-src['low'];p=src['center'].copy();width=float(abs(axis)@extent[:2])
         if width>.065:p[:2]+=(1 if (start_tcp[:2]-p[:2])@axis>0 else -1)*.9*width/2*axis
         p[2]=src['low'][2]+rec.cfg.get('grasp_fraction',.4)*extent[2]
-        if rec.cfg.get('geometry_profile')=='observed_surfaces' and extent[2]<.025:
+        if rec.cfg.get('geometry_profile')=='observed_surfaces' and extent[2]<.025 and not side:
             p[2]=src['high'][2]+.023  # empirical own gripper low-object clearance; visible estimate only
+        if side:p[2]=src['high'][2]+.004
         dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=p,axis=axis,width=width,source='visible geometry + own gripper span'))
         return p
     def measure_held():
@@ -93,12 +103,13 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         dump(rec.folder/f'holding-{ticks:04d}.json',holding)
     try:
         sem,src,dst=locate('initial');grasp=grasp_target();hover=max(src['high'][2],dst['high'][2])+.14
-        while phase<len(PHASES):
-            stage=PHASES[phase];rec.check_budget()
+        while phase<len(phases):
+            stage=phases[phase];rec.check_budget()
             if ticks>=550 or stage_decisions>=45:raise RuntimeError('Stage/native budget: '+stage)
-            if stage=='approach':target=np.r_[src['center'][:2],hover]
-            elif stage=='align':target=np.r_[grasp[:2],hover]
-            elif stage=='descend':target=grasp
+            if stage=='approach':target=np.r_[src['center'][:2]+(np.array([.13,0]) if side else 0),hover]
+            elif stage=='align':target=np.r_[grasp[:2]+(np.array([.13,0]) if side else 0),hover]
+            elif stage=='descend':target=grasp+(np.array([.13,0,0]) if side else 0)
+            elif stage=='insert':target=grasp
             elif stage in ['grasp','release']:target=obs['robot0_eef_pos'].copy()
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
             elif stage in ['carry','retreat']:target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
@@ -107,7 +118,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 target=np.r_[dst['center'][:2]-offset[:2],dst['high'][2]+height+.012-offset[2]]
             position=obs['robot0_eef_pos'].copy();error=target-position
             if stage in ['lift','carry'] and np.max(abs(error))<.008:measure_held()
-            state=dict(task=task.language,stage=stage,next_phase=PHASES[phase+1] if phase+1<len(PHASES) else 'finish_attempt',phase_contract=NOTES[stage],
+            state=dict(task=task.language,stage=stage,next_phase=phases[phase+1] if phase+1<len(phases) else 'finish_attempt',phase_contract=notes[stage],
                 position_m=position.tolist(),target_position_m=target.tolist(),error_m=error.tolist(),hold_tolerance_m=.004,arrival_tolerance_m=.008,
                 gripper_qpos_m=obs['robot0_gripper_qpos'].tolist(),last_gripper_command='open' if gripper==-1 else 'close',
                 current_phase_gripper_ticks=gripper_ticks,gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),phase_native_ticks=stage_ticks,phase_decisions=stage_decisions,
@@ -126,6 +137,12 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
                     recent_actions=history[-3:],gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),
                     feedback_note='valid=False holding is NOT success; gripper tick count is measured execution, not a recommended answer')
+            rotation_error=np.zeros(3)
+            if side:
+                rotation_error=Rotation.from_matrix(orientation_goal@Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
+                state.update(rotation_control=True,rotation_error_rad=dict(zip(['rx','ry','rz'],rotation_error.tolist())),rotation_tolerance_rad=.03,
+                    orientation_arrived=bool(np.max(abs(rotation_error))<.03))
+                state['phase_contract']+=' Before advancing any positioning phase, also require orientation_arrived. Rotation is commanded by your rx/ry/rz choices.'
             state=json.loads(json.dumps(state,default=serial,allow_nan=False))
             d=model.decide(state);stage_decisions+=1
             if d['transition']=='stop':raise RuntimeError('Jev elected stop')
@@ -137,10 +154,11 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             before=position.copy()
             for _ in range(3):
                 if ticks>=550:raise RuntimeError('native budget')
-                obs,_,_,_=env.step(np.r_[delta/.05,0,0,0,gripper]);ticks+=1;stage_ticks+=1;gripper_ticks+=1
+                rotation=np.array(d['rotation_signs'])*np.minimum(.12,.5*abs(rotation_error))
+                obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;gripper_ticks+=1
             after=obs['robot0_eef_pos'].copy();last_progress=float(np.linalg.norm(error)-np.linalg.norm(target-after));stalls=stalls+1 if np.linalg.norm(after-before)<.0008 and np.linalg.norm(error)>.015 else 0
             event=dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,
-                       selected_gripper=selected,executed_gripper=gripper,selected_transition=d['transition'],progress_m=last_progress)
+                       selected_gripper=selected,executed_gripper=gripper,rotation_signs=d['rotation_signs'],rotation_error_rad=rotation_error,selected_transition=d['transition'],progress_m=last_progress)
             rec.branch(event);history.append(dict(gripper=selected,transition=d['transition'],progress_mm=round(last_progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()));save(stage)
             if d['transition']=='reobserve':
                 if reobserved or vision.calls>=3:raise RuntimeError('Jev requested exhausted reobserve budget')
@@ -158,5 +176,5 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     finally:
         # Evaluation only; hidden success never sent to decision maker.
         success=bool(env.check_success())
-        dump(rec.folder/'result.json',dict(success=success,program_finished=finished,error=error_message,native_steps=ticks,jev_calls=len(rec.decisions),semantic_calls=vision.calls,deepseek_calls=0,schema=rec.cfg['schema'],ownership='Jev XYZ + gripper + transitions',stage=PHASES[phase] if phase<len(PHASES) else 'finished'))
+        dump(rec.folder/'result.json',dict(success=success,program_finished=finished,error=error_message,native_steps=ticks,jev_calls=len(rec.decisions),semantic_calls=vision.calls,deepseek_calls=0,schema=rec.cfg['schema'],ownership='Jev XYZ + gripper + transitions',stage=phases[phase] if phase<len(PHASES) else 'finished'))
         rec.finish('success' if success else 'failed');model.close();vision.close()
