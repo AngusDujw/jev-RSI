@@ -21,7 +21,7 @@ manifest=dict(task_id=988,init_indices=list(range(1,21)),seed=0,policy_changes=F
 rows=[]
 for i in manifest['init_indices']:
     output=root/f'init-{i:02d}'
-    cmd=[sys.executable,'-B',str(frozen/files[0]),'--task-id','988','--seed','0','--init-index',str(i),'--output',str(output)]
+    cmd=[sys.executable,'-B',str(frozen/files[0]),'--legacy-vision','--task-id','988','--seed','0','--init-index',str(i),'--output',str(output)]
     start=time.monotonic()
     with (root/f'init-{i:02d}.log').open('w') as log:
         try: returncode=subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT,timeout=960).returncode

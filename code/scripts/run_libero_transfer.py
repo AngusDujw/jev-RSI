@@ -12,7 +12,7 @@ manifest=dict(cases=cases,initial_states=[1,2,3],seed=0,commit=subprocess.check_
 for task,relation in cases:
  for init in [1,2,3]:
   out=root/f'task-{task}-init-{init}';start=time.monotonic()
-  command=[sys.executable,'-B',str(frozen/'libero_jev_rollout.py'),'--task-id',str(task),'--relation',relation,'--init-index',str(init),'--output',str(out)]
+  command=[sys.executable,'-B',str(frozen/'libero_jev_rollout.py'),'--legacy-vision','--task-id',str(task),'--relation',relation,'--init-index',str(init),'--output',str(out)]
   with (root/f'task-{task}-init-{init}.log').open('w') as log:
    try:code=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=960).returncode
    except subprocess.TimeoutExpired:code=124
