@@ -163,3 +163,4 @@
 - 【User】【2026-10-02 15:07】[intent] 授权测试其他GPT高成功率任务组对应Plus任务；选Spatial三项不同关系任务1030/1062/1282，先核对感知，再各3初态，不把组得分当逐任务得分。
 - 【User】【2026-10-02 15:10】[decision] 用户要求参考RoboDawn/Harness VLA经验总结与加载，重组为尽可能通用逻辑＋Markdown经验；冻结后测4次。本轮仅general_pickup布局0–3，每个一次，不中途调参。
 - 【Agent】【2026-10-02 15:10】[op] 新建隔离memory_pickup候选：通用观测/验证经验与拾取配方Markdown分层，按阶段检索，保存哈希快照、加载轨迹、事实笔记；撤销最近同名目标选择与lift特殊放宽。8mm重抓只保留为有证据但未泛化的任务经验。
+- 【Agent】【2026-10-02 15:18】[op] 核对RoboDawn memory.py三类记忆和Harness VLA官方Task/Global Memory及bootstrapping/evaluation分离；文档明示本实现借鉴边界。新增离线事实总结工具，候选status=candidate不自动激活；四回合评测运行版本与active经验冻结未改。
