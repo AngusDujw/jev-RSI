@@ -57,7 +57,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     phases=list(PHASES)
     if side:phases.insert(phases.index('grasp'),'insert')
     notes=dict(NOTES,insert='Insert horizontally at the observed grasp height with gripper open; advance when target reached. Do not close before arrival.')
-    initial_source_extent=None
+    initial_source_extent=None;side_sign=-1
     orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
     ticks=0;phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
@@ -109,12 +109,15 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         dump(rec.folder/f'holding-{ticks:04d}.json',holding)
     try:
         sem,src,dst=locate('initial');initial_source_extent=src['high']-src['low'];grasp=grasp_target();hover=max(src['high'][2],dst['high'][2])+.14
+        if side:
+            side_sign=1 if start_tcp[0]>src['center'][0] else -1
+            orientation_goal=(Rotation.from_rotvec([0,side_sign*np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix()
         while phase<len(phases):
             stage=phases[phase];rec.check_budget()
             if ticks>=550 or stage_decisions>=45:raise RuntimeError('Stage/native budget: '+stage)
-            if stage=='approach':target=np.r_[src['center'][:2]+(np.array([.13,0]) if side else 0),hover]
-            elif stage=='align':target=np.r_[grasp[:2]+(np.array([.13,0]) if side else 0),hover]
-            elif stage=='descend':target=grasp+(np.array([.13,0,0]) if side else 0)
+            if stage=='approach':target=np.r_[src['center'][:2]+(np.array([side_sign*.10,0]) if side else 0),hover]
+            elif stage=='align':target=np.r_[grasp[:2]+(np.array([side_sign*.10,0]) if side else 0),hover]
+            elif stage=='descend':target=grasp+(np.array([side_sign*.10,0,0]) if side else 0)
             elif stage=='insert':target=grasp
             elif stage in ['grasp','release']:target=obs['robot0_eef_pos'].copy()
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
