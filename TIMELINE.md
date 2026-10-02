@@ -42,6 +42,7 @@ graph LR
     T_2026W40_009["📊 jev-control-formulation<br/>腕部RGB-D恢复＋固定视觉抓取点：gen…"]:::experiment
     T_2026W40_010["⛔ libero-plus-jev<br/>LIBERO-Plus抓放开发0/3：抓起…"]:::blocker
     T_2026W40_011["📊 jev-control-formulation<br/>20次腕部开发收束：通用拾取2/4且两个布…"]:::experiment
+    T_2026W40_012["📊 libero-plus-jev<br/>腕部RGB-D碗沿拟圆补偿后首次原生成功1…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -58,6 +59,7 @@ graph LR
   T_2026W40_007 --> T_2026W40_008
   T_2026W40_008 --> T_2026W40_009
   T_2026W40_009 --> T_2026W40_011
+  T_2026W40_010 --> T_2026W40_012
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
 ```
@@ -91,6 +93,7 @@ graph LR
 | `T-2026W40-009` | 2026-10-02 | experiment | jev-control-formulation | 腕部RGB-D恢复＋固定视觉抓取点：general_pickup第3次原生成功，22Jev/126步，零运行时GPT-6/DeepSeek | `EXP-2026W40-027` | - |
 | `T-2026W40-010` | 2026-10-02 | blocker | libero-plus-jev | LIBERO-Plus抓放开发0/3：抓起已见，放置与抓后视觉未通过；离线过滤修正待新回合验证 | `EXP-2026W40-030` | - |
 | `T-2026W40-011` | 2026-10-02 | experiment | jev-control-formulation | 20次腕部开发收束：通用拾取2/4且两个布局成功，其他四任务各0/4；停止扩测，保留未验证修复 | `EXP-2026W40-044` | - |
+| `T-2026W40-012` | 2026-10-02 | experiment | libero-plus-jev | 腕部RGB-D碗沿拟圆补偿后首次原生成功1/1：77Jev、263步、98.73秒，单开发初态 | `EXP-2026W40-045` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
