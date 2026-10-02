@@ -839,5 +839,99 @@
       "robodojo",
       "--with-jev"
     ]
+  },
+  "other-retry-fold_clothes-10": {
+    "experiment_id": "EXP-2026W40-108",
+    "task": "fold_clothes",
+    "attempt": 10,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:phase budget exhausted without verified progress",
+    "run": "code/runs/other-retry-fold_clothes-10",
+    "commit": "4529843478a47f9b8e7f7d126bfe743c37bd3b9d",
+    "steps": 143,
+    "actions": 33,
+    "jev_calls": 23,
+    "vision_calls": 71,
+    "wall_seconds": 301.7683896161616,
+    "stages": [
+      "approach"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/fold_clothes.json",
+      "--output",
+      "code/runs/other-retry-fold_clothes-10",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-match_and_pick_from_conveyor-10": {
+    "experiment_id": "EXP-2026W40-109",
+    "task": "match_and_pick_from_conveyor",
+    "attempt": 10,
+    "success": true,
+    "native_success": true,
+    "reason": "native_episode_ended",
+    "run": "code/runs/other-retry-match_and_pick_from_conveyor-10",
+    "commit": "4529843478a47f9b8e7f7d126bfe743c37bd3b9d",
+    "steps": 479,
+    "actions": 64,
+    "jev_calls": 19,
+    "vision_calls": 94,
+    "wall_seconds": 570.0952579788864,
+    "stages": [
+      "conveyor_wait_departure",
+      "conveyor_wait_repeat",
+      "approach",
+      "contact",
+      "close",
+      "lift"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/conveyor-intercept.json",
+      "--output",
+      "code/runs/other-retry-match_and_pick_from_conveyor-10",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-stack_bowls-10": {
+    "experiment_id": "EXP-2026W40-110",
+    "task": "stack_bowls",
+    "attempt": 10,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: target uncertainty too large",
+    "run": "code/runs/other-retry-stack_bowls-10",
+    "commit": "4529843478a47f9b8e7f7d126bfe743c37bd3b9d",
+    "steps": 261,
+    "actions": 61,
+    "jev_calls": 42,
+    "vision_calls": 89,
+    "wall_seconds": 351.97091072797775,
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp",
+      "transport"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/stack_bowls.json",
+      "--output",
+      "code/runs/other-retry-stack_bowls-10",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
   }
 }

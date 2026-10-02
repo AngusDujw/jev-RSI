@@ -1,0 +1,142 @@
+{
+  "run": "code/runs/other-retry-match_and_pick_from_conveyor-10",
+  "provenance": {
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/conveyor-intercept.json",
+      "--output",
+      "code/runs/other-retry-match_and_pick_from_conveyor-10",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ],
+    "python": "/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python",
+    "commit": "4529843478a47f9b8e7f7d126bfe743c37bd3b9d",
+    "backend": "robodojo",
+    "with_jev": true
+  },
+  "controller": {
+    "files": {
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/base_controller.py": "9b1a69330030b3f0f4e9025af02ef40b41e2cdf40facc348d8382b892a432eb1",
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/controller.py": "57379763be05a117e40078e96e1574e34646de355fc1222cc63d1da8644b9fa4",
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/visual_evidence.py": "b26f432a12280e17a93eb30263b9efe88b9b694e88a8e0f89c9f1154cb99dfad",
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/FROZEN.md": "efa0b519bd4846e68873494611666399f19fc5ceeb65bd9492ce6e1c38a10d80",
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/self_mask.py": "99b3b386d104282ca37c467b03e402448c31c8e52480508c587d96af3309d053",
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/multiview.py": "16d295c013f9e53876c6c7f40c24c334df7dc79b7e35f34867dc53f96019101a",
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/task_controller.py": "3391435c971c073d73afa6b01d7e893069800a9a301c365b2b516513d3b40f11",
+      "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_intercept/experience.py": "70b4e29ea1959538568a7827c3b74499532ccfd371aecd2e8c9110b54828f5ab"
+    },
+    "settings": {
+      "gpu": 4,
+      "existing_root": "/root/yekangjie/project/robodojo-jev",
+      "schema_variant": "numeric",
+      "max_step_m": 0.04,
+      "position_tolerance_m": 0.005,
+      "seed": 0,
+      "run_dir": "/root/yekangjie/project/jev_rsi/code/runs/other-retry-match_and_pick_from_conveyor-10",
+      "experience_enabled": true
+    }
+  },
+  "experience": {
+    "enabled": true,
+    "task": "match_and_pick_from_conveyor",
+    "records": [
+      {
+        "id": "temporal-match",
+        "status": "active",
+        "tasks": [
+          "match_and_pick_from_conveyor"
+        ],
+        "stages": [
+          "select",
+          "conveyor_wait_first",
+          "conveyor_wait_departure",
+          "conveyor_wait_repeat",
+          "approach",
+          "contact",
+          "close",
+          "lift",
+          "verify_grasp"
+        ],
+        "rules": {
+          "appearance_match": true,
+          "wait_ticks": 10,
+          "orient_before_approach": true,
+          "approach_clearance_m": 0.085,
+          "contact_anchor_ttl": 5,
+          "grasp_depth_adjust_m": 0.0,
+          "close_ticks": 2,
+          "lift_clearance_m": 0.12
+        },
+        "evidence": [
+          "code/runs/wrist-match_and_pick_from_conveyor-attempt04",
+          "LOGS/wrist-campaign-results.md"
+        ],
+        "content": "# 传送带：首物体记忆、再现与时序预算\n```json\n{\"id\": \"temporal-match\", \"status\": \"active\", \"tasks\": [\"match_and_pick_from_conveyor\"], \"stages\": [\"select\", \"conveyor_wait_first\", \"conveyor_wait_departure\", \"conveyor_wait_repeat\", \"approach\", \"contact\", \"close\", \"lift\", \"verify_grasp\"], \"rules\": {\"appearance_match\": true, \"wait_ticks\": 10, \"orient_before_approach\": true, \"approach_clearance_m\": 0.085, \"contact_anchor_ttl\": 5, \"grasp_depth_adjust_m\": 0.0, \"close_ticks\": 2, \"lift_clearance_m\": 0.12}, \"evidence\": [\"code/runs/wrist-match_and_pick_from_conveyor-attempt04\", \"LOGS/wrist-campaign-results.md\"]}\n```\n首物体出现、离开、再次出现是三件事。通用object标签不足以提供唯一语义，需要颜色和可见尺寸联合核验；低分匹配宁可不抓。检测失败不等于物体已离开。保证整个原生时间预算内有新鲜视觉刷新，不能刷新耗尽后无观测地等待。\n\n本轮经验候选：先在当前位置完成姿态调整，再向物体上方移动，避免边下降边转动带动物体。接触阶段允许短期历史参考，但明确标记非新观测，抓后必须重新验证。不是成功保证。\n\n开发01错误地把同一物体的短暂检测丢失判为离开/再现。离开事件新增由最近可见速度外推越过观测带面边界的证据，外推明确标为非观测；等待期间在初始安全高度预置姿态，重复物进入当前机械臂附近才抓，避免边界外追赶。\n\n开发03发现最高点的横向位置在同一物体表面变化，被错误计入几何形变和测量噪声。改为分别记录形状变化与测量质量；保留中心位移/高度/组件一致性门。该修复两组共享，不是凭经验放宽成功条件。\n\n开发05已持续追踪目标，但移动目标上方仍要求5mm到位而耗尽接近阶段。接近允许物体可见短边35%（不超过20mm）的跟踪区，真正接触仍保留原精度；近各向同性物体不为不稳定主轴再次旋转。\n",
+        "sha256": "4c7dd0cf45d5717c12f8220cbf8cdb7882b1544ed5faca368f8abcfc80266410"
+      },
+      {
+        "id": "observation",
+        "status": "active",
+        "stages": [
+          "approach",
+          "contact",
+          "close",
+          "lift",
+          "verify_grasp"
+        ],
+        "kinds": [
+          "pick_lift"
+        ],
+        "evidence": [
+          "LOGS/wrist-campaign-results.md"
+        ],
+        "parameters": {},
+        "content": "# 遮挡与参考点\n```json\n{\"id\":\"observation\",\"status\":\"active\",\"stages\":[\"approach\",\"contact\",\"close\",\"lift\",\"verify_grasp\"],\"kinds\":[\"pick_lift\"],\"evidence\":[\"LOGS/wrist-campaign-results.md\"],\"parameters\":{}}\n```\n多视角看到的是物体不同表面，不可平均其中心或把视角变化当物体移动。保留当前观测与历史参考的来源、年龄、可见性。头部遮挡后检查腕部；关联有歧义就重新观察，不能仅凭距离选另一物体。相同标签不保证相同实例。\n",
+        "sha256": "91174460f677a7ba0ba9db85e1adf9280d7a3c23c0667d8da91293cc48c0fc45"
+      },
+      {
+        "id": "verification",
+        "status": "active",
+        "stages": [
+          "contact",
+          "close",
+          "lift",
+          "verify_grasp"
+        ],
+        "kinds": [
+          "pick_lift"
+        ],
+        "evidence": [
+          "LOGS/wrist-campaign-results.md"
+        ],
+        "parameters": {},
+        "content": "# 失败事实与验证\n```json\n{\"id\":\"verification\",\"status\":\"active\",\"stages\":[\"contact\",\"close\",\"lift\",\"verify_grasp\"],\"kinds\":[\"pick_lift\"],\"evidence\":[\"LOGS/wrist-campaign-results.md\"],\"parameters\":{}}\n```\n夹爪移动或闭合不代表抓住物体。必须比较物体与末端位移，禁止把控制器退出当成功。不确定、失去观测或缺少证据时应保持或停止。原生任务结果仅用于回合结束评估，不作在线方向输入。\n",
+        "sha256": "d1277b2189a7a498f184987dab1a0c1b3a775e7f31139d9827cbb47521a8eef8"
+      }
+    ]
+  },
+  "result": {
+    "status": "native_episode_ended",
+    "native": {
+      "episode_id": "bd995528c50e4520897c977e01ff5b4e",
+      "step_id": 479,
+      "success": true,
+      "terminated": true,
+      "truncated": false,
+      "video_frames": 480,
+      "control_dt": 0.04,
+      "reason": "native_episode_ended",
+      "evaluation_case": null
+    },
+    "jev_calls": 19,
+    "vision_calls": 94,
+    "deepseek_calls": 0,
+    "actions": 64,
+    "steps": 479,
+    "frames": 64,
+    "task": "match_and_pick_from_conveyor",
+    "schema": "numeric"
+  }
+}
