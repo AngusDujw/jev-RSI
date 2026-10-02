@@ -139,6 +139,7 @@ class Controller(Geometry):
             if self.stage=='contact' and self.task=='match_and_pick_from_conveyor':
                 row=self._get(self.plan['source'],fresh=True);a=self.plan['arms'][0]
                 evidence['current_contact_error_m']=self._grasp_point(row,a)-self.robot[a]['grasp']
+                evidence['current_contact_observed']=bool(row['observed']);evidence['current_contact_source']=row['source']
                 evidence['prediction_note']='Tracking waypoint may lead moving object; closure must use current contact error.'
             if self.stage=='press_retract':
                 next_stage='done' if self.press_index+1>=len(self.sequence) else 'select'
@@ -199,6 +200,12 @@ class Controller(Geometry):
         state['alignment_facts']={a:dict(error_mm=(1000*(p-self.robot[a]['grasp'])).tolist(),tolerance_mm=1000*self._deadzone(u),
             axes_outside_tracking_band=[axis for axis,e in zip(AXES,p-self.robot[a]['grasp']) if abs(e)>self._deadzone(u)],
             orientation_outside_tracking_band=angles[a]>.15) for a,p in targets.items()}
+        if self.task=='match_and_pick_from_conveyor' and self.stage=='contact' and targets and 'current_contact_error_m' in evidence:
+            a=next(iter(targets));e=np.asarray(evidence['current_contact_error_m'])
+            state['alignment_facts'][a]=dict(error_mm=(e*1000).tolist(),tolerance_mm=1000*self._deadzone(u),
+                axes_outside_tracking_band=[axis for axis,v in zip(AXES,e) if abs(v)>self._deadzone(u)],orientation_outside_tracking_band=angles[a]>.15)
+            state['alignment_reference']='current visible contact point' if evidence.get('current_contact_observed') else 'last visible contact reference, NOT a current observation'
+            state['alignment_reference']+='; geometry remains a PREDICTED tracking waypoint and is not the closure reference'
         state['fact_provenance']='Band comparisons are computed from the SAME disclosed measured/reference coordinates, not simulator truth or an instruction to advance.'
 
         if self.variant=='evidence':
@@ -351,7 +358,7 @@ class Controller(Geometry):
             phase_choice=answers.get('phase',{}).get('choice')
             if phase_choice=='stay':
                 action_questions={k:copy.deepcopy(v) for k,v in all_questions.items() if k!='phase'}
-                action_state={k:copy.deepcopy(state[k]) for k in ('task','instruction','stage','native_step','remaining_steps','active_arms','frame','stage_goal','robot','geometry','relations','alignment_facts','constraints','visibility','orientation_error_rad','recent_gripper_feedback','last_gripper_commands','feedback','phase_evidence','waypoint_reference','consecutive_contact_stalls') if k in state}
+                action_state={k:copy.deepcopy(state[k]) for k in ('task','instruction','stage','native_step','remaining_steps','active_arms','frame','stage_goal','robot','geometry','relations','alignment_facts','constraints','visibility','orientation_error_rad','recent_gripper_feedback','last_gripper_commands','feedback','phase_evidence','waypoint_reference','consecutive_contact_stalls','alignment_reference','velocity_prediction_model') if k in state}
                 action_state.update(decision_role='current_stage_action_only',phase_decision='Jev chose STAY; current objective is not confirmed complete',
                     interpretation='No future-stage action. Current contact stage can still be centimetres above the object: examine alignment_facts, not the stage name.')
                 for key,q in action_questions.items():
