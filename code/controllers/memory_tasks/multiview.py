@@ -40,6 +40,13 @@ class MultiView:
                 noun=(tokens(row['label']) & tokens(prev['label']))-{'the','a','object','small','green'}
                 distance=float(np.linalg.norm(row['center']-prev['center']))
                 if not noun or distance>.12: continue
+                if row['category']=='button':
+                    colors={'red','blue','green','yellow'}
+                    if (tokens(row['appearance'])&colors)!=(tokens(prev['appearance'])&colors):continue
+                    if distance>.035:continue
+                    if row['landmark_view']!=prev['landmark_view']:continue
+                ca=np.asarray(row['color']);cb=np.asarray(prev['color'])
+                if np.linalg.norm(ca/max(1,ca.sum())-cb/max(1,cb.sum()))>.22:continue
                 if (self.active_id is not None and oid!=self.active_id or prev['category']=='cloth') and row['views']!=['cam_high']: continue
                 # Preserve local identity when possible; reference changes are explicit.
                 score=row['uncertainty_m'] + .05*distance

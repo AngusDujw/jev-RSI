@@ -19,7 +19,10 @@ class Controller(Base):
             if used:state['experience_memory']=[dict(id=r['id'],lesson=r['content'],sha256=r['sha256']) for r in used]
             self.memory.record(state,used)
             return ask_jev(state,questions)
-        return super().step(observation,query,perceive)
+        result=super().step(observation,query,perceive)
+        if result['stage'].startswith('conveyor_wait_') and not result['stop']:
+            result['ticks']=min(self.remaining,int(self.rules.get('wait_ticks',3)))
+        return result
     def _after_motion(self):
         self.feedback=None
         if self.last_motion:

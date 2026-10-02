@@ -111,7 +111,7 @@ class Controller:
             b=tokens(r['label']+' '+r['appearance'])-IGNORE
             ca=np.asarray(ref['color']); cb=np.asarray(r['color'])
             semantic=(bool(a&b) and len(a&b)/max(1,len(a|b))>=.6)
-            if not a and not b:
+            if not a and not b and self.rules.get('appearance_match',False):
                 old=np.sort(np.asarray(ref['visible_extent_m'])[:2]); new=np.sort((r['high']-r['low'])[:2])
                 semantic=bool(np.max(np.abs(new-old)/np.maximum(old,.01))<.35)
             return (semantic and r['text']==ref['text'] and
