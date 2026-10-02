@@ -9,7 +9,7 @@ manifest=dict(task=1062,starts=[2,3,4],seed=0,retries=0,commit=subprocess.check_
 (root/'manifest.json').write_text(json.dumps(manifest,indent=2));rows=[]
 for init in manifest['starts']:
  out=root/f'init-{init}';start=time.monotonic()
- command=[sys.executable,'-B',str(frozen/'libero_jev_rollout.py'),'--generic-vision','--task-id','1062','--init-index',str(init),'--seed','0','--output',str(out)]
+ command=[sys.executable,'-B',str(frozen/'libero_jev_rollout.py'),'--generic-vision','--scripted-supervisor','--task-id','1062','--init-index',str(init),'--seed','0','--output',str(out)]
  with (root/f'init-{init}.log').open('w') as log:
   try:code=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=960).returncode
   except subprocess.TimeoutExpired:code=124

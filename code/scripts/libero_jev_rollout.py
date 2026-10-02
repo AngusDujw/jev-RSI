@@ -211,9 +211,10 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--output', required=True)
     p.add_argument('--capture-only', action='store_true')
-    p.add_argument('--jev-supervisor', action='store_true')
+    p.add_argument('--jev-supervisor', dest='jev_supervisor',action='store_true',default=True)
+    p.add_argument('--scripted-supervisor',dest='jev_supervisor',action='store_false',help='Historical automatic gripper/phase policy; reproduction only')
     p.add_argument('--max-jev-decisions',type=int,default=120)
-    p.add_argument('--schema', choices=['numeric','feedback'], default='numeric')
+    p.add_argument('--schema', choices=['numeric','feedback'], default='feedback')
     p.add_argument('--grasp-fraction', type=float, default=.4)
     p.add_argument('--geometry-profile',choices=['base','observed_surfaces'],default='base')
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
@@ -262,7 +263,7 @@ def main():
         dump(out/'robot.json',dict(position=obs['robot0_eef_pos'],quaternion=obs['robot0_eef_quat']))
         if a.capture_only:
             rec.finish('capture_only'); return
-        if a.jev_supervisor:
+        if a.jev_supervisor and a.generic_vision:
             from libero_jev_supervisor import run_supervisor
             run_supervisor(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
         elif a.generic_vision:

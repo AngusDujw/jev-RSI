@@ -11,7 +11,7 @@ manifest=dict(cases=cases,starts=[1,2,3],seed=0,retries=0,commit=subprocess.chec
 for suite,task in cases:
  for init in [1,2,3]:
   label=f'{suite}-{task}-init-{init}';out=root/label;start=time.monotonic()
-  cmd=[sys.executable,'-B',str(frozen/'libero_jev_rollout.py'),'--generic-vision','--suite',suite,'--task-id',str(task),'--init-index',str(init),'--output',str(out)]
+  cmd=[sys.executable,'-B',str(frozen/'libero_jev_rollout.py'),'--generic-vision','--scripted-supervisor','--suite',suite,'--task-id',str(task),'--init-index',str(init),'--output',str(out)]
   with (root/(label+'.log')).open('w') as log:
    try:code=subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT,timeout=960).returncode
    except subprocess.TimeoutExpired:code=124

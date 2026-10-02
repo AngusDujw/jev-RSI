@@ -1,0 +1,10 @@
+{
+  "policy": "Jev XYZ/gripper/transitions; phase scaffold and geometry external",
+  "status": "development candidates, not frozen benchmark performance",
+  "per_task_attempt_cap": 50,
+  "tasks": [
+    {"suite":"libero_spatial","task_id":1282,"schema":"feedback","geometry_profile":"base","camera_size":384,"approach_mode":"top","max_jev_decisions":120,"lift_check":false,"evidence":"feedback-v1 init1 plus bowl-confirm init2/3; 3 successful development starts, two exact-version confirmation trials"},
+    {"suite":"libero_object","task_id":1043,"schema":"feedback","geometry_profile":"observed_surfaces","camera_size":768,"approach_mode":"top","max_jev_decisions":160,"lift_check":true,"evidence":"soup-final init1/2/3 native and program success 3/3; single-task small sample"},
+    {"suite":"libero_object","task_id":1066,"schema":"feedback","geometry_profile":"observed_surfaces","camera_size":768,"approach_mode":"angled","max_jev_decisions":160,"lift_check":true,"evidence":"UNSOLVED: all 7 development attempts failed; do not call this a successful config"}
+  ]
+}
