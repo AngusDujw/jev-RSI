@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 TASKS=['general_pickup','stack_bowls','fold_clothes','press_by_number','match_and_pick_from_conveyor']
 
-def run(task,variant,processing,layout,gpu=None,frozen_from=None):
+def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False):
     folder=ROOT/'code/runs';old=sorted(folder.glob('jev-discrete-'+task+'-[0-9][0-9]'))
     numbers=[int(p.name[-2:]) for p in old];number=max(numbers,default=0)+1
     if number>50:raise RuntimeError('50 trial budget reached '+task)
@@ -31,8 +31,22 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None):
             relative='code/scripts/'+name
             if subprocess.check_output(['git','show',commit+':'+relative],cwd=ROOT)!=(ROOT/relative).read_bytes():raise RuntimeError('frozen pipeline changed: '+relative)
         cfg['frozen_reference']=str(reference)
-    usage=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.used','--format=csv,noheader,nounits'],text=True)
+    usage=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.used,utilization.gpu','--format=csv,noheader,nounits'],text=True)
     memory={int(r.split(',')[0]):int(r.split(',')[1]) for r in usage.splitlines()}
+    utilization={int(r.split(',')[0]):int(r.split(',')[2]) for r in usage.splitlines()}
+    lease=None
+    if auto_gpu:
+        import fcntl
+        leases=folder/'jev-discrete-gpu-leases';leases.mkdir(exist_ok=True)
+        for index in sorted(memory,key=memory.get):
+            if memory[index]>1024 or utilization[index]>5:continue
+            handle=(leases/f'{index}.lock').open('a+')
+            try:fcntl.flock(handle,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            except BlockingIOError:handle.close();continue
+            lease=handle;cfg['gpu']=index;break
+        if lease is None:
+            print(json.dumps(dict(event='deferred_before_trial',task=task,reason='no idle GPU; no trial reserved')),flush=True)
+            return 2
     if memory[cfg['gpu']]>1024:
         print(json.dumps(dict(event='deferred_before_trial',task=task,gpu=cfg['gpu'],reason='occupied; no trial reserved')),flush=True)
         return 2
@@ -46,17 +60,18 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None):
         result=subprocess.run(command,cwd=ROOT,env=env,stdout=f,stderr=subprocess.STDOUT)
     rpath=output/'structured_result.json';result_data=json.loads(rpath.read_text()) if rpath.exists() else {}
     print(json.dumps(dict(event='complete',task=task,attempt=number,returncode=result.returncode,result=result_data)),flush=True)
+    if lease is not None:lease.close()
     return result.returncode
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
     p.add_argument('--variant',choices=['numeric','relations','evidence','hierarchical'],default='numeric')
     p.add_argument('--processing',choices=['anchored','live','precision'],default='anchored');p.add_argument('--layout',type=int,default=0)
-    p.add_argument('--gpu',type=int);p.add_argument('--frozen-from');p.add_argument('--layouts',nargs='+',type=int)
+    p.add_argument('--gpu',type=int);p.add_argument('--auto-gpu',action='store_true');p.add_argument('--frozen-from');p.add_argument('--layouts',nargs='+',type=int)
     args=p.parse_args()
     if args.gpu is not None and len(args.tasks)!=1:p.error('--gpu requires exactly one task')
     for layout in args.layouts or [args.layout]:
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
-            jobs=[pool.submit(run,t,args.variant,args.processing,layout,args.gpu,args.frozen_from) for t in args.tasks]
+            jobs=[pool.submit(run,t,args.variant,args.processing,layout,args.gpu,args.frozen_from,args.auto_gpu) for t in args.tasks]
             codes=[j.result() for j in jobs]
         if any(codes):sys.exit(1)

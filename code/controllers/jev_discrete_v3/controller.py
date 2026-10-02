@@ -225,7 +225,7 @@ class Controller(Geometry):
             questions['phase']['instructions']+=' Repeated evidence of object staying on its support while the robot rises is NEGATIVE grasp evidence, not merely missing evidence. Choose retry (and gripper open) to reattempt, or abort. Reobserve only if a new view could resolve missing evidence.'
             for key,q in questions.items():
                 if key.endswith('_gripper'):q['instructions']+=' If selecting phase retry, choose open to release before reapproaching.'
-        if self.stage=='contact' and self.task=='fold_clothes':
+        if self.stage=='contact' and self.task in ('fold_clothes','general_pickup','stack_bowls'):
             questions['phase']['instructions']+=' If XY is aligned within 5mm and repeated commanded descent has stalled within 12mm of the requested surface waypoint (consecutive_contact_stalls >=2), you may advance to a CLOSE-and-lift probe instead of waiting for an unreachable exact Z. This could be support contact or IK limitation; it does not prove grasp. Inspect visible cloth after lifting.'
             for key,q in questions.items():
                 if key.endswith('_gripper'):q['instructions']+=' At contact with XY alignment and repeated descent stall near the surface, closing is a permitted grasp probe; it is not proof of attachment.'
@@ -239,8 +239,7 @@ class Controller(Geometry):
             phase_q['criteria'][option]=dict(meaning=description)
         if 'advance' in phase_q['criteria']:
             phase_q['criteria']['advance']['not_when']=['a motion waypoint still has axes listed in alignment_facts.*.axes_outside_tracking_band (except a described contact probe)', 'the gripper operation has not yet executed', 'only a future objective or prior-stage history supports completion']
-        phase_q['criteria'].setdefault('stay',dict(meaning='Continue the current unfinished objective.'))
-        phase_q['criteria']['stay']['when']='Usable current/reference evidence is available and work toward the current objective remains.'
+        if 'stay' in phase_q['criteria']:phase_q['criteria']['stay']['when']='Usable current/reference evidence is available and work toward the current objective remains.'
         if 'reobserve' in phase_q['criteria']:
             phase_q['criteria']['reobserve']['when']='A necessary observation is unavailable or ambiguous, and another observation could resolve it.'
             phase_q['criteria']['reobserve']['not_when']='The reference waypoint is usable and simply has not yet been reached.'
@@ -364,6 +363,9 @@ class Controller(Geometry):
             if phase=='retry':
                 self.grasp_retries+=1;self.grasp_evidence=[]
                 self.plan['baseline']=None;self.plan['grasp_verified']=False
+                if self.task!='fold_clothes':
+                    row=self._get(self.plan['source'],fresh=True);a=self.plan['arms'][0]
+                    self.plan['initial_grasp']=np.asarray(self._grasp_point(row,a)).copy()
                 self.rules['grasp_depth_adjust_m']=-.003*self.grasp_retries
                 self._accept_phase('approach',dict(Jev_selected_retry=True,attempt=self.grasp_retries,previous_evidence=evidence,depth_adjust_m=self.rules['grasp_depth_adjust_m']))
             if phase=='advance':self._accept_phase(next_stage,evidence)
