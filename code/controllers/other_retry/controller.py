@@ -46,6 +46,7 @@ class Controller(TaskController):
         return super()._movement(targets,uncertainty,opening,obs,ask_jev)
     def _targets(self):
         targets,u,g=super()._targets()
+        if self.stage in ('approach','contact'):g=self.rules.get('pregrasp_opening',g)
         if self.stage=='approach':
             old=.045 if self.task=='fold_clothes' else .055
             targets={a:np.asarray(p)+[0,0,self.rules['approach_clearance_m']-old] for a,p in targets.items()}
