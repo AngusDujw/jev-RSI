@@ -33,7 +33,7 @@ class MultiView:
         self.last_cost=dict(called=bool(calls),calls=calls,seconds=seconds,source='local_multiview')
         self.last_semantic=self.call_index if calls else self.last_semantic
         old=self.tracks; current={}; consumed=set()
-        for oid,prev in old.items():
+        for oid,prev in sorted(old.items(),key=lambda item:item[0]!=self.active_id):
             eligible=[]
             for j,row in enumerate(candidates):
                 if j in consumed or row['category']!=prev['category']: continue
