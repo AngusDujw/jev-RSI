@@ -18,7 +18,7 @@ CONTRACTS={
  'select':'Identify the instruction-relevant visible object(s) and a feasible prepared plan before advancing.',
  'approach':'Reach the clearance waypoint AND align tool orientation. Keep the gripper open for grasp tasks; closed for button pressing.',
  'contact':'Reach the current contact waypoint with aligned orientation and usable visual/reference evidence. Keep gripper open until contact is reached; then close and advance.',
- 'close':'Close the gripper. Advance to lift after actual robot opening is near closed (<=0.15). Closure alone is NOT grasp success.',
+ 'close':'Command close and observe its response. Advance to a lift PROBE when opening is near closed (<=0.15) OR has stabilized for two observations under a close command. An object may prevent full closure. This is not grasp success; verify after lifting.',
  'lift':'Keep closed while reaching the lift waypoint. Advance to visual verification once the robot reaches it.',
  'verify_grasp':'Require repeated visual object/cloth rise and attachment evidence; an empty robot lift is not success. Keep closed. Advance only when evidence supports carrying.',
  'transport':'Keep closed and reach the destination clearance waypoint.',
@@ -47,7 +47,7 @@ class Controller(Geometry):
         self.variant=settings.get('input_variant','numeric')
         self.processing=settings.get('processing_variant','anchored')
         self.proposal=None;self.initial_robot=None;self.perception_failures=0
-        self.phase_decisions=[];self.last_grip={};self.prepared_stage=None
+        self.phase_decisions=[];self.last_grip={};self.prepared_stage=None;self.gripper_observations=[]
         self.rules.setdefault('approach_clearance_m',.055)
 
     def _transition(self,new,evidence):
@@ -143,6 +143,7 @@ class Controller(Geometry):
         state=dict(version='jev_discrete_v1',task=self.task,instruction=self.instruction,stage=self.stage,
             input_variant=self.variant,processing_variant=self.processing,native_step=self.last_native,
             remaining_steps=self.remaining,stage_age=self.stage_age,active_arms=arms,
+            recent_gripper_feedback=self.gripper_observations[-4:],last_gripper_commands=self.last_grip,
             observation_permissions='RGB-D, calibrated cameras, robot feedback, public instruction; no object truth or native success',
             decision_owners=dict(translation_sign='Jev',gripper='Jev',phase_transition='Jev',target_candidates_orientation_amplitude='external'),
             stage_goal=CONTRACTS.get(self.stage,'Observe current evidence before advancing'),
@@ -192,7 +193,7 @@ class Controller(Geometry):
         elif self.stage in MOVING:
             questions['phase']['instructions']='Decide ONLY if the CURRENT robot waypoint has been reached: compare geometry/relations with constraints.dead_zone_m and orientation_error_rad (<=0.15 rad). If outside tolerance, stay and execute motion. If inside tolerance, advance to the named next phase. Do not require future grasp/lift/release success. At contact on conveyor, use current_contact_error_m instead of the lead waypoint. '+CONTRACTS.get(self.stage,'')
         elif self.stage in ('close','release'):
-            questions['phase']['instructions']='Decide ONLY if the gripper opening has reached the CURRENT phase endpoint. '+CONTRACTS[self.stage]+' If not yet reached, stay and command the needed gripper action; grasp verification is a later phase.'
+            questions['phase']['instructions']='Decide if the CURRENT gripper operation has been executed using recent_gripper_feedback and last_gripper_commands. '+CONTRACTS[self.stage]+' For close, nonzero stable opening under close command may mean object resistance: proceed to lift probe instead of waiting forever for zero. For release, require opening >=0.85. If still moving toward its command, stay; grasp verification is a later phase.'
         return questions
 
     def _accept_phase(self,new,evidence):
@@ -218,6 +219,7 @@ class Controller(Geometry):
         try:
             self.last_native=int(observation['native_step']);self.remaining=int(observation['remaining_steps'])
             self.instruction=str(observation['instruction']);self._read_robot(observation)
+            self.gripper_observations.append(dict(native_step=self.last_native,stage=self.stage,opening={a:r['opening'] for a,r in self.robot.items()},previous_commands=dict(self.last_grip)))
             if self.initial_robot is None:self.initial_robot=copy.deepcopy(self.robot)
             self._after_motion();self.step_index+=1;self.stage_age+=1
             if self.stage_age>40 and not self.stage.startswith('conveyor_wait_'):
