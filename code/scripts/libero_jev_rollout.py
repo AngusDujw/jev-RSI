@@ -64,6 +64,44 @@ def perceive(rgb, depth, K, T, held_tcp=None):
     return dict(bowl=bowl,plate=plate,table_z=table_z,candidates=bowls)
 
 
+def select_transfer_target(evidence, rgb, depth, K, T, relation):
+    """Declared task-specific selector, no hidden object metadata.
+    Ramekin: small achromatic circular vessel; center: image-center heuristic.
+    """
+    hsv=cv2.cvtColor(rgb,cv2.COLOR_RGB2HSV)
+    rim=(hsv[:,:,0]>15)&(hsv[:,:,0]<45)&(hsv[:,:,1]>85)&(hsv[:,:,2]>65)
+    bowls=[]
+    for b in evidence['candidates']:
+        x,y,w,h=b['bbox']
+        if w/h>1.2 and int(rim[max(0,y-15):y+h+5,max(0,x-5):x+w+5].sum())>=8:
+            bowls.append(b)
+    if not bowls: raise RuntimeError('No bowl candidate with visible coloured rim')
+    reference=None
+    if relation=='near_ramekin':
+        circles=cv2.HoughCircles(cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY),cv2.HOUGH_GRADIENT,1,24,
+                                param1=80,param2=22,minRadius=10,maxRadius=23)
+        refs=[]
+        for u,v,r in ([] if circles is None else circles[0]):
+            u,v=int(u),int(v);d=float(depth[v,u])
+            pt=T[:3,:3]@np.array([(u-K[0,2])*d/K[0,0],(v-K[1,2])*d/K[1,1],d])+T[:3,3]
+            if not evidence['table_z']-.005<pt[2]<evidence['table_z']+.085: continue
+            if any(np.linalg.norm(np.array(b['pixel'])-[u,v])<r+15 for b in bowls):continue
+            if np.linalg.norm(np.array(evidence['plate']['pixel'])-[u,v])<60:continue
+            y0,y1=max(0,v-8),min(rgb.shape[0],v+8);x0,x1=max(0,u-8),min(rgb.shape[1],u+8)
+            saturation=float(np.median(hsv[y0:y1,x0:x1,1]));value=float(np.median(hsv[y0:y1,x0:x1,2]))
+            if saturation<45 and value>85:refs.append(dict(pixel=[u,v],position=pt,saturation=saturation))
+        if len(refs)!=1:raise RuntimeError('Ramekin circular detection missing or ambiguous')
+        reference=refs[0];bowl=min(bowls,key=lambda b:np.linalg.norm(b['position'][:2]-reference['position'][:2]))
+    elif relation=='table_center':
+        reference=dict(pixel=[rgb.shape[1]/2,rgb.shape[0]/2],note='image-center heuristic, not metric table-center guarantee')
+        bowl=min(bowls,key=lambda b:np.linalg.norm(np.array(b['pixel'])-reference['pixel']))
+    elif relation=='near_plate':
+        reference=evidence['plate'];bowl=min(bowls,key=lambda b:np.linalg.norm(b['position'][:2]-reference['position'][:2]))
+    else: raise ValueError('Unknown transfer relation')
+    return dict(evidence,bowl=bowl,candidates=bowls,relation=relation,reference=reference,
+                selection_source='external RGB-D colour/shape and relation scaffold')
+
+
 def held_rim(rgb, depth, K, T, tcp, minimum_points=80):
     """Fit visible yellow/olive bowl rim in world XY. Task-specific appearance.
     Fresh camera pose, trimmed-depth points, radius/residual/arc checks; no truth.
@@ -108,6 +146,8 @@ def run_policy(env, obs, rec, task, depth_fn, k_fn, t_fn):
         rgb=np.ascontiguousarray(obs[cam+'_image'][::-1])
         depth=depth_fn(env.sim,obs[cam+'_depth'])[::-1].squeeze()
         evidence=perceive(rgb,depth,k_fn(env.sim,cam,384,384),t_fn(env.sim,cam))
+        if rec.cfg.get('relation'):
+            evidence=select_transfer_target(evidence,rgb,depth,k_fn(env.sim,cam,384,384),t_fn(env.sim,cam),rec.cfg['relation'])
         dump(rec.folder/'perception.json',evidence)
         bowl=evidence['bowl']; plate=evidence['plate']; z=evidence['table_z']
         hover=max(bowl['top']+.14,z+.18)
@@ -174,12 +214,13 @@ def main():
     p.add_argument('--task-id', type=int, default=988)
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--init-index', type=int, default=0)
+    p.add_argument('--relation', choices=['near_ramekin','table_center','near_plate'])
     a = p.parse_args()
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
-               suite='libero_spatial', task_id=a.task_id, seed=a.seed, init_index=a.init_index,
+               suite='libero_spatial', task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
                permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
