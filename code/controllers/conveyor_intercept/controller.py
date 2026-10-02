@@ -8,14 +8,11 @@ from visual_evidence import plain
 class Controller(TaskController):
     def __init__(self,task,settings):
         super().__init__(task,settings)
-        self.anchor_records={};self.anchor_poses={};self.preorient_count=0
-        self.vision.settings['cloth_keypoint_inset_px']=self.rules.get('cloth_keypoint_inset_px',3.)
+        self.anchor_records={};self.preorient_count=0
     def _select(self):
         self.preorient_count=0
         super()._select()
         if self.plan:
-            for key,r in self.current.items():
-                if r['observed']:self.anchor_records[key]=copy.deepcopy(r)
             oid=self.plan['source'];row=self.current.get(oid)
             if row and row['observed']:self.anchor_records[oid]=copy.deepcopy(row)
             if self.task in ('match_and_pick_from_conveyor','stack_bowls'):self.plan['lift_distance_m']=self.rules.get('lift_clearance_m',.12)
@@ -27,26 +24,6 @@ class Controller(TaskController):
         row=self.current.get(oid)
         if row and row['observed'] and row['uncertainty_m']<=.012:
             self.anchor_records[oid]=copy.deepcopy(row)
-            if self.plan and oid==self.plan['source']:
-                a=self.plan['arms'][0];self.anchor_poses[oid]=copy.deepcopy(self.robot[a])
-        if self.task=='stack_bowls' and self.plan and oid in (self.plan.get('destination'),self.plan.get('stack_base')) and oid in self.anchor_records:
-            if row is None or not row['observed'] or row['uncertainty_m']>.025:
-                ref=copy.deepcopy(self.anchor_records[oid]);ref.update(observed=False,source='last_observed_stationary_stack_target_NOT_current',age_steps=max(0,self.last_native-ref['native_step']))
-                self.debug.setdefault('stack_target_memory',[]).append(dict(id=oid,observed_now=False,reference_native_step=ref['native_step']))
-                return ref
-        if self.task=='stack_bowls' and self.plan and self.plan.get('grasp_verified') and self.stage in ('transport','lower') and oid==self.plan['source'] and oid in self.anchor_poses:
-            reference=self.anchor_records[oid];age=self.last_native-reference['native_step']
-            if (row is None or not row['observed'] or row['uncertainty_m']>.025) and age<=20:
-                from scipy.spatial.transform import Rotation
-                a=self.plan['arms'][0];before=self.anchor_poses[oid];now=self.robot[a]
-                q0=np.asarray(before['quaternion']);q1=np.asarray(now['quaternion'])
-                rot=(Rotation.from_quat(q1[[1,2,3,0]])*Rotation.from_quat(q0[[1,2,3,0]]).inv()).as_matrix()
-                ref=copy.deepcopy(reference)
-                for key in ('center','top','low','high'):
-                    ref[key]=rot@(np.asarray(reference[key])-before['grasp'])+now['grasp']
-                ref.update(observed=False,age_steps=max(1,age//5),uncertainty_m=.01,source='brief_rigid_carry_prediction_NOT_current',carry_prediction=True)
-                self.debug['carry_prediction']=dict(id=oid,age_native_steps=age,limit_native_steps=20,assumption='previously visually verified grasp remains attached')
-                return ref
         ttl=self.rules.get('contact_anchor_ttl',0)
         if self.stage in ('contact','close') and oid in self.anchor_records:
             reference=self.anchor_records[oid];age=self.last_native-reference['native_step']
@@ -69,17 +46,6 @@ class Controller(TaskController):
         return super()._movement(targets,uncertainty,opening,obs,ask_jev)
     def _targets(self):
         targets,u,g=super()._targets()
-        if self.stage in ('approach','contact'):g=self.rules.get('pregrasp_opening',g)
-        if self.task=='stack_bowls' and self.plan.get('grasp_verified') and self.stage in ('transport','lower'):
-            arm=self.plan['arms'][0];source=self._get(self.plan['source'],fresh=True)
-            measured=np.asarray(source['center']).copy()
-            rim=source.get('measured_rim')
-            if rim:measured[:2]=rim['center_xy']
-            offset=self.robot[arm]['grasp']-measured
-            targets={arm:np.asarray(targets[arm])+offset-self.plan['carry_offset']}
-            self.plan['carry_offset']=offset
-            self.plan['quaternions'][arm]=self.robot[arm]['quaternion'].copy()
-            self.debug['carry_control']=dict(source='current visible object-to-grasp offset',keep_achieved_orientation=True,assumption='already visually verified grasp')
         if self.stage=='approach':
             old=.045 if self.task=='fold_clothes' else .055
             targets={a:np.asarray(p)+[0,0,self.rules['approach_clearance_m']-old] for a,p in targets.items()}
@@ -91,7 +57,6 @@ class Controller(TaskController):
         return targets,u,g
 
     def step(self,observation,ask_jev,perceive):
-        if self.stage=='return_home':return self._home(observation,ask_jev)
         result=super().step(observation,ask_jev,perceive)
         if self.task=='match_and_pick_from_conveyor' and result['stage'].startswith('conveyor_wait_') and not result['stop']:
             arms={}
@@ -100,9 +65,6 @@ class Controller(TaskController):
                 if angle>.10:arms[arm]=dict(delta_xyz_m=[0.,0.,0.],quaternion_wxyz=q,gripper_opening=1.)
             if arms:
                 result['arms']=arms;result['reason']='observe conveyor while orienting at initial safe height'
-        if self.task in ('stack_bowls','fold_clothes') and result['stop'] and self.stage=='observed_operation_complete':
-            self.stopped=False;self.stop_reason='';self.stage='return_home'
-            return self._home(observation,ask_jev)
         return plain(result)
 
     def _appearance_candidates(self,observation,measured):
@@ -153,29 +115,3 @@ class Controller(TaskController):
                 width=float(min(row['high'][:2]-row['low'][:2]))
                 return max(base,min(.020,.35*width))
         return base
-
-    def _read_robot(self,observation):
-        super()._read_robot(observation)
-        if not hasattr(self,'initial_home'):
-            self.initial_home={a:dict(position=r['grasp'].copy(),quaternion=r['quaternion'].copy()) for a,r in self.robot.items()}
-    def _home(self,observation,ask_jev):
-        self._read_robot(observation);self.last_native=observation['native_step'];self.remaining=observation['remaining_steps']
-        geometry={a:dict(current_grasp_xyz_m=r['grasp'],target_xyz_m=self.initial_home[a]['position'],
-            target_minus_grasp_m=self.initial_home[a]['position']-r['grasp'],uncertainty_m=0.) for a,r in self.robot.items()}
-        quats={};angles={}
-        for a,r in self.robot.items():quats[a],angles[a]=bounded_quaternion(r['quaternion'],self.initial_home[a]['quaternion'])
-        aligned=all(np.max(np.abs(g['target_minus_grasp_m']))<.012 for g in geometry.values())
-        if aligned and max(angles.values())<.12:return self._result(stop=True,reason='open-gripper initial pose reached; native evaluation only',ticks=1)
-        answers={}
-        if not aligned:
-            state=plain(dict(task=self.task,stage='return_home',frame='environment_origin world axes',geometry=geometry,
-                constraints=dict(dead_zone_m=.012,max_delta_norm_m=.04),reference_source='initial robot proprioception; no object truth'))
-            questions={f'{a}_{x}':dict(type='choice',instructions=f'Choose the sign of {x} target minus current for {a} robot home waypoint; hold inside 0.012m.',criteria=dict(negative='decrease coordinate',hold='within dead zone',positive='increase coordinate')) for a in geometry for x in 'xyz'}
-            answers=ask_jev(state,questions)['answers']
-        commands={}
-        for a,g in geometry.items():
-            e=g['target_minus_grasp_m'];amp=np.minimum(.025,.7*np.abs(e));amp[np.abs(e)<.012]=0;delta=np.zeros(3)
-            if not aligned:delta=amp*np.array([{'negative':-1,'hold':0,'positive':1}[answers[f'{a}_{x}']['choice']] for x in 'xyz'])
-            delta*=min(1.,.04/max(np.linalg.norm(delta),1e-9))
-            commands[a]=dict(delta_xyz_m=delta,quaternion_wxyz=quats[a],gripper_opening=1.)
-        return self._result(commands,reason='return to own initial pose with open grippers',ticks=3)
