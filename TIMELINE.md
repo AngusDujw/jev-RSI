@@ -47,6 +47,7 @@ graph LR
     T_2026W40_014["📊 libero-plus-jev<br/>固定腕部策略20个未调试初态16/20=8…"]:::experiment
     T_2026W40_015["📊 libero-plus-transfer<br/>三项迁移各3初态：盘旁3/3成功，烤碗旁0…"]:::experiment
     T_2026W40_016["⛔ libero-generic-vision<br/>通用语义框/SAM替代类别规则，3尝试未完…"]:::blocker
+    T_2026W40_017["⛔ jev-control-formulation<br/>四任务经验开发各连续3次失败，正式off1…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -66,6 +67,7 @@ graph LR
   T_2026W40_010 --> T_2026W40_012
   T_2026W40_011 --> T_2026W40_013
   T_2026W40_012 --> T_2026W40_014
+  T_2026W40_013 --> T_2026W40_017
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
 ```
@@ -104,6 +106,7 @@ graph LR
 | `T-2026W40-014` | 2026-10-02 | experiment | libero-plus-jev | 固定腕部策略20个未调试初态16/20=80%；4次lift后拟合拒绝，完整封版 | `EXP-2026W40-050` | - |
 | `T-2026W40-015` | 2026-10-02 | experiment | libero-plus-transfer | 三项迁移各3初态：盘旁3/3成功，烤碗旁0/3识别失败，桌中央0/3下降停滞；封存小批不追加 | `EXP-2026W40-054` | - |
 | `T-2026W40-016` | 2026-10-02 | blocker | libero-generic-vision | 通用语义框/SAM替代类别规则，3尝试未完成：识别通过但抓取/抓后跟踪未通过；暂停新物理回合 | `EXP-2026W40-069` | - |
+| `T-2026W40-017` | 2026-10-02 | blocker | jev-control-formulation | 四任务经验开发各连续3次失败，正式off10/on10前提未满足；停止而非填充失败评测 | `EXP-2026W40-066` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

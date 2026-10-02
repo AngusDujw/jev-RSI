@@ -1,0 +1,423 @@
+{
+  "development": [
+    {
+      "task": "stack_bowls",
+      "attempt": 1,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_3",
+      "steps": 109,
+      "actions": 30,
+      "jev_calls": 18,
+      "vision_calls": 49,
+      "deepseek_calls": 0,
+      "stages": [
+        "approach",
+        "contact"
+      ],
+      "run": "code/runs/memory-task-stack_bowls-dev01",
+      "commit": "3819462055d725496b8a783dac608ed895f40efe",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/stack_bowls.json",
+        "--output",
+        "code/runs/memory-task-stack_bowls-dev01",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 148.859937235713,
+      "memory_enabled": true,
+      "memory_ids": [
+        "rim-grasp"
+      ],
+      "experiment_id": "EXP-2026W40-055"
+    },
+    {
+      "task": "stack_bowls",
+      "attempt": 2,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_3",
+      "steps": 109,
+      "actions": 30,
+      "jev_calls": 18,
+      "vision_calls": 47,
+      "deepseek_calls": 0,
+      "stages": [
+        "approach",
+        "contact"
+      ],
+      "run": "code/runs/memory-task-stack_bowls-dev02",
+      "commit": "76d74b8c7a63287178d4101da85ed31a234e399f",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/stack_bowls.json",
+        "--output",
+        "code/runs/memory-task-stack_bowls-dev02",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 146.7497866153717,
+      "memory_enabled": true,
+      "memory_ids": [
+        "rim-grasp"
+      ],
+      "experiment_id": "EXP-2026W40-056"
+    },
+    {
+      "task": "stack_bowls",
+      "attempt": 3,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_3",
+      "steps": 109,
+      "actions": 30,
+      "jev_calls": 18,
+      "vision_calls": 45,
+      "deepseek_calls": 0,
+      "stages": [
+        "approach",
+        "contact"
+      ],
+      "run": "code/runs/memory-task-stack_bowls-dev03",
+      "commit": "f99d28e4e673b3dd1436656b25488a1a3eddc05a",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/stack_bowls.json",
+        "--output",
+        "code/runs/memory-task-stack_bowls-dev03",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 206.43628717958927,
+      "memory_enabled": true,
+      "memory_ids": [
+        "rim-grasp",
+        "observation",
+        "verification"
+      ],
+      "experiment_id": "EXP-2026W40-057"
+    },
+    {
+      "task": "fold_clothes",
+      "attempt": 1,
+      "success": false,
+      "reason": "controller_stop:phase budget exhausted without verified progress",
+      "steps": 159,
+      "actions": 33,
+      "jev_calls": 31,
+      "vision_calls": 59,
+      "deepseek_calls": 0,
+      "stages": [
+        "approach"
+      ],
+      "run": "code/runs/memory-task-fold_clothes-dev01",
+      "commit": "3819462055d725496b8a783dac608ed895f40efe",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/fold_clothes.json",
+        "--output",
+        "code/runs/memory-task-fold_clothes-dev01",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 173.95684422552586,
+      "memory_enabled": true,
+      "memory_ids": [
+        "cloth-reference"
+      ],
+      "experiment_id": "EXP-2026W40-058"
+    },
+    {
+      "task": "fold_clothes",
+      "attempt": 2,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_1",
+      "steps": 107,
+      "actions": 27,
+      "jev_calls": 17,
+      "vision_calls": 61,
+      "deepseek_calls": 0,
+      "stages": [
+        "approach",
+        "contact",
+        "close",
+        "lift",
+        "verify_grasp"
+      ],
+      "run": "code/runs/memory-task-fold_clothes-dev02",
+      "commit": "25ea90d4bfe8f46d56d2c79a469ec0cf1d5bd9e0",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/fold_clothes.json",
+        "--output",
+        "code/runs/memory-task-fold_clothes-dev02",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 155.79519145935774,
+      "memory_enabled": true,
+      "memory_ids": [
+        "cloth-reference",
+        "observation",
+        "verification"
+      ],
+      "experiment_id": "EXP-2026W40-059"
+    },
+    {
+      "task": "fold_clothes",
+      "attempt": 3,
+      "success": false,
+      "reason": "controller_stop:grasp not verified from after-action visual displacement",
+      "steps": 113,
+      "actions": 27,
+      "jev_calls": 17,
+      "vision_calls": 63,
+      "deepseek_calls": 0,
+      "stages": [
+        "approach",
+        "contact",
+        "close",
+        "lift",
+        "verify_grasp"
+      ],
+      "run": "code/runs/memory-task-fold_clothes-dev03",
+      "commit": "f99d28e4e673b3dd1436656b25488a1a3eddc05a",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/fold_clothes.json",
+        "--output",
+        "code/runs/memory-task-fold_clothes-dev03",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 157.7527403458953,
+      "memory_enabled": true,
+      "memory_ids": [
+        "cloth-reference",
+        "observation",
+        "verification"
+      ],
+      "experiment_id": "EXP-2026W40-060"
+    },
+    {
+      "task": "press_by_number",
+      "attempt": 1,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: button face has not visibly returned after retract",
+      "steps": 175,
+      "actions": 39,
+      "jev_calls": 35,
+      "vision_calls": 104,
+      "deepseek_calls": 0,
+      "stages": [
+        "press_approach",
+        "press_contact",
+        "press_stroke",
+        "press_retract"
+      ],
+      "run": "code/runs/memory-task-press_by_number-dev01",
+      "commit": "3819462055d725496b8a783dac608ed895f40efe",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/press_by_number.json",
+        "--output",
+        "code/runs/memory-task-press_by_number-dev01",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 183.53572233766317,
+      "memory_enabled": true,
+      "memory_ids": [
+        "press-feedback"
+      ],
+      "experiment_id": "EXP-2026W40-061"
+    },
+    {
+      "task": "press_by_number",
+      "attempt": 2,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_3",
+      "steps": 61,
+      "actions": 15,
+      "jev_calls": 11,
+      "vision_calls": 42,
+      "deepseek_calls": 0,
+      "stages": [
+        "press_approach"
+      ],
+      "run": "code/runs/memory-task-press_by_number-dev02",
+      "commit": "76d74b8c7a63287178d4101da85ed31a234e399f",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/press_by_number.json",
+        "--output",
+        "code/runs/memory-task-press_by_number-dev02",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 127.31645593419671,
+      "memory_enabled": true,
+      "memory_ids": [
+        "press-feedback"
+      ],
+      "experiment_id": "EXP-2026W40-062"
+    },
+    {
+      "task": "press_by_number",
+      "attempt": 3,
+      "success": false,
+      "reason": "controller_stop:bounded press reached but button motion not visually resolved",
+      "steps": 84,
+      "actions": 20,
+      "jev_calls": 15,
+      "vision_calls": 56,
+      "deepseek_calls": 0,
+      "stages": [
+        "press_approach",
+        "press_contact",
+        "press_stroke",
+        "press_verify"
+      ],
+      "run": "code/runs/memory-task-press_by_number-dev03",
+      "commit": "ec4abb78f0575aee07c73db85f594b5709350723",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/press-dev03.json",
+        "--output",
+        "code/runs/memory-task-press_by_number-dev03",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 139.07489197701216,
+      "memory_enabled": true,
+      "memory_ids": [
+        "press-feedback",
+        "observation",
+        "verification"
+      ],
+      "experiment_id": "EXP-2026W40-063"
+    },
+    {
+      "task": "match_and_pick_from_conveyor",
+      "attempt": 1,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: first conveyor arrival ambiguous: multiple visible items",
+      "steps": 2,
+      "actions": 2,
+      "jev_calls": 0,
+      "vision_calls": 3,
+      "deepseek_calls": 0,
+      "stages": [
+        "select"
+      ],
+      "run": "code/runs/memory-task-match_and_pick_from_conveyor-dev01",
+      "commit": "b2f11d5171f10322b24b784d225b3ca75d554389",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/match_and_pick_from_conveyor.json",
+        "--output",
+        "code/runs/memory-task-match_and_pick_from_conveyor-dev01",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 38.13068826124072,
+      "memory_enabled": true,
+      "memory_ids": [
+        "temporal-match"
+      ],
+      "experiment_id": "EXP-2026W40-064"
+    },
+    {
+      "task": "match_and_pick_from_conveyor",
+      "attempt": 2,
+      "success": false,
+      "reason": "native_episode_ended",
+      "steps": 700,
+      "actions": 70,
+      "jev_calls": 0,
+      "vision_calls": 70,
+      "deepseek_calls": 0,
+      "stages": [
+        "conveyor_wait_departure",
+        "conveyor_wait_repeat"
+      ],
+      "run": "code/runs/memory-task-match_and_pick_from_conveyor-dev02",
+      "commit": "25ea90d4bfe8f46d56d2c79a469ec0cf1d5bd9e0",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/match_and_pick_from_conveyor.json",
+        "--output",
+        "code/runs/memory-task-match_and_pick_from_conveyor-dev02",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 186.97103261575103,
+      "memory_enabled": true,
+      "memory_ids": [
+        "temporal-match",
+        "observation",
+        "verification"
+      ],
+      "experiment_id": "EXP-2026W40-065"
+    },
+    {
+      "task": "match_and_pick_from_conveyor",
+      "attempt": 3,
+      "success": false,
+      "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_46",
+      "steps": 212,
+      "actions": 23,
+      "jev_calls": 0,
+      "vision_calls": 24,
+      "deepseek_calls": 0,
+      "stages": [
+        "conveyor_wait_departure",
+        "conveyor_wait_repeat",
+        "approach"
+      ],
+      "run": "code/runs/memory-task-match_and_pick_from_conveyor-dev03",
+      "commit": "f99d28e4e673b3dd1436656b25488a1a3eddc05a",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-tasks/match_and_pick_from_conveyor.json",
+        "--output",
+        "code/runs/memory-task-match_and_pick_from_conveyor-dev03",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ],
+      "wall_seconds": 81.71723943948746,
+      "memory_enabled": true,
+      "memory_ids": [
+        "temporal-match",
+        "observation",
+        "verification"
+      ],
+      "experiment_id": "EXP-2026W40-066"
+    }
+  ],
+  "formal_evaluation_completed": 0,
+  "planned_trials_per_task_per_arm": 10,
+  "status": "blocked_at_prerequisite"
+}

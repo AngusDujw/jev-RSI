@@ -167,6 +167,8 @@
 
 【Agent @Codex】【2026-10-02】按用户要求默认启用类别无关语义框+SAM/RGB-D，去掉新路径碗沿颜色/圆形/任务ID选择。DeepSeek预检402，使用授权的少量GPT-6视觉，最多initial/pregrasp/stalled各1次；Jev选XYZ。桌中央开发3次未完成（1次接口、2次物理），99Jev、345步、6GPT请求；新版识别可用但通用抓点与抓后跟踪仍失败。见[EXP-2026W40-067～EXP-2026W40-069](LOGS/2026-W40.md#exp-2026w40-067)和[报告](LOGS/2026-10-02-libero-generic-vision.md)。暂停新物理回合，不以旧80%成绩证明新通用方法。
 
+【Agent @Codex】【2026-10-02】[四任务经验开发结果](LOGS/memory-task-development-results.md)：EXP-2026W40-055～066共12次开发/180Jev，四任务各0/3，运行时GPT-6/DeepSeek均0。on/off加载机制已实现，但“先调通”前提未满足，正式每组10次尚未启动。每任务连续3次失败，按§10停止，不将调试失败伪称正式对照；候选失败经验仅归档。CIRCLE-1收敛为封存结果，待用户决定继续开发预算或收缩任务范围。
+
 ## Resolution（关闭议题时必填）
 
 > Status 切到 `Resolved` 时，本节必须全部填好；否则不许关闭。
