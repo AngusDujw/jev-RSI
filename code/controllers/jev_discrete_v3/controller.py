@@ -238,7 +238,18 @@ class Controller(Geometry):
         for option,description in list(phase_q['criteria'].items()):
             phase_q['criteria'][option]=dict(meaning=description)
         if 'advance' in phase_q['criteria']:
-            phase_q['criteria']['advance']['not_when']=['a motion waypoint still has axes listed in alignment_facts.*.axes_outside_tracking_band (except a described contact probe)', 'the gripper operation has not yet executed', 'only a future objective or prior-stage history supports completion']
+            criterion=phase_q['criteria']['advance']
+            criterion['not_when']=['only a future objective or prior-stage history supports completion']
+            if targets:
+                criterion['when']='CURRENT robot waypoint has no axes outside the tracking band and required orientation is aligned; OR the current contact phase has a specifically permitted near-surface stall probe.'
+                criterion['not_when'].append('a current waypoint axis remains outside the band and no described contact-probe exception applies')
+            elif self.stage=='close':criterion['when']='The close command has executed and the aperture is near closed OR stable under the close command; next phase only probes a lift, not proven grasp.'
+            elif self.stage=='release':criterion['when']='Actual gripper opening is at least 0.85 after the open command.'
+            elif self.stage=='select':criterion['when']='The instructed source/fixture and a usable candidate plan/reference are identified. No movement, closure, or grasp evidence is required at SELECT.'
+            elif self.stage=='verify_grasp':criterion['when']='Repeated visible attachment/rise evidence supports grasp; the robot rising by itself is insufficient.'
+            elif self.stage=='verify_release':criterion['when']='Repeated visible placement/fold geometry supports the operation.'
+            elif self.stage=='press_verify':criterion['when']='Retract to expose and inspect the button after the bounded stroke; activation may remain unknown.'
+            else:criterion['when']='Current temporal observation evidence supports entering the candidate NEXT phase; do not require the next phase to have already happened.'
         if 'stay' in phase_q['criteria']:phase_q['criteria']['stay']['when']='Usable current/reference evidence is available and work toward the current objective remains.'
         if 'reobserve' in phase_q['criteria']:
             phase_q['criteria']['reobserve']['when']='A necessary observation is unavailable or ambiguous, and another observation could resolve it.'
