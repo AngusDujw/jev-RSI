@@ -90,6 +90,7 @@ class VisualEvidence:
         self.calls=0; self.seconds=0.; self.frames={}; self.image_records={}; self.tracks={}
         self.next_id=0; self.last_semantic=-1000; self.last_native=None; self.call_index=0
         self.events=[]; self.last_cost={}
+        self.cloth_keypoint_inset_px=float(settings.get('cloth_keypoint_inset_px',3.))
         self.reference_camera=settings.get('reference_camera'); self.camera_history=[]
 
     def _parse(self,response,cameras):
@@ -170,7 +171,7 @@ class VisualEvidence:
         for corner in rectangle:
             p=polygon[np.argmin(np.linalg.norm(polygon-corner,axis=1))]
             direction=middle-p; distance=np.linalg.norm(direction)
-            p=p+direction*min(1.,3./max(distance,1e-6))
+            p=p+direction*min(1.,self.cloth_keypoint_inset_px/max(distance,1e-6))
             chosen.append(p/[w-1,h-1])
         if min(np.linalg.norm(a-b) for i,a in enumerate(chosen) for b in chosen[i+1:])<.015: return
         for i,p in enumerate(chosen): row['keypoints'][f'tracked_corner_{i}']=p

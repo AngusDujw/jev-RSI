@@ -9,6 +9,7 @@ class Controller(TaskController):
     def __init__(self,task,settings):
         super().__init__(task,settings)
         self.anchor_records={};self.preorient_count=0
+        self.vision.settings['cloth_keypoint_inset_px']=self.rules.get('cloth_keypoint_inset_px',3.)
     def _select(self):
         self.preorient_count=0
         super()._select()
