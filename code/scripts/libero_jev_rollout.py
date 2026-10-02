@@ -73,7 +73,7 @@ def select_transfer_target(evidence, rgb, depth, K, T, relation):
     bowls=[]
     for b in evidence['candidates']:
         x,y,w,h=b['bbox']
-        if w/h>1.2 and int(rim[max(0,y-15):y+h+5,max(0,x-5):x+w+5].sum())>=8:
+        if w/h>1.2 and int(rim[max(0,y-15):y+h+5,max(0,x-5):x+w+5].sum())>=2:
             bowls.append(b)
     if not bowls: raise RuntimeError('No bowl candidate with visible coloured rim')
     reference=None
