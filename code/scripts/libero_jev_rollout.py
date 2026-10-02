@@ -212,6 +212,7 @@ def main():
     p.add_argument('--output', required=True)
     p.add_argument('--capture-only', action='store_true')
     p.add_argument('--jev-supervisor', action='store_true')
+    p.add_argument('--max-jev-decisions',type=int,default=120)
     p.add_argument('--schema', choices=['numeric','feedback'], default='numeric')
     p.add_argument('--grasp-fraction', type=float, default=.4)
     p.add_argument('--geometry-profile',choices=['base','observed_surfaces'],default='base')
@@ -228,7 +229,7 @@ def main():
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
-               wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
+               wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
                permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode)
     rec = Recorder(out, cfg)
