@@ -21,7 +21,7 @@ class Experience:
     def rules(self):
         out={}
         for row in self.records:out.update(row.get('rules',{}))
-        boolean={'contact_endstop','rim_circle','cloth_keypoint_anchor','appearance_match','occluded_fixture_map','orient_before_approach'}
+        boolean={'contact_endstop','rim_circle','cloth_keypoint_anchor','appearance_match','occluded_fixture_map','orient_before_approach','side_pinch'}
         ranges={'stroke_ticks':(1,8),'rim_insertion_m':(0,.015),'wait_ticks':(1,15),'approach_clearance_m':(.04,.15),'cloth_keypoint_inset_px':(3,20),'pregrasp_opening':(.15,1.),'contact_dwell_ticks':(0,10),'close_ticks':(1,12),'lift_clearance_m':(.05,.2),'contact_anchor_ttl':(0,12),'grasp_depth_adjust_m':(-.015,.015)}
         for key,value in out.items():
             if key in boolean:

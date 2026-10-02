@@ -182,3 +182,13 @@ class Controller(TaskController):
             delta*=min(1.,.04/max(np.linalg.norm(delta),1e-9))
             commands[a]=dict(delta_xyz_m=delta,quaternion_wxyz=quats[a],gripper_opening=1.)
         return self._result(commands,reason='return to own initial pose with open grippers',ticks=3)
+
+    def _select_fold(self,cloth):
+        super()._select_fold(cloth)
+        if self.rules.get('side_pinch',False):
+            for arm,point in self.plan['fold_source'].items():
+                inward=np.asarray(cloth['center'])-np.asarray(point);inward[2]=0.
+                inward/=max(np.linalg.norm(inward),1e-9)
+                approach=np.r_[inward[:2],-.25];approach/=np.linalg.norm(approach)
+                self.plan['quaternions'][arm]=tool_quaternion(approach,[0,0,1])
+            self.debug['thin_material_grasp']=dict(rule='side approach with approximately vertical finger closure',source='visible cloth boundary and centre',native_attachment=False)
