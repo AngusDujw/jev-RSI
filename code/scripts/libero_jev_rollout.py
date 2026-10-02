@@ -211,6 +211,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--output', required=True)
     p.add_argument('--capture-only', action='store_true')
+    p.add_argument('--jev-supervisor', action='store_true')
+    p.add_argument('--schema', choices=['numeric','feedback'], default='numeric')
+    p.add_argument('--grasp-fraction', type=float, default=.4)
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
     p.add_argument('--legacy-vision', dest='generic_vision', action='store_false', help='Reproduce archived task-specific colour/rim policy only')
     p.add_argument('--task-id', type=int, default=988)
@@ -224,7 +227,7 @@ def main():
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
@@ -254,7 +257,10 @@ def main():
         dump(out/'robot.json',dict(position=obs['robot0_eef_pos'],quaternion=obs['robot0_eef_quat']))
         if a.capture_only:
             rec.finish('capture_only'); return
-        if a.generic_vision:
+        if a.jev_supervisor:
+            from libero_jev_supervisor import run_supervisor
+            run_supervisor(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
+        elif a.generic_vision:
             from libero_generic_vision import run_generic
             run_generic(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
         else:
