@@ -1,0 +1,1 @@
+Frozen from 3aa9d561022010622923fdf0547eb2d6198bb706 after native conveyor success at 368 steps/27 Jev. Only memory-directory path rebound. Controller algorithms and memory content preserved; shared runner/perception provenance recorded per run.

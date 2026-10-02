@@ -46,17 +46,6 @@ class Controller(TaskController):
         return super()._movement(targets,uncertainty,opening,obs,ask_jev)
     def _targets(self):
         targets,u,g=super()._targets()
-        if self.stage in ('approach','contact'):g=self.rules.get('pregrasp_opening',g)
-        if self.task=='stack_bowls' and self.plan.get('grasp_verified') and self.stage in ('transport','lower'):
-            arm=self.plan['arms'][0];source=self._get(self.plan['source'],fresh=True)
-            measured=np.asarray(source['center']).copy()
-            rim=source.get('measured_rim')
-            if rim:measured[:2]=rim['center_xy']
-            offset=self.robot[arm]['grasp']-measured
-            targets={arm:np.asarray(targets[arm])+offset-self.plan['carry_offset']}
-            self.plan['carry_offset']=offset
-            self.plan['quaternions'][arm]=self.robot[arm]['quaternion'].copy()
-            self.debug['carry_control']=dict(source='current visible object-to-grasp offset',keep_achieved_orientation=True,assumption='already visually verified grasp')
         if self.stage=='approach':
             old=.045 if self.task=='fold_clothes' else .055
             targets={a:np.asarray(p)+[0,0,self.rules['approach_clearance_m']-old] for a,p in targets.items()}
