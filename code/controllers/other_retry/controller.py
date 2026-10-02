@@ -56,3 +56,17 @@ class Controller(TaskController):
             if arms:
                 result['arms']=arms;result['reason']='observe conveyor while orienting at initial safe height'
         return plain(result)
+
+    def _appearance_candidates(self,observation,measured):
+        import cv2
+        super()._appearance_candidates(observation,measured)
+        for name,view in observation['cameras'].items():
+            h,w=view['rgb'].shape[:2];rows=measured['views'][name]['objects']
+            rows.sort(key=lambda r:0 if str(r.get('source','')).startswith('current RGB chroma') else 1)
+            kept=[];masks=[]
+            for row in rows:
+                mask=np.zeros((h,w),np.uint8);poly=np.rint(np.asarray(row['polygon_uv01'])*[w-1,h-1]).astype(np.int32)
+                cv2.fillPoly(mask,[poly],1)
+                if any(row['category']==old['category'] and (mask&other).sum()/max(1,min(mask.sum(),other.sum()))>.65 for old,other in zip(kept,masks)):continue
+                kept.append(row);masks.append(mask)
+            measured['views'][name]['objects']=kept

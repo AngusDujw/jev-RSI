@@ -267,7 +267,7 @@ class VisualEvidence:
             shift=0.; shape_jump=0.
             if prior is not None:
                 shift=float(np.linalg.norm(center-prior['center']))
-                shape_jump=max(float(np.linalg.norm((top-center)-(prior['top']-prior['center']))),
+                shape_jump=max(abs(float((top-center)[2]-(prior['top']-prior['center'])[2])),
                     float(np.max(np.maximum(0.,(high-low)-(prior['high']-prior['low'])))))
                 # Finite observed dimensions allow tall bowls/cloth at acquisition and
                 # coherent translation later. No absolute object-height assumption.
@@ -304,11 +304,8 @@ class VisualEvidence:
         # This is a conservative heuristic, not a calibrated confidence interval.
         error=max(.003,float(np.quantile(residual,.7))*.3+.002)+.025*excluded
         if prior is not None:
-            if row['category']=='cloth':
-                diagnostics['outline_change_m']=float(shape_jump)
-                diagnostics['outline_change_is_not_depth_noise']=True
-                error=max(error,.5*abs(float(top[2]-prior['top'][2])))
-            else: error=max(error,.5*shape_jump)
+            diagnostics['shape_innovation_m']=float(shape_jump)
+            diagnostics['shape_innovation_is_not_measurement_noise']=True
         diagnostics.update(selected_component=component,selected_samples=count,
             excluded_fraction=excluded,prior_id=None if prior is None else prior['id'],
             prior_age_steps=None if prior is None else self.call_index-prior['measurement_index'],
