@@ -15,7 +15,7 @@ class Controller(TaskController):
         if self.plan:
             oid=self.plan['source'];row=self.current.get(oid)
             if row and row['observed']:self.anchor_records[oid]=copy.deepcopy(row)
-            if self.task=='match_and_pick_from_conveyor':self.plan['lift_distance_m']=self.rules.get('lift_clearance_m',.12)
+            if self.task in ('match_and_pick_from_conveyor','stack_bowls'):self.plan['lift_distance_m']=self.rules.get('lift_clearance_m',.12)
     def _get(self,oid,fresh=False):
         row=self.current.get(oid)
         if row and row['observed'] and row['uncertainty_m']<=.012:
@@ -45,6 +45,10 @@ class Controller(TaskController):
         if self.stage=='approach':
             old=.045 if self.task=='fold_clothes' else .055
             targets={a:np.asarray(p)+[0,0,self.rules['approach_clearance_m']-old] for a,p in targets.items()}
+        if self.task=='fold_clothes' and self.stage in ('transport','lower'):
+            height=self.plan['fold_height'] if self.stage=='transport' else .006
+            targets={a:np.asarray(p)+[0,0,height] for a,p in self.plan['fold_destination'].items()}
+            self.debug['fold_target_reference']='initial observed intended fold destination, not re-numbered live rectangle'
         if self.stage=='contact':targets={a:np.asarray(p)+[0,0,self.rules.get('grasp_depth_adjust_m',0.)] for a,p in targets.items()}
         return targets,u,g
 
@@ -77,6 +81,14 @@ class Controller(TaskController):
         if self.stage=='close':ticks=int(self.rules.get('close_ticks',ticks))
         return super()._fixed(opening,reason,ticks)
     def _verify_grasp(self):
+        if self.task=='stack_bowls':
+            row=self._get(self.plan['source'],fresh=True);base=self.plan['baseline'];arm=self.plan['arms'][0]
+            points=np.asarray(row.get('surface_samples_m',[]));distance=float(np.min(np.linalg.norm(points-self.robot[arm]['grasp'],axis=1))) if points.size else 1.
+            low_rise=float(row['low'][2]-base['low'][2]);robot_rise=float(self.robot[arm]['grasp'][2]-base['robot'][arm][2])
+            evidence=dict(visible_bottom_rise_m=low_rise,robot_rise_m=robot_rise,visible_surface_to_grasp_m=distance,source='fresh depth above original support; allows rigid rotation')
+            if low_rise>.020 and robot_rise>.030 and distance<.07:self.grasp_evidence.append(dict(native_step=self.last_native))
+            else:self.grasp_evidence=[]
+            return len(self.grasp_evidence)>=2,evidence
         if self.task!='fold_clothes':return super()._verify_grasp()
         row=self._get(self.plan['source'],fresh=True);points=np.asarray(row.get('surface_samples_m',[]));base=self.plan['baseline']
         if points.size==0:return False,dict(reason='no current garment depth samples')

@@ -234,6 +234,11 @@ class VisualEvidence:
         graph=coo_matrix((np.ones(len(aa),np.uint8),(aa,bb)),shape=(total,total)).tocsr()
         n,labels=connected_components(graph,directed=False)
         sizes=np.bincount(labels,minlength=n)
+        if row['category']=='cloth':
+            supported=sizes[labels]>=12
+            labels=np.where(supported,0,1)
+            sizes=np.bincount(labels,minlength=2);n=2
+            diagnostics['garment_union_of_visible_components']=True
         components=np.flatnonzero(sizes>=12)
         diagnostics.update(neighbor_gap_m=gap,component_count=int(n),
             supported_component_sizes=sorted(sizes[components].tolist(),reverse=True)[:24])
