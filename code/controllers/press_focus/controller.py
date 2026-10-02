@@ -1,6 +1,7 @@
 """Bounded press primitive with separate tracking error and perception uncertainty."""
 import numpy as np
 from task_controller import Controller as TaskController
+from base_controller import Controller as BaseMotion
 
 class Controller(TaskController):
     def _deadzone(self,uncertainty):
@@ -20,11 +21,25 @@ class Controller(TaskController):
         if self.stage=='press_stroke' and self.rules.get('bounded_press_cycle'):
             arm=self.plan['arms'][0];normal=np.asarray(self.plan['normal'])
             advancement=float(np.dot(self.plan['button_surface']-self.robot[arm]['grasp'],normal))
-            if advancement>=.5*self.rules['press_depth_m']:
-                self._transition('press_retract',dict(source='measured end-effector normal advancement',
+            if self.feedback and self.feedback['stage']=='press_stroke':
+                f=self.feedback['arms'][arm]
+                actual=abs(float(np.dot(f['actual'],normal)));command=abs(float(np.dot(f['command'],normal)))
+                self.press_stall=self.press_stall+1 if command>.002 and actual<.0015 else 0
+            if advancement>=.5*self.rules['press_depth_m'] or self.press_stall>=2:
+                self._transition('press_retract',dict(source='bounded advancement or repeated normal endstop',
                     normal_advancement_m=advancement,button_activation_verified=False))
-                targets,uncertainty,opening=self._targets()
-        return super()._movement(targets,uncertainty,opening,obs,ask_jev)
+                self.press_stall=0;targets,uncertainty,opening=self._targets()
+        if self.stage=='press_retract' and self.rules.get('bounded_press_cycle'):
+            if not self.plan.get('bottom_dwell_done'):
+                self.plan['bottom_dwell_done']=True
+                return self._fixed(0.,'hold achieved contact pose briefly; activation not verified',ticks=self.rules['settle_ticks'])
+            arrived=all(np.max(np.abs(p-self.robot[a]['grasp']))<=self._deadzone(uncertainty) for a,p in targets.items())
+            if arrived and not self.plan.get('release_dwell_done'):
+                self.plan['release_dwell_done']=True
+                return self._fixed(0.,'hold retracted pose for spring return; activation not verified',ticks=self.rules['settle_ticks'])
+        result=BaseMotion._movement(self,targets,uncertainty,opening,obs,ask_jev)
+        if result and self.stage=='press_stroke' and result.get('arms'):result['ticks']=min(self.remaining,self.rules['stroke_ticks'])
+        return result
 
     @staticmethod
     def waypoint_state(state):
