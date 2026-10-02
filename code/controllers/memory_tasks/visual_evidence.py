@@ -183,6 +183,19 @@ class VisualEvidence:
         h,w=cloud.shape[:2]; mask=np.zeros((h,w),np.uint8)
         cv2.fillPoly(mask,[np.rint(row['polygon']*[w-1,h-1]).astype(np.int32)],1)
         mask=mask.astype(bool)&np.isfinite(cloud).all(-1)
+        # Segment supports against its own previous measured appearance, never
+        # an externally supplied object color. Reject foreground robot pixels.
+        if row['category'] in ('cloth','bowl'):
+            priors=[r for r in self.tracks.values() if r['category']==row['category'] and r['landmark_view']==name
+                and self.call_index-r['measurement_index']<=self.ttl
+                and np.linalg.norm(np.asarray(r['image_center_uv01'])-np.mean(row['polygon'],axis=0))<.12]
+            if len(priors)==1:
+                proto=np.asarray(priors[0]['color'],float); image=np.asarray(rgb,float)
+                if row['category']=='cloth':
+                    chroma=image/np.maximum(1.,image.sum(-1,keepdims=True)); ref=proto/max(1.,proto.sum())
+                    mask &= np.linalg.norm(chroma-ref,axis=-1)<.14
+                else:
+                    mask &= image.mean(-1)>.4*proto.mean()
         total=int(mask.sum())
         diagnostics=dict(camera=name,label=row['label'],category=row['category'],
                          appearance=row['appearance'],text=row['text'],
