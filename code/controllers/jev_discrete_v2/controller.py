@@ -7,7 +7,7 @@ import copy
 import time
 import numpy as np
 from geometry_controller import Controller as Geometry
-from base_controller import bounded_quaternion, tool_quaternion, EvidenceError, AXES
+from base_controller import bounded_quaternion, tool_quaternion, quat_matrix, EvidenceError, AXES
 from visual_evidence import plain
 
 MOVING={'approach':'contact','contact':'close','lift':'verify_grasp',
@@ -47,7 +47,7 @@ class Controller(Geometry):
         self.variant=settings.get('input_variant','numeric')
         self.processing=settings.get('processing_variant','anchored')
         self.proposal=None;self.initial_robot=None;self.perception_failures=0
-        self.phase_decisions=[];self.last_grip={};self.prepared_stage=None;self.gripper_observations=[];self.grasp_retries=0
+        self.phase_decisions=[];self.last_grip={};self.prepared_stage=None;self.gripper_observations=[];self.grasp_retries=0;self.contact_stalls=0
         self.rules.setdefault('approach_clearance_m',.055)
 
     def _transition(self,new,evidence):
@@ -89,6 +89,13 @@ class Controller(Geometry):
         if self.processing=='precision' and self.stage in ('contact','lower','press_contact','press_stroke'):
             return .002  # waypoint tracking tolerance; perception uncertainty remains disclosed separately
         return super()._deadzone(uncertainty)
+
+    def _orientation_goal(self,a):
+        if self.stage=='return_home':return self.initial_robot[a]['quaternion']
+        if self.task=='stack_bowls' and self.stage in ('transport','lower','release','retreat'):
+            self.debug['orientation_contract']='vertical approach axis; yaw is free for rotationally symmetric bowls'
+            return tool_quaternion([0,0,-1],quat_matrix(self.robot[a]['quaternion'])[:,1])
+        return self.plan['quaternions'].get(a,self.robot[a]['quaternion']) if self.plan else tool_quaternion([0,0,-1])
 
     def _result(self,*args,**kwargs):
         result=super()._result(*args,**kwargs)
@@ -156,7 +163,8 @@ class Controller(Geometry):
             stage_goal=CONTRACTS.get(self.stage,'Observe current evidence before advancing'),
             next_stage_candidate=next_stage,phase_evidence=evidence,perception_error=error,
             robot=self.robot,history=list(self.history)[-8:],feedback=self.feedback,
-            waypoint_reference=self.debug.get('waypoint_reference','desired robot waypoint estimated from RGB-D; not an object truth claim'),grasp_retries=self.grasp_retries,
+            waypoint_reference=self.debug.get('waypoint_reference','desired robot waypoint estimated from RGB-D; not an object truth claim'),grasp_retries=self.grasp_retries,consecutive_contact_stalls=self.contact_stalls,
+            contact_stall_meaning='commanded translation >2mm but measured response <0.5mm; may be contact OR IK limitation, not a contact sensor',
             visibility={k:{f:v.get(f) for f in ('observed','age_steps','uncertainty_m','label','source','views')} for k,v in self.current.items()},
             constraints=dict(max_delta_norm_m=self.max_step,dead_zone_m=self._deadzone(u),uncertainty_m=u),
             interpretation='Targets are desired robot waypoints from vision, not true object poses. Evidence is an estimate. Stage names/candidates do not assert completion.')
@@ -167,7 +175,7 @@ class Controller(Geometry):
         else:state['geometry']=geometry
         angles={}
         for a in arms:
-            q=self.initial_robot[a]['quaternion'] if self.stage=='return_home' else self.plan['quaternions'].get(a,self.robot[a]['quaternion']) if self.plan else tool_quaternion([0,0,-1])
+            q=self._orientation_goal(a)
             _,angles[a]=bounded_quaternion(self.robot[a]['quaternion'],q)
         state['orientation_error_rad']=angles
         if self.variant=='evidence':
@@ -202,6 +210,9 @@ class Controller(Geometry):
             questions['phase']['instructions']='Decide ONLY if the CURRENT robot waypoint has been reached: compare geometry/relations with constraints.dead_zone_m and orientation_error_rad (<=0.15 rad). If outside tolerance, stay and execute motion. If inside tolerance, advance to the named next phase. Do not require future grasp/lift/release success. At contact on conveyor, use current_contact_error_m instead of the lead waypoint. '+CONTRACTS.get(self.stage,'')
         elif self.stage in ('close','release'):
             questions['phase']['instructions']='Decide if the CURRENT gripper operation has been executed using recent_gripper_feedback and last_gripper_commands. '+CONTRACTS[self.stage]+' For close, nonzero stable opening under close command may mean object resistance: proceed to lift probe instead of waiting forever for zero. For release, require opening >=0.85. If still moving toward its command, stay; grasp verification is a later phase.'
+        if self.task=='press_by_number' and self.stage=='select' and next_stage:
+            questions['phase']['instructions']='Decide only whether the next prescribed button has been identified and a candidate approach exists. A previously observed, explicitly marked STATIONARY fixture reference is usable when the hand occludes the face. Do not require a fresh detection of that same fixture, or proof of previous activation, to select it. The sequence tracks attempted presses, not certified activations.'
+            questions['phase']['criteria']['advance']='The next prescribed button identity and its current OR stored stationary fixture reference support an approach candidate.'
         if self.stage.startswith('press_'):
             questions['phase']['instructions']='Judge ONLY the current bounded robot operation, not whether the button was activated. '+CONTRACTS.get(self.stage,'')+' The geometry target is a requested ROBOT waypoint anchored to a measured fixture, not an assertion of true/current button pose. At stroke: compare maximum robot waypoint error with dead_zone_m; once reached, ADVANCE to verification/retraction. At press_verify: choose advance to retract and expose the button after the stroke; activation remains unknown. Do not demand hidden activation information to retract. At retract: advance when robot reaches clearance; this records an ATTEMPT only.'
         if self.stage=='verify_grasp' and self.grasp_retries<2:
@@ -209,6 +220,10 @@ class Controller(Geometry):
             questions['phase']['instructions']+=' Repeated evidence of object staying on its support while the robot rises is NEGATIVE grasp evidence, not merely missing evidence. Choose retry (and gripper open) to reattempt, or abort. Reobserve only if a new view could resolve missing evidence.'
             for key,q in questions.items():
                 if key.endswith('_gripper'):q['instructions']+=' If selecting phase retry, choose open to release before reapproaching.'
+        if self.stage=='contact' and self.task=='fold_clothes':
+            questions['phase']['instructions']+=' If XY is aligned within 5mm and repeated commanded descent has stalled within 12mm of the requested surface waypoint (consecutive_contact_stalls >=2), you may advance to a CLOSE-and-lift probe instead of waiting for an unreachable exact Z. This could be support contact or IK limitation; it does not prove grasp. Inspect visible cloth after lifting.'
+            for key,q in questions.items():
+                if key.endswith('_gripper'):q['instructions']+=' At contact with XY alignment and repeated descent stall near the surface, closing is a permitted grasp probe; it is not proof of attachment.'
         return questions
 
     def _accept_phase(self,new,evidence):
@@ -237,6 +252,8 @@ class Controller(Geometry):
             self.gripper_observations.append(dict(native_step=self.last_native,stage=self.stage,opening={a:r['opening'] for a,r in self.robot.items()},previous_commands=dict(self.last_grip)))
             if self.initial_robot is None:self.initial_robot=copy.deepcopy(self.robot)
             self._after_motion();self.step_index+=1;self.stage_age+=1
+            stalled=self.stage=='contact' and self.feedback and self.feedback['stage']=='contact' and any(np.linalg.norm(f['command'])>.002 and np.linalg.norm(f['actual'])<.0005 for f in self.feedback['arms'].values())
+            self.contact_stalls=self.contact_stalls+1 if stalled else 0
             if self.stage_age>40 and not self.stage.startswith('conveyor_wait_'):
                 return self._result(stop=True,reason='external phase observation budget exhausted (40 decisions)',ticks=1)
             if self.perception_failures>=6:
@@ -273,7 +290,7 @@ class Controller(Geometry):
             if phase=='abort':return self._result(stop=True,reason='Jev abort from observed evidence',ticks=1)
             # Freeze candidate geometry before transitioning; never move using an old-stage sign after a phase change.
             for a in arms:
-                qgoal=self.initial_robot[a]['quaternion'] if self.stage=='return_home' else self.plan['quaternions'].get(a,self.robot[a]['quaternion']) if self.plan else tool_quaternion([0,0,-1])
+                qgoal=self._orientation_goal(a)
                 q,_=bounded_quaternion(self.robot[a]['quaternion'],qgoal)
                 opening=self.last_grip.get(a,self.robot[a]['opening'])
                 grip=decisions[a+'_gripper']
@@ -302,7 +319,7 @@ class Controller(Geometry):
                 self._accept_phase('approach',dict(Jev_selected_retry=True,attempt=self.grasp_retries,previous_evidence=evidence,depth_adjust_m=self.rules['grasp_depth_adjust_m']))
             if phase=='advance':self._accept_phase(next_stage,evidence)
             if self.stage=='done':return self._result(stop=True,reason='Jev declared task complete; native evaluator remains independent',ticks=1)
-            ticks=2 if self.task=='match_and_pick_from_conveyor' else 5
+            ticks=2 if self.task=='match_and_pick_from_conveyor' or phase in ('advance','retry','reobserve') else 3
             if self.stage.startswith('conveyor_wait_'):ticks=10
             return self._result(commands,reason='Jev phase/gripper/sign decision',ticks=ticks)
         except Exception as exc:

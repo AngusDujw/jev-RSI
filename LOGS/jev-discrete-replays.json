@@ -1,0 +1,408 @@
+{
+  "experiment_id": "EXP-2026W40-131",
+  "requests": [
+    {
+      "folder": "code/runs/jev-discrete-general_pickup-02-phase-replay",
+      "response": "full_specific-response.json",
+      "answers": {
+        "phase": {
+          "type": "choice",
+          "choice": "advance",
+          "confidence": 0.96,
+          "probabilities": {
+            "reobserve": 0.02,
+            "advance": 0.98
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 2140,
+        "output_tokens": 33
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-general_pickup-02-phase-replay",
+      "response": "compact_specific-response.json",
+      "answers": {
+        "phase": {
+          "type": "choice",
+          "choice": "advance",
+          "confidence": 0.99,
+          "probabilities": {
+            "reobserve": 0.0,
+            "advance": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 941,
+        "output_tokens": 33
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-stack_bowls-04-relations-replay",
+      "response": "numeric_same_errors-response.json",
+      "answers": {
+        "left_x": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.73,
+          "probabilities": {
+            "hold": 0.17,
+            "positive": 0.02,
+            "negative": 0.8099999999999999
+          }
+        },
+        "left_y": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.61,
+          "probabilities": {
+            "negative": 0.08,
+            "positive": 0.74,
+            "hold": 0.18
+          }
+        },
+        "left_z": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.85,
+          "probabilities": {
+            "hold": 0.09,
+            "positive": 0.01,
+            "negative": 0.9
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 4521,
+        "output_tokens": 111
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-stack_bowls-04-relations-replay",
+      "response": "original_relations-response.json",
+      "answers": {
+        "left_x": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.15,
+          "probabilities": {
+            "positive": 0.22,
+            "hold": 0.34,
+            "negative": 0.44
+          }
+        },
+        "left_y": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.08,
+          "probabilities": {
+            "negative": 0.35,
+            "hold": 0.26,
+            "positive": 0.39
+          }
+        },
+        "left_z": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.27,
+          "probabilities": {
+            "negative": 0.52,
+            "hold": 0.22,
+            "positive": 0.26
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 4432,
+        "output_tokens": 111
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-stack_bowls-04-relations-replay",
+      "response": "explicit_relations-response.json",
+      "answers": {
+        "left_x": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.39,
+          "probabilities": {
+            "negative": 0.59,
+            "hold": 0.3,
+            "positive": 0.11
+          }
+        },
+        "left_y": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.42,
+          "probabilities": {
+            "negative": 0.19,
+            "hold": 0.2,
+            "positive": 0.61
+          }
+        },
+        "left_z": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.77,
+          "probabilities": {
+            "negative": 0.85,
+            "hold": 0.13,
+            "positive": 0.02
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 4441,
+        "output_tokens": 111
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-stack_bowls-04-relations-replay-corrected",
+      "response": "numeric_same_errors-response.json",
+      "answers": {
+        "left_x": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.76,
+          "probabilities": {
+            "hold": 0.15,
+            "negative": 0.84,
+            "positive": 0.01
+          }
+        },
+        "left_y": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.65,
+          "probabilities": {
+            "hold": 0.16,
+            "negative": 0.08,
+            "positive": 0.76
+          }
+        },
+        "left_z": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.84,
+          "probabilities": {
+            "hold": 0.1,
+            "negative": 0.89,
+            "positive": 0.01
+          }
+        },
+        "left_gripper": {
+          "type": "choice",
+          "choice": "keep",
+          "confidence": 0.97,
+          "probabilities": {
+            "keep": 0.98,
+            "open": 0.02,
+            "close": 0.0
+          }
+        },
+        "phase": {
+          "type": "choice",
+          "choice": "stay",
+          "confidence": 1.0,
+          "probabilities": {
+            "abort": 0.0,
+            "advance": 0.0,
+            "reobserve": 0.0,
+            "stay": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 4874,
+        "output_tokens": 192
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-stack_bowls-04-relations-replay-corrected",
+      "response": "original_full_joint_repeat-response.json",
+      "answers": {
+        "left_x": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.26,
+          "probabilities": {
+            "hold": 0.22,
+            "negative": 0.28,
+            "positive": 0.5
+          }
+        },
+        "left_y": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.41,
+          "probabilities": {
+            "hold": 0.25,
+            "negative": 0.61,
+            "positive": 0.14
+          }
+        },
+        "left_z": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.23,
+          "probabilities": {
+            "hold": 0.21,
+            "negative": 0.31,
+            "positive": 0.48
+          }
+        },
+        "left_gripper": {
+          "type": "choice",
+          "choice": "keep",
+          "confidence": 0.97,
+          "probabilities": {
+            "keep": 0.98,
+            "open": 0.02,
+            "close": 0.0
+          }
+        },
+        "phase": {
+          "type": "choice",
+          "choice": "stay",
+          "confidence": 1.0,
+          "probabilities": {
+            "abort": 0.0,
+            "advance": 0.0,
+            "reobserve": 0.0,
+            "stay": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 4731,
+        "output_tokens": 192
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-stack_bowls-04-relations-replay-corrected",
+      "response": "original_full_joint-response.json",
+      "answers": {
+        "left_x": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.23,
+          "probabilities": {
+            "negative": 0.28,
+            "hold": 0.24,
+            "positive": 0.48
+          }
+        },
+        "left_y": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.32,
+          "probabilities": {
+            "negative": 0.55,
+            "hold": 0.26,
+            "positive": 0.19
+          }
+        },
+        "left_z": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.22,
+          "probabilities": {
+            "negative": 0.33,
+            "hold": 0.19,
+            "positive": 0.48
+          }
+        },
+        "left_gripper": {
+          "type": "choice",
+          "choice": "keep",
+          "confidence": 0.96,
+          "probabilities": {
+            "close": 0.0,
+            "open": 0.03,
+            "keep": 0.97
+          }
+        },
+        "phase": {
+          "type": "choice",
+          "choice": "stay",
+          "confidence": 0.99,
+          "probabilities": {
+            "advance": 0.0,
+            "stay": 1.0,
+            "abort": 0.0,
+            "reobserve": 0.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 4731,
+        "output_tokens": 192
+      }
+    },
+    {
+      "folder": "code/runs/jev-discrete-stack_bowls-04-relations-replay-corrected",
+      "response": "explicit_relations-response.json",
+      "answers": {
+        "left_x": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.39,
+          "probabilities": {
+            "hold": 0.31,
+            "positive": 0.1,
+            "negative": 0.59
+          }
+        },
+        "left_y": {
+          "type": "choice",
+          "choice": "positive",
+          "confidence": 0.41,
+          "probabilities": {
+            "hold": 0.18,
+            "positive": 0.61,
+            "negative": 0.21
+          }
+        },
+        "left_z": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 0.81,
+          "probabilities": {
+            "hold": 0.11,
+            "positive": 0.02,
+            "negative": 0.87
+          }
+        },
+        "left_gripper": {
+          "type": "choice",
+          "choice": "keep",
+          "confidence": 0.97,
+          "probabilities": {
+            "open": 0.02,
+            "keep": 0.98,
+            "close": 0.0
+          }
+        },
+        "phase": {
+          "type": "choice",
+          "choice": "stay",
+          "confidence": 1.0,
+          "probabilities": {
+            "stay": 1.0,
+            "reobserve": 0.0,
+            "advance": 0.0,
+            "abort": 0.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 4794,
+        "output_tokens": 192
+      }
+    }
+  ],
+  "qualification": "9 model-only calls; first 3 relation probes share rewritten question text and are NOT original-query controls; corrected full-joint original twice 0/3, explicit relation 3/3, numeric 3/3 against SAME estimated error."
+}
