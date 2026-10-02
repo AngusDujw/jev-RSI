@@ -164,3 +164,5 @@
 - 【User】【2026-10-02 15:10】[decision] 用户要求参考RoboDawn/Harness VLA经验总结与加载，重组为尽可能通用逻辑＋Markdown经验；冻结后测4次。本轮仅general_pickup布局0–3，每个一次，不中途调参。
 - 【Agent】【2026-10-02 15:10】[op] 新建隔离memory_pickup候选：通用观测/验证经验与拾取配方Markdown分层，按阶段检索，保存哈希快照、加载轨迹、事实笔记；撤销最近同名目标选择与lift特殊放宽。8mm重抓只保留为有证据但未泛化的任务经验。
 - 【Agent】【2026-10-02 15:18】[op] 核对RoboDawn memory.py三类记忆和Harness VLA官方Task/Global Memory及bootstrapping/evaluation分离；文档明示本实现借鉴边界。新增离线事实总结工具，候选status=candidate不自动激活；四回合评测运行版本与active经验冻结未改。
+- 【Agent】【2026-10-02 16:02】[op] 三任务RGB-D静态选择核对通过：1030右侧烤碗旁碗、1062桌中碗、1282盘旁碗；固定选择器各3初态，不更改Jev和腕部闭环。
+- 【Agent】【2026-10-02 16:07】[result] 经验重组固定4回合完成3/4=75%，81真实Jev请求均带冻结Markdown检索证据，四回合源码/经验SHA一致。回合结果总结为candidate不自动激活；2036原始文件两端SHA一致，仿真退出，停止不追加。

@@ -1,0 +1,101 @@
+{
+  "rows": [
+    {
+      "layout": 0,
+      "success": true,
+      "steps": 127,
+      "jev_calls": 22,
+      "vision_calls": 43,
+      "deepseek_calls": 0,
+      "status": "native_episode_ended",
+      "run": "code/runs/memory-eval4-0",
+      "commit": "b26a7856e2b9bbbe8636ec5a12837297672a1b59",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-eval4/0.json",
+        "--output",
+        "code/runs/memory-eval4-0",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    },
+    {
+      "layout": 1,
+      "success": true,
+      "steps": 160,
+      "jev_calls": 30,
+      "vision_calls": 56,
+      "deepseek_calls": 0,
+      "status": "native_episode_ended",
+      "run": "code/runs/memory-eval4-1",
+      "commit": "b26a7856e2b9bbbe8636ec5a12837297672a1b59",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-eval4/1.json",
+        "--output",
+        "code/runs/memory-eval4-1",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    },
+    {
+      "layout": 2,
+      "success": false,
+      "steps": 2,
+      "jev_calls": 0,
+      "vision_calls": 9,
+      "deepseek_calls": 0,
+      "status": "controller_stop:unrecoverable observation ambiguity: instruction does not uniquely identify visible candidates",
+      "run": "code/runs/memory-eval4-2",
+      "commit": "78246895ab5199ad525c44f2cbfcf38b71864aca",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-eval4/2.json",
+        "--output",
+        "code/runs/memory-eval4-2",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    },
+    {
+      "layout": 3,
+      "success": true,
+      "steps": 161,
+      "jev_calls": 29,
+      "vision_calls": 39,
+      "deepseek_calls": 0,
+      "status": "native_episode_ended",
+      "run": "code/runs/memory-eval4-3",
+      "commit": "78246895ab5199ad525c44f2cbfcf38b71864aca",
+      "command": [
+        "code/scripts/run_position_pilot.py",
+        "--config",
+        "code/configs/memory-eval4/3.json",
+        "--output",
+        "code/runs/memory-eval4-3",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    }
+  ],
+  "memory_hashes": {
+    "observation": "91174460f677a7ba0ba9db85e1adf9280d7a3c23c0667d8da91293cc48c0fc45",
+    "verification": "d1277b2189a7a498f184987dab1a0c1b3a775e7f31139d9827cbb47521a8eef8",
+    "pick_lift": "9d6c4601bcbb563450327258fa5a1644c14a285b499e57506dcf2fd8d167aed0"
+  },
+  "controller_hashes": {
+    "/root/yekangjie/project/jev_rsi/code/controllers/memory_pickup/base_controller.py": "59e06ce5fbd4b0f92856da8769da8ade52c58599d36f6950455b8a85315c25fc",
+    "/root/yekangjie/project/jev_rsi/code/controllers/memory_pickup/controller.py": "e1c611aad8593a828fd8de4aedb70c3d4ff93fc698faa7f81ec12ac800654794",
+    "/root/yekangjie/project/jev_rsi/code/controllers/memory_pickup/visual_evidence.py": "4c006fc8c969eb0c408efc99d25244e2b9b4685ccaae3af00a3f921cf889f5c9",
+    "/root/yekangjie/project/jev_rsi/code/controllers/memory_pickup/multiview.py": "aaa5e2a2ba13bfd84ed94f7b0fd3e6770fadf775d75d6e98cf2d215e2ba99dcc",
+    "/root/yekangjie/project/jev_rsi/code/controllers/memory_pickup/experience.py": "ac1795c4942933ba97ce09e0f4c1dde42007a80ee57e1f085409a68788ca21d8"
+  },
+  "memory_verified_requests": 81
+}
