@@ -214,6 +214,7 @@ def main():
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
     p.add_argument('--legacy-vision', dest='generic_vision', action='store_false', help='Reproduce archived task-specific colour/rim policy only')
     p.add_argument('--task-id', type=int, default=988)
+    p.add_argument('--suite', choices=['libero_spatial','libero_object','libero_goal','libero_10'], default='libero_spatial')
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--init-index', type=int, default=0)
     p.add_argument('--relation', choices=['near_ramekin','table_center','near_plate'])
@@ -222,7 +223,7 @@ def main():
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
-               suite='libero_spatial', task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
+               suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
                permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
@@ -233,7 +234,7 @@ def main():
     from libero.libero.envs.env_wrapper import ControlEnv
     from robosuite.utils.camera_utils import get_real_depth_map, get_camera_intrinsic_matrix, get_camera_extrinsic_matrix
     with contextlib.redirect_stdout(io.StringIO()):
-        suite = benchmark.get_benchmark_dict()['libero_spatial'](0)
+        suite = benchmark.get_benchmark_dict()[a.suite](0)
     task = suite.get_task(a.task_id)
     dump(out/'task.json', dict(name=task.name, language=task.language, bddl=suite.get_task_bddl_file_path(a.task_id)))
     env = None
