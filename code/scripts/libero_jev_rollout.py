@@ -173,12 +173,13 @@ def main():
     p.add_argument('--capture-only', action='store_true')
     p.add_argument('--task-id', type=int, default=988)
     p.add_argument('--seed', type=int, default=0)
+    p.add_argument('--init-index', type=int, default=0)
     a = p.parse_args()
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
-               suite='libero_spatial', task_id=a.task_id, seed=a.seed,
+               suite='libero_spatial', task_id=a.task_id, seed=a.seed, init_index=a.init_index,
                permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
@@ -198,7 +199,7 @@ def main():
              camera_names=['agentview','robot0_eye_in_hand'], camera_heights=384, camera_widths=384,
              camera_depths=True, control_freq=20, horizon=600, controller='OSC_POSE', initialization_noise=None)
         env.seed(a.seed); env.reset()
-        obs = env.set_init_state(np.asarray(suite.get_task_init_states(a.task_id)[0],float))
+        obs = env.set_init_state(np.asarray(suite.get_task_init_states(a.task_id)[a.init_index],float))
         for _ in range(10): obs, _, _, _ = env.step(np.array([0.,0.,0.,0.,0.,0.,-1.]))
         for cam in ['agentview','robot0_eye_in_hand']:
             rgb = np.ascontiguousarray(obs[cam+'_image'][::-1])
