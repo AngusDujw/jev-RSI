@@ -54,6 +54,7 @@ graph LR
     T_2026W40_021["📊 libero-generic-vision<br/>冻结跨任务：盘旁1/3、奶酪0/3、汤罐0…"]:::experiment
     T_2026W40_022["📊 jev-control-formulation<br/>三任务各10次收束：传送带最终版原生成功4…"]:::experiment
     T_2026W40_023["🔀 jev-control-formulation<br/>用户授权扩展Jev职责至夹爪与阶段决策；比…"]:::pivot
+    T_2026W40_024["📊 libero-jev-ownership<br/>Jev接管夹爪和阶段20回合：反馈族碗3个…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -126,6 +127,7 @@ graph LR
 | `T-2026W40-021` | 2026-10-02 | experiment | libero-generic-vision | 冻结跨任务：盘旁1/3、奶酪0/3、汤罐0/3；暴露关联/低矮抓取/容器放置限制，9回合封版 | `EXP-2026W40-111` | - |
 | `T-2026W40-022` | 2026-10-02 | experiment | jev-control-formulation | 三任务各10次收束：传送带最终版原生成功479步/19Jev，另外两任务未完成；不宣称稳定率 | `EXP-2026W40-109` | - |
 | `T-2026W40-023` | 2026-10-02 | pivot | jev-control-formulation | 用户授权扩展Jev职责至夹爪与阶段决策；比较非特权视觉处理与结构化输入，每任务最多50次，开发与冻结验证分开 | `DISC-2026W39-001` | - |
+| `T-2026W40-024` | 2026-10-03 | experiment | libero-jev-ownership | Jev接管夹爪和阶段20回合：反馈族碗3个初态成功、汤罐最终3/3完整成功，奶酪0/7；无特权输入审计与全负结果保留 | `EXP-2026W40-151` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
