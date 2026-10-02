@@ -20,7 +20,12 @@ class Controller(Base):
             if used:state['experience_memory']=[dict(id=r['id'],lesson=r['content'],sha256=r['sha256']) for r in used]
             self.memory.record(state,used)
             return ask_jev(state,questions)
-        result=super().step(observation,query,perceive)
+        def perception(prompt,payload):
+            measured=perceive(prompt,payload)
+            if self.task=='match_and_pick_from_conveyor' and self.rules.get('appearance_match') and self.first_object is not None:
+                self._appearance_candidates(payload,measured)
+            return measured
+        result=super().step(observation,query,perception)
         if result['stage'].startswith('conveyor_wait_') and not result['stop']:
             result['ticks']=min(self.remaining,int(self.rules.get('wait_ticks',3)))
         return result
@@ -113,3 +118,22 @@ class Controller(Base):
                 self.debug.setdefault('fixture_references',[]).append(dict(id=oid,initial_native_step=remembered['native_step'],current_native_step=self.last_native,observed_now=False))
                 return remembered
         return super()._get(oid,fresh=fresh)
+
+    def _appearance_candidates(self,observation,measured):
+        import cv2
+        ref=np.asarray(self.first_object['color'],float); proto=ref/max(1.,ref.sum())
+        for name,view in observation['cameras'].items():
+            image=np.asarray(view['rgb'],float); chroma=image/np.maximum(1.,image.sum(-1,keepdims=True))
+            mask=(np.linalg.norm(chroma-proto,axis=-1)<.07)&(image.mean(-1)>.5*ref.mean())
+            count,labels,stats,_=cv2.connectedComponentsWithStats(mask.astype(np.uint8))
+            h,w=mask.shape
+            for i in range(1,count):
+                area=stats[i,cv2.CC_STAT_AREA]
+                if not 30<=area<=.03*h*w:continue
+                contours,_=cv2.findContours((labels==i).astype(np.uint8),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+                contour=max(contours,key=cv2.contourArea);contour=cv2.approxPolyDP(contour,.01*cv2.arcLength(contour,True),True).reshape(-1,2)
+                if len(contour)<3:continue
+                measured['views'][name]['objects'].append(dict(category=self.first_object['category'],label=self.first_object['label'],
+                    appearance=self.first_object['appearance'],text=self.first_object['text'],confidence=.8,
+                    polygon_uv01=(contour/[w-1,h-1]).tolist(),keypoints={},
+                    source='current RGB chroma segmentation against first-observed appearance; requires subsequent metric gate'))
