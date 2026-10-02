@@ -68,3 +68,31 @@ class Controller(Base):
             targets={a:p+np.array([0,0,.045 if self.stage=='approach' else 0]) for a,p in self.plan['fold_source'].items()}
             self.debug['experience_reference']='initial garment landmark, not new centroid; fresh cloth required'
         return targets,u,g
+
+    def _select_fold(self,cloth):
+        if not self.rules.get('cloth_keypoint_anchor') or len(cloth.get('corners',[]))!=4:
+            return super()._select_fold(cloth)
+        corners=np.asarray(cloth['corners']); names=cloth['corner_names']; candidates=[]
+        mid=.5*(self.robot['left']['link6'][0]+self.robot['right']['link6'][0])
+        for k in range(4):
+            src=[k,(k+1)%4]; dst=[(k+3)%4,(k+2)%4]
+            for arms in [('left','right'),('right','left')]:
+                travel=0.; penalty=0.
+                for a,i,j in zip(arms,src,dst):
+                    travel+=np.linalg.norm(self.robot[a]['grasp']-corners[i])+np.linalg.norm(corners[j]-corners[i])
+                    for point in [corners[i],corners[j]]:
+                        excess=point[0]-mid if a=='left' else mid-point[0]
+                        penalty+=max(0.,excess-.015)
+                candidates.append((10*penalty+travel,penalty,arms,src,dst))
+        _,penalty,arms,si,di=min(candidates,key=lambda x:x[0])
+        if penalty>.04: raise EvidenceError('paired garment fold requires unreachable cross-arm workspace')
+        src=corners[si];dst=corners[di];spans=np.linalg.norm(dst-src,axis=1)
+        self.plan=dict(source=cloth['id'],arms=list(arms),fold_mode='outline_half_fold',
+            fold_source=dict(zip(arms,src)),fold_destination=dict(zip(arms,dst)),
+            source_names=dict(zip(arms,[names[i] for i in si])),destination_names=dict(zip(arms,[names[i] for i in di])),
+            landmark_view=cloth['landmark_view'],source_initial=cloth['center'].copy(),
+            initial_extent=(cloth['high']-cloth['low']).copy(),baseline=None,grasp_verified=False,
+            quaternions={a:tool_quaternion([0,0,-1],dst[i]-src[i]) for i,a in enumerate(arms)},
+            fold_height=min(.14,max(.05,float(max(spans))*.35)),rule='observed opposite garment edges with bilateral workspace gate')
+        self.grasp_evidence=[];self.release_evidence=[]
+        self._transition('approach',dict(memory='cloth-reference',workspace_penalty_m=penalty,source_points=src,destination_points=dst))
