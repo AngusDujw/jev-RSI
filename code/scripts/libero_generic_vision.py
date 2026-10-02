@@ -124,9 +124,9 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
             # Wider than a comfortable pad span: pinch an observed boundary,
             # not the whole object center. Generic edge heuristic, not learned grasp.
             sign=1 if np.dot(obs['robot0_eef_pos'][:2]-target[:2],perpendicular)>0 else -1
-            distance=max(0,np.dot(np.abs(perpendicular),extent[:2])/2-.004)
+            distance=max(0,.75*np.dot(np.abs(perpendicular),extent[:2])/2)
             target[:2]+=sign*distance*perpendicular
-        target[2]=src['high'][2]-.014
+        target[2]=src['low'][2]+.40*extent[2]
         dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=target,closing_axis=axis,observed_width=width,
              source='visible extent plus own gripper span; generic boundary pinch heuristic'))
         return target
@@ -156,6 +156,7 @@ def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
         # Every grasp uses newly localized geometry; explicit robot geometry offset.
         tcp_before=obs['robot0_eef_pos'].copy();source_before=src['center'].copy()
         step([0,0,0,0,0,0,1],16);snapshot('close')
+        dump(rec.folder/'gripper-close.json',dict(qpos=obs['robot0_gripper_qpos'],tcp=obs['robot0_eef_pos']))
         move(np.r_[tcp_before[:2],hover],'lift',1)
         # Verify source using a fresh detector, associated to predicted source location.
         v=views();cam='robot0_eye_in_hand'
