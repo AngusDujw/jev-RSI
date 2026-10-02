@@ -55,3 +55,7 @@ cd /root/yekangjie/project/jev_rsi
 ## 固定20初态验证
 
 2026-10-02：成功版本增加`--init-index`选择，`run_libero_batch.py`冻结源码后测试官方初态1–20，各1回合，16/20=80%。开发init0不计入；失败2/13/14/18均为lift后腕部拟合拒绝。共1244Jev、4308步、31.5分钟；无额外模型调用。详见[报告](../LOGS/2026-10-02-libero-frozen20-results.md)。
+
+## 三任务迁移
+
+新增`--relation near_ramekin|table_center|near_plate`显式外部目标选择，只影响选择此参数的回合。`run_libero_transfer.py`冻结源码测试1030/1062/1282各init1–3；分别0/3、0/3、3/3。详见[迁移报告](../LOGS/2026-10-02-libero-transfer-results.md)。原task988控制不传此参数，旧20次结果不变。

@@ -166,3 +166,4 @@
 - 【Agent】【2026-10-02 15:18】[op] 核对RoboDawn memory.py三类记忆和Harness VLA官方Task/Global Memory及bootstrapping/evaluation分离；文档明示本实现借鉴边界。新增离线事实总结工具，候选status=candidate不自动激活；四回合评测运行版本与active经验冻结未改。
 - 【Agent】【2026-10-02 16:02】[op] 三任务RGB-D静态选择核对通过：1030右侧烤碗旁碗、1062桌中碗、1282盘旁碗；固定选择器各3初态，不更改Jev和腕部闭环。
 - 【Agent】【2026-10-02 16:07】[result] 经验重组固定4回合完成3/4=75%，81真实Jev请求均带冻结Markdown检索证据，四回合源码/经验SHA一致。回合结果总结为candidate不自动激活；2036原始文件两端SHA一致，仿真退出，停止不追加。
+- 【Agent】【2026-10-02 16:16】[result] 三任务迁移完成：1030识别失败0/3；1062下降停滞0/3；1282盘旁黑碗3/3原生成功。318Jev、0DeepSeek/GPT6；1901文件两端SHA256一致；失败任务各3次后不追加。

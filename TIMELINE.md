@@ -45,6 +45,7 @@ graph LR
     T_2026W40_012["📊 libero-plus-jev<br/>腕部RGB-D碗沿拟圆补偿后首次原生成功1…"]:::experiment
     T_2026W40_013["📊 jev-control-formulation<br/>general_pickup固定五布局3/…"]:::experiment
     T_2026W40_014["📊 libero-plus-jev<br/>固定腕部策略20个未调试初态16/20=8…"]:::experiment
+    T_2026W40_015["📊 libero-plus-transfer<br/>三项迁移各3初态：盘旁3/3成功，烤碗旁0…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -100,6 +101,7 @@ graph LR
 | `T-2026W40-012` | 2026-10-02 | experiment | libero-plus-jev | 腕部RGB-D碗沿拟圆补偿后首次原生成功1/1：77Jev、263步、98.73秒，单开发初态 | `EXP-2026W40-045` | - |
 | `T-2026W40-013` | 2026-10-02 | experiment | jev-control-formulation | general_pickup固定五布局3/5；针对失败修复后layout3成功，layout2仍失败，确认4/5=80%开发比例 | `EXP-2026W40-052` | - |
 | `T-2026W40-014` | 2026-10-02 | experiment | libero-plus-jev | 固定腕部策略20个未调试初态16/20=80%；4次lift后拟合拒绝，完整封版 | `EXP-2026W40-050` | - |
+| `T-2026W40-015` | 2026-10-02 | experiment | libero-plus-transfer | 三项迁移各3初态：盘旁3/3成功，烤碗旁0/3识别失败，桌中央0/3下降停滞；封存小批不追加 | `EXP-2026W40-054` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
