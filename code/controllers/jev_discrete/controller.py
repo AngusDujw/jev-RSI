@@ -67,7 +67,7 @@ class Controller(Geometry):
         if self.stage=='return_home':
             return {a:r['grasp'].copy() for a,r in self.initial_robot.items()},0.,1.
         targets,u,g=super()._targets()
-        if self.task=='general_pickup' and self.processing=='anchored' and self.stage in ('approach','contact'):
+        if self.task=='general_pickup' and self.processing in ('anchored','precision') and self.stage in ('approach','contact'):
             targets={self.plan['arms'][0]:self.plan['initial_grasp']+np.array([0,0,.004+(.055 if self.stage=='approach' else 0)])}
         if self.processing=='precision' and self.stage in ('approach','contact') and self.task=='fold_clothes':
             center=self.plan['source_initial']
