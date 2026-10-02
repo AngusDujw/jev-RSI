@@ -86,7 +86,11 @@ class Controller(Geometry):
             evidence['candidate_plan']=self.plan
             evidence['temporal_observations']=self.debug
             if self.proposal: next_stage=self.proposal['to_stage'];evidence['candidate_basis']=self.proposal['evidence']
-            else:next_stage=None
+            else:
+                next_stage=None
+                if self.task=='match_and_pick_from_conveyor' and self.first_object is not None:
+                    if self.stage in ('select','conveyor_wait_first'):next_stage='conveyor_wait_departure'
+                    elif self.stage=='conveyor_wait_departure' and self.conveyor_departed:next_stage='conveyor_wait_repeat'
         elif self.stage in MOVING:
             targets,uncertainty,_=self._targets();next_stage=MOVING[self.stage]
             if self.stage=='contact' and self.task=='match_and_pick_from_conveyor':
@@ -167,7 +171,14 @@ class Controller(Geometry):
         criteria=dict(stay='Continue current stage; execute selected movement/gripper command.',
             reobserve='Stay in stage, hold translation and gripper command; acquire another observation.',abort='Stop unsuccessful because available evidence cannot support safe progress.')
         if next_stage and not error:criteria['advance']=f'Enter {next_stage}; current stage requirements are satisfied by available evidence. No translation in the transition action; selected gripper command still executes.'
-        questions['phase']=choice('YOU decide WHEN to change phase. The candidate is a possible next goal, NOT an instruction to advance now. Compare measured errors/opening/orientation and phase_goal. Advance only after current stage completion. In contact use current contact error if supplied. Missing evidence: reobserve; never use hidden simulation outcome. A verification requires at least two supporting observations. Select/temporal phases advance when candidate evidence is supported.',criteria)
+        questions['phase']=choice('YOU decide WHEN to change phase. The candidate is a possible next goal, NOT an instruction to advance now. Compare measured errors/opening/orientation and stage_goal. Advance only after current stage completion. In contact use current contact error if supplied. Missing evidence: reobserve; never use hidden simulation outcome. A verification requires at least two supporting observations. Select/temporal phases advance when candidate evidence is supported.',criteria)
+        if self.stage=='select' and next_stage=='approach' and not error:
+            questions['phase']=choice('Decide whether to finish SELECT and begin APPROACH. Selection is complete if an instruction-relevant source and a feasible candidate plan are available from observed RGB-D. This phase requires NO robot movement, grasp, lift, or task success. Lack of grasp/lift evidence is irrelevant at SELECT.',
+                dict(advance='A source and a usable candidate plan are available: begin approaching it.',reobserve='A source or usable plan is missing or ambiguous: obtain another observation.'))
+        elif self.stage in MOVING:
+            questions['phase']['instructions']='Decide ONLY if the CURRENT robot waypoint has been reached: compare geometry/relations with constraints.dead_zone_m and orientation_error_rad (<=0.15 rad). If outside tolerance, stay and execute motion. If inside tolerance, advance to the named next phase. Do not require future grasp/lift/release success. At contact on conveyor, use current_contact_error_m instead of the lead waypoint. '+CONTRACTS.get(self.stage,'')
+        elif self.stage in ('close','release'):
+            questions['phase']['instructions']='Decide ONLY if the gripper opening has reached the CURRENT phase endpoint. '+CONTRACTS[self.stage]+' If not yet reached, stay and command the needed gripper action; grasp verification is a later phase.'
         return questions
 
     def _accept_phase(self,new,evidence):
@@ -195,6 +206,10 @@ class Controller(Geometry):
             self.instruction=str(observation['instruction']);self._read_robot(observation)
             if self.initial_robot is None:self.initial_robot=copy.deepcopy(self.robot)
             self._after_motion();self.step_index+=1;self.stage_age+=1
+            if self.stage_age>40 and not self.stage.startswith('conveyor_wait_'):
+                return self._result(stop=True,reason='external phase observation budget exhausted (40 decisions)',ticks=1)
+            if self.perception_failures>=6:
+                return self._result(stop=True,reason='external unavailable-observation budget exhausted (6 observations)',ticks=1)
             if self.remaining<=0 or self.jev_calls>=240 or time.monotonic()-self.started>19*60:
                 return self._result(stop=True,reason='external hard budget reached',ticks=1)
             self.vision.stage=self.stage
