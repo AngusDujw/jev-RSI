@@ -12,7 +12,10 @@ class Controller(TaskController):
         targets,u,opening=super()._targets()
         if self.task=='press_by_number' and self.rules.get('bounded_press_cycle'):
             arm=self.plan['arms'][0];normal=np.asarray(self.plan['normal'])
-            if self.stage=='press_stroke':targets={arm:self.plan['button_surface']-normal*self.rules['press_depth_m']}
+            if self.rules.get('spatial_press_order'):
+                self.plan['button_surface']=np.asarray(self.fixture_map[self.plan['source']]['center']).copy()
+            if self.stage=='press_approach':targets={arm:self.plan['button_surface']+normal*self.rules['retract_height_m']}
+            elif self.stage=='press_stroke':targets={arm:self.plan['button_surface']-normal*self.rules['press_depth_m']}
             elif self.stage=='press_retract':targets={arm:self.plan['button_surface']+normal*self.rules['retract_height_m']}
             self.debug['press_tracking_contract']=dict(perception_uncertainty_m=u,tracking_tolerance_m=self._deadzone(u),
                 source='measured fixed fixture with bounded normal probing',native_activation_verified=False)
@@ -67,3 +70,9 @@ class Controller(TaskController):
                 negative=f'decrease robot {axis} coordinate toward requested waypoint',
                 hold=f'zero {axis}: already within tracking dead zone',
                 positive=f'increase robot {axis} coordinate toward requested waypoint')) for arm in targets for axis in 'xyz'}
+
+    def _press_sequence(self,instruction,rows):
+        if self.sequence is not None:return self.sequence
+        if self.rules.get('spatial_press_order'):
+            rows=sorted(rows,key=lambda r:float(r['image_center_uv01'][0]))
+        return super()._press_sequence(instruction,rows)
