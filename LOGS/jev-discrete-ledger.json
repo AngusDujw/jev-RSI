@@ -1,0 +1,272 @@
+{
+  "jev-discrete-fold_clothes-01": {
+    "experiment_id": "EXP-2026W40-114",
+    "task": "fold_clothes",
+    "attempt": 1,
+    "variant": {
+      "input_variant": "numeric",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "native_episode_ended",
+    "steps": 500,
+    "jev_requests": 100,
+    "jev_responses": 100,
+    "phase_choices": {
+      "reobserve": 100
+    },
+    "gripper_choices": {
+      "open": 200
+    },
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [
+      "select"
+    ],
+    "wall_seconds": 469.9994806535542,
+    "commit": "f19791c5701ca1af902b3f35480113971d8cde59",
+    "run": "code/runs/jev-discrete-fold_clothes-01",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-fold_clothes-01.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-fold_clothes-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-general_pickup-01": {
+    "experiment_id": "EXP-2026W40-115",
+    "task": "general_pickup",
+    "attempt": 1,
+    "variant": {
+      "input_variant": "numeric",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": null,
+    "reason": "[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]",
+    "steps": 0,
+    "jev_requests": 0,
+    "jev_responses": 0,
+    "phase_choices": {},
+    "gripper_choices": {},
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [],
+    "wall_seconds": 0.4401760399341583,
+    "commit": "f19791c5701ca1af902b3f35480113971d8cde59",
+    "run": "code/runs/jev-discrete-general_pickup-01",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-01.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-general_pickup-02": {
+    "experiment_id": "EXP-2026W40-116",
+    "task": "general_pickup",
+    "attempt": 2,
+    "variant": {
+      "input_variant": "numeric",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "native_episode_ended",
+    "steps": 200,
+    "jev_requests": 40,
+    "jev_responses": 40,
+    "phase_choices": {
+      "reobserve": 40
+    },
+    "gripper_choices": {
+      "keep": 40,
+      "close": 40
+    },
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [
+      "select"
+    ],
+    "wall_seconds": 306.6464483588934,
+    "commit": "0e33f6ed0b58e3e0688b3c1071e8c749557e06dd",
+    "run": "code/runs/jev-discrete-general_pickup-02",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-02.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-match_and_pick_from_conveyor-01": {
+    "experiment_id": "EXP-2026W40-117",
+    "task": "match_and_pick_from_conveyor",
+    "attempt": 1,
+    "variant": {
+      "input_variant": "numeric",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "controller_stop:Jev abort from observed evidence",
+    "steps": 184,
+    "jev_requests": 93,
+    "jev_responses": 93,
+    "phase_choices": {
+      "reobserve": 91,
+      "stay": 1,
+      "abort": 1
+    },
+    "gripper_choices": {
+      "keep": 186
+    },
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [
+      "select"
+    ],
+    "wall_seconds": 397.6450222991407,
+    "commit": "f19791c5701ca1af902b3f35480113971d8cde59",
+    "run": "code/runs/jev-discrete-match_and_pick_from_conveyor-01",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-match_and_pick_from_conveyor-01.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-match_and_pick_from_conveyor-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-press_by_number-01": {
+    "experiment_id": "EXP-2026W40-118",
+    "task": "press_by_number",
+    "attempt": 1,
+    "variant": {
+      "input_variant": "numeric",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "native_episode_ended",
+    "steps": 700,
+    "jev_requests": 140,
+    "jev_responses": 140,
+    "phase_choices": {
+      "reobserve": 129,
+      "advance": 1,
+      "stay": 10
+    },
+    "gripper_choices": {
+      "keep": 138,
+      "close": 3
+    },
+    "transition_owners": [
+      "Jev"
+    ],
+    "forbidden_field_hits": [],
+    "stages": [
+      "press_approach"
+    ],
+    "wall_seconds": 578.8256223015487,
+    "commit": "f19791c5701ca1af902b3f35480113971d8cde59",
+    "run": "code/runs/jev-discrete-press_by_number-01",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-press_by_number-01.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-press_by_number-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-stack_bowls-01": {
+    "experiment_id": "EXP-2026W40-119",
+    "task": "stack_bowls",
+    "attempt": 1,
+    "variant": {
+      "input_variant": "numeric",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": null,
+    "reason": "[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]",
+    "steps": 0,
+    "jev_requests": 0,
+    "jev_responses": 0,
+    "phase_choices": {},
+    "gripper_choices": {},
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [],
+    "wall_seconds": 0.39648111164569855,
+    "commit": "f19791c5701ca1af902b3f35480113971d8cde59",
+    "run": "code/runs/jev-discrete-stack_bowls-01",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-stack_bowls-01.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-stack_bowls-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "jev-discrete-stack_bowls-02": {
+    "experiment_id": "EXP-2026W40-120",
+    "task": "stack_bowls",
+    "attempt": 2,
+    "variant": {
+      "input_variant": "numeric",
+      "processing_variant": "anchored"
+    },
+    "layout": 0,
+    "native_success": false,
+    "reason": "native_episode_ended",
+    "steps": 800,
+    "jev_requests": 160,
+    "jev_responses": 160,
+    "phase_choices": {
+      "reobserve": 160
+    },
+    "gripper_choices": {
+      "keep": 269,
+      "open": 51
+    },
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [
+      "select"
+    ],
+    "wall_seconds": 583.5159026496112,
+    "commit": "0e33f6ed0b58e3e0688b3c1071e8c749557e06dd",
+    "run": "code/runs/jev-discrete-stack_bowls-02",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-stack_bowls-02.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-stack_bowls-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  }
+}
