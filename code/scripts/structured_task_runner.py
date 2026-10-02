@@ -33,6 +33,7 @@ def run(rec,rpc,reset):
     settings=dict(gpu=cfg['gpu'],existing_root=cfg['existing_root'],schema_variant=cfg['schema_variant'],
         max_step_m=.04,position_tolerance_m=.005,seed=cfg['seed'],run_dir=str(rec.folder))
     settings['experience_enabled']=cfg.get('experience_enabled',False)
+    settings.update(cfg.get('controller_settings',{}))
     controller=module.Controller(cfg['runtime_task'].removesuffix('_random'),settings)
     dump(rec.folder/'generated_provenance.json',dict(files={str(p):hashlib.sha256(p.read_bytes()).hexdigest()
         for p in directory.rglob('*') if p.is_file() and p.suffix in ('.py','.md','.json')},settings=settings))
