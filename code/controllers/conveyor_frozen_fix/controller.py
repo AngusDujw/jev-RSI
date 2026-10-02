@@ -9,13 +9,10 @@ class Controller(TaskController):
     def __init__(self,task,settings):
         super().__init__(task,settings)
         self.anchor_records={};self.preorient_count=0
-        self.vision.settings['cloth_keypoint_inset_px']=self.rules.get('cloth_keypoint_inset_px',3.)
     def _select(self):
         self.preorient_count=0
         super()._select()
         if self.plan:
-            for key,r in self.current.items():
-                if r['observed']:self.anchor_records[key]=copy.deepcopy(r)
             oid=self.plan['source'];row=self.current.get(oid)
             if row and row['observed']:self.anchor_records[oid]=copy.deepcopy(row)
             if self.task in ('match_and_pick_from_conveyor','stack_bowls'):self.plan['lift_distance_m']=self.rules.get('lift_clearance_m',.12)
@@ -27,11 +24,6 @@ class Controller(TaskController):
         row=self.current.get(oid)
         if row and row['observed'] and row['uncertainty_m']<=.012:
             self.anchor_records[oid]=copy.deepcopy(row)
-        if self.task=='stack_bowls' and self.plan and oid in (self.plan.get('destination'),self.plan.get('stack_base')) and oid in self.anchor_records:
-            if row is None or not row['observed'] or row['uncertainty_m']>.025:
-                ref=copy.deepcopy(self.anchor_records[oid]);ref.update(observed=False,source='last_observed_stationary_stack_target_NOT_current',age_steps=max(0,self.last_native-ref['native_step']))
-                self.debug.setdefault('stack_target_memory',[]).append(dict(id=oid,observed_now=False,reference_native_step=ref['native_step']))
-                return ref
         ttl=self.rules.get('contact_anchor_ttl',0)
         if self.stage in ('contact','close') and oid in self.anchor_records:
             reference=self.anchor_records[oid];age=self.last_native-reference['native_step']
@@ -54,17 +46,6 @@ class Controller(TaskController):
         return super()._movement(targets,uncertainty,opening,obs,ask_jev)
     def _targets(self):
         targets,u,g=super()._targets()
-        if self.stage in ('approach','contact'):g=self.rules.get('pregrasp_opening',g)
-        if self.task=='stack_bowls' and self.plan.get('grasp_verified') and self.stage in ('transport','lower'):
-            arm=self.plan['arms'][0];source=self._get(self.plan['source'],fresh=True)
-            measured=np.asarray(source['center']).copy()
-            rim=source.get('measured_rim')
-            if rim:measured[:2]=rim['center_xy']
-            offset=self.robot[arm]['grasp']-measured
-            targets={arm:np.asarray(targets[arm])+offset-self.plan['carry_offset']}
-            self.plan['carry_offset']=offset
-            self.plan['quaternions'][arm]=self.robot[arm]['quaternion'].copy()
-            self.debug['carry_control']=dict(source='current visible object-to-grasp offset',keep_achieved_orientation=True,assumption='already visually verified grasp')
         if self.stage=='approach':
             old=.045 if self.task=='fold_clothes' else .055
             targets={a:np.asarray(p)+[0,0,self.rules['approach_clearance_m']-old] for a,p in targets.items()}

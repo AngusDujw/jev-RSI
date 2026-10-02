@@ -1,0 +1,2 @@
+Frozen from 3aa9d561022010622923fdf0547eb2d6198bb706 after native conveyor success at 368 steps/27 Jev. Only memory-directory path rebound. Controller algorithms and memory content preserved; shared runner/perception provenance recorded per run.
+Confirmation07 exposed internal historical references accidentally JSON-normalized to lists. This copy restores numeric arrays internally and casts vectors at motion arithmetic boundaries; Markdown memory/parameters otherwise unchanged. Prior frozen version retained.

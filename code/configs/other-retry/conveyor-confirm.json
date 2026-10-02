@@ -47,7 +47,7 @@
     "feedback_deadband_m": 0.0002
   },
   "runtime_task": "match_and_pick_from_conveyor",
-  "generated_controller": "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_frozen/controller.py",
+  "generated_controller": "/root/yekangjie/project/jev_rsi/code/controllers/conveyor_frozen_fix/controller.py",
   "schema_variant": "numeric",
   "max_vision_calls": 300,
   "max_outer_actions": 300,
