@@ -120,6 +120,9 @@ class Controller(TaskController):
             measured['views'][name]['objects']=kept
 
     def _fixed(self,opening,reason,ticks=5):
+        if self.stage=='close' and self.rules.get('contact_dwell_ticks',0)>0 and not self.plan.get('contact_dwell_done'):
+            self.plan['contact_dwell_done']=True;self.pending=None
+            return super()._fixed(self.rules.get('pregrasp_opening',1.),'settle at depth-supported contact before closing',self.rules['contact_dwell_ticks'])
         if self.stage=='close':ticks=int(self.rules.get('close_ticks',ticks))
         return super()._fixed(opening,reason,ticks)
     def _verify_grasp(self):
