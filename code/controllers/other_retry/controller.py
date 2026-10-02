@@ -10,10 +10,12 @@ class Controller(TaskController):
         super().__init__(task,settings)
         self.anchor_records={};self.preorient_count=0
     def _select(self):
+        self.preorient_count=0
         super()._select()
         if self.plan:
             oid=self.plan['source'];row=self.current.get(oid)
             if row and row['observed']:self.anchor_records[oid]=copy.deepcopy(row)
+            if self.task=='match_and_pick_from_conveyor':self.plan['lift_distance_m']=self.rules.get('lift_clearance_m',.12)
     def _get(self,oid,fresh=False):
         row=self.current.get(oid)
         if row and row['observed'] and row['uncertainty_m']<=.012:
@@ -70,3 +72,21 @@ class Controller(TaskController):
                 if any(row['category']==old['category'] and (mask&other).sum()/max(1,min(mask.sum(),other.sum()))>.65 for old,other in zip(kept,masks)):continue
                 kept.append(row);masks.append(mask)
             measured['views'][name]['objects']=kept
+
+    def _fixed(self,opening,reason,ticks=5):
+        if self.stage=='close':ticks=int(self.rules.get('close_ticks',ticks))
+        return super()._fixed(opening,reason,ticks)
+    def _verify_grasp(self):
+        if self.task!='fold_clothes':return super()._verify_grasp()
+        row=self._get(self.plan['source'],fresh=True);points=np.asarray(row.get('surface_samples_m',[]));base=self.plan['baseline']
+        if points.size==0:return False,dict(reason='no current garment depth samples')
+        evidence={}
+        for arm in self.plan['arms']:
+            grasp=self.robot[arm]['grasp'];near=points[np.linalg.norm(points-grasp,axis=1)<.045]
+            rise=float(np.quantile(near[:,2],.8)-base['center'][2]) if len(near)>=3 else None
+            evidence[arm]=dict(current_cloth_samples_near_grasp=len(near),visible_rise_m=rise,
+                robot_rise_m=float(grasp[2]-base['robot'][arm][2]),source='current segmented garment depth; no re-numbered corners')
+        ok=all(e['visible_rise_m'] is not None and e['visible_rise_m']>.015 and e['robot_rise_m']>.02 for e in evidence.values())
+        if ok:self.grasp_evidence.append(dict(native_step=self.last_native))
+        else:self.grasp_evidence=[]
+        return len(self.grasp_evidence)>=2,evidence

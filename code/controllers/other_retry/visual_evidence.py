@@ -242,11 +242,15 @@ class VisualEvidence:
         # It gates a CURRENT component; it is never returned as a new measurement.
         image_center=np.mean(row['polygon'],axis=0)
         prior_candidates=[]
+        current_color=np.median(rgb[mask],axis=0).astype(float)
+        current_chroma=current_color/max(1.,current_color.sum())
         for t in self.tracks.values():
             age=self.call_index-t['measurement_index']
             if age>self.ttl or t.get('landmark_view')!=name: continue
             if t['category']!=row['category'] or t['text'].strip().lower()!=row['text'].strip().lower(): continue
             if not tokens(t['label'])&tokens(row['label']): continue
+            old_color=np.asarray(t['color'],float)
+            if np.linalg.norm(current_chroma-old_color/max(1.,old_color.sum()))>.16:continue
             distance=float(np.linalg.norm(image_center-t['image_center_uv01']))
             if distance<.12: prior_candidates.append((distance,t['id'],t))
         prior_candidates.sort(key=lambda x:(x[0],x[1]))
@@ -349,7 +353,7 @@ class VisualEvidence:
             confidence=row['confidence'],image_center_uv01=image_center,
             image_polygon_uv01=row['polygon'].copy(),center=center,top=top,low=lo,high=hi,
             normal=normal,plane_residual_m=float(np.median(residual)),principal_axis=v[0],keypoints=keys,
-            measured_rim=measured_rim,corners=corners,corner_names=corner_names if corners else [],rim_candidates=rim,color=np.median(colors,axis=0),
+            measured_rim=measured_rim,surface_samples_m=points[::max(1,len(points)//500)].tolist(),corners=corners,corner_names=corner_names if corners else [],rim_candidates=rim,color=np.median(colors,axis=0),
             uncertainty_m=error,views=[name],landmark_view=name,source=row['source']+'_coherent_surface_component',tracking_error_px=row['tracking_error_px'],
             samples=len(points),observed=True,measurement_index=self.call_index,native_step=self.last_native,
             semantic_age=self.call_index-self.last_semantic,surface_evidence=diagnostics)

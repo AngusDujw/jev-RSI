@@ -15,7 +15,7 @@ class MultiView:
     def update(self, observation, perceive, force=False):
         self.call_index+=1; self.events=[]; candidates=[]; calls=0; seconds=0.
         names=list(observation['cameras'])
-        if 'conveyor' in observation.get('instruction','').lower(): names=['cam_high']
+        if 'conveyor' in observation.get('instruction','').lower() and (self.stage=='select' or self.stage.startswith('conveyor_wait_')): names=['cam_high']
         # At contact both viewpoints are actually measured, not merely saved.
         preferred='cam_'+self.active_arm+'_wrist'
         for name in names:
