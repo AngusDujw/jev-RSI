@@ -1,0 +1,179 @@
+{
+  "other-retry-fold_clothes-01": {
+    "experiment_id": "EXP-2026W40-078",
+    "task": "fold_clothes",
+    "attempt": 1,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_1",
+    "run": "code/runs/other-retry-fold_clothes-01",
+    "commit": "654a22c760945170defbca7e14a467d8c321dab5",
+    "steps": 120,
+    "actions": 31,
+    "jev_calls": 14,
+    "vision_calls": 76,
+    "wall_seconds": 161.79645135253668,
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/fold_clothes.json",
+      "--output",
+      "code/runs/other-retry-fold_clothes-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-fold_clothes-02": {
+    "experiment_id": "EXP-2026W40-079",
+    "task": "fold_clothes",
+    "attempt": 2,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:grasp not verified from after-action visual displacement",
+    "run": "code/runs/other-retry-fold_clothes-02",
+    "commit": "c4126c56ef7ab69e9b19e299ddfddb637e5b58d8",
+    "steps": 130,
+    "actions": 33,
+    "jev_calls": 14,
+    "vision_calls": 80,
+    "wall_seconds": 173.17151901498437,
+    "stages": [
+      "approach",
+      "contact",
+      "close",
+      "lift",
+      "verify_grasp"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/fold_clothes.json",
+      "--output",
+      "code/runs/other-retry-fold_clothes-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-match_and_pick_from_conveyor-01": {
+    "experiment_id": "EXP-2026W40-080",
+    "task": "match_and_pick_from_conveyor",
+    "attempt": 1,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_11",
+    "run": "code/runs/other-retry-match_and_pick_from_conveyor-01",
+    "commit": "654a22c760945170defbca7e14a467d8c321dab5",
+    "steps": 231,
+    "actions": 30,
+    "jev_calls": 0,
+    "vision_calls": 31,
+    "wall_seconds": 90.13565592095256,
+    "stages": [
+      "conveyor_wait_departure",
+      "conveyor_wait_repeat",
+      "approach"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/match_and_pick_from_conveyor.json",
+      "--output",
+      "code/runs/other-retry-match_and_pick_from_conveyor-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-match_and_pick_from_conveyor-02": {
+    "experiment_id": "EXP-2026W40-081",
+    "task": "match_and_pick_from_conveyor",
+    "attempt": 2,
+    "success": false,
+    "native_success": null,
+    "reason": "RPC client closed; create a client and reset",
+    "run": "code/runs/other-retry-match_and_pick_from_conveyor-02",
+    "commit": "c4126c56ef7ab69e9b19e299ddfddb637e5b58d8",
+    "steps": null,
+    "actions": null,
+    "jev_calls": 0,
+    "vision_calls": null,
+    "wall_seconds": 35.62790432572365,
+    "stages": [
+      "conveyor_wait_departure"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/match_and_pick_from_conveyor.json",
+      "--output",
+      "code/runs/other-retry-match_and_pick_from_conveyor-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-stack_bowls-01": {
+    "experiment_id": "EXP-2026W40-082",
+    "task": "stack_bowls",
+    "attempt": 1,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:unrecoverable observation ambiguity: surface position uncertainty exceeds 25 mm: mv_3",
+    "run": "code/runs/other-retry-stack_bowls-01",
+    "commit": "654a22c760945170defbca7e14a467d8c321dab5",
+    "steps": 47,
+    "actions": 17,
+    "jev_calls": 0,
+    "vision_calls": 28,
+    "wall_seconds": 57.0433803088963,
+    "stages": [
+      "approach"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/stack_bowls.json",
+      "--output",
+      "code/runs/other-retry-stack_bowls-01",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  },
+  "other-retry-stack_bowls-02": {
+    "experiment_id": "EXP-2026W40-083",
+    "task": "stack_bowls",
+    "attempt": 2,
+    "success": false,
+    "native_success": false,
+    "reason": "controller_stop:phase budget exhausted without verified progress",
+    "run": "code/runs/other-retry-stack_bowls-02",
+    "commit": "c4126c56ef7ab69e9b19e299ddfddb637e5b58d8",
+    "steps": 99,
+    "actions": 33,
+    "jev_calls": 0,
+    "vision_calls": 49,
+    "wall_seconds": 86.03404407203197,
+    "stages": [
+      "approach"
+    ],
+    "command": [
+      "code/scripts/run_position_pilot.py",
+      "--config",
+      "code/configs/other-retry/stack_bowls.json",
+      "--output",
+      "code/runs/other-retry-stack_bowls-02",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
+  }
+}
