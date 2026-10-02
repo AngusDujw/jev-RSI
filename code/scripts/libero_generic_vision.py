@@ -66,3 +66,88 @@ class GenericVision:
             try:self.worker.stdin.write('{"close":true}\n');self.worker.stdin.flush();self.worker.wait(timeout=20)
             except Exception:self.worker.terminate();self.worker.wait(timeout=20)
         self.log.close()
+
+
+def run_generic(env,obs,rec,task,depth_fn,k_fn,t_fn):
+    """Single-object pick/place only; semantic recognition never chooses actions."""
+    from run_position_pilot import Jev
+    vision=GenericVision(rec);model=Jev(rec);ticks=0;recovery_used=False
+    def views():
+        return {c:dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),depth=depth_fn(env.sim,obs[c+'_depth'])[::-1].squeeze(),K=k_fn(env.sim,c,384,384),T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
+    def snapshot(stage):
+        for c,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{c}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))
+    def step(action,n):
+        nonlocal ticks,obs
+        for _ in range(n):
+            rec.check_budget()
+            if ticks>=550:raise RuntimeError('Native step budget')
+            obs,_,_,_=env.step(np.asarray(action,float));ticks+=1
+    def move(target,stage,grip):
+        stall=0
+        rec.event(dict(kind='stage',stage=stage,target=target.tolist()))
+        for i in range(40):
+            p=obs['robot0_eef_pos'].copy();err=target-p
+            if np.max(np.abs(err))<.007:return
+            state=dict(task=task.language,stage=stage,position_m=p.tolist(),target_position_m=target.tolist(),hold_tolerance_m=.004,
+                       observation_source='semantic object masks + fresh RGB-D + robot state',target_source='external generic pick/place geometry',
+                       error_m=err.tolist(),frame='world metres',gripper=grip)
+            d=model.choose(state,dict(stage=stage,iteration=i,environment='libero_plus_generic'))
+            if d is None:raise RuntimeError('Jev budget')
+            delta=np.asarray(d['signs'])*np.minimum(.02,np.abs(err)*.5)
+            step(np.r_[delta/.05,0,0,0,grip],3)
+            after=obs['robot0_eef_pos'].copy()
+            rec.branch(dict(stage=stage,decision_id=d['decision_id'],before=p,after=after,delta=delta,native_steps=ticks))
+            snapshot(stage)
+            stall=stall+1 if np.linalg.norm(after-p)<.0008 and np.linalg.norm(err)>.015 else 0
+            if stall>=3:raise RuntimeError('Physical stall: '+stage)
+        if np.max(np.abs(target-obs['robot0_eef_pos']))>=.007:raise RuntimeError('Stage budget: '+stage)
+    def locate(reason):
+        v=views();sem=vision.recognize(v,task.language,reason);geom={}
+        for role in ['source','destination']:
+            x=sem[role];geom[role]=vision.measure(v[x['camera']],x['bbox'],x['label'],reason+'-'+role)
+        dump(rec.folder/(reason+'-geometry.json'),geom)
+        return sem,geom
+    try:
+        sem,g=locate('initial');src=g['source'];dst=g['destination']
+        hover=max(src['high'][2],dst['high'][2])+.14
+        move(np.r_[src['center'][:2],hover],'approach',-1)
+        # Mandatory fresh wrist-inclusive localization before descending / closing.
+        sem,g=locate('pregrasp');src=g['source'];dst=g['destination']
+        move(np.r_[src['center'][:2],hover],'align',-1)
+        target=np.r_[src['center'][:2],src['high'][2]-.008]
+        try:move(target,'descend',-1)
+        except RuntimeError as exc:
+            if 'Physical stall' not in str(exc):raise
+            recovery_used=True
+            move(obs['robot0_eef_pos']+np.array([0,0,.06]),'retract',-1)
+            sem,g=locate('stalled');src=g['source'];dst=g['destination']
+            move(np.r_[src['center'][:2],obs['robot0_eef_pos'][2]],'realign',-1)
+            move(np.r_[src['center'][:2],src['high'][2]+.004],'descend_recovery',-1)
+        # Every grasp uses newly localized geometry; explicit robot geometry offset.
+        tcp_before=obs['robot0_eef_pos'].copy();source_before=src['center'].copy()
+        step([0,0,0,0,0,0,1],16);snapshot('close')
+        move(np.r_[tcp_before[:2],hover],'lift',1)
+        # Verify source using a fresh detector, associated to predicted source location.
+        v=views();cam='robot0_eye_in_hand'
+        predicted=source_before+(obs['robot0_eef_pos']-tcp_before)
+        T=v[cam]['T'];K=v[cam]['K'];cp=T[:3,:3].T@(predicted-T[:3,3])
+        if cp[2]<=0:raise RuntimeError('Source behind wrist camera')
+        uv=(K@cp)[:2]/cp[2];extent=np.clip(max(src['high']-src['low'])*K[0,0]/cp[2],30,250)
+        box=np.r_[uv-extent*.65,uv+extent*.65].clip(0,383).tolist()
+        held=vision.measure(v[cam],box,sem['source']['label'],'lift-association')
+        if held['center'][2]-source_before[2]<.05 or np.linalg.norm(held['center']-predicted)>.08:
+            raise RuntimeError('No reliable RGB-D evidence of lifted source')
+        offset=held['center']-obs['robot0_eef_pos'];dump(rec.folder/'generic-held-offset.json',dict(offset=offset,held=held,predicted=predicted))
+        move(np.r_[dst['center'][:2]-offset[:2],hover],'carry',1)
+        # Lower to observed receiving surface plus observed source half-height.
+        height=(held['high'][2]-held['low'][2])/2
+        place=np.r_[dst['center'][:2]-offset[:2],dst['high'][2]+height+.012-offset[2]]
+        move(place,'lower',1);step([0,0,0,0,0,0,-1],16);snapshot('release')
+        move(np.r_[place[:2],hover],'retreat',-1)
+        success=bool(env.check_success())
+        dump(rec.folder/'result.json',dict(success=success,native_steps=ticks,jev_calls=len(rec.decisions),semantic_calls=vision.calls,deepseek_calls=0,recovery_used=recovery_used))
+        rec.finish('success' if success else 'task_failed')
+    except Exception as exc:
+        dump(rec.folder/'result.json',dict(success=False,error_type=type(exc).__name__,error=str(exc),native_steps=ticks,jev_calls=len(rec.decisions),semantic_calls=vision.calls,deepseek_calls=0,recovery_used=recovery_used))
+        rec.finish('failed');raise
+    finally:model.close();vision.close()

@@ -211,6 +211,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--output', required=True)
     p.add_argument('--capture-only', action='store_true')
+    p.add_argument('--generic-vision', action='store_true')
     p.add_argument('--task-id', type=int, default=988)
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--init-index', type=int, default=0)
@@ -221,7 +222,7 @@ def main():
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=400, max_jev_decisions=120,
                suite='libero_spatial', task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
@@ -251,7 +252,11 @@ def main():
         dump(out/'robot.json',dict(position=obs['robot0_eef_pos'],quaternion=obs['robot0_eef_quat']))
         if a.capture_only:
             rec.finish('capture_only'); return
-        run_policy(env, obs, rec, task, get_real_depth_map, get_camera_intrinsic_matrix, get_camera_extrinsic_matrix)
+        if a.generic_vision:
+            from libero_generic_vision import run_generic
+            run_generic(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
+        else:
+            run_policy(env, obs, rec, task, get_real_depth_map, get_camera_intrinsic_matrix, get_camera_extrinsic_matrix)
 
     finally:
         if env is not None: env.close()
