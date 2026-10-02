@@ -98,7 +98,7 @@ class Controller:
             if objects:
                 r=objects[0]
                 self.first_object=dict(label=r['label'],appearance=r['appearance'],text=r['text'],
-                    color=r['color'].copy(),visible_extent_m=(r['high']-r['low']).copy(),category=r['category'],native_step=self.last_native,
+                    last_seen_position=r['center'].copy(),last_seen_step=self.last_native,velocity=np.zeros(3),color=r['color'].copy(),visible_extent_m=(r['high']-r['low']).copy(),category=r['category'],native_step=self.last_native,
                     reference_camera=self.vision.reference_camera,
                     provenance='first uniquely visible item inside observed conveyor outline')
                 self._transition('conveyor_wait_departure',self.first_object)
@@ -121,16 +121,26 @@ class Controller:
         self.debug['conveyor_memory']=dict(first=ref,matching_visible_ids=[r['id'] for r in same],
             departure_semantic_observations=self.conveyor_absent,departed=self.conveyor_departed,
             waiting_observations=self.conveyor_wait,appearance_memory_is_not_current_pose=True)
+        if not self.conveyor_departed and len(same)==1:
+            dt=self.last_native-ref['last_seen_step']
+            if dt>0:ref['velocity']=(same[0]['center']-ref['last_seen_position'])/dt
+            ref['last_seen_position']=same[0]['center'].copy();ref['last_seen_step']=self.last_native
         if not self.conveyor_departed:
             # A failed flow track is not evidence of disappearance. Require fresh RGB relabels.
             if semantic:
-                self.conveyor_absent=0 if same else self.conveyor_absent+1
+                predicted=np.asarray(ref['last_seen_position'])+np.asarray(ref['velocity'])*(self.last_native-ref['last_seen_step'])
+                boundary_exit=bool(np.any(predicted[:2]<belt['low'][:2]-.02) or np.any(predicted[:2]>belt['high'][:2]+.02))
+                self.debug['departure_prediction']=dict(position=predicted,observed=False,boundary_exit=boundary_exit)
+                self.conveyor_absent=self.conveyor_absent+1 if not same and boundary_exit else 0
                 if self.conveyor_absent>=2:
                     self.conveyor_departed=True
                     self._transition('conveyor_wait_repeat',dict(two_fresh_RGB_absences=True))
             return None
         if len(same)>1: raise EvidenceError('multiple returning conveyor matches')
-        return same[0] if same else None
+        if same:
+            reachable=any(abs(same[0]['center'][0]-self.robot[a]['grasp'][0])<.15 for a in ARMS)
+            if reachable:return same[0]
+        return None
 
     def _transition(self,new,evidence):
         event=dict(from_stage=self.stage,to_stage=new,evidence=plain(evidence),

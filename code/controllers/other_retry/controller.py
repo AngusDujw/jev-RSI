@@ -43,3 +43,14 @@ class Controller(TaskController):
             targets={a:np.asarray(p)+[0,0,self.rules['approach_clearance_m']-old] for a,p in targets.items()}
         if self.stage=='contact':targets={a:np.asarray(p)+[0,0,self.rules.get('grasp_depth_adjust_m',0.)] for a,p in targets.items()}
         return targets,u,g
+
+    def step(self,observation,ask_jev,perceive):
+        result=super().step(observation,ask_jev,perceive)
+        if self.task=='match_and_pick_from_conveyor' and result['stage'].startswith('conveyor_wait_') and not result['stop']:
+            arms={}
+            for arm,r in self.robot.items():
+                q,angle=bounded_quaternion(r['quaternion'],tool_quaternion([0,0,-1]))
+                if angle>.10:arms[arm]=dict(delta_xyz_m=[0.,0.,0.],quaternion_wxyz=q,gripper_opening=1.)
+            if arms:
+                result['arms']=arms;result['reason']='observe conveyor while orienting at initial safe height'
+        return result
