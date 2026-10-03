@@ -32,6 +32,7 @@ for rp in sorted(a.root.glob('**/result.json')):
    if 'candidate' in actual:assert actual['candidate']['choice']==d['candidate']
    else:assert d['candidate']=='not_requested'
    signmap=dict(negative=-1,hold=0,positive=1)
+   assert [signmap[actual[k]['choice']] for k in ['x','y','z']]==d['signs']
    for i,k in enumerate(['rx','ry','rz']):
     if k in actual:assert signmap[actual[k]['choice']]==d['rotation_signs'][i]
     else:assert d['rotation_signs'][i]==0 and abs(state['required_rotation_world_rad'][k])<.03

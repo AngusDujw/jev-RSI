@@ -15,9 +15,13 @@ for root in sorted((repo/'code/runs').glob(a.prefix+'*')):
  for row in json.loads((root/'batch.json').read_text()):
   run=root/f'{row["suite"]}-{row["task"]}-init-{row["init"]}'
   ds=[json.loads(x) for x in (run/'decisions.jsonl').read_text().splitlines()] if (run/'decisions.jsonl').exists() else []
+  responses=[json.loads(p.read_text()) for p in run.glob('decision-*/response.json')]
+  usage=[r['usage'] for r in responses if isinstance(r.get('usage'),dict) and 'input_tokens' in r['usage']]
+  token_stats=dict(returned_responses=len(responses),responses_with_usage=len(usage),input_tokens=sum(u['input_tokens'] for u in usage),output_tokens=sum(u.get('output_tokens',0) for u in usage))
+  token_stats['mean_input_tokens']=token_stats['input_tokens']/len(usage) if usage else None
   good=sum(sum(d.get('metrics',{}).get('axis_correct',[])) for d in ds)
   axes=sum(len(d.get('metrics',{}).get('axis_correct',[])) for d in ds)
-  row.update(path=str(run.relative_to(repo)),batch=root.name,commit=manifest['commit'],options=manifest['options'],axis_correct=good,axes_evaluated=axes,models=sorted(set(d.get('model','unreturned') for d in ds)))
+  row.update(path=str(run.relative_to(repo)),batch=root.name,commit=manifest['commit'],options=manifest['options'],axis_correct=good,axes_evaluated=axes,models=sorted(set(d.get('model','unreturned') for d in ds)),jev_usage=token_stats)
   rows.append(row)
 rows.sort(key=lambda x:x['campaign_attempt'])
 assert len(set(r['campaign_attempt'] for r in rows))==len(rows)
