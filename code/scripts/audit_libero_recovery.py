@@ -28,7 +28,9 @@ for rp in sorted(a.root.glob('**/result.json')):
   requests[d['decision_id']]=state
   if 'answers' in d:
    actual=json.loads((q/d['decision_id']/'response.json').read_text())['answers'];assert actual==d['answers']
-   for k in ['gripper','transition','candidate']:assert actual[k]['choice']==d[k]
+   for k in ['gripper','transition']:assert actual[k]['choice']==d[k]
+   if 'candidate' in actual:assert actual['candidate']['choice']==d['candidate']
+   else:assert d['candidate']=='not_requested'
  branches=[json.loads(x) for x in (q/'branches.jsonl').read_text().splitlines()] if (q/'branches.jsonl').exists() else []
  prev=-1
  for b in branches:
