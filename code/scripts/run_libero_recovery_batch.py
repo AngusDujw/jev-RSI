@@ -15,7 +15,7 @@ p.add_argument('--output',required=True)
 p.add_argument('--tasks',default='libero_object:1066')
 p.add_argument('--inits',default='1')
 p.add_argument('--frozen-from',help='Reuse an audited prior frozen/ policy snapshot exactly')
-p.add_argument('--input-organization',choices=['contract','evidence','local'],default='contract')
+p.add_argument('--input-organization',choices=['contract','evidence','local','focused'],default='contract')
 p.add_argument('--grasp-algorithm',choices=['legacy_clearance','pad_fit'],default='pad_fit')
 p.add_argument('--contact-angle-deg',type=float,default=0.)
 p.add_argument('--pad-overlap-mm',type=float,default=6.)
@@ -62,9 +62,11 @@ for item in a.tasks.split(','):
   if a.execution_profile!='baseline':cmd.extend(['--execution-profile',a.execution_profile])
   start=time.monotonic()
   with (root/f'{suite}-{task}-init-{init}.log').open('w') as log:
+   termination_reason=None
    child=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT)
    while child.poll() is None:
     if time.monotonic()-start>960 or shutil.disk_usage(root).free<4*1024**3:
+     termination_reason='Shared filesystem below 4GiB' if shutil.disk_usage(root).free<4*1024**3 else 'Runner timeout 960s'
      child.send_signal(signal.SIGINT)
      try:child.wait(timeout=45)
      except subprocess.TimeoutExpired:child.kill();child.wait()
@@ -73,6 +75,9 @@ for item in a.tasks.split(','):
     except subprocess.TimeoutExpired:pass
    rc=child.returncode
   result=json.loads((out/'result.json').read_text()) if (out/'result.json').exists() else dict(success=False,error='Setup/no result')
+  if termination_reason:
+   result=dict(result,runner_termination=termination_reason,error=termination_reason)
+   (out/'runner-stop.json').write_text(json.dumps(dict(reason=termination_reason,returncode=rc),indent=2))
   row=dict(suite=suite,task=task,init=init,attempt=count+1,campaign_attempt=reservation['campaign_attempt'],seconds=time.monotonic()-start,returncode=rc,result=result)
   rows.append(row);(root/'batch.json').write_text(json.dumps(rows,indent=2));print(json.dumps(row),flush=True)
   if sum(f.stat().st_size for f in root.rglob('*') if f.is_file())>3*1024**3:raise RuntimeError('Batch disk cap')

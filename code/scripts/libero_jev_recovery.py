@@ -75,6 +75,7 @@ class RecoveryModel(Jev):
             raw = self.api.post('/systemone', payload)
             dump(folder/'response.json', raw)
             answers = raw['answers']
+            if set(answers)!=set(questions):raise ValueError('Unexpected or missing Jev question answer')
             for name, q in questions.items():
                 a = answers[name]
                 p = a['probabilities']
@@ -82,7 +83,7 @@ class RecoveryModel(Jev):
                     raise ValueError('Invalid Jev decision')
             mapping = dict(negative=-1, hold=0, positive=1)
             signs = [mapping[answers[a]['choice']] for a in 'xyz']
-            row.update(answers=answers, signs=signs, rotation_signs=[mapping[answers[a]['choice']] if a in answers else 0 for a in ['rx', 'ry', 'rz']], model=raw.get('model'), gripper=answers['gripper']['choice'], transition=answers['transition']['choice'], candidate=answers['candidate']['choice'] if 'candidate' in answers else 'not_requested', metrics=direction_metrics(state['position_m'], state['target_position_m'], signs, state['axis_hold_tolerance_mm']/1000))
+            row.update(answers=answers, signs=signs, rotation_signs=[mapping[answers[a]['choice']] if a in answers else 0 for a in ['rx', 'ry', 'rz']], model=raw.get('model'), gripper=answers['gripper']['choice'], transition=answers['transition']['choice'], candidate=answers['candidate']['choice'] if 'candidate' in answers else 'not_requested', metrics=direction_metrics([state['translation_axes'][a]['current_coordinate_m'] for a in 'xyz'], [state['translation_axes'][a]['goal_coordinate_m'] for a in 'xyz'], signs, state['axis_hold_tolerance_mm']/1000))
         except Exception as exc:
             row['error'] = str(exc).replace(self.api.credential, '[redacted]')
             self.rec.errors.append(dict(type=type(exc).__name__))
@@ -256,6 +257,13 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 state['local_decision_summary']=dict(operation=stage,xyz_error_mm=np.round(error*1000,2).tolist(),can_finish=bool(complete),holding=holding['status'],blocked=stalls>=3,can_retry=bool(can_retry),gripper_state_to_maintain=state['gripper']['required_state'])
             if rec.cfg['input_organization']=='evidence':
                 state['evidence_interpretation']='contract_satisfied is a measured conjunction of the listed tests, not task success. failed holding means the source did not follow the robot; not_checked_yet means continue the pending test. Failed or blocked attempts may use retry. Pick candidates by physical overlap/clearance, never by index alone.'
+            if rec.cfg['input_organization']=='focused':
+                keep=['task','operation','next_operation','operation_contract','translation_axes','axis_hold_tolerance_mm','arrival_tolerance_mm','required_rotation_world_rad','gripper','completion_evidence','allowed_transitions','blocked_action_count','recent_actions','information_sources','grasp_attempts','failed_candidates','selected_candidate','phase_decisions']
+                focused={k:state[k] for k in keep}
+                focused['holding_evidence']={k:v for k,v in holding.items() if k in ['status','valid','source','source_rise_mm','co_motion_error_mm','observed_tick','reason']}
+                if stage=='select':focused['candidates']=state['candidates']
+                else:focused['selected_candidate_geometry']={k:c[k] for k in ['visible_width_mm','estimated_pad_overlap_mm','estimated_finger_table_clearance_mm']}
+                state=focused
             state = json.loads(json.dumps(state,default=serial,allow_nan=False))
             d = model.decide(state);stage_decisions+=1
             if d['transition']=='stop':raise RuntimeError('Jev elected stop')

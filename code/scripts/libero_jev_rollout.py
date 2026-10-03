@@ -212,7 +212,7 @@ def main():
     p.add_argument('--output', required=True)
     p.add_argument('--capture-only', action='store_true')
     p.add_argument('--recovery-supervisor', action='store_true')
-    p.add_argument('--input-organization', choices=['contract','evidence','local'], default='contract')
+    p.add_argument('--input-organization', choices=['contract','evidence','local','focused'], default='contract')
     p.add_argument('--grasp-algorithm', choices=['legacy_clearance','pad_fit'], default='pad_fit')
     p.add_argument('--contact-angle-deg',type=float,default=0.)
     p.add_argument('--pad-overlap-mm',type=float,default=6.)
