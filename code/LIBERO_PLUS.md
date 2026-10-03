@@ -1,5 +1,7 @@
 # LIBERO-Plus Jev 开发抓放
 
+**2026-10-03批次更新（实际UTC+8事件为10月4日）：奶酪task1066的可见指垫拟合与focused输入使用独立的`--recovery-supervisor`入口。逐版正负结果和真实输入输出见[优化报告](../LOGS/2026-10-03-libero-recovery30.md)，候选配置见[配置表](configs/libero-supervisor/candidates.json)。**
+
 **最新执行入口默认由Jev选择夹爪和阶段；旧自动流程须`--scripted-supervisor`显式复现。处理/输入比较及20回合结果见[控制权实验报告](../LOGS/2026-10-02-libero-jev-ownership.md)。**
 
 **2026-10-02更新：入口默认启用通用语义视觉，不再调用下述历史碗专用前处理。新路径与失败开发结果见[通用视觉报告](../LOGS/2026-10-02-libero-generic-vision.md)。历史成绩必须显式使用`--legacy-vision`复现，不能移作通用版本成绩。**
@@ -75,3 +77,27 @@ cd /root/yekangjie/project/jev_rsi
 ## 冻结通用流程跨任务
 
 增加`--suite`选择与`run_libero_generic_cross_tasks.py`，策略保持不变。Spatial1282盘旁碗1/3、Object1066奶酪0/3、Object1043汤罐0/3；详见[跨任务报告](../LOGS/2026-10-02-libero-generic-cross-tasks.md)。未证实稳定类别泛化。
+
+
+## 可见指垫拟合与focused阶段输入
+
+`--recovery-supervisor`优先选择新入口，旧的碗/汤罐supervisor入口保持。处理链是公开任务和双相机RGB-D → 语义源/目标框与SAM分割 → 可见支撑面/物体范围 → 自有手指/指垫几何拟合的3个候选 → 当前阶段合同及逐轴坐标 → 一次Jev批量选择 → 保留模型符号的受限执行 → 重新测量。策略不读场景对象真位姿/ID/隐藏尺寸或任务谓词；官方success只在终局评价读取。
+
+Jev实际选择XYZ、超旋转容差的轴、夹爪open/close/keep、候选以及continue_phase/advance/retry/stop。常规阶段不问候选；未询问的旋转轴必须在容差内且执行零。外部程序仍定义阶段图、几何目标、证据阈值与幅度，不代表模型自主发明抓取策略。
+
+focused输入保留task、operation/next_operation、operation_contract、translation_axes（每轴current/goal/error/relation）、夹爪实际开度/命令时长、completion_evidence、holding_evidence摘要、allowed_transitions、最近3次真实动作和停滞计数。select给完整候选列表，其余阶段只给当前候选三个几何量。原始视觉测量与完整请求/响应都保留。
+
+抓前腕部看到局部时，保留初始较完整的可见范围；指垫深度考虑可见物体与支撑面、自有指垫重叠和指尖桌面间隙，不使用碗颜色/圆形特定拟合。adaptive在远离目标>60mm或纯夹爪等待时每决策6原生步（gain=0.35），接触附近3步（gain=0.5）。位移符号严格来自Jev，代码不能静默反转。
+
+视觉大模型固定initial/pregrasp/lift_check最多各1次，本批使用gpt-6-astra；DeepSeek闭环0次。每回合900秒/180Jev/550原生步/600MiB，每批3GiB；新回合前至少6GiB空闲、运行时至少4GiB，不清理其他任务。所有setup和物理失败计入新增30次与每任务累计50次，不自动重试。恢复分支本批未启用。
+
+以下在company-server-2逐行执行；最后一行是完整命令，无需拆行。`NEW-libero-focused`换成尚不存在的输出目录名称，其余参数与本批实际运行一致。批入口仍会检查已有授权计数，不在此文档中自动追加回合。
+
+```bash
+cd /root/yekangjie/project/jev_rsi
+/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/run_libero_recovery_batch.py --input-organization focused --grasp-algorithm pad_fit --preserve-source --execution-profile adaptive --inits 7,8,9 --output code/runs/NEW-libero-focused
+```
+
+脚本默认任务为libero_object:1066。若需要严格复用归档策略，加`--frozen-from code/runs/2026-10-03-libero-recovery30-focused-v1/frozen`，入口逐文件验证SHA256后复制策略；完整配置和源码哈希以该批manifest为准。source版本与运行器版本分别保存在manifest，不以最后文档提交冒充历史实验代码。
+
+本轮新增15/30次，奶酪累计22/50；最终focused+adaptive新init7/8/9完整成功3/3（92/96/95Jev），每回合3次语义识别。上述启动方式和参数已在company-server-2实际运行3回合、全部returncode0，最终配置和原始输入输出均已归档；不继续追加本轮回合。

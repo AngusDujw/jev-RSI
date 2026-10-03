@@ -3,8 +3,51 @@
   "status": "development candidates, not frozen benchmark performance",
   "per_task_attempt_cap": 50,
   "tasks": [
-    {"suite":"libero_spatial","task_id":1282,"schema":"feedback","geometry_profile":"base","camera_size":384,"approach_mode":"top","max_jev_decisions":120,"lift_check":false,"evidence":"feedback-v1 init1 plus bowl-confirm init2/3; 3 successful development starts, two exact-version confirmation trials"},
-    {"suite":"libero_object","task_id":1043,"schema":"feedback","geometry_profile":"observed_surfaces","camera_size":768,"approach_mode":"top","max_jev_decisions":160,"lift_check":true,"evidence":"soup-final init1/2/3 native and program success 3/3; single-task small sample"},
-    {"suite":"libero_object","task_id":1066,"schema":"feedback","geometry_profile":"observed_surfaces","camera_size":768,"approach_mode":"angled","max_jev_decisions":160,"lift_check":true,"evidence":"UNSOLVED: all 7 development attempts failed; do not call this a successful config"}
+    {
+      "suite": "libero_spatial",
+      "task_id": 1282,
+      "schema": "feedback",
+      "geometry_profile": "base",
+      "camera_size": 384,
+      "approach_mode": "top",
+      "max_jev_decisions": 120,
+      "lift_check": false,
+      "evidence": "feedback-v1 init1 plus bowl-confirm init2/3; 3 successful development starts, two exact-version confirmation trials"
+    },
+    {
+      "suite": "libero_object",
+      "task_id": 1043,
+      "schema": "feedback",
+      "geometry_profile": "observed_surfaces",
+      "camera_size": 768,
+      "approach_mode": "top",
+      "max_jev_decisions": 160,
+      "lift_check": true,
+      "evidence": "soup-final init1/2/3 native and program success 3/3; single-task small sample"
+    },
+    {
+      "suite": "libero_object",
+      "task_id": 1066,
+      "entry": "recovery_supervisor",
+      "geometry_profile": "observed_surfaces",
+      "camera_size": 768,
+      "input_organization": "focused",
+      "grasp_algorithm": "pad_fit",
+      "contact_angle_deg": 0.0,
+      "pad_overlap_mm": 6.0,
+      "table_margin_mm": 1.0,
+      "preserve_source": true,
+      "allow_retry": false,
+      "execution_profile": "adaptive",
+      "max_jev_decisions": 180,
+      "frozen_policy_dir": "code/runs/2026-10-03-libero-recovery30-focused-v1/frozen",
+      "frozen_commit": "44b7898886513f81a4a6c74c2b37211ae800f6b1",
+      "verified_init_indices": [
+        7,
+        8,
+        9
+      ],
+      "evidence": "focused/adaptive frozen new init7/8/9: 3/3 native and program success; Jev92/96/95, native396/411/405, 3 semantic calls each, no retry. Earlier 7 failures retained; new campaign15/30, task total22/50. Small single-task sample; not full benchmark performance."
+    }
   ]
 }
