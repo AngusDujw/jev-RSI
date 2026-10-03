@@ -2,22 +2,90 @@
 
 开发混版本，不能作为最终冻结成功率。GPU/接口失败也计入每任务50次预算。
 
-|任务|尝试|输入/处理|布局|原生成功|步数|Jev请求/响应|终止原因|
-|---|---:|---|---:|---|---:|---:|---|
-|fold_clothes|1|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|500|100/100|native_episode_ended|
-|general_pickup|1|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|None|0|0/0|[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]|
-|general_pickup|2|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|200|40/40|native_episode_ended|
-|match_and_pick_from_conveyor|1|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|184|93/93|controller_stop:Jev abort from observed evidence|
-|press_by_number|1|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|700|140/140|native_episode_ended|
-|stack_bowls|1|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|None|0|0/0|[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]|
-|stack_bowls|2|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|800|160/160|native_episode_ended|
-|fold_clothes|2|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|340|68/68|controller_stop:external phase observation budget exhausted (40 decisions)|
-|general_pickup|3|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|None|0|0/0|[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]|
-|general_pickup|4|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|200|40/40|native_episode_ended|
-|match_and_pick_from_conveyor|2|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|80|40/40|controller_stop:external phase observation budget exhausted (40 decisions)|
-|press_by_number|2|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|200|40/40|controller_stop:external phase observation budget exhausted (40 decisions)|
-|stack_bowls|3|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|390|78/78|controller_stop:external phase observation budget exhausted (40 decisions)|
-|fold_clothes|3|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|500|100/100|native_episode_ended|
-|match_and_pick_from_conveyor|3|{'input_variant': 'relations', 'processing_variant': 'anchored'}|0|False|570|109/109|controller_stop:external phase observation budget exhausted (40 decisions)|
-|press_by_number|3|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|205|41/41|controller_stop:external phase observation budget exhausted (40 decisions)|
-|stack_bowls|4|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|205|41/41|controller_stop:external phase observation budget exhausted (40 decisions)|
+|任务|尝试|用途|输入/处理|布局|原生成功|步数|Jev请求/响应|终止原因|
+|---|---:|---|---|---:|---|---:|---:|---|
+|fold_clothes|1|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|500|100/100|native_episode_ended|
+|general_pickup|1|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|None|0|0/0|[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]|
+|general_pickup|2|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|200|40/40|native_episode_ended|
+|match_and_pick_from_conveyor|1|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|184|93/93|controller_stop:Jev abort from observed evidence|
+|press_by_number|1|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|700|140/140|native_episode_ended|
+|stack_bowls|1|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|None|0|0/0|[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]|
+|stack_bowls|2|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|800|160/160|native_episode_ended|
+|fold_clothes|2|开发|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|340|68/68|controller_stop:external phase observation budget exhausted (40 decisions)|
+|general_pickup|3|开发|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|None|0|0/0|[{'type': 'RuntimeError', 'error': 'Configured GPU is occupied; no process preemption allowed'}]|
+|general_pickup|4|开发|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|200|40/40|native_episode_ended|
+|match_and_pick_from_conveyor|2|开发|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|80|40/40|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|2|开发|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|200|40/40|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|3|开发|{'input_variant': 'evidence', 'processing_variant': 'anchored'}|0|False|390|78/78|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|3|开发|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|500|100/100|native_episode_ended|
+|match_and_pick_from_conveyor|3|开发|{'input_variant': 'relations', 'processing_variant': 'anchored'}|0|False|570|109/109|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|3|开发|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|205|41/41|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|4|开发|{'input_variant': 'relations', 'processing_variant': 'precision'}|0|False|205|41/41|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|4|开发|{'input_variant': 'numeric', 'processing_variant': 'precision'}|0|False|320|64/64|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|5|开发|{'input_variant': 'evidence', 'processing_variant': 'precision'}|0|False|385|77/77|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|6|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|175|116/116|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|7|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|175|116/116|controller_stop:external phase observation budget exhausted (40 decisions)|
+|general_pickup|5|开发|{'input_variant': 'numeric', 'processing_variant': 'precision'}|0|True|170|34/34|native_episode_ended|
+|general_pickup|6|冻结验证|{'input_variant': 'numeric', 'processing_variant': 'precision'}|0|False|200|40/40|native_episode_ended|
+|general_pickup|7|冻结验证|{'input_variant': 'numeric', 'processing_variant': 'precision'}|1|False|165|33/33|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|general_pickup|8|冻结验证|{'input_variant': 'numeric', 'processing_variant': 'precision'}|2|False|30|6/6|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|general_pickup|9|冻结验证|{'input_variant': 'numeric', 'processing_variant': 'precision'}|3|False|200|40/40|native_episode_ended|
+|general_pickup|10|冻结验证|{'input_variant': 'numeric', 'processing_variant': 'precision'}|4|False|200|40/40|native_episode_ended|
+|general_pickup|11|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|200|130/130|native_episode_ended|
+|general_pickup|12|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|True|114|76/76|native_episode_ended|
+|general_pickup|13|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|True|117|78/78|native_episode_ended|
+|general_pickup|14|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|1|False|200|132/132|native_episode_ended|
+|general_pickup|15|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|2|False|12|6/6|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|general_pickup|16|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|3|True|91|60/60|native_episode_ended|
+|general_pickup|17|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|4|True|81|54/54|native_episode_ended|
+|match_and_pick_from_conveyor|4|开发|{'input_variant': 'numeric', 'processing_variant': 'anchored'}|0|False|496|72/72|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|match_and_pick_from_conveyor|5|开发|{'input_variant': 'evidence', 'processing_variant': 'precision'}|0|False|540|94/94|controller_stop:external phase observation budget exhausted (40 decisions)|
+|match_and_pick_from_conveyor|6|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|546|171/171|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|4|开发|{'input_variant': 'numeric', 'processing_variant': 'precision'}|0|False|285|57/57|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|5|开发|{'input_variant': 'evidence', 'processing_variant': 'precision'}|0|False|295|59/59|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|6|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|288|187/187|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|7|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|246|161/161|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|5|开发|{'input_variant': 'numeric', 'processing_variant': 'precision'}|0|False|370|74/74|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|6|开发|{'input_variant': 'evidence', 'processing_variant': 'precision'}|0|False|395|79/79|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|7|开发|{'input_variant': 'evidence', 'processing_variant': 'precision'}|0|False|122|41/41|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|8|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|260|171/171|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|9|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|315|193/193|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|8|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|175|116/116|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|9|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480}|0|False|278|165/165|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|10|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'english_full'}|0|False|310|181/181|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|11|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|296|175/175|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|12|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|255|168/168|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|13|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|251|151/151|controller_stop:external phase observation budget exhausted (40 decisions)|
+|fold_clothes|14|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence', 'phase_scope': 'local'}|0|False|182|119/119|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|fold_clothes|15|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence', 'phase_scope': 'local'}|0|False|288|189/189|controller_stop:external phase observation budget exhausted (40 decisions)|
+|general_pickup|18|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'english_full'}|0|True|117|78/78|native_episode_ended|
+|general_pickup|19|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|True|120|80/80|native_episode_ended|
+|general_pickup|20|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|True|117|79/79|native_episode_ended|
+|general_pickup|21|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|1|False|200|132/132|native_episode_ended|
+|general_pickup|22|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|2|False|12|6/6|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|general_pickup|23|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|3|True|91|61/61|native_episode_ended|
+|match_and_pick_from_conveyor|7|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|622|240/240|controller_stop:external hard budget reached|
+|match_and_pick_from_conveyor|8|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|622|240/240|controller_stop:external hard budget reached|
+|match_and_pick_from_conveyor|9|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480}|0|False|634|251/251|controller_stop:external phase observation budget exhausted (40 decisions)|
+|match_and_pick_from_conveyor|10|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'english_full'}|0|False|628|232/232|controller_stop:external phase observation budget exhausted (40 decisions)|
+|match_and_pick_from_conveyor|11|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|700|79/79|native_episode_ended|
+|match_and_pick_from_conveyor|12|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|528|151/151|controller_stop:external motion safety veto: command would cross observed support surface|
+|match_and_pick_from_conveyor|13|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|True|517|127/127|native_episode_ended|
+|match_and_pick_from_conveyor|14|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|596|203/203|controller_stop:external phase observation budget exhausted (40 decisions)|
+|match_and_pick_from_conveyor|15|冻结验证|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|1|False|700|139/139|native_episode_ended|
+|press_by_number|8|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|380|240/240|controller_stop:controller error: RuntimeError: Jev decision budget exhausted|
+|press_by_number|9|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480}|0|False|601|380/380|controller_stop:Jev declared task complete; native evaluator remains independent|
+|press_by_number|10|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'english_full'}|0|False|246|154/153|controller_stop:controller error: RuntimeError: jev HTTP 520: non-JSON error body|
+|press_by_number|11|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|581|354/354|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|12|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|584|356/356|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|13|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|572|348/348|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|14|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence', 'phase_scope': 'local'}|0|False|170|98/98|controller_stop:external phase observation budget exhausted (40 decisions)|
+|press_by_number|15|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence', 'phase_scope': 'local'}|0|False|598|378/378|controller_stop:Jev declared task complete; native evaluator remains independent|
+|stack_bowls|10|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action'}|0|False|271|178/178|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|stack_bowls|11|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480}|0|False|262|169/169|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|stack_bowls|12|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'english_full'}|0|False|300|183/183|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|13|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|354|219/219|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|14|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|236|156/156|controller_stop:external phase observation budget exhausted (40 decisions)|
+|stack_bowls|15|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence'}|0|False|229|150/150|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|stack_bowls|16|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence', 'phase_scope': 'local'}|0|False|221|146/146|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|stack_bowls|17|开发|{'input_variant': 'evidence', 'processing_variant': 'precision', 'decision_mode': 'phase_then_action', 'decision_limit': 480, 'input_organization': 'compact_evidence', 'phase_scope': 'local'}|0|False|218|144/144|controller_stop:external unavailable-observation budget exhausted (6 observations)|

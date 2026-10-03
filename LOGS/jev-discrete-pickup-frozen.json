@@ -1,0 +1,248 @@
+{
+  "task": "general_pickup",
+  "source": "code/runs/jev-discrete-general_pickup-12",
+  "development_success": {
+    "steps": 114,
+    "jev_calls": 76
+  },
+  "validation": [
+    {
+      "experiment_id": "EXP-2026W40-164",
+      "task": "general_pickup",
+      "attempt": 13,
+      "variant": {
+        "input_variant": "evidence",
+        "processing_variant": "precision",
+        "decision_mode": "phase_then_action"
+      },
+      "layout": 0,
+      "frozen_reference": "code/runs/jev-discrete-general_pickup-12",
+      "native_success": true,
+      "reason": "native_episode_ended",
+      "steps": 117,
+      "jev_requests": 78,
+      "jev_responses": 78,
+      "phase_choices": {
+        "advance": 4,
+        "stay": 37
+      },
+      "gripper_choices": {
+        "open": 30,
+        "keep": 5,
+        "close": 2
+      },
+      "transition_owners": [
+        "Jev"
+      ],
+      "forbidden_field_hits": [],
+      "stages": [
+        "approach",
+        "contact",
+        "close",
+        "lift"
+      ],
+      "wall_seconds": 303.3389093391597,
+      "commit": "78adbb1880131b79760a50a9d80dc3f1ffeecc03",
+      "run": "code/runs/jev-discrete-general_pickup-13",
+      "command": [
+        "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+        "--config",
+        "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-13.json",
+        "--output",
+        "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-13",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    },
+    {
+      "experiment_id": "EXP-2026W40-165",
+      "task": "general_pickup",
+      "attempt": 14,
+      "variant": {
+        "input_variant": "evidence",
+        "processing_variant": "precision",
+        "decision_mode": "phase_then_action"
+      },
+      "layout": 1,
+      "frozen_reference": "code/runs/jev-discrete-general_pickup-12",
+      "native_success": false,
+      "reason": "native_episode_ended",
+      "steps": 200,
+      "jev_requests": 132,
+      "jev_responses": 132,
+      "phase_choices": {
+        "advance": 5,
+        "stay": 63,
+        "retry": 1
+      },
+      "gripper_choices": {
+        "close": 2,
+        "open": 54,
+        "keep": 7
+      },
+      "transition_owners": [
+        "Jev"
+      ],
+      "forbidden_field_hits": [],
+      "stages": [
+        "approach",
+        "contact",
+        "close",
+        "lift",
+        "verify_grasp"
+      ],
+      "wall_seconds": 365.15029729530215,
+      "commit": "78adbb1880131b79760a50a9d80dc3f1ffeecc03",
+      "run": "code/runs/jev-discrete-general_pickup-14",
+      "command": [
+        "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+        "--config",
+        "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-14.json",
+        "--output",
+        "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-14",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    },
+    {
+      "experiment_id": "EXP-2026W40-166",
+      "task": "general_pickup",
+      "attempt": 15,
+      "variant": {
+        "input_variant": "evidence",
+        "processing_variant": "precision",
+        "decision_mode": "phase_then_action"
+      },
+      "layout": 2,
+      "frozen_reference": "code/runs/jev-discrete-general_pickup-12",
+      "native_success": false,
+      "reason": "controller_stop:external unavailable-observation budget exhausted (6 observations)",
+      "steps": 12,
+      "jev_requests": 6,
+      "jev_responses": 6,
+      "phase_choices": {
+        "reobserve": 6
+      },
+      "gripper_choices": {},
+      "transition_owners": [],
+      "forbidden_field_hits": [],
+      "stages": [
+        "select"
+      ],
+      "wall_seconds": 233.40593092888594,
+      "commit": "78adbb1880131b79760a50a9d80dc3f1ffeecc03",
+      "run": "code/runs/jev-discrete-general_pickup-15",
+      "command": [
+        "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+        "--config",
+        "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-15.json",
+        "--output",
+        "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-15",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    },
+    {
+      "experiment_id": "EXP-2026W40-167",
+      "task": "general_pickup",
+      "attempt": 16,
+      "variant": {
+        "input_variant": "evidence",
+        "processing_variant": "precision",
+        "decision_mode": "phase_then_action"
+      },
+      "layout": 3,
+      "frozen_reference": "code/runs/jev-discrete-general_pickup-12",
+      "native_success": true,
+      "reason": "native_episode_ended",
+      "steps": 91,
+      "jev_requests": 60,
+      "jev_responses": 60,
+      "phase_choices": {
+        "advance": 4,
+        "stay": 28
+      },
+      "gripper_choices": {
+        "open": 20,
+        "keep": 6,
+        "close": 2
+      },
+      "transition_owners": [
+        "Jev"
+      ],
+      "forbidden_field_hits": [],
+      "stages": [
+        "approach",
+        "contact",
+        "close",
+        "lift"
+      ],
+      "wall_seconds": 282.29019974172115,
+      "commit": "78adbb1880131b79760a50a9d80dc3f1ffeecc03",
+      "run": "code/runs/jev-discrete-general_pickup-16",
+      "command": [
+        "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+        "--config",
+        "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-16.json",
+        "--output",
+        "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-16",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    },
+    {
+      "experiment_id": "EXP-2026W40-168",
+      "task": "general_pickup",
+      "attempt": 17,
+      "variant": {
+        "input_variant": "evidence",
+        "processing_variant": "precision",
+        "decision_mode": "phase_then_action"
+      },
+      "layout": 4,
+      "frozen_reference": "code/runs/jev-discrete-general_pickup-12",
+      "native_success": true,
+      "reason": "native_episode_ended",
+      "steps": 81,
+      "jev_requests": 54,
+      "jev_responses": 54,
+      "phase_choices": {
+        "advance": 4,
+        "stay": 25
+      },
+      "gripper_choices": {
+        "open": 16,
+        "keep": 7,
+        "close": 2
+      },
+      "transition_owners": [
+        "Jev"
+      ],
+      "forbidden_field_hits": [],
+      "stages": [
+        "approach",
+        "contact",
+        "close",
+        "lift"
+      ],
+      "wall_seconds": 278.83267657086253,
+      "commit": "78adbb1880131b79760a50a9d80dc3f1ffeecc03",
+      "run": "code/runs/jev-discrete-general_pickup-17",
+      "command": [
+        "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+        "--config",
+        "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-17.json",
+        "--output",
+        "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-17",
+        "--backend",
+        "robodojo",
+        "--with-jev"
+      ]
+    }
+  ],
+  "interpretation": "Frozen code/experience/input across five previously seen layouts, 3/5; development diagnostic, not independent final generalization evaluation."
+}

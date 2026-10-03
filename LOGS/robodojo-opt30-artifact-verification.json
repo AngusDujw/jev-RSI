@@ -1,0 +1,11 @@
+{
+  "campaign": "2026-10-04-robodojo-opt30",
+  "files": 58818,
+  "bytes": 20654950039,
+  "sha256_manifest": "code/runs/2026-10-04-robodojo-opt30-sha256.json",
+  "manifest_sha256": "08ce992cac46f090a55be45540f6e5ef0b3e16fbff88212c52b1a17e475b6054",
+  "local": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI",
+  "remote": "company-server-2:/root/yekangjie/project/jev_rsi",
+  "mismatches": [],
+  "verified": true
+}
