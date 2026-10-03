@@ -14,6 +14,40 @@ from libero_robot_geometry import gripper_geometry, envelope
 PHASES = ['select', 'approach', 'align', 'descend', 'grasp', 'test_lift', 'lift', 'carry', 'lower', 'release', 'retreat']
 
 
+def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_candidates):
+    extent = src['high']-src['low']
+    # Horizontal observed bounding range, no hidden object shape/PCA metadata.
+    major = np.array([1.,0.,0.]) if extent[0] >= extent[1] else np.array([0.,1.,0.])
+    minor = np.array([-major[1],major[0],0.])
+    R = np.column_stack([major, -minor, [0.,0.,-1.]])
+    current = Rotation.from_quat(quaternion).as_matrix()
+    alternate = R @ Rotation.from_euler('z',np.pi).as_matrix()
+    if np.linalg.norm(Rotation.from_matrix(alternate@current.T).as_rotvec()) < np.linalg.norm(Rotation.from_matrix(R@current.T).as_rotvec()):
+        R = alternate
+    angle = cfg['contact_angle_deg']*np.pi/180
+    near = 1 if position[:2]@major[:2] > src['center'][:2]@major[:2] else -1
+    R = Rotation.from_rotvec(minor*angle*near).as_matrix() @ R
+    ee = envelope(own, R)
+    c = []
+    for i, extra in enumerate([0., .003, -.003]):
+        overlap = cfg['pad_overlap_mm']/1000+extra
+        if cfg['grasp_algorithm'] == 'legacy_clearance':
+            z = src['high'][2]+.023
+        else:
+            z = src['high'][2]-overlap-ee['pad_low_offset'][2]
+            z = max(z, level-ee['finger_low_z_offset']+cfg['table_margin_mm']/1000)
+        target = np.r_[src['center'][:2]-ee['pad_center_offset'][:2], z]
+        target[:2] += major[:2] * ([0.,-.012,.012][i])
+        pad_low, pad_high = z+ee['pad_low_offset'][2],z+ee['pad_high_offset'][2]
+        width = float(abs(minor[:2])@extent[:2])
+        c.append(dict(id=f'candidate_{i}', target=target, orientation=R, visible_width_mm=width*1000,
+                      estimated_pad_overlap_mm=max(0., min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000,
+                      estimated_finger_table_clearance_mm=(z+ee['finger_low_z_offset']-level)*1000,
+                      pad_z_interval_m=[pad_low,pad_high],support_z_m=level, support_pixels=points,
+                      prior_failed=i in failed_candidates, source='Visible RGB-D bounds/support plane + own robot mesh; geometric estimate only'))
+    return c
+
+
 class RecoveryModel(Jev):
     def decide(self, state):
         self.rec.check_budget()
@@ -132,36 +166,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
 
     def candidates():
         level, points = support_level()
-        extent = src['high']-src['low']
-        # Horizontal observed bounding range, no hidden object shape/PCA metadata.
-        major = np.array([1.,0.,0.]) if extent[0] >= extent[1] else np.array([0.,1.,0.])
-        minor = np.array([-major[1],major[0],0.])
-        R = np.column_stack([major, -minor, [0.,0.,-1.]])
-        current = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-        alternate = R @ Rotation.from_euler('z',np.pi).as_matrix()
-        if np.linalg.norm(Rotation.from_matrix(alternate@current.T).as_rotvec()) < np.linalg.norm(Rotation.from_matrix(R@current.T).as_rotvec()):
-            R = alternate
-        angle = rec.cfg['contact_angle_deg']*np.pi/180
-        near = 1 if obs['robot0_eef_pos'][:2]@major[:2] > src['center'][:2]@major[:2] else -1
-        R = Rotation.from_rotvec(minor*angle*near).as_matrix() @ R
-        ee = envelope(own, R)
-        c = []
-        for i, extra in enumerate([0., .003, -.003]):
-            overlap = rec.cfg['pad_overlap_mm']/1000+extra
-            if rec.cfg['grasp_algorithm'] == 'legacy_clearance':
-                z = src['high'][2]+.023
-            else:
-                z = src['high'][2]-overlap-ee['pad_low_offset'][2]
-                z = max(z, level-ee['finger_low_z_offset']+rec.cfg['table_margin_mm']/1000)
-            target = np.r_[src['center'][:2]-ee['pad_center_offset'][:2], z]
-            target[:2] += major * ([0.,-.012,.012][i])
-            pad_low, pad_high = z+ee['pad_low_offset'][2],z+ee['pad_high_offset'][2]
-            width = float(abs(minor[:2])@extent[:2])
-            c.append(dict(id=f'candidate_{i}', target=target, orientation=R, visible_width_mm=width*1000,
-                          estimated_pad_overlap_mm=max(0., min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000,
-                          estimated_finger_table_clearance_mm=(z+ee['finger_low_z_offset']-level)*1000,
-                          pad_z_interval_m=[pad_low,pad_high],support_z_m=level, support_pixels=points,
-                          prior_failed=i in failed_candidates, source='Visible RGB-D bounds/support plane + own robot mesh; geometric estimate only'))
+        c = fit_candidates(src, own, obs['robot0_eef_pos'], obs['robot0_eef_quat'], level, points, rec.cfg, failed_candidates)
         dump(rec.folder/f'candidates-{grasp_tries:02d}.json',c)
         return c
 
