@@ -204,7 +204,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         hover = max(src['high'][2],dst['high'][2])+.12
         while True:
             rec.check_budget()
-            if ticks >= 660 or stage_decisions >= 45:
+            if ticks >= 550 or stage_decisions >= 45:
                 raise RuntimeError('Stage/native budget: '+stage)
             c = cs[selected]
             Rgoal = c['orientation']
@@ -263,7 +263,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             newgrip=gripper if d['gripper']=='keep' else -1 if d['gripper']=='open' else 1
             if newgrip!=gripper:grip_ticks=0
             gripper=newgrip
-            cap=.006 if stage in ['descend','test_lift','lower'] else .02
+            cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .02
             delta=np.asarray(d['signs'])*np.minimum(cap,.5*abs(error))
             rotation=np.asarray(d['rotation_signs'])*np.minimum(.10,.5*abs(rot))
             before=position.copy()
