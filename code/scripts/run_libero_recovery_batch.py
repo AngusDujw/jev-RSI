@@ -12,6 +12,7 @@ p=argparse.ArgumentParser()
 p.add_argument('--output',required=True)
 p.add_argument('--tasks',default='libero_object:1066')
 p.add_argument('--inits',default='1')
+p.add_argument('--frozen-from',help='Reuse an audited prior frozen/ policy snapshot exactly')
 p.add_argument('--input-organization',choices=['contract','evidence','local'],default='contract')
 p.add_argument('--grasp-algorithm',choices=['legacy_clearance','pad_fit'],default='pad_fit')
 p.add_argument('--contact-angle-deg',type=float,default=0.)
@@ -25,8 +26,14 @@ source=Path(__file__).resolve().parent
 root=Path(a.output).resolve();root.mkdir(parents=True,exist_ok=False)
 frozen=root/'frozen';frozen.mkdir()
 files=['libero_jev_rollout.py','libero_jev_supervisor.py','libero_jev_recovery.py','libero_robot_geometry.py','libero_generic_vision.py','libero_grounding_worker.py','local_rgbd_perception.py','run_position_pilot.py']
-for name in files:(frozen/name).write_bytes((source/name).read_bytes())
-manifest=dict(options=vars(a),commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),source_sha256={n:hashlib.sha256((frozen/n).read_bytes()).hexdigest() for n in files},new_episode_cap=30,per_task_total_cap=50)
+snapshot=Path(a.frozen_from).resolve() if a.frozen_from else source
+prior=json.loads((snapshot.parent/'manifest.json').read_text()) if a.frozen_from else None
+for name in files:
+ data=(snapshot/name).read_bytes()
+ if prior and hashlib.sha256(data).hexdigest()!=prior['source_sha256'][name]:raise RuntimeError('Frozen source hash mismatch: '+name)
+ (frozen/name).write_bytes(data)
+runner_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+manifest=dict(options=vars(a),commit=prior['commit'] if prior else runner_commit,runner_commit=runner_commit,source_sha256={n:hashlib.sha256((frozen/n).read_bytes()).hexdigest() for n in files},new_episode_cap=30,per_task_total_cap=50)
 (root/'manifest.json').write_text(json.dumps(manifest,indent=2))
 ledger=source.parent/'runs'/'libero-supervisor-ledger.jsonl'
 campaign=source.parent/'runs'/'libero-recovery30-ledger.jsonl'
