@@ -110,7 +110,8 @@ class Controller(Geometry):
         if self.stage=='lift' and self.plan.get('baseline'):
             distance=self.plan['fold_height'] if self.task=='fold_clothes' else self.plan['lift_distance_m']
             self.debug['waypoint_reference']='bounded lift probe from recorded ROBOT position; no assertion of current object pose or attachment'
-            return {a:np.asarray(self.plan['baseline']['robot'][a])+[0,0,distance] for a in self.plan['arms']},0.,0.
+            origin=self.plan.get('lift_probe_origin',self.plan['baseline']['robot'])
+            return {a:np.asarray(origin[a])+[0,0,distance] for a in self.plan['arms']},0.,0.
         if self.stage=='return_home':
             return {a:r['grasp'].copy() for a,r in self.initial_robot.items()},0.,1.
         if self.task=='stack_bowls' and self.stage in ('transport','lower'):
@@ -410,6 +411,8 @@ class Controller(Geometry):
 
     def _accept_phase(self,new,evidence):
         old=self.stage
+        if old=='close' and new=='lift':
+            self.plan['lift_probe_origin']={a:self.robot[a]['grasp'].copy() for a in self.plan['arms']}
         if old=='close' and self.plan.get('baseline') is None:self.plan['baseline']=self._baseline()
         if old=='release':self.plan['release_robot']={a:self.robot[a]['grasp'].copy() for a in self.plan['arms']}
         if old=='verify_grasp' and new=='transport':
@@ -477,15 +480,21 @@ class Controller(Geometry):
             phase_raw=ask_jev(phase_state,questions)
             answers=dict(phase_raw.get('answers',{}));raw=dict(composed=True,phase_response=phase_raw)
             phase_choice=answers.get('phase',{}).get('choice')
-            if phase_choice=='stay':
+            finalize_contact=phase_choice=='advance' and self.stage=='contact'
+            if phase_choice=='stay' or finalize_contact:
                 action_questions={k:copy.deepcopy(v) for k,v in all_questions.items() if k!='phase'}
+                if finalize_contact:action_questions={k:v for k,v in action_questions.items() if k.endswith('_gripper')}
                 action_state={k:copy.deepcopy(state[k]) for k in ('task','instruction','stage','native_step','remaining_steps','active_arms','frame','stage_goal','robot','geometry','relations','alignment_facts','constraints','visibility','orientation_error_rad','recent_gripper_feedback','last_gripper_commands','feedback','phase_evidence','waypoint_reference','consecutive_contact_stalls','alignment_reference','velocity_prediction_model','active_gripper_feedback','active_gripper_summary','contact_tool_geometry','perception_error','operation_role','prior_grasp_verification_accepted','placement_reference','support_plane_estimate') if k in state}
                 action_state['decision_card'] = state['decision_card']
                 action_state.update(decision_role='current_stage_action_only',phase_decision='Jev chose STAY; current objective is not confirmed complete',
                     interpretation='Act only for the CURRENT named phase and operation_role. Unfinished movement does not mean a prior grasp is unconfirmed. During lift, transport and lower, preserve the grip until the separate release phase.')
+                if finalize_contact:
+                    action_state.update(decision_role='finalize_current_contact_gripper',
+                        phase_decision='Jev chose ADVANCE from contact to close using this observation; decide the gripper endpoint now, without translation.',
+                        interpretation='Begin the gripper action at the current observed contact before advancing. Attachment remains unverified; a lift probe follows.')
                 for key,q in action_questions.items():
                     if key.endswith('_gripper'):
-                        q['instructions']['phase_dependency']='Jev already chose STAY in the first request; choose an action for this CURRENT unfinished phase, not a future phase.'
+                        q['instructions']['phase_dependency']=('Jev chose ADVANCE from contact to close. Decide whether to start closing at this observed contact now; do not wait for a future grasp result.' if finalize_contact else 'Jev already chose STAY in the first request; choose an action for this CURRENT unfinished phase, not a future phase.')
                 if self.jev_calls>=self.decision_limit:
                     self.jev_seconds+=time.monotonic()-started
                     return self._result(stop=True,reason='external model-query budget exhausted after phase judgment',ticks=1)
