@@ -31,12 +31,17 @@ for rp in sorted(a.root.glob('**/result.json')):
    for k in ['gripper','transition']:assert actual[k]['choice']==d[k]
    if 'candidate' in actual:assert actual['candidate']['choice']==d['candidate']
    else:assert d['candidate']=='not_requested'
+   signmap=dict(negative=-1,hold=0,positive=1)
+   for i,k in enumerate(['rx','ry','rz']):
+    if k in actual:assert signmap[actual[k]['choice']]==d['rotation_signs'][i]
+    else:assert d['rotation_signs'][i]==0 and abs(state['required_rotation_world_rad'][k])<.03
  branches=[json.loads(x) for x in (q/'branches.jsonl').read_text().splitlines()] if (q/'branches.jsonl').exists() else []
  prev=-1
  for b in branches:
   d=decisions[b['decision_id']];assert d['gripper']==b['selected_gripper'];assert d['transition']==b['selected_transition']
   expected=prev if d['gripper']=='keep' else -1 if d['gripper']=='open' else 1;assert expected==b['executed_gripper'];prev=expected
   assert all(v*s>=-1e-12 for v,s in zip(b['delta'],d['signs']))
+  assert b['rotation_signs']==d['rotation_signs']
  events=[json.loads(x) for x in (q/'events.jsonl').read_text().splitlines()]
  edges=[e for e in events if e.get('kind')=='phase_transition']
  for e in edges:
