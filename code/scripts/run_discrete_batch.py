@@ -24,7 +24,14 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False)
         for name,digest in provenance['files'].items():
             if hashlib.sha256(Path(name).read_bytes()).hexdigest()!=digest:raise RuntimeError('frozen controller changed: '+name)
         snapshot=json.loads((reference/'experience_snapshot.json').read_text())
-        available={hashlib.sha256(p.read_bytes()).hexdigest() for folder in ['global','jev_discrete'] for p in (ROOT/'code/experience'/folder).glob('*.md')}
+        import re
+        directory=Path(cfg['generated_controller']).parent
+        task_source=(directory/'task_controller.py').read_text()
+        memory_source=(directory/'experience.py').read_text()
+        task_match=re.search(r'experience/([a-zA-Z0-9_]+)',task_source)
+        global_match=re.search(r"parent/'([a-zA-Z0-9_]+)'",memory_source)
+        folders=[task_match[1] if task_match else 'jev_discrete',global_match[1] if global_match else 'global']
+        available={hashlib.sha256(p.read_bytes()).hexdigest() for folder in folders for p in (ROOT/'code/experience'/folder).glob('*.md')}
         if any(r['sha256'] not in available for r in snapshot['records']):raise RuntimeError('frozen experience changed')
         commit=json.loads((reference/'provenance.json').read_text())['commit']
         for name in ['run_position_pilot.py','robodojo_position.py','structured_task_runner.py','local_rgbd_perception.py','local_digit_ocr.py','rgbd_bridge.py']:

@@ -8,7 +8,7 @@ from pathlib import Path
 from run_discrete_batch import ROOT, TASKS, run
 
 
-def trial(task, variant, layout, campaign, limit):
+def trial(task, variant, layout, campaign, limit, frozen_from=None):
     folder = ROOT / 'code/runs'
     with (folder / (campaign + '.lock')).open('a+') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
@@ -29,7 +29,7 @@ def trial(task, variant, layout, campaign, limit):
                    task=task, attempt=attempt, variant=variant, layout=layout)
         with journal.open('a') as handle:
             handle.write(json.dumps(row) + '\n')
-    code = run(task, variant, 'precision', layout, auto_gpu=True)
+    code = run(task, variant, 'precision', layout, auto_gpu=True, frozen_from=frozen_from)
     if code == 2:
         # A raced GPU lease did not start a physical trial. Keep explicit release history.
         row['event'] = 'deferred_after_reservation'
@@ -51,13 +51,14 @@ if __name__ == '__main__':
     parser.add_argument('--layout', type=int, default=0)
     parser.add_argument('--campaign', default='2026-10-04-robodojo-opt30')
     parser.add_argument('--limit', type=int, default=30)
+    parser.add_argument('--frozen-from')
     args = parser.parse_args()
     if not 1 <= args.limit <= 30:
         parser.error('campaign limit must be 1..30')
     if len(set(args.tasks)) != len(args.tasks):
         parser.error('tasks must be unique within one batch')
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
-        jobs = [pool.submit(trial, task, args.variant, args.layout, args.campaign, args.limit)
+        jobs = [pool.submit(trial, task, args.variant, args.layout, args.campaign, args.limit, args.frozen_from)
                 for task in args.tasks]
         for job in concurrent.futures.as_completed(jobs):
             print(json.dumps(job.result()), flush=True)
