@@ -142,7 +142,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         if np.linalg.norm(Rotation.from_matrix(alternate@current.T).as_rotvec()) < np.linalg.norm(Rotation.from_matrix(R@current.T).as_rotvec()):
             R = alternate
         angle = rec.cfg['contact_angle_deg']*np.pi/180
-        near = 1 if obs['robot0_eef_pos'][:2]@major > src['center'][:2]@major else -1
+        near = 1 if obs['robot0_eef_pos'][:2]@major[:2] > src['center'][:2]@major[:2] else -1
         R = Rotation.from_rotvec(minor*angle*near).as_matrix() @ R
         ee = envelope(own, R)
         c = []
