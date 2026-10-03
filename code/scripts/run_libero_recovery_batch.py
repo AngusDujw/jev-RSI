@@ -22,6 +22,7 @@ p.add_argument('--pad-overlap-mm',type=float,default=6.)
 p.add_argument('--table-margin-mm',type=float,default=1.)
 p.add_argument('--preserve-source',action='store_true')
 p.add_argument('--allow-retry',action='store_true')
+p.add_argument('--execution-profile',choices=['baseline','adaptive'],default='baseline')
 p.add_argument('--max-jev-decisions',type=int,default=180)
 a=p.parse_args()
 source=Path(__file__).resolve().parent
@@ -58,6 +59,7 @@ for item in a.tasks.split(','):
   cmd=['/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python','-B',str(frozen/'libero_jev_rollout.py'),'--recovery-supervisor','--suite',suite,'--task-id',str(task),'--init-index',str(init),'--geometry-profile','observed_surfaces','--camera-size','768','--max-jev-decisions',str(a.max_jev_decisions),'--input-organization',a.input_organization,'--grasp-algorithm',a.grasp_algorithm,'--contact-angle-deg',str(a.contact_angle_deg),'--pad-overlap-mm',str(a.pad_overlap_mm),'--table-margin-mm',str(a.table_margin_mm),'--output',str(out)]
   if a.preserve_source:cmd.append('--preserve-source')
   if a.allow_retry:cmd.append('--allow-retry')
+  if a.execution_profile!='baseline':cmd.extend(['--execution-profile',a.execution_profile])
   start=time.monotonic()
   with (root/f'{suite}-{task}-init-{init}.log').open('w') as log:
    child=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT)

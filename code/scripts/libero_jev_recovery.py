@@ -247,6 +247,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open'] and (stalls>=3 or holding['status']=='failed')
             next_stage = 'select' if stage=='recover_open' else 'recover_open' if stage=='recover_up' else 'finish_attempt' if stage=='retreat' else PHASES[PHASES.index(stage)+1]
             state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks),holding_evidence=holding,allowed_transitions=dict(continue_phase=True,advance=bool(complete),retry=bool(can_retry),stop=True),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
+            adaptive=rec.cfg.get('execution_profile','baseline')=='adaptive'
+            block_ticks=6 if adaptive and (stage in ['grasp','release','recover_open'] or np.max(abs(error))>.06) else 3
+            state['gripper']['next_action_block_native_ticks']=block_ticks
             state['translation_axes']={a:dict(current_coordinate_m=float(position[i]),goal_coordinate_m=float(target[i]),goal_minus_current_mm=round(float(error[i])*1000,2),relation='within_tolerance' if abs(error[i])<.002 else 'goal_coordinate_larger' if error[i]>0 else 'goal_coordinate_smaller') for i,a in enumerate('xyz')}
             state['rotation_questions']='Only axes outside 0.03rad tolerance are requested; unrequested rotations are zero, not fabricated model choices.'
             if rec.cfg['input_organization']=='local':
@@ -264,15 +267,17 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if newgrip!=gripper:grip_ticks=0
             gripper=newgrip
             cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .02
-            delta=np.asarray(d['signs'])*np.minimum(cap,.5*abs(error))
-            rotation=np.asarray(d['rotation_signs'])*np.minimum(.10,.5*abs(rot))
+            gain=.35 if block_ticks==6 else .5
+            delta=np.asarray(d['signs'])*np.minimum(cap,gain*abs(error))
+            rotation=np.asarray(d['rotation_signs'])*np.minimum(.10,gain*abs(rot))
             before=position.copy()
-            for _ in range(3):
+            if ticks+block_ticks>550:raise RuntimeError('Native block budget')
+            for _ in range(block_ticks):
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;grip_ticks+=1
             after=obs['robot0_eef_pos'].copy()
             progress=float(np.linalg.norm(error)-np.linalg.norm(target-after))
             stalls=stalls+1 if np.linalg.norm(after-before)<.0008 and np.linalg.norm(error)>.008 else 0
-            rec.branch(dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,selected_gripper=d['gripper'],executed_gripper=gripper,selected_transition=d['transition'],rotation_signs=d['rotation_signs'],rotation_error_rad=rot,progress_m=progress))
+            rec.branch(dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,selected_gripper=d['gripper'],executed_gripper=gripper,selected_transition=d['transition'],block_native_ticks=block_ticks,selected_candidate=c['id'],rotation_signs=d['rotation_signs'],rotation_error_rad=rot,progress_m=progress))
             history.append(dict(gripper=d['gripper'],transition=d['transition'],progress_mm=round(progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()))
             for cam,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{cam}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))
             transition=d['transition']
