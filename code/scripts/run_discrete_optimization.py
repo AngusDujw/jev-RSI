@@ -47,7 +47,7 @@ def trial(task, variant, layout, campaign, limit):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--tasks', nargs='+', choices=TASKS, default=TASKS)
-    parser.add_argument('--variant', choices=['english', 'compact', 'geometry', 'anchors'], required=True)
+    parser.add_argument('--variant', choices=['english', 'compact', 'geometry', 'anchors', 'local'], required=True)
     parser.add_argument('--layout', type=int, default=0)
     parser.add_argument('--campaign', default='2026-10-04-robodojo-opt30')
     parser.add_argument('--limit', type=int, default=30)
