@@ -12,7 +12,8 @@ for run in sorted((ROOT/'code/runs').glob('jev-discrete-*-??')):
         if not rp.exists():continue
         state=json.loads(q.read_text())['state'];answers=json.loads(rp.read_text()).get('answers',{})
         group=groups[(cfg['runtime_task'],variant,state['stage'])];group['requests']+=1
-        dz=state['constraints']['dead_zone_m'];errors={}
+        dz=state.get('constraints',{}).get('dead_zone_m');errors={}
+        if dz is None:continue  # Select-only projected requests contain no motion coordinates.
         for arm,g in state.get('geometry',{}).items():errors[arm]=g['target_minus_grasp_m']
         for arm,g in state.get('relations',{}).items():errors[arm]=[g[a].get('target_minus_current_grasp_mm',g[a].get('signed_distance_mm'))/1000 for a in 'xyz']
         for arm,values in errors.items():
