@@ -4,6 +4,8 @@ import fcntl
 import hashlib
 import json
 import os
+import signal
+import shutil
 from pathlib import Path
 import subprocess
 import time
@@ -42,6 +44,7 @@ for item in a.tasks.split(','):
  suite,task=item.split(':');task=int(task)
  for init in map(int,a.inits.split(',')):
   out=root/f'{suite}-{task}-init-{init}'
+  if shutil.disk_usage(root).free<6*1024**3:raise RuntimeError('Shared filesystem guard: need >=6GiB before a new episode')
   with ledger.open('a+') as lock:
    fcntl.flock(lock,fcntl.LOCK_EX);lock.seek(0)
    old=[json.loads(x) for x in lock if x.strip()]
@@ -57,8 +60,16 @@ for item in a.tasks.split(','):
   if a.allow_retry:cmd.append('--allow-retry')
   start=time.monotonic()
   with (root/f'{suite}-{task}-init-{init}.log').open('w') as log:
-   try:rc=subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT,timeout=960).returncode
-   except subprocess.TimeoutExpired:rc=124
+   child=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT)
+   while child.poll() is None:
+    if time.monotonic()-start>960 or shutil.disk_usage(root).free<4*1024**3:
+     child.send_signal(signal.SIGINT)
+     try:child.wait(timeout=45)
+     except subprocess.TimeoutExpired:child.kill();child.wait()
+     break
+    try:child.wait(timeout=5)
+    except subprocess.TimeoutExpired:pass
+   rc=child.returncode
   result=json.loads((out/'result.json').read_text()) if (out/'result.json').exists() else dict(success=False,error='Setup/no result')
   row=dict(suite=suite,task=task,init=init,attempt=count+1,campaign_attempt=reservation['campaign_attempt'],seconds=time.monotonic()-start,returncode=rc,result=result)
   rows.append(row);(root/'batch.json').write_text(json.dumps(rows,indent=2));print(json.dumps(row),flush=True)
