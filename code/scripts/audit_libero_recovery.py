@@ -24,7 +24,7 @@ for rp in sorted(a.root.glob('**/result.json')):
  requests={}
  for d in ds:
   request=json.loads((q/d['decision_id']/'request.json').read_text());state=request['state'];assert set(state)<=allowed,set(state)-allowed;walk(state)
-  assert not any('\u4e00'<=c<='\u9fff' for c in json.dumps(request,ensure_ascii=False)),q/d['decision_id']
+  assert json.dumps(request,ensure_ascii=False).isascii(),q/d['decision_id']
   requests[d['decision_id']]=state
   if 'answers' in d:
    actual=json.loads((q/d['decision_id']/'response.json').read_text())['answers'];assert actual==d['answers'];assert set(actual)==set(request['questions'])
