@@ -71,7 +71,7 @@ def add_card(state, compact=False):
             state['phase_evidence']['candidate_plan'] = {
                 k: plan[k] for k in ('source', 'destination', 'arms', 'rule', 'requested_lift_m',
                                     'fold_mode', 'count_entry') if k in plan}
-            state['phase_evidence'].pop('temporal_observations', None)
+            # Temporal evidence explains departure/return; keep it even in compact input.
         state['robot'] = {a: {k: r[k] for k in ('grasp', 'quaternion', 'opening') if k in r}
                           for a, r in state['robot'].items()}
     return state
