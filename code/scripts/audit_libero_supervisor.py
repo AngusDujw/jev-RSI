@@ -21,9 +21,18 @@ for result_path in sorted(a.root.glob('**/result.json')):
  for e in edges:assert ds[e['decision_id']]['transition']=='advance' and ds[e['decision_id']]['stage']==e['from_stage']
  for r in rows:
   request=json.load(open(q/r['decision_id']/'request.json'));assert set(request['state'])<=base_keys,set(request['state'])-base_keys
+  assert json.dumps(request,ensure_ascii=False).isascii()
+  if 'answers' in r:
+   actual=json.load(open(q/r['decision_id']/'response.json'))['answers'];assert actual==r['answers'];assert set(actual)==set(request['questions'])
+   assert all(actual[k]['choice']==r[k] for k in ['gripper','transition'])
+   signs=dict(negative=-1,hold=0,positive=1)
+   assert [signs[actual[k]['choice']] for k in 'xyz']==r['signs']
+   if request['state'].get('rotation_control'):
+    assert [signs[actual[k]['choice']] for k in ['rx','ry','rz']]==r['rotation_signs']
+   else:assert r['rotation_signs']==[0,0,0]
   assert not any(k in request['state'] for k in ['reward','success','object_poses','goal_predicates','true_state','scene_layout'])
  out=dict(path=str(q),result=json.load(open(result_path)),decisions=len(rows),executed_decisions=len(branches),transitions=len(edges),gripper_choices=dict(collections.Counter(r.get('gripper') for r in rows)),transition_choices=dict(collections.Counter(r.get('transition') for r in rows)))
  results.append(out)
-report=json.dumps(dict(episodes=len(results),audit='recorded actions/phase edges match recorded decisions; root input fields allowlisted; code/source review still required for provenance',rows=results),indent=2)
+report=json.dumps(dict(episodes=len(results),audit='actual Jev responses match recorded directions/gripper/transitions and executed actions/phase edges; request text ASCII; root input fields allowlisted; code/source review still required for provenance',rows=results),indent=2)
 if a.output:a.output.write_text(report+'\n')
 print(report)
