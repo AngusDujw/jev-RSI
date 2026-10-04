@@ -11,13 +11,26 @@ import json
 import os
 import shutil
 import signal
+import socket
 import subprocess
 import time
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from libero_frame_archive import archive
 
 SIM_PYTHON = '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python'
+
+
+def network_preflight():
+    """No model requests or credentials in output; no ledger reservation yet."""
+    config = Path('/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json')
+    jev = json.loads(config.read_text())['jev']['base_url']
+    for url in [jev, 'https://sub2api.qinjiu8.com/v1']:
+        parsed = urlsplit(url)
+        port = parsed.port or (443 if parsed.scheme == 'https' else 80)
+        with socket.create_connection((parsed.hostname, port), timeout=10):
+            pass
 
 
 def main():
@@ -51,6 +64,7 @@ def main():
         if isinstance(development_inits, str):
             development_inits = [int(i) for i in development_inits.split(',')]
         assert not set(inits).intersection(development_inits), 'Evaluation must use new initial states'
+    network_preflight()
     root = a.output.resolve(); root.mkdir(parents=True, exist_ok=False)
     frozen = root/'frozen'; frozen.mkdir()
     for name, expected in prior['source_sha256'].items():
@@ -115,12 +129,27 @@ def main():
                         break
                     try: child.wait(timeout=5)
                     except subprocess.TimeoutExpired: pass
+                    except KeyboardInterrupt:
+                        termination = 'User/protocol interruption of owned runner'
+                        child.send_signal(signal.SIGINT)
+                        try: child.wait(timeout=45)
+                        except subprocess.TimeoutExpired: child.kill(); child.wait()
+                        break
             result = json.loads((out/'result.json').read_text()) if (out/'result.json').exists() else dict(success=False, error='Setup/no result')
             row = dict(reservation, seconds=time.monotonic()-start,
                 returncode=child.returncode, result=result, runner_termination=termination)
             rows.append(row)
             (root/'batch.json').write_text(json.dumps(rows, indent=2)+'\n')
             print(json.dumps(row), flush=True)
+            network_error = any(s in str(result.get('error', '')) for s in
+                ['Name or service not known', 'Temporary failure in name resolution',
+                 'Connection refused', 'Network is unreachable'])
+            if termination or network_error:
+                # Stop on the first infrastructure failure, preserving the row.
+                (root/'stopped.json').write_text(json.dumps(dict(
+                    reason=termination or 'API/network infrastructure failure',
+                    episode=str(out), completed_rows=len(rows)), indent=2)+'\n')
+                raise RuntimeError('Stopped without an automatic retry: '+str(out))
             if (out/'result.json').exists():
                 audit_name = 'audit_libero_recovery.py' if 'input_organization' in options else 'audit_libero_supervisor.py'
                 with (out/'audit.stdout').open('w') as log:
