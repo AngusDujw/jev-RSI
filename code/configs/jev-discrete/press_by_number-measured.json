@@ -68,5 +68,6 @@
     "input_organization": "compact_evidence",
     "phase_scope": "local"
   },
-  "compress_snapshot_depth": true
+  "compress_snapshot_depth": true,
+  "jev_proxy_url": "http://127.0.0.1:7897"
 }

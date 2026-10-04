@@ -26,6 +26,13 @@ def run(rec,rpc,reset):
     api_settings=dict(json.loads(Path(cfg['api_config']).read_text())['jev'])
     if 'jev_timeout_seconds' in cfg:api_settings['timeout_s']=cfg['jev_timeout_seconds']
     api=API(api_settings,rec.event,'jev')
+    if cfg.get('jev_proxy_url'):
+        import httpx
+        old_client = api.client
+        api.client = httpx.Client(proxy=cfg['jev_proxy_url'], trust_env=False,
+                                  timeout=api_settings['timeout_s'], headers=old_client.headers,
+                                  base_url=old_client.base_url)
+        old_client.close()
     directory=Path(cfg['generated_controller']).resolve().parent
     sys.path.insert(0,str(directory))
     spec=importlib.util.spec_from_file_location('server_generated_controller',cfg['generated_controller'])
