@@ -1,0 +1,140 @@
+"""New authorized evaluation/development ledger; never reset the task's 50 cap.
+
+Freeze the supplied policy snapshot and its configuration before the first run.
+Archival is post-episode instrumentation, verified byte-reversible, not a policy
+change. No discarded episode or automatic rerun of a failed initial state.
+"""
+import argparse
+import fcntl
+import hashlib
+import json
+import os
+import shutil
+import signal
+import subprocess
+import time
+from pathlib import Path
+
+from libero_frame_archive import archive
+
+SIM_PYTHON = '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python'
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('--frozen-from', type=Path, required=True)
+    p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--campaign', required=True)
+    p.add_argument('--inits', required=True)
+    p.add_argument('--tasks', help='Override environment task only; policy unchanged')
+    p.add_argument('--episode-cap', type=int, default=20, choices=[20, 30])
+    p.add_argument('--purpose', choices=['evaluation', 'development'], default='evaluation')
+    a = p.parse_args()
+    assert a.campaign.startswith(('2026-10-04-libero-verify20-', '2026-10-04-libero-top5-'))
+    source = Path(__file__).resolve().parent
+    repo = source.parents[1]
+    prior = json.loads((a.frozen_from.parent/'manifest.json').read_text())
+    options = dict(prior.get('options', prior))
+    if 'input_organization' in options:
+        # These were explicit fixed arguments in the original recovery runner.
+        options.setdefault('geometry_profile', 'observed_surfaces')
+        options.setdefault('camera_size', 768)
+    tasks = a.tasks or options.get('tasks')
+    if not isinstance(tasks, str):
+        tasks = ','.join(f'{s}:{t}' for s, t in tasks)
+    specs = [(s, int(t)) for s, t in (x.split(':') for x in tasks.split(','))]
+    inits = [int(i) for i in a.inits.split(',')]
+    assert len(set(inits)) == len(inits) and len(set(specs)) == len(specs)
+    assert len(specs)*len(inits) <= a.episode_cap
+    if a.purpose == 'evaluation':
+        development_inits = options.get('inits', [])
+        if isinstance(development_inits, str):
+            development_inits = [int(i) for i in development_inits.split(',')]
+        assert not set(inits).intersection(development_inits), 'Evaluation must use new initial states'
+    root = a.output.resolve(); root.mkdir(parents=True, exist_ok=False)
+    frozen = root/'frozen'; frozen.mkdir()
+    for name, expected in prior['source_sha256'].items():
+        data = (a.frozen_from/name).read_bytes()
+        assert hashlib.sha256(data).hexdigest() == expected, name
+        (frozen/name).write_bytes(data)
+    manifest = dict(options=options, commit=prior['commit'],
+        runner_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+        source_sha256=prior['source_sha256'], campaign=a.campaign,
+        purpose=a.purpose, episode_cap=a.episode_cap, task_total_cap=50,
+        evaluation_inits=inits, environment_tasks=specs, args=vars(a),
+        frame_archival='Lossless RGB video; exact original PNG byte reconstruction verified')
+    (root/'manifest.json').write_text(json.dumps(manifest, indent=2, default=str)+'\n')
+    ledger = repo/'code/runs/libero-supervisor-ledger.jsonl'
+    campaign = repo/'code/runs'/f'{a.campaign}-ledger.jsonl'
+    rows = []
+    for suite, task in specs:
+        for init in inits:
+            out = root/f'{suite}-{task}-init-{init}'
+            if shutil.disk_usage(root).free < 6*1024**3:
+                raise RuntimeError('Need >=6GiB before starting another episode')
+            with ledger.open('a+') as lf:
+                fcntl.flock(lf, fcntl.LOCK_EX); lf.seek(0)
+                old = [json.loads(s) for s in lf if s.strip()]
+                with campaign.open('a+') as cf:
+                    cf.seek(0); previous = [json.loads(s) for s in cf if s.strip()]
+                    count = sum(r['suite']==suite and r['task']==task for r in old)
+                    assert count < 50 and len(previous) < a.episode_cap, 'Authorized cap reached'
+                    assert not any(r['suite']==suite and r['task']==task and r['init']==init
+                        for r in previous), 'Do not rerun an initial state in this campaign'
+                    reservation = dict(suite=suite, task=task, init=init, attempt=count+1,
+                        campaign_attempt=len(previous)+1, campaign=a.campaign,
+                        purpose=a.purpose, output=str(out), options=options)
+                    for stream in [lf, cf]:
+                        stream.write(json.dumps(reservation)+'\n'); stream.flush(); os.fsync(stream.fileno())
+            cmd = [SIM_PYTHON, '-B', str(frozen/'libero_jev_rollout.py'),
+                '--suite', suite, '--task-id', str(task), '--init-index', str(init),
+                '--output', str(out)]
+            if 'input_organization' in options:
+                cmd.append('--recovery-supervisor')
+                for key in ['input_organization', 'grasp_algorithm', 'contact_angle_deg',
+                    'pad_overlap_mm', 'table_margin_mm', 'execution_profile']:
+                    cmd.extend(['--'+key.replace('_','-'), str(options.get(key, 'baseline'))])
+                for key in ['preserve_source', 'allow_retry']:
+                    if options.get(key): cmd.append('--'+key.replace('_','-'))
+            else:
+                cmd.append('--jev-supervisor')
+                for key in ['schema', 'grasp_fraction', 'approach_mode']:
+                    cmd.extend(['--'+key.replace('_','-'), str(options[key])])
+                if options.get('lift_check'): cmd.append('--lift-check')
+            for key in ['geometry_profile', 'camera_size', 'max_jev_decisions']:
+                cmd.extend(['--'+key.replace('_','-'), str(options[key])])
+            start = time.monotonic(); termination = None
+            with (root/f'{out.name}.log').open('w') as log:
+                child = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT)
+                while child.poll() is None:
+                    if time.monotonic()-start > 960 or shutil.disk_usage(root).free < 4*1024**3:
+                        termination = 'Runner timeout or shared filesystem below 4GiB'
+                        child.send_signal(signal.SIGINT)
+                        try: child.wait(timeout=45)
+                        except subprocess.TimeoutExpired: child.kill(); child.wait()
+                        break
+                    try: child.wait(timeout=5)
+                    except subprocess.TimeoutExpired: pass
+            result = json.loads((out/'result.json').read_text()) if (out/'result.json').exists() else dict(success=False, error='Setup/no result')
+            row = dict(reservation, seconds=time.monotonic()-start,
+                returncode=child.returncode, result=result, runner_termination=termination)
+            rows.append(row)
+            (root/'batch.json').write_text(json.dumps(rows, indent=2)+'\n')
+            print(json.dumps(row), flush=True)
+            if (out/'result.json').exists():
+                audit_name = 'audit_libero_recovery.py' if 'input_organization' in options else 'audit_libero_supervisor.py'
+                with (out/'audit.stdout').open('w') as log:
+                    rc = subprocess.run([SIM_PYTHON, '-B', str(source/audit_name), str(out),
+                        '--output', str(out/'audit.json')], stdout=log, stderr=subprocess.STDOUT).returncode
+                if rc != 0: raise RuntimeError('Recorded control audit failed: '+str(out))
+                row['archive'] = archive(out, remove_source=True)
+                (root/'batch.json').write_text(json.dumps(rows, indent=2)+'\n')
+            if sum(f.stat().st_size for f in root.rglob('*') if f.is_file()) > 3*1024**3:
+                raise RuntimeError('Batch disk cap 3GiB')
+    (root/'finished.json').write_text(json.dumps(dict(episodes=len(rows),
+        native_successes=sum(r['result']['success'] for r in rows),
+        complete_successes=sum(r['result']['success'] and r['result'].get('program_finished',False) for r in rows)))+'\n')
+
+
+if __name__ == '__main__':
+    main()

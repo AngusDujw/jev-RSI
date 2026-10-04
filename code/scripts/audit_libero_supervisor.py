@@ -1,7 +1,7 @@
 """Audit recorded ownership and model input allowlist, without simulation access."""
 import argparse,json,collections,hashlib
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('root',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('--output',type=Path);a=p.parse_args()
 base_keys={'task','stage','next_phase','phase_contract','position_m','target_position_m','error_m','hold_tolerance_m','arrival_tolerance_m','gripper_qpos_m','last_gripper_command','current_phase_gripper_ticks','phase_native_ticks','phase_decisions','holding_evidence','geometry_source','source_label','destination_label','recovery_remaining','last_progress_m','stalls','error_mm','axis_relations','max_error_mm','phase_goal_distance_mm','recent_actions','gripper_aperture_mm','feedback_note','measurement_status','decision_protocol','rotation_control','rotation_error_rad','required_rotation_world_rad','rotation_relations','rotation_tolerance_rad','orientation_arrived','observation_age_native_steps'}
 results=[]
 for result_path in sorted(a.root.glob('**/result.json')):
@@ -24,4 +24,6 @@ for result_path in sorted(a.root.glob('**/result.json')):
   assert not any(k in request['state'] for k in ['reward','success','object_poses','goal_predicates','true_state','scene_layout'])
  out=dict(path=str(q),result=json.load(open(result_path)),decisions=len(rows),executed_decisions=len(branches),transitions=len(edges),gripper_choices=dict(collections.Counter(r.get('gripper') for r in rows)),transition_choices=dict(collections.Counter(r.get('transition') for r in rows)))
  results.append(out)
-print(json.dumps(dict(episodes=len(results),audit='recorded actions/phase edges match real Jev responses; root input fields allowlisted; code/source review still required for provenance',rows=results),indent=2))
+report=json.dumps(dict(episodes=len(results),audit='recorded actions/phase edges match recorded decisions; root input fields allowlisted; code/source review still required for provenance',rows=results),indent=2)
+if a.output:a.output.write_text(report+'\n')
+print(report)
