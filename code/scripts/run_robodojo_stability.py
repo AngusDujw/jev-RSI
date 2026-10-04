@@ -44,10 +44,11 @@ def execute(task, variant, layout, purpose, frozen_from=None):
                 handle.write(json.dumps(row)+'\n')
         append(entry)
         try:
-            # This 24GB host has graphics contexts on every GPU. A <=4GB,
-            # <=5% utilization device still leaves >=20GB for one serial pilot.
+            # This 24GB host has persistent simulation contexts on every GPU.
+            # A <=10GB, <=5% device leaves >=14GB for our single ~6.5GB pilot,
+            # including headroom; do not kill or modify existing jobs.
             # Keep the original batch default (1GB) unchanged for other callers.
-            code = run(task,variant,'precision',layout,auto_gpu=True,frozen_from=frozen_from,gpu_memory_limit_mib=4096)
+            code = run(task,variant,'precision',layout,auto_gpu=True,frozen_from=frozen_from,gpu_memory_limit_mib=10240)
             failure = None
         except Exception as exc:
             code = 1
