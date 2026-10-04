@@ -101,3 +101,10 @@ cd /root/yekangjie/project/jev_rsi
 脚本默认任务为libero_object:1066。若需要严格复用归档策略，加`--frozen-from code/runs/2026-10-03-libero-recovery30-focused-v1/frozen`，入口逐文件验证SHA256后复制策略；完整配置和源码哈希以该批manifest为准。source版本与运行器版本分别保存在manifest，不以最后文档提交冒充历史实验代码。
 
 本轮新增15/30次，奶酪累计22/50；最终focused+adaptive新init7/8/9完整成功3/3（92/96/95Jev），每回合3次语义识别。上述启动方式和参数已在company-server-2实际运行3回合、全部returncode0，最终配置和原始输入输出均已归档；不继续追加本轮回合。
+## 冻结验证与录像归档（2026-10-04）
+
+新的[`run_libero_frozen_validation.py`](scripts/run_libero_frozen_validation.py)原样复用既有frozen源码SHA及配置，验证ledger独立于开发ledger，原每任务50次总账继续生效。预留回合前做网络DNS/TCP预检，首次网络失败即中断，不自动重试；只对结束回合审计和归档。
+
+[`libero_frame_archive.py`](scripts/libero_frame_archive.py)用CPU编码RGB无损录像，逐帧要求恢复后的PNG字节SHA与原文件一致，才移除本会话已备份的冗余控制PNG；完整原图仍在本地。[`summarize_libero_validation.py`](scripts/summarize_libero_validation.py)包含父进程中断时遗漏的真实子结果，不补造returncode，保留基础设施失败与物理结果的区别。
+
+当前奶酪新批仅有5次DNS阻断、0正式动作，20次有效验证尚未完成。其它四项待恢复联网。任务来源与对应见[`top5-correspondence.json`](configs/libero-supervisor/top5-correspondence.json)，明确是Harness VLA中并列最高任务族的Plus对应，不是唯一前五排名或Pro-T相同扰动实例。详细状态见[本轮报告](../LOGS/2026-10-04-libero-verify20-top5.md)。

@@ -1,0 +1,17 @@
+{
+  "source_project": "Harness VLA / RPent",
+  "source_paper": "https://arxiv.org/html/2607.08448#A8.T21",
+  "source_leaderboard": "https://rpent.readthedocs.io/en/latest/rst_source/leaderboard/performance.html",
+  "source_task_map": "https://raw.githubusercontent.com/Zxy-MLlab/LIBERO-PRO/master/libero/libero/benchmark/libero_suite_task_map.py",
+  "model_role": "GPT-6 Astra planner with frozen VLA and analytic primitives; not model-only motor control",
+  "selection": "Five representatives from tied highest Spatial-T/Object-T families. Published suite totals are 100/100 each: with ten tasks x ten seeds, each task has 10/10 by arithmetic inference. No unique top-five ordering is published.",
+  "correspondence": "Original task-family correspondence. Pro-T changes task language/goals while retaining base filenames; Plus instructions below are authoritative. These are not identical Pro-T perturbation instances.",
+  "policy_boundary": "Public language, dual RGB-D/calibration, own robot feedback/geometry only. Jev selects motion directions, gripper and stage edges; native success only final evaluation.",
+  "tasks": [
+    {"suite": "libero_object", "task_id": 1066, "pro_family": "Obj-T", "pro_base_index": 1, "description": "cream cheese into basket", "plus_instruction": "collect the cream cheese and set it in the basket", "frozen_from": "code/runs/2026-10-03-libero-recovery30-focused-v1/frozen", "validation_status": "Started; five pre-control DNS failures preserved, no physical validation result"},
+    {"suite": "libero_object", "task_id": 1043, "pro_family": "Obj-T", "pro_base_index": 0, "description": "alphabet soup into basket", "plus_instruction": "collect the alphabet soup and set it in the basket", "frozen_from": "code/runs/2026-10-02-libero-supervisor-soup-final/frozen", "validation_status": "Prior frozen 3/3; new validation pending infrastructure escalation"},
+    {"suite": "libero_spatial", "task_id": 1030, "pro_family": "Spat-T", "pro_base_index": 1, "description": "bowl near ramekin onto plate", "plus_instruction": "pick up the darkcolored concave container near the small glazed baking dish and place it on the flat dish used for serving food", "initial_policy_reference": "code/runs/2026-10-02-libero-supervisor-bowl-confirm/frozen", "validation_status": "Ownership-controlled transfer not yet tested; development required"},
+    {"suite": "libero_spatial", "task_id": 1062, "pro_family": "Spat-T", "pro_base_index": 2, "description": "bowl at table center onto plate", "plus_instruction": "retrieve the darkhued concave container from the middle of the flat surface for meals and set it atop the flat dish", "initial_policy_reference": "code/runs/2026-10-02-libero-supervisor-bowl-confirm/frozen", "validation_status": "Older automatic-stage successes do not satisfy current ownership requirement; development required"},
+    {"suite": "libero_spatial", "task_id": 1282, "pro_family": "Spat-T", "pro_base_index": 8, "description": "bowl next to plate onto plate", "plus_instruction": "on this lovely afternoon could you pick up the black bowl next to the plate and carefully place it on top of the plate", "frozen_from": "code/runs/2026-10-02-libero-supervisor-bowl-confirm/frozen", "validation_status": "Prior exact frozen confirmation 2/2; new validation pending infrastructure escalation"}
+  ]
+}

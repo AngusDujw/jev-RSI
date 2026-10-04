@@ -57,6 +57,7 @@ graph LR
     T_2026W40_024["📊 libero-jev-ownership<br/>Jev接管夹爪和阶段20回合：反馈族碗3个…"]:::experiment
     T_2026W40_025["📊 jev-control-formulation<br/>RoboDojo英文联合决策30回合：拾取…"]:::experiment
     T_2026W40_026["📊 libero-jev-ownership<br/>LIBERO奶酪新增15/30：可见指垫拟…"]:::experiment
+    T_2026W40_027["⛔ libero-jev-ownership<br/>奶酪冻结20验证被API DNS阻断：5次…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -85,6 +86,7 @@ graph LR
   T_2026W40_022 --> T_2026W40_023
   T_2026W40_023 --> T_2026W40_025
   T_2026W40_024 --> T_2026W40_026
+  T_2026W40_026 --> T_2026W40_027
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -134,6 +136,7 @@ graph LR
 | `T-2026W40-024` | 2026-10-03 | experiment | libero-jev-ownership | Jev接管夹爪和阶段20回合：反馈族碗3个初态成功、汤罐最终3/3完整成功，奶酪0/7；无特权输入审计与全负结果保留 | `EXP-2026W40-151` | - |
 | `T-2026W40-025` | 2026-10-04 | experiment | jev-control-formulation | RoboDojo英文联合决策30回合：拾取4/6、传送带1/6，其余0/6；固定候选复测不稳定，5036请求/456Jev阶段边、58818文件SHA一致，按预算封版 | `EXP-2026W40-216` | - |
 | `T-2026W40-026` | 2026-10-04 | experiment | libero-jev-ownership | LIBERO奶酪新增15/30：可见指垫拟合与focused/adaptive新初态3/3完整成功；同初态配对Jev136→94.33，1218响应/114阶段边审计通过，封版不扩测 | `EXP-2026W40-234` | - |
+| `T-2026W40-027` | 2026-10-04 | blocker | libero-jev-ownership | 奶酪冻结20验证被API DNS阻断：5次0控制/0Jev，首错守卫已修复；7897已占用，按连续Crashed规则征求恢复许可 | `EXP-2026W40-235` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
