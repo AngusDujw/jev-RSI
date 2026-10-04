@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 TASKS=['general_pickup','stack_bowls','fold_clothes','press_by_number','match_and_pick_from_conveyor']
 
-def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False):
+def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024):
     folder=ROOT/'code/runs';old=sorted(folder.glob('jev-discrete-'+task+'-[0-9][0-9]'))
     numbers=[int(p.name[-2:]) for p in old];number=max(numbers,default=0)+1
     if number>50:raise RuntimeError('50 trial budget reached '+task)
@@ -46,7 +46,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False)
         import fcntl
         leases=folder/'jev-discrete-gpu-leases';leases.mkdir(exist_ok=True)
         for index in sorted(memory,key=memory.get):
-            if memory[index]>1024 or utilization[index]>5:continue
+            if memory[index]>gpu_memory_limit_mib or utilization[index]>5:continue
             handle=(leases/f'{index}.lock').open('a+')
             try:fcntl.flock(handle,fcntl.LOCK_EX|fcntl.LOCK_NB)
             except BlockingIOError:handle.close();continue
@@ -54,7 +54,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False)
         if lease is None:
             print(json.dumps(dict(event='deferred_before_trial',task=task,reason='no idle GPU; no trial reserved')),flush=True)
             return 2
-    if memory[cfg['gpu']]>1024:
+    if memory[cfg['gpu']]>gpu_memory_limit_mib or utilization[cfg['gpu']]>5:
         print(json.dumps(dict(event='deferred_before_trial',task=task,gpu=cfg['gpu'],reason='occupied; no trial reserved')),flush=True)
         return 2
     config=ROOT/f'code/configs/jev-discrete/launched-{task}-{number:02d}.json'
