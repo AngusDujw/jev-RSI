@@ -7,6 +7,7 @@ import base64
 import hashlib
 import importlib.util
 import io
+import gzip
 import json
 from pathlib import Path
 import sys
@@ -143,7 +144,15 @@ def run(rec,rpc,reset):
                 view['rgb']=np.asarray(view['rgb'],dtype=np.uint8)
                 view['depth_m']=np.asarray(view['depth_m'],dtype=np.float32)
                 Image.fromarray(view['rgb']).save(frame/f'{name}.png')
-                np.save(frame/f'{name}-depth.npy',view['depth_m'])
+                depth_path = frame/f'{name}-depth.npy'
+                if cfg.get('compress_snapshot_depth', False):
+                    # Store the exact NPY byte stream losslessly; observations
+                    # used by the controller remain the original float32 array.
+                    raw_depth = io.BytesIO()
+                    np.save(raw_depth, view['depth_m'], allow_pickle=False)
+                    depth_path.with_suffix('.npy.gz').write_bytes(gzip.compress(raw_depth.getvalue(), compresslevel=1, mtime=0))
+                else:
+                    np.save(depth_path,view['depth_m'])
             dump(frame/'metadata.json',{**{k:v for k,v in current.items() if k!='cameras'},
                 'cameras':{name:{k:v for k,v in view.items() if k not in ('rgb','depth_m')} for name,view in current['cameras'].items()}})
             frame_count+=1
