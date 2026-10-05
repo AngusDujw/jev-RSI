@@ -9,6 +9,12 @@ from pathlib import Path
 import numpy as np
 
 
+def overhead_robot_base_region(contour):
+    """Fixed overhead view: bottom-center robot base, outside tabletop ROI."""
+    center_uv = np.mean(np.asarray(contour, dtype=float), axis=0)
+    return bool(.33 <= center_uv[0] <= .67 and center_uv[1] >= .875)
+
+
 def build_detector(cfg, device):
     import sys
     root = Path(cfg['existing_root'])
@@ -64,6 +70,12 @@ def visible_schema(detector, observation):
         for item in view.get('objects', []):
             contour = item.get('contour_uv01', [])
             if len(contour) < 3:
+                continue
+            # The fixed overhead camera also sees the robot's black base at
+            # the bottom center, beyond the table edge. A language detector
+            # can label it as a black target. This measured image ROI excludes
+            # that self region for pickup, without consulting scene objects.
+            if match and name == 'cam_high' and overhead_robot_base_region(contour):
                 continue
             label = str(item.get('label', 'object'))
             low = label.lower()
