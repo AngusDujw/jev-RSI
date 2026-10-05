@@ -1,12 +1,12 @@
 {
   "limit": 30,
-  "used": 6,
+  "used": 8,
   "tasks": {
     "general_pickup": {
-      "reserved": 5,
-      "completed": 5,
-      "native_evaluated": 2,
-      "mixed_development_successes": 1,
+      "reserved": 7,
+      "completed": 7,
+      "native_evaluated": 3,
+      "mixed_development_successes": 2,
       "frozen_successes": 0,
       "frozen_trials": 0
     },
@@ -49,6 +49,7 @@
       "transition_count": 0,
       "runtime_deepseek_calls": null,
       "runtime_gpt6_forbidden": true,
+      "startup_preflight": null,
       "runtime_perception": "groundingdino_sam2"
     },
     {
@@ -80,6 +81,7 @@
       "transition_count": 0,
       "runtime_deepseek_calls": null,
       "runtime_gpt6_forbidden": true,
+      "startup_preflight": null,
       "runtime_perception": "groundingdino_sam2"
     },
     {
@@ -117,6 +119,7 @@
       "transition_count": 4,
       "runtime_deepseek_calls": 0,
       "runtime_gpt6_forbidden": true,
+      "startup_preflight": null,
       "runtime_perception": "groundingdino_sam2"
     },
     {
@@ -150,6 +153,7 @@
       "transition_count": 0,
       "runtime_deepseek_calls": 0,
       "runtime_gpt6_forbidden": true,
+      "startup_preflight": null,
       "runtime_perception": "groundingdino_sam2"
     },
     {
@@ -183,6 +187,7 @@
       "transition_count": 0,
       "runtime_deepseek_calls": 0,
       "runtime_gpt6_forbidden": true,
+      "startup_preflight": null,
       "runtime_perception": "groundingdino_sam2"
     },
     {
@@ -214,6 +219,125 @@
       "transition_count": 0,
       "runtime_deepseek_calls": null,
       "runtime_gpt6_forbidden": true,
+      "startup_preflight": null,
+      "runtime_perception": "groundingdino_sam2"
+    },
+    {
+      "event": "reserved",
+      "reservation": 8,
+      "physical_trial": 7,
+      "task": "general_pickup",
+      "attempt": 29,
+      "variant": "measured",
+      "layout": 4,
+      "purpose": "startup",
+      "frozen_from": null,
+      "trial": 7,
+      "run": "code/runs/jev-discrete-general_pickup-29",
+      "organization": "compact_evidence",
+      "controller": "/root/yekangjie/project/jev_rsi/code/controllers/jev_discrete_v13/controller.py",
+      "frozen_reference": null,
+      "status": "startup_preflight_passed",
+      "native_success": null,
+      "steps": 0,
+      "requests": 0,
+      "stages": {},
+      "non_ascii_requests": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "audit_missing": [],
+      "forbidden_field_hits": [],
+      "ownership_violations": [],
+      "transition_count": 0,
+      "runtime_deepseek_calls": null,
+      "runtime_gpt6_forbidden": true,
+      "startup_preflight": {
+        "reset_passed": true,
+        "cameras": {
+          "cam_high": {
+            "rgb_shape": [
+              480,
+              640,
+              3
+            ],
+            "depth_shape": [
+              480,
+              640
+            ],
+            "finite_depth_pixels": 307200,
+            "depth_pixels": 307200
+          },
+          "cam_left_wrist": {
+            "rgb_shape": [
+              480,
+              640,
+              3
+            ],
+            "depth_shape": [
+              480,
+              640
+            ],
+            "finite_depth_pixels": 307200,
+            "depth_pixels": 307200
+          },
+          "cam_right_wrist": {
+            "rgb_shape": [
+              480,
+              640,
+              3
+            ],
+            "depth_shape": [
+              480,
+              640
+            ],
+            "finite_depth_pixels": 307200,
+            "depth_pixels": 307200
+          }
+        },
+        "native_step": 0,
+        "policy_actions": 0,
+        "jev_calls": 0,
+        "gpt6_calls": 0,
+        "scope": "initialization and RGB-D only; no task success evaluation"
+      },
+      "runtime_perception": "groundingdino_sam2"
+    },
+    {
+      "event": "reserved",
+      "reservation": 9,
+      "physical_trial": 8,
+      "task": "general_pickup",
+      "attempt": 30,
+      "variant": "measured",
+      "layout": 4,
+      "purpose": "development",
+      "frozen_from": null,
+      "trial": 8,
+      "run": "code/runs/jev-discrete-general_pickup-30",
+      "organization": "compact_evidence",
+      "controller": "/root/yekangjie/project/jev_rsi/code/controllers/jev_discrete_v13/controller.py",
+      "frozen_reference": null,
+      "status": "native_episode_ended",
+      "native_success": true,
+      "steps": 81,
+      "requests": 55,
+      "stages": {
+        "select": 1,
+        "approach": 31,
+        "contact": 10,
+        "close": 3,
+        "lift": 10
+      },
+      "non_ascii_requests": [],
+      "input_tokens": 152891,
+      "output_tokens": 4981,
+      "audit_missing": [],
+      "forbidden_field_hits": [],
+      "ownership_violations": [],
+      "transition_count": 4,
+      "runtime_deepseek_calls": 0,
+      "runtime_gpt6_forbidden": true,
+      "startup_preflight": null,
       "runtime_perception": "groundingdino_sam2"
     }
   ]

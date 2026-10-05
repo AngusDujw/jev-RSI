@@ -61,3 +61,8 @@ HTTPX经HTTP/SOCKS均出现TLS EOF；同代理/凭证的curl真实认证7901/790
 最后回合reset600秒超时且0控制；远程Aluminum_Cast材质/纹理解析失败仍存在，因果尚未唯一确定。RPC关闭socket后恢复期限的二次AttributeError已修复，原失败链不改；原始TimeoutError留在failure.json traceback。curl网络可用不等于场景可启动，下一步建议先处理材质依赖并通过启动预检再继续原剩余24次。
 
 本轮55次Jev请求尝试/51响应，全部ASCII，边界审计漏项0、方向/夹爪/阶段所有权违规0，运行时GPT-6/DeepSeek0。证据EXP-2026W41-021至025、robodojo-stability30-results.md及各回合原始目录。
+
+
+### 2026-10-05 turn8：用户授权修复，初始化已恢复
+
+原始NVIDIA材质和贴图缓存9文件15892492字节，Kit URL别名9/9原生读回SHA一致；同layout4启动-only拾取29/reset14.474秒、三路RGB-D有效且退出0，计第7/30。GPT6运行时0，Codex默认gpt-6-sol/xhigh/ChatGPT登录。具体根因、修改及边界见[修复诊断](robodojo-infrastructure-repair.md)。
