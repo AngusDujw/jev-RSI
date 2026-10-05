@@ -51,8 +51,11 @@ class Controller(Geometry):
         self.phase_decisions=[];self.last_grip={};self.prepared_stage=None;self.gripper_observations=[];self.grasp_retries=0;self.contact_stalls=0;self.support_plane=None;self.placement_refs={};self.decision_limit=int(settings.get("decision_limit",240))
         self.orientation_step_cap_rad=float(settings.get('orientation_step_cap_rad',.20))
         self.rotation_only_observations=int(settings.get('rotation_only_observations',8))
+        self.approach_motion_ticks=int(settings.get('approach_motion_ticks',3))
         if not (.05<=self.orientation_step_cap_rad<=.35 and 0<=self.rotation_only_observations<=8):
             raise ValueError('Orientation step cap or rotation-only observation limit outside tested bounds')
+        if not 3<=self.approach_motion_ticks<=9:
+            raise ValueError('Approach motion ticks outside tested bounds')
         self.rules.setdefault('approach_clearance_m',.055)
 
     def _read_robot(self,observation):
@@ -609,6 +612,9 @@ class Controller(Geometry):
             if phase=='advance':self._accept_phase(next_stage,evidence)
             if self.stage=='done':return self._result(stop=True,reason='Jev declared task complete; native evaluator remains independent',ticks=1)
             ticks=2 if self.task=='match_and_pick_from_conveyor' or phase in ('advance','retry','reobserve') else 3
+            if self.stage=='approach' and phase=='stay' and self.task!='match_and_pick_from_conveyor':
+                ticks=self.approach_motion_ticks
+                self.debug['approach_motion_ticks']=ticks
             if self.stage.startswith('conveyor_wait_'):ticks=10
             return self._result(commands,reason='Jev phase/gripper/sign decision',ticks=ticks)
         except Exception as exc:

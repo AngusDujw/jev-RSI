@@ -36,6 +36,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
         # two observed rotation actions. Legacy Jev defaults remain unchanged.
         cfg['controller_settings']['orientation_step_cap_rad']=.35
         cfg['controller_settings']['rotation_only_observations']=2
+        cfg['controller_settings']['approach_motion_ticks']=9 if task!='match_and_pick_from_conveyor' else 3
         for key in ('api_config','jev_proxy_url','jev_transport_attempts','deepseek_key_file',
                     'deepseek_max_calls','gpt6_key_file','gpt6_base_url'):
             cfg.pop(key,None)
