@@ -64,6 +64,10 @@ def main(name='2026-10-04-robodojo-opt30', output_stem='robodojo-opt30'):
                         direction=choices.get(arm+'_'+axis)
                         if direction!=('positive' if delta>0 else 'negative'):ownership_violations.append(str(path)+':direction')
         data = json.loads(result.read_text()) if result.exists() else {}
+        if not data and (folder/'summary.json').exists():
+            summary=json.loads((folder/'summary.json').read_text())
+            failure=json.loads((folder/'failure.json').read_text()) if (folder/'failure.json').exists() else {}
+            data=dict(status=summary.get('status','finished')+'_without_native_result:'+failure.get('error',''),steps=0)
         cfg = json.loads(config.read_text()) if config.exists() else {}
         records.append(dict(**row, run=str(folder.relative_to(ROOT)),
                             organization=cfg.get('controller_settings', {}).get('input_organization'),
@@ -79,10 +83,10 @@ def main(name='2026-10-04-robodojo-opt30', output_stem='robodojo-opt30'):
     tasks={}
     for task in sorted({r['task'] for r in records}):
         subset=[r for r in records if r['task']==task];finished=[r for r in subset if r['status']!='running'];frozen=[r for r in finished if r['frozen_reference']]
-        tasks[task]=dict(reserved=len(subset),completed=len(finished),mixed_development_successes=sum(r['native_success'] is True for r in finished),frozen_successes=sum(r['native_success'] is True for r in frozen),frozen_trials=len(frozen))
+        tasks[task]=dict(reserved=len(subset),completed=len(finished),native_evaluated=sum(r['native_success'] is not None for r in finished),mixed_development_successes=sum(r['native_success'] is True for r in finished),frozen_successes=sum(r['native_success'] is True for r in frozen),frozen_trials=len(frozen))
     output.write_text(json.dumps(dict(limit=30, used=len(records),tasks=tasks, trials=records), ensure_ascii=False, indent=2)+'\n')
     lines = ['# RoboDojo 30试次优化进展', '',
-             '开发混版本；英文校验、程序阶段推进与独立native成功分别记录。接口错误计入试次。', '',
+             '开发混版本；英文校验、程序阶段推进与独立native成功分别记录。启动/接口错误计入试次；native=None表示未取得任务评估，不能计算为物理控制失败率。未启动的资源或CUDA预检单列，不计试次。', '',
              '|本轮|任务|累计序号|输入|native成功|步数|Jev请求|终止原因|',
              '|---:|---|---:|---|---|---:|---:|---|']
     for r in records:
