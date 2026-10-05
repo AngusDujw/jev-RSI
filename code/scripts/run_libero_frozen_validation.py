@@ -11,26 +11,36 @@ import json
 import os
 import shutil
 import signal
-import socket
 import subprocess
 import time
 from pathlib import Path
-from urllib.parse import urlsplit
 
 from libero_frame_archive import archive
+from libero_proxy_transport import probe, validate_proxy, EXISTING_ROOT
 
 SIM_PYTHON = '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python'
 
 
-def network_preflight():
-    """No model requests or credentials in output; no ledger reservation yet."""
-    config = Path('/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json')
-    jev = json.loads(config.read_text())['jev']['base_url']
-    for url in [jev, 'https://sub2api.qinjiu8.com/v1']:
-        parsed = urlsplit(url)
-        port = parsed.port or (443 if parsed.scheme == 'https' else 80)
-        with socket.create_connection((parsed.hostname, port), timeout=10):
-            pass
+def gpu_preflight():
+    """Existing environments only; no physical episode or ledger reservation."""
+    code = ('import ctypes,json; lib=ctypes.CDLL("libcuda.so.1"); '
+        'rc=lib.cuInit(0); n=ctypes.c_int(); count_rc=lib.cuDeviceGetCount(ctypes.byref(n)); '
+        'print(json.dumps(dict(cuInit=rc,cuDeviceGetCount=count_rc,device_count=n.value))); '
+        'raise SystemExit(0 if rc==0 and count_rc==0 and n.value>0 else 2)')
+    rows = []
+    for role, python in [('simulator', SIM_PYTHON), ('grounding',
+        '/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python')]:
+        try:
+            result = subprocess.run([python, '-B', '-c', code],
+                capture_output=True, text=True, timeout=30)
+            detail = json.loads(result.stdout) if result.stdout.strip() else {}
+            row = dict(role=role, python=python, returncode=result.returncode,
+                **detail, stderr=result.stderr[-500:], ok=result.returncode == 0)
+        except (subprocess.TimeoutExpired, ValueError, OSError) as exc:
+            row = dict(role=role, python=python, ok=False,
+                error_type=type(exc).__name__, error=str(exc)[:500])
+        rows.append(row)
+    return dict(ok=all(r['ok'] for r in rows), checks=rows)
 
 
 def main():
@@ -42,7 +52,13 @@ def main():
     p.add_argument('--tasks', help='Override environment task only; policy unchanged')
     p.add_argument('--episode-cap', type=int, default=20, choices=[20, 30])
     p.add_argument('--purpose', choices=['evaluation', 'development'], default='evaluation')
+    p.add_argument('--jev-proxy', type=validate_proxy)
+    p.add_argument('--vision-proxy', type=validate_proxy)
+    p.add_argument('--preflight-only', action='store_true',
+        help='Check actual API transport and CUDA; reserve no physical trial')
     a = p.parse_args()
+    if bool(a.jev_proxy) != bool(a.vision_proxy):
+        p.error('Set both --jev-proxy and --vision-proxy, or neither')
     assert a.campaign.startswith(('2026-10-04-libero-verify20-', '2026-10-04-libero-top5-'))
     source = Path(__file__).resolve().parent
     repo = source.parents[1]
@@ -64,7 +80,6 @@ def main():
         if isinstance(development_inits, str):
             development_inits = [int(i) for i in development_inits.split(',')]
         assert not set(inits).intersection(development_inits), 'Evaluation must use new initial states'
-    network_preflight()
     root = a.output.resolve(); root.mkdir(parents=True, exist_ok=False)
     frozen = root/'frozen'; frozen.mkdir()
     for name, expected in prior['source_sha256'].items():
@@ -76,8 +91,27 @@ def main():
         source_sha256=prior['source_sha256'], campaign=a.campaign,
         purpose=a.purpose, episode_cap=a.episode_cap, task_total_cap=50,
         evaluation_inits=inits, environment_tasks=specs, args=vars(a),
-        frame_archival='Lossless RGB video; exact original PNG byte reconstruction verified')
+        frame_archival='Lossless RGB video; exact original PNG byte reconstruction verified',
+        transport=dict(jev_proxy=a.jev_proxy, vision_proxy=a.vision_proxy,
+            wrapper_sha256=hashlib.sha256((source/'libero_proxy_transport.py').read_bytes()).hexdigest(),
+            api_source_sha256=hashlib.sha256((EXISTING_ROOT/'controller/src/realman_jev/api.py').read_bytes()).hexdigest(),
+            policy_payload_changed=False))
     (root/'manifest.json').write_text(json.dumps(manifest, indent=2, default=str)+'\n')
+    network = probe(a.jev_proxy, a.vision_proxy)
+    gpu = gpu_preflight()
+    preflight = dict(network=network, gpu=gpu, planned_episodes=len(specs)*len(inits),
+        physical_episodes=0, trial_ledger_reserved=False)
+    (root/'preflight.json').write_text(json.dumps(preflight, indent=2)+'\n')
+    if not network['ok'] or not gpu['ok']:
+        (root/'not-started.json').write_text(json.dumps(dict(
+            reason='API transport or CUDA preflight failed', physical_episodes=0,
+            trial_ledger_reserved=False), indent=2)+'\n')
+        print(json.dumps(dict(preflight_ok=False, network_ok=network['ok'], gpu_ok=gpu['ok'],
+            physical_episodes=0, output=str(root))), flush=True)
+        raise SystemExit(2)
+    if a.preflight_only:
+        print(json.dumps(dict(preflight_ok=True, physical_episodes=0, output=str(root))), flush=True)
+        return
     ledger = repo/'code/runs/libero-supervisor-ledger.jsonl'
     campaign = repo/'code/runs'/f'{a.campaign}-ledger.jsonl'
     rows = []
@@ -117,6 +151,10 @@ def main():
                 if options.get('lift_check'): cmd.append('--lift-check')
             for key in ['geometry_profile', 'camera_size', 'max_jev_decisions']:
                 cmd.extend(['--'+key.replace('_','-'), str(options[key])])
+            if a.jev_proxy or a.vision_proxy:
+                cmd = [SIM_PYTHON, '-B', str(source/'libero_proxy_transport.py'), 'run',
+                    '--jev-proxy', a.jev_proxy, '--vision-proxy', a.vision_proxy,
+                    '--policy', str(frozen/'libero_jev_rollout.py'), '--', *cmd[3:]]
             start = time.monotonic(); termination = None
             with (root/f'{out.name}.log').open('w') as log:
                 child = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT)
@@ -143,7 +181,8 @@ def main():
             print(json.dumps(row), flush=True)
             network_error = any(s in str(result.get('error', '')) for s in
                 ['Name or service not known', 'Temporary failure in name resolution',
-                 'Connection refused', 'Network is unreachable'])
+                 'Connection refused', 'Network is unreachable', 'ConnectError',
+                 'unexpected EOF', 'ReadTimeout', 'ConnectTimeout'])
             if termination or network_error:
                 # Stop on the first infrastructure failure, preserving the row.
                 (root/'stopped.json').write_text(json.dumps(dict(
