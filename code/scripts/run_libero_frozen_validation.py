@@ -17,6 +17,7 @@ from pathlib import Path
 
 from libero_frame_archive import archive
 from libero_proxy_transport import probe, validate_proxy, EXISTING_ROOT
+from libero_failure import classify
 
 SIM_PYTHON = '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python'
 
@@ -179,14 +180,16 @@ def main():
             rows.append(row)
             (root/'batch.json').write_text(json.dumps(rows, indent=2)+'\n')
             print(json.dumps(row), flush=True)
-            network_error = any(s in str(result.get('error', '')) for s in
-                ['Name or service not known', 'Temporary failure in name resolution',
-                 'Connection refused', 'Network is unreachable', 'ConnectError',
-                 'unexpected EOF', 'ReadTimeout', 'ConnectTimeout'])
-            if termination or network_error:
+            events_file = out/'events.jsonl'
+            events = [json.loads(s) for s in events_file.read_text().splitlines()
+                if s.strip()] if events_file.exists() else []
+            row['failure_category'] = classify(result, row, events)
+            (root/'batch.json').write_text(json.dumps(rows, indent=2)+'\n')
+            if row['failure_category'] in ('interrupted', 'infrastructure'):
                 # Stop on the first infrastructure failure, preserving the row.
                 (root/'stopped.json').write_text(json.dumps(dict(
                     reason=termination or 'API/network infrastructure failure',
+                    category=row['failure_category'],
                     episode=str(out), completed_rows=len(rows)), indent=2)+'\n')
                 raise RuntimeError('Stopped without an automatic retry: '+str(out))
             if (out/'result.json').exists():
