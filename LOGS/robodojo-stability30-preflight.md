@@ -50,3 +50,14 @@ server-operator技能要求远端7897被占用时未经明确授权不得换端�
 ## 2026-10-05恢复继续
 
 用户授权继续。RoboDojo环境CUDA实际运算/同步通过；三个790x当前无监听，全部连接拒绝，故使用授权的7897至本机7897临时转发。Jev认证1.21秒，544输入/49输出token。五measured配置只改代理URL，保留v13及原预算；预检不计物理试次，仍余29。证据见EXP-2026W41-009与code/runs/2026-10-05-robodojo-resume-preflight/。
+
+
+## 2026-10-05 本次继续后的协议停止
+
+本轮账本6/30，剩24；本次新增4回合，拾取26/layout4完整原生成功75步/51Jev，其后叠碗18、拾取27、拾取28连续基础设施Crashed，按AGENTS§10停止并征求继续授权。冻结验证0回合，不能报告稳定成功。
+
+HTTPX经HTTP/SOCKS均出现TLS EOF；同代理/凭证的curl真实认证7901/7902/7903为3/3，已新增审计后端，凭证只送stdin。HTTPX官方socks extra所需socksio1.0.0按PyPI SHA核验后仅加入既有RoboDojo环境。5个官方新布局及44个新资产251862103字节已在项目盘下载并核验；原manifest仅追加新case、旧case保持，尚未执行这些布局。
+
+最后回合reset600秒超时且0控制；远程Aluminum_Cast材质/纹理解析失败仍存在，因果尚未唯一确定。RPC关闭socket后恢复期限的二次AttributeError已修复，原失败链不改；原始TimeoutError留在failure.json traceback。curl网络可用不等于场景可启动，下一步建议先处理材质依赖并通过启动预检再继续原剩余24次。
+
+本轮55次Jev请求尝试/51响应，全部ASCII，边界审计漏项0、方向/夹爪/阶段所有权违规0，运行时GPT-6/DeepSeek0。证据EXP-2026W41-021至025、robodojo-stability30-results.md及各回合原始目录。

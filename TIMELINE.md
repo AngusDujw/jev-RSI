@@ -67,6 +67,7 @@ graph LR
     T_2026W41_004["📊 libero-jev-ownership<br/>服务器新启动后CUDA8/8实算和LIBE…"]:::experiment
     T_2026W41_005["⛔ libero-jev-ownership<br/>恢复奶酪11/20：init24完整成功9…"]:::blocker
     T_2026W41_006["📊 jev-control-formulation<br/>v13恢复后拾取layout4原生成功75…"]:::experiment
+    T_2026W41_007["⛔ jev-control-formulation<br/>RoboDojo恢复6/30仅1开发成功，…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -102,6 +103,7 @@ graph LR
   T_2026W41_003 --> T_2026W41_004
   T_2026W41_004 --> T_2026W41_005
   T_2026W41_002 --> T_2026W41_006
+  T_2026W41_006 --> T_2026W41_007
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -158,6 +160,7 @@ graph LR
 | `T-2026W41-004` | 2026-10-05 | experiment | libero-jev-ownership | 服务器新启动后CUDA8/8实算和LIBERO768x768 RGB-D EGL恢复；代理端口均未监听，0新增任务试次 | `EXP-2026W41-008` | - |
 | `T-2026W41-005` | 2026-10-05 | blocker | libero-jev-ownership | 恢复奶酪11/20：init24完整成功95Jev/405步，9API断连及1主动中止；首错守卫漏匹配已修复，累计38/50，依连续Crashed规则待恢复确认 | `EXP-2026W41-019` | - |
 | `T-2026W41-006` | 2026-10-05 | experiment | jev-control-formulation | v13恢复后拾取layout4原生成功75步/51Jev；启动代理和reset期限修复通过，冻结候选待新布局验证 | `EXP-2026W41-022` | - |
+| `T-2026W41-007` | 2026-10-05 | blocker | jev-control-formulation | RoboDojo恢复6/30仅1开发成功，后3次基础设施Crashed；curl认证与5新布局就绪但reset600秒仍失败，余24保留待用户授权 | `EXP-2026W41-025` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
