@@ -71,3 +71,15 @@ ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCount
 ```
 
 奶酪完成一次真实全流程成功后，因9次链路中断及AGENTS§10升级已停止物理队列；首错守卫修复7daf5f2，详情见[恢复报告](../LOGS/2026-10-05-libero-resumed.md)。此处三个入口仍共用本机7897线路，不提供三份独立带宽或模型额度。
+
+## 2026-10-05 GPT-6 Sol/xhigh 实验端口更新
+
+上文为历史 Jev/API 端口记录。用户已要求后续实验全部改用 ChatGPT 登录的 GPT-6 Sol/xhigh。现有前台 SSH 隧道把服务器 7901、7902 转给本机 7897 代理；**服务器 7903 当前转给本机 7903 的 Codex 桥接服务，不再是 HTTP/SOCKS 代理**。本机桥接只监听 127.0.0.1，服务器的同号端口也只监听 127.0.0.1。Jev 和旧视觉 API 不用于新批；7901/7902 保留给资产等普通网络访问。
+
+当前实际运行的隧道命令如下。单行命令保持前台运行；端口已占用时不要重复执行或停止无关进程。
+
+```bash
+ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -R 127.0.0.1:7901:127.0.0.1:7897 -R 127.0.0.1:7902:127.0.0.1:7897 -R 127.0.0.1:7903:127.0.0.1:7903 -- 'company-server-2'
+```
+
+服务器对 `http://127.0.0.1:7903/health` 的实测返回 `ok=true, model=gpt-6-sol, reasoning_effort=xhigh, auth=ChatGPT`。这只验证登录和桥接；正式入口还会在预留物理试次前做一次真实模型选择题。模型曾有一次明确的容量拒绝，新桥接仅在此种失败时最多重试原请求三次，不换模型；每次 CLI 事件都保存在本机 `code/runs/pro-runtime/bridge/`。

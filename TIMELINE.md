@@ -3,7 +3,7 @@
 > 本文件回答三个问题：**主线现在走到哪、怎么走到这里的、有没有在绕圈子。**
 > 唯一写入口是 `python3 tools/timeline.py add`（AGENTS.md § 12），图由脚本生成，节点表只增不改。
 
-- **当前主线一句话**：按用户纠正，以末端 xyz/ypr 方向接口为对象，先验证固定姿态位置控制；优先形成定性决策驱动末端控制的问题定义与理论框架型论文，以 Jev 为首个实例；实验检验理论与方法，再依据证据决定是否收缩贡献定位。当前按用户授权，在五个RoboDojo任务上开发非特权RGB-D输入，并将夹爪和阶段切换交给Jev，每任务最多50次；该扩展不援引静态位置理论保证。
+- **当前主线一句话**：以末端 xyz/ypr 方向接口为对象，形成定性决策驱动末端控制的问题定义与理论框架；Jev 是原始实证对象。RoboDojo 的 Jev 结果按原协议保存。LIBERO 按用户最新决定另用 ChatGPT 登录的 GPT-6 Sol/xhigh 负责视觉、方向、夹爪和阶段，新旧模型的结果分别记录，均不援引静态位置理论保证。
 
 ---
 
@@ -69,6 +69,7 @@ graph LR
     T_2026W41_006["📊 jev-control-formulation<br/>v13恢复后拾取layout4原生成功75…"]:::experiment
     T_2026W41_007["⛔ jev-control-formulation<br/>RoboDojo恢复6/30仅1开发成功，…"]:::blocker
     T_2026W41_008["📊 jev-control-formulation<br/>同layout4原始材质缓存后reset由…"]:::experiment
+    T_2026W41_009["🔀 libero-jev-ownership<br/>用户将LIBERO视觉与控制决策统一迁移到…"]:::pivot
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -106,9 +107,11 @@ graph LR
   T_2026W41_002 --> T_2026W41_006
   T_2026W41_006 --> T_2026W41_007
   T_2026W41_007 --> T_2026W41_008
+  T_2026W41_005 --> T_2026W41_009
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
+  T_2026W40_023 ==> T_2026W41_009
 ```
 <!-- TIMELINE:GRAPH:END -->
 
@@ -164,6 +167,7 @@ graph LR
 | `T-2026W41-006` | 2026-10-05 | experiment | jev-control-formulation | v13恢复后拾取layout4原生成功75步/51Jev；启动代理和reset期限修复通过，冻结候选待新布局验证 | `EXP-2026W41-022` | - |
 | `T-2026W41-007` | 2026-10-05 | blocker | jev-control-formulation | RoboDojo恢复6/30仅1开发成功，后3次基础设施Crashed；curl认证与5新布局就绪但reset600秒仍失败，余24保留待用户授权 | `EXP-2026W41-025` | - |
 | `T-2026W41-008` | 2026-10-05 | experiment | jev-control-formulation | 同layout4原始材质缓存后reset由600秒超时恢复为14.474秒；3路RGB-D启动预检通过，不计任务成功 | `EXP-2026W41-026` | - |
+| `T-2026W41-009` | 2026-10-05 | pivot | libero-jev-ownership | 用户将LIBERO视觉与控制决策统一迁移到ChatGPT Pro GPT-6 Sol/xhigh；新试验单列，原Jev结果不混合 | `DISC-2026W39-001` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
