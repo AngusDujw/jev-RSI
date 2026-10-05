@@ -3,6 +3,7 @@ import argparse
 import fcntl
 import json
 import shutil
+import socket
 from pathlib import Path
 
 from run_discrete_batch import ROOT, TASKS, next_attempt, run
@@ -27,6 +28,13 @@ def execute(task, variant, layout, purpose, frozen_from=None):
         attempt = next_attempt(folder, task)
         if attempt > 50:
             return dict(event='task_budget_exhausted', task=task)
+        config = json.loads((ROOT/f'code/configs/jev-discrete/{task}-{variant}.json').read_text())
+        with socket.socket() as probe:
+            try:
+                probe.bind(('127.0.0.1', config['port']))
+            except OSError:
+                return dict(event='deferred_port_in_use', task=task,
+                    port=config['port'], used=used)
         if purpose == 'validation':
             if not frozen_from:
                 raise ValueError('Validation requires a successful Pro frozen reference')
