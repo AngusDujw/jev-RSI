@@ -17,13 +17,19 @@
 |11|general_pickup|33|compact_evidence|False|12|6|controller_stop:external unavailable-observation budget exhausted (6 observations)|
 |12|general_pickup|34|compact_evidence|False|23|18|controller_stop:controller error: ConnectError: curl exit 92: curl: (92) HTTP/2 stream 0 was not closed cleanly: PROTOCOL_ERROR (err 1)
 |
+|13|general_pickup|37|compact_evidence|True|75|51|native_episode_ended|
+|14|general_pickup|38|compact_evidence|False|127|82|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|15|stack_bowls|19|compact_evidence|False|122|81|controller_stop:external phase observation budget exhausted (40 decisions)|
+|16|stack_bowls|20|compact_evidence|False|146|97|controller_stop:external phase observation budget exhausted (48 decisions)|
+|17|fold_clothes|16|compact_evidence|False|32|21|controller_stop:external unavailable-observation budget exhausted (6 observations)|
 
 |任务|完成试次|开发混版本成功|冻结验证成功/次数|
 |---|---:|---:|---:|
-|general_pickup|11|3|1/3|
-|stack_bowls|1|0|0/0|
+|fold_clothes|1|0|0/0|
+|general_pickup|13|4|1/3|
+|stack_bowls|3|0|0/0|
 
-本轮已预留 12/30 试次。非ASCII请求 0。
+本轮已预留 17/30 试次。非ASCII请求 0。
 
 请求边界审计漏项 0；辅助禁止字段命中 0；方向/夹爪/阶段所有权违反 0。字段扫描仅辅助，不替代来源审阅。
 
