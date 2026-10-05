@@ -7,8 +7,9 @@ import argparse
 import fcntl
 import json
 import shutil
+import socket
 from pathlib import Path
-from run_discrete_batch import ROOT, TASKS, run
+from run_discrete_batch import ROOT, TASKS, next_attempt, run
 
 CAMPAIGN = '2026-10-04-robodojo-stability30'
 
@@ -25,10 +26,16 @@ def execute(task, variant, layout, purpose, frozen_from=None):
             return dict(event='campaign_budget_exhausted',used=used)
         if shutil.disk_usage(folder).free < 8*1024**3:
             return dict(event='deferred_disk_space',used=used,free_bytes=shutil.disk_usage(folder).free)
-        old = list(folder.glob('jev-discrete-'+task+'-[0-9][0-9]'))
-        attempt = max((int(p.name[-2:]) for p in old),default=0)+1
+        attempt = next_attempt(folder,task)
         if attempt>50:
             return dict(event='task_budget_exhausted',task=task)
+        config=json.loads((ROOT/f'code/configs/jev-discrete/{task}-{variant}.json').read_text())
+        port=config['port']
+        with socket.socket() as probe:
+            try:
+                probe.bind(('127.0.0.1',port))
+            except OSError:
+                return dict(event='deferred_port_in_use',task=task,port=port,used=used)
         if purpose=='validation' and not frozen_from:
             raise ValueError('Validation requires a frozen successful pilot reference')
         if frozen_from:
