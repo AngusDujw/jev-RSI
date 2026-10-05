@@ -110,3 +110,5 @@ cd /root/yekangjie/project/jev_rsi
 [`libero_frame_archive.py`](scripts/libero_frame_archive.py)用CPU编码RGB无损录像，逐帧要求恢复后的PNG字节SHA与原文件一致，才移除本会话已备份的冗余控制PNG；完整原图仍在本地。[`summarize_libero_validation.py`](scripts/summarize_libero_validation.py)包含父进程中断时遗漏的真实子结果，不补造returncode，保留基础设施失败与物理结果的区别。
 
 当前奶酪新批仅有5次DNS阻断、0正式动作，20次有效验证尚未完成。其它四项待恢复联网。任务来源与对应见[`top5-correspondence.json`](configs/libero-supervisor/top5-correspondence.json)，明确是Harness VLA中并列最高任务族的Plus对应，不是唯一前五排名或Pro-T相同扰动实例。详细状态见[本轮报告](../LOGS/2026-10-04-libero-verify20-top5.md)。
+
+2026-10-05 后续实验已按用户决定统一迁移到 ChatGPT 登录的 GPT-6 Sol/xhigh。奶酪 task1066/init26 的新模型物理开发回合完整成功，399 原生步、93 次新模型控制、3 次新模型视觉；这是新模型证据，不能并入上段 Jev 冻结验证。启动方式、审计与目录见[Pro 模型实验说明](PRO_ACCOUNT_EXPERIMENTS.md)。
