@@ -56,20 +56,43 @@ def run(rec,rpc,reset):
         return rpc.request(op,episode_id=episode,step_id=tick,**kw)
 
     def ask_jev(state,questions):
-        rec.check_budget()
-        index=len(rec.decisions)
-        if index>=cfg['max_jev_decisions']:
-            raise RuntimeError('Jev decision budget exhausted')
-        folder=rec.folder/f'decision-{index:04d}'
-        folder.mkdir()
         payload=dict(model=api.cfg['model'],state=state,questions=questions)
-        dump(folder/'request.json',payload)
-        row=dict(decision_id=folder.name,native_step=tick,stage=state.get('stage','unspecified'),
-            schema_variant=cfg['schema_variant'],observation=state,questions=questions)
-        rec.decisions.append(row)
-        start=time.monotonic()
-        response=api.post('/systemone',payload)
-        dump(folder/'response.json',response)
+        import httpx
+        attempts=cfg.get('jev_transport_attempts',1)
+        if type(attempts) is not int or not 1<=attempts<=3:
+            raise ValueError('Jev transport attempts must be an integer from 1 to 3')
+        for transport_attempt in range(attempts):
+            rec.check_budget()
+            index=len(rec.decisions)
+            if index>=cfg['max_jev_decisions']:
+                raise RuntimeError('Jev decision budget exhausted')
+            folder=rec.folder/f'decision-{index:04d}'
+            folder.mkdir()
+            if transport_attempt:
+                # The original call is audited by the controller. Retries use
+                # the identical English payload and get their own audit entry.
+                from input_contract import audit_request
+                audit_request(state,questions,rec.folder)
+            dump(folder/'request.json',payload)
+            row=dict(decision_id=folder.name,native_step=tick,stage=state.get('stage','unspecified'),
+                schema_variant=cfg['schema_variant'],observation=state,questions=questions,
+                transport_attempt=transport_attempt+1)
+            rec.decisions.append(row)
+            start=time.monotonic()
+            try:
+                response=api.post('/systemone',payload)
+            except httpx.TransportError as exc:
+                failure=dict(error_type=type(exc).__name__,error=str(exc),
+                    request_seconds=time.monotonic()-start,usage_unknown=True,
+                    decision_id=folder.name,transport_attempt=transport_attempt+1)
+                dump(folder/'error.json',failure)
+                rec.event(dict(kind='jev_transport_failure',**failure))
+                if transport_attempt+1==attempts:
+                    raise
+                time.sleep(.5)
+                continue
+            dump(folder/'response.json',response)
+            break
         if set(response.get('answers',{}))!=set(questions):
             raise ValueError('Jev did not answer all requested questions')
         for key,answer in response['answers'].items():
