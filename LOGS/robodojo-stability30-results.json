@@ -1,11 +1,11 @@
 {
   "limit": 30,
-  "used": 4,
+  "used": 5,
   "tasks": {
     "general_pickup": {
-      "reserved": 3,
-      "completed": 3,
-      "native_evaluated": 1,
+      "reserved": 4,
+      "completed": 4,
+      "native_evaluated": 2,
       "mixed_development_successes": 1,
       "frozen_successes": 0,
       "frozen_trials": 0
@@ -140,6 +140,39 @@
       "requests": 1,
       "stages": {
         "select": 1
+      },
+      "non_ascii_requests": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "audit_missing": [],
+      "forbidden_field_hits": [],
+      "ownership_violations": [],
+      "transition_count": 0,
+      "runtime_deepseek_calls": 0,
+      "runtime_gpt6_forbidden": true,
+      "runtime_perception": "groundingdino_sam2"
+    },
+    {
+      "event": "reserved",
+      "reservation": 6,
+      "physical_trial": 5,
+      "task": "general_pickup",
+      "attempt": 27,
+      "variant": "measured",
+      "layout": 4,
+      "purpose": "development",
+      "frozen_from": null,
+      "trial": 5,
+      "run": "code/runs/jev-discrete-general_pickup-27",
+      "organization": "compact_evidence",
+      "controller": "/root/yekangjie/project/jev_rsi/code/controllers/jev_discrete_v13/controller.py",
+      "frozen_reference": null,
+      "status": "controller_stop:controller error: ConnectError: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1016)",
+      "native_success": false,
+      "steps": 0,
+      "requests": 3,
+      "stages": {
+        "select": 3
       },
       "non_ascii_requests": [],
       "input_tokens": 0,
