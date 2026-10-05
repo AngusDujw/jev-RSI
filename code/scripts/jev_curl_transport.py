@@ -16,7 +16,9 @@ def post(api, payload, folder, proxy, timeout):
         raise ValueError('curl payload differs from saved Jev request')
     headers = ('header = ' + json.dumps('Authorization: Bearer ' + api.credential)
                + '\nheader = "Content-Type: application/json"\n')
-    command = ['curl', '--config', '-', '--silent', '--show-error',
+    # The proxy has intermittently terminated HTTP/2 streams mid-response.
+    # Use HTTP/1.1 for this audited POST; the payload and response contract stay unchanged.
+    command = ['curl', '--http1.1', '--config', '-', '--silent', '--show-error',
                '--connect-timeout', str(min(15, timeout)), '--max-time', str(timeout),
                '--proxy', proxy, '--noproxy', '', '--data-binary', '@' + str(request),
                '--output', str(wire), '--write-out', '%{http_code}',
