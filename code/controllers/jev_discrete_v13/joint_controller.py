@@ -52,10 +52,14 @@ class Controller(Geometry):
         self.orientation_step_cap_rad=float(settings.get('orientation_step_cap_rad',.20))
         self.rotation_only_observations=int(settings.get('rotation_only_observations',8))
         self.approach_motion_ticks=int(settings.get('approach_motion_ticks',3))
+        self.contact_motion_ticks=int(settings.get('contact_motion_ticks',3))
+        self.lift_motion_ticks=int(settings.get('lift_motion_ticks',3))
         if not (.05<=self.orientation_step_cap_rad<=.35 and 0<=self.rotation_only_observations<=8):
             raise ValueError('Orientation step cap or rotation-only observation limit outside tested bounds')
         if not 3<=self.approach_motion_ticks<=9:
             raise ValueError('Approach motion ticks outside tested bounds')
+        if not (3<=self.contact_motion_ticks<=9 and 3<=self.lift_motion_ticks<=9):
+            raise ValueError('Contact or lift motion ticks outside bounded 3–9 range')
         self.rules.setdefault('approach_clearance_m',.055)
 
     def _read_robot(self,observation):
@@ -615,6 +619,12 @@ class Controller(Geometry):
             if self.stage=='approach' and phase=='stay' and self.task!='match_and_pick_from_conveyor':
                 ticks=self.approach_motion_ticks
                 self.debug['approach_motion_ticks']=ticks
+            if self.task=='general_pickup' and phase=='stay' and self.stage in ('contact','lift'):
+                # The runner computes one bounded absolute pose target, then
+                # repeats IK toward it. More ticks improve physical convergence
+                # without multiplying or changing the model-approved direction.
+                ticks=self.contact_motion_ticks if self.stage=='contact' else self.lift_motion_ticks
+                self.debug['fixed_target_motion_ticks']=ticks
             if self.stage.startswith('conveyor_wait_'):ticks=10
             return self._result(commands,reason='Jev phase/gripper/sign decision',ticks=ticks)
         except Exception as exc:
