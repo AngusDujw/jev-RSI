@@ -49,4 +49,8 @@ python3 -B -u code/scripts/run_robodojo_pro_batch.py --task general_pickup --var
 
 试次40验证了上述时序：第3次接近判断后的命令X/Y各+23.09mm、Z0，与GPT-6 Sol/xhigh方向及姿态门一致；但两次Y实际仅前进4.43/2.07mm。6动作/17原生步后操作者结束开发回合，官方`success=false`，11条控制和6条已完成视觉回复均为固定模型。新增的Pro专用`approach_motion_ticks=9`将接近动作的同一有界目标执行更久；其它阶段、旧Jev及传送带快速时序保持原窗口。它尚未经过物理验证，不能把试次40改记为成功。
 
+试次41实测9 tick接近版本：前11次持续接近动作各执行9原生tick，推进到contact、close和lift，累计131原生步/23动作；43条控制、23条已完成视觉回复均为GPT-6 Sol/xhigh，DeepSeek 0。6544.34秒后内层墙时检查停止，官方`success=false`。隔离审计中剪刀在抬手时仍留在桌上；离线同模型可见标注的绿色实心颈部与在线XY目标相距约6毫米，因此不能只凭剪刀整体中心偏差判定XY选点错误。腕视图仅支持“未随手抬起”，接触点被遮挡，夹持失败的细节仍未定。证据见[EXP042](../LOGS/2026-W41.md#exp-2026w41-042)和`runs/pro-discrete-general_pickup-41/offline_audit/`。
+
+下一候选只将Pro拾取contact/lift的同一有界末端目标执行窗口从3增至9 tick，仍由模型逐动作决定方向、夹爪和阶段；旧Jev及其它任务保持原配置。其物理结果尚未验证，单跑GPU仍限定在2小时以内。
+
 奶酪Pro的20次冻结测试使用已完整成功的init26开发回合之`frozen/`源码，官方新初态为27–46。运行器记录旧策略的逐文件SHA与新的runner commit，且按用户最新授权把奶酪共享任务上限固定为59；20次结束前不得把开发回合和冻结回合合并计算成功率。
