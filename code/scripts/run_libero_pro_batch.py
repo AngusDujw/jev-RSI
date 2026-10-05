@@ -1,7 +1,7 @@
 """Bounded LIBERO comparison using ChatGPT-signed-in GPT-6 Sol/xhigh only.
 
 Old Jev/API episodes remain in their ledgers. Every new physical attempt,
-including a setup or transport failure, consumes the existing 50/task cap.
+including a setup or transport failure, consumes the task's shared cap.
 """
 import argparse
 import fcntl
@@ -32,6 +32,7 @@ PROFILES = {
     'bowl': dict(mode='supervisor', geometry_profile='base',
         camera_size=384, max_decisions=120),
 }
+TASK_CAP_OVERRIDES = {('libero_object', 1066): 59}  # User decision 2026-10-05: 20 more Pro episodes after attempt 39.
 
 
 def bridge_health():
@@ -83,6 +84,7 @@ def main():
     inits = [int(x) for x in args.inits.split(',')]
     if not inits or len(inits) != len(set(inits)) or len(inits) > 20:
         parser.error('Provide 1-20 distinct init indices')
+    task_cap = TASK_CAP_OVERRIDES.get((args.suite, args.task_id), 50)
     source = Path(__file__).resolve().parent
     repo = source.parents[1]
     root = args.output.resolve()
@@ -126,7 +128,7 @@ def main():
         profile=args.profile, policy=policy, purpose=args.purpose,
         suite=args.suite, task_id=args.task_id, inits=inits,
         policy_commit=prior['policy_commit'] if prior else commit,
-        runner_commit=commit, task_total_cap=50, campaign_cap=20,
+        runner_commit=commit, task_total_cap=task_cap, campaign_cap=20,
         source_sha256={name:hashlib.sha256((frozen/name).read_bytes()).hexdigest()
             for name in FILES})
     (root/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
@@ -147,7 +149,7 @@ def main():
                 campaign_rows = [json.loads(line) for line in own if line.strip()]
                 count = sum(row['suite']==args.suite and row['task']==args.task_id
                     for row in previous)
-                if count >= 50 or len(campaign_rows) >= 20:
+                if count >= task_cap or len(campaign_rows) >= 20:
                     raise RuntimeError('Authorized task/campaign attempt cap reached')
                 if any(row['init']==init for row in campaign_rows):
                     raise RuntimeError('Init already reserved in this campaign')

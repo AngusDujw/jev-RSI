@@ -6,7 +6,7 @@
 
 - [`scripts/codex_pro_bridge_server.py`](scripts/codex_pro_bridge_server.py) 固定模型与推理强度，保存每次 Codex CLI 事件、请求摘要、模型标识和用量。容量拒绝只对同请求最多重试三次，不切换模型。
 - [`scripts/codex_pro_bridge.py`](scripts/codex_pro_bridge.py) 供服务器端的控制与视觉入口使用，拒绝其它端点、模型标识和推理强度。
-- [`scripts/run_libero_pro_batch.py`](scripts/run_libero_pro_batch.py) 保留 LIBERO 每任务50次总账、新批20次上限及逐回合源码冻结；既有字段 `jev_calls` 是旧日志结构的计数名，新结果同时写 `model_control_calls` 和模型来源。
+- [`scripts/run_libero_pro_batch.py`](scripts/run_libero_pro_batch.py) 继续使用LIBERO共享任务总账、新批20次上限及逐回合源码冻结。用户于2026-10-05明确将奶酪`libero_object:1066`的共享总上限由50提高到59，以在已用39次后新增20次Pro冻结测试；其它任务仍为50。既有字段 `jev_calls` 是旧日志结构的计数名，新结果同时写 `model_control_calls` 和模型来源。
 - [`scripts/structured_task_runner.py`](scripts/structured_task_runner.py) 在 RoboDojo Pro 模式下不读取 Jev API 配置或旧视觉 API 密钥，运行时 RGB 视觉走同一 GPT-6 Sol/xhigh 桥接；本地 RGB-D 几何处理仍存在，但语义模型不使用旧 GroundingDINO/SAM 分支。
 - [`scripts/run_robodojo_pro_batch.py`](scripts/run_robodojo_pro_batch.py) 把新试次写入独立 Pro 账本，并连同旧冻结工作树试次检查每任务50次上限；新输出目录为 `pro-discrete-*`。
 
@@ -48,3 +48,5 @@ python3 -B -u code/scripts/run_robodojo_pro_batch.py --task general_pickup --var
 试次39之后的Pro配置把纯旋转接近限制到前2次观察，允许GPT-6 Sol选择的水平移动与受限旋转并行；旋转单次上限0.35rad，Z仍在姿态误差大于0.5rad时受抑制。旧Jev默认8次及0.20rad不变。这是新候选，需用独立物理试次确认实际姿态收敛、碰撞守卫和任务结果。
 
 试次40验证了上述时序：第3次接近判断后的命令X/Y各+23.09mm、Z0，与GPT-6 Sol/xhigh方向及姿态门一致；但两次Y实际仅前进4.43/2.07mm。6动作/17原生步后操作者结束开发回合，官方`success=false`，11条控制和6条已完成视觉回复均为固定模型。新增的Pro专用`approach_motion_ticks=9`将接近动作的同一有界目标执行更久；其它阶段、旧Jev及传送带快速时序保持原窗口。它尚未经过物理验证，不能把试次40改记为成功。
+
+奶酪Pro的20次冻结测试使用已完整成功的init26开发回合之`frozen/`源码，官方新初态为27–46。运行器记录旧策略的逐文件SHA与新的runner commit，且按用户最新授权把奶酪共享任务上限固定为59；20次结束前不得把开发回合和冻结回合合并计算成功率。

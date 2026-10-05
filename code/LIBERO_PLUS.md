@@ -112,3 +112,5 @@ cd /root/yekangjie/project/jev_rsi
 当前奶酪新批仅有5次DNS阻断、0正式动作，20次有效验证尚未完成。其它四项待恢复联网。任务来源与对应见[`top5-correspondence.json`](configs/libero-supervisor/top5-correspondence.json)，明确是Harness VLA中并列最高任务族的Plus对应，不是唯一前五排名或Pro-T相同扰动实例。详细状态见[本轮报告](../LOGS/2026-10-04-libero-verify20-top5.md)。
 
 2026-10-05 后续实验已按用户决定统一迁移到 ChatGPT 登录的 GPT-6 Sol/xhigh。奶酪 task1066/init26 的新模型物理开发回合完整成功，399 原生步、93 次新模型控制、3 次新模型视觉；这是新模型证据，不能并入上段 Jev 冻结验证。启动方式、审计与目录见[Pro 模型实验说明](PRO_ACCOUNT_EXPERIMENTS.md)。
+
+用户于2026-10-05进一步将奶酪task1066的共享总尝试上限从50提高到59：原总账39次后，以Pro账号GPT-6 Sol/xhigh和init26成功回合的冻结源码对官方新初态27–46做20次独立评测。其它LIBERO任务仍遵守每任务50次。旧Jev和新Pro各自的回合、模型调用与成功率必须单列。
