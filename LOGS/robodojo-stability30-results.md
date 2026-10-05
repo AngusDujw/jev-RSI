@@ -12,13 +12,18 @@
 |6|general_pickup|28|compact_evidence|None|0|0|failed_without_native_result:'NoneType' object has no attribute 'settimeout'|
 |7|general_pickup|29|compact_evidence|None|0|0|startup_preflight_passed|
 |8|general_pickup|30|compact_evidence|True|81|55|native_episode_ended|
+|9|general_pickup|31|compact_evidence|False|200|133|native_episode_ended|
+|10|general_pickup|32|compact_evidence|True|91|63|native_episode_ended|
+|11|general_pickup|33|compact_evidence|False|12|6|controller_stop:external unavailable-observation budget exhausted (6 observations)|
+|12|general_pickup|34|compact_evidence|False|23|18|controller_stop:controller error: ConnectError: curl exit 92: curl: (92) HTTP/2 stream 0 was not closed cleanly: PROTOCOL_ERROR (err 1)
+|
 
 |任务|完成试次|开发混版本成功|冻结验证成功/次数|
 |---|---:|---:|---:|
-|general_pickup|7|2|0/0|
+|general_pickup|11|3|1/3|
 |stack_bowls|1|0|0/0|
 
-本轮已预留 8/30 试次。非ASCII请求 0。
+本轮已预留 12/30 试次。非ASCII请求 0。
 
 请求边界审计漏项 0；辅助禁止字段命中 0；方向/夹爪/阶段所有权违反 0。字段扫描仅辅助，不替代来源审阅。
 
