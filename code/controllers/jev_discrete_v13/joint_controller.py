@@ -49,6 +49,10 @@ class Controller(Geometry):
         self.processing=settings.get('processing_variant','anchored')
         self.proposal=None;self.initial_robot=None;self.perception_failures=0
         self.phase_decisions=[];self.last_grip={};self.prepared_stage=None;self.gripper_observations=[];self.grasp_retries=0;self.contact_stalls=0;self.support_plane=None;self.placement_refs={};self.decision_limit=int(settings.get("decision_limit",240))
+        self.orientation_step_cap_rad=float(settings.get('orientation_step_cap_rad',.20))
+        self.rotation_only_observations=int(settings.get('rotation_only_observations',8))
+        if not (.05<=self.orientation_step_cap_rad<=.35 and 0<=self.rotation_only_observations<=8):
+            raise ValueError('Orientation step cap or rotation-only observation limit outside tested bounds')
         self.rules.setdefault('approach_clearance_m',.055)
 
     def _read_robot(self,observation):
@@ -563,7 +567,8 @@ class Controller(Geometry):
             # Freeze candidate geometry before transitioning; never move using an old-stage sign after a phase change.
             for a in arms:
                 qgoal=self._orientation_goal(a)
-                q,_=bounded_quaternion(self.robot[a]['quaternion'],qgoal)
+                q,_=bounded_quaternion(self.robot[a]['quaternion'],qgoal,
+                    cap=self.orientation_step_cap_rad)
                 opening=self.last_grip.get(a,self.robot[a]['opening'])
                 grip=decisions.get(a+'_gripper','keep')  # no new gripper choice on a phase-only transition; persist previous Jev command
                 if phase!='reobserve':opening={'open':1.,'close':0.,'keep':opening}[grip]
@@ -573,9 +578,16 @@ class Controller(Geometry):
                     e=targets[a]-self.robot[a]['grasp'];amp=np.minimum(.025,.7*np.abs(e));amp[np.abs(e)<=self._deadzone(u)]=0
                     amp*=min(1.,self.max_step/max(np.linalg.norm(amp),1e-12))
                     delta=amp*np.array([{'positive':1.,'negative':-1.,'hold':0.}[decisions[a+'_'+x]] for x in AXES]);amplitudes[a]=amp
-                    if self.stage=='approach' and angles[a]>.15 and self.stage_age<=8:delta*=0
+                    rotation_only=(self.stage=='approach' and angles[a]>.15
+                        and self.stage_age<=self.rotation_only_observations)
+                    if rotation_only:delta*=0
                     elif self.stage=='approach' and angles[a]>.5:delta[2]=0
-                    self.debug.setdefault('orientation_motion_masks',{})[a]=dict(initial_rotation_only=self.stage=='approach' and angles[a]>.15 and self.stage_age<=8,descent_suppressed=self.stage=='approach' and angles[a]>.5,rule='at most 8 orientation-only observations, then Jev horizontal motion; Z waits below 0.5rad')
+                    self.debug.setdefault('orientation_motion_masks',{})[a]=dict(
+                        initial_rotation_only=rotation_only,
+                        descent_suppressed=self.stage=='approach' and angles[a]>.5,
+                        rotation_only_observation_limit=self.rotation_only_observations,
+                        orientation_step_cap_rad=self.orientation_step_cap_rad,
+                        rule='bounded initial rotation, then model-signed horizontal motion while rotating; Z waits below 0.5rad')
                 if phase!='stay':q=self.robot[a]['quaternion']
                 commands[a]=dict(delta_xyz_m=delta,quaternion_wxyz=q,gripper_opening=opening)
             if self.stage=='close' and self.plan.get('baseline') is None and any(c['gripper_opening']<.5 for c in commands.values()):self.plan['baseline']=self._baseline()

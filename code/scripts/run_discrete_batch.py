@@ -31,6 +31,11 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
                    forbid_runtime_gpt6=False,wall_limit_seconds=6600,
                    pro_batch_views=bool(batch_views))
         cfg['controller_settings']['wall_budget_seconds']=6300
+        # GPT-6 Sol/xhigh vision is slower than the historical local detector.
+        # Preserve the contact/Z gate while allowing signed XY approach after
+        # two observed rotation actions. Legacy Jev defaults remain unchanged.
+        cfg['controller_settings']['orientation_step_cap_rad']=.35
+        cfg['controller_settings']['rotation_only_observations']=2
         for key in ('api_config','jev_proxy_url','jev_transport_attempts','deepseek_key_file',
                     'deepseek_max_calls','gpt6_key_file','gpt6_base_url'):
             cfg.pop(key,None)
