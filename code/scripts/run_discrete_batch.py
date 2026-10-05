@@ -8,7 +8,7 @@ def next_attempt(folder,task):
     # Frozen historical worktrees also consumed physical task budget. A copied
     # result with the same numbered trial is counted once, not twice.
     patterns=[f'jev-discrete-{task}-[0-9][0-9]',f'pro-discrete-{task}-[0-9][0-9]',
-        f'robodojo-frozen-*/code/runs/jev-discrete-{task}-[0-9][0-9]']
+        f'robodojo-*/code/runs/jev-discrete-{task}-[0-9][0-9]']
     numbers={int(p.name[-2:]) for pattern in patterns for p in folder.glob(pattern)}
     return max(numbers,default=0)+1
 
