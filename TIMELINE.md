@@ -74,6 +74,7 @@ graph LR
     T_2026W41_011["📊 libero-jev-ownership<br/>GPT-6 Sol/xhigh奶酪init…"]:::experiment
     T_2026W41_012["📊 jev-control-formulation<br/>叠碗姿态误差在0.15rad门槛附近回弹；…"]:::experiment
     T_2026W41_013["📊 jev-control-formulation<br/>Pro拾取39前8次接近动作零位移；44分…"]:::experiment
+    T_2026W41_014["📊 jev-control-formulation<br/>Pro拾取40解除纯旋转空动作后Y实际仅跟…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -116,6 +117,7 @@ graph LR
   T_2026W41_009 --> T_2026W41_011
   T_2026W41_010 --> T_2026W41_012
   T_2026W41_012 --> T_2026W41_013
+  T_2026W41_013 --> T_2026W41_014
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -180,6 +182,7 @@ graph LR
 | `T-2026W41-011` | 2026-10-05 | experiment | libero-jev-ownership | GPT-6 Sol/xhigh奶酪init26新模型开发回合原生完整成功；RoboDojo视觉与控制接口预检通过，物理结果待定 | `EXP-2026W41-033` | - |
 | `T-2026W41-012` | 2026-10-05 | experiment | jev-control-formulation | 叠碗姿态误差在0.15rad门槛附近回弹；40→48次阶段预算仍失败，否决只加预算 | `EXP-2026W41-038` | - |
 | `T-2026W41-013` | 2026-10-05 | experiment | jev-control-formulation | Pro拾取39前8次接近动作零位移；44分钟仍未到接触，固定有限旋转并行XY候选待检验 | `EXP-2026W41-040` | - |
+| `T-2026W41-014` | 2026-10-05 | experiment | jev-control-formulation | Pro拾取40解除纯旋转空动作后Y实际仅跟踪命令9–19%；改为有界接近执行窗口待物理检验 | `EXP-2026W41-041` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
