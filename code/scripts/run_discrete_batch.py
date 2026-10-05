@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 TASKS=['general_pickup','stack_bowls','fold_clothes','press_by_number','match_and_pick_from_conveyor']
 
-def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024):
+def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024,startup_only=False):
     folder=ROOT/'code/runs';old=sorted(folder.glob('jev-discrete-'+task+'-[0-9][0-9]'))
     numbers=[int(p.name[-2:]) for p in old];number=max(numbers,default=0)+1
     if number>50:raise RuntimeError('50 trial budget reached '+task)
@@ -12,6 +12,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
     output=folder/f'jev-discrete-{task}-{number:02d}'
     cfg=json.loads((ROOT/f'code/configs/jev-discrete/{task}-{variant}.json').read_text())
     cfg['controller_settings']['processing_variant']=processing;cfg['robodojo_layout_id']=layout
+    if startup_only:cfg['startup_only']=True
     if gpu is not None:cfg['gpu']=gpu
     if frozen_from:
         reference=Path(frozen_from)
@@ -36,6 +37,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
         commit=json.loads((reference/'provenance.json').read_text())['commit']
         pipeline=['run_position_pilot.py','robodojo_position.py','structured_task_runner.py','local_rgbd_perception.py','local_digit_ocr.py','rgbd_bridge.py']
         if cfg.get('jev_transport_backend')=='curl':pipeline.append('jev_curl_transport.py')
+        if cfg.get('nvidia_material_cache'):pipeline.append('nvidia_material_cache.py')
         for name in pipeline:
             relative='code/scripts/'+name
             if subprocess.check_output(['git','show',commit+':'+relative],cwd=ROOT)!=(ROOT/relative).read_bytes():raise RuntimeError('frozen pipeline changed: '+relative)

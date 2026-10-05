@@ -61,6 +61,13 @@ def run(rec, with_jev):
         env.update(HTTP_PROXY=cfg['simulator_proxy_url'], HTTPS_PROXY=cfg['simulator_proxy_url'],
                    http_proxy=cfg['simulator_proxy_url'], https_proxy=cfg['simulator_proxy_url'],
                    NO_PROXY='127.0.0.1,localhost', no_proxy='127.0.0.1,localhost')
+    if cfg.get('nvidia_material_cache'):
+        from nvidia_material_cache import verify
+        material_manifest = verify(cfg['nvidia_material_cache'])
+        dump(rec.folder/'material_manifest.json', material_manifest)
+        env['COMPANY_MATERIAL_CACHE'] = cfg['nvidia_material_cache']
+    # Bound remote resources not included in the verified mirror. Keep TLS checks.
+    env.update(OMNICLIENT_HTTP_TIMEOUT='10', OMNICLIENT_HTTP_RETRIES='1')
     output = rec.folder/"simulator"
     output.mkdir()
     command = [cfg["robodojo_python"], "-B", "-u", "-m", cfg.get("bridge_module", "realman_jev.company_bridge"),
@@ -108,6 +115,25 @@ def run(rec, with_jev):
                     rpc.sock.settimeout(180)
             episode, tick = reset["episode_id"], reset["step_id"]
             dump(rec.folder/"reset.json", reset)
+            if cfg.get('startup_only', False):
+                observation = rpc.request('rgbd_observation', episode_id=episode, step_id=tick)
+                cameras = {}
+                for name, view in observation['cameras'].items():
+                    rgb, depth = np.asarray(view['rgb']), np.asarray(view['depth_m'])
+                    if rgb.ndim != 3 or rgb.shape[-1] != 3 or not np.isfinite(depth).any():
+                        raise ValueError('Invalid startup RGB-D camera: ' + name)
+                    from PIL import Image
+                    Image.fromarray(rgb).save(rec.folder/(name+'.png'))
+                    cameras[name] = dict(rgb_shape=list(rgb.shape), depth_shape=list(depth.shape),
+                        finite_depth_pixels=int(np.isfinite(depth).sum()), depth_pixels=int(depth.size))
+                if not cameras:
+                    raise ValueError('Startup preflight returned no cameras')
+                dump(rec.folder/'startup_preflight.json', dict(reset_passed=True, cameras=cameras,
+                    native_step=tick, policy_actions=0, jev_calls=0, gpt6_calls=0,
+                    scope='initialization and RGB-D only; no task success evaluation'))
+                dump(rec.folder/'native_finish.json', rpc.request('finish_pilot', episode_id=episode,
+                    step_id=tick, reason='startup_preflight_only'))
+                return
             if cfg.get("robodojo_task_mode") == "structured_task":
                 from structured_task_runner import run as run_structured_task
                 run_structured_task(rec, rpc, reset)

@@ -75,5 +75,6 @@
   "simulator_proxy_url": "socks5h://127.0.0.1:7901",
   "robodojo_reset_timeout_seconds": 600,
   "jev_transport_attempts": 3,
-  "jev_transport_backend": "curl"
+  "jev_transport_backend": "curl",
+  "nvidia_material_cache": "/root/yekangjie/project/jev_rsi/code/runs/cache/nvidia-materials-2023_1"
 }

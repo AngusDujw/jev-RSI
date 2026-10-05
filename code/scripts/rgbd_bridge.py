@@ -4,6 +4,10 @@ Uses native image-plane depth (meters), not segmentation IDs or object poses.
 The existing simulator-only audit remains isolated on disk.
 """
 from pathlib import Path
+import faulthandler
+import json
+import os
+import time
 import numpy as np
 
 
@@ -14,10 +18,16 @@ def main():
     import utils.load_file  # noqa: F401
     from omegaconf import OmegaConf
     original_create = OmegaConf.create
+    material_cache_installed = False
 
     def create(obj=None, *args, **kwargs):
+        nonlocal material_cache_installed
         cfg = original_create(obj, *args, **kwargs)
         if isinstance(obj, dict) and all(k in obj for k in ('eval_cfg', 'camera', 'task_env', 'sim')):
+            if os.environ.get('COMPANY_MATERIAL_CACHE') and not material_cache_installed:
+                from nvidia_material_cache import install
+                install(os.environ['COMPANY_MATERIAL_CACHE'])
+                material_cache_installed = True
             cfg.eval_cfg.observation.vision.depth = True
             for name in cfg.camera.annotator:
                 cfg.camera.annotator[name].depth_capture = dict(type='distance_to_image_plane', device='cpu')
@@ -31,6 +41,15 @@ def main():
 
     class RGBDSession(parent):
         def dispatch(self, op, args):
+            if op == 'reset':
+                started = time.monotonic()
+                print(json.dumps(dict(event='reset_started', seed=args['seed'])), flush=True)
+                faulthandler.dump_traceback_later(60, repeat=True)
+                try:
+                    return super().dispatch(op, args)
+                finally:
+                    faulthandler.cancel_dump_traceback_later()
+                    print(json.dumps(dict(event='reset_finished', seconds=time.monotonic()-started)), flush=True)
             if op != 'rgbd_observation':
                 return super().dispatch(op, args)
             self._check_identity(args['episode_id'], args['step_id'])

@@ -48,7 +48,8 @@ def execute(task, variant, layout, purpose, frozen_from=None):
             # A <=10GB, <=5% device leaves >=14GB for our single ~6.5GB pilot,
             # including headroom; do not kill or modify existing jobs.
             # Keep the original batch default (1GB) unchanged for other callers.
-            code = run(task,variant,'precision',layout,auto_gpu=True,frozen_from=frozen_from,gpu_memory_limit_mib=10240)
+            code = run(task,variant,'precision',layout,auto_gpu=True,frozen_from=frozen_from,gpu_memory_limit_mib=10240,
+                       startup_only=purpose=='startup')
             failure = None
         except Exception as exc:
             code = 1
@@ -58,6 +59,8 @@ def execute(task, variant, layout, purpose, frozen_from=None):
         finished = dict(entry,event='finished' if started else 'not_started',returncode=code,error=failure)
         result_path = output/'structured_result.json'
         finished['result'] = json.loads(result_path.read_text()) if result_path.exists() else None
+        preflight = output/'startup_preflight.json'
+        finished['startup_preflight'] = json.loads(preflight.read_text()) if preflight.exists() else None
         append(finished)
         return finished
 
@@ -67,7 +70,7 @@ if __name__=='__main__':
     parser.add_argument('--task',choices=TASKS,required=True)
     parser.add_argument('--variant',required=True)
     parser.add_argument('--layout',type=int,required=True)
-    parser.add_argument('--purpose',choices=['development','validation'],required=True)
+    parser.add_argument('--purpose',choices=['development','validation','startup'],required=True)
     parser.add_argument('--frozen-from')
     args = parser.parse_args()
     print(json.dumps(execute(args.task,args.variant,args.layout,args.purpose,args.frozen_from)),flush=True)
