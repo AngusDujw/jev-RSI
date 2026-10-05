@@ -71,6 +71,7 @@ graph LR
     T_2026W41_008["📊 jev-control-formulation<br/>同layout4原始材质缓存后reset由…"]:::experiment
     T_2026W41_009["🔀 libero-jev-ownership<br/>用户将LIBERO视觉与控制决策统一迁移到…"]:::pivot
     T_2026W41_010["📊 jev-control-formulation<br/>拾取v13新布局5–7仅1/3，原定4/5…"]:::experiment
+    T_2026W41_011["📊 libero-jev-ownership<br/>GPT-6 Sol/xhigh奶酪init…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -110,6 +111,7 @@ graph LR
   T_2026W41_007 --> T_2026W41_008
   T_2026W41_005 --> T_2026W41_009
   T_2026W41_008 --> T_2026W41_010
+  T_2026W41_009 --> T_2026W41_011
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -171,6 +173,7 @@ graph LR
 | `T-2026W41-008` | 2026-10-05 | experiment | jev-control-formulation | 同layout4原始材质缓存后reset由600秒超时恢复为14.474秒；3路RGB-D启动预检通过，不计任务成功 | `EXP-2026W41-026` | - |
 | `T-2026W41-009` | 2026-10-05 | pivot | libero-jev-ownership | 用户将LIBERO视觉与控制决策统一迁移到ChatGPT Pro GPT-6 Sol/xhigh；新试验单列，原Jev结果不混合 | `DISC-2026W39-001` | - |
 | `T-2026W41-010` | 2026-10-05 | experiment | jev-control-formulation | 拾取v13新布局5–7仅1/3，原定4/5门槛不可达；新候选修机器人底座误检与高物体抓取 | `EXP-2026W41-029`, `EXP-2026W41-031` | - |
+| `T-2026W41-011` | 2026-10-05 | experiment | libero-jev-ownership | GPT-6 Sol/xhigh奶酪init26新模型开发回合原生完整成功；RoboDojo视觉与控制接口预检通过，物理结果待定 | `EXP-2026W41-033` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

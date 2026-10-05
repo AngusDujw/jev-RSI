@@ -16,7 +16,7 @@ Codex CLI 只返回离散选择，不返回经过校准的 Jev 概率。为兼�
 
 LIBERO-Plus `libero_object:1066` 奶酪 init26：一次新模型物理开发回合 `success=true` 且 `program_finished=true`，399 原生步、93 次 GPT-6 Sol/xhigh 控制、3 次同模型视觉、0 次 DeepSeek，原生结果和模型响应审计通过。批归档首次被旧活动目录白名单挡住；修复后**不重跑物理回合**，186 帧录像逐帧无损还原校验通过，`finished.json` 为1次完整成功。证据在服务器 `code/runs/2026-10-05-pro-sol-cheese-dev-init26/`；这是开发回合，不是20次冻结成功率。
 
-RoboDojo 非物理验证：历史 `general_pickup` 相机帧作为普通视觉输入，GPT-6 Sol/xhigh 返回24条可被现有 `VisualEvidence._parse` 接受的可见记录；同模型的桥接选择题和 JPEG 视觉请求也均通过。物理闭环结果需以独立 `2026-10-05-robodojo-pro30.jsonl` 及回合的 `structured_result.json` 为准。
+RoboDojo 非物理验证：历史 `general_pickup` 相机帧作为普通视觉输入，GPT-6 Sol/xhigh 返回24条可被现有 `VisualEvidence._parse` 接受的可见记录；同模型的桥接选择题和 JPEG 视觉请求也均通过。首个 Pro 物理开发回合 `general_pickup` layout0/试次35 **失败**：`native.success=false`，11原生步、7次新模型控制、11次新模型视觉、0次DeepSeek；旧控制器内置19分钟墙时先于外层3600秒预算触发，停止原因为 `external hard budget reached`。原始失败保留，不计任务成功。
 
 ## 当前启动方式
 
@@ -39,4 +39,6 @@ cd /root/yekangjie/project/jev_rsi
 python3 -B -u code/scripts/run_robodojo_pro_batch.py --task general_pickup --variant measured --layout 0 --purpose development
 ```
 
-服务器预检先确认桥接健康和一次真实 GPT-6 Sol/xhigh 选择，再检查磁盘、GPU与 CUDA；预检失败不占物理次数。所有任务回合保留原始输入、模型回复、控制命令和官方终局判定。单个 RoboDojo 回合的墙时上限3600秒、输出上限1600MiB。
+服务器预检先确认桥接健康和一次真实 GPT-6 Sol/xhigh 选择，再检查磁盘、GPU与 CUDA；预检失败不占物理次数。所有任务回合保留原始输入、模型回复、控制命令和官方终局判定。首轮失败后，Pro 模式外层墙时上限调为6600秒、控制器内层6300秒，仍低于单跑2小时GPU；旧 Jev 默认19分钟不变。输出上限1600MiB。
+
+为减少同一观测帧分别识别三个相机的延迟，新入口可加 `--batch-views`：只发送当前三路RGB图像一次，要求模型分别给出各相机可见记录，后续相机读取同一响应；每一帧会重新请求。历史同一帧的三相机非物理测试在144.38秒返回三路12/5/6条有效记录，三路分别通过现有解析器；这只证明接口兼容，不证明闭环成功。此选项是新的输入组织版本，须单列新试次和原始响应，不能重写试次35的失败结果。Pro启动命令使用`--with-model`标识实际模型路径，旧`--with-jev`仍仅供历史运行复现。
