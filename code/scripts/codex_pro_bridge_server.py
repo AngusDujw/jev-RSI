@@ -87,7 +87,8 @@ def model_turn(role, request, root):
     try:
         for attempt in range(3):
             result = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True,
-                text=True, timeout=200, env=env)
+                text=True, timeout=400 if role=='runtime_vision' and len(attachments)>1 else 200,
+                env=env)
             (folder / f'codex-events-{attempt+1}.jsonl').write_text(result.stdout)
             (folder / f'codex-stderr-{attempt+1}.log').write_text(result.stderr)
             events = [json.loads(line) for line in result.stdout.splitlines() if line.strip()]

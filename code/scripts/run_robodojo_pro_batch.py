@@ -13,7 +13,7 @@ from codex_pro_bridge import health, model_preflight
 CAMPAIGN = '2026-10-05-robodojo-pro30'
 
 
-def execute(task, variant, layout, purpose, frozen_from=None):
+def execute(task, variant, layout, purpose, frozen_from=None, batch_views=False):
     folder = ROOT/'code/runs'
     journal = folder/(CAMPAIGN+'.jsonl')
     with (folder/(CAMPAIGN+'.lock')).open('a+') as lock:
@@ -55,7 +55,7 @@ def execute(task, variant, layout, purpose, frozen_from=None):
         entry = dict(event='reserved', reservation=reservation, physical_trial=used+1,
             task=task, attempt=attempt, variant=variant, layout=layout, purpose=purpose,
             frozen_from=frozen_from, model='gpt-6-sol', reasoning_effort='xhigh',
-            authentication='ChatGPT')
+            authentication='ChatGPT', pro_batch_views=batch_views)
         def append(row):
             with journal.open('a') as handle:
                 handle.write(json.dumps(row)+'\n')
@@ -63,7 +63,7 @@ def execute(task, variant, layout, purpose, frozen_from=None):
         try:
             code = run(task, variant, 'precision', layout, auto_gpu=True,
                 frozen_from=frozen_from, gpu_memory_limit_mib=10240,
-                model_backend='codex_pro')
+                model_backend='codex_pro',batch_views=batch_views)
             failure = None
         except Exception as exc:
             code = 1
@@ -85,5 +85,7 @@ if __name__ == '__main__':
     parser.add_argument('--layout', type=int, required=True)
     parser.add_argument('--purpose', choices=['development','validation'], required=True)
     parser.add_argument('--frozen-from')
+    parser.add_argument('--batch-views', action='store_true',
+        help='One GPT-6 Sol visual request for all cameras in each observation')
     args = parser.parse_args()
-    print(json.dumps(execute(args.task,args.variant,args.layout,args.purpose,args.frozen_from)), flush=True)
+    print(json.dumps(execute(args.task,args.variant,args.layout,args.purpose,args.frozen_from,args.batch_views)), flush=True)

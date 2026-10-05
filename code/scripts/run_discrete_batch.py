@@ -12,7 +12,7 @@ def next_attempt(folder,task):
     numbers={int(p.name[-2:]) for pattern in patterns for p in folder.glob(pattern)}
     return max(numbers,default=0)+1
 
-def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024,startup_only=False,model_backend='legacy_jev'):
+def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024,startup_only=False,model_backend='legacy_jev',batch_views=False):
     if model_backend not in ('legacy_jev','codex_pro'):
         raise ValueError('Unknown model backend')
     folder=ROOT/'code/runs';number=next_attempt(folder,task)
@@ -28,7 +28,9 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
         model_preflight()
         cfg.update(protocol='pro-discrete-phase-gripper-development',model_backend='codex_pro',
                    jev_transport_backend='codex_pro',runtime_perception='codex_pro',
-                   forbid_runtime_gpt6=False,wall_limit_seconds=3600)
+                   forbid_runtime_gpt6=False,wall_limit_seconds=6600,
+                   pro_batch_views=bool(batch_views))
+        cfg['controller_settings']['wall_budget_seconds']=6300
         for key in ('api_config','jev_proxy_url','jev_transport_attempts','deepseek_key_file',
                     'deepseek_max_calls','gpt6_key_file','gpt6_base_url'):
             cfg.pop(key,None)
@@ -102,7 +104,8 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
             raise RuntimeError('CUDA startup preflight failed; no simulator started; see '+str(report))
     config=ROOT/f'code/configs/jev-discrete/launched-{prefix}-{task}-{number:02d}.json' if model_backend=='codex_pro' else ROOT/f'code/configs/jev-discrete/launched-{task}-{number:02d}.json'
     config.write_text(json.dumps(cfg,indent=2)+'\n')
-    command=[cfg['robodojo_python'],'-B','-u',str(ROOT/'code/scripts/run_position_pilot.py'),'--config',str(config),'--output',str(output),'--backend','robodojo','--with-jev']
+    command=[cfg['robodojo_python'],'-B','-u',str(ROOT/'code/scripts/run_position_pilot.py'),'--config',str(config),'--output',str(output),'--backend','robodojo',
+             '--with-model' if model_backend=='codex_pro' else '--with-jev']
     log=folder/f'{prefix}-{task}-{number:02d}.stdout.log'
     env=dict(os.environ,TMPDIR=str(folder/'cache/tmp'),PYTHONDONTWRITEBYTECODE='1')
     if model_backend=='codex_pro':env['JEV_RSI_MODEL_BACKEND']='codex_pro'

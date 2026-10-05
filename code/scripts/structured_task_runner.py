@@ -58,6 +58,7 @@ def run(rec,rpc,reset):
     frame_count=vision_calls=actions=0
     previous=None
     current=None
+    vision_cache={}
 
     def call(op,**kw):
         return rpc.request(op,episode_id=episode,step_id=tick,**kw)
@@ -136,6 +137,12 @@ def run(rec,rpc,reset):
     def perceive(prompt,observation):
         nonlocal vision_calls
         rec.check_budget()
+        batched=pro and cfg.get('pro_batch_views',False)
+        cache_key=(frame_count,prompt,str(observation.get('instruction',''))) if batched else None
+        if batched and cache_key in vision_cache:
+            rec.event(dict(kind='pro_multiview_cache_hit',frame=frame_count,
+                cameras=sorted(observation['cameras'])))
+            return vision_cache[cache_key]
         if vision_calls>=cfg.get('max_vision_calls',40):
             raise RuntimeError('Vision perception call budget exhausted')
         folder=rec.folder/f'perception-{vision_calls:04d}'
@@ -156,8 +163,16 @@ def run(rec,rpc,reset):
             return result
         if cfg.get('forbid_runtime_gpt6',False):
             raise RuntimeError('Runtime GPT-6 disabled by campaign policy')
-        content=[dict(type='input_text',text=prompt+'\nPublic instruction (visible noun disambiguation only): '+str(observation.get('instruction','')))]
-        for name,view in observation['cameras'].items():
+        cameras=current['cameras'] if batched else observation['cameras']
+        visual_prompt=prompt
+        if batched:
+            visual_prompt=visual_prompt.replace('Inspect ONLY the supplied reference-camera RGB image.',
+                'Inspect each supplied camera RGB image independently.')
+            visual_prompt=visual_prompt.replace('Use the actual supplied camera name;',
+                'Use every actual supplied camera name;')
+            visual_prompt='Apply this visible-only contract independently to every attached camera; return all views in one JSON object.\n'+visual_prompt
+        content=[dict(type='input_text',text=visual_prompt+'\nPublic instruction (visible noun disambiguation only): '+str(observation.get('instruction','')))]
+        for name,view in cameras.items():
             buff=io.BytesIO()
             Image.fromarray(np.asarray(view['rgb'])).save(buff,format='JPEG',quality=90)
             content.extend([dict(type='input_text',text=f'Camera: {name}; image pixel width/height {view["rgb"].shape[1]}/{view["rgb"].shape[0]}'),
@@ -178,6 +193,10 @@ def run(rec,rpc,reset):
         if text.startswith('```'):
             text=text.split('\n',1)[1].rsplit('```',1)[0].strip()
         result=json.loads(text)
+        if batched:
+            if not isinstance(result,dict) or not isinstance(result.get('views'),dict) or set(result['views'])!=set(cameras):
+                raise ValueError('Batched visual response does not cover the exact camera set')
+            vision_cache[cache_key]=result
         dump(folder/'measurements.json',result)
         return result
 
@@ -272,6 +291,8 @@ def run(rec,rpc,reset):
                 finalization_error=str(finish_error),step_id=tick)
         dump(rec.folder/'native_finish.json',final)
         dump(rec.folder/'structured_result.json',dict(status=status,native=final,jev_calls=len(rec.decisions),
+            model_control_calls=len(rec.decisions) if pro else 0,
+            visual_model_calls=vision_calls if pro else 0,
             vision_calls=vision_calls,deepseek_calls=fallback.calls if fallback else 0,actions=actions,steps=tick,frames=frame_count,
             task=cfg['runtime_task'],schema=cfg['schema_variant'],
             model_backend='codex_pro' if pro else 'legacy_jev',

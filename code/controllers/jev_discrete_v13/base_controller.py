@@ -721,7 +721,8 @@ class Controller:
                 return self._result(stop=True,reason='native_step moved backwards; use a new controller per episode',ticks=1)
             self.last_native=native; self.remaining=int(observation['remaining_steps'])
             if self.remaining<=0: return self._result(stop=True,reason='native step budget exhausted',ticks=1)
-            if time.monotonic()-self.started>19*60: return self._result(stop=True,reason='controller wall budget reached',ticks=1)
+            if time.monotonic()-self.started>float(self.settings.get('wall_budget_seconds',19*60)):
+                return self._result(stop=True,reason='controller wall budget reached',ticks=1)
             instruction=str(observation.get('instruction','')).strip()
             if not instruction: raise EvidenceError('public task instruction missing')
             if self.instruction is not None and instruction!=self.instruction:

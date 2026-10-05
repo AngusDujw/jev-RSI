@@ -331,6 +331,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--backend", choices=["embodied", "robodojo"], default="embodied")
     parser.add_argument("--with-jev", action="store_true")
+    parser.add_argument("--with-model", action="store_true",
+                        help="Use the configured model backend (Pro bridge when selected)")
     parser.add_argument("--max-decisions", type=int)
     parser.add_argument("--seed", type=int)
     args = parser.parse_args()
@@ -339,17 +341,21 @@ def main():
         cfg["max_jev_decisions"] = args.max_decisions
     if args.seed is not None:
         cfg["seed"] = args.seed
+    if args.with_jev and args.with_model:
+        parser.error('Select one model flag')
+    use_model = args.with_jev or args.with_model
     rec = Recorder(args.output, cfg)
     dump(rec.folder / "provenance.json", dict(command=sys.argv, python=sys.executable,
         commit=subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
-        backend=args.backend, with_jev=args.with_jev))
+        backend=args.backend, with_jev=args.with_jev,
+        with_model=use_model, model_backend=cfg.get('model_backend','legacy_jev')))
     status = "completed"
     try:
         if args.backend == "embodied":
-            embodied(rec, args.with_jev)
+            embodied(rec, use_model)
         else:
             from robodojo_position import run
-            run(rec, args.with_jev)
+            run(rec, use_model)
     except Exception as exc:
         status = "failed"
         rec.errors.append(dict(type=type(exc).__name__, error=str(exc)))

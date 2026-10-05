@@ -501,7 +501,7 @@ class Controller(Geometry):
                 return self._result(stop=True,reason='external phase observation budget exhausted (40 decisions)',ticks=1)
             if self.perception_failures>=6:
                 return self._result(stop=True,reason='external unavailable-observation budget exhausted (6 observations)',ticks=1)
-            if self.remaining<=0 or self.jev_calls>=self.decision_limit or time.monotonic()-self.started>19*60:
+            if self.remaining<=0 or self.jev_calls>=self.decision_limit or time.monotonic()-self.started>float(self.settings.get('wall_budget_seconds',19*60)):
                 return self._result(stop=True,reason='external hard budget reached',ticks=1)
             self.vision.stage=self.stage
             self.vision.grasp_verified=bool(self.plan and self.plan.get('grasp_verified'))
