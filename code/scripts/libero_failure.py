@@ -20,12 +20,12 @@ def classify(result, batch_row=None, events=()):
     if row.get('runner_termination') or (row.get('returncode') is not None
         and row['returncode'] < 0):
         return 'interrupted'
+    if any(e.get('kind') == 'api' and e.get('error_type') in TRANSPORT_TYPES
+        for e in events):
+        return 'infrastructure'
     if not result.get('error'):
         return 'physical_or_policy'
     message = str(result['error']).casefold()
     if any(s in message for s in TRANSPORT_MESSAGES):
-        return 'infrastructure'
-    if any(e.get('kind') == 'api' and e.get('error_type') in TRANSPORT_TYPES
-        for e in events):
         return 'infrastructure'
     return 'physical_or_policy'
