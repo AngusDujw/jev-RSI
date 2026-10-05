@@ -4,14 +4,34 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 TASKS=['general_pickup','stack_bowls','fold_clothes','press_by_number','match_and_pick_from_conveyor']
 
-def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024,startup_only=False):
-    folder=ROOT/'code/runs';old=sorted(folder.glob('jev-discrete-'+task+'-[0-9][0-9]'))
-    numbers=[int(p.name[-2:]) for p in old];number=max(numbers,default=0)+1
+def next_attempt(folder,task):
+    # Frozen historical worktrees also consumed physical task budget. A copied
+    # result with the same numbered trial is counted once, not twice.
+    patterns=[f'jev-discrete-{task}-[0-9][0-9]',f'pro-discrete-{task}-[0-9][0-9]',
+        f'robodojo-frozen-*/code/runs/jev-discrete-{task}-[0-9][0-9]']
+    numbers={int(p.name[-2:]) for pattern in patterns for p in folder.glob(pattern)}
+    return max(numbers,default=0)+1
+
+def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024,startup_only=False,model_backend='legacy_jev'):
+    if model_backend not in ('legacy_jev','codex_pro'):
+        raise ValueError('Unknown model backend')
+    folder=ROOT/'code/runs';number=next_attempt(folder,task)
     if number>50:raise RuntimeError('50 trial budget reached '+task)
     if shutil.disk_usage(folder).free<8*1024**3:raise RuntimeError('less than 8 GiB available; do not launch')
-    output=folder/f'jev-discrete-{task}-{number:02d}'
+    prefix='pro-discrete' if model_backend=='codex_pro' else 'jev-discrete'
+    output=folder/f'{prefix}-{task}-{number:02d}'
     cfg=json.loads((ROOT/f'code/configs/jev-discrete/{task}-{variant}.json').read_text())
     cfg['controller_settings']['processing_variant']=processing;cfg['robodojo_layout_id']=layout
+    if model_backend=='codex_pro':
+        from codex_pro_bridge import health, model_preflight
+        health()
+        model_preflight()
+        cfg.update(protocol='pro-discrete-phase-gripper-development',model_backend='codex_pro',
+                   jev_transport_backend='codex_pro',runtime_perception='codex_pro',
+                   forbid_runtime_gpt6=False,wall_limit_seconds=3600)
+        for key in ('api_config','jev_proxy_url','jev_transport_attempts','deepseek_key_file',
+                    'deepseek_max_calls','gpt6_key_file','gpt6_base_url'):
+            cfg.pop(key,None)
     if startup_only:cfg['startup_only']=True
     if gpu is not None:cfg['gpu']=gpu
     if frozen_from:
@@ -36,6 +56,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
         if any(r['sha256'] not in available for r in snapshot['records']):raise RuntimeError('frozen experience changed')
         commit=json.loads((reference/'provenance.json').read_text())['commit']
         pipeline=['run_position_pilot.py','robodojo_position.py','structured_task_runner.py','local_rgbd_perception.py','local_digit_ocr.py','rgbd_bridge.py']
+        if model_backend=='codex_pro':pipeline+=['codex_pro_bridge.py','codex_pro_bridge_server.py']
         if cfg.get('jev_transport_backend')=='curl':pipeline.append('jev_curl_transport.py')
         if cfg.get('nvidia_material_cache'):pipeline.append('nvidia_material_cache.py')
         for name in pipeline:
@@ -79,16 +100,17 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
         if check['returncode']!=0:
             if lease is not None:lease.close()
             raise RuntimeError('CUDA startup preflight failed; no simulator started; see '+str(report))
-    config=ROOT/f'code/configs/jev-discrete/launched-{task}-{number:02d}.json'
+    config=ROOT/f'code/configs/jev-discrete/launched-{prefix}-{task}-{number:02d}.json' if model_backend=='codex_pro' else ROOT/f'code/configs/jev-discrete/launched-{task}-{number:02d}.json'
     config.write_text(json.dumps(cfg,indent=2)+'\n')
     command=[cfg['robodojo_python'],'-B','-u',str(ROOT/'code/scripts/run_position_pilot.py'),'--config',str(config),'--output',str(output),'--backend','robodojo','--with-jev']
-    log=folder/f'jev-discrete-{task}-{number:02d}.stdout.log'
+    log=folder/f'{prefix}-{task}-{number:02d}.stdout.log'
     env=dict(os.environ,TMPDIR=str(folder/'cache/tmp'),PYTHONDONTWRITEBYTECODE='1')
-    print(json.dumps(dict(event='launch',task=task,attempt=number,variant=variant,processing=processing,layout=layout,command=command)),flush=True)
+    if model_backend=='codex_pro':env['JEV_RSI_MODEL_BACKEND']='codex_pro'
+    print(json.dumps(dict(event='launch',task=task,attempt=number,variant=variant,processing=processing,layout=layout,model_backend=model_backend,command=command)),flush=True)
     with log.open('w') as f:
         result=subprocess.run(command,cwd=ROOT,env=env,stdout=f,stderr=subprocess.STDOUT)
     rpath=output/'structured_result.json';result_data=json.loads(rpath.read_text()) if rpath.exists() else {}
-    print(json.dumps(dict(event='complete',task=task,attempt=number,returncode=result.returncode,result=result_data)),flush=True)
+    print(json.dumps(dict(event='complete',task=task,attempt=number,model_backend=model_backend,returncode=result.returncode,result=result_data)),flush=True)
     if lease is not None:lease.close()
     return result.returncode
 

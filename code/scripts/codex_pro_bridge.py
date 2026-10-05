@@ -12,18 +12,44 @@ import urllib.request
 
 MODEL = 'gpt-6-sol'
 EFFORT = 'xhigh'
+URL = 'http://127.0.0.1:7903'
+
+
+def health():
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    with opener.open(URL + '/health', timeout=20) as reply:
+        status = json.load(reply)
+    if status != dict(ok=True, model=MODEL, reasoning_effort=EFFORT, auth='ChatGPT'):
+        raise RuntimeError('Pro bridge health/model/auth mismatch')
+    return status
+
+
+def model_preflight():
+    body = dict(role='jev', request=dict(model=MODEL,
+        state=dict(task='nonphysical model preflight', x_goal_relation='increase'),
+        questions=dict(x=dict(type='choice', instructions='Choose direction toward the larger x coordinate',
+            criteria=dict(negative='decrease', hold='stay', positive='increase')))))
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    call = urllib.request.Request(URL + '/infer', data=json.dumps(body).encode(),
+        headers={'Content-Type': 'application/json'})
+    with opener.open(call, timeout=700) as reply:
+        response = json.load(reply)
+    if (response.get('model'), response.get('reasoning_effort'),
+            response.get('answers',{}).get('x',{}).get('choice')) != (MODEL, EFFORT, 'positive'):
+        raise RuntimeError('Pro bridge returned the wrong model, effort or choice')
+    return response
 
 
 class API:
     def __init__(self, cfg, event, role):
-        if role not in ('jev', 'semantic_vision'):
+        if role not in ('jev', 'semantic_vision', 'runtime_vision'):
             raise ValueError('Unsupported Pro bridge role: ' + role)
         self.cfg = dict(cfg, model=MODEL)
         self.event = event
         self.role = role
         self.credential = None
-        self.url = os.environ.get('JEV_RSI_PRO_BRIDGE_URL', 'http://127.0.0.1:7903')
-        if self.url != 'http://127.0.0.1:7903':
+        self.url = os.environ.get('JEV_RSI_PRO_BRIDGE_URL', URL)
+        if self.url != URL:
             raise ValueError('Pro bridge must use the authorized loopback port 7903')
 
     def post(self, path, request):

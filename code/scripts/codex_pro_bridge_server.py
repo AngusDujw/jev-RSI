@@ -1,4 +1,4 @@
-"""Loopback-only Codex CLI transport for the LIBERO Pro-account comparison.
+"""Loopback-only Codex CLI transport for the Pro-account robot comparisons.
 
 The server runs on the signed-in workstation. An SSH reverse forward carries
 requests from the simulator; OAuth credentials never leave this machine.
@@ -40,7 +40,7 @@ def model_turn(role, request, root):
             'one JSON object mapping every question name to exactly one criterion key. '
             'Output JSON only.\n' + json.dumps(dict(state=request['state'], questions=questions),
                 ensure_ascii=True, separators=(',', ':')))
-    elif role == 'semantic_vision':
+    elif role in ('semantic_vision', 'runtime_vision'):
         content = request['input'][0]['content']
         text_parts = []
         for item in content:
@@ -48,9 +48,13 @@ def model_turn(role, request, root):
                 text_parts.append(item['text'])
             elif item['type'] == 'input_image':
                 url = item['image_url']
-                if not url.startswith('data:image/png;base64,'):
-                    raise ValueError('Only PNG observation attachments are permitted')
-                path = folder / f'image-{len(attachments)}.png'
+                if url.startswith('data:image/png;base64,'):
+                    extension = '.png'
+                elif url.startswith('data:image/jpeg;base64,'):
+                    extension = '.jpg'
+                else:
+                    raise ValueError('Only PNG/JPEG observation attachments are permitted')
+                path = folder / f'image-{len(attachments)}{extension}'
                 path.write_bytes(base64.b64decode(url.partition(',')[2], validate=True))
                 attachments.append(path)
             else:
@@ -61,8 +65,7 @@ def model_turn(role, request, root):
             'experiment. Use only the attached camera images and supplied public '
             'instruction. Do not use tools or inspect files other than the attachments. '
             'Follow the supplied response contract and return JSON only. '
-            'Write all labels and evidence strings in English; the grounding model '
-            'requires English object names.\n'
+            'Write all labels and evidence strings in English.\n'
             + request['instructions'] + '\n' + '\n'.join(text_parts))
     else:
         raise ValueError('Unknown model role')
@@ -119,11 +122,14 @@ def model_turn(role, request, root):
             response = dict(model=MODEL, reasoning_effort=EFFORT, answers=answers,
                 probability_source='uniform compatibility placeholder; not a model score')
         else:
-            if not isinstance(content, dict) or not {'source', 'destination'} <= set(content):
-                raise ValueError('Missing visual source or destination')
-            for item in (content['source'], content['destination']):
-                if not item['label'].isascii():
-                    raise ValueError('Visual object label must be English ASCII')
+            if not isinstance(content, dict):
+                raise ValueError('Visual response must be a JSON object')
+            if role == 'semantic_vision':
+                if not {'source', 'destination'} <= set(content):
+                    raise ValueError('Missing visual source or destination')
+                for item in (content['source'], content['destination']):
+                    if not item['label'].isascii():
+                        raise ValueError('Visual object label must be English ASCII')
             response = dict(model=MODEL, reasoning_effort=EFFORT, status='completed',
                 output=[dict(type='message', content=[dict(type='output_text',
                     text=json.dumps(content, ensure_ascii=False))])])

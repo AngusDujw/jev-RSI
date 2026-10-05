@@ -22,11 +22,18 @@ from run_position_pilot import dump, append
 def run(rec,rpc,reset):
     cfg=rec.cfg
     sys.path.insert(0,cfg['existing_root']+'/controller/src')
-    from realman_jev.api import API
-    api_settings=dict(json.loads(Path(cfg['api_config']).read_text())['jev'])
-    if 'jev_timeout_seconds' in cfg:api_settings['timeout_s']=cfg['jev_timeout_seconds']
+    pro = cfg.get('model_backend') == 'codex_pro'
+    if pro:
+        from codex_pro_bridge import API, MODEL, EFFORT
+        api_settings = {'model': MODEL, 'timeout_s': 700}
+        if cfg.get('deepseek_key_file') or cfg.get('jev_transport_backend') != 'codex_pro':
+            raise ValueError('Pro trial cannot use a legacy model transport or DeepSeek')
+    else:
+        from realman_jev.api import API
+        api_settings=dict(json.loads(Path(cfg['api_config']).read_text())['jev'])
+        if 'jev_timeout_seconds' in cfg:api_settings['timeout_s']=cfg['jev_timeout_seconds']
     api=API(api_settings,rec.event,'jev')
-    if cfg.get('jev_proxy_url'):
+    if cfg.get('jev_proxy_url') and not pro:
         import httpx
         old_client = api.client
         api.client = httpx.Client(proxy=cfg['jev_proxy_url'], trust_env=False,
@@ -58,11 +65,11 @@ def run(rec,rpc,reset):
     def ask_jev(state,questions):
         payload=dict(model=api.cfg['model'],state=state,questions=questions)
         import httpx
-        attempts=cfg.get('jev_transport_attempts',1)
+        attempts=1 if pro else cfg.get('jev_transport_attempts',1)
         if type(attempts) is not int or not 1<=attempts<=3:
             raise ValueError('Jev transport attempts must be an integer from 1 to 3')
         backend=cfg.get('jev_transport_backend','httpx')
-        if backend not in ('httpx','curl'):
+        if backend not in ('httpx','curl','codex_pro') or (backend=='codex_pro') != pro:
             raise ValueError('Unknown Jev transport backend')
         for transport_attempt in range(attempts):
             rec.check_budget()
@@ -88,7 +95,7 @@ def run(rec,rpc,reset):
                     response=post(api,payload,folder,cfg['jev_proxy_url'],api_settings['timeout_s'])
                 else:
                     response=api.post('/systemone',payload)
-            except httpx.TransportError as exc:
+            except (httpx.TransportError, RuntimeError) as exc:
                 failure=dict(error_type=type(exc).__name__,error=str(exc),
                     request_seconds=time.monotonic()-start,usage_unknown=True,
                     decision_id=folder.name,transport_attempt=transport_attempt+1)
@@ -100,6 +107,8 @@ def run(rec,rpc,reset):
                 continue
             dump(folder/'response.json',response)
             break
+        if pro and (response.get('model') != MODEL or response.get('reasoning_effort') != EFFORT):
+            raise RuntimeError('Pro control model/effort mismatch')
         if set(response.get('answers',{}))!=set(questions):
             raise ValueError('Jev did not answer all requested questions')
         for key,answer in response['answers'].items():
@@ -113,6 +122,8 @@ def run(rec,rpc,reset):
     detector = None
     detector_cfg = None
     if cfg.get("runtime_perception") == "groundingdino_sam2":
+        if pro:
+            raise ValueError('Pro trial must route semantic vision through GPT-6 Sol')
         from local_rgbd_perception import build_detector, visible_schema
         detector, detector_cfg = build_detector(cfg, cfg["gpu"])
         dump(rec.folder / "perception_config.json", detector_cfg)
@@ -151,14 +162,17 @@ def run(rec,rpc,reset):
             Image.fromarray(np.asarray(view['rgb'])).save(buff,format='JPEG',quality=90)
             content.extend([dict(type='input_text',text=f'Camera: {name}; image pixel width/height {view["rgb"].shape[1]}/{view["rgb"].shape[0]}'),
                 dict(type='input_image',image_url='data:image/jpeg;base64,'+base64.b64encode(buff.getvalue()).decode())])
-        payload=dict(model='gpt-6-astra',instructions='You are a visual measurement/OCR service. Return requested JSON of visible facts only. Do NOT plan robot actions, supply target waypoints, stages or movement directions. State missing observations explicitly.',
-            input=[dict(role='user',content=content)],reasoning=dict(effort='medium'),max_output_tokens=8000,
+        payload=dict(model=MODEL if pro else 'gpt-6-astra',instructions='You are a visual measurement/OCR service. Return requested JSON of visible facts only. Do NOT plan robot actions, supply target waypoints, stages or movement directions. State missing observations explicitly.',
+            input=[dict(role='user',content=content)],reasoning=dict(effort=EFFORT if pro else 'medium'),max_output_tokens=8000,
             text=dict(format=dict(type='json_object')),store=False)
         dump(folder/'request.json',payload)
         vision_calls+=1
-        response=request(payload,cfg['gpt6_key_file'],cfg['gpt6_base_url'])
+        if pro:
+            response=API({'model': MODEL},rec.event,'runtime_vision').post('/responses',payload)
+        else:
+            response=request(payload,cfg['gpt6_key_file'],cfg['gpt6_base_url'])
         dump(folder/'response.json',response)
-        if response.get('model')!='gpt-6-astra' or response.get('status')!='completed':
+        if response.get('model')!=(MODEL if pro else 'gpt-6-astra') or response.get('status')!='completed' or (pro and response.get('reasoning_effort')!=EFFORT):
             raise RuntimeError('Unexpected/incomplete GPT-6 perception response')
         text='\n'.join(c.get('text','') for x in response.get('output',[]) for c in x.get('content',[]) if c.get('type')=='output_text').strip()
         if text.startswith('```'):
@@ -259,4 +273,7 @@ def run(rec,rpc,reset):
         dump(rec.folder/'native_finish.json',final)
         dump(rec.folder/'structured_result.json',dict(status=status,native=final,jev_calls=len(rec.decisions),
             vision_calls=vision_calls,deepseek_calls=fallback.calls if fallback else 0,actions=actions,steps=tick,frames=frame_count,
-            task=cfg['runtime_task'],schema=cfg['schema_variant']))
+            task=cfg['runtime_task'],schema=cfg['schema_variant'],
+            model_backend='codex_pro' if pro else 'legacy_jev',
+            model='gpt-6-sol' if pro else api.cfg.get('model'),
+            reasoning_effort='xhigh' if pro else None))
