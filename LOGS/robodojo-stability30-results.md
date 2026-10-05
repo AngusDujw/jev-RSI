@@ -5,12 +5,16 @@
 |本轮|任务|累计序号|输入|native成功|步数|Jev请求|终止原因|
 |---:|---|---:|---|---|---:|---:|---|
 |1|general_pickup|24|compact_evidence|None|0|0|failed_without_native_result:Isaac startup exited with -15; see simulator.log|
+|2|general_pickup|25|compact_evidence|None|0|0|failed_without_native_result:timed out|
+|3|general_pickup|26|compact_evidence|True|75|51|native_episode_ended|
+|4|stack_bowls|18|compact_evidence|False|0|1|controller_stop:controller error: ConnectError: [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1016)|
 
 |任务|完成试次|开发混版本成功|冻结验证成功/次数|
 |---|---:|---:|---:|
-|general_pickup|1|0|0/0|
+|general_pickup|3|1|0/0|
+|stack_bowls|1|0|0/0|
 
-本轮已预留 1/30 试次。非ASCII请求 0。
+本轮已预留 4/30 试次。非ASCII请求 0。
 
 请求边界审计漏项 0；辅助禁止字段命中 0；方向/夹爪/阶段所有权违反 0。字段扫描仅辅助，不替代来源审阅。
 

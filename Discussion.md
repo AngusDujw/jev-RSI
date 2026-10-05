@@ -231,3 +231,9 @@
 2. 运行 `python tools/new_disc.py close "<slug>"`：脚本校验 Resolution → 归档为 `Discussion/Archive/DISC-YYYYWww-NNN-<slug>.md`（文件名含议题号，可反查）→ 从 `tools/templates/Discussion.template.md` 重置本文件。
 3. 在 `method.md` / `idea.md` 受影响章节追加 changelog 条目，并反向链回归档路径。
 4. 开启下一个议题：`python tools/new_disc.py open "<标题>"`（编号由脚本分配，避免撞号）。
+
+
+【Agent @Codex】【2026-10-05】RoboDojo恢复：
+- [EXP-2026W41-021](LOGS/2026-W41.md#exp-2026w41-021)：恢复后的拾取25在reset180秒超时、0Jev/0控制；原失败保留。
+- [EXP-2026W41-022](LOGS/2026-W41.md#exp-2026w41-022)：仿真代理与独立reset600秒修复后，v13拾取26/layout4原生成功75步/51Jev；51请求全ASCII、边界漏项0、决策权违规0，591文件两端SHA一致。是开发成功，尚无冻结新布局成功率。
+- [EXP-2026W41-023](LOGS/2026-W41.md#exp-2026w41-023)：叠碗18 reset后首请求TLS EOF，0控制；新增最多3次逐次记账的传输重试，payload/策略决策权不变，6项分支检查通过。新配置需要重建成功参考再冻结；HF官方新布局下载暂被TLS阻断。
