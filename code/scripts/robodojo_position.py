@@ -41,7 +41,7 @@ def run(rec, with_jev):
         check.bind(("127.0.0.1", port))
     gpu_info = subprocess.check_output(["nvidia-smi", "--query-gpu=index,memory.used", "--format=csv,noheader,nounits"], text=True)
     memory = dict((int(row.split(",")[0]), int(row.split(",")[1])) for row in gpu_info.strip().splitlines())
-    if memory[cfg["gpu"]] > 1024:
+    if memory[cfg["gpu"]] > cfg.get('startup_gpu_memory_limit_mib',1024):
         raise RuntimeError("Configured GPU is occupied; no process preemption allowed")
     dump(rec.folder/"gpu-before.json", dict(memory_mib=memory))
     cache = rec.folder.parent/"cache"

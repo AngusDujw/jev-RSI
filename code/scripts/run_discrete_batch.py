@@ -57,6 +57,24 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
     if memory[cfg['gpu']]>gpu_memory_limit_mib or utilization[cfg['gpu']]>5:
         print(json.dumps(dict(event='deferred_before_trial',task=task,gpu=cfg['gpu'],reason='occupied; no trial reserved')),flush=True)
         return 2
+    if cfg.get('cuda_startup_preflight',False):
+        import time
+        preflights=folder/'cuda-startup-preflights';preflights.mkdir(exist_ok=True)
+        report=preflights/f'{task}-{number:02d}-{time.time_ns()}.json'
+        probe=[cfg['robodojo_python'],'-B','-c',
+               'import torch; print(torch.cuda.get_device_name(0),flush=True); '
+               'x=torch.zeros(1,device="cuda:0"); torch.cuda.synchronize(); '
+               'print("isolated CUDA allocation passed",flush=True)']
+        try:
+            checked=subprocess.run(probe,env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(cfg['gpu'])),
+                                   text=True,capture_output=True,timeout=30)
+            check=dict(gpu=cfg['gpu'],returncode=checked.returncode,stdout=checked.stdout,stderr=checked.stderr)
+        except subprocess.TimeoutExpired:
+            check=dict(gpu=cfg['gpu'],returncode=None,error='isolated CUDA startup exceeded 30 seconds')
+        report.write_text(json.dumps(check,indent=2)+'\n')
+        if check['returncode']!=0:
+            if lease is not None:lease.close()
+            raise RuntimeError('CUDA startup preflight failed; no simulator started; see '+str(report))
     config=ROOT/f'code/configs/jev-discrete/launched-{task}-{number:02d}.json'
     config.write_text(json.dumps(cfg,indent=2)+'\n')
     command=[cfg['robodojo_python'],'-B','-u',str(ROOT/'code/scripts/run_position_pilot.py'),'--config',str(config),'--output',str(output),'--backend','robodojo','--with-jev']

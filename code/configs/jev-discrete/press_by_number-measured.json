@@ -69,5 +69,7 @@
     "phase_scope": "local"
   },
   "compress_snapshot_depth": true,
-  "jev_proxy_url": "http://127.0.0.1:7898"
+  "jev_proxy_url": "http://127.0.0.1:7898",
+  "cuda_startup_preflight": true,
+  "startup_gpu_memory_limit_mib": 10240
 }
