@@ -167,3 +167,10 @@
 - 【Agent】【2026-10-05 23:14】[result] 试次41离线审计：Pro Sol/xhigh在原始俯视图标注绿色实心颈部，深度点[0.389,0.002,0.775]m与在线XY目标差约6mm；双帧腕视判断剪刀未随手抬起且接触遮挡。保存原请求回复和深度映射于试次41/offline_audit，修正EXP042与Discussion，不再把整体中心3.8cm偏差当作XY选点错误。
 - 【Agent】【2026-10-05 23:17】[op] 对Pro general_pickup只调整contact/lift阶段固定目标执行tick 3→9（其余任务和旧Jev默认不变）；AST与git diff --check通过，提交2c7d32b并经SSH推送ykj。模型仍逐动作决定方向、夹爪与阶段，下一次独立试次检验能否提前做抓取验证。
 - 【Agent】【2026-10-05 23:25】[op] EXP042/Discussion/Timeline与Pro实验说明已strict检查提交93bda88并SSH推送，远端Git bundle快进同步；试次41的Pro离线可见标注和深度审计亦已同步。为遵守活动流水append-only，将并行改动合并为仅追加，保留所有历史行。
+- 【Agent】【2026-10-05 23:55】[result] 奶酪Pro冻结评测init27为官方success=true且program_finished=true，405原生步、95次gpt-6-sol/xhigh控制、3次同模型视觉、0 DeepSeek；95响应/11阶段边审计通过，190帧无损归档。批处理SSH会话在首回合结束后断开，未预约init28；将使用可重连tmux继续19个新初态，不重跑init27。
+- 【User】【2026-10-05 23:56】[prompt] 这个pro账号桥接应该可以并发的呀看看怎么解决这个问题
+- 【User】【2026-10-05 23:57】[prompt] 提高到59次，完成20次新模型测试
+- 【Agent】【2026-10-05 23:57】[op] 新建实验块 EXP-2026W41-043：GPT-6 Sol/xhigh奶酪冻结新初态init27完整评测、SSH中断与结果归档  ↪ `EXP-2026W41-043`
+- 【Agent】【2026-10-06 00:02】[op] 排查Pro桥接全局锁导致串行；将服务端改为默认最多2个同时Codex CLI推理，新增7904并行端口和远端客户端受限loopback选择；两条gpt-6-sol/xhigh真实请求并发成功，远端7904健康检查通过。
+- 【Agent】【2026-10-06 00:02】[op] 新建实验块 EXP-2026W41-044：验证Pro账号桥接双路并发与远端7904链路  ↪ `EXP-2026W41-044`
+- 【Agent】【2026-10-06 00:07】[result] Pro桥接双路请求分别21.353秒和26.544秒，总26.544秒、重叠21.353秒；代码da5cda9已SSH推送并以Git bundle快进同步服务器；7904反向转发和远端真实模型预检gpt-6-sol/xhigh成功，旧7903上的LIBERO评测未中断。
