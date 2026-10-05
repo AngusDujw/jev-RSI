@@ -41,7 +41,8 @@ def install_transport(jev_proxy, vision_proxy):
     proxies = dict(jev=validate_proxy(jev_proxy),
         semantic_vision=validate_proxy(vision_proxy))
     API = api_class()
-    original = API.__init__
+    original = getattr(API, '_libero_transport_original_init', API.__init__)
+    API._libero_transport_original_init = original
 
     def initialize(self, cfg, log, role):
         settings = dict(cfg)
@@ -57,14 +58,11 @@ def install_transport(jev_proxy, vision_proxy):
 
 def probe(jev_proxy, vision_proxy):
     """One small authenticated Jev request; vision /models is non-generative."""
+    install_transport(jev_proxy, vision_proxy)
     API = api_class()
     events = []
     jev_cfg = dict(json.loads(API_CONFIG.read_text())['jev'], timeout_s=30)
     vision_cfg = dict(VISION_CONFIG)
-    if jev_proxy:
-        jev_cfg['proxy'] = validate_proxy(jev_proxy)
-    if vision_proxy:
-        vision_cfg['proxy'] = validate_proxy(vision_proxy)
     clients = []
     result = dict(jev_proxy=jev_proxy, vision_proxy=vision_proxy,
         physical_episodes=0, vision_generation_requests=0, events=events)
@@ -72,6 +70,8 @@ def probe(jev_proxy, vision_proxy):
     try:
         jev = API(jev_cfg, events.append, 'jev'); clients.append(jev)
         vision = API(vision_cfg, events.append, 'semantic_vision'); clients.append(vision)
+        result['effective_api_proxies'] = dict(jev=jev.cfg.get('proxy'),
+            semantic_vision=vision.cfg.get('proxy'))
         response = jev.client.get('https://example.com/')
         result['external_http_status'] = response.status_code
         response.raise_for_status()
