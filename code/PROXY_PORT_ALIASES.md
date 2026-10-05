@@ -55,3 +55,7 @@ cd /root/yekangjie/project/jev_rsi
 网络通过，但仿真和grounding两个既有环境均cuInit=999，cuDeviceGetCount=3，入口退出2并保存not-started.json，未预留任何任务试次。原总账40行、奶酪27/50，前后文件SHA相同。原8个冻结策略源码SHA全部验证并保留，包装和外部API源码SHA另存manifest，不混称新策略。
 
 CUDA可用后，正式启动应去掉preflight-only并使用新的output目录；入口仍会先检查网络和CUDA，再预留试次，沿用50/task上限。当前没有完成20次验证或其它四任务的新物理实验。证据为[EXP-2026W41-006](../LOGS/2026-W41.md#exp-2026w41-006)及code/runs/2026-10-05-libero-proxy-api-preflight、2026-10-04-libero-verify20-cheese-restored-preflight。
+
+## 2026-10-05 11:14状态复核
+
+服务器已重新启动：8卡CUDA实际计算/同步通过，LIBERO768×768 RGB-D EGL通过，见[EXP-2026W41-008](../LOGS/2026-W41.md#exp-2026w41-008)。当前7897/7898/7901/7902/7903均无监听，先前PID及ready状态文件属于重启前历史，不能当作当前在线证据。继续实验前需要恢复上游和别名进程，再验证API。本次只检查GPU，没有重新创建代理或启动任务回合。
