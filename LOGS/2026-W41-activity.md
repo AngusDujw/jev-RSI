@@ -85,3 +85,5 @@
 - 【Agent】【2026-10-05 13:29】[stop] 停止依据AGENTS§10：恢复意图后3回合EXP023/024/025连续Crashed，暂停新物理试次；本轮6/30、剩24，当前55Jev请求尝试51响应，全部ASCII、审计漏项和所有权违规0；一完整开发成功，未做冻结稳定验证  ↪ `EXP-2026W41-025`
 - 【Agent】【2026-10-05 13:33】[op] 补全EXP025、恢复说明与Discussion停止升级，表明55请求尝试/51响应与所有英文/所有权审计0违规；停止是连续3基础设施Crashed规则，不是宣布稳定任务完成  ↪ `EXP-2026W41-025`
 - 【Agent】【2026-10-05 13:35】[result] 702个本轮完整文件两端逐文件SHA256一致；实验块strict lint通过。仅清理本轮创建且clean的Git工作树，保留原始实验与失败，尚未新增第7次试次；等待用户对连续3Crashed后的恢复授权  ↪ `EXP-2026W41-025`
+- 【User】【2026-10-05 14:20】[prompt] 什么api断连，现在全部都用我的pro账号的gpt6了吧不用api了
+- 【Agent】【2026-10-05 14:22】[note] 核实Pro通道：本机codex 0.159.3 login status为Logged in using ChatGPT；LIBERO live/frozen GenericVision仍为sub2api responses API，Jev仍为独立systemone API。服务器codex wrapper指向不存在程序，不能认作已接入Pro；本轮0模型请求、0物理试次，保持旧API批次停止，未改控制策略或驱动。用户纠正执行通道，尚未完成Pro接入。  ↪ `DISC-2026W39-001`
