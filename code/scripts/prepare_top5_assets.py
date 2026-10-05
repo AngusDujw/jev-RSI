@@ -28,6 +28,7 @@ def main():
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--manifest',type=Path,required=True)
     p.add_argument('--layouts',type=int,default=5)
+    p.add_argument('--tasks',choices=TASKS,nargs='+',default=TASKS)
     p.add_argument('--download',action='store_true')
     a=p.parse_args()
     index=json.loads(a.index.read_text())
@@ -56,7 +57,7 @@ def main():
         partial.rename(path)
         return path
     cases=[]
-    for task in TASKS:
+    for task in a.tasks:
         variants=[task,task+'_random'] if task in ('fold_clothes','stack_bowls') else [task]
         for runtime in variants:
             for layout in range(a.layouts):
