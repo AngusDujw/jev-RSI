@@ -1,19 +1,23 @@
 """Offline campaign report; native outcomes never flow into the controller."""
 import collections
+import argparse
 import hashlib
 import json
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def main():
-    name = '2026-10-04-robodojo-opt30'
+def main(name='2026-10-04-robodojo-opt30', output_stem='robodojo-opt30'):
     journal = ROOT / 'code/runs' / (name + '.jsonl')
     rows = [json.loads(line) for line in journal.read_text().splitlines()] if journal.exists() else []
+    not_started = {r.get('reservation') for r in rows if r['event']=='not_started'}
     records = []
     for row in rows:
         if row['event'] != 'reserved':
             continue
+        if row.get('reservation') in not_started:
+            continue
+        row = dict(row, trial=row.get('trial',row.get('physical_trial')))
         folder = ROOT / 'code/runs' / f"jev-discrete-{row['task']}-{row['attempt']:02d}"
         result = folder / 'structured_result.json'
         config = folder / 'protocol.json'
@@ -71,7 +75,7 @@ def main():
                             ownership_violations=ownership_violations,transition_count=transition_count,
                             runtime_deepseek_calls=data.get('deepseek_calls'),runtime_gpt6_forbidden=cfg.get('forbid_runtime_gpt6'),
                             runtime_perception=cfg.get('runtime_perception')))
-    output = ROOT / 'LOGS/robodojo-opt30-results.json'
+    output = ROOT / 'LOGS' / (output_stem+'-results.json')
     tasks={}
     for task in sorted({r['task'] for r in records}):
         subset=[r for r in records if r['task']==task];finished=[r for r in subset if r['status']!='running'];frozen=[r for r in finished if r['frozen_reference']]
@@ -88,9 +92,13 @@ def main():
     lines += ['', f"本轮已预留 {len(records)}/30 试次。非ASCII请求 {sum(len(r['non_ascii_requests']) for r in records)}。", '',
               f"请求边界审计漏项 {sum(len(r['audit_missing']) for r in records)}；辅助禁止字段命中 {sum(len(r['forbidden_field_hits']) for r in records)}；方向/夹爪/阶段所有权违反 {sum(len(r['ownership_violations']) for r in records)}。字段扫描仅辅助，不替代来源审阅。", '',
               '每回合原始目录及阶段请求数量见JSON；全部request/response、RGB-D、动作、版本与原生结果保留。']
-    (ROOT / 'LOGS/robodojo-opt30-results.md').write_text('\n'.join(lines)+'\n')
+    (ROOT / 'LOGS' / (output_stem+'-results.md')).write_text('\n'.join(lines)+'\n')
     print('Campaign trials:', len(records), '; non-ASCII:', sum(len(r['non_ascii_requests']) for r in records))
 
 
 if __name__ == '__main__':
-    main()
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--campaign',default='2026-10-04-robodojo-opt30')
+    parser.add_argument('--output-stem',default='robodojo-opt30')
+    args=parser.parse_args()
+    main(args.campaign,args.output_stem)
