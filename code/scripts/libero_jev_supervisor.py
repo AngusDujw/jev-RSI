@@ -44,7 +44,7 @@ class DecisionModel(Jev):
             signs=[dict(negative=-1,hold=0,positive=1)[answers[a]['choice']] for a in 'xyz']
             row.update(rotation_signs=[dict(negative=-1,hold=0,positive=1)[answers[a]['choice']] for a in ['rx','ry','rz']] if state.get('rotation_control') else [0,0,0],answers=answers,signs=signs,model=raw.get('model'),gripper=answers['gripper']['choice'],transition=answers['transition']['choice'],metrics=direction_metrics(state['position_m'],state['target_position_m'],signs,state['hold_tolerance_m']))
         except Exception as exc:
-            row['error']=str(exc).replace(self.api.credential,'[redacted]');self.rec.errors.append(dict(type=type(exc).__name__));raise
+            row['error']=str(exc).replace(self.api.credential,'[redacted]') if self.api.credential else str(exc);self.rec.errors.append(dict(type=type(exc).__name__));raise
         finally:
             row['request_seconds']=time.monotonic()-start;dump(folder/'decision.json',row);append(self.rec.folder/'decisions.jsonl',row)
         return row

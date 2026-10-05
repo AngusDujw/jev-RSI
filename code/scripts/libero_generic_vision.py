@@ -12,8 +12,12 @@ class GenericVision:
     def __init__(self,rec):
         self.rec=rec;self.calls=0;self.refreshes=0;self.identity=None;self.reasons=set()
         sys.path.insert(0,rec.cfg['existing_root']+'/controller/src')
-        from realman_jev.api import API
-        cfg=dict(base_url='https://sub2api.qinjiu8.com/v1',model='gpt-6-astra',key_file='/root/yekangjie/project/jev_rsi/.private/openai.key',timeout_s=90,expected_model_prefix='gpt-6',max_tokens=4000)
+        if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro':
+            from codex_pro_bridge import API
+        else:
+            from realman_jev.api import API
+        cfg=({'model':'gpt-6-sol'} if os.environ.get('JEV_RSI_MODEL_BACKEND')=='codex_pro'
+             else dict(base_url='https://sub2api.qinjiu8.com/v1',model='gpt-6-astra',key_file='/root/yekangjie/project/jev_rsi/.private/openai.key',timeout_s=90,expected_model_prefix='gpt-6',max_tokens=4000))
         self.api=API(cfg,rec.event,'semantic_vision')
         self.log=(rec.folder/'grounding-worker.log').open('w')
         env=dict(os.environ,HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
@@ -42,7 +46,7 @@ class GenericVision:
         for name,v in views.items():
             buf=io.BytesIO();Image.fromarray(v['rgb']).save(buf,'PNG')
             content.extend([dict(type='input_text',text='Camera '+name+' size '+str(v['rgb'].shape[1])+'x'+str(v['rgb'].shape[0])),dict(type='input_image',image_url='data:image/png;base64,'+base64.b64encode(buf.getvalue()).decode(),detail='high')])
-        request=dict(model='gpt-6-astra',instructions=prompt,input=[dict(role='user',content=content)],max_output_tokens=4000,store=False,text=dict(format=dict(type='json_object')))
+        request=dict(model=self.api.cfg['model'],instructions=prompt,input=[dict(role='user',content=content)],max_output_tokens=4000,store=False,text=dict(format=dict(type='json_object')))
         dump(p/'request.json',request);raw=self.api.post('/responses',request);dump(p/'response.json',raw)
         if raw.get('status')!='completed':raise RuntimeError('Semantic model incomplete')
         text=''.join(c.get('text','') for item in raw.get('output',[]) for c in item.get('content',[]) if c.get('type')=='output_text')

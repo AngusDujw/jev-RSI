@@ -223,6 +223,7 @@ def main():
     p.add_argument('--jev-supervisor', dest='jev_supervisor',action='store_true',default=True)
     p.add_argument('--scripted-supervisor',dest='jev_supervisor',action='store_false',help='Historical automatic gripper/phase policy; reproduction only')
     p.add_argument('--max-jev-decisions',type=int,default=120)
+    p.add_argument('--wall-limit-seconds',type=int,default=900)
     p.add_argument('--schema', choices=['numeric','feedback'], default='feedback')
     p.add_argument('--grasp-fraction', type=float, default=.4)
     p.add_argument('--geometry-profile',choices=['base','observed_surfaces'],default='base')
@@ -240,7 +241,7 @@ def main():
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
-               wall_limit_seconds=900, output_limit_mb=600 if a.recovery_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
+               wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
                permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile)
     rec = Recorder(out, cfg)

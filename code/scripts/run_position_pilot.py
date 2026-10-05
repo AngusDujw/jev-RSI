@@ -106,8 +106,12 @@ class Jev:
     def __init__(self, recorder):
         self.rec = recorder
         sys.path.insert(0, recorder.cfg["existing_root"] + "/controller/src")
-        from realman_jev.api import API
-        config = json.loads(Path(recorder.cfg["api_config"]).read_text())["jev"]
+        if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro':
+            from codex_pro_bridge import API
+        else:
+            from realman_jev.api import API
+        config = ({'model': 'gpt-6-sol'} if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro'
+            else json.loads(Path(recorder.cfg["api_config"]).read_text())["jev"])
         self.api = API(config, recorder.event, "jev")
 
     def choose(self, state, metadata):
@@ -151,7 +155,7 @@ class Jev:
                        metrics=direction_metrics(state["position_m"], state["target_position_m"],
                                                  signs, state["hold_tolerance_m"]))
         except Exception as exc:
-            row.update(error_type=type(exc).__name__, error=str(exc).replace(self.api.credential, "[redacted]"))
+            row.update(error_type=type(exc).__name__, error=(str(exc).replace(self.api.credential, "[redacted]") if self.api.credential else str(exc)))
             self.rec.errors.append(dict(decision_id=did, error_type=type(exc).__name__))
             raise
         finally:

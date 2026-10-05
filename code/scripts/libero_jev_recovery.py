@@ -3,6 +3,7 @@ No hidden object poses, contact IDs, reward or task predicates enter decisions.
 """
 import hashlib
 import json
+import os
 import time
 import cv2
 import numpy as np
@@ -85,7 +86,7 @@ class RecoveryModel(Jev):
             signs = [mapping[answers[a]['choice']] for a in 'xyz']
             row.update(answers=answers, signs=signs, rotation_signs=[mapping[answers[a]['choice']] if a in answers else 0 for a in ['rx', 'ry', 'rz']], model=raw.get('model'), gripper=answers['gripper']['choice'], transition=answers['transition']['choice'], candidate=answers['candidate']['choice'] if 'candidate' in answers else 'not_requested', metrics=direction_metrics([state['translation_axes'][a]['current_coordinate_m'] for a in 'xyz'], [state['translation_axes'][a]['goal_coordinate_m'] for a in 'xyz'], signs, state['axis_hold_tolerance_mm']/1000))
         except Exception as exc:
-            row['error'] = str(exc).replace(self.api.credential, '[redacted]')
+            row['error'] = str(exc).replace(self.api.credential, '[redacted]') if self.api.credential else str(exc)
             self.rec.errors.append(dict(type=type(exc).__name__))
             raise
         finally:
@@ -315,5 +316,6 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         error_message=str(exc);rec.event(dict(kind='stop',reason=error_message))
     finally:
         success=bool(env.check_success())  # Terminal evaluation only.
-        dump(rec.folder/'result.json',dict(success=success,program_finished=finished,error=error_message,native_steps=ticks,jev_calls=len(rec.decisions),semantic_calls=vision.calls,deepseek_calls=0,stage=stage,grasp_attempts=grasp_tries,failed_candidates=failed_candidates,ownership='Jev XYZ/rotation/gripper/candidate/phase/retry',input_organization=rec.cfg['input_organization']))
+        backend='gpt-6-sol/xhigh via ChatGPT Codex' if os.environ.get('JEV_RSI_MODEL_BACKEND')=='codex_pro' else 'Jev'
+        dump(rec.folder/'result.json',dict(success=success,program_finished=finished,error=error_message,native_steps=ticks,jev_calls=len(rec.decisions),model_control_calls=len(rec.decisions),semantic_calls=vision.calls,deepseek_calls=0,stage=stage,grasp_attempts=grasp_tries,failed_candidates=failed_candidates,ownership=backend+' XYZ/rotation/gripper/candidate/phase/retry',input_organization=rec.cfg['input_organization'],model_backend=backend))
         rec.finish('success' if success else 'failed');model.close();vision.close()
