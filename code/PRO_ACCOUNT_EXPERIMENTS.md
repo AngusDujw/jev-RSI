@@ -18,6 +18,8 @@ LIBERO-Plus `libero_object:1066` 奶酪 init26：一次新模型物理开发回�
 
 RoboDojo 非物理验证：历史 `general_pickup` 相机帧作为普通视觉输入，GPT-6 Sol/xhigh 返回24条可被现有 `VisualEvidence._parse` 接受的可见记录；同模型的桥接选择题和 JPEG 视觉请求也均通过。首个 Pro 物理开发回合 `general_pickup` layout0/试次35 **失败**：`native.success=false`，11原生步、7次新模型控制、11次新模型视觉、0次DeepSeek；旧控制器内置19分钟墙时先于外层3600秒预算触发，停止原因为 `external hard budget reached`。原始失败保留，不计任务成功。
 
+第二个 Pro 开发回合 `general_pickup` layout0/试次39使用同帧三相机合并输入，11动作、32原生步、21条控制与11条已完成视觉回复，均为GPT-6 Sol/xhigh，DeepSeek 0。第1–8个接近动作受旧纯旋转保护规则置为XYZ零位移，44分钟后姿态误差仍为2.237rad；为避免把剩余墙时耗在已量化的慢收敛上，操作者SIGINT结束，官方`success=false`。原始`structured_result.status=running`只表示中断时控制器尚在阶段内；`summary.status=completed`只表示记录器收尾。完整负结果在`code/runs/pro-discrete-general_pickup-39/`，不是新模型任务成功。
+
 ## 当前启动方式
 
 以下命令每块只有一行，无需人工换行。先在**工作站**运行桥接服务并保持前台：
@@ -42,3 +44,5 @@ python3 -B -u code/scripts/run_robodojo_pro_batch.py --task general_pickup --var
 服务器预检先确认桥接健康和一次真实 GPT-6 Sol/xhigh 选择，再检查磁盘、GPU与 CUDA；预检失败不占物理次数。所有任务回合保留原始输入、模型回复、控制命令和官方终局判定。首轮失败后，Pro 模式外层墙时上限调为6600秒、控制器内层6300秒，仍低于单跑2小时GPU；旧 Jev 默认19分钟不变。输出上限1600MiB。
 
 为减少同一观测帧分别识别三个相机的延迟，新入口可加 `--batch-views`：只发送当前三路RGB图像一次，要求模型分别给出各相机可见记录，后续相机读取同一响应；每一帧会重新请求。历史同一帧的三相机非物理测试在144.38秒返回三路12/5/6条有效记录，三路分别通过现有解析器；这只证明接口兼容，不证明闭环成功。此选项是新的输入组织版本，须单列新试次和原始响应，不能重写试次35的失败结果。Pro启动命令使用`--with-model`标识实际模型路径，旧`--with-jev`仍仅供历史运行复现。
+
+试次39之后的Pro配置把纯旋转接近限制到前2次观察，允许GPT-6 Sol选择的水平移动与受限旋转并行；旋转单次上限0.35rad，Z仍在姿态误差大于0.5rad时受抑制。旧Jev默认8次及0.20rad不变。这是新候选，需用独立物理试次确认实际姿态收敛、碰撞守卫和任务结果。
