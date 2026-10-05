@@ -36,7 +36,7 @@ class API:
         # Never send the workstation request to a configured internet proxy.
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
         try:
-            with opener.open(transport, timeout=240) as reply:
+            with opener.open(transport, timeout=700) as reply:
                 response = json.load(reply)
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode(errors='replace')[:500]

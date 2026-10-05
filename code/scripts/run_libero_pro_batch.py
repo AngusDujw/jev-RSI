@@ -56,13 +56,14 @@ def bridge_model_preflight():
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     call = urllib.request.Request('http://127.0.0.1:7903/infer', data=body,
         headers={'Content-Type':'application/json'})
-    with opener.open(call, timeout=250) as reply:
+    with opener.open(call, timeout=700) as reply:
         result = json.load(reply)
     if (result.get('model')!='gpt-6-sol' or result.get('reasoning_effort')!='xhigh'
             or result.get('answers',{}).get('x',{}).get('choice')!='positive'):
         raise RuntimeError('Model preflight returned unexpected decision/model')
     return dict(model=result['model'], reasoning_effort=result['reasoning_effort'],
-        codex_request_id=result.get('codex_request_id'), usage=result.get('usage'))
+        codex_request_id=result.get('codex_request_id'), usage=result.get('usage'),
+        transport_attempts=result.get('codex_transport_attempts'))
 
 
 def main():

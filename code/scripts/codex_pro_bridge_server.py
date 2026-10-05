@@ -82,16 +82,21 @@ def model_turn(role, request, root):
     start = time.monotonic()
     env = dict(os.environ, TMPDIR=str(root), TMP=str(root), TEMP=str(root))
     try:
-        result = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True,
-            text=True, timeout=230, env=env)
-        (folder / 'codex-events.jsonl').write_text(result.stdout)
-        (folder / 'codex-stderr.log').write_text(result.stderr)
-        events = [json.loads(line) for line in result.stdout.splitlines() if line.strip()]
+        for attempt in range(3):
+            result = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True,
+                text=True, timeout=200, env=env)
+            (folder / f'codex-events-{attempt+1}.jsonl').write_text(result.stdout)
+            (folder / f'codex-stderr-{attempt+1}.log').write_text(result.stderr)
+            events = [json.loads(line) for line in result.stdout.splitlines() if line.strip()]
+            failures = [e.get('error', {}).get('message', 'turn failed') for e in events
+                if e.get('type') == 'turn.failed']
+            if failures and 'Selected model is at capacity' in failures[-1] and attempt < 2:
+                time.sleep(5 * (attempt+1))
+                continue
+            break
         messages = [e['item']['text'] for e in events if e.get('type') == 'item.completed'
             and e.get('item', {}).get('type') == 'agent_message']
         completions = [e for e in events if e.get('type') == 'turn.completed']
-        failures = [e.get('error', {}).get('message', 'turn failed') for e in events
-            if e.get('type') == 'turn.failed']
         if failures:
             raise RuntimeError('Codex turn failed: ' + failures[-1][:250])
         if result.returncode != 0 or len(messages) != 1 or len(completions) != 1:
@@ -123,7 +128,8 @@ def model_turn(role, request, root):
                 output=[dict(type='message', content=[dict(type='output_text',
                     text=json.dumps(content, ensure_ascii=False))])])
         response.update(usage=usage, codex_request_id=ident,
-            codex_elapsed_seconds=time.monotonic()-start)
+            codex_elapsed_seconds=time.monotonic()-start,
+            codex_transport_attempts=attempt+1)
         (folder / 'response.json').write_text(json.dumps(response, indent=2) + '\n')
         return response
     finally:
