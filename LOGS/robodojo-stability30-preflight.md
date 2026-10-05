@@ -46,3 +46,7 @@ server-operator技能要求远端7897被占用时未经明确授权不得换端�
 第1次拾取layout4启动停在renderer.init，358.41秒后仅停止自有已核验进程，0控制步、0控制Jev请求、native=None，计入1/30。GPU0/2/7最小CUDA初始化均失败；无PyTorch直接加载系统libcuda调用cuInit同样返回999/CUDA_ERROR_UNKNOWN。因此不能用已用显存低推断GPU可用。未变更驱动或停止其他作业。
 
 新增CUDA预分配/同步检查（30秒上限）。正式入口的stack_bowls前置检查被拦截，记录not_started，不计第2次。当前剩余29次，暂无新任务成功率；CUDA恢复后再继续。详见EXP-2026W41-002～003与独立stability30账本。
+
+## 2026-10-05恢复继续
+
+用户授权继续。RoboDojo环境CUDA实际运算/同步通过；三个790x当前无监听，全部连接拒绝，故使用授权的7897至本机7897临时转发。Jev认证1.21秒，544输入/49输出token。五measured配置只改代理URL，保留v13及原预算；预检不计物理试次，仍余29。证据见EXP-2026W41-009与code/runs/2026-10-05-robodojo-resume-preflight/。
