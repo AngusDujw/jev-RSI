@@ -35,3 +35,15 @@ OpenAI官方区分ChatGPT订阅登录与API key登录，并支持限制登录方
 ### 联合修复的真实控制验证
 
 拾取30/layout4第8/30成功：reset32.435秒，总267.119秒；原生success=true、81步、29动作，55/55 Jev响应全部HTTP200，32本地视觉、0DeepSeek、0GPT6；非ASCII/审计漏项/禁字段/所有权违规均0。进程正常退出，未换v13策略。与拾取29预检一起验证本次修复；两次验证保留原失败，本轮剩22次，冻结新布局验证尚未运行。见[EXP027](2026-W41.md#exp-2026w41-027)。
+
+## 本轮修改与新增文件
+
+- 新增：`code/scripts/nvidia_material_cache.py`、`LOGS/robodojo-infrastructure-repair.md`。
+- 修改脚本：`code/scripts/rgbd_bridge.py`、`code/scripts/robodojo_position.py`、`code/scripts/run_discrete_batch.py`、`code/scripts/run_robodojo_stability.py`、`code/scripts/report_discrete_optimization.py`。
+- 修改配置：`code/configs/jev-discrete/`下`general_pickup-measured.json`、`stack_bowls-measured.json`、`fold_clothes-measured.json`、`press_by_number-measured.json`、`match_and_pick_from_conveyor-measured.json`。
+- 修改研究记录：`Discussion.md`、`TIMELINE.md`、`LOGS/2026-W41.md`、`LOGS/2026-W41-activity.md`、`LOGS/robodojo-stability30-preflight.md`、`LOGS/robodojo-stability30-results.md`、`LOGS/robodojo-stability30-results.json`。
+- 追加引用笔记：`ref/notes/idea-draft-v0.1.md`、`ref/notes/具身智能机械臂控制理论与论文框架-5b7a9009.md`。
+- 仓库外修改：`/home/ykj/.codex/config.toml`的模型/推理/登录方式默认设置，未纳入项目Git。
+- 新增运行证据：`code/runs/jev-discrete-general_pickup-29/`、`code/runs/jev-discrete-general_pickup-30/`、`code/runs/cache/nvidia-materials-2023_1/`及turn8 SHA256清单/回执；预算journal仅追加。695文件两端SHA256一致。
+
+其余会话正在修改的LIBERO/Pro接入代码与既有未提交排版均未纳入本轮提交。
