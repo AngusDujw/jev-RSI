@@ -170,7 +170,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._reply(413, dict(error='invalid request size'))
         try:
             body = json.loads(self.rfile.read(size))
-            with self.server.lock:
+            with self.server.request_slots:
                 response = model_turn(body['role'], body['request'], self.server.work_root)
             self._reply(200, response)
         except Exception as exc:
@@ -183,13 +183,20 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--work-root', type=Path, required=True)
+    parser.add_argument('--port', type=int, default=7903)
+    parser.add_argument('--max-inflight', type=int, default=2)
     args = parser.parse_args()
+    if not 1 <= args.port <= 65535:
+        parser.error('--port must be between 1 and 65535')
+    if args.max_inflight < 1:
+        parser.error('--max-inflight must be positive')
     args.work_root.mkdir(parents=True, exist_ok=True)
-    server = ThreadingHTTPServer(('127.0.0.1', 7903), Handler)
+    server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
     server.work_root = args.work_root.resolve()
-    server.lock = threading.Lock()
-    print(json.dumps(dict(listen='127.0.0.1:7903', model=MODEL,
-        reasoning_effort=EFFORT, work_root=str(server.work_root))), flush=True)
+    server.request_slots = threading.BoundedSemaphore(args.max_inflight)
+    print(json.dumps(dict(listen=f'127.0.0.1:{args.port}', model=MODEL,
+        reasoning_effort=EFFORT, max_inflight=args.max_inflight,
+        work_root=str(server.work_root))), flush=True)
     server.serve_forever()
 
 

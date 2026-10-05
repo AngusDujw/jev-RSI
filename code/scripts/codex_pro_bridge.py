@@ -13,11 +13,19 @@ import urllib.request
 MODEL = 'gpt-6-sol'
 EFFORT = 'xhigh'
 URL = 'http://127.0.0.1:7903'
+ALLOWED_URLS = {URL, 'http://127.0.0.1:7904'}
+
+
+def bridge_url():
+    url = os.environ.get('JEV_RSI_PRO_BRIDGE_URL', URL)
+    if url not in ALLOWED_URLS:
+        raise ValueError('Pro bridge must use authorized loopback port 7903 or 7904')
+    return url
 
 
 def health():
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-    with opener.open(URL + '/health', timeout=20) as reply:
+    with opener.open(bridge_url() + '/health', timeout=20) as reply:
         status = json.load(reply)
     if status != dict(ok=True, model=MODEL, reasoning_effort=EFFORT, auth='ChatGPT'):
         raise RuntimeError('Pro bridge health/model/auth mismatch')
@@ -30,7 +38,7 @@ def model_preflight():
         questions=dict(x=dict(type='choice', instructions='Choose direction toward the larger x coordinate',
             criteria=dict(negative='decrease', hold='stay', positive='increase')))))
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-    call = urllib.request.Request(URL + '/infer', data=json.dumps(body).encode(),
+    call = urllib.request.Request(bridge_url() + '/infer', data=json.dumps(body).encode(),
         headers={'Content-Type': 'application/json'})
     with opener.open(call, timeout=700) as reply:
         response = json.load(reply)
@@ -48,9 +56,7 @@ class API:
         self.event = event
         self.role = role
         self.credential = None
-        self.url = os.environ.get('JEV_RSI_PRO_BRIDGE_URL', URL)
-        if self.url != URL:
-            raise ValueError('Pro bridge must use the authorized loopback port 7903')
+        self.url = bridge_url()
 
     def post(self, path, request):
         expected = '/systemone' if self.role == 'jev' else '/responses'
