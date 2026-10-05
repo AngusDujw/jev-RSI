@@ -69,10 +69,10 @@
     "phase_scope": "local"
   },
   "compress_snapshot_depth": true,
-  "jev_proxy_url": "http://127.0.0.1:7901",
+  "jev_proxy_url": "socks5h://127.0.0.1:7901",
   "cuda_startup_preflight": true,
   "startup_gpu_memory_limit_mib": 10240,
-  "simulator_proxy_url": "http://127.0.0.1:7901",
+  "simulator_proxy_url": "socks5h://127.0.0.1:7901",
   "robodojo_reset_timeout_seconds": 600,
   "jev_transport_attempts": 3
 }
