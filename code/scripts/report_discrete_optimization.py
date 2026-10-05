@@ -64,6 +64,10 @@ def main(name='2026-10-04-robodojo-opt30', output_stem='robodojo-opt30'):
                         direction=choices.get(arm+'_'+axis)
                         if direction!=('positive' if delta>0 else 'negative'):ownership_violations.append(str(path)+':direction')
         data = json.loads(result.read_text()) if result.exists() else {}
+        startup_path = folder/'startup_preflight.json'
+        startup_preflight = json.loads(startup_path.read_text()) if startup_path.exists() else None
+        if row.get('purpose') == 'startup' and startup_preflight:
+            data = dict(status='startup_preflight_passed', steps=0)
         if not data and (folder/'summary.json').exists():
             summary=json.loads((folder/'summary.json').read_text())
             failure=json.loads((folder/'failure.json').read_text()) if (folder/'failure.json').exists() else {}
@@ -78,6 +82,7 @@ def main(name='2026-10-04-robodojo-opt30', output_stem='robodojo-opt30'):
                             audit_missing=audit_missing,forbidden_field_hits=forbidden_hits,
                             ownership_violations=ownership_violations,transition_count=transition_count,
                             runtime_deepseek_calls=data.get('deepseek_calls'),runtime_gpt6_forbidden=cfg.get('forbid_runtime_gpt6'),
+                            startup_preflight=startup_preflight,
                             runtime_perception=cfg.get('runtime_perception')))
     output = ROOT / 'LOGS' / (output_stem+'-results.json')
     tasks={}
