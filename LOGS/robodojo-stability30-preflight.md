@@ -38,3 +38,11 @@ server-operator技能要求远端7897被占用时未经明确授权不得换端�
 新增物理试次数上限30，仍保留累计每任务50；开发和冻结验证分别记账。暂按成功候选冻结后五个不同未开发新布局至少4/5原生成功作工作门槛，用户可调整；门槛和小样本不代表已证明广泛泛化。任何阶段完成声明均不替代native evaluator。
 
 代码和候选见code/controllers/jev_discrete_v13/及code/configs/jev-discrete/*-measured.json，入口code/scripts/run_robodojo_stability.py。本页为启动前证据，不是物理实验结果。
+
+## 2026-10-05恢复更新
+
+用户授权后重新确认7897仍占用、7898空闲。独立7898转发本机7897后认证成功：jev-1.13.0，1.31秒，544输入/49输出token，原始response-authorized7898.json保留。网络阻塞解除。
+
+第1次拾取layout4启动停在renderer.init，358.41秒后仅停止自有已核验进程，0控制步、0控制Jev请求、native=None，计入1/30。GPU0/2/7最小CUDA初始化均失败；无PyTorch直接加载系统libcuda调用cuInit同样返回999/CUDA_ERROR_UNKNOWN。因此不能用已用显存低推断GPU可用。未变更驱动或停止其他作业。
+
+新增CUDA预分配/同步检查（30秒上限）。正式入口的stack_bowls前置检查被拦截，记录not_started，不计第2次。当前剩余29次，暂无新任务成功率；CUDA恢复后再继续。详见EXP-2026W41-002～003与独立stability30账本。

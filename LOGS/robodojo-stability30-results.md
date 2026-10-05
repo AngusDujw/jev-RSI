@@ -1,0 +1,17 @@
+# RoboDojo 30试次优化进展
+
+开发混版本；英文校验、程序阶段推进与独立native成功分别记录。启动/接口错误计入试次；native=None表示未取得任务评估，不能计算为物理控制失败率。未启动的资源或CUDA预检单列，不计试次。
+
+|本轮|任务|累计序号|输入|native成功|步数|Jev请求|终止原因|
+|---:|---|---:|---|---|---:|---:|---|
+|1|general_pickup|24|compact_evidence|None|0|0|failed_without_native_result:Isaac startup exited with -15; see simulator.log|
+
+|任务|完成试次|开发混版本成功|冻结验证成功/次数|
+|---|---:|---:|---:|
+|general_pickup|1|0|0/0|
+
+本轮已预留 1/30 试次。非ASCII请求 0。
+
+请求边界审计漏项 0；辅助禁止字段命中 0；方向/夹爪/阶段所有权违反 0。字段扫描仅辅助，不替代来源审阅。
+
+每回合原始目录及阶段请求数量见JSON；全部request/response、RGB-D、动作、版本与原生结果保留。

@@ -1,0 +1,9 @@
+{
+  "files": 20,
+  "bytes": 20175,
+  "local_remote_sha256_match": true,
+  "manifest": "code/runs/2026-10-05-robodojo-stability30-startup-sha256.json",
+  "manifest_sha256": "21554c92c364f3774cae7bb960e8f61ceca39f41236558d015281f99bd10cc01",
+  "remote": "company-server-2:/root/yekangjie/project/jev_rsi",
+  "scope": "Finished general_pickup-24 startup plus Jev transport and CUDA preflight artifacts; no physical control frames exist"
+}

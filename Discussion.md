@@ -200,6 +200,8 @@
 - 绕圈检测：CIRCLE-1/libero-generic-vision已显式报告；收敛方案为冻结新初态验证、网络故障不作为控制证据、预算用完如实判未达标。没有CIRCLE-2。保留用户对LIBERO恢复的独立待确认，不以本轮RoboDojo授权代替。
 - 理论边界：idea/method的静态末端位置模型不覆盖衣物形变、运动目标及抓持接触切换；当前仅作为系统扩展诊断，不据阶段推进改写理论保证、研究目标或主指标。
 
+【Agent @Codex】【2026-10-05】RoboDojo第二轮恢复检查：用户授权后以服务器7898转发本机7897，认证成功返回jev-1.13.0（544输入/49输出token），见[EXP-2026W41-003](LOGS/2026-W41.md#exp-2026w41-003)。新拾取layout4仅启动：Isaac卡在renderer.init，GPU0/2/7独立CUDA初始化失败、无PyTorch直接cuInit=999；358.41秒后只停止自有已核验进程，见[EXP-2026W41-002](LOGS/2026-W41.md#exp-2026w41-002)。本轮1/30、0控制步/0控制Jev、native=None，不能算Jev或视觉控制失败率；CUDA前置守卫实际阻止下一任务启动，not_started不计第2次。保留剩余29次，服务器CUDA恢复后继续，未改驱动或中止其他作业。
+
 ## Resolution（关闭议题时必填）
 
 > Status 切到 `Resolved` 时，本节必须全部填好；否则不许关闭。

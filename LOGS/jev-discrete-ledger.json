@@ -4194,5 +4194,43 @@
       "robodojo",
       "--with-jev"
     ]
+  },
+  "jev-discrete-general_pickup-24": {
+    "experiment_id": "EXP-2026W41-002",
+    "task": "general_pickup",
+    "attempt": 24,
+    "variant": {
+      "input_variant": "evidence",
+      "processing_variant": "precision",
+      "decision_mode": "phase_then_action",
+      "decision_limit": 480,
+      "input_organization": "compact_evidence",
+      "phase_scope": "local"
+    },
+    "layout": 4,
+    "frozen_reference": null,
+    "native_success": null,
+    "reason": "[{'type': 'RuntimeError', 'error': 'Isaac startup exited with -15; see simulator.log'}]",
+    "steps": 0,
+    "jev_requests": 0,
+    "jev_responses": 0,
+    "phase_choices": {},
+    "gripper_choices": {},
+    "transition_owners": [],
+    "forbidden_field_hits": [],
+    "stages": [],
+    "wall_seconds": 358.4068913310766,
+    "commit": "f504d265a60d1ebf6b9a844d3408463012e8e99a",
+    "run": "code/runs/jev-discrete-general_pickup-24",
+    "command": [
+      "/root/yekangjie/project/jev_rsi/code/scripts/run_position_pilot.py",
+      "--config",
+      "/root/yekangjie/project/jev_rsi/code/configs/jev-discrete/launched-general_pickup-24.json",
+      "--output",
+      "/root/yekangjie/project/jev_rsi/code/runs/jev-discrete-general_pickup-24",
+      "--backend",
+      "robodojo",
+      "--with-jev"
+    ]
   }
 }

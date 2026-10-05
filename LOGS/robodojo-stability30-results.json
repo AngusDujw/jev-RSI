@@ -1,0 +1,47 @@
+{
+  "limit": 30,
+  "used": 1,
+  "tasks": {
+    "general_pickup": {
+      "reserved": 1,
+      "completed": 1,
+      "native_evaluated": 0,
+      "mixed_development_successes": 0,
+      "frozen_successes": 0,
+      "frozen_trials": 0
+    }
+  },
+  "trials": [
+    {
+      "event": "reserved",
+      "reservation": 1,
+      "physical_trial": 1,
+      "task": "general_pickup",
+      "attempt": 24,
+      "variant": "measured",
+      "layout": 4,
+      "purpose": "development",
+      "frozen_from": null,
+      "trial": 1,
+      "run": "code/runs/jev-discrete-general_pickup-24",
+      "organization": "compact_evidence",
+      "controller": "/root/yekangjie/project/jev_rsi/code/controllers/jev_discrete_v13/controller.py",
+      "frozen_reference": null,
+      "status": "failed_without_native_result:Isaac startup exited with -15; see simulator.log",
+      "native_success": null,
+      "steps": 0,
+      "requests": 0,
+      "stages": {},
+      "non_ascii_requests": [],
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "audit_missing": [],
+      "forbidden_field_hits": [],
+      "ownership_violations": [],
+      "transition_count": 0,
+      "runtime_deepseek_calls": null,
+      "runtime_gpt6_forbidden": true,
+      "runtime_perception": "groundingdino_sam2"
+    }
+  ]
+}

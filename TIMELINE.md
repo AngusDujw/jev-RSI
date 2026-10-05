@@ -62,6 +62,7 @@ graph LR
   subgraph wk_2026_W41["2026-W41"]
     direction TB
     T_2026W41_001["⛔ jev-control-formulation<br/>第二轮RoboDojo v13离线五任务入…"]:::blocker
+    T_2026W41_002["⛔ jev-control-formulation<br/>授权7898代理后Jev认证恢复；拾取启动…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -92,6 +93,7 @@ graph LR
   T_2026W40_024 --> T_2026W40_026
   T_2026W40_026 --> T_2026W40_027
   T_2026W40_025 --> T_2026W41_001
+  T_2026W41_001 --> T_2026W41_002
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -143,6 +145,7 @@ graph LR
 | `T-2026W40-026` | 2026-10-04 | experiment | libero-jev-ownership | LIBERO奶酪新增15/30：可见指垫拟合与focused/adaptive新初态3/3完整成功；同初态配对Jev136→94.33，1218响应/114阶段边审计通过，封版不扩测 | `EXP-2026W40-234` | - |
 | `T-2026W40-027` | 2026-10-04 | blocker | libero-jev-ownership | 奶酪冻结20验证被API DNS阻断：5次0控制/0Jev，首错守卫已修复；7897已占用，按连续Crashed规则征求恢复许可 | `EXP-2026W40-235` | - |
 | `T-2026W41-001` | 2026-10-05 | blocker | jev-control-formulation | 第二轮RoboDojo v13离线五任务入口通过，0/30新物理回合；Jev直连DNS与既有代理TLS阻断，临时7898转发许可待回复，不计任务失败 | `EXP-2026W41-001` | - |
+| `T-2026W41-002` | 2026-10-05 | blocker | jev-control-formulation | 授权7898代理后Jev认证恢复；拾取启动GPU渲染卡住、GPU0/2/7及直接cuInit999，停止自有进程且CUDA守卫已验证；1/30启动失败、0控制步/0控制Jev，余29保留 | `EXP-2026W41-003` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
