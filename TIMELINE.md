@@ -76,6 +76,7 @@ graph LR
     T_2026W41_013["📊 jev-control-formulation<br/>Pro拾取39前8次接近动作零位移；44分…"]:::experiment
     T_2026W41_014["📊 jev-control-formulation<br/>Pro拾取40解除纯旋转空动作后Y实际仅跟…"]:::experiment
     T_2026W41_015["📊 jev-control-formulation<br/>Pro拾取9 tick解决接近欠跟踪，但闭…"]:::experiment
+    T_2026W41_016["📊 libero-jev-ownership<br/>Pro冻结奶酪首个未见init27原生完整…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -120,6 +121,7 @@ graph LR
   T_2026W41_012 --> T_2026W41_013
   T_2026W41_013 --> T_2026W41_014
   T_2026W41_014 --> T_2026W41_015
+  T_2026W41_011 --> T_2026W41_016
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -186,6 +188,7 @@ graph LR
 | `T-2026W41-013` | 2026-10-05 | experiment | jev-control-formulation | Pro拾取39前8次接近动作零位移；44分钟仍未到接触，固定有限旋转并行XY候选待检验 | `EXP-2026W41-040` | - |
 | `T-2026W41-014` | 2026-10-05 | experiment | jev-control-formulation | Pro拾取40解除纯旋转空动作后Y实际仅跟踪命令9–19%；改为有界接近执行窗口待物理检验 | `EXP-2026W41-041` | - |
 | `T-2026W41-015` | 2026-10-05 | experiment | jev-control-formulation | Pro拾取9 tick解决接近欠跟踪，但闭爪后目标未随手抬起且墙时耗尽 | `EXP-2026W41-042` | - |
+| `T-2026W41-016` | 2026-10-06 | experiment | libero-jev-ownership | Pro冻结奶酪首个未见init27原生完整成功，95控制/3视觉/405步；其余19回合待验证 | `EXP-2026W41-043` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
