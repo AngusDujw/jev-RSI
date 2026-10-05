@@ -61,6 +61,9 @@ def run(rec,rpc,reset):
         attempts=cfg.get('jev_transport_attempts',1)
         if type(attempts) is not int or not 1<=attempts<=3:
             raise ValueError('Jev transport attempts must be an integer from 1 to 3')
+        backend=cfg.get('jev_transport_backend','httpx')
+        if backend not in ('httpx','curl'):
+            raise ValueError('Unknown Jev transport backend')
         for transport_attempt in range(attempts):
             rec.check_budget()
             index=len(rec.decisions)
@@ -80,7 +83,11 @@ def run(rec,rpc,reset):
             rec.decisions.append(row)
             start=time.monotonic()
             try:
-                response=api.post('/systemone',payload)
+                if backend=='curl':
+                    from jev_curl_transport import post
+                    response=post(api,payload,folder,cfg['jev_proxy_url'],api_settings['timeout_s'])
+                else:
+                    response=api.post('/systemone',payload)
             except httpx.TransportError as exc:
                 failure=dict(error_type=type(exc).__name__,error=str(exc),
                     request_seconds=time.monotonic()-start,usage_unknown=True,

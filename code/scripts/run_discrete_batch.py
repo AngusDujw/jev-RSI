@@ -34,7 +34,9 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
         available={hashlib.sha256(p.read_bytes()).hexdigest() for folder in folders for p in (ROOT/'code/experience'/folder).glob('*.md')}
         if any(r['sha256'] not in available for r in snapshot['records']):raise RuntimeError('frozen experience changed')
         commit=json.loads((reference/'provenance.json').read_text())['commit']
-        for name in ['run_position_pilot.py','robodojo_position.py','structured_task_runner.py','local_rgbd_perception.py','local_digit_ocr.py','rgbd_bridge.py']:
+        pipeline=['run_position_pilot.py','robodojo_position.py','structured_task_runner.py','local_rgbd_perception.py','local_digit_ocr.py','rgbd_bridge.py']
+        if cfg.get('jev_transport_backend')=='curl':pipeline.append('jev_curl_transport.py')
+        for name in pipeline:
             relative='code/scripts/'+name
             if subprocess.check_output(['git','show',commit+':'+relative],cwd=ROOT)!=(ROOT/relative).read_bytes():raise RuntimeError('frozen pipeline changed: '+relative)
         cfg['frozen_reference']=str(reference)
