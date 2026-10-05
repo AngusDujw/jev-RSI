@@ -45,3 +45,11 @@
 本轮5个已结束回合的108份原始文件共37,340,308字节两端SHA256一致，见[核验](../code/runs/2026-10-04-libero-verify20-summary/sync-verification.json)。旧控制帧的39份录像/恢复manifest共361,750,642字节同步一致，见[归档核验](../code/runs/2026-10-04-libero-verify20-summary/archive-sync-verification.json)。本地新生成的audit.json单独列为派生数据，不冒称服务器原始记录；旧本地PNG全量副本保留。
 
 文件变更：新增code/scripts/libero_frame_archive.py、run_libero_frozen_validation.py、summarize_libero_validation.py、code/configs/libero-supervisor/top5-correspondence.json和本报告；修改code/scripts/audit_libero_supervisor.py、code/LIBERO_PLUS.md、LOGS/2026-W40.md、LOGS/2026-W40-activity.md、Discussion.md及TIMELINE.md。未修改冻结策略模块或其它会话文件。
+
+## 2026-10-05授权恢复与代理预检
+
+用户已明确授权验证7901/7902/7903外网并用可用端口继续测试，覆盖上文待授权的网络恢复安排。三端口均外网HTTP200、真实Jev认证成功及视觉/models HTTP200；正式入口的原API类代理包装另验证Jev走7901、视觉走7902。4次网络Jev请求均jev-1.13.0，共1500输入/152输出token；视觉生成0，不是物理控制实验。
+
+用原冻结8源码及SHA、完整新init15–34和相同预算执行preflight-only：网络通过，仿真/grounding两个环境cuInit均999，入口保存not-started后退出2。没有追加任务总账，奶酪仍27/50；20次及其它四任务没有新增物理成绩。阻塞已从DNS变为节点CUDA故障，未改驱动或干预其他任务。
+
+冻结策略和Jev夹爪/阶段所有权保持。新增显式传输包装，修改验证入口增加双环境GPU守卫，命令及证据见[代理说明](../code/PROXY_PORT_ALIASES.md)和[EXP-2026W41-006](2026-W41.md#exp-2026w41-006)。原5个DNS失败继续保留；CUDA恢复且守卫通过后才执行20次新初态验证，不能将这次API成功称为任务成功。

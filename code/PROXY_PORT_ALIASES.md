@@ -38,3 +38,20 @@ python3 -B code/scripts/loopback_port_alias.py --ports 7901 7902 7903 --target-p
 ```
 
 前台Ctrl+C或对该转发进程发送SIGTERM可正常停止。验证记录在code/runs/2026-10-05-proxy-aliases-7901-7903及code/runs/2026-10-05-proxy-aliases-active；实验记录为LOGS/2026-W41.md的EXP-2026W41-004，本次没有模型调用或物理回合。
+
+## 2026-10-05真实API及LIBERO启动预检
+
+用户授权用这些端口恢复测试后，三端口分别通过example.com HTTP200、Jev认证/systemone POST200及视觉API/models HTTP200，均返回jev-1.13.0，模型列表含gpt-6-astra。视觉没有生成请求，此结果只证明该接口可达及返回所需模型。三个端口仍共用原7897上游，不是三个独立线路。
+
+原realman_jev API使用trust_env=False，但支持构造配置proxy字段。因此新增libero_proxy_transport.py，只在原API类构造时给jev/semantic_vision指定代理，不改变任何策略输入输出或冻结源码。真实包装初始化预检验证了Jev使用7901、视觉使用7902；另7903可作备用。4次Jev网络请求共1500输入/152输出token，均单列，不计任务结果；没有DeepSeek调用。
+
+以下两条按行执行的命令已在服务器用完整20个init实际验证。它是preflight-only模式，不执行机器人；输出目录已存在，重新验证须更换output，不能覆盖旧记录。
+
+```bash
+cd /root/yekangjie/project/jev_rsi
+/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/run_libero_frozen_validation.py --frozen-from code/runs/2026-10-03-libero-recovery30-focused-v1/frozen --output code/runs/2026-10-04-libero-verify20-cheese-restored-preflight --campaign 2026-10-04-libero-verify20-cheese-restored --inits 15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34 --jev-proxy http://127.0.0.1:7901 --vision-proxy http://127.0.0.1:7902 --preflight-only
+```
+
+网络通过，但仿真和grounding两个既有环境均cuInit=999，cuDeviceGetCount=3，入口退出2并保存not-started.json，未预留任何任务试次。原总账40行、奶酪27/50，前后文件SHA相同。原8个冻结策略源码SHA全部验证并保留，包装和外部API源码SHA另存manifest，不混称新策略。
+
+CUDA可用后，正式启动应去掉preflight-only并使用新的output目录；入口仍会先检查网络和CUDA，再预留试次，沿用50/task上限。当前没有完成20次验证或其它四任务的新物理实验。证据为[EXP-2026W41-006](../LOGS/2026-W41.md#exp-2026w41-006)及code/runs/2026-10-05-libero-proxy-api-preflight、2026-10-04-libero-verify20-cheese-restored-preflight。
