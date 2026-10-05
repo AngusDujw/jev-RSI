@@ -202,6 +202,8 @@
 
 【Agent @Codex】【2026-10-05】RoboDojo第二轮恢复检查：用户授权后以服务器7898转发本机7897，认证成功返回jev-1.13.0（544输入/49输出token），见[EXP-2026W41-003](LOGS/2026-W41.md#exp-2026w41-003)。新拾取layout4仅启动：Isaac卡在renderer.init，GPU0/2/7独立CUDA初始化失败、无PyTorch直接cuInit=999；358.41秒后只停止自有已核验进程，见[EXP-2026W41-002](LOGS/2026-W41.md#exp-2026w41-002)。本轮1/30、0控制步/0控制Jev、native=None，不能算Jev或视觉控制失败率；CUDA前置守卫实际阻止下一任务启动，not_started不计第2次。保留剩余29次，服务器CUDA恢复后继续，未改驱动或中止其他作业。
 
+【Agent @Codex】【2026-10-05】按用户请求将服务器现有7897代理增加7901/7902/7903三个本地TCP入口。[EXP-2026W41-004](LOGS/2026-W41.md#exp-2026w41-004)：每端口HTTP CONNECT/SOCKS5h，共6并发HEAD请求均HTTP200、exit0，约0.46秒；自有转发进程正常SIGTERM退出后全部别名端口释放，原代理/隧道仍监听，正式进程PID3910099重新启动后环境变量用法也返回200。见[使用说明](code/PROXY_PORT_ALIASES.md)。这只是共用同一上游的网络入口，不新增API额度、模型调用或物理回合，不构成任务性能证据；未改冻结策略或驱动。
+
 ## Resolution（关闭议题时必填）
 
 > Status 切到 `Resolved` 时，本节必须全部填好；否则不许关闭。
