@@ -5,6 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 import time
 import urllib.request
 from urllib.parse import quote
@@ -29,6 +30,7 @@ def main():
     p.add_argument('--manifest',type=Path,required=True)
     p.add_argument('--layouts',type=int,default=5)
     p.add_argument('--tasks',choices=TASKS,nargs='+',default=TASKS)
+    p.add_argument('--socks-proxy',help='Authorized host:port for curl SOCKS5 remote DNS')
     p.add_argument('--download',action='store_true')
     a=p.parse_args()
     index=json.loads(a.index.read_text())
@@ -44,13 +46,18 @@ def main():
         partial=path.with_name(path.name+'.download')
         for attempt in range(4):
             try:
-                with urllib.request.urlopen(url,timeout=90) as response,partial.open('wb') as output:
-                    while True:
-                        b=response.read(1048576)
-                        if not b: break
-                        output.write(b)
+                if a.socks_proxy:
+                    subprocess.run(['curl','--fail','--silent','--show-error','--location',
+                        '--connect-timeout','15','--max-time','90','--socks5-hostname',
+                        a.socks_proxy,'--output',str(partial),url],check=True)
+                else:
+                    with urllib.request.urlopen(url,timeout=90) as response,partial.open('wb') as output:
+                        while True:
+                            b=response.read(1048576)
+                            if not b: break
+                            output.write(b)
                 break
-            except (OSError,urllib.error.URLError):
+            except (OSError,urllib.error.URLError,subprocess.CalledProcessError):
                 if attempt==3: raise
                 time.sleep(2**attempt)
         if not valid(partial,e): raise ValueError('Asset checksum mismatch: '+name)
