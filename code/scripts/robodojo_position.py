@@ -102,7 +102,10 @@ def run(rec, with_jev):
                 reset = rpc.request("reset", seed=case["layout_id"], source="gpt_eef",
                                     policy_version="jev_rsi_development_probe_v1")
             finally:
-                rpc.sock.settimeout(180)
+                # RPCClient closes and clears its socket after a failed request.
+                # Preserve that original failure instead of raising AttributeError.
+                if rpc.sock is not None:
+                    rpc.sock.settimeout(180)
             episode, tick = reset["episode_id"], reset["step_id"]
             dump(rec.folder/"reset.json", reset)
             if cfg.get("robodojo_task_mode") == "structured_task":
