@@ -55,6 +55,12 @@ def run(rec, with_jev):
                CUDA_VISIBLE_DEVICES=str(cfg["gpu"]), COMPANY_OBSERVATION=cfg.get("observation_mode", "oracle"),
                COMPANY_LAYOUT_PATH=str(layout.resolve()), COMPANY_LAYOUT_SHA256=case["layout_sha256"],
                COMPANY_ORACLE_GEOMETRY=str(int(cfg.get("robodojo_task_mode") == "stage_stack")), HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
+    # Kit may resolve remote MDL dependencies while resetting the first scene.
+    # Scope the authorized proxy to this simulator, without altering the host.
+    if cfg.get('simulator_proxy_url'):
+        env.update(HTTP_PROXY=cfg['simulator_proxy_url'], HTTPS_PROXY=cfg['simulator_proxy_url'],
+                   http_proxy=cfg['simulator_proxy_url'], https_proxy=cfg['simulator_proxy_url'],
+                   NO_PROXY='127.0.0.1,localhost', no_proxy='127.0.0.1,localhost')
     output = rec.folder/"simulator"
     output.mkdir()
     command = [cfg["robodojo_python"], "-B", "-u", "-m", cfg.get("bridge_module", "realman_jev.company_bridge"),
@@ -89,8 +95,14 @@ def run(rec, with_jev):
             rec.event(dict(kind="simulator_ready", startup_seconds=time.monotonic()-start))
             rpc = RPCClient("127.0.0.1", port, timeout=180)
             dump(rec.folder/"native_metadata.json", rpc.request("metadata"))
-            reset = rpc.request("reset", seed=case["layout_id"], source="gpt_eef",
-                                policy_version="jev_rsi_development_probe_v1")
+            # Initial shader compilation can exceed the normal action deadline.
+            # Restore the shorter deadline even when reset itself raises.
+            rpc.sock.settimeout(cfg.get('robodojo_reset_timeout_seconds', 180))
+            try:
+                reset = rpc.request("reset", seed=case["layout_id"], source="gpt_eef",
+                                    policy_version="jev_rsi_development_probe_v1")
+            finally:
+                rpc.sock.settimeout(180)
             episode, tick = reset["episode_id"], reset["step_id"]
             dump(rec.folder/"reset.json", reset)
             if cfg.get("robodojo_task_mode") == "structured_task":
