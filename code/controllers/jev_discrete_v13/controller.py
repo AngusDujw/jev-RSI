@@ -56,6 +56,39 @@ class Controller(Joint):
                 targets = {arm:np.asarray(point)+[0,0,.010] for arm,point in targets.items()}
                 self.debug['thin_surface_grasp'] = dict(offset_m=.010,
                     source='visible depth thickness below 22mm; compensate robot finger envelope above support; grasp unverified')
+                if self.stage == 'contact':
+                    arm = self.plan['arms'][0]
+                    anchor = np.asarray(self.plan['initial_grasp'])
+                    saved = self.plan.get('contact_z_refinement')
+                    if saved and np.array_equal(saved['initial_grasp'], anchor):
+                        corrected = saved['target_z_m']
+                        evidence = dict(saved['evidence'], reused_after_first_clear_view=True)
+                    else:
+                        self.plan.pop('contact_z_refinement', None)
+                        current = self.current.get(self.plan['source'])
+                        corrected = None
+                        if current and current['observed'] and current['uncertainty_m'] <= .008:
+                            top_z = float(current['top'][2]); low_z = float(current['low'][2])
+                            base_z = float(targets[arm][2])
+                            if (0 <= float(current['high'][2])-low_z <= .015 and
+                                    low_z+.008 <= base_z and abs(top_z-base_z) <= .025):
+                                corrected = max(base_z-.010, low_z+.008,
+                                    min(base_z, top_z+.002))
+                                evidence = dict(original_target_z_m=base_z,
+                                    visible_top_z_m=top_z, visible_low_z_m=low_z,
+                                    uncertainty_m=float(current['uncertainty_m']),
+                                    corrected_target_z_m=corrected,
+                                    source='current RGB-D thin-object surface; XY anchor unchanged')
+                                if corrected < base_z-.001:
+                                    self.plan['contact_z_refinement'] = dict(
+                                        initial_grasp=anchor.copy(), target_z_m=corrected,
+                                        evidence=evidence)
+                        if corrected is None or corrected >= float(targets[arm][2])-.001:
+                            corrected = None
+                    if corrected is not None:
+                        targets[arm] = np.asarray(targets[arm]).copy()
+                        targets[arm][2] = corrected
+                        self.debug['current_surface_contact_height'] = evidence
         return targets, uncertainty, opening
 
     def _conveyor_source(self, rows):
