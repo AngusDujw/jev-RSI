@@ -32,7 +32,23 @@ def world_cloud(view):
     return cam @ t[:3, :3].T + t[:3, 3]
 
 
-def contact_push_plan(source, goal, own, current_orientation=None):
+def visible_rear_extent(view, mask, source, direction):
+    """Robust trailing support of any segmented tabletop object along a push."""
+    if mask.shape != view['depth'].shape:
+        raise RuntimeError('Visible source mask/depth shape mismatch')
+    good = mask & np.isfinite(view['depth']) & (view['depth'] > .02) & (view['depth'] < 3.)
+    if int(good.sum()) < 80:
+        raise RuntimeError('Insufficient visible source pixels for push extent')
+    points = world_cloud(view)[good]
+    projection = (points[:, :2]-source['center'][:2]) @ direction
+    rear = -float(np.quantile(projection, .05))
+    if not .005 < rear < .20:
+        raise RuntimeError('Visible rear push extent outside supported range')
+    return rear
+
+
+def contact_push_plan(source, goal, own, current_orientation=None,
+                      observed_rear_extent_m=None):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -55,9 +71,9 @@ def contact_push_plan(source, goal, own, current_orientation=None):
     fingers = own['finger_vertices_tool'] @ orientation.T
     leading = float(np.max(fingers @ xaxis))
     finger_high = float(fingers[:, 2].max())
-    observed_radius = float(np.dot(np.abs(direction),
-        (source['high']-source['low'])[:2]/2))
-    contact_xy = source['center'][:2] - direction*(observed_radius+leading+.004)
+    rear_extent = (float(observed_rear_extent_m) if observed_rear_extent_m is not None
+        else float(np.dot(np.abs(direction), (source['high']-source['low'])[:2]/2)))
+    contact_xy = source['center'][:2] - direction*(rear_extent+leading+.004)
     contact_z = goal[2]+.004-own_box['finger_low_z_offset']
     finger_low_world = contact_z+own_box['finger_low_z_offset']
     finger_high_world = contact_z+finger_high
@@ -65,8 +81,8 @@ def contact_push_plan(source, goal, own, current_orientation=None):
             finger_high_world < source['low'][2]+.001):
         raise RuntimeError('Own finger envelope misses observed object height')
     hover_z = max(contact_z+.20, source['high'][2]+.20)
-    approach = np.r_[contact_xy-direction*.035, hover_z]
-    lower = np.r_[contact_xy-direction*.035, contact_z]
+    approach = np.r_[contact_xy-direction*.010, hover_z]
+    lower = np.r_[contact_xy-direction*.010, contact_z]
     contact = np.r_[contact_xy, contact_z]
     push_end = np.r_[contact_xy+direction*(distance+.025), contact_z]
     retreat = push_end+np.array([0., 0., .10])
@@ -74,7 +90,9 @@ def contact_push_plan(source, goal, own, current_orientation=None):
         orientation_source='preserved downward robot pose' if preserve else
             'downward pose derived from visible push direction',
         direction=direction,
-        observed_radius_m=observed_radius, own_finger_leading_offset_m=leading,
+        observed_rear_extent_m=rear_extent,
+        rear_extent_source='visible SAM mask/RGB-D 5th percentile' if observed_rear_extent_m is not None else 'RGB-D axis bounds fallback',
+        own_finger_leading_offset_m=leading,
         own_finger_high_offset_m=finger_high, own_envelope=own_box,
         finger_world_z_interval_m=[finger_low_world,finger_high_world],
         approach=approach, lower=lower, contact=contact, push_end=push_end,
@@ -257,8 +275,12 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         if len(patch) == 0 or not np.isfinite(patch).all():
             raise RuntimeError('Goal tabletop RGB-D unavailable')
         goal = np.median(patch.reshape(-1, 3), axis=0)
+        unit_push = goal[:2]-source['center'][:2]
+        unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
+        rear_extent = visible_rear_extent(v[ob['camera']],
+            np.load(source['visible_mask_path']), source, unit_push)
         plan = contact_push_plan(source, goal, own,
-            Rotation.from_quat(obs['robot0_eef_quat']).as_matrix())
+            Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(), rear_extent)
         direction = plan['direction']
         orientation = plan['orientation']
         approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
@@ -371,6 +393,21 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 if stage == 'retreat':
                     finished = True
                     break
+                if stage == 'prepare':
+                    # The pusher geometry is recalculated from its *actual* closed
+                    # finger mesh before setting the approach/contact line.
+                    own = gripper_geometry(env, obs)
+                    dump(rec.folder/'own-gripper-after-close.json', own)
+                    plan = contact_push_plan(source, goal, own,
+                        Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(),
+                        rear_extent)
+                    direction, orientation = plan['direction'], plan['orientation']
+                    approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
+                    push_end, retreat = plan['push_end'],plan['retreat']
+                    dump(rec.folder/'push-geometry-after-close.json', dict(
+                        public_task=public_task, source=source, target_uv=goal_uv,
+                        visible_goal_world_m=goal, **plan,
+                        provenance='Fresh own closed-finger geometry + initial visible SAM/RGB-D; no scene truth'))
                 stage = next_stage
                 stage_decisions = 0
                 stalls = 0

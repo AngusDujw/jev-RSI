@@ -72,7 +72,9 @@ class GenericVision:
         if len(data)<80:raise RuntimeError('Too few valid segmented depth points')
         lo,hi=np.quantile(data,[.05,.95],axis=0);center=(lo+hi)/2
         if (hi-lo>.35).any():raise RuntimeError('Foreground depth extent exceeds 35cm')
-        result=dict(center=center,low=lo,high=hi,points=len(data),label=label,source='semantic box + SAM visible mask + RGB-D quantiles')
+        result=dict(center=center,low=lo,high=hi,points=len(data),label=label,
+                    visible_mask_path=r['objects'][0]['mask_path'],
+                    source='semantic box + SAM visible mask + RGB-D quantiles')
         dump(p/'geometry.json',result);return result
     def close(self):
         self.api.close()
