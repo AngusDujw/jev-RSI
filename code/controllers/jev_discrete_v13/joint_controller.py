@@ -174,7 +174,24 @@ class Controller(Geometry):
             if raw_velocity is not None:row['velocity_m_per_native_step']=raw_velocity
 
         if self.task=='general_pickup' and self.processing in ('anchored','precision') and self.stage in ('approach','contact'):
-            targets={self.plan['arms'][0]:self.plan['initial_grasp']+np.array([0,0,.004+(.055 if self.stage=='approach' else 0)])}
+            arm=self.plan['arms'][0]
+            target=self.plan['initial_grasp']+np.array([0,0,.004+(.055 if self.stage=='approach' else 0)])
+            if self.stage=='contact':
+                source=self.current.get(self.plan['source'])
+                if source and source['observed'] and source['uncertainty_m']<=.008:
+                    top_z=float(source['top'][2]);low_z=float(source['low'][2])
+                    # Thin objects can be measured lower from the wrist camera
+                    # than at selection. Keep the original XY grasp site, but
+                    # correct only contact height from current visible depth.
+                    if (0<=float(source['high'][2])-low_z<=.015 and
+                            low_z+.008<=target[2] and abs(top_z-target[2])<=.025):
+                        corrected=max(target[2]-.010,low_z+.008,min(target[2],top_z+.002))
+                        self.debug['current_surface_contact_height']=dict(
+                            initial_target_z_m=float(target[2]),visible_top_z_m=top_z,
+                            visible_low_z_m=low_z,corrected_target_z_m=float(corrected),
+                            downward_limit_m=.010,source='current RGB-D thin-object surface; XY anchor unchanged')
+                        target[2]=corrected
+            targets={arm:target}
         if self.processing=='precision' and self.stage in ('approach','contact') and self.task=='fold_clothes':
             center=self.plan['source_initial']
             targets={a:np.asarray(p).copy() for a,p in targets.items()}
