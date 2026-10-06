@@ -84,6 +84,7 @@ graph LR
     T_2026W41_021["⛔ libero-generic-vision<br/>推盘子init4–6连续三次Crashed…"]:::blocker
     T_2026W41_022["📊 libero-generic-vision<br/>离线审计证实推盘子init6末4块方向正确…"]:::experiment
     T_2026W41_023["📊 jev-control-formulation<br/>Pro试次44最终接触Z下修约9mm，la…"]:::experiment
+    T_2026W41_024["📊 jev-control-formulation<br/>Pro layout1小铲完整200步失败…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -136,6 +137,7 @@ graph LR
   T_2026W41_020 --> T_2026W41_021
   T_2026W41_021 --> T_2026W41_022
   T_2026W41_019 --> T_2026W41_023
+  T_2026W41_023 --> T_2026W41_024
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -210,6 +212,7 @@ graph LR
 | `T-2026W41-021` | 2026-10-06 | blocker | libero-generic-vision | 推盘子init4–6连续三次Crashed；新掩码后沿与闭爪几何修订仅离线验证，暂停新物理回合 | `EXP-2026W41-055` | - |
 | `T-2026W41-022` | 2026-10-06 | experiment | libero-generic-vision | 离线审计证实推盘子init6末4块方向正确但Z执行近零，旧4次停滞即stop问题限制恢复；新输入和重观察仅静态待验 | `EXP-2026W41-056` | - |
 | `T-2026W41-023` | 2026-10-06 | experiment | jev-control-formulation | Pro试次44最终接触Z下修约9mm，layout0在185步获原生成功；冻结单初态结果待未见布局验证 | `EXP-2026W41-057` | - |
+| `T-2026W41-024` | 2026-10-06 | experiment | jev-control-formulation | Pro layout1小铲完整200步失败：末端升122mm而物体Z近零；ASCII故障已排除，layout0成功未泛化 | `EXP-2026W41-060` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

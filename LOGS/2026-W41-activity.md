@@ -236,3 +236,7 @@
 - 【Agent】【2026-10-06 13:18】[op] 新建实验块 EXP-2026W41-059：Pro layout1试次45：视觉标签含重音触发ASCII输入合同停止  ↪ `EXP-2026W41-059`
 - 【Agent】【2026-10-06 13:23】[result] Pro layout1试次45在85步因视觉标签Nescafé box中的é进入ASCII控制输入而中止；20控制/12视觉均Pro Sol/xhigh，原生未终止，不能判抓取失败。  ↪ `EXP-2026W41-059`
 - 【Agent】【2026-10-06 13:24】[op] 修复v13视觉模型自由文本ASCII规范化，源码bdd68dc已SSH推送并Git bundle同步服务器；原RoboDojo环境对实际Nescafé标签、标点、非拉丁兜底做无GPU解析/控制合同检查通过，EXP059及议题留痕。  ↪ `EXP-2026W41-059`
+- 【Agent】【2026-10-06 13:27】[run] 冻结3807c01视觉ASCII修复后，在GPU4空闲、134GB同盘空间及7904 ChatGPT Pro桥接健康预检下前台启动官方general_pickup layout1试次46；仅复验EXP059软件中断后能否完成原生闭环。  ↪ `EXP-2026W41-059`
+- 【Agent】【2026-10-06 14:46】[op] 新建实验块 EXP-2026W41-060：Pro layout1试次46：ASCII修复后完整回合揭示小铲未夹持  ↪ `EXP-2026W41-060`
+- 【Agent】【2026-10-06 14:49】[result] Pro layout1试次46完整200步原生success=false且截断；53控制/29视觉均Sol/xhigh、DeepSeek0、53条ASCII合同通过。核验末端Z+121.9mm而小铲Z-0.7mm，模型选择retry；确认跨布局/物体未泛化。  ↪ `EXP-2026W41-060`
+- 【Agent】【2026-10-06 14:49】[op] 补齐EXP060、Discussion和T-2026W41-024；对比接触/闭爪/核验RGB-D及原生反馈，冻结layout0成功与layout1失败，不对无触觉证据的具体滑脱机制下结论。  ↪ `EXP-2026W41-060`

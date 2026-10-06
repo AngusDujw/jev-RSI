@@ -287,3 +287,5 @@
 【Agent @Codex】【2026-10-06 12:47】通道审计见[EXP058](LOGS/2026-W41.md#exp-2026w41-058)：10月4日36份、10月5日8份旧sub2api配置的GPT-6 Astra视觉完成回复；当时不能称为全程Pro。服务器项目密钥文件已删除，现行LIBERO视觉入口改为仅接受Pro桥，并在无Pro后端时离线提前拒绝1/1；本轮API请求0。历史冻结配置保留审计，不重跑旧通道。两项CIRCLE-1收敛为固定Pro版本、按预先指定初态和完整可评估终局报告，不再反复更换同一任务提示词；本次没有新的物理性能证据，议题保持Open。
 
 【Agent @Codex】【2026-10-06 13:23】未见layout1的小铲试次45见[EXP059](LOGS/2026-W41.md#exp-2026w41-059)：85步/11动作接触时，非目标包装视觉标签`Nescafé box`中的重音进入控制请求，触发ASCII合同`ValueError`，原生success=false但terminated/truncated均false；这是软件中断，不能算小铲物理失败。20控制/12视觉均Pro GPT-6 Sol/xhigh、DeepSeek0。bdd68dc仅在视觉解析边界规范化模型自由文本，原始回复保留；服务器现有环境无GPU检查通过。CIRCLE-1收敛方案不变：同一布局只复验这一个明确的软件修复，若再有同类合同中断就停下审计请求边界，不进行多轮提示词试错。
+
+【Agent @Codex】【2026-10-06 14:48】ASCII修复后同一未见layout1的完整复验见[EXP060](LOGS/2026-W41.md#exp-2026w41-060)：53条控制合同全通过，53控制/29视觉均Pro Sol/xhigh、DeepSeek0；官方200步截断、success=false。抓取核验中末端Z+121.9mm而小铲Z-0.7mm，位移不匹配124.4mm，模型主动选retry；俯视/腕视确认小铲留在桌上。故软件中断已消除，但layout0剪刀成功不能外推layout1小铲。`jev-control-formulation` CIRCLE-1现12轮未决：冻结这对正负结果，不再同布局盲目跑；下一候选先用已存RGB-D和自身夹指几何量化接触位置，提出单因素可证伪改动，议题保持Open。
