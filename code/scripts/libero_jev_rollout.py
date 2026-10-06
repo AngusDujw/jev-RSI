@@ -247,7 +247,8 @@ def main():
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
-                      MUJOCO_EGL_DEVICE_ID='0', TMPDIR=str(cache), XDG_CACHE_HOME=str(cache))
+                      TMPDIR=str(cache), XDG_CACHE_HOME=str(cache))
+    os.environ.setdefault('MUJOCO_EGL_DEVICE_ID', '0')
     sys.path.insert(0, ROOT)
     from libero.libero import benchmark
     from libero.libero.envs.env_wrapper import ControlEnv
