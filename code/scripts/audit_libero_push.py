@@ -10,7 +10,7 @@ ALLOWED = {'task', 'operation', 'next_operation', 'operation_contract',
            'translation_axes', 'axis_hold_tolerance_mm',
            'required_rotation_world_rad', 'gripper', 'completion_evidence',
            'allowed_transitions', 'visible_geometry', 'phase_decisions',
-           'information_sources'}
+           'information_sources', 'blocked_action_count', 'recent_actions'}
 
 
 def scan(value):
@@ -56,6 +56,7 @@ def audit(root):
         assert branch['executed_gripper'] == expected
         previous_gripper = expected
         assert all(d*s >= -1e-12 for d, s in zip(branch['delta'], decision['signs']))
+        assert all(d*s >= -1e-12 for d, s in zip(branch['rotation'], decision['rotation_signs']))
     edges = [row for row in events if row.get('kind') == 'phase_transition']
     for edge in edges:
         decision = decisions[edge['decision_id']]

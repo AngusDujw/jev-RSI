@@ -32,7 +32,7 @@ def world_cloud(view):
     return cam @ t[:3, :3].T + t[:3, 3]
 
 
-def contact_push_plan(source, goal, own):
+def contact_push_plan(source, goal, own, current_orientation=None):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -43,9 +43,14 @@ def contact_push_plan(source, goal, own):
         raise RuntimeError('Proposed goal not on visible source support level')
     xaxis = np.r_[direction, 0.]
     yaxis = np.r_[direction[::-1]*np.array([1., -1.]), 0.]
-    orientation = np.column_stack((xaxis, yaxis, [0., 0., -1.]))
-    if np.linalg.det(orientation) < 0:
-        orientation[:, 1] *= -1
+    proposed = np.column_stack((xaxis, yaxis, [0., 0., -1.]))
+    if np.linalg.det(proposed) < 0:
+        proposed[:, 1] *= -1
+    # A downward pusher needs no yaw alignment to make side contact. Keep an
+    # already-downward wrist pose to avoid sweeping the arm through obstacles.
+    preserve = current_orientation is not None and float(
+        np.asarray(current_orientation)[2, 2]) < -.90
+    orientation = np.asarray(current_orientation) if preserve else proposed
     own_box = envelope(own, orientation)
     fingers = own['finger_vertices_tool'] @ orientation.T
     leading = float(np.max(fingers @ xaxis))
@@ -59,13 +64,16 @@ def contact_push_plan(source, goal, own):
     if (finger_low_world > source['high'][2]-.001 or
             finger_high_world < source['low'][2]+.001):
         raise RuntimeError('Own finger envelope misses observed object height')
-    hover_z = max(contact_z+.10, source['high'][2]+.11)
+    hover_z = max(contact_z+.20, source['high'][2]+.20)
     approach = np.r_[contact_xy-direction*.035, hover_z]
     lower = np.r_[contact_xy-direction*.035, contact_z]
     contact = np.r_[contact_xy, contact_z]
     push_end = np.r_[contact_xy+direction*(distance+.025), contact_z]
     retreat = push_end+np.array([0., 0., .10])
-    return dict(orientation=orientation, direction=direction,
+    return dict(orientation=orientation,
+        orientation_source='preserved downward robot pose' if preserve else
+            'downward pose derived from visible push direction',
+        direction=direction,
         observed_radius_m=observed_radius, own_finger_leading_offset_m=leading,
         own_finger_high_offset_m=finger_high, own_envelope=own_box,
         finger_world_z_interval_m=[finger_low_world,finger_high_world],
@@ -164,7 +172,8 @@ class PushModel(Jev):
                           keep='Preserve previous command'))
         questions['transition'] = dict(type='choice', instructions=
             'Choose advance only when current contract_satisfied is true; '
-            'otherwise continue. Stop if blocked or impossible. Your selected '
+            'otherwise continue. If blocked_action_count is at least 4 and the '
+            'contract is still unsatisfied, choose stop. Your selected '
             'action executes before a phase edge.',
             criteria=dict(continue_phase='Remain in current operation',
                           advance='Enter next operation', stop='End incomplete'))
@@ -226,6 +235,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     error_message = None
     observed_after = None
     goal = None
+    stalls = 0
+    history = []
 
     def views():
         return {c: dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),
@@ -246,7 +257,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         if len(patch) == 0 or not np.isfinite(patch).all():
             raise RuntimeError('Goal tabletop RGB-D unavailable')
         goal = np.median(patch.reshape(-1, 3), axis=0)
-        plan = contact_push_plan(source, goal, own)
+        plan = contact_push_plan(source, goal, own,
+            Rotation.from_quat(obs['robot0_eef_quat']).as_matrix())
         direction = plan['direction']
         orientation = plan['orientation']
         approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
@@ -288,7 +300,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
             next_stage = 'finish_attempt' if stage == 'retreat' else PHASES[PHASES.index(stage)+1]
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
-                approach='Move to hover pose behind visible source and orient pusher downward.',
+                approach='Move to high-clearance hover behind visible source, keeping the selected downward pusher pose.',
                 lower='Lower behind object to own-finger tabletop clearance, without lifting source.',
                 push='Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.',
                 retreat='Raise pusher after the observed push; advance to end attempt.')
@@ -313,6 +325,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 visible_geometry=dict(source_initial_xy_m=source['center'][:2],
                     goal_xy_m=goal[:2], push_direction_xy=direction,
                     source_observed_after_xy_m=None if observed_after is None else observed_after['center'][:2]),
+                blocked_action_count=stalls, recent_actions=history[-3:],
                 phase_decisions=stage_decisions, information_sources=
                 'Public instruction, rendered RGB-D/calibration, own robot pose/finger mesh, executed history only.')
             state = json.loads(json.dumps(state, default=serial, allow_nan=False))
@@ -338,11 +351,16 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 ticks += 1
                 grip_ticks += 1
             after = obs['robot0_eef_pos'].copy()
+            progress = float(np.linalg.norm(error)-np.linalg.norm(target-after))
+            stalls = stalls+1 if stage != 'prepare' and np.linalg.norm(error)>.015 and progress<.0003 else 0
+            history.append(dict(stage=stage, progress_mm=round(progress*1000, 2),
+                actual_displacement_mm=np.round((after-before)*1000, 2).tolist()))
             rec.branch(dict(stage=stage, decision_id=decision['decision_id'],
                 before=before, after=after, delta=delta, rotation=rotations,
                 selected_gripper=decision['gripper'], executed_gripper=gripper,
                 selected_transition=decision['transition'], native_steps=ticks,
-                block_native_ticks=block))
+                block_native_ticks=block, progress_mm=progress*1000,
+                blocked_action_count=stalls))
             for camera, view in views().items():
                 cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{camera}.png'),
                     cv2.cvtColor(view['rgb'], cv2.COLOR_RGB2BGR))
@@ -355,6 +373,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     break
                 stage = next_stage
                 stage_decisions = 0
+                stalls = 0
     except Exception as exc:
         error_message = str(exc)
         rec.event(dict(kind='stop', reason=error_message,
