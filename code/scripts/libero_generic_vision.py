@@ -1,7 +1,9 @@
 """Bounded semantic RGB recognition + SAM masks + calibrated geometry.
+Current LIBERO vision requires the ChatGPT-signed-in Pro bridge; historical
+frozen snapshots retain their original backends for audit only.
 No category-specific colour, circle, task-id or relational selectors.
 """
-import base64,io,json,os,select,subprocess,sys,time
+import base64,io,json,os,select,subprocess,time
 from pathlib import Path
 import cv2
 import numpy as np
@@ -10,15 +12,11 @@ from run_position_pilot import dump
 
 class GenericVision:
     def __init__(self,rec):
+        if os.environ.get('JEV_RSI_MODEL_BACKEND') != 'codex_pro':
+            raise RuntimeError('Current LIBERO semantic vision requires codex_pro; legacy API fallback disabled')
         self.rec=rec;self.calls=0;self.refreshes=0;self.identity=None;self.reasons=set()
-        sys.path.insert(0,rec.cfg['existing_root']+'/controller/src')
-        if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro':
-            from codex_pro_bridge import API
-        else:
-            from realman_jev.api import API
-        cfg=({'model':'gpt-6-sol'} if os.environ.get('JEV_RSI_MODEL_BACKEND')=='codex_pro'
-             else dict(base_url='https://sub2api.qinjiu8.com/v1',model='gpt-6-astra',key_file='/root/yekangjie/project/jev_rsi/.private/openai.key',timeout_s=90,expected_model_prefix='gpt-6',max_tokens=4000))
-        self.api=API(cfg,rec.event,'semantic_vision')
+        from codex_pro_bridge import API
+        self.api=API({'model':'gpt-6-sol'},rec.event,'semantic_vision')
         self.log=(rec.folder/'grounding-worker.log').open('w')
         env=dict(os.environ,HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
         self.worker=subprocess.Popen(['/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python','-B',str(Path(__file__).with_name('libero_grounding_worker.py'))],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.log,text=True,env=env)
