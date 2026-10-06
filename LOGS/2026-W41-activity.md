@@ -174,3 +174,30 @@
 - 【Agent】【2026-10-06 00:02】[op] 排查Pro桥接全局锁导致串行；将服务端改为默认最多2个同时Codex CLI推理，新增7904并行端口和远端客户端受限loopback选择；两条gpt-6-sol/xhigh真实请求并发成功，远端7904健康检查通过。
 - 【Agent】【2026-10-06 00:02】[op] 新建实验块 EXP-2026W41-044：验证Pro账号桥接双路并发与远端7904链路  ↪ `EXP-2026W41-044`
 - 【Agent】【2026-10-06 00:07】[result] Pro桥接双路请求分别21.353秒和26.544秒，总26.544秒、重叠21.353秒；代码da5cda9已SSH推送并以Git bundle快进同步服务器；7904反向转发和远端真实模型预检gpt-6-sol/xhigh成功，旧7903上的LIBERO评测未中断。
+- 【Agent】【2026-10-06 00:10】[run] SSH前台会话在init27完成后中断，未登记init28。补做init27输入/动作/模型审计及190帧无损归档，双端366文件SHA一致；用项目内tmux专用socket启动相同冻结策略的init28–46新评测，GPU0/4映射不变，首个init28已预约。EXP043、Discussion及T016已更新并strict lint通过，9eaf4a2经SSH推送。
+- 【Agent】【2026-10-06 01:51】[op] 新建实验块 EXP-2026W41-045：奶酪Pro冻结init28与init29两个未见初态原生完整成功  ↪ `EXP-2026W41-045`
+- 【Agent】【2026-10-06 01:51】[op] 新建实验块 EXP-2026W41-046：奶酪Pro冻结init30因7903反向转发断连中止，计入总账并保留负结果  ↪ `EXP-2026W41-046`
+- 【Agent】【2026-10-06 01:54】[result] 奶酪Pro新增4次尝试：init27/28/29均官方完整成功，init30在48步第12控制请求因本机7903反向转发断连Crashed，计入共享第43/59次且不重跑；11已完成控制/2视觉回复模型审计通过，22帧失败轨迹归档，批目录814文件本地服务器SHA一致。将本机转发移至项目内tmux自动重连并启动init31–46；EXP045/046和Discussion写入、strict lint通过，67cce1b经SSH推送。
+- 【Agent】【2026-10-06 05:48】[result] 奶酪Pro冻结init39官方完整成功：405原生步、94控制、3视觉；模型标识与真实动作审计通过，354?文件目录本地/服务器树SHA一致；累计本轮12完整成功、1基础设施中断，继续init40–46。
+- 【Agent】【2026-10-06 05:48】[note] 更正上一条中未核定文件数：init39归档实为351文件，本地/服务器树SHA256均为2c5adad5527b97d9fb1fe8453548f4a70bcf9741d02c5109c72f5a39cd652301。
+- 【Agent】【2026-10-06 06:12】[result] 奶酪Pro冻结init40官方完整成功：405原生步、95控制、3视觉、0 DeepSeek；95执行动作及11阶段边审计违规0。本地/服务器归档树SHA256同为6e331224c6e995f5eec88641a1ec93187479fc2090248022b134d95a7baaec04。当前新增13次完整成功、1次基础设施中断，继续init41–46。
+- 【Agent】【2026-10-06 06:36】[result] 奶酪Pro冻结init41官方完整成功：405原生步、95控制、3视觉、0 DeepSeek；95执行动作/11阶段边审计违规0。本地/服务器目录树SHA256均为5896769ab67c725bb667b0a45ec2de15176c8abeb30c4d15d2feeb3f1cb0a264。新模型评测当前14完整成功、1转发中断；init42–46继续。
+- 【Agent】【2026-10-06 07:01】[result] 奶酪Pro冻结init42官方完整成功：405原生步、95控制、3视觉、0 DeepSeek；95执行动作/11阶段边审计违规0。本地/服务器目录树SHA256均为be05c1ca66bdaf60c4bac6e511f54c2ccc131038f5877352ec89000c69aea5a0。新增15完整成功、1基础设施中断；继续init43–46。
+- 【Agent】【2026-10-06 07:27】[result] 奶酪Pro冻结init43官方完整成功：405原生步、95控制、3视觉、0 DeepSeek；95执行动作/11阶段边审计违规0。本地/服务器目录树SHA256均为a261bcac185d488776ef554d6a419f76a4fdaa80d225a80a06bd4f805153594e。新增16完整成功、1基础设施中断；继续init44–46。
+- 【Agent】【2026-10-06 07:53】[result] 奶酪Pro冻结init44官方完整成功：408原生步、96控制、3视觉、0 DeepSeek；96执行动作/11阶段边审计违规0。本地/服务器目录树SHA256均为94a5a8cdeb6280b916cfd67f994d66331c24ccb1177fcbf9773c79fbb84e2991。新增17完整成功、1基础设施中断；继续init45/46。
+- 【Agent】【2026-10-06 08:18】[result] 奶酪Pro冻结init45官方完整成功：402原生步、94控制、3视觉、0 DeepSeek；94执行动作/11阶段边审计违规0。本地/服务器目录树SHA256均为84ab55c63528e4d3a4dde85231b1b525dccc06fcee7ef08686f5b1ccdc186ca1。新增18完整成功、1基础设施中断；最后已授权初态init46启动。
+- 【User】【2026-10-06 08:44】[prompt] 用新的桥接继续跑吧
+- 【Agent】【2026-10-06 08:46】[run] 7904新桥接与远端反向转发模型预检通过（gpt-6-sol/xhigh、ChatGPT登录、positive）；确认奶酪init46成功且共享59/59、Robo试次41仅145MB和空闲GPU后，前台启动general_pickup layout0开发试次42，三相机合帧，独立Pro账本。
+- 【Agent】【2026-10-06 08:51】[op] 新建实验块 EXP-2026W41-047：在59次共享上限内完成奶酪20个新模型初态并区分完整成功与转发中断  ↪ `EXP-2026W41-047`
+- 【Agent】【2026-10-06 08:55】[op] 完成奶酪Pro冻结20次报告、EXP047、Discussion硬证据、Timeline实验节点及LIBERO/Pro说明和任务映射；19个完整成功、1转发中断，三批目录和四账本双端哈希一致，周志strict lint通过。
+- 【Agent】【2026-10-06 09:05】[result] 奶酪Pro冻结新模型20次尝试最终19完整成功、init30一次7903基础设施中断；共享总账59/59，三批数据与账本双端哈希一致。EXP047和报告以62df786通过SSH推送；服务器DNS暂不可用，项目内Git bundle快进同步同一提交；其它RoboDojo作业占用GPU0/4，未启动四个其它LIBERO任务。已请求用户决定是否提高上限60补测未用init47。
+- 【User】【2026-10-06 09:33】[prompt] 所以基本可以确认这个任务也可以了是吧，接下来再找一个不是pick and place的任务设计一下看怎么稳定成功
+- 【Agent】【2026-10-06 09:55】[op] LIBERO goal plate push contact primitive, audited Pro batch and EGL device selection implemented; commits 27171ae/9621072/3d3552a/4ecd578 pushed in session libero-push turn 1.
+- 【Agent】【2026-10-06 09:55】[run] On company-server-2: capture-only init0 reserved as task attempt1; init1 and init2 setup failures reserved attempts2-3; nonphysical grounding worker GPU preflight passed; init3 attempt4 running.
+- 【Agent】【2026-10-06 09:56】[op] 新建实验块 EXP-2026W41-048：--help  ↪ `EXP-2026W41-048`
+- 【Agent】【2026-10-06 09:57】[op] 新建实验块 EXP-2026W41-049：LIBERO-Plus推盘子第二次启动：视觉worker设备索引核查  ↪ `EXP-2026W41-049`
+- 【Agent】【2026-10-06 09:57】[op] 新建实验块 EXP-2026W41-050：LIBERO-Plus推盘子第三次启动：Pro视觉桥接请求契约核查  ↪ `EXP-2026W41-050`
+- 【Agent】【2026-10-06 10:01】[stop] LIBERO push same-intent three consecutive Crashed (EXP048–050); AGENTS.md §10 mandates pause before a fourth physical init. Bridge source/destination patch prepared only statically; pending user continuation.  ↪ `EXP-2026W41-050`
+- 【Agent】【2026-10-06 10:01】[op] Backed up capture and dev-v1/v2/v3 raw outputs plus shared ledger from company-server-2; 88 files local/server SHA tree equal 90418fb6c234b385afcfb67900c0c18f724dd953d291d582d310bb5c12f08f6d; added Discussion evidence and timeline blocker.  ↪ `EXP-2026W41-050`
+- 【Agent】【2026-10-06 10:02】[op] 新建实验块 EXP-2026W41-051：Pro桥接试次42验证9 tick接触与抬升后剪刀是否随动  ↪ `EXP-2026W41-051`
+- 【Agent】【2026-10-06 10:07】[result] RoboDojo Pro试次42通过7904运行4198秒，原生200步截断success=false；53控制/30视觉均gpt-6-sol/xhigh，DeepSeek0。手上移110.7mm而可见剪刀仅0.073mm，Jev在verify_grasp后选择retry。固定接触目标比当前可见表面高约11mm，据此提交668ff3e有界当前RGB-D薄物体接触Z校正并SSH推送、Git bundle同步服务器；EXP051、Discussion与Timeline留痕。
