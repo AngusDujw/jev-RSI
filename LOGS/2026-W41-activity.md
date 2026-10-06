@@ -211,3 +211,8 @@
 - 【Agent】【2026-10-06 11:12】[stop] Three consecutive push Crashed after resumed audit (EXP052,053,055); AGENTS.md §10 requires pause before init7. New mask-projected rear extent and closed-finger contact code 7a67af7 only offline tested; no additional physical attempt.  ↪ `EXP-2026W41-055`
 - 【Agent】【2026-10-06 11:12】[op] Backed up push init4/5/6 and nonphysical preflights plus global ledger; 329 scoped files local/server tree SHA equal 84c52a1b3471857f3e7b98dd93a6b863ee354a04830cd49baa1051eb586a6754; v5/v6 dual-camera lossless video byte verified.  ↪ `EXP-2026W41-055`
 - 【Agent】【2026-10-06 11:17】[op] LIBERO push三次负结果EXP052/053/055、Discussion、Timeline及使用说明已选择性提交b71d540并SSH推送；保留并行RoboDojo未提交EXP054和流水，未启动init7物理实验。
+- 【User】【2026-10-06 12:16】[prompt] 没搞懂你说的init几是什么意思，这个完成不了是报错了还是单纯没完成，单纯没完成不应该是给jev的问题然后改这个处理和给jev的输入方式吗
+- 【Agent】【2026-10-06 12:16】[op] 审计LIBERO推盘子init5/6原始请求、回复和逐步执行；init6末尾连续4次每次命令Z下降12mm而真实Z近零，方向正确但执行停滞。代码4fff8de给模型输入逐轴命令/实动比，停滞时由模型一次选择重观察并刷新可见几何，模型stop与执行异常分开记，SSH推送；未启动新物理回合、未用API密钥。
+- 【Agent】【2026-10-06 12:16】[op] 新建实验块 EXP-2026W41-056：离线复盘推盘子init5/6：区分报错与未完成，检验模型输入是否掩盖执行停滞  ↪ `EXP-2026W41-056`
+- 【Agent】【2026-10-06 12:24】[result] 离线反馈修订ea7b60a已SSH推送并经本地Git bundle快进同步company-server-2；服务器既有libero-plus环境导入、旧init6审计及无网络假模型reobserve选项/禁止提前advance检查通过。新增0物理步、0真实模型/API请求；EXP056及文档说明init4代码错、init5/6未完成，保持§10暂停。  ↪ `EXP-2026W41-056`
+- 【Agent】【2026-10-06 12:24】[note] 更正本轮较早流水的“命令/实动比”说法：每原生步命令与整执行块实动时间尺度不同，最终ea7b60a明确分列、没有计算两者比例；EXP056采用更正后口径。  ↪ `EXP-2026W41-056`
