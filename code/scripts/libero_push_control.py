@@ -101,7 +101,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
 
 class PushVision(GenericVision):
     def locate(self, views, public_task, reason, previous=None):
-        if reason not in ('initial', 'after_push') or self.calls >= 3:
+        if reason not in ('initial', 'reobserve', 'after_push') or self.calls >= 3:
             raise RuntimeError('Push semantic-vision trigger/budget')
         self.calls += 1
         folder = self.rec.folder / f'semantic-{self.calls}'
@@ -116,7 +116,9 @@ class PushVision(GenericVision):
             'should end, satisfying the public spatial relation. Keep a straight '
             'route clear of visible objects. Do not use unseen regions or imagine '
             'simulator coordinates. At after_push report the moved source and '
-            'the same destination patch, not a new target. If source '
+            'the same destination patch, not a new target. At reobserve, '
+            'find the SAME source and destination from previous, even if the '
+            'robot partly occludes them; if ambiguous set visible=false. If source '
             'identity is ambiguous, visible=false. Prefer agentview when the '
             'wrist image crops the source. Return pixel coordinates for '
             'the supplied image size; do not propose motor actions or success claims.')
@@ -185,20 +187,31 @@ class PushModel(Jev):
                                   hold='No rotation', positive='Positive world rotation'))
         questions['gripper'] = dict(type='choice', instructions=
             'Choose open, close or keep based on the current contact-push contract. '
-            'The source remains supported by the table, so never claim a grasp.',
+            'The source remains supported by the table, so never claim a grasp. '
+            'For an observation-only reobserve, the motor choice is not executed.',
             criteria=dict(open='Command open', close='Command close',
                           keep='Preserve previous command'))
         questions['transition'] = dict(type='choice', instructions=
             'Choose advance only when current contract_satisfied is true; '
-            'otherwise continue. If blocked_action_count is at least 4 and the '
-            'contract is still unsatisfied, choose stop. Your selected '
-            'action executes before a phase edge.',
+            'otherwise continue or, when offered, reobserve. A correct direction '
+            'does not imply the controller actually moved: compare commanded and '
+            'observed displacement in recent_actions. If blocked, reobserve can '
+            'refresh the visible source and contact waypoint once, without motor '
+            'action or phase change. Stop if continued control is not sensible. '
+            'When selecting reobserve or stop, no XYZ, rotation or gripper '
+            'motor choice from this response is executed. '
+            'For continue_phase or advance, your selected motor action executes '
+            'before any phase edge.',
             criteria=dict(continue_phase='Remain in current operation',
-                          advance='Enter next operation', stop='End incomplete'))
+                          **({'advance': 'Enter next operation'}
+                              if state['allowed_transitions']['advance'] else {}),
+                          **({'reobserve': 'Refresh visible geometry without moving or changing phase'}
+                              if state['allowed_transitions']['reobserve'] else {}),
+                          stop='End incomplete'))
         request = dict(model=self.api.cfg['model'], state=state, questions=questions)
         dump(folder/'request.json', request)
         row = dict(decision_id=f'decision-{i:04d}', stage=state['operation'],
-                   observation=state, prompt_version='contact-push-v1',
+                   observation=state, prompt_version='contact-push-v2',
                    request_sha256=hashlib.sha256(json.dumps(request,
                        sort_keys=True).encode()).hexdigest())
         self.rec.decisions.append(row)
@@ -251,9 +264,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     gripper = -1
     finished = False
     error_message = None
+    termination_reason = None
     observed_after = None
     goal = None
     stalls = 0
+    reobservations = 0
     history = []
 
     def views():
@@ -343,20 +358,67 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     orientation_arrived=oriented, visible_object_goal_error_mm=
                     None if visible_error is None else round(visible_error*1000, 2),
                     contract_satisfied=bool(complete)),
-                allowed_transitions=dict(continue_phase=True, advance=bool(complete), stop=True),
+                allowed_transitions=dict(continue_phase=True, advance=bool(complete),
+                    reobserve=bool(stalls >= 2 and reobservations == 0 and
+                        stage in ('approach', 'lower') and vision.calls < 2),
+                    stop=True),
                 visible_geometry=dict(source_initial_xy_m=source['center'][:2],
                     goal_xy_m=goal[:2], push_direction_xy=direction,
                     source_observed_after_xy_m=None if observed_after is None else observed_after['center'][:2]),
-                blocked_action_count=stalls, recent_actions=history[-3:],
+                blocked_action_count=stalls, reobserve_count=reobservations,
+                tracking_axes={a: dict(
+                    last_commanded_mm=history[-1]['commanded_displacement_mm'][i],
+                    last_observed_mm=history[-1]['actual_displacement_mm'][i],
+                    observed_over_commanded=(None if abs(history[-1]['commanded_displacement_mm'][i]) < 1.
+                        else round(history[-1]['actual_displacement_mm'][i] /
+                            history[-1]['commanded_displacement_mm'][i], 3)))
+                    for i, a in enumerate('xyz')} if history else None,
+                recent_actions=history[-3:],
                 phase_decisions=stage_decisions, information_sources=
                 'Public instruction, rendered RGB-D/calibration, own robot pose/finger mesh, executed history only.')
             state = json.loads(json.dumps(state, default=serial, allow_nan=False))
             decision = model.decide(state)
             stage_decisions += 1
             if decision['transition'] == 'stop':
-                raise RuntimeError('Model elected stop')
+                termination_reason = 'model_stopped_unsatisfied'
+                rec.event(dict(kind='model_stop', stage=stage,
+                    decision_id=decision['decision_id'],
+                    blocked_action_count=stalls))
+                break
             if decision['transition'] == 'advance' and not complete:
                 raise RuntimeError('Model advanced before visible contract satisfied')
+            if decision['transition'] == 'reobserve':
+                if not state['allowed_transitions']['reobserve']:
+                    raise RuntimeError('Invalid model reobserve choice')
+                v = views()
+                refreshed = vision.locate(v, public_task, 'reobserve',
+                    previous=dict(source=ob, destination=identity['destination']))
+                ob = refreshed['source']
+                source = vision.measure(v[ob['camera']], ob['bbox'], ob['label'],
+                    'reobserve-source')
+                unit_push = goal[:2]-source['center'][:2]
+                unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
+                rear_extent = visible_rear_extent(v[ob['camera']],
+                    np.load(source['visible_mask_path']), source, unit_push)
+                own = gripper_geometry(env, obs)
+                plan = contact_push_plan(source, goal, own,
+                    Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(),
+                    rear_extent)
+                direction, orientation = plan['direction'], plan['orientation']
+                approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
+                push_end, retreat = plan['push_end'], plan['retreat']
+                reobservations += 1
+                stalls = 0
+                rec.event(dict(kind='reobserve', decision_id=decision['decision_id'],
+                    stage=stage, old_target=target,
+                    new_target=approach if stage == 'approach' else lower,
+                    semantic_calls=vision.calls))
+                dump(rec.folder/'push-geometry-reobserve.json', dict(
+                    public_task=public_task, source=source, target_uv=goal_uv,
+                    visible_goal_world_m=goal, **plan,
+                    provenance='Fresh visible RGB-D/SAM and own robot geometry; '
+                        'original visible destination retained'))
+                continue
             newgripper = gripper if decision['gripper']=='keep' else -1 if decision['gripper']=='open' else 1
             if newgripper != gripper:
                 grip_ticks = 0
@@ -376,6 +438,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             progress = float(np.linalg.norm(error)-np.linalg.norm(target-after))
             stalls = stalls+1 if stage != 'prepare' and np.linalg.norm(error)>.015 and progress<.0003 else 0
             history.append(dict(stage=stage, progress_mm=round(progress*1000, 2),
+                commanded_displacement_mm=np.round(delta*1000, 2).tolist(),
                 actual_displacement_mm=np.round((after-before)*1000, 2).tolist()))
             rec.branch(dict(stage=stage, decision_id=decision['decision_id'],
                 before=before, after=after, delta=delta, rotation=rotations,
@@ -392,6 +455,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     selected_transition='advance'))
                 if stage == 'retreat':
                     finished = True
+                    termination_reason = 'model_finished_attempt'
                     break
                 if stage == 'prepare':
                     # The pusher geometry is recalculated from its *actual* closed
@@ -413,12 +477,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 stalls = 0
     except Exception as exc:
         error_message = str(exc)
+        termination_reason = 'execution_error'
         rec.event(dict(kind='stop', reason=error_message,
                        error_type=type(exc).__name__))
     finally:
         success = bool(env.check_success())
         dump(rec.folder/'result.json', dict(success=success,
             program_finished=finished, error=error_message,
+            termination_reason=termination_reason,
             native_steps=ticks, jev_calls=len(rec.decisions),
             semantic_calls=vision.calls, stage=stage,
             visible_object_goal_error_m=None if observed_after is None or goal is None else

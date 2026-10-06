@@ -10,7 +10,8 @@ ALLOWED = {'task', 'operation', 'next_operation', 'operation_contract',
            'translation_axes', 'axis_hold_tolerance_mm',
            'required_rotation_world_rad', 'gripper', 'completion_evidence',
            'allowed_transitions', 'visible_geometry', 'phase_decisions',
-           'information_sources', 'blocked_action_count', 'recent_actions'}
+           'information_sources', 'blocked_action_count', 'reobserve_count',
+           'tracking_axes', 'recent_actions'}
 
 
 def scan(value):
@@ -64,10 +65,29 @@ def audit(root):
         assert decision['transition'] == 'advance'
         assert state['allowed_transitions']['advance']
         assert edge['to_stage'] == state['next_operation']
+    reobserves = [row for row in events if row.get('kind') == 'reobserve']
+    assert len(reobserves) <= 1
+    for event in reobserves:
+        decision = decisions[event['decision_id']]
+        state = states[event['decision_id']]
+        assert decision['transition'] == 'reobserve'
+        assert state['allowed_transitions']['reobserve']
+        assert event['stage'] == state['operation']
+        assert not any(branch['decision_id'] == event['decision_id'] for branch in branches)
+    model_stops = [row for row in events if row.get('kind') == 'model_stop']
+    assert len(model_stops) <= 1
+    for event in model_stops:
+        decision = decisions[event['decision_id']]
+        assert decision['transition'] == 'stop'
+        assert not any(branch['decision_id'] == event['decision_id'] for branch in branches)
     violations = [row['decision_id'] for row in rows if row.get('transition') == 'advance'
                   and not states[row['decision_id']]['allowed_transitions']['advance']]
+    violations += [row['decision_id'] for row in rows if row.get('transition') == 'reobserve'
+                   and not states[row['decision_id']]['allowed_transitions'].get('reobserve', False)]
     result = dict(episode=str(root), decisions=len(rows), actions=len(branches),
-                  phase_edges=len(edges), contract_violations=violations,
+                  phase_edges=len(edges), reobservations=len(reobserves),
+                  model_stops=len(model_stops),
+                  contract_violations=violations,
                   result=json.loads((root/'result.json').read_text()),
                   note='Response/action/edge audit; source provenance requires code review')
     assert not violations
