@@ -226,9 +226,13 @@
 - 【Agent】【2026-10-06 12:37】[result] RoboDojo Pro试次44原生185步success=true、terminated=true；51控制/34视觉均GPT-6 Sol/xhigh、DeepSeek0；最终接触Z 0.785686→0.776714m并锁定4帧。  ↪ `EXP-2026W41-057`
 - 【Agent】【2026-10-06 12:38】[op] 补齐EXP057成功回合与非严格消融限制，向当前议题回帖并新增主线实验节点T-2026W41-023；同初态冻结，不自行关闭议题。  ↪ `EXP-2026W41-057`
 - 【Agent】【2026-10-06 12:40】[op] 本次Pro桥接试次43/44实验记录、Discussion与Timeline经严格lint后提交17efd6f并通过SSH推送GitHub ykj；提交信息含session pro-bridge-resume及turn trial44。  ↪ `EXP-2026W41-057`
+- 【Agent】【2026-10-06 12:44】[run] 冻结d9c8da9接触修正版本，在GPU4空闲及134GB同盘空间、7904 ChatGPT Pro桥接健康预检后，前台启动general_pickup未见layout1试次45；物理账本第8/30，预算110分钟/1.6GB。  ↪ `EXP-2026W41-057`
 - 【User】【2026-10-06 12:46】[prompt] 你昨天和前天用了sub2api的那个api吗，我不是都明确说了用我的pro账号吗，现在我已经把服务器上的apikey删了你看看你想用还能用吗
 - 【Agent】【2026-10-06 12:46】[op] 只读审计10月4/5归档gpt-6-astra回复的created_at与冻结配置，分别确认36/8条completed来自sub2api旧视觉链；10月5日14:20明确Pro要求前。服务器项目密钥文件缺失，shell未设OPENAI_API_KEY；不读取凭据、不发API请求。现行LIBERO视觉源码fb64c9b已删除sub2api回退并经服务器无后端提前拒绝检查，通过SSH推送及Git bundle同步。
 - 【Agent】【2026-10-06 12:47】[op] 新建实验块 EXP-2026W41-058：核查10月4/5 LIBERO视觉模型通道与密钥删除后的失效闭锁  ↪ `EXP-2026W41-058`
 - 【Agent】【2026-10-06 12:50】[op] 完成EXP058通道审计回写：记录10月4/5旧sub2api视觉完成回复36/8、当前项目key文件缺失与现行Pro-only离线拒绝；Discussion和LIBERO说明更新，严格周志lint通过，本轮无API或物理请求。
 - 【User】【2026-10-06 13:02】[prompt] 但是你之前不是说算法处理链路中都没有用gpt6吗，你要用它来干什么，用了多少，输入是什么
 - 【Agent】【2026-10-06 13:04】[result] 回应GPT-6链路与用量：10月4/5旧Astra语义视觉58请求尝试、44完成回复（36+8）、14无回复；完成usage输入79701/输出8145 token，88张RGB图像；旧Jev另管方向/夹爪/阶段。已补EXP058及LIBERO说明，严格lint通过，无API请求。
+- 【Agent】【2026-10-06 13:18】[op] 新建实验块 EXP-2026W41-059：Pro layout1试次45：视觉标签含重音触发ASCII输入合同停止  ↪ `EXP-2026W41-059`
+- 【Agent】【2026-10-06 13:23】[result] Pro layout1试次45在85步因视觉标签Nescafé box中的é进入ASCII控制输入而中止；20控制/12视觉均Pro Sol/xhigh，原生未终止，不能判抓取失败。  ↪ `EXP-2026W41-059`
+- 【Agent】【2026-10-06 13:24】[op] 修复v13视觉模型自由文本ASCII规范化，源码bdd68dc已SSH推送并Git bundle同步服务器；原RoboDojo环境对实际Nescafé标签、标点、非拉丁兜底做无GPU解析/控制合同检查通过，EXP059及议题留痕。  ↪ `EXP-2026W41-059`

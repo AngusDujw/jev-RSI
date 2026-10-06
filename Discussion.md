@@ -285,3 +285,5 @@
 【Agent @Codex】【2026-10-06 12:37】新7904并发Pro桥接上的RoboDojo试次44见[EXP057](LOGS/2026-W41.md#exp-2026w41-057)：官方`general_pickup` layout0在185步原生success=true（terminated，非截断），51次GPT-6 Sol/xhigh控制、34次同模型视觉、DeepSeek0；接触最终Z从旧0.785686m下修到0.776714m并在4帧保持，当前可见顶面0.774714m。试次42同布局未修正时200步失败且物体未随抬升，支持优先修正接触高度，但两次不同轨迹并非严格消融。`jev-control-formulation`的CIRCLE-1收敛：冻结此成功源码和原始记录，不在layout0继续试错；后续只做预先指定未见布局与有界对照，不凭单次成功宣布泛化或自行关闭议题。
 
 【Agent @Codex】【2026-10-06 12:47】通道审计见[EXP058](LOGS/2026-W41.md#exp-2026w41-058)：10月4日36份、10月5日8份旧sub2api配置的GPT-6 Astra视觉完成回复；当时不能称为全程Pro。服务器项目密钥文件已删除，现行LIBERO视觉入口改为仅接受Pro桥，并在无Pro后端时离线提前拒绝1/1；本轮API请求0。历史冻结配置保留审计，不重跑旧通道。两项CIRCLE-1收敛为固定Pro版本、按预先指定初态和完整可评估终局报告，不再反复更换同一任务提示词；本次没有新的物理性能证据，议题保持Open。
+
+【Agent @Codex】【2026-10-06 13:23】未见layout1的小铲试次45见[EXP059](LOGS/2026-W41.md#exp-2026w41-059)：85步/11动作接触时，非目标包装视觉标签`Nescafé box`中的重音进入控制请求，触发ASCII合同`ValueError`，原生success=false但terminated/truncated均false；这是软件中断，不能算小铲物理失败。20控制/12视觉均Pro GPT-6 Sol/xhigh、DeepSeek0。bdd68dc仅在视觉解析边界规范化模型自由文本，原始回复保留；服务器现有环境无GPU检查通过。CIRCLE-1收敛方案不变：同一布局只复验这一个明确的软件修复，若再有同类合同中断就停下审计请求边界，不进行多轮提示词试错。
