@@ -21,6 +21,7 @@ from run_libero_frozen_validation import gpu_preflight, SIM_PYTHON
 
 FILES = ['libero_jev_rollout.py', 'libero_jev_supervisor.py',
     'libero_jev_recovery.py', 'libero_robot_geometry.py',
+    'libero_push_control.py',
     'libero_generic_vision.py', 'libero_grounding_worker.py',
     'local_rgbd_perception.py', 'run_position_pilot.py',
     'codex_pro_bridge.py']
@@ -31,6 +32,8 @@ PROFILES = {
         camera_size=768, max_decisions=160),
     'bowl': dict(mode='supervisor', geometry_profile='base',
         camera_size=384, max_decisions=120),
+    'push': dict(mode='push', geometry_profile='observed_surfaces',
+        camera_size=768, max_decisions=120),
 }
 TASK_CAP_OVERRIDES = {('libero_object', 1066): 59}  # User decision 2026-10-05: 20 more Pro episodes after attempt 39.
 
@@ -71,13 +74,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--profile', choices=PROFILES, required=True)
-    parser.add_argument('--suite', choices=['libero_object', 'libero_spatial'], required=True)
+    parser.add_argument('--suite', choices=['libero_object', 'libero_spatial', 'libero_goal'], required=True)
     parser.add_argument('--task-id', type=int, required=True)
     parser.add_argument('--inits', required=True, help='Comma-separated official init indices')
     parser.add_argument('--purpose', choices=['development', 'evaluation'], default='development')
     parser.add_argument('--frozen-from', type=Path,
         help='Required for evaluation: previously frozen Pro policy directory')
     parser.add_argument('--preflight-only', action='store_true')
+    parser.add_argument('--egl-device-id', type=int, choices=range(8), default=0)
+    parser.add_argument('--vision-cuda-device', type=int, choices=range(8), default=1)
     args = parser.parse_args()
     if args.purpose == 'evaluation' and args.frozen_from is None:
         parser.error('Evaluation requires --frozen-from')
@@ -126,6 +131,8 @@ def main():
         authentication='ChatGPT-signed-in Codex CLI on workstation',
         endpoint='SSH reverse-forwarded loopback 7903',
         profile=args.profile, policy=policy, purpose=args.purpose,
+        egl_device_id=args.egl_device_id,
+        vision_cuda_device=args.vision_cuda_device,
         suite=args.suite, task_id=args.task_id, inits=inits,
         policy_commit=prior['policy_commit'] if prior else commit,
         runner_commit=commit, task_total_cap=task_cap, campaign_cap=20,
@@ -167,7 +174,9 @@ def main():
             '--wall-limit-seconds', '3600', '--max-jev-decisions',
             str(policy['max_decisions']), '--geometry-profile',
             policy['geometry_profile'], '--camera-size', str(policy['camera_size'])]
-        if policy['mode']=='recovery':
+        if policy['mode']=='push':
+            cmd += ['--push-supervisor']
+        elif policy['mode']=='recovery':
             cmd += ['--recovery-supervisor', '--input-organization', 'focused',
                 '--grasp-algorithm', 'pad_fit', '--preserve-source',
                 '--execution-profile', 'adaptive', '--pad-overlap-mm', '6',
@@ -178,7 +187,9 @@ def main():
             if args.profile=='soup':
                 cmd.append('--lift-check')
         env = dict(os.environ, JEV_RSI_MODEL_BACKEND='codex_pro',
-            JEV_RSI_PRO_BRIDGE_URL='http://127.0.0.1:7903')
+            JEV_RSI_PRO_BRIDGE_URL='http://127.0.0.1:7903',
+            MUJOCO_EGL_DEVICE_ID=str(args.egl_device_id),
+            CUDA_VISIBLE_DEVICES=str(args.vision_cuda_device))
         start = time.monotonic()
         termination = None
         with (root/f'{out.name}.log').open('w') as log:
@@ -213,8 +224,9 @@ def main():
                 'Pro bridge/model transport failure', episode=str(out)), indent=2)+'\n')
             raise RuntimeError('Stopped after infrastructure failure: '+str(out))
         if (out/'result.json').exists():
-            audit_name = ('audit_libero_recovery.py' if policy['mode']=='recovery'
-                else 'audit_libero_supervisor.py')
+            audit_name = ('audit_libero_push.py' if policy['mode']=='push' else
+                'audit_libero_recovery.py' if policy['mode']=='recovery' else
+                'audit_libero_supervisor.py')
             with (out/'audit.stdout').open('w') as log:
                 audit_return = subprocess.run([SIM_PYTHON, '-B', str(source/audit_name),
                     str(out), '--output', str(out/'audit.json')],

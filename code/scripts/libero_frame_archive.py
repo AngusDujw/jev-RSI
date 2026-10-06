@@ -61,7 +61,7 @@ def archive(run, remove_source=False, expected_inventory=None):
     assert (run / 'result.json').is_file(), 'Never archive an active episode'
     assert any(part.startswith(('2026-10-03-libero-recovery30-',
         '2026-10-04-libero-verify20-', '2026-10-04-libero-top5-',
-        '2026-10-05-pro-sol-'))
+        '2026-10-05-pro-sol-', '2026-10-06-libero-push-'))
         for part in run.parts), 'Only this conversation owned campaigns'
     manifest_path = run / 'control-frame-archive.json'
     if manifest_path.exists():
