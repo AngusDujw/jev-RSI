@@ -190,8 +190,7 @@ def main():
             JEV_RSI_PRO_BRIDGE_URL='http://127.0.0.1:7903',
             MUJOCO_EGL_DEVICE_ID=str(args.egl_device_id),
             CUDA_VISIBLE_DEVICES=','.join(dict.fromkeys((str(args.egl_device_id),
-                str(args.vision_cuda_device)))),
-            JEV_RSI_VISION_CUDA_DEVICE=str(args.vision_cuda_device))
+                str(args.vision_cuda_device)))))
         start = time.monotonic()
         termination = None
         with (root/f'{out.name}.log').open('w') as log:
