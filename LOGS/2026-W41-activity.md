@@ -201,18 +201,27 @@
 - 【Agent】【2026-10-06 10:01】[op] Backed up capture and dev-v1/v2/v3 raw outputs plus shared ledger from company-server-2; 88 files local/server SHA tree equal 90418fb6c234b385afcfb67900c0c18f724dd953d291d582d310bb5c12f08f6d; added Discussion evidence and timeline blocker.  ↪ `EXP-2026W41-050`
 - 【Agent】【2026-10-06 10:02】[op] 新建实验块 EXP-2026W41-051：Pro桥接试次42验证9 tick接触与抬升后剪刀是否随动  ↪ `EXP-2026W41-051`
 - 【Agent】【2026-10-06 10:07】[result] RoboDojo Pro试次42通过7904运行4198秒，原生200步截断success=false；53控制/30视觉均gpt-6-sol/xhigh，DeepSeek0。手上移110.7mm而可见剪刀仅0.073mm，Jev在verify_grasp后选择retry。固定接触目标比当前可见表面高约11mm，据此提交668ff3e有界当前RGB-D薄物体接触Z校正并SSH推送、Git bundle同步服务器；EXP051、Discussion与Timeline留痕。
+- 【Agent】【2026-10-06 10:10】[run] 经已推送668ff3e、7904健康、空闲GPU与136GB同盘空闲预检，前台启动Pro general_pickup layout0开发试次43，唯一改动为当前RGB-D薄物体接触Z有界下修；若此次仍不随动即停止该思路。
 - 【User】【2026-10-06 10:25】[prompt] 允许
 - 【Agent】【2026-10-06 10:25】[decision] User authorized continuation after three LIBERO push setup/vision Crashed records; resume with nonphysical visual preflight then unused official init4.  ↪ `EXP-2026W41-050`
 - 【Agent】【2026-10-06 10:33】[run] With user continuation authorized, offline GPT-6 visual preflight source/destination passed and SAM/own-mesh contact plan replay passed on archived observations; init4 reserved as task attempt5 and failed before control on missing finger_high_offset; fixed code bf4b97e pushed; now init5 attempt6 running on company-server-2 GPU2/3 via 7903.  ↪ `EXP-2026W41-050`
 - 【Agent】【2026-10-06 10:52】[op] 新建实验块 EXP-2026W41-052：LIBERO-Plus推盘子init4：视觉成功后自有夹指高度字段错误  ↪ `EXP-2026W41-052`
 - 【Agent】【2026-10-06 10:52】[op] 新建实验块 EXP-2026W41-053：LIBERO-Plus推盘子init5：模型方向正确但接近运动停滞  ↪ `EXP-2026W41-053`
+- 【Agent】【2026-10-06 11:06】[op] 新建实验块 EXP-2026W41-054：Pro试次43接触Z校正被后续薄物体补偿抵消的无效回合  ↪ `EXP-2026W41-054`
+- 【Agent】【2026-10-06 11:07】[result] 试次43第6/30物理回合在141步发现早层接触Z校正被任务层+10mm补偿抵消，已核对owned_process后仅中止自有仿真；原生评估不可用、35控制/20视觉Pro回复保留，记EXP054=Crashed。修正c3772ba已SSH推送并Git bundle同步远端；既有RoboDojo环境内不启动仿真的目标检查验证最终Z从0.785765降至0.776573m且后续模糊帧保持该值，XY不变。
 - 【Agent】【2026-10-06 11:08】[op] 新建实验块 EXP-2026W41-055：LIBERO-Plus推盘子init6：接近成功但下降停滞、模型主动停止  ↪ `EXP-2026W41-055`
+- 【Agent】【2026-10-06 11:08】[run] 基于c3772ba最终层接触Z校正的无GPU离线目标检查通过；7904健康、空闲GPU与135GB同盘空间确认后前台启动Pro general_pickup layout0试次44，预定为该初态接触高度单次最终复验。
 - 【Agent】【2026-10-06 11:12】[result] LIBERO push init4/5/6 after user-approved resume: 0 full successes. init4 1 vision/0 control missing own finger field; init5 37 completed controls/222 steps stayed approach and owned runner interrupted; init6 20 control/96 steps reached lower then model stop at 183mm remaining Z. Model XYZ signs 111/111 and 60/60 correct respectively; native success false both.  ↪ `EXP-2026W41-055`
 - 【Agent】【2026-10-06 11:12】[stop] Three consecutive push Crashed after resumed audit (EXP052,053,055); AGENTS.md §10 requires pause before init7. New mask-projected rear extent and closed-finger contact code 7a67af7 only offline tested; no additional physical attempt.  ↪ `EXP-2026W41-055`
 - 【Agent】【2026-10-06 11:12】[op] Backed up push init4/5/6 and nonphysical preflights plus global ledger; 329 scoped files local/server tree SHA equal 84c52a1b3471857f3e7b98dd93a6b863ee354a04830cd49baa1051eb586a6754; v5/v6 dual-camera lossless video byte verified.  ↪ `EXP-2026W41-055`
 - 【Agent】【2026-10-06 11:17】[op] LIBERO push三次负结果EXP052/053/055、Discussion、Timeline及使用说明已选择性提交b71d540并SSH推送；保留并行RoboDojo未提交EXP054和流水，未启动init7物理实验。
+- 【User】【2026-10-06 11:57】[prompt] 更新 AGENTS.md：替换此前规则；新增本机 caz 管理的 API key 仅当前实际使用 caz 切换的 z provider 会话可按配置调用，其他任何方式使用同一 key 须事先明确同意。
 - 【User】【2026-10-06 12:16】[prompt] 没搞懂你说的init几是什么意思，这个完成不了是报错了还是单纯没完成，单纯没完成不应该是给jev的问题然后改这个处理和给jev的输入方式吗
 - 【Agent】【2026-10-06 12:16】[op] 审计LIBERO推盘子init5/6原始请求、回复和逐步执行；init6末尾连续4次每次命令Z下降12mm而真实Z近零，方向正确但执行停滞。代码4fff8de给模型输入逐轴命令/实动比，停滞时由模型一次选择重观察并刷新可见几何，模型stop与执行异常分开记，SSH推送；未启动新物理回合、未用API密钥。
 - 【Agent】【2026-10-06 12:16】[op] 新建实验块 EXP-2026W41-056：离线复盘推盘子init5/6：区分报错与未完成，检验模型输入是否掩盖执行停滞  ↪ `EXP-2026W41-056`
 - 【Agent】【2026-10-06 12:24】[result] 离线反馈修订ea7b60a已SSH推送并经本地Git bundle快进同步company-server-2；服务器既有libero-plus环境导入、旧init6审计及无网络假模型reobserve选项/禁止提前advance检查通过。新增0物理步、0真实模型/API请求；EXP056及文档说明init4代码错、init5/6未完成，保持§10暂停。  ↪ `EXP-2026W41-056`
 - 【Agent】【2026-10-06 12:24】[note] 更正本轮较早流水的“命令/实动比”说法：每原生步命令与整执行块实动时间尺度不同，最终ea7b60a明确分列、没有计算两者比例；EXP056采用更正后口径。  ↪ `EXP-2026W41-056`
+- 【Agent】【2026-10-06 12:34】[op] 新建实验块 EXP-2026W41-057：--help  ↪ `EXP-2026W41-057`
+- 【Agent】【2026-10-06 12:37】[note] 更正12:34流水：调用new_exp.py时--help被脚本当作标题写入新块；EXP057现已完整改为试次44结果，未删除记录。  ↪ `EXP-2026W41-057`
+- 【Agent】【2026-10-06 12:37】[result] RoboDojo Pro试次44原生185步success=true、terminated=true；51控制/34视觉均GPT-6 Sol/xhigh、DeepSeek0；最终接触Z 0.785686→0.776714m并锁定4帧。  ↪ `EXP-2026W41-057`
+- 【Agent】【2026-10-06 12:38】[op] 补齐EXP057成功回合与非严格消融限制，向当前议题回帖并新增主线实验节点T-2026W41-023；同初态冻结，不自行关闭议题。  ↪ `EXP-2026W41-057`
