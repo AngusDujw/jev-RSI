@@ -225,3 +225,4 @@
 - 【Agent】【2026-10-06 12:37】[note] 更正12:34流水：调用new_exp.py时--help被脚本当作标题写入新块；EXP057现已完整改为试次44结果，未删除记录。  ↪ `EXP-2026W41-057`
 - 【Agent】【2026-10-06 12:37】[result] RoboDojo Pro试次44原生185步success=true、terminated=true；51控制/34视觉均GPT-6 Sol/xhigh、DeepSeek0；最终接触Z 0.785686→0.776714m并锁定4帧。  ↪ `EXP-2026W41-057`
 - 【Agent】【2026-10-06 12:38】[op] 补齐EXP057成功回合与非严格消融限制，向当前议题回帖并新增主线实验节点T-2026W41-023；同初态冻结，不自行关闭议题。  ↪ `EXP-2026W41-057`
+- 【Agent】【2026-10-06 12:40】[op] 本次Pro桥接试次43/44实验记录、Discussion与Timeline经严格lint后提交17efd6f并通过SSH推送GitHub ykj；提交信息含session pro-bridge-resume及turn trial44。  ↪ `EXP-2026W41-057`
