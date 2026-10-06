@@ -41,14 +41,15 @@ class PushVision(GenericVision):
         folder.mkdir()
         instruction = (
             'For the public tabletop pushing instruction, identify the same visible '
-            'object to push. Return JSON: source={label, camera, bbox:[x1,y1,x2,y2], '
-            'visible}, and evidence (short string). Bounding box encloses only the '
-            'visible object, without the robot. If this is the initial image also '
-            'return goal_uv=[u,v] in agentview: a visible empty tabletop point '
-            'where the object centre should end, satisfying the public spatial '
-            'relation. Keep a straight route from source to goal clear of visible '
-            'objects. Do not use unseen regions or imagine simulator coordinates. '
-            'At after_push report the moved source, not a new target. If source '
+            'object to push. Return JSON containing source and destination, each '
+            'with {label, camera, bbox:[x1,y1,x2,y2], visible}, plus evidence. '
+            'Labels and evidence must be English. The source box encloses only '
+            'the visible object, without the robot. Destination is a small '
+            'visible, empty tabletop patch in agentview where the object centre '
+            'should end, satisfying the public spatial relation. Keep a straight '
+            'route clear of visible objects. Do not use unseen regions or imagine '
+            'simulator coordinates. At after_push report the moved source and '
+            'the same destination patch, not a new target. If source '
             'identity is ambiguous, visible=false. Prefer agentview when the '
             'wrist image crops the source. Return pixel coordinates for '
             'the supplied image size; do not propose motor actions or success claims.')
@@ -81,12 +82,15 @@ class PushVision(GenericVision):
                      0 <= box[1] < box[3] <= view['rgb'].shape[0])):
             raise RuntimeError('Invalid visible source box')
         if reason == 'initial':
-            uv = np.asarray(answer['goal_uv'], float)
+            destination = answer['destination']
             v = views['agentview']
-            if (uv.shape != (2,) or not np.isfinite(uv).all() or
-                    not (5 <= uv[0] < v['rgb'].shape[1]-5 and
-                         5 <= uv[1] < v['rgb'].shape[0]-5)):
-                raise RuntimeError('Invalid visible goal point')
+            db = np.asarray(destination['bbox'], float)
+            if (not destination['visible'] or destination['camera'] != 'agentview'
+                    or db.shape != (4,) or not np.isfinite(db).all() or
+                    not (5 <= db[0] < db[2] <= v['rgb'].shape[1]-5 and
+                         5 <= db[1] < db[3] <= v['rgb'].shape[0]-5)):
+                raise RuntimeError('Invalid visible goal patch')
+            answer['goal_uv'] = ((db[:2]+db[2:])/2).tolist()
         dump(folder/'objects.json', answer)
         return answer
 
@@ -250,7 +254,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             oriented = bool(np.max(np.abs(rot)) < .03)
             if stage == 'push' and arrived and observed_after is None:
                 v = views()
-                later = vision.locate(v, public_task, 'after_push', previous=ob)
+                later = vision.locate(v, public_task, 'after_push',
+                    previous=dict(source=ob, destination=identity['destination']))
                 later_ob = later['source']
                 observed_after = vision.measure(v[later_ob['camera']],
                     later_ob['bbox'], later_ob['label'], 'after-push-source')

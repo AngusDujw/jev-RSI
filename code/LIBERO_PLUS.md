@@ -116,3 +116,9 @@ cd /root/yekangjie/project/jev_rsi
 用户于2026-10-05进一步将奶酪task1066的共享总尝试上限从50提高到59：原总账39次后，以Pro账号GPT-6 Sol/xhigh和init26成功回合的冻结源码对官方新初态27–46做20次独立评测。其它LIBERO任务仍遵守每任务50次。旧Jev和新Pro各自的回合、模型调用与成功率必须单列。
 
 2026-10-06结果：init27–46的20个新增新模型尝试已执行，19个官方完整成功；init30因7903反向转发中断而没有完整终局，保留为基础设施崩溃记录且没有重跑。故本轮是**19/19可评估成功、20次尝试中1次未评估**，共享总账已达59/59。第三批init31–46按同一冻结源码16/16完整成功。20回合真实动作/输入权限审计合同违规0、已完成模型回复均为`gpt-6-sol/xhigh`，双相机视频与全部账本已做本地/服务器哈希核对。逐初态结果和复现范围见[报告](../LOGS/2026-10-06-pro-cheese-frozen20.md)；它不构成其它四项对应任务或整个LIBERO-Plus/Pro的成功率。若要补足第20个完整可评估回合，需先获得超过59次的明确授权。
+
+## 非抓放接触推送开发（2026-10-06，暂停）
+
+`libero_goal:2404` 是官方 Plus 扰动任务 `push_the_plate_to_the_front_of_the_stove_light_1`。[`libero_push_control.py`](scripts/libero_push_control.py)以公开语言和双相机RGB-D定位盘子及可见空桌面目标小框，用自身夹指mesh与可见物体范围估计盘后接触位姿；模型给出XYZ/旋转方向、夹爪和阶段边，程序限定幅度。原生成功只在回合结束读取；没有读取BDDL目标区域坐标、场景物体真值或奖励作为策略输入。
+
+`run_libero_pro_batch.py --profile push --suite libero_goal --task-id 2404`支持冻结源码、逐次总账与审计；EGL设备和分割GPU需使用两个在`CUDA_VISIBLE_DEVICES`中都可见的编号，既有分割worker固定选择可见设备`cuda:1`。目前官方init0只采集场景，init1–3连续三次在正式控制前崩溃：EGL设备可见性、worker设备相对索引、视觉桥接`source`/`destination`契约。三次失败原样保留，计入共享账本4/50；模型控制0、正式原生步0、完整成功0。第三项已把目标改成可见`destination`小框，但尚未实跑。依据[EXP-2026W41-048至050](../LOGS/2026-W41.md#exp-2026w41-048)和`AGENTS.md` §10，暂停新增物理初态，等待继续实验的用户决定。
