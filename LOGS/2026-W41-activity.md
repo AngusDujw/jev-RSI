@@ -240,3 +240,4 @@
 - 【Agent】【2026-10-06 14:46】[op] 新建实验块 EXP-2026W41-060：Pro layout1试次46：ASCII修复后完整回合揭示小铲未夹持  ↪ `EXP-2026W41-060`
 - 【Agent】【2026-10-06 14:49】[result] Pro layout1试次46完整200步原生success=false且截断；53控制/29视觉均Sol/xhigh、DeepSeek0、53条ASCII合同通过。核验末端Z+121.9mm而小铲Z-0.7mm，模型选择retry；确认跨布局/物体未泛化。  ↪ `EXP-2026W41-060`
 - 【Agent】【2026-10-06 14:49】[op] 补齐EXP060、Discussion和T-2026W41-024；对比接触/闭爪/核验RGB-D及原生反馈，冻结layout0成功与layout1失败，不对无触觉证据的具体滑脱机制下结论。  ↪ `EXP-2026W41-060`
+- 【Agent】【2026-10-06 14:51】[op] 本轮trial46负结果EXP060、Discussion与Timeline严格lint后提交b372abb并通过SSH推送GitHub ykj；提交记录含session pro-bridge-resume及turn trial46，停止同布局盲目重跑。  ↪ `EXP-2026W41-060`
