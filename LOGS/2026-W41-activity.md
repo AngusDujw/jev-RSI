@@ -230,3 +230,5 @@
 - 【Agent】【2026-10-06 12:46】[op] 只读审计10月4/5归档gpt-6-astra回复的created_at与冻结配置，分别确认36/8条completed来自sub2api旧视觉链；10月5日14:20明确Pro要求前。服务器项目密钥文件缺失，shell未设OPENAI_API_KEY；不读取凭据、不发API请求。现行LIBERO视觉源码fb64c9b已删除sub2api回退并经服务器无后端提前拒绝检查，通过SSH推送及Git bundle同步。
 - 【Agent】【2026-10-06 12:47】[op] 新建实验块 EXP-2026W41-058：核查10月4/5 LIBERO视觉模型通道与密钥删除后的失效闭锁  ↪ `EXP-2026W41-058`
 - 【Agent】【2026-10-06 12:50】[op] 完成EXP058通道审计回写：记录10月4/5旧sub2api视觉完成回复36/8、当前项目key文件缺失与现行Pro-only离线拒绝；Discussion和LIBERO说明更新，严格周志lint通过，本轮无API或物理请求。
+- 【User】【2026-10-06 13:02】[prompt] 但是你之前不是说算法处理链路中都没有用gpt6吗，你要用它来干什么，用了多少，输入是什么
+- 【Agent】【2026-10-06 13:04】[result] 回应GPT-6链路与用量：10月4/5旧Astra语义视觉58请求尝试、44完成回复（36+8）、14无回复；完成usage输入79701/输出8145 token，88张RGB图像；旧Jev另管方向/夹爪/阶段。已补EXP058及LIBERO说明，严格lint通过，无API请求。
