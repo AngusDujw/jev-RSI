@@ -32,6 +32,47 @@ def world_cloud(view):
     return cam @ t[:3, :3].T + t[:3, 3]
 
 
+def contact_push_plan(source, goal, own):
+    """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
+    travel = goal[:2]-source['center'][:2]
+    distance = float(np.linalg.norm(travel))
+    if not .04 < distance < .55:
+        raise RuntimeError('Visible push distance outside supported range')
+    direction = travel/distance
+    if abs(goal[2]-source['low'][2]) > .065:
+        raise RuntimeError('Proposed goal not on visible source support level')
+    xaxis = np.r_[direction, 0.]
+    yaxis = np.r_[direction[::-1]*np.array([1., -1.]), 0.]
+    orientation = np.column_stack((xaxis, yaxis, [0., 0., -1.]))
+    if np.linalg.det(orientation) < 0:
+        orientation[:, 1] *= -1
+    own_box = envelope(own, orientation)
+    fingers = own['finger_vertices_tool'] @ orientation.T
+    leading = float(np.max(fingers @ xaxis))
+    finger_high = float(fingers[:, 2].max())
+    observed_radius = float(np.dot(np.abs(direction),
+        (source['high']-source['low'])[:2]/2))
+    contact_xy = source['center'][:2] - direction*(observed_radius+leading+.004)
+    contact_z = goal[2]+.004-own_box['finger_low_z_offset']
+    finger_low_world = contact_z+own_box['finger_low_z_offset']
+    finger_high_world = contact_z+finger_high
+    if (finger_low_world > source['high'][2]-.001 or
+            finger_high_world < source['low'][2]+.001):
+        raise RuntimeError('Own finger envelope misses observed object height')
+    hover_z = max(contact_z+.10, source['high'][2]+.11)
+    approach = np.r_[contact_xy-direction*.035, hover_z]
+    lower = np.r_[contact_xy-direction*.035, contact_z]
+    contact = np.r_[contact_xy, contact_z]
+    push_end = np.r_[contact_xy+direction*(distance+.025), contact_z]
+    retreat = push_end+np.array([0., 0., .10])
+    return dict(orientation=orientation, direction=direction,
+        observed_radius_m=observed_radius, own_finger_leading_offset_m=leading,
+        own_finger_high_offset_m=finger_high, own_envelope=own_box,
+        finger_world_z_interval_m=[finger_low_world,finger_high_world],
+        approach=approach, lower=lower, contact=contact, push_end=push_end,
+        retreat=retreat)
+
+
 class PushVision(GenericVision):
     def locate(self, views, public_task, reason, previous=None):
         if reason not in ('initial', 'after_push') or self.calls >= 3:
@@ -205,39 +246,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         if len(patch) == 0 or not np.isfinite(patch).all():
             raise RuntimeError('Goal tabletop RGB-D unavailable')
         goal = np.median(patch.reshape(-1, 3), axis=0)
-        travel = goal[:2]-source['center'][:2]
-        distance = float(np.linalg.norm(travel))
-        if not .04 < distance < .55:
-            raise RuntimeError('Visible push distance outside supported range')
-        direction = travel/distance
-        if abs(goal[2]-source['low'][2]) > .065:
-            raise RuntimeError('Proposed goal not on visible source support level')
-        # Own collision mesh and observed object extent determine first contact.
-        xaxis = np.r_[direction, 0.]
-        yaxis = np.r_[direction[::-1]*np.array([1., -1.]), 0.]
-        orientation = np.column_stack((xaxis, yaxis, [0., 0., -1.]))
-        if np.linalg.det(orientation) < 0:
-            orientation[:, 1] *= -1
-        own_box = envelope(own, orientation)
-        leading = float(np.max((own['finger_vertices_tool'] @ orientation.T) @ xaxis))
-        observed_radius = float(np.dot(np.abs(direction),
-            (source['high']-source['low'])[:2]/2))
-        contact_xy = source['center'][:2] - direction*(observed_radius+leading+.004)
-        contact_z = goal[2]+.004-own_box['finger_low_z_offset']
-        if not goal[2]+.006 <= contact_z+own_box['finger_high_offset'][2]:
-            raise RuntimeError('Own finger envelope does not intersect visible object height')
-        hover_z = max(contact_z+.10, source['high'][2]+.11)
-        approach = np.r_[contact_xy-direction*.035, hover_z]
-        lower = np.r_[contact_xy-direction*.035, contact_z]
-        contact = np.r_[contact_xy, contact_z]
-        push_end = np.r_[contact_xy+direction*(distance+.025), contact_z]
-        retreat = push_end+np.array([0., 0., .10])
+        plan = contact_push_plan(source, goal, own)
+        direction = plan['direction']
+        orientation = plan['orientation']
+        approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
+        push_end, retreat = plan['push_end'],plan['retreat']
         dump(rec.folder/'push-geometry.json', dict(public_task=public_task,
             source=source, target_uv=goal_uv, visible_goal_world_m=goal,
-            push_unit_xy=direction, observed_radius_m=observed_radius,
-            own_finger_leading_offset_m=leading, own_envelope=own_box,
-            approach=approach, lower=lower, contact=contact, push_end=push_end,
-            retreat=retreat, provenance='Public language + GPT-6 image point/box + '
+            **plan, provenance='Public language + GPT-6 image point/box + '
                 'visible RGB-D/SAM + own gripper mesh; no BDDL geometry or predicate'))
         while True:
             rec.check_budget()

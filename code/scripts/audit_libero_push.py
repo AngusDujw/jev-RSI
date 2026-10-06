@@ -24,7 +24,7 @@ def scan(value):
 
 
 def audit(root):
-    rows = [json.loads(s) for s in (root/'decisions.jsonl').read_text().splitlines()]
+    rows = [json.loads(s) for s in (root/'decisions.jsonl').read_text().splitlines()] if (root/'decisions.jsonl').exists() else []
     branches = [json.loads(s) for s in (root/'branches.jsonl').read_text().splitlines()] if (root/'branches.jsonl').exists() else []
     events = [json.loads(s) for s in (root/'events.jsonl').read_text().splitlines()]
     decisions = {row['decision_id']: row for row in rows}
