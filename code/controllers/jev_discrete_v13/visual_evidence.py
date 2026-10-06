@@ -5,6 +5,7 @@ Metric records describe visible surfaces, never complete object poses.
 """
 import time
 import re
+import unicodedata
 from collections import deque
 import cv2
 import numpy as np
@@ -25,6 +26,19 @@ def plain(value):
 
 def tokens(s):
     return set(re.findall(r'[a-z0-9]+',str(s).lower()))
+
+
+def ascii_visual_text(value, limit):
+    """Fold model-supplied visual prose before it enters the ASCII control contract.
+
+    The raw vision response is kept in the bridge artifacts; only the controller's
+    derived semantic record is normalized. Numeric card text is unaffected.
+    """
+    punctuation = str.maketrans({'\u2018': "'", '\u2019': "'", '\u201c': '"', '\u201d': '"',
+                                 '\u2013': '-', '\u2014': '-', '\u00a0': ' ', '\u00df': 'ss',
+                                 '\u00e6': 'ae', '\u0153': 'oe', '\u00f8': 'o'})
+    folded = unicodedata.normalize('NFKD', str(value).translate(punctuation))
+    return re.sub(r'\s+', ' ', folded.encode('ascii', 'ignore').decode('ascii')).strip()[:limit]
 
 
 def lift(view,origin):
@@ -111,9 +125,12 @@ class VisualEvidence:
                     for k,v in row.get('keypoints',{}).items():
                         p=np.asarray(v,float)
                         if p.shape==(2,) and np.isfinite(p).all() and np.all((p>=0)&(p<=1)):
-                            keys[str(k)[:40]]=p
-                    records[name].append(dict(category=row['category'],label=str(row['label'])[:100],
-                        appearance=str(row.get('appearance',''))[:180],text=str(row.get('text',''))[:80],
+                            key=ascii_visual_text(k,40)
+                            if key: keys[key]=p
+                    records[name].append(dict(category=row['category'],
+                        label=ascii_visual_text(row['label'],100) or row['category'],
+                        appearance=ascii_visual_text(row.get('appearance',''),180),
+                        text=ascii_visual_text(row.get('text',''),80),
                         confidence=confidence,polygon=poly,keypoints=keys,
                         source='restricted_RGB_semantics_plus_current_depth',tracking_error_px=0.))
                 except (TypeError,ValueError,KeyError,AttributeError): continue
