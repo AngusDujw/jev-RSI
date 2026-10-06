@@ -80,6 +80,8 @@ graph LR
     T_2026W41_017["📊 jev-control-formulation<br/>LIBERO-Plus奶酪冻结Pro新模型…"]:::experiment
     T_2026W41_018["⛔ libero-generic-vision<br/>非抓放推盘子开发三次连续启动/视觉接口崩溃…"]:::blocker
     T_2026W41_019["📊 jev-control-formulation<br/>Pro试次42加长接触与抬升后手上移110…"]:::experiment
+    T_2026W41_020["📊 libero-generic-vision<br/>推盘子init6在保持朝下姿态与高接近净空…"]:::experiment
+    T_2026W41_021["⛔ libero-generic-vision<br/>推盘子init4–6连续三次Crashed…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -128,6 +130,8 @@ graph LR
   T_2026W41_015 --> T_2026W41_017
   T_2026W40_021 --> T_2026W41_018
   T_2026W41_017 --> T_2026W41_019
+  T_2026W41_018 --> T_2026W41_020
+  T_2026W41_020 --> T_2026W41_021
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -198,6 +202,8 @@ graph LR
 | `T-2026W41-017` | 2026-10-06 | experiment | jev-control-formulation | LIBERO-Plus奶酪冻结Pro新模型20次尝试中19个完整成功、1个转发中断；只支持所测单任务整套系统 | `EXP-2026W41-047` | - |
 | `T-2026W41-018` | 2026-10-06 | blocker | libero-generic-vision | 非抓放推盘子开发三次连续启动/视觉接口崩溃，0次正式控制；已静态修正接口，按协议暂停新增物理尝试 | `EXP-2026W41-050` | - |
 | `T-2026W41-019` | 2026-10-06 | experiment | jev-control-formulation | Pro试次42加长接触与抬升后手上移110.7mm、剪刀仅0.073mm，原生200步截断；转向有界当前表面Z校正 | `EXP-2026W41-051` | - |
+| `T-2026W41-020` | 2026-10-06 | experiment | libero-generic-vision | 推盘子init6在保持朝下姿态与高接近净空后到达盘后方，但下降距接触183mm处停滞；0/1完整成功 | `EXP-2026W41-055` | - |
+| `T-2026W41-021` | 2026-10-06 | blocker | libero-generic-vision | 推盘子init4–6连续三次Crashed；新掩码后沿与闭爪几何修订仅离线验证，暂停新物理回合 | `EXP-2026W41-055` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
