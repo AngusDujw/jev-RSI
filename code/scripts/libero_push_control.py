@@ -195,7 +195,10 @@ class PushModel(Jev):
             'Choose advance only when current contract_satisfied is true; '
             'otherwise continue or, when offered, reobserve. A correct direction '
             'does not imply the controller actually moved: compare commanded and '
-            'observed displacement in recent_actions. If blocked, reobserve can '
+            'observed displacement in tracking_axes and recent_actions. Commanded '
+            'delta is per native step; observed displacement is over the whole '
+            'block, so do not divide them as if they shared a time interval. '
+            'If blocked, reobserve can '
             'refresh the visible source and contact waypoint once, without motor '
             'action or phase change. Stop if continued control is not sensible. '
             'When selecting reobserve or stop, no XYZ, rotation or gripper '
@@ -367,11 +370,12 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     source_observed_after_xy_m=None if observed_after is None else observed_after['center'][:2]),
                 blocked_action_count=stalls, reobserve_count=reobservations,
                 tracking_axes={a: dict(
-                    last_commanded_mm=history[-1]['commanded_displacement_mm'][i],
-                    last_observed_mm=history[-1]['actual_displacement_mm'][i],
-                    observed_over_commanded=(None if abs(history[-1]['commanded_displacement_mm'][i]) < 1.
-                        else round(history[-1]['actual_displacement_mm'][i] /
-                            history[-1]['commanded_displacement_mm'][i], 3)))
+                    commanded_delta_mm_per_native_step=
+                        history[-1]['commanded_delta_mm_per_native_step'][i],
+                    observed_block_displacement_mm=
+                        history[-1]['actual_block_displacement_mm'][i],
+                    block_native_ticks=history[-1]['block_native_ticks'],
+                    motion_detected=abs(history[-1]['actual_block_displacement_mm'][i]) >= .5)
                     for i, a in enumerate('xyz')} if history else None,
                 recent_actions=history[-3:],
                 phase_decisions=stage_decisions, information_sources=
@@ -438,8 +442,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             progress = float(np.linalg.norm(error)-np.linalg.norm(target-after))
             stalls = stalls+1 if stage != 'prepare' and np.linalg.norm(error)>.015 and progress<.0003 else 0
             history.append(dict(stage=stage, progress_mm=round(progress*1000, 2),
-                commanded_displacement_mm=np.round(delta*1000, 2).tolist(),
-                actual_displacement_mm=np.round((after-before)*1000, 2).tolist()))
+                commanded_delta_mm_per_native_step=np.round(delta*1000, 2).tolist(),
+                actual_block_displacement_mm=np.round((after-before)*1000, 2).tolist(),
+                block_native_ticks=block))
             rec.branch(dict(stage=stage, decision_id=decision['decision_id'],
                 before=before, after=after, delta=delta, rotation=rotations,
                 selected_gripper=decision['gripper'], executed_gripper=gripper,
