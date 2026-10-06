@@ -2,6 +2,8 @@
 
 **2026-10-05 GPT-6 Sol/xhigh 对照入口：**用户将后续 LIBERO 的语义视觉、XYZ/旋转方向、夹爪、候选和阶段选择统一改为本机 ChatGPT 登录的 Codex CLI。见[运行器](scripts/run_libero_pro_batch.py)、[服务器桥接客户端](scripts/codex_pro_bridge.py)和[本机桥接服务](scripts/codex_pro_bridge_server.py)。新批仍使用同一公开任务、双相机 RGB-D、可见几何和本体反馈；模型未接收对象真值、奖励或隐藏成功谓词。旧 Jev 冻结结果保留为历史基线，不能与新模型试次合并计算成功率。当前新模型链路已通过双角色试调用和服务器非物理预检，物理成功率单列统计。
 
+**2026-10-06通道核查：**历史冻结视觉源码确实曾在10月4日、5日使用sub2api上的`gpt-6-astra`，按原始回复时间分别有36、8份完成回复，后者最晚12:03（UTC+8）；不能把旧结果称为Pro。用户14:20明确要求Pro后，归档中没有新的Astra完成回复。服务器项目密钥文件已不存在；现行[通用视觉入口](scripts/libero_generic_vision.py)也已移除sub2api回退，缺少`codex_pro`时在任何凭据读取或网络请求前报错。旧冻结源码只保留供离线审计，不用于新回合。详见[EXP058](../LOGS/2026-W41.md#exp-2026w41-058)。
+
 **2026-10-03批次更新（实际UTC+8事件为10月4日）：奶酪task1066的可见指垫拟合与focused输入使用独立的`--recovery-supervisor`入口。逐版正负结果和真实输入输出见[优化报告](../LOGS/2026-10-03-libero-recovery30.md)，候选配置见[配置表](configs/libero-supervisor/candidates.json)。**
 
 **最新执行入口默认由Jev选择夹爪和阶段；旧自动流程须`--scripted-supervisor`显式复现。处理/输入比较及20回合结果见[控制权实验报告](../LOGS/2026-10-02-libero-jev-ownership.md)。**
