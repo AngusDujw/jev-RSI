@@ -37,6 +37,11 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
         else:
             z = src['high'][2]-overlap-ee['pad_low_offset'][2]
             z = max(z, level-ee['finger_low_z_offset']+cfg['table_margin_mm']/1000)
+        tall_slender = extent[2] > .09 and max(extent[:2]) < .07
+        if tall_slender and cfg['grasp_algorithm'] == 'pad_fit':
+            # A top-edge fit pinches a bottle cap; use visible mid-body height.
+            mid = src['low'][2]+.55*extent[2]-ee['pad_center_offset'][2]
+            z = max(mid, level-ee['finger_low_z_offset']+cfg['table_margin_mm']/1000)
         target = np.r_[src['center'][:2]-ee['pad_center_offset'][:2], z]
         target[:2] += major[:2] * ([0.,-.012,.012][i])
         pad_low, pad_high = z+ee['pad_low_offset'][2],z+ee['pad_high_offset'][2]
@@ -45,6 +50,7 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
                       estimated_pad_overlap_mm=max(0., min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000,
                       estimated_finger_table_clearance_mm=(z+ee['finger_low_z_offset']-level)*1000,
                       pad_z_interval_m=[pad_low,pad_high],support_z_m=level, support_pixels=points,
+                      grasp_height_source='visible tall-slender mid-body' if tall_slender else 'visible top pad-overlap',
                       prior_failed=i in failed_candidates, source='Visible RGB-D bounds/support plane + own robot mesh; geometric estimate only'))
     return c
 
@@ -68,7 +74,7 @@ class RecoveryModel(Jev):
             transitions['advance'] = 'Enter supplied next operation'
         if state['allowed_transitions']['retry']:
             transitions['retry'] = 'Withdraw and select another visible-geometry candidate'
-        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. advance only when the current contract is satisfied. A pending test is unknown, not failed. On a failed lift or >=3 blocked actions, choose retry if available to withdraw and prepare another candidate. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
+        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. advance only when the current contract is satisfied. A pending test is unknown, not failed. On a failed or unavailable lift check or >=3 blocked actions, choose retry if available to withdraw and prepare another candidate. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
         if state['operation'] == 'select':
             choices={c['id']: 'Visible-geometry candidate '+c['id'] for c in state['candidates'] if not c['prior_failed']}
             questions['candidate'] = dict(type='choice', instructions='Select one of the available visible-geometry candidates now. Prefer adequate pad overlap and positive table clearance. This selection and your advance choice apply together. The previously displayed candidate is only a default, not a completed selection. These are geometric estimates, not tested success predictions.', criteria=choices)
@@ -189,12 +195,17 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # The source can move after grasp. Reproject its expected position
             # instead of reusing the frozen initial image box.
             v = vv['agentview']
-            camera = v['T'][:3,:3].T @ (expected-v['T'][:3,3])
-            if camera[2] <= .02:
+            moved_low = initial_src['low']+(obs['robot0_eef_pos']-tcp_grasp)
+            moved_high = initial_src['high']+(obs['robot0_eef_pos']-tcp_grasp)
+            corners = np.array([[x,y,z] for x in (moved_low[0],moved_high[0])
+                                for y in (moved_low[1],moved_high[1])
+                                for z in (moved_low[2],moved_high[2])])
+            camera = (corners-v['T'][:3,3]) @ v['T'][:3,:3]
+            if np.any(camera[:,2] <= .02):
                 raise RuntimeError('Expected lifted source behind camera')
-            uv = (v['K'] @ camera)[:2] / camera[2]
-            size = np.clip(np.max(initial_src['high']-initial_src['low'])*v['K'][0,0]/camera[2],35,220)
-            box = np.r_[uv-size*.7,uv+size*.7].clip(0,767).tolist()
+            projected = camera @ v['K'].T
+            uv = projected[:,:2]/projected[:,2,None]
+            box = np.r_[uv.min(axis=0)-8,uv.max(axis=0)+8].clip(0,767).tolist()
             ob = dict(camera='agentview',bbox=box,label=identity['source']['label'])
             dump(rec.folder/f'hold-projection-{ticks:04d}.json',dict(expected=expected,bbox=box))
         elif 'lift_check' not in vision.reasons and vision.calls < 3:
@@ -205,7 +216,24 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         if ob is None:
             holding = dict(valid=None,status='unavailable',reason='No cached external source identity')
             return
-        h = vision.measure(vv[ob['camera']],ob['bbox'],ob['label'],'test-lift-hold')
+        try:
+            h = vision.measure(vv[ob['camera']],ob['bbox'],ob['label'],'test-lift-hold')
+        except RuntimeError as exc:
+            if not vision.static_mode:
+                raise
+            try:
+                still = vision.measure(vv['agentview'],identity['source']['bbox'],
+                                       identity['source']['label'],'test-lift-original-site')
+                unmoved = bool(np.linalg.norm(still['center']-source_grasp)<.025)
+            except RuntimeError:
+                still = None
+                unmoved = False
+            holding = dict(valid=False if unmoved else None,
+                           status='failed' if unmoved else 'unavailable',
+                           reason='Lifted-source mask unavailable: '+str(exc),
+                           original_site=still, observed_tick=ticks)
+            dump(rec.folder/f'holding-{ticks:04d}.json',holding)
+            return
         rise = float(h['center'][2]-source_grasp[2])
         mismatch = float(np.linalg.norm(h['center']-expected))
         valid = rise > .015 and mismatch < .065 and h['high'][2]-h['low'][2] < max(.06,1.8*(initial_src['high'][2]-initial_src['low'][2]))
@@ -263,7 +291,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if stage == 'grasp':complete=grip_ticks>=18 and gripper==1
             if stage in ['release','recover_open']:complete=grip_ticks>=24 and aperture>=70 and gripper==-1
             if stage == 'test_lift':complete=complete and holding['status']=='passed'
-            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open'] and (stalls>=3 or holding['status']=='failed')
+            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open'] and (stalls>=3 or holding['status'] in ('failed','unavailable'))
             next_stage = 'select' if stage=='recover_open' else 'recover_open' if stage=='recover_up' else 'finish_attempt' if stage=='retreat' else PHASES[PHASES.index(stage)+1]
             state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks),holding_evidence=holding,allowed_transitions=dict(continue_phase=True,advance=bool(complete),retry=bool(can_retry),stop=True),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
             adaptive=rec.cfg.get('execution_profile','baseline')=='adaptive'
