@@ -179,7 +179,20 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     def check_hold():
         nonlocal holding, offset, src
         vv = views()
-        if 'lift_check' not in vision.reasons and vision.calls < 3:
+        expected = source_grasp+(obs['robot0_eef_pos']-tcp_grasp)
+        if vision.static_mode:
+            # The source can move after grasp. Reproject its expected position
+            # instead of reusing the frozen initial image box.
+            v = vv['agentview']
+            camera = v['T'][:3,:3].T @ (expected-v['T'][:3,3])
+            if camera[2] <= .02:
+                raise RuntimeError('Expected lifted source behind camera')
+            uv = (v['K'] @ camera)[:2] / camera[2]
+            size = np.clip(np.max(initial_src['high']-initial_src['low'])*v['K'][0,0]/camera[2],35,220)
+            box = np.r_[uv-size*.7,uv+size*.7].clip(0,767).tolist()
+            ob = dict(camera='agentview',bbox=box,label=identity['source']['label'])
+            dump(rec.folder/f'hold-projection-{ticks:04d}.json',dict(expected=expected,bbox=box))
+        elif 'lift_check' not in vision.reasons and vision.calls < 3:
             ids = vision.recognize(vv, task.language, 'lift_check')
             ob = ids['source']
         else:
@@ -188,7 +201,6 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             holding = dict(valid=None,status='unavailable',reason='No cached external source identity')
             return
         h = vision.measure(vv[ob['camera']],ob['bbox'],ob['label'],'test-lift-hold')
-        expected = source_grasp+(obs['robot0_eef_pos']-tcp_grasp)
         rise = float(h['center'][2]-source_grasp[2])
         mismatch = float(np.linalg.norm(h['center']-expected))
         valid = rise > .015 and mismatch < .065 and h['high'][2]-h['low'][2] < max(.06,1.8*(initial_src['high'][2]-initial_src['low'][2]))

@@ -12,11 +12,15 @@ from run_position_pilot import dump
 
 class GenericVision:
     def __init__(self,rec):
-        if os.environ.get('JEV_RSI_MODEL_BACKEND') != 'codex_pro':
+        self.static_mode = bool(rec.cfg.get('offline_goal_vision'))
+        if not self.static_mode and os.environ.get('JEV_RSI_MODEL_BACKEND') != 'codex_pro':
             raise RuntimeError('Current LIBERO semantic vision requires codex_pro; legacy API fallback disabled')
         self.rec=rec;self.calls=0;self.refreshes=0;self.identity=None;self.reasons=set()
-        from codex_pro_bridge import API
-        self.api=API({'model':'gpt-6-sol'},rec.event,'semantic_vision')
+        if self.static_mode:
+            self.api = None
+        else:
+            from codex_pro_bridge import API
+            self.api=API({'model':'gpt-6-sol'},rec.event,'semantic_vision')
         self.log=(rec.folder/'grounding-worker.log').open('w')
         env=dict(os.environ,HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
         self.worker=subprocess.Popen(['/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python','-B',str(Path(__file__).with_name('libero_grounding_worker.py'))],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.log,text=True,env=env)
@@ -37,6 +41,11 @@ class GenericVision:
         if reason in self.reasons:raise RuntimeError('Repeated semantic trigger disallowed')
         self.reasons.add(reason)
         self.calls+=1;p=self.rec.folder/f'semantic-{self.calls}';p.mkdir()
+        if self.static_mode:
+            from libero_goal_static_vision import recognition
+            result = recognition(self.rec.cfg['task_id'], reason, views)
+            self.identity=result;dump(p/'objects.json',result)
+            return result
         prompt='''Identify only visible objects required by the public pick-and-place instruction. No robot actions, trajectories, simulator truth or completion claims. Return JSON with source and destination. Each is {label:short plain noun phrase,camera:camera name,bbox:[x1,y1,x2,y2] in pixels,visible:boolean}. Resolve relational references from images. source is the object to move, destination the receiving object/surface. At pregrasp, stalled, or lift_check, locate the SAME source, preferably in wrist if visible; use previous identity description, do not switch instances. Reject ambiguity with visible=false. Bounding boxes enclose the whole visible object, exclude robot fingers and background. Coordinates are absolute pixels for the provided images; sizes are explicitly given for each camera. Return concise evidence string. Do not infer invisible boundaries. At lift_check do not assume a successful grasp: identify the source wherever actually visible, including still on the support. Prefer external camera if the wrist is heavily occluded by fingers.'''
         if self.rec.cfg.get('geometry_profile')=='observed_surfaces':
             prompt += " Carefully resolve exact product identity from visible packaging, especially when several similar objects exist. Describe visible distinguishing evidence; if identity is ambiguous set visible=false instead of choosing a convenient object. For destination, bound only the VISIBLE receiving region: the interior opening of an open container (exclude outside walls and handles), or the exposed support surface. Report receiver_kind as open_container or support_surface in destination. This is visual region recognition only; do not propose robot motions or hidden bottom geometry."
@@ -75,7 +84,7 @@ class GenericVision:
                     source='semantic box + SAM visible mask + RGB-D quantiles')
         dump(p/'geometry.json',result);return result
     def close(self):
-        self.api.close()
+        if self.api is not None:self.api.close()
         if self.worker.poll() is None:
             try:self.worker.stdin.write('{"close":true}\n');self.worker.stdin.flush();self.worker.wait(timeout=20)
             except Exception:self.worker.terminate();self.worker.wait(timeout=20)
