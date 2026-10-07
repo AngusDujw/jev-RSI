@@ -86,6 +86,7 @@ graph LR
     T_2026W41_023["📊 jev-control-formulation<br/>Pro试次44最终接触Z下修约9mm，la…"]:::experiment
     T_2026W41_024["📊 jev-control-formulation<br/>Pro layout1小铲完整200步失败…"]:::experiment
     T_2026W41_025["📊 libero-generic-vision<br/>Goal十项初态10/10可采；本地检测对…"]:::experiment
+    T_2026W41_026["📊 jev-control-formulation<br/>三任务配对响应：LIBERO远区两任务有相…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -140,6 +141,7 @@ graph LR
   T_2026W41_019 --> T_2026W41_023
   T_2026W41_023 --> T_2026W41_024
   T_2026W41_022 --> T_2026W41_025
+  T_2026W41_024 --> T_2026W41_026
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -216,6 +218,7 @@ graph LR
 | `T-2026W41-023` | 2026-10-06 | experiment | jev-control-formulation | Pro试次44最终接触Z下修约9mm，layout0在185步获原生成功；冻结单初态结果待未见布局验证 | `EXP-2026W41-057` | - |
 | `T-2026W41-024` | 2026-10-06 | experiment | jev-control-formulation | Pro layout1小铲完整200步失败：末端升122mm而物体Z近零；ASCII故障已排除，layout0成功未泛化 | `EXP-2026W41-060` | - |
 | `T-2026W41-025` | 2026-10-08 | experiment | libero-generic-vision | Goal十项初态10/10可采；本地检测对抽屉把手、盘/碗和炉具旋钮存在身份/区域错误，需固定几何过滤后才可给Jev目标 | `EXP-2026W41-061` | - |
+| `T-2026W41-026` | 2026-10-08 | experiment | jev-control-formulation | 三任务配对响应：LIBERO远区两任务有相近净执行响应，但近区零命令仍前进5–6mm，尚不能并入停稳步长数据 | `EXP-2026W41-070` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
