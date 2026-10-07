@@ -265,3 +265,5 @@
 - 【User】【2026-10-08 00:59】[prompt] 现有数据基本都是一个任务的吧  ↪ `DISC-2026W39-001`
 - 【User】【2026-10-08 00:59】[prompt] 之前的任务不也是这样的吗（确认GPT-6只在实验前设计视觉、阶段、输入输出，运行时Jev推进）  ↪ `DISC-2026W39-001`
 - 【Agent】【2026-10-08 01:01】[result] 用户澄清为额外新增10任务；已校正既有十项报告，新增LIBERO-Plus Goal十项报告与Discussion回帖。官方task map核对10个ID；离线121个阶段请求均可序列化，未运行Jev/物理回合。  ↪ `DISC-2026W39-001`
+- 【Agent】【2026-10-08 01:01】[run] 在company-server-2项目内隔离worktree，以共享账本串行采集新增10个LIBERO Goal任务init0双相机RGB-D；只开夹爪初始化，模型调用0；每任务记账与6GiB/1GiB空间守卫。GitHub SSH推送两次遇远端Internal Server Error，已用SHA核对的Git bundle临时同步到同项目。  ↪ `DISC-2026W39-001`
+- 【Agent】【2026-10-08 01:14】[result] 新增10项Goal init0双相机采集10/10，控制/Jev/GPT-6调用均0；本地DINO+SAM十帧发现把手合框、盘/碗误识别、奶酪漏检、旋钮假阳性；离线阶段合同扩至128项并验证。原始267文件本机/服务器SHA一致；EXP061由工具--help意外创建的空块已填为本次真实实验。  ↪ `EXP-2026W41-061`

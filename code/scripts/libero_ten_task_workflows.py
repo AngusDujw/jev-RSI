@@ -101,10 +101,41 @@ FORBIDDEN = ("reward", "success", "object_pose", "object_id", "bddl",
 
 def stages(task_id: int) -> tuple[dict, ...]:
     plan = TASKS[task_id]
-    return tuple(dict(id=f"{part_index}:{primitive}:{name}", primitive=primitive,
-                      name=name, contract=contract, gate=gate)
-        for part_index, primitive in enumerate(plan.primitives)
-        for name, contract, gate in PHASES[primitive])
+    sequence = []
+    for part_index, primitive in enumerate(plan.primitives):
+        phases = list(PHASES[primitive])
+        if primitive == "open_drawer":
+            phases.insert(1, ("select_handle",
+                "separate visible handles and select requested world-height rank",
+                "handle_unambiguous"))
+        if primitive == "pick_place" and task_id in (1163, 1252):
+            phases.insert(1, ("inspect_receiver",
+                "measure a visible cabinet-top support polygon; do not extrapolate hidden top",
+                "support_surface_visible"))
+        if primitive == "pick_place" and task_id == 1202:
+            phases.insert(1, ("reobserve_interior",
+                "after opening, freshly measure the drawer mouth and interior bottom",
+                "interior_visible"))
+        if primitive == "push":
+            phases.insert(1, ("choose_corridor",
+                "measure a free table corridor from the plate to a patch in front of the stove",
+                "collision_free_corridor"))
+        if primitive == "pick_place" and task_id == 1458:
+            phases = [
+                ("align_opening",
+                 "align the held bottle axis with a visibly measured rack entrance",
+                 "opening_aligned") if name == "lower" else
+                (name, contract, gate)
+                for name, contract, gate in phases]
+            insertion = next(i for i, row in enumerate(phases)
+                             if row[0] == "align_opening") + 1
+            phases.insert(insertion, ("insert",
+                "advance incrementally through the visible opening with clearance checks",
+                "visible_insertion"))
+        sequence.extend(dict(id=f"{part_index}:{primitive}:{name}",
+                             primitive=primitive, name=name, contract=contract,
+                             gate=gate) for name, contract, gate in phases)
+    return tuple(sequence)
 
 
 def _finite_vec(value, size, label):
@@ -145,6 +176,13 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
     if index is None:
         raise ValueError(f"Unknown stage {stage_id} for task {task_id}")
     phase = sequence[index]
+    operation_index = int(stage_id.split(":", 1)[0])
+    source, destination, relation = (
+        ("top drawer handle", "drawer opening", "open")
+        if task_id == 1202 and operation_index == 0 else
+        ("bowl", "open drawer interior", "inside")
+        if task_id == 1202 and operation_index == 1 else
+        (plan.source, plan.destination, plan.relation))
     current = _finite_vec(tcp_xyz_m, 3, "tcp_xyz_m")
     target = _finite_vec(target_xyz_m, 3, "target_xyz_m")
     rotation = _finite_vec(rotation_error_world_rad, 3,
@@ -174,7 +212,11 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                                  else "goal_coordinate_smaller"))
             for j, axis in enumerate("xyz")}
     next_stage = sequence[index+1]["id"] if index+1 < len(sequence) else "finish_attempt"
-    state = dict(task=plan.language, stage=stage_id,
+    state = dict(task=plan.language,
+                 public_entity_slots=dict(source=source,
+                                          destination=destination,
+                                          relation=relation),
+                 stage=stage_id,
                  next_stage=next_stage, stage_contract=phase["contract"],
                  translation_axes=axes,
                  required_rotation_world_rad=dict(zip(("rx", "ry", "rz"), rotation)),
@@ -184,6 +226,7 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                  recent_actions=recent_actions[-3:],
                  allowed_transitions=dict(continue_phase=True,
                                           advance=gate is True,
+                                          reobserve=True,
                                           stop=True),
                  information_sources=list(ALLOWED_SOURCES))
     questions = {axis: dict(type="choice",
@@ -203,7 +246,9 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                                 instructions="Select open, close, or keep for the current stage.",
                                 criteria=dict(open="Open", close="Close",
                                               keep="Keep previous command"))
-    choices = dict(continue_phase="Stay in current stage", stop="End incomplete")
+    choices = dict(continue_phase="Stay in current stage",
+                   reobserve="Request a fresh permitted camera observation",
+                   stop="End incomplete")
     if gate is True:
         choices["advance"] = "Advance after executing this decision"
     questions["transition"] = dict(type="choice",

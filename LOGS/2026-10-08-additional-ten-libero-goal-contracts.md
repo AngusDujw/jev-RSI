@@ -1,5 +1,7 @@
 # 额外十个 LIBERO-Plus Goal 任务的 Jev 阶段合同（2026-10-08）
 
+> 本文是采集前 `3a688c0` 的**初版快照**。同日十项真实初态采集、本地视觉失效、修订后的任务阶段（共128项，新增 `reobserve` 选择）和仍未接入 Jev 的范围，见[后续实验 EXP-2026W41-061](2026-W41.md#exp-2026w41-061)与[逐任务视觉方法](2026-10-08-new-ten-goal-offline-methods.md)。下文“121阶段”“没有 reobserve”等均描述初版，不代表最新代码或完成率。
+
 这是在[此前十任务盘点](2026-10-08-ten-task-jev-contracts.md)之外**新增的十项**，没有复用此前的 RoboDojo 五项、奶酪入篮/汤罐入篮及三个黑碗空间任务。任务 ID 与任务族名称逐项对照[官方 LIBERO-Plus `libero_goal` task map](https://raw.githubusercontent.com/sylvestf/LIBERO-plus/main/libero/libero/benchmark/libero_suite_task_map.py) 的索引 1098、1144、1163、1202、1252、1296、1335、1383、1423、1458；对应的是指定 `language_1/view_0_0_100_0_0/initstate_0` 的变体，不应把不同语言/视角/初态版本合并成绩。
 
 本轮交付的是**任务处理与模型输入候选**。当前[十任务合同模块](../code/scripts/libero_ten_task_workflows.py)定义 10 个公开任务和四种动作原语，共 121 个阶段实例；[采集入口](../code/scripts/run_libero_ten_task_capture.py)只预留账本并采集双视角 RGB-D/标定/本体状态，**不调用 Jev 或 GPT-6、不执行任务动作**。因此以下十项目前都是待离线核查和物理验证的候选，成功回合数为零；不能把“有阶段表”写成“Jev 已能推进十任务”。
