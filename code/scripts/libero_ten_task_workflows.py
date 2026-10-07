@@ -163,7 +163,8 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                      gripper_aperture_mm: float, last_gripper_command: str,
                      observed_evidence: dict, recent_actions: list,
                      native_tick: int, public_language: str | None = None,
-                     reobserve_available: bool = True) -> dict:
+                     reobserve_available: bool = True,
+                     required_gripper_state: str | None = None) -> dict:
     """Build a model request from measurements provided by a vision adapter.
 
     The adapter must only supply rendered RGB-D/calibration, own robot feedback
@@ -176,6 +177,8 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
         raise ValueError("public_language must be nonempty text")
     if not isinstance(reobserve_available, bool):
         raise ValueError("reobserve_available must be boolean")
+    if required_gripper_state not in (None, "open", "close", "preserve"):
+        raise ValueError("required_gripper_state must be open, close or preserve")
     sequence = stages(task_id)
     index = next((i for i, phase in enumerate(sequence)
                   if phase["id"] == stage_id), None)
@@ -227,7 +230,8 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                  translation_axes=axes,
                  required_rotation_world_rad=dict(zip(("rx", "ry", "rz"), rotation)),
                  gripper=dict(aperture_mm=gripper_aperture_mm,
-                              last_command=last_gripper_command),
+                              last_command=last_gripper_command,
+                              required_state=required_gripper_state),
                  completion_evidence=observed_evidence,
                  recent_actions=recent_actions[-3:],
                  allowed_transitions=dict(continue_phase=True,
@@ -249,7 +253,7 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                                                  hold="No rotation",
                                                  positive="Positive rotation"))
     questions["gripper"] = dict(type="choice",
-                                instructions="Select open, close, or keep for the current stage.",
+                                instructions="Select open, close, or keep for the current stage. Follow gripper.required_state when supplied; keep preserves the last command, so keep while last_command=open does not close a handle.",
                                 criteria=dict(open="Open", close="Close",
                                               keep="Keep previous command"))
     choices = dict(continue_phase="Stay in current stage",

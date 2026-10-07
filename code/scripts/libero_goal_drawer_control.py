@@ -181,7 +181,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 last_gripper_command='open' if gripper == -1 else 'close',
                 observed_evidence=evidence, recent_actions=history,
                 native_tick=ticks, public_language=task.language,
-                reobserve_available=not reobserved and name in ('observe', 'select_handle', 'approach', 'align'))
+                reobserve_available=not reobserved and name in ('observe', 'select_handle', 'approach', 'align'),
+                required_gripper_state='close' if name in ('grasp', 'pull') else 'open')
             decision = model.decide(request, stage['id'])
             edge = decision['transition']
             if edge == 'stop':
