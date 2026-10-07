@@ -9,6 +9,8 @@ from __future__ import annotations
 import cv2
 import numpy as np
 
+from run_position_pilot import dump
+
 
 def world_cloud(view):
     depth = np.asarray(view['depth'], float)
@@ -148,3 +150,61 @@ def visible_front_goal(view, plate, stove):
     if not clear:
         raise RuntimeError('No visible collision-clear plate corridor in front of stove')
     return min(clear, key=lambda row: (row['travel_m'], row['elevated_corridor_pixels']))
+
+
+class GoalPlateVision:
+    """Drop-in visible-only source/goal adapter for the Jev push primitive."""
+
+    def __init__(self, rec):
+        self.rec = rec
+        self.calls = 0
+        self.refreshes = 0
+        self.goal = None
+        self.last_uv = None
+
+    def locate(self, views, public_task, reason, previous=None):
+        if reason not in ('initial', 'reobserve', 'after_push') or self.calls >= 3:
+            raise RuntimeError('Goal plate observation trigger/budget')
+        self.calls += 1
+        view = views['agentview']
+        plate = visible_plate(view, self.last_uv)
+        self.last_uv = plate['uv']
+        if reason == 'initial':
+            stove = visible_stove(view)
+            self.goal = visible_front_goal(view, plate, stove)
+            dump(self.rec.folder/'goal-plate-visible-plan.json', dict(
+                plate={key: value for key, value in plate.items() if key != 'mask'},
+                stove=stove, goal=self.goal, public_task=public_task,
+                source='agentview RGB-D/calibration only'))
+        if self.goal is None:
+            raise RuntimeError('Goal plate target has not been measured')
+        uv = self.goal['goal_uv']
+        result = dict(source=dict(label='visible flat red-rim plate',
+                                  camera='agentview', bbox=plate['bbox'],
+                                  visible=True),
+                      destination=dict(label='visible free tabletop in front of stove',
+                                       camera='agentview',
+                                       bbox=[uv[0]-8, uv[1]-8, uv[0]+8, uv[1]+8],
+                                       visible=True),
+                      goal_uv=uv, reason=reason,
+                      evidence='RGB-D flat red-rim plate and visible stove/table geometry')
+        dump(self.rec.folder/f'goal-plate-observation-{self.calls}.json', result)
+        return result
+
+    def measure(self, view, bbox, label, reason):
+        self.refreshes += 1
+        plate = visible_plate(view, self.last_uv)
+        self.last_uv = plate['uv']
+        folder = self.rec.folder/f'plate-mask-{self.refreshes}'
+        folder.mkdir()
+        path = folder/'mask.npy'
+        np.save(path, plate['mask'])
+        result = dict(center=plate['center'], low=plate['low'],
+                      high=plate['high'], points=plate['valid_depth_pixels'],
+                      label=label, visible_mask_path=str(path),
+                      source='visible red-rim connected component + RGB-D quantiles')
+        dump(folder/'geometry.json', result)
+        return result
+
+    def close(self):
+        pass

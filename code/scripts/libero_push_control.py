@@ -258,7 +258,12 @@ class PushModel(Jev):
 
 
 def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
-    vision = PushVision(rec)
+    visible_goal_plate = bool(rec.cfg.get('goal_plate_push'))
+    if visible_goal_plate:
+        from libero_goal_plate_vision import GoalPlateVision
+        vision = GoalPlateVision(rec)
+    else:
+        vision = PushVision(rec)
     model = PushModel(rec)
     own = gripper_geometry(env, obs)
     dump(rec.folder/'own-gripper.json', own)
@@ -305,8 +310,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         push_end, retreat = plan['push_end'],plan['retreat']
         dump(rec.folder/'push-geometry.json', dict(public_task=public_task,
             source=source, target_uv=goal_uv, visible_goal_world_m=goal,
-            **plan, provenance='Public language + GPT-6 image point/box + '
-                'visible RGB-D/SAM + own gripper mesh; no BDDL geometry or predicate'))
+            **plan, provenance=(
+                'Public language + visible red-rim plate/stove/table RGB-D + own gripper mesh'
+                if visible_goal_plate else 'Public language + GPT-6 image point/box + '
+                'visible RGB-D/SAM + own gripper mesh') +
+                '; no BDDL geometry or predicate'))
         while True:
             rec.check_budget()
             if ticks >= 550 or stage_decisions >= 65:
@@ -494,8 +502,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             semantic_calls=vision.calls, stage=stage,
             visible_object_goal_error_m=None if observed_after is None or goal is None else
                 float(np.linalg.norm(observed_after['center'][:2]-goal[:2])),
-            ownership='gpt-6-sol/xhigh via ChatGPT Codex: XYZ/rotation/gripper/phase',
-            model_backend='gpt-6-sol/xhigh via ChatGPT Codex'))
+            ownership=('Jev: XYZ/rotation/gripper/phase; fixed visible Goal plate method'
+                if visible_goal_plate else
+                'gpt-6-sol/xhigh via ChatGPT Codex: XYZ/rotation/gripper/phase'),
+            model_backend='jev-1.13' if visible_goal_plate else
+                'gpt-6-sol/xhigh via ChatGPT Codex'))
         rec.finish('success' if success else 'failed')
         model.close()
         vision.close()
