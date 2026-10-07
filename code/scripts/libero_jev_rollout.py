@@ -211,6 +211,8 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--output', required=True)
     p.add_argument('--capture-only', action='store_true')
+    p.add_argument('--drawer-supervisor', action='store_true',
+                   help='Jev-controlled visible-handle Goal 1098 init0 drawer trial')
     p.add_argument('--offline-goal-vision', action='store_true',
                    help='Use predeclared init0 Goal image boxes and runtime RGB-D/SAM; no GPT-6 calls')
     p.add_argument('--recovery-supervisor', action='store_true')
@@ -244,6 +246,10 @@ def main():
     a = p.parse_args()
     if a.offline_goal_vision and (a.suite != 'libero_goal' or a.init_index != 0 or a.camera_size != 768):
         p.error('--offline-goal-vision requires libero_goal init0 at 768x768')
+    if a.drawer_supervisor and (a.suite != 'libero_goal' or a.task_id != 1098 or
+                                a.init_index != 0 or a.camera_size != 768 or
+                                os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro'):
+        p.error('--drawer-supervisor requires Goal 1098 init0, 768px, and Jev backend')
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
@@ -280,7 +286,10 @@ def main():
         dump(out/'robot.json',dict(position=obs['robot0_eef_pos'],quaternion=obs['robot0_eef_quat']))
         if a.capture_only:
             rec.finish('capture_only'); return
-        if a.push_supervisor:
+        if a.drawer_supervisor:
+            from libero_goal_drawer_control import run_drawer
+            run_drawer(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
+        elif a.push_supervisor:
             from libero_push_control import run_push
             run_push(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
         elif a.recovery_supervisor:

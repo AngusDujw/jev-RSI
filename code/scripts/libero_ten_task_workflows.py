@@ -162,7 +162,8 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                      target_xyz_m, rotation_error_world_rad,
                      gripper_aperture_mm: float, last_gripper_command: str,
                      observed_evidence: dict, recent_actions: list,
-                     native_tick: int) -> dict:
+                     native_tick: int, public_language: str | None = None,
+                     reobserve_available: bool = True) -> dict:
     """Build a model request from measurements provided by a vision adapter.
 
     The adapter must only supply rendered RGB-D/calibration, own robot feedback
@@ -170,6 +171,11 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
     The model retains direction, gripper and phase-choice ownership.
     """
     plan = TASKS[task_id]
+    if public_language is not None and (not isinstance(public_language, str)
+                                        or not public_language.strip()):
+        raise ValueError("public_language must be nonempty text")
+    if not isinstance(reobserve_available, bool):
+        raise ValueError("reobserve_available must be boolean")
     sequence = stages(task_id)
     index = next((i for i, phase in enumerate(sequence)
                   if phase["id"] == stage_id), None)
@@ -212,7 +218,7 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                                  else "goal_coordinate_smaller"))
             for j, axis in enumerate("xyz")}
     next_stage = sequence[index+1]["id"] if index+1 < len(sequence) else "finish_attempt"
-    state = dict(task=plan.language,
+    state = dict(task=public_language or plan.language,
                  public_entity_slots=dict(source=source,
                                           destination=destination,
                                           relation=relation),
@@ -226,7 +232,7 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                  recent_actions=recent_actions[-3:],
                  allowed_transitions=dict(continue_phase=True,
                                           advance=gate is True,
-                                          reobserve=True,
+                                          reobserve=reobserve_available,
                                           stop=True),
                  information_sources=list(ALLOWED_SOURCES))
     questions = {axis: dict(type="choice",
@@ -247,8 +253,9 @@ def decision_request(task_id: int, stage_id: str, *, tcp_xyz_m,
                                 criteria=dict(open="Open", close="Close",
                                               keep="Keep previous command"))
     choices = dict(continue_phase="Stay in current stage",
-                   reobserve="Request a fresh permitted camera observation",
                    stop="End incomplete")
+    if reobserve_available:
+        choices["reobserve"] = "Request a fresh permitted camera observation"
     if gate is True:
         choices["advance"] = "Advance after executing this decision"
     questions["transition"] = dict(type="choice",
