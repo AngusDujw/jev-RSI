@@ -11,6 +11,7 @@ import time
 
 import cv2
 import numpy as np
+from scipy.spatial.transform import Rotation
 
 from libero_goal_drawer_vision import visible_drawer_handles, select_public_handle
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
@@ -47,8 +48,10 @@ class DrawerModel(Jev):
                     raise ValueError('Malformed Jev probabilities')
             signs = {'negative': -1, 'hold': 0, 'positive': 1}
             choice = [signs[answers[axis]['choice']] for axis in 'xyz']
+            rotation_choice = [signs[answers[axis]['choice']] if axis in answers else 0
+                               for axis in ('rx', 'ry', 'rz')]
             axes = payload['state']['translation_axes']
-            row.update(answers=answers, signs=choice,
+            row.update(answers=answers, signs=choice, rotation_signs=rotation_choice,
                        gripper=answers['gripper']['choice'],
                        transition=answers['transition']['choice'],
                        model=raw.get('model'),
@@ -84,6 +87,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_handle = None
     image_template = None
     expected = None
+    # The three visible handles protrude from the cabinet face toward +world Y.
+    # Approach with tool Z toward -world Y to avoid a top-down collision.
+    side_orientation = np.array([[1., 0., 0.],
+                                 [0., 0., -1.],
+                                 [0., 1., 0.]])
 
     def frame():
         cam = 'agentview'
@@ -130,12 +138,17 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             targets = {
-                'approach': handle_position + [0., .14, .08],
-                'align': handle_position + [0., .14, .012],
-                'contact': handle_position + [0., .012, .012],
-                'pull': handle_position + [0., .18, .012],
+                'approach': handle_position + [0., .14, .14],
+                'align': handle_position + [0., .14, .14],
+                'contact': handle_position + [0., .012, 0.],
+                'pull': handle_position + [0., .18, 0.],
             }
             target = np.asarray(targets.get(name, position), float)
+            rotation_error = (Rotation.from_matrix(side_orientation @
+                Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
+                if name in ('align', 'contact', 'grasp', 'pull', 'release')
+                else np.zeros(3))
+            oriented = bool(np.max(np.abs(rotation_error)) < .06)
             aperture = float(np.sum(np.abs(obs['robot0_gripper_qpos']))*1000)
             shift = handle_shift() if name in ('pull', 'verify') else None
             arrived = bool(np.max(np.abs(target-position)) < .007)
@@ -143,8 +156,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'observe': True,
                 'select_handle': True,
                 'approach': arrived,
-                'align': arrived,
-                'contact': arrived,
+                'align': arrived and oriented,
+                'contact': arrived and oriented,
                 'grasp': grip_ticks >= 18 and gripper == 1,
                 'pull': arrived and shift is not None and shift['pixel_displacement'] > 12,
                 'release': grip_ticks >= 24 and gripper == -1 and aperture >= 65,
@@ -157,12 +170,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             handle_world_m=handle_position.tolist(),
                             current_tcp_world_m=position.tolist(),
                             position_arrived=arrived,
+                            orientation_arrived=oriented,
                             gripper_command_ticks=grip_ticks,
                             gripper_aperture_mm=aperture,
                             visible_handle_shift=shift,
                             **{stage['gate']: bool(gate)})
             request = decision_request(1098, stage['id'], tcp_xyz_m=position,
-                target_xyz_m=target, rotation_error_world_rad=[0., 0., 0.],
+                target_xyz_m=target, rotation_error_world_rad=rotation_error,
                 gripper_aperture_mm=aperture,
                 last_gripper_command='open' if gripper == -1 else 'close',
                 observed_evidence=evidence, recent_actions=history,
@@ -184,12 +198,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             gripper = selected_gripper
             error = target-position
             delta = np.asarray(decision['signs'])*np.minimum(.018, .5*np.abs(error))
+            rotation_delta = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rotation_error))
             block = 6 if name in ('grasp', 'release') else 3
             before = position.copy()
             for _ in range(block):
                 if ticks >= 550:
                     raise RuntimeError('Drawer native step budget')
-                obs, _, _, _ = env.step(np.r_[delta/.05, 0., 0., 0., gripper])
+                obs, _, _, _ = env.step(np.r_[delta/.05, rotation_delta/.5, gripper])
                 ticks += 1
                 stage_ticks += 1
                 grip_ticks += 1
@@ -197,12 +212,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             motion = np.round((after-before)*1000, 2).tolist()
             rec.branch(dict(stage=stage['id'], decision_id=decision['decision_id'],
                             before=before, after=after, delta=delta,
+                            rotation_delta=rotation_delta,
                             selected_gripper=command, executed_gripper=gripper,
                             selected_transition=edge, native_steps=ticks))
             history.append(dict(stage=name, actual_displacement_mm=motion,
                                 commanded_delta_mm=np.round(delta*1000, 2).tolist(),
                                 transition=edge))
             if edge == 'advance':
+                current_image, _, _, _ = frame()
+                cv2.imwrite(str(rec.folder/f'{ticks:04d}-{name}-agentview.jpg'),
+                            cv2.cvtColor(current_image, cv2.COLOR_RGB2BGR))
                 rec.event(dict(kind='phase_transition', from_stage=stage['id'],
                                to_stage=request['state']['next_stage'],
                                decision_id=decision['decision_id']))
@@ -213,6 +232,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         failure = str(exc)
         rec.event(dict(kind='stop', reason=failure))
     finally:
+        current_image, _, _, _ = frame()
+        cv2.imwrite(str(rec.folder/f'{ticks:04d}-terminal-agentview.jpg'),
+                    cv2.cvtColor(current_image, cv2.COLOR_RGB2BGR))
         visible_shift = handle_shift()
         success = bool(env.check_success())
         dump(rec.folder/'result.json', dict(success=success,
