@@ -254,3 +254,5 @@
 - 【User】【2026-10-07 13:49】[prompt] 后续不需要ykj这个分支了直接合到远程仓库的main里面吧
 - 【Agent】【2026-10-07 13:50】[op] 用户决定停用ykj并合入远程main；核对SSH远端main是ykj祖先，差329提交，可快进。将提交本轮流水、快进main、SSH推送并在验证后移除ykj分支。  ↪ `DISC-2026W39-001`
 - 【Agent】【2026-10-07 13:51】[result] 本轮main快进到ab2cdc0并经SSH推送，远端核验同SHA；确认ykj祖先关系后删除远端与本地ykj分支。最终流水提交将直接推main。  ↪ `DISC-2026W39-001`
+- 【User】【2026-10-07 13:52】[prompt] 已经把在robodojo和libero上跑的实验等都同步到远程仓库了是吗，包括具体跑的代码部分吗
+- 【Agent】【2026-10-07 13:53】[result] 审计远程main=6cfd9ea：RoboDojo/LIBERO运行源码、Pro桥与LOGS结果报告已跟踪；code/runs等原始回合与LIBERO frozen快照被.gitignore排除，不能称所有原始产物已上Git。  ↪ `DISC-2026W39-001`
