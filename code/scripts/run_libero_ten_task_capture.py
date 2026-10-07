@@ -25,7 +25,16 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--egl-device-id", type=int, choices=range(8), default=2)
     parser.add_argument("--init-index", type=int, default=0)
+    parser.add_argument("--task-ids", default=",".join(map(str, TASKS)),
+                        help="Comma-separated subset of the ten public Goal task IDs")
     args = parser.parse_args()
+    try:
+        task_ids = [int(item) for item in args.task_ids.split(",")]
+    except ValueError:
+        parser.error("--task-ids must be comma-separated integers")
+    if not task_ids or len(task_ids) != len(set(task_ids)) or any(
+            task_id not in TASKS for task_id in task_ids):
+        parser.error("--task-ids must be a nonempty unique subset of the ten tasks")
     repo = Path(__file__).resolve().parents[2]
     root = args.output.resolve()
     if not root.is_relative_to(repo / "code/runs"):
@@ -37,7 +46,7 @@ def main():
     root.mkdir(parents=True)
     ledger = repo / "code/runs/libero-supervisor-ledger.jsonl"
     source = Path(__file__).with_name("libero_jev_rollout.py")
-    manifest = dict(task_ids=list(TASKS), suite="libero_goal",
+    manifest = dict(task_ids=task_ids, suite="libero_goal",
                     init_index=args.init_index, model_calls=0,
                     purpose="public-scene RGB-D observation only",
                     camera_size=768, per_task_cap=TASK_CAP,
@@ -47,7 +56,7 @@ def main():
     (root / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     rows = []
     consecutive_crashes = 0
-    for task_id in TASKS:
+    for task_id in task_ids:
         if shutil.disk_usage(root).free < 6 * 1024**3:
             (root / "stopped.json").write_text(json.dumps(dict(
                 reason="Less than 6GiB free", task_id=task_id), indent=2) + "\n")
@@ -115,7 +124,7 @@ def main():
             break
     (root / "summary.json").write_text(json.dumps(dict(
         captured=sum(r["scene_ready"] for r in rows),
-        reserved=len(rows), planned=len(TASKS)), indent=2) + "\n")
+        reserved=len(rows), planned=len(task_ids)), indent=2) + "\n")
 
 
 if __name__ == "__main__":
