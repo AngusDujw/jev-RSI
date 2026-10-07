@@ -7,7 +7,7 @@
 - `company-server-2` 同一项目隔离 worktree 的 `code/runs/2026-10-08-ten-goal-initial-rgbd/` 保存 Goal task 1098、1144、1163、1202、1252、1296、1335、1383、1423、1458，各官方 init0 一次。`summary.json` 为 `captured=10, reserved=10`；每项初始化张爪后记录两路 768×768 RGB-D、标定和机器人 TCP。账本写入原项目 `code/runs/libero-supervisor-ledger.jsonl`，每项占一次既定 50 次上限。**控制步、Jev、GPT-6 均为 0**；这不是任务完成测试。
 - 固定文本提示的本地 GroundingDINO+SAM2 对十张 agentview 逐张推理，响应保存于 `grounding-requests.jsonl` / `grounding-responses.jsonl`，每张检测都附 SAM 掩码。对 1335、1383 各做一次离线提示修订，结果在 `*-v2.jsonl`。这是本地视觉模型，不是 GPT-6/Pro/API；该提示调整只适用于开发帧，未来冻结评估不能再用 init0 调参。
 - `1098` 的检测框合并了多个抽屉把手；`1296` 把碗也报作 `plate`，把“front area”报成整张桌；`1335` 第一提示漏检奶酪，明确描述蓝色奶酪盒后才出现候选；`1383` 旋钮候选同时落在机器人/柜把手上，只有利用炉具邻接关系才能保留正确候选。这些是**真实视觉失效**，不能把检测标签直接写进 Jev 输入当真值。
-- [代码合同](../code/scripts/libero_ten_task_workflows.py)当前只生成 `state + questions`、阶段顺序与选项校验，目标坐标和证据须由视觉适配器提供；[采集入口](../code/scripts/run_libero_ten_task_capture.py)只采图。历史 [GenericVision](../code/scripts/libero_generic_vision.py)当前仅允许 `codex_pro`，所以不能直接作为这十项 Jev 运行时前端。**十项物理 Jev 闭环尚未实现或试跑。**
+- [代码合同](../code/scripts/libero_ten_task_workflows.py)当前只生成 `state + questions`、阶段顺序与选项校验，目标坐标和证据须由视觉适配器提供；[采集入口](../code/scripts/run_libero_ten_task_capture.py)只采图。[GenericVision](../code/scripts/libero_generic_vision.py)默认语义路径要求 `codex_pro`；并行加入的显式 `offline_goal_vision` 路径用[固定 init0 图框](../code/scripts/libero_goal_static_vision.py)覆盖六个抓放项，仅能用于这些开发初态，不能当成十项通用可见目标适配器。**本次十项采集没有运行 Jev 闭环。**
 
 ## 固定处理：每项在运行前给定，运行时只读传感器
 
