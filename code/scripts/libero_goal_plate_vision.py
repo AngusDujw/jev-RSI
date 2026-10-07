@@ -63,7 +63,10 @@ def visible_plate(view, previous_uv=None):
     if not candidates:
         raise RuntimeError('No unambiguous visible flat red-rim plate')
     candidates.sort(key=lambda row: row['red_pixels'], reverse=True)
-    if len(candidates) > 1 and candidates[1]['red_pixels'] > .75*candidates[0]['red_pixels']:
+    if (len(candidates) > 1 and
+            candidates[1]['red_pixels'] > .75*candidates[0]['red_pixels'] and
+            np.linalg.norm(np.asarray(candidates[1]['uv'])-
+                           np.asarray(candidates[0]['uv'])) > 80):
         raise RuntimeError('Ambiguous visible red-rim plate candidates')
     return candidates[0]
 
