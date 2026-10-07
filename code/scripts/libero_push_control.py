@@ -48,7 +48,8 @@ def visible_rear_extent(view, mask, source, direction):
 
 
 def contact_push_plan(source, goal, own, current_orientation=None,
-                      observed_rear_extent_m=None, rear_standoff_m=.010):
+                      observed_rear_extent_m=None, rear_standoff_m=.010,
+                      preserve_downward=True):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -64,7 +65,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         proposed[:, 1] *= -1
     # A downward pusher needs no yaw alignment to make side contact. Keep an
     # already-downward wrist pose to avoid sweeping the arm through obstacles.
-    preserve = current_orientation is not None and float(
+    preserve = preserve_downward and current_orientation is not None and float(
         np.asarray(current_orientation)[2, 2]) < -.90
     orientation = np.asarray(current_orientation) if preserve else proposed
     own_box = envelope(own, orientation)
@@ -306,7 +307,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         rear_extent = visible_rear_extent(v[ob['camera']],
             np.load(source['visible_mask_path']), source, unit_push)
         plan = contact_push_plan(source, goal, own,
-            Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(), rear_extent)
+            Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(), rear_extent,
+            preserve_downward=not visible_goal_plate)
         direction = plan['direction']
         orientation = plan['orientation']
         approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
@@ -421,7 +423,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 plan = contact_push_plan(source, goal, own,
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(),
                     rear_extent,
-                    rear_standoff_m=-.012 if visible_goal_plate and stage == 'lower' else .010)
+                    rear_standoff_m=-.012 if visible_goal_plate and stage == 'lower' else .010,
+                    preserve_downward=not visible_goal_plate)
                 direction, orientation = plan['direction'], plan['orientation']
                 approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
                 push_end, retreat = plan['push_end'], plan['retreat']
@@ -485,7 +488,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     dump(rec.folder/'own-gripper-after-close.json', own)
                     plan = contact_push_plan(source, goal, own,
                         Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(),
-                        rear_extent)
+                        rear_extent, preserve_downward=not visible_goal_plate)
                     direction, orientation = plan['direction'], plan['orientation']
                     approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
                     push_end, retreat = plan['push_end'],plan['retreat']
