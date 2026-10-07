@@ -112,6 +112,13 @@ class Jev:
             from realman_jev.api import API
         config = ({'model': 'gpt-6-sol'} if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro'
             else json.loads(Path(recorder.cfg["api_config"]).read_text())["jev"])
+        if os.environ.get('JEV_RSI_JEV_PROXY'):
+            if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro':
+                raise ValueError('Jev proxy is only for the Jev backend')
+            proxy = os.environ['JEV_RSI_JEV_PROXY']
+            if proxy != 'http://127.0.0.1:7905':
+                raise ValueError('Jev proxy must be the authorized SSH loopback forward')
+            config = dict(config, proxy=proxy)
         self.api = API(config, recorder.event, "jev")
 
     def choose(self, state, metadata):
