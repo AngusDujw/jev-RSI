@@ -82,6 +82,9 @@ class GenericVision:
         result=dict(center=center,low=lo,high=hi,points=len(data),label=label,
                     visible_mask_path=r['objects'][0]['mask_path'],
                     source='semantic box + SAM visible mask + RGB-D quantiles')
+        if self.static_mode and reason == 'initial-source':
+            from libero_goal_static_vision import validate_initial_source
+            validate_initial_source(self.rec.cfg['task_id'], result)
         dump(p/'geometry.json',result);return result
     def close(self):
         if self.api is not None:self.api.close()
