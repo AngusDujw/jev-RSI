@@ -88,6 +88,8 @@ graph LR
     T_2026W41_025["📊 libero-generic-vision<br/>Goal十项初态10/10可采；本地检测对…"]:::experiment
     T_2026W41_026["📊 jev-control-formulation<br/>三任务配对响应：LIBERO远区两任务有相…"]:::experiment
     T_2026W41_027["📊 libero-goal-ten<br/>新增十项的四个Goal init0分别获得…"]:::experiment
+    T_2026W41_028["⛔ libero-goal-ten<br/>Goal 1296 连续三次实跑 Cras…"]:::blocker
+    T_2026W41_029["⛔ libero-goal-ten<br/>Goal1296三次可见盘推送均在下降阶段…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -143,6 +145,8 @@ graph LR
   T_2026W41_023 --> T_2026W41_024
   T_2026W41_022 --> T_2026W41_025
   T_2026W41_024 --> T_2026W41_026
+  T_2026W41_027 --> T_2026W41_028
+  T_2026W41_028 --> T_2026W41_029
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -221,6 +225,8 @@ graph LR
 | `T-2026W41-025` | 2026-10-08 | experiment | libero-generic-vision | Goal十项初态10/10可采；本地检测对抽屉把手、盘/碗和炉具旋钮存在身份/区域错误，需固定几何过滤后才可给Jev目标 | `EXP-2026W41-061` | - |
 | `T-2026W41-026` | 2026-10-08 | experiment | jev-control-formulation | 三任务配对响应：LIBERO远区两任务有相近净执行响应，但近区零命令仍前进5–6mm，尚不能并入停稳步长数据 | `EXP-2026W41-070` | - |
 | `T-2026W41-027` | 2026-10-08 | experiment | libero-goal-ten | 新增十项的四个Goal init0分别获得一次Jev原生完整成功；瓶和抽屉仍未完成 | `EXP-2026W41-064`, `EXP-2026W41-066`, `EXP-2026W41-067`, `EXP-2026W41-071` | - |
+| `T-2026W41-028` | 2026-10-08 | blocker | libero-goal-ten | Goal 1296 连续三次实跑 Crashed；新增十项目前4/10原生成功，按协议暂停新物理实验并请用户决定 | `EXP-2026W41-078` | - |
+| `T-2026W41-029` | 2026-10-08 | blocker | libero-goal-ten | Goal1296三次可见盘推送均在下降阶段不收敛；姿态转向将最低高度1.106m降至0.946m但仍未接触盘，按协议暂停新增实验 | `EXP-2026W41-075`, `EXP-2026W41-076`, `EXP-2026W41-078` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
