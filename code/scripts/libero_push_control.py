@@ -48,7 +48,7 @@ def visible_rear_extent(view, mask, source, direction):
 
 
 def contact_push_plan(source, goal, own, current_orientation=None,
-                      observed_rear_extent_m=None):
+                      observed_rear_extent_m=None, rear_standoff_m=.010):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -73,6 +73,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     finger_high = float(fingers[:, 2].max())
     rear_extent = (float(observed_rear_extent_m) if observed_rear_extent_m is not None
         else float(np.dot(np.abs(direction), (source['high']-source['low'])[:2]/2)))
+    if not -.020 <= rear_standoff_m <= .030:
+        raise ValueError('Rear standoff outside declared contact range')
     contact_xy = source['center'][:2] - direction*(rear_extent+leading+.004)
     contact_z = goal[2]+.004-own_box['finger_low_z_offset']
     finger_low_world = contact_z+own_box['finger_low_z_offset']
@@ -81,8 +83,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
             finger_high_world < source['low'][2]+.001):
         raise RuntimeError('Own finger envelope misses observed object height')
     hover_z = max(contact_z+.20, source['high'][2]+.20)
-    approach = np.r_[contact_xy-direction*.010, hover_z]
-    lower = np.r_[contact_xy-direction*.010, contact_z]
+    approach = np.r_[contact_xy-direction*rear_standoff_m, hover_z]
+    lower = np.r_[contact_xy-direction*rear_standoff_m, contact_z]
     contact = np.r_[contact_xy, contact_z]
     push_end = np.r_[contact_xy+direction*(distance+.025), contact_z]
     retreat = push_end+np.array([0., 0., .10])
@@ -91,6 +93,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
             'downward pose derived from visible push direction',
         direction=direction,
         observed_rear_extent_m=rear_extent,
+        rear_standoff_m=rear_standoff_m,
         rear_extent_source='visible SAM mask/RGB-D 5th percentile' if observed_rear_extent_m is not None else 'RGB-D axis bounds fallback',
         own_finger_leading_offset_m=leading,
         own_finger_high_offset_m=finger_high, own_envelope=own_box,
@@ -319,6 +322,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             rec.check_budget()
             if ticks >= 550 or stage_decisions >= 65:
                 raise RuntimeError('Push native/stage decision budget')
+            if visible_goal_plate and stalls >= 6 and reobservations >= 1:
+                raise RuntimeError('Visible plate push halted after six blocked blocks following reobserve')
             current = obs['robot0_eef_pos'].copy()
             target = dict(prepare=current, approach=approach, lower=lower,
                           push=push_end, retreat=retreat)[stage]
@@ -415,7 +420,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 own = gripper_geometry(env, obs)
                 plan = contact_push_plan(source, goal, own,
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(),
-                    rear_extent)
+                    rear_extent,
+                    rear_standoff_m=-.012 if visible_goal_plate and stage == 'lower' else .010)
                 direction, orientation = plan['direction'], plan['orientation']
                 approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
                 push_end, retreat = plan['push_end'], plan['retreat']
@@ -428,7 +434,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 dump(rec.folder/'push-geometry-reobserve.json', dict(
                     public_task=public_task, source=source, target_uv=goal_uv,
                     visible_goal_world_m=goal, **plan,
-                    provenance='Fresh visible RGB-D/SAM and own robot geometry; '
+                    provenance=('Fresh visible red-rim plate RGB-D and own robot geometry; '
+                        if visible_goal_plate else
+                        'Fresh visible RGB-D/SAM and own robot geometry; ') +
                         'original visible destination retained'))
                 continue
             newgripper = gripper if decision['gripper']=='keep' else -1 if decision['gripper']=='open' else 1
