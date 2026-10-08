@@ -118,8 +118,17 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             uv=(v['K']@cp)[:2]/cp[2];size=np.clip(max(src['high']-src['low'])*v['K'][0,0]/cp[2],30,250)
             b=np.r_[uv-size*.65,uv+size*.65].clip(0,v['rgb'].shape[0]-1).tolist()
             if h is None:h=vision.measure(v,b,sem['source']['label'],'held-validation')
-            valid=bool(h['low'][2]-source_grasp[2]>.015 and h['high'][2]-h['low'][2]<max(.06,1.8*max(src['high'][2]-src['low'][2],initial_source_extent[2])) and np.linalg.norm(h['center']-expected)<.06)
-            holding=dict(valid=valid,source='RGB-D co-motion proxy, not ground truth',measured=h,expected=expected,observed_tick=ticks)
+            # A held bowl can rotate from horizontal to a near-vertical rim.
+            # World-Z thickness is not invariant to that rotation; compare the
+            # visible 3-D span with the initial visible span instead.
+            size_ratio=float(np.linalg.norm(h['high']-h['low'])/
+                             max(np.linalg.norm(initial_source_extent),1e-6))
+            valid=bool(h['low'][2]-source_grasp[2]>.015 and
+                       .4 < size_ratio < 1.7 and
+                       np.linalg.norm(h['center']-expected)<.06)
+            holding=dict(valid=valid,source='RGB-D co-motion proxy, not ground truth',
+                         visible_span_ratio=size_ratio,measured=h,
+                         expected=expected,observed_tick=ticks)
             if valid:offset=h['center']-obs['robot0_eef_pos']
         except Exception as e:holding=dict(valid=False,reason=str(e),observed_tick=ticks)
         dump(rec.folder/f'holding-{ticks:04d}.json',holding)

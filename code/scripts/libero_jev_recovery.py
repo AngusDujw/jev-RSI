@@ -252,8 +252,14 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             return
         rise = float(h['center'][2]-source_grasp[2])
         mismatch = float(np.linalg.norm(h['center']-expected))
-        valid = rise > .015 and mismatch < .065 and h['high'][2]-h['low'][2] < max(.06,1.8*(initial_src['high'][2]-initial_src['low'][2]))
-        holding = dict(valid=bool(valid),status='passed' if valid else 'failed',source='Visible RGB-D co-motion proxy',source_rise_mm=rise*1000,co_motion_error_mm=mismatch*1000,measured=h,expected=expected,observed_tick=ticks)
+        size_ratio = float(np.linalg.norm(h['high']-h['low']) /
+                           max(np.linalg.norm(initial_src['high']-initial_src['low']),1e-6))
+        valid = rise > .015 and mismatch < .065 and .4 < size_ratio < 1.7
+        holding = dict(valid=bool(valid),status='passed' if valid else 'failed',
+                       source='Visible RGB-D co-motion proxy',
+                       source_rise_mm=rise*1000,co_motion_error_mm=mismatch*1000,
+                       visible_span_ratio=size_ratio,measured=h,expected=expected,
+                       observed_tick=ticks)
         if valid:
             offset = h['center']-obs['robot0_eef_pos']
         elif rise < .015:
