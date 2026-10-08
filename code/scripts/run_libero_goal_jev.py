@@ -20,6 +20,7 @@ KNOB_TASKS = {1383}
 DRAWER_TASKS = {1098}
 PUSH_TASKS = {1296}
 POLICY_FILES = (
+    'run_libero_goal_jev.py',
     'libero_jev_rollout.py', 'libero_generic_vision.py',
     'libero_goal_local_vision.py', 'libero_grounding_worker.py',
     'libero_jev_recovery.py', 'libero_jev_supervisor.py',
