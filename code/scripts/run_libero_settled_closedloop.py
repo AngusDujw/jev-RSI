@@ -42,17 +42,25 @@ def main():
     parser.add_argument('--init', required=True, type=int)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--egl-device', type=int, default=1)
+    parser.add_argument('--policies', nargs='+',
+                        choices=('jev_adaptive', 'jev_fixed', 'direct_adaptive'),
+                        default=('jev_adaptive', 'jev_fixed', 'direct_adaptive'))
+    parser.add_argument('--direct-hold-tolerance-m', type=float)
     args = parser.parse_args()
     if (args.task == 'bowl' and args.init not in range(1, 21)) or (
             args.task == 'cheese' and args.init not in (7, 8, 9)):
         parser.error('Init must have an archived frozen trajectory')
+    if args.direct_hold_tolerance_m is not None and not 0 <= args.direct_hold_tolerance_m <= TOLERANCE_M[args.task]:
+        parser.error('Direct hold tolerance must be between zero and the task tolerance')
+    direct_tolerance = (TOLERANCE_M[args.task] if args.direct_hold_tolerance_m is None
+                        else args.direct_hold_tolerance_m)
     out = args.output.resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=900, output_limit_mb=100, max_jev_decisions=8,
                task=args.task, init=args.init, coordinate_frame='world_cartesian_m',
-               policies=['jev_adaptive', 'jev_fixed', 'direct_adaptive'],
+               policies=list(args.policies), direct_hold_tolerance_m=direct_tolerance,
                max_attempts=MAX_ATTEMPTS, step_cap_m=STEP_CAP_M, step_gain=STEP_GAIN,
                fixed_step_m=FIXED_STEP_M, hold_tolerance_m=TOLERANCE_M[args.task],
                target_radius_m=TOLERANCE_M[args.task], action_ticks=3,
@@ -116,7 +124,7 @@ def main():
                         break
                     signs = np.asarray(choice['signs'], int)
                 else:
-                    signs = direct_signs(error, cfg['hold_tolerance_m'])
+                    signs = direct_signs(error, cfg['direct_hold_tolerance_m'])
                 delta = action_for(error, signs, policy)
                 if not np.any(delta):
                     status = 'all_hold'
