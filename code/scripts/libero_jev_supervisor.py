@@ -42,7 +42,12 @@ class DecisionModel(Jev):
                 a=answers[name];p=a['probabilities']
                 if a['choice'] not in q['criteria'] or set(p)!=set(q['criteria']) or not all(np.isfinite(x) and 0<=x<=1 for x in [a['confidence'],*p.values()]) or abs(sum(p.values())-1)>.02:raise ValueError('Invalid Jev decision')
             signs=[dict(negative=-1,hold=0,positive=1)[answers[a]['choice']] for a in 'xyz']
-            row.update(rotation_signs=[dict(negative=-1,hold=0,positive=1)[answers[a]['choice']] for a in ['rx','ry','rz']] if state.get('rotation_control') else [0,0,0],answers=answers,signs=signs,model=raw.get('model'),gripper=answers['gripper']['choice'],transition=answers['transition']['choice'],metrics=direction_metrics(state['position_m'],state['target_position_m'],signs,state['hold_tolerance_m']))
+            if 'translation_axes' in state:
+                pos=[0.]*3
+                target=[state['translation_axes'][a]['goal_minus_current_mm']/1000 for a in 'xyz']
+            else:
+                pos,target=state['position_m'],state['target_position_m']
+            row.update(rotation_signs=[dict(negative=-1,hold=0,positive=1)[answers[a]['choice']] for a in ['rx','ry','rz']] if state.get('rotation_control') else [0,0,0],answers=answers,signs=signs,model=raw.get('model'),gripper=answers['gripper']['choice'],transition=answers['transition']['choice'],metrics=direction_metrics(pos,target,signs,state['hold_tolerance_m']))
         except Exception as exc:
             row['error']=str(exc).replace(self.api.credential,'[redacted]') if self.api.credential else str(exc);self.rec.errors.append(dict(type=type(exc).__name__));raise
         finally:
@@ -174,7 +179,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 geometry_source='RGB-D visible masks, not true object poses',source_label=sem['source']['label'],destination_label=sem['destination']['label'],
                 recovery_remaining=not reobserved and vision.calls<3,last_progress_m=last_progress,stalls=stalls,
                 carry_hover_replans=carry_hover_replans)
-            if rec.cfg['schema']=='feedback':
+            if rec.cfg['schema'] in ('feedback','focused'):
                 observed=holding.get('observed_tick') is not None
                 check_status=('passed' if holding.get('valid') else 'failed') if observed else 'not_checked_yet'
                 if not observed:state['holding_evidence']=dict(valid=None,status=check_status,reason='Co-motion test becomes available on arrival at lift height, not before')
@@ -192,6 +197,32 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 state.update(rotation_control=True,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rotation_error.tolist())),rotation_relations={a:('hold' if abs(e)<.03 else 'target needs positive rotation' if e>0 else 'target needs negative rotation') for a,e in zip(['rx','ry','rz'],rotation_error)},rotation_tolerance_rad=.03,
                     orientation_arrived=bool(np.max(abs(rotation_error))<.03))
                 state['phase_contract']+=' Before advancing any positioning phase, also require orientation_arrived. Rotation is commanded by your rx/ry/rz choices.'
+            if rec.cfg['schema']=='focused':
+                full=state
+                state=dict(task=full['task'],stage=stage,next_phase=full['next_phase'],
+                           phase_contract=full['phase_contract'],
+                           translation_axes={a:dict(
+                               goal_minus_current_mm=round(float(error[i])*1000,2),
+                               relation=full['axis_relations'][a])
+                               for i,a in enumerate('xyz')},
+                           hold_tolerance_m=.004,
+                           gripper=dict(aperture_mm=full['gripper_aperture_mm'],
+                               last_command=full['last_gripper_command'],
+                               phase_ticks=gripper_ticks,
+                               required_state=('open' if stage in ('approach','align','descend','release','retreat')
+                                               else 'closed')),
+                           measurement_status=full['measurement_status'],
+                           holding_evidence=dict(valid=holding.get('valid') if stage in ('lift','carry','lower','release','retreat') else None,
+                               observed_tick=holding.get('observed_tick'),
+                               visible_span_ratio=holding.get('visible_span_ratio')),
+                           stalls=stalls,last_progress_m=last_progress,
+                           carry_hover_replans=carry_hover_replans,
+                           recent_actions=history[-1:],
+                           information_sources='Public task, rendered RGB-D/calibration, own robot state and executed actions only.')
+                if side:
+                    state.update(rotation_control=True,
+                                 required_rotation_world_rad=full['required_rotation_world_rad'],
+                                 orientation_arrived=full['orientation_arrived'])
             state=json.loads(json.dumps(state,default=serial,allow_nan=False))
             d=model.decide(state);stage_decisions+=1
             if d['transition']=='stop':raise RuntimeError('Jev elected stop')

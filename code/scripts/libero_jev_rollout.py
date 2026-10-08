@@ -236,7 +236,7 @@ def main():
     p.add_argument('--scripted-supervisor',dest='jev_supervisor',action='store_false',help='Historical automatic gripper/phase policy; reproduction only')
     p.add_argument('--max-jev-decisions',type=int,default=120)
     p.add_argument('--wall-limit-seconds',type=int,default=900)
-    p.add_argument('--schema', choices=['numeric','feedback'], default='feedback')
+    p.add_argument('--schema', choices=['numeric','feedback','focused'], default='feedback')
     p.add_argument('--grasp-fraction', type=float, default=.4)
     p.add_argument('--geometry-profile',choices=['base','observed_surfaces'],default='base')
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
