@@ -1,7 +1,7 @@
 """Bounded Jev drawer attempt from public RGB-D handle measurements.
 
 No simulator object state or task predicate is read until terminal evaluation.
-The action path is a declared init0 development scaffold; Jev chooses motion
+The action path is a declared Goal 1098 development scaffold; Jev chooses motion
 signs, gripper commands and every phase transition.
 """
 import hashlib
@@ -73,8 +73,8 @@ class DrawerModel(Jev):
 
 
 def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
-    if rec.cfg['suite'] != 'libero_goal' or rec.cfg['task_id'] != 1098 or rec.cfg['init_index'] != 0:
-        raise ValueError('Drawer controller is frozen only for Goal 1098 init0')
+    if rec.cfg['suite'] != 'libero_goal' or rec.cfg['task_id'] != 1098:
+        raise ValueError('Drawer controller requires Goal 1098')
     if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro':
         raise ValueError('Drawer trial requires Jev at runtime')
     model = DrawerModel(rec)
@@ -89,11 +89,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_handle = None
     image_template = None
     expected = None
-    hook_mode = rec.cfg.get('drawer_contact_mode', 'pinch') == 'hook'
+    contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
+    hook_mode = contact_mode in ('hook', 'top_hook')
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
-    side_orientation = (Rotation.from_euler('x', 210, degrees=True).as_matrix()
+    side_orientation = (Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+                        if contact_mode == 'top_hook' else
+                        Rotation.from_euler('x', 210, degrees=True).as_matrix()
                         if hook_mode else np.array([[1., 0., 0.],
                                                     [0., 0., -1.],
                                                     [0., 1., 0.]]))

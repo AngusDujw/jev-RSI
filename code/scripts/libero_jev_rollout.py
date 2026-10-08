@@ -212,10 +212,10 @@ def main():
     p.add_argument('--output', required=True)
     p.add_argument('--capture-only', action='store_true')
     p.add_argument('--drawer-supervisor', action='store_true',
-                   help='Jev-controlled visible-handle Goal 1098 init0 drawer trial')
+                   help='Jev-controlled visible-handle Goal 1098 drawer trial')
     p.add_argument('--knob-supervisor', action='store_true',
                    help='Jev-controlled visible stove control Goal 1383 trial')
-    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook'], default='pinch',
+    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook'], default='pinch',
                    help='Fixed public-vision handle contact method; Jev still selects gripper and stages')
     p.add_argument('--offline-goal-vision', action='store_true',
                    help='Use predeclared init0 Goal image boxes and runtime RGB-D/SAM; no GPT-6 calls')
@@ -263,9 +263,9 @@ def main():
                                 os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
         p.error('--local-goal-vision requires a supported Goal task, 768px and Jev backend')
     if a.drawer_supervisor and (a.suite != 'libero_goal' or a.task_id != 1098 or
-                                a.init_index != 0 or a.camera_size != 768 or
+                                a.camera_size != 768 or
                                 os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro'):
-        p.error('--drawer-supervisor requires Goal 1098 init0, 768px, and Jev backend')
+        p.error('--drawer-supervisor requires Goal 1098, 768px, and Jev backend')
     if a.knob_supervisor and (a.suite != 'libero_goal' or a.task_id != 1383 or
                               a.camera_size != 768 or
                               os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
