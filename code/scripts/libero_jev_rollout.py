@@ -290,7 +290,8 @@ def main():
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
                       TMPDIR=str(cache), XDG_CACHE_HOME=str(cache))
-    os.environ.setdefault('MUJOCO_EGL_DEVICE_ID', '0')
+    if os.environ.get('JEV_RSI_RENDER_BACKEND') != 'mesa':
+        os.environ.setdefault('MUJOCO_EGL_DEVICE_ID', '0')
     sys.path.insert(0, ROOT)
     from libero.libero import benchmark
     from libero.libero.envs.env_wrapper import ControlEnv

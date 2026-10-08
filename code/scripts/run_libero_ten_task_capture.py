@@ -91,12 +91,14 @@ def main():
         if args.render_backend == "mesa":
             env.pop("MUJOCO_EGL_DEVICE_ID", None)
             env.update(MUJOCO_GL="egl", EGL_PLATFORM="surfaceless",
+                JEV_RSI_RENDER_BACKEND="mesa",
                 __EGL_VENDOR_LIBRARY_FILENAMES=(
                     "/usr/share/glvnd/egl_vendor.d/50_mesa.json"),
                 CUDA_VISIBLE_DEVICES="")
         else:
             env.update(MUJOCO_EGL_DEVICE_ID=str(args.egl_device_id),
-                       CUDA_VISIBLE_DEVICES=str(args.egl_device_id))
+                       CUDA_VISIBLE_DEVICES=str(args.egl_device_id),
+                       JEV_RSI_RENDER_BACKEND="nvidia")
         started = time.monotonic()
         with (root / f"libero_goal-{task_id}.log").open("w") as log:
             try:
