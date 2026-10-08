@@ -12,7 +12,8 @@ from run_position_pilot import dump
 
 class GenericVision:
     def __init__(self,rec):
-        self.static_mode = bool(rec.cfg.get('offline_goal_vision'))
+        self.local_mode = bool(rec.cfg.get('local_goal_vision'))
+        self.static_mode = bool(rec.cfg.get('offline_goal_vision') or self.local_mode)
         if not self.static_mode and os.environ.get('JEV_RSI_MODEL_BACKEND') != 'codex_pro':
             raise RuntimeError('Current LIBERO semantic vision requires codex_pro; legacy API fallback disabled')
         self.rec=rec;self.calls=0;self.refreshes=0;self.identity=None;self.reasons=set()
@@ -42,8 +43,14 @@ class GenericVision:
         self.reasons.add(reason)
         self.calls+=1;p=self.rec.folder/f'semantic-{self.calls}';p.mkdir()
         if self.static_mode:
-            from libero_goal_static_vision import recognition
-            result = recognition(self.rec.cfg['task_id'], reason, views)
+            if self.local_mode:
+                from libero_goal_local_vision import recognize
+                result = recognize(self.worker, self.receive, views,
+                                   self.rec.cfg['task_id'], reason,
+                                   self.identity, p)
+            else:
+                from libero_goal_static_vision import recognition
+                result = recognition(self.rec.cfg['task_id'], reason, views)
             self.identity=result;dump(p/'objects.json',result)
             return result
         prompt='''Identify only visible objects required by the public pick-and-place instruction. No robot actions, trajectories, simulator truth or completion claims. Return JSON with source and destination. Each is {label:short plain noun phrase,camera:camera name,bbox:[x1,y1,x2,y2] in pixels,visible:boolean}. Resolve relational references from images. source is the object to move, destination the receiving object/surface. At pregrasp, stalled, or lift_check, locate the SAME source, preferably in wrist if visible; use previous identity description, do not switch instances. Reject ambiguity with visible=false. Bounding boxes enclose the whole visible object, exclude robot fingers and background. Coordinates are absolute pixels for the provided images; sizes are explicitly given for each camera. Return concise evidence string. Do not infer invisible boundaries. At lift_check do not assume a successful grasp: identify the source wherever actually visible, including still on the support. Prefer external camera if the wrist is heavily occluded by fingers.'''

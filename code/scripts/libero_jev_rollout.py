@@ -217,6 +217,8 @@ def main():
                    help='Fixed public-vision handle contact method; Jev still selects gripper and stages')
     p.add_argument('--offline-goal-vision', action='store_true',
                    help='Use predeclared init0 Goal image boxes and runtime RGB-D/SAM; no GPT-6 calls')
+    p.add_argument('--local-goal-vision', action='store_true',
+                   help='Use local RGB GroundingDINO/SAM for public Goal nouns and fixed visible fixture regions; no GPT-6 calls')
     p.add_argument('--recovery-supervisor', action='store_true')
     p.add_argument('--push-supervisor', action='store_true',
                    help='Visible RGB-D contact pushing with model-owned gripper and phase edges')
@@ -250,6 +252,11 @@ def main():
     a = p.parse_args()
     if a.offline_goal_vision and (a.suite != 'libero_goal' or a.init_index != 0 or a.camera_size != 768):
         p.error('--offline-goal-vision requires libero_goal init0 at 768x768')
+    if a.local_goal_vision and (a.offline_goal_vision or a.suite != 'libero_goal' or
+                                a.task_id not in (1144, 1163, 1252, 1335, 1423, 1458) or
+                                a.camera_size != 768 or
+                                os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
+        p.error('--local-goal-vision requires a supported Goal task, 768px and Jev backend')
     if a.drawer_supervisor and (a.suite != 'libero_goal' or a.task_id != 1098 or
                                 a.init_index != 0 or a.camera_size != 768 or
                                 os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro'):
@@ -263,7 +270,7 @@ def main():
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,offline_goal_vision=a.offline_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
