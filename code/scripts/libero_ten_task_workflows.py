@@ -86,7 +86,7 @@ PHASES = {
         ("contact", "reach control contact pose", "control_contact_pose_reached"),
         ("grasp", "close on the visible control", "closure_executed"),
         ("turn", "rotate the grasped control by the declared bounded wrist angle; verify visible control rotation after withdrawal", "wrist_turn_arrived"),
-        ("release", "open gripper and clear control", "opening_executed"),
+        ("release", "hold TCP at the control and command open until >=24 executed ticks and >=70mm aperture; advance on that evidence. Withdrawal is in verify, not this stage", "opening_executed"),
         ("verify", "compare visible control/indicator before and after", "visible_change"),
     ),
 }

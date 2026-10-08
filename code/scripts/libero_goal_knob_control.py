@@ -122,6 +122,12 @@ def run_knob(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'toward the declared world-Z goal. This stage uses only own '
                     'orientation as a gate; actual visible control rotation is '
                     'checked after opening and withdrawal.')
+            if name=='release':
+                request['questions']['transition']['instructions']=(
+                    'Read completion_evidence.opening_executed. If true, choose '
+                    'advance now: opening and its measured duration are the whole '
+                    'release contract. The next verify stage withdraws and checks '
+                    'the visible control. If false, continue opening.')
             if name=='verify':
                 request['state']['stage_contract']=(
                     'Withdraw with open gripper, then compare the visible control '
