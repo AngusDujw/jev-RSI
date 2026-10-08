@@ -476,7 +476,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if newgripper != gripper:
                 grip_ticks = 0
             gripper = newgripper
-            cap = .012 if stage in ('lower','push') else .02
+            # A supported top slide must remain quasi-static so the fingertip
+            # can transmit tangential force instead of running ahead of the
+            # plate. Other push tasks keep their established amplitude.
+            cap = (.003 if visible_goal_plate and stage == 'push' else
+                   .012 if stage in ('lower', 'push') else .02)
             delta = np.asarray(decision['signs'])*np.minimum(cap, .5*np.abs(error))
             rotations = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rot))
             block = 6 if stage == 'prepare' or np.max(np.abs(error))>.06 else 3
