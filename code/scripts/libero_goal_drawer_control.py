@@ -14,6 +14,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 from libero_goal_drawer_vision import visible_drawer_handles, select_public_handle
+from libero_robot_geometry import gripper_geometry
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
 
@@ -92,6 +93,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     side_orientation = np.array([[1., 0., 0.],
                                  [0., 0., -1.],
                                  [0., 1., 0.]])
+    own = gripper_geometry(env, obs)
+    pad_center_offset = np.median(
+        np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
+    dump(rec.folder/'own-pad-contact-offset.json', dict(
+        side_orientation=side_orientation,
+        pad_center_offset_world_m=pad_center_offset,
+        source='own gripper collision pads and robot TCP only'))
 
     def frame():
         cam = 'agentview'
@@ -137,11 +145,12 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             stage = sequence[phase]
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
+            contact_tcp = handle_position - pad_center_offset
             targets = {
-                'approach': handle_position + [0., .14, .14],
-                'align': handle_position + [0., .14, .14],
-                'contact': handle_position + [0., .012, 0.],
-                'pull': handle_position + [0., .18, 0.],
+                'approach': contact_tcp + [0., .14, .14],
+                'align': contact_tcp + [0., .14, .14],
+                'contact': contact_tcp,
+                'pull': contact_tcp + [0., .18, 0.],
             }
             target = np.asarray(targets.get(name, position), float)
             rotation_error = (Rotation.from_matrix(side_orientation @
@@ -165,9 +174,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             }[name]
             evidence = dict(sources=['public_task', 'agentview_rgbd',
                                      'camera_calibration', 'robot_proprioception',
+                                     'own_robot_mesh',
                                      'executed_action_history'],
                             observed_native_tick=ticks,
                             handle_world_m=handle_position.tolist(),
+                            own_pad_center_offset_world_m=pad_center_offset.tolist(),
                             current_tcp_world_m=position.tolist(),
                             position_arrived=arrived,
                             orientation_arrived=oriented,
