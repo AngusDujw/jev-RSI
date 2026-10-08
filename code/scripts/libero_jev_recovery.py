@@ -147,6 +147,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     grasp_orientation = grasp_offset = rack_geometry = None
     rack_verified = False
     rack_release_tcp = None
+    recovery_clear_target = None
     rack_contact_checked = False
     rack_contact_evidence = dict(status='not_checked')
     visible_goal_evidence = dict(status='not_checked')
@@ -423,7 +424,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 Rgoal = (Rotation.from_rotvec(
                     np.array([rack_geometry['x_rotation_world_rad'],0.,0.])).as_matrix()
                     @ c['orientation'])
-            if stage == 'settle_receiver':
+            if stage in ('clear_receiver','settle_receiver'):
                 Rgoal = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
             position = obs['robot0_eef_pos'].copy()
             if stage in ['select','grasp','release','recover_open','settle_receiver']:
@@ -456,10 +457,12 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     target = np.r_[dst['center'][:2]-offset[:2],dst['high'][2]+(initial_src['high'][2]-initial_src['low'][2])/2+.012-offset[2]]
             elif stage == 'recover_up':
                 target = recovery_target
+            elif stage == 'clear_receiver':
+                target = recovery_clear_target
             else:
                 raise ValueError(stage)
             error = target-position
-            tol = .003 if stage == 'descend' else .006
+            tol = .003 if stage == 'descend' else .018 if stage == 'clear_receiver' else .006
             arrived = bool(np.max(abs(error)) < tol)
             rot = Rotation.from_matrix(Rgoal@Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
             oriented = bool(np.max(abs(rot)) < .03)
@@ -505,13 +508,15 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     rack_contact_evidence = dict(status='unavailable',
                         holding_status=holding['status'],observed_tick=ticks)
                 dump(rec.folder/f'rack-contact-{ticks:04d}.json',rack_contact_evidence)
-            required_open = stage in ['approach','align','descend','release','retreat','recover_open','settle_receiver']
+            required_open = stage in ['approach','align','descend','release','retreat','recover_open','clear_receiver','settle_receiver']
             required_close = stage in ['grasp','test_lift','lift','carry_lateral','carry','orient_receiver','lower']
             contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open. If fresh visible support evidence passed, choose finish_if_visible instead of another grasp.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp=f'Hold TCP, close for at least {rec.cfg.get("grasp_hold_ticks", 18)} native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. Advance only if measured holding passed. Retry if failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
-            contracts['settle_receiver'] = ('Hold TCP and keep gripper open for at least 42 native ticks after release so the object can settle under gravity. '
+            contracts['clear_receiver'] = ('Keep the gripper open and withdraw your own fingers from above the visible rack along the supplied clearance target. '
+                                           'Advance only after reaching this pose; the source may settle after the hand leaves.')
+            contracts['settle_receiver'] = ('Hold TCP clear of the rack and keep gripper open for at least 12 native ticks after withdrawal. '
                                             'Advance to a fresh public RGB-D placement check only after this interval and open aperture >=70mm. Do not infer native success.')
             if rack_task:
                 contracts['lower'] = ('Keep closed and approach the rack using the bottle offset measured after rotation. '
@@ -538,7 +543,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if stage == 'select':complete=True
             if stage == 'grasp':complete=grip_ticks>=rec.cfg.get('grasp_hold_ticks', 18) and gripper==1
             if stage in ['release','recover_open']:complete=grip_ticks>=24 and aperture>=70 and gripper==-1
-            if stage == 'settle_receiver':complete=stage_ticks>=42 and aperture>=70 and gripper==-1
+            if stage == 'settle_receiver':complete=stage_ticks>=12 and aperture>=70 and gripper==-1
             if stage == 'test_lift':complete=complete and holding['status']=='passed'
             if stage == 'lift' and lift_verified:complete=complete and holding['status']=='passed'
             if stage == 'orient_receiver':complete=complete and rack_verified and holding['status']=='passed'
@@ -548,8 +553,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     (arrived or stalls>=2))
             if stage in ('carry_lateral','carry') and dark_source:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
-            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status']!='visible_contact_candidate'))
-            next_stage = ('settle_receiver' if stage=='recover_open' and rack_task else
+            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status']!='visible_contact_candidate'))
+            next_stage = ('clear_receiver' if stage=='recover_open' and rack_task else
+                          'settle_receiver' if stage=='clear_receiver' else
                           'select' if stage in ('recover_open','settle_receiver') else
                           'recover_open' if stage=='recover_up' else
                           'finish_attempt' if stage=='retreat' else phases[phases.index(stage)+1])
@@ -557,7 +563,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             can_continue = not (rack_task and stage == 'lower' and stalls >= 3 and
                 rack_contact_checked and
                 rack_contact_evidence['status'] != 'visible_contact_candidate') and not (
-                stage == 'settle_receiver' and complete)
+                stage in ('clear_receiver','settle_receiver') and complete)
             state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,blocked_visible_contact_trial=contact_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=can_continue,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
             if rack_task and stage == 'lower':
                 state['completion_evidence']['visible_rack_contact'] = rack_contact_evidence
@@ -648,7 +654,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     grasp_offset=offset.copy()
                 if stage=='release' and rack_task:
                     rack_release_tcp=obs['robot0_eef_pos'].copy()
-                if stage=='recover_open':cs=candidates()
+                if stage=='recover_open':
+                    cs=candidates()
+                    if rack_task:
+                        recovery_clear_target=after+np.array([.06,.07,.02])
             else:
                 continue
             rec.event(dict(kind='phase_transition',from_stage=stage,to_stage=to_stage,decision_id=d['decision_id'],selected_transition=transition))
