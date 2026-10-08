@@ -20,12 +20,14 @@ from libero_ten_task_workflows import decision_request, stages, validate_choice_
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
 
 
-def under_hook_waypoints(middle, lower, contact_tcp, pad_center_offset):
+def under_hook_waypoints(middle, lower, contact_tcp, pad_center_offset,
+                         own_pad_half_height_m):
     """Enter a measured handle gap before rising to the requested rod."""
     middle_z = float(middle['center_world_m'][2])
     lower_z = float(lower['center_world_m'][2])
     separation = middle_z-lower_z
-    if not .050 < separation < .110:
+    if not .050 < separation < .110 or \
+            separation/2 <= float(own_pad_half_height_m) + .005:
         raise RuntimeError('Visible middle/lower handle gap unavailable')
     pad_entry_z = (middle_z+lower_z)/2
     entry_tcp = np.asarray(contact_tcp, float).copy()
@@ -126,19 +128,32 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 env.sim.model.geom_name2id(geom)] for geom in names], axis=0)
             pad_tool = (pad_world-np.asarray(obs['robot0_eef_pos'])) @ initial_rotation
             offset = pad_tool @ side_orientation.T
-            finger_options.append((finger, names, offset))
+            finger_options.append((finger, names, offset, pad_tool))
         # The pad toward the cabinet (-world Y) leaves the TCP in front of the
         # visible cabinet face. Choose from measured own geometry, not a name.
-        hook_finger, pad_names, pad_center_offset = min(
+        hook_finger, pad_names, pad_center_offset, chosen_pad_tool = min(
             finger_options, key=lambda item: item[2][1])
+        other_pad_tool = next(row[3] for row in finger_options
+                              if row[0] != hook_finger)
+        own_pad_vertices = np.asarray(own['pad_vertices_tool'])
+        selected_vertices = own_pad_vertices[
+            np.linalg.norm(own_pad_vertices-chosen_pad_tool, axis=1) <
+            np.linalg.norm(own_pad_vertices-other_pad_tool, axis=1)]
+        if not len(selected_vertices):
+            raise RuntimeError('Own selected fingerpad mesh unavailable')
+        projected_pad = selected_vertices @ side_orientation.T
+        pad_half_height = float(np.max(np.abs(
+            projected_pad[:, 2]-pad_center_offset[2])))
         if contact_mode in ('top_hook', 'under_hook') and pad_center_offset[1] >= 0:
             raise RuntimeError('No rearward own fingerpad for hook')
     else:
         pad_center_offset = np.median(
             np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
+        pad_half_height = None
     dump(rec.folder/'own-pad-contact-offset.json', dict(
         side_orientation=side_orientation,
         pad_center_offset_world_m=pad_center_offset,
+        selected_pad_half_height_world_z_m=pad_half_height,
         hook_finger=hook_finger if hook_mode else None,
         source='own gripper collision pads and robot TCP only'))
 
@@ -210,7 +225,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             under_tcp = pad_entry_z = None
             if contact_mode == 'under_hook':
                 under_tcp, pad_entry_z = under_hook_waypoints(
-                    handle, lower_handle, contact_tcp, pad_center_offset)
+                    handle, lower_handle, contact_tcp, pad_center_offset,
+                    pad_half_height)
             targets = {
                 'approach': (under_tcp if under_tcp is not None else contact_tcp)
                             + [0., .14, 0. if under_tcp is not None else .14],
@@ -269,6 +285,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
                                 if contact_mode == 'under_hook' else None),
                             under_entry_pad_world_z_m=pad_entry_z,
+                            own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
                             position_arrived=arrived,
                             orientation_arrived=oriented,
