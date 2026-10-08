@@ -60,6 +60,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     if side:phases.insert(phases.index('grasp'),'insert')
     notes=dict(NOTES,insert='Insert horizontally at the observed grasp height with gripper open; advance when target reached. Do not close before arrival.')
     initial_source_extent=None;side_sign=-1
+    carry_hover_replans=0
     orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
     ticks=0;phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
@@ -140,6 +141,19 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         while phase<len(phases):
             stage=phases[phase];rec.check_budget()
             if ticks>=550 or stage_decisions>=45:raise RuntimeError('Stage/native budget: '+stage)
+            if stage=='carry' and stalls>=3 and holding.get('valid') and carry_hover_replans<2:
+                # The high clearance pose can be outside the robot's reachable
+                # set even with a securely held object. Try one lower visible-
+                # clearance waypoint; Jev still chooses every motion/edge.
+                floor=max(dst['high'][2]+max(initial_source_extent[2],.05)+.03,
+                          src['high'][2]+.06)
+                lowered=max(floor,hover-.03)
+                if lowered<hover-.005:
+                    rec.event(dict(kind='carry_hover_replan',native_tick=ticks,
+                                   from_height_m=hover,to_height_m=lowered,
+                                   visible_clearance_floor_m=floor,
+                                   source='fresh visible source/receiver extent + robot stall'))
+                    hover=lowered;carry_hover_replans+=1;stalls=0
             if stage=='approach':target=np.r_[src['center'][:2]+(np.array([side_sign*entry_clearance,0]) if side else 0),hover]
             elif stage=='align':target=np.r_[grasp[:2]+(np.array([side_sign*entry_clearance,0]) if side else 0),hover]
             elif stage=='descend':target=grasp+(np.array([side_sign*entry_clearance,0,0]) if side else 0)
@@ -158,7 +172,8 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 current_phase_gripper_ticks=gripper_ticks,gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),phase_native_ticks=stage_ticks,phase_decisions=stage_decisions,
                 holding_evidence=holding if stage in ['lift','carry','lower','release','retreat'] else dict(valid=None,reason='not tested before lift'),
                 geometry_source='RGB-D visible masks, not true object poses',source_label=sem['source']['label'],destination_label=sem['destination']['label'],
-                recovery_remaining=not reobserved and vision.calls<3,last_progress_m=last_progress,stalls=stalls)
+                recovery_remaining=not reobserved and vision.calls<3,last_progress_m=last_progress,stalls=stalls,
+                carry_hover_replans=carry_hover_replans)
             if rec.cfg['schema']=='feedback':
                 observed=holding.get('observed_tick') is not None
                 check_status=('passed' if holding.get('valid') else 'failed') if observed else 'not_checked_yet'
