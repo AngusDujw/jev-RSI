@@ -127,6 +127,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     finished = False
     initial_src = src = dst = identity = None
     cached_external = None
+    initial_source_points_world = None
 
     def views():
         return {c: dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]), depth=depth_fn(env.sim, obs[c+'_depth'])[::-1].squeeze(), K=k_fn(env.sim,c,obs[c+'_image'].shape[0],obs[c+'_image'].shape[1]), T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
@@ -137,7 +138,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         return np.stack([(uu-K[0,2])*d/K[0,0], (vv-K[1,2])*d/K[1,1], d], -1) @ T[:3,:3].T + T[:3,3]
 
     def locate(reason):
-        nonlocal identity, cached_external
+        nonlocal identity, cached_external, initial_source_points_world
         vv = views()
         identity = vision.recognize(vv, task.language, reason)
         result = {}
@@ -145,6 +146,15 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             ob = identity[role]
             v = vv[ob['camera']]
             result[role] = vision.measure(v, ob['bbox'], ob['label'], reason+'-'+role)
+            if role == 'source' and reason == 'initial':
+                mask = np.load(result[role]['visible_mask_path'])
+                valid = (mask & np.isfinite(v['depth']) &
+                         (v['depth'] > .02) & (v['depth'] < 3.))
+                initial_source_points_world = cloud(v)[valid]
+                if len(initial_source_points_world) < 80:
+                    raise RuntimeError('Insufficient initial visible source points')
+                np.save(rec.folder/'initial-visible-source-cloud.npy',
+                        initial_source_points_world)
             if role == 'source' and ob['camera'] == 'agentview':
                 cached_external = dict(ob)
             if role == 'destination' and ob.get('receiver_kind') == 'open_container':
@@ -192,22 +202,27 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         vv = views()
         expected = source_grasp+(obs['robot0_eef_pos']-tcp_grasp)
         if vision.static_mode:
-            # The source can move after grasp. Reproject its expected position
-            # instead of reusing the frozen initial image box.
+            # Reproject the actually segmented visible RGB-D points. Corners
+            # of an axis-aligned 3-D box create an overly wide projected box
+            # for a tall, thin object and contaminate the SAM hold check.
             v = vv['agentview']
-            moved_low = initial_src['low']+(obs['robot0_eef_pos']-tcp_grasp)
-            moved_high = initial_src['high']+(obs['robot0_eef_pos']-tcp_grasp)
-            corners = np.array([[x,y,z] for x in (moved_low[0],moved_high[0])
-                                for y in (moved_low[1],moved_high[1])
-                                for z in (moved_low[2],moved_high[2])])
-            camera = (corners-v['T'][:3,3]) @ v['T'][:3,:3]
+            if initial_source_points_world is None:
+                raise RuntimeError('Initial visible source cloud unavailable')
+            moved = initial_source_points_world + (obs['robot0_eef_pos']-tcp_grasp)
+            camera = (moved-v['T'][:3,3]) @ v['T'][:3,:3]
             if np.any(camera[:,2] <= .02):
                 raise RuntimeError('Expected lifted source behind camera')
             projected = camera @ v['K'].T
             uv = projected[:,:2]/projected[:,2,None]
-            box = np.r_[uv.min(axis=0)-8,uv.max(axis=0)+8].clip(0,767).tolist()
+            low_uv, high_uv = np.quantile(uv, [.01, .99], axis=0)
+            box = np.r_[low_uv-8,high_uv+8].clip(0,767).tolist()
+            if box[2]-box[0] < 12 or box[3]-box[1] < 12:
+                raise RuntimeError('Projected visible source box too small')
             ob = dict(camera='agentview',bbox=box,label=identity['source']['label'])
-            dump(rec.folder/f'hold-projection-{ticks:04d}.json',dict(expected=expected,bbox=box))
+            dump(rec.folder/f'hold-projection-{ticks:04d}.json',dict(
+                expected=expected,bbox=box,visible_source_points=len(moved),
+                projection_quantiles=[.01,.99],
+                source='Initial visible SAM/RGB-D source points shifted by own TCP displacement'))
         elif 'lift_check' not in vision.reasons and vision.calls < 3:
             ids = vision.recognize(vv, task.language, 'lift_check')
             ob = ids['source']
