@@ -122,8 +122,13 @@ def visible_front_goal(view, plate, stove):
     for v in (max(stove_y1+75, source_v-55),
               max(stove_y1+100, source_v-25),
               max(stove_y1+125, source_v)):
-        for u in (centre_u, centre_u-18, centre_u+18):
+        for offset in (0, -18, 18, -28, 28, -44, 44, -60, 60):
+            u = centre_u+offset
             if not (20 <= u < 748 and 20 <= v < 748):
+                continue
+            # The plate may partly overlap the stove's projected width, but
+            # its centre must remain visibly in front of the stove housing.
+            if not (stove_x0+30 <= u <= stove_x1-30):
                 continue
             patch = cloud[v-4:v+5, u-4:u+5].reshape(-1, 3)
             if not np.isfinite(patch).all():
@@ -160,7 +165,14 @@ def visible_front_goal(view, plate, stove):
     clear = [candidate for candidate in goals if candidate['elevated_corridor_pixels'] < 80]
     if not clear:
         raise RuntimeError('No visible collision-clear plate corridor in front of stove')
-    return min(clear, key=lambda row: (row['travel_m'], row['elevated_corridor_pixels']))
+    # The public request is a spatial relation to the stove. Prefer the
+    # closest visible *front row* that has a clear swept path, even when a
+    # farther route around a visible tabletop obstacle is needed.
+    selected = min(clear, key=lambda row: (row['goal_uv'][1],
+        row['elevated_corridor_pixels'], abs(row['goal_uv'][0]-centre_u),
+        row['travel_m']))
+    return dict(selected, evaluated_visible_candidates=goals,
+                selection_reason='frontmost visible table row with clear swept plate corridor')
 
 
 def visible_side_contact(view, plate_mask, plate, direction, central_contact_xy):
