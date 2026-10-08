@@ -85,6 +85,8 @@ def main():
                 '--allow-retry', '--execution-profile', 'adaptive']
     else:
         cmd += ['--jev-supervisor', '--schema', 'focused']
+        if a.task_id == 1423:
+            cmd += ['--placement-height-mode', 'visible_bottom']
     env = dict(os.environ, MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
                CUDA_VISIBLE_DEVICES=f'{a.egl_device_id},{a.worker_device_id}',
                JEV_RSI_MODEL_BACKEND='jev')

@@ -133,7 +133,9 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                        .4 < size_ratio < 1.7 and
                        np.linalg.norm(h['center']-expected)<.06)
             holding=dict(valid=valid,source='RGB-D co-motion proxy, not ground truth',
-                         visible_span_ratio=size_ratio,measured=h,
+                         visible_span_ratio=size_ratio,
+                         visible_low_tcp_offset_m=float(h['low'][2]-obs['robot0_eef_pos'][2]),
+                         measured=h,
                          expected=expected,observed_tick=ticks)
             if valid:offset=h['center']-obs['robot0_eef_pos']
         except Exception as e:holding=dict(valid=False,reason=str(e),observed_tick=ticks)
@@ -167,8 +169,14 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
             elif stage in ['carry','retreat']:target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
             elif stage=='lower':
-                height=(src['high'][2]-src['low'][2])/2
-                target=np.r_[dst['center'][:2]-offset[:2],dst['high'][2]+height+.012-offset[2]]
+                if rec.cfg.get('placement_height_mode')=='visible_bottom':
+                    if not holding.get('valid') or 'visible_low_tcp_offset_m' not in holding:
+                        raise RuntimeError('Visible held-object bottom unavailable for lower')
+                    release_z=dst['high'][2]+.005-holding['visible_low_tcp_offset_m']
+                else:
+                    height=(src['high'][2]-src['low'][2])/2
+                    release_z=dst['high'][2]+height+.012-offset[2]
+                target=np.r_[dst['center'][:2]-offset[:2],release_z]
             position=obs['robot0_eef_pos'].copy();error=target-position
             if stage in ['lift','carry'] and np.max(abs(error))<.008:measure_held()
             state=dict(task=task.language,stage=stage,next_phase=phases[phase+1] if phase+1<len(phases) else 'finish_attempt',phase_contract=notes[stage],
@@ -214,7 +222,8 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                            measurement_status=full['measurement_status'],
                            holding_evidence=dict(valid=holding.get('valid') if stage in ('lift','carry','lower','release','retreat') else None,
                                observed_tick=holding.get('observed_tick'),
-                               visible_span_ratio=holding.get('visible_span_ratio')),
+                               visible_span_ratio=holding.get('visible_span_ratio'),
+                               visible_low_tcp_offset_m=holding.get('visible_low_tcp_offset_m') if stage=='lower' else None),
                            stalls=stalls,last_progress_m=last_progress,
                            carry_hover_replans=carry_hover_replans,
                            recent_actions=history[-1:],
