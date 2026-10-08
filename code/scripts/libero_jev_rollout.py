@@ -233,6 +233,7 @@ def main():
     p.add_argument('--allow-retry',action='store_true')
     p.add_argument('--execution-profile',choices=['baseline','adaptive'],default='baseline')
     p.add_argument('--carry-route',choices=['direct','lateral_first'],default='direct')
+    p.add_argument('--visible-goal-check',action='store_true',help='At retry select, offer Jev a public RGB-D support-goal check')
     p.add_argument('--jev-supervisor', dest='jev_supervisor',action='store_true',default=True)
     p.add_argument('--scripted-supervisor',dest='jev_supervisor',action='store_false',help='Historical automatic gripper/phase policy; reproduction only')
     p.add_argument('--max-jev-decisions',type=int,default=120)
@@ -267,12 +268,15 @@ def main():
                               a.task_id != 1296 or a.camera_size != 768 or
                               os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
         p.error('--goal-plate-push requires --push-supervisor Goal 1296, 768px, Jev backend')
+    if a.visible_goal_check and (not a.recovery_supervisor or a.task_id != 1163 or
+                                 not a.local_goal_vision):
+        p.error('--visible-goal-check currently requires local recovery Goal 1163')
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
