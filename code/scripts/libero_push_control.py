@@ -325,7 +325,10 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         kwargs = dict(current_orientation=Rotation.from_quat(
             obs['robot0_eef_quat']).as_matrix(),
             observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
-            preserve_downward=not visible_goal_plate,
+            # The first plate segment establishes a downward pusher. Reusing
+            # that measured own-wrist pose for the second side contact avoids
+            # a large in-air yaw sweep; the finger offset is refit below.
+            preserve_downward=(not visible_goal_plate or segment == 2),
             contact_mode=('top_surface' if visible_goal_plate and segment == 1
                           else 'rear_edge'))
         candidate = contact_push_plan(source, goal, own, **kwargs)
