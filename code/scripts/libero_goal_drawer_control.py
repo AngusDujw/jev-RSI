@@ -20,6 +20,19 @@ from libero_ten_task_workflows import decision_request, stages, validate_choice_
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
 
 
+def under_hook_waypoints(middle, lower, contact_tcp, pad_center_offset):
+    """Enter a measured handle gap before rising to the requested rod."""
+    middle_z = float(middle['center_world_m'][2])
+    lower_z = float(lower['center_world_m'][2])
+    separation = middle_z-lower_z
+    if not .050 < separation < .110:
+        raise RuntimeError('Visible middle/lower handle gap unavailable')
+    pad_entry_z = (middle_z+lower_z)/2
+    entry_tcp = np.asarray(contact_tcp, float).copy()
+    entry_tcp[2] = pad_entry_z-float(pad_center_offset[2])
+    return entry_tcp, pad_entry_z
+
+
 class DrawerModel(Jev):
     def decide(self, request, stage):
         self.rec.check_budget()
@@ -90,12 +103,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     image_template = None
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
-    hook_mode = contact_mode in ('hook', 'top_hook')
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook')
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
-    side_orientation = (Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-                        if contact_mode == 'top_hook' else
+    initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+    side_orientation = ((Rotation.from_euler('x', -30, degrees=True).as_matrix()
+                         @ initial_orientation)
+                        if contact_mode == 'under_hook' else
+                        initial_orientation if contact_mode == 'top_hook' else
                         Rotation.from_euler('x', 210, degrees=True).as_matrix()
                         if hook_mode else np.array([[1., 0., 0.],
                                                     [0., 0., -1.],
@@ -115,8 +131,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         # visible cabinet face. Choose from measured own geometry, not a name.
         hook_finger, pad_names, pad_center_offset = min(
             finger_options, key=lambda item: item[2][1])
-        if contact_mode == 'top_hook' and pad_center_offset[1] >= 0:
-            raise RuntimeError('No rearward own fingerpad for top-down hook')
+        if contact_mode in ('top_hook', 'under_hook') and pad_center_offset[1] >= 0:
+            raise RuntimeError('No rearward own fingerpad for hook')
     else:
         pad_center_offset = np.median(
             np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
@@ -139,7 +155,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         dump(rec.folder/f'handles-{ticks:04d}.json', measured)
         front = (visible_cabinet_front(image, depth, intrinsic, extrinsic,
                  chosen['center_world_m']) if hook_mode else None)
-        return image, chosen, front
+        lower = select_public_handle(measured, 'bottom')
+        return image, chosen, front, lower
 
     def handle_shift():
         if image_template is None:
@@ -158,7 +175,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     match_score=float(maximum), current_origin=now.tolist())
 
     try:
-        image, handle, front_plane = measure_handle()
+        image, handle, front_plane, lower_handle = measure_handle()
         handle_position = np.asarray(handle['center_world_m'], float)
         x, y, width, height = handle['bbox_xywh']
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -190,9 +207,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_tcp = handle_position - pad_center_offset
                 finger_behind = False
                 pad_now = None
+            under_tcp = pad_entry_z = None
+            if contact_mode == 'under_hook':
+                under_tcp, pad_entry_z = under_hook_waypoints(
+                    handle, lower_handle, contact_tcp, pad_center_offset)
             targets = {
-                'approach': contact_tcp + [0., .14, .14],
-                'align': contact_tcp + [0., .14, .14],
+                'approach': (under_tcp if under_tcp is not None else contact_tcp)
+                            + [0., .14, 0. if under_tcp is not None else .14],
+                'align': (under_tcp if under_tcp is not None else contact_tcp)
+                         + [0., .14, 0. if under_tcp is not None else .14],
                 'contact': contact_tcp,
                 'pull': contact_tcp + [0., .18, 0.],
             }
@@ -204,6 +227,12 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 # into the cabinet/rod depth. Descend only after that Y leg.
                 target = np.asarray(contact_tcp + [0., 0., .14], float)
                 contact_leg = 'high_y_insert'
+            if contact_mode == 'under_hook' and name == 'contact' and \
+                    position[1] > contact_tcp[1] + .009:
+                target = under_tcp.copy()
+                contact_leg = 'under_y_insert'
+            elif contact_mode == 'under_hook' and name == 'contact':
+                contact_leg = 'under_rise'
             rotation_error = (Rotation.from_matrix(side_orientation @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
                 if name in ('align', 'contact', 'grasp', 'pull', 'release')
@@ -217,8 +246,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'select_handle': True,
                 'approach': arrived,
                 'align': arrived and oriented,
-                'contact': arrived and oriented and contact_leg == 'final'
-                           and (finger_behind if contact_mode == 'top_hook' else True),
+                'contact': arrived and oriented and contact_leg in ('final', 'under_rise')
+                           and (finger_behind if contact_mode in ('top_hook', 'under_hook') else True),
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
                           if hook_mode else grip_ticks >= 18 and gripper == 1),
                 'pull': arrived and shift is not None and shift['pixel_displacement'] > 12,
@@ -237,6 +266,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             contact_path_leg=contact_leg if name == 'contact' else None,
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
+                            lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
+                                if contact_mode == 'under_hook' else None),
+                            under_entry_pad_world_z_m=pad_entry_z,
                             current_tcp_world_m=position.tolist(),
                             position_arrived=arrived,
                             orientation_arrived=oriented,
@@ -267,6 +299,19 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'contact_path_leg names the current waypoint. Advance '
                     'only after the final pose and observed finger-behind-rod '
                     'gate are both true.')
+            if contact_mode == 'under_hook' and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Keep the hand outside the visible cabinet and align the '
+                    'selected own finger with the measured gap between middle '
+                    'and lower handle rods. The wrist is tilted toward the '
+                    'open room. Advance only after own pose evidence is met.')
+            if contact_mode == 'under_hook' and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'First insert the own finger to the visible cabinet/rod '
+                    'depth at the measured gap midpoint, then rise to the '
+                    'middle handle rod. contact_path_leg names the current '
+                    'waypoint. Advance only after the selected finger is '
+                    'measured behind the middle rod at the final pose.')
             if hook_mode and name == 'pull':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open; pull the measured finger hook outward '
@@ -277,7 +322,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if edge == 'stop':
                 raise RuntimeError('Jev elected stop')
             if edge == 'reobserve':
-                image, handle, front_plane = measure_handle()
+                image, handle, front_plane, lower_handle = measure_handle()
                 handle_position = np.asarray(handle['center_world_m'], float)
                 reobserved = True
                 continue
