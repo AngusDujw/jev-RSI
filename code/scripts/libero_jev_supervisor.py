@@ -100,12 +100,40 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         pads=[np.mean([env.sim.data.geom_xpos[env.sim.model.geom_name2id(n)] for n in names[key]],axis=0) for key in ['left_fingerpad','right_fingerpad']]
         axis=(pads[1]-pads[0])[:2];axis=axis/max(np.linalg.norm(axis),1e-9)
         extent=src['high']-src['low'];p=src['center'].copy();width=float(abs(axis)@extent[:2])
-        if width>.065:p[:2]+=(1 if (start_tcp[:2]-p[:2])@axis>0 else -1)*.9*width/2*axis
         p[2]=src['low'][2]+rec.cfg.get('grasp_fraction',.4)*extent[2]
+        local_profile=None
+        centered=False
+        if rec.cfg.get('grasp_profile')=='center_if_width_fits' and not side:
+            # A wide rim can hide a narrower grasp section near the base.
+            # Estimate that section from the same visible SAM mask and RGB-D.
+            view=views()[sem['source']['camera']]
+            mask=np.load(src['visible_mask_path'])
+            d=view['depth'];K=view['K'];T=view['T'];vv,uu=np.indices(d.shape)
+            pts=np.stack([(uu-K[0,2])*d/K[0,0],
+                          (vv-K[1,2])*d/K[1,1],d],-1)@T[:3,:3].T+T[:3,3]
+            band=pts[mask&np.isfinite(d)&(d>.02)&(d<3)]
+            band=band[abs(band[:,2]-p[2])<.004]
+            if len(band)>=80:
+                projected=band[:,:2]@axis
+                qlo,qhi=np.quantile(projected,[.05,.95])
+                local_width=float(qhi-qlo)
+                pad_gap=float(np.linalg.norm((pads[1]-pads[0])[:2]))
+                centered=bool(local_width<pad_gap-.003)
+                local_profile=dict(visible_section_points=len(band),
+                    visible_section_width_m=local_width,own_open_pad_gap_m=pad_gap,
+                    fits_open_pads=centered,source='public segmented RGB-D + own pads')
+                if centered:
+                    p[:2]+=((qlo+qhi)/2-p[:2]@axis)*axis
+            else:
+                local_profile=dict(visible_section_points=len(band),
+                    fits_open_pads=False,reason='Insufficient visible section')
+        if width>.065 and not centered:
+            p[:2]+=(1 if (start_tcp[:2]-p[:2])@axis>0 else -1)*.9*width/2*axis
         if rec.cfg.get('geometry_profile')=='observed_surfaces' and extent[2]<.025 and (initial_source_extent is None or initial_source_extent[2]<.025) and not side:
             p[2]=src['high'][2]+.023  # empirical own gripper low-object clearance; visible estimate only
         if side:p[2]=src['high'][2]+.004
-        dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=p,axis=axis,width=width,source='visible geometry + own gripper span'))
+        dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=p,axis=axis,width=width,
+            local_profile=local_profile,source='visible geometry + own gripper span'))
         return p
     def measure_held():
         nonlocal holding,offset,last_verification_tick

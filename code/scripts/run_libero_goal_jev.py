@@ -30,7 +30,7 @@ POLICY_FILES = (
 )
 
 
-def launch_command(source, task_id, init_index, episode, mode):
+def launch_command(source, task_id, init_index, episode, mode, grasp_profile):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -48,6 +48,7 @@ def launch_command(source, task_id, init_index, episode, mode):
         cmd += ['--jev-supervisor', '--schema', 'focused']
         if task_id == 1423:
             cmd += ['--placement-height-mode', 'occlusion_guarded_bottom']
+            cmd += ['--grasp-profile', grasp_profile]
     elif mode == 'knob':
         cmd += ['--knob-supervisor']
     else:
@@ -62,6 +63,7 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--egl-device-id', type=int, choices=range(8), default=5)
     p.add_argument('--worker-device-id', type=int, choices=range(8), default=6)
+    p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     a = p.parse_args()
@@ -77,7 +79,9 @@ def main():
     mode = ('drawer' if a.task_id in DRAWER_TASKS else
             'knob' if a.task_id in KNOB_TASKS else
             'recovery' if a.task_id in RECOVERY_TASKS else 'supervisor')
-    cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode)
+    if a.grasp_profile != 'edge' and a.task_id != 1423:
+        p.error('Local grasp profile is currently evaluated only for Goal 1423')
+    cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,a.grasp_profile)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -107,6 +111,7 @@ def main():
     out.mkdir()
     episode = out/'episode'  # Recorder creates this directory itself.
     manifest = dict(reservation=reservation, mode=mode,
+                    grasp_profile=a.grasp_profile,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',
                     runtime_gpt6_calls=0, runtime_deepseek_calls=0,
