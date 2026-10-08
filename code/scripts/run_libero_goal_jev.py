@@ -31,7 +31,7 @@ POLICY_FILES = (
 
 
 def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
-                   approach_mode, entry_side):
+                   approach_mode, entry_side, grasp_hold_ticks):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -44,7 +44,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                 '--grasp-algorithm', 'pad_fit', '--preserve-source',
                 '--allow-retry', '--execution-profile', 'adaptive']
         if task_id == 1163:
-            cmd += ['--carry-route', 'lateral_first', '--visible-goal-check']
+            cmd += ['--carry-route', 'lateral_first', '--visible-goal-check',
+                    '--grasp-hold-ticks', str(grasp_hold_ticks)]
     elif mode == 'supervisor':
         cmd += ['--jev-supervisor', '--schema', 'focused']
         if task_id == 1423:
@@ -69,6 +70,7 @@ def main():
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
     p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
+    p.add_argument('--grasp-hold-ticks', type=int, choices=[18,24,30,36,42,48], default=18)
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     a = p.parse_args()
@@ -90,8 +92,10 @@ def main():
         p.error('Alternative approach mode is currently evaluated only for Goal 1423')
     if a.entry_side != 'robot_side' and (a.task_id != 1423 or a.approach_mode == 'top'):
         p.error('Receiver entry side requires an angled or side Goal 1423 approach')
+    if a.grasp_hold_ticks != 18 and a.task_id != 1163:
+        p.error('Extended closure is currently evaluated only for Goal 1163')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
-                         a.grasp_profile,a.approach_mode,a.entry_side)
+                         a.grasp_profile,a.approach_mode,a.entry_side,a.grasp_hold_ticks)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -124,6 +128,7 @@ def main():
                     grasp_profile=a.grasp_profile,
                     approach_mode=a.approach_mode,
                     entry_side=a.entry_side,
+                    grasp_hold_ticks=a.grasp_hold_ticks,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',
                     runtime_gpt6_calls=0, runtime_deepseek_calls=0,
