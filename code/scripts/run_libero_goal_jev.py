@@ -23,6 +23,7 @@ POLICY_FILES = (
     'libero_goal_local_vision.py', 'libero_grounding_worker.py',
     'libero_jev_recovery.py', 'libero_jev_supervisor.py',
     'libero_robot_geometry.py',
+    'libero_goal_rack_geometry.py',
     'libero_goal_knob_vision.py', 'libero_goal_knob_control.py',
     'libero_goal_plate_vision.py', 'libero_goal_drawer_control.py',
     'libero_goal_drawer_vision.py',
