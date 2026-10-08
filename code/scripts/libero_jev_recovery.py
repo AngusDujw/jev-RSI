@@ -13,6 +13,7 @@ from libero_generic_vision import GenericVision
 from libero_robot_geometry import gripper_geometry, envelope
 
 PHASES = ['select', 'approach', 'align', 'descend', 'grasp', 'test_lift', 'lift', 'carry', 'lower', 'release', 'retreat']
+NATIVE_BUDGET = 580  # Env horizon is 600; initial gripper opening uses 10 ticks.
 
 
 def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_candidates):
@@ -266,7 +267,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         hover = max(src['high'][2],dst['high'][2])+.12
         while True:
             rec.check_budget()
-            if ticks >= 550 or stage_decisions >= 45:
+            if ticks >= NATIVE_BUDGET or stage_decisions >= 45:
                 raise RuntimeError('Stage/native budget: '+stage)
             c = cs[selected]
             Rgoal = c['orientation']
@@ -353,7 +354,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             delta=np.asarray(d['signs'])*np.minimum(cap,gain*abs(error))
             rotation=np.asarray(d['rotation_signs'])*np.minimum(.10,gain*abs(rot))
             before=position.copy()
-            if ticks+block_ticks>550:raise RuntimeError('Native block budget')
+            if ticks+block_ticks>NATIVE_BUDGET:raise RuntimeError('Native block budget')
             for _ in range(block_ticks):
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;grip_ticks+=1
             after=obs['robot0_eef_pos'].copy()
