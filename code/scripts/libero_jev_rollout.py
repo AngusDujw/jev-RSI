@@ -240,7 +240,7 @@ def main():
     p.add_argument('--wall-limit-seconds',type=int,default=900)
     p.add_argument('--schema', choices=['numeric','feedback','focused'], default='feedback')
     p.add_argument('--grasp-fraction', type=float, default=.4)
-    p.add_argument('--placement-height-mode', choices=['center_extent','visible_bottom'], default='center_extent')
+    p.add_argument('--placement-height-mode', choices=['center_extent','visible_bottom','contact_seat'], default='center_extent')
     p.add_argument('--geometry-profile',choices=['base','observed_surfaces'],default='base')
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
     p.add_argument('--legacy-vision', dest='generic_vision', action='store_false', help='Reproduce archived task-specific colour/rim policy only')

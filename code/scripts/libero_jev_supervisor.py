@@ -169,18 +169,22 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
             elif stage in ['carry','retreat']:target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
             elif stage=='lower':
-                if rec.cfg.get('placement_height_mode')=='visible_bottom':
+                if rec.cfg.get('placement_height_mode') in ('visible_bottom','contact_seat'):
                     if not holding.get('valid') or 'visible_low_tcp_offset_m' not in holding:
                         raise RuntimeError('Visible held-object bottom unavailable for lower')
-                    release_z=dst['high'][2]+.005-holding['visible_low_tcp_offset_m']
+                    surface_offset = -.002 if rec.cfg['placement_height_mode']=='contact_seat' else .005
+                    release_z=dst['high'][2]+surface_offset-holding['visible_low_tcp_offset_m']
                 else:
                     height=(src['high'][2]-src['low'][2])/2
                     release_z=dst['high'][2]+height+.012-offset[2]
                 target=np.r_[dst['center'][:2]-offset[:2],release_z]
             position=obs['robot0_eef_pos'].copy();error=target-position
+            arrival_tolerance = .004 if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat' else .008
+            if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat':
+                notes['lower']='Seat the visible held-object bottom at the observed receiver surface while closed. Advance only after arrival within 4mm; stop or reobserve on a physical stall, never release in midair.'
             if stage in ['lift','carry'] and np.max(abs(error))<.008:measure_held()
             state=dict(task=task.language,stage=stage,next_phase=phases[phase+1] if phase+1<len(phases) else 'finish_attempt',phase_contract=notes[stage],
-                position_m=position.tolist(),target_position_m=target.tolist(),error_m=error.tolist(),hold_tolerance_m=.004,arrival_tolerance_m=.008,
+                position_m=position.tolist(),target_position_m=target.tolist(),error_m=error.tolist(),hold_tolerance_m=.004,arrival_tolerance_m=arrival_tolerance,
                 gripper_qpos_m=obs['robot0_gripper_qpos'].tolist(),last_gripper_command='open' if gripper==-1 else 'close',
                 current_phase_gripper_ticks=gripper_ticks,gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),phase_native_ticks=stage_ticks,phase_decisions=stage_decisions,
                 holding_evidence=holding if stage in ['lift','carry','lower','release','retreat'] else dict(valid=None,reason='not tested before lift'),
@@ -191,9 +195,12 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 observed=holding.get('observed_tick') is not None
                 check_status=('passed' if holding.get('valid') else 'failed') if observed else 'not_checked_yet'
                 if not observed:state['holding_evidence']=dict(valid=None,status=check_status,reason='Co-motion test becomes available on arrival at lift height, not before')
-                state['measurement_status']=dict(target_arrival=bool(np.max(abs(error))<.008),holding_check=check_status,
+                state['measurement_status']=dict(target_arrival=bool(np.max(abs(error))<arrival_tolerance),holding_check=check_status,
                     gripper_actuation_complete=bool(gripper_ticks>=16),reobserve_available=state['recovery_remaining'],
                     observation_age_native_steps=ticks-(holding.get('observed_tick') or ticks))
+                if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat':
+                    state['measurement_status']['estimated_visible_bottom_to_receiver_mm']=float(
+                        (position[2]+holding['visible_low_tcp_offset_m']-dst['high'][2])*1000)
                 state['decision_protocol']='At lift while still far from lift target, holding check not_checked_yet is normal: keep closed and move, not a failure. Reobserve only after at least 3 stalled actions or an actual failed visual check; do not reobserve because a future check is pending. Never request reobserve when unavailable. At grasp/release continue chosen close/open until the phase contract duration and aperture requirements are met. Advance is your choice when the current phase contract is met.'
                 state.update(error_mm=np.round(error*1000,2).tolist(),axis_relations={a:('within tolerance' if abs(e)<.004 else 'target higher coordinate' if e>0 else 'target lower coordinate') for a,e in zip('xyz',error)},
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
@@ -214,6 +221,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                                relation=full['axis_relations'][a])
                                for i,a in enumerate('xyz')},
                            hold_tolerance_m=.004,
+                           arrival_tolerance_m=arrival_tolerance,
                            gripper=dict(aperture_mm=full['gripper_aperture_mm'],
                                last_command=full['last_gripper_command'],
                                phase_ticks=gripper_ticks,
