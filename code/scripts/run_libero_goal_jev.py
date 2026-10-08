@@ -83,6 +83,8 @@ def main():
         cmd += ['--recovery-supervisor', '--input-organization', 'focused',
                 '--grasp-algorithm', 'pad_fit', '--preserve-source',
                 '--allow-retry', '--execution-profile', 'adaptive']
+        if a.task_id == 1163:
+            cmd += ['--carry-route', 'lateral_first']
     else:
         cmd += ['--jev-supervisor', '--schema', 'focused']
         if a.task_id == 1423:

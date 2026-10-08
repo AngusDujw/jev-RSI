@@ -111,6 +111,10 @@ class RecoveryModel(Jev):
 def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     vision = GenericVision(rec)
     model = RecoveryModel(rec)
+    phases = list(PHASES)
+    lateral_first = rec.cfg.get('carry_route') == 'lateral_first'
+    if lateral_first:
+        phases.insert(phases.index('carry'), 'carry_lateral')
     own = gripper_geometry(env, obs)
     dump(rec.folder/'own-gripper.json', own)
     ticks = stage_ticks = stage_decisions = grip_ticks = 0
@@ -131,6 +135,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_source_points_world = None
     dark_source = False
     lift_verified = False
+    carry_verified_stage = None
 
     def views():
         return {c: dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]), depth=depth_fn(env.sim, obs[c+'_depth'])[::-1].squeeze(), K=k_fn(env.sim,c,obs[c+'_image'].shape[0],obs[c+'_image'].shape[1]), T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
@@ -329,6 +334,11 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 target = test_target
             elif stage == 'lift':
                 target = np.r_[tcp_grasp[:2],hover]
+            elif stage == 'carry_lateral':
+                # Public source/receiver geometry gives a two-leg path. The
+                # object crosses sideways at the source-side Y before moving
+                # toward the receiver, clearing a visible rear obstacle.
+                target = np.r_[dst['center'][0]-offset[0],tcp_grasp[1],hover]
             elif stage in ['carry','retreat']:
                 target = np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
             elif stage == 'lower':
@@ -350,9 +360,16 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     holding.get('appearance_filtered') and not lift_verified):
                 check_hold(use_projection=True)
                 lift_verified = True
+            if (stage in ('carry_lateral', 'carry') and arrived and dark_source and
+                    carry_verified_stage != stage):
+                check_hold(use_projection=True)
+                carry_verified_stage = stage
             required_open = stage in ['approach','align','descend','release','retreat','recover_open']
-            required_close = stage in ['grasp','test_lift','lift','carry','lower']
+            required_close = stage in ['grasp','test_lift','lift','carry_lateral','carry','lower']
             contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp='Hold TCP, close for at least 18 native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. Advance only if measured holding passed. Retry if failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
+            contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
+            if dark_source:
+                contracts['carry'] += ' At arrival, require a fresh visible holding check before advance.'
             if stage == 'lift' and holding.get('appearance_filtered'):
                 contracts['lift'] += ' At clearance, advance only after the second visible holding check passes.'
             complete = arrived and oriented
@@ -374,8 +391,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if stage in ['release','recover_open']:complete=grip_ticks>=24 and aperture>=70 and gripper==-1
             if stage == 'test_lift':complete=complete and holding['status']=='passed'
             if stage == 'lift' and lift_verified:complete=complete and holding['status']=='passed'
+            if stage in ('carry_lateral','carry') and dark_source:
+                complete=complete and carry_verified_stage==stage and holding['status']=='passed'
             can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open'] and (stalls>=3 or holding['status'] in ('failed','unavailable'))
-            next_stage = 'select' if stage=='recover_open' else 'recover_open' if stage=='recover_up' else 'finish_attempt' if stage=='retreat' else PHASES[PHASES.index(stage)+1]
+            next_stage = 'select' if stage=='recover_open' else 'recover_open' if stage=='recover_up' else 'finish_attempt' if stage=='retreat' else phases[phases.index(stage)+1]
             state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,blocked_visible_contact_trial=contact_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=True,advance=bool(complete),retry=bool(can_retry),stop=True),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
             adaptive=rec.cfg.get('execution_profile','baseline')=='adaptive'
             block_ticks=6 if adaptive and (stage in ['grasp','release','recover_open'] or np.max(abs(error))>.06) else 3
@@ -425,6 +444,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 to_stage='recover_up'
                 holding=dict(status='not_checked_yet',valid=None)
                 lift_verified=False
+                carry_verified_stage=None
             elif transition=='advance':
                 to_stage=next_stage
                 if stage=='select':
@@ -435,6 +455,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 if stage=='grasp':
                     tcp_grasp=obs['robot0_eef_pos'].copy();source_grasp=src['center'].copy();test_target=tcp_grasp+np.array([0.,0.,.05]);holding=dict(status='not_checked_yet',valid=None)
                     lift_verified=False
+                    carry_verified_stage=None
                 if stage=='test_lift' and offset is None:raise RuntimeError('Jev advanced without holding evidence')
                 if stage=='recover_open':cs=candidates()
             else:
