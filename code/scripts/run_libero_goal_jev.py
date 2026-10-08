@@ -17,7 +17,7 @@ SIM_PYTHON = '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python'
 RECOVERY_TASKS = {1163, 1335, 1458}
 SUPERVISOR_TASKS = {1144, 1252, 1423}
 KNOB_TASKS = {1383}
-DRAWER_TASKS = {1098}
+DRAWER_TASKS = {1098, 1202}
 PUSH_TASKS = {1296}
 POLICY_FILES = (
     'run_libero_goal_jev.py',

@@ -267,10 +267,10 @@ def main():
                                 a.camera_size != 768 or
                                 os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
         p.error('--local-goal-vision requires a supported Goal task, 768px and Jev backend')
-    if a.drawer_supervisor and (a.suite != 'libero_goal' or a.task_id != 1098 or
+    if a.drawer_supervisor and (a.suite != 'libero_goal' or a.task_id not in (1098,1202) or
                                 a.camera_size != 768 or
                                 os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro'):
-        p.error('--drawer-supervisor requires Goal 1098, 768px, and Jev backend')
+        p.error('--drawer-supervisor requires Goal 1098 or 1202, 768px, and Jev backend')
     if a.knob_supervisor and (a.suite != 'libero_goal' or a.task_id != 1383 or
                               a.camera_size != 768 or
                               os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):

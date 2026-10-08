@@ -1,8 +1,9 @@
-"""Bounded Jev drawer attempt from public RGB-D handle measurements.
+"""Bounded Jev drawer primitive from public RGB-D handle measurements.
 
 No simulator object state or task predicate is read until terminal evaluation.
-The action path is a declared Goal 1098 development scaffold; Jev chooses motion
-signs, gripper commands and every phase transition.
+Goal 1202 only executes its first, top-drawer-opening primitive here; placing
+the bowl remains incomplete. Jev chooses motion signs, gripper commands and
+every phase transition.
 """
 import hashlib
 import json
@@ -88,15 +89,19 @@ class DrawerModel(Jev):
 
 
 def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
-    if rec.cfg['suite'] != 'libero_goal' or rec.cfg['task_id'] != 1098:
-        raise ValueError('Drawer controller requires Goal 1098')
+    task_id = rec.cfg['task_id']
+    if rec.cfg['suite'] != 'libero_goal' or task_id not in (1098, 1202):
+        raise ValueError('Drawer controller requires Goal 1098 or 1202')
     if os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro':
         raise ValueError('Drawer trial requires Jev at runtime')
     model = DrawerModel(rec)
     ticks = stage_ticks = grip_ticks = 0
     gripper = -1
     history = []
-    sequence = stages(1098)
+    sequence = [stage for stage in stages(task_id)
+                if stage['primitive'] == 'open_drawer']
+    requested_level = 'top' if task_id == 1202 else 'middle'
+    contact_clearance = .07 if requested_level == 'top' else .14
     phase = 0
     reobserved = False
     finished = False
@@ -166,7 +171,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     def measure_handle():
         image, depth, intrinsic, extrinsic = frame()
         measured = visible_drawer_handles(image, depth, intrinsic, extrinsic)
-        chosen = select_public_handle(measured, 'middle')
+        chosen = select_public_handle(measured, requested_level)
         dump(rec.folder/f'handles-{ticks:04d}.json', measured)
         front = (visible_cabinet_front(image, depth, intrinsic, extrinsic,
                  chosen['center_world_m']) if hook_mode else None)
@@ -196,7 +201,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image_template = gray[y:y+height, x:x+width].copy()
         initial_handle = dict(handle, template_origin=[x, y])
-        dump(rec.folder/'selected-handle.json', initial_handle)
+        dump(rec.folder/'selected-handle.json', dict(
+            initial_handle, public_requested_level=requested_level))
         while phase < len(sequence):
             rec.check_budget()
             if ticks >= 550 or stage_ticks >= 145:
@@ -229,9 +235,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     pad_half_height)
             targets = {
                 'approach': (under_tcp if under_tcp is not None else contact_tcp)
-                            + [0., .14, 0. if under_tcp is not None else .14],
+                            + [0., .14, 0. if under_tcp is not None else contact_clearance],
                 'align': (under_tcp if under_tcp is not None else contact_tcp)
-                         + [0., .14, 0. if under_tcp is not None else .14],
+                         + [0., .14, 0. if under_tcp is not None else contact_clearance],
                 'contact': contact_tcp,
                 'pull': contact_tcp + [0., .18, 0.],
             }
@@ -239,9 +245,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             contact_leg = 'final'
             if contact_mode == 'top_hook' and name == 'contact' and \
                     position[1] > contact_tcp[1] + .009:
-                # Keep the finger above the upper visible handle while moving
-                # into the cabinet/rod depth. Descend only after that Y leg.
-                target = np.asarray(contact_tcp + [0., 0., .14], float)
+                # Keep the finger above the selected visible handle while
+                # moving into the cabinet/rod depth; descend after that Y leg.
+                target = np.asarray(contact_tcp + [0., 0., contact_clearance], float)
                 contact_leg = 'high_y_insert'
             if contact_mode == 'under_hook' and name == 'contact' and \
                     position[1] > contact_tcp[1] + .009:
@@ -293,7 +299,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             gripper_aperture_mm=aperture,
                             visible_handle_shift=shift,
                             **{stage['gate']: bool(gate)})
-            request = decision_request(1098, stage['id'], tcp_xyz_m=position,
+            request = decision_request(task_id, stage['id'], tcp_xyz_m=position,
                 target_xyz_m=target, rotation_error_world_rad=rotation_error,
                 gripper_aperture_mm=aperture,
                 last_gripper_command='open' if gripper == -1 else 'close',
@@ -305,14 +311,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if hook_mode and name == 'grasp':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open and place one own finger behind the '
-                    'visible middle handle rod, with RGB-D front-plane clearance. '
+                    f'visible {requested_level} handle rod, with RGB-D front-plane clearance. '
                     'Advance only after the measured finger hook and open-command '
                     'hold are confirmed.')
             if contact_mode == 'top_hook' and name == 'contact':
                 request['state']['stage_contract'] = (
                     'First move the selected own finger to the measured '
-                    'cabinet/rod depth while it remains above the visible '
-                    'upper handle, then lower it to the middle handle. '
+                    'cabinet/rod depth while it remains above the selected '
+                    f'visible {requested_level} handle, then lower it to that rod. '
                     'contact_path_leg names the current waypoint. Advance '
                     'only after the final pose and observed finger-behind-rod '
                     'gate are both true.')
@@ -384,16 +390,34 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         failure = str(exc)
         rec.event(dict(kind='stop', reason=failure))
     finally:
-        current_image, _, _, _ = frame()
+        current_image, agent_depth, agent_k, agent_t = frame()
         cv2.imwrite(str(rec.folder/f'{ticks:04d}-terminal-agentview.jpg'),
                     cv2.cvtColor(current_image, cv2.COLOR_RGB2BGR))
+        if task_id == 1202:
+            np.save(rec.folder/'terminal-agentview-depth.npy', agent_depth)
+            dump(rec.folder/'terminal-agentview-calibration.json',
+                 dict(K=agent_k, T=agent_t))
+            wrist = 'robot0_eye_in_hand'
+            wrist_rgb = np.ascontiguousarray(obs[wrist+'_image'][::-1])
+            wrist_depth = depth_fn(env.sim, obs[wrist+'_depth'])[::-1].squeeze()
+            cv2.imwrite(str(rec.folder/f'{ticks:04d}-terminal-wrist.jpg'),
+                        cv2.cvtColor(wrist_rgb, cv2.COLOR_RGB2BGR))
+            np.save(rec.folder/'terminal-wrist-depth.npy', wrist_depth)
+            dump(rec.folder/'terminal-wrist-calibration.json', dict(
+                 K=k_fn(env.sim, wrist, 768, 768), T=t_fn(env.sim, wrist)))
         visible_shift = handle_shift()
         success = bool(env.check_success())
         dump(rec.folder/'result.json', dict(success=success,
-            program_finished=finished, error=failure,
+            program_finished=finished and task_id == 1098,
+            drawer_primitive_finished=finished,
+            remaining_primitive='pick_place_bowl_in_open_drawer' if task_id == 1202 else None,
+            terminal_dual_rgbd_saved=task_id == 1202,
+            error=failure,
             native_steps=ticks, jev_calls=len(rec.decisions),
-            stage=sequence[phase]['name'] if phase < len(sequence) else 'finished',
+            stage=sequence[phase]['name'] if phase < len(sequence) else (
+                'await_bowl_placement' if task_id == 1202 else 'finished'),
             visible_handle_shift=visible_shift,
             ownership='Jev XYZ/gripper/phase; fixed public RGB-D handle geometry'))
-        rec.finish('success' if success else 'failed')
+        rec.finish('success' if success and finished and task_id == 1098
+                   else 'failed')
         model.close()
