@@ -310,6 +310,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     ultimate_goal = None
     ultimate_goal_uv = None
     segment = 1
+    max_native_ticks = 900 if visible_goal_plate else 550
     stalls = 0
     reobservations = 0
     history = []
@@ -366,7 +367,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 '; no BDDL geometry or predicate'))
         while True:
             rec.check_budget()
-            if ticks >= 550 or stage_decisions >= 65:
+            if ticks >= max_native_ticks or stage_decisions >= 65:
                 raise RuntimeError('Push native/stage decision budget')
             if visible_goal_plate and stalls >= 6 and reobservations >= 1:
                 raise RuntimeError('Visible plate push halted after six blocked blocks following reobserve')
@@ -511,7 +512,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             delta = np.asarray(decision['signs'])*np.minimum(cap, .5*np.abs(error))
             rotations = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rot))
             block = 6 if stage == 'prepare' or np.max(np.abs(error))>.06 else 3
-            if ticks+block > 550:
+            if ticks+block > max_native_ticks:
                 raise RuntimeError('Native block budget')
             before = current.copy()
             for _ in range(block):
