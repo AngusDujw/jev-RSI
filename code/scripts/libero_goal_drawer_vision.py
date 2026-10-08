@@ -63,6 +63,8 @@ def visible_drawer_handles(rgb, depth, intrinsic, extrinsic):
             center_uv=[round(float(np.median(u)), 2),
                        round(float(np.median(v)), 2)],
             center_world_m=centre.tolist(),
+            rod_back_world_y_m=float(np.quantile(world[:, 1], .05)),
+            rod_front_world_y_m=float(np.quantile(world[:, 1], .95)),
             rod_axis_world=axis.tolist(),
             visible_rod_length_m=length,
             bbox_xywh=[x+x0, y+y0, width, height],

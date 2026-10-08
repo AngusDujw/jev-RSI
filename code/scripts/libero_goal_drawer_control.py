@@ -13,7 +13,8 @@ import cv2
 import numpy as np
 from scipy.spatial.transform import Rotation
 
-from libero_goal_drawer_vision import visible_drawer_handles, select_public_handle
+from libero_goal_drawer_vision import (visible_cabinet_front,
+    visible_drawer_handles, select_public_handle)
 from libero_robot_geometry import gripper_geometry
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
@@ -88,14 +89,25 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_handle = None
     image_template = None
     expected = None
+    hook_mode = rec.cfg.get('drawer_contact_mode', 'pinch') == 'hook'
+    front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
-    side_orientation = np.array([[1., 0., 0.],
-                                 [0., 0., -1.],
-                                 [0., 1., 0.]])
+    side_orientation = (Rotation.from_euler('x', 210, degrees=True).as_matrix()
+                        if hook_mode else np.array([[1., 0., 0.],
+                                                    [0., 0., -1.],
+                                                    [0., 1., 0.]]))
     own = gripper_geometry(env, obs)
-    pad_center_offset = np.median(
-        np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
+    if hook_mode:
+        pad_names = env.robots[0].gripper.important_geoms['left_fingerpad']
+        pad_world = np.mean([env.sim.data.geom_xpos[
+            env.sim.model.geom_name2id(name)] for name in pad_names], axis=0)
+        initial_rotation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+        pad_tool = (pad_world-np.asarray(obs['robot0_eef_pos'])) @ initial_rotation
+        pad_center_offset = pad_tool @ side_orientation.T
+    else:
+        pad_center_offset = np.median(
+            np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
     dump(rec.folder/'own-pad-contact-offset.json', dict(
         side_orientation=side_orientation,
         pad_center_offset_world_m=pad_center_offset,
@@ -112,7 +124,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         measured = visible_drawer_handles(image, depth, intrinsic, extrinsic)
         chosen = select_public_handle(measured, 'middle')
         dump(rec.folder/f'handles-{ticks:04d}.json', measured)
-        return image, chosen
+        front = (visible_cabinet_front(image, depth, intrinsic, extrinsic,
+                 chosen['center_world_m']) if hook_mode else None)
+        return image, chosen, front
 
     def handle_shift():
         if image_template is None:
@@ -131,7 +145,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     match_score=float(maximum), current_origin=now.tolist())
 
     try:
-        image, handle = measure_handle()
+        image, handle, front_plane = measure_handle()
         handle_position = np.asarray(handle['center_world_m'], float)
         x, y, width, height = handle['bbox_xywh']
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -145,7 +159,24 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             stage = sequence[phase]
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
-            contact_tcp = handle_position - pad_center_offset
+            if hook_mode:
+                face_y = float(front_plane['point_world_m'][1])
+                back_y = float(handle['rod_back_world_y_m'])
+                hook_y = face_y + .012
+                if not face_y + .008 < hook_y < back_y - .003:
+                    raise RuntimeError('Visible finger-hook gap unavailable')
+                hook_pad = np.array([handle_position[0], hook_y,
+                                     handle_position[2]])
+                contact_tcp = hook_pad - pad_center_offset
+                pad_now = np.mean([env.sim.data.geom_xpos[
+                    env.sim.model.geom_name2id(name)] for name in pad_names], axis=0)
+                finger_behind = bool(face_y + .003 < pad_now[1] < back_y - .003
+                    and abs(pad_now[0]-handle_position[0]) < .018
+                    and abs(pad_now[2]-handle_position[2]) < .012)
+            else:
+                contact_tcp = handle_position - pad_center_offset
+                finger_behind = False
+                pad_now = None
             targets = {
                 'approach': contact_tcp + [0., .14, .14],
                 'align': contact_tcp + [0., .14, .14],
@@ -167,7 +198,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'approach': arrived,
                 'align': arrived and oriented,
                 'contact': arrived and oriented,
-                'grasp': grip_ticks >= 18 and gripper == 1,
+                'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
+                          if hook_mode else grip_ticks >= 18 and gripper == 1),
                 'pull': arrived and shift is not None and shift['pixel_displacement'] > 12,
                 'release': grip_ticks >= 24 and gripper == -1 and aperture >= 65,
                 'verify': shift is not None and shift['pixel_displacement'] > 12,
@@ -179,6 +211,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             observed_native_tick=ticks,
                             handle_world_m=handle_position.tolist(),
                             own_pad_center_offset_world_m=pad_center_offset.tolist(),
+                            hook_finger_behind_visible_rod=finger_behind if hook_mode else None,
+                            hook_pad_current_world_m=pad_now.tolist() if hook_mode else None,
+                            visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
+                            visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             current_tcp_world_m=position.tolist(),
                             position_arrived=arrived,
                             orientation_arrived=oriented,
@@ -193,13 +229,25 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 observed_evidence=evidence, recent_actions=history,
                 native_tick=ticks, public_language=task.language,
                 reobserve_available=not reobserved and name in ('observe', 'select_handle', 'approach', 'align'),
-                required_gripper_state='close' if name in ('grasp', 'pull') else 'open')
+                required_gripper_state=('close' if name in ('grasp', 'pull')
+                    and not hook_mode else 'open'))
+            if hook_mode and name == 'grasp':
+                request['state']['stage_contract'] = (
+                    'Keep the gripper open and place one own finger behind the '
+                    'visible middle handle rod, with RGB-D front-plane clearance. '
+                    'Advance only after the measured finger hook and open-command '
+                    'hold are confirmed.')
+            if hook_mode and name == 'pull':
+                request['state']['stage_contract'] = (
+                    'Keep the gripper open; pull the measured finger hook outward '
+                    'along the visible cabinet-front normal. Advance only when '
+                    'the handle image actually moves and TCP reaches the target.')
             decision = model.decide(request, stage['id'])
             edge = decision['transition']
             if edge == 'stop':
                 raise RuntimeError('Jev elected stop')
             if edge == 'reobserve':
-                image, handle = measure_handle()
+                image, handle, front_plane = measure_handle()
                 handle_position = np.asarray(handle['center_world_m'], float)
                 reobserved = True
                 continue
