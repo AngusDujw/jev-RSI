@@ -223,6 +223,45 @@ def visible_side_contact(view, plate_mask, plate, direction, central_contact_xy)
                 source='segmented plate RGB-D and visible elevated rear corridor')
 
 
+def visible_lateral_stage(view, plate, front_goal):
+    """Find a clear table waypoint beside the visible obstacle before going front."""
+    cloud = world_cloud(view)
+    u = int(front_goal['goal_uv'][0])
+    v = int(round(plate['uv'][1]))
+    if not (10 <= u < 758 and 10 <= v < 758):
+        raise RuntimeError('Lateral plate staging patch outside agentview')
+    patch = cloud[v-4:v+5, u-4:u+5].reshape(-1, 3)
+    if not np.isfinite(patch).all():
+        raise RuntimeError('Lateral plate staging patch lacks depth')
+    goal = np.median(patch, axis=0)
+    source = np.asarray(plate['center'], float)
+    if abs(goal[2]-plate['low'][2]) > .025:
+        raise RuntimeError('Lateral plate staging patch is not visible tabletop')
+    travel = goal[:2]-source[:2]
+    distance = float(np.linalg.norm(travel))
+    if not .06 < distance < .40:
+        raise RuntimeError('Lateral plate staging distance outside range')
+    direction = travel/distance
+    elevated = (np.isfinite(cloud).all(axis=2) &
+                (cloud[:, :, 2] > goal[2]+.025) &
+                (cloud[:, :, 2] < goal[2]+.30) & ~plate['mask'])
+    elevated[:320] = 0
+    elevated[:, :250] = 0
+    points = cloud[elevated][:, :2]
+    along = (points-source[:2]) @ direction
+    lateral = np.abs((points-source[:2])[:, 0]*direction[1] -
+                     (points-source[:2])[:, 1]*direction[0])
+    radius = .5*max(np.asarray(plate['high'])[:2]-
+                    np.asarray(plate['low'])[:2])+.008
+    blockers = int(((along > .015) & (along < distance+.02) &
+                    (lateral < radius)).sum())
+    if blockers >= 80:
+        raise RuntimeError('Lateral plate staging route has visible obstacle')
+    return dict(goal_uv=[u, v], goal_world_m=goal.tolist(),
+                travel_m=distance, elevated_corridor_pixels=blockers,
+                source='visible table depth at plate row, aligned with front-goal column')
+
+
 class GoalPlateVision:
     """Drop-in visible-only source/goal adapter for the Jev push primitive."""
 
@@ -231,10 +270,11 @@ class GoalPlateVision:
         self.calls = 0
         self.refreshes = 0
         self.goal = None
+        self.stage_goal = None
         self.last_uv = None
 
     def locate(self, views, public_task, reason, previous=None):
-        if reason not in ('initial', 'reobserve', 'after_push') or self.calls >= 3:
+        if reason not in ('initial', 'reobserve', 'after_push') or self.calls >= 5:
             raise RuntimeError('Goal plate observation trigger/budget')
         self.calls += 1
         view = views['agentview']
@@ -243,9 +283,11 @@ class GoalPlateVision:
         if reason == 'initial':
             stove = visible_stove(view)
             self.goal = visible_front_goal(view, plate, stove)
+            self.stage_goal = visible_lateral_stage(view, plate, self.goal)
             dump(self.rec.folder/'goal-plate-visible-plan.json', dict(
                 plate={key: value for key, value in plate.items() if key != 'mask'},
-                stove=stove, goal=self.goal, public_task=public_task,
+                stove=stove, goal=self.goal, lateral_stage=self.stage_goal,
+                public_task=public_task,
                 source='agentview RGB-D/calibration only'))
         if self.goal is None:
             raise RuntimeError('Goal plate target has not been measured')

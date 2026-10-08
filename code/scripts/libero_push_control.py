@@ -307,6 +307,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     termination_reason = None
     observed_after = None
     goal = None
+    ultimate_goal = None
+    ultimate_goal_uv = None
+    segment = 1
     stalls = 0
     reobservations = 0
     history = []
@@ -322,7 +325,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             obs['robot0_eef_quat']).as_matrix(),
             observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
             preserve_downward=not visible_goal_plate,
-            contact_mode='top_surface' if visible_goal_plate else 'rear_edge')
+            contact_mode=('top_surface' if visible_goal_plate and segment == 1
+                          else 'rear_edge'))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
@@ -339,6 +343,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         if len(patch) == 0 or not np.isfinite(patch).all():
             raise RuntimeError('Goal tabletop RGB-D unavailable')
         goal = np.median(patch.reshape(-1, 3), axis=0)
+        ultimate_goal = goal.copy()
+        ultimate_goal_uv = goal_uv.copy()
+        if visible_goal_plate:
+            goal_uv = np.asarray(vision.stage_goal['goal_uv'], float)
+            goal = np.asarray(vision.stage_goal['goal_world_m'], float)
         unit_push = goal[:2]-source['center'][:2]
         unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
         rear_extent = visible_rear_extent(v[ob['camera']],
@@ -377,7 +386,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 later_ob = later['source']
                 observed_after = vision.measure(v[later_ob['camera']],
                     later_ob['bbox'], later_ob['label'], 'after-push-source')
-                dump(rec.folder/'after-push-geometry.json', observed_after)
+                dump(rec.folder/(f'after-push-geometry-segment-{segment}.json'
+                    if visible_goal_plate else 'after-push-geometry.json'),
+                    observed_after)
             visible_error = None if observed_after is None else float(np.linalg.norm(
                 observed_after['center'][:2]-goal[:2]))
             if stage == 'push' and arrived and visible_error is not None and visible_error >= .045:
@@ -388,19 +399,24 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if stage == 'retreat':
                 complete = arrived
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
-            next_stage = 'finish_attempt' if stage == 'retreat' else PHASES[PHASES.index(stage)+1]
+            next_stage = ('approach' if stage == 'retreat' and visible_goal_plate
+                          and segment == 1 else 'finish_attempt' if stage == 'retreat'
+                          else PHASES[PHASES.index(stage)+1])
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
                 approach=('Move to a high-clearance hover above the visible plate centre.'
-                    if visible_goal_plate else
+                    if visible_goal_plate and segment == 1 else
                     'Move to high-clearance hover behind visible source, keeping the selected downward pusher pose.'),
                 lower=('Lower the own fingertip onto the visible plate top for a supported slide; keep the plate on the table.'
-                    if visible_goal_plate else
+                    if visible_goal_plate and segment == 1 else
                     'Lower behind object to own-finger tabletop clearance, without lifting source.'),
-                push=('Translate the supported contact across the table toward the visible goal; advance only after fresh RGB-D confirms the plate centre within 45mm of goal.'
+                push=('Translate the supported contact laterally across the table to the visible staging waypoint; advance only after fresh RGB-D confirms the plate centre within 45mm of that waypoint.'
+                    if visible_goal_plate and segment == 1 else
+                    'Push from behind the observed plate toward the visible stove-front goal; advance only after fresh RGB-D confirms the plate centre within 45mm of goal.'
                     if visible_goal_plate else
                     'Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.'),
                 retreat='Raise pusher after the observed push; advance to end attempt.')
             state = dict(task=public_task, operation=stage, next_operation=next_stage,
+                segment_index=segment, segment_count=2 if visible_goal_plate else 1,
                 operation_contract=contracts[stage],
                 translation_axes={a: dict(current_coordinate_m=float(current[i]),
                     goal_coordinate_m=float(target[i]),
@@ -424,6 +440,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 visible_geometry=dict(source_initial_xy_m=source['center'][:2],
                     goal_xy_m=goal[:2], push_direction_xy=direction,
                     contact_mode=plan['contact_mode'],
+                    final_goal_xy_m=None if ultimate_goal is None else ultimate_goal[:2],
                     source_observed_after_xy_m=None if observed_after is None else observed_after['center'][:2]),
                 blocked_action_count=stalls, reobserve_count=reobservations,
                 tracking_axes={a: dict(
@@ -514,8 +531,39 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if decision['transition'] == 'advance':
                 rec.event(dict(kind='phase_transition', from_stage=stage,
                     to_stage=next_stage, decision_id=decision['decision_id'],
-                    selected_transition='advance'))
+                    selected_transition='advance', segment_index=segment))
                 if stage == 'retreat':
+                    if visible_goal_plate and segment == 1:
+                        v = views()
+                        refreshed = vision.locate(v, public_task, 'reobserve',
+                            previous=dict(source=ob, destination=identity['destination']))
+                        ob = refreshed['source']
+                        source = vision.measure(v[ob['camera']], ob['bbox'],
+                            ob['label'], 'second-segment-source')
+                        goal, goal_uv = ultimate_goal.copy(), ultimate_goal_uv.copy()
+                        unit_push = goal[:2]-source['center'][:2]
+                        unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
+                        rear_extent = visible_rear_extent(v[ob['camera']],
+                            np.load(source['visible_mask_path']), source, unit_push)
+                        own = gripper_geometry(env, obs)
+                        segment = 2
+                        plan = build_plan(source, rear_extent, v, own)
+                        direction, orientation = plan['direction'], plan['orientation']
+                        approach, lower, contact = (plan[k] for k in
+                            ('approach', 'lower', 'contact'))
+                        push_end, retreat = plan['push_end'], plan['retreat']
+                        dump(rec.folder/'push-geometry-segment-2.json', dict(
+                            public_task=public_task, source=source,
+                            target_uv=goal_uv, visible_goal_world_m=goal, **plan,
+                            provenance='Fresh visible plate RGB-D, fixed public front goal, own gripper mesh'))
+                        rec.event(dict(kind='second_segment_visible_replan',
+                            decision_id=decision['decision_id'],
+                            goal_world_m=goal, semantic_calls=vision.calls))
+                        observed_after = None
+                        reobservations = 1
+                        stage = next_stage
+                        stage_decisions = stalls = 0
+                        continue
                     finished = True
                     termination_reason = 'model_finished_attempt'
                     break
