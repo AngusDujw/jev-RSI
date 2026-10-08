@@ -108,7 +108,10 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     approach = np.r_[contact_xy-direction*standoff, hover_z]
     lower = np.r_[contact_xy-direction*standoff, contact_z]
     contact = np.r_[contact_xy, contact_z]
-    push_end = np.r_[contact_xy+direction*(distance+.025), contact_z]
+    # Top contact leaves the plate trailing the fingertip; keep the pusher
+    # moving until the visible plate can approach the visible stove-front goal.
+    overshoot = .060 if contact_mode == 'top_surface' else .025
+    push_end = np.r_[contact_xy+direction*(distance+overshoot), contact_z]
     retreat = push_end+np.array([0., 0., .10])
     return dict(orientation=orientation,
         orientation_source='preserved downward robot pose' if preserve else
@@ -117,6 +120,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         observed_rear_extent_m=rear_extent,
         rear_standoff_m=rear_standoff_m,
         contact_mode=contact_mode,
+        planned_overshoot_m=overshoot,
         lateral_contact_offset_m=lateral_contact_offset_m,
         lateral_contact_axis_xy=lateral_axis,
         rear_extent_source='visible SAM mask/RGB-D 5th percentile' if observed_rear_extent_m is not None else 'RGB-D axis bounds fallback',
