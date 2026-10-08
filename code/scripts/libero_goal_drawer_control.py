@@ -102,16 +102,21 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                                     [0., 1., 0.]]))
     own = gripper_geometry(env, obs)
     if hook_mode:
-        # For a top-down wrist, the -Y finger enters the visible cabinet/rod
-        # gap while the TCP remains in front of the cabinet. The other finger
-        # would put the TCP behind the cabinet face.
-        hook_finger = 'right_fingerpad' if contact_mode == 'top_hook' else 'left_fingerpad'
-        pad_names = env.robots[0].gripper.important_geoms[hook_finger]
-        pad_world = np.mean([env.sim.data.geom_xpos[
-            env.sim.model.geom_name2id(name)] for name in pad_names], axis=0)
         initial_rotation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-        pad_tool = (pad_world-np.asarray(obs['robot0_eef_pos'])) @ initial_rotation
-        pad_center_offset = pad_tool @ side_orientation.T
+        finger_options = []
+        for finger in ('left_fingerpad', 'right_fingerpad'):
+            names = env.robots[0].gripper.important_geoms[finger]
+            pad_world = np.mean([env.sim.data.geom_xpos[
+                env.sim.model.geom_name2id(geom)] for geom in names], axis=0)
+            pad_tool = (pad_world-np.asarray(obs['robot0_eef_pos'])) @ initial_rotation
+            offset = pad_tool @ side_orientation.T
+            finger_options.append((finger, names, offset))
+        # The pad toward the cabinet (-world Y) leaves the TCP in front of the
+        # visible cabinet face. Choose from measured own geometry, not a name.
+        hook_finger, pad_names, pad_center_offset = min(
+            finger_options, key=lambda item: item[2][1])
+        if contact_mode == 'top_hook' and pad_center_offset[1] >= 0:
+            raise RuntimeError('No rearward own fingerpad for top-down hook')
     else:
         pad_center_offset = np.median(
             np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
