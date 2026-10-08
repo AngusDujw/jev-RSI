@@ -379,7 +379,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             rot = np.zeros(3) if stage in ('prepare', 'retreat') else Rotation.from_matrix(
                 orientation @ Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
             oriented = bool(np.max(np.abs(rot)) < .03)
-            if stage == 'push' and arrived and observed_after is None:
+            verification_stage = ('retreat' if visible_goal_plate else 'push')
+            if stage == verification_stage and arrived and observed_after is None:
                 v = views()
                 later = vision.locate(v, public_task, 'after_push',
                     previous=dict(source=ob, destination=identity['destination']))
@@ -391,13 +392,15 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     observed_after)
             visible_error = None if observed_after is None else float(np.linalg.norm(
                 observed_after['center'][:2]-goal[:2]))
-            if stage == 'push' and arrived and visible_error is not None and visible_error >= .045:
+            if stage == verification_stage and arrived and visible_error is not None and visible_error >= .045:
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
-            if stage == 'push':
+            if stage == 'push' and not visible_goal_plate:
                 complete = bool(complete and visible_error is not None and visible_error < .045)
             if stage == 'retreat':
-                complete = arrived
+                complete = (bool(arrived and visible_error is not None and
+                                 visible_error < .045) if visible_goal_plate
+                            else arrived)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
             next_stage = ('approach' if stage == 'retreat' and visible_goal_plate
                           and segment == 1 else 'finish_attempt' if stage == 'retreat'
@@ -409,12 +412,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 lower=('Lower the own fingertip onto the visible plate top for a supported slide; keep the plate on the table.'
                     if visible_goal_plate and segment == 1 else
                     'Lower behind object to own-finger tabletop clearance, without lifting source.'),
-                push=('Translate the supported contact laterally across the table to the visible staging waypoint; advance only after fresh RGB-D confirms the plate centre within 45mm of that waypoint.'
+                push=('Translate the supported contact laterally across the table to the visible staging waypoint; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
                     if visible_goal_plate and segment == 1 else
-                    'Push from behind the observed plate toward the visible stove-front goal; advance only after fresh RGB-D confirms the plate centre within 45mm of goal.'
+                    'Push from behind the observed plate toward the visible stove-front goal; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
                     if visible_goal_plate else
                     'Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.'),
-                retreat='Raise pusher after the observed push; advance to end attempt.')
+                retreat=('Raise the pusher to reveal the plate; advance only after fresh RGB-D measures its centre within 45mm of the current segment goal.'
+                    if visible_goal_plate else
+                    'Raise pusher after the observed push; advance to end attempt.'))
             state = dict(task=public_task, operation=stage, next_operation=next_stage,
                 segment_index=segment, segment_count=2 if visible_goal_plate else 1,
                 operation_contract=contracts[stage],
