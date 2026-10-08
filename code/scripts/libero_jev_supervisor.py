@@ -29,8 +29,22 @@ class DecisionModel(Jev):
         if state.get('rotation_control'):
             for a in ['rx','ry','rz']:
                 questions[a]=dict(type='choice',instructions=f'For {a} read required_rotation_world_rad[{a}]. This is target relative to current (NOT current minus target). Positive value means choose positive rotation; negative value means negative rotation. hold if magnitude below 0.03 radians. Do NOT negate the supplied required rotation. Only this axis, not other axes.',criteria=dict(negative='Negative world-axis rotation',hold='No rotation',positive='Positive world-axis rotation'))
-        questions['gripper']=dict(type='choice',instructions='You control the gripper. Open during approach/align/descend; close during grasp/lift/carry/lower; open during release/retreat. keep preserves last motor command. Choose based on current phase and feedback, not the next phase.',criteria=dict(open='Command open',close='Command close',keep='Keep prior commanded gripper state'))
+        questions['gripper']=dict(type='choice',instructions='You control the gripper. Open during approach/align/descend/insert; close during grasp/lift/carry/lower; open during release/retreat. keep preserves last motor command. Choose based on current phase and feedback, not the next phase.',criteria=dict(open='Command open',close='Command close',keep='Keep prior commanded gripper state'))
         questions['transition']=dict(type='choice',instructions='You own the phase switch. Use the phase contract and measured feedback. Continue while target not reached or required gripper ticks incomplete. Advance only when the current contract is met. For stalled motion or missing visual holding evidence reobserve; if recovery budget unavailable stop. This choice is applied AFTER current actions, and does not declare task success.',criteria=dict(continue_phase='Remain in this phase and execute selected motion/gripper',advance='Finish current phase and enter next predefined phase',reobserve='Remain, refresh permitted visual measurement once if budget allows',stop='Terminate incomplete attempt'))
+        if (state['stage']=='insert' and
+                state.get('measurement_status',{}).get('visible_contact_candidate')):
+            questions['transition']['instructions']=(
+                'You own the phase edge. The current public RGB-D source bounds '
+                'overlap or nearly overlap your own pad mesh. This is an explicit '
+                'exception to reaching the nominal TCP center: you may choose '
+                'advance now for one grasp trial even while target_arrival is '
+                'false. Keep the gripper open in this insert decision; closure '
+                'is decided in the next grasp stage. A pad/bounds overlap is '
+                'only a contact candidate, not proof of holding or task success. '
+                'You may instead continue_phase or stop if the visible evidence '
+                'does not justify the trial. Reobserve only if available.')
+            questions['transition']['criteria']['advance']=(
+                'Enter grasp for one test closure using measured pad proximity')
         payload=dict(model=self.api.cfg['model'],state=state,questions=questions)
         dump(folder/'request.json',payload)
         row=dict(decision_id=f'decision-{i:04d}',stage=state['stage'],observation=state,prompt_version='supervisor-'+self.rec.cfg['schema'],request_sha256=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest())
