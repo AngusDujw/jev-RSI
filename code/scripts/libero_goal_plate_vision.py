@@ -152,6 +152,54 @@ def visible_front_goal(view, plate, stove):
     return min(clear, key=lambda row: (row['travel_m'], row['elevated_corridor_pixels']))
 
 
+def visible_side_contact(view, plate_mask, plate, direction, central_contact_xy):
+    """Select a supported off-centre rim point with a visible clear rear lane.
+
+    This uses only calibrated RGB-D, the plate's segmented pixels, and the
+    already-computed contact line. The camera-facing side wins equal-clearance
+    ties, avoiding a fixed simulator/world-coordinate side choice.
+    """
+    cloud = world_cloud(view)
+    if plate_mask.shape != cloud.shape[:2]:
+        raise ValueError('Plate mask/depth shape mismatch')
+    good = plate_mask & np.isfinite(cloud).all(axis=2)
+    if int(good.sum()) < 500:
+        raise RuntimeError('Insufficient visible plate support for side contact')
+    direction = np.asarray(direction, float)
+    lateral = np.array([direction[1], -direction[0]])
+    source_xy = np.asarray(plate['center'][:2], float)
+    support = (cloud[good, :2]-source_xy) @ lateral
+    q05, q95 = np.quantile(support, [.05, .95])
+    available = min(q95, -q05)
+    if available < .020:
+        raise RuntimeError('Plate rim too narrow for supported side contact')
+    offset = float(min(.035, .80*available))
+    elevated = (np.isfinite(cloud).all(axis=2) & ~plate_mask &
+                (cloud[:, :, 2] > plate['high'][2]+.012) &
+                (cloud[:, :, 2] < plate['high'][2]+.45))
+    points = cloud[elevated][:, :2]
+    camera_xy = np.asarray(view['T'], float)[:2, 3]
+    rows = []
+    for sign in (-1, 1):
+        contact = np.asarray(central_contact_xy, float)+sign*offset*lateral
+        relative = points-contact
+        along = relative @ direction
+        across = relative @ lateral
+        # The descending wrist occupies a wider area than the fingertip.
+        # Count only *visible* elevated pixels in its rear approach corridor.
+        nearby = (along > -.075) & (along < .015) & (np.abs(across) < .055)
+        rows.append(dict(offset_m=sign*offset,
+                         contact_xy_m=contact.tolist(),
+                         elevated_rear_corridor_pixels=int(nearby.sum()),
+                         camera_side_score_m=float(np.dot(contact-camera_xy,
+                             contact-camera_xy))))
+    selected = min(rows, key=lambda row: (
+        row['elevated_rear_corridor_pixels'], row['camera_side_score_m']))
+    return dict(**selected, alternatives=rows,
+                plate_lateral_support_5_95_m=[float(q05), float(q95)],
+                source='segmented plate RGB-D and visible elevated rear corridor')
+
+
 class GoalPlateVision:
     """Drop-in visible-only source/goal adapter for the Jev push primitive."""
 

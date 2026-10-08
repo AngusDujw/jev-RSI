@@ -49,7 +49,7 @@ def visible_rear_extent(view, mask, source, direction):
 
 def contact_push_plan(source, goal, own, current_orientation=None,
                       observed_rear_extent_m=None, rear_standoff_m=.010,
-                      preserve_downward=True):
+                      preserve_downward=True, lateral_contact_offset_m=0.):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -76,7 +76,11 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         else float(np.dot(np.abs(direction), (source['high']-source['low'])[:2]/2)))
     if not -.020 <= rear_standoff_m <= .030:
         raise ValueError('Rear standoff outside declared contact range')
-    contact_xy = source['center'][:2] - direction*(rear_extent+leading+.004)
+    if not -.045 <= lateral_contact_offset_m <= .045:
+        raise ValueError('Lateral contact offset outside visible object support')
+    lateral_axis = np.array([direction[1], -direction[0]])
+    contact_xy = (source['center'][:2] - direction*(rear_extent+leading+.004)
+                  + lateral_axis*lateral_contact_offset_m)
     contact_z = goal[2]+.004-own_box['finger_low_z_offset']
     finger_low_world = contact_z+own_box['finger_low_z_offset']
     finger_high_world = contact_z+finger_high
@@ -95,6 +99,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         direction=direction,
         observed_rear_extent_m=rear_extent,
         rear_standoff_m=rear_standoff_m,
+        lateral_contact_offset_m=lateral_contact_offset_m,
+        lateral_contact_axis_xy=lateral_axis,
         rear_extent_source='visible SAM mask/RGB-D 5th percentile' if observed_rear_extent_m is not None else 'RGB-D axis bounds fallback',
         own_finger_leading_offset_m=leading,
         own_finger_high_offset_m=finger_high, own_envelope=own_box,
@@ -289,6 +295,22 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             K=k_fn(env.sim, c, rec.cfg['camera_size'], rec.cfg['camera_size']),
             T=t_fn(env.sim, c)) for c in ('agentview', 'robot0_eye_in_hand')}
 
+    def build_plan(source, rear_extent, observed_views, own, standoff=.010):
+        kwargs = dict(current_orientation=Rotation.from_quat(
+            obs['robot0_eef_quat']).as_matrix(),
+            observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
+            preserve_downward=not visible_goal_plate)
+        candidate = contact_push_plan(source, goal, own, **kwargs)
+        if visible_goal_plate:
+            from libero_goal_plate_vision import visible_side_contact
+            side = visible_side_contact(observed_views[ob['camera']],
+                np.load(source['visible_mask_path']), source,
+                candidate['direction'], candidate['contact'][:2])
+            candidate = contact_push_plan(source, goal, own,
+                lateral_contact_offset_m=side['offset_m'], **kwargs)
+            candidate['lateral_selection'] = side
+        return candidate
+
     try:
         public_task = ' '.join(task.language.split()[:-2]) if task.language.split()[-2:-1] == ['light'] else task.language
         v = views()
@@ -306,9 +328,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
         rear_extent = visible_rear_extent(v[ob['camera']],
             np.load(source['visible_mask_path']), source, unit_push)
-        plan = contact_push_plan(source, goal, own,
-            Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(), rear_extent,
-            preserve_downward=not visible_goal_plate)
+        plan = build_plan(source, rear_extent, v, own)
         direction = plan['direction']
         orientation = plan['orientation']
         approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
@@ -420,11 +440,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 rear_extent = visible_rear_extent(v[ob['camera']],
                     np.load(source['visible_mask_path']), source, unit_push)
                 own = gripper_geometry(env, obs)
-                plan = contact_push_plan(source, goal, own,
-                    Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(),
-                    rear_extent,
-                    rear_standoff_m=-.012 if visible_goal_plate and stage == 'lower' else .010,
-                    preserve_downward=not visible_goal_plate)
+                plan = build_plan(source, rear_extent, v, own)
                 direction, orientation = plan['direction'], plan['orientation']
                 approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
                 push_end, retreat = plan['push_end'], plan['retreat']
@@ -486,9 +502,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     # finger mesh before setting the approach/contact line.
                     own = gripper_geometry(env, obs)
                     dump(rec.folder/'own-gripper-after-close.json', own)
-                    plan = contact_push_plan(source, goal, own,
-                        Rotation.from_quat(obs['robot0_eef_quat']).as_matrix(),
-                        rear_extent, preserve_downward=not visible_goal_plate)
+                    plan = build_plan(source, rear_extent, v, own)
                     direction, orientation = plan['direction'], plan['orientation']
                     approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
                     push_end, retreat = plan['push_end'],plan['retreat']
