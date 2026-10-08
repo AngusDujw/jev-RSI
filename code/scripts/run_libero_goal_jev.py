@@ -65,6 +65,7 @@ def main():
         stream.flush()
         os.fsync(stream.fileno())
     out.mkdir()
+    episode = out/'episode'  # Recorder creates this directory itself.
     mode = 'recovery' if a.task_id in RECOVERY_TASKS else 'supervisor'
     manifest = dict(reservation=reservation, mode=mode,
                     policy_source_sha256=hashes, git_commit=commit,
@@ -77,7 +78,7 @@ def main():
            '--init-index', str(a.init_index), '--camera-size', '768',
            '--local-goal-vision', '--geometry-profile', 'observed_surfaces',
            '--max-jev-decisions', '160', '--wall-limit-seconds', '1200',
-           '--output', str(out)]
+           '--output', str(episode)]
     if mode == 'recovery':
         cmd += ['--recovery-supervisor', '--input-organization', 'focused',
                 '--grasp-algorithm', 'pad_fit', '--preserve-source',
@@ -97,7 +98,7 @@ def main():
             returncode, termination = done.returncode, None
         except subprocess.TimeoutExpired:
             returncode, termination = 124, '1400s launcher timeout'
-    result_file = out/'result.json'
+    result_file = episode/'result.json'
     result = json.loads(result_file.read_text()) if result_file.exists() else dict(
         success=False, error='No terminal result; inspect launcher.log')
     row = dict(reservation=reservation, returncode=returncode,
