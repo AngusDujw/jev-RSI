@@ -28,6 +28,27 @@ def overlap_ratio(a, b):
     return intersection / max(1., float(np.prod(np.maximum(a[2:]-a[:2], 0))))
 
 
+def associate_precontact(detections, label, prior_box):
+    """Match a previously visible object before contact, despite noun drift."""
+    prior_box = np.asarray(prior_box, float)
+    choices = []
+    for detection in detections:
+        box = np.asarray(detection['bbox'], float)
+        if label not in detection['label'].strip().lower() or detection['score'] < .25:
+            continue
+        low, high = np.maximum(box[:2], prior_box[:2]), np.minimum(box[2:], prior_box[2:])
+        intersection = float(np.prod(np.maximum(high-low, 0)))
+        area = float(np.prod(box[2:]-box[:2]))
+        prior_area = float(np.prod(prior_box[2:]-prior_box[:2]))
+        iou = intersection/max(1., area+prior_area-intersection)
+        if iou >= .60:
+            choices.append((iou, detection['score'], detection))
+    choices.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    if not choices or (len(choices)>1 and choices[1][0]>.9*choices[0][0]):
+        raise RuntimeError(f'No unambiguous precontact visible {label}')
+    return choices[0][2]
+
+
 def pick_visible(detections, label, excluded_box=None):
     """Fail closed on missing/ambiguous exact-label public-image detections."""
     choices = [d for d in detections if d['label'].strip().lower() == label]
@@ -60,10 +81,21 @@ def recognize(worker, receive, views, task_id, reason, prior, folder):
         (folder/f'grounding-{role}-response.json').write_text(json.dumps(result, indent=2)+'\n')
         return result['objects']
     source_label = SOURCE_LABEL[task_id]
-    source = pick_visible(detect('source', source_label), source_label)
+    detections = detect('source', source_label)
+    if reason == 'pregrasp' and prior is not None:
+        try:
+            source = associate_precontact(detections, source_label,
+                                          prior['source']['bbox'])
+            evidence = 'local RGB detection matched to initial public-visible box before contact'
+        except RuntimeError:
+            source = pick_visible(detections, source_label)
+            evidence = 'local GroundingDINO exact public noun + visible SAM box'
+    else:
+        source = pick_visible(detections, source_label)
+        evidence = 'local GroundingDINO exact public noun + visible SAM box'
     result = dict(source=dict(label=source_label, camera='agentview',
                               bbox=source['bbox'], visible=True,
-                              evidence='local GroundingDINO exact public noun + visible SAM box'))
+                              evidence=evidence))
     if task_id in DESTINATION_LABEL:
         destination_label = DESTINATION_LABEL[task_id]
         destination = pick_visible(detect('destination', destination_label),
