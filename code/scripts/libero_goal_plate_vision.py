@@ -193,8 +193,12 @@ def visible_side_contact(view, plate_mask, plate, direction, central_contact_xy)
                          elevated_rear_corridor_pixels=int(nearby.sum()),
                          camera_side_score_m=float(np.dot(contact-camera_xy,
                              contact-camera_xy))))
-    selected = min(rows, key=lambda row: (
-        row['elevated_rear_corridor_pixels'], row['camera_side_score_m']))
+    fewest = min(row['elevated_rear_corridor_pixels'] for row in rows)
+    # Pixel counts fluctuate with occlusion and sloped surfaces. Treat lanes
+    # within 15% as equivalent, then favour the camera-facing exposed rim.
+    nearly_clear = [row for row in rows if
+                    row['elevated_rear_corridor_pixels'] <= fewest*1.15+50]
+    selected = min(nearly_clear, key=lambda row: row['camera_side_score_m'])
     return dict(**selected, alternatives=rows,
                 plate_lateral_support_5_95_m=[float(q05), float(q95)],
                 source='segmented plate RGB-D and visible elevated rear corridor')
