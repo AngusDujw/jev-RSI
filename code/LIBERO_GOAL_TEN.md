@@ -19,10 +19,11 @@
 
 Goal1458 的现行方法见 [可见斜架拟合](scripts/libero_goal_rack_geometry.py)、[Jev 阶段与可见释放证据](scripts/libero_jev_recovery.py)、[单回合计数入口](scripts/run_libero_goal_jev.py)。从已分割的酒架 RGB-D 中拟合承托斜率，瓶身被抓住后 Jev 在高处旋转；下降阻塞时用新鲜瓶体点云相对承托面的法向间隙估计落差。只有瓶仍被可见共运动检查通过、落差在 60 mm 内且投影位于可见架面时，才提供一次低处释放的阶段选项。释放后撤离、等待、重新测可见关系，由 Jev 决定是否结束；官方成功只在回合结束读取。init2 的低处落差 36.02 mm、释放后可见近架像素比例 0.9794，真实答案/执行/阶段边审计 0 违规，原始数据本机与服务器 SHA256 一致，见 [EXP160](../LOGS/2026-W41.md#exp-2026w41-160)。此前高处开爪、静等、横向撤离的负结果保留在 EXP154～159。
 
-服务器为 `company-server-2`，隔离工作树 `/root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008`。现行冻结提交为 `823df20`，仿真环境 `/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python`。init3 第12次的本地视觉 worker 超时已按基础设施崩溃归档，`nvidia-smi` 同时超时；GPU 恢复前不要启动下个物理回合。恢复后若手动启动未见新初态，以下两行分别执行；第二行必须保持为**一整行**，把 `4` 和输出目录名同步改成实际未用的 init 索引。
+服务器为 `company-server-2`，隔离工作树 `/root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008`。Goal1458 的一次完整成功来自冻结策略提交 `823df20`；此后工作树为其他任务的入口及抽屉候选更新过，严格复测1458须先将该空闲工作树切回 `823df20`。仿真环境 `/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python`。init3 第12次的本地视觉 worker 超时已按基础设施崩溃归档，`nvidia-smi` 同时超时；GPU 恢复前不要启动下个物理回合。恢复后若手动启动未见新初态，以下三行分别执行；第三行必须保持为**一整行**，把 `4` 和输出目录名同步改成实际未用的 init 索引。
 
 ```bash
 cd /root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008
+git switch --detach 823df20
 /root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/run_libero_goal_jev.py --task-id 1458 --init-index 4 --output code/runs/NEW-goal-1458-init4
 ```
 
@@ -30,4 +31,4 @@ cd /root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008
 
 GPU 故障时尝试过现有 Mesa EGL：最小 MuJoCo 渲染可用，但 Robosuite 的 LIBERO 离屏相机不兼容，Goal1098 init2 两次均在场景帧前崩溃，见 [EXP162](../LOGS/2026-W41.md#exp-2026w41-162)、[EXP163](../LOGS/2026-W41.md#exp-2026w41-163)。可选 Mesa 代码已撤回，保留完整失败记录；未修改系统图形栈。
 
-Goal1098 新增待实跑的 `under_hook`：从公开RGB-D选中层杆及相邻下层杆，以两杆世界Z中点作为选中指垫的入深高度；外倾腕姿的自身指垫偏移反解TCP。初态0保存的可见杆距68.83mm，入深/最终TCP的Z约0.96505/0.99947m。其几何只在已存画面核对，**没有**新JeV/机器人接触或开抽屉结果，见 [EXP165](../LOGS/2026-W41.md#exp-2026w41-165)；只有GPU恢复后实跑才能判断可达性。启用需在单回合命令追加 `--drawer-contact-mode under_hook`，默认仍为旧`top_hook`。
+Goal1098 新增待实跑的 `under_hook`：从公开RGB-D选中层杆及相邻下层杆，以两杆世界Z中点作为选中指垫的入深高度；外倾腕姿的自身指垫偏移反解TCP，并检查自有指垫 mesh 的高度能否落入该间隙。初态0保存的可见杆距68.83mm，入深/最终TCP的Z约0.96505/0.99947m。其几何只在已存画面核对，**没有**新Jev/机器人接触或开抽屉结果，见 [EXP165](../LOGS/2026-W41.md#exp-2026w41-165)；只有GPU恢复后实跑才能判断可达性。启用需在单回合命令追加 `--drawer-contact-mode under_hook`，默认仍为旧`top_hook`。
