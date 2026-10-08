@@ -78,7 +78,7 @@ class RecoveryModel(Jev):
             transitions['retry'] = 'Withdraw and select another visible-geometry candidate'
         if state['allowed_transitions'].get('finish_if_visible'):
             transitions['finish_if_visible'] = 'End because fresh public RGB-D shows the source resting on the requested support'
-        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. advance only when the current contract is satisfied. If fresh visible_goal_evidence passed at select and the gripper is open, choose finish_if_visible; this is sensor evidence, not native task success. A pending test is unknown, not failed. At descend, a blocked motion with measured open-pad overlap may allow one bounded closure trial; advance then and let the short lift test decide holding. On a failed or unavailable lift check, or blocked motion without contact-trial evidence, choose retry if available. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
+        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. advance only when the current contract is satisfied. If fresh visible_goal_evidence passed at select and the gripper is open, choose finish_if_visible; this is sensor evidence, not native task success. A pending test is unknown, not failed. At descend, a blocked motion with measured open-pad overlap may allow one bounded closure trial; advance then and let the short lift test decide holding. At lower, a fresh visible held-source/rack contact candidate after arrival or blocked motion may allow release; it is not native task success. On a failed or unavailable lift/contact check, or blocked motion without contact-trial evidence, choose retry if available. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
         if state['operation'] == 'select' and not state['allowed_transitions'].get('finish_if_visible'):
             choices={c['id']: 'Visible-geometry candidate '+c['id'] for c in state['candidates'] if not c['prior_failed']}
             questions['candidate'] = dict(type='choice', instructions='Select one of the available visible-geometry candidates now. Prefer adequate pad overlap and positive table clearance. This selection and your advance choice apply together. The previously displayed candidate is only a default, not a completed selection. These are geometric estimates, not tested success predictions.', criteria=choices)
@@ -145,6 +145,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     grasp_orientation = grasp_offset = rack_geometry = None
     rack_verified = False
     rack_release_tcp = None
+    rack_contact_checked = False
+    rack_contact_evidence = dict(status='not_checked')
     visible_goal_evidence = dict(status='not_checked')
 
     def views():
@@ -410,8 +412,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 target = np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
             elif stage == 'lower':
                 if rack_task:
-                    rotated_offset = Rgoal @ grasp_orientation.T @ grasp_offset
-                    target = np.asarray(rack_geometry['center_world_m'])-rotated_offset
+                    # Rotation and contact can shift the source inside the
+                    # fingers. Use the fresh post-rotation visible offset.
+                    target = np.asarray(rack_geometry['center_world_m'])-offset
                 else:
                     target = np.r_[dst['center'][:2]-offset[:2],dst['high'][2]+(initial_src['high'][2]-initial_src['low'][2])/2+.012-offset[2]]
             elif stage == 'recover_up':
@@ -438,12 +441,43 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if stage == 'orient_receiver' and arrived and oriented and not rack_verified:
                 check_hold(use_projection=True, rotation_aware=True)
                 rack_verified = True
+            if stage == 'lower' and rack_task and (arrived or stalls >= 2) and not rack_contact_checked:
+                check_hold(use_projection=True, rotation_aware=True)
+                rack_contact_checked = True
+                if holding['status'] == 'passed':
+                    measured_center = np.asarray(holding['measured']['center'], float)
+                    rack_center = np.asarray(rack_geometry['center_world_m'], float)
+                    slope = rack_geometry['support_slope_dz_dy']
+                    surface_z = (rack_geometry['visible_surface_z_m'] +
+                                 slope*(measured_center[1]-rack_center[1]))
+                    normal_gap = float((measured_center[2]-surface_z)/
+                                       np.sqrt(1+slope*slope))
+                    y_low, y_high = rack_geometry['y_visible_quantile_range_m']
+                    in_footprint = bool(abs(measured_center[0]-rack_center[0]) < .055
+                        and y_low-.015 < measured_center[1] < y_high+.015)
+                    radius = rack_geometry['source_visible_radius_m']
+                    candidate = bool(in_footprint and
+                        -.01 < normal_gap < radius+.025)
+                    rack_contact_evidence = dict(
+                        status='visible_contact_candidate' if candidate else 'not_near_visible_support',
+                        source_center_world_m=measured_center.tolist(),
+                        normal_gap_m=normal_gap, visible_source_radius_m=radius,
+                        in_visible_rack_footprint=in_footprint, observed_tick=ticks,
+                        source='Fresh public RGB-D held-source mask vs visible rack slope')
+                else:
+                    rack_contact_evidence = dict(status='unavailable',
+                        holding_status=holding['status'],observed_tick=ticks)
+                dump(rec.folder/f'rack-contact-{ticks:04d}.json',rack_contact_evidence)
             required_open = stage in ['approach','align','descend','release','retreat','recover_open']
             required_close = stage in ['grasp','test_lift','lift','carry_lateral','carry','orient_receiver','lower']
             contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open. If fresh visible support evidence passed, choose finish_if_visible instead of another grasp.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp=f'Hold TCP, close for at least {rec.cfg.get("grasp_hold_ticks", 18)} native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. Advance only if measured holding passed. Retry if failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
+            if rack_task:
+                contracts['lower'] = ('Keep closed and approach the rack using the bottle offset measured after rotation. '
+                                      'Advance to one release trial only when a fresh public RGB-D source/rack contact candidate passes after arrival or blocked motion. '
+                                      'This geometric candidate is not native success.')
             if dark_source:
                 contracts['carry'] += ' At arrival, require a fresh visible holding check before advance.'
             if stage == 'lift' and holding.get('appearance_filtered'):
@@ -468,12 +502,18 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if stage == 'test_lift':complete=complete and holding['status']=='passed'
             if stage == 'lift' and lift_verified:complete=complete and holding['status']=='passed'
             if stage == 'orient_receiver':complete=complete and rack_verified and holding['status']=='passed'
+            if stage == 'lower' and rack_task:
+                complete=bool(oriented and rack_contact_checked and
+                    rack_contact_evidence['status']=='visible_contact_candidate' and
+                    (arrived or stalls>=2))
             if stage in ('carry_lateral','carry') and dark_source:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
-            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open'] and (stalls>=3 or holding['status'] in ('failed','unavailable'))
+            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status']!='visible_contact_candidate'))
             next_stage = 'select' if stage=='recover_open' else 'recover_open' if stage=='recover_up' else 'finish_attempt' if stage=='retreat' else phases[phases.index(stage)+1]
             finish_if_visible = bool(stage=='select' and visible_goal_evidence['status']=='passed')
             state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,blocked_visible_contact_trial=contact_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=True,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
+            if rack_task and stage == 'lower':
+                state['completion_evidence']['visible_rack_contact'] = rack_contact_evidence
             if rack_task and stage in ('orient_receiver','lower'):
                 state['visible_receiver_geometry'] = {k:rack_geometry[k] for k in (
                     'center_world_m','visible_surface_z_m','x_rotation_world_rad',
@@ -538,6 +578,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 lift_verified=False
                 carry_verified_stage=None
                 rack_verified=False
+                rack_contact_checked=False
+                rack_contact_evidence=dict(status='not_checked')
             elif transition=='advance':
                 to_stage=next_stage
                 if stage=='select':
@@ -552,6 +594,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     lift_verified=False
                     carry_verified_stage=None
                     rack_verified=False
+                    rack_contact_checked=False
+                    rack_contact_evidence=dict(status='not_checked')
                 if stage=='test_lift':
                     if offset is None:raise RuntimeError('Jev advanced without holding evidence')
                     grasp_offset=offset.copy()

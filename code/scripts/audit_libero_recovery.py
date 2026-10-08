@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('--output',type=Path);a=p.parse_args()
-allowed={'task','operation','next_operation','operation_contract','position_m','target_position_m','target_minus_current_mm','axis_hold_tolerance_mm','arrival_tolerance_mm','required_rotation_world_rad','gripper','completion_evidence','holding_evidence','allowed_transitions','selected_candidate','candidates','failed_candidates','grasp_attempts','recent_actions','blocked_action_count','phase_decisions','information_sources','local_decision_summary','evidence_interpretation','translation_axes','rotation_questions','selected_candidate_geometry','visible_goal_evidence','candidate_selection'}
+allowed={'task','operation','next_operation','operation_contract','position_m','target_position_m','target_minus_current_mm','axis_hold_tolerance_mm','arrival_tolerance_mm','required_rotation_world_rad','gripper','completion_evidence','holding_evidence','allowed_transitions','selected_candidate','candidates','failed_candidates','grasp_attempts','recent_actions','blocked_action_count','phase_decisions','information_sources','local_decision_summary','evidence_interpretation','translation_axes','rotation_questions','selected_candidate_geometry','visible_goal_evidence','candidate_selection','visible_receiver_geometry'}
 forbidden={'reward','success','object_poses','object_id','object_ids','goal_predicates','true_state','scene_layout','bddl','task_id','init_state'}
 
 def walk(obj):
