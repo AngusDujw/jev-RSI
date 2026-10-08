@@ -11,3 +11,5 @@
 三个修改文件Python编译、`git diff --check`、本机/服务器单回合`--dry-run`通过，非Goal1423误用开关被拒。服务器GPU相关进程仍处D态，未开启实跑。GPU健康后先冻结`7088e5b`或其等价仅文档后继，在未见init3实跑一次：优先检查真实指垫高度重叠、闭爪后可见碗与TCP共运动、双终局；若指垫仍无法入碗沿则停止该侧入方式，不以提示词或阈值继续绕圈。当周完整EXP为`EXP-2026W41-169`。
 
 随后对未见init3使用同一冻结入口尝试启动，`nvidia-smi -L`的8秒预检超时并在账本预留前退出。共享账本SHA256保持`62fef38bdd1e6ae436b37075fc311ab94f772582f5892ea8778a76c5fdc216be`，新输出目录未创建；这不是一次物理试验，不增加15/50计数。见`EXP-2026W41-170`；停止重复GPU探测。
+
+只读系统诊断：`journalctl -k`在2026-10-09 02:07:31记录`NVRM: Xid (PCI:0000:00:09): 109 ... CTX SWITCH TIMEOUT`，对应`/proc/driver/nvidia/gpus/0000:00:09.0/information`中的GPU UUID `GPU-6f3dda0d-c9f3-9a1f-5a25-693c6f843231`。多个已有RoboDojo Python与`nvidia-smi`进程处于D态，`wchan`为`os_acquire_rwlock_read`或`rwsem_down_write_slowpath`。这是设备/驱动等待的直接系统证据；不据此确定哪个作业造成Xid，也未终止其他作业或修改GPU/驱动。
