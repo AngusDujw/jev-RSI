@@ -47,6 +47,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
         if task_id == 1163:
             cmd += ['--carry-route', 'lateral_first', '--visible-goal-check',
                     '--grasp-hold-ticks', str(grasp_hold_ticks)]
+        if task_id == 1458:
+            cmd += ['--visible-goal-check']
     elif mode == 'supervisor':
         cmd += ['--jev-supervisor', '--schema', 'focused']
         if task_id == 1423:

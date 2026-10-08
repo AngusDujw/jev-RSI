@@ -277,9 +277,9 @@ def main():
                               a.task_id != 1296 or a.camera_size != 768 or
                               os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
         p.error('--goal-plate-push requires --push-supervisor Goal 1296, 768px, Jev backend')
-    if a.visible_goal_check and (not a.recovery_supervisor or a.task_id != 1163 or
+    if a.visible_goal_check and (not a.recovery_supervisor or a.task_id not in (1163,1458) or
                                  not a.local_goal_vision):
-        p.error('--visible-goal-check currently requires local recovery Goal 1163')
+        p.error('--visible-goal-check currently requires local recovery Goal 1163 or 1458')
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',

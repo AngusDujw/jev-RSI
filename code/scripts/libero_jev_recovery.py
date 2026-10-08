@@ -351,6 +351,39 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             ob = found['source']
             measured = vision.measure(vv[ob['camera']], ob['bbox'], ob['label'],
                                       'visible-goal-source')
+            if rack_task:
+                v = vv[ob['camera']]
+                mask = np.load(measured['visible_mask_path']).astype(bool)
+                good = (mask & np.isfinite(v['depth']) &
+                        (v['depth'] > .02) & (v['depth'] < 3.))
+                source_points = cloud(v)[good]
+                if len(source_points) < 300:
+                    raise RuntimeError('Insufficient released source pixels for rack check')
+                rack_center = np.asarray(rack_geometry['center_world_m'], float)
+                slope = rack_geometry['support_slope_dz_dy']
+                surface_z = (rack_geometry['visible_surface_z_m'] +
+                             slope*(source_points[:,1]-rack_center[1]))
+                normal_gap = ((source_points[:,2]-surface_z)/
+                              np.sqrt(1+slope*slope))
+                y_low, y_high = rack_geometry['y_visible_quantile_range_m']
+                near_support = (np.abs(source_points[:,0]-rack_center[0]) < .075
+                    ) & (source_points[:,1] > y_low-.03) & (
+                    source_points[:,1] < y_high+.03) & (
+                    normal_gap > -.06) & (normal_gap < .08)
+                supported_fraction = float(np.mean(near_support))
+                center_rise = float(measured['center'][2]-initial_src['center'][2])
+                passed = bool(supported_fraction > .12 and center_rise > .08 and
+                    abs(measured['center'][0]-rack_center[0]) < .085)
+                visible_goal_evidence = dict(
+                    status='passed' if passed else 'failed',
+                    released_source_near_visible_rack_fraction=supported_fraction,
+                    center_rise_from_initial_m=center_rise,
+                    source_center_world_m=measured['center'],
+                    source_pixels=len(source_points),
+                    observed_tick=ticks,
+                    source='Fresh public RGB-D/SAM released source vs initial visible rack support; no native success input')
+                dump(rec.folder/f'visible-goal-{ticks:04d}.json',visible_goal_evidence)
+                return
             low, high = measured['low'], measured['high']
             width = np.maximum(high[:2]-low[:2], 1e-6)
             overlap = np.maximum(0., np.minimum(high[:2],dst['high'][:2])-
