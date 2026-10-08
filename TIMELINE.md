@@ -90,6 +90,7 @@ graph LR
     T_2026W41_027["📊 libero-goal-ten<br/>新增十项的四个Goal init0分别获得…"]:::experiment
     T_2026W41_028["⛔ libero-goal-ten<br/>Goal 1296 连续三次实跑 Cras…"]:::blocker
     T_2026W41_029["⛔ libero-goal-ten<br/>Goal1296三次可见盘推送均在下降阶段…"]:::blocker
+    T_2026W41_030["📊 jev-control-formulation<br/>停稳13状态与三初态闭环：精确坐标Jev方…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -147,6 +148,7 @@ graph LR
   T_2026W41_024 --> T_2026W41_026
   T_2026W41_027 --> T_2026W41_028
   T_2026W41_028 --> T_2026W41_029
+  T_2026W41_026 --> T_2026W41_030
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -227,6 +229,7 @@ graph LR
 | `T-2026W41-027` | 2026-10-08 | experiment | libero-goal-ten | 新增十项的四个Goal init0分别获得一次Jev原生完整成功；瓶和抽屉仍未完成 | `EXP-2026W41-064`, `EXP-2026W41-066`, `EXP-2026W41-067`, `EXP-2026W41-071` | - |
 | `T-2026W41-028` | 2026-10-08 | blocker | libero-goal-ten | Goal 1296 连续三次实跑 Crashed；新增十项目前4/10原生成功，按协议暂停新物理实验并请用户决定 | `EXP-2026W41-078` | - |
 | `T-2026W41-029` | 2026-10-08 | blocker | libero-goal-ten | Goal1296三次可见盘推送均在下降阶段不收敛；姿态转向将最低高度1.106m降至0.946m但仍未接触盘，按协议暂停新增实验 | `EXP-2026W41-075`, `EXP-2026W41-076`, `EXP-2026W41-078` | - |
+| `T-2026W41-030` | 2026-10-08 | experiment | jev-control-formulation | 停稳13状态与三初态闭环：精确坐标Jev方向未胜同信息直接反馈，校正后10动作完全同轨 | `EXP-2026W41-079`, `EXP-2026W41-080`, `EXP-2026W41-081` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
