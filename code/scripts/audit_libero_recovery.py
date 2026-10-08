@@ -50,7 +50,7 @@ for rp in sorted(a.root.glob('**/result.json')):
   expected=(s['next_operation'] if d['transition']=='advance' else
             'recover_up' if d['transition']=='retry' else 'finish_attempt')
   assert e['to_stage']==expected
- violations=[d['decision_id'] for d in ds if 'transition' in d and d['transition'] in ['advance','retry','finish_if_visible'] and not requests[d['decision_id']]['allowed_transitions'][d['transition']]]
+ violations=[d['decision_id'] for d in ds if 'transition' in d and d['transition'] in ['continue_phase','advance','retry','finish_if_visible'] and not requests[d['decision_id']]['allowed_transitions'][d['transition']]]
  rows.append(dict(path=str(q),result=json.loads(rp.read_text()),decisions=len(ds),executed=len(branches),phase_edges=len(edges),contract_violations=violations,transition_choices=dict(collections.Counter(d.get('transition') for d in ds))))
 result=dict(episodes=len(rows),audit='Actual Jev responses match gripper/actions/graph edges; signs preserved; all request text English; recursive forbidden keys absent. Input provenance additionally requires frozen-source review.',rows=rows)
 text=json.dumps(result,indent=2)
