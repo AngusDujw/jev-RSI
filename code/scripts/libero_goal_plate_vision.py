@@ -56,12 +56,23 @@ def visible_plate(view, previous_uv=None):
         if not (.07 < max(high[:2]-low[:2]) < .24 and
                 high[2]-low[2] < .045):
             continue
+        yy, xx = np.ogrid[:768, :768]
+        inner = (good & ((xx-centres[idx][0])**2+
+                         (yy-centres[idx][1])**2 < 18**2) &
+                 (hsv[:, :, 1] < 80) & (hsv[:, :, 2] > 100))
+        if int(inner.sum()) < 300:
+            continue
+        surface_z = float(np.median(cloud[inner, 2]))
+        if not low[2]-.003 < surface_z < high[2]+.003:
+            continue
         centre = (low+high)/2
         candidates.append(dict(mask=good, bbox=[x, y, x+w, y+h],
                                uv=centres[idx].tolist(),
                                center=centre.tolist(), low=low.tolist(),
                                high=high.tolist(), red_pixels=count,
-                               valid_depth_pixels=len(points)))
+                               valid_depth_pixels=len(points),
+                               contact_surface_world_z_m=surface_z,
+                               contact_surface_pixels=int(inner.sum())))
     if not candidates:
         raise RuntimeError('No unambiguous visible flat red-rim plate')
     candidates.sort(key=lambda row: row['red_pixels'], reverse=True)
@@ -249,8 +260,10 @@ class GoalPlateVision:
         np.save(path, plate['mask'])
         result = dict(center=plate['center'], low=plate['low'],
                       high=plate['high'], points=plate['valid_depth_pixels'],
+                      contact_surface_world_z_m=plate['contact_surface_world_z_m'],
+                      contact_surface_pixels=plate['contact_surface_pixels'],
                       label=label, visible_mask_path=str(path),
-                      source='visible red-rim connected component + RGB-D quantiles')
+                      source='visible red-rim hull + inner unsaturated RGB-D surface')
         dump(folder/'geometry.json', result)
         return result
 

@@ -88,9 +88,13 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         if lateral_contact_offset_m:
             raise ValueError('Top contact must remain at observed source centre')
         contact_xy = np.asarray(source['center'][:2], float)
-        # Four millimetres of commanded finger-pad contact accounts for the
-        # OSC controller's residual tracking error; it is not scene truth.
-        contact_z = source['high'][2]-.004-own_box['finger_low_z_offset']
+        surface_z = float(source['contact_surface_world_z_m'])
+        if not source['low'][2]-.003 < surface_z < source['high'][2]+.003:
+            raise RuntimeError('Visible inner surface inconsistent with plate bounds')
+        # Use the inner surface actually contacted by the finger, not the
+        # higher coloured rim. Three millimetres of commanded penetration
+        # counters OSC residual tracking error; it is not hidden scene state.
+        contact_z = surface_z-.003-own_box['finger_low_z_offset']
     else:
         raise ValueError('Unknown visible contact mode')
     finger_low_world = contact_z+own_box['finger_low_z_offset']
@@ -476,11 +480,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if newgripper != gripper:
                 grip_ticks = 0
             gripper = newgripper
-            # A supported top slide must remain quasi-static so the fingertip
-            # can transmit tangential force instead of running ahead of the
-            # plate. Other push tasks keep their established amplitude.
-            cap = (.003 if visible_goal_plate and stage == 'push' else
-                   .012 if stage in ('lower', 'push') else .02)
+            cap = .012 if stage in ('lower', 'push') else .02
             delta = np.asarray(decision['signs'])*np.minimum(cap, .5*np.abs(error))
             rotations = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rot))
             block = 6 if stage == 'prepare' or np.max(np.abs(error))>.06 else 3
