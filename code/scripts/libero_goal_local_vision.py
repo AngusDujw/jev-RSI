@@ -50,8 +50,15 @@ def associate_precontact(detections, label, prior_box):
 
 
 def pick_visible(detections, label, excluded_box=None):
-    """Fail closed on missing/ambiguous exact-label public-image detections."""
+    """Prefer exact public nouns; admit a tight compound label if none exists."""
     choices = [d for d in detections if d['label'].strip().lower() == label]
+    if not choices:
+        # Grounding can append a generic noun ("box container") while keeping
+        # the public noun intact. A scene-scale box is not an object proposal.
+        choices = [d for d in detections
+                   if d['label'].strip().lower().startswith(label+' ')
+                   and np.prod(np.asarray(d['bbox'])[2:]-np.asarray(d['bbox'])[:2])
+                   < .10*768*768]
     if excluded_box is not None:
         choices = [d for d in choices if overlap_ratio(d['bbox'], excluded_box) < .45]
     choices.sort(key=lambda d: d['score'], reverse=True)
