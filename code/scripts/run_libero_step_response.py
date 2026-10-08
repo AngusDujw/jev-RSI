@@ -32,14 +32,16 @@ def write_json(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False) + '\n')
 
 
-def source_case(run_root, task, init, state):
+def source_case(run_root, task, init, state, target_error_m=.04):
     if task == 'bowl':
         folder = run_root / '2026-10-02-libero-wrist-frozen20' / f'init-{init:02d}'
         suite_name, task_id, index = 'libero_spatial', 988, init
         decisions = [row for row in read_jsonl(folder / 'decisions.jsonl') if row['stage'] == 'approach']
         decision = (decisions[0] if state == 'far' else min(
-            (row for row in decisions if row['metrics']['error_norm_m'] >= .006),
-            key=lambda row: abs(row['metrics']['error_norm_m']-.015)))
+            (row for row in decisions if row['metrics']['error_norm_m'] >=
+             (.025 if state == 'pre_near' else .006)),
+            key=lambda row: abs(row['metrics']['error_norm_m']-
+                                (target_error_m if state == 'pre_near' else .015))))
         prefix = [row for row in read_jsonl(folder / 'branches.jsonl')
                   if row['decision_id'] < decision['decision_id']]
         position = decision['observation']['position_m']
@@ -51,8 +53,10 @@ def source_case(run_root, task, init, state):
         decisions = read_jsonl(folder / 'decisions.jsonl')
         approaches = [row for row in decisions if row['stage'] == 'approach']
         decision = (approaches[0] if state == 'far' else min(
-            (row for row in approaches if row['metrics']['error_norm_m'] >= .006),
-            key=lambda row: abs(row['metrics']['error_norm_m']-.015)))
+            (row for row in approaches if row['metrics']['error_norm_m'] >=
+             (.025 if state == 'pre_near' else .006)),
+            key=lambda row: abs(row['metrics']['error_norm_m']-
+                                (target_error_m if state == 'pre_near' else .015))))
         prefix = [row for row in read_jsonl(folder / 'branches.jsonl') if row['decision_id'] < decision['decision_id']]
         axes = decision['observation']['translation_axes']
         position = [axes[a]['current_coordinate_m'] for a in 'xyz']
@@ -67,6 +71,7 @@ def source_case(run_root, task, init, state):
                 signs=np.asarray(decision['signs'], dtype=float),
                 position=np.asarray(position, dtype=float), target=np.asarray(target, dtype=float),
                 prefix=prefix, gripper=gripper, state=state,
+                task_text=decision['observation']['task'],
                 sha256={str(f): hashlib.sha256(f.read_bytes()).hexdigest() for f in files})
 
 
