@@ -197,6 +197,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'pull': contact_tcp + [0., .18, 0.],
             }
             target = np.asarray(targets.get(name, position), float)
+            contact_leg = 'final'
+            if contact_mode == 'top_hook' and name == 'contact' and \
+                    position[1] > contact_tcp[1] + .009:
+                # Keep the finger above the upper visible handle while moving
+                # into the cabinet/rod depth. Descend only after that Y leg.
+                target = np.asarray(contact_tcp + [0., 0., .14], float)
+                contact_leg = 'high_y_insert'
             rotation_error = (Rotation.from_matrix(side_orientation @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
                 if name in ('align', 'contact', 'grasp', 'pull', 'release')
@@ -210,7 +217,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'select_handle': True,
                 'approach': arrived,
                 'align': arrived and oriented,
-                'contact': arrived and oriented,
+                'contact': arrived and oriented and contact_leg == 'final'
+                           and (finger_behind if contact_mode == 'top_hook' else True),
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
                           if hook_mode else grip_ticks >= 18 and gripper == 1),
                 'pull': arrived and shift is not None and shift['pixel_displacement'] > 12,
@@ -226,6 +234,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             own_pad_center_offset_world_m=pad_center_offset.tolist(),
                             hook_finger_behind_visible_rod=finger_behind if hook_mode else None,
                             hook_pad_current_world_m=pad_now.tolist() if hook_mode else None,
+                            contact_path_leg=contact_leg if name == 'contact' else None,
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             current_tcp_world_m=position.tolist(),
@@ -250,6 +259,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'visible middle handle rod, with RGB-D front-plane clearance. '
                     'Advance only after the measured finger hook and open-command '
                     'hold are confirmed.')
+            if contact_mode == 'top_hook' and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'First move the selected own finger to the measured '
+                    'cabinet/rod depth while it remains above the visible '
+                    'upper handle, then lower it to the middle handle. '
+                    'contact_path_leg names the current waypoint. Advance '
+                    'only after the final pose and observed finger-behind-rod '
+                    'gate are both true.')
             if hook_mode and name == 'pull':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open; pull the measured finger hook outward '
