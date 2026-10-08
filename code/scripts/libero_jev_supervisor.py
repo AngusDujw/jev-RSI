@@ -234,6 +234,12 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 notes['lower']='Seat the visible held-object bottom at the observed receiver surface while closed. Advance only after arrival within 4mm; stop or reobserve on a physical stall, never release in midair.'
             if stage=='lower' and rec.cfg.get('placement_height_mode')=='occlusion_guarded_bottom':
                 notes['lower']='Lower the occlusion-guarded held bottom to 2mm above the observed receiver surface, keeping the gripper closed. Advance only after arrival within 4mm. The bottom is a public RGB-D estimate, not confirmed contact.'
+            if stage=='insert' and rec.cfg.get('entry_side')=='receiver_side':
+                notes['insert']=('Keep the gripper open while moving toward the visible grasp site. '
+                    'If motion stalls but an own pad mesh is within 12mm of the current visible '
+                    'source bounds, you may advance to one closure trial without reaching the '
+                    'nominal TCP center. This is only a contact candidate, not holding proof; '
+                    'the lift phase must check actual visible co-motion.')
             if stage in ['lift','carry'] and np.max(abs(error))<.008:measure_held()
             state=dict(task=task.language,stage=stage,next_phase=phases[phase+1] if phase+1<len(phases) else 'finish_attempt',phase_contract=notes[stage],
                 position_m=position.tolist(),target_position_m=target.tolist(),error_m=error.tolist(),hold_tolerance_m=.004,arrival_tolerance_m=arrival_tolerance,
@@ -250,6 +256,16 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 state['measurement_status']=dict(target_arrival=bool(np.max(abs(error))<arrival_tolerance),holding_check=check_status,
                     gripper_actuation_complete=bool(gripper_ticks>=16),reobserve_available=state['recovery_remaining'],
                     observation_age_native_steps=ticks-(holding.get('observed_tick') or ticks))
+                if stage=='insert' and rec.cfg.get('entry_side')=='receiver_side':
+                    from libero_robot_geometry import gripper_geometry
+                    own=gripper_geometry(env,obs)
+                    rotation=Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+                    pad_world=own['pad_vertices_tool']@rotation.T+position
+                    box_distance=np.maximum(np.maximum(src['low']-pad_world,
+                                                        pad_world-src['high']),0.)
+                    closest=float(np.linalg.norm(box_distance,axis=1).min())
+                    state['measurement_status']['own_pad_to_visible_source_bounds_mm']=round(closest*1000,2)
+                    state['measurement_status']['visible_contact_candidate']=bool(closest<.012)
                 if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat':
                     state['measurement_status']['estimated_visible_bottom_to_receiver_mm']=float(
                         (position[2]+holding['visible_low_tcp_offset_m']-dst['high'][2])*1000)
@@ -280,7 +296,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                            gripper=dict(aperture_mm=full['gripper_aperture_mm'],
                                last_command=full['last_gripper_command'],
                                phase_ticks=gripper_ticks,
-                               required_state=('open' if stage in ('approach','align','descend','release','retreat')
+                               required_state=('open' if stage in ('approach','align','descend','insert','release','retreat')
                                                else 'closed')),
                            measurement_status=full['measurement_status'],
                            holding_evidence=dict(valid=holding.get('valid') if stage in ('lift','carry','lower','release','retreat') else None,
