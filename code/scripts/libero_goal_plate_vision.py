@@ -226,7 +226,7 @@ def visible_side_contact(view, plate_mask, plate, direction, central_contact_xy)
                 source='segmented plate RGB-D and visible elevated rear corridor')
 
 
-def visible_lateral_stage(view, plate, front_goal):
+def visible_lateral_stage(view, plate, front_goal, max_turn_deg=0):
     """Find a clear table waypoint beside the visible obstacle before going front."""
     cloud = world_cloud(view)
     u = int(front_goal['goal_uv'][0])
@@ -260,9 +260,39 @@ def visible_lateral_stage(view, plate, front_goal):
                     (lateral < radius)).sum())
     if blockers >= 80:
         raise RuntimeError('Lateral plate staging route has visible obstacle')
-    return dict(goal_uv=[u, v], goal_world_m=goal.tolist(),
-                travel_m=distance, elevated_corridor_pixels=blockers,
-                source='visible table depth at plate row, aligned with front-goal column')
+    selected = dict(goal_uv=[u, v], goal_world_m=goal.tolist(),
+                    travel_m=distance, elevated_corridor_pixels=blockers,
+                    turn_from_lateral_deg=0.,
+                    source='visible table depth at plate row, aligned with front-goal column')
+    if max_turn_deg:
+        if not 0 < max_turn_deg <= 20:
+            raise ValueError('Invalid visible plate staging turn bound')
+        choices = []
+        for row in front_goal['evaluated_visible_candidates']:
+            if (row['goal_uv'][0] != u or
+                    not front_goal['goal_uv'][1] <= row['goal_uv'][1] <= v or
+                    row['elevated_corridor_pixels'] >= 80):
+                continue
+            waypoint = np.asarray(row['goal_world_m'], float)
+            vector = waypoint[:2]-source[:2]
+            length = float(np.linalg.norm(vector))
+            if (not .06 < length < .40 or
+                    abs(waypoint[2]-plate['low'][2]) > .025):
+                continue
+            turn = float(np.degrees(np.arccos(np.clip(
+                np.dot(vector/length, direction), -1., 1.))))
+            if turn <= max_turn_deg:
+                choices.append((row, turn))
+        if choices:
+            row, turn = min(choices, key=lambda item: (
+                item[0]['goal_uv'][1], item[1]))
+            selected = dict(goal_uv=row['goal_uv'],
+                            goal_world_m=row['goal_world_m'],
+                            travel_m=row['travel_m'],
+                            elevated_corridor_pixels=row['elevated_corridor_pixels'],
+                            turn_from_lateral_deg=turn,
+                            source='visible table corridor with bounded turn from supported lateral push')
+    return selected
 
 
 class GoalPlateVision:
@@ -288,7 +318,8 @@ class GoalPlateVision:
         if reason == 'initial':
             stove = visible_stove(view)
             self.goal = visible_front_goal(view, plate, stove)
-            self.stage_goal = visible_lateral_stage(view, plate, self.goal)
+            self.stage_goal = visible_lateral_stage(view, plate, self.goal,
+                self.rec.cfg.get('plate_stage_turn_deg', 0))
             dump(self.rec.folder/'goal-plate-visible-plan.json', dict(
                 plate={key: value for key, value in plate.items() if key != 'mask'},
                 stove=stove, goal=self.goal, lateral_stage=self.stage_goal,

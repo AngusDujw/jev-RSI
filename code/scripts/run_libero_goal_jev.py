@@ -35,7 +35,8 @@ POLICY_FILES = (
 
 
 def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
-                   approach_mode, entry_side, grasp_hold_ticks, drawer_contact_mode):
+                   approach_mode, entry_side, grasp_hold_ticks, drawer_contact_mode,
+                   plate_stage_turn_deg):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -64,6 +65,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
         cmd += ['--knob-supervisor']
     elif mode == 'push':
         cmd += ['--push-supervisor', '--goal-plate-push']
+        if plate_stage_turn_deg:
+            cmd += ['--plate-stage-turn-deg', str(plate_stage_turn_deg)]
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
     return cmd
@@ -82,6 +85,7 @@ def main():
     p.add_argument('--grasp-hold-ticks', type=int, choices=[18,24,30,36,42,48], default=18)
     p.add_argument('--drawer-contact-mode', choices=['top_hook', 'under_hook'],
                    default='top_hook')
+    p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9], default=0)
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     a = p.parse_args()
@@ -108,9 +112,11 @@ def main():
         p.error('Extended closure is currently evaluated only for Goal 1163')
     if a.drawer_contact_mode != 'top_hook' and a.task_id != 1098:
         p.error('Alternative drawer entry is currently evaluated only for Goal 1098')
+    if a.plate_stage_turn_deg and a.task_id != 1296:
+        p.error('Alternative plate stage is currently evaluated only for Goal 1296')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
                          a.grasp_profile,a.approach_mode,a.entry_side,a.grasp_hold_ticks,
-                         a.drawer_contact_mode)
+                         a.drawer_contact_mode,a.plate_stage_turn_deg)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -150,6 +156,7 @@ def main():
                     entry_side=a.entry_side,
                     grasp_hold_ticks=a.grasp_hold_ticks,
                     drawer_contact_mode=a.drawer_contact_mode,
+                    plate_stage_turn_deg=a.plate_stage_turn_deg,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',
                     runtime_gpt6_calls=0, runtime_deepseek_calls=0,
