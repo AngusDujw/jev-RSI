@@ -29,3 +29,5 @@ cd /root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008
 单回合入口在预留账本前检查同盘至少 6 GiB 空闲和 `nvidia-smi` 能否在 8 秒内返回；这只能拦住明显的 GPU 故障，不能保证后续 worker 启动。入口也支持 Goal1296 推盘的可见 RGB-D/Jev 两段流程，并冻结 `libero_push_control.py` 的 SHA256；这项此前的开发回合仍无官方成功，入口接通不算新的物理结果。正式启动后，setup 失败也计入每任务 50 次，不自动重跑。大文件只写本项目同挂载盘。本轮没有更改显卡、CUDA 或系统驱动，也没有使用本机受限的 API 密钥。
 
 GPU 故障时尝试过现有 Mesa EGL：最小 MuJoCo 渲染可用，但 Robosuite 的 LIBERO 离屏相机不兼容，Goal1098 init2 两次均在场景帧前崩溃，见 [EXP162](../LOGS/2026-W41.md#exp-2026w41-162)、[EXP163](../LOGS/2026-W41.md#exp-2026w41-163)。可选 Mesa 代码已撤回，保留完整失败记录；未修改系统图形栈。
+
+Goal1098 新增待实跑的 `under_hook`：从公开RGB-D选中层杆及相邻下层杆，以两杆世界Z中点作为选中指垫的入深高度；外倾腕姿的自身指垫偏移反解TCP。初态0保存的可见杆距68.83mm，入深/最终TCP的Z约0.96505/0.99947m。其几何只在已存画面核对，**没有**新JeV/机器人接触或开抽屉结果，见 [EXP165](../LOGS/2026-W41.md#exp-2026w41-165)；只有GPU恢复后实跑才能判断可达性。启用需在单回合命令追加 `--drawer-contact-mode under_hook`，默认仍为旧`top_hook`。
