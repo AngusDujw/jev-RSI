@@ -122,17 +122,18 @@ def run_knob(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'toward the declared world-Z goal. This stage uses only own '
                     'orientation as a gate; actual visible control rotation is '
                     'checked after opening and withdrawal.')
-            if name=='release':
-                request['questions']['transition']['instructions']=(
-                    'Read completion_evidence.opening_executed. If true, choose '
-                    'advance now: opening and its measured duration are the whole '
-                    'release contract. The next verify stage withdraws and checks '
-                    'the visible control. If false, continue opening.')
             if name=='verify':
                 request['state']['stage_contract']=(
                     'Withdraw with open gripper, then compare the visible control '
                     'tab axis with its initial public RGB-D axis. Advance only '
                     'when fresh visible rotation exceeds 0.35 rad.')
+            request['questions']['transition']['instructions']=(
+                f'The completion gate for this stage is completion_evidence.{stage["gate"]}. '
+                'If that gate is true, choose advance now; all evidence needed '
+                'for this stage is complete, and later-stage evidence belongs '
+                'to the next stage. If false, continue_phase or stop. The '
+                'selected action executes before the edge. This does not '
+                'claim official task success.')
             d=model.decide(request,stage['id'])
             edge=d['transition']
             if edge=='stop':
