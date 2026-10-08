@@ -41,6 +41,8 @@ class DecisionModel(Jev):
                 'false. Keep the gripper open in this insert decision; closure '
                 'is decided in the next grasp stage. A pad/bounds overlap is '
                 'only a contact candidate, not proof of holding or task success. '
+                'If own_pad_visible_height_overlap_mm is provided, use that '
+                'measured vertical overlap as part of the contact evidence. '
                 'You may instead continue_phase or stop if the visible evidence '
                 'does not justify the trial. Reobserve only if available.')
             questions['transition']['criteria']['advance']=(
@@ -145,9 +147,26 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             p[:2]+=(1 if (start_tcp[:2]-p[:2])@axis>0 else -1)*.9*width/2*axis
         if rec.cfg.get('geometry_profile')=='observed_surfaces' and extent[2]<.025 and (initial_source_extent is None or initial_source_extent[2]<.025) and not side:
             p[2]=src['high'][2]+.023  # empirical own gripper low-object clearance; visible estimate only
-        if side:p[2]=src['high'][2]+.004
+        pad_fit=None
+        if side:
+            p[2]=src['high'][2]+.004
+            if rec.cfg.get('side_pad_overlap_mm',0):
+                from libero_robot_geometry import gripper_geometry,envelope
+                own=gripper_geometry(env,obs)
+                own_fit=envelope(own,orientation_goal)
+                overlap=rec.cfg['side_pad_overlap_mm']/1000.
+                visible_target=float(src['high'][2]-overlap-own_fit['pad_low_offset'][2])
+                finger_clearance=float(src['low'][2]+.005-own_fit['finger_low_z_offset'])
+                p[2]=max(visible_target,finger_clearance)
+                pad_fit=dict(requested_visible_overlap_mm=overlap*1000,
+                    predicted_pad_low_z_m=float(p[2]+own_fit['pad_low_offset'][2]),
+                    predicted_finger_low_z_m=float(p[2]+own_fit['finger_low_z_offset']),
+                    visible_source_high_z_m=float(src['high'][2]),
+                    visible_source_low_z_m=float(src['low'][2]),
+                    source='Public RGB-D bounds and own open-gripper mesh at requested orientation')
         dump(rec.folder/f'grasp-{vision.calls}.json',dict(target=p,axis=axis,width=width,
-            local_profile=local_profile,source='visible geometry + own gripper span'))
+            local_profile=local_profile,pad_fit=pad_fit,
+            source='visible geometry + own gripper span'))
         return p
     def measure_held():
         nonlocal holding,offset,last_verification_tick
@@ -191,7 +210,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         except Exception as e:holding=dict(valid=False,reason=str(e),observed_tick=ticks)
         dump(rec.folder/f'holding-{ticks:04d}.json',holding)
     try:
-        sem,src,dst=locate('initial');initial_source_extent=src['high']-src['low'];grasp=grasp_target();hover=max(src['high'][2],dst['high'][2])+.14
+        sem,src,dst=locate('initial');initial_source_extent=src['high']-src['low'];hover=max(src['high'][2],dst['high'][2])+.14
         if side:
             if rec.cfg.get('entry_side')=='receiver_side':
                 dx=float(dst['center'][0]-src['center'][0])
@@ -205,6 +224,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 receiver_visible_x_m=float(dst['center'][0]),
                 rule=rec.cfg.get('entry_side','robot_side')))
             orientation_goal=(Rotation.from_rotvec([0,side_sign*tilt,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix()
+        grasp=grasp_target()
         while phase<len(phases):
             stage=phases[phase];rec.check_budget()
             if ticks>=550 or stage_decisions>=45:raise RuntimeError('Stage/native budget: '+stage)
@@ -278,8 +298,15 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                     box_distance=np.maximum(np.maximum(src['low']-pad_world,
                                                         pad_world-src['high']),0.)
                     closest=float(np.linalg.norm(box_distance,axis=1).min())
+                    vertical_overlap=max(0.,min(float(pad_world[:,2].max()),
+                        float(src['high'][2]))-max(float(pad_world[:,2].min()),
+                        float(src['low'][2])))*1000.
                     state['measurement_status']['own_pad_to_visible_source_bounds_mm']=round(closest*1000,2)
-                    state['measurement_status']['visible_contact_candidate']=bool(closest<.012)
+                    if rec.cfg.get('side_pad_overlap_mm',0):
+                        state['measurement_status']['own_pad_visible_height_overlap_mm']=round(vertical_overlap,2)
+                    state['measurement_status']['visible_contact_candidate']=bool(
+                        closest<.012 and (not rec.cfg.get('side_pad_overlap_mm',0) or
+                                          vertical_overlap>=5.))
                 if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat':
                     state['measurement_status']['estimated_visible_bottom_to_receiver_mm']=float(
                         (position[2]+holding['visible_low_tcp_offset_m']-dst['high'][2])*1000)
