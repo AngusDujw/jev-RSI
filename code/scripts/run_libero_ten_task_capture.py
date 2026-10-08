@@ -24,6 +24,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--egl-device-id", type=int, choices=range(8), default=2)
+    parser.add_argument("--render-backend", choices=("nvidia", "mesa"),
+                        default="nvidia")
     parser.add_argument("--init-index", type=int, default=0)
     parser.add_argument("--task-ids", default=",".join(map(str, TASKS)),
                         help="Comma-separated subset of the ten public Goal task IDs")
@@ -48,6 +50,7 @@ def main():
     source = Path(__file__).with_name("libero_jev_rollout.py")
     manifest = dict(task_ids=task_ids, suite="libero_goal",
                     init_index=args.init_index, model_calls=0,
+                    render_backend=args.render_backend,
                     purpose="public-scene RGB-D observation only",
                     camera_size=768, per_task_cap=TASK_CAP,
                     source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
@@ -84,9 +87,16 @@ def main():
                    "--suite", "libero_goal", "--task-id", str(task_id),
                    "--init-index", str(args.init_index), "--camera-size", "768",
                    "--output", str(out), "--wall-limit-seconds", "500"]
-        env = dict(os.environ, MUJOCO_EGL_DEVICE_ID=str(args.egl_device_id),
-                   CUDA_VISIBLE_DEVICES=str(args.egl_device_id),
-                   JEV_RSI_MODEL_BACKEND="capture_only")
+        env = dict(os.environ, JEV_RSI_MODEL_BACKEND="capture_only")
+        if args.render_backend == "mesa":
+            env.pop("MUJOCO_EGL_DEVICE_ID", None)
+            env.update(MUJOCO_GL="egl", EGL_PLATFORM="surfaceless",
+                __EGL_VENDOR_LIBRARY_FILENAMES=(
+                    "/usr/share/glvnd/egl_vendor.d/50_mesa.json"),
+                CUDA_VISIBLE_DEVICES="")
+        else:
+            env.update(MUJOCO_EGL_DEVICE_ID=str(args.egl_device_id),
+                       CUDA_VISIBLE_DEVICES=str(args.egl_device_id))
         started = time.monotonic()
         with (root / f"libero_goal-{task_id}.log").open("w") as log:
             try:
