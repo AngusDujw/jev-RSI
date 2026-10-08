@@ -49,7 +49,8 @@ def visible_rear_extent(view, mask, source, direction):
 
 def contact_push_plan(source, goal, own, current_orientation=None,
                       observed_rear_extent_m=None, rear_standoff_m=.010,
-                      preserve_downward=True, lateral_contact_offset_m=0.):
+                      preserve_downward=True, lateral_contact_offset_m=0.,
+                      contact_mode='rear_edge'):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -79,17 +80,29 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     if not -.045 <= lateral_contact_offset_m <= .045:
         raise ValueError('Lateral contact offset outside visible object support')
     lateral_axis = np.array([direction[1], -direction[0]])
-    contact_xy = (source['center'][:2] - direction*(rear_extent+leading+.004)
-                  + lateral_axis*lateral_contact_offset_m)
-    contact_z = goal[2]+.004-own_box['finger_low_z_offset']
+    if contact_mode == 'rear_edge':
+        contact_xy = (source['center'][:2] - direction*(rear_extent+leading+.004)
+                      + lateral_axis*lateral_contact_offset_m)
+        contact_z = goal[2]+.004-own_box['finger_low_z_offset']
+    elif contact_mode == 'top_surface':
+        if lateral_contact_offset_m:
+            raise ValueError('Top contact must remain at observed source centre')
+        contact_xy = np.asarray(source['center'][:2], float)
+        # Four millimetres of commanded finger-pad contact accounts for the
+        # OSC controller's residual tracking error; it is not scene truth.
+        contact_z = source['high'][2]-.004-own_box['finger_low_z_offset']
+    else:
+        raise ValueError('Unknown visible contact mode')
     finger_low_world = contact_z+own_box['finger_low_z_offset']
     finger_high_world = contact_z+finger_high
-    if (finger_low_world > source['high'][2]-.001 or
-            finger_high_world < source['low'][2]+.001):
+    if (contact_mode == 'rear_edge' and
+            (finger_low_world > source['high'][2]-.001 or
+             finger_high_world < source['low'][2]+.001)):
         raise RuntimeError('Own finger envelope misses observed object height')
     hover_z = max(contact_z+.20, source['high'][2]+.20)
-    approach = np.r_[contact_xy-direction*rear_standoff_m, hover_z]
-    lower = np.r_[contact_xy-direction*rear_standoff_m, contact_z]
+    standoff = rear_standoff_m if contact_mode == 'rear_edge' else 0.
+    approach = np.r_[contact_xy-direction*standoff, hover_z]
+    lower = np.r_[contact_xy-direction*standoff, contact_z]
     contact = np.r_[contact_xy, contact_z]
     push_end = np.r_[contact_xy+direction*(distance+.025), contact_z]
     retreat = push_end+np.array([0., 0., .10])
@@ -99,6 +112,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         direction=direction,
         observed_rear_extent_m=rear_extent,
         rear_standoff_m=rear_standoff_m,
+        contact_mode=contact_mode,
         lateral_contact_offset_m=lateral_contact_offset_m,
         lateral_contact_axis_xy=lateral_axis,
         rear_extent_source='visible SAM mask/RGB-D 5th percentile' if observed_rear_extent_m is not None else 'RGB-D axis bounds fallback',
@@ -299,16 +313,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         kwargs = dict(current_orientation=Rotation.from_quat(
             obs['robot0_eef_quat']).as_matrix(),
             observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
-            preserve_downward=not visible_goal_plate)
+            preserve_downward=not visible_goal_plate,
+            contact_mode='top_surface' if visible_goal_plate else 'rear_edge')
         candidate = contact_push_plan(source, goal, own, **kwargs)
-        if visible_goal_plate:
-            from libero_goal_plate_vision import visible_side_contact
-            side = visible_side_contact(observed_views[ob['camera']],
-                np.load(source['visible_mask_path']), source,
-                candidate['direction'], candidate['contact'][:2])
-            candidate = contact_push_plan(source, goal, own,
-                lateral_contact_offset_m=side['offset_m'], **kwargs)
-            candidate['lateral_selection'] = side
         return candidate
 
     try:
@@ -375,9 +382,15 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
             next_stage = 'finish_attempt' if stage == 'retreat' else PHASES[PHASES.index(stage)+1]
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
-                approach='Move to high-clearance hover behind visible source, keeping the selected downward pusher pose.',
-                lower='Lower behind object to own-finger tabletop clearance, without lifting source.',
-                push='Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.',
+                approach=('Move to a high-clearance hover above the visible plate centre.'
+                    if visible_goal_plate else
+                    'Move to high-clearance hover behind visible source, keeping the selected downward pusher pose.'),
+                lower=('Lower the own fingertip onto the visible plate top for a supported slide; keep the plate on the table.'
+                    if visible_goal_plate else
+                    'Lower behind object to own-finger tabletop clearance, without lifting source.'),
+                push=('Translate the supported contact across the table toward the visible goal; advance only after fresh RGB-D confirms the plate centre within 45mm of goal.'
+                    if visible_goal_plate else
+                    'Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.'),
                 retreat='Raise pusher after the observed push; advance to end attempt.')
             state = dict(task=public_task, operation=stage, next_operation=next_stage,
                 operation_contract=contracts[stage],
@@ -402,6 +415,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     stop=True),
                 visible_geometry=dict(source_initial_xy_m=source['center'][:2],
                     goal_xy_m=goal[:2], push_direction_xy=direction,
+                    contact_mode=plan['contact_mode'],
                     source_observed_after_xy_m=None if observed_after is None else observed_after['center'][:2]),
                 blocked_action_count=stalls, reobserve_count=reobservations,
                 tracking_axes={a: dict(
