@@ -375,11 +375,16 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             target = dict(prepare=current, approach=approach, lower=lower,
                           push=push_end, retreat=retreat)[stage]
             error = target-current
-            tolerance = .008 if stage == 'push' else .006
+            second_lower = visible_goal_plate and segment == 2 and stage == 'lower'
+            # The rear-edge staging pose is a clearance waypoint, not the
+            # contact endpoint. At this pose the controller's near-contact
+            # residual can persist for >100 ticks; the measured finger envelope
+            # still overlaps the visible plate within these bounds.
+            tolerance = .009 if second_lower else .008 if stage == 'push' else .006
             arrived = bool(np.max(np.abs(error)) < tolerance)
             rot = np.zeros(3) if stage in ('prepare', 'retreat') else Rotation.from_matrix(
                 orientation @ Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
-            oriented = bool(np.max(np.abs(rot)) < .03)
+            oriented = bool(np.max(np.abs(rot)) < (.07 if second_lower else .03))
             verification_stage = ('retreat' if visible_goal_plate else 'push')
             if stage == verification_stage and arrived and observed_after is None:
                 v = views()
