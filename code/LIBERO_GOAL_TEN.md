@@ -26,4 +26,4 @@ cd /root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008
 /root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/run_libero_goal_jev.py --task-id 1458 --init-index 4 --output code/runs/NEW-goal-1458-init4
 ```
 
-单回合入口在启动前检查同盘至少 6 GiB 空闲，预留共享每任务 50 次账本；setup 失败也计一次，不自动重跑。大文件只写本项目同挂载盘。本轮没有更改显卡、CUDA 或系统驱动，也没有使用本机受限的 API 密钥。
+单回合入口在预留账本前检查同盘至少 6 GiB 空闲和 `nvidia-smi` 能否在 8 秒内返回；这只能拦住明显的 GPU 故障，不能保证后续 worker 启动。入口也支持 Goal1296 推盘的可见 RGB-D/Jev 两段流程，并冻结 `libero_push_control.py` 的 SHA256；这项此前的开发回合仍无官方成功，入口接通不算新的物理结果。正式启动后，setup 失败也计入每任务 50 次，不自动重跑。大文件只写本项目同挂载盘。本轮没有更改显卡、CUDA 或系统驱动，也没有使用本机受限的 API 密钥。

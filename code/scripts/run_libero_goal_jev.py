@@ -18,6 +18,7 @@ RECOVERY_TASKS = {1163, 1335, 1458}
 SUPERVISOR_TASKS = {1144, 1252, 1423}
 KNOB_TASKS = {1383}
 DRAWER_TASKS = {1098}
+PUSH_TASKS = {1296}
 POLICY_FILES = (
     'libero_jev_rollout.py', 'libero_generic_vision.py',
     'libero_goal_local_vision.py', 'libero_grounding_worker.py',
@@ -27,6 +28,7 @@ POLICY_FILES = (
     'libero_goal_knob_vision.py', 'libero_goal_knob_control.py',
     'libero_goal_plate_vision.py', 'libero_goal_drawer_control.py',
     'libero_goal_drawer_vision.py',
+    'libero_push_control.py',
     'libero_ten_task_workflows.py',
 )
 
@@ -36,7 +38,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
-           '--max-jev-decisions', '160', '--wall-limit-seconds', '1200',
+           '--max-jev-decisions', '240' if mode == 'push' else '160',
+           '--wall-limit-seconds', '1200',
            '--output', str(episode)]
     if mode in ('recovery', 'supervisor'):
         cmd += ['--local-goal-vision', '--geometry-profile', 'observed_surfaces']
@@ -58,6 +61,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                     '--entry-side', entry_side]
     elif mode == 'knob':
         cmd += ['--knob-supervisor']
+    elif mode == 'push':
+        cmd += ['--push-supervisor', '--goal-plate-push']
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', 'top_hook']
     return cmd
@@ -77,7 +82,7 @@ def main():
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     a = p.parse_args()
-    if a.task_id not in RECOVERY_TASKS | SUPERVISOR_TASKS | KNOB_TASKS | DRAWER_TASKS or not 0 <= a.init_index < 50:
+    if a.task_id not in RECOVERY_TASKS | SUPERVISOR_TASKS | KNOB_TASKS | DRAWER_TASKS | PUSH_TASKS or not 0 <= a.init_index < 50:
         p.error('Unsupported Goal task or official init index')
     if a.egl_device_id == a.worker_device_id:
         p.error('Simulator and local grounding worker need distinct visible devices')
@@ -86,7 +91,8 @@ def main():
     out = a.output.resolve()
     if not out.is_relative_to(repo/'code/runs') or out.exists():
         p.error('Output must be a new directory under project code/runs')
-    mode = ('drawer' if a.task_id in DRAWER_TASKS else
+    mode = ('push' if a.task_id in PUSH_TASKS else
+            'drawer' if a.task_id in DRAWER_TASKS else
             'knob' if a.task_id in KNOB_TASKS else
             'recovery' if a.task_id in RECOVERY_TASKS else 'supervisor')
     if a.grasp_profile != 'edge' and a.task_id != 1423:
@@ -104,6 +110,11 @@ def main():
         return
     if shutil.disk_usage(repo).free < 6*1024**3:
         raise RuntimeError('Need >=6GiB project-disk space before episode')
+    try:
+        subprocess.run(['nvidia-smi', '-L'], stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL, check=True, timeout=8)
+    except (subprocess.SubprocessError, OSError) as exc:
+        raise RuntimeError('GPU health preflight failed before attempt reservation') from exc
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo,
                                      text=True).strip()
     hashes = {name: hashlib.sha256((source/name).read_bytes()).hexdigest()
