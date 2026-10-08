@@ -231,6 +231,7 @@ def main():
     p.add_argument('--input-organization', choices=['contract','evidence','local','focused'], default='contract')
     p.add_argument('--grasp-algorithm', choices=['legacy_clearance','pad_fit'], default='pad_fit')
     p.add_argument('--grasp-hold-ticks',type=int,choices=range(18,49,6),default=18)
+    p.add_argument('--lift-recheck-mm',type=int,choices=[0,30],default=0)
     p.add_argument('--contact-angle-deg',type=float,default=0.)
     p.add_argument('--pad-overlap-mm',type=float,default=6.)
     p.add_argument('--table-margin-mm',type=float,default=1.)
@@ -284,12 +285,14 @@ def main():
     if a.visible_goal_check and (not a.recovery_supervisor or a.task_id not in (1163,1458) or
                                  not a.local_goal_vision):
         p.error('--visible-goal-check currently requires local recovery Goal 1163 or 1458')
+    if a.lift_recheck_mm and (not a.recovery_supervisor or a.task_id != 1163):
+        p.error('--lift-recheck-mm currently requires recovery Goal 1163')
     out = Path(a.output).resolve()
     cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,grasp_hold_ticks=a.grasp_hold_ticks,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',

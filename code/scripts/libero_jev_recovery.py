@@ -80,7 +80,7 @@ class RecoveryModel(Jev):
             transitions['retry'] = 'Withdraw and select another visible-geometry candidate'
         if state['allowed_transitions'].get('finish_if_visible'):
             transitions['finish_if_visible'] = 'End because fresh public RGB-D shows the source resting on the requested support'
-        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. advance only when the current contract is satisfied. If fresh visible_goal_evidence passed at select and the gripper is open, choose finish_if_visible; this is sensor evidence, not native task success. A pending test is unknown, not failed. At descend, a blocked motion with measured open-pad overlap may allow one bounded closure trial; advance then and let the short lift test decide holding. At lower, a fresh visible held-source/rack contact or bounded low-drop candidate after blocked motion may allow one release trial; neither is native task success. On a failed or unavailable lift/contact check, or blocked motion without release-trial evidence, choose retry if available. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
+        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. advance only when the current contract is satisfied. If fresh visible_goal_evidence passed at select and the gripper is open, choose finish_if_visible; this is sensor evidence, not native task success. A pending or ambiguous first lift test needs the one supplied recheck goal, not an advance. At descend, a blocked motion with measured open-pad overlap may allow one bounded closure trial; advance then and let the short lift test decide holding. At lower, a fresh visible held-source/rack contact or bounded low-drop candidate after blocked motion may allow one release trial; neither is native task success. On a failed or unavailable final lift/contact check, or blocked motion without release-trial evidence, choose retry if available. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
         if state['operation'] == 'select' and not state['allowed_transitions'].get('finish_if_visible'):
             choices={c['id']: 'Visible-geometry candidate '+c['id'] for c in state['candidates'] if not c['prior_failed']}
             questions['candidate'] = dict(type='choice', instructions='Select one of the available visible-geometry candidates now. Prefer adequate pad overlap and positive table clearance. This selection and your advance choice apply together. The previously displayed candidate is only a default, not a completed selection. These are geometric estimates, not tested success predictions.', criteria=choices)
@@ -143,6 +143,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_source_points_world = None
     dark_source = False
     lift_verified = False
+    lift_recheck_used = False
     carry_verified_stage = None
     grasp_orientation = grasp_offset = rack_geometry = None
     rack_verified = False
@@ -467,8 +468,29 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             rot = Rotation.from_matrix(Rgoal@Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
             oriented = bool(np.max(abs(rot)) < .03)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
-            if stage == 'test_lift' and arrived and holding['status']=='not_checked_yet':
-                check_hold()
+            if stage == 'test_lift' and arrived and holding['status'] in ('not_checked_yet', 'ambiguous'):
+                check_hold(use_projection=lift_recheck_used)
+                first_rise = holding.get('source_rise_mm')
+                first_mismatch = holding.get('co_motion_error_mm')
+                if (not lift_recheck_used and rec.cfg.get('lift_recheck_mm', 0) > 0 and
+                        holding['status'] == 'failed' and first_rise is not None and
+                        7. <= first_rise <= 15. and first_mismatch is not None and
+                        first_mismatch < 65. and .4 < holding['visible_span_ratio'] < 1.7):
+                    # A borderline first lift is neither grasp proof nor a
+                    # definite slip. Continue the same closed-gripper phase
+                    # once, then require fresh projected RGB-D evidence.
+                    holding = dict(holding, valid=None, status='ambiguous',
+                                   reason='Borderline visible rise; one bounded higher lift recheck')
+                    dump(rec.folder/f'holding-ambiguous-{ticks:04d}.json', holding)
+                    test_target = test_target + np.array([0., 0.,
+                        rec.cfg['lift_recheck_mm']/1000.])
+                    lift_recheck_used = True
+                    target = test_target.copy()
+                    error = target-position
+                    arrived = bool(np.max(abs(error)) < tol)
+                    rec.event(dict(kind='lift_recheck', observed_tick=ticks,
+                                   first_rise_mm=first_rise,
+                                   added_height_mm=rec.cfg['lift_recheck_mm']))
                 cs = cs  # candidate stays frozen through a grasp attempt
             if (stage == 'lift' and arrived and
                     holding.get('appearance_filtered') and not lift_verified):
@@ -515,7 +537,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 dump(rec.folder/f'rack-contact-{ticks:04d}.json',rack_contact_evidence)
             required_open = stage in ['approach','align','descend','release','retreat','recover_open','clear_receiver','settle_receiver']
             required_close = stage in ['grasp','test_lift','lift','carry_lateral','carry','orient_receiver','lower']
-            contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open. If fresh visible support evidence passed, choose finish_if_visible instead of another grasp.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp=f'Hold TCP, close for at least {rec.cfg.get("grasp_hold_ticks", 18)} native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. Advance only if measured holding passed. Retry if failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
+            contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open. If fresh visible support evidence passed, choose finish_if_visible instead of another grasp.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp=f'Hold TCP, close for at least {rec.cfg.get("grasp_hold_ticks", 18)} native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. A borderline visible rise may extend this goal once for a fresh RGB-D check. Advance only if measured holding passed; retry if the final check failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
@@ -649,6 +671,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     fresh, dst=locate('pregrasp');src=fuse(fresh);cs=candidates()
                 if stage=='grasp':
                     tcp_grasp=obs['robot0_eef_pos'].copy();source_grasp=src['center'].copy();test_target=tcp_grasp+np.array([0.,0.,.05]);holding=dict(status='not_checked_yet',valid=None)
+                    lift_recheck_used=False
                     grasp_orientation=Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
                     grasp_offset=None
                     lift_verified=False

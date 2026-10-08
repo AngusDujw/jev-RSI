@@ -36,7 +36,7 @@ POLICY_FILES = (
 
 def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    approach_mode, entry_side, grasp_hold_ticks, drawer_contact_mode,
-                   plate_stage_turn_deg):
+                   plate_stage_turn_deg, lift_recheck_mm=0):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -52,6 +52,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
         if task_id == 1163:
             cmd += ['--carry-route', 'lateral_first', '--visible-goal-check',
                     '--grasp-hold-ticks', str(grasp_hold_ticks)]
+            if lift_recheck_mm:
+                cmd += ['--lift-recheck-mm', str(lift_recheck_mm)]
         if task_id == 1458:
             cmd += ['--visible-goal-check']
     elif mode == 'supervisor':
@@ -83,6 +85,7 @@ def main():
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
     p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
     p.add_argument('--grasp-hold-ticks', type=int, choices=[18,24,30,36,42,48], default=18)
+    p.add_argument('--lift-recheck-mm', type=int, choices=[0,30], default=0)
     p.add_argument('--drawer-contact-mode', choices=['top_hook', 'under_hook'],
                    default='top_hook')
     p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9], default=0)
@@ -110,13 +113,15 @@ def main():
         p.error('Receiver entry side requires an angled or side Goal 1423 approach')
     if a.grasp_hold_ticks != 18 and a.task_id != 1163:
         p.error('Extended closure is currently evaluated only for Goal 1163')
+    if a.lift_recheck_mm and a.task_id != 1163:
+        p.error('Extended lift recheck is currently evaluated only for Goal 1163')
     if a.drawer_contact_mode != 'top_hook' and a.task_id != 1098:
         p.error('Alternative drawer entry is currently evaluated only for Goal 1098')
     if a.plate_stage_turn_deg and a.task_id != 1296:
         p.error('Alternative plate stage is currently evaluated only for Goal 1296')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
                          a.grasp_profile,a.approach_mode,a.entry_side,a.grasp_hold_ticks,
-                         a.drawer_contact_mode,a.plate_stage_turn_deg)
+                         a.drawer_contact_mode,a.plate_stage_turn_deg,a.lift_recheck_mm)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -155,6 +160,7 @@ def main():
                     approach_mode=a.approach_mode,
                     entry_side=a.entry_side,
                     grasp_hold_ticks=a.grasp_hold_ticks,
+                    lift_recheck_mm=a.lift_recheck_mm,
                     drawer_contact_mode=a.drawer_contact_mode,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     policy_source_sha256=hashes, git_commit=commit,
