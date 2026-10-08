@@ -16,11 +16,15 @@ import time
 SIM_PYTHON = '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python'
 RECOVERY_TASKS = {1163, 1335, 1458}
 SUPERVISOR_TASKS = {1144, 1252, 1423}
+KNOB_TASKS = {1383}
 POLICY_FILES = (
     'libero_jev_rollout.py', 'libero_generic_vision.py',
     'libero_goal_local_vision.py', 'libero_grounding_worker.py',
     'libero_jev_recovery.py', 'libero_jev_supervisor.py',
     'libero_robot_geometry.py',
+    'libero_goal_knob_vision.py', 'libero_goal_knob_control.py',
+    'libero_goal_plate_vision.py', 'libero_goal_drawer_control.py',
+    'libero_ten_task_workflows.py',
 )
 
 
@@ -32,7 +36,7 @@ def main():
     p.add_argument('--egl-device-id', type=int, choices=range(8), default=5)
     p.add_argument('--worker-device-id', type=int, choices=range(8), default=6)
     a = p.parse_args()
-    if a.task_id not in RECOVERY_TASKS | SUPERVISOR_TASKS or not 0 <= a.init_index < 50:
+    if a.task_id not in RECOVERY_TASKS | SUPERVISOR_TASKS | KNOB_TASKS or not 0 <= a.init_index < 50:
         p.error('Unsupported Goal task or official init index')
     if a.egl_device_id == a.worker_device_id:
         p.error('Simulator and local grounding worker need distinct visible devices')
@@ -66,7 +70,8 @@ def main():
         os.fsync(stream.fileno())
     out.mkdir()
     episode = out/'episode'  # Recorder creates this directory itself.
-    mode = 'recovery' if a.task_id in RECOVERY_TASKS else 'supervisor'
+    mode = ('knob' if a.task_id in KNOB_TASKS else
+            'recovery' if a.task_id in RECOVERY_TASKS else 'supervisor')
     manifest = dict(reservation=reservation, mode=mode,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',
@@ -85,10 +90,12 @@ def main():
                 '--allow-retry', '--execution-profile', 'adaptive']
         if a.task_id == 1163:
             cmd += ['--carry-route', 'lateral_first', '--visible-goal-check']
-    else:
+    elif mode == 'supervisor':
         cmd += ['--jev-supervisor', '--schema', 'focused']
         if a.task_id == 1423:
             cmd += ['--placement-height-mode', 'occlusion_guarded_bottom']
+    else:
+        cmd += ['--knob-supervisor']
     env = dict(os.environ, MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
                CUDA_VISIBLE_DEVICES=f'{a.egl_device_id},{a.worker_device_id}',
                JEV_RSI_MODEL_BACKEND='jev')

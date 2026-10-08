@@ -32,7 +32,7 @@ class DrawerModel(Jev):
                        questions=request['questions'])
         dump(folder/'request.json', payload)
         row = dict(decision_id=f'decision-{index:04d}', stage=stage,
-                   observation=payload['state'], prompt_version='goal-drawer-v1',
+                   observation=payload['state'], prompt_version=getattr(self,'prompt_version','goal-drawer-v1'),
                    request_sha256=hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest())
         self.rec.decisions.append(row)
         started = time.monotonic()

@@ -85,7 +85,7 @@ PHASES = {
         ("align", "align own fingers to the visible control", "orientation_reached"),
         ("contact", "reach control contact pose", "control_contact_pose_reached"),
         ("grasp", "close on the visible control", "closure_executed"),
-        ("turn", "apply bounded tangent motion around observed centre", "visible_rotation"),
+        ("turn", "rotate the grasped control by the declared bounded wrist angle; verify visible control rotation after withdrawal", "wrist_turn_arrived"),
         ("release", "open gripper and clear control", "opening_executed"),
         ("verify", "compare visible control/indicator before and after", "visible_change"),
     ),
