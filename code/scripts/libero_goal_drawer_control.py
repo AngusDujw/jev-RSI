@@ -102,7 +102,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                                     [0., 1., 0.]]))
     own = gripper_geometry(env, obs)
     if hook_mode:
-        pad_names = env.robots[0].gripper.important_geoms['left_fingerpad']
+        # For a top-down wrist, the -Y finger enters the visible cabinet/rod
+        # gap while the TCP remains in front of the cabinet. The other finger
+        # would put the TCP behind the cabinet face.
+        hook_finger = 'right_fingerpad' if contact_mode == 'top_hook' else 'left_fingerpad'
+        pad_names = env.robots[0].gripper.important_geoms[hook_finger]
         pad_world = np.mean([env.sim.data.geom_xpos[
             env.sim.model.geom_name2id(name)] for name in pad_names], axis=0)
         initial_rotation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
@@ -114,6 +118,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     dump(rec.folder/'own-pad-contact-offset.json', dict(
         side_orientation=side_orientation,
         pad_center_offset_world_m=pad_center_offset,
+        hook_finger=hook_finger if hook_mode else None,
         source='own gripper collision pads and robot TCP only'))
 
     def frame():
