@@ -383,7 +383,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if stage == verification_stage and arrived and observed_after is None:
                 v = views()
                 later = vision.locate(v, public_task, 'after_push',
-                    previous=dict(source=ob, destination=identity['destination']))
+                    previous=dict(source=ob, destination=identity['destination']),
+                    expected_uv=goal_uv if visible_goal_plate else None)
                 later_ob = later['source']
                 observed_after = vision.measure(v[later_ob['camera']],
                     later_ob['bbox'], later_ob['label'], 'after-push-source')

@@ -24,7 +24,7 @@ def world_cloud(view):
     return xyz @ t[:3, :3].T + t[:3, 3]
 
 
-def visible_plate(view, previous_uv=None):
+def visible_plate(view, previous_uv=None, expected_uv=None):
     """Select the flat red-ring plate, rejecting similar round bowls/burners."""
     rgb = np.asarray(view['rgb'])
     if rgb.shape != (768, 768, 3):
@@ -43,7 +43,10 @@ def visible_plate(view, previous_uv=None):
                 .8 <= w/h <= 2.1):
             continue
         if previous_uv is not None and np.linalg.norm(centres[idx]-previous_uv) > 190:
-            continue
+            # A planned push may move the plate farther than the local tracker
+            # gate. Accept only a plate near that segment's visible waypoint.
+            if expected_uv is None or np.linalg.norm(centres[idx]-expected_uv) > 80:
+                continue
         pixels = np.column_stack(np.where(labels == idx))[:, ::-1].astype(np.int32)
         hull = cv2.convexHull(pixels)
         mask = np.zeros(red.shape, np.uint8)
@@ -273,12 +276,14 @@ class GoalPlateVision:
         self.stage_goal = None
         self.last_uv = None
 
-    def locate(self, views, public_task, reason, previous=None):
+    def locate(self, views, public_task, reason, previous=None,
+               expected_uv=None):
         if reason not in ('initial', 'reobserve', 'after_push') or self.calls >= 5:
             raise RuntimeError('Goal plate observation trigger/budget')
         self.calls += 1
         view = views['agentview']
-        plate = visible_plate(view, self.last_uv)
+        plate = visible_plate(view, self.last_uv,
+                              expected_uv if reason == 'after_push' else None)
         self.last_uv = plate['uv']
         if reason == 'initial':
             stove = visible_stove(view)
