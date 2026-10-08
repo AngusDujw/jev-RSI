@@ -132,9 +132,17 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             valid=bool(h['low'][2]-source_grasp[2]>.015 and
                        .4 < size_ratio < 1.7 and
                        np.linalg.norm(h['center']-expected)<.06)
+            visible_height=float(h['high'][2]-h['low'][2])
+            initial_height=float(initial_source_extent[2])
+            guarded_low=float(h['high'][2]-max(initial_height,visible_height))
             holding=dict(valid=valid,source='RGB-D co-motion proxy, not ground truth',
                          visible_span_ratio=size_ratio,
                          visible_low_tcp_offset_m=float(h['low'][2]-obs['robot0_eef_pos'][2]),
+                         guarded_low_tcp_offset_m=float(guarded_low-obs['robot0_eef_pos'][2]),
+                         visible_z_height_mm=visible_height*1000,
+                         initial_visible_z_height_mm=initial_height*1000,
+                         occluded_bottom_allowance_mm=max(0.,initial_height-visible_height)*1000,
+                         guarded_low_source='Current visible top minus max(initial visible height, current visible height); conservative sensor estimate',
                          measured=h,
                          expected=expected,observed_tick=ticks)
             if valid:offset=h['center']-obs['robot0_eef_pos']
@@ -169,19 +177,25 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
             elif stage in ['carry','retreat']:target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
             elif stage=='lower':
-                if rec.cfg.get('placement_height_mode') in ('visible_bottom','contact_seat'):
+                mode=rec.cfg.get('placement_height_mode')
+                if mode in ('visible_bottom','contact_seat','occlusion_guarded_bottom'):
                     if not holding.get('valid') or 'visible_low_tcp_offset_m' not in holding:
                         raise RuntimeError('Visible held-object bottom unavailable for lower')
-                    surface_offset = -.002 if rec.cfg['placement_height_mode']=='contact_seat' else .005
-                    release_z=dst['high'][2]+surface_offset-holding['visible_low_tcp_offset_m']
+                    surface_offset = -.002 if mode=='contact_seat' else .002 if mode=='occlusion_guarded_bottom' else .005
+                    low_offset=(holding['guarded_low_tcp_offset_m'] if mode=='occlusion_guarded_bottom'
+                                else holding['visible_low_tcp_offset_m'])
+                    release_z=dst['high'][2]+surface_offset-low_offset
                 else:
                     height=(src['high'][2]-src['low'][2])/2
                     release_z=dst['high'][2]+height+.012-offset[2]
                 target=np.r_[dst['center'][:2]-offset[:2],release_z]
             position=obs['robot0_eef_pos'].copy();error=target-position
-            arrival_tolerance = .004 if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat' else .008
+            arrival_tolerance = (.004 if stage=='lower' and rec.cfg.get('placement_height_mode')
+                                 in ('contact_seat','occlusion_guarded_bottom') else .008)
             if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat':
                 notes['lower']='Seat the visible held-object bottom at the observed receiver surface while closed. Advance only after arrival within 4mm; stop or reobserve on a physical stall, never release in midair.'
+            if stage=='lower' and rec.cfg.get('placement_height_mode')=='occlusion_guarded_bottom':
+                notes['lower']='Lower the occlusion-guarded held bottom to 2mm above the observed receiver surface, keeping the gripper closed. Advance only after arrival within 4mm. The bottom is a public RGB-D estimate, not confirmed contact.'
             if stage in ['lift','carry'] and np.max(abs(error))<.008:measure_held()
             state=dict(task=task.language,stage=stage,next_phase=phases[phase+1] if phase+1<len(phases) else 'finish_attempt',phase_contract=notes[stage],
                 position_m=position.tolist(),target_position_m=target.tolist(),error_m=error.tolist(),hold_tolerance_m=.004,arrival_tolerance_m=arrival_tolerance,
@@ -201,6 +215,9 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 if stage=='lower' and rec.cfg.get('placement_height_mode')=='contact_seat':
                     state['measurement_status']['estimated_visible_bottom_to_receiver_mm']=float(
                         (position[2]+holding['visible_low_tcp_offset_m']-dst['high'][2])*1000)
+                if stage=='lower' and rec.cfg.get('placement_height_mode')=='occlusion_guarded_bottom':
+                    state['measurement_status']['estimated_guarded_bottom_to_receiver_mm']=float(
+                        (position[2]+holding['guarded_low_tcp_offset_m']-dst['high'][2])*1000)
                 state['decision_protocol']='At lift while still far from lift target, holding check not_checked_yet is normal: keep closed and move, not a failure. Reobserve only after at least 3 stalled actions or an actual failed visual check; do not reobserve because a future check is pending. Never request reobserve when unavailable. At grasp/release continue chosen close/open until the phase contract duration and aperture requirements are met. Advance is your choice when the current phase contract is met.'
                 state.update(error_mm=np.round(error*1000,2).tolist(),axis_relations={a:('within tolerance' if abs(e)<.004 else 'target higher coordinate' if e>0 else 'target lower coordinate') for a,e in zip('xyz',error)},
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
@@ -231,7 +248,9 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                            holding_evidence=dict(valid=holding.get('valid') if stage in ('lift','carry','lower','release','retreat') else None,
                                observed_tick=holding.get('observed_tick'),
                                visible_span_ratio=holding.get('visible_span_ratio'),
-                               visible_low_tcp_offset_m=holding.get('visible_low_tcp_offset_m') if stage=='lower' else None),
+                               visible_low_tcp_offset_m=holding.get('visible_low_tcp_offset_m') if stage=='lower' else None,
+                               guarded_low_tcp_offset_m=holding.get('guarded_low_tcp_offset_m') if stage=='lower' else None,
+                               occluded_bottom_allowance_mm=holding.get('occluded_bottom_allowance_mm') if stage=='lower' else None),
                            stalls=stalls,last_progress_m=last_progress,
                            carry_hover_replans=carry_hover_replans,
                            recent_actions=history[-1:],
