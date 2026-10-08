@@ -31,7 +31,7 @@ POLICY_FILES = (
 
 
 def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
-                   approach_mode):
+                   approach_mode, entry_side):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -50,7 +50,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
         if task_id == 1423:
             cmd += ['--placement-height-mode', 'occlusion_guarded_bottom']
             cmd += ['--grasp-profile', grasp_profile,
-                    '--approach-mode', approach_mode]
+                    '--approach-mode', approach_mode,
+                    '--entry-side', entry_side]
     elif mode == 'knob':
         cmd += ['--knob-supervisor']
     else:
@@ -67,6 +68,7 @@ def main():
     p.add_argument('--worker-device-id', type=int, choices=range(8), default=6)
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
+    p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     a = p.parse_args()
@@ -86,8 +88,10 @@ def main():
         p.error('Local grasp profile is currently evaluated only for Goal 1423')
     if a.approach_mode != 'top' and a.task_id != 1423:
         p.error('Alternative approach mode is currently evaluated only for Goal 1423')
+    if a.entry_side != 'robot_side' and (a.task_id != 1423 or a.approach_mode == 'top'):
+        p.error('Receiver entry side requires an angled or side Goal 1423 approach')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
-                         a.grasp_profile,a.approach_mode)
+                         a.grasp_profile,a.approach_mode,a.entry_side)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -119,6 +123,7 @@ def main():
     manifest = dict(reservation=reservation, mode=mode,
                     grasp_profile=a.grasp_profile,
                     approach_mode=a.approach_mode,
+                    entry_side=a.entry_side,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',
                     runtime_gpt6_calls=0, runtime_deepseek_calls=0,

@@ -250,6 +250,7 @@ def main():
     p.add_argument('--task-id', type=int, default=988)
     p.add_argument('--lift-check',action='store_true')
     p.add_argument('--approach-mode',choices=['top','side','angled'],default='top')
+    p.add_argument('--entry-side',choices=['robot_side','receiver_side'],default='robot_side')
     p.add_argument('--camera-size',type=int,choices=[384,768],default=384)
     p.add_argument('--suite', choices=['libero_spatial','libero_object','libero_goal','libero_10'], default='libero_spatial')
     p.add_argument('--seed', type=int, default=0)
@@ -283,7 +284,7 @@ def main():
                api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',

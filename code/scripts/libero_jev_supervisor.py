@@ -179,7 +179,17 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     try:
         sem,src,dst=locate('initial');initial_source_extent=src['high']-src['low'];grasp=grasp_target();hover=max(src['high'][2],dst['high'][2])+.14
         if side:
-            side_sign=1 if start_tcp[0]>src['center'][0] else -1
+            if rec.cfg.get('entry_side')=='receiver_side':
+                dx=float(dst['center'][0]-src['center'][0])
+                if abs(dx)<.03:
+                    raise RuntimeError('Visible receiver does not select an X entry side')
+                side_sign=1 if dx>0 else -1
+            else:
+                side_sign=1 if start_tcp[0]>src['center'][0] else -1
+            dump(rec.folder/'side-entry-choice.json',dict(side_sign=side_sign,
+                source_visible_x_m=float(src['center'][0]),
+                receiver_visible_x_m=float(dst['center'][0]),
+                rule=rec.cfg.get('entry_side','robot_side')))
             orientation_goal=(Rotation.from_rotvec([0,side_sign*tilt,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix()
         while phase<len(phases):
             stage=phases[phase];rec.check_budget()
