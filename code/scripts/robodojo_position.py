@@ -46,11 +46,15 @@ def run(rec, with_jev):
         raise RuntimeError("Configured GPU is occupied; no process preemption allowed")
     dump(rec.folder/"gpu-before.json", dict(memory_mib=memory))
     cache = rec.folder.parent/"cache"
-    for name in ("tmp", "xdg", "torch-extensions", "kit-extensions"):
-        (cache/name).mkdir(parents=True, exist_ok=True)
+    tmp_cache = cache/"tmp"
+    xdg_cache = Path(cfg.get('xdg_cache', cache/"xdg"))
+    torch_cache = Path(cfg.get('torch_extensions_cache', cache/"torch-extensions"))
+    kit_cache = Path(cfg.get('kit_extension_cache', cache/"kit-extensions"))
+    for path in (tmp_cache, xdg_cache, torch_cache, kit_cache):
+        path.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, PYTHONPATH=os.pathsep.join(map(str, paths)),
-               TMPDIR=str(cache/"tmp"), XDG_CACHE_HOME=str(cache/"xdg"),
-               TORCH_EXTENSIONS_DIR=str(cache/"torch-extensions"),
+               TMPDIR=str(tmp_cache), XDG_CACHE_HOME=str(xdg_cache),
+               TORCH_EXTENSIONS_DIR=str(torch_cache),
                PYTHONDONTWRITEBYTECODE="1", PYTHONNOUSERSITE="1",
                OMNI_KIT_ACCEPT_EULA="YES", ACCEPT_EULA="Y",
                CUDA_VISIBLE_DEVICES=str(cfg["gpu"]), COMPANY_OBSERVATION=cfg.get("observation_mode", "oracle"),
@@ -76,7 +80,7 @@ def run(rec, with_jev):
                "--task", task, "--eval-seed", str(case["eval_seed"]),
                "--output", str(output), "--port", str(port), "--headless", "--enable_cameras",
                "--device", "cuda:0",
-               f"--kit_args=--/exts/omni.kit.registry.nucleus/cachePath={cache}/kit-extensions "
+               f"--kit_args=--/exts/omni.kit.registry.nucleus/cachePath={kit_cache} "
                f"--/renderer/activeGpu={render_gpu} --/renderer/multiGpu/enabled=false "
                "--/app/updateOrder/checkForHydraRenderComplete=1000 "
                "--/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true"]

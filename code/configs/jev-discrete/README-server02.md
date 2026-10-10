@@ -1,6 +1,6 @@
 # server02 RoboDojo 配置
 
-本组 `*-server02.json` 配置使用 `/home/user/ykj/project/RoboLaya` 已有的 RoboDojo、Isaac Sim 5.1 Docker 镜像、项目 `.conda` 环境与布局文件，项目部署在 `/home/user/ykj/project/gpt6/jev-RSI`。仿真子进程通过 `code/scripts/server02_isaac_python.sh` 挂载两个项目；控制器父进程使用 RoboLaya 的 `.conda/bin/python`。五个任务均固定为 layout 0，布局 SHA-256 见 `../robodojo/server02-top5-layout0.json`。运行时的决策和语义视觉使用本机已登录 ChatGPT 的 GPT-6 Sol/xhigh 桥接；不需要在服务器上安装模型权重或配置 OpenAI API key。
+本组 `*-server02.json` 配置使用 `/home/user/ykj/project/RoboLaya` 已有的 RoboDojo、Isaac Sim 5.1 Docker 镜像、项目 `.conda` 环境、Kit 扩展缓存与布局文件，项目部署在 `/home/user/ykj/project/gpt6/jev-RSI`。仿真子进程通过 `code/scripts/server02_isaac_python.sh` 挂载两个项目；控制器父进程使用 RoboLaya 的 `.conda/bin/python`。五个任务均固定为 layout 0，布局 SHA-256 见 `../robodojo/server02-top5-layout0.json`。运行时的决策和语义视觉使用本机已登录 ChatGPT 的 GPT-6 Sol/xhigh 桥接；不需要在服务器上安装模型权重或配置 OpenAI API key。
 
 本机启动桥接服务（保持进程运行）：
 
