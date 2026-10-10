@@ -12,7 +12,7 @@ python3 -B code/scripts/codex_pro_bridge_server.py --work-root code/runs/pro-bri
 本机另开终端，建立到 server02 的反向端口转发（保持连接）：
 
 ```bash
-ssh -N -o ExitOnForwardFailure=yes -R 7903:127.0.0.1:7903 server02
+ssh -N -o ClearAllForwardings=yes -o ExitOnForwardFailure=yes -R 7903:127.0.0.1:7903 server02
 ```
 
 在 server02 上运行单任务；`--auto-gpu` 会在两张卡中选空闲卡：
