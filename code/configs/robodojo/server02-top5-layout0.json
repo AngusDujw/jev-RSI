@@ -1,0 +1,50 @@
+{
+  "source_manifest_sha256": "f94b290949604d465d8b5433b7eeabdd005304989e14518f29338aeb01a4dbb0",
+  "cases": [
+    {
+      "task": "general_pickup",
+      "runtime_task": "general_pickup",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/general_pickup_0.json",
+      "split": "development",
+      "layout_sha256": "7a3ecf189e248f99a75ef8f6fdbe7fca85795846d67e9fd7f2d74954c8e78dda"
+    },
+    {
+      "task": "fold_clothes",
+      "runtime_task": "fold_clothes",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/fold_clothes_0.json",
+      "split": "development",
+      "layout_sha256": "53de16e28978c71cfaa0620712633a0e07ed9d4bb79cdb63c5a953fa26f1b5ba"
+    },
+    {
+      "task": "press_by_number",
+      "runtime_task": "press_by_number",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/press_by_number_0.json",
+      "split": "development",
+      "layout_sha256": "a7dc98bf795083bbc14269ccdd9ffa982d91a725f62467c0c1f79bb778cb13c3"
+    },
+    {
+      "task": "match_and_pick_from_conveyor",
+      "runtime_task": "match_and_pick_from_conveyor",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/match_and_pick_from_conveyor_0.json",
+      "split": "development",
+      "layout_sha256": "9c89a282516bae7323eda660e5584caf908c241976b0bcd1f8ae22793a1fd931"
+    },
+    {
+      "task": "stack_bowls",
+      "runtime_task": "stack_bowls",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/stack_bowls_0.json",
+      "split": "development",
+      "layout_sha256": "8ec7c160815f8955b5dd1af1a042673140cc2b6ac4b7536ee7fa9057e8a978f5"
+    }
+  ]
+}

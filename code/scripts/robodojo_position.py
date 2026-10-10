@@ -23,7 +23,8 @@ def run(rec, with_jev):
     cfg = rec.cfg
     root = Path(cfg["existing_root"])
     runtime_root = Path(cfg.get('robodojo_root', root/'robodojo'))
-    paths = [Path(__file__).resolve().parent, root/"controller/src", root/"GPT-as-Policy", runtime_root, runtime_root/"XPolicyLab"]
+    paths = [Path(__file__).resolve().parent, root/"controller/src", root/"src",
+             root/"GPT-as-Policy", runtime_root, runtime_root/"XPolicyLab"]
     for p in reversed(paths):
         sys.path.insert(0, str(p))
     from hybrid_rollout.robodojo.robodojo_server.protocol import RPCClient

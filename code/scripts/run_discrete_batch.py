@@ -15,7 +15,9 @@ def next_attempt(folder,task):
 def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,gpu_memory_limit_mib=1024,startup_only=False,model_backend='legacy_jev',batch_views=False):
     if model_backend not in ('legacy_jev','codex_pro'):
         raise ValueError('Unknown model backend')
-    folder=ROOT/'code/runs';number=next_attempt(folder,task)
+    folder=ROOT/'code/runs';folder.mkdir(parents=True,exist_ok=True)
+    (folder/'cache/tmp').mkdir(parents=True,exist_ok=True)
+    number=next_attempt(folder,task)
     if number>50:raise RuntimeError('50 trial budget reached '+task)
     if shutil.disk_usage(folder).free<8*1024**3:raise RuntimeError('less than 8 GiB available; do not launch')
     prefix='pro-discrete' if model_backend=='codex_pro' else 'jev-discrete'
@@ -128,13 +130,18 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--tasks',nargs='+',choices=TASKS,default=TASKS)
-    p.add_argument('--variant',choices=['numeric','relations','evidence','hierarchical','english','compact','geometry'],default='numeric')
+    p.add_argument('--variant',choices=['numeric','relations','evidence','hierarchical','english','compact','geometry','server02'],default='numeric')
     p.add_argument('--processing',choices=['anchored','live','precision'],default='anchored');p.add_argument('--layout',type=int,default=0)
     p.add_argument('--gpu',type=int);p.add_argument('--auto-gpu',action='store_true');p.add_argument('--frozen-from');p.add_argument('--layouts',nargs='+',type=int)
+    p.add_argument('--model-backend',choices=['legacy_jev','codex_pro'],default='legacy_jev')
+    p.add_argument('--startup-only',action='store_true');p.add_argument('--batch-views',action='store_true')
     args=p.parse_args()
     if args.gpu is not None and len(args.tasks)!=1:p.error('--gpu requires exactly one task')
+    if args.variant=='server02' and args.model_backend!='codex_pro':p.error('server02 profile requires --model-backend codex_pro')
     for layout in args.layouts or [args.layout]:
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
-            jobs=[pool.submit(run,t,args.variant,args.processing,layout,args.gpu,args.frozen_from,args.auto_gpu) for t in args.tasks]
+            jobs=[pool.submit(run,t,args.variant,args.processing,layout,args.gpu,args.frozen_from,args.auto_gpu,
+                              startup_only=args.startup_only,model_backend=args.model_backend,
+                              batch_views=args.batch_views) for t in args.tasks]
             codes=[j.result() for j in jobs]
         if any(codes):sys.exit(1)
