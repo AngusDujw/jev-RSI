@@ -91,7 +91,17 @@ graph LR
     T_2026W41_028["⛔ libero-goal-ten<br/>Goal 1296 连续三次实跑 Cras…"]:::blocker
     T_2026W41_029["⛔ libero-goal-ten<br/>Goal1296三次可见盘推送均在下降阶段…"]:::blocker
     T_2026W41_030["📊 jev-control-formulation<br/>停稳13状态与三初态闭环：精确坐标Jev方…"]:::experiment
+    T_2026W41_031["📊 libero-goal-ten<br/>Goal1296盘心滑推让盘可见前移17.…"]:::experiment
+    T_2026W41_032["📊 libero-goal-ten<br/>Goal1296可见局部盘心高度让盘前进1…"]:::experiment
     T_2026W41_033["📊 jev-control-formulation<br/>冻结Q迁移：黑碗新初态局部到达3/5对固定…"]:::experiment
+    T_2026W41_034["📊 libero-goal-ten<br/>Goal1296两段Jev闭环已使盘两次可…"]:::experiment
+    T_2026W41_035["📊 libero-goal-ten<br/>Goal1163视觉目标复核使同init3…"]:::experiment
+    T_2026W41_036["📊 libero-goal-ten<br/>Goal1383显式阶段门在init2/3…"]:::experiment
+    T_2026W41_037["📊 libero-goal-ten<br/>Goal1383冻结未见init3–6为4…"]:::experiment
+    T_2026W41_038["📊 libero-goal-ten<br/>Goal1458可见低落差放瓶在未见ini…"]:::experiment
+    T_2026W41_039["📊 libero-goal-ten<br/>Goal1423旧侧抓单pad临近而垂直重…"]:::experiment
+    T_2026W41_040["⛔ libero-goal-ten<br/>服务器NVRM Xid109使GPU预检超…"]:::blocker
+    T_2026W41_041["⛔ server02-robodojo-startup<br/>server02 项目已部署且 Pro 桥…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -150,7 +160,16 @@ graph LR
   T_2026W41_027 --> T_2026W41_028
   T_2026W41_028 --> T_2026W41_029
   T_2026W41_026 --> T_2026W41_030
+  T_2026W41_029 --> T_2026W41_031
+  T_2026W41_031 --> T_2026W41_032
   T_2026W41_030 --> T_2026W41_033
+  T_2026W41_032 --> T_2026W41_034
+  T_2026W41_034 --> T_2026W41_035
+  T_2026W41_035 --> T_2026W41_036
+  T_2026W41_036 --> T_2026W41_037
+  T_2026W41_037 --> T_2026W41_038
+  T_2026W41_038 --> T_2026W41_039
+  T_2026W41_039 --> T_2026W41_040
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -232,7 +251,17 @@ graph LR
 | `T-2026W41-028` | 2026-10-08 | blocker | libero-goal-ten | Goal 1296 连续三次实跑 Crashed；新增十项目前4/10原生成功，按协议暂停新物理实验并请用户决定 | `EXP-2026W41-078` | - |
 | `T-2026W41-029` | 2026-10-08 | blocker | libero-goal-ten | Goal1296三次可见盘推送均在下降阶段不收敛；姿态转向将最低高度1.106m降至0.946m但仍未接触盘，按协议暂停新增实验 | `EXP-2026W41-075`, `EXP-2026W41-076`, `EXP-2026W41-078` | - |
 | `T-2026W41-030` | 2026-10-08 | experiment | jev-control-formulation | 停稳13状态与三初态闭环：精确坐标Jev方向未胜同信息直接反馈，校正后10动作完全同轨 | `EXP-2026W41-079`, `EXP-2026W41-080`, `EXP-2026W41-081` | - |
+| `T-2026W41-031` | 2026-10-08 | experiment | libero-goal-ten | Goal1296盘心滑推让盘可见前移17.3mm，但滑脱且原生失败 | `EXP-2026W41-085` | - |
+| `T-2026W41-032` | 2026-10-08 | experiment | libero-goal-ten | Goal1296可见局部盘心高度让盘前进148.3mm，但原生仍失败 | `EXP-2026W41-087` | - |
 | `T-2026W41-033` | 2026-10-08 | experiment | jev-control-formulation | 冻结Q迁移：黑碗新初态局部到达3/5对固定2/5，奶酪已见3/3但动作更多；29步Jev+Q与直接+Q完全同轨，无方向增量证据 | `EXP-2026W41-088` | - |
+| `T-2026W41-034` | 2026-10-08 | experiment | libero-goal-ten | Goal1296两段Jev闭环已使盘两次可见移动，第二段盘心移动37.7mm但距目标51.5mm且官方失败；Goal1098仍未接触有效把手 | `EXP-2026W41-095` | - |
+| `T-2026W41-035` | 2026-10-09 | experiment | libero-goal-ten | Goal1163视觉目标复核使同init3完整成功；Goal1423两种放置高度改动完整执行仍官方失败，下一步检验持有姿态 | `EXP-2026W41-130`, `EXP-2026W41-132`, `EXP-2026W41-133` | - |
+| `T-2026W41-036` | 2026-10-09 | experiment | libero-goal-ten | Goal1383显式阶段门在init2/3双重完整成功；Goal1098俯视接触路径未打开抽屉，转向侧方入杆几何 | `EXP-2026W41-139` | - |
+| `T-2026W41-037` | 2026-10-09 | experiment | libero-goal-ten | Goal1383冻结未见init3–6为4/4完整成功；Goal1423斜向路径问法修正后仍视觉空抓 | `EXP-2026W41-151` | - |
+| `T-2026W41-038` | 2026-10-09 | experiment | libero-goal-ten | Goal1458可见低落差放瓶在未见init2双终局成功；高处开爪路线不稳，转冻结初态检验 | `EXP-2026W41-160` | - |
+| `T-2026W41-039` | 2026-10-09 | experiment | libero-goal-ten | Goal1423旧侧抓单pad临近而垂直重叠0，冻结自身pad高度门槛待GPU复测 | `EXP-2026W41-169` | - |
+| `T-2026W41-040` | 2026-10-09 | blocker | libero-goal-ten | 服务器NVRM Xid109使GPU预检超时，十任务冻结物理验证等待设备恢复 | `EXP-2026W41-170` | - |
+| `T-2026W41-041` | 2026-10-10 | blocker | server02-robodojo-startup | server02 项目已部署且 Pro 桥接预检通过；IsaacLab/Kit 扩展依赖连续三次启动失败，暂停仿真 | `EXP-2026W41-174` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
