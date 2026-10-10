@@ -17,6 +17,8 @@
 
 当前至少一次双终局成功的是 **7/10 项**，只在 Goal1383 有数个未见初态的固定版本复测。以上各任务不能合并成“十项成功率”，也不能把单个初始化场景的成功写成稳定完成。详细逐回合正负记录在 [本周实验块](../LOGS/2026-W41.md) 的 EXP-2026W41-138～160 与原始 `code/runs/`；成功视频/图像可由保存的公开相机帧重建。
 
+[Goal1383 与 Goal1458 交互式案例网页](reports/libero-goal-casebook/index.html)解释 task-id / init-index，并从两次成功回合嵌入全部 219 组真实 Jev 请求、回答、执行分支及选定相机帧；冻结样本范围与任务特定处理步骤分别列明。运行 `python3 code/scripts/build_libero_goal_casebook.py` 可由本地原始回合重新生成网页数据和图片。
+
 Goal1458 的现行方法见 [可见斜架拟合](scripts/libero_goal_rack_geometry.py)、[Jev 阶段与可见释放证据](scripts/libero_jev_recovery.py)、[单回合计数入口](scripts/run_libero_goal_jev.py)。从已分割的酒架 RGB-D 中拟合承托斜率，瓶身被抓住后 Jev 在高处旋转；下降阻塞时用新鲜瓶体点云相对承托面的法向间隙估计落差。只有瓶仍被可见共运动检查通过、落差在 60 mm 内且投影位于可见架面时，才提供一次低处释放的阶段选项。释放后撤离、等待、重新测可见关系，由 Jev 决定是否结束；官方成功只在回合结束读取。init2 的低处落差 36.02 mm、释放后可见近架像素比例 0.9794，真实答案/执行/阶段边审计 0 违规，原始数据本机与服务器 SHA256 一致，见 [EXP160](../LOGS/2026-W41.md#exp-2026w41-160)。此前高处开爪、静等、横向撤离的负结果保留在 EXP154～159。
 
 服务器为 `company-server-2`，隔离工作树 `/root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008`。Goal1458 的一次完整成功来自冻结策略提交 `823df20`；此后工作树为其他任务的入口及抽屉候选更新过，严格复测1458须先将该空闲工作树切回 `823df20`。仿真环境 `/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python`。init3 第12次的本地视觉 worker 超时已按基础设施崩溃归档，`nvidia-smi` 同时超时；GPU 恢复前不要启动下个物理回合。恢复后若手动启动未见新初态，以下三行分别执行；第三行必须保持为**一整行**，把 `4` 和输出目录名同步改成实际未用的 init 索引。
