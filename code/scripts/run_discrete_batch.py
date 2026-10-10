@@ -115,7 +115,7 @@ def run(task,variant,processing,layout,gpu=None,frozen_from=None,auto_gpu=False,
             raise RuntimeError('CUDA startup preflight failed; no simulator started; see '+str(report))
     config=ROOT/f'code/configs/jev-discrete/launched-{prefix}-{task}-{number:02d}.json' if model_backend=='codex_pro' else ROOT/f'code/configs/jev-discrete/launched-{task}-{number:02d}.json'
     config.write_text(json.dumps(cfg,indent=2)+'\n')
-    command=[cfg['robodojo_python'],'-B','-u',str(ROOT/'code/scripts/run_position_pilot.py'),'--config',str(config),'--output',str(output),'--backend','robodojo',
+    command=[cfg.get('embodied_python',cfg['robodojo_python']),'-B','-u',str(ROOT/'code/scripts/run_position_pilot.py'),'--config',str(config),'--output',str(output),'--backend','robodojo',
              '--with-model' if model_backend=='codex_pro' else '--with-jev']
     log=folder/f'{prefix}-{task}-{number:02d}.stdout.log'
     env=dict(os.environ,TMPDIR=str(folder/'cache/tmp'),PYTHONDONTWRITEBYTECODE='1')

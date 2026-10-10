@@ -2,7 +2,7 @@
   "protocol": "jev-discrete-phase-gripper-development",
   "existing_root": "/home/user/ykj/project/RoboLaya",
   "embodied_python": "/home/user/ykj/project/RoboLaya/.conda/bin/python",
-  "robodojo_python": "/home/user/ykj/project/RoboLaya/.conda/bin/python",
+  "robodojo_python": "/home/user/ykj/project/gpt6/jev-RSI/code/scripts/server02_isaac_python.sh",
   "amplitudes_m": [
     0.0,
     0.001,
@@ -69,5 +69,6 @@
   "startup_gpu_memory_limit_mib": 1024,
   "robodojo_reset_timeout_seconds": 600,
   "jev_transport_attempts": 3,
-  "jev_transport_backend": "curl"
+  "jev_transport_backend": "curl",
+  "container_gpu_remap": true
 }

@@ -71,12 +71,13 @@ def run(rec, with_jev):
     env.update(OMNICLIENT_HTTP_TIMEOUT='10', OMNICLIENT_HTTP_RETRIES='1')
     output = rec.folder/"simulator"
     output.mkdir()
+    render_gpu = 0 if cfg.get('container_gpu_remap', False) else cfg['gpu']
     command = [cfg["robodojo_python"], "-B", "-u", "-m", cfg.get("bridge_module", "realman_jev.company_bridge"),
                "--task", task, "--eval-seed", str(case["eval_seed"]),
                "--output", str(output), "--port", str(port), "--headless", "--enable_cameras",
                "--device", "cuda:0",
                f"--kit_args=--/exts/omni.kit.registry.nucleus/cachePath={cache}/kit-extensions "
-               f"--/renderer/activeGpu={cfg['gpu']} --/renderer/multiGpu/enabled=false "
+               f"--/renderer/activeGpu={render_gpu} --/renderer/multiGpu/enabled=false "
                "--/app/updateOrder/checkForHydraRenderComplete=1000 "
                "--/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true"]
     dump(rec.folder/"launch.json", dict(command=command, cwd=str(runtime_root),
