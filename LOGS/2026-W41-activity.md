@@ -484,3 +484,4 @@
 - 【Agent】【2026-10-10 19:00】[op] 新建实验块 EXP-2026W41-173：server02 RoboDojo Docker 启动预检：IsaacLab 依赖解析  ↪ `EXP-2026W41-173`
 - 【Agent】【2026-10-10 19:00】[op] 新建实验块 EXP-2026W41-174：server02 RoboDojo 复用 Kit 缓存后的启动预检  ↪ `EXP-2026W41-174`
 - 【Agent】【2026-10-10 19:01】[stop] server02 RoboDojo 同一启动意图连续三次 Crashed：宿主缺 isaacsim，容器 Kit 依赖 URDF 2.4.31/镜像仅 2.4.30 且扩展 registry 不通；按 AGENTS.md §10 停止重试并征求用户。  ↪ `EXP-2026W41-174`
+- 【User】【2026-10-10 19:10】[prompt] 把怎么通过pro账户转成这种api来用的方法也放服务器上了吧，在哪里
