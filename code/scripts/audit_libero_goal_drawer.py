@@ -48,8 +48,9 @@ def audit(episode):
     branches = [b for b in rows(episode/'branches.jsonl')
                 if not combined or drawer_stage(b['stage'])]
     events = rows(episode/'events.jsonl')
-    result = json.loads((episode/('drawer-primitive-result.json' if combined
-                                  else 'result.json')).read_text())
+    drawer_result = episode/'drawer-primitive-result.json'
+    result = json.loads((drawer_result if combined and drawer_result.exists()
+                         else episode/'result.json').read_text())
     assert decisions and len({d['decision_id'] for d in decisions}) == len(decisions)
     by_id = {d['decision_id']: d for d in decisions}
     states = {}
