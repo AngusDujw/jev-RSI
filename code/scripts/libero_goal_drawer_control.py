@@ -287,7 +287,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_mode == 'pinch' and blocked_contact_blocks >= 3 and
                 oriented and np.linalg.norm(target-position) < .030 and
                 rod_gap < .025)
-            exact_contact_pose = bool(arrived and oriented and
+            exact_contact_pose = bool(name == 'contact' and arrived and oriented and
                 contact_leg in ('final', 'under_rise') and
                 (finger_behind if hook_mode else True))
             gate = {
