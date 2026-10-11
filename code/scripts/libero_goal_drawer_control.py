@@ -283,7 +283,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             pad_low, pad_high = np.min(pad_bounds, axis=0), np.max(pad_bounds, axis=0)
             rod_gap = float(np.linalg.norm(np.maximum(
                 np.maximum(pad_low-handle_position, handle_position-pad_high), 0.)))
-            blocked_contact_trial = bool(name == 'contact' and
+            blocked_contact_trial = bool(task_id == 1098 and name == 'contact' and
                 contact_mode == 'pinch' and blocked_contact_blocks >= 3 and
                 oriented and np.linalg.norm(target-position) < .030 and
                 rod_gap < .025)
@@ -369,7 +369,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'middle handle rod. contact_path_leg names the current '
                     'waypoint. Advance only after the selected finger is '
                     'measured behind the middle rod at the final pose.')
-            if contact_mode == 'pinch' and name == 'contact':
+            if task_id == 1098 and contact_mode == 'pinch' and name == 'contact':
                 request['state']['stage_contract'] = (
                     'Move open fingers toward the visible rod. If the exact '
                     'pose is blocked but three executed blocks have stalled '
