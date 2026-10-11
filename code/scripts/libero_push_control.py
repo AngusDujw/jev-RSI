@@ -319,7 +319,10 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     ultimate_goal = None
     ultimate_goal_uv = None
     segment = 1
-    max_native_ticks = 900 if visible_goal_plate else 550
+    # The official episode horizon is 600 native steps.  The rollout already
+    # spent 10 steps opening the gripper before entering this supervisor.
+    # Leave a ten-step margin so a correction cannot overrun the simulator.
+    max_native_ticks = 580 if visible_goal_plate else 550
     stalls = 0
     reobservations = 0
     history = []
@@ -412,7 +415,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             residual_correction_available = bool(visible_goal_plate and
                 stage == 'retreat' and arrived and segment == 2 and
                 visible_error is not None and .045 <= visible_error <= .12 and
-                vision.calls < 5)
+                vision.calls < 5 and max_native_ticks-ticks >= 120)
             if (stage == verification_stage and arrived and
                     visible_error is not None and visible_error >= .045 and
                     not residual_correction_available):
