@@ -401,7 +401,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # contact endpoint. At this pose the controller's near-contact
             # residual can persist for >100 ticks; the measured finger envelope
             # still overlaps the visible plate within these bounds.
-            tolerance = .009 if second_lower else .008 if stage == 'push' else .006
+            # Under supported contact, OSC can stall within the last 10–14 mm
+            # of the planned TCP sweep.  The object itself is independently
+            # checked from fresh RGB-D after lifting the pusher.
+            tolerance = (.014 if visible_goal_plate and stage == 'push' else
+                         .009 if second_lower else .008 if stage == 'push' else .006)
             arrived = bool(np.max(np.abs(error)) < tolerance)
             rot = np.zeros(3) if stage in ('prepare', 'retreat') else Rotation.from_matrix(
                 orientation @ Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
