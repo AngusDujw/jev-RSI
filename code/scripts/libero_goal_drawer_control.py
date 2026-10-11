@@ -342,6 +342,12 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 reobserve_available=not reobserved and name in ('observe', 'select_handle', 'approach', 'align'),
                 required_gripper_state=('close' if name in ('grasp', 'pull')
                     and not hook_mode else 'open'))
+            request['questions']['transition']['instructions'] = (
+                f'The current completion gate is completion_evidence.{stage["gate"]}. '
+                'When it is true, choose advance now; the selected action '
+                'executes before the stage edge. When false, choose '
+                'continue_phase or stop. This is a local visible/proprioceptive '
+                'stage gate, not official task success.')
             if hook_mode and name == 'grasp':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open and place one own finger behind the '
