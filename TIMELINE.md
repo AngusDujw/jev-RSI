@@ -104,6 +104,11 @@ graph LR
     T_2026W41_041["⛔ server02-robodojo-startup<br/>server02 项目已部署且 Pro 桥…"]:::blocker
     T_2026W41_042["🔀 jev-control-formulation<br/>用户将主线纠偏为GPT-6等模型可重复规划…"]:::pivot
   end
+  subgraph wk_2026_W42["2026-W42"]
+    direction TB
+    T_2026W42_001["📊 libero-goal-ten<br/>5880 Goal1296 首次双终局成功…"]:::experiment
+    T_2026W42_002["⛔ libero-goal-ten<br/>Goal1202同一完整任务意图三次连续不…"]:::blocker
+  end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
   T_2026W39_003 --> T_2026W39_004
@@ -172,6 +177,8 @@ graph LR
   T_2026W41_038 --> T_2026W41_039
   T_2026W41_039 --> T_2026W41_040
   T_2026W41_033 --> T_2026W41_042
+  T_2026W41_040 --> T_2026W42_001
+  T_2026W42_001 --> T_2026W42_002
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -266,6 +273,8 @@ graph LR
 | `T-2026W41-040` | 2026-10-09 | blocker | libero-goal-ten | 服务器NVRM Xid109使GPU预检超时，十任务冻结物理验证等待设备恢复 | `EXP-2026W41-170` | - |
 | `T-2026W41-041` | 2026-10-10 | blocker | server02-robodojo-startup | server02 项目已部署且 Pro 桥接预检通过；IsaacLab/Kit 扩展依赖连续三次启动失败，暂停仿真 | `EXP-2026W41-174` | - |
 | `T-2026W41-042` | 2026-10-11 | pivot | jev-control-formulation | 用户将主线纠偏为GPT-6等模型可重复规划、Jev/OpenAI decision model等模型推进；优先RoboDojo与LIBERO-Plus整套多任务benchmark成绩 | `DISC-2026W39-001` | - |
+| `T-2026W42-001` | 2026-10-12 | experiment | libero-goal-ten | 5880 Goal1296 首次双终局成功但未见init3失败；十项至少成功过升至8/10，稳定性仍待冻结复测 | `EXP-2026W42-015` | - |
+| `T-2026W42-002` | 2026-10-12 | blocker | libero-goal-ten | Goal1202同一完整任务意图三次连续不收敛；最新回合45次完成门为真仍未切换，暂停新增物理实跑 | `EXP-2026W42-038` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

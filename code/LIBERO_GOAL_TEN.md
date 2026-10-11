@@ -1,5 +1,34 @@
 # LIBERO-Plus Goal 十任务实跑状态
 
+## 2026-10-12 · 5880 迁移与新增回合
+
+**已有 8/10 个不同 Goal 任务至少一次双终局成功。** 成功要求 `success=true` 且 `program_finished=true`；混合版本开发回合不能合并成稳定成功率。旧服务器记录见下方历史段落，5880 原始正负结果及完整配置见 [W42 EXP004–038](../LOGS/2026-W42.md)。运行时 GPT-6/DeepSeek 调用仍为 0；Jev 依据公开任务、双 RGB-D/标定、机器人自身反馈与自身 mesh、真实动作历史选方向、夹爪、候选和阶段。官方成功只在最终评价读取一次。
+
+| Goal | 共享尝试 | 5880 新证据与当前判断 |
+| ---: | ---: | --- |
+| 1098 抽屉 | 21/50 | init4的`pinch`精确接触停在杆前约17mm；受阻闭爪试验让Jev拉动自身TCP约162mm，但可见抽屉伸出0像素；`top_hook`指垫到杆后Y，仍高86mm。三种接触均无完整成功。 |
+| 1144 碗放炉面 | 7/50 | 历史至少一次完整成功，未在 5880 复测稳定性。 |
+| 1163 酒瓶放柜顶 | 17/50 | init4 通过抬升复核并可见搬运，柜顶再次分割不可判，Jev 重试后超预算；未稳定。 |
+| 1202 开抽屉放碗 | 10/50 | init2同回合开抽屉成功两次；续接v1在碗下降受阻、v4在取碗对齐门已真45次却Jev不推进。整任务0成功。EXP036–038连续三次不收敛已按AGENTS §10暂停新增物理实跑；`dc16c3c`阶段问题修正已部署但未测试。 |
+| 1252 碗放柜顶 | 9/50 | 历史至少一次完整成功，未在 5880 复测稳定性。 |
+| 1296 推盘 | 35/50 | init2旧9°、init3/4的15°路线双终局成功；init5原目标行错误修正后，两段可见路线把盘送到距炉前目标53.88mm，第二段侧推滑移。`4935129`按可见障碍改第二段顶部接触，已部署、尚未实测；跨初态稳定性未定。 |
+| 1335 奶酪放碗 | 9/50 | 历史至少一次完整成功，未在 5880 复测稳定性。 |
+| 1383 开炉灶旋钮 | 12/50 | 旧冻结 init2–6 为 5/5；5880 init7 再双终局成功，95/95 响应/动作、8/8 阶段边审计零违规。 |
+| 1423 碗放盘上 | 17/50 | init3 侧抓实测下降停滞，Z 目标还差约139mm；未稳定。 |
+| 1458 酒瓶入斜架 | 13/50 | 5880 init4 新增双终局成功，126 Jev/519 步，126/126 动作与 14/14 阶段边审计通过；与旧 init2 策略源码不完全相同，稳定率仍未定。 |
+
+LIBERO-Plus 官方 `assets.zip` SHA256 为 `96764a4bfbdaea98d4411598caeab235458318fe0f549611b93d1a323027b3cf`，ZIP 完整校验通过；解压在 5880 `/home/user/ykj/project/gpt6/LIBERO-plus/libero/libero/assets/`。源码 `/home/user/ykj/project/gpt6/jev-RSI` 使用 `codex/goal-ten-5880-20261012` 分支与项目 `.venv-libero-plus`。运行新回合需显式设置 `JEV_RSI_MODEL_CACHE`，否则旧配置会尝试访问旧服务器 root 路径。下面保持换行逐行执行；`init-index` 和输出目录须改成需要的新回合，输出目录必须不存在。
+
+```bash
+cd /home/user/ykj/project/gpt6/jev-RSI
+export JEV_RSI_SIM_PYTHON=/home/user/ykj/project/gpt6/jev-RSI/.venv-libero-plus/bin/python JEV_RSI_LIBERO_ROOT=/home/user/ykj/project/gpt6/LIBERO-plus JEV_RSI_EXISTING_ROOT=/home/user/ykj/project/gpt6 JEV_RSI_API_CONFIG=/home/user/ykj/project/gpt6/controller/config/api.local.json JEV_RSI_VISION_PYTHON=/home/user/miniconda3/envs/isaaclab/bin/python JEV_RSI_MODEL_CACHE=/home/user/ykj/project/gpt6/.cache/models JEV_RSI_MODEL_BACKEND=jev HTTP_PROXY=http://127.0.0.1:7897 HTTPS_PROXY=http://127.0.0.1:7897
+.venv-libero-plus/bin/python -B code/scripts/run_libero_goal_jev.py --task-id 1383 --init-index 8 --egl-device-id 0 --worker-device-id 0 --allow-shared-gpu --output code/runs/NEW-5880-goal1383-init8
+```
+
+RoboDojo 位于 5880 `/home/user/ykj/benchmark/robodojo`：源码与三个锁定子模块已克隆，`Assets` 的逐文件聚合 SHA256 `b4de896a86d5cdf0452ef65f37a6f00003d24a567c55ae00abe4ffddab4cd0e9` 与旧服务器一致。独立 `.venv-isaac51` 已安装 Isaac Sim 5.1、锁定 Isaac Lab 可编辑子模块及 CuRobo；CuRobo 关键模块可导入，任务清单 54/54 可解析。GPU0 Kit headless 启动并关闭成功。启动该环境时须把环境内 `lib` 放在 `LD_LIBRARY_PATH` 前面，以避开系统 libstdc++ 缺少 `CXXABI_1.3.15`；这仍只证明仿真核心可启动，**尚无 RoboDojo 任务级 Jev 成功率**。
+
+## 2026-10-11 · 旧服务器历史状态
+
 截至 2026-10-11。目标是每个官方任务都由离线确定的视觉处理、几何候选和阶段合同生成 Jev 输入；运行时 Jev 1.13 选择 XYZ/旋转方向、夹爪、候选、阶段和重试。运行时 GPT-6/DeepSeek 调用为 0。本地 GroundingDINO/SAM 只处理公开 RGB-D；策略可用相机标定、任务语言、机器人自身反馈与 mesh、历史真实动作，不能读取场景对象真位姿、奖励或官方成功谓词。`success=true` 与 `program_finished=true` **同时成立**才计完整成功。
 
 | Goal ID | 任务 | 共享尝试 | 当前可核实结论 |
