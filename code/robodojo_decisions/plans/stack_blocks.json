@@ -1,0 +1,27 @@
+{
+  "task": "stack_blocks",
+  "initial_stage": "observe_blocks",
+  "stages": {
+    "observe_blocks": "Inspect all three RGB views to locate the three blocks visually and select a visible base block and an unstacked block.",
+    "select_arm": "Select the arm with a visibly clear approach to the chosen unstacked block using RGB views and measured EEF and joint states.",
+    "approach": "Move the selected arm toward the visible grasp region while checking clearance after each discrete motion.",
+    "align": "Adjust EEF position and single-axis orientation until the open gripper visibly brackets the chosen block.",
+    "grasp": "Close the gripper around the block and inspect the RGB views for visible capture before attempting a lift.",
+    "lift": "Lift incrementally and check that the block visibly rises with the gripper and clears its support.",
+    "move_to_stack": "Move the held block above the visible base block or existing stack while monitoring grip retention and clearance.",
+    "place": "Lower the held block incrementally until the RGB views provide evidence of alignment and contact with the supporting block.",
+    "release": "Open the gripper and inspect whether the placed block remains visibly supported.",
+    "retreat": "Withdraw the open gripper incrementally along a visibly clear path while monitoring the stack for movement.",
+    "verify": "Inspect all three views for three visibly stacked and stable blocks, returning to observe_blocks if another placement or visual retry is needed."
+  },
+  "notes": [
+    "Each low-level decision uses OpenAI Decisions API gpt-6-luna and directly inspects the current three RGB views plus measured EEF and joint states.",
+    "Use only discrete XYZ direction commands with lengths of 5, 15, 30, or 45 mm, single-axis rotation increments of 0.18 rad, and available gripper commands.",
+    "Reobserve after every command; use smaller translation increments near blocks, support surfaces, and possible collisions.",
+    "Do not use object ground truth, privileged layout information, reward signals, or invisible object coordinates.",
+    "If visibility or alignment is insufficient, stop advancing, return to observe_blocks or align, and retry from fresh visual evidence.",
+    "If capture, lift, placement, or release fails visibly, reassess the current scene and repeat the necessary stages without assuming the previous action worked.",
+    "Repeat select_arm through verify for each remaining unstacked block, selecting targets from current RGB evidence.",
+    "Verification describes observable evidence only; ambiguous, occluded, or unstable arrangements remain unverified, and this specification makes no success claim."
+  ]
+}
