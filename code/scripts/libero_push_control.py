@@ -352,8 +352,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # Use the same support-relative contact rule in both segments.
             contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
             allow_short_push=bool(visible_goal_plate and segment >= 2),
-            top_contact_rear_fraction=(.7 if visible_goal_plate and segment == 2
-                                       else .5 if visible_goal_plate else 0.))
+            # A visually blocked direct corridor needs a lateral first leg.
+            # The second crosswise push in that route can slip from a far-rear
+            # plate contact; use the same more central supported contact as
+            # its first leg. Direct routes keep the previously successful .7.
+            top_contact_rear_fraction=(
+                .5 if visible_goal_plate and (
+                    segment == 1 or vision.goal['elevated_corridor_pixels'] >= 80)
+                else .7 if visible_goal_plate else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
