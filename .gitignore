@@ -44,3 +44,6 @@ baseline/logs/
 .idea/
 *.swp
 *.swo
+
+# Historical artifacts moved with code/; new runs live on /data
+code/old/runs/
