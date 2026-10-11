@@ -41,6 +41,16 @@ DIRECTIONS = {
     "x_positive_y_negative": (1, -1, 0),
     "x_positive_y_positive": (1, 1, 0),
 }
+BLOCK_IDS = ("initial_left", "initial_middle", "initial_right")
+BLOCK_DESCRIPTIONS = {
+    "initial_left": "initial high-view leftmost block",
+    "initial_middle": "initial high-view middle block",
+    "initial_right": "initial high-view rightmost block",
+}
+PICK_BASE_PAIRS = {
+    f"{pick}__{base}": f"Pick {BLOCK_DESCRIPTIONS[pick]}; support on distinct {BLOCK_DESCRIPTIONS[base]} or its existing stack"
+    for pick in BLOCK_IDS for base in BLOCK_IDS if pick != base
+}
 
 
 def gate_questions(stage: str) -> list[dict]:
@@ -55,12 +65,8 @@ def gate_questions(stage: str) -> list[dict]:
         questions.extend([
             choice("active_arm", "Choose the arm with the clearest visible approach to ONE loose block. The other arm stays still.",
                    {"left": "Left", "right": "Right"}),
-            choice("target_id", "Name the block to PICK using its left-to-right position in the INITIAL high-camera reference image. Track that same texture in current views.",
-                   {"initial_left": "Initial high view leftmost block", "initial_middle": "Initial high view middle block",
-                    "initial_right": "Initial high view rightmost block"}),
-            choice("base_id", "Name the distinct block intended as the supporting base, using the INITIAL high-camera reference. If two blocks are already stacked, choose the visible stack.",
-                   {"initial_left": "Initial leftmost block or its stack", "initial_middle": "Initial middle block or its stack",
-                    "initial_right": "Initial rightmost block or its stack"}),
+            choice("pick_base_pair", "Choose a visually feasible LOOSE target and DISTINCT supporting block from the INITIAL high-camera reference. Track texture identity in the current views. If two blocks are already stacked, choose its visible top as support.",
+                   PICK_BASE_PAIRS),
         ])
     return questions
 
@@ -128,12 +134,8 @@ class StageController:
         if verdict == "pass" and answer["evidence_view"] == "none":
             verdict = "uncertain"
         if self.stage == "select_arm" and verdict == "pass":
-            if answer["target_id"] == answer["base_id"]:
-                verdict = "uncertain"
-            else:
-                self.active_arm = answer["active_arm"]
-                self.target_id = answer["target_id"]
-                self.base_id = answer["base_id"]
+            self.active_arm = answer["active_arm"]
+            self.target_id, self.base_id = answer["pick_base_pair"].split("__")
         if self.stage == "return_home" and verdict == "pass":
             for arm in ARMS:
                 current = obs["current_eef"][arm]
