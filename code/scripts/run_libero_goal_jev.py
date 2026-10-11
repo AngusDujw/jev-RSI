@@ -145,6 +145,26 @@ def main():
             raise RuntimeError(f'Selected GPUs not both available: {sorted(healthy)}')
     except (subprocess.SubprocessError, OSError) as exc:
         raise RuntimeError('Selected GPU health preflight failed before attempt reservation') from exc
+    # NVML can enumerate a GPU while EGL context creation is blocked by a
+    # different failed device. Exercise the same headless path before charging
+    # a task attempt; the actual episode still owns its own EGL context.
+    egl_probe = (
+        'import mujoco; '
+        'm=mujoco.MjModel.from_xml_string('
+        '"<mujoco><worldbody><geom type=\\"sphere\\" size=\\"0.1\\"/>'
+        '</worldbody></mujoco>"); '
+        'd=mujoco.MjData(m); r=mujoco.Renderer(m,64,64); '
+        'r.update_scene(d); r.render(); r.close()'
+    )
+    probe_env = dict(os.environ, MUJOCO_GL='egl',
+                     MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
+                     CUDA_VISIBLE_DEVICES=f'{a.egl_device_id},{a.worker_device_id}')
+    try:
+        subprocess.run([SIM_PYTHON, '-B', '-c', egl_probe], env=probe_env,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                       check=True, timeout=20)
+    except (subprocess.SubprocessError, OSError) as exc:
+        raise RuntimeError('Selected GPU EGL render preflight failed before attempt reservation') from exc
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo,
                                      text=True).strip()
     hashes = {name: hashlib.sha256((source/name).read_bytes()).hexdigest()
