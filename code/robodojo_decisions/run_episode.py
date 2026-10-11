@@ -103,9 +103,10 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         if key_file is None:
             raise ValueError("--key-file is required for control")
         model = DecisionClient(key_file, output / "decisions")
-        if controller_version == "v2":
+        if controller_version in ("v2", "v3"):
             from stage_controller import NO_MOTION, StageController
-            stage_control = StageController(model, obs, plan)
+            stage_control = StageController(model, obs, plan,
+                augmented=(controller_version == "v3"))
         else:
             stage_control = None
         while not obs["rollout_finished"]:
@@ -183,7 +184,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v2"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v2", "v3"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")

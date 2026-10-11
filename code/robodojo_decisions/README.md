@@ -10,6 +10,8 @@ OpenAI [Decisions API documentation](https://developers.openai.com/api/docs/guid
 
 Version `v1` asks stage and both arms' action in one request. Its 30-decision RGB pilot stayed in `observe_blocks` for every call, so it only tested the input/action link. Version `v2` separates a visual stage gate from a second request for the locked active arm's bounded action. A fourth image supplies the initial high-camera block reference. The controller changes stage only when current visual evidence passes the gate; failure returns to a named recovery stage. The other arm is held. This retains Decisions as the visual reasoner and categorical motion policy.
 
+Version `v2` reached `align` but returned hold on 9 of 13 motions. A Pro visual audit of initial/current high and right wrist RGB showed that the wrist view centered the yellow support, while the locked purple target remained left of the right gripper. Version `v3` keeps all raw camera images and adds a labeled initial high view plus RGB-only color boxes to clarify target identity. It removes the hold option during approach/alignment and supplies the measured high-camera X projection from the previous layout-0 pilot. These are fallible image-derived hints, recorded separately from model answers; the controller still needs native complete success evidence.
+
 ## Run contract
 
 - Existing Python and assets: `~/DataStorage/jev-router/sources` and the existing environment recorded in `~/DataStorage/jev-router/project/jev-router/ENVIRONMENT.json`. No environment, driver, or CUDA changes.
@@ -28,7 +30,7 @@ Each command below is one line. Run one at a time from the project checkout on v
 ```
 
 ```bash
-HTTPS_PROXY=http://127.0.0.1:7897 HTTP_PROXY=http://127.0.0.1:7897 "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v2 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-rgb-gated-pilot-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 40
+HTTPS_PROXY=http://127.0.0.1:7897 HTTP_PROXY=http://127.0.0.1:7897 "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v3 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-rgb-labeled-pilot-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 40
 ```
 
 This controller is an experimental categorical EEF policy, not the original RoboProbe GPT-6 Astra harness. Stability requires frozen code/plan and independent native episodes, including standard/random layouts where the official cell is paired.

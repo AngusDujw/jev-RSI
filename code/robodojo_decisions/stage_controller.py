@@ -71,10 +71,12 @@ def gate_questions(stage: str) -> list[dict]:
     return questions
 
 
-def motion_questions(stage: str) -> list[dict]:
+def motion_questions(stage: str, augmented: bool = False) -> list[dict]:
     allowed = DIRECTIONS
     if stage == "grasp":
         allowed = {key: value for key, value in DIRECTIONS.items() if key in ("hold", "z_positive")}
+    elif augmented and stage in ("approach", "align"):
+        allowed = {key: value for key, value in DIRECTIONS.items() if key != "hold"}
     return [
         choice("direction", f"For the LOCKED active arm at stage {stage}, choose one bounded WORLD XYZ direction toward the visible target. Choose hold if only gripper change is needed. Do not move the inactive arm.",
                {key: f"World XYZ sign {vector}" for key, vector in allowed.items()}),
@@ -92,15 +94,26 @@ def rot_distance(a: list[float], b: list[float]) -> float:
 
 
 class StageController:
-    def __init__(self, client: DecisionClient, initial_obs: dict, plan: dict):
+    def __init__(self, client: DecisionClient, initial_obs: dict, plan: dict,
+                 augmented: bool = False):
         self.client = client
         self.plan = plan
+        self.augmented = augmented
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
         self.base_id: str | None = None
         self.initial_eef = initial_obs["current_eef"]
-        self.reference = next(Path(item["path"]) for item in initial_obs["images"] if item["camera"] == "cam_high")
+        self.raw_reference = next(Path(item["path"]) for item in initial_obs["images"] if item["camera"] == "cam_high")
+        self.reference = self.raw_reference
+        self.block_reference: list[dict] = []
+        if augmented:
+            from visual_context import detect_blocks, draw_reference
+            detected = detect_blocks(self.raw_reference)
+            if len(detected) == 3:
+                self.block_reference = detected
+                self.reference = draw_reference(self.raw_reference,
+                    client.output.parent / "visual_context/initial_labeled.png", detected)
         self.phase_calls = 0
         self.motion_calls = 0
         self.events: list[dict] = []
@@ -120,6 +133,23 @@ class StageController:
             "task_notes": self.plan.get("notes", []),
             "camera_instruction": "Inspect the current three RGB views directly. The fourth high view, if attached, is the initial block identity reference. Do not use hidden object state, reward, or a prior gripper command as grasp proof.",
         }
+        if self.augmented:
+            from visual_context import detect_blocks
+            current_high = next(Path(item["path"]) for item in obs["images"]
+                                if item["camera"] == "cam_high")
+            detected = detect_blocks(current_high)
+            color_by_id = {block["id"]: block["color"] for block in self.block_reference}
+            state["rgb_only_extra_information"] = {
+                "initial_ranked_color_boxes": self.block_reference,
+                "target_color_from_initial_rgb": color_by_id.get(self.target_id),
+                "support_color_from_initial_rgb": color_by_id.get(self.base_id),
+                "current_color_regions_px": [
+                    {key: block[key] for key in ("color", "bbox_xywh", "center_px", "mask_area_px")}
+                    for block in detected],
+                "limitations": "HSV color boxes are image-derived hints only; occlusion and robot materials can cause misses or false positives. Current left-to-right rank is NOT persistent identity.",
+                "empirical_high_camera_axis": "In the preceding layout-0 pilot, +world X moved the right gripper toward IMAGE RIGHT in the high view. Recheck on fresh frames; do not infer Y/depth from this.",
+                "align_guidance": "Track the LOCKED target color rather than the support color. In align, each micro-motion should reduce a visible gripper-target error; no zero-motion hold is offered.",
+            }
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
 
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
@@ -136,6 +166,11 @@ class StageController:
         if self.stage == "select_arm" and verdict == "pass":
             self.active_arm = answer["active_arm"]
             self.target_id, self.base_id = answer["pick_base_pair"].split("__")
+            if self.augmented and self.block_reference:
+                from visual_context import draw_reference
+                self.reference = draw_reference(self.raw_reference,
+                    self.client.output.parent / "visual_context/target_and_base.png",
+                    self.block_reference, self.target_id, self.base_id)
         if self.stage == "return_home" and verdict == "pass":
             for arm in ARMS:
                 current = obs["current_eef"][arm]
@@ -171,7 +206,7 @@ class StageController:
                                       self.initial_eef[arm]["quaternion_wxyz"]))
         name = f"move_{self.motion_calls:04d}"
         self.motion_calls += 1
-        answer = self.client.query(obs, motion_questions(self.stage),
+        answer = self.client.query(obs, motion_questions(self.stage, self.augmented),
                                    self._evidence(obs, recent, "one bounded action for locked arm"),
                                    name, self.reference)
         arm = self.active_arm
