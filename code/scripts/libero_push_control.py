@@ -347,7 +347,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # on init2; init3's centred first contact lost the plate early.
             # Use the same support-relative contact rule in both segments.
             contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
-            top_contact_rear_fraction=(.5 if visible_goal_plate else 0.))
+            top_contact_rear_fraction=(.7 if visible_goal_plate and segment == 2
+                                       else .5 if visible_goal_plate else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
@@ -420,20 +421,21 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     observed_after)
             visible_error = None if observed_after is None else float(np.linalg.norm(
                 observed_after['center'][:2]-goal[:2]))
+            goal_tolerance = .020 if visible_goal_plate and segment >= 2 else .045
             residual_correction_available = bool(visible_goal_plate and
                 stage == 'retreat' and arrived and segment == 2 and
-                visible_error is not None and .045 <= visible_error <= .12 and
+                visible_error is not None and goal_tolerance <= visible_error <= .12 and
                 vision.calls < 5 and max_native_ticks-ticks >= 120)
             if (stage == verification_stage and arrived and
-                    visible_error is not None and visible_error >= .045 and
+                    visible_error is not None and visible_error >= goal_tolerance and
                     not residual_correction_available):
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
             if stage == 'push' and not visible_goal_plate:
-                complete = bool(complete and visible_error is not None and visible_error < .045)
+                complete = bool(complete and visible_error is not None and visible_error < goal_tolerance)
             if stage == 'retreat':
                 complete = (bool(arrived and visible_error is not None and
-                                 visible_error < .045) if visible_goal_plate
+                                 visible_error < goal_tolerance) if visible_goal_plate
                             else arrived)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
             next_stage = ('approach' if stage == 'retreat' and visible_goal_plate
@@ -451,13 +453,13 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'Keep supported top contact while pushing the observed plate toward the visible stove-front goal; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
                     if visible_goal_plate else
                     'Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.'),
-                retreat=('Raise the pusher to reveal the plate; advance only after fresh RGB-D measures its centre within 45mm of the current segment goal.'
+                retreat=('Raise the pusher to reveal the plate; advance only after fresh RGB-D measures its centre within the supplied visible goal tolerance (45 mm staging, 20 mm final).'
                     if visible_goal_plate else
                     'Raise pusher after the observed push; advance to end attempt.'))
             if residual_correction_available:
                 contracts['retreat'] = (
                     'Fresh public RGB-D measures a remaining plate-to-goal '
-                    'distance above 45 mm. Reobserve is offered for one '
+                    f'distance above {goal_tolerance*1000:.0f} mm. Reobserve is offered for one '
                     'additional correction push from the measured plate pose; '
                     'choose it now if correction is sensible. No motor action '
                     'executes for reobserve. This is not official success.')
@@ -480,6 +482,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 completion_evidence=dict(position_arrived=arrived,
                     orientation_arrived=oriented, visible_object_goal_error_mm=
                     None if visible_error is None else round(visible_error*1000, 2),
+                    visible_goal_tolerance_mm=round(goal_tolerance*1000, 1),
                     contract_satisfied=bool(complete)),
                 allowed_transitions=dict(continue_phase=True, advance=bool(complete),
                     reobserve=bool(residual_correction_available or
