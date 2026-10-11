@@ -164,7 +164,7 @@ def main():
         '"<mujoco><worldbody><geom type=\\"sphere\\" size=\\"0.1\\"/>'
         '</worldbody></mujoco>"); '
         'd=mujoco.MjData(m); r=mujoco.Renderer(m,64,64); '
-        'r.update_scene(d); r.render(); r.close()'
+        'r.update_scene(d); r.render()'
     )
     probe_env = dict(os.environ, MUJOCO_GL='egl',
                      MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
