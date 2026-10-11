@@ -343,12 +343,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
             preserve_downward=not visible_goal_plate,
             # Both plate segments concern the same visible, broad support
-            # surface.  The first segment maintained contact there; the
-            # rear-edge second segment lost the plate after only ~41 mm.
-            # Keep one contact rule across segments for this paired test.
+            # surface.  Trailing top contact maintained the second segment
+            # on init2; init3's centred first contact lost the plate early.
+            # Use the same support-relative contact rule in both segments.
             contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
-            top_contact_rear_fraction=(.5 if visible_goal_plate and segment == 2
-                                       else 0.))
+            top_contact_rear_fraction=(.5 if visible_goal_plate else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
