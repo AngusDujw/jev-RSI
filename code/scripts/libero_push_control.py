@@ -50,7 +50,7 @@ def visible_rear_extent(view, mask, source, direction):
 def contact_push_plan(source, goal, own, current_orientation=None,
                       observed_rear_extent_m=None, rear_standoff_m=.010,
                       preserve_downward=True, lateral_contact_offset_m=0.,
-                      contact_mode='rear_edge'):
+                      contact_mode='rear_edge', top_contact_rear_fraction=0.):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -79,6 +79,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         raise ValueError('Rear standoff outside declared contact range')
     if not -.045 <= lateral_contact_offset_m <= .045:
         raise ValueError('Lateral contact offset outside visible object support')
+    if not 0. <= top_contact_rear_fraction <= .8:
+        raise ValueError('Top contact rear fraction outside visible support')
     lateral_axis = np.array([direction[1], -direction[0]])
     if contact_mode == 'rear_edge':
         contact_xy = (source['center'][:2] - direction*(rear_extent+leading+.004)
@@ -86,8 +88,9 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         contact_z = goal[2]+.004-own_box['finger_low_z_offset']
     elif contact_mode == 'top_surface':
         if lateral_contact_offset_m:
-            raise ValueError('Top contact must remain at observed source centre')
-        contact_xy = np.asarray(source['center'][:2], float)
+            raise ValueError('Top contact cannot use a lateral offset')
+        contact_xy = (np.asarray(source['center'][:2], float) -
+                      direction*rear_extent*top_contact_rear_fraction)
         surface_z = float(source['contact_surface_world_z_m'])
         if not source['low'][2]-.003 < surface_z < source['high'][2]+.003:
             raise RuntimeError('Visible inner surface inconsistent with plate bounds')
@@ -120,6 +123,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         observed_rear_extent_m=rear_extent,
         rear_standoff_m=rear_standoff_m,
         contact_mode=contact_mode,
+        top_contact_rear_fraction=top_contact_rear_fraction,
         planned_overshoot_m=overshoot,
         lateral_contact_offset_m=lateral_contact_offset_m,
         lateral_contact_axis_xy=lateral_axis,
@@ -342,7 +346,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # surface.  The first segment maintained contact there; the
             # rear-edge second segment lost the plate after only ~41 mm.
             # Keep one contact rule across segments for this paired test.
-            contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'))
+            contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
+            top_contact_rear_fraction=(.5 if visible_goal_plate and segment == 2
+                                       else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
