@@ -44,7 +44,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
-           '--max-jev-decisions', '240' if mode == 'push' else '160',
+           '--max-jev-decisions', '240' if mode == 'push' or task_id == 1202 else '160',
            '--wall-limit-seconds', '1200',
            '--output', str(episode)]
     if mode in ('recovery', 'supervisor'):
@@ -77,6 +77,12 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-stage-turn-deg', str(plate_stage_turn_deg)]
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
+        if task_id == 1202:
+            cmd += ['--drawer-bowl-continuation', '--local-goal-vision',
+                    '--geometry-profile', 'observed_surfaces',
+                    '--input-organization', 'focused',
+                    '--grasp-algorithm', 'pad_fit', '--preserve-source',
+                    '--execution-profile', 'adaptive']
     return cmd
 
 

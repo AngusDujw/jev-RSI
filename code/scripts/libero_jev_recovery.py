@@ -113,7 +113,8 @@ class RecoveryModel(Jev):
         return row
 
 
-def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
+def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
+                 prior_native_ticks=0):
     vision = GenericVision(rec)
     model = RecoveryModel(rec)
     phases = list(PHASES)
@@ -125,7 +126,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         phases.insert(phases.index('carry'), 'carry_lateral')
     own = gripper_geometry(env, obs)
     dump(rec.folder/'own-gripper.json', own)
-    ticks = stage_ticks = stage_decisions = grip_ticks = 0
+    ticks = int(prior_native_ticks)
+    stage_ticks = stage_decisions = grip_ticks = 0
     gripper = -1
     stage = 'select'
     selected = 0
@@ -139,6 +141,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     error_message = None
     finished = False
     initial_src = src = dst = identity = None
+    initial_drawer_interior = None
     cached_external = None
     initial_source_points_world = None
     dark_source = False
@@ -162,14 +165,28 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         return np.stack([(uu-K[0,2])*d/K[0,0], (vv-K[1,2])*d/K[1,1], d], -1) @ T[:3,:3].T + T[:3,3]
 
     def locate(reason):
-        nonlocal identity, cached_external, initial_source_points_world, dark_source, rack_geometry
+        nonlocal identity, cached_external, initial_source_points_world, dark_source, rack_geometry, initial_drawer_interior
         vv = views()
         identity = vision.recognize(vv, task.language, reason)
         result = {}
         for role in ['source','destination']:
             ob = identity[role]
             v = vv[ob['camera']]
-            result[role] = vision.measure(v, ob['bbox'], ob['label'], reason+'-'+role)
+            if role == 'destination' and rec.cfg.get('task_id') == 1202:
+                from libero_goal_drawer_vision import visible_drawer_interior
+                handle = json.loads((rec.folder/'selected-handle.json').read_text())
+                try:
+                    result[role] = visible_drawer_interior(
+                        v['rgb'], v['depth'], v['K'], v['T'], handle)
+                    if reason == 'initial':
+                        initial_drawer_interior = result[role]
+                except RuntimeError:
+                    if initial_drawer_interior is None:
+                        raise
+                    result[role] = dict(initial_drawer_interior,
+                        source='previously visible drawer floor retained under hand occlusion')
+            else:
+                result[role] = vision.measure(v, ob['bbox'], ob['label'], reason+'-'+role)
             if role == 'destination' and rack_task and reason == 'initial':
                 mask = np.load(result[role]['visible_mask_path']).astype(bool)
                 depth = v['depth']
@@ -411,7 +428,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         initial_src, dst = locate('initial')
         src = initial_src
         cs = candidates()
-        hover = max(src['high'][2],dst['high'][2])+(.17 if rack_task else .12)
+        hover = max(src['high'][2], dst.get('rim_high_z',dst['high'][2]))+(.17 if rack_task else .12)
         while True:
             rec.check_budget()
             if ticks >= NATIVE_BUDGET or stage_decisions >= 45:

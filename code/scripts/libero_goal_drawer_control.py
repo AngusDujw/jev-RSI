@@ -419,8 +419,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         failure = str(exc)
         rec.event(dict(kind='stop', reason=failure))
     finally:
+        handoff = bool(task_id == 1202 and finished and
+                       rec.cfg.get('drawer_bowl_continuation'))
         current_image, agent_depth, agent_k, agent_t = frame()
-        cv2.imwrite(str(rec.folder/f'{ticks:04d}-terminal-agentview.jpg'),
+        label = 'drawer-primitive' if handoff else 'terminal'
+        cv2.imwrite(str(rec.folder/f'{ticks:04d}-{label}-agentview.jpg'),
                     cv2.cvtColor(current_image, cv2.COLOR_RGB2BGR))
         if task_id == 1202:
             np.save(rec.folder/'terminal-agentview-depth.npy', agent_depth)
@@ -429,7 +432,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             wrist = 'robot0_eye_in_hand'
             wrist_rgb = np.ascontiguousarray(obs[wrist+'_image'][::-1])
             wrist_depth = depth_fn(env.sim, obs[wrist+'_depth'])[::-1].squeeze()
-            cv2.imwrite(str(rec.folder/f'{ticks:04d}-terminal-wrist.jpg'),
+            cv2.imwrite(str(rec.folder/f'{ticks:04d}-{label}-wrist.jpg'),
                         cv2.cvtColor(wrist_rgb, cv2.COLOR_RGB2BGR))
             np.save(rec.folder/'terminal-wrist-depth.npy', wrist_depth)
             dump(rec.folder/'terminal-wrist-calibration.json', dict(
@@ -439,8 +442,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             current_image, agent_depth, agent_k, agent_t, handle,
             baseline_pixels=initial_extension_pixels)
             if initial_handle is not None else None)
-        success = bool(env.check_success())
-        dump(rec.folder/'result.json', dict(success=success,
+        success = None if handoff else bool(env.check_success())
+        result_file = ('drawer-primitive-result.json' if handoff else 'result.json')
+        dump(rec.folder/result_file, dict(success=success,
             program_finished=finished and task_id == 1098,
             drawer_primitive_finished=finished,
             remaining_primitive='pick_place_bowl_in_open_drawer' if task_id == 1202 else None,
@@ -452,6 +456,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             visible_handle_shift=visible_shift,
             visible_drawer_extension=visible_extension,
             ownership='Jev XYZ/gripper/phase; fixed public RGB-D handle geometry'))
-        rec.finish('success' if success and finished and task_id == 1098
-                   else 'failed')
+        if not handoff:
+            rec.finish('success' if success and finished and task_id == 1098
+                       else 'failed')
         model.close()
+    if handoff:
+        return obs, ticks

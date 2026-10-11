@@ -9,7 +9,7 @@ import numpy as np
 
 
 SOURCE_LABEL = {
-    1144: 'bowl', 1163: 'wine bottle', 1252: 'bowl',
+    1144: 'bowl', 1163: 'wine bottle', 1202: 'bowl', 1252: 'bowl',
     1335: 'cream cheese box', 1423: 'bowl', 1458: 'wine bottle',
 }
 DESTINATION_LABEL = {1335: 'bowl', 1423: 'plate'}
@@ -103,7 +103,22 @@ def recognize(worker, receive, views, task_id, reason, prior, folder):
     result = dict(source=dict(label=source_label, camera='agentview',
                               bbox=source['bbox'], visible=True,
                               evidence=evidence))
-    if task_id in DESTINATION_LABEL:
+    if task_id == 1202:
+        from libero_goal_drawer_vision import visible_drawer_interior
+        handle = json.loads((folder.parent/'selected-handle.json').read_text())
+        if reason == 'initial':
+            geometry = visible_drawer_interior(view['rgb'], view['depth'],
+                view['K'], view['T'], handle)
+            bbox = geometry['bbox_xyxy']
+        else:
+            if prior is None or 'destination' not in prior:
+                raise RuntimeError('Initial visible drawer floor missing')
+            bbox = prior['destination']['bbox']
+        result['destination'] = dict(label='visible open drawer interior floor',
+            camera='agentview', bbox=list(bbox), visible=True,
+            receiver_kind='support_surface',
+            evidence='initial public RGB-D drawer-floor fit; bbox retained after hand occlusion')
+    elif task_id in DESTINATION_LABEL:
         destination_label = DESTINATION_LABEL[task_id]
         destination = pick_visible(detect('destination', destination_label),
                                    destination_label, source['bbox'])
