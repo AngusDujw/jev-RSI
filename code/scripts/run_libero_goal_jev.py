@@ -94,7 +94,11 @@ def main():
     p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9], default=0)
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
+    p.add_argument('--preflight-only', action='store_true',
+                   help='Check selected GPU and EGL rendering without reserving an attempt')
     a = p.parse_args()
+    if a.dry_run and a.preflight_only:
+        p.error('Choose either --dry-run or --preflight-only')
     if a.task_id not in RECOVERY_TASKS | SUPERVISOR_TASKS | KNOB_TASKS | DRAWER_TASKS | PUSH_TASKS or not 0 <= a.init_index < 50:
         p.error('Unsupported Goal task or official init index')
     if a.egl_device_id == a.worker_device_id:
@@ -165,6 +169,12 @@ def main():
                        check=True, timeout=20)
     except (subprocess.SubprocessError, OSError) as exc:
         raise RuntimeError('Selected GPU EGL render preflight failed before attempt reservation') from exc
+    if a.preflight_only:
+        print(json.dumps(dict(gpu_preflight='passed',
+                              egl_device_id=a.egl_device_id,
+                              worker_device_id=a.worker_device_id,
+                              attempt_reserved=False)))
+        return
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo,
                                      text=True).strip()
     hashes = {name: hashlib.sha256((source/name).read_bytes()).hexdigest()
