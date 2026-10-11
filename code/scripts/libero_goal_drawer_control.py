@@ -1,9 +1,8 @@
 """Bounded Jev drawer primitive from public RGB-D handle measurements.
 
 No simulator object state or task predicate is read until terminal evaluation.
-Goal 1202 only executes its first, top-drawer-opening primitive here; placing
-the bowl remains incomplete. Jev chooses motion signs, gripper commands and
-every phase transition.
+Goal 1202 can hand off its opened drawer to bowl placement in the same native
+episode. Jev chooses motion signs, gripper commands and every phase edge.
 """
 import hashlib
 import json
@@ -110,6 +109,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     image_template = None
     initial_extension_pixels = 0
     clear_target = None
+    blocked_contact_blocks = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook')
@@ -275,13 +275,27 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 baseline_pixels=initial_extension_pixels)
                 if name in ('pull', 'verify') else None)
             arrived = bool(np.max(np.abs(target-position)) < .007)
+            # An actual contact can block the final exact TCP pose. This only
+            # offers a closure trial from permitted RGB-D and own pad geometry;
+            # opening is still verified from fresh public images later.
+            pad_bounds = (np.asarray(own['pad_vertices_tool']) @
+                Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T + position)
+            pad_low, pad_high = np.min(pad_bounds, axis=0), np.max(pad_bounds, axis=0)
+            rod_gap = float(np.linalg.norm(np.maximum(
+                np.maximum(pad_low-handle_position, handle_position-pad_high), 0.)))
+            blocked_contact_trial = bool(name == 'contact' and
+                contact_mode == 'pinch' and blocked_contact_blocks >= 3 and
+                oriented and np.linalg.norm(target-position) < .030 and
+                rod_gap < .025)
+            exact_contact_pose = bool(arrived and oriented and
+                contact_leg in ('final', 'under_rise') and
+                (finger_behind if hook_mode else True))
             gate = {
                 'observe': True,
                 'select_handle': True,
                 'approach': arrived,
                 'align': arrived and oriented,
-                'contact': arrived and oriented and contact_leg in ('final', 'under_rise')
-                           and (finger_behind if contact_mode in ('top_hook', 'under_hook') else True),
+                'contact': exact_contact_pose or blocked_contact_trial,
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
                           if hook_mode else grip_ticks >= 18 and gripper == 1),
                 'pull': bool(extension and extension['passed']) or (
@@ -308,6 +322,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
+                            own_pad_to_visible_rod_gap_mm=round(rod_gap*1000, 2),
+                            blocked_contact_blocks=blocked_contact_blocks,
+                            handle_contact_pose_reached=exact_contact_pose,
+                            blocked_contact_closure_trial=blocked_contact_trial,
                             position_arrived=arrived,
                             orientation_arrived=oriented,
                             gripper_command_ticks=grip_ticks,
@@ -351,6 +369,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'middle handle rod. contact_path_leg names the current '
                     'waypoint. Advance only after the selected finger is '
                     'measured behind the middle rod at the final pose.')
+            if contact_mode == 'pinch' and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Move open fingers toward the visible rod. If the exact '
+                    'pose is blocked but three executed blocks have stalled '
+                    'within 30 mm of the RGB-D target and own pad envelope '
+                    'is within 25 mm of the rod, you may advance to one '
+                    'closure trial. This does not prove grasp; the later '
+                    'visible drawer-motion gate must still pass.')
             if hook_mode and name == 'pull':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open; pull the measured finger hook outward '
@@ -396,6 +422,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 stage_ticks += 1
                 grip_ticks += 1
             after = np.asarray(obs['robot0_eef_pos'], float)
+            if name == 'contact':
+                blocked_contact_blocks = (blocked_contact_blocks+1 if
+                    np.linalg.norm(after-before) < .0008 and
+                    np.linalg.norm(target-before) > .007 else 0)
             motion = np.round((after-before)*1000, 2).tolist()
             rec.branch(dict(stage=stage['id'], decision_id=decision['decision_id'],
                             before=before, after=after, delta=delta,
@@ -414,6 +444,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                decision_id=decision['decision_id']))
                 phase += 1
                 stage_ticks = grip_ticks = 0
+                blocked_contact_blocks = 0
         finished = True
     except Exception as exc:
         failure = str(exc)

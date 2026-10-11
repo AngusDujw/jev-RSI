@@ -73,7 +73,7 @@ PHASES = {
         ("observe", "identify specified handle and visible cabinet front", "handle_visible"),
         ("approach", "move open gripper to handle approach pose", "handle_hover_reached"),
         ("align", "align own fingers to visible handle and cabinet-front normal", "orientation_reached"),
-        ("contact", "reach handle without crossing cabinet front", "handle_contact_pose_reached"),
+        ("contact", "reach visible handle contact pose, or use one bounded blocked-contact closure trial", "handle_contact_trial_ready"),
         ("grasp", "close on handle and measure actual aperture", "closure_executed"),
         ("pull", "pull outward along estimated cabinet-front normal; measure handle displacement", "visible_handle_displacement"),
         ("release", "open gripper", "opening_executed"),
