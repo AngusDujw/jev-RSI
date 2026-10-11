@@ -114,8 +114,9 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     contact = np.r_[contact_xy, contact_z]
     # Top contact leaves the plate trailing the fingertip; keep the pusher
     # moving until the visible plate can approach the visible stove-front goal.
-    overshoot = (.025 if allow_short_push and distance < .04 else
-                 .060 if contact_mode == 'top_surface' else .025)
+    # A short goal residual does not shorten the travel needed to reach the
+    # plate from a rear top contact. Keep the same visible-extent sweep.
+    overshoot = .060 if contact_mode == 'top_surface' else .025
     push_end = np.r_[contact_xy+direction*(distance+overshoot), contact_z]
     retreat = push_end+np.array([0., 0., .10])
     return dict(orientation=orientation,
