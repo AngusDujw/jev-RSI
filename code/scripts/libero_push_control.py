@@ -252,7 +252,7 @@ class PushModel(Jev):
         self.rec.decisions.append(row)
         started = time.monotonic()
         try:
-            raw = self.api.post('/systemone', request)
+            raw = self.post_with_connect_retry('/systemone', request)
             dump(folder/'response.json', raw)
             answers = raw['answers']
             if set(answers) != set(questions):

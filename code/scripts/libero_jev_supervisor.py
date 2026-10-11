@@ -52,7 +52,7 @@ class DecisionModel(Jev):
         row=dict(decision_id=f'decision-{i:04d}',stage=state['stage'],observation=state,prompt_version='supervisor-'+self.rec.cfg['schema'],request_sha256=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest())
         self.rec.decisions.append(row);start=time.monotonic()
         try:
-            raw=self.api.post('/systemone',payload);dump(folder/'response.json',raw)
+            raw=self.post_with_connect_retry('/systemone',payload);dump(folder/'response.json',raw)
             answers=raw['answers']
             for name,q in questions.items():
                 a=answers[name];p=a['probabilities']
