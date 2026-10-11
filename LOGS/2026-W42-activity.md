@@ -10,3 +10,5 @@
 - 【Agent】【2026-10-12 00:49】[op] 5880指定盘克隆jev-RSI十Goal分支、RoboDojo官方源码及锁定子模块、LIBERO-Plus官方源码；同步旧Goal总账SHA；创建独立LIBERO环境及可见模型缓存。
 - 【Agent】【2026-10-12 00:49】[op] 5880迁移分支91b5632和2ecea30经SSH推送：可配置路径、单GPU选项、MuJoCo2.3.7 EGL探针修复；探针渲染64x64成功，模型worker离线加载ready。
 - 【Agent】【2026-10-12 00:51】[result] 5880单GPU MuJoCo2.3.7 EGL探针与运行器预检通过，64x64 RGB；0 Jev、0任务预留，视觉worker独立ready。首次失败是探针close兼容性错误，已修复并保留在EXP。  ↪ `EXP-2026W42-001`
+- 【User】【2026-10-12 01:24】[intent] 继续 5880 服务器部署、LIBERO-Plus 和 RoboDojo 环境配置，并推进十个任务的真实稳定性验证；本轮补充 AGENTS.md 约束。
+- 【Agent】【2026-10-12 01:33】[op] 记录5880无计账Goal1383捕获的h5py与缺失官方资产两处启动故障、修复专用环境h5py；旧company-server-2的EGL仍超时且0任务预留；W42 EXP002-003严格lint通过。
