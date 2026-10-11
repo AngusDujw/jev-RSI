@@ -504,3 +504,6 @@
 - 【User】【2026-10-11 22:37】[prompt] 我要在discussion中加一个milestone，就是之前的方向理解的有误，现在的方向应该是使用高层规划器-低层推进器框架，采用gpt6等大模型进行规划（可以多次规划），jev.openai decision model等决策模型进行推进，实现泛化的多任务操作，先实现多任务整个benchmark的刷榜并把结果刷的尽可能高，目前的目标benchmark主要是robodojo和libero-plus  ↪ `DISC-2026W39-001`
 - 【User】【2026-10-11 22:37】[decision] 确认项目主线转为高层规划器—低层推进器：GPT-6等大模型可反复规划，Jev/OpenAI decision model等决策模型推进；优先覆盖RoboDojo和LIBERO-Plus完整多任务benchmark并尽可能提高整体成绩。  ↪ `DISC-2026W39-001`
 - 【Agent】【2026-10-11 22:38】[op] 在Discussion新增M1方向纠偏milestone并标记旧Q4为历史定位；Timeline追加用户拍板的pivot节点并更新当前主线，不改动已有实验结论。  ↪ `DISC-2026W39-001`, `T-2026W41-042`
+- 【User】【2026-10-11 23:39】[prompt] v3已经停了；将server02 jev-RSI/code除old以外全部移到old，新代码写code；本轮日志资产放/data新目录，空间不足时可迁移~/ykj/project日志。
+- 【Agent】【2026-10-11 23:39】[op] 将code原有13个顶层条目原样移入code/old，新增.gitignore保护历史runs；提交8c834aa7，SSH推送因远端无写权限被拒绝。
+- 【Agent】【2026-10-11 23:39】[op] 创建/data/ykj_robodojo/jev-rsi-gpt-decision-20261011专用日志资产目录；将cad/direct密钥以600权限传至server02用户私有配置，元数据标记du且校验内容一致。

@@ -1,0 +1,7 @@
+# Reviewed cross-task experience (2026-10-11)
+
+- Observation contract: only public task language, current calibrated RGB cameras, and robot proprioception are available. Stereo box centres and RGB silhouettes are estimates; never treat a last-seen point, neutral orientation placeholder, or gripper command as true object pose, grasp, or success.
+- Planner: declare visual identity cues and implemented detection/triangulation operators before motion. Give every object-dependent stage an explicit freshness requirement, a measurable end condition, and a bounded reobservation or recovery route. Reserve GPT replanning for semantic milestones or genuine failed evidence, because repeated visual localization has caused long delays and identity loss.
+- Decision model: use current motor residual and deadband for signed axes. Inspect selected live images for visible contradiction, occlusion, wrong target, lost hold, and changed receiver. Request reobservation or replanning before acting on an uncertain relation; do not override an axis sign from image parallax alone.
+- After apparent closure, verify object motion relative to the gripper during a short lift. After apparent placement, verify the released relation from fresh RGB. Keep native success strictly as an offline result.
+- A prior failed episode is diagnostic evidence, never a demonstration to replay. Re-ground every historical lesson in the current images. Sources: `code/old/experience/`; server02 vision-method campaign records in `/data/ykj_robodojo/RoboLaya/runs/vision-method-20261011/`.

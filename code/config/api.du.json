@@ -1,0 +1,25 @@
+{
+  "gpt": {
+    "base_url": "http://127.0.0.1:18883/v1",
+    "auth_mode": "none",
+    "model": "gpt-6.1-sol",
+    "expected_model_prefix": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "wire": "chat",
+    "max_tokens": 12000,
+    "timeout_s": 1300,
+    "transport_recovery_s": 300
+  },
+  "decision": {
+    "base_url": "https://api.openai.com/v1",
+    "key_file": "/home/user/.config/jev-rsi/du-openai-direct.key",
+    "model": "gpt-6-luna",
+    "expected_model_prefix": "gpt-6-luna",
+    "reasoning_effort": "medium",
+    "wire": "responses",
+    "max_tokens": 3000,
+    "timeout_s": 150,
+    "transport_recovery_s": 300,
+    "proxy": "http://127.0.0.1:10408"
+  }
+}
