@@ -40,7 +40,7 @@
   "semantic_handoffs": false,
   "planner_prompt_mode": "vision_method_v1",
   "stage_contract_reuse": false,
-  "renderer_gpu_id": 1,
+  "renderer_gpu_id": 0,
   "gpu_ids": [
     1
   ],

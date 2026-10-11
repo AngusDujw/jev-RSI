@@ -1,0 +1,570 @@
+{
+  "source": "Official RoboDojo GPT-6 Astra sim leaderboard, 2026-10-09; ordering only",
+  "reference_file": "/home/user/ykj/project/gpt6/jev-RSI/code/config/official-priority.json",
+  "base_task_count": 42,
+  "variant_task_count": 12,
+  "batches": [
+    [
+      "stack_blocks",
+      "general_pickup",
+      "fold_clothes",
+      "press_by_number",
+      "arrange_largest_number"
+    ],
+    [
+      "push_T",
+      "stack_bowls",
+      "match_and_pick_from_conveyor",
+      "classify_objects",
+      "align_blocks"
+    ],
+    [
+      "cover_blocks",
+      "solve_equation",
+      "stack_blocks_by_language",
+      "imitate_sorting_sequence",
+      "classify_objects_by_language"
+    ],
+    [
+      "swap_T",
+      "fasten_screws",
+      "sort_nesting_dolls_by_size",
+      "put_bottles_into_dustbin",
+      "play_Xylophone"
+    ],
+    [
+      "pour_liquid_into_cup",
+      "sweep_blocks",
+      "pick_from_conveyor_by_image",
+      "pour_balls_into_vase",
+      "build_tower"
+    ],
+    [
+      "deposit_coin",
+      "fill_egg_holder",
+      "fill_pen_holder",
+      "hang_mugs",
+      "insert_key"
+    ],
+    [
+      "insert_tubes",
+      "make_kong",
+      "make_toast",
+      "organize_table",
+      "pack_objects_into_box"
+    ],
+    [
+      "play_stacking_toy",
+      "play_tic_tac_toe",
+      "plug_in_charger",
+      "pour_by_language",
+      "store_laptop_and_headphones"
+    ],
+    [
+      "store_tools_in_toolbox",
+      "swap_blocks"
+    ]
+  ],
+  "variants": [
+    "stack_blocks_random",
+    "fold_clothes_random",
+    "stack_bowls_random",
+    "arrange_largest_number_random",
+    "push_T_random",
+    "sort_nesting_dolls_by_size_random",
+    "hang_mugs_random",
+    "make_toast_random",
+    "pack_objects_into_box_random",
+    "pour_liquid_into_cup_random",
+    "store_laptop_and_headphones_random",
+    "sweep_blocks_random"
+  ],
+  "cases": [
+    {
+      "task": "stack_blocks",
+      "runtime_task": "stack_blocks",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/stack_blocks_0.json",
+      "layout_sha256": "9a6b1ba160b2fc5420fd4aa858400b1ee0346d7d7449bdd85aa99d9f65418191",
+      "split": "development"
+    },
+    {
+      "task": "general_pickup",
+      "runtime_task": "general_pickup",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/general_pickup_0.json",
+      "layout_sha256": "7a3ecf189e248f99a75ef8f6fdbe7fca85795846d67e9fd7f2d74954c8e78dda",
+      "split": "development"
+    },
+    {
+      "task": "fold_clothes",
+      "runtime_task": "fold_clothes",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/fold_clothes_0.json",
+      "layout_sha256": "53de16e28978c71cfaa0620712633a0e07ed9d4bb79cdb63c5a953fa26f1b5ba",
+      "split": "development"
+    },
+    {
+      "task": "press_by_number",
+      "runtime_task": "press_by_number",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/press_by_number_0.json",
+      "layout_sha256": "a7dc98bf795083bbc14269ccdd9ffa982d91a725f62467c0c1f79bb778cb13c3",
+      "split": "development"
+    },
+    {
+      "task": "arrange_largest_number",
+      "runtime_task": "arrange_largest_number",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/arrange_largest_number_0.json",
+      "layout_sha256": "8d45b23010c950c35d5618c8701c6b8203036abaaf20a228db067ec3b1e30617",
+      "split": "development"
+    },
+    {
+      "task": "push_T",
+      "runtime_task": "push_T",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/push_T_0.json",
+      "layout_sha256": "5d6c4c37b2715479cb6a16f6d1200c5de740f1fbbaa216640b3b8828295f0b07",
+      "split": "development"
+    },
+    {
+      "task": "stack_bowls",
+      "runtime_task": "stack_bowls",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/stack_bowls_0.json",
+      "layout_sha256": "8ec7c160815f8955b5dd1af1a042673140cc2b6ac4b7536ee7fa9057e8a978f5",
+      "split": "development"
+    },
+    {
+      "task": "match_and_pick_from_conveyor",
+      "runtime_task": "match_and_pick_from_conveyor",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/match_and_pick_from_conveyor_0.json",
+      "layout_sha256": "9c89a282516bae7323eda660e5584caf908c241976b0bcd1f8ae22793a1fd931",
+      "split": "development"
+    },
+    {
+      "task": "classify_objects",
+      "runtime_task": "classify_objects",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/classify_objects_0.json",
+      "layout_sha256": "5ceb9e18e6d8490a7db85dd001462d63265c297ea6fad0d7438364deb2de3ece",
+      "split": "development"
+    },
+    {
+      "task": "align_blocks",
+      "runtime_task": "align_blocks",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/align_blocks_0.json",
+      "layout_sha256": "45caba46237c5c8070004e85b099f0122b9b97d2580e16886928e3ac7e4e6bd0",
+      "split": "development"
+    },
+    {
+      "task": "cover_blocks",
+      "runtime_task": "cover_blocks",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/cover_blocks_0.json",
+      "layout_sha256": "10a84eed03be80f3ba31bca0cf07c96f34a7143b0670ba0262957add36a1161c",
+      "split": "development"
+    },
+    {
+      "task": "solve_equation",
+      "runtime_task": "solve_equation",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/solve_equation_0.json",
+      "layout_sha256": "df2d8ee1b5e6b3d984174bd03555a2f512addb671a4bf830e9eecbd9e7f7d48b",
+      "split": "development"
+    },
+    {
+      "task": "stack_blocks_by_language",
+      "runtime_task": "stack_blocks_by_language",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/stack_blocks_by_language_0.json",
+      "layout_sha256": "03aa18bd083b56acb34f383611255f50fd33aec3df07fef40c52f60f710f04a8",
+      "split": "development"
+    },
+    {
+      "task": "imitate_sorting_sequence",
+      "runtime_task": "imitate_sorting_sequence",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/imitate_sorting_sequence_0.json",
+      "layout_sha256": "3f49325bc7198569671b2e6a478460d9ea3a323edb38a5da4da389c7a29b2f27",
+      "split": "development"
+    },
+    {
+      "task": "classify_objects_by_language",
+      "runtime_task": "classify_objects_by_language",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/classify_objects_by_language_0.json",
+      "layout_sha256": "eb7bc205a8e5f3acad8fdada3bf7a26b8e11fc39d7944f434aa4989356044eb2",
+      "split": "development"
+    },
+    {
+      "task": "swap_T",
+      "runtime_task": "swap_T",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/swap_T_0.json",
+      "layout_sha256": "e7181ce640596479865b95711f8c4a92bd50c11b646dd4dc9bc496c29c3489fd",
+      "split": "development"
+    },
+    {
+      "task": "fasten_screws",
+      "runtime_task": "fasten_screws",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/fasten_screws_0.json",
+      "layout_sha256": "13ee331afd5590012692ef274ec8eb7923087799a2311f35f8302865e2dd1dee",
+      "split": "development"
+    },
+    {
+      "task": "sort_nesting_dolls_by_size",
+      "runtime_task": "sort_nesting_dolls_by_size",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/sort_nesting_dolls_by_size_0.json",
+      "layout_sha256": "a01c86062db05ce741bf9153c5c31ab57b85ee3b3dce9ad7c1be660eec00dfc1",
+      "split": "development"
+    },
+    {
+      "task": "put_bottles_into_dustbin",
+      "runtime_task": "put_bottles_into_dustbin",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/put_bottles_into_dustbin_0.json",
+      "layout_sha256": "3c2168f460d48dde2d72d55429f1af7e850725b642dfcb8c8d5e31ed2ec25537",
+      "split": "development"
+    },
+    {
+      "task": "play_Xylophone",
+      "runtime_task": "play_Xylophone",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/play_Xylophone_0.json",
+      "layout_sha256": "acb2c7dacf66afe330797215b2fe325b203f5745ffc31bae1406272975184265",
+      "split": "development"
+    },
+    {
+      "task": "pour_liquid_into_cup",
+      "runtime_task": "pour_liquid_into_cup",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/pour_liquid_into_cup_0.json",
+      "layout_sha256": "99d7b7cba10a7926e00eb2ad117a2e7ce812afd8876239f692acc6bea54bfc9c",
+      "split": "development"
+    },
+    {
+      "task": "sweep_blocks",
+      "runtime_task": "sweep_blocks",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/sweep_blocks_0.json",
+      "layout_sha256": "1eebf38dc48de8c80a3010a112082c0b6bc6a4e0a45d0c38c05f8c719774ba9e",
+      "split": "development"
+    },
+    {
+      "task": "pick_from_conveyor_by_image",
+      "runtime_task": "pick_from_conveyor_by_image",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/pick_from_conveyor_by_image_0.json",
+      "layout_sha256": "b35518107e88e78d3e001572a0662fe81c0f43e7cf9a19ef858055b1e5cf88d5",
+      "split": "development"
+    },
+    {
+      "task": "pour_balls_into_vase",
+      "runtime_task": "pour_balls_into_vase",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/pour_balls_into_vase_0.json",
+      "layout_sha256": "171eb88834b95edeb1e90a5786802400ad3c924f4c9e4ed412d318e98fd69000",
+      "split": "development"
+    },
+    {
+      "task": "build_tower",
+      "runtime_task": "build_tower",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/build_tower_0.json",
+      "layout_sha256": "afcf896086392357a8826f84bebe4910dcb7a5f1b84e7be435e16e3d5c3607a4",
+      "split": "development"
+    },
+    {
+      "task": "deposit_coin",
+      "runtime_task": "deposit_coin",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/deposit_coin_0.json",
+      "layout_sha256": "53bd0820af9e5a8156e3ad0689f6ebbf40c28189c04991fb31d1d57ab3037f5f",
+      "split": "development"
+    },
+    {
+      "task": "fill_egg_holder",
+      "runtime_task": "fill_egg_holder",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/fill_egg_holder_0.json",
+      "layout_sha256": "d8bc6aef3d3fd1fba68d29d6818c0eceb3158e31202b31124128906a6629ca7a",
+      "split": "development"
+    },
+    {
+      "task": "fill_pen_holder",
+      "runtime_task": "fill_pen_holder",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/fill_pen_holder_0.json",
+      "layout_sha256": "346dfc9c75c87c9509ae3bc5d7333092df5025535baf1e2f5116b57e78cd35bc",
+      "split": "development"
+    },
+    {
+      "task": "hang_mugs",
+      "runtime_task": "hang_mugs",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/hang_mugs_0.json",
+      "layout_sha256": "d257f31ef0597bcc47470ce8df823a120283257669426175f0ee8099a83cb601",
+      "split": "development"
+    },
+    {
+      "task": "insert_key",
+      "runtime_task": "insert_key",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/insert_key_0.json",
+      "layout_sha256": "2e8349f7073e2f0c20c3bc2fff8bd3c3e0de0719e4460e62cf39d2d6f69544c9",
+      "split": "development"
+    },
+    {
+      "task": "insert_tubes",
+      "runtime_task": "insert_tubes",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/insert_tubes_0.json",
+      "layout_sha256": "7a385171c850978ea45616e562eb0c6efd025e592be0542ac5f0298ee0f12557",
+      "split": "development"
+    },
+    {
+      "task": "make_kong",
+      "runtime_task": "make_kong",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/make_kong_0.json",
+      "layout_sha256": "4e13e55934b1b3bdab5f3697f7b997080e4f7652fa265f24a6b05cbb761a7228",
+      "split": "development"
+    },
+    {
+      "task": "make_toast",
+      "runtime_task": "make_toast",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/make_toast_0.json",
+      "layout_sha256": "f78afb3f82b6d9ce2399b13a8ce8a1508134565e7e8cd97f8a8532854fbc0b28",
+      "split": "development"
+    },
+    {
+      "task": "organize_table",
+      "runtime_task": "organize_table",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/organize_table_0.json",
+      "layout_sha256": "e55e5cffef73b1967ad26dc0c7c8933ce05e68f329450ae0ac933abf386fa5ba",
+      "split": "development"
+    },
+    {
+      "task": "pack_objects_into_box",
+      "runtime_task": "pack_objects_into_box",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/pack_objects_into_box_0.json",
+      "layout_sha256": "d529ff309408abf0270efa996832d3e70dcc9e070c2e90c9824fba60f396d2b2",
+      "split": "development"
+    },
+    {
+      "task": "play_stacking_toy",
+      "runtime_task": "play_stacking_toy",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/play_stacking_toy_0.json",
+      "layout_sha256": "8e4303a7971c499e8f484dfee677d355be40b3d5fa4fe8b562a27e6c17a554df",
+      "split": "development"
+    },
+    {
+      "task": "play_tic_tac_toe",
+      "runtime_task": "play_tic_tac_toe",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/play_tic_tac_toe_0.json",
+      "layout_sha256": "b5fe280e548e5845d1ff49c9df61afc6eb6a50adaa02f817c18bfa4af83f82cb",
+      "split": "development"
+    },
+    {
+      "task": "plug_in_charger",
+      "runtime_task": "plug_in_charger",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/plug_in_charger_0.json",
+      "layout_sha256": "0fb33f8293090054014dc47c943d6388aa529acd2f2d4a5e2499834515012003",
+      "split": "development"
+    },
+    {
+      "task": "pour_by_language",
+      "runtime_task": "pour_by_language",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/pour_by_language_0.json",
+      "layout_sha256": "a37dd2812e5642783a594633524700cdb30c00588dd9a132b7d4cbc4fb1b65cd",
+      "split": "development"
+    },
+    {
+      "task": "store_laptop_and_headphones",
+      "runtime_task": "store_laptop_and_headphones",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/store_laptop_and_headphones_0.json",
+      "layout_sha256": "36c256352ba182181517141f659ba50513749d81bcf87f3297bafd0b320de214",
+      "split": "development"
+    },
+    {
+      "task": "store_tools_in_toolbox",
+      "runtime_task": "store_tools_in_toolbox",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/store_tools_in_toolbox_0.json",
+      "layout_sha256": "e5afcda29f1d149bd9637e6f466c86a429b0486e4d6a63d6307926b8c56b662b",
+      "split": "development"
+    },
+    {
+      "task": "swap_blocks",
+      "runtime_task": "swap_blocks",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/swap_blocks_0.json",
+      "layout_sha256": "fa3f3809370d58c0476cdb2d08c09306f4b044d7958e01a26cb42cd492ecdecd",
+      "split": "development"
+    },
+    {
+      "task": "stack_blocks_random",
+      "runtime_task": "stack_blocks_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/stack_blocks_random_0.json",
+      "layout_sha256": "9e4db1d50a67e9d1147295be97a9237a9ba1abf7d14f2e186ecc9eec2960ce60",
+      "split": "development"
+    },
+    {
+      "task": "fold_clothes_random",
+      "runtime_task": "fold_clothes_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/fold_clothes_random_0.json",
+      "layout_sha256": "91ca045a523167ea32cf84551db921862b49d107995586a853c6b9eff1db10f0",
+      "split": "development"
+    },
+    {
+      "task": "stack_bowls_random",
+      "runtime_task": "stack_bowls_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/stack_bowls_random_0.json",
+      "layout_sha256": "5d52b98d362d52ebc274fb9a3b29febbc6a8ea5a1f51617911dda7502783f678",
+      "split": "development"
+    },
+    {
+      "task": "arrange_largest_number_random",
+      "runtime_task": "arrange_largest_number_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/arrange_largest_number_random_0.json",
+      "layout_sha256": "c7897e5204ca76bbd7c6cb3c93a794a4e5218c0c17a4312f047930f5e7e822d5",
+      "split": "development"
+    },
+    {
+      "task": "push_T_random",
+      "runtime_task": "push_T_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/push_T_random_0.json",
+      "layout_sha256": "11dcb2c9c947dd81aec783ae4235d748da3ebfc01e2091d0dcbf1e439038a709",
+      "split": "development"
+    },
+    {
+      "task": "sort_nesting_dolls_by_size_random",
+      "runtime_task": "sort_nesting_dolls_by_size_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/sort_nesting_dolls_by_size_random_0.json",
+      "layout_sha256": "f45438f654fd1ce77dc5423e62ca21b1e56c0132f0fe3dbdb8f614c4813f6f40",
+      "split": "development"
+    },
+    {
+      "task": "hang_mugs_random",
+      "runtime_task": "hang_mugs_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/hang_mugs_random_0.json",
+      "layout_sha256": "9fb225ebf9b9039191c836e46b5343d9f87ec38f5c805e95e1ef7edb3270997e",
+      "split": "development"
+    },
+    {
+      "task": "make_toast_random",
+      "runtime_task": "make_toast_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/make_toast_random_0.json",
+      "layout_sha256": "2a4a101c6703de7b6f4357ef78d76d7435b6931d173d6d327f8333bbdedcb03a",
+      "split": "development"
+    },
+    {
+      "task": "pack_objects_into_box_random",
+      "runtime_task": "pack_objects_into_box_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/pack_objects_into_box_random_0.json",
+      "layout_sha256": "f51946657574f10da34a6760128dd5701ec948a3ce638b6168f5ceb6478166c4",
+      "split": "development"
+    },
+    {
+      "task": "pour_liquid_into_cup_random",
+      "runtime_task": "pour_liquid_into_cup_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/pour_liquid_into_cup_random_0.json",
+      "layout_sha256": "17aa3d03d67f2a17c9292bcfb219368bb2f8300d8450d02637b06506cc9d6658",
+      "split": "development"
+    },
+    {
+      "task": "store_laptop_and_headphones_random",
+      "runtime_task": "store_laptop_and_headphones_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/store_laptop_and_headphones_random_0.json",
+      "layout_sha256": "1d682a4a3844392f368eea462611bcfea12546d28764654874d8e7e7ce2ce418",
+      "split": "development"
+    },
+    {
+      "task": "sweep_blocks_random",
+      "runtime_task": "sweep_blocks_random",
+      "layout_id": 0,
+      "eval_seed": 0,
+      "layout": "Assets/Eval_Layout/RoboDojo/arx_x5/0/sweep_blocks_random_0.json",
+      "layout_sha256": "d04495ad79faf3f3aeb2e4e51d10818962ddb6d751ee473821646a2f41807780",
+      "split": "development"
+    }
+  ]
+}

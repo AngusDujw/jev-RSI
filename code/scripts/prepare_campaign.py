@@ -67,7 +67,8 @@ def main() -> None:
     )
     template.pop('controller_commit', None)
     for gpu in (0, 1):
-        cfg = dict(template, gpu_ids=[gpu], renderer_gpu_id=gpu,
+        # Docker exposes only the selected host GPU; inside it is device 0.
+        cfg = dict(template, gpu_ids=[gpu], renderer_gpu_id=0,
                    base_port=19980 + gpu)
         write(CODE / f'config/campaign-top5-gpu{gpu}.json', cfg)
 
