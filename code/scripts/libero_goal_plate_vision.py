@@ -118,13 +118,13 @@ def visible_front_goal(view, plate, stove):
     source = np.asarray(plate['center'], float)
     stove_x0, _, stove_x1, stove_y1 = stove['bbox']
     centre_u = (stove_x0+stove_x1)//2
-    source_v = int(round(plate['uv'][1]))
     goals = []
-    # More frontal rows are tried first only if the swept visible corridor is
-    # free. The ranges refer to image layout, while geometry comes from depth.
-    for v in (max(stove_y1+75, source_v-55),
-              max(stove_y1+100, source_v-25),
-              max(stove_y1+125, source_v)):
+    # The receiving relation is to the visible stove, not to the plate's
+    # initial image row. A source-relative row can leave a farther plate
+    # farther from the stove even when it reaches its computed target exactly.
+    # Try fixed visible clearances from the stove face; depth and the swept
+    # corridor still decide whether each candidate is actually usable.
+    for v in (stove_y1+75, stove_y1+100, stove_y1+125):
         for offset in (0, -18, 18, -28, 28, -44, 44, -60, 60):
             u = centre_u+offset
             if not (20 <= u < 748 and 20 <= v < 748):
