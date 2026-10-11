@@ -50,11 +50,12 @@ def visible_rear_extent(view, mask, source, direction):
 def contact_push_plan(source, goal, own, current_orientation=None,
                       observed_rear_extent_m=None, rear_standoff_m=.010,
                       preserve_downward=True, lateral_contact_offset_m=0.,
-                      contact_mode='rear_edge', top_contact_rear_fraction=0.):
+                      contact_mode='rear_edge', top_contact_rear_fraction=0.,
+                      allow_short_push=False):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
-    if not .04 < distance < .55:
+    if not (.008 if allow_short_push else .04) < distance < .55:
         raise RuntimeError('Visible push distance outside supported range')
     direction = travel/distance
     if abs(goal[2]-source['low'][2]) > .065:
@@ -113,7 +114,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     contact = np.r_[contact_xy, contact_z]
     # Top contact leaves the plate trailing the fingertip; keep the pusher
     # moving until the visible plate can approach the visible stove-front goal.
-    overshoot = .060 if contact_mode == 'top_surface' else .025
+    overshoot = (.025 if allow_short_push and distance < .04 else
+                 .060 if contact_mode == 'top_surface' else .025)
     push_end = np.r_[contact_xy+direction*(distance+overshoot), contact_z]
     retreat = push_end+np.array([0., 0., .10])
     return dict(orientation=orientation,
@@ -125,6 +127,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         contact_mode=contact_mode,
         top_contact_rear_fraction=top_contact_rear_fraction,
         planned_overshoot_m=overshoot,
+        short_visible_correction=bool(allow_short_push and distance < .04),
         lateral_contact_offset_m=lateral_contact_offset_m,
         lateral_contact_axis_xy=lateral_axis,
         rear_extent_source='visible SAM mask/RGB-D 5th percentile' if observed_rear_extent_m is not None else 'RGB-D axis bounds fallback',
@@ -347,6 +350,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # on init2; init3's centred first contact lost the plate early.
             # Use the same support-relative contact rule in both segments.
             contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
+            allow_short_push=bool(visible_goal_plate and segment >= 2),
             top_contact_rear_fraction=(.7 if visible_goal_plate and segment == 2
                                        else .5 if visible_goal_plate else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
