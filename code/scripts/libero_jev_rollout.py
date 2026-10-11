@@ -227,7 +227,7 @@ def main():
                    help='Visible RGB-D contact pushing with model-owned gripper and phase edges')
     p.add_argument('--goal-plate-push', action='store_true',
                    help='Task 1296 visible plate/stove/table geometry with runtime Jev push decisions')
-    p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9], default=0,
+    p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0,
                    help='Optional visible first-push turn bound relative to the supported lateral corridor')
     p.add_argument('--input-organization', choices=['contract','evidence','local','focused'], default='contract')
     p.add_argument('--grasp-algorithm', choices=['legacy_clearance','pad_fit'], default='pad_fit')

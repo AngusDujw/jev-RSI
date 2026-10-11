@@ -292,43 +292,47 @@ def visible_lateral_stage(view, plate, front_goal, max_turn_deg=0):
                             elevated_corridor_pixels=row['elevated_corridor_pixels'],
                             turn_from_lateral_deg=turn,
                             source='visible table corridor with bounded turn from supported lateral push')
-        # A fixed image column can leave a large world-X residual after a
-        # long first push.  Search neighbouring *visible tabletop* patches
-        # within the same public turn and obstacle bound, and favour the
-        # waypoint that leaves the shortest visible second segment.
+        # A fixed image row can leave a large world-X residual after a long
+        # first push. Search nearby *visible tabletop* rows/columns within
+        # the public turn and obstacle bound, and favour a waypoint that
+        # leaves a shorter visible second segment.
         final_xy = np.asarray(front_goal['goal_world_m'][:2], float)
         candidates = [selected]
-        for du in (-64, -48, -32, -16, 16, 32, 48, 64):
-            candidate_u = u+du
-            if not 10 <= candidate_u < 758:
+        for candidate_v in range(int(front_goal['goal_uv'][1]), v+1, 5):
+            if not 10 <= candidate_v < 758:
                 continue
-            candidate_patch = cloud[v-4:v+5, candidate_u-4:candidate_u+5]
-            if candidate_patch.shape[:2] != (9, 9) or not np.isfinite(candidate_patch).all():
-                continue
-            waypoint = np.median(candidate_patch.reshape(-1, 3), axis=0)
-            if abs(waypoint[2]-plate['low'][2]) > .025:
-                continue
-            vector = waypoint[:2]-source[:2]
-            length = float(np.linalg.norm(vector))
-            if not .06 < length < .40:
-                continue
-            unit = vector/length
-            turn = float(np.degrees(np.arccos(np.clip(np.dot(unit, direction), -1., 1.))))
-            if turn > max_turn_deg:
-                continue
-            along = (points-source[:2]) @ unit
-            lateral = np.abs((points-source[:2])[:, 0]*unit[1] -
-                             (points-source[:2])[:, 1]*unit[0])
-            blockers = int(((along > .015) & (along < length+.02) &
-                            (lateral < radius)).sum())
-            if blockers >= 80:
-                continue
-            candidates.append(dict(goal_uv=[candidate_u, v],
-                                   goal_world_m=waypoint.tolist(),
-                                   travel_m=length,
-                                   elevated_corridor_pixels=blockers,
-                                   turn_from_lateral_deg=turn,
-                                   source='visible tabletop with bounded turn toward final goal'))
+            for du in (-32, -16, 0, 16, 32):
+                candidate_u = u+du
+                if not 10 <= candidate_u < 758:
+                    continue
+                candidate_patch = cloud[candidate_v-4:candidate_v+5,
+                                        candidate_u-4:candidate_u+5]
+                if candidate_patch.shape[:2] != (9, 9) or not np.isfinite(candidate_patch).all():
+                    continue
+                waypoint = np.median(candidate_patch.reshape(-1, 3), axis=0)
+                if abs(waypoint[2]-plate['low'][2]) > .025:
+                    continue
+                vector = waypoint[:2]-source[:2]
+                length = float(np.linalg.norm(vector))
+                if not .06 < length < .40:
+                    continue
+                unit = vector/length
+                turn = float(np.degrees(np.arccos(np.clip(np.dot(unit, direction), -1., 1.))))
+                if turn > max_turn_deg:
+                    continue
+                along = (points-source[:2]) @ unit
+                lateral = np.abs((points-source[:2])[:, 0]*unit[1] -
+                                 (points-source[:2])[:, 1]*unit[0])
+                blockers = int(((along > .015) & (along < length+.02) &
+                                (lateral < radius)).sum())
+                if blockers >= 80:
+                    continue
+                candidates.append(dict(goal_uv=[candidate_u, candidate_v],
+                                       goal_world_m=waypoint.tolist(),
+                                       travel_m=length,
+                                       elevated_corridor_pixels=blockers,
+                                       turn_from_lateral_deg=turn,
+                                       source='visible tabletop with bounded turn toward final goal'))
         best = min(candidates, key=lambda row: (
             np.linalg.norm(np.asarray(row['goal_world_m'][:2])-final_xy),
             row['elevated_corridor_pixels'], row['turn_from_lateral_deg']))

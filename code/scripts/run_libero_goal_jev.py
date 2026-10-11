@@ -97,7 +97,7 @@ def main():
     p.add_argument('--side-pad-overlap-mm', type=int, choices=[0,12], default=0)
     p.add_argument('--drawer-contact-mode', choices=['top_hook', 'under_hook'],
                    default='top_hook')
-    p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9], default=0)
+    p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0)
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     p.add_argument('--preflight-only', action='store_true',
