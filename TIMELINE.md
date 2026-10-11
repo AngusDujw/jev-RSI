@@ -104,6 +104,10 @@ graph LR
     T_2026W41_041["⛔ server02-robodojo-startup<br/>server02 项目已部署且 Pro 桥…"]:::blocker
     T_2026W41_042["🔀 jev-control-formulation<br/>用户将主线纠偏为GPT-6等模型可重复规划…"]:::pivot
   end
+  subgraph wk_2026_W42["2026-W42"]
+    direction TB
+    T_2026W42_001["📊 robodojo-decision-stages<br/>三相机 Decisions 30 次均停在…"]:::experiment
+  end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
   T_2026W39_003 --> T_2026W39_004
@@ -266,6 +270,7 @@ graph LR
 | `T-2026W41-040` | 2026-10-09 | blocker | libero-goal-ten | 服务器NVRM Xid109使GPU预检超时，十任务冻结物理验证等待设备恢复 | `EXP-2026W41-170` | - |
 | `T-2026W41-041` | 2026-10-10 | blocker | server02-robodojo-startup | server02 项目已部署且 Pro 桥接预检通过；IsaacLab/Kit 扩展依赖连续三次启动失败，暂停仿真 | `EXP-2026W41-174` | - |
 | `T-2026W41-042` | 2026-10-11 | pivot | jev-control-formulation | 用户将主线纠偏为GPT-6等模型可重复规划、Jev/OpenAI decision model等模型推进；优先RoboDojo与LIBERO-Plus整套多任务benchmark成绩 | `DISC-2026W39-001` | - |
+| `T-2026W42-001` | 2026-10-12 | experiment | robodojo-decision-stages | 三相机 Decisions 30 次均停在观察阶段；分离视觉验收与单臂动作 | `EXP-2026W42-002` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

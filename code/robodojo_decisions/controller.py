@@ -81,10 +81,10 @@ def public_evidence(obs: dict, plan: dict, stage: str, history: list[dict]) -> s
     return json.dumps(clean, ensure_ascii=False, separators=(",", ":"))
 
 
-def decode_answers(response: dict, plan: dict) -> dict:
+def decode_response(response: dict, asked: list[dict]) -> dict:
     if response.get("model") != MODEL:
         raise ValueError(f"Unexpected decision model: {response.get('model')}")
-    expected = {q["name"]: q for q in questions(plan)}
+    expected = {q["name"]: q for q in asked}
     answers = response.get("answers")
     if not isinstance(answers, list):
         raise ValueError("Missing decision answers")
@@ -109,6 +109,10 @@ def decode_answers(response: dict, plan: dict) -> dict:
     if set(found) != set(expected):
         raise ValueError(f"Missing decision answers: {sorted(set(expected) - set(found))}")
     return found
+
+
+def decode_answers(response: dict, plan: dict) -> dict:
+    return decode_response(response, questions(plan))
 
 
 def to_action(obs: dict, answers: dict) -> dict:
@@ -145,10 +149,14 @@ class DecisionClient:
         self.output = Path(output)
         self.timeout = timeout
 
-    def decide(self, obs: dict, plan: dict, stage: str, history: list[dict]) -> tuple[dict, dict]:
-        content = [{"type": "input_text", "text": public_evidence(obs, plan, stage, history)}]
+    def query(self, obs: dict, asked: list[dict], evidence: str, record_name: str,
+              reference_image: Path | None = None) -> dict:
+        content = [{"type": "input_text", "text": evidence}]
         image_info = []
-        for image in obs["images"]:
+        images = list(obs["images"])
+        if reference_image is not None:
+            images.append({"camera": "initial_high_camera_reference", "path": str(reference_image)})
+        for image in images:
             path = Path(image["path"])
             raw = path.read_bytes()
             digest = hashlib.sha256(raw).hexdigest()
@@ -158,12 +166,11 @@ class DecisionClient:
             image_info.append({"camera": image["camera"], "path": str(path), "sha256": digest,
                                "bytes": len(raw)})
         payload = {"model": MODEL, "input": [{"role": "user", "content": content}],
-                   "questions": questions(plan)}
+                   "questions": asked}
         key = self.key_file.read_text().strip()
         if not key.startswith("sk-"):
             raise ValueError("Key file does not contain an OpenAI API key")
-        decision = len(history)
-        meta = {"decision": decision, "step_id": obs["step_id"], "model": MODEL,
+        meta = {"record_name": record_name, "step_id": obs["step_id"], "model": MODEL,
                 "input_text": content[0]["text"], "images": image_info,
                 "question_names": [q["name"] for q in payload["questions"]]}
         self.output.mkdir(parents=True, exist_ok=True)
@@ -176,15 +183,24 @@ class DecisionClient:
                 response = json.load(handle)
         except urllib.error.HTTPError as error:
             body = error.read().decode("utf-8", errors="replace")[:2000]
-            (self.output / f"decision_{decision:04d}.json").write_text(json.dumps(
+            (self.output / f"{record_name}.json").write_text(json.dumps(
                 {**meta, "latency_s": time.monotonic() - started, "http_status": error.code,
                  "error_body": body}, ensure_ascii=False, indent=2))
             raise
-        answers = decode_answers(response, plan)
-        action = to_action(obs, answers)
+        answers = decode_response(response, asked)
         record = {**meta, "latency_s": time.monotonic() - started,
                   "response_id": response.get("id"), "response_model": response.get("model"),
                   "usage": response.get("usage"), "raw_answers": response.get("answers"),
-                  "decoded_answers": answers, "action": action}
-        (self.output / f"decision_{decision:04d}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2))
+                  "decoded_answers": answers}
+        (self.output / f"{record_name}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2))
+        return answers
+
+    def decide(self, obs: dict, plan: dict, stage: str, history: list[dict]) -> tuple[dict, dict]:
+        record_name = f"decision_{len(history):04d}"
+        answers = self.query(obs, questions(plan), public_evidence(obs, plan, stage, history), record_name)
+        action = to_action(obs, answers)
+        path = self.output / f"{record_name}.json"
+        record = json.loads(path.read_text())
+        record["action"] = action
+        path.write_text(json.dumps(record, ensure_ascii=False, indent=2))
         return action, answers

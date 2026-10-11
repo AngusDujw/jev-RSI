@@ -77,7 +77,8 @@ def wait_ready(proc: subprocess.Popen, logfile: Path, seconds: int = 1200) -> No
 
 
 def run_control(task: str, layout: int, output: Path, key_file: Path | None,
-                plan: dict, max_decisions: int, deadline: float, preflight: bool) -> dict:
+                plan: dict, max_decisions: int, deadline: float, preflight: bool,
+                controller_version: str) -> dict:
     from controller import DecisionClient
     import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
     from hybrid_rollout.robodojo.robodojo_server.client import RPCClient
@@ -102,29 +103,63 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         if key_file is None:
             raise ValueError("--key-file is required for control")
         model = DecisionClient(key_file, output / "decisions")
+        if controller_version == "v2":
+            from stage_controller import NO_MOTION, StageController
+            stage_control = StageController(model, obs, plan)
+        else:
+            stage_control = None
         while not obs["rollout_finished"]:
             if time.monotonic() > deadline:
                 tools.finish("wall_budget_incomplete")
                 result["status"] = "wall_budget_incomplete"
                 break
-            action, answers = model.decide(obs, plan, stage, history)
+            if stage_control is None:
+                action, answers = model.decide(obs, plan, stage, history)
+            else:
+                # Zero-motion gates may advance several semantic stages using the same fresh view.
+                for _ in range(4):
+                    event = stage_control.inspect(obs, history)
+                    if stage_control.stage not in NO_MOTION:
+                        break
+                    if event["stage_after"] == event["stage_before"]:
+                        tools.finish("visual_gate_stalled_incomplete")
+                        result["status"] = "visual_gate_stalled_incomplete"
+                        result["gate_event"] = event
+                        return result
+                if stage_control.stage in NO_MOTION:
+                    tools.finish("visual_gate_loop_incomplete")
+                    result["status"] = "visual_gate_loop_incomplete"
+                    return result
+                action, answers = stage_control.action(obs, history)
             native.validate_action(action, tools.request)
             call = tools.next_call()
             call.pop("tool")
             call["response"] = action
             next_obs = tools.act(**call)
-            history.append({"stage": answers["stage"], "step_before": obs["step_id"],
+            chosen_stage = answers["stage"] if stage_control is None else stage_control.stage
+            history.append({"stage": chosen_stage, "step_before": obs["step_id"],
                             "step_after": next_obs["step_id"],
                             "model_choices": {k: v for k, v in answers.items() if not k.endswith("_held")},
                             "visible_predicates": {k: v for k, v in answers.items()
                                                    if k.endswith("_held") or k == "visible_goal_done"},
                             "target": action["target"],
                             "measured_eef_after": next_obs["current_eef"]})
-            stage, obs = answers["stage"], next_obs
+            stage, obs = chosen_stage, next_obs
             result["decisions"] = len(history)
         if obs["rollout_finished"]:
-            result["status"] = "native_or_decision_limit"
             result["native_result"] = obs.get("result")
+            native_result = result["native_result"] or {}
+            if native_result.get("success") and native_result.get("complete"):
+                result["status"] = "native_success"
+            elif native_result.get("reason") == "decision_budget":
+                result["status"] = "decision_budget_incomplete"
+            elif native_result.get("complete"):
+                result["status"] = "native_complete_failure"
+            else:
+                result["status"] = "native_incomplete"
+        if stage_control is not None:
+            result["stage_events"] = len(stage_control.events)
+            result["final_stage"] = stage_control.stage
     except BaseException as error:
         result.update(status="controller_error", error_type=type(error).__name__, error=str(error))
         (output / "controller_error.txt").write_text(traceback.format_exc())
@@ -148,6 +183,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
+    parser.add_argument("--controller", choices=("v1", "v2"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -195,7 +231,8 @@ def main() -> None:
         try:
             wait_ready(process, simlog, min(1200, args.max_wall_seconds))
             result = run_control(args.task, args.layout, output, args.key_file, plan,
-                                 args.max_decisions, deadline, args.preflight_only)
+                                 args.max_decisions, deadline, args.preflight_only,
+                                 args.controller)
             print(json.dumps(result, ensure_ascii=False), flush=True)
         finally:
             if process.poll() is None:
