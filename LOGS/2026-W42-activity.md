@@ -12,3 +12,5 @@
 - 【Agent】【2026-10-12 00:51】[result] 5880单GPU MuJoCo2.3.7 EGL探针与运行器预检通过，64x64 RGB；0 Jev、0任务预留，视觉worker独立ready。首次失败是探针close兼容性错误，已修复并保留在EXP。  ↪ `EXP-2026W42-001`
 - 【User】【2026-10-12 01:24】[intent] 继续 5880 服务器部署、LIBERO-Plus 和 RoboDojo 环境配置，并推进十个任务的真实稳定性验证；本轮补充 AGENTS.md 约束。
 - 【Agent】【2026-10-12 01:33】[op] 记录5880无计账Goal1383捕获的h5py与缺失官方资产两处启动故障、修复专用环境h5py；旧company-server-2的EGL仍超时且0任务预留；W42 EXP002-003严格lint通过。
+- 【Agent】【2026-10-12 02:30】[op] 5880完成LIBERO官方资产完整性检查与Goal1383 init7双终局成功审计；Goal1098 init4 API连接故障及under_hook实体停滞、Goal1296 init2二段目标偏差和补推越过原生horizon已保留原始负结果；代码分支58ad5f1修正horizon后推送，启动Goal1423 init3侧抓指垫验证。
+- 【Agent】【2026-10-12 02:41】[result] 5880 Goal1423 init3 attempt16因旧模型缓存路径退出（Jev0/步0）；显式指向5880缓存后attempt17为48 Jev/141步，在下降阶段Z差138.94mm且Jev主动stop，原生失败；RoboDojo Assets全量聚合SHA与旧服务器一致，锁定IsaacLab子模块在专用环境安装完成；W42 EXP004-011记录并通过严格lint。
