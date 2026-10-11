@@ -132,8 +132,8 @@ def main():
                                    a.approach_mode != 'angled' or
                                    a.entry_side != 'receiver_side'):
         p.error('Side pad overlap currently requires angled receiver-side Goal 1423')
-    if a.drawer_contact_mode != 'top_hook' and a.task_id != 1098:
-        p.error('Alternative drawer entry is currently evaluated only for Goal 1098')
+    if a.drawer_contact_mode != 'top_hook' and a.task_id not in (1098, 1202):
+        p.error('Alternative drawer entry requires a supported drawer task')
     if a.plate_stage_turn_deg and a.task_id != 1296:
         p.error('Alternative plate stage is currently evaluated only for Goal 1296')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
