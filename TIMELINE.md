@@ -107,6 +107,7 @@ graph LR
   subgraph wk_2026_W42["2026-W42"]
     direction TB
     T_2026W42_001["⛔ robodojo-gpt-decision<br/>三次启动崩溃；GPU1容器内渲染器编号已修…"]:::blocker
+    T_2026W42_002["📊 robodojo-gpt-decision<br/>stack_blocks非特权闭环158步…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -176,6 +177,7 @@ graph LR
   T_2026W41_038 --> T_2026W41_039
   T_2026W41_039 --> T_2026W41_040
   T_2026W41_033 --> T_2026W41_042
+  T_2026W42_001 --> T_2026W42_002
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -271,6 +273,7 @@ graph LR
 | `T-2026W41-041` | 2026-10-10 | blocker | server02-robodojo-startup | server02 项目已部署且 Pro 桥接预检通过；IsaacLab/Kit 扩展依赖连续三次启动失败，暂停仿真 | `EXP-2026W41-174` | - |
 | `T-2026W41-042` | 2026-10-11 | pivot | jev-control-formulation | 用户将主线纠偏为GPT-6等模型可重复规划、Jev/OpenAI decision model等模型推进；优先RoboDojo与LIBERO-Plus整套多任务benchmark成绩 | `DISC-2026W39-001` | - |
 | `T-2026W42-001` | 2026-10-12 | blocker | robodojo-gpt-decision | 三次启动崩溃；GPU1容器内渲染器编号已修正，等待用户确认继续 | `EXP-2026W42-003` | - |
+| `T-2026W42-002` | 2026-10-12 | experiment | robodojo-gpt-decision | stack_blocks非特权闭环158步，10次规划耗尽且未抓取 | `EXP-2026W42-004` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

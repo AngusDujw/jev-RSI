@@ -11,3 +11,5 @@
 - 【Agent】【2026-10-12 00:17】[op] 补齐官方54个layout0任务清单；修正GPU1容器渲染编号，记录第三次启动失败和协议blocker；暂停新回合等待用户确认
 - 【Agent】【2026-10-12 00:21】[run] GPU0 stack_blocks layout0 attempt0002 已启动并进入非特权RGB闭环；GPT-6.1-sol/high 视觉方法与规划成功返回，GPT-6-luna 已作多模态离散判断，仍待原生结果
 - 【Agent】【2026-10-12 00:23】[op] 把 stack_blocks layout0 的观察阶段入口死锁写入经验文件；规定先移动获取视角，再以双目证据判断完成
+- 【Agent】【2026-10-12 00:28】[op] 同步15个已完成的 Pro 规划器桥接任务日志到 /data 的专用 bridge 目录；本地临时缓存待回合结束清理
+- 【Agent】【2026-10-12 00:48】[result] stack_blocks attempt0002 真实非特权闭环结束：158步、10次规划、89次推进判断、79次有界动作，0抓取，recovery_budget_exhausted；原生评估无效，按 EXP-2026W42-004 记录

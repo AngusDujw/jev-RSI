@@ -356,3 +356,5 @@
 【Lead @User】【2026-10-11 22:37】确认 Milestone M1：此前对方向的理解有误；主线转向 GPT-6 等大模型可重复规划、Jev/OpenAI decision model 等决策模型持续推进的高层规划器—低层推进器框架，目标是泛化多任务操作，先覆盖 RoboDojo 与 LIBERO-Plus 整套 benchmark 并尽可能提高成绩。
 
 【Agent @Codex】【2026-10-12 00:17】RoboDojo 首批任务启动检查：[EXP-2026W42-001](LOGS/2026-W42.md#exp-2026w42-001)、[002](LOGS/2026-W42.md#exp-2026w42-002)、[003](LOGS/2026-W42.md#exp-2026w42-003) 共 3 次启动崩溃、均为 0 控制步；前两次归档路径错误已修正，第三次 GPU1 容器内渲染编号错误已修正。GPU0 的 stack_blocks 已进入原生仿真，原生成功尚未产生；按协议停止启动新回合并询问用户。
+
+【Agent @Codex】【2026-10-12 00:48】首个非特权 RoboDojo 闭环结果：[EXP-2026W42-004](LOGS/2026-W42.md#exp-2026w42-004)，stack_blocks layout0 在 158/550 原生步、10 次完整规划、89 次 GPT-6-luna 决策后以 recovery_budget_exhausted 结束；79 次有界动作全部用于寻找视角，抓取 0 次，原生评估 incomplete / valid_for_success_rate=false，不能计入有效成功率。主因是要求多块同时双目可测以及主动感知阶段被视觉不确定性规则否决。下轮优先逐对源块/承接块验证并允许安全相机搜索；按 §10 等待用户对三次启动崩溃后的继续确认。
