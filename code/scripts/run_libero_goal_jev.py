@@ -13,7 +13,9 @@ import shutil
 import subprocess
 import time
 
-SIM_PYTHON = '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python'
+SIM_PYTHON = os.environ.get(
+    'JEV_RSI_SIM_PYTHON',
+    '/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python')
 RECOVERY_TASKS = {1163, 1335, 1458}
 SUPERVISOR_TASKS = {1144, 1252, 1423}
 KNOB_TASKS = {1383}
@@ -23,6 +25,7 @@ POLICY_FILES = (
     'run_libero_goal_jev.py',
     'libero_jev_rollout.py', 'libero_generic_vision.py',
     'libero_goal_local_vision.py', 'libero_grounding_worker.py',
+    'local_rgbd_perception.py',
     'libero_jev_recovery.py', 'libero_jev_supervisor.py',
     'libero_robot_geometry.py',
     'libero_goal_rack_geometry.py',
@@ -83,6 +86,8 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--egl-device-id', type=int, choices=range(8), default=5)
     p.add_argument('--worker-device-id', type=int, choices=range(8), default=6)
+    p.add_argument('--allow-shared-gpu', action='store_true',
+                   help='Allow EGL and the vision worker on one GPU; report this resource choice')
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
     p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
@@ -101,8 +106,8 @@ def main():
         p.error('Choose either --dry-run or --preflight-only')
     if a.task_id not in RECOVERY_TASKS | SUPERVISOR_TASKS | KNOB_TASKS | DRAWER_TASKS | PUSH_TASKS or not 0 <= a.init_index < 50:
         p.error('Unsupported Goal task or official init index')
-    if a.egl_device_id == a.worker_device_id:
-        p.error('Simulator and local grounding worker need distinct visible devices')
+    if a.egl_device_id == a.worker_device_id and not a.allow_shared_gpu:
+        p.error('Use --allow-shared-gpu to select the same GPU for EGL and vision')
     repo = Path(__file__).resolve().parents[2]
     source = Path(__file__).resolve().parent
     out = a.output.resolve()
@@ -140,12 +145,13 @@ def main():
     if shutil.disk_usage(repo).free < 6*1024**3:
         raise RuntimeError('Need >=6GiB project-disk space before episode')
     try:
+        visible_devices = sorted({a.egl_device_id, a.worker_device_id})
         gpu_check = subprocess.run(
-            ['nvidia-smi', '-i', f'{a.egl_device_id},{a.worker_device_id}',
+            ['nvidia-smi', '-i', ','.join(map(str, visible_devices)),
              '--query-gpu=index', '--format=csv,noheader,nounits'],
             capture_output=True, text=True, check=True, timeout=8)
         healthy = {int(line.strip()) for line in gpu_check.stdout.splitlines()}
-        if healthy != {a.egl_device_id, a.worker_device_id}:
+        if healthy != set(visible_devices):
             raise RuntimeError(f'Selected GPUs not both available: {sorted(healthy)}')
     except (subprocess.SubprocessError, OSError) as exc:
         raise RuntimeError('Selected GPU health preflight failed before attempt reservation') from exc
@@ -162,7 +168,7 @@ def main():
     )
     probe_env = dict(os.environ, MUJOCO_GL='egl',
                      MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
-                     CUDA_VISIBLE_DEVICES=f'{a.egl_device_id},{a.worker_device_id}')
+                     CUDA_VISIBLE_DEVICES=','.join(map(str, visible_devices)))
     try:
         subprocess.run([SIM_PYTHON, '-B', '-c', egl_probe], env=probe_env,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -213,7 +219,8 @@ def main():
                     outcome='evaluate only after final robot action')
     (out/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
     env = dict(os.environ, MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
-               CUDA_VISIBLE_DEVICES=f'{a.egl_device_id},{a.worker_device_id}',
+               CUDA_VISIBLE_DEVICES=','.join(map(str, visible_devices)),
+               JEV_RSI_VISION_DEVICE=str(visible_devices.index(a.worker_device_id)),
                JEV_RSI_MODEL_BACKEND='jev')
     env.pop('JEV_RSI_JEV_PROXY', None)
     env.pop('JEV_RSI_VISION_PROXY', None)

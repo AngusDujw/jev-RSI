@@ -5,6 +5,7 @@ output into the JSON-compatible visible-facts schema expected by the generated
 controller; depth and calibration remain handled by VisualEvidence.
 """
 import json
+import os
 from pathlib import Path
 import numpy as np
 
@@ -22,6 +23,7 @@ def build_detector(cfg, device):
     from realman_jev.robodojo_rgb import RGBEvidence
     source = json.loads((root / 'controller/config/company-stack-study.json').read_text())
     vcfg = dict(source['vision'])
+    vcfg['cache_dir'] = os.environ.get('JEV_RSI_MODEL_CACHE', vcfg['cache_dir'])
     vcfg.update(device=f'cuda:{device}', include_instruction=True,
                 calibrated_robot_projection=False, max_instances=18)
     cache = Path(vcfg['cache_dir'])

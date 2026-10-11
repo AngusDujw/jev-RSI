@@ -13,7 +13,8 @@ import cv2
 import numpy as np
 from run_position_pilot import Recorder, Jev, dump
 
-ROOT = '/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'
+ROOT = os.environ.get('JEV_RSI_LIBERO_ROOT',
+    '/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus')
 
 def perceive(rgb, depth, K, T, held_tcp=None):
     """Task-specific colour/shape frontend, no simulator object data.
@@ -293,8 +294,11 @@ def main():
                                   a.entry_side != 'receiver_side'):
         p.error('--side-pad-overlap-mm currently requires angled receiver-side Goal 1423 supervisor')
     out = Path(a.output).resolve()
-    cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
-               api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
+    existing_root = os.environ.get('JEV_RSI_EXISTING_ROOT',
+        '/root/yekangjie/project/robodojo-jev')
+    cfg = dict(existing_root=existing_root,
+               api_config=os.environ.get('JEV_RSI_API_CONFIG',
+                   existing_root+'/controller/config/api.company.local.json'),
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
                permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)

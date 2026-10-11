@@ -1,12 +1,15 @@
 """Isolated text-conditioned RGB segmentation server; no simulation access."""
-import contextlib,json,sys,time
+import contextlib,json,os,sys,time
 from pathlib import Path
 import numpy as np
 from PIL import Image
 from local_rgbd_perception import build_detector
 
 with contextlib.redirect_stdout(sys.stderr):
-    detector,_=build_detector(dict(existing_root='/root/yekangjie/project/robodojo-jev'),1)
+    detector,_=build_detector(
+        dict(existing_root=os.environ.get('JEV_RSI_EXISTING_ROOT',
+             '/root/yekangjie/project/robodojo-jev')),
+        int(os.environ.get('JEV_RSI_VISION_DEVICE','1')))
 print(json.dumps(dict(ready=True)),flush=True)
 for line in sys.stdin:
     try:
