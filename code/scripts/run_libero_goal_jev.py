@@ -136,10 +136,15 @@ def main():
     if shutil.disk_usage(repo).free < 6*1024**3:
         raise RuntimeError('Need >=6GiB project-disk space before episode')
     try:
-        subprocess.run(['nvidia-smi', '-L'], stdout=subprocess.DEVNULL,
-                       stderr=subprocess.DEVNULL, check=True, timeout=8)
+        gpu_check = subprocess.run(
+            ['nvidia-smi', '-i', f'{a.egl_device_id},{a.worker_device_id}',
+             '--query-gpu=index', '--format=csv,noheader,nounits'],
+            capture_output=True, text=True, check=True, timeout=8)
+        healthy = {int(line.strip()) for line in gpu_check.stdout.splitlines()}
+        if healthy != {a.egl_device_id, a.worker_device_id}:
+            raise RuntimeError(f'Selected GPUs not both available: {sorted(healthy)}')
     except (subprocess.SubprocessError, OSError) as exc:
-        raise RuntimeError('GPU health preflight failed before attempt reservation') from exc
+        raise RuntimeError('Selected GPU health preflight failed before attempt reservation') from exc
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo,
                                      text=True).strip()
     hashes = {name: hashlib.sha256((source/name).read_bytes()).hexdigest()
