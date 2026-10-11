@@ -136,3 +136,40 @@ def select_public_handle(handles, requested_level):
     if requested_level not in order:
         raise ValueError("Unknown public drawer level")
     return handles[order[requested_level]]
+
+
+def visible_drawer_extension(rgb, depth, intrinsic, extrinsic, handle, baseline_pixels=0):
+    """Measure a protruding dark drawer surface from camera pixels and depth.
+
+    The image window follows the selected visible handle. A dark patch only
+    counts when its reconstructed height matches that handle and it lies
+    outward of the handle's initial measured Y. No drawer body state is read.
+    """
+    image = np.asarray(rgb)
+    distance = np.asarray(depth, float)
+    k = np.asarray(intrinsic, float)
+    t = np.asarray(extrinsic, float)
+    if (image.shape != (768, 768, 3) or distance.shape != (768, 768)
+            or k.shape != (3, 3) or t.shape != (4, 4)):
+        raise ValueError('Drawer extension requires calibrated agentview RGB-D')
+    u, v = (int(round(value)) for value in handle['center_uv'])
+    x0, x1, y0, y1 = u+25, u+155, v-110, v-55
+    if not (0 <= x0 < x1 <= 768 and 0 <= y0 < y1 <= 768):
+        raise RuntimeError('Visible drawer-extension window outside agentview')
+    vv, uu = np.mgrid[y0:y1, x0:x1]
+    z = distance[vv, uu]
+    camera = np.stack(((uu-k[0, 2])*z/k[0, 0],
+                       (vv-k[1, 2])*z/k[1, 1], z), axis=-1)
+    world = camera @ t[:3, :3].T + t[:3, 3]
+    h = np.asarray(handle['center_world_m'], float)
+    candidate = ((image[vv, uu].max(axis=2) < 70) & np.isfinite(z)
+                 & (np.abs(world[:, :, 2]-h[2]) < .04)
+                 & (world[:, :, 1] > h[1]+.04)
+                 & (world[:, :, 1] < h[1]+.30))
+    count = int(candidate.sum())
+    gain = count-int(baseline_pixels)
+    return dict(candidate_pixels=count, initial_candidate_pixels=int(baseline_pixels),
+                new_candidate_pixels=gain,
+                passed=bool(count >= 1200 and gain >= 1000),
+                window_xyxy=[x0, y0, x1, y1],
+                source='agentview dark surface at selected visible handle height, calibrated outward depth')

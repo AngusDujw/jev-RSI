@@ -15,7 +15,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 from libero_goal_drawer_vision import (visible_cabinet_front,
-    visible_drawer_handles, select_public_handle)
+    visible_drawer_handles, select_public_handle, visible_drawer_extension)
 from libero_robot_geometry import gripper_geometry
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
@@ -108,6 +108,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     failure = None
     initial_handle = None
     image_template = None
+    initial_extension_pixels = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook')
@@ -201,6 +202,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image_template = gray[y:y+height, x:x+width].copy()
         initial_handle = dict(handle, template_origin=[x, y])
+        initial_rgb, initial_depth, initial_k, initial_t = frame()
+        initial_extension_pixels = visible_drawer_extension(
+            initial_rgb, initial_depth, initial_k, initial_t, handle)['candidate_pixels']
         dump(rec.folder/'selected-handle.json', dict(
             initial_handle, public_requested_level=requested_level))
         while phase < len(sequence):
@@ -262,6 +266,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             oriented = bool(np.max(np.abs(rotation_error)) < .06)
             aperture = float(np.sum(np.abs(obs['robot0_gripper_qpos']))*1000)
             shift = handle_shift() if name in ('pull', 'verify') else None
+            extension = (visible_drawer_extension(*frame(), handle,
+                baseline_pixels=initial_extension_pixels)
+                if name in ('pull', 'verify') else None)
             arrived = bool(np.max(np.abs(target-position)) < .007)
             gate = {
                 'observe': True,
@@ -272,9 +279,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                            and (finger_behind if contact_mode in ('top_hook', 'under_hook') else True),
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
                           if hook_mode else grip_ticks >= 18 and gripper == 1),
-                'pull': arrived and shift is not None and shift['pixel_displacement'] > 12,
+                'pull': bool(extension and extension['passed']) or (
+                    arrived and shift is not None and shift['pixel_displacement'] > 12),
                 'release': grip_ticks >= 24 and gripper == -1 and aperture >= 65,
-                'verify': shift is not None and shift['pixel_displacement'] > 12,
+                'verify': bool(extension and extension['passed']) or (
+                    shift is not None and shift['pixel_displacement'] > 12),
             }[name]
             evidence = dict(sources=['public_task', 'agentview_rgbd',
                                      'camera_calibration', 'robot_proprioception',
@@ -298,6 +307,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             gripper_command_ticks=grip_ticks,
                             gripper_aperture_mm=aperture,
                             visible_handle_shift=shift,
+                            visible_drawer_extension=extension,
                             **{stage['gate']: bool(gate)})
             request = decision_request(task_id, stage['id'], tcp_xyz_m=position,
                 target_xyz_m=target, rotation_error_world_rad=rotation_error,
@@ -339,7 +349,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 request['state']['stage_contract'] = (
                     'Keep the gripper open; pull the measured finger hook outward '
                     'along the visible cabinet-front normal. Advance only when '
-                    'the handle image actually moves and TCP reaches the target.')
+                    'fresh RGB-D shows a protruding drawer surface at the selected '
+                    'handle height, or the handle visibly moves and TCP arrives.')
+            if name in ('pull', 'verify'):
+                request['questions']['transition']['instructions'] = (
+                    'Advance when the fresh visible drawer-extension gate is true. '
+                    'This is calibrated RGB-D evidence of an outward dark drawer '
+                    'surface at the selected handle height, not native task success. '
+                    'Otherwise use the allowed transitions from current evidence.')
             decision = model.decide(request, stage['id'])
             edge = decision['transition']
             if edge == 'stop':
@@ -406,6 +423,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             dump(rec.folder/'terminal-wrist-calibration.json', dict(
                  K=k_fn(env.sim, wrist, 768, 768), T=t_fn(env.sim, wrist)))
         visible_shift = handle_shift()
+        visible_extension = (visible_drawer_extension(
+            current_image, agent_depth, agent_k, agent_t, handle,
+            baseline_pixels=initial_extension_pixels)
+            if initial_handle is not None else None)
         success = bool(env.check_success())
         dump(rec.folder/'result.json', dict(success=success,
             program_finished=finished and task_id == 1098,
@@ -417,6 +438,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             stage=sequence[phase]['name'] if phase < len(sequence) else (
                 'await_bowl_placement' if task_id == 1202 else 'finished'),
             visible_handle_shift=visible_shift,
+            visible_drawer_extension=visible_extension,
             ownership='Jev XYZ/gripper/phase; fixed public RGB-D handle geometry'))
         rec.finish('success' if success and finished and task_id == 1098
                    else 'failed')
