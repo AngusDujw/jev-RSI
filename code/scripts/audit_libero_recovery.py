@@ -18,8 +18,12 @@ def walk(obj):
 rows=[]
 for rp in sorted(a.root.glob('**/result.json')):
  q=rp.parent
- if not (q/'protocol.json').exists() or not json.loads((q/'protocol.json').read_text()).get('recovery_supervisor'):continue
+ if not (q/'protocol.json').exists():continue
+ protocol=json.loads((q/'protocol.json').read_text())
+ combined=bool(protocol.get('drawer_bowl_continuation'))
+ if not (protocol.get('recovery_supervisor') or combined):continue
  ds=[json.loads(x) for x in (q/'decisions.jsonl').read_text().splitlines()] if (q/'decisions.jsonl').exists() else []
+ if combined:ds=[d for d in ds if not d['stage'].startswith('0:open_drawer:')]
  decisions={d['decision_id']:d for d in ds}
  requests={}
  for d in ds:
@@ -37,6 +41,7 @@ for rp in sorted(a.root.glob('**/result.json')):
     if k in actual:assert signmap[actual[k]['choice']]==d['rotation_signs'][i]
     else:assert d['rotation_signs'][i]==0 and abs(state['required_rotation_world_rad'][k])<.03
  branches=[json.loads(x) for x in (q/'branches.jsonl').read_text().splitlines()] if (q/'branches.jsonl').exists() else []
+ if combined:branches=[b for b in branches if not b['stage'].startswith('0:open_drawer:')]
  prev=-1
  for b in branches:
   d=decisions[b['decision_id']];assert d['gripper']==b['selected_gripper'];assert d['transition']==b['selected_transition']
@@ -44,7 +49,8 @@ for rp in sorted(a.root.glob('**/result.json')):
   assert all(v*s>=-1e-12 for v,s in zip(b['delta'],d['signs']))
   assert b['rotation_signs']==d['rotation_signs']
  events=[json.loads(x) for x in (q/'events.jsonl').read_text().splitlines()]
- edges=[e for e in events if e.get('kind')=='phase_transition']
+ edges=[e for e in events if e.get('kind')=='phase_transition' and
+        (not combined or not e['from_stage'].startswith('0:open_drawer:'))]
  for e in edges:
   d=decisions[e['decision_id']];s=requests[e['decision_id']];assert d['stage']==e['from_stage'];assert d['transition']==e['selected_transition']
   expected=(s['next_operation'] if d['transition']=='advance' else

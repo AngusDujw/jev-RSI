@@ -41,10 +41,15 @@ def inspect_keys(value):
 def audit(episode):
     protocol = json.loads((episode/'protocol.json').read_text())
     assert protocol['task_id'] in (1098, 1202) and protocol['suite'] == 'libero_goal'
-    decisions = rows(episode/'decisions.jsonl')
-    branches = rows(episode/'branches.jsonl')
+    combined = bool(protocol.get('drawer_bowl_continuation'))
+    drawer_stage = lambda stage: stage.startswith('0:open_drawer:')
+    decisions = [d for d in rows(episode/'decisions.jsonl')
+                 if not combined or drawer_stage(d['stage'])]
+    branches = [b for b in rows(episode/'branches.jsonl')
+                if not combined or drawer_stage(b['stage'])]
     events = rows(episode/'events.jsonl')
-    result = json.loads((episode/'result.json').read_text())
+    result = json.loads((episode/('drawer-primitive-result.json' if combined
+                                  else 'result.json')).read_text())
     assert decisions and len({d['decision_id'] for d in decisions}) == len(decisions)
     by_id = {d['decision_id']: d for d in decisions}
     states = {}
@@ -93,7 +98,8 @@ def audit(episode):
         assert all(delta*sign >= -1e-12 for delta, sign in
                    zip(branch['rotation_delta'], decision['rotation_signs']))
 
-    edges = [event for event in events if event.get('kind') == 'phase_transition']
+    edges = [event for event in events if event.get('kind') == 'phase_transition'
+             and (not combined or drawer_stage(event['from_stage']))]
     for edge in edges:
         ident = edge['decision_id']
         assert ident in executed
