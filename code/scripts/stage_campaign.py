@@ -137,13 +137,13 @@ def run_one(cfg, case, campaign):
     import hashlib
     if hashlib.sha256(layout.read_bytes()).hexdigest() != case['layout_sha256']:
         raise ValueError('Frozen layout mismatch')
+    commit=subprocess.check_output(['git','-C',str(code),'rev-parse',cfg.get('controller_commit','HEAD')+'^{commit}'],text=True).strip()
+    archived=subprocess.check_output(['git','-C',str(code.parent),'archive',commit,
+        'code/src/realman_jev','code/config/staged-task-specs.json','code/experience'])
     number = reserve(campaign, case, cfg.get('variant', 'relational-v1'))
     out = campaign/f'{number:04d}-{case["runtime_task"]}-{case["layout_id"]}'
     out.mkdir(exist_ok=False); (out/'sim').mkdir()
-    commit=subprocess.check_output(['git','-C',str(code),'rev-parse',cfg.get('controller_commit','HEAD')+'^{commit}'],text=True).strip()
     snapshot=out/'controller_snapshot';snapshot.mkdir()
-    archived=subprocess.check_output(['git','-C',str(code),'archive',commit,
-        'code/src/realman_jev','code/config/staged-task-specs.json','code/experience'])
     with tarfile.open(fileobj=io.BytesIO(archived)) as archive:
         members=archive.getmembers()
         if any(Path(m.name).is_absolute() or '..' in Path(m.name).parts or not (m.isfile() or m.isdir()) for m in members):
