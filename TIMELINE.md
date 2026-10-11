@@ -3,7 +3,7 @@
 > 本文件回答三个问题：**主线现在走到哪、怎么走到这里的、有没有在绕圈子。**
 > 唯一写入口是 `python3 tools/timeline.py add`（AGENTS.md § 12），图由脚本生成，节点表只增不改。
 
-- **当前主线一句话**：以末端 xyz/ypr 方向接口为对象，形成定性决策驱动末端控制的问题定义与理论框架；Jev 是原始实证对象。RoboDojo 的 Jev 结果按原协议保存。LIBERO 按用户最新决定另用 ChatGPT 登录的 GPT-6 Sol/xhigh 负责视觉、方向、夹爪和阶段，新旧模型的结果分别记录，均不援引静态位置理论保证。
+- **当前主线一句话**：构建高层规划器—低层推进器框架：GPT-6 等大模型可随反馈多次规划，Jev、OpenAI decision model 等决策模型持续推进；先覆盖 RoboDojo 与 LIBERO-Plus 整套多任务 benchmark，并尽可能提高原生评测成绩。静态末端方向与步长理论作为局部方法和诊断保留，现有成绩仍按原实验口径报告。
 
 ---
 
@@ -102,6 +102,7 @@ graph LR
     T_2026W41_039["📊 libero-goal-ten<br/>Goal1423旧侧抓单pad临近而垂直重…"]:::experiment
     T_2026W41_040["⛔ libero-goal-ten<br/>服务器NVRM Xid109使GPU预检超…"]:::blocker
     T_2026W41_041["⛔ server02-robodojo-startup<br/>server02 项目已部署且 Pro 桥…"]:::blocker
+    T_2026W41_042["🔀 jev-control-formulation<br/>用户将主线纠偏为GPT-6等模型可重复规划…"]:::pivot
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -170,10 +171,12 @@ graph LR
   T_2026W41_037 --> T_2026W41_038
   T_2026W41_038 --> T_2026W41_039
   T_2026W41_039 --> T_2026W41_040
+  T_2026W41_033 --> T_2026W41_042
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
   T_2026W40_023 ==> T_2026W41_009
+  T_2026W41_009 ==> T_2026W41_042
 ```
 <!-- TIMELINE:GRAPH:END -->
 
@@ -262,6 +265,7 @@ graph LR
 | `T-2026W41-039` | 2026-10-09 | experiment | libero-goal-ten | Goal1423旧侧抓单pad临近而垂直重叠0，冻结自身pad高度门槛待GPU复测 | `EXP-2026W41-169` | - |
 | `T-2026W41-040` | 2026-10-09 | blocker | libero-goal-ten | 服务器NVRM Xid109使GPU预检超时，十任务冻结物理验证等待设备恢复 | `EXP-2026W41-170` | - |
 | `T-2026W41-041` | 2026-10-10 | blocker | server02-robodojo-startup | server02 项目已部署且 Pro 桥接预检通过；IsaacLab/Kit 扩展依赖连续三次启动失败，暂停仿真 | `EXP-2026W41-174` | - |
+| `T-2026W41-042` | 2026-10-11 | pivot | jev-control-formulation | 用户将主线纠偏为GPT-6等模型可重复规划、Jev/OpenAI decision model等模型推进；优先RoboDojo与LIBERO-Plus整套多任务benchmark成绩 | `DISC-2026W39-001` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
