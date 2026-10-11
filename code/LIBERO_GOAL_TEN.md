@@ -1,10 +1,10 @@
 # LIBERO-Plus Goal 十任务实跑状态
 
-截至 2026-10-09。目标是每个官方任务都由离线确定的视觉处理、几何候选和阶段合同生成 Jev 输入；运行时 Jev 1.13 选择 XYZ/旋转方向、夹爪、候选、阶段和重试。运行时 GPT-6/DeepSeek 调用为 0。本地 GroundingDINO/SAM 只处理公开 RGB-D；策略可用相机标定、任务语言、机器人自身反馈与 mesh、历史真实动作，不能读取场景对象真位姿、奖励或官方成功谓词。`success=true` 与 `program_finished=true` **同时成立**才计完整成功。
+截至 2026-10-11。目标是每个官方任务都由离线确定的视觉处理、几何候选和阶段合同生成 Jev 输入；运行时 Jev 1.13 选择 XYZ/旋转方向、夹爪、候选、阶段和重试。运行时 GPT-6/DeepSeek 调用为 0。本地 GroundingDINO/SAM 只处理公开 RGB-D；策略可用相机标定、任务语言、机器人自身反馈与 mesh、历史真实动作，不能读取场景对象真位姿、奖励或官方成功谓词。`success=true` 与 `program_finished=true` **同时成立**才计完整成功。
 
 | Goal ID | 任务 | 共享尝试 | 当前可核实结论 |
 | ---: | --- | ---: | --- |
-| 1098 | 开中层抽屉 | 15/50 | 仍无完整成功；俯视单指从上入把手受阻。新增2次 Mesa 软件渲染启动失败，0 Jev/0控制动作，不能当算法失败；需侧/下方入杆。 |
+| 1098 | 开中层抽屉 | 16/50 | 仍无完整成功；俯视单指从上入把手受阻。第16次 `under_hook` 因 EGL 初始化卡住，0 Jev/0控制动作；此候选仍未被实测。 |
 | 1144 | 碗放炉面 | 7/50 | 已有完整成功；混合版本开发结果，尚无本配置的冻结稳定率。 |
 | 1163 | 酒瓶放柜顶 | 16/50 | init3 一次完整成功；init4 冻结复测与延长闭爪均滑脱失败，未稳定。 |
 | 1202 | 开上抽屉再放碗 | 2/50 | 已接通Jev控制的上抽屉第一原语入口，但只通过已存RGB-D离线几何及命令核对；尚无控制回合，放碗逻辑待打开后重看内部。 |
@@ -21,7 +21,12 @@
 
 Goal1458 的现行方法见 [可见斜架拟合](scripts/libero_goal_rack_geometry.py)、[Jev 阶段与可见释放证据](scripts/libero_jev_recovery.py)、[单回合计数入口](scripts/run_libero_goal_jev.py)。从已分割的酒架 RGB-D 中拟合承托斜率，瓶身被抓住后 Jev 在高处旋转；下降阻塞时用新鲜瓶体点云相对承托面的法向间隙估计落差。只有瓶仍被可见共运动检查通过、落差在 60 mm 内且投影位于可见架面时，才提供一次低处释放的阶段选项。释放后撤离、等待、重新测可见关系，由 Jev 决定是否结束；官方成功只在回合结束读取。init2 的低处落差 36.02 mm、释放后可见近架像素比例 0.9794，真实答案/执行/阶段边审计 0 违规，原始数据本机与服务器 SHA256 一致，见 [EXP160](../LOGS/2026-W41.md#exp-2026w41-160)。此前高处开爪、静等、横向撤离的负结果保留在 EXP154～159。
 
-服务器为 `company-server-2`，隔离工作树 `/root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008`。Goal1458 的一次完整成功来自冻结策略提交 `823df20`；此后工作树为其他任务的入口及抽屉候选更新过，严格复测1458须先将该空闲工作树切回 `823df20`。仿真环境 `/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python`。init3 第12次的本地视觉 worker 超时已按基础设施崩溃归档，`nvidia-smi` 同时超时；GPU 恢复前不要启动下个物理回合。恢复后若手动启动未见新初态，以下三行分别执行；第三行必须保持为**一整行**，把 `4` 和输出目录名同步改成实际未用的 init 索引。
+服务器为 `company-server-2`，隔离工作树 `/root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008`。Goal1458 的一次完整成功来自冻结策略提交 `823df20`；此后工作树为其他任务的入口及抽屉候选更新过，严格复测1458须先将该空闲工作树切回 `823df20`。仿真环境 `/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python`。init3 第12次的本地视觉 worker 超时已按基础设施崩溃归档。2026-10-11 定向 `nvidia-smi` 可查 GPU5/6，但最小 MuJoCo EGL 渲染仍超时，Goal1098 第16次于0决策处卡住；当前入口在记账前实际渲染一帧，失败时不消耗任务次数，见 [EXP175](../LOGS/2026-W41.md#exp-2026w41-175)。冻结 `823df20` 本身尚无这道预检；严格复测时须先在当前提交用 `--preflight-only` 单独验证 EGL，确认可渲染后再切回冻结代码。GPU 渲染恢复后若手动启动未见新初态，先执行下面两行预检，再逐行执行冻结回合的三行；每条命令本身均是一整行，把 `4` 和输出目录名同步改成实际未用的 init 索引。
+
+```bash
+cd /root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008
+/root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/run_libero_goal_jev.py --task-id 1458 --init-index 4 --output code/runs/UNUSED-goal-1458-preflight --preflight-only
+```
 
 ```bash
 cd /root/yekangjie/project/jev_rsi/.worktrees/ten-goal-20261008
@@ -29,7 +34,7 @@ git switch --detach 823df20
 /root/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B code/scripts/run_libero_goal_jev.py --task-id 1458 --init-index 4 --output code/runs/NEW-goal-1458-init4
 ```
 
-单回合入口在预留账本前检查同盘至少 6 GiB 空闲和 `nvidia-smi` 能否在 8 秒内返回；这只能拦住明显的 GPU 故障，不能保证后续 worker 启动。入口也支持 Goal1296 推盘的可见 RGB-D/Jev 两段流程，并冻结 `libero_push_control.py` 的 SHA256；这项此前的开发回合仍无官方成功，入口接通不算新的物理结果。正式启动后，setup 失败也计入每任务 50 次，不自动重跑。大文件只写本项目同挂载盘。本轮没有更改显卡、CUDA 或系统驱动，也没有使用本机受限的 API 密钥。
+当前单回合入口在预留账本前检查同盘至少 6 GiB 空闲、选定两张 GPU 的 NVML 查询以及最小 EGL 渲染；这些仍不能保证后续视觉 worker 启动。入口也支持 Goal1296 推盘的可见 RGB-D/Jev 两段流程，并冻结 `libero_push_control.py` 的 SHA256；这项此前的开发回合仍无官方成功，入口接通不算新的物理结果。正式启动后，setup 失败也计入每任务 50 次，不自动重跑。大文件只写本项目同挂载盘。本轮没有更改显卡、CUDA 或系统驱动，也没有使用本机受限的 API 密钥。
 
 GPU 故障时尝试过现有 Mesa EGL：最小 MuJoCo 渲染可用，但 Robosuite 的 LIBERO 离屏相机不兼容，Goal1098 init2 两次均在场景帧前崩溃，见 [EXP162](../LOGS/2026-W41.md#exp-2026w41-162)、[EXP163](../LOGS/2026-W41.md#exp-2026w41-163)。可选 Mesa 代码已撤回，保留完整失败记录；未修改系统图形栈。
 
