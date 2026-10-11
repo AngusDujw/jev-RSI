@@ -338,8 +338,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             obs['robot0_eef_quat']).as_matrix(),
             observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
             preserve_downward=not visible_goal_plate,
-            contact_mode=('top_surface' if visible_goal_plate and segment == 1
-                          else 'rear_edge'))
+            # Both plate segments concern the same visible, broad support
+            # surface.  The first segment maintained contact there; the
+            # rear-edge second segment lost the plate after only ~41 mm.
+            # Keep one contact rule across segments for this paired test.
+            contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
@@ -433,14 +436,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                           else PHASES[PHASES.index(stage)+1])
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
                 approach=('Move to a high-clearance hover above the visible plate centre.'
-                    if visible_goal_plate and segment == 1 else
+                    if visible_goal_plate else
                     'Move to high-clearance hover behind visible source, keeping the selected downward pusher pose.'),
                 lower=('Lower the own fingertip onto the visible plate top for a supported slide; keep the plate on the table.'
-                    if visible_goal_plate and segment == 1 else
+                    if visible_goal_plate else
                     'Lower behind object to own-finger tabletop clearance, without lifting source.'),
                 push=('Translate the supported contact laterally across the table to the visible staging waypoint; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
                     if visible_goal_plate and segment == 1 else
-                    'Push from behind the observed plate toward the visible stove-front goal; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
+                    'Keep supported top contact while pushing the observed plate toward the visible stove-front goal; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
                     if visible_goal_plate else
                     'Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.'),
                 retreat=('Raise the pusher to reveal the plate; advance only after fresh RGB-D measures its centre within 45mm of the current segment goal.'
