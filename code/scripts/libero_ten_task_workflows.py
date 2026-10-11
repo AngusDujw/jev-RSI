@@ -108,6 +108,10 @@ def stages(task_id: int) -> tuple[dict, ...]:
             phases.insert(1, ("select_handle",
                 "separate visible handles and select requested world-height rank",
                 "handle_unambiguous"))
+            if task_id == 1202:
+                phases.insert(-1, ("clear_opening",
+                    "withdraw the open own gripper up and outward before observing the drawer interior",
+                    "tcp_clear_of_drawer"))
         if primitive == "pick_place" and task_id in (1163, 1252):
             phases.insert(1, ("inspect_receiver",
                 "measure a visible cabinet-top support polygon; do not extrapolate hidden top",

@@ -109,6 +109,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_handle = None
     image_template = None
     initial_extension_pixels = 0
+    clear_target = None
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook')
@@ -246,6 +247,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'pull': contact_tcp + [0., .18, 0.],
             }
             target = np.asarray(targets.get(name, position), float)
+            if name == 'clear_opening':
+                if clear_target is None:
+                    clear_target = position + np.array([0., .14, .15])
+                target = clear_target.copy()
             contact_leg = 'final'
             if contact_mode == 'top_hook' and name == 'contact' and \
                     position[1] > contact_tcp[1] + .009:
@@ -282,6 +287,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'pull': bool(extension and extension['passed']) or (
                     arrived and shift is not None and shift['pixel_displacement'] > 12),
                 'release': grip_ticks >= 24 and gripper == -1 and aperture >= 65,
+                'clear_opening': arrived and gripper == -1,
                 'verify': bool(extension and extension['passed']) or (
                     shift is not None and shift['pixel_displacement'] > 12),
             }[name]
@@ -357,6 +363,12 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'This is calibrated RGB-D evidence of an outward dark drawer '
                     'surface at the selected handle height, not native task success. '
                     'Otherwise use the allowed transitions from current evidence.')
+            if name == 'clear_opening':
+                request['state']['stage_contract'] = (
+                    'Keep the gripper open and move to the supplied clearance '
+                    'pose above and outward of the visibly open drawer. Advance '
+                    'only after own TCP arrival; the next stage measures fresh '
+                    'RGB-D with the hand out of the opening.')
             decision = model.decide(request, stage['id'])
             edge = decision['transition']
             if edge == 'stop':
