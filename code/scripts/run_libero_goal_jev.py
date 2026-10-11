@@ -95,7 +95,7 @@ def main():
     p.add_argument('--grasp-hold-ticks', type=int, choices=[18,24,30,36,42,48], default=18)
     p.add_argument('--lift-recheck-mm', type=int, choices=[0,30], default=0)
     p.add_argument('--side-pad-overlap-mm', type=int, choices=[0,12], default=0)
-    p.add_argument('--drawer-contact-mode', choices=['top_hook', 'under_hook'],
+    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook'],
                    default='top_hook')
     p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0)
     p.add_argument('--dry-run', action='store_true',
