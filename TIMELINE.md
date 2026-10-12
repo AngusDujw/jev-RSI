@@ -109,6 +109,7 @@ graph LR
     T_2026W42_001["⛔ robodojo-gpt-decision<br/>三次启动崩溃；GPU1容器内渲染器编号已修…"]:::blocker
     T_2026W42_002["📊 robodojo-gpt-decision<br/>stack_blocks非特权闭环158步…"]:::experiment
     T_2026W42_003["📊 robodojo-gpt-decision<br/>主动感知死锁解除后stack 100步仍无…"]:::experiment
+    T_2026W42_004["📊 robodojo-vision-localization<br/>Luna 三图身份 3/3 但抓取局部点腕…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -277,6 +278,7 @@ graph LR
 | `T-2026W42-001` | 2026-10-12 | blocker | robodojo-gpt-decision | 三次启动崩溃；GPU1容器内渲染器编号已修正，等待用户确认继续 | `EXP-2026W42-003` | - |
 | `T-2026W42-002` | 2026-10-12 | experiment | robodojo-gpt-decision | stack_blocks非特权闭环158步，10次规划耗尽且未抓取 | `EXP-2026W42-004` | - |
 | `T-2026W42-003` | 2026-10-12 | experiment | robodojo-gpt-decision | 主动感知死锁解除后stack 100步仍无抓取，下一缺口是可见部位对应与接触 | `EXP-2026W42-005` | - |
+| `T-2026W42-004` | 2026-10-12 | experiment | robodojo-vision-localization | Luna 三图身份 3/3 但抓取局部点腕视偏移 23.5/30 px，保留高精度定位 | `EXP-2026W42-012` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
