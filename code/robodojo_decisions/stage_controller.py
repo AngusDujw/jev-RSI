@@ -16,6 +16,7 @@ GATES = {
     "select_arm": "One arm has a visible collision-free approach to a named loose block; identify that arm, target and supporting block in the choices below.",
     "approach": "The chosen OPEN gripper is visibly near its loose target block, within roughly one gripper width, and ready for fine alignment.",
     "align": "Two current camera views show the OPEN gripper straddling the target block at grasp height, without a visible collision.",
+    "reobserve": "The LOCKED target and distinct support are separately identifiable in fresh RGB, and the target can be located relative to both open fingers after withdrawal.",
     "grasp": "After gripper closure AND a small test lift, the SAME target block visibly moves upward with the gripper and stays between the fingers. Closure alone fails this test.",
     "lift": "The gripped target block is visibly lifted clear of its prior table or stack support and remains held.",
     "move_to_stack": "The visibly held target block is centered above the selected supporting block or existing stack in at least two views.",
@@ -27,7 +28,7 @@ GATES = {
 }
 NEXT = {
     "observe_blocks": "select_arm", "select_arm": "approach", "approach": "align",
-    "align": "grasp", "grasp": "lift", "lift": "move_to_stack",
+    "align": "grasp", "reobserve": "align", "grasp": "lift", "lift": "move_to_stack",
     "move_to_stack": "place", "place": "release", "release": "retreat",
     "retreat": "verify", "verify": "return_home", "return_home": "return_home",
 }
@@ -68,6 +69,13 @@ def gate_questions(stage: str) -> list[dict]:
             choice("pick_base_pair", "Choose a visually feasible LOOSE target and DISTINCT supporting block from the INITIAL high-camera reference. Track texture identity in the current views. If two blocks are already stacked, choose its visible top as support.",
                    PICK_BASE_PAIRS),
         ])
+    if stage == "reobserve":
+        questions.extend([
+            choice("target_visibility", "Using fresh RGB and the labeled INITIAL high reference, is the LOCKED loose target distinct from the supporting block? Do not substitute the support for the target.",
+                   {"visible": "Target block is directly visible", "occluded": "Target location is hidden by the robot", "uncertain": "Identity cannot be resolved"}),
+            choice("target_vs_fingers", "In the current high or active wrist RGB, where is the LOCKED target relative to the OPEN active fingers? This is image geometry, not a world-axis command.",
+                   {"left": "Visible left of both fingers", "between": "Visible between both fingers", "right": "Visible right of both fingers", "hidden": "Cannot locate target relative to both fingers"}),
+        ])
     return questions
 
 
@@ -95,10 +103,11 @@ def rot_distance(a: list[float], b: list[float]) -> float:
 
 class StageController:
     def __init__(self, client: DecisionClient, initial_obs: dict, plan: dict,
-                 augmented: bool = False):
+                 augmented: bool = False, reobserve: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
+        self.reobserve = reobserve
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -117,6 +126,22 @@ class StageController:
         self.phase_calls = 0
         self.motion_calls = 0
         self.events: list[dict] = []
+        self.target_missing = 0
+        self.reobserve_cycles = 0
+        self.reobserve_actions = 0
+        self.align_actions = 0
+        self.stalled_reason: str | None = None
+
+    def _current_colors(self, obs: dict) -> set[str]:
+        if not self.augmented:
+            return set()
+        from visual_context import detect_blocks
+        high = next(Path(item["path"]) for item in obs["images"] if item["camera"] == "cam_high")
+        return {item["color"] for item in detect_blocks(high)}
+
+    def _locked_colors(self) -> tuple[str | None, str | None]:
+        by_id = {item["id"]: item["color"] for item in self.block_reference}
+        return by_id.get(self.target_id), by_id.get(self.base_id)
 
     def _evidence(self, obs: dict, recent: list[dict], purpose: str) -> str:
         state = {
@@ -150,6 +175,14 @@ class StageController:
                 "empirical_high_camera_axis": "In the preceding layout-0 pilot, +world X moved the right gripper toward IMAGE RIGHT in the high view. Recheck on fresh frames; do not infer Y/depth from this.",
                 "align_guidance": "Track the LOCKED target color rather than the support color. In align, each micro-motion should reduce a visible gripper-target error; no zero-motion hold is offered.",
             }
+            if self.reobserve:
+                target_color, base_color = self._locked_colors()
+                found = {item["color"] for item in detected}
+                state["rgb_only_extra_information"].update({
+                    "locked_target_detected_in_current_high": target_color in found if target_color else None,
+                    "locked_support_detected_in_current_high": base_color in found if base_color else None,
+                    "visibility_recovery_rule": "If the target disappears behind the open gripper, briefly lift and withdraw toward the previously clear starting hand pose; visually re-identify target and support before further alignment. High-view color detection is fallible; inspect raw RGB yourself.",
+                })
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
 
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
@@ -171,6 +204,32 @@ class StageController:
                 self.reference = draw_reference(self.raw_reference,
                     self.client.output.parent / "visual_context/target_and_base.png",
                     self.block_reference, self.target_id, self.base_id)
+        if self.reobserve and self.stage in ("align", "reobserve"):
+            target_color, base_color = self._locked_colors()
+            colors = self._current_colors(obs)
+            target_visible = target_color in colors if target_color else False
+            support_visible = base_color in colors if base_color else False
+            if self.stage == "align":
+                self.target_missing = 0 if target_visible else self.target_missing + 1
+                if verdict == "pass" and not target_visible:
+                    verdict = "uncertain"
+                if self.target_missing >= 2:
+                    verdict = "continue"
+                    self.stage = "reobserve"
+                    self.reobserve_cycles += 1
+                    self.reobserve_actions = 0
+                    if self.reobserve_cycles > 2:
+                        self.stalled_reason = "repeated_target_occlusion"
+            else:
+                recovered = (target_visible and support_visible and
+                             answer["target_visibility"] == "visible" and
+                             answer["target_vs_fingers"] != "hidden")
+                if verdict == "pass" and not recovered:
+                    verdict = "uncertain"
+                if recovered:
+                    verdict = "pass"
+                if self.reobserve_actions >= 3 and verdict != "pass":
+                    self.stalled_reason = "target_unrecoverable_after_visibility_actions"
         if self.stage == "return_home" and verdict == "pass":
             for arm in ARMS:
                 current = obs["current_eef"][arm]
@@ -191,6 +250,8 @@ class StageController:
             self.stage = "observe_blocks"
         if self.stage == "observe_blocks" and old != "observe_blocks":
             self.active_arm = self.target_id = self.base_id = None
+        if old == "align" and self.stage == "grasp":
+            self.align_actions = 0
         event = {"step_id": obs["step_id"], "stage_before": old, "stage_after": self.stage,
                  "verdict": verdict, "raw_gate": answer, "record": name}
         self.events.append(event)
@@ -206,13 +267,33 @@ class StageController:
                                       self.initial_eef[arm]["quaternion_wxyz"]))
         name = f"move_{self.motion_calls:04d}"
         self.motion_calls += 1
-        answer = self.client.query(obs, motion_questions(self.stage, self.augmented),
-                                   self._evidence(obs, recent, "one bounded action for locked arm"),
-                                   name, self.reference)
+        if self.stage == "reobserve":
+            if self.reobserve_actions == 0:
+                delta = np.asarray((0.0, 0.0, 0.015))
+                answer = {"direction": "reobserve_lift", "size": "short", "rotation": "hold"}
+            else:
+                current = np.asarray(obs["current_eef"][self.active_arm]["position"])
+                initial = np.asarray(self.initial_eef[self.active_arm]["position"])
+                toward_start = initial - current
+                toward_start[2] = 0
+                length = float(np.linalg.norm(toward_start))
+                delta = toward_start / length * min(length, 0.030) if length else toward_start
+                answer = {"direction": "reobserve_to_initial_xy", "size": "medium", "rotation": "hold"}
+            self.reobserve_actions += 1
+            source = "bounded RGB visibility recovery"
+        else:
+            answer = self.client.query(obs, motion_questions(self.stage, self.augmented),
+                                       self._evidence(obs, recent, "one bounded action for locked arm"),
+                                       name, self.reference)
+            vector = np.asarray(DIRECTIONS[answer["direction"]], dtype=float)
+            norm = float(np.linalg.norm(vector))
+            delta = vector / norm * SIZES[answer["size"]] if norm else vector
+            source = "OpenAI Decisions RGB action"
+            if self.reobserve and self.stage == "align":
+                self.align_actions += 1
+                if self.align_actions > 16:
+                    self.stalled_reason = "align_action_budget_without_grasp"
         arm = self.active_arm
-        vector = np.asarray(DIRECTIONS[answer["direction"]], dtype=float)
-        norm = float(np.linalg.norm(vector))
-        delta = vector / norm * SIZES[answer["size"]] if norm else vector
         target = {}
         for index, hand in enumerate(ARMS):
             current = obs["current_eef"][hand]
@@ -236,14 +317,16 @@ class StageController:
             target[hand] = {"position": position.tolist(), "quaternion_wxyz": old_q.tolist(),
                             "gripper_closed": gripper_closed}
         result = {"request_id": obs["request_id"], "mode": "eef", "steps": 5,
-                  "reason": f"RGB Decisions v2 stage={self.stage}, arm={arm}, target={self.target_id}, base={self.base_id}",
+                  "reason": f"RGB Decisions stage={self.stage}, arm={arm}, target={self.target_id}, base={self.base_id}; {source}",
                   "target": target}
         path = self.client.output / f"{name}.json"
-        record = json.loads(path.read_text())
+        record = json.loads(path.read_text()) if path.exists() else {}
         record["action"] = result
         record["stage"] = self.stage
         record["active_arm"] = arm
         record["target_id"] = self.target_id
         record["base_id"] = self.base_id
+        record["source"] = source
+        record["decoded_answers"] = answer
         path.write_text(json.dumps(record, ensure_ascii=False, indent=2))
         return result, answer

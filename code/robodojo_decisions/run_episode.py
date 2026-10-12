@@ -103,10 +103,11 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         if key_file is None:
             raise ValueError("--key-file is required for control")
         model = DecisionClient(key_file, output / "decisions")
-        if controller_version in ("v2", "v3"):
+        if controller_version in ("v2", "v3", "v4"):
             from stage_controller import NO_MOTION, StageController
             stage_control = StageController(model, obs, plan,
-                augmented=(controller_version == "v3"))
+                augmented=(controller_version in ("v3", "v4")),
+                reobserve=(controller_version == "v4"))
         else:
             stage_control = None
         while not obs["rollout_finished"]:
@@ -130,6 +131,13 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                 if stage_control.stage in NO_MOTION:
                     tools.finish("visual_gate_loop_incomplete")
                     result["status"] = "visual_gate_loop_incomplete"
+                    return result
+                if stage_control.stalled_reason:
+                    tools.finish("visual_stall_incomplete")
+                    result.update(status="visual_stall_incomplete",
+                                  stall_reason=stage_control.stalled_reason,
+                                  final_stage=stage_control.stage,
+                                  stage_events=len(stage_control.events))
                     return result
                 action, answers = stage_control.action(obs, history)
             native.validate_action(action, tools.request)
@@ -184,7 +192,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v2", "v3"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")

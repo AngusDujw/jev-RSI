@@ -6,6 +6,7 @@
     "select_arm": "Select the arm with a visibly clear approach to the chosen unstacked block using RGB views and measured EEF and joint states.",
     "approach": "Move the selected arm toward the visible grasp region while checking clearance after each discrete motion.",
     "align": "Adjust EEF position and single-axis orientation until the open gripper visibly brackets the chosen block.",
+    "reobserve": "If the target becomes hidden during alignment, lift and withdraw the open gripper in bounded steps; require fresh RGB to identify the target and support separately before resuming alignment.",
     "grasp": "Close the gripper around the block and inspect the RGB views for visible capture before attempting a lift.",
     "lift": "Lift incrementally and check that the block visibly rises with the gripper and clears its support.",
     "move_to_stack": "Move the held block above the visible base block or existing stack while monitoring grip retention and clearance.",
@@ -19,7 +20,7 @@
     "Use only discrete XYZ direction commands with lengths of 5, 15, 30, or 45 mm, single-axis rotation increments of 0.18 rad, and available gripper commands.",
     "Reobserve after every command; use smaller translation increments near blocks, support surfaces, and possible collisions.",
     "Do not use object ground truth, privileged layout information, reward signals, or invisible object coordinates.",
-    "If visibility or alignment is insufficient, stop advancing, return to observe_blocks or align, and retry from fresh visual evidence.",
+    "If the locked target is occluded during align, use bounded visibility recovery, then compare fresh RGB against the labeled initial reference before further alignment.",
     "If capture, lift, placement, or release fails visibly, reassess the current scene and repeat the necessary stages without assuming the previous action worked.",
     "Repeat select_arm through verify for each remaining unstacked block, selecting targets from current RGB evidence.",
     "Verification describes observable evidence only; ambiguous, occluded, or unstable arrangements remain unverified, and this specification makes no success claim."
