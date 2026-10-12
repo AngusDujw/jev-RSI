@@ -108,6 +108,8 @@ graph LR
     direction TB
     T_2026W42_001["📊 libero-goal-ten<br/>5880 Goal1296 首次双终局成功…"]:::experiment
     T_2026W42_002["⛔ libero-goal-ten<br/>Goal1202同一完整任务意图三次连续不…"]:::blocker
+    T_2026W42_003["📊 libero-goal-ten<br/>5880 Goal1202阶段门已通但两种…"]:::experiment
+    T_2026W42_004["📊 libero-goal-ten<br/>5880 Goal1458冻结新版GPU未…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -179,6 +181,8 @@ graph LR
   T_2026W41_033 --> T_2026W41_042
   T_2026W41_040 --> T_2026W42_001
   T_2026W42_001 --> T_2026W42_002
+  T_2026W42_002 --> T_2026W42_003
+  T_2026W42_003 --> T_2026W42_004
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -275,6 +279,8 @@ graph LR
 | `T-2026W41-042` | 2026-10-11 | pivot | jev-control-formulation | 用户将主线纠偏为GPT-6等模型可重复规划、Jev/OpenAI decision model等模型推进；优先RoboDojo与LIBERO-Plus整套多任务benchmark成绩 | `DISC-2026W39-001` | - |
 | `T-2026W42-001` | 2026-10-12 | experiment | libero-goal-ten | 5880 Goal1296 首次双终局成功但未见init3失败；十项至少成功过升至8/10，稳定性仍待冻结复测 | `EXP-2026W42-015` | - |
 | `T-2026W42-002` | 2026-10-12 | blocker | libero-goal-ten | Goal1202同一完整任务意图三次连续不收敛；最新回合45次完成门为真仍未切换，暂停新增物理实跑 | `EXP-2026W42-038` | - |
+| `T-2026W42-003` | 2026-10-12 | experiment | libero-goal-ten | 5880 Goal1202阶段门已通但两种公开碗沿候选均空抓；Goal1098两种近端入杆路径仍受阻，转新初态稳定性检验 | `EXP-2026W42-046` | - |
+| `T-2026W42-004` | 2026-10-12 | experiment | libero-goal-ten | 5880 Goal1458冻结新版GPU未见init9/10为2/2，CPU视觉后备init11/12为2/2；十项仍仅8项曾完整成功，需继续跨初态验证与两项接触路线 | `EXP-2026W42-063` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
