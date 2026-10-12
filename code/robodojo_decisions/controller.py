@@ -123,12 +123,12 @@ def decode_answers(response: dict, plan: dict) -> dict:
 
 def curl_socks_decision(payload: dict, key: str, timeout: int) -> dict:
     """Send one Decisions read over local SOCKS without putting the key in argv or on disk."""
-    if not hasattr(os, "memfd_create"):
-        raise RuntimeError("curl_socks transport requires Linux memfd_create")
-    config_fd = os.memfd_create("openai-decisions-header")
+    config_fd, config_writer = os.pipe()
     try:
-        os.write(config_fd, f'header = "Authorization: Bearer {key}"\n'.encode())
-        os.lseek(config_fd, 0, os.SEEK_SET)
+        os.write(config_writer, f'header = "Authorization: Bearer {key}"\n'.encode())
+    finally:
+        os.close(config_writer)
+    try:
         environment = os.environ.copy()
         for name in ("HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy",
                      "ALL_PROXY", "all_proxy"):

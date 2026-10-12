@@ -45,3 +45,4 @@
 - 【Agent】【2026-10-12 12:14】[op] v6-04 首步X−long后视觉门收到代理特有403/http_unsupported；仅固定HTTPS端点遇到该错误时对只读模型请求有限重试，并完整记录 EXP011。
 - 【Agent】【2026-10-12 12:14】[run] v4090 前台启动 v6-05：仅使用HTTPS_PROXY反向隧道，去除ALL_PROXY/HTTP_PROXY歧义；保留只读网络重试，最多60动作/2400秒。
 - 【Agent】【2026-10-12 12:19】[op] HTTP CONNECT 路径在 v6-05 五次重试仍失败；改为同一反向隧道 SOCKS 通道，curl 经匿名内存 fd 读取密钥、请求体走 stdin，先做四图只读 API 验证再开仿真。
+- 【Agent】【2026-10-12 12:20】[op] SOCKS离线探针暴露远端Python无os.memfd_create；改用匿名pipe fd传递curl授权头，仍不把密钥放在argv或磁盘。
