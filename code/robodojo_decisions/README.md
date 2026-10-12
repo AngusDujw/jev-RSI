@@ -30,6 +30,8 @@ The v10 pilot ended before its Y probe: horizontal center error stopped at 8.5 p
 
 The v11 pilot exposed a mismatch: a recovering target with 8.5 px estimated edge clearance but gripper template score 0.7956 moved from `reobserve` to `align`, where the 0.80 action threshold raised an error. Local Pro inspected the images and advised a stationary confirmation frame. `v12_confirm_probe` performs one zero-motion observation when recovery score is 0.79–0.80 and the target is visible with margin at least 3 px. It proceeds to the same single Y−3 mm diagnostic only when the next RGB has score at least 0.80, target center drift at most 2 px, and at least 90% of the prior visible purple area; otherwise it records an explicit incomplete result.
 
+The v12 diagnostic measured right EEF Y−2.987 mm and a 1 px improvement in target-to-finger vertical error, but visible purple area fell from 297 to 256 px while the right wrist still showed only yellow. Local Pro review advised against more purple-under-palm micro motions. Version `v13_yellow_first` constrains the initial Decisions selection to a right-arm yellow-block pickup candidate, because the initial high and right-wrist RGB both show the whole yellow block. Decisions still judges stages and chooses one world-axis action from fresh raw RGB; RGB-only color/hand tracking filters directions with the wrong local image sign and caps each approach translation at 10 mm. The support choice is provisional until a held yellow block is visually verified. This is a distinct task-specific pilot, not a stack success result.
+
 ## Run contract
 
 - Existing Python and assets: `~/DataStorage/jev-router/sources` and the existing environment recorded in `~/DataStorage/jev-router/project/jev-router/ENVIRONMENT.json`. No environment, driver, or CUDA changes.
@@ -82,6 +84,10 @@ ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/
 
 ```bash
 ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v12_confirm_probe --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-visibility-confirm-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 60 --max-wall-seconds 2400
+```
+
+```bash
+ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v13_yellow_first --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-yellow-first-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 40 --max-wall-seconds 2400
 ```
 
 This controller is an experimental categorical EEF policy, not the original RoboProbe GPT-6 Astra harness. Stability requires frozen code/plan and independent native episodes, including standard/random layouts where the official cell is paired.

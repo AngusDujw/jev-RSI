@@ -54,7 +54,7 @@ PICK_BASE_PAIRS = {
 }
 
 
-def gate_questions(stage: str) -> list[dict]:
+def gate_questions(stage: str, yellow_first: bool = False) -> list[dict]:
     questions = [choice("gate", "Assess ONLY the current stage from fresh RGB and measured robot state. PASS only with the specified visible evidence. CONTINUE if reachable but unfinished. RECOVER if an attempted grasp/placement failed or the target was lost. UNCERTAIN for insufficient visibility. Do not treat a prior command as evidence it succeeded.",
         {"pass": GATES[stage], "continue": "Stage not complete; target and active arm remain identifiable",
          "recover": "Task geometry or grasp failed; a previous stage must be retried",
@@ -63,11 +63,17 @@ def gate_questions(stage: str) -> list[dict]:
             {"high": "High camera", "left_wrist": "Left wrist camera", "right_wrist": "Right wrist camera",
              "multiple": "At least two cameras", "none": "No clear visual evidence"})]
     if stage == "select_arm":
+        arms = ({"right": "Right wrist directly sees the whole yellow target",
+                 "uncertain": "Right wrist does not safely see a loose yellow target"}
+                if yellow_first else {"left": "Left", "right": "Right"})
+        pairs = ({key: value for key, value in PICK_BASE_PAIRS.items()
+                  if key.startswith("initial_middle__")}
+                 if yellow_first else PICK_BASE_PAIRS)
         questions.extend([
             choice("active_arm", "Choose the arm with the clearest visible approach to ONE loose block. The other arm stays still.",
-                   {"left": "Left", "right": "Right"}),
+                   arms),
             choice("pick_base_pair", "Choose a visually feasible LOOSE target and DISTINCT supporting block from the INITIAL high-camera reference. Track texture identity in the current views. If two blocks are already stacked, choose its visible top as support.",
-                   PICK_BASE_PAIRS),
+                   pairs),
         ])
     if stage == "reobserve":
         questions.extend([
@@ -119,7 +125,8 @@ class StageController:
                  geometry_cue: bool = False, sign_gate: bool = False,
                  staged_micro: bool = False, recovery_sweep: bool = False,
                  y_probe: bool = False, edge_margin_probe: bool = False,
-                 visibility_confirmation: bool = False):
+                 visibility_confirmation: bool = False,
+                 yellow_first: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
@@ -131,6 +138,7 @@ class StageController:
         self.y_probe = y_probe
         self.edge_margin_probe = edge_margin_probe
         self.visibility_confirmation = visibility_confirmation
+        self.yellow_first = yellow_first
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -164,6 +172,9 @@ class StageController:
         self.previous_alignment_target: dict | None = None
         self.visibility_before: dict | None = None
         self.visibility_hold_issued = False
+        self.pending_y_error_abs: float | None = None
+        self.y_no_progress_count = 0
+        self.yellow_hold_count = 0
 
     def _current_colors(self, obs: dict) -> set[str]:
         if not self.augmented:
@@ -182,7 +193,7 @@ class StageController:
         from visual_context import detect_blocks, track_right_gripper
         current_high = next(Path(item["path"]) for item in obs["images"]
                             if item["camera"] == "cam_high")
-        tracked = track_right_gripper(self.raw_reference, current_high)
+        tracked = track_right_gripper(self.raw_reference, current_high, extended=self.yellow_first)
         target_color, _ = self._locked_colors()
         target = next((item for item in detect_blocks(current_high)
                        if item["color"] == target_color), None)
@@ -282,9 +293,36 @@ class StageController:
                      if self.y_probe else
                      "Only after two reliable RGB observations at horizontal error <=5 px may Y/Z be considered; "
                      "each such action is capped at 5 mm and checked against measured EEF and fresh RGB."))
+            if self.yellow_first:
+                state["rgb_only_extra_information"]["yellow_first_rule"] = (
+                    "The right wrist initially shows the whole yellow loose block between the fingers; "
+                    "the purple block disappeared under the right palm in prior trials. "
+                    "Choose one world-axis action from the current RGB and measured EEF. "
+                    "Measured locally: +Y moves the right gripper upward in the fixed high image, "
+                    "+X moves it right. Translation is capped at 10 mm; preserve yellow visibility "
+                    "and do not infer a grasp from gripper closure or a yellow block merely in the wrist view.")
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
 
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
+        if self.yellow_first and self.active_arm == "right" and self.stage in ("approach", "align"):
+            geometry = self._high_geometry(obs)
+            if not geometry or float(geometry["normalized_match_score"]) < 0.75 or not geometry.get("locked_target_center_px"):
+                self.stage = "reobserve"
+                self.reobserve_cycles += 1
+                self.reobserve_actions = 0
+                if self.reobserve_cycles > 2:
+                    self.stalled_reason = "yellow_target_lost_twice"
+            elif float(geometry["right_eef_z_change_from_initial_mm"]) > 40:
+                self.stalled_reason = "yellow_visibility_lift_above_40mm"
+        if self.yellow_first and self.pending_y_error_abs is not None:
+            geometry = self._high_geometry(obs)
+            if geometry and float(geometry["normalized_match_score"]) >= 0.75 and geometry.get("target_minus_finger_gap_center_px"):
+                current = abs(float(geometry["target_minus_finger_gap_center_px"][1]))
+                self.y_no_progress_count = (self.y_no_progress_count + 1
+                                            if current >= self.pending_y_error_abs - 1.0 else 0)
+                if self.y_no_progress_count >= 2:
+                    self.stalled_reason = "yellow_high_rgb_y_projection_not_improving"
+            self.pending_y_error_abs = None
         if self.staged_micro and self.active_arm == "right" and self.stage in ("approach", "align", "reobserve"):
             geometry = self._high_geometry(obs)
             score = float(geometry["normalized_match_score"]) if geometry else 0.0
@@ -384,7 +422,7 @@ class StageController:
             return event
         name = f"gate_{self.phase_calls:04d}"
         self.phase_calls += 1
-        asked = gate_questions(self.stage)
+        asked = gate_questions(self.stage, self.yellow_first)
         answer = self.client.query(obs, asked, self._evidence(obs, recent, "visual stage acceptance"),
                                    name, self.reference)
         old = self.stage
@@ -393,7 +431,11 @@ class StageController:
         if verdict == "pass" and answer["evidence_view"] == "none":
             verdict = "uncertain"
         if self.stage == "select_arm" and verdict == "pass":
-            self.active_arm = answer["active_arm"]
+            if self.yellow_first and answer["active_arm"] != "right":
+                verdict = "uncertain"
+            else:
+                self.active_arm = answer["active_arm"]
+        if self.stage == "select_arm" and verdict == "pass":
             self.target_id, self.base_id = answer["pick_base_pair"].split("__")
             if self.augmented and self.block_reference:
                 from visual_context import draw_reference
@@ -434,7 +476,7 @@ class StageController:
                     if self.reobserve_cycles > (4 if self.geometry_cue else 2):
                         self.stalled_reason = "repeated_target_occlusion"
             else:
-                recovered = (target_visible and support_visible and
+                recovered = (target_visible and (support_visible or self.yellow_first) and
                              answer["target_visibility"] == "visible" and
                              answer["target_vs_fingers"] != "hidden")
                 if verdict == "pass" and not recovered:
@@ -616,8 +658,19 @@ class StageController:
                 allowed_directions = ("hold", "x_negative" if horizontal_error < 0 else "x_positive")
             else:
                 allowed_directions = ("hold", "y_negative", "y_positive", "z_negative", "z_positive")
+        if self.yellow_first and self.stage in ("approach", "align"):
+            if not geometry or float(geometry["normalized_match_score"]) < 0.75 or not geometry.get("target_minus_finger_gap_center_px"):
+                raise ValueError("Yellow action requires a visible RGB target and tracked right gripper")
+            x_error, y_error = (float(value) for value in geometry["target_minus_finger_gap_center_px"])
+            choices = ["hold"]
+            if abs(x_error) > 5:
+                choices.append("x_negative" if x_error < 0 else "x_positive")
+            if abs(y_error) > 10:
+                choices.append("y_positive" if y_error < 0 else "y_negative")
+            choices.append("z_positive" if abs(y_error) > 10 else "z_negative")
+            allowed_directions = tuple(choices)
         answer = self.client.query(obs, motion_questions(self.stage,
-                                                          self.augmented and not self.staged_micro,
+                                                          self.augmented and not (self.staged_micro or self.yellow_first),
                                                           self.geometry_cue,
                                                           horizontal_error if self.stage in ("approach", "align") else None,
                                                           allowed_directions),
@@ -628,6 +681,14 @@ class StageController:
         norm = float(np.linalg.norm(vector))
         delta = vector / norm * SIZES[answer["size"]] if norm else vector
         source = "OpenAI Decisions RGB action"
+        if self.yellow_first and self.stage in ("approach", "align"):
+            delta = vector * min(SIZES[answer["size"]], 0.010) if norm else vector
+            source += "; yellow-first RGB action capped at 10mm"
+            self.yellow_hold_count = self.yellow_hold_count + 1 if not norm else 0
+            if self.yellow_hold_count >= 2:
+                self.stalled_reason = "yellow_two_holds_without_approach"
+            if vector[1] and geometry.get("target_minus_finger_gap_center_px"):
+                self.pending_y_error_abs = abs(float(geometry["target_minus_finger_gap_center_px"][1]))
         if self.staged_micro and self.stage in ("approach", "align"):
             if vector[1] or vector[2]:
                 delta = vector * min(SIZES[answer["size"]], 0.005)

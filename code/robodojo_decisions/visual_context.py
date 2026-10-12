@@ -84,14 +84,14 @@ def draw_reference(source: Path, destination: Path, blocks: list[dict],
     return destination
 
 
-def track_right_gripper(reference: Path, current: Path) -> dict:
+def track_right_gripper(reference: Path, current: Path, extended: bool = False) -> dict:
     """Match a visible right-gripper RGB crop and report image displacement."""
     initial = cv2.imread(str(reference))
     image = cv2.imread(str(current))
     if initial is None or image is None:
         raise FileNotFoundError((reference, current))
     tx, ty, tw, th = RIGHT_TEMPLATE_XYWH
-    sx, sy, sw, sh = RIGHT_SEARCH_XYWH
+    sx, sy, sw, sh = (310, 150, 310, 225) if extended else RIGHT_SEARCH_XYWH
     template = initial[ty:ty + th, tx:tx + tw]
     search = image[sy:sy + sh, sx:sx + sw]
     response = cv2.matchTemplate(search, template, cv2.TM_CCOEFF_NORMED)
