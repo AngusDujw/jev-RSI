@@ -55,10 +55,11 @@ def audit(episode):
     by_id = {d['decision_id']: d for d in decisions}
     states = {}
     usage = Counter()
+    answered = []
+    unanswered = []
     for decision in decisions:
         ident = decision['decision_id']
         request = json.loads((episode/ident/'request.json').read_text())
-        response = json.loads((episode/ident/'response.json').read_text())
         assert set(request) == {'model', 'state', 'questions'}
         assert json.dumps(request, ensure_ascii=False).isascii(), ident
         assert hashlib.sha256(json.dumps(request, sort_keys=True).encode()).hexdigest() == decision['request_sha256'], ident
@@ -67,6 +68,14 @@ def audit(episode):
         assert set(state) == STATE_KEYS, (ident, set(state) ^ STATE_KEYS)
         assert state['stage'] == decision['stage']
         states[ident] = state
+        response_path = episode/ident/'response.json'
+        if not response_path.exists():
+            assert ident == decisions[-1]['decision_id'] and result.get('error'), ident
+            assert 'answers' not in decision, ident
+            unanswered.append(ident)
+            continue
+        response = json.loads(response_path.read_text())
+        answered.append(decision)
         answers = response['answers']
         assert answers == decision['answers']
         assert set(answers) == set(request['questions']), ident
@@ -85,7 +94,7 @@ def audit(episode):
     executed = set()
     for branch in branches:
         ident = branch['decision_id']
-        assert ident in by_id and ident not in executed
+        assert ident in by_id and ident not in unanswered and ident not in executed
         executed.add(ident)
         decision = by_id[ident]
         assert branch['stage'] == decision['stage']
@@ -107,15 +116,16 @@ def audit(episode):
         assert by_id[ident]['transition'] == 'advance'
         assert edge['from_stage'] == states[ident]['stage']
         assert edge['to_stage'] == states[ident]['next_stage']
-    assert len(edges) == sum(d['transition'] == 'advance' for d in decisions)
+    assert len(edges) == sum(d['transition'] == 'advance' for d in answered)
     assert result['jev_calls'] == len(decisions)
     return dict(episode=str(episode), success=result['success'],
                 program_finished=result['program_finished'],
                 drawer_primitive_finished=result['drawer_primitive_finished'],
-                decisions=len(decisions), executed=len(branches),
+                decisions=len(decisions), answered=len(answered),
+                unanswered_requests=len(unanswered), executed=len(branches),
                 phase_edges=len(edges),
-                gripper_choices=dict(Counter(d['gripper'] for d in decisions)),
-                transition_choices=dict(Counter(d['transition'] for d in decisions)),
+                gripper_choices=dict(Counter(d['gripper'] for d in answered)),
+                transition_choices=dict(Counter(d['transition'] for d in answered)),
                 usage=dict(usage), contract_violations=0,
                 input_boundary='Request schema/forbidden keys checked; frozen RGB-D perception source reviewed separately')
 
