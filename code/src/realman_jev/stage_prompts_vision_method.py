@@ -26,6 +26,12 @@ camera movement, so do not ask the decision model to stop that movement merely
 because the target is not yet visible. Localize the next source and receiver
 pair needed for manipulation; do not demand simultaneous stereo for unrelated
 objects or spend the episode trying to recover all identities at once.
+When the next contact can be expressed with current `now.o` estimates after a
+sense stage, include the bounded manipulate stage in the SAME plan. The runtime
+refreshes RGB and checks that stage's visual requirements before every action;
+it will return failed evidence for replanning if the target remains missing.
+Do not spend a full planning round after every camera move or acquire depth for
+all future targets before attempting the first evidence-supported contact.
 Choose visible_rgb for a currently visible 2D identity; choose fresh_stereo
 when current metric XYZ is required. For a SHORT approach/closure through
 gripper occlusion, last_stereo_bounded may use the most recent accepted

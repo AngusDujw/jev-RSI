@@ -27,3 +27,4 @@
 - 【Agent】【2026-10-12 12:47】[op] 回写Discussion：stack感知改动达到7阶段但0抓取，pickup受OOM中断并暴露跨视图部位对应问题
 - 【Agent】【2026-10-12 12:54】[op] 修正启动错误归档：原生evaluation_outcome缺失时保留policy_error根因，而非覆盖成FileNotFoundError
 - 【Agent】【2026-10-12 12:56】[op] 记录EXP007/008四路并发下两个reset RPC超时；零策略动作，单路press复测已启动
+- 【Agent】【2026-10-12 13:14】[op] 补充感知-操作同计划规则：刷新now.o且入口门满足后直接尝试下一目标接触，减少每次视角移动后的Pro整轮重规划
