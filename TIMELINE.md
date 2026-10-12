@@ -133,6 +133,7 @@ graph LR
     T_2026W42_025["📊 robodojo-decision-stages<br/>机器人手部网格高度输入未改变剪刀70步通路…"]:::experiment
     T_2026W42_026["📊 robodojo-task-coverage<br/>第三批五任务Pro+Luna首轮均停初始感…"]:::experiment
     T_2026W42_027["📊 robodojo-decision-stages<br/>剪刀新转腕候选预测增40px但仍无场景净空…"]:::experiment
+    T_2026W42_028["📊 robodojo-decision-stages<br/>木琴双转腕10步取得同源端双视图，杆轴线估…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -227,6 +228,7 @@ graph LR
   T_2026W42_023 --> T_2026W42_025
   T_2026W42_024 --> T_2026W42_026
   T_2026W42_025 --> T_2026W42_027
+  T_2026W42_027 --> T_2026W42_028
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -348,6 +350,7 @@ graph LR
 | `T-2026W42-025` | 2026-10-13 | experiment | robodojo-decision-stages | 机器人手部网格高度输入未改变剪刀70步通路停止；暂停同轨迹重试并让Pro重拟视点/实心柄证据 | `EXP-2026W42-050` | - |
 | `T-2026W42-026` | 2026-10-13 | experiment | robodojo-task-coverage | 第三批五任务Pro+Luna首轮均停初始感知，累计15/42真实首轮且0/15完整成功；停用旧逐轴格式 | `EXP-2026W42-052` | - |
 | `T-2026W42-027` | 2026-10-13 | experiment | robodojo-decision-stages | 剪刀新转腕候选预测增40px但仍无场景净空；通用同点门拒绝不可见黄罩，改先获取源物第二视角 | `EXP-2026W42-054` | - |
+| `T-2026W42-028` | 2026-10-13 | experiment | robodojo-decision-stages | 木琴双转腕10步取得同源端双视图，杆轴线估计P95仍5.30毫米未授权抓取 | `EXP-2026W42-065`, `EXP-2026W42-066` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

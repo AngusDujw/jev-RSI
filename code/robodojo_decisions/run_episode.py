@@ -22,7 +22,8 @@ TASKS = ("stack_blocks", "general_pickup", "fold_clothes", "press_by_number", "s
          "match_and_pick_from_conveyor", "push_T", "arrange_largest_number",
          "classify_objects", "align_blocks", "cover_blocks", "solve_equation",
          "stack_blocks_by_language", "imitate_sorting_sequence",
-         "classify_objects_by_language")
+         "classify_objects_by_language", "sort_nesting_dolls_by_size", "swap_T",
+         "fasten_screws", "put_bottles_into_dustbin", "play_Xylophone")
 
 
 def executable() -> Path:
@@ -60,6 +61,7 @@ def native_env(run: Path, python: Path) -> dict:
     env["LD_LIBRARY_PATH"] = ":".join(libs + [env.get("LD_LIBRARY_PATH", "")])
     env["VK_ICD_FILENAMES"] = "/usr/share/vulkan/icd.d/nvidia_icd.json"
     env["__EGL_VENDOR_LIBRARY_FILENAMES"] = "/usr/share/glvnd/egl_vendor.d/10_nvidia.json"
+    env["ROBODOJO_GPT6_DATA_ROOT"] = str(DATA_ROOT)
     return env
 
 
@@ -117,6 +119,40 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         if controller_version == "v5_probe_y":
             from probe_y import run_probe
             result.update(run_probe(tools, obs, model, output))
+            return result
+        if controller_version == "v1_source_view":
+            if initial_camera_calibration is None:
+                raise ValueError("Source-view pilot requires public RGB calibration")
+            from source_view_probe import run_probe
+            result.update(run_probe(tools, obs, model, plan, output,
+                                    initial_camera_calibration, initial_eef,
+                                    deadline, max_decisions))
+            return result
+        if controller_version == "v1_source_view_sequence":
+            if initial_camera_calibration is None:
+                raise ValueError("Source-view sequence requires public RGB calibration")
+            from source_view_probe import run_sequence
+            result.update(run_sequence(tools, obs, model, plan, output,
+                                       initial_camera_calibration, initial_eef,
+                                       deadline, max_decisions))
+            return result
+        if controller_version == "v1_source_single_view":
+            if initial_camera_calibration is None:
+                raise ValueError("Single source view requires public RGB calibration")
+            from source_view_probe import run_single_view
+            result.update(run_single_view(tools, obs, model, plan, output,
+                                          initial_camera_calibration, initial_eef,
+                                          deadline))
+            return result
+        if controller_version == "v1_source_double_view":
+            if initial_camera_calibration is None:
+                raise ValueError("Two source views require public RGB calibration")
+            if max_decisions != 2:
+                raise ValueError("Two source-view turns require --max-decisions 2")
+            from source_view_probe import run_double_view
+            result.update(run_double_view(tools, obs, model, plan, output,
+                                          initial_camera_calibration, initial_eef,
+                                          deadline))
             return result
         if controller_version in ("v2", "v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"):
             from stage_controller import NO_MOTION, StageController
@@ -291,7 +327,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -300,6 +336,12 @@ def main() -> None:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
     if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
+    if args.controller in ("v1_source_view", "v1_source_view_sequence") and (args.task != "cover_blocks" or args.layout != 0):
+        parser.error("source-view pilots are for cover_blocks layout 0")
+    if args.controller == "v1_source_single_view" and (args.task != "play_Xylophone" or args.layout != 0):
+        parser.error("v1_source_single_view is a play_Xylophone layout-0 pilot")
+    if args.controller == "v1_source_double_view" and (args.task != "play_Xylophone" or args.layout != 0):
+        parser.error("v1_source_double_view is a play_Xylophone layout-0 pilot")
     if args.controller in ("v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin") and (args.task != "general_pickup" or args.layout != 0):
         parser.error("geometry pilots are for general_pickup layout 0 only")
     if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate") and (args.task != "stack_blocks" or args.layout != 0):
