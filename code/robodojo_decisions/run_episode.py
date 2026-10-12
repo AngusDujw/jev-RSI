@@ -16,7 +16,7 @@ import traceback
 from pathlib import Path
 
 SOURCE_ROOT = Path.home() / "DataStorage/jev-router/sources"
-DATA_ROOT = Path.home() / "DataStorage/robodojo-decisions"
+DATA_ROOT = Path(os.environ.get("ROBODOJO_GPT6_DATA_ROOT", str(Path.home() / "DataStorage/gpt6-dec")))
 ENVIRONMENT = Path.home() / "DataStorage/jev-router/project/jev-router/ENVIRONMENT.json"
 TASKS = ("stack_blocks", "general_pickup", "fold_clothes", "press_by_number", "stack_bowls")
 
@@ -245,6 +245,8 @@ def main() -> None:
     (output / "launch.json").write_text(json.dumps({"command": command, "layout": args.layout,
         "started": dt.datetime.now().astimezone().isoformat(),
         "source": "existing read-only RoboDojo + GPT-as-Policy installation",
+        "planner_model": "gpt-6.1-sol high via local Pro bridge",
+        "decision_model": "gpt-6-luna via du cad/direct key",
         "input_contract": "current three RGB views and measured robot state only"}, indent=2))
     os.environ.update(environment)
     os.environ["ROBODOJO_RPC_PORT"] = str(port)

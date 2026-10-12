@@ -239,6 +239,9 @@ class StageController:
             "remaining_native_steps": obs["remaining_steps"],
             "recent_executed_actions": recent[-4:], "recent_stage_events": self.events[-4:],
             "task_notes": self.plan.get("notes", []),
+            "planner_stage_recipe": self.plan.get("stages", {}).get(self.stage),
+            "planner_visual_method": self.plan.get("visual_method"),
+            "planner_experience": self.plan.get("experience", []),
             "camera_instruction": "Inspect the current three RGB views directly. The fourth high view, if attached, is the initial block identity reference. Do not use hidden object state, reward, or a prior gripper command as grasp proof.",
         }
         if self.augmented:
@@ -306,7 +309,7 @@ class StageController:
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
         if self.yellow_first and self.active_arm == "right" and self.stage in ("approach", "align"):
             geometry = self._high_geometry(obs)
-            if not geometry or float(geometry["normalized_match_score"]) < 0.75 or not geometry.get("locked_target_center_px"):
+            if not geometry or float(geometry["normalized_match_score"]) < 0.75 or not geometry.get("target_minus_finger_gap_center_px"):
                 self.stage = "reobserve"
                 self.reobserve_cycles += 1
                 self.reobserve_actions = 0
