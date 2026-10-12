@@ -9,7 +9,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 from button_probe import _left_path_preview
-from camera_geometry import (gripper_height_above_landmark, project,
+from camera_geometry import (eef_transform, gripper_height_above_landmark, project,
                              propagate_wrist_calibration)
 from controller import choice
 from refresh_landmark import refresh_landmark
@@ -51,11 +51,25 @@ def _offer(tools, obs: dict, model, plan: dict, output: Path,
     source_uv = project(wrist, point)
     if source_uv is None:
         return obs, {"step_id": obs["step_id"], "label": label}, "source_behind_wrist_incomplete"
+    moving_camera = dict(wrist)
+    moving_camera["camera_to_environment"] = (
+        eef_transform(target_left) @ np.linalg.inv(eef_transform(current)) @
+        np.asarray(wrist["camera_to_environment"], float)).tolist()
+    predicted_uv = project(moving_camera, point)
+    if predicted_uv is None or min(predicted_uv[0], 639 - predicted_uv[0],
+                                   predicted_uv[1], 479 - predicted_uv[1]) < 24:
+        return obs, {"step_id": obs["step_id"], "label": label,
+                     "source_uv_predicted": predicted_uv}, "source_projection_gate_incomplete"
     hand = []
+    current_rotation = Rotation.from_quat(old_q[[1, 2, 3, 0]])
+    world_rotation_delta = (Rotation.from_quat(new_q[[1, 2, 3, 0]]) *
+                            current_rotation.inv()).as_rotvec()
     for fraction in np.linspace(0, 1, 6):
+        partial_q_xyzw = (Rotation.from_rotvec(world_rotation_delta * fraction) *
+                          current_rotation).as_quat()
         pose = {"position": (np.asarray(current["position"], float) +
                              fraction * delta).tolist(),
-                "quaternion_wxyz": target_left["quaternion_wxyz"]}
+                "quaternion_wxyz": partial_q_xyzw[[3, 0, 1, 2]].tolist()}
         hand.append(gripper_height_above_landmark(pose, point)[
             "hand_above_landmark_plane_after_m"])
     if not path["model_path_gate"] or min(hand) < 0.06:
@@ -67,20 +81,22 @@ def _offer(tools, obs: dict, model, plan: dict, output: Path,
                    if (exp_root / name).is_file()}
     options = {
         "execute": (f"Execute only this Pro-reviewed LEFT LINK6 five-step "
-                    f"free-space approach: world delta {delta.tolist()} m, "
+                    f"{'non-contact sensing view' if 'view' in label else 'free-space approach'}: "
+                    f"world translation {delta.tolist()} m, world rotation {rotation_delta:.5f} rad, "
+                    f"world rotation vector {world_rotation_delta.tolist()} rad, "
                     "grippers open, right arm held. Reobserve before any contact."),
         "stop_visible_blocker": "Stop for a specific visible nearby hand/object/table sweep conflict",
         "stop_source_identity": "Stop if the red physical T source point is missing, occluded or confused with gray target",
         "stop_tracking_or_path": "Stop for a concrete current robot-path, joint or tracking mismatch",
     }
     question = choice("red_T_segment",
-        "Choose ONE complete current-image free-space red-T preapproach or a "
+        "Choose ONE complete current-image red-T non-contact action or a "
         "specific stop. The red solid T is the source and gray printed T is "
         "the goal. Pro confirmed the SAME red stem-end top corner in current high "
         "and left-wrist RGB, with public ray checks. Robot-only native first IK "
         "and full five-step public path passed, but mesh height above the corner "
         "plane is not complete scene clearance. Inspect all THREE fresh RGB views "
-        "for a concrete short-corridor blocker. This action is not contact, push, "
+        f"for a concrete short-corridor blocker. The accepted corner is predicted to move in the left wrist from {source_uv} to {predicted_uv} pixels. This action is not contact, push, "
         "grasp or success; fresh RGB and robot tracking must follow.", options)
     evidence = {"task": obs["task"], "instruction": obs["instruction"],
                 "current_step_id": obs["step_id"], "pro_plans": plan["pro_plans"],
@@ -90,7 +106,9 @@ def _offer(tools, obs: dict, model, plan: dict, output: Path,
                 "current_eef": obs["current_eef"],
                 "current_joint_state": obs["current_state"],
                 "candidate_left_target": target_left,
+                "candidate_world_rotation_vector_rad": world_rotation_delta.tolist(),
                 "source_uv_current": source_uv,
+                "source_uv_predicted": predicted_uv,
                 "hand_mesh_min_height_above_source_corner_plane_m": min(hand),
                 "public_robot_five_step_path": path,
                 "recent_steps": history[-2:],
@@ -100,6 +118,7 @@ def _offer(tools, obs: dict, model, plan: dict, output: Path,
     selected = answer["red_T_segment"]
     record = {"step_id": obs["step_id"], "label": label, "luna_choice": selected,
               "source_geometry": geometry, "source_uv_current": source_uv,
+              "source_uv_predicted": predicted_uv,
               "target_left": target_left, "robot_path": path,
               "hand_mesh_min_height_above_source_corner_plane_m": min(hand)}
     if selected != "execute":
@@ -157,16 +176,20 @@ def run_sequence(tools, obs: dict, model, plan: dict, output: Path,
             if point_gap > 0.006 or pose_gap[0] > 0.002 or pose_gap[1] > 0.02:
                 status = "red_T_replay_anchor_mismatch_incomplete"
             else:
+                second_label = ("second_left_X_view" if plan.get("second_purpose") == "sense"
+                                else "second_preapproach")
                 obs, record, status = _offer(
                     tools, obs, model, plan, output,
-                    plan["second_target_left"], fresh, "second_preapproach", trace)
+                    plan["second_target_left"], fresh, second_label, trace)
                 trace.append(record)
                 if status == "executed" and not obs["rollout_finished"]:
                     obs["camera_calibration"] = propagate_wrist_calibration(
                         initial_calibration, initial_eef, obs["current_eef"], obs["step_id"])
                     (output / "camera_calibration_step_010.json").write_text(
                         json.dumps(obs["camera_calibration"], ensure_ascii=False, indent=2))
-                    status = "red_T_second_preapproach_progress_incomplete"
+                    status = ("red_T_second_view_progress_incomplete"
+                              if plan.get("second_purpose") == "sense" else
+                              "red_T_second_preapproach_progress_incomplete")
     native_result = obs.get("result") if obs["rollout_finished"] else tools.finish(status)
     (output / "push_followup_trace.json").write_text(
         json.dumps(trace, ensure_ascii=False, indent=2))

@@ -19,6 +19,10 @@ def main():
     parser.add_argument("--observation", type=Path, required=True)
     parser.add_argument("--calibration", type=Path,
                         help="Current public RGB camera intrinsics/extrinsics, if available")
+    parser.add_argument("--previous-observation", type=Path,
+                        help="Optional earlier three-RGB public observation for visual motion comparison")
+    parser.add_argument("--previous-calibration", type=Path,
+                        help="Public camera calibration matched to --previous-observation")
     parser.add_argument("--geometry-evidence", type=Path,
                         help="Optional camera-derived landmark/projection checks from current RGB and measured LINK6")
     parser.add_argument("--template", type=Path)
@@ -28,18 +32,38 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     obs = json.loads(args.observation.read_text())
+    if bool(args.previous_observation) != bool(args.previous_calibration):
+        raise ValueError("Previous observation and calibration must be supplied together")
+    previous = (json.loads(args.previous_observation.read_text())
+                if args.previous_observation else None)
+    if previous and (previous["task"] != obs["task"] or
+                     int(previous["step_id"]) >= int(obs["step_id"])):
+        raise ValueError("Historical RGB must be an earlier step of the same task")
     template = json.loads(args.template.read_text()) if args.template else None
     if template and template["task"] != obs["task"]:
         raise ValueError("Task mismatch")
     public = {
         "task": obs["task"], "instruction": obs["instruction"],
+        "step_id": obs["step_id"],
         "current_eef": obs["current_eef"],
         "current_joint_state": obs["current_state"],
     }
     if args.calibration:
         public["camera_calibration"] = json.loads(args.calibration.read_text())
+        if int(public["camera_calibration"]["step_id"]) != int(obs["step_id"]):
+            raise ValueError("Current RGB/calibration step mismatch")
     if args.geometry_evidence:
         public["camera_derived_geometry_evidence"] = json.loads(args.geometry_evidence.read_text())
+    if previous:
+        previous_calibration = json.loads(args.previous_calibration.read_text())
+        if int(previous_calibration["step_id"]) != int(previous["step_id"]):
+            raise ValueError("Historical RGB/calibration step mismatch")
+        public["historical_observation_for_motion_only"] = {
+            "step_id": previous["step_id"],
+            "current_eef": previous["current_eef"],
+            "current_joint_state": previous["current_state"],
+            "camera_calibration": previous_calibration,
+        }
     experience = {
         "global": args.global_experience.read_text(),
         "task": args.task_experience.read_text() if args.task_experience else "",
@@ -70,7 +94,10 @@ def main():
         "orientation change from each arm's current measured LINK6 pose. A longer "
         "10/15/20-step robot path preview is diagnostic only: it cannot be submitted "
         "as one EEF action. Split longer sensing paths into independently planned, "
-        "observed and Luna-approved legal segments. Return JSON only."
+        "observed and Luna-approved legal segments. If historical RGB is provided, "
+        "use it only to compare actual visual motion and validate the public camera "
+        "projection; never reuse old pixels as current contact or target evidence. "
+        "Calculate image u/v motion signs from numeric K/T rather than prose. Return JSON only."
         + (" Camera-derived geometry evidence is provided from the CURRENT RGB, "
            "public camera calibration and measured LINK6. Compare predicted "
            "image margin, public robot-path reachability, visible obstacles and "
@@ -116,6 +143,19 @@ def main():
         parts.append({"type": "text", "text": "Current RGB: " + item["camera"]})
         parts.append({"type": "image_url", "image_url": {
             "url": "data:image/png;base64," + base64.b64encode(raw).decode("ascii")}})
+    previous_image_meta = []
+    if previous:
+        for item in previous["images"]:
+            if item["camera"] not in {"cam_high", "cam_left_wrist", "cam_right_wrist"}:
+                raise ValueError("Unexpected historical camera")
+            old_image = Path(item["path"])
+            old_raw = old_image.read_bytes()
+            previous_image_meta.append({"camera": item["camera"], "path": str(old_image),
+                                        "sha256": hashlib.sha256(old_raw).hexdigest()})
+            parts.append({"type": "text", "text":
+                          f"HISTORICAL RGB step_id={previous['step_id']} for motion comparison ONLY: " + item["camera"]})
+            parts.append({"type": "image_url", "image_url": {
+                "url": "data:image/png;base64," + base64.b64encode(old_raw).decode("ascii")}})
     payload = {
         "model": "gpt-6.1-sol", "reasoning_effort": "high",
         "response_format": {"type": "json_object"}, "stream": False,
@@ -125,6 +165,7 @@ def main():
     write_json(args.output / "planner-input-manifest.json", {
         "model": payload["model"], "reasoning_effort": payload["reasoning_effort"],
         "public_observation": public, "images": image_meta,
+        "historical_images_for_motion_only": previous_image_meta,
         "template_sha256": (hashlib.sha256(args.template.read_bytes()).hexdigest()
                             if args.template else None),
         "geometry_evidence_sha256": (hashlib.sha256(args.geometry_evidence.read_bytes()).hexdigest()

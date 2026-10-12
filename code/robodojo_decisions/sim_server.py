@@ -26,9 +26,13 @@ class SyncedLauncher(_AppLauncher):
             config.use_fabric = True
             # CPU+Fabric skips Garment and Articulation objects at scene load.
             # Cloth fails to initialize under GPU Fabric here; button reward
-            # code also converts GPU tensors directly to NumPy. Both need the
-            # native CPU non-Fabric path for a valid reset.
-            if os.environ.get("ROBODOJO_TASK") in {"fold_clothes", "press_by_number"}:
+            # code also converts GPU tensors directly to NumPy. The egg-holder
+            # layout uses an articulation and its CPU+Fabric reset omits that
+            # object; toaster, laptop and spring-button articulations behave the same way. These
+            # tasks need the native CPU non-Fabric path.
+            if os.environ.get("ROBODOJO_TASK") in {"fold_clothes", "press_by_number",
+                                                  "fill_egg_holder", "make_toast",
+                                                  "store_laptop_and_headphones", "swap_blocks"}:
                 config.device = "cpu"
                 config.use_fabric = False
             return original(env, config, *a, **kw)

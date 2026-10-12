@@ -140,6 +140,13 @@ graph LR
     T_2026W42_032["📊 robodojo-decision-stages<br/>红T同源角双图复核通过且两段Luna实动；…"]:::experiment
     T_2026W42_033["📝 robodojo-task-coverage<br/>CLI开放官方42任务，第5批五项三RGB…"]:::note
     T_2026W42_034["📊 robodojo-decision-stages<br/>非接触短取景门与RGB轮廓深度使碗任务首次…"]:::experiment
+    T_2026W42_035["📊 robodojo-decision-stages<br/>碗第二Z取景实动5步，腕图v+11与数值K…"]:::experiment
+    T_2026W42_036["📊 robodojo-decision-stages<br/>红T新视差同角通过但实际推面仍被手指遮挡；…"]:::experiment
+    T_2026W42_037["📊 robodojo-decision-stages<br/>数字右腕两段10步使蓝源完整入画，但旧9身…"]:::experiment
+    T_2026W42_038["📝 robodojo-task-coverage<br/>第六批五任务经蛋盒CPU非Fabric与钥…"]:::note
+    T_2026W42_039["📝 robodojo-task-coverage<br/>第七批五任务经吐司机CPU非Fabric与…"]:::note
+    T_2026W42_040["📝 robodojo-task-coverage<br/>第八批及最后两任务经笔记本与弹簧按钮CPU…"]:::note
+    T_2026W42_041["📊 robodojo-decision-stages<br/>数字2身份纠错后首次组合预抓取接近获Lun…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -241,6 +248,13 @@ graph LR
   T_2026W42_031 --> T_2026W42_032
   T_2026W42_026 --> T_2026W42_033
   T_2026W42_032 --> T_2026W42_034
+  T_2026W42_034 --> T_2026W42_035
+  T_2026W42_035 --> T_2026W42_036
+  T_2026W42_036 --> T_2026W42_037
+  T_2026W42_033 --> T_2026W42_038
+  T_2026W42_038 --> T_2026W42_039
+  T_2026W42_039 --> T_2026W42_040
+  T_2026W42_037 --> T_2026W42_041
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -369,6 +383,13 @@ graph LR
 | `T-2026W42-032` | 2026-10-13 | experiment | robodojo-decision-stages | 红T同源角双图复核通过且两段Luna实动；第二段跟踪2.96mm超2mm接触前门 | `EXP-2026W42-079` | - |
 | `T-2026W42-033` | 2026-10-13 | note | robodojo-task-coverage | CLI开放官方42任务，第5批五项三RGB预检完成，累计25/42但完整成功仍0 | `EXP-2026W42-083` | - |
 | `T-2026W42-034` | 2026-10-13 | experiment | robodojo-decision-stages | 非接触短取景门与RGB轮廓深度使碗任务首次Luna实动5步且视差正确；仍无抓取 | `EXP-2026W42-084` | - |
+| `T-2026W42-035` | 2026-10-13 | experiment | robodojo-decision-stages | 碗第二Z取景实动5步，腕图v+11与数值K/T一致而与Pro文字相反；需数值投影验收 | `EXP-2026W42-085` | - |
+| `T-2026W42-036` | 2026-10-13 | experiment | robodojo-decision-stages | 红T新视差同角通过但实际推面仍被手指遮挡；停用仅改善角点12px的再取景，转新源物首操作 | `EXP-2026W42-088` | - |
+| `T-2026W42-037` | 2026-10-13 | experiment | robodojo-decision-stages | 数字右腕两段10步使蓝源完整入画，但旧9身份可能错为2；先语义重识别再抓取 | `EXP-2026W42-092` | - |
+| `T-2026W42-038` | 2026-10-13 | note | robodojo-task-coverage | 第六批五任务经蛋盒CPU非Fabric与钥匙两项官方LFS资产定向修复，三RGB预检累计30/42；完整成功仍0 | `EXP-2026W42-091` | - |
+| `T-2026W42-039` | 2026-10-13 | note | robodojo-task-coverage | 第七批五任务经吐司机CPU非Fabric与键盘官方LFS JSON修复，三RGB预检累计35/42；完整成功仍0 | `EXP-2026W42-094` | - |
+| `T-2026W42-040` | 2026-10-13 | note | robodojo-task-coverage | 第八批及最后两任务经笔记本与弹簧按钮CPU非Fabric修复，42/42具三RGB零动作入口；完整成功仍0 | `EXP-2026W42-096` | - |
+| `T-2026W42-041` | 2026-10-13 | experiment | robodojo-decision-stages | 数字2身份纠错后首次组合预抓取接近获Luna批准并实动15步，末段残差2.412mm越门且无物体移动；转step15实心抓段 | `EXP-2026W42-097` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
