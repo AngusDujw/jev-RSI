@@ -255,7 +255,7 @@ class StageController:
                     "This is a visual sign check, not an object pose.")
             if self.staged_micro:
                 state["rgb_only_extra_information"]["staged_motion_rule"] = (
-                    "First reduce the target-to-finger horizontal RGB error with X only. "
+                    "First reduce the target-to-finger horizontal RGB error with X only. " +
                     ("If occluded, raise up to 30 mm, then retreat X up to 30 mm, each in 10 mm steps to regain visibility. "
                      if self.recovery_sweep else
                      "If the target is occluded, preserve measured X progress and use at most two 5 mm Z+ visibility probes. ") +
