@@ -118,7 +118,7 @@ class StageController:
                  augmented: bool = False, reobserve: bool = False,
                  geometry_cue: bool = False, sign_gate: bool = False,
                  staged_micro: bool = False, recovery_sweep: bool = False,
-                 y_probe: bool = False):
+                 y_probe: bool = False, edge_margin_probe: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
@@ -128,6 +128,7 @@ class StageController:
         self.staged_micro = staged_micro
         self.recovery_sweep = recovery_sweep
         self.y_probe = y_probe
+        self.edge_margin_probe = edge_margin_probe
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -158,6 +159,7 @@ class StageController:
         self.micro_no_progress_count = 0
         self.last_x_sign = 0
         self.y_probe_actions = 0
+        self.previous_alignment_target: dict | None = None
 
     def _current_colors(self, obs: dict) -> set[str]:
         if not self.augmented:
@@ -184,9 +186,14 @@ class StageController:
             x, y = target["center_px"]
             left, right = tracked["estimated_inner_finger_x_px"]
             tip_y = tracked["estimated_finger_tip_y_px"]
+            initial_width = next((item["bbox_xywh"][2] for item in self.block_reference
+                                  if item.get("id") == self.target_id), target["bbox_xywh"][2])
+            edge_margin = min(x - initial_width / 2 - left,
+                              right - (x + initial_width / 2))
             tracked.update({
                 "locked_target_center_px": [x, y],
                 "locked_target_mask_area_px": int(target["mask_area_px"]),
+                "conservative_target_to_inner_finger_edge_margin_px": round(edge_margin, 1),
                 "target_minus_finger_gap_center_px": [round(x - (left + right) / 2, 1),
                                                        round(y - tip_y, 1)],
                 "target_inside_inner_finger_gap_x": bool(left + 8 <= x <= right - 8),
@@ -263,7 +270,10 @@ class StageController:
                     ("If occluded, raise up to 30 mm, then retreat X up to 30 mm, each in 10 mm steps to regain visibility. "
                      if self.recovery_sweep else
                      "If the target is occluded, preserve measured X progress and use at most two 5 mm Z+ visibility probes. ") +
-                    ("At horizontal error <=8 px in two fresh observations, stop X and run one Y-3 mm RGB/EEF probe, "
+                    ("At estimated target-to-inner-finger edge margin >=3 px in two stable fresh observations, "
+                     "stop X and run one Y-3 mm RGB/EEF probe, then stop incomplete for review."
+                     if self.edge_margin_probe else
+                     "At horizontal error <=8 px in two fresh observations, stop X and run one Y-3 mm RGB/EEF probe, "
                      "possibly followed by Y-2 mm only if the first improves the vertical error without moving the block."
                      if self.y_probe else
                      "Only after two reliable RGB observations at horizontal error <=5 px may Y/Z be considered; "
@@ -307,15 +317,27 @@ class StageController:
                             self.stalled_reason = ("y_probe_rgb_rejected:"
                                                    f"improvement={improvement:.1f},"
                                                    f"block_shift={block_shift:.1f},area_ratio={area_ratio:.2f}")
-                        elif self.y_probe_actions >= 2:
+                        elif self.y_probe_actions >= (1 if self.edge_margin_probe else 2):
                             self.stalled_reason = "bounded_y_probe_complete_incomplete"
             if self.stage in ("approach", "align"):
                 if target_seen and score >= 0.80:
                     horizontal = abs(float(geometry["target_minus_finger_gap_center_px"][0]))
-                    self.horizontal_confirmations = (self.horizontal_confirmations + 1
-                                                     if horizontal <= (8 if self.y_probe else 5) else 0)
+                    if self.edge_margin_probe:
+                        area = float(geometry["locked_target_mask_area_px"])
+                        center = np.asarray(geometry["locked_target_center_px"], dtype=float)
+                        previous = self.previous_alignment_target
+                        stable = (previous is not None and
+                                  float(np.linalg.norm(center - previous["center"])) <= 2.0 and
+                                  0.80 <= area / max(1.0, previous["area"]) <= 1.25)
+                        margin = float(geometry["conservative_target_to_inner_finger_edge_margin_px"])
+                        self.horizontal_confirmations = (self.horizontal_confirmations + 1 if stable else 1) if margin >= 3 else 0
+                        self.previous_alignment_target = {"center": center, "area": area}
+                    else:
+                        self.horizontal_confirmations = (self.horizontal_confirmations + 1
+                                                         if horizontal <= (8 if self.y_probe else 5) else 0)
                 else:
                     self.horizontal_confirmations = 0
+                    self.previous_alignment_target = None
                     self.stage = "reobserve"
                     self.reobserve_cycles += 1
                     self.reobserve_actions = 0
@@ -375,8 +397,10 @@ class StageController:
                             float(geometry["normalized_match_score"]) < 0.80 or
                             self.horizontal_confirmations < 2 or
                             not geometry.get("target_minus_finger_gap_center_px") or
-                            abs(float(geometry["target_minus_finger_gap_center_px"][0])) >
-                            (8 if self.y_probe else 5)):
+                            (float(geometry.get("conservative_target_to_inner_finger_edge_margin_px", -100)) < 3
+                             if self.edge_margin_probe else
+                             abs(float(geometry["target_minus_finger_gap_center_px"][0])) >
+                             (8 if self.y_probe else 5))):
                         verdict = "uncertain"
                 self.target_missing = 0 if target_visible else self.target_missing + 1
                 if verdict == "pass" and not target_visible:
@@ -467,12 +491,14 @@ class StageController:
             if not geometry or float(geometry["normalized_match_score"]) < 0.80 or not geometry.get("target_minus_finger_gap_center_px"):
                 raise ValueError("Y probe requires a visible target and reliable RGB tracker")
             horizontal_error = abs(float(geometry["target_minus_finger_gap_center_px"][0]))
-            if horizontal_error <= 8 and self.horizontal_confirmations == 1:
+            lateral_ready = (float(geometry.get("conservative_target_to_inner_finger_edge_margin_px", -100)) >= 3
+                             if self.edge_margin_probe else horizontal_error <= 8)
+            if lateral_ready and self.horizontal_confirmations == 1:
                 delta = np.zeros(3)
                 answer = {"direction": "hold_for_second_horizontal_rgb_frame", "size": "hold", "rotation": "hold"}
                 source = "fresh RGB confirmation before Pro-guided Y probe"
-            elif horizontal_error <= 8 and self.horizontal_confirmations >= 2:
-                if self.y_probe_actions >= 2:
+            elif lateral_ready and self.horizontal_confirmations >= 2:
+                if self.y_probe_actions >= (1 if self.edge_margin_probe else 2):
                     raise ValueError("Bounded Y probe already completed")
                 distance = 0.003 if self.y_probe_actions == 0 else 0.002
                 delta = np.asarray((0.0, -distance, 0.0))
@@ -539,7 +565,10 @@ class StageController:
         if self.staged_micro and self.stage in ("approach", "align"):
             if horizontal_error is None or float(geometry["normalized_match_score"]) < 0.80:
                 raise ValueError("Staged RGB action requires a visible target and reliable gripper tracker")
-            if abs(horizontal_error) > (8 if self.y_probe else 5) or self.horizontal_confirmations < 2:
+            lateral_ready = (float(geometry.get("conservative_target_to_inner_finger_edge_margin_px", -100)) >= 3
+                             if self.edge_margin_probe else
+                             abs(horizontal_error) <= (8 if self.y_probe else 5))
+            if not lateral_ready or self.horizontal_confirmations < 2:
                 allowed_directions = ("hold", "x_negative" if horizontal_error < 0 else "x_positive")
             else:
                 allowed_directions = ("hold", "y_negative", "y_positive", "z_negative", "z_positive")

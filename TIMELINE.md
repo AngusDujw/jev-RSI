@@ -115,6 +115,7 @@ graph LR
     T_2026W42_007["📊 robodojo-decision-stages<br/>v7横向误差69→34px，但Z+/Y+使…"]:::experiment
     T_2026W42_008["📊 robodojo-decision-stages<br/>v8横向误差69→47px，但紫块连续遮挡…"]:::experiment
     T_2026W42_009["📊 robodojo-decision-stages<br/>v9抬升与X退让让目标重现且水平误差到5-…"]:::experiment
+    T_2026W42_010["📊 robodojo-decision-stages<br/>v10中心8px阈值仍在-8.5px挡住Y…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -192,6 +193,7 @@ graph LR
   T_2026W42_006 --> T_2026W42_007
   T_2026W42_007 --> T_2026W42_008
   T_2026W42_008 --> T_2026W42_009
+  T_2026W42_009 --> T_2026W42_010
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -295,6 +297,7 @@ graph LR
 | `T-2026W42-007` | 2026-10-12 | experiment | robodojo-decision-stages | v7横向误差69→34px，但Z+/Y+使竖向偏差扩大且模板失信；改分阶段小幅取证 | `EXP-2026W42-014` | - |
 | `T-2026W42-008` | 2026-10-12 | experiment | robodojo-decision-stages | v8横向误差69→47px，但紫块连续遮挡且两次Z+5mm未重现；改受控抬升与X退让取证 | `EXP-2026W42-015` | - |
 | `T-2026W42-009` | 2026-10-12 | experiment | robodojo-decision-stages | v9抬升与X退让让目标重现且水平误差到5-6px，但掌下目标仍不可抓；检验Y-3mm单轴投影 | `EXP-2026W42-016` | - |
+| `T-2026W42-010` | 2026-10-12 | experiment | robodojo-decision-stages | v10中心8px阈值仍在-8.5px挡住Y探测；改双帧保守指缝边缘余量放行一次Y-3mm | `EXP-2026W42-017` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

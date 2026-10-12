@@ -107,16 +107,17 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
             from probe_y import run_probe
             result.update(run_probe(tools, obs, model, output))
             return result
-        if controller_version in ("v2", "v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe"):
+        if controller_version in ("v2", "v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe"):
             from stage_controller import NO_MOTION, StageController
             stage_control = StageController(model, obs, plan,
-                augmented=(controller_version in ("v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe")),
-                reobserve=(controller_version in ("v4", "v6", "v7", "v8", "v9", "v10_y_probe")),
-                geometry_cue=(controller_version in ("v6", "v7", "v8", "v9", "v10_y_probe")),
-                sign_gate=(controller_version in ("v7", "v8", "v9", "v10_y_probe")),
-                staged_micro=(controller_version in ("v8", "v9", "v10_y_probe")),
-                recovery_sweep=(controller_version in ("v9", "v10_y_probe")),
-                y_probe=(controller_version == "v10_y_probe"))
+                augmented=(controller_version in ("v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe")),
+                reobserve=(controller_version in ("v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe")),
+                geometry_cue=(controller_version in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe")),
+                sign_gate=(controller_version in ("v7", "v8", "v9", "v10_y_probe", "v11_edge_probe")),
+                staged_micro=(controller_version in ("v8", "v9", "v10_y_probe", "v11_edge_probe")),
+                recovery_sweep=(controller_version in ("v9", "v10_y_probe", "v11_edge_probe")),
+                y_probe=(controller_version in ("v10_y_probe", "v11_edge_probe")),
+                edge_margin_probe=(controller_version == "v11_edge_probe"))
         else:
             stage_control = None
         while not obs["rollout_finished"]:
@@ -201,7 +202,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -210,7 +211,7 @@ def main() -> None:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
     if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
-    if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe") and (args.task != "stack_blocks" or args.layout != 0):
+    if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe") and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("RGB geometry cue is calibrated only for stack_blocks layout 0")
     python = executable()
     robo = SOURCE_ROOT / "RoboDojo"
