@@ -8,7 +8,7 @@
     "wire": "chat",
     "max_tokens": 12000,
     "timeout_s": 1300,
-    "transport_recovery_s": 300
+    "transport_recovery_s": 1800
   },
   "decision": {
     "base_url": "https://api.openai.com/v1",
