@@ -57,6 +57,22 @@ def pixel_ray(calibration, uv, origin):
     return transform[:3, 3]-np.asarray(origin, float), direction
 
 
+def project_estimated_point(calibration, point, origin):
+    """Project a past RGB stereo estimate; this is never a current detection."""
+    k = np.asarray(calibration['intrinsic'], float)
+    transform = np.asarray(calibration['camera_to_world'], float)
+    world = np.asarray(point, float)+np.asarray(origin, float)
+    camera = transform[:3, :3].T @ (world-transform[:3, 3])
+    if not np.isfinite(camera).all() or camera[2] >= -1e-6:
+        return dict(in_front=False, pixel_uv=None, inside_image=False)
+    depth = -camera[2]
+    u = k[0, 0]*camera[0]/depth+k[0, 2]
+    v = k[1, 2]-k[1, 1]*camera[1]/depth
+    width, height = calibration['size']
+    return dict(in_front=True, pixel_uv=[round(float(u), 1), round(float(v), 1)],
+                inside_image=bool(0 <= u < width and 0 <= v < height))
+
+
 def _metric_uv(record):
     box = record['bbox_xyxy']
     return record.get('metric_uv') or ((box[0]+box[2])/2, (box[1]+box[3])/2)
@@ -665,6 +681,16 @@ class VisionScene:
             if item['last_position'] is None:
                 continue
             point = np.asarray(item['last_position'], float)
+            projection = None
+            last_stereo = item.get('last_stereo')
+            if (last_stereo is not None and item['id'] not in self.possibly_mobile
+                    and tick-last_stereo['tick'] <= self.cfg.get('max_projection_age_ticks', 60)):
+                projection = dict(source='past_accepted_RGB_stereo_prediction_ONLY',
+                    age_ticks=tick-last_stereo['tick'],
+                    cameras={name:project_estimated_point(calibration,
+                        last_stereo['position_m'], robot_state['env_origin'])
+                        for name, calibration in robot_state['cameras'].items()
+                        if name in CAMERAS})
             # Coarse visual bounds: these are not asset metadata or exact mesh extents.
             half = np.asarray(self.cfg.get('default_half_extent_m', [.025, .025, .018]), float)
             obj = dict(id=item['id'], kind='VisualDetection', category=item['category'],
@@ -683,6 +709,7 @@ class VisionScene:
                 last_stereo=item.get('last_stereo'),
                 last_stereo_age_ticks=(tick-item['last_stereo']['tick']
                                        if item.get('last_stereo') else None),
+                camera_projection_from_last_stereo=projection,
                 possibly_mobile=item['id'] in self.possibly_mobile,
                 visual_motion_confirmed=item['id'] in self.visually_mobile,
                 visual_xy_velocity_m_per_s=item.get('visual_xy_velocity_m_per_s'),
@@ -711,8 +738,9 @@ class VisionScene:
                                   relative_m=state.get('relative_m')))
         evidence = dict(source='RGB-only GPT detection + RGB tracking + calibrated camera triangulation',
             frame='environment_origin', tick=tick, objects=objects, robot=robot_state['robot'],
+            camera_calibration=robot_state['cameras'],
             feature_errors=robot_state.get('feature_errors', []),
-            caution='Object orientation and bbox thickness are unmeasured; stale positions are not success evidence.')
+            caution='Object orientation and bbox thickness are unmeasured. Camera projections of a past stereo point are search predictions, not current detections or success evidence.')
         self.cached_evidence = evidence
         self.log(dict(kind='visual_stage_evidence', tick=tick, objects=[dict(id=o['id'],
             position_m=o['position_m'], position_provenance=o['position_provenance'],

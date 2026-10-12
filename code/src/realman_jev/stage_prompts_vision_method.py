@@ -12,6 +12,14 @@ unobservable_requirements remains unknown until new permitted camera evidence
 actually resolves it. If the required relation cannot be measured with these
 sensors, say so in reasoning and make a bounded reobservation stage, rather
 than inventing an object coordinate or marking task completion.
+Each object may include camera_projection_from_last_stereo. It projects the
+last accepted RGB two-view point through the CURRENT calibrated cameras; its
+pixel_uv, in_front and inside_image values are only search predictions. Use
+them with visible RGB boxes and camera_calibration to choose a bounded wrist
+viewpoint when a small target leaves the moving camera. If a point is predicted
+inside a view yet the target is not visible, consider occlusion or bad identity
+and seek a different view. A projected point is neither a fresh detection nor
+permission for contact, and is invalid after the object may have moved.
 
 For EVERY stage whose target, completion or abort expression refers to an
 object, declare visual_requirements covering EACH referenced visual entity.

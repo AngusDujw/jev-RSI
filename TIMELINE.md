@@ -110,6 +110,7 @@ graph LR
     T_2026W42_002["📊 robodojo-gpt-decision<br/>stack_blocks非特权闭环158步…"]:::experiment
     T_2026W42_003["📊 robodojo-gpt-decision<br/>主动感知死锁解除后stack 100步仍无…"]:::experiment
     T_2026W42_004["📊 robodojo-vision-localization<br/>Luna 三图身份 3/3 但抓取局部点腕…"]:::experiment
+    T_2026W42_005["📊 robodojo-viewpoint-search<br/>历史 RGB 立体点经当前标定投影与首帧框…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -279,6 +280,7 @@ graph LR
 | `T-2026W42-002` | 2026-10-12 | experiment | robodojo-gpt-decision | stack_blocks非特权闭环158步，10次规划耗尽且未抓取 | `EXP-2026W42-004` | - |
 | `T-2026W42-003` | 2026-10-12 | experiment | robodojo-gpt-decision | 主动感知死锁解除后stack 100步仍无抓取，下一缺口是可见部位对应与接触 | `EXP-2026W42-005` | - |
 | `T-2026W42-004` | 2026-10-12 | experiment | robodojo-vision-localization | Luna 三图身份 3/3 但抓取局部点腕视偏移 23.5/30 px，保留高精度定位 | `EXP-2026W42-012` | - |
+| `T-2026W42-005` | 2026-10-12 | experiment | robodojo-viewpoint-search | 历史 RGB 立体点经当前标定投影与首帧框中心误差 0.64/1.64 px；待闭环验证 | `EXP-2026W42-013` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

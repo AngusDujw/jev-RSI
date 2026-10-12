@@ -13,6 +13,7 @@ CAMERAS = ('cam_high', 'cam_left_wrist', 'cam_right_wrist')
 OBJECT_FIELDS = (
     'id', 'descriptions', 'visual_boxes', 'position_m', 'position_provenance',
     'position_measurement', 'last_stereo_age_ticks', 'last_seen_tick',
+    'camera_projection_from_last_stereo',
     'possibly_mobile', 'visual_motion_confirmed',
     'visual_cycle_count', 'visual_cycle_down', 'visual_cycle_valid',
     'visual_cycle_relative_m', 'visual_cycle_displacement_m',
@@ -29,6 +30,11 @@ success, collision state or grasp solely from a finger command. Judge each
 motor sign from its measured target error and deadband; images may reveal a
 specific contradiction or missing evidence and then you should request a
 new observation or replan. Keep choices within the supplied criteria.
+camera_projection_from_last_stereo, when present, predicts where a past RGB
+stereo point falls in the CURRENT calibrated camera. It may guide where you
+look in the image, but it is not a current detection or permission to move
+toward a hidden object. If the predicted point contradicts current RGB,
+request reobservation or replanning under the stage criteria.
 Return one JSON object mapping every question name to one criterion key,
 with no additional keys, explanations, or Markdown.'''
 
