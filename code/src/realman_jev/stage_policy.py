@@ -319,11 +319,20 @@ def run(args):
                             not candidate.stages[-1].observe_after or any(s.observe_after for s in candidate.stages[:-1])):
                         raise ValueError('Emit only the executable prefix through ONE next measured milestone, with observe_after=true on its final stage')
                     if prompt_mode == 'vision_method_v1':
+                        if any(not isinstance(raw_stage, dict) or 'purpose' not in raw_stage
+                               for raw_stage in raw_plan['stages']):
+                            raise ValueError('Every vision-method stage must explicitly declare purpose=sense or purpose=manipulate')
                         handoffs = sum(stage.observe_after for stage in candidate.stages)
                         if handoffs > 3:
                             raise ValueError(f'Plan declares {handoffs} GPT handoffs; maximum is 3 because RGB tracking runs every decision')
                         declared = set(vision.method_by_id)
                         for stage in candidate.stages:
+                            if stage.purpose == 'sense':
+                                if any(goal.gripper == 'close' or any(
+                                        re.search(r'(?:now|entry|home)\.o\.v_[a-z][a-z0-9_]*', target)
+                                        for target in goal.target)
+                                        for goal in stage.arms.values()):
+                                    raise ValueError(f'Sensing stage {stage.id!r} must move only to a robot-state waypoint without closing fingers')
                             required = {r.id for r in stage.visual_requirements}
                             if not required <= declared:
                                 raise ValueError(f'Stage {stage.id!r} requires an undeclared visual entity')
@@ -394,7 +403,7 @@ def run(args):
                     log(dict(kind='stage_entry_blocked',tick=tick,**feedback,physical_action_sent=False))
                     plan=None
                     continue
-            if prompt_mode == 'vision_method_v1' and stage.visual_requirements:
+            if prompt_mode == 'vision_method_v1' and stage.visual_requirements and stage.purpose != 'sense':
                 bounded_requirements = [requirement.model_copy(update=dict(
                     max_age_ticks=min(requirement.max_age_ticks,
                         vision.method_by_id[requirement.id].max_stale_ticks)))

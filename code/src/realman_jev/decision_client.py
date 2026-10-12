@@ -34,6 +34,18 @@ with no additional keys, explanations, or Markdown.'''
 def add_visual_question(questions, stage):
     result = dict(questions)
     if stage.visual_requirements:
+        if stage.purpose == 'sense':
+            result['visual_integrity'] = dict(type='choice', instructions=(
+                'This is a bounded camera-search stage whose arm target depends only on robot state. '
+                'Missing, occluded, or non-stereo target evidence is the reason to move the camera, '
+                'not a reason to veto that safe search. Choose consistent unless the current images '
+                'show a concrete wrong identity, unsafe camera path, or other contradiction to the '
+                'declared search. Choose replan for such a specific contradiction.'),
+                criteria={
+                    'consistent': 'Proceed with bounded camera-search motion or measured stage transition',
+                    'replan': 'Stop search and return a visible contradiction to the planner',
+                })
+            return result
         result['visual_integrity'] = dict(type='choice', instructions=(
             'Use the attached current images and sensor-derived object records. '
             'Choose consistent when they do not show a concrete contradiction to '
@@ -77,7 +89,7 @@ def prepare(log_folder, number, instruction, stage, state, questions, vision,
     robot = evidence['robot']
     request = dict(
         public_instruction=instruction,
-        stage=dict(id=stage.id, objective=stage.objective,
+        stage=dict(id=stage.id, objective=stage.objective, purpose=stage.purpose,
                    visual_requirements=[item.model_dump() for item in stage.visual_requirements]),
         motor_state=state,
         visual_method=[item.model_dump() for item in entities],

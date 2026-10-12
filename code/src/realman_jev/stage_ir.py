@@ -43,6 +43,7 @@ class Stage(BaseModel):
     model_config = ConfigDict(extra='forbid')
     id: str
     objective: str
+    purpose: Literal['sense', 'manipulate'] = 'manipulate'
     arms: dict[Literal['left', 'right'], ArmGoal]
     completion: list[Predicate] = Field(default_factory=list)
     abort: list[Predicate] = Field(default_factory=list)
