@@ -23,7 +23,14 @@ TASKS = ("stack_blocks", "general_pickup", "fold_clothes", "press_by_number", "s
          "classify_objects", "align_blocks", "cover_blocks", "solve_equation",
          "stack_blocks_by_language", "imitate_sorting_sequence",
          "classify_objects_by_language", "sort_nesting_dolls_by_size", "swap_T",
-         "fasten_screws", "put_bottles_into_dustbin", "play_Xylophone")
+         "fasten_screws", "put_bottles_into_dustbin", "play_Xylophone",
+         "pick_from_conveyor_by_image", "pour_balls_into_vase",
+         "pour_liquid_into_cup", "sweep_blocks", "build_tower", "deposit_coin",
+         "fill_egg_holder", "fill_pen_holder", "hang_mugs", "insert_key",
+         "insert_tubes", "make_kong", "make_toast", "organize_table",
+         "pack_objects_into_box", "play_stacking_toy", "play_tic_tac_toe",
+         "plug_in_charger", "pour_by_language", "store_laptop_and_headphones",
+         "store_tools_in_toolbox", "swap_blocks")
 
 
 def executable() -> Path:
@@ -116,6 +123,42 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         if key_file is None:
             raise ValueError("--key-file is required for control")
         model = DecisionClient(key_file, output / "decisions")
+        if controller_version == "v1_button_view":
+            if initial_camera_calibration is None:
+                raise ValueError("Button view requires public RGB calibration")
+            from button_probe import run_probe as run_button_probe
+            result.update(run_button_probe(tools, obs, model, plan, output,
+                                           initial_camera_calibration, initial_eef))
+            return result
+        if controller_version == "v1_button_sequence":
+            if initial_camera_calibration is None:
+                raise ValueError("Button view sequence requires public RGB calibration")
+            from button_sequence import run_sequence as run_button_sequence
+            result.update(run_button_sequence(tools, obs, model, plan, output,
+                                              initial_camera_calibration, initial_eef,
+                                              max_decisions))
+            return result
+        if controller_version == "v1_push_preapproach":
+            if initial_camera_calibration is None:
+                raise ValueError("Push preapproach requires public RGB calibration")
+            from push_probe import run_probe as run_push_probe
+            result.update(run_push_probe(tools, obs, model, plan, output,
+                                         initial_camera_calibration, initial_eef))
+            return result
+        if controller_version == "v1_push_followup":
+            if initial_camera_calibration is None:
+                raise ValueError("Push followup requires public RGB calibration")
+            from push_followup import run_sequence as run_push_followup
+            result.update(run_push_followup(tools, obs, model, plan, output,
+                                            initial_camera_calibration, initial_eef))
+            return result
+        if controller_version == "v1_bowl_view":
+            if initial_camera_calibration is None:
+                raise ValueError("Bowl view requires public RGB calibration")
+            from bowl_view_probe import run_probe as run_bowl_view
+            result.update(run_bowl_view(tools, obs, model, plan, output,
+                                         initial_camera_calibration, initial_eef))
+            return result
         if controller_version == "v5_probe_y":
             from probe_y import run_probe
             result.update(run_probe(tools, obs, model, output))
@@ -348,7 +391,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -357,6 +400,12 @@ def main() -> None:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
     if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
+    if args.controller in ("v1_button_view", "v1_button_sequence") and (args.task != "press_by_number" or args.layout != 0):
+        parser.error("Button view controllers are press_by_number layout-0 pilots")
+    if args.controller in ("v1_push_preapproach", "v1_push_followup") and (args.task != "push_T" or args.layout != 0):
+        parser.error("Push controllers are push_T layout-0 pilots")
+    if args.controller == "v1_bowl_view" and (args.task != "stack_bowls" or args.layout != 0):
+        parser.error("Bowl view controller is a stack_bowls layout-0 pilot")
     if args.controller in ("v1_source_view", "v1_source_view_sequence") and (args.task != "cover_blocks" or args.layout != 0):
         parser.error("source-view pilots are for cover_blocks layout 0")
     if args.controller == "v1_source_single_view" and (args.task != "play_Xylophone" or args.layout != 0):

@@ -136,6 +136,10 @@ graph LR
     T_2026W42_028["📊 robodojo-decision-stages<br/>木琴双转腕10步取得同源端双视图，杆轴线估…"]:::experiment
     T_2026W42_029["📊 robodojo-decision-stages<br/>五步公开机器人路径门使Luna放行木琴右腕…"]:::experiment
     T_2026W42_030["📊 robodojo-decision-stages<br/>木琴右腕20步仍无槌杆，长视角超原生单步合…"]:::experiment
+    T_2026W42_031["📊 robodojo-decision-stages<br/>按钮LINK6移动33mm但腕图卡片0像素…"]:::experiment
+    T_2026W42_032["📊 robodojo-decision-stages<br/>红T同源角双图复核通过且两段Luna实动；…"]:::experiment
+    T_2026W42_033["📝 robodojo-task-coverage<br/>CLI开放官方42任务，第5批五项三RGB…"]:::note
+    T_2026W42_034["📊 robodojo-decision-stages<br/>非接触短取景门与RGB轮廓深度使碗任务首次…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -233,6 +237,10 @@ graph LR
   T_2026W42_027 --> T_2026W42_028
   T_2026W42_028 --> T_2026W42_029
   T_2026W42_029 --> T_2026W42_030
+  T_2026W42_030 --> T_2026W42_031
+  T_2026W42_031 --> T_2026W42_032
+  T_2026W42_026 --> T_2026W42_033
+  T_2026W42_032 --> T_2026W42_034
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -357,6 +365,10 @@ graph LR
 | `T-2026W42-028` | 2026-10-13 | experiment | robodojo-decision-stages | 木琴双转腕10步取得同源端双视图，杆轴线估计P95仍5.30毫米未授权抓取 | `EXP-2026W42-065`, `EXP-2026W42-066` | - |
 | `T-2026W42-029` | 2026-10-13 | experiment | robodojo-decision-stages | 五步公开机器人路径门使Luna放行木琴右腕首段，原生15步但右腕仍未见木槌 | `EXP-2026W42-070` | - |
 | `T-2026W42-030` | 2026-10-13 | experiment | robodojo-decision-stages | 木琴右腕20步仍无槌杆，长视角超原生单步合同；当前杆线P95 5.31毫米未过抓持门，改找新视差 | `EXP-2026W42-073`, `EXP-2026W42-074` | - |
+| `T-2026W42-031` | 2026-10-13 | experiment | robodojo-decision-stages | 按钮LINK6移动33mm但腕图卡片0像素平移，Pro停止当前按压路径 | `EXP-2026W42-076` | - |
+| `T-2026W42-032` | 2026-10-13 | experiment | robodojo-decision-stages | 红T同源角双图复核通过且两段Luna实动；第二段跟踪2.96mm超2mm接触前门 | `EXP-2026W42-079` | - |
+| `T-2026W42-033` | 2026-10-13 | note | robodojo-task-coverage | CLI开放官方42任务，第5批五项三RGB预检完成，累计25/42但完整成功仍0 | `EXP-2026W42-083` | - |
+| `T-2026W42-034` | 2026-10-13 | experiment | robodojo-decision-stages | 非接触短取景门与RGB轮廓深度使碗任务首次Luna实动5步且视差正确；仍无抓取 | `EXP-2026W42-084` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
