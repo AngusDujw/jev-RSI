@@ -118,7 +118,8 @@ class StageController:
                  augmented: bool = False, reobserve: bool = False,
                  geometry_cue: bool = False, sign_gate: bool = False,
                  staged_micro: bool = False, recovery_sweep: bool = False,
-                 y_probe: bool = False, edge_margin_probe: bool = False):
+                 y_probe: bool = False, edge_margin_probe: bool = False,
+                 visibility_confirmation: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
@@ -129,6 +130,7 @@ class StageController:
         self.recovery_sweep = recovery_sweep
         self.y_probe = y_probe
         self.edge_margin_probe = edge_margin_probe
+        self.visibility_confirmation = visibility_confirmation
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -160,6 +162,8 @@ class StageController:
         self.last_x_sign = 0
         self.y_probe_actions = 0
         self.previous_alignment_target: dict | None = None
+        self.visibility_before: dict | None = None
+        self.visibility_hold_issued = False
 
     def _current_colors(self, obs: dict) -> set[str]:
         if not self.augmented:
@@ -285,6 +289,23 @@ class StageController:
             geometry = self._high_geometry(obs)
             score = float(geometry["normalized_match_score"]) if geometry else 0.0
             target_seen = bool(geometry and geometry.get("locked_target_center_px"))
+            if self.visibility_hold_issued:
+                previous = self.visibility_before
+                self.visibility_hold_issued = False
+                self.visibility_before = None
+                if not previous or not target_seen:
+                    self.stalled_reason = "rgb_visibility_confirmation_lost_target"
+                else:
+                    center = np.asarray(geometry["locked_target_center_px"], dtype=float)
+                    area = float(geometry["locked_target_mask_area_px"])
+                    if (score < 0.80 or
+                            float(np.linalg.norm(center - previous["center"])) > 2.0 or
+                            area < 0.90 * previous["area"] or
+                            float(geometry["conservative_target_to_inner_finger_edge_margin_px"]) < 3):
+                        self.stalled_reason = "rgb_visibility_confirmation_failed"
+                    else:
+                        self.previous_alignment_target = previous
+                        self.horizontal_confirmations = 1
             if score < 0.80 and not (self.recovery_sweep and self.stage == "reobserve"):
                 self.stalled_reason = "rgb_gripper_tracker_below_0_80"
             if self.recovery_sweep and self.stage == "reobserve" and geometry and (
@@ -420,6 +441,24 @@ class StageController:
                     verdict = "uncertain"
                 if recovered:
                     verdict = "pass"
+                    if self.visibility_confirmation:
+                        recovery_geometry = self._high_geometry(obs)
+                        recovery_score = float(recovery_geometry["normalized_match_score"]) if recovery_geometry else 0.0
+                        margin = float(recovery_geometry.get("conservative_target_to_inner_finger_edge_margin_px", -100)) if recovery_geometry else -100
+                        if recovery_score < 0.80:
+                            if recovery_score >= 0.79 and margin >= 3:
+                                self.visibility_before = {
+                                    "center": np.asarray(recovery_geometry["locked_target_center_px"], dtype=float),
+                                    "area": float(recovery_geometry["locked_target_mask_area_px"]),
+                                }
+                            else:
+                                self.stalled_reason = "rgb_recovery_tracker_not_reliable"
+                        elif margin >= 3:
+                            self.previous_alignment_target = {
+                                "center": np.asarray(recovery_geometry["locked_target_center_px"], dtype=float),
+                                "area": float(recovery_geometry["locked_target_mask_area_px"]),
+                            }
+                            self.horizontal_confirmations = 1
                 if self.reobserve_actions >= (6 if self.recovery_sweep else 2 if self.staged_micro else 3) and verdict != "pass":
                     self.stalled_reason = "target_unrecoverable_after_visibility_actions"
         if self.stage == "return_home" and verdict == "pass":
@@ -459,7 +498,12 @@ class StageController:
                                       self.initial_eef[arm]["quaternion_wxyz"]))
         name = f"move_{self.motion_calls:04d}"
         self.motion_calls += 1
-        if self.stage == "reobserve":
+        if self.visibility_confirmation and self.visibility_before is not None and not self.visibility_hold_issued and self.stage == "align":
+            delta = np.zeros(3)
+            answer = {"direction": "hold_for_rgb_tracker_confirmation", "size": "hold", "rotation": "hold"}
+            source = "fresh RGB confirmation of recovered target and gripper"
+            self.visibility_hold_issued = True
+        elif self.stage == "reobserve":
             if self.recovery_sweep:
                 if self.reobserve_actions < 3:
                     delta = np.asarray((0.0, 0.0, 0.010))
