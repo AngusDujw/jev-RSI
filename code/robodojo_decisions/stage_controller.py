@@ -126,7 +126,7 @@ class StageController:
                  staged_micro: bool = False, recovery_sweep: bool = False,
                  y_probe: bool = False, edge_margin_probe: bool = False,
                  visibility_confirmation: bool = False,
-                 yellow_first: bool = False):
+                 yellow_first: bool = False, yellow_x_first: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
@@ -139,6 +139,7 @@ class StageController:
         self.edge_margin_probe = edge_margin_probe
         self.visibility_confirmation = visibility_confirmation
         self.yellow_first = yellow_first
+        self.yellow_x_first = yellow_x_first
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -304,6 +305,12 @@ class StageController:
                     "Measured locally: +Y moves the right gripper upward in the fixed high image, "
                     "+X moves it right. Translation is capped at 10 mm; preserve yellow visibility "
                     "and do not infer a grasp from gripper closure or a yellow block merely in the wrist view.")
+                if self.yellow_x_first:
+                    state["rgb_only_extra_information"]["horizontal_first_rule"] = (
+                        "When the locked target is more than 5 high-image pixels outside the finger-gap center, "
+                        "choose only a measured-sign world X correction or hold. Fresh RGB and measured EEF "
+                        "must confirm the X error decreases before considering Y/Z. This is a local visual "
+                        "alignment rule, not an object pose estimate.")
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
 
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
@@ -671,11 +678,14 @@ class StageController:
                 raise ValueError("Yellow action requires a visible RGB target and tracked right gripper")
             x_error, y_error = (float(value) for value in geometry["target_minus_finger_gap_center_px"])
             choices = ["hold"]
-            if abs(x_error) > 5:
+            if self.yellow_x_first and abs(x_error) > 5:
                 choices.append("x_negative" if x_error < 0 else "x_positive")
-            if abs(y_error) > 10:
-                choices.append("y_positive" if y_error < 0 else "y_negative")
-            choices.append("z_positive" if abs(y_error) > 10 else "z_negative")
+            else:
+                if abs(x_error) > 5:
+                    choices.append("x_negative" if x_error < 0 else "x_positive")
+                if abs(y_error) > 10:
+                    choices.append("y_positive" if y_error < 0 else "y_negative")
+                choices.append("z_positive" if abs(y_error) > 10 else "z_negative")
             allowed_directions = tuple(choices)
         answer = self.client.query(obs, motion_questions(self.stage,
                                                           self.augmented and not (self.staged_micro or self.yellow_first),

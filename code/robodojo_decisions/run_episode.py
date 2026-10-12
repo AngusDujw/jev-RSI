@@ -107,19 +107,20 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
             from probe_y import run_probe
             result.update(run_probe(tools, obs, model, output))
             return result
-        if controller_version in ("v2", "v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first"):
+        if controller_version in ("v2", "v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first"):
             from stage_controller import NO_MOTION, StageController
             stage_control = StageController(model, obs, plan,
-                augmented=(controller_version in ("v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first")),
-                reobserve=(controller_version in ("v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first")),
-                geometry_cue=(controller_version in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first")),
-                sign_gate=(controller_version in ("v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first")),
+                augmented=(controller_version in ("v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first")),
+                reobserve=(controller_version in ("v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first")),
+                geometry_cue=(controller_version in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first")),
+                sign_gate=(controller_version in ("v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first")),
                 staged_micro=(controller_version in ("v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe")),
                 recovery_sweep=(controller_version in ("v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe")),
                 y_probe=(controller_version in ("v10_y_probe", "v11_edge_probe", "v12_confirm_probe")),
                 edge_margin_probe=(controller_version in ("v11_edge_probe", "v12_confirm_probe")),
                 visibility_confirmation=(controller_version == "v12_confirm_probe"),
-                yellow_first=(controller_version == "v13_yellow_first"))
+                yellow_first=(controller_version in ("v13_yellow_first", "v14_yellow_x_first")),
+                yellow_x_first=(controller_version == "v14_yellow_x_first"))
         else:
             stage_control = None
         while not obs["rollout_finished"]:
@@ -204,7 +205,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -213,7 +214,7 @@ def main() -> None:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
     if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
-    if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first") and (args.task != "stack_blocks" or args.layout != 0):
+    if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first") and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("RGB geometry cue is calibrated only for stack_blocks layout 0")
     python = executable()
     robo = SOURCE_ROOT / "RoboDojo"
