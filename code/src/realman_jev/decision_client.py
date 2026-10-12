@@ -70,10 +70,11 @@ def prepare(log_folder, number, instruction, stage, state, questions, vision,
     entities = [item for item in (vision.method.entities if vision and vision.method else [])
                 if item.id in needed]
     requested = {camera for item in entities for camera in item.preferred_views}
-    if not requested:
-        requested.add('cam_high')
-        for arm in stage.arms:
-            requested.add('cam_' + arm + '_wrist')
+    requested.add('cam_high')
+    for arm in stage.arms:
+        requested.add('cam_' + arm + '_wrist')
+    if stage.purpose == 'sense':
+        requested.update(CAMERAS)
     names = [name for name in CAMERAS if name in requested and name in observation]
     if not names:
         raise ValueError('Decision input has no permitted current RGB camera')
