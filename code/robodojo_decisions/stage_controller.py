@@ -482,6 +482,11 @@ class StageController:
                 recovered = (target_visible and (support_visible or self.yellow_first) and
                              answer["target_visibility"] == "visible" and
                              answer["target_vs_fingers"] != "hidden")
+                if self.yellow_first:
+                    recovery_geometry = self._high_geometry(obs)
+                    recovered = bool(recovered and recovery_geometry and
+                                     float(recovery_geometry["normalized_match_score"]) >= 0.75 and
+                                     recovery_geometry.get("target_minus_finger_gap_center_px"))
                 if verdict == "pass" and not recovered:
                     verdict = "uncertain"
                 if recovered:
