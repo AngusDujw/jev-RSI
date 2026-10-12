@@ -104,17 +104,83 @@ def geometry_candidate_questions(obs: dict, plan: dict) -> list[dict]:
         "precontact action. The candidate toward the RGB-derived scissors hinge "
         f"moves world X{axes[0]}/Y{axes[1]} by 10 mm TOTAL, remains at current Z, "
         "and must be followed by a fresh image. It is a diagnostic move toward a "
-        "landmark, not a grasp/contact point. The view candidate raises world Z by "
-        "5 mm for a new image. Choose stop only if target identity or the next 10 mm "
-        "corridor cannot be judged safe from current RGB."
+        "landmark, not a grasp/contact point. "
+        + ("The view candidate is a separately judged world Z-5 mm sensing descent, "
+           "available only when its current camera projection improves image margin "
+           "and task progress. Judge its own swept path from all fresh RGB views. "
+           if plan.get("visibility_margin_gate") else
+           "The view candidate raises world Z by 5 mm for a new image. ")
+        + "Choose stop if target identity or the selected move's corridor cannot be judged safe."
     )
-    return [
-        choice("motion", instructions, {
+    if plan.get("visibility_margin_gate"):
+        from camera_geometry import project, view_margin_candidate, gripper_height_above_landmark
+        camera = obs["camera_calibration"]["cameras"]["cam_right_wrist"]
+        uv = project(camera, np.asarray(point, float))
+        if uv is None:
+            raise ValueError("Camera landmark is behind the current wrist camera")
+        width, height = camera["size"]
+        margin = min(uv[0], width - 1 - uv[0], uv[1], height - 1 - uv[1])
+        view = view_margin_candidate(camera, point, obs["current_eef"]["right"],
+                                     min_height_clearance=0.10, require_progress=True)
+        mesh_height = gripper_height_above_landmark(obs["current_eef"]["right"], point)
+        if mesh_height["hand_above_landmark_plane_after_m"] < 0.05:
+            view = None
+        if margin < 40:
+            if not view or (view["axis"], view["sign"]) != ("z", "negative"):
+                raise ValueError("No task-progressing wrist view candidate with safe geometric margin")
+            motion_options = {
+                "probe_down": ("World Z-5 mm open-gripper free-space descent; predicted wrist "
+                               f"landmark margin {margin:.1f}->{view['image_margin_px_after_prediction']:.1f} px; "
+                               f"X5 hand mesh remains at least {mesh_height['hand_above_landmark_plane_after_m']*1000:.1f} mm "
+                               "above the CAMERA-DERIVED hinge-height plane, not a collision guarantee; "
+                               "judge other objects and full swept clearance in all current RGB views"),
+                "stop": "Stop if actual visible swept clearance or target identity is uncertain",
+            }
+            instructions = (f"Current camera-derived hinge projects to wrist pixel {uv}; image edge margin "
+                            f"{margin:.1f} px is below 40 px. Do not continue planar approach until a "
+                            "fresh view improves margin. Decide whether this bounded 5 mm descent is "
+                            "visibly clear; LINK6 height difference is not finger-pad clearance.")
+        else:
+            motion_options = {
+                "probe_toward": "Small planar pregrasp probe toward camera-derived hinge, 10 mm total, gripper open",
+            }
+            if view and (view["axis"], view["sign"]) == ("z", "negative"):
+                motion_options["probe_down"] = (
+                    "World Z-5 mm open-gripper sensing descent, only if this VERTICAL corridor "
+                    "is visibly clear; predicted wrist landmark image margin "
+                    f"{margin:.1f}->{view['image_margin_px_after_prediction']:.1f} px. "
+                    f"Public X5 hand collision mesh remains at least {mesh_height['hand_above_landmark_plane_after_m']*1000:.1f} mm "
+                    "above the camera-derived hinge plane after the move; this does NOT rule out other obstacles. "
+                    "Take a fresh RGB view before any planar continuation.")
+            motion_options["stop"] = "Do not move if the selected short move has a visible blocker"
+            instructions += (f" Current projected wrist margin is {margin:.1f} px. "
+                             "Prefer planar approach when its corridor is visibly clear; "
+                             "use a view probe only when that corridor is uncertain AND the "
+                             "probe's own corridor is visibly clear. LINK6 height is not "
+                             "finger-pad clearance.")
+    else:
+        motion_options = {
             "probe_toward": "Small planar pregrasp probe toward camera-derived hinge, 10 mm total, gripper open",
             "probe_view": "Raise view by 5 mm, gripper open, to reduce occlusion; maximum two uses",
             "stop": "Do not move; return a specific visual blocker for replanning",
-        }),
-        choice("blocker", "Which current visual fact most limits this precontact action? Choose none when a safe 10 mm corridor is visible.", {
+        }
+    if plan.get("joint_motion_gate"):
+        motion_options.pop("stop", None)
+        motion_options.update({
+            "stop_identity": "Stop: the mint green scissors or same hinge identity is uncertain in current RGB",
+            "stop_occluded": "Stop: neither offered short move has a visibly clear swept corridor",
+            "stop_collision": "Stop: a specific table or object intersection blocks the offered moves",
+        })
+        return [
+            choice("motion", instructions + " Give ONE consistent motion-or-stop judgment; "
+                   "each move option asserts its own short corridor is visibly clear. "
+                   "If that assertion is uncertain, choose the matching stop reason.", motion_options),
+            {"type": "predicate", "name": "right_object_held", "instructions": "Do fresh RGB views clearly show the scissors carried off the table by the right gripper?"},
+            {"type": "predicate", "name": "visible_goal_done", "instructions": "Do fresh RGB views clearly show scissors lifted by 10 cm and held?"},
+        ]
+    return [
+        choice("motion", instructions, motion_options),
+        choice("blocker", "Which current visual fact limits the SELECTED short move? If the planar path is occluded but the selected sensing descent itself is visibly clear, choose none for that descent. Otherwise report its specific blocker.", {
             "none": "No specific blocker visible in the first 10 mm corridor",
             "target_identity": "The mint green scissors cannot be identified consistently",
             "occluded_path": "The gripper-to-target corridor is occluded",
@@ -141,6 +207,7 @@ def public_evidence(obs: dict, plan: dict, stage: str, history: list[dict]) -> s
         "task_notes": plan.get("notes", ""),
         "planner_task_detail": plan.get("task_detail"),
         "planner_visual_method": plan.get("visual_method"),
+        "planner_view_replan": plan.get("view_replan"),
         "planner_experience": plan.get("experience", []),
         "decision_constraint": (
             "For this diagnostic pregrasp pilot, choose only offered world X/Y signs supported by the "
@@ -151,7 +218,12 @@ def public_evidence(obs: dict, plan: dict, stage: str, history: list[dict]) -> s
             "Inspect the current RGB for target identity and a specific immediate path blocker. "
             "No gripper contact, rotation or left-arm motion is permitted in this short pilot. "
             "The initial hinge estimate expires after 40 native steps."
-            if plan.get("geometry_candidate_gate") else None),
+            if plan.get("geometry_candidate_gate") and not plan.get("visibility_margin_gate") else
+            "At each decision, project the accepted RGB landmark with the propagated wrist camera pose. "
+            "If image margin is below 40 px, choose only a verified short descent that improves both "
+            "margin and estimated free-space progress, or stop on a visible clearance concern. "
+            "Never treat LINK6 height difference as finger-pad clearance; inspect all RGB."
+            if plan.get("visibility_margin_gate") else None),
         "recent_executed_actions": previous,
         "instruction_to_decision_model": (
             "Inspect ALL three attached fresh RGB views directly. Decide the current task stage, bounded LINK6 motion, "
@@ -186,6 +258,10 @@ def public_evidence(obs: dict, plan: dict, stage: str, history: list[dict]) -> s
                 "Inspect all current RGB for target motion or occlusion after each move."
             ),
         }
+        if plan.get("visibility_margin_gate") and age <= 40:
+            from camera_geometry import gripper_height_above_landmark
+            clean["robot_mesh_height_bound"] = gripper_height_above_landmark(
+                obs["current_eef"]["right"], point)
     return json.dumps(clean, ensure_ascii=False, separators=(",", ":"))
 
 
@@ -387,10 +463,21 @@ class DecisionClient:
             current = obs["current_eef"]["right"]["position"]
             residual = [float(landmark[i]) - float(current[i]) for i in range(2)]
             motion = answers["motion"]
-            if motion == "probe_toward" and answers["blocker"] == "occluded_path":
+            if plan.get("joint_motion_gate"):
+                stop_reasons = {"stop_identity": "target_identity",
+                                "stop_occluded": "occluded_path",
+                                "stop_collision": "visible_collision"}
+                answers["blocker"] = stop_reasons.get(motion, "none")
+                if motion in stop_reasons:
+                    answers["motion_routed_from"] = motion
+                    motion = "stop"
+            if motion == "probe_toward" and answers["blocker"] == "occluded_path" and not plan.get("visibility_margin_gate"):
                 answers["motion_routed_from"] = motion
                 motion = "probe_view"
             elif motion == "probe_toward" and answers["blocker"] != "none":
+                answers["motion_routed_from"] = motion
+                motion = "stop"
+            if motion == "probe_down" and answers["blocker"] != "none":
                 answers["motion_routed_from"] = motion
                 motion = "stop"
             signs = ["positive" if x > 0.015 else "negative" if x < -0.015 else "hold"
@@ -405,8 +492,9 @@ class DecisionClient:
                 "stage": approach_stage if motion == "probe_toward" else sense_stage,
                 "right_x": signs[0] if motion == "probe_toward" else "hold",
                 "right_y": signs[1] if motion == "probe_toward" else "hold",
-                "right_z": "positive" if motion == "probe_view" else "hold",
-                "right_size": "fine" if motion == "probe_view" else "short"}
+                "right_z": "negative" if motion == "probe_down" else
+                           "positive" if motion == "probe_view" else "hold",
+                "right_size": "fine" if motion in ("probe_view", "probe_down") else "short"}
         if sign_gated:
             answers = {**{
                 "left_x": "hold", "left_y": "hold", "left_z": "hold", "left_size": "fine",

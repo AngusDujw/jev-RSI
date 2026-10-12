@@ -19,6 +19,8 @@ def main():
     parser.add_argument("--observation", type=Path, required=True)
     parser.add_argument("--calibration", type=Path,
                         help="Current public RGB camera intrinsics/extrinsics, if available")
+    parser.add_argument("--geometry-evidence", type=Path,
+                        help="Optional camera-derived landmark/projection checks from current RGB and measured LINK6")
     parser.add_argument("--template", type=Path)
     parser.add_argument("--global-experience", type=Path, required=True)
     parser.add_argument("--task-experience", type=Path)
@@ -36,6 +38,8 @@ def main():
     }
     if args.calibration:
         public["camera_calibration"] = json.loads(args.calibration.read_text())
+    if args.geometry_evidence:
+        public["camera_derived_geometry_evidence"] = json.loads(args.geometry_evidence.read_text())
     experience = {
         "global": args.global_experience.read_text(),
         "task": args.task_experience.read_text() if args.task_experience else "",
@@ -62,6 +66,13 @@ def main():
         "choose among offered discrete motion, gripper and stage options. Do not emit "
         "precise object world coordinates from monocular RGB. Require visible capture and "
         "post-release verification. Return JSON only."
+        + (" Camera-derived geometry evidence is provided from the CURRENT RGB, "
+           "public camera calibration and measured LINK6. Compare predicted "
+           "image-margin and remaining free-space distance for each candidate "
+           "before selecting a new viewpoint; a retreat that merely reverses "
+           "the next approach is not a durable solution. State an explicit "
+           "visibility gate and reject stale or out-of-frame landmarks."
+           if args.geometry_evidence else "")
         + (" Camera calibration IS provided. In visual_method.initial_correspondences, "
            "name the same physical grasp-relevant landmark in two current RGB views and "
            "give each visible view's pixel_uv and an uncertainty radius in pixels. Omit "
@@ -98,6 +109,8 @@ def main():
         "public_observation": public, "images": image_meta,
         "template_sha256": (hashlib.sha256(args.template.read_bytes()).hexdigest()
                             if args.template else None),
+        "geometry_evidence_sha256": (hashlib.sha256(args.geometry_evidence.read_bytes()).hexdigest()
+                                     if args.geometry_evidence else None),
         "experience_sha256": {k: hashlib.sha256(v.encode()).hexdigest()
                               for k, v in experience.items()},
     })

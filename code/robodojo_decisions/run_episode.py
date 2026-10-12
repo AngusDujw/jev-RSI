@@ -18,7 +18,11 @@ from pathlib import Path
 SOURCE_ROOT = Path.home() / "DataStorage/jev-router/sources"
 DATA_ROOT = Path(os.environ.get("ROBODOJO_GPT6_DATA_ROOT", str(Path.home() / "DataStorage/gpt6-dec")))
 ENVIRONMENT = Path.home() / "DataStorage/jev-router/project/jev-router/ENVIRONMENT.json"
-TASKS = ("stack_blocks", "general_pickup", "fold_clothes", "press_by_number", "stack_bowls")
+TASKS = ("stack_blocks", "general_pickup", "fold_clothes", "press_by_number", "stack_bowls",
+         "match_and_pick_from_conveyor", "push_T", "arrange_largest_number",
+         "classify_objects", "align_blocks", "cover_blocks", "solve_equation",
+         "stack_blocks_by_language", "imitate_sorting_sequence",
+         "classify_objects_by_language")
 
 
 def executable() -> Path:
@@ -136,7 +140,7 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                 tools.finish("geometry_hypothesis_stale_incomplete")
                 result["status"] = "geometry_hypothesis_stale_incomplete"
                 break
-            if controller_version == "v1_geometry_candidate_refresh":
+            if controller_version in ("v1_geometry_candidate_refresh", "v1_geometry_candidate_margin"):
                 landmark = plan["initial_landmark_estimate"]
                 age = int(obs["step_id"]) - int(landmark["camera_step_id"])
                 if age >= 40:
@@ -156,20 +160,42 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                     tools.finish("landmark_planar_alignment_incomplete")
                     result["status"] = "landmark_planar_alignment_incomplete"
                     return result
+                if controller_version == "v1_geometry_candidate_margin":
+                    from camera_geometry import project, view_margin_candidate, gripper_height_above_landmark
+                    camera = obs["camera_calibration"]["cameras"]["cam_right_wrist"]
+                    uv = project(camera, point)
+                    width, height = camera["size"]
+                    margin = (min(uv[0], width - 1 - uv[0], uv[1], height - 1 - uv[1])
+                              if uv is not None else -1.0)
+                    view = view_margin_candidate(camera, point, obs["current_eef"]["right"],
+                                                 min_height_clearance=0.10, require_progress=True)
+                    mesh_bound = gripper_height_above_landmark(obs["current_eef"]["right"], point)
+                    if margin < 40 and (not view or (view["axis"], view["sign"]) != ("z", "negative")
+                                        or mesh_bound["hand_above_landmark_plane_after_m"] < 0.05):
+                        tools.finish("visibility_candidate_incomplete")
+                        result.update(status="visibility_candidate_incomplete",
+                                      wrist_image_margin_px=margin, candidate=view,
+                                      robot_mesh_height_bound=mesh_bound)
+                        return result
             if time.monotonic() > deadline:
                 tools.finish("wall_budget_incomplete")
                 result["status"] = "wall_budget_incomplete"
                 break
             if stage_control is None:
                 action, answers = model.decide(obs, plan, stage, history)
-                if controller_version in ("v1_geometry_candidate", "v1_geometry_candidate_refresh"):
+                if controller_version in ("v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin"):
                     view_moves = sum(item["model_choices"].get("motion") == "probe_view" for item in history)
-                    if answers["motion"] == "stop" or (answers["motion"] == "probe_view" and view_moves >= 2):
+                    down_moves = sum(item["model_choices"].get("motion") == "probe_down" for item in history)
+                    if (answers["motion"] == "stop" or
+                            (answers["motion"] == "probe_view" and view_moves >= 2) or
+                            (answers["motion"] == "probe_down" and down_moves >= 8)):
                         reason = ("candidate_stop_incomplete" if answers["motion"] == "stop"
+                                  else "descent_budget_incomplete" if answers["motion"] == "probe_down"
                                   else "view_budget_incomplete")
                         tools.finish(reason)
                         result.update(status=reason, blocker=answers["blocker"],
-                                      view_moves=view_moves, final_stage=answers["stage"])
+                                      view_moves=view_moves, down_moves=down_moves,
+                                      final_stage=answers["stage"])
                         return result
             else:
                 # Zero-motion gates may advance several semantic stages using the same fresh view.
@@ -251,7 +277,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -260,7 +286,7 @@ def main() -> None:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
     if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
-    if args.controller in ("v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh") and (args.task != "general_pickup" or args.layout != 0):
+    if args.controller in ("v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin") and (args.task != "general_pickup" or args.layout != 0):
         parser.error("geometry pilots are for general_pickup layout 0 only")
     if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate") and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("RGB geometry cue is calibrated only for stack_blocks layout 0")
@@ -269,13 +295,20 @@ def main() -> None:
     if not (robo / "Assets").is_dir() or not (robo / "XPolicyLab").is_dir():
         raise FileNotFoundError("Existing RoboDojo assets/source links unavailable")
     plan_file = args.plan or Path(__file__).resolve().parent / "plans" / f"{args.task}.json"
-    plan = json.loads(plan_file.read_text())
+    if args.preflight_only and not plan_file.exists():
+        plan = {"task": args.task, "initial_stage": "observe",
+                "stages": {"observe": "Acquire three current RGB views, measured robot state and public camera calibration; zero control actions."},
+                "notes": "Sensor-only preflight; no hidden object state or evaluator feedback."}
+    else:
+        plan = json.loads(plan_file.read_text())
     if plan.get("task") != args.task or plan["initial_stage"] not in plan["stages"]:
         raise ValueError("Task plan mismatch")
     if args.controller == "v1_geometry_sign" and not plan.get("geometry_sign_gate"):
         raise ValueError("v1_geometry_sign requires a geometry_sign_gate plan")
-    if args.controller in ("v1_geometry_candidate", "v1_geometry_candidate_refresh") and not plan.get("geometry_candidate_gate"):
+    if args.controller in ("v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin") and not plan.get("geometry_candidate_gate"):
         raise ValueError("geometry candidate controller requires a geometry_candidate_gate plan")
+    if args.controller == "v1_geometry_candidate_margin" and not plan.get("visibility_margin_gate"):
+        raise ValueError("margin controller requires a visibility_margin_gate plan")
     output = DATA_ROOT / "runs" / args.run_name
     if args.dry_run:
         print(json.dumps({"python": str(python), "sources": str(SOURCE_ROOT),

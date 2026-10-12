@@ -124,6 +124,13 @@ graph LR
     T_2026W42_016["📊 robodojo-task-coverage<br/>首批五任务layout0三RGB预检5/5…"]:::experiment
     T_2026W42_017["📊 robodojo-decision-stages<br/>完整相机几何动作候选使剪刀8/8次正确方向…"]:::experiment
     T_2026W42_018["📊 robodojo-decision-stages<br/>发现运行中腕外参RPC不随手移动；link…"]:::experiment
+    T_2026W42_019["📊 robodojo-decision-stages<br/>剪刀16小步后腕图铰链出下缘，固定Z+取景…"]:::experiment
+    T_2026W42_020["📊 robodojo-task-coverage<br/>首批五任务均已真实试跑但0原生成功；第二批…"]:::experiment
+    T_2026W42_021["📊 robodojo-decision-stages<br/>剪刀第20步通路不确定而停止且视野余量仍1…"]:::experiment
+    T_2026W42_022["📊 robodojo-task-coverage<br/>官方优先前10任务各有一次Pro+Luna…"]:::experiment
+    T_2026W42_023["📊 robodojo-decision-stages<br/>剪刀互斥完整Choice让连续14短步和4…"]:::experiment
+    T_2026W42_024["📊 robodojo-task-coverage<br/>第三批新五任务三RGB零动作预检5/5；累…"]:::experiment
+    T_2026W42_025["📊 robodojo-decision-stages<br/>机器人手部网格高度输入未改变剪刀70步通路…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -209,6 +216,13 @@ graph LR
   T_2026W42_014 --> T_2026W42_015
   T_2026W42_015 --> T_2026W42_017
   T_2026W42_017 --> T_2026W42_018
+  T_2026W42_018 --> T_2026W42_019
+  T_2026W42_016 --> T_2026W42_020
+  T_2026W42_019 --> T_2026W42_021
+  T_2026W42_020 --> T_2026W42_022
+  T_2026W42_021 --> T_2026W42_023
+  T_2026W42_022 --> T_2026W42_024
+  T_2026W42_023 --> T_2026W42_025
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -321,6 +335,13 @@ graph LR
 | `T-2026W42-016` | 2026-10-12 | experiment | robodojo-task-coverage | 首批五任务layout0三RGB预检5/5；衣物与按钮须CPU非Fabric，完整成功仍0项 | `EXP-2026W42-032`, `EXP-2026W42-034` | - |
 | `T-2026W42-017` | 2026-10-12 | experiment | robodojo-decision-stages | 完整相机几何动作候选使剪刀8/8次正确方向小步，估计距367降至314毫米；刷新几何后再延长接近 | `EXP-2026W42-035` | - |
 | `T-2026W42-018` | 2026-10-12 | experiment | robodojo-decision-stages | 发现运行中腕外参RPC不随手移动；link6刚体传播让双视图重标通过，65步后因遮挡停止 | `EXP-2026W42-037`, `EXP-2026W42-038`, `EXP-2026W42-039` | - |
+| `T-2026W42-019` | 2026-10-12 | experiment | robodojo-decision-stages | 剪刀16小步后腕图铰链出下缘，固定Z+取景反使余量缩小；转投影验算候选视点 | `EXP-2026W42-040` | - |
+| `T-2026W42-020` | 2026-10-13 | experiment | robodojo-task-coverage | 首批五任务均已真实试跑但0原生成功；第二批五任务传感器预检5/5通过，转各任务首轮控制 | `EXP-2026W42-043` | - |
+| `T-2026W42-021` | 2026-10-13 | experiment | robodojo-decision-stages | 剪刀第20步通路不确定而停止且视野余量仍132px；需为遮挡单独给投影验证取景候选 | `EXP-2026W42-044` | - |
+| `T-2026W42-022` | 2026-10-13 | experiment | robodojo-task-coverage | 官方优先前10任务各有一次Pro+Luna原生控制首轮但0/10完整成功；通用逐轴输入停初始感知 | `EXP-2026W42-047` | - |
+| `T-2026W42-023` | 2026-10-13 | experiment | robodojo-decision-stages | 剪刀互斥完整Choice让连续14短步和40步视觉重标成立，70步因通路不明停止；加入公开手指网格高度界 | `EXP-2026W42-048` | - |
+| `T-2026W42-024` | 2026-10-13 | experiment | robodojo-task-coverage | 第三批新五任务三RGB零动作预检5/5；累计15任务预检、10任务Pro+Luna首轮、0完整成功 | `EXP-2026W42-051` | - |
+| `T-2026W42-025` | 2026-10-13 | experiment | robodojo-decision-stages | 机器人手部网格高度输入未改变剪刀70步通路停止；暂停同轨迹重试并让Pro重拟视点/实心柄证据 | `EXP-2026W42-050` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

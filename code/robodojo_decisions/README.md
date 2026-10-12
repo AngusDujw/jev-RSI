@@ -1,6 +1,22 @@
 # RoboDojo RGB Decisions pilot
 
-This is a separate RoboDojo simulation pilot for the user authorized v4090 host. It reuses the already installed RoboDojo simulator and the existing GPT-as-Policy native bounded EEF/RPC adapter as read-only references. New code belongs in `~/ykj/project/jev-RSI/code/robodojo_decisions`; all run output, cache, raw RGB and private API credentials belong under `~/DataStorage/robodojo-decisions` on the data mount. Do not write them to the source checkout or `/tmp`.
+## Current v4090 campaign (2026-10-13)
+
+- Checkout: `/home/v4090-1/ykj/project/jev-RSI-gpt6-dec`, branch `codex/robodojo-gpt6-dec-v4090-20261012`. Reuse RoboDojo at `/home/v4090-1/DataStorage/jev-router/sources/RoboDojo` and its existing Python environment. All run RGB, native trajectories, plans, reviewed experiences, service logs and the mode-600 `du` Decisions key are under `/home/v4090-1/DataStorage/gpt6-dec`.
+- Planner: `pro_plan.py` calls the local ChatGPT Pro bridge with `gpt-6.1-sol`, `reasoning_effort=high`. It loads `experience/global.md` and an optional `experience/<task>.md` as raw Markdown, then receives the current three RGB images, public camera calibration and measured robot state. It writes a stage plan and a short `experience` list under `plans/<run>/plan.json`. A live landmark refresh in `refresh_landmark.py` also reads the latest raw experience files.
+- Pusher: `controller.py` calls `gpt-6-luna` Decisions using the separately authorized `du` direct key at `secrets/du-openai-direct.key`. It receives all three fresh RGB images, the Pro plan and distilled experience, current measured robot state, propagated wrist calibration, accepted camera-derived landmark checks, bounded action options and recent execution feedback. Object true poses, contacts and native reward/success are never sent to either model.
+- The first five ranked tasks and the next five have each completed at least one Pro+Luna native control pilot on layout 0; **0/10 complete native successes so far**. Zero-action preflight is tracked separately. The broad `v1` stage plus independent XYZ Decisions input repeatedly held in the initial sensing stage. The current `general_pickup` diagnostic instead asks Luna to choose one complete camera-derived bounded action or a specific stop reason; the X5 public hand mesh can supply a conservative height bound relative to the visually triangulated hinge plane. This is not a collision certificate or a grasp point.
+- Official task order is recorded in `plans/gpt6-astra-task-priority.json`. The official Astra rate ranks tasks for investigation; this Sol+Luna interface has its own native success record. Weekly experimental evidence and negative results are in `LOGS/2026-W42.md`, with the active issue in `Discussion.md`.
+
+From this checkout, a planner run uses a preflight observation and its same-step public calibration. The `--output` directory must be new. This one-line example shows exactly where the experience is loaded:
+
+```bash
+"/home/v4090-1/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/pro_plan.py --observation /home/v4090-1/DataStorage/gpt6-dec/runs/2026-10-12-gpt6-dec-classify_objects-preflight-01/controller/request_000.json --calibration /home/v4090-1/DataStorage/gpt6-dec/runs/2026-10-12-gpt6-dec-classify_objects-preflight-01/camera_calibration_initial.json --global-experience /home/v4090-1/DataStorage/gpt6-dec/experience/global.md --output /home/v4090-1/DataStorage/gpt6-dec/plans/your-new-run-name
+```
+
+The following older examples document the preceding pilot. Their old paths and controller assumptions are historical; use the current paths and run manifests above for v4090.
+
+This is a separate RoboDojo simulation pilot for the user authorized v4090 host. It reuses the already installed RoboDojo simulator and the existing GPT-as-Policy native bounded EEF/RPC adapter as read-only references. The current checkout is `/home/v4090-1/ykj/project/jev-RSI-gpt6-dec`; all run output, cache, raw RGB and private API credentials belong under `/home/v4090-1/DataStorage/gpt6-dec` on the data mount. Do not write them to the source checkout or `/tmp`.
 
 ## Task order
 
