@@ -75,9 +75,10 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
             for i, side in enumerate((1., -1.)):
                 candidate = dict(c[1])
                 candidate['id'] = f'candidate_{i}'
-                candidate['target'] = np.r_[
-                    src['center'][:2]-ee['pad_center_offset'][:2]
-                    + side*rim_offset*minor[:2], c[1]['target'][2]]
+                # Preserve the longitudinal candidate that was already
+                # reachable; only change the jaw-closing axis for a rim pinch.
+                candidate['target'] = c[1]['target'].copy()
+                candidate['target'][:2] += side*rim_offset*minor[:2]
                 candidate['grasp_height_source'] = 'visible one-sided rim pinch'
                 candidate['own_open_inner_pad_gap_mm'] = inner_gap*1000
                 candidate['one_sided_rim_offset_mm'] = side*rim_offset*1000
