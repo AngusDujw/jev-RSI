@@ -150,12 +150,14 @@ class DecisionClient:
         self.timeout = timeout
 
     def query(self, obs: dict, asked: list[dict], evidence: str, record_name: str,
-              reference_image: Path | None = None) -> dict:
+              reference_image: Path | None = None,
+              extra_images: list[dict] | None = None) -> dict:
         content = [{"type": "input_text", "text": evidence}]
         image_info = []
         images = list(obs["images"])
         if reference_image is not None:
             images.append({"camera": "initial_high_camera_reference", "path": str(reference_image)})
+        images.extend(extra_images or [])
         for image in images:
             path = Path(image["path"])
             raw = path.read_bytes()

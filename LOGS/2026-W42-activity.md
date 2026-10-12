@@ -26,3 +26,4 @@
 - 【Agent】【2026-10-12 11:36】[run] v4090 前台启动 stack_blocks 布局0 v4 遮挡恢复原生试跑；40动作和3600秒上限，OpenAI Decisions 三视角 RGB，日志全部在 DataStorage。
 - 【Agent】【2026-10-12 11:43】[op] 新建实验块 EXP-2026W42-006：--help  ↪ `EXP-2026W42-006`
 - 【Agent】【2026-10-12 11:45】[result] EXP-2026W42-006：v4 21动作/105原生步、两轮遮挡恢复使紫块重新可见，但17次align仍未抓取；原生 success=false、complete=false、reason=visual_stall_incomplete。下一轮做Y轴像素投影探测。
+- 【Agent】【2026-10-12 11:47】[op] 本机 Pro 基于 v4 前后 RGB 设计 Y 轴单因素小探测；新增 v5_probe_y：右臂开爪、世界Y +5/-5/0mm 三动作，Decisions 对新旧高图回答目标可见性与手指像素位移。

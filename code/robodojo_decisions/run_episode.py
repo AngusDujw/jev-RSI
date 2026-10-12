@@ -103,6 +103,10 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         if key_file is None:
             raise ValueError("--key-file is required for control")
         model = DecisionClient(key_file, output / "decisions")
+        if controller_version == "v5_probe_y":
+            from probe_y import run_probe
+            result.update(run_probe(tools, obs, model, output))
+            return result
         if controller_version in ("v2", "v3", "v4"):
             from stage_controller import NO_MOTION, StageController
             stage_control = StageController(model, obs, plan,
@@ -192,13 +196,15 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4", "v5_probe_y"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     if args.layout < 0 or args.max_decisions < 0 or not 1 <= args.max_wall_seconds <= 6900:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
+    if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
+        parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
     python = executable()
     robo = SOURCE_ROOT / "RoboDojo"
     if not (robo / "Assets").is_dir() or not (robo / "XPolicyLab").is_dir():

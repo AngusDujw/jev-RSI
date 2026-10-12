@@ -14,6 +14,8 @@ Version `v2` reached `align` but returned hold on 9 of 13 motions. A Pro visual 
 
 Version `v3` then spent 14 actions in alignment without a grasp: high RGB lost the purple target behind the right fingers while the wrist still showed yellow. A second local Pro visual review proposed a small lift and withdrawal before asking the Decisions model to distinguish the target, support, and fingers again. Version `v4` adds that bounded RGB visibility recovery. It requires fresh target and support detections plus the model's visual target/finger assessment before resuming alignment, and records an explicit incomplete status if visibility or alignment stays stalled. The color detections are fallible image hints; raw RGB remains in every model request.
 
+The `v5_probe_y` diagnostic is intentionally an incomplete task episode for `stack_blocks` layout 0. Following local Pro's review of v4, it holds the initial right-hand X/Z position and open gripper while commanding world-Y offsets of +5 mm, -5 mm, and 0 mm in three native actions. Decisions inspects the current three raw RGB views, labeled initial high view, and previous high frame at each stop. Its categorical answers record whether the purple target remains visible and how the right gripper shifted in high-image coordinates. A later controller may use the observed mapping; this diagnostic itself makes no grasp or benchmark success claim.
+
 ## Run contract
 
 - Existing Python and assets: `~/DataStorage/jev-router/sources` and the existing environment recorded in `~/DataStorage/jev-router/project/jev-router/ENVIRONMENT.json`. No environment, driver, or CUDA changes.
@@ -33,6 +35,10 @@ Each command below is one line. Run one at a time from the project checkout on v
 
 ```bash
 HTTPS_PROXY=http://127.0.0.1:7897 HTTP_PROXY=http://127.0.0.1:7897 "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v4 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-visibility-recovery-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 40
+```
+
+```bash
+HTTPS_PROXY=http://127.0.0.1:7897 HTTP_PROXY=http://127.0.0.1:7897 "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v5_probe_y --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-y-probe-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 5 --max-wall-seconds 1200
 ```
 
 This controller is an experimental categorical EEF policy, not the original RoboProbe GPT-6 Astra harness. Stability requires frozen code/plan and independent native episodes, including standard/random layouts where the official cell is paired.
