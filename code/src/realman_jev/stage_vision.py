@@ -38,7 +38,12 @@ LOCALIZER_PROMPT += '''\nIf visual_method is supplied in the request, detect ONL
 Use each declared id verbatim, its query and distinguishing cues to identify a
 physical instance across current views. Its preferred_views are priorities,
 not permission to invent a box in an occluded view. The method's silhouette
-and metric operators run locally after your boxes; do not claim they succeeded.'''
+and metric operators run locally after your boxes; do not claim they succeeded.
+A declared landmark may be a VISIBLE PART of a declared whole object. Return
+a tight box for that same physical part in each current camera, preserving its
+parent object's visual identity. If you cannot identify the same part in a
+view, omit that view. Do not substitute the entire object's box or another
+part: their box centres do not form a valid stereo correspondence.'''
 
 
 def pixel_ray(calibration, uv, origin):

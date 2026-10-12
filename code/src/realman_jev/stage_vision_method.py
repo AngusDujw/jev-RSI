@@ -85,4 +85,15 @@ For moving/ambiguous entities use a much shorter age. The runtime refuses
 stale guidance once visual motion or possible grasp is detected. Stale geometry
 never proves capture or success. The later stage planner, not this method call,
 chooses motor goals.
+When a whole-object box centre is not a useful physical correspondence across
+views or a contact target, declare an additional small visual landmark tied by
+its query and distinguishing cues to that same object. Examples include a
+visible handle loop, a rigid graspable segment, a block top face, a button
+surface, or an opening rim. Use a distinct v_ id and role=landmark; retain the
+whole-object entity for identity and motion checks. Ask the localizer for a
+tight box around the SAME visible part in each camera, not different silhouette
+centres. If the part is hidden in a view, omit that view and keep its depth
+unverified. A landmark gives an approximate camera-derived point for a bounded
+action, not a precise contact surface or proof of grasp/placement. Select only
+parts visible and useful for the next action; avoid whole-scene searches.
 Do not choose a task-specific fixed pixel ROI or absolute world point.'''
