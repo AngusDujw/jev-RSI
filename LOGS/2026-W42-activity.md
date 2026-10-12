@@ -27,3 +27,6 @@
 - 【Agent】【2026-10-12 11:43】[op] 新建实验块 EXP-2026W42-006：--help  ↪ `EXP-2026W42-006`
 - 【Agent】【2026-10-12 11:45】[result] EXP-2026W42-006：v4 21动作/105原生步、两轮遮挡恢复使紫块重新可见，但17次align仍未抓取；原生 success=false、complete=false、reason=visual_stall_incomplete。下一轮做Y轴像素投影探测。
 - 【Agent】【2026-10-12 11:47】[op] 本机 Pro 基于 v4 前后 RGB 设计 Y 轴单因素小探测；新增 v5_probe_y：右臂开爪、世界Y +5/-5/0mm 三动作，Decisions 对新旧高图回答目标可见性与手指像素位移。
+- 【Agent】【2026-10-12 11:48】[run] v4090 前台启动 stack_blocks 布局0 v5_probe_y 校准试跑；世界Y +5/-5/0mm 仅3动作、15原生步，Decisions 对每步新旧 RGB 判视觉位移，DataStorage 留存。
+- 【Agent】【2026-10-12 11:50】[op] 新建实验块 EXP-2026W42-007：stack_blocks v5 三路RGB及Decisions模型参与的世界Y小位移视觉标定  ↪ `EXP-2026W42-007`
+- 【Agent】【2026-10-12 11:52】[result] EXP-2026W42-007：v5 Y±5mm/3动作15步，图像匹配得+Y→高图上3px、−Y→下3px；Decisions视觉回答none/left/none误判微位移。原生预设不完整，下一轮附像素量化线索。

@@ -110,6 +110,7 @@ graph LR
     T_2026W42_002["📊 robodojo-decision-stages<br/>分离视觉门后能进入接近，但13动作仅到对齐…"]:::experiment
     T_2026W42_003["⛔ robodojo-decision-stages<br/>stack_blocks视觉门同一意图连续…"]:::blocker
     T_2026W42_004["📊 robodojo-decision-stages<br/>v4 遮挡恢复让紫块重现，但21动作/10…"]:::experiment
+    T_2026W42_005["📊 robodojo-decision-stages<br/>Y±5mm 在高图投影为∓3px，但 De…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -182,6 +183,7 @@ graph LR
   T_2026W42_001 --> T_2026W42_002
   T_2026W42_002 --> T_2026W42_003
   T_2026W42_003 --> T_2026W42_004
+  T_2026W42_004 --> T_2026W42_005
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -280,6 +282,7 @@ graph LR
 | `T-2026W42-002` | 2026-10-12 | experiment | robodojo-decision-stages | 分离视觉门后能进入接近，但13动作仅到对齐且9次hold；需目标标注与非零纠偏 | `EXP-2026W42-004` | - |
 | `T-2026W42-003` | 2026-10-12 | blocker | robodojo-decision-stages | stack_blocks视觉门同一意图连续三次Crashed；暂停物理试跑等待用户决定 | `EXP-2026W42-005` | - |
 | `T-2026W42-004` | 2026-10-12 | experiment | robodojo-decision-stages | v4 遮挡恢复让紫块重现，但21动作/105步仍无抓取，须标定纵深与高度 | `EXP-2026W42-006` | - |
+| `T-2026W42-005` | 2026-10-12 | experiment | robodojo-decision-stages | Y±5mm 在高图投影为∓3px，但 Decisions 直接视觉答案误判位移；加入RGB匹配量化提示 | `EXP-2026W42-007` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
