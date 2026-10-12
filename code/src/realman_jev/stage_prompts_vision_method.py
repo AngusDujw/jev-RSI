@@ -15,8 +15,8 @@ than inventing an object coordinate or marking task completion.
 
 For EVERY stage whose target, completion or abort expression refers to an
 object, declare visual_requirements covering EACH referenced visual entity.
-Set purpose="sense" for a bounded camera or hand-view search, and
-purpose="manipulate" for contact, grasp, transfer, placement, or other
+Every stage MUST explicitly include its purpose field. Set purpose="sense"
+for a bounded camera or hand-view search, and purpose="manipulate" for contact, grasp, transfer, placement, or other
 object-dependent movement. A sense stage may list missing visual_requirements
 as its desired END evidence; these are not entry gates. Its arm targets must
 use robot state only and must not close fingers. Use finish_on="checks" with

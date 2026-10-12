@@ -232,6 +232,10 @@ def run(args):
                          'receding_stages' if cfg.get('planning_horizon') else 'whole_remaining_plan')
                 if prompt_mode == 'vision_method_v1':
                     request['planning_contract']['max_observe_after_handoffs'] = 3
+                    stage_schema = plan_schema['$defs']['Stage']
+                    stage_schema['required'] = list(dict.fromkeys(
+                        [*stage_schema['required'], 'purpose']))
+                    stage_schema['properties']['purpose'].pop('default', None)
                 specs = json.loads(Path(cfg['task_specs']).read_text()) if cfg.get('task_specs') else {}
                 request['public_task_acceptance'] = specs.get(case['task'], obs['instruction'])
                 request['acceptance_provenance'] = specs.get('source', 'task instruction')
