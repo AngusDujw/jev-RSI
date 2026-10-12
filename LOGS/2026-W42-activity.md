@@ -37,3 +37,5 @@
 - 【Agent】【2026-10-12 21:17】[run] 5880 Goal1458 冻结版 init9/10 双终局均成功；init11 GPU视觉CUDA分配失败，显式CPU视觉后备已通过预检并进入真实Jev回合；完整原始日志按回合同步核对。
 - 【Agent】【2026-10-12 21:24】[result] 5880 Goal1458 init11显式CPU视觉第25/50次双终局成功，120 Jev/504原生步/一次抓取、14阶段边0违规，本机与服务器完整原始文件SHA一致；第26次新init12已预检并开始。GPU冻结init9–10仍单独为2/2。
 - 【Agent】【2026-10-12 21:38】[result] 5880 Goal1458显式CPU视觉冻结配置init11–13双终局3/3，均一次抓取、Jev真实动作/阶段审计0违规；GPU配置新init9–10另为2/2。三份CPU原始目录和两份GPU原始目录均已与服务器逐目录聚合SHA核对。十项仍只有8项曾完成，Goal1098/1202仍0。
+- 【User】【2026-10-12 21:43】[prompt] 啥意思，现在5880的显卡有问题吗是，之前都是在用cpu跑吗
+- 【Agent】【2026-10-12 21:43】[note] 5880复核：nvidia-smi识别RTX5880-Ada-24Q，但isaaclab环境最小torch CUDA张量报operation not supported；Goal1458 init9/10视觉GPU，init11–13显式CPU视觉，仿真仍用GPU0 EGL。
