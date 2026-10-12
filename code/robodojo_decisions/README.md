@@ -25,6 +25,7 @@ That probe measured high-image right-gripper shifts of roughly 3 px for each 4�
 - `--preflight-only` initializes and resets the native simulator, obtains three RGB frames, then records an incomplete preflight with zero model calls.
 - A normal development pilot defaults to 30 native actions and at most 6,800 seconds. This is incomplete unless native termination and the native success criterion are recorded. Full frozen evaluation should use `--max-decisions 0` with the same under-two-hour wall guard only after pilot evidence supports it.
 - API errors/refusals or invalid actions execute no robot step. Transient network failures on read-only Decisions queries may retry up to five times with short exponential backoff and recorded attempts. A simulator mutation is never retried automatically after uncertain acknowledgement.
+- For intermittent HTTP proxy protocol errors, `ROBODOJO_DECISION_TRANSPORT=curl_socks` sends Decisions requests through the same local reverse tunnel using SOCKS. The API key is passed to curl through an anonymous in-memory file descriptor; it is never placed in command arguments or a new disk file. Validate a four-image read-only request before running a simulator episode.
 - Every model call records text, RGB file paths/hashes, typed answers, bounded target, usage and latency without recording the API key. The native result and full simulator logs remain on DataStorage.
 
 ## Remote commands
@@ -44,7 +45,7 @@ HTTPS_PROXY=http://127.0.0.1:7897 HTTP_PROXY=http://127.0.0.1:7897 "$HOME/zjc/Gp
 ```
 
 ```bash
-HTTPS_PROXY=http://127.0.0.1:7897 HTTP_PROXY=http://127.0.0.1:7897 "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v6 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-rgb-geometry-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 60 --max-wall-seconds 2400
+ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v6 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-rgb-geometry-socks-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 60 --max-wall-seconds 2400
 ```
 
 This controller is an experimental categorical EEF policy, not the original RoboProbe GPT-6 Astra harness. Stability requires frozen code/plan and independent native episodes, including standard/random layouts where the official cell is paired.

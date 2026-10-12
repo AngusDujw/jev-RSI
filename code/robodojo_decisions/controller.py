@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import io
 import json
 import math
+import os
+import subprocess
 import time
 import urllib.error
 import urllib.request
@@ -118,6 +121,42 @@ def decode_answers(response: dict, plan: dict) -> dict:
     return decode_response(response, questions(plan))
 
 
+def curl_socks_decision(payload: dict, key: str, timeout: int) -> dict:
+    """Send one Decisions read over local SOCKS without putting the key in argv or on disk."""
+    if not hasattr(os, "memfd_create"):
+        raise RuntimeError("curl_socks transport requires Linux memfd_create")
+    config_fd = os.memfd_create("openai-decisions-header")
+    try:
+        os.write(config_fd, f'header = "Authorization: Bearer {key}"\n'.encode())
+        os.lseek(config_fd, 0, os.SEEK_SET)
+        environment = os.environ.copy()
+        for name in ("HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy",
+                     "ALL_PROXY", "all_proxy"):
+            environment.pop(name, None)
+        command = ["curl", "--silent", "--show-error", "--http1.1",
+                   "--socks5-hostname", "127.0.0.1:7897", "--connect-timeout", "15",
+                   "--max-time", str(timeout), "--header", "Content-Type: application/json",
+                   "--config", f"/proc/self/fd/{config_fd}", "--data-binary", "@-",
+                   "--write-out", "\n%{http_code}", ENDPOINT]
+        try:
+            result = subprocess.run(command, input=json.dumps(payload).encode(),
+                                    capture_output=True, env=environment, pass_fds=(config_fd,),
+                                    timeout=timeout + 5, check=False)
+        except subprocess.TimeoutExpired as error:
+            raise urllib.error.URLError("curl SOCKS Decisions request timed out") from error
+        body, separator, raw_status = result.stdout.rpartition(b"\n")
+        status = int(raw_status) if separator and raw_status.isdigit() else 0
+        if status >= 400:
+            raise urllib.error.HTTPError(ENDPOINT, status, "Decisions HTTP error", None,
+                                         io.BytesIO(body))
+        if result.returncode or not 200 <= status < 300:
+            detail = result.stderr.decode(errors="replace")[:500]
+            raise urllib.error.URLError(f"curl SOCKS transport code={result.returncode}, status={status}: {detail}")
+        return json.loads(body)
+    finally:
+        os.close(config_fd)
+
+
 def to_action(obs: dict, answers: dict) -> dict:
     target = {}
     for index, arm in enumerate(ARMS):
@@ -186,8 +225,11 @@ class DecisionClient:
         transient_errors = []
         for attempt in range(MAX_QUERY_ATTEMPTS):
             try:
-                with urllib.request.urlopen(request, timeout=self.timeout) as handle:
-                    response = json.load(handle)
+                if os.environ.get("ROBODOJO_DECISION_TRANSPORT") == "curl_socks":
+                    response = curl_socks_decision(payload, key, self.timeout)
+                else:
+                    with urllib.request.urlopen(request, timeout=self.timeout) as handle:
+                        response = json.load(handle)
                 break
             except urllib.error.HTTPError as error:
                 body = error.read().decode("utf-8", errors="replace")[:2000]

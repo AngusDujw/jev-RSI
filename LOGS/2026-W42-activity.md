@@ -43,3 +43,5 @@
 - 【Agent】【2026-10-12 12:09】[run] v4090 前台重跑 stack_blocks 布局0 v6-04；Decisions 只读查询最多5次退避，几何提示不变，原生动作最多60/2400秒。
 - 【Agent】【2026-10-12 12:13】[op] 新建实验块 EXP-2026W42-011：stack_blocks v6 一动作后代理HTTPS协议异常  ↪ `EXP-2026W42-011`
 - 【Agent】【2026-10-12 12:14】[op] v6-04 首步X−long后视觉门收到代理特有403/http_unsupported；仅固定HTTPS端点遇到该错误时对只读模型请求有限重试，并完整记录 EXP011。
+- 【Agent】【2026-10-12 12:14】[run] v4090 前台启动 v6-05：仅使用HTTPS_PROXY反向隧道，去除ALL_PROXY/HTTP_PROXY歧义；保留只读网络重试，最多60动作/2400秒。
+- 【Agent】【2026-10-12 12:19】[op] HTTP CONNECT 路径在 v6-05 五次重试仍失败；改为同一反向隧道 SOCKS 通道，curl 经匿名内存 fd 读取密钥、请求体走 stdin，先做四图只读 API 验证再开仿真。
