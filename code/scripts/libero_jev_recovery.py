@@ -591,10 +591,11 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             if rec.cfg.get('drawer_bowl_continuation'):
                 contracts['descend'] = (
                     'Move open fingers toward the visible bowl pad-fit pose. '
-                    'If motion stalls within 20 mm of that pose, own pad '
-                    'envelope overlaps the visible bowl in XY, and its vertical '
-                    'gap to the bowl is at most 12 mm, you may advance to one '
-                    'closure trial. The subsequent visible lift must prove holding.')
+                    'If motion stalls, own open pad envelope overlaps the '
+                    'visible bowl by at least 5 mm in X, Y and Z, and own '
+                    'finger-table clearance is positive, you may advance to '
+                    'one closure trial. Otherwise choose retry when offered. '
+                    'The subsequent visible lift must prove holding.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
@@ -701,7 +702,12 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;grip_ticks+=1
             after=obs['robot0_eef_pos'].copy()
             progress=float(np.linalg.norm(error)-np.linalg.norm(target-after))
-            stalls=stalls+1 if np.linalg.norm(after-before)<.0008 and np.linalg.norm(error)>.008 else 0
+            # An arm can jitter by >0.8 mm while making no net progress toward
+            # a blocked descend target. Count target-error reduction there;
+            # retain the prior displacement check in other stages.
+            motion_stalled = (progress < .001 if stage == 'descend' else
+                              np.linalg.norm(after-before) < .0008)
+            stalls=stalls+1 if motion_stalled and np.linalg.norm(error)>.008 else 0
             rec.branch(dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,selected_gripper=d['gripper'],executed_gripper=gripper,selected_transition=d['transition'],block_native_ticks=block_ticks,selected_candidate=c['id'],rotation_signs=d['rotation_signs'],rotation_error_rad=rot,progress_m=progress))
             history.append(dict(gripper=d['gripper'],transition=d['transition'],progress_mm=round(progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()))
             for cam,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{cam}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))
