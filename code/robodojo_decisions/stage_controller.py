@@ -117,7 +117,7 @@ class StageController:
     def __init__(self, client: DecisionClient, initial_obs: dict, plan: dict,
                  augmented: bool = False, reobserve: bool = False,
                  geometry_cue: bool = False, sign_gate: bool = False,
-                 staged_micro: bool = False):
+                 staged_micro: bool = False, recovery_sweep: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
@@ -125,6 +125,7 @@ class StageController:
         self.geometry_cue = geometry_cue
         self.sign_gate = sign_gate
         self.staged_micro = staged_micro
+        self.recovery_sweep = recovery_sweep
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -153,6 +154,7 @@ class StageController:
         self.horizontal_confirmations = 0
         self.pending_micro: dict | None = None
         self.micro_no_progress_count = 0
+        self.last_x_sign = 0
 
     def _current_colors(self, obs: dict) -> set[str]:
         if not self.augmented:
@@ -238,7 +240,9 @@ class StageController:
                 state["rgb_only_extra_information"].update({
                     "locked_target_detected_in_current_high": target_color in found if target_color else None,
                     "locked_support_detected_in_current_high": base_color in found if base_color else None,
-                    "visibility_recovery_rule": ("If the target disappears, preserve X and use only a 5 mm Z+ visibility probe, at most twice; stop if still hidden."
+                    "visibility_recovery_rule": ("If the target disappears, first raise open gripper in three Z+10 mm steps. If still hidden, retreat along the last X path in at most three 10 mm steps. Re-identify target in fresh RGB before approach."
+                                                 if self.recovery_sweep else
+                                                 "If the target disappears, preserve X and use only a 5 mm Z+ visibility probe, at most twice; stop if still hidden."
                                                  if self.staged_micro else
                                                  "If the target disappears behind the open gripper, briefly lift and withdraw toward the previously clear starting hand pose; visually re-identify target and support before further alignment. High-view color detection is fallible; inspect raw RGB yourself."),
                 })
@@ -252,7 +256,9 @@ class StageController:
             if self.staged_micro:
                 state["rgb_only_extra_information"]["staged_motion_rule"] = (
                     "First reduce the target-to-finger horizontal RGB error with X only. "
-                    "If the target is occluded, preserve measured X progress and use at most two 5 mm Z+ visibility probes. "
+                    ("If occluded, raise up to 30 mm, then retreat X up to 30 mm, each in 10 mm steps to regain visibility. "
+                     if self.recovery_sweep else
+                     "If the target is occluded, preserve measured X progress and use at most two 5 mm Z+ visibility probes. ") +
                     "Only after two reliable RGB observations at horizontal error <=5 px may Y/Z be considered; "
                     "each such action is capped at 5 mm and checked against measured EEF and fresh RGB.")
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
@@ -262,8 +268,11 @@ class StageController:
             geometry = self._high_geometry(obs)
             score = float(geometry["normalized_match_score"]) if geometry else 0.0
             target_seen = bool(geometry and geometry.get("locked_target_center_px"))
-            if score < 0.80:
+            if score < 0.80 and not (self.recovery_sweep and self.stage == "reobserve"):
                 self.stalled_reason = "rgb_gripper_tracker_below_0_80"
+            if self.recovery_sweep and self.stage == "reobserve" and geometry and (
+                    float(geometry["right_eef_z_change_from_initial_mm"]) > 65):
+                self.stalled_reason = "visibility_recovery_above_65mm_from_start"
             if self.pending_micro is not None:
                 previous = self.pending_micro
                 self.pending_micro = None
@@ -289,8 +298,9 @@ class StageController:
                     self.stage = "reobserve"
                     self.reobserve_cycles += 1
                     self.reobserve_actions = 0
-            elif self.stage == "reobserve" and not target_seen and self.reobserve_actions >= 2:
-                self.stalled_reason = "target_hidden_after_two_5mm_visibility_probes"
+            elif self.stage == "reobserve" and not target_seen and self.reobserve_actions >= (6 if self.recovery_sweep else 2):
+                self.stalled_reason = ("target_hidden_after_bounded_lift_and_x_retreat" if self.recovery_sweep
+                                       else "target_hidden_after_two_5mm_visibility_probes")
         if self.sign_gate and self.pending_x_error_abs is not None:
             geometry = self._high_geometry(obs)
             if geometry and geometry["usable"] and geometry.get("target_minus_finger_gap_center_px"):
@@ -364,7 +374,7 @@ class StageController:
                     verdict = "uncertain"
                 if recovered:
                     verdict = "pass"
-                if self.reobserve_actions >= (2 if self.staged_micro else 3) and verdict != "pass":
+                if self.reobserve_actions >= (6 if self.recovery_sweep else 2 if self.staged_micro else 3) and verdict != "pass":
                     self.stalled_reason = "target_unrecoverable_after_visibility_actions"
         if self.stage == "return_home" and verdict == "pass":
             for arm in ARMS:
@@ -404,7 +414,17 @@ class StageController:
         name = f"move_{self.motion_calls:04d}"
         self.motion_calls += 1
         if self.stage == "reobserve":
-            if self.staged_micro:
+            if self.recovery_sweep:
+                if self.reobserve_actions < 3:
+                    delta = np.asarray((0.0, 0.0, 0.010))
+                    direction = "reobserve_z_positive_10mm"
+                else:
+                    if not self.last_x_sign:
+                        raise ValueError("No measured X approach direction for bounded retreat")
+                    delta = np.asarray((-self.last_x_sign * 0.010, 0.0, 0.0))
+                    direction = "reobserve_reverse_x_10mm"
+                answer = {"direction": direction, "size": "recovery_10mm", "rotation": "hold"}
+            elif self.staged_micro:
                 delta = np.asarray((0.0, 0.0, 0.005))
                 answer = {"direction": "reobserve_z_positive_5mm", "size": "fine", "rotation": "hold"}
             elif self.reobserve_actions == 0:
@@ -460,6 +480,8 @@ class StageController:
             if (self.sign_gate and self.stage in ("approach", "align") and
                     vector[0] and horizontal_error is not None):
                 self.pending_x_error_abs = abs(horizontal_error)
+            if self.recovery_sweep and vector[0]:
+                self.last_x_sign = int(np.sign(vector[0]))
             if self.reobserve and self.stage == "align":
                 self.align_actions += 1
                 if self.align_actions > (50 if self.geometry_cue else 16):

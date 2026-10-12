@@ -53,3 +53,5 @@
 - 【Agent】【2026-10-12 12:32】[run] v4090 前台启动 stack_blocks 布局0 v7：原始三路RGB+RGB匹配符号门、SOCKS只读请求10次退避；最多60动作/2400秒，原生终局留DataStorage。
 - 【Agent】【2026-10-12 12:44】[op] 新建实验块 EXP-2026W42-014：stack_blocks v7 RGB横向符号门控与纵深失控取证  ↪ `EXP-2026W42-014`
 - 【Agent】【2026-10-12 12:52】[op] 实现RoboDojo v8分阶段RGB门控与5mm微探，准备原生试跑
+- 【Agent】【2026-10-12 13:01】[op] v8原生stack_blocks试跑5动作25步，目标遮挡后两次Z+5mm仍不可见，原生success=false/complete=false；本机Pro图像复核建议先分次抬高再小幅回退X取证
+- 【Agent】【2026-10-12 13:02】[op] 记录v8原生负结果并实现v9受控抬升加原路X退让取证
