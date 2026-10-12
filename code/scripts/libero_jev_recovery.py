@@ -31,6 +31,7 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
     near = 1 if position[:2]@major[:2] > src['center'][:2]@major[:2] else -1
     R = Rotation.from_rotvec(minor*angle*near).as_matrix() @ R
     ee = envelope(own, R)
+    width = float(abs(minor[:2])@extent[:2])
     c = []
     for i, extra in enumerate([0., .003, -.003]):
         overlap = cfg['pad_overlap_mm']/1000+extra
@@ -47,13 +48,40 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
         target = np.r_[src['center'][:2]-ee['pad_center_offset'][:2], z]
         target[:2] += major[:2] * ([0.,-.012,.012][i])
         pad_low, pad_high = z+ee['pad_low_offset'][2],z+ee['pad_high_offset'][2]
-        width = float(abs(minor[:2])@extent[:2])
         c.append(dict(id=f'candidate_{i}', target=target, orientation=R, visible_width_mm=width*1000,
                       estimated_pad_overlap_mm=max(0., min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000,
                       estimated_finger_table_clearance_mm=(z+ee['finger_low_z_offset']-level)*1000,
                       pad_z_interval_m=[pad_low,pad_high],support_z_m=level, support_pixels=points,
                       grasp_height_source='visible tall-slender mid-body' if tall_slender else 'visible top pad-overlap',
                       prior_failed=i in failed_candidates, source='Visible RGB-D bounds/support plane + own robot mesh; geometric estimate only'))
+    if cfg.get('task_id') == 1202:
+        # A visible bowl wider than the open inner pad gap cannot be straddled
+        # symmetrically. Put one pad inside its visible rim and the other
+        # outside. Both sides remain selectable by Jev; no asset dimensions or
+        # scene contact state are consulted.
+        pad_world = np.asarray(own['pad_vertices_tool']) @ R.T
+        pad_axis = pad_world @ minor
+        positive, negative = pad_axis[pad_axis > 0], pad_axis[pad_axis < 0]
+        if not len(positive) or not len(negative):
+            raise RuntimeError('Own open pads have no opposed inner faces')
+        inner_gap = float(np.min(positive) - np.max(negative))
+        if inner_gap > 0 and width > inner_gap:
+            rim_offset = max(.012, width/2-.012)
+            rim_candidates = []
+            for i, side in enumerate((1., -1.)):
+                candidate = dict(c[1])
+                candidate['id'] = f'candidate_{i}'
+                candidate['target'] = np.r_[
+                    src['center'][:2]-ee['pad_center_offset'][:2]
+                    + side*rim_offset*minor[:2], c[1]['target'][2]]
+                candidate['grasp_height_source'] = 'visible one-sided rim pinch'
+                candidate['own_open_inner_pad_gap_mm'] = inner_gap*1000
+                candidate['one_sided_rim_offset_mm'] = side*rim_offset*1000
+                candidate['approach_distance_mm'] = float(np.linalg.norm(
+                    candidate['target'][:2]-position[:2])*1000)
+                candidate['prior_failed'] = i in failed_candidates
+                rim_candidates.append(candidate)
+            return rim_candidates
     return c
 
 
@@ -595,12 +623,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 pad_overlap_mm = np.round(overlap*1000, 2).tolist()
                 pad_vertical_gap_mm = float(max(
                     src['low'][2]-pad_high[2], pad_low[2]-src['high'][2], 0.)*1000)
-                near_bowl_trial = bool(rec.cfg.get('drawer_bowl_continuation') and
-                    np.all(overlap[:2] >= .005) and
-                    pad_vertical_gap_mm <= 12. and
-                    np.max(abs(error)) < .020)
                 contact_trial = bool(stalls >= 3 and oriented and
-                    (np.all(overlap >= .005) or near_bowl_trial) and
+                    np.all(overlap >= .005) and
                     c['estimated_finger_table_clearance_mm'] > 1.)
                 complete = bool(complete or contact_trial)
             if stage == 'select':complete=True

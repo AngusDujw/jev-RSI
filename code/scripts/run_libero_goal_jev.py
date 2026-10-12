@@ -82,7 +82,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                     '--geometry-profile', 'observed_surfaces',
                     '--input-organization', 'focused',
                     '--grasp-algorithm', 'pad_fit', '--preserve-source',
-                    '--execution-profile', 'adaptive']
+                    '--execution-profile', 'adaptive', '--allow-retry']
     return cmd
 
 
