@@ -131,6 +131,8 @@ graph LR
     T_2026W42_023["📊 robodojo-decision-stages<br/>剪刀互斥完整Choice让连续14短步和4…"]:::experiment
     T_2026W42_024["📊 robodojo-task-coverage<br/>第三批新五任务三RGB零动作预检5/5；累…"]:::experiment
     T_2026W42_025["📊 robodojo-decision-stages<br/>机器人手部网格高度输入未改变剪刀70步通路…"]:::experiment
+    T_2026W42_026["📊 robodojo-task-coverage<br/>第三批五任务Pro+Luna首轮均停初始感…"]:::experiment
+    T_2026W42_027["📊 robodojo-decision-stages<br/>剪刀新转腕候选预测增40px但仍无场景净空…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -223,6 +225,8 @@ graph LR
   T_2026W42_021 --> T_2026W42_023
   T_2026W42_022 --> T_2026W42_024
   T_2026W42_023 --> T_2026W42_025
+  T_2026W42_024 --> T_2026W42_026
+  T_2026W42_025 --> T_2026W42_027
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -342,6 +346,8 @@ graph LR
 | `T-2026W42-023` | 2026-10-13 | experiment | robodojo-decision-stages | 剪刀互斥完整Choice让连续14短步和40步视觉重标成立，70步因通路不明停止；加入公开手指网格高度界 | `EXP-2026W42-048` | - |
 | `T-2026W42-024` | 2026-10-13 | experiment | robodojo-task-coverage | 第三批新五任务三RGB零动作预检5/5；累计15任务预检、10任务Pro+Luna首轮、0完整成功 | `EXP-2026W42-051` | - |
 | `T-2026W42-025` | 2026-10-13 | experiment | robodojo-decision-stages | 机器人手部网格高度输入未改变剪刀70步通路停止；暂停同轨迹重试并让Pro重拟视点/实心柄证据 | `EXP-2026W42-050` | - |
+| `T-2026W42-026` | 2026-10-13 | experiment | robodojo-task-coverage | 第三批五任务Pro+Luna首轮均停初始感知，累计15/42真实首轮且0/15完整成功；停用旧逐轴格式 | `EXP-2026W42-052` | - |
+| `T-2026W42-027` | 2026-10-13 | experiment | robodojo-decision-stages | 剪刀新转腕候选预测增40px但仍无场景净空；通用同点门拒绝不可见黄罩，改先获取源物第二视角 | `EXP-2026W42-054` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

@@ -146,6 +146,56 @@ def view_margin_candidate(camera, landmark, measured_eef, min_height_clearance=0
     return best if best and best["margin_gain_px"] >= 3.0 else None
 
 
+def wrist_rotation_view_candidates(camera, landmark, measured_eef, angle_rad=0.08):
+    """Project small world-axis wrist rotations from public calibration and LINK6 state."""
+    point = np.asarray(landmark, float)
+    current = project(camera, point)
+    if current is None:
+        return []
+    width, height = camera["size"]
+
+    def margin(uv):
+        return min(uv[0], width - 1 - uv[0], uv[1], height - 1 - uv[1])
+
+    link = eef_transform(measured_eef)
+    camera_transform = np.asarray(camera["camera_to_environment"], float)
+    start_rotation = Rotation.from_matrix(link[:3, :3])
+    candidates = []
+    for axis in range(3):
+        for sign in (-1, 1):
+            rotvec = np.zeros(3)
+            rotvec[axis] = sign * angle_rad
+            moved_rotation = Rotation.from_rotvec(rotvec) * start_rotation
+            moved_link = link.copy()
+            moved_link[:3, :3] = moved_rotation.as_matrix()
+            moved_camera = copy.deepcopy(camera)
+            moved_camera["camera_to_environment"] = (
+                moved_link @ np.linalg.inv(link) @ camera_transform).tolist()
+            uv = project(moved_camera, point)
+            if uv is None:
+                continue
+            min_hand_height = float("inf")
+            for fraction in np.linspace(0.0, 1.0, 5):
+                partial_rotation = Rotation.from_rotvec(rotvec * fraction) * start_rotation
+                q = partial_rotation.as_quat()
+                pose = {"position": measured_eef["position"],
+                        "quaternion_wxyz": q[[3, 0, 1, 2]].tolist()}
+                bound = gripper_height_above_landmark(pose, point, descent_m=0.0)
+                min_hand_height = min(min_hand_height,
+                                      bound["hand_above_landmark_plane_after_m"])
+            candidates.append({
+                "axis": "xyz"[axis], "sign": "positive" if sign > 0 else "negative",
+                "angle_rad": angle_rad, "landmark_uv_before": current,
+                "landmark_uv_after_prediction": uv,
+                "image_margin_px_before": margin(current),
+                "image_margin_px_after_prediction": margin(uv),
+                "margin_gain_px": margin(uv) - margin(current),
+                "min_hand_above_landmark_plane_during_rotation_m": min_hand_height,
+                "caution": "Robot mesh vs camera landmark plane only; other obstacles and joint feasibility require review.",
+            })
+    return candidates
+
+
 def estimate(calibration, annotation):
     views = annotation["views"]
     if len(views) != 2:

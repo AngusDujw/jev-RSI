@@ -71,7 +71,12 @@ def main():
            "image-margin and remaining free-space distance for each candidate "
            "before selecting a new viewpoint; a retreat that merely reverses "
            "the next approach is not a durable solution. State an explicit "
-           "visibility gate and reject stale or out-of-frame landmarks."
+           "visibility gate and reject stale or out-of-frame landmarks. "
+           "If camera_derived_geometry_evidence names excluded_candidates from "
+           "previous failed or vetoed trials, do not recommend those motions again. "
+           "Find a distinct public-camera viewpoint, including the other wrist if "
+           "its bounded robot-state path can be specified, or explicitly report "
+           "that current RGB cannot justify a safe observation action."
            if args.geometry_evidence else "")
         + (" Camera calibration IS provided. In visual_method.initial_correspondences, "
            "name the same physical grasp-relevant landmark in two current RGB views and "

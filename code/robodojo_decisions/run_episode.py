@@ -161,7 +161,9 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                     result["status"] = "landmark_planar_alignment_incomplete"
                     return result
                 if controller_version == "v1_geometry_candidate_margin":
-                    from camera_geometry import project, view_margin_candidate, gripper_height_above_landmark
+                    from camera_geometry import (project, view_margin_candidate,
+                                                 gripper_height_above_landmark,
+                                                 wrist_rotation_view_candidates)
                     camera = obs["camera_calibration"]["cameras"]["cam_right_wrist"]
                     uv = project(camera, point)
                     width, height = camera["size"]
@@ -170,11 +172,19 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                     view = view_margin_candidate(camera, point, obs["current_eef"]["right"],
                                                  min_height_clearance=0.10, require_progress=True)
                     mesh_bound = gripper_height_above_landmark(obs["current_eef"]["right"], point)
-                    if margin < 40 and (not view or (view["axis"], view["sign"]) != ("z", "negative")
-                                        or mesh_bound["hand_above_landmark_plane_after_m"] < 0.05):
+                    rotation_view = next((item for item in wrist_rotation_view_candidates(
+                        camera, point, obs["current_eef"]["right"])
+                        if item["axis"] == "x" and item["sign"] == "negative" and
+                        item["margin_gain_px"] >= 12 and
+                        item["min_hand_above_landmark_plane_during_rotation_m"] >= 0.05), None)
+                    view_ok = (rotation_view is not None if plan.get("rotation_view_gate") else
+                               bool(view and (view["axis"], view["sign"]) == ("z", "negative") and
+                                    mesh_bound["hand_above_landmark_plane_after_m"] >= 0.05))
+                    if margin < 40 and not view_ok:
                         tools.finish("visibility_candidate_incomplete")
                         result.update(status="visibility_candidate_incomplete",
-                                      wrist_image_margin_px=margin, candidate=view,
+                                      wrist_image_margin_px=margin,
+                                      candidate=rotation_view if plan.get("rotation_view_gate") else view,
                                       robot_mesh_height_bound=mesh_bound)
                         return result
             if time.monotonic() > deadline:
@@ -186,15 +196,19 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                 if controller_version in ("v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin"):
                     view_moves = sum(item["model_choices"].get("motion") == "probe_view" for item in history)
                     down_moves = sum(item["model_choices"].get("motion") == "probe_down" for item in history)
+                    rotate_moves = sum(item["model_choices"].get("motion") == "probe_rotate_x_negative" for item in history)
                     if (answers["motion"] == "stop" or
                             (answers["motion"] == "probe_view" and view_moves >= 2) or
-                            (answers["motion"] == "probe_down" and down_moves >= 8)):
+                            (answers["motion"] == "probe_down" and down_moves >= 8) or
+                            (answers["motion"] == "probe_rotate_x_negative" and rotate_moves >= 2)):
                         reason = ("candidate_stop_incomplete" if answers["motion"] == "stop"
                                   else "descent_budget_incomplete" if answers["motion"] == "probe_down"
+                                  else "rotation_budget_incomplete" if answers["motion"] == "probe_rotate_x_negative"
                                   else "view_budget_incomplete")
                         tools.finish(reason)
                         result.update(status=reason, blocker=answers["blocker"],
                                       view_moves=view_moves, down_moves=down_moves,
+                                      rotate_moves=rotate_moves,
                                       final_stage=answers["stage"])
                         return result
             else:

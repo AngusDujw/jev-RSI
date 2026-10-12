@@ -105,7 +105,11 @@ def geometry_candidate_questions(obs: dict, plan: dict) -> list[dict]:
         f"moves world X{axes[0]}/Y{axes[1]} by 10 mm TOTAL, remains at current Z, "
         "and must be followed by a fresh image. It is a diagnostic move toward a "
         "landmark, not a grasp/contact point. "
-        + ("The view candidate is a separately judged world Z-5 mm sensing descent, "
+        + ("If image margin falls below 40 px, the view candidate is a separately "
+           "judged 0.08 rad world-X negative wrist rotation at fixed LINK6 position. "
+           "Its swept corridor must be visibly clear. "
+           if plan.get("rotation_view_gate") else
+           "The view candidate is a separately judged world Z-5 mm sensing descent, "
            "available only when its current camera projection improves image margin "
            "and task progress. Judge its own swept path from all fresh RGB views. "
            if plan.get("visibility_margin_gate") else
@@ -113,7 +117,8 @@ def geometry_candidate_questions(obs: dict, plan: dict) -> list[dict]:
         + "Choose stop if target identity or the selected move's corridor cannot be judged safe."
     )
     if plan.get("visibility_margin_gate"):
-        from camera_geometry import project, view_margin_candidate, gripper_height_above_landmark
+        from camera_geometry import (project, view_margin_candidate, gripper_height_above_landmark,
+                                     wrist_rotation_view_candidates)
         camera = obs["camera_calibration"]["cameras"]["cam_right_wrist"]
         uv = project(camera, np.asarray(point, float))
         if uv is None:
@@ -125,26 +130,53 @@ def geometry_candidate_questions(obs: dict, plan: dict) -> list[dict]:
         mesh_height = gripper_height_above_landmark(obs["current_eef"]["right"], point)
         if mesh_height["hand_above_landmark_plane_after_m"] < 0.05:
             view = None
+        rotation_view = next((item for item in wrist_rotation_view_candidates(
+            camera, point, obs["current_eef"]["right"])
+            if item["axis"] == "x" and item["sign"] == "negative" and
+            item["margin_gain_px"] >= 12 and
+            item["min_hand_above_landmark_plane_during_rotation_m"] >= 0.05), None)
         if margin < 40:
-            if not view or (view["axis"], view["sign"]) != ("z", "negative"):
-                raise ValueError("No task-progressing wrist view candidate with safe geometric margin")
-            motion_options = {
-                "probe_down": ("World Z-5 mm open-gripper free-space descent; predicted wrist "
-                               f"landmark margin {margin:.1f}->{view['image_margin_px_after_prediction']:.1f} px; "
-                               f"X5 hand mesh remains at least {mesh_height['hand_above_landmark_plane_after_m']*1000:.1f} mm "
-                               "above the CAMERA-DERIVED hinge-height plane, not a collision guarantee; "
-                               "judge other objects and full swept clearance in all current RGB views"),
-                "stop": "Stop if actual visible swept clearance or target identity is uncertain",
-            }
-            instructions = (f"Current camera-derived hinge projects to wrist pixel {uv}; image edge margin "
-                            f"{margin:.1f} px is below 40 px. Do not continue planar approach until a "
-                            "fresh view improves margin. Decide whether this bounded 5 mm descent is "
-                            "visibly clear; LINK6 height difference is not finger-pad clearance.")
+            if plan.get("rotation_view_gate"):
+                if not rotation_view:
+                    raise ValueError("No 0.08-rad X-negative wrist view with sufficient projected margin and robot-mesh height")
+                motion_options = {
+                    "probe_rotate_x_negative": (
+                        "Right LINK6 world-X negative rotation 0.08 rad around its measured center, "
+                        "no translation, gripper open. Current public K/T predicts hinge wrist margin "
+                        f"{margin:.1f}->{rotation_view['image_margin_px_after_prediction']:.1f} px. "
+                        "Across five rotation samples, the public X5 hand mesh stays at least "
+                        f"{rotation_view['min_hand_above_landmark_plane_during_rotation_m']*1000:.1f} mm "
+                        "above the camera-derived hinge plane. This is not full-scene clearance. "
+                        "Choose only if fresh RGB shows this SHORT ROTATION corridor is clear; "
+                        "reobserve before translating or grasping."),
+                    "stop": "Stop if actual visible swept clearance or target identity is uncertain",
+                }
+                instructions = (f"Current hinge projects to wrist pixel {uv}; image margin {margin:.1f} px "
+                                "is below 40 px. Prior Z-negative translations were vetoed, so only "
+                                "a distinct bounded wrist rotation is offered. Judge its own full "
+                                "swept corridor in all current RGB; the mesh/hinge-plane height "
+                                "cannot certify clearance from other scene objects.")
+            else:
+                if not view or (view["axis"], view["sign"]) != ("z", "negative"):
+                    raise ValueError("No task-progressing wrist view candidate with safe geometric margin")
+                motion_options = {
+                    "probe_down": ("World Z-5 mm open-gripper free-space descent; predicted wrist "
+                                   f"landmark margin {margin:.1f}->{view['image_margin_px_after_prediction']:.1f} px; "
+                                   f"X5 hand mesh remains at least {mesh_height['hand_above_landmark_plane_after_m']*1000:.1f} mm "
+                                   "above the CAMERA-DERIVED hinge-height plane, not a collision guarantee; "
+                                   "judge visible swept clearance in all current RGB views"),
+                    "stop": "Stop if actual visible swept clearance or target identity is uncertain",
+                }
+                instructions = (f"Current camera-derived hinge projects to wrist pixel {uv}; image edge margin "
+                                f"{margin:.1f} px is below 40 px. Do not continue planar approach until a "
+                                "fresh view improves margin. Decide whether this bounded 5 mm descent is "
+                                "visibly clear; LINK6 height difference is not finger-pad clearance.")
         else:
             motion_options = {
                 "probe_toward": "Small planar pregrasp probe toward camera-derived hinge, 10 mm total, gripper open",
             }
-            if view and (view["axis"], view["sign"]) == ("z", "negative"):
+            if (not plan.get("rotation_view_gate") and view and
+                    (view["axis"], view["sign"]) == ("z", "negative")):
                 motion_options["probe_down"] = (
                     "World Z-5 mm open-gripper sensing descent, only if this VERTICAL corridor "
                     "is visibly clear; predicted wrist landmark image margin "
@@ -223,7 +255,12 @@ def public_evidence(obs: dict, plan: dict, stage: str, history: list[dict]) -> s
             "If image margin is below 40 px, choose only a verified short descent that improves both "
             "margin and estimated free-space progress, or stop on a visible clearance concern. "
             "Never treat LINK6 height difference as finger-pad clearance; inspect all RGB."
-            if plan.get("visibility_margin_gate") else None),
+            if plan.get("visibility_margin_gate") and not plan.get("rotation_view_gate") else
+            "If wrist image margin is below 40 px, a world-X negative 0.08 rad RIGHT wrist "
+            "rotation may reframe the hinge without translating toward it. Judge its own "
+            "short swept corridor from all current RGB; robot mesh height relative to the "
+            "camera-derived hinge plane is not full-scene collision clearance. Stop if unsure."
+            if plan.get("rotation_view_gate") else None),
         "recent_executed_actions": previous,
         "instruction_to_decision_model": (
             "Inspect ALL three attached fresh RGB views directly. Decide the current task stage, bounded LINK6 motion, "
@@ -347,7 +384,9 @@ def to_action(obs: dict, answers: dict, max_translation_m: float = 0.05) -> dict
             delta = delta / np.linalg.norm(delta) * max_translation_m
         position = np.asarray(old["position"], dtype=float) + delta
         old_q = np.asarray(old["quaternion_wxyz"], dtype=float)
-        rotation_axis, radians = ROTATIONS[answers[f"{arm}_rotation"]]
+        rotation_name = answers[f"{arm}_rotation"]
+        rotation_axis, radians = ((0, -0.08) if rotation_name == "view_x_negative"
+                                  else ROTATIONS[rotation_name])
         vector = np.zeros(3)
         vector[rotation_axis] = radians
         current = Rotation.from_quat(old_q[[1, 2, 3, 0]])
@@ -480,6 +519,9 @@ class DecisionClient:
             if motion == "probe_down" and answers["blocker"] != "none":
                 answers["motion_routed_from"] = motion
                 motion = "stop"
+            if motion == "probe_rotate_x_negative" and answers["blocker"] != "none":
+                answers["motion_routed_from"] = motion
+                motion = "stop"
             signs = ["positive" if x > 0.015 else "negative" if x < -0.015 else "hold"
                      for x in residual]
             approach_stage = "planar_align" if "planar_align" in plan["stages"] else "pregrasp"
@@ -494,6 +536,7 @@ class DecisionClient:
                 "right_y": signs[1] if motion == "probe_toward" else "hold",
                 "right_z": "negative" if motion == "probe_down" else
                            "positive" if motion == "probe_view" else "hold",
+                "right_rotation": "view_x_negative" if motion == "probe_rotate_x_negative" else "hold",
                 "right_size": "fine" if motion in ("probe_view", "probe_down") else "short"}
         if sign_gated:
             answers = {**{

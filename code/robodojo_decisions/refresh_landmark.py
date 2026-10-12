@@ -1,4 +1,4 @@
-"""Ask the Pro planner to re-annotate a visible hinge in fresh RGB, then verify stereo."""
+"""Ask the Pro planner for a specified same-point RGB landmark, then verify stereo."""
 
 from __future__ import annotations
 
@@ -25,6 +25,19 @@ def refresh_landmark(obs: dict, plan: dict, output: Path) -> dict:
         path = data / "experience" / name
         experience[label] = path.read_text() if path.is_file() else ""
     previous = plan.get("initial_landmark_estimate")
+    spec = plan.get("landmark_spec") or {
+        "landmark_id": "scissors_hinge_rivet_center",
+        "target_identity": "the mint green scissors",
+        "physical_landmark": "same circular rivet at the hinge between green handles and silver blades",
+        "required_views": ["cam_high", "cam_right_wrist"],
+    }
+    required_views = spec.get("required_views")
+    if (not isinstance(required_views, list) or len(required_views) != 2 or
+            len(set(required_views)) != 2 or
+            not set(required_views) <= {"cam_high", "cam_left_wrist", "cam_right_wrist"} or
+            not all(isinstance(spec.get(key), str) and spec[key]
+                    for key in ("landmark_id", "target_identity", "physical_landmark"))):
+        raise ValueError("Invalid planner landmark_spec")
     public = {
         "task": obs["task"], "instruction": obs["instruction"],
         "step_id": obs["step_id"], "current_eef": obs["current_eef"],
@@ -34,20 +47,22 @@ def refresh_landmark(obs: dict, plan: dict, output: Path) -> dict:
         "planner_visual_method": plan.get("visual_method"),
         "planner_experience": plan.get("experience"),
         "latest_experience_files": experience,
+        "landmark_spec": spec,
     }
     system = (
         "You are GPT-6.1 Sol high, a sensor-only RoboDojo visual planner. "
-        "The mint green scissors are still the target. Identify the SAME physical "
-        "circular rivet at the hinge between green handles and silver blades in "
-        "both CURRENT cam_high and CURRENT cam_right_wrist RGB images. Camera "
+        "Identify only landmark_spec.target_identity and the SAME physical point "
+        "described by landmark_spec.physical_landmark in both named CURRENT RGB "
+        "views. Do not switch to a nearby but different object or point. Camera "
         "intrinsics/extrinsics and robot state are public sensors. Never use true "
         "simulator object pose, reward, contact, or saved scene layout. The prior "
         "estimate and old wrist image are stale; use them only to preserve object "
         "identity, never copy old pixels. Return one JSON object with exactly "
-        "landmark_id='scissors_hinge_rivet_center', status='visible' or 'uncertain', "
-        "landmark (short description), views mapping cam_high and cam_right_wrist "
-        "to pixel_uv [u,v] and uncertainty_radius_px, and explanation. If the "
-        "identical rivet cannot be located in both current images, set status "
+        "landmark_id equal to the supplied landmark_spec.landmark_id, status='visible' "
+        "or 'uncertain', landmark (short description), views mapping exactly the "
+        "two landmark_spec.required_views to pixel_uv [u,v] and "
+        "uncertainty_radius_px, and explanation. If the identical physical point "
+        "cannot be located in both current images, set status "
         "uncertain and views empty. Do not invent 3D position."
     )
     parts = [{"type": "text", "text": json.dumps(public, ensure_ascii=False)}]
@@ -88,12 +103,12 @@ def refresh_landmark(obs: dict, plan: dict, output: Path) -> dict:
         raise RuntimeError("Pro landmark refresh failed: " + str(last_error))
     (output / "planner-response.json").write_text(json.dumps(response, ensure_ascii=False, indent=2))
     annotation = json.loads(response["choices"][0]["message"]["content"])
-    if annotation.get("landmark_id") != "scissors_hinge_rivet_center":
+    if annotation.get("landmark_id") != spec["landmark_id"]:
         raise ValueError("Planner changed physical landmark identity")
     if annotation.get("status") != "visible":
-        raise ValueError("Same hinge not visible in both current RGB views")
+        raise ValueError("Specified same physical landmark not visible in both current RGB views")
     views = annotation.get("views")
-    if not isinstance(views, dict) or set(views) != {"cam_high", "cam_right_wrist"}:
+    if not isinstance(views, dict) or set(views) != set(required_views):
         raise ValueError("Planner must annotate both required current RGB views")
     for name, item in views.items():
         uv = item.get("pixel_uv")
