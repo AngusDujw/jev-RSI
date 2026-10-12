@@ -109,6 +109,7 @@ graph LR
     T_2026W42_001["📊 robodojo-decision-stages<br/>三相机 Decisions 30 次均停在…"]:::experiment
     T_2026W42_002["📊 robodojo-decision-stages<br/>分离视觉门后能进入接近，但13动作仅到对齐…"]:::experiment
     T_2026W42_003["⛔ robodojo-decision-stages<br/>stack_blocks视觉门同一意图连续…"]:::blocker
+    T_2026W42_004["📊 robodojo-decision-stages<br/>v4 遮挡恢复让紫块重现，但21动作/10…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -180,6 +181,7 @@ graph LR
   T_2026W41_033 --> T_2026W41_042
   T_2026W42_001 --> T_2026W42_002
   T_2026W42_002 --> T_2026W42_003
+  T_2026W42_003 --> T_2026W42_004
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -277,6 +279,7 @@ graph LR
 | `T-2026W42-001` | 2026-10-12 | experiment | robodojo-decision-stages | 三相机 Decisions 30 次均停在观察阶段；分离视觉验收与单臂动作 | `EXP-2026W42-002` | - |
 | `T-2026W42-002` | 2026-10-12 | experiment | robodojo-decision-stages | 分离视觉门后能进入接近，但13动作仅到对齐且9次hold；需目标标注与非零纠偏 | `EXP-2026W42-004` | - |
 | `T-2026W42-003` | 2026-10-12 | blocker | robodojo-decision-stages | stack_blocks视觉门同一意图连续三次Crashed；暂停物理试跑等待用户决定 | `EXP-2026W42-005` | - |
+| `T-2026W42-004` | 2026-10-12 | experiment | robodojo-decision-stages | v4 遮挡恢复让紫块重现，但21动作/105步仍无抓取，须标定纵深与高度 | `EXP-2026W42-006` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

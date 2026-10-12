@@ -23,3 +23,6 @@
 - 【User】【2026-10-12 11:30】[prompt] 我现在已经在本机改了这个AGENTS.md了让它不会因为几次没跑通就停下来，你同步一下之后继续之前的任务目标
 - 【Agent】【2026-10-12 11:30】[op] 同步用户更新后的 AGENTS.md 至 v4090-decisions 独立分支；取消连续失败导致的强制停工，恢复 RoboDojo 实验。
 - 【Agent】【2026-10-12 11:35】[op] 本机 Pro 复核 v3 三张 RGB 后，实现 v4 遮挡恢复：紫块丢失时抬高手并后撤，重新让 Decisions 判别目标/支撑/手指；自动记视觉停滞终局。
+- 【Agent】【2026-10-12 11:36】[run] v4090 前台启动 stack_blocks 布局0 v4 遮挡恢复原生试跑；40动作和3600秒上限，OpenAI Decisions 三视角 RGB，日志全部在 DataStorage。
+- 【Agent】【2026-10-12 11:43】[op] 新建实验块 EXP-2026W42-006：--help  ↪ `EXP-2026W42-006`
+- 【Agent】【2026-10-12 11:45】[result] EXP-2026W42-006：v4 21动作/105原生步、两轮遮挡恢复使紫块重新可见，但17次align仍未抓取；原生 success=false、complete=false、reason=visual_stall_incomplete。下一轮做Y轴像素投影探测。
