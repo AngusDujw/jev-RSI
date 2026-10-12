@@ -46,3 +46,7 @@
 - 【Agent】【2026-10-12 12:14】[run] v4090 前台启动 v6-05：仅使用HTTPS_PROXY反向隧道，去除ALL_PROXY/HTTP_PROXY歧义；保留只读网络重试，最多60动作/2400秒。
 - 【Agent】【2026-10-12 12:19】[op] HTTP CONNECT 路径在 v6-05 五次重试仍失败；改为同一反向隧道 SOCKS 通道，curl 经匿名内存 fd 读取密钥、请求体走 stdin，先做四图只读 API 验证再开仿真。
 - 【Agent】【2026-10-12 12:20】[op] SOCKS离线探针暴露远端Python无os.memfd_create；改用匿名pipe fd传递curl授权头，仍不把密钥放在argv或磁盘。
+- 【Agent】【2026-10-12 12:22】[run] v4090 前台启动 stack_blocks 布局0 v6-SOCKS：离线真实四图及选臂门已通过，Decisions请求走匿名管道授权头/SOCKS，动作最多60、墙钟2400秒。
+- 【Agent】【2026-10-12 12:22】[op] 新建实验块 EXP-2026W42-012：stack_blocks v6 HTTP代理五次重试仍全部失败并转SOCKS传输  ↪ `EXP-2026W42-012`
+- 【Agent】【2026-10-12 12:30】[op] 新建实验块 EXP-2026W42-013：stack_blocks v6 SOCKS多模态闭环首轮及横向反向动作  ↪ `EXP-2026W42-013`
+- 【Agent】【2026-10-12 12:32】[op] 本机 Pro 依据 v6 原始高图建议 RGB 横向符号门控；v7 对|误差|>5px过滤反向X，连续两次合规X不缩小误差则终止并复核，模型继续判阶段/其余方向/步长。只读请求扩为10次长退避。

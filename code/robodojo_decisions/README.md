@@ -18,13 +18,15 @@ The `v5_probe_y` diagnostic is intentionally an incomplete task episode for `sta
 
 That probe measured high-image right-gripper shifts of roughly 3 px for each 4–5 mm Y motion, with opposite directions for Y+ and Y−, while Decisions answered `none/left/none`. Version `v6` therefore reports a normalized RGB-only palm template match, approximate right-finger interval, purple target center and image-space error as supplemental text beside the raw images. It includes the measured local X/Y projection signs and limits. The model still selects target, stage, world-axis direction, magnitude, and rotation; a grasp-stage pass additionally requires visible target-in-finger geometry and a bounded hand height. These cues are calibrated only for layout 0 and do not use simulator object poses or labels.
 
+In the first SOCKS trial, v6 reached 7 actions/35 native steps before a connection outage. The model chose three X-negative and four X-positive motions; in the high RGB, three X-positive moves enlarged the target-to-finger horizontal error from about 58 to 95 pixels. A local Pro review proposed a visual sign gate. Version `v7` still asks Decisions for stage, safe world-axis direction and step size, but removes X directions that would increase the currently measured horizontal error when it exceeds 5 px. If two permitted X actions fail to shrink that error, the pilot terminates incomplete and flags its image projection for review. This is a task-specific RGB constraint, not a grasp claim.
+
 ## Run contract
 
 - Existing Python and assets: `~/DataStorage/jev-router/sources` and the existing environment recorded in `~/DataStorage/jev-router/project/jev-router/ENVIRONMENT.json`. No environment, driver, or CUDA changes.
 - Pilot is one foreground process and one native episode. Output names are unique and never overwritten.
 - `--preflight-only` initializes and resets the native simulator, obtains three RGB frames, then records an incomplete preflight with zero model calls.
 - A normal development pilot defaults to 30 native actions and at most 6,800 seconds. This is incomplete unless native termination and the native success criterion are recorded. Full frozen evaluation should use `--max-decisions 0` with the same under-two-hour wall guard only after pilot evidence supports it.
-- API errors/refusals or invalid actions execute no robot step. Transient network failures on read-only Decisions queries may retry up to five times with short exponential backoff and recorded attempts. A simulator mutation is never retried automatically after uncertain acknowledgement.
+- API errors/refusals or invalid actions execute no robot step. Transient network failures on read-only Decisions queries may retry up to ten times with bounded exponential backoff and recorded attempts. A simulator mutation is never retried automatically after uncertain acknowledgement.
 - For intermittent HTTP proxy protocol errors, `ROBODOJO_DECISION_TRANSPORT=curl_socks` sends Decisions requests through the same local reverse tunnel using SOCKS. The API key is passed to curl through an anonymous in-memory file descriptor; it is never placed in command arguments or a new disk file. Validate a four-image read-only request before running a simulator episode.
 - Every model call records text, RGB file paths/hashes, typed answers, bounded target, usage and latency without recording the API key. The native result and full simulator logs remain on DataStorage.
 
@@ -46,6 +48,10 @@ HTTPS_PROXY=http://127.0.0.1:7897 HTTP_PROXY=http://127.0.0.1:7897 "$HOME/zjc/Gp
 
 ```bash
 ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v6 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-rgb-geometry-socks-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 60 --max-wall-seconds 2400
+```
+
+```bash
+ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v7 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-rgb-sign-gate-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 60 --max-wall-seconds 2400
 ```
 
 This controller is an experimental categorical EEF policy, not the original RoboProbe GPT-6 Astra harness. Stability requires frozen code/plan and independent native episodes, including standard/random layouts where the official cell is paired.

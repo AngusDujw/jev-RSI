@@ -19,7 +19,7 @@ from scipy.spatial.transform import Rotation
 
 MODEL = "gpt-6-luna"
 ENDPOINT = "https://api.openai.com/v1/decisions"
-MAX_QUERY_ATTEMPTS = 5
+MAX_QUERY_ATTEMPTS = 10
 AXES = ("x", "y", "z")
 ARMS = ("left", "right")
 SIGNS = ("negative", "hold", "positive")
@@ -242,7 +242,7 @@ class DecisionClient:
                 if (error.code in (429, 500, 502, 503, 504) or transport_scheme_error) and attempt + 1 < MAX_QUERY_ATTEMPTS:
                     transient_errors.append({"attempt": attempt + 1,
                                              "http_status": error.code, "error_code": error_code})
-                    time.sleep(2 ** attempt)
+                    time.sleep(min(2 ** attempt, 30))
                     continue
                 (self.output / f"{record_name}.json").write_text(json.dumps(
                     {**meta, "latency_s": time.monotonic() - started, "attempts": attempt + 1,
@@ -254,7 +254,7 @@ class DecisionClient:
                 transient_errors.append({"attempt": attempt + 1,
                                          "error_type": type(error).__name__, "error": str(error)})
                 if attempt + 1 < MAX_QUERY_ATTEMPTS:
-                    time.sleep(2 ** attempt)
+                    time.sleep(min(2 ** attempt, 30))
                     continue
                 (self.output / f"{record_name}.json").write_text(json.dumps(
                     {**meta, "latency_s": time.monotonic() - started, "attempts": attempt + 1,

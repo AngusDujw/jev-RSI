@@ -80,12 +80,16 @@ def gate_questions(stage: str) -> list[dict]:
 
 
 def motion_questions(stage: str, augmented: bool = False,
-                     geometry_cue: bool = False) -> list[dict]:
+                     geometry_cue: bool = False,
+                     horizontal_error_px: float | None = None) -> list[dict]:
     allowed = DIRECTIONS
     if stage == "grasp":
         allowed = {key: value for key, value in DIRECTIONS.items() if key in ("hold", "z_positive")}
     elif augmented and stage in ("approach", "align"):
         allowed = {key: value for key, value in DIRECTIONS.items() if key != "hold"}
+    if horizontal_error_px is not None and abs(horizontal_error_px) > 5:
+        allowed = {key: value for key, value in allowed.items()
+                   if value[0] == 0 or value[0] * horizontal_error_px > 0}
     asked = [
         choice("direction", f"For the LOCKED active arm at stage {stage}, choose one bounded WORLD XYZ direction toward the visible target. Choose hold if only gripper change is needed. Do not move the inactive arm. " +
                ("Use the RGB-derived target-to-finger pixel error and measured world-axis image probes in the text; image vertical error mixes world Y and Z, so inspect wrist RGB and height too. " if geometry_cue else ""),
@@ -108,12 +112,13 @@ def rot_distance(a: list[float], b: list[float]) -> float:
 class StageController:
     def __init__(self, client: DecisionClient, initial_obs: dict, plan: dict,
                  augmented: bool = False, reobserve: bool = False,
-                 geometry_cue: bool = False):
+                 geometry_cue: bool = False, sign_gate: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
         self.reobserve = reobserve
         self.geometry_cue = geometry_cue
+        self.sign_gate = sign_gate
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -137,6 +142,8 @@ class StageController:
         self.reobserve_actions = 0
         self.align_actions = 0
         self.stalled_reason: str | None = None
+        self.pending_x_error_abs: float | None = None
+        self.x_no_progress_count = 0
 
     def _current_colors(self, obs: dict) -> set[str]:
         if not self.augmented:
@@ -224,9 +231,29 @@ class StageController:
                 })
             if self.geometry_cue:
                 state["rgb_only_extra_information"]["right_gripper_rgb_geometry"] = self._high_geometry(obs)
+            if self.sign_gate:
+                state["rgb_only_extra_information"]["horizontal_action_rule"] = (
+                    "If the RGB target is more than 5 px left of the estimated right-finger gap, +world X options are excluded; if more than 5 px right, -world X options are excluded. Y/Z choices remain available. This is a visual sign check, not an object pose.")
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
 
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
+        if self.sign_gate and self.pending_x_error_abs is not None:
+            geometry = self._high_geometry(obs)
+            if geometry and geometry["usable"] and geometry.get("target_minus_finger_gap_center_px"):
+                current = abs(float(geometry["target_minus_finger_gap_center_px"][0]))
+                if current >= self.pending_x_error_abs - 0.5:
+                    self.x_no_progress_count += 1
+                else:
+                    self.x_no_progress_count = 0
+                if self.x_no_progress_count >= 2:
+                    self.stalled_reason = "rgb_x_projection_not_improving"
+            self.pending_x_error_abs = None
+        if self.stalled_reason:
+            event = {"step_id": obs["step_id"], "stage_before": self.stage,
+                     "stage_after": self.stage, "verdict": "uncertain",
+                     "raw_gate": None, "record": None, "stall_reason": self.stalled_reason}
+            self.events.append(event)
+            return event
         name = f"gate_{self.phase_calls:04d}"
         self.phase_calls += 1
         asked = gate_questions(self.stage)
@@ -331,8 +358,13 @@ class StageController:
             self.reobserve_actions += 1
             source = "bounded RGB visibility recovery"
         else:
+            geometry = self._high_geometry(obs) if self.sign_gate else None
+            horizontal_error = (float(geometry["target_minus_finger_gap_center_px"][0])
+                                if geometry and geometry["usable"] and
+                                geometry.get("target_minus_finger_gap_center_px") else None)
             answer = self.client.query(obs, motion_questions(self.stage, self.augmented,
-                                                              self.geometry_cue),
+                                                              self.geometry_cue,
+                                                              horizontal_error if self.stage in ("approach", "align") else None),
                                        self._evidence(obs, recent, "one bounded action for locked arm"),
                                        name, self.reference)
             answer.setdefault("rotation", "hold")
@@ -340,6 +372,9 @@ class StageController:
             norm = float(np.linalg.norm(vector))
             delta = vector / norm * SIZES[answer["size"]] if norm else vector
             source = "OpenAI Decisions RGB action"
+            if (self.sign_gate and self.stage in ("approach", "align") and
+                    vector[0] and horizontal_error is not None):
+                self.pending_x_error_abs = abs(horizontal_error)
             if self.reobserve and self.stage == "align":
                 self.align_actions += 1
                 if self.align_actions > (50 if self.geometry_cue else 16):
