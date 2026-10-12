@@ -55,3 +55,5 @@
 - 【Agent】【2026-10-12 12:52】[op] 实现RoboDojo v8分阶段RGB门控与5mm微探，准备原生试跑
 - 【Agent】【2026-10-12 13:01】[op] v8原生stack_blocks试跑5动作25步，目标遮挡后两次Z+5mm仍不可见，原生success=false/complete=false；本机Pro图像复核建议先分次抬高再小幅回退X取证
 - 【Agent】【2026-10-12 13:02】[op] 记录v8原生负结果并实现v9受控抬升加原路X退让取证
+- 【Agent】【2026-10-12 13:19】[op] v9原生stack_blocks14动作70步；抬升及X退让恢复紫块可见，后横误差到5-6px但边界hold停滞，success=false/complete=false；本机Pro建议先Y-3mm取证
+- 【Agent】【2026-10-12 13:21】[op] 记录v9原生部分结果与Pro图像复核，加入v10横向8px双帧确认后Y-3/2mm取证

@@ -117,7 +117,8 @@ class StageController:
     def __init__(self, client: DecisionClient, initial_obs: dict, plan: dict,
                  augmented: bool = False, reobserve: bool = False,
                  geometry_cue: bool = False, sign_gate: bool = False,
-                 staged_micro: bool = False, recovery_sweep: bool = False):
+                 staged_micro: bool = False, recovery_sweep: bool = False,
+                 y_probe: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
@@ -126,6 +127,7 @@ class StageController:
         self.sign_gate = sign_gate
         self.staged_micro = staged_micro
         self.recovery_sweep = recovery_sweep
+        self.y_probe = y_probe
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -155,6 +157,7 @@ class StageController:
         self.pending_micro: dict | None = None
         self.micro_no_progress_count = 0
         self.last_x_sign = 0
+        self.y_probe_actions = 0
 
     def _current_colors(self, obs: dict) -> set[str]:
         if not self.augmented:
@@ -183,6 +186,7 @@ class StageController:
             tip_y = tracked["estimated_finger_tip_y_px"]
             tracked.update({
                 "locked_target_center_px": [x, y],
+                "locked_target_mask_area_px": int(target["mask_area_px"]),
                 "target_minus_finger_gap_center_px": [round(x - (left + right) / 2, 1),
                                                        round(y - tip_y, 1)],
                 "target_inside_inner_finger_gap_x": bool(left + 8 <= x <= right - 8),
@@ -259,8 +263,11 @@ class StageController:
                     ("If occluded, raise up to 30 mm, then retreat X up to 30 mm, each in 10 mm steps to regain visibility. "
                      if self.recovery_sweep else
                      "If the target is occluded, preserve measured X progress and use at most two 5 mm Z+ visibility probes. ") +
-                    "Only after two reliable RGB observations at horizontal error <=5 px may Y/Z be considered; "
-                    "each such action is capped at 5 mm and checked against measured EEF and fresh RGB.")
+                    ("At horizontal error <=8 px in two fresh observations, stop X and run one Y-3 mm RGB/EEF probe, "
+                     "possibly followed by Y-2 mm only if the first improves the vertical error without moving the block."
+                     if self.y_probe else
+                     "Only after two reliable RGB observations at horizontal error <=5 px may Y/Z be considered; "
+                     "each such action is capped at 5 mm and checked against measured EEF and fresh RGB."))
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
 
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
@@ -281,6 +288,8 @@ class StageController:
                 measured_mm = float(np.linalg.norm(after - before) * 1000)
                 if measured_mm < 1.0 or measured_mm > 9.0:
                     self.stalled_reason = f"micro_probe_measured_eef_outside_1_to_9_mm:{measured_mm:.1f}"
+                if previous.get("purpose") == "y_probe" and not target_seen:
+                    self.stalled_reason = "target_disappeared_after_y_probe"
                 if target_seen and score >= 0.80:
                     errors = geometry["target_minus_finger_gap_center_px"]
                     improvement = abs(previous["vertical_error_px"]) - abs(float(errors[1]))
@@ -288,11 +297,23 @@ class StageController:
                                                     else self.micro_no_progress_count + 1)
                     if self.micro_no_progress_count >= 2:
                         self.stalled_reason = "vertical_rgb_error_not_improving_after_two_micro_moves"
+                    if previous.get("purpose") == "y_probe":
+                        before_center = np.asarray(previous["target_center_px"], dtype=float)
+                        after_center = np.asarray(geometry["locked_target_center_px"], dtype=float)
+                        block_shift = float(np.linalg.norm(after_center - before_center))
+                        area_ratio = (float(geometry["locked_target_mask_area_px"]) /
+                                      max(1.0, float(previous["target_mask_area_px"])))
+                        if improvement < 1.0 or block_shift > 2.0 or area_ratio < 0.70:
+                            self.stalled_reason = ("y_probe_rgb_rejected:"
+                                                   f"improvement={improvement:.1f},"
+                                                   f"block_shift={block_shift:.1f},area_ratio={area_ratio:.2f}")
+                        elif self.y_probe_actions >= 2:
+                            self.stalled_reason = "bounded_y_probe_complete_incomplete"
             if self.stage in ("approach", "align"):
                 if target_seen and score >= 0.80:
                     horizontal = abs(float(geometry["target_minus_finger_gap_center_px"][0]))
                     self.horizontal_confirmations = (self.horizontal_confirmations + 1
-                                                     if horizontal <= 5 else 0)
+                                                     if horizontal <= (8 if self.y_probe else 5) else 0)
                 else:
                     self.horizontal_confirmations = 0
                     self.stage = "reobserve"
@@ -354,7 +375,8 @@ class StageController:
                             float(geometry["normalized_match_score"]) < 0.80 or
                             self.horizontal_confirmations < 2 or
                             not geometry.get("target_minus_finger_gap_center_px") or
-                            abs(float(geometry["target_minus_finger_gap_center_px"][0])) > 5):
+                            abs(float(geometry["target_minus_finger_gap_center_px"][0])) >
+                            (8 if self.y_probe else 5)):
                         verdict = "uncertain"
                 self.target_missing = 0 if target_visible else self.target_missing + 1
                 if verdict == "pass" and not target_visible:
@@ -440,52 +462,36 @@ class StageController:
                 answer = {"direction": "reobserve_to_initial_xy", "size": "medium", "rotation": "hold"}
             self.reobserve_actions += 1
             source = "bounded RGB visibility recovery"
+        elif self.y_probe and self.stage in ("approach", "align") and self.active_arm == "right":
+            geometry = self._high_geometry(obs)
+            if not geometry or float(geometry["normalized_match_score"]) < 0.80 or not geometry.get("target_minus_finger_gap_center_px"):
+                raise ValueError("Y probe requires a visible target and reliable RGB tracker")
+            horizontal_error = abs(float(geometry["target_minus_finger_gap_center_px"][0]))
+            if horizontal_error <= 8 and self.horizontal_confirmations == 1:
+                delta = np.zeros(3)
+                answer = {"direction": "hold_for_second_horizontal_rgb_frame", "size": "hold", "rotation": "hold"}
+                source = "fresh RGB confirmation before Pro-guided Y probe"
+            elif horizontal_error <= 8 and self.horizontal_confirmations >= 2:
+                if self.y_probe_actions >= 2:
+                    raise ValueError("Bounded Y probe already completed")
+                distance = 0.003 if self.y_probe_actions == 0 else 0.002
+                delta = np.asarray((0.0, -distance, 0.0))
+                answer = {"direction": "y_negative_pro_probe", "size": f"{distance * 1000:g}mm", "rotation": "hold"}
+                self.pending_micro = {
+                    "purpose": "y_probe",
+                    "eef_position": obs["current_eef"][self.active_arm]["position"],
+                    "vertical_error_px": float(geometry["target_minus_finger_gap_center_px"][1]),
+                    "target_center_px": geometry["locked_target_center_px"],
+                    "target_mask_area_px": geometry["locked_target_mask_area_px"],
+                }
+                self.y_probe_actions += 1
+                source = "Pro-guided single-axis RGB/EEF probe, at most 5mm total"
+            else:
+                answer = None
+            if answer is None:
+                answer, delta, source = self._model_motion(obs, recent, name)
         else:
-            geometry = self._high_geometry(obs) if self.sign_gate else None
-            horizontal_error = (float(geometry["target_minus_finger_gap_center_px"][0])
-                                if geometry and geometry["usable"] and
-                                geometry.get("target_minus_finger_gap_center_px") else None)
-            allowed_directions = None
-            if self.staged_micro and self.stage in ("approach", "align"):
-                if horizontal_error is None or float(geometry["normalized_match_score"]) < 0.80:
-                    raise ValueError("Staged RGB action requires a visible target and reliable gripper tracker")
-                if abs(horizontal_error) > 5 or self.horizontal_confirmations < 2:
-                    allowed_directions = ("hold", "x_negative" if horizontal_error < 0 else "x_positive")
-                else:
-                    allowed_directions = ("hold", "y_negative", "y_positive", "z_negative", "z_positive")
-            answer = self.client.query(obs, motion_questions(self.stage,
-                                                              self.augmented and not self.staged_micro,
-                                                              self.geometry_cue,
-                                                              horizontal_error if self.stage in ("approach", "align") else None,
-                                                              allowed_directions),
-                                       self._evidence(obs, recent, "one bounded action for locked arm"),
-                                       name, self.reference)
-            answer.setdefault("rotation", "hold")
-            vector = np.asarray(DIRECTIONS[answer["direction"]], dtype=float)
-            norm = float(np.linalg.norm(vector))
-            delta = vector / norm * SIZES[answer["size"]] if norm else vector
-            source = "OpenAI Decisions RGB action"
-            if self.staged_micro and self.stage in ("approach", "align"):
-                if vector[1] or vector[2]:
-                    delta = vector * min(SIZES[answer["size"]], 0.005)
-                    self.pending_micro = {
-                        "eef_position": obs["current_eef"][self.active_arm]["position"],
-                        "vertical_error_px": float(geometry["target_minus_finger_gap_center_px"][1]),
-                    }
-                    source += "; Y/Z capped at 5mm with measured EEF/RGB acceptance"
-                elif not norm:
-                    self.x_no_progress_count += 1
-                    if self.x_no_progress_count >= 2:
-                        self.stalled_reason = "two_holds_before_rgb_alignment"
-            if (self.sign_gate and self.stage in ("approach", "align") and
-                    vector[0] and horizontal_error is not None):
-                self.pending_x_error_abs = abs(horizontal_error)
-            if self.recovery_sweep and vector[0]:
-                self.last_x_sign = int(np.sign(vector[0]))
-            if self.reobserve and self.stage == "align":
-                self.align_actions += 1
-                if self.align_actions > (50 if self.geometry_cue else 16):
-                    self.stalled_reason = "align_action_budget_without_grasp"
+            answer, delta, source = self._model_motion(obs, recent, name)
         arm = self.active_arm
         target = {}
         for index, hand in enumerate(ARMS):
@@ -523,3 +529,51 @@ class StageController:
         record["decoded_answers"] = answer
         path.write_text(json.dumps(record, ensure_ascii=False, indent=2))
         return result, answer
+
+    def _model_motion(self, obs: dict, recent: list[dict], name: str) -> tuple[dict, np.ndarray, str]:
+        geometry = self._high_geometry(obs) if self.sign_gate else None
+        horizontal_error = (float(geometry["target_minus_finger_gap_center_px"][0])
+                            if geometry and geometry["usable"] and
+                            geometry.get("target_minus_finger_gap_center_px") else None)
+        allowed_directions = None
+        if self.staged_micro and self.stage in ("approach", "align"):
+            if horizontal_error is None or float(geometry["normalized_match_score"]) < 0.80:
+                raise ValueError("Staged RGB action requires a visible target and reliable gripper tracker")
+            if abs(horizontal_error) > (8 if self.y_probe else 5) or self.horizontal_confirmations < 2:
+                allowed_directions = ("hold", "x_negative" if horizontal_error < 0 else "x_positive")
+            else:
+                allowed_directions = ("hold", "y_negative", "y_positive", "z_negative", "z_positive")
+        answer = self.client.query(obs, motion_questions(self.stage,
+                                                          self.augmented and not self.staged_micro,
+                                                          self.geometry_cue,
+                                                          horizontal_error if self.stage in ("approach", "align") else None,
+                                                          allowed_directions),
+                                   self._evidence(obs, recent, "one bounded action for locked arm"),
+                                   name, self.reference)
+        answer.setdefault("rotation", "hold")
+        vector = np.asarray(DIRECTIONS[answer["direction"]], dtype=float)
+        norm = float(np.linalg.norm(vector))
+        delta = vector / norm * SIZES[answer["size"]] if norm else vector
+        source = "OpenAI Decisions RGB action"
+        if self.staged_micro and self.stage in ("approach", "align"):
+            if vector[1] or vector[2]:
+                delta = vector * min(SIZES[answer["size"]], 0.005)
+                self.pending_micro = {
+                    "eef_position": obs["current_eef"][self.active_arm]["position"],
+                    "vertical_error_px": float(geometry["target_minus_finger_gap_center_px"][1]),
+                }
+                source += "; Y/Z capped at 5mm with measured EEF/RGB acceptance"
+            elif not norm:
+                self.x_no_progress_count += 1
+                if self.x_no_progress_count >= 2:
+                    self.stalled_reason = "two_holds_before_rgb_alignment"
+        if (self.sign_gate and self.stage in ("approach", "align") and
+                vector[0] and horizontal_error is not None):
+            self.pending_x_error_abs = abs(horizontal_error)
+        if self.recovery_sweep and vector[0]:
+            self.last_x_sign = int(np.sign(vector[0]))
+        if self.reobserve and self.stage == "align":
+            self.align_actions += 1
+            if self.align_actions > (50 if self.geometry_cue else 16):
+                self.stalled_reason = "align_action_budget_without_grasp"
+        return answer, delta, source
