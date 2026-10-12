@@ -60,6 +60,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                 cmd += ['--lift-recheck-mm', str(lift_recheck_mm)]
         if task_id == 1458:
             cmd += ['--visible-goal-check']
+            if lift_recheck_mm:
+                cmd += ['--lift-recheck-mm', str(lift_recheck_mm)]
     elif mode == 'supervisor':
         cmd += ['--jev-supervisor', '--schema', 'focused']
         if task_id == 1423:
@@ -132,8 +134,8 @@ def main():
         p.error('Receiver entry side requires an angled or side Goal 1423 approach')
     if a.grasp_hold_ticks != 18 and a.task_id != 1163:
         p.error('Extended closure is currently evaluated only for Goal 1163')
-    if a.lift_recheck_mm and a.task_id != 1163:
-        p.error('Extended lift recheck is currently evaluated only for Goal 1163')
+    if a.lift_recheck_mm and a.task_id not in (1163, 1458):
+        p.error('Extended lift recheck is currently evaluated only for Goal 1163/1458')
     if a.side_pad_overlap_mm and (a.task_id != 1423 or
                                    a.approach_mode != 'angled' or
                                    a.entry_side != 'receiver_side'):
