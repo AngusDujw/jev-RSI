@@ -530,7 +530,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 first_mismatch = holding.get('co_motion_error_mm')
                 if (not lift_recheck_used and rec.cfg.get('lift_recheck_mm', 0) > 0 and
                         holding['status'] == 'failed' and first_rise is not None and
-                        7. <= first_rise <= 15. and first_mismatch is not None and
+                        5. <= first_rise <= 15. and first_mismatch is not None and
                         first_mismatch < 65. and .4 < holding['visible_span_ratio'] < 1.7):
                     # A borderline first lift is neither grasp proof nor a
                     # definite slip. Continue the same closed-gripper phase
