@@ -24,7 +24,7 @@ def build_detector(cfg, device):
     source = json.loads((root / 'controller/config/company-stack-study.json').read_text())
     vcfg = dict(source['vision'])
     vcfg['cache_dir'] = os.environ.get('JEV_RSI_MODEL_CACHE', vcfg['cache_dir'])
-    vcfg.update(device=f'cuda:{device}', include_instruction=True,
+    vcfg.update(device='cpu' if device < 0 else f'cuda:{device}', include_instruction=True,
                 calibrated_robot_projection=False, max_instances=18)
     cache = Path(vcfg['cache_dir'])
     dino = next((p for p in (cache/'models--IDEA-Research--grounding-dino-tiny'/'snapshots').iterdir() if p.is_dir()), None)
