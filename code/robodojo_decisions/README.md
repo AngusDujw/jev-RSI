@@ -24,7 +24,7 @@ That probe measured high-image right-gripper shifts of roughly 3 px for each 4â€
 - Pilot is one foreground process and one native episode. Output names are unique and never overwritten.
 - `--preflight-only` initializes and resets the native simulator, obtains three RGB frames, then records an incomplete preflight with zero model calls.
 - A normal development pilot defaults to 30 native actions and at most 6,800 seconds. This is incomplete unless native termination and the native success criterion are recorded. Full frozen evaluation should use `--max-decisions 0` with the same under-two-hour wall guard only after pilot evidence supports it.
-- API errors/refusals or invalid actions execute no robot step. Transient network failures on read-only Decisions queries may retry up to three times with recorded attempts. A simulator mutation is never retried automatically after uncertain acknowledgement.
+- API errors/refusals or invalid actions execute no robot step. Transient network failures on read-only Decisions queries may retry up to five times with short exponential backoff and recorded attempts. A simulator mutation is never retried automatically after uncertain acknowledgement.
 - Every model call records text, RGB file paths/hashes, typed answers, bounded target, usage and latency without recording the API key. The native result and full simulator logs remain on DataStorage.
 
 ## Remote commands

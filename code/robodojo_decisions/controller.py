@@ -16,6 +16,7 @@ from scipy.spatial.transform import Rotation
 
 MODEL = "gpt-6-luna"
 ENDPOINT = "https://api.openai.com/v1/decisions"
+MAX_QUERY_ATTEMPTS = 5
 AXES = ("x", "y", "z")
 ARMS = ("left", "right")
 SIGNS = ("negative", "hold", "positive")
@@ -183,16 +184,16 @@ class DecisionClient:
             headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
             method="POST")
         transient_errors = []
-        for attempt in range(3):
+        for attempt in range(MAX_QUERY_ATTEMPTS):
             try:
                 with urllib.request.urlopen(request, timeout=self.timeout) as handle:
                     response = json.load(handle)
                 break
             except urllib.error.HTTPError as error:
                 body = error.read().decode("utf-8", errors="replace")[:2000]
-                if error.code in (429, 500, 502, 503, 504) and attempt < 2:
+                if error.code in (429, 500, 502, 503, 504) and attempt + 1 < MAX_QUERY_ATTEMPTS:
                     transient_errors.append({"attempt": attempt + 1, "http_status": error.code})
-                    time.sleep(2 * (attempt + 1))
+                    time.sleep(2 ** attempt)
                     continue
                 (self.output / f"{record_name}.json").write_text(json.dumps(
                     {**meta, "latency_s": time.monotonic() - started, "attempts": attempt + 1,
@@ -203,8 +204,8 @@ class DecisionClient:
                     json.JSONDecodeError) as error:
                 transient_errors.append({"attempt": attempt + 1,
                                          "error_type": type(error).__name__, "error": str(error)})
-                if attempt < 2:
-                    time.sleep(2 * (attempt + 1))
+                if attempt + 1 < MAX_QUERY_ATTEMPTS:
+                    time.sleep(2 ** attempt)
                     continue
                 (self.output / f"{record_name}.json").write_text(json.dumps(
                     {**meta, "latency_s": time.monotonic() - started, "attempts": attempt + 1,
