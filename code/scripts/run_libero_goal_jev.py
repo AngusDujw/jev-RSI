@@ -97,6 +97,8 @@ def main():
     p.add_argument('--worker-device-id', type=int, choices=range(8), default=6)
     p.add_argument('--allow-shared-gpu', action='store_true',
                    help='Allow EGL and the vision worker on one GPU; report this resource choice')
+    p.add_argument('--cpu-vision', action='store_true',
+                   help='Run only local DINO/SAM perception on CPU when CUDA model loading is unavailable')
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
     p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
@@ -184,10 +186,24 @@ def main():
                        check=True, timeout=20)
     except (subprocess.SubprocessError, OSError) as exc:
         raise RuntimeError('Selected GPU EGL render preflight failed before attempt reservation') from exc
+    if a.cpu_vision:
+        worker_env = dict(os.environ, JEV_RSI_VISION_DEVICE='-1',
+                          HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1')
+        worker_python = os.environ.get('JEV_RSI_VISION_PYTHON', SIM_PYTHON)
+        try:
+            worker_probe = subprocess.run(
+                [worker_python, '-B', str(source/'libero_grounding_worker.py')],
+                input='{"close":true}\n', capture_output=True, text=True,
+                env=worker_env, check=True, timeout=90)
+            if not any(json.loads(line).get('ready') for line in worker_probe.stdout.splitlines()):
+                raise RuntimeError('CPU vision worker did not report ready')
+        except (subprocess.SubprocessError, OSError, ValueError) as exc:
+            raise RuntimeError('CPU vision worker preflight failed before attempt reservation') from exc
     if a.preflight_only:
         print(json.dumps(dict(gpu_preflight='passed',
                               egl_device_id=a.egl_device_id,
                               worker_device_id=a.worker_device_id,
+                              cpu_vision=a.cpu_vision,
                               attempt_reserved=False)))
         return
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo,
@@ -222,6 +238,7 @@ def main():
                     side_pad_overlap_mm=a.side_pad_overlap_mm,
                     drawer_contact_mode=a.drawer_contact_mode,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
+                    cpu_vision=a.cpu_vision,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',
                     runtime_gpt6_calls=0, runtime_deepseek_calls=0,
@@ -229,7 +246,8 @@ def main():
     (out/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
     env = dict(os.environ, MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
                CUDA_VISIBLE_DEVICES=','.join(map(str, visible_devices)),
-               JEV_RSI_VISION_DEVICE=str(visible_devices.index(a.worker_device_id)),
+               JEV_RSI_VISION_DEVICE=('-1' if a.cpu_vision else
+                                      str(visible_devices.index(a.worker_device_id))),
                JEV_RSI_MODEL_BACKEND='jev')
     env.pop('JEV_RSI_JEV_PROXY', None)
     env.pop('JEV_RSI_VISION_PROXY', None)
