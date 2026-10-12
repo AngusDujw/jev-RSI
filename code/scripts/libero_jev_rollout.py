@@ -292,8 +292,8 @@ def main():
     if a.visible_goal_check and (not a.recovery_supervisor or a.task_id not in (1163,1458) or
                                  not a.local_goal_vision):
         p.error('--visible-goal-check currently requires local recovery Goal 1163 or 1458')
-    if a.lift_recheck_mm and (not a.recovery_supervisor or a.task_id != 1163):
-        p.error('--lift-recheck-mm currently requires recovery Goal 1163')
+    if a.lift_recheck_mm and (not a.recovery_supervisor or a.task_id not in (1163, 1458)):
+        p.error('--lift-recheck-mm currently requires recovery Goal 1163/1458')
     if a.side_pad_overlap_mm and (not a.jev_supervisor or a.recovery_supervisor or
                                   a.task_id != 1423 or a.approach_mode != 'angled' or
                                   a.entry_side != 'receiver_side'):
