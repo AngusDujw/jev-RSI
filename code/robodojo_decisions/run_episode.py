@@ -154,6 +154,16 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                                           initial_camera_calibration, initial_eef,
                                           deadline))
             return result
+        if controller_version == "v1_source_right_view":
+            if initial_camera_calibration is None:
+                raise ValueError("Three source views require public RGB calibration")
+            if max_decisions != 3:
+                raise ValueError("Three source-view turns require --max-decisions 3")
+            from source_view_probe import run_double_view
+            result.update(run_double_view(tools, obs, model, plan, output,
+                                          initial_camera_calibration, initial_eef,
+                                          deadline, include_right=True))
+            return result
         if controller_version in ("v2", "v3", "v4", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"):
             from stage_controller import NO_MOTION, StageController
             stage_control = StageController(model, obs, plan,
@@ -327,7 +337,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -342,6 +352,8 @@ def main() -> None:
         parser.error("v1_source_single_view is a play_Xylophone layout-0 pilot")
     if args.controller == "v1_source_double_view" and (args.task != "play_Xylophone" or args.layout != 0):
         parser.error("v1_source_double_view is a play_Xylophone layout-0 pilot")
+    if args.controller == "v1_source_right_view" and (args.task != "play_Xylophone" or args.layout != 0):
+        parser.error("v1_source_right_view is a play_Xylophone layout-0 pilot")
     if args.controller in ("v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin") and (args.task != "general_pickup" or args.layout != 0):
         parser.error("geometry pilots are for general_pickup layout 0 only")
     if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate") and (args.task != "stack_blocks" or args.layout != 0):

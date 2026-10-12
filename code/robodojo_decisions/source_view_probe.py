@@ -9,13 +9,17 @@ from __future__ import annotations
 
 import copy
 import json
+import os
+import pwd
 import time
 from pathlib import Path
 
 import numpy as np
 from scipy.spatial.transform import Rotation
+from scipy.spatial import cKDTree
 
-from camera_geometry import (gripper_height_above_landmark, project,
+from camera_geometry import (eef_transform, gripper_height_above_landmark,
+                             gripper_mesh_vertices, project,
                              propagate_wrist_calibration, ray,
                              wrist_rotation_view_candidates)
 from controller import DecisionClient, choice
@@ -627,9 +631,199 @@ def run_single_view(tools, obs: dict, model: DecisionClient, plan: dict,
             "view_trace": str(output / "mallet_single_view_trace.json")}
 
 
+def _hand_vertices(pose: dict) -> np.ndarray:
+    """Public X5 hand meshes at both possible finger openings; no scene state."""
+    home = Path(pwd.getpwuid(os.getuid()).pw_dir)
+    meshes = gripper_mesh_vertices(str(home /
+        "DataStorage/jev-router/sources/RoboDojo/Assets/Robots/x5/meshes"))
+    origins = (np.zeros(3), np.array([0.08657, 0.024896, -0.0002436]),
+               np.array([0.08657, -0.0249, -0.00024366]))
+    axes = (0, 1, -1)
+    transform = eef_transform(pose)
+    return np.concatenate([
+        (vertices + origin + np.array([0.0, axis * opening, 0.0])) @
+        transform[:3, :3].T + transform[:3, 3]
+        for vertices, origin, axis in zip(meshes, origins, axes)
+        for opening in (0.0, 0.044)])
+
+
+def _right_short_turn(tools, obs: dict, model: DecisionClient, plan: dict,
+                      output: Path, initial_calibration: dict,
+                      initial_eef: dict, source_geometry: dict,
+                      initial_high: Path) -> tuple[dict, dict, str, dict | None]:
+    """One Pro-reviewed right-wrist sensing turn after the two left views."""
+    import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
+
+    review = plan["right_sensing_rotation"]
+    if review.get("planner_provenance") != "gpt-6.1-sol-high-pro-right-path-14":
+        raise ValueError("Missing distinct Pro right-view review")
+    continuity = {arm: _pose_residual(obs["current_eef"][arm],
+                                    review[f"{arm}_link6_anchor"])
+                  for arm in ("left", "right")}
+    if any(item["translation_m"] > 0.001 or item["rotation_rad"] > 0.01
+           for item in continuity.values()):
+        return obs, {"turn": 3, "anchor_residual": continuity}, "right_anchor_mismatch_incomplete", None
+    measured = obs["current_eef"]["right"]
+    old_q = np.asarray(measured["quaternion_wxyz"], float)
+    next_rotation = (Rotation.from_rotvec([0, 0, 0.12]) *
+                     Rotation.from_quat(old_q[[1, 2, 3, 0]]))
+    xyzw = next_rotation.as_quat()
+    target_right = {"position": list(measured["position"]),
+                    "quaternion_wxyz": xyzw[[3, 0, 1, 2]].tolist()}
+    source = np.asarray(source_geometry["estimated_position_environment_m"], float)
+    bar_height = float(plan["single_sensing_rotation"]
+                       ["separate_obstacle_reference"]["estimated_position_environment_m"][2])
+    current_camera = obs["camera_calibration"]["cameras"]["cam_right_wrist"]
+    camera_matrix = np.asarray(current_camera["camera_to_environment"], float)
+    current_link = eef_transform(measured)
+    left_tree = cKDTree(_hand_vertices(obs["current_eef"]["left"]))
+    start_rotation = Rotation.from_quat(old_q[[1, 2, 3, 0]])
+    samples = []
+    for angle in np.linspace(0, 0.12, 7):
+        partial = Rotation.from_rotvec([0, 0, float(angle)]) * start_rotation
+        q = partial.as_quat()
+        pose = {"position": list(measured["position"]),
+                "quaternion_wxyz": q[[3, 0, 1, 2]].tolist()}
+        vertices = _hand_vertices(pose)
+        samples.append({"world_z_rad": float(angle),
+                        "min_right_hand_world_z_m": float(vertices[:, 2].min()),
+                        "min_right_to_left_hand_mesh_m":
+                        float(left_tree.query(vertices, k=1)[0].min())})
+    moved_camera = copy.deepcopy(current_camera)
+    moved_camera["camera_to_environment"] = (
+        eef_transform(target_right) @ np.linalg.inv(current_link) @ camera_matrix).tolist()
+    before, after = project(current_camera, source), project(moved_camera, source)
+    forecast = {"right_source_uv_before": before,
+                "right_source_uv_after_prediction": after,
+                "mesh_samples": samples,
+                "min_hand_z_above_camera_derived_bar_plane_m":
+                min(item["min_right_hand_world_z_m"] for item in samples) - bar_height,
+                "min_hand_z_above_camera_derived_source_plane_m":
+                min(item["min_right_hand_world_z_m"] for item in samples) - float(source[2]),
+                "min_hand_to_other_hand_mesh_m":
+                min(item["min_right_to_left_hand_mesh_m"] for item in samples),
+                "limitation": "Hand meshes and visual point planes only; not a full arm/scene collision certificate."}
+    if (before is None or after is None or after[0] - before[0] < 100 or
+            forecast["min_hand_z_above_camera_derived_bar_plane_m"] < 0.06 or
+            forecast["min_hand_z_above_camera_derived_source_plane_m"] < 0.06 or
+            forecast["min_hand_to_other_hand_mesh_m"] < 0.15):
+        return obs, {"turn": 3, "forecast": forecast}, "right_mesh_or_projection_gate_incomplete", None
+    preview_targets = {}
+    for arm in ("left", "right"):
+        pose = target_right if arm == "right" else obs["current_eef"]["left"]
+        preview_targets[arm] = {"position": pose["position"],
+                                "quaternion_wxyz": pose["quaternion_wxyz"],
+                                "gripper_closed": False}
+    native_ik = tools._rpc("eef_joint_target", targets=preview_targets)
+    if native_ik.get("physical_steps") != 0 or len(native_ik.get("action", [])) != 14:
+        return obs, {"turn": 3, "forecast": forecast,
+                     "native_robot_only_ik": native_ik}, "native_ik_preview_invalid_incomplete", None
+    right_joint_before = np.asarray(obs["current_state"][7:13], float)
+    right_joint_preview = np.asarray(native_ik["action"][7:13], float)
+    if (not np.isfinite(right_joint_preview).all() or
+            np.max(np.abs(right_joint_preview - right_joint_before)) > 0.051):
+        return obs, {"turn": 3, "forecast": forecast,
+                     "native_robot_only_ik": native_ik}, "native_ik_joint_gate_incomplete", None
+    ik_summary = {"physical_steps": 0,
+                  "right_first_bounded_joint_delta_rad":
+                  (right_joint_preview - right_joint_before).tolist(),
+                  "max_abs_right_joint_delta_rad":
+                  float(np.max(np.abs(right_joint_preview - right_joint_before))),
+                  "diagnostics": native_ik.get("diagnostics"),
+                  "scope": "Native read-only robot FK and first bounded DLS joint target; not full path/collision proof."}
+    from robot_path_preview import preview as preview_robot_path
+    robot_path = preview_robot_path(obs, target_right, right_joint_preview.tolist())
+    if not robot_path["model_path_gate"]:
+        return obs, {"turn": 3, "forecast": forecast,
+                     "native_robot_only_ik_first_step_preview": ik_summary,
+                     "public_robot_five_step_path_preview": robot_path}, "robot_path_model_gate_incomplete", None
+    options = {
+        "sense_right_z_plus_0p12_once": (
+            "Turn only the RIGHT LINK6 about WORLD Z +0.12 rad at its measured fixed "
+            "position for one five-step open-gripper sensing action; left arm held"),
+        "stop_visible_blocker": "Stop: name a specific visible local hand/object/table blocker",
+        "stop_native_path_unverified": (
+            "Stop only for a concrete mismatch in current native first IK / five-step URDF "
+            "path gate, exceeded joint bound, or a specific actuator feasibility issue"),
+        "stop_stale_or_tracking": "Stop: fresh RGB, robot state or source identity is inconsistent",
+    }
+    question = choice("right_mallet_view_action",
+        "Choose ONE complete first right-wrist sensing turn or stop from CURRENT "
+        "three RGB views. The source mallet remains visible in high and left-wrist "
+        "views but is predicted OUTSIDE the right wrist image after this first "
+        "short turn. This is one conditional 0.12-rad segment from the Pro review, "
+        "not approval for the eight-segment sequence. Public hand mesh relative "
+        "to visual landmarks and the other hand is partial scene clearance "
+        "evidence. CURRENT native robot-only first IK and public URDF five-step "
+        "path checks have passed; they are predictions, so future physical tracking "
+        "can only be tested by executing this bounded sensing step. Use the native "
+        "path stop ONLY for a concrete failed check or specific actuator issue, "
+        "not merely because later steps are predictions. Check the current RGB "
+        "for a concrete local blocker; choose action if the short open-gripper "
+        "corridor appears clear. No grasp, contact or success is implied.", options)
+    experience_root = output.parents[1] / "experience"
+    raw_experience = {name: (experience_root / name).read_text()
+                      for name in ("global.md", f"{obs['task']}.md")
+                      if (experience_root / name).is_file()}
+    evidence = {"task": obs["task"], "instruction": obs["instruction"],
+                "pro_planner_review": review["candidate_review"],
+                "latest_experience_files": raw_experience,
+                "current_same_point_source_geometry": source_geometry,
+                "current_camera_calibration": obs["camera_calibration"],
+                "current_measured_eef": obs["current_eef"],
+                "current_joint_state": obs["current_state"],
+                "candidate_target_right_link6": target_right,
+                "candidate_forecast": forecast,
+                "native_robot_only_ik_first_step_preview": ik_summary,
+                "public_robot_five_step_path_preview": robot_path,
+                "no_privileged_object_pose_contact_reward_success": True}
+    answer = model.query(obs, [question], json.dumps(evidence, ensure_ascii=False),
+                         "mallet_right_view_02", reference_image=initial_high)
+    selected = answer["right_mallet_view_action"]
+    record = {"turn": 3, "step_id": obs["step_id"], "model_choice": selected,
+              "anchor_residual": continuity, "forecast": forecast,
+              "native_robot_only_ik_first_step_preview": ik_summary,
+              "public_robot_five_step_path_preview": robot_path}
+    if selected != "sense_right_z_plus_0p12_once":
+        return obs, record, f"{selected}_incomplete", None
+    target = {}
+    for arm in ("left", "right"):
+        pose = target_right if arm == "right" else obs["current_eef"]["left"]
+        target[arm] = {"position": pose["position"],
+                       "quaternion_wxyz": pose["quaternion_wxyz"],
+                       "gripper_closed": False}
+    action = {"request_id": obs["request_id"], "mode": "eef", "steps": 5,
+              "reason": "Luna-selected Pro right mallet camera first short turn; no grasp",
+              "target": target}
+    native.validate_action(action, tools.request)
+    call = tools.next_call()
+    call.pop("tool")
+    call["response"] = action
+    new_obs = tools.act(**call)
+    record["action"] = action
+    record["new_step_id"] = new_obs["step_id"]
+    residual = _pose_residual(new_obs["current_eef"]["right"], target_right)
+    record["measured_residual_after"] = residual
+    if not new_obs.get("images") or not new_obs.get("current_eef"):
+        return new_obs, record, "right_post_action_rgb_missing_incomplete", None
+    new_obs["camera_calibration"] = propagate_wrist_calibration(
+        initial_calibration, initial_eef, new_obs["current_eef"], new_obs["step_id"])
+    if residual["translation_m"] > 0.002 or residual["rotation_rad"] > 0.01:
+        return new_obs, record, "right_view_tracking_incomplete", None
+    try:
+        refreshed = refresh_landmark(new_obs, plan,
+                                     output / "planner_refresh_right_first")
+        record["accepted_source_geometry"] = refreshed
+    except (ValueError, RuntimeError) as error:
+        record["source_landmark_rejection"] = f"{type(error).__name__}: {error}"
+        return new_obs, record, "right_view_source_identity_unverified_incomplete", None
+    return new_obs, record, "right_first_view_sensed_incomplete", refreshed
+
+
 def run_double_view(tools, obs: dict, model: DecisionClient, plan: dict,
                     output: Path, initial_calibration: dict,
-                    initial_eef: dict, deadline: float) -> dict:
+                    initial_eef: dict, deadline: float,
+                    include_right: bool = False) -> dict:
     """Reproduce one approved sensor turn, then review a distinct Pro follow-up turn.
 
     The second choice uses the first turn's *fresh* RGB, measured robot pose and
@@ -656,9 +850,21 @@ def run_double_view(tools, obs: dict, model: DecisionClient, plan: dict,
     initial_high = next(Path(item["path"]) for item in obs["images"]
                         if item["camera"] == "cam_high")
 
-    for index in range(2):
+    right_source_geometry = None
+    for index in range(3 if include_right else 2):
         if time.monotonic() > deadline:
             status = "wall_budget_incomplete"
+            break
+        if index == 2:
+            if second_geometry is None:
+                status = "second_source_identity_unverified_incomplete"
+                break
+            obs, record, status, right_source_geometry = _right_short_turn(
+                tools, obs, model, plan, output, initial_calibration, initial_eef,
+                second_geometry, initial_high)
+            trace.append(record)
+            (output / "mallet_double_view_trace.json").write_text(json.dumps(
+                trace, ensure_ascii=False, indent=2))
             break
         anchor = first["left_link6_anchor"] if index == 0 else second["left_link6_anchor"]
         anchor_residual = _pose_residual(obs["current_eef"]["left"], anchor)
@@ -819,5 +1025,6 @@ def run_double_view(tools, obs: dict, model: DecisionClient, plan: dict,
             "visual_queries": sum("model_choice" in item for item in trace),
             "first_source_geometry_accepted": bool(first_geometry),
             "second_source_geometry_accepted": bool(second_geometry),
+            "right_view_source_geometry_accepted": bool(right_source_geometry),
             "native_result": native_result,
             "view_trace": str(output / "mallet_double_view_trace.json")}
