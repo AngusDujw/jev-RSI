@@ -68,3 +68,7 @@
 - 【User】【2026-10-12 15:25】[prompt] 再次提供 AGENTS.md 指令，要求同步本机版本后继续。
 - 【Agent】【2026-10-12 15:25】[result] v13黄色优先原生试验在3个EEF动作15步后因高视图夹爪模板匹配0.7128、reobserve门控错误放行到align而触发controller_error；将检查门控并复测。
 - 【Agent】【2026-10-12 16:21】[op] 本会话 remote-sync-20261012 第1轮：将 v4090 分支尚未提交的本周流水单独提交并经 SSH 推送；保留独立工作树和未跟踪缓存。
+- 【User】【2026-10-12 22:13】[prompt] 你先用v4090服务器跑吧，项目clone到/home/v4090-1/ykj/project里新建一个文件夹，日志和资产放在/home/v4090-1/DataStorage/gpt6-dec，复用已有RoboDojo。
+- 【Agent】【2026-10-12 22:13】[op] 在v4090独立克隆jev-RSI-gpt6-dec并复用现有RoboDojo环境；Pro桥接反向隧道已连通，du cad/direct密钥摘要核对并复制到DataStorage/gpt6-dec/secrets；预检三路RGB与机器人状态通过，输出在DataStorage/gpt6-dec。
+- 【Agent】【2026-10-12 22:13】[result] stack_blocks布局0：Pro高推理阶段计划完成；Luna首回合3动作后恢复门误放行报错，配对修复后10动作50原生控制步有界停止，仍0抓取/0官方成功；根据高RGB横向误差46–66px与Y+误选形成经验，v14水平优先回合待测。
+- 【Agent】【2026-10-12 22:13】[op] 新建实验块 EXP-2026W42-020：--help  ↪ `EXP-2026W42-020`

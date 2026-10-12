@@ -126,7 +126,8 @@ class StageController:
                  staged_micro: bool = False, recovery_sweep: bool = False,
                  y_probe: bool = False, edge_margin_probe: bool = False,
                  visibility_confirmation: bool = False,
-                 yellow_first: bool = False, yellow_x_first: bool = False):
+                 yellow_first: bool = False, yellow_x_first: bool = False,
+                 yellow_margin_gate: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
@@ -140,6 +141,7 @@ class StageController:
         self.visibility_confirmation = visibility_confirmation
         self.yellow_first = yellow_first
         self.yellow_x_first = yellow_x_first
+        self.yellow_margin_gate = yellow_margin_gate
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -307,7 +309,9 @@ class StageController:
                     "and do not infer a grasp from gripper closure or a yellow block merely in the wrist view.")
                 if self.yellow_x_first:
                     state["rgb_only_extra_information"]["horizontal_first_rule"] = (
-                        "When the locked target is more than 5 high-image pixels outside the finger-gap center, "
+                        "When the locked target is more than "
+                        + ("8 pixels from the finger-gap center or its conservative inner margin is below 8 pixels"
+                           if self.yellow_margin_gate else "5 high-image pixels outside the finger-gap center") + ", "
                         "choose only a measured-sign world X correction or hold. Fresh RGB and measured EEF "
                         "must confirm the X error decreases before considering Y/Z. This is a local visual "
                         "alignment rule, not an object pose estimate.")
@@ -678,7 +682,10 @@ class StageController:
                 raise ValueError("Yellow action requires a visible RGB target and tracked right gripper")
             x_error, y_error = (float(value) for value in geometry["target_minus_finger_gap_center_px"])
             choices = ["hold"]
-            if self.yellow_x_first and abs(x_error) > 5:
+            margin = float(geometry.get("conservative_target_to_inner_finger_edge_margin_px", -100))
+            horizontal_ready = (abs(x_error) <= 8 and margin >= 8
+                                if self.yellow_margin_gate else abs(x_error) <= 5)
+            if self.yellow_x_first and not horizontal_ready:
                 choices.append("x_negative" if x_error < 0 else "x_positive")
             else:
                 if abs(x_error) > 5:

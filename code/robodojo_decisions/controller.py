@@ -74,7 +74,11 @@ def public_evidence(obs: dict, plan: dict, stage: str, history: list[dict]) -> s
         "current_eef": obs["current_eef"], "current_joint_state": state,
         "step_id": obs["step_id"], "remaining_native_steps": obs["remaining_steps"],
         "stage_before_this_decision": stage, "stage_recipe": plan["stages"],
-        "task_notes": plan.get("notes", ""), "recent_executed_actions": previous,
+        "task_notes": plan.get("notes", ""),
+        "planner_task_detail": plan.get("task_detail"),
+        "planner_visual_method": plan.get("visual_method"),
+        "planner_experience": plan.get("experience", []),
+        "recent_executed_actions": previous,
         "instruction_to_decision_model": (
             "Inspect ALL three attached fresh RGB views directly. Decide the current task stage, bounded LINK6 motion, "
             "small orientation change and gripper command for BOTH arms. Choose hold for an unused arm. "

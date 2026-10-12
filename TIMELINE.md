@@ -118,6 +118,7 @@ graph LR
     T_2026W42_010["📊 robodojo-decision-stages<br/>v10中心8px阈值仍在-8.5px挡住Y…"]:::experiment
     T_2026W42_011["📊 robodojo-decision-stages<br/>v11保守余量8.5px但模板0.7956…"]:::experiment
     T_2026W42_012["📊 robodojo-decision-stages<br/>v12 Y-2.99mm仅改善竖误差1px…"]:::experiment
+    T_2026W42_013["📊 robodojo-decision-stages<br/>v4090横向优先让当前RGB误差51降到…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -198,6 +199,7 @@ graph LR
   T_2026W42_009 --> T_2026W42_010
   T_2026W42_010 --> T_2026W42_011
   T_2026W42_011 --> T_2026W42_012
+  T_2026W42_012 --> T_2026W42_013
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -304,6 +306,7 @@ graph LR
 | `T-2026W42-010` | 2026-10-12 | experiment | robodojo-decision-stages | v10中心8px阈值仍在-8.5px挡住Y探测；改双帧保守指缝边缘余量放行一次Y-3mm | `EXP-2026W42-017` | - |
 | `T-2026W42-011` | 2026-10-12 | experiment | robodojo-decision-stages | v11保守余量8.5px但模板0.7956使恢复门与动作门不一致；先静止确认再试Y-3mm | `EXP-2026W42-018` | - |
 | `T-2026W42-012` | 2026-10-12 | experiment | robodojo-decision-stages | v12 Y-2.99mm仅改善竖误差1px且紫块可见面积降14%；停止掌下同向微调，转可见侧或替代目标 | `EXP-2026W42-019` | - |
+| `T-2026W42-013` | 2026-10-12 | experiment | robodojo-decision-stages | v4090横向优先让当前RGB误差51降到7px，但5px门过严、仍无抓取；改以指间余量配对验证 | `EXP-2026W42-023` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
