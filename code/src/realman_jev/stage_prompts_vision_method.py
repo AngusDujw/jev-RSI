@@ -72,6 +72,15 @@ planning call. Use it only when the remaining stage design truly depends on
 new post-contact or post-placement evidence, at most THREE times in one plan.
 Do not set it on ordinary alignment, descent, release or retreat stages just
 to refresh camera evidence.
+If you have already accepted stereo on a static small landmark, then need
+many robot-only rotation/clearance actions before alignment, that landmark
+may no longer be visible in the moving wrist camera. For a bounded precontact
+alignment or short descent, use `last_stereo_bounded` with an explicit age
+limit large enough for the planned robot-only actions, plus `visible_rgb` on
+the whole object in a fixed camera when available. The old point remains a
+contact HYPOTHESIS only while RGB tracking shows no object motion. Do not
+require fresh wrist stereo on every precontact tick if the moving wrist and
+gripper predictably occlude the point; reobserve after contact and on lifting.
 Camera-derived object coordinates are estimates, never simulator truth.
 If visual_method declares event_monitors, each moving landmark exposes
 visual_cycle_count, visual_cycle_down and visual_cycle_valid in `now.o`.
