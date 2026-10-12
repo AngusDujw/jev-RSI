@@ -191,8 +191,15 @@ class DecisionClient:
                 break
             except urllib.error.HTTPError as error:
                 body = error.read().decode("utf-8", errors="replace")[:2000]
-                if error.code in (429, 500, 502, 503, 504) and attempt + 1 < MAX_QUERY_ATTEMPTS:
-                    transient_errors.append({"attempt": attempt + 1, "http_status": error.code})
+                try:
+                    error_code = json.loads(body).get("error", {}).get("code")
+                except (ValueError, AttributeError):
+                    error_code = None
+                transport_scheme_error = (error.code == 403 and error_code == "http_unsupported"
+                                          and ENDPOINT.startswith("https://"))
+                if (error.code in (429, 500, 502, 503, 504) or transport_scheme_error) and attempt + 1 < MAX_QUERY_ATTEMPTS:
+                    transient_errors.append({"attempt": attempt + 1,
+                                             "http_status": error.code, "error_code": error_code})
                     time.sleep(2 ** attempt)
                     continue
                 (self.output / f"{record_name}.json").write_text(json.dumps(
