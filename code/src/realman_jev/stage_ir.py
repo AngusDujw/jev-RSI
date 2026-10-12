@@ -241,6 +241,14 @@ def variables(evidence):
                     zip('xyz', last_stereo['position_m'])})
                 fields['last_stereo_age_ticks'] = float(obj['last_stereo_age_ticks'])
             fields['visual_motion_confirmed'] = float(obj.get('visual_motion_confirmed', False))
+            if 'visual_cycle_count' in obj:
+                fields['visual_cycle_count'] = float(obj['visual_cycle_count'])
+                fields['visual_cycle_down'] = float(obj['visual_cycle_down'])
+                fields['visual_cycle_valid'] = float(obj['visual_cycle_valid'])
+                for name in ('relative_m', 'displacement_m'):
+                    value = obj.get('visual_cycle_'+name)
+                    if value is not None:
+                        fields['visual_cycle_'+name] = float(value)
             visual_velocity = obj.get('visual_xy_velocity_m_per_s')
             if visual_velocity is not None:
                 fields['vx'], fields['vy'] = map(float, visual_velocity)

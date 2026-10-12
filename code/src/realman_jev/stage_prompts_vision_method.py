@@ -48,4 +48,13 @@ new post-contact or post-placement evidence, at most THREE times in one plan.
 Do not set it on ordinary alignment, descent, release or retreat stages just
 to refresh camera evidence.
 Camera-derived object coordinates are estimates, never simulator truth.
+If visual_method declares event_monitors, each moving landmark exposes
+visual_cycle_count, visual_cycle_down and visual_cycle_valid in `now.o`.
+The count increments only after two current RGB-triangulated landmarks show a
+thresholded down-then-return sequence; it is a visual event estimate, never
+a native button counter or task success flag. Use it for press/release stage
+checks only while the same visual identity and reference landmark remain
+trustworthy. If count stays unchanged after a bounded contact attempt,
+reobserve the two parts or revise contact. Never substitute commanded arm
+descent, a closed finger, or a whole-button box centre for a measured cycle.
 '''

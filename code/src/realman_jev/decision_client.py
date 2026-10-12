@@ -14,6 +14,8 @@ OBJECT_FIELDS = (
     'id', 'descriptions', 'visual_boxes', 'position_m', 'position_provenance',
     'position_measurement', 'last_stereo_age_ticks', 'last_seen_tick',
     'possibly_mobile', 'visual_motion_confirmed',
+    'visual_cycle_count', 'visual_cycle_down', 'visual_cycle_valid',
+    'visual_cycle_relative_m', 'visual_cycle_displacement_m',
 )
 
 DECISION_PROMPT = '''You are the lower-level GPT decision model in a RoboDojo
@@ -93,6 +95,8 @@ def prepare(log_folder, number, instruction, stage, state, questions, vision,
                    visual_requirements=[item.model_dump() for item in stage.visual_requirements]),
         motor_state=state,
         visual_method=[item.model_dump() for item in entities],
+        visual_event_monitors=[item.model_dump() for item in vision.method.event_monitors
+                               if item.moving_id in needed] if vision and vision.method else [],
         camera_derived_objects=objects,
         robot_proprioception={key: robot[key] for key in ('eef_positions_m', 'states')
                               if key in robot},

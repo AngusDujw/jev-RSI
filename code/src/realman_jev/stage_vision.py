@@ -10,6 +10,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from .stage_vision_method import VisionMethodPlan, METHOD_PROMPT
+from .stage_visual_events import update_visual_cycle
 
 
 CAMERAS = ('cam_high', 'cam_left_wrist', 'cam_right_wrist')
@@ -215,6 +216,7 @@ class VisionScene:
         self.head_motion = {}
         self.reference_crops = {}
         self.stereo_streaks = {}
+        self.cycle_states = {}
         self.method = None
         self.method_by_id = {}
         self.local_detector = None
@@ -687,6 +689,26 @@ class VisionScene:
                 visual_xy_velocity_age_ticks=(tick-item['last_velocity_tick']
                                               if item.get('last_velocity_tick') is not None else None))
             objects.append(obj)
+        if self.method is not None:
+            by_id = {obj['id']: obj for obj in objects}
+            for monitor in self.method.event_monitors:
+                previous = self.cycle_states.get(monitor.moving_id)
+                state = update_visual_cycle(monitor, previous, by_id, tick)
+                self.cycle_states[monitor.moving_id] = state
+                moving = by_id.get(monitor.moving_id)
+                if moving is not None:
+                    moving.update(visual_cycle_count=state['count'],
+                                  visual_cycle_down=state['phase'] == 'down',
+                                  visual_cycle_valid=state['valid'],
+                                  visual_cycle_relative_m=state.get('relative_m'),
+                                  visual_cycle_displacement_m=state.get('displacement_m'))
+                if previous is not None and (state['count'] != previous['count'] or
+                                             state['phase'] != previous['phase']):
+                    self.log(dict(kind='visual_cycle_transition', tick=tick,
+                                  moving_id=monitor.moving_id,
+                                  reference_id=monitor.reference_id,
+                                  phase=state['phase'], count=state['count'],
+                                  relative_m=state.get('relative_m')))
         evidence = dict(source='RGB-only GPT detection + RGB tracking + calibrated camera triangulation',
             frame='environment_origin', tick=tick, objects=objects, robot=robot_state['robot'],
             feature_errors=robot_state.get('feature_errors', []),

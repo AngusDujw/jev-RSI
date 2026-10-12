@@ -36,6 +36,23 @@ class VisualEntityMethod(BaseModel):
         return self
 
 
+class VisualCycleMethod(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    moving_id: str = Field(pattern=r'^v_[a-z][a-z0-9_]*$')
+    reference_id: str = Field(pattern=r'^v_[a-z][a-z0-9_]*$')
+    axis: Literal['x', 'y', 'z'] = 'z'
+    press_direction: Literal['increase', 'decrease'] = 'decrease'
+    press_delta_m: float = Field(ge=.001, le=.04)
+    release_delta_m: float = Field(ge=0., le=.02)
+    confirmations: int = Field(default=2, ge=1, le=3)
+
+    @model_validator(mode='after')
+    def ordered_thresholds(self):
+        if self.moving_id == self.reference_id or self.release_delta_m >= self.press_delta_m:
+            raise ValueError('A visual cycle needs distinct landmarks and separated thresholds')
+        return self
+
+
 class VisionMethodPlan(BaseModel):
     model_config = ConfigDict(extra='forbid')
     reasoning: str = Field(min_length=20)
@@ -43,12 +60,18 @@ class VisionMethodPlan(BaseModel):
     visible_success_evidence: str = Field(min_length=10)
     unobservable_requirements: list[str] = Field(default_factory=list, max_length=12)
     reobserve_triggers: list[str] = Field(min_length=1, max_length=8)
+    event_monitors: list[VisualCycleMethod] = Field(default_factory=list, max_length=12)
 
     @model_validator(mode='after')
     def unique_ids(self):
         ids = [entity.id for entity in self.entities]
         if len(ids) != len(set(ids)):
             raise ValueError('Visual entity ids must be unique')
+        monitors = [monitor.moving_id for monitor in self.event_monitors]
+        if len(monitors) != len(set(monitors)) or any(
+                monitor.moving_id not in ids or monitor.reference_id not in ids
+                for monitor in self.event_monitors):
+            raise ValueError('Visual cycle landmarks must be declared and moving IDs unique')
         return self
 
 
@@ -96,4 +119,16 @@ centres. If the part is hidden in a view, omit that view and keep its depth
 unverified. A landmark gives an approximate camera-derived point for a bounded
 action, not a precise contact surface or proof of grasp/placement. Select only
 parts visible and useful for the next action; avoid whole-scene searches.
+For a public task that requires repeated full presses and releases, declare
+both the visible moving button top and a stationary base/rim as separate
+landmarks, and add one event_monitors entry for that pair. The implemented
+monitor compares their CURRENT accepted stereo RGB points along the selected
+world axis, initializes its baseline from a visible released state, and counts
+only a down-then-return cycle beyond your declared conservative metre
+thresholds for the specified number of consecutive observations. Choose
+thresholds above expected pixel/stereo jitter, with release_delta_m smaller
+than press_delta_m; these are visual hypotheses, not simulator button travel.
+If the two parts cannot both be triangulated, the monitor will report invalid
+instead of inventing a count. Keep an independent viewing camera clear during
+contact. The cycle count is visual evidence only, not a native success flag.
 Do not choose a task-specific fixed pixel ROI or absolute world point.'''
