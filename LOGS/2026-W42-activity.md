@@ -39,3 +39,5 @@
 - 【Agent】【2026-10-12 21:38】[result] 5880 Goal1458显式CPU视觉冻结配置init11–13双终局3/3，均一次抓取、Jev真实动作/阶段审计0违规；GPU配置新init9–10另为2/2。三份CPU原始目录和两份GPU原始目录均已与服务器逐目录聚合SHA核对。十项仍只有8项曾完成，Goal1098/1202仍0。
 - 【User】【2026-10-12 21:43】[prompt] 啥意思，现在5880的显卡有问题吗是，之前都是在用cpu跑吗
 - 【Agent】【2026-10-12 21:43】[note] 5880复核：nvidia-smi识别RTX5880-Ada-24Q，但isaaclab环境最小torch CUDA张量报operation not supported；Goal1458 init9/10视觉GPU，init11–13显式CPU视觉，仿真仍用GPU0 EGL。
+- 【User】【2026-10-12 21:53】[prompt] 再检查一下确定一下是什么问题
+- 【Agent】【2026-10-12 21:53】[result] 5880只读诊断：vGPU RTX5880-Ada-24Q显示Unlicensed；nvidia-gridd自2026-10-11 20:50因license服务器证书校验失败退出，虽ClientConfigToken目录有token但gridd.conf缺失。GPU成功回合在开机后23小时、首次CUDA失败在24小时后；独立CUDA驱动cuCtxCreate_v2返回801，和NVIDIA未授权24小时后CUDA失效规则吻合。未改驱动/服务。
