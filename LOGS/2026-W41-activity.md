@@ -504,3 +504,6 @@
 - 【User】【2026-10-11 22:37】[prompt] 我要在discussion中加一个milestone，就是之前的方向理解的有误，现在的方向应该是使用高层规划器-低层推进器框架，采用gpt6等大模型进行规划（可以多次规划），jev.openai decision model等决策模型进行推进，实现泛化的多任务操作，先实现多任务整个benchmark的刷榜并把结果刷的尽可能高，目前的目标benchmark主要是robodojo和libero-plus  ↪ `DISC-2026W39-001`
 - 【User】【2026-10-11 22:37】[decision] 确认项目主线转为高层规划器—低层推进器：GPT-6等大模型可反复规划，Jev/OpenAI decision model等决策模型推进；优先覆盖RoboDojo和LIBERO-Plus完整多任务benchmark并尽可能提高整体成绩。  ↪ `DISC-2026W39-001`
 - 【Agent】【2026-10-11 22:38】[op] 在Discussion新增M1方向纠偏milestone并标记旧Q4为历史定位；Timeline追加用户拍板的pivot节点并更新当前主线，不改动已有实验结论。  ↪ `DISC-2026W39-001`, `T-2026W41-042`
+- 【User】【2026-10-11 23:14】[prompt] # AGENTS.md instructions for /home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI（本会话用户提供项目协议）；本轮任务：@gpt6分阶段+jev泛化 @libero plus/pro 使用GPT-6规划器+GPT decision model推进器在server02运行RoboDojo全benchmark，先五任务、再每批新增五任务，GPT-6 Sol 6.1 high走Pro账号，推进器使用bashrc中cad转换的API key并标记来自du；仅用相机与机器人状态非特权输入，积累经验文件并用多模态推进，迭代至稳定完成，尽量并行利用显存。
+- 【User】【2026-10-11 23:36】[prompt] v3已经停了你不用管他，你的代码文件写在/home/user/ykj/project/gpt6/jev-RSI/code下，先把其中除了~/ykj/project/gpt6/jev-RSI/code/old外的东西都放到这个old文件夹里再开始写；如果后面空间不够用可以把~/ykj/project的日志等都放/data的对应地方，你的所有日志资产等也要放在/data的对应地方，在那新建一个文件夹放
+- 【User】【2026-10-11 23:54】[intent] 在v4090运行RoboDojo：按GPT-6官方逐任务成功率顺序推进前五项；本机Pro账号用于迭代，OpenAI Decisions API作多模态推进器；代码放远端~/ykj/project，日志资产放~/DataStorage；逐任务迭代至稳定成功。用户单独提供API凭证，本流水不保存凭证。  ↪ `DISC-2026W39-001`
