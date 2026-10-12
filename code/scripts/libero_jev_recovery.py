@@ -66,7 +66,11 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
             raise RuntimeError('Own open pads have no opposed inner faces')
         inner_gap = float(np.min(positive) - np.max(negative))
         if inner_gap > 0 and width > inner_gap:
-            rim_offset = max(.012, width/2-.012)
+            # Shift just enough for one inner pad face to clear the observed
+            # rim. A large source-radius shift can move the entire arm into
+            # nearby fixtures even though the gripper geometry is valid.
+            rim_offset = min(width/2-.002,
+                             max(.004, (width-inner_gap)/2+.004))
             rim_candidates = []
             for i, side in enumerate((1., -1.)):
                 candidate = dict(c[1])
