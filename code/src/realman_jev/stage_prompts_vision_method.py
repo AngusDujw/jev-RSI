@@ -32,6 +32,14 @@ refreshes RGB and checks that stage's visual requirements before every action;
 it will return failed evidence for replanning if the target remains missing.
 Do not spend a full planning round after every camera move or acquire depth for
 all future targets before attempting the first evidence-supported contact.
+The planner statically checks every stage expression against CURRENT available
+fields. For a future stage after sensing, use `now.o.ID.x/y/z` with an explicit
+`fresh_stereo` visual requirement on that ID: the gate runs before the action,
+so these coordinates are accepted stereo at execution. Do not reference
+`last_stereo_x/y/z` unless those fields are present in the current variables;
+they are absent until a real stereo observation occurs. If an object ID itself
+is absent now, emit the bounded sense stage first and plan contact after its
+measured handoff rather than inventing an object value.
 Choose visible_rgb for a currently visible 2D identity; choose fresh_stereo
 when current metric XYZ is required. For a SHORT approach/closure through
 gripper occlusion, last_stereo_bounded may use the most recent accepted
