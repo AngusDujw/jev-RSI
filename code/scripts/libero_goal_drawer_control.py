@@ -113,6 +113,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook')
+    initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
@@ -215,20 +216,29 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             stage = sequence[phase]
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
+            contact_rod_position = handle_position.copy()
+            if task_id == 1098 and contact_mode == 'top_hook':
+                # The middle handle is visibly about 8 cm long. A near-side
+                # contact leaves room for the arm to descend beside the
+                # cabinet, while keeping the chosen pad on the observed rod.
+                axis = np.asarray(handle['rod_axis_world'], float)
+                toward_robot = 1. if (initial_robot_x-handle_position[0])*axis[0] >= 0 else -1.
+                contact_rod_position += (toward_robot *
+                    min(.024, .30*float(handle['visible_rod_length_m'])) * axis)
             if hook_mode:
                 face_y = float(front_plane['point_world_m'][1])
                 back_y = float(handle['rod_back_world_y_m'])
                 hook_y = face_y + .012
                 if not face_y + .008 < hook_y < back_y - .003:
                     raise RuntimeError('Visible finger-hook gap unavailable')
-                hook_pad = np.array([handle_position[0], hook_y,
-                                     handle_position[2]])
+                hook_pad = np.array([contact_rod_position[0], hook_y,
+                                     contact_rod_position[2]])
                 contact_tcp = hook_pad - pad_center_offset
                 pad_now = np.mean([env.sim.data.geom_xpos[
                     env.sim.model.geom_name2id(name)] for name in pad_names], axis=0)
                 finger_behind = bool(face_y + .003 < pad_now[1] < back_y - .003
-                    and abs(pad_now[0]-handle_position[0]) < .018
-                    and abs(pad_now[2]-handle_position[2]) < .012)
+                    and abs(pad_now[0]-contact_rod_position[0]) < .018
+                    and abs(pad_now[2]-contact_rod_position[2]) < .012)
             else:
                 contact_tcp = handle_position - pad_center_offset
                 finger_behind = False
@@ -282,7 +292,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T + position)
             pad_low, pad_high = np.min(pad_bounds, axis=0), np.max(pad_bounds, axis=0)
             rod_gap = float(np.linalg.norm(np.maximum(
-                np.maximum(pad_low-handle_position, handle_position-pad_high), 0.)))
+                np.maximum(pad_low-contact_rod_position,
+                           contact_rod_position-pad_high), 0.)))
             blocked_contact_trial = bool(task_id == 1098 and name == 'contact' and
                 contact_mode == 'pinch' and blocked_contact_blocks >= 3 and
                 oriented and np.linalg.norm(target-position) < .030 and
@@ -311,6 +322,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                      'executed_action_history'],
                             observed_native_tick=ticks,
                             handle_world_m=handle_position.tolist(),
+                            contact_rod_world_m=contact_rod_position.tolist(),
                             own_pad_center_offset_world_m=pad_center_offset.tolist(),
                             hook_finger_behind_visible_rod=finger_behind if hook_mode else None,
                             hook_pad_current_world_m=pad_now.tolist() if hook_mode else None,
