@@ -31,3 +31,5 @@
 - 【Agent】【2026-10-12 11:50】[op] 新建实验块 EXP-2026W42-007：stack_blocks v5 三路RGB及Decisions模型参与的世界Y小位移视觉标定  ↪ `EXP-2026W42-007`
 - 【Agent】【2026-10-12 11:52】[result] EXP-2026W42-007：v5 Y±5mm/3动作15步，图像匹配得+Y→高图上3px、−Y→下3px；Decisions视觉回答none/left/none误判微位移。原生预设不完整，下一轮附像素量化线索。
 - 【Agent】【2026-10-12 11:57】[op] 基于 v5 本机 Pro 复盘和 RGB 模板匹配，新增 v6 右夹爪像素位移/目标相对指缝几何提示、经验X/Y投影符号和可证伪对齐门，保留 Decisions 多模态目标/阶段/方向/步长决策。
+- 【Agent】【2026-10-12 11:57】[run] v4090 前台启动 stack_blocks 布局0 v6 多模态+RGB几何提示试跑；上限60动作/2400秒，目标/阶段/方向仍由 Decisions 选择，原生终局写 DataStorage。
+- 【Agent】【2026-10-12 12:01】[result] v6 首次 API 动作调用在 0 原生动作处 HTTP400：rotation Choice 只有 hold 一个选项，Decisions 要求至少2个；修复为固定姿态时省略该问题并在控制器置 hold。

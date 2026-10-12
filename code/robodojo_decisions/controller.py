@@ -28,6 +28,8 @@ ROTATIONS = {
 
 
 def choice(name: str, instructions: str, options: dict[str, str]) -> dict:
+    if len(options) < 2:
+        raise ValueError(f"Decision choice {name} needs at least two options")
     return {"type": "choice", "name": name, "instructions": instructions,
             "choices": [{"value": value, "description": description}
                         for value, description in options.items()]}

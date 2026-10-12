@@ -86,17 +86,17 @@ def motion_questions(stage: str, augmented: bool = False,
         allowed = {key: value for key, value in DIRECTIONS.items() if key in ("hold", "z_positive")}
     elif augmented and stage in ("approach", "align"):
         allowed = {key: value for key, value in DIRECTIONS.items() if key != "hold"}
-    rotations = ({"hold": ROTATIONS["hold"]}
-                 if geometry_cue and stage in ("approach", "align") else ROTATIONS)
-    return [
+    asked = [
         choice("direction", f"For the LOCKED active arm at stage {stage}, choose one bounded WORLD XYZ direction toward the visible target. Choose hold if only gripper change is needed. Do not move the inactive arm. " +
                ("Use the RGB-derived target-to-finger pixel error and measured world-axis image probes in the text; image vertical error mixes world Y and Z, so inspect wrist RGB and height too. " if geometry_cue else ""),
                {key: f"World XYZ sign {vector}" for key, vector in allowed.items()}),
         choice("size", "Choose translation length for this one feedback motion. Use fine around contact and never assume the commanded pose was reached. If the image-derived target is still more than 15 pixels outside the fingers and free space is visible, choose medium or long rather than repeating fine X motions.",
                {key: f"{value * 1000:g} mm" for key, value in SIZES.items()}),
-        choice("rotation", "Choose one small world orientation correction, or hold, based on visible gripper geometry.",
-               {key: key for key in rotations}),
     ]
+    if not (geometry_cue and stage in ("approach", "align")):
+        asked.append(choice("rotation", "Choose one small world orientation correction, or hold, based on visible gripper geometry.",
+                            {key: key for key in ROTATIONS}))
+    return asked
 
 
 def rot_distance(a: list[float], b: list[float]) -> float:
@@ -335,6 +335,7 @@ class StageController:
                                                               self.geometry_cue),
                                        self._evidence(obs, recent, "one bounded action for locked arm"),
                                        name, self.reference)
+            answer.setdefault("rotation", "hold")
             vector = np.asarray(DIRECTIONS[answer["direction"]], dtype=float)
             norm = float(np.linalg.norm(vector))
             delta = vector / norm * SIZES[answer["size"]] if norm else vector
