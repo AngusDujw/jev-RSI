@@ -30,6 +30,15 @@ When the next contact can be expressed with current `now.o` estimates after a
 sense stage, include the bounded manipulate stage in the SAME plan. The runtime
 refreshes RGB and checks that stage's visual requirements before every action;
 it will return failed evidence for replanning if the target remains missing.
+Do not combine a robot waypoint and a fresh-stereo streak for the same
+moving wrist camera into one mandatory finish_on="checks" conjunction unless
+both have already been observed together. Raising or rotating that wrist may
+remove a small landmark from its view. First record the accepted two-view
+point while visible, then make the robot-only clearance/orientation move and
+use last_stereo_bounded for a short static-target approach if the view is
+occluded. Separate the waypoint from a later viewpoint search if a new
+stereo observation is required. At contact and after lifting, demand new
+visible evidence; bounded history cannot establish grasp success.
 Do not spend a full planning round after every camera move or acquire depth for
 all future targets before attempting the first evidence-supported contact.
 The planner statically checks every stage expression against CURRENT available
