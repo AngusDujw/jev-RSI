@@ -125,10 +125,17 @@ def run_one(cfg, case, campaign):
     if shutil.disk_usage(root).free < cfg['minimum_free_gb']*1e9:
         raise RuntimeError('Filesystem reserve reached before launch')
     if cfg.get('preflight_api_connections',False):
-        check=subprocess.run([policy_python,'-m','realman_jev.stage_network','--config',cfg['api_config']],
-            cwd=code,env=dict(os.environ,PYTHONPATH=str(code/'src')),capture_output=True,text=True,timeout=45)
-        if check.returncode:
-            raise RuntimeError('API connectivity preflight failed: '+check.stderr.strip().splitlines()[-1][:200])
+        for attempt in range(3):
+            check=subprocess.run([policy_python,'-m','realman_jev.stage_network','--config',cfg['api_config']],
+                cwd=code,env=dict(os.environ,PYTHONPATH=str(code/'src')),capture_output=True,text=True,timeout=45)
+            if not check.returncode:
+                break
+            detail=check.stderr.strip().splitlines()
+            message=detail[-1][:200] if detail else 'unknown connectivity error'
+            if attempt == 2:
+                raise RuntimeError('API connectivity preflight failed after 3 tries: '+message)
+            print(f'API connectivity preflight retry {attempt+1}/2: {message}', flush=True)
+            time.sleep(5)
     port = cfg['base_port']
     import socket
     with socket.socket() as sock:
