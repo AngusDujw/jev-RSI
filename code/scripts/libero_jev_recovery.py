@@ -596,10 +596,13 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             if rec.cfg.get('drawer_bowl_continuation'):
                 contracts['descend'] = (
                     'Move open fingers toward the visible bowl pad-fit pose. '
-                    'If motion stalls, own open pad envelope overlaps the '
-                    'visible bowl by at least 5 mm in X, Y and Z, and own '
-                    'finger-table clearance is positive, you may advance to '
-                    'one closure trial. Otherwise choose retry when offered. '
+                    'If motion stalls, one closure trial is available when own '
+                    'open pad envelope overlaps the visible bowl by at least '
+                    '5 mm in X, Y and Z. For a selected one-sided rim candidate, '
+                    'the trial is also available with at least 5 mm X/Y '
+                    'overlap, at most 2 mm vertical gap, and less than 20 mm '
+                    'remaining to the supplied target. Own finger-table '
+                    'clearance must be positive. Otherwise choose retry when offered. '
                     'The subsequent visible lift must prove holding.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
@@ -620,6 +623,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             pad_overlap_mm = None
             pad_vertical_gap_mm = None
             contact_trial = False
+            near_rim_trial = False
             if stage == 'descend':
                 pad_vertices = (np.asarray(own['pad_vertices_tool']) @
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T + position)
@@ -629,8 +633,14 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 pad_overlap_mm = np.round(overlap*1000, 2).tolist()
                 pad_vertical_gap_mm = float(max(
                     src['low'][2]-pad_high[2], pad_low[2]-src['high'][2], 0.)*1000)
+                near_rim_trial = bool(
+                    rec.cfg.get('drawer_bowl_continuation') and
+                    c.get('grasp_height_source') == 'visible one-sided rim pinch' and
+                    np.all(overlap[:2] >= .005) and
+                    pad_vertical_gap_mm <= 2. and
+                    np.max(abs(error)) < .020)
                 contact_trial = bool(stalls >= 3 and oriented and
-                    np.all(overlap >= .005) and
+                    (np.all(overlap >= .005) or near_rim_trial) and
                     c['estimated_finger_table_clearance_mm'] > 1.)
                 complete = bool(complete or contact_trial)
             if stage == 'select':complete=True
@@ -659,7 +669,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')) and not (
                 rack_task and stage == 'lower' and complete) and not (
                 stage in ('clear_receiver','settle_receiver') and complete)
-            state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,visible_pad_vertical_gap_mm=pad_vertical_gap_mm,blocked_visible_contact_trial=contact_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=can_continue,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
+            state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,visible_pad_vertical_gap_mm=pad_vertical_gap_mm,blocked_visible_contact_trial=contact_trial,one_sided_rim_trial=near_rim_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=can_continue,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
             if rack_task and stage == 'lower':
                 state['completion_evidence']['visible_rack_contact'] = rack_contact_evidence
             if rack_task and stage in ('orient_receiver','lower'):
