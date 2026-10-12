@@ -182,17 +182,37 @@ class DecisionClient:
         request = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode(),
             headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
             method="POST")
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as handle:
-                response = json.load(handle)
-        except urllib.error.HTTPError as error:
-            body = error.read().decode("utf-8", errors="replace")[:2000]
-            (self.output / f"{record_name}.json").write_text(json.dumps(
-                {**meta, "latency_s": time.monotonic() - started, "http_status": error.code,
-                 "error_body": body}, ensure_ascii=False, indent=2))
-            raise
+        transient_errors = []
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout) as handle:
+                    response = json.load(handle)
+                break
+            except urllib.error.HTTPError as error:
+                body = error.read().decode("utf-8", errors="replace")[:2000]
+                if error.code in (429, 500, 502, 503, 504) and attempt < 2:
+                    transient_errors.append({"attempt": attempt + 1, "http_status": error.code})
+                    time.sleep(2 * (attempt + 1))
+                    continue
+                (self.output / f"{record_name}.json").write_text(json.dumps(
+                    {**meta, "latency_s": time.monotonic() - started, "attempts": attempt + 1,
+                     "transient_errors": transient_errors, "http_status": error.code,
+                     "error_body": body}, ensure_ascii=False, indent=2))
+                raise
+            except (urllib.error.URLError, TimeoutError, ConnectionError, OSError,
+                    json.JSONDecodeError) as error:
+                transient_errors.append({"attempt": attempt + 1,
+                                         "error_type": type(error).__name__, "error": str(error)})
+                if attempt < 2:
+                    time.sleep(2 * (attempt + 1))
+                    continue
+                (self.output / f"{record_name}.json").write_text(json.dumps(
+                    {**meta, "latency_s": time.monotonic() - started, "attempts": attempt + 1,
+                     "transient_errors": transient_errors}, ensure_ascii=False, indent=2))
+                raise
         answers = decode_response(response, asked)
         record = {**meta, "latency_s": time.monotonic() - started,
+                  "attempts": len(transient_errors) + 1, "transient_errors": transient_errors,
                   "response_id": response.get("id"), "response_model": response.get("model"),
                   "usage": response.get("usage"), "raw_answers": response.get("answers"),
                   "decoded_answers": answers}
