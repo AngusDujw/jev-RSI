@@ -32,7 +32,7 @@ def forecast(observation: dict, calibration: dict, source_geometry: dict,
     q = np.asarray(measured["quaternion_wxyz"], float)
     start_rotation = Rotation.from_quat(q[[1, 2, 3, 0]])
     samples = []
-    for theta in np.linspace(0.0, angle_rad, 7):
+    for theta in np.linspace(0.0, angle_rad, max(7, int(round(angle_rad / 0.04)) + 1)):
         turned = Rotation.from_rotvec([0.0, 0.0, float(theta)]) * start_rotation
         xyzw = turned.as_quat()
         pose = {"position": list(measured["position"]),
@@ -57,7 +57,7 @@ def forecast(observation: dict, calibration: dict, source_geometry: dict,
         "target_right_link6": target,
         "source_uv_right_current_prediction": before,
         "source_uv_right_after_prediction": after,
-        "source_is_actually_visible_in_right_rgb": False,
+        "source_right_rgb_correspondence_status": "not_checked_by_projection_forecast",
         "mesh_samples": samples,
         "min_hand_height_above_camera_derived_bar_plane_m":
             min(row["min_right_hand_world_z_m"] for row in samples) - bar_height_m,
@@ -75,13 +75,17 @@ def main() -> None:
     parser.add_argument("--calibration", type=Path, required=True)
     parser.add_argument("--geometry", type=Path, required=True)
     parser.add_argument("--bar-height-m", type=float, required=True)
+    parser.add_argument("--angle-rad", type=float, default=0.12)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
+    if not 0.0 < args.angle_rad <= 0.48:
+        parser.error("angle-rad must be within (0, 0.48]")
     result = forecast(json.loads(args.observation.read_text()),
                       json.loads(args.calibration.read_text()),
-                      json.loads(args.geometry.read_text()), args.bar_height_m)
+                      json.loads(args.geometry.read_text()), args.bar_height_m,
+                      args.angle_rad)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps({"output": str(args.output),
                       "source_uv_after_prediction": result["source_uv_right_after_prediction"]}))

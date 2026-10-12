@@ -67,8 +67,8 @@ def _arm_mesh(fk: ArmFK, root: np.ndarray, joints: np.ndarray,
 
 def preview(observation: dict, target: dict, native_first_joint_action: list[float] | None,
             steps: int = 5) -> dict:
-    if steps != 5:
-        raise ValueError("This bounded preview is calibrated for five native steps")
+    if steps not in (5, 10, 15, 20):
+        raise ValueError("Preview supports 5, 10, 15, or 20 bounded native steps")
     fk, limits, meshes = _model()
     q_right = np.asarray(observation["current_state"][7:13], float)
     q_left = np.asarray(observation["current_state"][0:6], float)
@@ -79,6 +79,14 @@ def preview(observation: dict, target: dict, native_first_joint_action: list[flo
     left_vertices = _arm_mesh(fk, left_root, q_left, meshes)
     left_min, left_max = left_vertices.min(axis=0), left_vertices.max(axis=0)
     desired = eef_transform(target)
+    measured_right = eef_transform(observation["current_eef"]["right"])
+    requested_translation_m = float(np.linalg.norm(
+        desired[:3, 3] - measured_right[:3, 3]))
+    requested_rotation_rad = float(Rotation.from_matrix(
+        desired[:3, :3] @ measured_right[:3, :3].T).magnitude())
+    native_eef_single_action_legal = bool(
+        steps <= 5 and requested_translation_m <= 0.05 + 1e-9 and
+        requested_rotation_rad <= 0.35 + 1e-9)
     rows = []
     first_native = (None if native_first_joint_action is None else
                     np.asarray(native_first_joint_action, float))
@@ -124,26 +132,33 @@ def preview(observation: dict, target: dict, native_first_joint_action: list[flo
             for item in rows) >= 0.10)
     output = {
         "source": "public X5 URDF, current measured dual arm joints/LINK6, same bounded DLS update as native robot-only IK",
+        "predicted_native_steps": steps,
+        "requested_link6_translation_m": requested_translation_m,
+        "requested_link6_rotation_rad": requested_rotation_rad,
+        "native_eef_single_action_legal": native_eef_single_action_legal,
+        "native_eef_contract": "One Decision permits 1..5 steps, LINK6 delta position <=0.05 m and orientation <=0.35 rad; longer public paths are offline diagnostics only.",
         "native_first_step_max_joint_disagreement_rad": first_agreement,
         "predicted_joint_path": rows,
         "public_path_gate": public_path_gate,
         "model_path_gate": bool(first_agreement is not None and
-                                first_agreement < 0.002 and public_path_gate),
+                                first_agreement < 0.002 and public_path_gate and
+                                native_eef_single_action_legal),
         "limitations": "Root inferred from current measured LINK6/joints. Native first bounded IK cross-check is required for model_path_gate; a null disagreement means it has not been requested. Later steps are model predictions. Link2-5 AABB separation is a conservative lower bound for those arm meshes; it omits bases, fingers and scene objects. Not a full collision certificate or physical tracking proof."
     }
     return output
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Offline public-robot-only five-step preview")
+    parser = argparse.ArgumentParser(description="Offline public-robot-only bounded path preview")
     parser.add_argument("--observation", type=Path, required=True)
     parser.add_argument("--target", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--steps", type=int, choices=(5, 10, 15, 20), default=5)
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
     result = preview(json.loads(args.observation.read_text()),
-                     json.loads(args.target.read_text()), None)
+                     json.loads(args.target.read_text()), None, args.steps)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps({"output": str(args.output),
                       "public_path_gate": result["public_path_gate"],

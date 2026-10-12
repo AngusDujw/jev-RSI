@@ -135,6 +135,7 @@ graph LR
     T_2026W42_027["📊 robodojo-decision-stages<br/>剪刀新转腕候选预测增40px但仍无场景净空…"]:::experiment
     T_2026W42_028["📊 robodojo-decision-stages<br/>木琴双转腕10步取得同源端双视图，杆轴线估…"]:::experiment
     T_2026W42_029["📊 robodojo-decision-stages<br/>五步公开机器人路径门使Luna放行木琴右腕…"]:::experiment
+    T_2026W42_030["📊 robodojo-decision-stages<br/>木琴右腕20步仍无槌杆，长视角超原生单步合…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -231,6 +232,7 @@ graph LR
   T_2026W42_025 --> T_2026W42_027
   T_2026W42_027 --> T_2026W42_028
   T_2026W42_028 --> T_2026W42_029
+  T_2026W42_029 --> T_2026W42_030
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -354,6 +356,7 @@ graph LR
 | `T-2026W42-027` | 2026-10-13 | experiment | robodojo-decision-stages | 剪刀新转腕候选预测增40px但仍无场景净空；通用同点门拒绝不可见黄罩，改先获取源物第二视角 | `EXP-2026W42-054` | - |
 | `T-2026W42-028` | 2026-10-13 | experiment | robodojo-decision-stages | 木琴双转腕10步取得同源端双视图，杆轴线估计P95仍5.30毫米未授权抓取 | `EXP-2026W42-065`, `EXP-2026W42-066` | - |
 | `T-2026W42-029` | 2026-10-13 | experiment | robodojo-decision-stages | 五步公开机器人路径门使Luna放行木琴右腕首段，原生15步但右腕仍未见木槌 | `EXP-2026W42-070` | - |
+| `T-2026W42-030` | 2026-10-13 | experiment | robodojo-decision-stages | 木琴右腕20步仍无槌杆，长视角超原生单步合同；当前杆线P95 5.31毫米未过抓持门，改找新视差 | `EXP-2026W42-073`, `EXP-2026W42-074` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
