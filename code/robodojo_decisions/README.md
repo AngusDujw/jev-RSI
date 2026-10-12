@@ -20,6 +20,8 @@ That probe measured high-image right-gripper shifts of roughly 3 px for each 4�
 
 In the first SOCKS trial, v6 reached 7 actions/35 native steps before a connection outage. The model chose three X-negative and four X-positive motions; in the high RGB, three X-positive moves enlarged the target-to-finger horizontal error from about 58 to 95 pixels. A local Pro review proposed a visual sign gate. Version `v7` still asks Decisions for stage, safe world-axis direction and step size, but removes X directions that would increase the currently measured horizontal error when it exceeds 5 px. If two permitted X actions fail to shrink that error, the pilot terminates incomplete and flags its image projection for review. This is a task-specific RGB constraint, not a grasp claim.
 
+The v7 native pilot made horizontal progress but lost reliable RGB tracking after a 45 mm Z lift and two Y motions. Version `v8` separates horizontal alignment from Y/Z adjustment. While the target is visible and the fixed right-gripper RGB template scores at least 0.80, the model may choose only a sign-correct X motion or hold until horizontal error is at most 5 px in two fresh observations. When the target is occluded, the controller preserves horizontal progress and tries at most two 5 mm Z+ visibility probes. Y/Z choices are then capped at 5 mm and checked against measured EEF movement and fresh RGB error; low visual confidence or repeated lack of progress ends the pilot incomplete. This fixed-camera gate is calibrated only for `stack_blocks` layout 0.
+
 ## Run contract
 
 - Existing Python and assets: `~/DataStorage/jev-router/sources` and the existing environment recorded in `~/DataStorage/jev-router/project/jev-router/ENVIRONMENT.json`. No environment, driver, or CUDA changes.
@@ -52,6 +54,10 @@ ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/
 
 ```bash
 ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v7 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-rgb-sign-gate-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 60 --max-wall-seconds 2400
+```
+
+```bash
+ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/bin/python" -B code/robodojo_decisions/run_episode.py --controller v8 --task stack_blocks --layout 0 --run-name 2026-10-12-stack-blocks-staged-micro-01 --key-file "$HOME/DataStorage/robodojo-decisions/secrets/openai.key" --max-decisions 60 --max-wall-seconds 2400
 ```
 
 This controller is an experimental categorical EEF policy, not the original RoboProbe GPT-6 Astra harness. Stability requires frozen code/plan and independent native episodes, including standard/random layouts where the official cell is paired.

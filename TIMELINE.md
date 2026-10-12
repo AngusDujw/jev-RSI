@@ -112,6 +112,7 @@ graph LR
     T_2026W42_004["📊 robodojo-decision-stages<br/>v4 遮挡恢复让紫块重现，但21动作/10…"]:::experiment
     T_2026W42_005["📊 robodojo-decision-stages<br/>Y±5mm 在高图投影为∓3px，但 De…"]:::experiment
     T_2026W42_006["📊 robodojo-decision-stages<br/>v6 量化RGB误差后首步加大，但7动作中…"]:::experiment
+    T_2026W42_007["📊 robodojo-decision-stages<br/>v7横向误差69→34px，但Z+/Y+使…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -186,6 +187,7 @@ graph LR
   T_2026W42_003 --> T_2026W42_004
   T_2026W42_004 --> T_2026W42_005
   T_2026W42_005 --> T_2026W42_006
+  T_2026W42_006 --> T_2026W42_007
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -286,6 +288,7 @@ graph LR
 | `T-2026W42-004` | 2026-10-12 | experiment | robodojo-decision-stages | v4 遮挡恢复让紫块重现，但21动作/105步仍无抓取，须标定纵深与高度 | `EXP-2026W42-006` | - |
 | `T-2026W42-005` | 2026-10-12 | experiment | robodojo-decision-stages | Y±5mm 在高图投影为∓3px，但 Decisions 直接视觉答案误判位移；加入RGB匹配量化提示 | `EXP-2026W42-007` | - |
 | `T-2026W42-006` | 2026-10-12 | experiment | robodojo-decision-stages | v6 量化RGB误差后首步加大，但7动作中4次X反向扩大误差；加入视觉符号门控 | `EXP-2026W42-013` | - |
+| `T-2026W42-007` | 2026-10-12 | experiment | robodojo-decision-stages | v7横向误差69→34px，但Z+/Y+使竖向偏差扩大且模板失信；改分阶段小幅取证 | `EXP-2026W42-014` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
