@@ -166,6 +166,17 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
             result.update(run_bowl_view_sequence(tools, obs, model, plan, output,
                                                   initial_camera_calibration, initial_eef))
             return result
+        if controller_version in ("v1_stack_first_advance", "v1_stack_side_sequence"):
+            expected = 2 if controller_version == "v1_stack_side_sequence" else 1
+            if initial_camera_calibration is None or max_decisions != expected:
+                raise ValueError("Stack sequence requires calibration and exact decision budget")
+            if ("followup_plan" in plan) != (expected == 2):
+                raise ValueError("Stack followup plan and controller mismatch")
+            from stack_first_advance import run_probe as run_stack_first_advance
+            result.update(run_stack_first_advance(
+                tools, obs, model, plan, output,
+                initial_camera_calibration, initial_eef))
+            return result
         if controller_version == "v1_number_first_view":
             if initial_camera_calibration is None or max_decisions != 1:
                 raise ValueError("First number view requires calibration and --max-decisions 1")
@@ -174,7 +185,9 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                                                 initial_camera_calibration, initial_eef))
             return result
         if controller_version == "v1_number_view_sequence":
-            expected_decisions = 3 if "third_plan" in plan else 2
+            expected_decisions = (5 if "fifth_plan" in plan else
+                                  4 if "fourth_plan" in plan else
+                                  3 if "third_plan" in plan else 2)
             if initial_camera_calibration is None or max_decisions != expected_decisions:
                 raise ValueError("Number view sequence requires calibration and its plan decision count")
             from number_view_sequence import run_sequence as run_number_view_sequence
@@ -413,7 +426,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_stack_first_advance", "v1_stack_side_sequence", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -424,6 +437,8 @@ def main() -> None:
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
     if args.controller in ("v1_button_view", "v1_button_sequence") and (args.task != "press_by_number" or args.layout != 0):
         parser.error("Button view controllers are press_by_number layout-0 pilots")
+    if args.controller in ("v1_stack_first_advance", "v1_stack_side_sequence") and (args.task != "stack_blocks" or args.layout != 0):
+        parser.error("First stack advance is a stack_blocks layout-0 pilot")
     if args.controller in ("v1_push_preapproach", "v1_push_followup") and (args.task != "push_T" or args.layout != 0):
         parser.error("Push controllers are push_T layout-0 pilots")
     if args.controller in ("v1_bowl_view", "v1_bowl_view_sequence") and (args.task != "stack_bowls" or args.layout != 0):

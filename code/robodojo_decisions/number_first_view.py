@@ -1,4 +1,4 @@
-"""One native, Pro-reviewed view of the partly clipped blue 9.
+"""One native, Pro-reviewed view of the partly clipped rightmost blue digit.
 
 Only current RGB, public cameras, measured robot state and public X5 geometry
 enter the Pro/Luna input. Native outcome is recorded after the action.
@@ -78,7 +78,7 @@ def run_probe(tools, obs: dict, model, plan: dict, output: Path,
         "Check all current RGB for a visible local corridor blocker, then inspect fresh RGB."
     ) for item in proposals if item["public_path"]["model_path_gate"]}
     trace = {"step_id": 0,
-             "source": "tentative blue 9 at right; first wooden disc is a separate receiver",
+             "source": "rightmost blue digit requires current semantic recheck; wooden discs are separate receivers",
              "before_blue_high": _blue_region(obs, "cam_high"),
              "before_blue_right_wrist": _blue_region(obs, "cam_right_wrist"),
              "candidate_checks": proposals}

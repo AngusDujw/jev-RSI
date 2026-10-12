@@ -202,6 +202,127 @@ def run_sequence(tools, obs: dict, model, plan: dict, output: Path,
                     status = ("number_2_pregrasp_advance_incomplete"
                               if third["status"] == "action_executed" else
                               f"third_{third['status']}")
+                    if "fourth_plan" in plan and "action" in third:
+                        anchor15 = plan["saved_step15_anchor"]
+                        current15 = after["current_eef"]["right"]
+                        position_error15 = float(np.linalg.norm(
+                            np.asarray(current15["position"], float) -
+                            np.asarray(anchor15["right_link6_position_m"], float)))
+                        q15 = np.asarray(current15["quaternion_wxyz"], float)
+                        aq15 = np.asarray(anchor15["right_link6_quaternion_wxyz"], float)
+                        angle_error15 = float((Rotation.from_quat(q15[[1, 2, 3, 0]]) *
+                                               Rotation.from_quat(aq15[[1, 2, 3, 0]]).inv()
+                                               ).magnitude())
+                        blue15 = third["after_blue_right_wrist"]
+                        top_error15 = abs(blue15["bounds_xyxy"][1] -
+                                          anchor15["blue_right_top_y"])
+                        count_error15 = abs(blue15["count"] -
+                                            anchor15["blue_right_pixel_count"])
+                        traces.append({"step_id": after["step_id"],
+                                       "replay_step15_anchor_error_m": position_error15,
+                                       "replay_step15_orientation_error_rad": angle_error15,
+                                       "blue_top_error_px": top_error15,
+                                       "blue_count_error_px": count_error15,
+                                       "third_target_residual_m": third[
+                                           "measured_target_residual_translation_m"]})
+                        rebase_ok = (third["measured_target_residual_translation_m"] <= 0.003
+                                     and third["measured_target_residual_rotation_rad"] <= 0.01
+                                     and position_error15 <= 0.002
+                                     and angle_error15 <= 0.01
+                                     and top_error15 <= 4 and count_error15 <= 200)
+                        if not rebase_ok:
+                            status = "saved_step15_measured_rebase_incomplete"
+                        elif after["rollout_finished"]:
+                            status = "third_rollout_ended_incomplete"
+                        else:
+                            fourth_plan = plan["fourth_plan"]
+                            stage = json.loads(fourth_plan["stages"][
+                                fourth_plan["initial_stage"]])
+                            choices = [item for item in stage["choices"] if item["id"] ==
+                                       "RIGHT_2_LOCAL_FORWARD15_LATERAL15_DOWN15"]
+                            if len(choices) != 1 or choices[0]["physical_steps"] != 5:
+                                raise ValueError("Step15 Pro did not approve the exact complete candidate")
+                            target4 = choices[0]["right"]
+                            expected_local = np.array([0.015, 0.015, -0.015])
+                            measured_rotation = Rotation.from_quat(q15[[1, 2, 3, 0]])
+                            actual_local = measured_rotation.inv().apply(
+                                np.asarray(target4["position"], float) -
+                                np.asarray(current15["position"], float))
+                            if np.linalg.norm(actual_local - expected_local) > 0.002:
+                                raise ValueError("Fourth precontact target is stale relative to measured step15")
+                            after, fourth = _offer(
+                                tools, after, model, fourth_plan, output,
+                                {"position": target4["position"],
+                                 "quaternion_wxyz": target4["quaternion_wxyz"]},
+                                "fourth_2_solid_precontact", initial_calibration, initial_eef)
+                            traces.append(fourth)
+                            status = ("number_2_solid_precontact_progress_incomplete"
+                                      if fourth["status"] == "action_executed" else
+                                      f"fourth_{fourth['status']}")
+                            if "fifth_plan" in plan and "action" in fourth:
+                                anchor20 = plan["saved_step20_anchor"]
+                                current20 = after["current_eef"]["right"]
+                                p20err = float(np.linalg.norm(
+                                    np.asarray(current20["position"], float) -
+                                    np.asarray(anchor20["right_link6_position_m"], float)))
+                                q20 = np.asarray(current20["quaternion_wxyz"], float)
+                                aq20 = np.asarray(anchor20["right_link6_quaternion_wxyz"], float)
+                                q20err = float((Rotation.from_quat(q20[[1, 2, 3, 0]]) *
+                                                Rotation.from_quat(aq20[[1, 2, 3, 0]]).inv()
+                                                ).magnitude())
+                                blue20 = fourth["after_blue_right_wrist"]
+                                blue20_top_err = abs(blue20["bounds_xyxy"][1] -
+                                                     anchor20["blue_right_top_y"])
+                                blue20_count_err = abs(blue20["count"] -
+                                                       anchor20["blue_right_pixel_count"])
+                                high20_count_err = abs(
+                                    fourth["after_blue_high"]["count"] -
+                                    anchor20["blue_high_pixel_count"])
+                                traces.append({
+                                    "step_id": after["step_id"],
+                                    "replay_step20_anchor_error_m": p20err,
+                                    "replay_step20_orientation_error_rad": q20err,
+                                    "blue_right_top_error_px": blue20_top_err,
+                                    "blue_right_count_error_px": blue20_count_err,
+                                    "blue_high_count_error_px": high20_count_err,
+                                    "fourth_target_residual_m": fourth[
+                                        "measured_target_residual_translation_m"]})
+                                rebase20_ok = (
+                                    fourth["measured_target_residual_translation_m"] <= 0.003
+                                    and fourth["measured_target_residual_rotation_rad"] <= 0.01
+                                    and p20err <= 0.002 and q20err <= 0.01
+                                    and blue20_top_err <= 4
+                                    and blue20_count_err <= 250
+                                    and high20_count_err <= 100)
+                                if not rebase20_ok:
+                                    status = "saved_step20_measured_rebase_incomplete"
+                                elif after["rollout_finished"]:
+                                    status = "fourth_rollout_ended_incomplete"
+                                else:
+                                    fifth_plan = plan["fifth_plan"]
+                                    spec5 = fifth_plan["notes"]["initial_candidate"]
+                                    if (spec5["id"] !=
+                                        "RIGHT_2_LOCAL_FORWARD8_LATERAL8_DOWN8"
+                                        or spec5["steps"] != 5):
+                                        raise ValueError("Step20 Pro did not approve the 8mm candidate")
+                                    target5 = spec5["right_target"]
+                                    measured_rotation = Rotation.from_quat(q20[[1, 2, 3, 0]])
+                                    actual_local = measured_rotation.inv().apply(
+                                        np.asarray(target5["position"], float) -
+                                        np.asarray(current20["position"], float))
+                                    if np.linalg.norm(actual_local -
+                                                      np.array([0.008, 0.008, -0.008])) > 0.002:
+                                        raise ValueError("Fifth target is stale relative to measured step20")
+                                    after, fifth = _offer(
+                                        tools, after, model, fifth_plan, output,
+                                        {"position": target5["position"],
+                                         "quaternion_wxyz": target5["quaternion_wxyz"]},
+                                        "fifth_2_local8_precontact",
+                                        initial_calibration, initial_eef)
+                                    traces.append(fifth)
+                                    status = ("number_2_local8_precontact_progress_incomplete"
+                                              if fifth["status"] == "action_executed" else
+                                              f"fifth_{fifth['status']}")
         else:
             status = "first_rollout_ended_incomplete"
     else:

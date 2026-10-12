@@ -147,6 +147,10 @@ graph LR
     T_2026W42_039["📝 robodojo-task-coverage<br/>第七批五任务经吐司机CPU非Fabric与…"]:::note
     T_2026W42_040["📝 robodojo-task-coverage<br/>第八批及最后两任务经笔记本与弹簧按钮CPU…"]:::note
     T_2026W42_041["📊 robodojo-decision-stages<br/>数字2身份纠错后首次组合预抓取接近获Lun…"]:::experiment
+    T_2026W42_042["📊 robodojo-decision-stages<br/>双RGB蓝轮廓平面IoU0.830支持数字…"]:::experiment
+    T_2026W42_043["📊 robodojo-decision-stages<br/>数字2较短局部8mm把实际跟踪收敛到1.4…"]:::experiment
+    T_2026W42_044["📊 robodojo-decision-stages<br/>积木黄色源五步非接触首段实测误差1.872…"]:::experiment
+    T_2026W42_045["📊 robodojo-decision-stages<br/>积木第二侧视原生10步仍缺对侧源面与两指垫…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -255,6 +259,10 @@ graph LR
   T_2026W42_038 --> T_2026W42_039
   T_2026W42_039 --> T_2026W42_040
   T_2026W42_037 --> T_2026W42_041
+  T_2026W42_041 --> T_2026W42_042
+  T_2026W42_042 --> T_2026W42_043
+  T_2026W42_043 --> T_2026W42_044
+  T_2026W42_044 --> T_2026W42_045
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -390,6 +398,10 @@ graph LR
 | `T-2026W42-039` | 2026-10-13 | note | robodojo-task-coverage | 第七批五任务经吐司机CPU非Fabric与键盘官方LFS JSON修复，三RGB预检累计35/42；完整成功仍0 | `EXP-2026W42-094` | - |
 | `T-2026W42-040` | 2026-10-13 | note | robodojo-task-coverage | 第八批及最后两任务经笔记本与弹簧按钮CPU非Fabric修复，42/42具三RGB零动作入口；完整成功仍0 | `EXP-2026W42-096` | - |
 | `T-2026W42-041` | 2026-10-13 | experiment | robodojo-decision-stages | 数字2身份纠错后首次组合预抓取接近获Luna批准并实动15步，末段残差2.412mm越门且无物体移动；转step15实心抓段 | `EXP-2026W42-097` | - |
+| `T-2026W42-042` | 2026-10-13 | experiment | robodojo-decision-stages | 双RGB蓝轮廓平面IoU0.830支持数字2第二段预接触，20步后高位被右指遮挡且无抓取；需工具指垫和源的不确定度重建 | `EXP-2026W42-098` | - |
+| `T-2026W42-043` | 2026-10-13 | experiment | robodojo-decision-stages | 数字2较短局部8mm把实际跟踪收敛到1.467mm，但25步仍高位遮挡、无物体移动；停同类预接近转首物体操作 | `EXP-2026W42-099` | - |
+| `T-2026W42-044` | 2026-10-13 | experiment | robodojo-decision-stages | 积木黄色源五步非接触首段实测误差1.872mm且当前双图顶面IoU0.870；高位源未动，转指垫和侧面门 | `EXP-2026W42-101` | - |
+| `T-2026W42-045` | 2026-10-13 | experiment | robodojo-decision-stages | 积木第二侧视原生10步仍缺对侧源面与两指垫，Pro只给STOP；转按钮首操作 | `EXP-2026W42-103` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
