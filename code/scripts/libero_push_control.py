@@ -342,23 +342,24 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             T=t_fn(env.sim, c)) for c in ('agentview', 'robot0_eye_in_hand')}
 
     def build_plan(source, rear_extent, observed_views, own, standoff=.010):
-        blocked_second_leg = bool(visible_goal_plate and segment >= 2 and
-            vision.goal['elevated_corridor_pixels'] >= 80)
         kwargs = dict(current_orientation=Rotation.from_quat(
             obs['robot0_eef_quat']).as_matrix(),
             observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
             preserve_downward=not visible_goal_plate,
-            # On a visibly blocked two-leg route, a second top-surface push
-            # slid off the plate. Place the own fingertip behind the measured
-            # plate edge for that leg; direct routes keep their tested top push.
-            contact_mode=('rear_edge' if blocked_second_leg or not visible_goal_plate
-                          else 'top_surface'),
+            # Both plate segments concern the same visible, broad support
+            # surface.  Trailing top contact maintained the second segment
+            # on init2; init3's centred first contact lost the plate early.
+            # Use the same support-relative contact rule in both segments.
+            contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
             allow_short_push=bool(visible_goal_plate and segment >= 2),
-            # The first leg uses the visible plate interior; unblocked direct
-            # second legs retain their previously successful rearward top point.
+            # A visually blocked direct corridor needs a lateral first leg.
+            # The second crosswise push in that route can slip from a far-rear
+            # plate contact; use the same more central supported contact as
+            # its first leg. Direct routes keep the previously successful .7.
             top_contact_rear_fraction=(
-                .5 if visible_goal_plate and segment == 1 else
-                .7 if visible_goal_plate and not blocked_second_leg else 0.))
+                .5 if visible_goal_plate and (
+                    segment == 1 or vision.goal['elevated_corridor_pixels'] >= 80)
+                else .7 if visible_goal_plate else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
