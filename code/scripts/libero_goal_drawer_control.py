@@ -217,10 +217,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             contact_rod_position = handle_position.copy()
-            if task_id == 1098 and contact_mode == 'top_hook':
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook'):
                 # The middle handle is visibly about 8 cm long. A near-side
-                # contact leaves room for the arm to descend beside the
-                # cabinet, while keeping the chosen pad on the observed rod.
+                # contact may leave room for the arm beside the cabinet;
+                # retain the same observed rod point for both hook paths.
                 axis = np.asarray(handle['rod_axis_world'], float)
                 toward_robot = 1. if (initial_robot_x-handle_position[0])*axis[0] >= 0 else -1.
                 contact_rod_position += (toward_robot *
