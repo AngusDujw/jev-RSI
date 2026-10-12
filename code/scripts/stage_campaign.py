@@ -220,7 +220,10 @@ def run_one(cfg, case, campaign):
                 server.wait(timeout=30)
             except subprocess.TimeoutExpired:
                 pass
-            native = json.loads((out/'sim/evaluation_outcome.json').read_text())
+            outcome = out/'sim/evaluation_outcome.json'
+            native = (json.loads(outcome.read_text()) if outcome.exists() else
+                      dict(status='incomplete', reason='native_evaluation_not_written',
+                           valid_for_success_rate=False, native_success=None))
             result['native_evaluation'] = native
             result['verified_success'] = native.get('valid_for_success_rate') is True and native.get('native_success') is True
     except Exception as exc:

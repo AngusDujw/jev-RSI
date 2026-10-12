@@ -25,3 +25,4 @@
 - 【Agent】【2026-10-12 12:41】[op] 并发首启API预检出现一次SSL EOF且未预约试次；入口增加3次有限重试以避免将短暂连接抖动当作任务失败
 - 【Agent】【2026-10-12 12:47】[op] 记录EXP005主动观察修复后stack未抓取与EXP006 general_pickup OOM中断；两者均未产生有效官方成功率
 - 【Agent】【2026-10-12 12:47】[op] 回写Discussion：stack感知改动达到7阶段但0抓取，pickup受OOM中断并暴露跨视图部位对应问题
+- 【Agent】【2026-10-12 12:54】[op] 修正启动错误归档：原生evaluation_outcome缺失时保留policy_error根因，而非覆盖成FileNotFoundError
