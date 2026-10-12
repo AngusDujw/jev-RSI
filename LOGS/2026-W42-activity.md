@@ -72,3 +72,7 @@
 - 【Agent】【2026-10-12 22:13】[op] 在v4090独立克隆jev-RSI-gpt6-dec并复用现有RoboDojo环境；Pro桥接反向隧道已连通，du cad/direct密钥摘要核对并复制到DataStorage/gpt6-dec/secrets；预检三路RGB与机器人状态通过，输出在DataStorage/gpt6-dec。
 - 【Agent】【2026-10-12 22:13】[result] stack_blocks布局0：Pro高推理阶段计划完成；Luna首回合3动作后恢复门误放行报错，配对修复后10动作50原生控制步有界停止，仍0抓取/0官方成功；根据高RGB横向误差46–66px与Y+误选形成经验，v14水平优先回合待测。
 - 【Agent】【2026-10-12 22:13】[op] 新建实验块 EXP-2026W42-020：--help  ↪ `EXP-2026W42-020`
+
+- 【Agent】【2026-10-12 22:44】[result] v15 systemd回合21动作105原生步，横差约0、竖差−77→−27px但遮挡后0抓取；general_pickup首回合30/30次locate全hold。
+- 【Agent】【2026-10-12 22:44】[op] 只读相机标定RPC预检3/3通过；Pro高位/右腕同铰链标注后以RGB射线检验，间距3.93mm、重投影0.95/2.53px，接近假设已提供给Luna且启动新回合。
+- 【Agent】【2026-10-12 23:29】[op] v4090首批五任务三相机预检5/5；剪刀Pro经验回流使Luna8次正确小步、运行中相机外参用link6传播后重标通过；碗首轮30次停感知，所有原生日志与经验在DataStorage/gpt6-dec

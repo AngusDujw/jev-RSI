@@ -17,6 +17,8 @@ def write_json(path, value):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--observation", type=Path, required=True)
+    parser.add_argument("--calibration", type=Path,
+                        help="Current public RGB camera intrinsics/extrinsics, if available")
     parser.add_argument("--template", type=Path)
     parser.add_argument("--global-experience", type=Path, required=True)
     parser.add_argument("--task-experience", type=Path)
@@ -32,6 +34,8 @@ def main():
         "current_eef": obs["current_eef"],
         "current_joint_state": obs["current_state"],
     }
+    if args.calibration:
+        public["camera_calibration"] = json.loads(args.calibration.read_text())
     experience = {
         "global": args.global_experience.read_text(),
         "task": args.task_experience.read_text() if args.task_experience else "",
@@ -42,6 +46,8 @@ def main():
         "and the supplied experience notes. No hidden simulator object pose, contacts, reward, "
         "evaluation state, or task layout data are available. Produce one JSON object with "
         "task, initial_stage, stages, notes, visual_method, experience. "
+        "Set task to the EXACT public_observation.task identifier string; put any "
+        "natural-language task description in notes. "
         + ("Keep EXACTLY the provided stage keys and initial_stage from the template. "
            if template else
            "Choose 4 to 12 task-specific stages and an initial_stage that is one of them. ") +
@@ -49,12 +55,19 @@ def main():
         "a concise actionable recipe with visual pass criterion and bounded recovery. "
         "visual_method must describe how to use RGB and measured robot state to construct "
         "the decision model input, including image identity, color/shape measurements, "
-        "camera/frame ambiguities, freshness and occlusion handling. experience is a "
+        "camera/frame ambiguities, actual provided calibration (if any), freshness and "
+        "occlusion handling. experience is a "
         "short list of applicable, evidence-grounded lessons, never an assertion of success. "
         "The GPT-6 Luna decision model receives all three current RGB frames and may only "
         "choose among offered discrete motion, gripper and stage options. Do not emit "
         "precise object world coordinates from monocular RGB. Require visible capture and "
         "post-release verification. Return JSON only."
+        + (" Camera calibration IS provided. In visual_method.initial_correspondences, "
+           "name the same physical grasp-relevant landmark in two current RGB views and "
+           "give each visible view's pixel_uv and an uncertainty radius in pixels. Omit "
+           "uncertain views. Explain a calibrated ray-gap and reprojection check before "
+           "any 3D estimate; if no reliable correspondence exists, request a bounded "
+           "camera viewpoint move as a sensing action." if args.calibration else "")
     )
     details = {
         "public_observation": public,

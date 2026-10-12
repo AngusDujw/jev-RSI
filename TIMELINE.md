@@ -119,6 +119,11 @@ graph LR
     T_2026W42_011["📊 robodojo-decision-stages<br/>v11保守余量8.5px但模板0.7956…"]:::experiment
     T_2026W42_012["📊 robodojo-decision-stages<br/>v12 Y-2.99mm仅改善竖误差1px…"]:::experiment
     T_2026W42_013["📊 robodojo-decision-stages<br/>v4090横向优先让当前RGB误差51降到…"]:::experiment
+    T_2026W42_014["📊 robodojo-decision-stages<br/>相机标定+同铰链RGB对应通过3.93mm…"]:::experiment
+    T_2026W42_015["📊 robodojo-decision-stages<br/>剪刀几何输入使Luna反向移动，单独符号限…"]:::experiment
+    T_2026W42_016["📊 robodojo-task-coverage<br/>首批五任务layout0三RGB预检5/5…"]:::experiment
+    T_2026W42_017["📊 robodojo-decision-stages<br/>完整相机几何动作候选使剪刀8/8次正确方向…"]:::experiment
+    T_2026W42_018["📊 robodojo-decision-stages<br/>发现运行中腕外参RPC不随手移动；link…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -200,6 +205,10 @@ graph LR
   T_2026W42_010 --> T_2026W42_011
   T_2026W42_011 --> T_2026W42_012
   T_2026W42_012 --> T_2026W42_013
+  T_2026W42_013 --> T_2026W42_014
+  T_2026W42_014 --> T_2026W42_015
+  T_2026W42_015 --> T_2026W42_017
+  T_2026W42_017 --> T_2026W42_018
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -307,6 +316,11 @@ graph LR
 | `T-2026W42-011` | 2026-10-12 | experiment | robodojo-decision-stages | v11保守余量8.5px但模板0.7956使恢复门与动作门不一致；先静止确认再试Y-3mm | `EXP-2026W42-018` | - |
 | `T-2026W42-012` | 2026-10-12 | experiment | robodojo-decision-stages | v12 Y-2.99mm仅改善竖误差1px且紫块可见面积降14%；停止掌下同向微调，转可见侧或替代目标 | `EXP-2026W42-019` | - |
 | `T-2026W42-013` | 2026-10-12 | experiment | robodojo-decision-stages | v4090横向优先让当前RGB误差51降到7px，但5px门过严、仍无抓取；改以指间余量配对验证 | `EXP-2026W42-023` | - |
+| `T-2026W42-014` | 2026-10-12 | experiment | robodojo-decision-stages | 相机标定+同铰链RGB对应通过3.93mm射线/0.95及2.53px重投影；测试Luna是否由全hold转有界动作 | `EXP-2026W42-029` | - |
+| `T-2026W42-015` | 2026-10-12 | experiment | robodojo-decision-stages | 剪刀几何输入使Luna反向移动，单独符号限制又全hold；转为完整有界动作候选供多模态判断 | `EXP-2026W42-030`, `EXP-2026W42-031` | - |
+| `T-2026W42-016` | 2026-10-12 | experiment | robodojo-task-coverage | 首批五任务layout0三RGB预检5/5；衣物与按钮须CPU非Fabric，完整成功仍0项 | `EXP-2026W42-032`, `EXP-2026W42-034` | - |
+| `T-2026W42-017` | 2026-10-12 | experiment | robodojo-decision-stages | 完整相机几何动作候选使剪刀8/8次正确方向小步，估计距367降至314毫米；刷新几何后再延长接近 | `EXP-2026W42-035` | - |
+| `T-2026W42-018` | 2026-10-12 | experiment | robodojo-decision-stages | 发现运行中腕外参RPC不随手移动；link6刚体传播让双视图重标通过，65步后因遮挡停止 | `EXP-2026W42-037`, `EXP-2026W42-038`, `EXP-2026W42-039` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

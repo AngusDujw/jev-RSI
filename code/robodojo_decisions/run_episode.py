@@ -96,6 +96,13 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         call = tools.next_call()
         call.pop("tool")
         obs = tools.start(**call)
+        initial_camera_calibration = None
+        initial_eef = obs["current_eef"]
+        if os.environ.get("ROBODOJO_PUBLIC_CAMERA_CALIBRATION") == "1":
+            initial_camera_calibration = tools._rpc("public_camera_calibration")
+            obs["camera_calibration"] = initial_camera_calibration
+            (output / "camera_calibration_initial.json").write_text(
+                json.dumps(obs["camera_calibration"], ensure_ascii=False, indent=2))
         if preflight:
             tools.finish("preflight_no_control")
             result["status"] = "preflight_complete"
@@ -125,12 +132,45 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         else:
             stage_control = None
         while not obs["rollout_finished"]:
+            if controller_version in ("v1_geometry_sign", "v1_geometry_candidate") and int(obs["step_id"]) >= 40:
+                tools.finish("geometry_hypothesis_stale_incomplete")
+                result["status"] = "geometry_hypothesis_stale_incomplete"
+                break
+            if controller_version == "v1_geometry_candidate_refresh":
+                landmark = plan["initial_landmark_estimate"]
+                age = int(obs["step_id"]) - int(landmark["camera_step_id"])
+                if age >= 40:
+                    from refresh_landmark import refresh_landmark
+                    try:
+                        plan["initial_landmark_estimate"] = refresh_landmark(
+                            obs, plan, output / "planner_refresh")
+                        result["refreshes"] = result.get("refreshes", 0) + 1
+                    except (ValueError, RuntimeError) as error:
+                        tools.finish("relocalization_incomplete")
+                        result.update(status="relocalization_incomplete",
+                                      refresh_error=f"{type(error).__name__}: {error}")
+                        return result
+                point = plan["initial_landmark_estimate"]["estimated_position_environment_m"]
+                eef = obs["current_eef"]["right"]["position"]
+                if all(abs(float(point[i]) - float(eef[i])) <= 0.015 for i in (0, 1)):
+                    tools.finish("landmark_planar_alignment_incomplete")
+                    result["status"] = "landmark_planar_alignment_incomplete"
+                    return result
             if time.monotonic() > deadline:
                 tools.finish("wall_budget_incomplete")
                 result["status"] = "wall_budget_incomplete"
                 break
             if stage_control is None:
                 action, answers = model.decide(obs, plan, stage, history)
+                if controller_version in ("v1_geometry_candidate", "v1_geometry_candidate_refresh"):
+                    view_moves = sum(item["model_choices"].get("motion") == "probe_view" for item in history)
+                    if answers["motion"] == "stop" or (answers["motion"] == "probe_view" and view_moves >= 2):
+                        reason = ("candidate_stop_incomplete" if answers["motion"] == "stop"
+                                  else "view_budget_incomplete")
+                        tools.finish(reason)
+                        result.update(status=reason, blocker=answers["blocker"],
+                                      view_moves=view_moves, final_stage=answers["stage"])
+                        return result
             else:
                 # Zero-motion gates may advance several semantic stages using the same fresh view.
                 for _ in range(4):
@@ -159,6 +199,11 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
             call.pop("tool")
             call["response"] = action
             next_obs = tools.act(**call)
+            if os.environ.get("ROBODOJO_PUBLIC_CAMERA_CALIBRATION") == "1" and not next_obs["rollout_finished"]:
+                from camera_geometry import propagate_wrist_calibration
+                next_obs["camera_calibration"] = propagate_wrist_calibration(
+                    initial_camera_calibration, initial_eef,
+                    next_obs["current_eef"], next_obs["step_id"])
             chosen_stage = answers["stage"] if stage_control is None else stage_control.stage
             history.append({"stage": chosen_stage, "step_before": obs["step_id"],
                             "step_after": next_obs["step_id"],
@@ -206,7 +251,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -215,6 +260,8 @@ def main() -> None:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
     if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
+    if args.controller in ("v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh") and (args.task != "general_pickup" or args.layout != 0):
+        parser.error("geometry pilots are for general_pickup layout 0 only")
     if args.controller in ("v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate") and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("RGB geometry cue is calibrated only for stack_blocks layout 0")
     python = executable()
@@ -225,6 +272,10 @@ def main() -> None:
     plan = json.loads(plan_file.read_text())
     if plan.get("task") != args.task or plan["initial_stage"] not in plan["stages"]:
         raise ValueError("Task plan mismatch")
+    if args.controller == "v1_geometry_sign" and not plan.get("geometry_sign_gate"):
+        raise ValueError("v1_geometry_sign requires a geometry_sign_gate plan")
+    if args.controller in ("v1_geometry_candidate", "v1_geometry_candidate_refresh") and not plan.get("geometry_candidate_gate"):
+        raise ValueError("geometry candidate controller requires a geometry_candidate_gate plan")
     output = DATA_ROOT / "runs" / args.run_name
     if args.dry_run:
         print(json.dumps({"python": str(python), "sources": str(SOURCE_ROOT),
@@ -239,6 +290,7 @@ def main() -> None:
     (output / "native_runtime").mkdir()
     (output / "plan.json").write_text(json.dumps(plan, ensure_ascii=False, indent=2))
     environment = native_env(output, python)
+    environment["ROBODOJO_TASK"] = args.task
     sys.path[:0] = environment["PYTHONPATH"].split(":")
     port = free_port()
     command = [str(python), str(Path(__file__).resolve().parent / "sim_server.py"),
