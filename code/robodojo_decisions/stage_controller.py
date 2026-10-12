@@ -15,7 +15,7 @@ GATES = {
     "observe_blocks": "At least one loose block and a distinct block that can support it are clearly visible in current RGB; all three blocks need not be unoccluded.",
     "select_arm": "One arm has a visible collision-free approach to a named loose block; identify that arm, target and supporting block in the choices below.",
     "approach": "The chosen OPEN gripper is visibly near its loose target block, within roughly one gripper width, and ready for fine alignment.",
-    "align": "Two current camera views show the OPEN gripper straddling the target block at grasp height, without a visible collision.",
+    "align": "Fresh high RGB shows the LOCKED target visibly inside the OPEN active finger gap near the finger tips; its height is plausible from the wrist and measured hand pose. A yellow support in the right wrist view is not evidence that the purple target is held.",
     "reobserve": "The LOCKED target and distinct support are separately identifiable in fresh RGB, and the target can be located relative to both open fingers after withdrawal.",
     "grasp": "After gripper closure AND a small test lift, the SAME target block visibly moves upward with the gripper and stays between the fingers. Closure alone fails this test.",
     "lift": "The gripped target block is visibly lifted clear of its prior table or stack support and remains held.",
@@ -79,19 +79,23 @@ def gate_questions(stage: str) -> list[dict]:
     return questions
 
 
-def motion_questions(stage: str, augmented: bool = False) -> list[dict]:
+def motion_questions(stage: str, augmented: bool = False,
+                     geometry_cue: bool = False) -> list[dict]:
     allowed = DIRECTIONS
     if stage == "grasp":
         allowed = {key: value for key, value in DIRECTIONS.items() if key in ("hold", "z_positive")}
     elif augmented and stage in ("approach", "align"):
         allowed = {key: value for key, value in DIRECTIONS.items() if key != "hold"}
+    rotations = ({"hold": ROTATIONS["hold"]}
+                 if geometry_cue and stage in ("approach", "align") else ROTATIONS)
     return [
-        choice("direction", f"For the LOCKED active arm at stage {stage}, choose one bounded WORLD XYZ direction toward the visible target. Choose hold if only gripper change is needed. Do not move the inactive arm.",
+        choice("direction", f"For the LOCKED active arm at stage {stage}, choose one bounded WORLD XYZ direction toward the visible target. Choose hold if only gripper change is needed. Do not move the inactive arm. " +
+               ("Use the RGB-derived target-to-finger pixel error and measured world-axis image probes in the text; image vertical error mixes world Y and Z, so inspect wrist RGB and height too. " if geometry_cue else ""),
                {key: f"World XYZ sign {vector}" for key, vector in allowed.items()}),
-        choice("size", "Choose translation length for this one feedback motion. Use fine around contact and never assume the commanded pose was reached.",
+        choice("size", "Choose translation length for this one feedback motion. Use fine around contact and never assume the commanded pose was reached. If the image-derived target is still more than 15 pixels outside the fingers and free space is visible, choose medium or long rather than repeating fine X motions.",
                {key: f"{value * 1000:g} mm" for key, value in SIZES.items()}),
         choice("rotation", "Choose one small world orientation correction, or hold, based on visible gripper geometry.",
-               {key: key for key in ROTATIONS}),
+               {key: key for key in rotations}),
     ]
 
 
@@ -103,11 +107,13 @@ def rot_distance(a: list[float], b: list[float]) -> float:
 
 class StageController:
     def __init__(self, client: DecisionClient, initial_obs: dict, plan: dict,
-                 augmented: bool = False, reobserve: bool = False):
+                 augmented: bool = False, reobserve: bool = False,
+                 geometry_cue: bool = False):
         self.client = client
         self.plan = plan
         self.augmented = augmented
         self.reobserve = reobserve
+        self.geometry_cue = geometry_cue
         self.stage = "observe_blocks"
         self.active_arm: str | None = None
         self.target_id: str | None = None
@@ -142,6 +148,39 @@ class StageController:
     def _locked_colors(self) -> tuple[str | None, str | None]:
         by_id = {item["id"]: item["color"] for item in self.block_reference}
         return by_id.get(self.target_id), by_id.get(self.base_id)
+
+    def _high_geometry(self, obs: dict) -> dict | None:
+        if not self.geometry_cue or self.active_arm != "right" or not self.target_id:
+            return None
+        from visual_context import detect_blocks, track_right_gripper
+        current_high = next(Path(item["path"]) for item in obs["images"]
+                            if item["camera"] == "cam_high")
+        tracked = track_right_gripper(self.raw_reference, current_high)
+        target_color, _ = self._locked_colors()
+        target = next((item for item in detect_blocks(current_high)
+                       if item["color"] == target_color), None)
+        if target is not None:
+            x, y = target["center_px"]
+            left, right = tracked["estimated_inner_finger_x_px"]
+            tip_y = tracked["estimated_finger_tip_y_px"]
+            tracked.update({
+                "locked_target_center_px": [x, y],
+                "target_minus_finger_gap_center_px": [round(x - (left + right) / 2, 1),
+                                                       round(y - tip_y, 1)],
+                "target_inside_inner_finger_gap_x": bool(left + 8 <= x <= right - 8),
+                "target_near_finger_tip_y": bool(abs(y - tip_y) <= 12),
+            })
+        else:
+            tracked["locked_target_center_px"] = None
+        initial_z = float(self.initial_eef["right"]["position"][2])
+        current_z = float(obs["current_eef"]["right"]["position"][2])
+        tracked["right_eef_z_change_from_initial_mm"] = round((current_z - initial_z) * 1000, 1)
+        tracked["empirical_axes_from_RGB_probes"] = {
+            "+world_X": "gripper moves high-image right, roughly 0.5 px/mm in this local view",
+            "+world_Y": "gripper moves high-image up, roughly 0.7 px/mm in this local view",
+            "warning": "Image vertical motion also responds to world Z; this local projection is not an object pose or depth estimate.",
+        }
+        return tracked
 
     def _evidence(self, obs: dict, recent: list[dict], purpose: str) -> str:
         state = {
@@ -183,6 +222,8 @@ class StageController:
                     "locked_support_detected_in_current_high": base_color in found if base_color else None,
                     "visibility_recovery_rule": "If the target disappears behind the open gripper, briefly lift and withdraw toward the previously clear starting hand pose; visually re-identify target and support before further alignment. High-view color detection is fallible; inspect raw RGB yourself.",
                 })
+            if self.geometry_cue:
+                state["rgb_only_extra_information"]["right_gripper_rgb_geometry"] = self._high_geometry(obs)
         return json.dumps(state, ensure_ascii=False, separators=(",", ":"))
 
     def inspect(self, obs: dict, recent: list[dict]) -> dict:
@@ -210,6 +251,14 @@ class StageController:
             target_visible = target_color in colors if target_color else False
             support_visible = base_color in colors if base_color else False
             if self.stage == "align":
+                if self.geometry_cue and verdict == "pass":
+                    geometry = self._high_geometry(obs)
+                    z_change = geometry.get("right_eef_z_change_from_initial_mm", 1000) if geometry else 1000
+                    if not (geometry and geometry["usable"] and
+                            geometry.get("target_inside_inner_finger_gap_x") and
+                            geometry.get("target_near_finger_tip_y") and
+                            -45 <= z_change <= 15):
+                        verdict = "uncertain"
                 self.target_missing = 0 if target_visible else self.target_missing + 1
                 if verdict == "pass" and not target_visible:
                     verdict = "uncertain"
@@ -218,7 +267,7 @@ class StageController:
                     self.stage = "reobserve"
                     self.reobserve_cycles += 1
                     self.reobserve_actions = 0
-                    if self.reobserve_cycles > 2:
+                    if self.reobserve_cycles > (4 if self.geometry_cue else 2):
                         self.stalled_reason = "repeated_target_occlusion"
             else:
                 recovered = (target_visible and support_visible and
@@ -282,7 +331,8 @@ class StageController:
             self.reobserve_actions += 1
             source = "bounded RGB visibility recovery"
         else:
-            answer = self.client.query(obs, motion_questions(self.stage, self.augmented),
+            answer = self.client.query(obs, motion_questions(self.stage, self.augmented,
+                                                              self.geometry_cue),
                                        self._evidence(obs, recent, "one bounded action for locked arm"),
                                        name, self.reference)
             vector = np.asarray(DIRECTIONS[answer["direction"]], dtype=float)
@@ -291,7 +341,7 @@ class StageController:
             source = "OpenAI Decisions RGB action"
             if self.reobserve and self.stage == "align":
                 self.align_actions += 1
-                if self.align_actions > 16:
+                if self.align_actions > (50 if self.geometry_cue else 16):
                     self.stalled_reason = "align_action_budget_without_grasp"
         arm = self.active_arm
         target = {}

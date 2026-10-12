@@ -30,3 +30,4 @@
 - 【Agent】【2026-10-12 11:48】[run] v4090 前台启动 stack_blocks 布局0 v5_probe_y 校准试跑；世界Y +5/-5/0mm 仅3动作、15原生步，Decisions 对每步新旧 RGB 判视觉位移，DataStorage 留存。
 - 【Agent】【2026-10-12 11:50】[op] 新建实验块 EXP-2026W42-007：stack_blocks v5 三路RGB及Decisions模型参与的世界Y小位移视觉标定  ↪ `EXP-2026W42-007`
 - 【Agent】【2026-10-12 11:52】[result] EXP-2026W42-007：v5 Y±5mm/3动作15步，图像匹配得+Y→高图上3px、−Y→下3px；Decisions视觉回答none/left/none误判微位移。原生预设不完整，下一轮附像素量化线索。
+- 【Agent】【2026-10-12 11:57】[op] 基于 v5 本机 Pro 复盘和 RGB 模板匹配，新增 v6 右夹爪像素位移/目标相对指缝几何提示、经验X/Y投影符号和可证伪对齐门，保留 Decisions 多模态目标/阶段/方向/步长决策。

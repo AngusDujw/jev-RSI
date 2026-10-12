@@ -19,6 +19,13 @@ COLOR_BOUNDS = {
 RANKS = ("initial_left", "initial_middle", "initial_right")
 DRAW_COLORS = {"purple": (230, 140, 255), "yellow": (30, 250, 255), "white": (255, 255, 255)}
 
+# RGB pixels only. These bounds locate the right open gripper in the fixed
+# layout-0 high camera; they are not object/robot ground-truth coordinates.
+RIGHT_TEMPLATE_XYWH = (500, 270, 80, 55)
+RIGHT_SEARCH_XYWH = (360, 215, 260, 160)
+RIGHT_FINGER_INNER_X = (489, 548)
+RIGHT_FINGER_TIP_Y = 295
+
 
 def detect_blocks(image_path: Path) -> list[dict]:
     """Locate only three compact color regions in a high-camera RGB frame."""
@@ -75,3 +82,28 @@ def draw_reference(source: Path, destination: Path, blocks: list[dict],
     if not cv2.imwrite(str(destination), image):
         raise OSError(f"Cannot write RGB reference: {destination}")
     return destination
+
+
+def track_right_gripper(reference: Path, current: Path) -> dict:
+    """Match a visible right-gripper RGB crop and report image displacement."""
+    initial = cv2.imread(str(reference))
+    image = cv2.imread(str(current))
+    if initial is None or image is None:
+        raise FileNotFoundError((reference, current))
+    tx, ty, tw, th = RIGHT_TEMPLATE_XYWH
+    sx, sy, sw, sh = RIGHT_SEARCH_XYWH
+    template = initial[ty:ty + th, tx:tx + tw]
+    search = image[sy:sy + sh, sx:sx + sw]
+    response = cv2.matchTemplate(search, template, cv2.TM_CCOEFF_NORMED)
+    _, score, _, location = cv2.minMaxLoc(response)
+    dx = int(sx + location[0] - tx)
+    dy = int(sy + location[1] - ty)
+    left, right = (x + dx for x in RIGHT_FINGER_INNER_X)
+    return {
+        "template_shift_px": [dx, dy],
+        "normalized_match_score": round(float(score), 4),
+        "estimated_inner_finger_x_px": [left, right],
+        "estimated_finger_tip_y_px": RIGHT_FINGER_TIP_Y + dy,
+        "usable": bool(score >= 0.75),
+        "limits": "Fixed layout-0 RGB template; approximate fingertip geometry, invalid after strong wrist rotation, lighting changes, or occlusion.",
+    }
