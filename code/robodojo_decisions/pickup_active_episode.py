@@ -246,6 +246,53 @@ def _sensing_descent(obs: dict, hull: dict,
                                   "visual_support_source": support_source}
 
 
+def _contact_approach_descent(obs, hull, material, table, green_plane):
+    """Explicit contact hypothesis, separate from the free-space height gate."""
+    if any(value is None for value in (material, table, green_plane)):
+        return None
+    if table['current_step_id'] != obs['step_id'] or green_plane['current_step_id'] != obs['step_id']:
+        raise ValueError('Contact-approach camera evidence is not current')
+    boxes = hull['public_inner_pad_bbox_right_wrist_xyxy']
+    box = hull['right_wrist_mask_bbox_xyxy']
+    if not (box[0] >= boxes['link7'][2]-20 and box[2] <= boxes['link8'][0]+20):
+        return None
+    nominal_table = float(table['matched_height_q05_q50_q95_m'][1])
+    source_z = float(green_plane['estimated_green_plane_height_m'])
+    if source_z - nominal_table < .002:
+        return None
+    target = _targets(obs, 'z', -1, .005)
+    path = preview(obs, target['right'], None, steps=5)
+    if not (path['public_path_gate'] and path['native_eef_single_action_legal']):
+        return None
+    nominal = gripper_height_above_landmark(
+        obs['current_eef']['right'], [0, 0, nominal_table], descent_m=.005)
+    upper = gripper_height_above_landmark(
+        obs['current_eef']['right'], [0, 0, table['upper_height_for_robot_check_m']], descent_m=.005)
+    if nominal['hand_above_landmark_plane_after_m'] < .002:
+        return None
+    # Do not duplicate the existing free-space candidate or falsify its bound.
+    if upper['hand_above_landmark_plane_after_m'] >= .006:
+        return None
+    key = 'z_negative_5mm_contact_approach'
+    description = (
+        'One COMPLETE five-native-step OPEN-gripper right LINK6 world-Z -5mm, '
+        'orientation and left arm held. This is an INTENTIONAL SOURCE-CONTACT '
+        'APPROACH hypothesis, separate from a certified free-space claim. '
+        f'Public whole-hand mesh nominal table gap after move is '
+        f"{nominal['hand_above_landmark_plane_after_m']*1000:.2f}mm, while gap "
+        f"to the declared table upper reference is {upper['hand_above_landmark_plane_after_m']*1000:.2f}mm. "
+        f'Current fitted green-plane nominal height is {source_z:.6f}m; '
+        'camera uncertainty bands may overlap. Inspect ACTUAL inward pad height, '
+        'solid scissors material and entire hand/table sweep in all current RGB. '
+        'Source contact may be intended; table or unrelated-object collision is '
+        'not authorized by this estimate. Select another complete motion or STOP '
+        'if RGB does not support the approach. This does not close or claim holding.')
+    return key, target, _translation_view_prediction(obs, target, hull), {
+        'description': description, 'public_path': path,
+        'nominal_table_reference': nominal, 'declared_table_upper_reference': upper,
+        'limitation': 'The2mm nominal gap is a declared candidate filter, not an uncertainty bound or collision certificate.'}
+
+
 def _translation_options(obs: dict, hull: dict,
                          temporal: dict | None = None,
                          material: dict | None = None,
@@ -796,6 +843,14 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             options, targets, image_effects = _translation_options(
                 obs, hull, temporal, material, table=table)
             record["translation_view_effects"] = image_effects
+            contact_approach = _contact_approach_descent(
+                obs, hull, material, table, green_plane)
+            if contact_approach is not None:
+                key, target, effect, evidence = contact_approach
+                options[key] = evidence['description']
+                targets[key] = target
+                image_effects[key] = effect
+                record['contact_approach_evidence'] = evidence
             if material is not None and margin > 0:
                 facet_distance = material[
                     "possible_green_to_each_public_facet_distance_mm_q05_q50_q95"]
@@ -1004,6 +1059,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "remaining_native_physical_steps": obs["remaining_steps"],
             "native_episode_physical_step_limit": obs["max_episode_steps"],
             "contact_hypothesis_gate": record.get("contact_hypothesis_gate"),
+            "contact_approach_evidence": record.get("contact_approach_evidence"),
             "camera_view_prediction": record.get("view_predictions"),
             "translation_view_effects": record.get("translation_view_effects"),
             "descent_public_evidence": record.get("descent_public_evidence"),
