@@ -66,8 +66,6 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                     '--grasp-hold-ticks', str(grasp_hold_ticks)]
             if lift_recheck_mm:
                 cmd += ['--lift-recheck-mm', str(lift_recheck_mm)]
-        if task_id == 1202 and grasp_hold_ticks != 18:
-            cmd += ['--grasp-hold-ticks', str(grasp_hold_ticks)]
         if task_id == 1458:
             cmd += ['--visible-goal-check']
             if lift_recheck_mm:
@@ -97,6 +95,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                     '--input-organization', 'focused',
                     '--grasp-algorithm', 'pad_fit', '--preserve-source',
                     '--execution-profile', 'adaptive', '--allow-retry']
+            if grasp_hold_ticks != 18:
+                cmd += ['--grasp-hold-ticks', str(grasp_hold_ticks)]
             if drawer_bowl_algorithm != 'recovery':
                 cmd += ['--drawer-bowl-algorithm', drawer_bowl_algorithm,
                         '--schema', 'focused',
