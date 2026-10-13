@@ -44,7 +44,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    rim_height_mode='top_overlap', rim_tilt_deg=0, rim_axis='short',
                    rim_inset_mm=0,
                    drawer_preorient=False, drawer_clear_to_source=False,
-                   empty_hand_fast=False, support_stall_release=False):
+                   empty_hand_fast=False, support_stall_release=False,
+                   drawer_bowl_algorithm='recovery'):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -91,6 +92,11 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                     '--input-organization', 'focused',
                     '--grasp-algorithm', 'pad_fit', '--preserve-source',
                     '--execution-profile', 'adaptive', '--allow-retry']
+            if drawer_bowl_algorithm != 'recovery':
+                cmd += ['--drawer-bowl-algorithm', drawer_bowl_algorithm,
+                        '--schema', 'focused',
+                        '--placement-height-mode', 'occlusion_guarded_bottom',
+                        '--support-stall-release']
             if rim_height_mode != 'top_overlap':
                 cmd += ['--rim-height-mode', rim_height_mode]
             if rim_tilt_deg:
@@ -127,6 +133,8 @@ def main():
     p.add_argument('--side-pad-overlap-mm', type=int, choices=[0,12], default=0)
     p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook'],
                    default='top_hook')
+    p.add_argument('--drawer-bowl-algorithm', choices=['recovery', 'supervisor'],
+                   default='recovery', help='Goal1202 pick/place continuation after opening the visible top drawer')
     p.add_argument('--rim-height-mode', choices=['top_overlap','visible_sidewall'],
                    default='top_overlap')
     p.add_argument('--rim-tilt-deg', type=int, choices=[0,12,20], default=0)
@@ -175,6 +183,8 @@ def main():
         p.error('Alternative drawer entry requires a supported drawer task')
     if a.drawer_contact_mode in ('side_hook', 'tip_hook') and a.task_id != 1098:
         p.error('Middle-handle entry mode requires Goal 1098')
+    if a.drawer_bowl_algorithm != 'recovery' and a.task_id != 1202:
+        p.error('Alternative bowl continuation requires Goal1202')
     if a.rim_height_mode != 'top_overlap' and a.task_id != 1202:
         p.error('Alternative rim height requires Goal 1202')
     if a.rim_tilt_deg and a.task_id != 1202:
@@ -199,7 +209,8 @@ def main():
                          a.side_pad_overlap_mm,a.rim_height_mode,a.rim_tilt_deg,a.rim_axis,
                          a.rim_inset_mm,
                          a.drawer_preorient,a.drawer_clear_to_source,
-                         a.empty_hand_fast,a.support_stall_release)
+                         a.empty_hand_fast,a.support_stall_release,
+                         a.drawer_bowl_algorithm)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -287,6 +298,7 @@ def main():
                     lift_recheck_mm=a.lift_recheck_mm,
                     side_pad_overlap_mm=a.side_pad_overlap_mm,
                     drawer_contact_mode=a.drawer_contact_mode,
+                    drawer_bowl_algorithm=a.drawer_bowl_algorithm,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,

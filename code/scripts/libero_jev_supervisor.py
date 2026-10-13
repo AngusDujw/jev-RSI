@@ -110,7 +110,7 @@ class DecisionModel(Jev):
         return row
 
 
-def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
+def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn,prior_native_ticks=0):
     vision=GenericVision(rec);model=DecisionModel(rec)
     from scipy.spatial.transform import Rotation
     side=rec.cfg.get('approach_mode') in ('side','angled')
@@ -122,7 +122,8 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     initial_source_extent=None;side_sign=-1
     carry_hover_replans=0;carry_support_checked=False
     orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
-    ticks=0;phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
+    ticks=int(prior_native_ticks);phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
+    initial_drawer_interior=None
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
     src=dst=sem=None;grasp=None;hover=None;offset=None;place=None;tcp_grasp=None;source_grasp=None;release_tcp=None
     last_verification_tick=-1;reobserved=False;start_tcp=obs['robot0_eef_pos'].copy();finished=False
@@ -131,10 +132,27 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     def save(label):
         for cam,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{label}-{cam}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))
     def locate(reason):
+        nonlocal initial_drawer_interior
         vv=views();ss=vision.recognize(vv,task.language,reason);gg={}
         for role in ['source','destination']:
-            x=ss[role];view=vv[x['camera']];gg[role]=vision.measure(view,x['bbox'],x['label'],reason+'-'+role)
-            if role=='destination' and x.get('receiver_kind')=='open_container':
+            x=ss[role];view=vv[x['camera']]
+            if role=='destination' and rec.cfg.get('task_id')==1202:
+                # The opened drawer floor is visible RGB-D, measured from the
+                # public handle saved during the preceding Jev drawer phase.
+                from libero_goal_drawer_vision import visible_drawer_interior
+                handle=json.loads((rec.folder/'selected-handle.json').read_text())
+                try:
+                    gg[role]=visible_drawer_interior(
+                        view['rgb'],view['depth'],view['K'],view['T'],handle)
+                    if reason=='initial':initial_drawer_interior=gg[role]
+                except RuntimeError:
+                    if initial_drawer_interior is None:raise
+                    gg[role]=dict(initial_drawer_interior,
+                        source='previously visible drawer floor retained under hand occlusion')
+            else:
+                gg[role]=vision.measure(view,x['bbox'],x['label'],reason+'-'+role)
+            if (role=='destination' and x.get('receiver_kind')=='open_container'
+                    and rec.cfg.get('task_id')!=1202):
                 # Opening is free space, not a physical surface: SAM often selects
                 # the far wall. Intersect the observed opening center ray with
                 # observed upper rim plane instead of treating wall centroid as goal.

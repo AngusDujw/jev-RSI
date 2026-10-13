@@ -216,6 +216,8 @@ def main():
                    help='Jev-controlled visible-handle Goal 1098 drawer trial')
     p.add_argument('--drawer-bowl-continuation', action='store_true',
                    help='After Jev opens Goal1202 top drawer, continue in the same episode to visible bowl pick/place')
+    p.add_argument('--drawer-bowl-algorithm', choices=['recovery', 'supervisor'], default='recovery',
+                   help='Fixed Goal1202 bowl handling scaffold after Jev-controlled drawer opening')
     p.add_argument('--drawer-preorient', action='store_true',
                    help='Let Jev orient own wrist during drawer approach, then verify in align')
     p.add_argument('--knob-supervisor', action='store_true',
@@ -296,6 +298,8 @@ def main():
     if a.drawer_bowl_continuation and (not a.drawer_supervisor or a.task_id != 1202 or
                                         not a.local_goal_vision):
         p.error('--drawer-bowl-continuation requires Goal1202 drawer and local visible vision')
+    if a.drawer_bowl_algorithm != 'recovery' and not a.drawer_bowl_continuation:
+        p.error('--drawer-bowl-algorithm requires Goal1202 drawer continuation')
     if a.drawer_preorient and not a.drawer_bowl_continuation:
         p.error('--drawer-preorient requires Goal1202 drawer continuation')
     if a.drawer_contact_mode in ('side_hook', 'tip_hook') and a.task_id != 1098:
@@ -339,7 +343,7 @@ def main():
                    existing_root+'/controller/config/api.company.local.json'),
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, support_stall_release=a.support_stall_release, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,drawer_clear_to_source=a.drawer_clear_to_source,empty_hand_fast=a.empty_hand_fast,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,rim_inset_mm=a.rim_inset_mm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, support_stall_release=a.support_stall_release, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_bowl_algorithm=a.drawer_bowl_algorithm,drawer_preorient=a.drawer_preorient,drawer_clear_to_source=a.drawer_clear_to_source,empty_hand_fast=a.empty_hand_fast,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,rim_inset_mm=a.rim_inset_mm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
@@ -375,12 +379,19 @@ def main():
             handoff = run_drawer(env,obs,rec,task,get_real_depth_map,
                                  get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
             if a.drawer_bowl_continuation and handoff is not None:
-                from libero_jev_recovery import run_recovery
                 obs, used_ticks = handoff
-                run_recovery(env, obs, rec, task, get_real_depth_map,
-                             get_camera_intrinsic_matrix,
-                             get_camera_extrinsic_matrix,
-                             prior_native_ticks=used_ticks)
+                if a.drawer_bowl_algorithm == 'supervisor':
+                    from libero_jev_supervisor import run_supervisor
+                    run_supervisor(env, obs, rec, task, get_real_depth_map,
+                                   get_camera_intrinsic_matrix,
+                                   get_camera_extrinsic_matrix,
+                                   prior_native_ticks=used_ticks)
+                else:
+                    from libero_jev_recovery import run_recovery
+                    run_recovery(env, obs, rec, task, get_real_depth_map,
+                                 get_camera_intrinsic_matrix,
+                                 get_camera_extrinsic_matrix,
+                                 prior_native_ticks=used_ticks)
         elif a.knob_supervisor:
             from libero_goal_knob_control import run_knob
             run_knob(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
