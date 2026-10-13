@@ -14,6 +14,8 @@ from pickup_source_visibility import effect as source_visibility_effect
 
 def propose(obs, targets, material, green_plane, table, stage):
     targets = dict(targets)
+    phase_gain_ranking=(os.environ.get('ROBODOJO_PICKUP_PHASE_GAIN_RANKING')=='1' and
+                        stage in ('coarse_directional_alignment_review','strict_tool_geometry_review'))
     diagnostics = {}
     if material is not None and float(obs['current_eef']['right']['gripper_opening_command'])>.95:
         error = np.asarray(material['representative_material_point']['nearest_opposing_surface_midpoint_delta_xyz_mm'])/1000
@@ -92,6 +94,7 @@ def propose(obs, targets, material, green_plane, table, stage):
                    float(np.linalg.norm(current_error)-np.linalg.norm(after)))
         else:
             score=float(angle-newangle)
+        phase_gain=score
         visibility = None
         if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
             visibility = source_visibility_effect(obs, target, material)
@@ -102,14 +105,24 @@ def propose(obs, targets, material, green_plane, table, stage):
                     score -= max(0,35-wrist['after_target_edge_margin_px'])
                     if wrist['current_edge_margin_px'] < 35:
                         score += .5 * min(60,max(0,wrist['after_target_edge_margin_px']-wrist['current_edge_margin_px']))
-        scores[name]={'source_visibility_prediction':visibility,'score_definition':'Controller utility: phase gain minus 40mm per added high-footprint overlap fraction, minus 1mm per wrist margin pixel below35; when current margin<35, plus0.5mm per restored margin pixel capped60. These are chosen utility weights, not physical error or success probabilities.','stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
+        if phase_gain_ranking:
+            score=phase_gain
+        scores[name]={'source_visibility_prediction':visibility,
+                     'predicted_stage_gain_before_visibility_utility':round(phase_gain,3),
+                     'score_definition':('Positive expected CURRENT stage error reduction only, XY millimetres or tool-angle degrees according to phase. Visibility is a lexicographic near-tie criterion, not subtracted pixels/ratios in the phase metric. Predictions are uncertain, not guaranteed progress.' if phase_gain_ranking else
+                         'Controller utility: phase gain minus 40mm per added high-footprint overlap fraction, minus 1mm per wrist margin pixel below35; when current margin<35, plus0.5mm per restored margin pixel capped60. These are chosen utility weights, not physical error or success probabilities.'),
+                     'stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
                      'prediction':predictions.get(name),'scope':'A current controller proposal score under stated RGB/static-source/robot-model hypotheses, not task completion or observed contact.'}
     if not scores:
         return None,targets,diagnostics,scores
-    selected=max(scores,key=lambda key:scores[key]['stage_progress_score'])
+    eligible={key:value for key,value in scores.items()
+              if not phase_gain_ranking or value['stage_progress_score']>0}
+    if not eligible:
+        return None,targets,diagnostics,scores
+    selected=max(eligible,key=lambda key:scores[key]['stage_progress_score'])
     if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
         best = scores[selected]['stage_progress_score']
-        near_ties = [key for key,value in scores.items()
+        near_ties = [key for key,value in eligible.items()
                      if value['stage_progress_score'] >= best-2 and value['source_visibility_prediction']]
         if near_ties:
             def tie_cost(key):
@@ -119,7 +132,8 @@ def propose(obs, targets, material, green_plane, table, stage):
                         v['additional_current_source_pixel_overlap_fraction'],
                         -scores[key]['stage_progress_score'])
             selected = min(near_ties,key=tie_cost)
-            scores[selected]['near_tie_retention_rule'] = 'Within2 controller utility units of maximum, prefer a wrist margin>=35 then least added current-high-source footprint overlap; chosen controller tolerance, not a confidence bound.'
+            scores[selected]['near_tie_retention_rule'] = ('Within2 units of positive phase gain (mm or degrees for this phase), prefer wrist margin>=35 then lower high-source footprint overlap; chosen tie tolerance, not confidence.' if phase_gain_ranking else
+                'Within2 controller utility units of maximum, prefer a wrist margin>=35 then least added current-high-source footprint overlap; chosen controller tolerance, not a confidence bound.')
     if selected.startswith('open_empty_'):
         return None,targets,diagnostics,scores
     return selected,targets,diagnostics,scores
