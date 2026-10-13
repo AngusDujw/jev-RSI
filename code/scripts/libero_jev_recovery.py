@@ -702,7 +702,18 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         visible_low = float(holding['measured']['low'][2])
                         floor_gap = visible_low-float(dst['high'][2])
                         rim_gap = visible_low-float(dst['rim_high_z'])
-                        if rim_gap < -.005 and floor_gap > .035:
+                        if rec.cfg.get('rim_relative_drop'):
+                            correction = float(dst['rim_high_z'])+.012-visible_low
+                            if abs(correction) > .04:
+                                raise RuntimeError('Visible rim-relative height correction exceeds 40 mm')
+                            drawer_lower_target = position.copy()
+                            drawer_lower_target[2] += correction
+                            rec.event(dict(kind='drawer_visible_rim_drop_target',
+                                native_tick=ticks, correction_mm=round(correction*1000,2),
+                                desired_bowl_bottom_above_rim_mm=12.,
+                                visible_bottom_to_rim_mm=round(rim_gap*1000,2),
+                                source='Fresh public held-bowl RGB-D and visible drawer rim'))
+                        elif rim_gap < -.005 and floor_gap > .035:
                             insertion = min(.015, floor_gap-.025)
                             drawer_lower_target = position.copy()
                             drawer_lower_target[2] -= insertion
@@ -745,7 +756,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     centered = bool(np.max(np.abs(center[:2]-
                         np.asarray(dst['center'][:2], float))) <= .010)
                     insertion_ready = (drawer_lower_target is None or drawer_lower_verified)
-                    rim_low = -35 if drawer_lower_verified else -20
+                    rim_low = (5 if rec.cfg.get('rim_relative_drop') else
+                               -35 if drawer_lower_verified else -20)
                     candidate = bool(insertion_ready and 0 <= age <= 12 and
                         footprint >= .50 and centered and
                         np.all(center[:2] >= floor_low[:2]-.005) and
@@ -773,9 +785,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     arrived and not drawer_lower_verified):
                 check_hold(use_projection=True)
                 drawer_lower_verified = True
-                rec.event(dict(kind='drawer_visible_insert_recheck',
+                rec.event(dict(kind=('drawer_visible_rim_drop_recheck' if
+                    rec.cfg.get('rim_relative_drop') else 'drawer_visible_insert_recheck'),
                     native_tick=ticks, holding_status=holding['status'],
-                    source='Fresh public RGB-D after own closed-gripper lowering'))
+                    source='Fresh public RGB-D after own closed-gripper height adjustment'))
                 continue
             if stage == 'test_lift' and arrived and holding['status'] in ('not_checked_yet', 'ambiguous'):
                 check_hold(use_projection=lift_recheck_used)
@@ -886,8 +899,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 if stage == 'lower' and drawer_lower_target is not None:
                     contracts['lower'] = (
                         'Keep the gripper closed and follow the supplied '
-                        'short downward goal into the visible open drawer. '
-                        'After arrival a fresh public RGB-D holding and floor '
+                        + ('rim-relative release height above the visible open drawer. '
+                           if rec.cfg.get('rim_relative_drop') else
+                           'short downward goal into the visible open drawer. ')
+                        + 'After arrival a fresh public RGB-D holding and floor '
                         'check is required before any release. If it fails, '
                         'choose retry when offered. Do not infer native success.')
                 contracts['descend'] = (
@@ -902,10 +917,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     'The subsequent visible lift must prove holding.')
                 if stage == 'lower' and container_drop['status']=='visible_drop_candidate':
                     contracts['lower']=(
-                        'Fresh public RGB-D shows the held bowl bottom partly inside '
-                        'the visible open drawer rim, with its footprint over the '
-                        'measured floor and a bounded drop gap. You may advance '
-                        'now to one gripper-opening trial without deeper insertion; '
+                        'Fresh public RGB-D shows the held bowl bottom at the '
+                        'selected height relative to the visible open drawer rim, '
+                        'with its footprint over the measured floor and a bounded '
+                        'drop gap. You may advance now to one gripper-opening trial; '
                         'this is not official success. Keep closed for this lower '
                         'decision, then decide opening in release.')
                 if stage == 'release' and visible_container_drop_selected:
