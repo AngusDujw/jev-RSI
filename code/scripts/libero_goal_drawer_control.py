@@ -351,7 +351,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     reason=str(exc)))
         while phase < len(sequence):
             rec.check_budget()
-            stage_cap = 230 if high_side_insert and sequence[phase]['name'] == 'contact' else 145
+            stage_cap = (240 if far_side_insert and sequence[phase]['name'] == 'approach'
+                         else 230 if high_side_insert and sequence[phase]['name'] == 'contact'
+                         else 145)
             if ticks >= max_native_ticks or stage_ticks >= stage_cap:
                 raise RuntimeError('Drawer native/stage budget')
             stage = sequence[phase]
@@ -883,8 +885,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 grip_ticks = 0
             gripper = selected_gripper
             error = target-position
-            fast_open = bool(rec.cfg.get('empty_hand_fast') and gripper == -1 and
-                             name in ('approach', 'align', 'clear_opening'))
+            fast_open = bool((rec.cfg.get('empty_hand_fast') or far_side_insert)
+                and gripper == -1 and
+                name in ('approach', 'align', 'clear_opening'))
             far_open = fast_open and np.max(np.abs(error)) > .04
             fast_rotation = fast_open and np.max(np.abs(rotation_error)) > .15
             delta = np.asarray(decision['signs'])*np.minimum(
@@ -896,7 +899,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             block = 6 if name in ('grasp', 'release') else 3
             before = position.copy()
             for _ in range(block):
-                if ticks >= 550:
+                if ticks >= max_native_ticks:
                     raise RuntimeError('Drawer native step budget')
                 obs, _, _, _ = env.step(np.r_[delta/.05, rotation_delta/.5, gripper])
                 ticks += 1
