@@ -156,8 +156,33 @@ def visible_cabinet_near_side(rgb, depth, intrinsic, extrinsic, front, handle):
     if float(np.quantile(xs, .95)-np.quantile(xs, .05)) < .12:
         raise RuntimeError('Visible cabinet front too narrow for side entry')
     return dict(near_side_world_x_m=float(np.quantile(xs, .01)),
+                far_side_world_x_m=float(np.quantile(xs, .99)),
                 front_world_y_m=face_y, visible_pixels=int(len(face)),
                 source='Camera RGB-D dark cabinet/front-plane pixels at public middle-handle height')
+
+
+def visible_tabletop_height(depth, intrinsic, extrinsic):
+    """Measure the broad public RGB-D tabletop beside the drawer."""
+    distance = np.asarray(depth, float)
+    k = np.asarray(intrinsic, float)
+    t = np.asarray(extrinsic, float)
+    if distance.shape != (768, 768) or k.shape != (3, 3) or t.shape != (4, 4):
+        raise ValueError('Expected calibrated public agentview depth')
+    v, u = np.mgrid[400:740, 270:740]
+    d = distance[v, u]
+    camera = np.stack(((u-k[0, 2])*d/k[0, 0],
+                       (v-k[1, 2])*d/k[1, 1], d), axis=-1)
+    z = (camera @ t[:3, :3].T + t[:3, 3])[:, :, 2]
+    support = z[np.isfinite(z) & (z > .85) & (z < .95)]
+    if len(support) < 10000:
+        raise RuntimeError('Visible tabletop support unavailable')
+    counts, edges = np.histogram(support, bins=200, range=(.85, .95))
+    if int(counts.max()) < 5000:
+        raise RuntimeError('Visible tabletop height ambiguous')
+    i = int(np.argmax(counts))
+    return dict(world_z_m=float((edges[i]+edges[i+1])/2),
+                modal_pixels=int(counts[i]),
+                source='Broad public agentview RGB-D tabletop mode')
 
 
 def select_public_handle(handles, requested_level):

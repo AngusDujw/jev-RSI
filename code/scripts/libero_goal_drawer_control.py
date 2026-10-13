@@ -16,7 +16,7 @@ from scipy.spatial.transform import Rotation
 
 from libero_goal_drawer_vision import (visible_cabinet_front,
     visible_cabinet_near_side, visible_drawer_handles, select_public_handle,
-    visible_drawer_extension)
+    visible_drawer_extension, visible_tabletop_height)
 from libero_robot_geometry import gripper_geometry, own_hand_vertices_tool
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
@@ -124,6 +124,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     yaw_side_entry = contact_mode == 'cabinet_side_yaw_hook'
     thin_side_entry = contact_mode == 'cabinet_side_thin_hook'
     high_side_insert = bool(thin_side_entry and rec.cfg.get('drawer_high_side_insert'))
+    far_side_insert = bool(high_side_insert and rec.cfg.get('drawer_far_side_insert'))
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
@@ -157,6 +158,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                                     [0., 1., 0.]]))
     own = gripper_geometry(env, obs)
     own_hand_tool = own_hand_vertices_tool(env, obs) if thin_side_entry else None
+    own_full_hand_low_z_offset = (float(np.min(np.concatenate((
+        np.asarray(own['finger_vertices_tool']), own_hand_tool)) @
+        side_orientation.T, axis=0)[2]) if thin_side_entry else None)
     if hook_mode:
         initial_rotation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
         finger_options = []
@@ -324,8 +328,12 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         cabinet_side = (visible_cabinet_near_side(initial_rgb, initial_depth,
             initial_k, initial_t, front_plane, handle)
             if cabinet_side_entry else None)
+        table_support = (visible_tabletop_height(initial_depth, initial_k, initial_t)
+                         if far_side_insert else None)
         if cabinet_side is not None:
             dump(rec.folder/'visible-cabinet-near-side.json', cabinet_side)
+        if table_support is not None:
+            dump(rec.folder/'visible-table-support.json', table_support)
         dump(rec.folder/'selected-handle.json', dict(
             initial_handle, public_requested_level=requested_level))
         if task_id == 1202 and rec.cfg.get('drawer_clear_to_source'):
@@ -354,7 +362,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 # contact may leave room for the arm beside the cabinet;
                 # retain the same observed rod point for both hook paths.
                 axis = np.asarray(handle['rod_axis_world'], float)
-                toward_robot = 1. if (initial_robot_x-handle_position[0])*axis[0] >= 0 else -1.
+                toward_robot = (-1. if far_side_insert else
+                    1. if (initial_robot_x-handle_position[0])*axis[0] >= 0 else -1.)
                 contact_rod_position += (toward_robot *
                     min(.024, .30*float(handle['visible_rod_length_m'])) * axis)
             if hook_mode:
@@ -401,6 +410,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     if pad_entry_z-lower_z <= pad_half_height+.010:
                         raise RuntimeError('Visible handle gap too narrow for raised own pad')
                     under_tcp[2] = pad_entry_z-float(contact_offset[2])
+                    if far_side_insert:
+                        # The old low-side hand would penetrate the visible
+                        # tabletop by ~2 mm on init4. Guard the entire own
+                        # hand, not merely the selected fingerpad.
+                        floor_tcp_z = (float(table_support['world_z_m'])+.005-
+                                       own_full_hand_low_z_offset)
+                        under_tcp[2] = max(under_tcp[2], floor_tcp_z)
+                        pad_entry_z = under_tcp[2]+float(contact_offset[2])
+                        if pad_entry_z > middle_z-pad_half_height-.003:
+                            raise RuntimeError('No visible rod/table gap for entire own hand')
             if contact_mode == 'side_hook':
                 # First pass the measured near end of the rod at the visible
                 # middle/lower gap, then slide along its axis behind the rod.
@@ -421,9 +440,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     if thin_side_entry else np.asarray(own['finger_vertices_tool']))
                 projected_fingers = own_side_mesh @ side_orientation.T
                 side_entry_tcp = under_tcp.copy()
-                side_entry_tcp[0] = (cabinet_side['near_side_world_x_m'] -
+                side_entry_tcp[0] = (
+                    cabinet_side['far_side_world_x_m'] -
+                    float(np.min(projected_fingers[:, 0])) + .020
+                    if far_side_insert else
+                    cabinet_side['near_side_world_x_m'] -
                     float(np.max(projected_fingers[:, 0])) - .020)
-                if abs(side_entry_tcp[0]-initial_robot_x) > .35:
+                if abs(side_entry_tcp[0]-initial_robot_x) > (.55 if far_side_insert else .35):
                     raise RuntimeError('Visible cabinet side outside bounded own reach')
                 if thin_side_entry and not side_plan_logged:
                     clearance = (contact_tcp[1] +
@@ -435,6 +458,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         contact_tcp_world_m=contact_tcp,
                         own_hand_and_fingers_to_visible_front_clearance_mm=round(clearance*1000,2),
                         visible_cabinet_near_side_world_x_m=cabinet_side['near_side_world_x_m'],
+                        visible_cabinet_far_side_world_x_m=cabinet_side['far_side_world_x_m'],
+                        visible_table_world_z_m=(table_support['world_z_m']
+                            if table_support is not None else None),
                         visible_front_world_y_m=face_y,
                         visible_rod_back_world_y_m=back_y,
                         source='Public camera RGB-D/links plus own gripper collision mesh and proprioception'))
@@ -645,6 +671,12 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                 if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook') else None),
                             visible_cabinet_near_side_world_x_m=(cabinet_side['near_side_world_x_m']
                                 if cabinet_side is not None else None),
+                            visible_cabinet_far_side_world_x_m=(cabinet_side['far_side_world_x_m']
+                                if cabinet_side is not None else None),
+                            own_full_hand_table_clearance_mm=(round(
+                                (position[2]+own_full_hand_low_z_offset-
+                                 table_support['world_z_m'])*1000, 2)
+                                if table_support is not None else None),
                             visible_upper_handle_world_z_m=(float(upper_handle['center_world_m'][2])
                                 if high_entry or steep_entry or high_side_insert else None),
                             high_entry_tcp_world_m=(high_entry_tcp.tolist() if high_entry else None),
