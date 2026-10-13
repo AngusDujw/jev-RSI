@@ -661,6 +661,10 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 table = max(planes, key=lambda row:
                             row["accepted_texture_match_count"])
                 table_cache = table
+        gripper_closed = (
+            trace[-1]['post_action']['action']['target']['right']['gripper_closed']
+            if trace and 'post_action' in trace[-1] else
+            float(obs['current_eef']['right']['gripper_opening_command']) < .5)
         green_plane = None
         green_plane_errors = []
         try:
@@ -739,10 +743,6 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         ring_count = hull["right_wrist_closed_green_ring_count"]
         # Native observations expose the measured opening command, while
         # EEF action targets use the separate gripper_closed Boolean.
-        gripper_closed = (
-            trace[-1]['post_action']['action']['target']['right']['gripper_closed']
-            if trace and 'post_action' in trace[-1] else
-            float(obs['current_eef']['right']['gripper_opening_command']) < .5)
         # Missing closed AIR-hole contours does not invalidate current solid
         # material evidence. With a current revalidated material set, let
         # Luna judge complete approach/closure options against fresh RGB;
