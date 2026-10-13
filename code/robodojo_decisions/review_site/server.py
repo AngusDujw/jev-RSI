@@ -18,8 +18,23 @@ CACHE = {'time': 0, 'data': None}
 LOCK = threading.Lock()
 LABELS = {'general_pickup': '拾取剪刀', 'stack_blocks': '叠积木',
           'fold_clothes': '折衣服', 'press_by_number': '按数字按钮',
-          'stack_bowls': '叠碗', 'play_xylophone': '敲木琴',
-          'push_t': '推 T', 'cut_paper': '剪纸'}
+          'stack_bowls': '叠碗', 'play_Xylophone': '敲木琴',
+          'push_T': '推 T', 'align_blocks': '对齐积木',
+          'arrange_largest_number': '排列最大数字', 'classify_objects': '物体分类',
+          'classify_objects_by_language': '按语言分类', 'cover_blocks': '盖住积木',
+          'imitate_sorting_sequence': '模仿排序', 'match_and_pick_from_conveyor': '传送带匹配拾取',
+          'solve_equation': '解方程', 'stack_blocks_by_language': '按语言叠积木',
+          'build_tower': '搭塔', 'deposit_coin': '投硬币', 'fasten_screws': '拧螺丝',
+          'fill_egg_holder': '放鸡蛋', 'fill_pen_holder': '放笔', 'hang_mugs': '挂杯子',
+          'insert_key': '插钥匙', 'insert_tubes': '插管', 'make_kong': '装填玩具',
+          'make_toast': '制作吐司', 'organize_table': '整理桌面',
+          'pack_objects_into_box': '装箱', 'pick_from_conveyor_by_image': '按图传送带拾取',
+          'play_stacking_toy': '叠玩具', 'play_tic_tac_toe': '井字棋',
+          'plug_in_charger': '插充电器', 'pour_balls_into_vase': '倒球入花瓶',
+          'pour_by_language': '按语言倒物', 'pour_liquid_into_cup': '倒液体',
+          'put_bottles_into_dustbin': '丢瓶子', 'sort_nesting_dolls_by_size': '套娃排序',
+          'store_laptop_and_headphones': '收纳电脑耳机', 'store_tools_in_toolbox': '收纳工具',
+          'swap_T': '交换 T', 'swap_blocks': '交换积木', 'sweep_blocks': '扫积木'}
 CURATED = {'general_pickup': '2026-10-13-gpt61-du-pickup-close-hypothesis-native-204',
            'press_by_number': '2026-10-13-gpt6-dec-press-gpu-fabric-path-aware-three-view-152'}
 
@@ -48,7 +63,7 @@ def result_for(path):
         result = {}
     if isinstance(status, dict) and isinstance(status.get('native_result'), dict):
         result = status['native_result']
-    for file in sorted(path.glob('*trace.json')):
+    for file in sorted(path.glob('*trace.json')) if not result else []:
         data = read(file, {})
         if isinstance(data, dict) and isinstance(data.get('native_result'), dict):
             result = data['native_result']
