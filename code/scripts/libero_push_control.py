@@ -308,7 +308,8 @@ class PushModel(Jev):
 def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     visible_goal_plate = bool(rec.cfg.get('goal_plate_push'))
     if visible_goal_plate:
-        from libero_goal_plate_vision import GoalPlateVision
+        from libero_goal_plate_vision import (GoalPlateVision,
+            visible_plate_in_front_of_stove)
         vision = GoalPlateVision(rec)
     else:
         vision = PushVision(rec)
@@ -436,21 +437,30 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     observed_after)
             visible_error = None if observed_after is None else float(np.linalg.norm(
                 observed_after['center'][:2]-goal[:2]))
+            front_relation = (visible_plate_in_front_of_stove(
+                observed_after_identity['bbox'], vision.stove['bbox'],
+                observed_after['low'][2],
+                vision.goal['visible_support_world_z_m'])
+                if visible_goal_plate and segment >= 2 and
+                   observed_after is not None else None)
+            front_relation_passed = bool(front_relation and front_relation['passed'])
             goal_tolerance = .020 if visible_goal_plate and segment >= 2 else .045
             residual_correction_available = bool(visible_goal_plate and
                 stage == 'retreat' and arrived and segment == 2 and
-                visible_error is not None and goal_tolerance <= visible_error <= .12 and
+                visible_error is not None and not front_relation_passed and
+                goal_tolerance <= visible_error <= .12 and
                 vision.calls < 5 and max_native_ticks-ticks >= 120)
             if (stage == verification_stage and arrived and
                     visible_error is not None and visible_error >= goal_tolerance and
-                    not residual_correction_available):
+                    not front_relation_passed and not residual_correction_available):
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
             if stage == 'push' and not visible_goal_plate:
                 complete = bool(complete and visible_error is not None and visible_error < goal_tolerance)
             if stage == 'retreat':
                 complete = (bool(arrived and visible_error is not None and
-                                 visible_error < goal_tolerance) if visible_goal_plate
+                                 (visible_error < goal_tolerance or
+                                  front_relation_passed)) if visible_goal_plate
                             else arrived)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
             next_stage = ('approach' if stage == 'retreat' and visible_goal_plate
@@ -471,6 +481,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 retreat=('Raise the pusher to reveal the plate; advance only after fresh RGB-D measures its centre within the supplied visible goal tolerance (45 mm staging, 20 mm final).'
                     if visible_goal_plate else
                     'Raise pusher after the observed push; advance to end attempt.'))
+            if visible_goal_plate and segment >= 2:
+                contracts['retreat'] = (
+                    'Raise the pusher to reveal the plate. Advance if fresh '
+                    'public RGB-D confirms the plate centre near the target '
+                    'patch or the plate visibly rests on the tabletop in '
+                    'front of and horizontally aligned with the stove. '
+                    'The latter uses visible bounding boxes and the plate '
+                    'radius, not the evaluator.')
             if residual_correction_available:
                 contracts['retreat'] = (
                     'Fresh public RGB-D measures a remaining plate-to-goal '
@@ -498,6 +516,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     orientation_arrived=oriented, visible_object_goal_error_mm=
                     None if visible_error is None else round(visible_error*1000, 2),
                     visible_goal_tolerance_mm=round(goal_tolerance*1000, 1),
+                    visible_front_relation=front_relation,
                     contract_satisfied=bool(complete)),
                 allowed_transitions=dict(continue_phase=True, advance=bool(complete),
                     reobserve=bool(residual_correction_available or

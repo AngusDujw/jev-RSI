@@ -239,6 +239,30 @@ def visible_front_goal(view, plate, stove):
                 selection_reason='frontmost visible table row with clear swept plate corridor')
 
 
+def visible_plate_in_front_of_stove(plate_bbox, stove_bbox, plate_low_z,
+                                    visible_support_z):
+    """Check the public front-of relation from visible boxes and RGB-D support."""
+    px0, py0, px1, py1 = map(float, plate_bbox)
+    sx0, _, sx1, sy1 = map(float, stove_bbox)
+    if not (px0 < px1 and py0 < py1 and sx0 < sx1):
+        raise ValueError('Invalid visible plate/stove boxes')
+    plate_width = px1-px0
+    visible_radius = .5*max(plate_width, py1-py0)
+    horizontal_overlap = max(0., min(px1, sx1)-max(px0, sx0))/plate_width
+    front_gap = py0-sy1
+    support_error = abs(float(plate_low_z)-float(visible_support_z))
+    passed = bool(horizontal_overlap >= .5 and
+                  -.5*visible_radius <= front_gap <= visible_radius and
+                  support_error <= .015)
+    return dict(passed=passed,
+                visible_front_gap_px=round(front_gap, 2),
+                allowed_front_gap_px=[round(-.5*visible_radius, 2),
+                                      round(visible_radius, 2)],
+                horizontal_overlap_fraction=round(horizontal_overlap, 3),
+                visible_support_error_mm=round(support_error*1000, 2),
+                source='Initial public stove box, fresh visible plate box and RGB-D tabletop support')
+
+
 def visible_side_contact(view, plate_mask, plate, direction, central_contact_xy):
     """Select a supported off-centre rim point with a visible clear rear lane.
 
@@ -431,6 +455,7 @@ class GoalPlateVision:
         self.refreshes = 0
         self.goal = None
         self.stage_goal = None
+        self.stove = None
         self.last_uv = None
 
     def locate(self, views, public_task, reason, previous=None,
@@ -444,6 +469,7 @@ class GoalPlateVision:
         self.last_uv = plate['uv']
         if reason == 'initial':
             stove = visible_stove(view)
+            self.stove = stove
             self.goal = visible_front_goal(view, plate, stove)
             self.stage_goal = visible_lateral_stage(view, plate, self.goal,
                 self.rec.cfg.get('plate_stage_turn_deg', 0))
