@@ -69,6 +69,23 @@ def _install_sensor_calibration():
 
     def sensor_calibration_dispatch(self, op, args):
         """Expose authored RGB K/T; wrist T is propagated from measured LINK6 by client."""
+        if (op == 'public_robot_gripper_state' and
+                os.environ.get('ROBODOJO_MEASURED_GRIPPER_STATE') == '1'):
+            self._check_identity(args['episode_id'],args['step_id'])
+            manager=self.env.robot_manager
+            arms={r.arm_name.split('_')[0]:r for r in manager.robot_list if r.type=='target'}
+            if set(arms) != {'left','right'}:
+                raise RuntimeError('Expected two public robot arms')
+            measured={}
+            for arm,robot in arms.items():
+                names=list(robot.gripper_joints_name)
+                values=manager.get_end_effector_real_val(robot,env_idx_list=[0])[0]
+                if len(names)!=len(values):
+                    raise RuntimeError('Gripper joint names/encoder shape mismatch')
+                measured[arm]={'joint_names':names,'joint_positions_m':values.tolist(),
+                    'source':'Current robot articulation joint_pos, not prev_control command'}
+            return {'step_id':self.step_id,'physical_steps':0,'arms':measured,
+                'scope':'Robot prismatic joint encoders only; no object state, contacts, force, reward or outcome.'}
         if op != "public_camera_calibration":
             return native_dispatch(self, op, args)
         self._check_identity(args["episode_id"], args["step_id"])

@@ -109,6 +109,13 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         call = tools.next_call()
         call.pop("tool")
         obs = tools.start(**call)
+        if os.environ.get('ROBODOJO_MEASURED_GRIPPER_STATE') == '1':
+            measured=tools._rpc('public_robot_gripper_state')
+            if measured.get('physical_steps')!=0 or measured.get('step_id')!=obs['step_id']:
+                raise ValueError('Robot encoder read must be current and zero-step')
+            obs['measured_gripper_joint_state']=measured
+            (output / 'robot_gripper_state_step_000.json').write_text(
+                json.dumps(measured,ensure_ascii=False,indent=2))
         initial_camera_calibration = None
         initial_eef = obs["current_eef"]
         if os.environ.get("ROBODOJO_PUBLIC_CAMERA_CALIBRATION") == "1":
