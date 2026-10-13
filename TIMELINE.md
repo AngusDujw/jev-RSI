@@ -189,6 +189,7 @@ graph LR
     T_2026W42_081["📊 robodojo-decision-stages<br/>260 170步工具朝下并接近；近距改当前…"]:::experiment
     T_2026W42_082["📊 robodojo-decision-stages<br/>265早期STOP；真实输入重整为显式完整…"]:::experiment
     T_2026W42_083["📊 robodojo-decision-stages<br/>268 170步无闭爪；修正近距射线搜索与…"]:::experiment
+    T_2026W42_084["📊 robodojo-decision-stages<br/>271工具阶段却给身份规则；273映射当前…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -338,6 +339,7 @@ graph LR
   T_2026W42_080 --> T_2026W42_081
   T_2026W42_081 --> T_2026W42_082
   T_2026W42_082 --> T_2026W42_083
+  T_2026W42_083 --> T_2026W42_084
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -515,6 +517,7 @@ graph LR
 | `T-2026W42-081` | 2026-10-14 | experiment | robodojo-decision-stages | 260 170步工具朝下并接近；近距改当前局部指面材料，265检验抓持 | `EXP-2026W42-188` | - |
 | `T-2026W42-082` | 2026-10-14 | experiment | robodojo-decision-stages | 265早期STOP；真实输入重整为显式完整增量/选中预测，268实际验证 | `EXP-2026W42-189` | - |
 | `T-2026W42-083` | 2026-10-14 | experiment | robodojo-decision-stages | 268 170步无闭爪；修正近距射线搜索与局部入口，271原生验证 | `EXP-2026W42-190` | - |
+| `T-2026W42-084` | 2026-10-14 | experiment | robodojo-decision-stages | 271工具阶段却给身份规则；273映射当前阶段并量化阶段误差 | `EXP-2026W42-191` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
