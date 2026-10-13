@@ -592,8 +592,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 else:
                     contact_leg = 'side_rise'
             if cabinet_side_entry and name == 'contact':
+                # In the tabletop-guarded path, the old 9 mm early edge
+                # allowed descent while the own hand still grazed a visible
+                # foreground object. Match the 2 mm Jev axis hold tolerance.
+                side_y_arrival_tol = (.002 if rec.cfg.get(
+                    'drawer_table_clearance') else .009)
                 if (high_side_insert and not high_y_insert_reached and
-                        position[1] <= side_entry_tcp[1]+.009):
+                        position[1] <= side_entry_tcp[1]+side_y_arrival_tol):
                     high_y_insert_reached = True
                     rec.event(dict(kind='high_side_y_waypoint_reached',
                         native_tick=ticks,
