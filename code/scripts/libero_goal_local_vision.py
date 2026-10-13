@@ -54,25 +54,30 @@ def pick_visible(detections, label, excluded_box=None, allow_generic=False):
     def area(d):
         box = np.asarray(d['bbox'], float)
         return float(np.prod(np.maximum(box[2:]-box[:2], 0)))
+    def interior(d):
+        x0,y0,x1,y1 = map(float,d['bbox'])
+        return 4 < x0 < x1 < 764 and 4 < y0 < y1 < 764
+    def strong_noun(d):
+        # A uniquely localized small item can be less confidently named than
+        # a fixture. Keep the relaxed tier tied to visible shape and position.
+        return d['score'] >= .35 or (
+            d['score'] >= .30 and area(d) < .03*768*768 and interior(d))
     scene_limit = .10*768*768
     choices = [d for d in detections
                if d['label'].strip().lower() == label and area(d) < scene_limit]
     selection = 'exact public noun with scene-scale rejection'
-    if not choices:
+    if not any(strong_noun(d) for d in choices):
         # Grounding can append a generic noun ("box container") while keeping
         # the public noun intact. A scene-scale box is not an object proposal.
         choices = [d for d in detections
                    if d['label'].strip().lower().startswith(label+' ')
                    and area(d) < scene_limit]
         selection = 'public noun compound with scene-scale rejection'
-    if not any(d['score'] >= .35 for d in choices) and allow_generic:
+    if not any(strong_noun(d) for d in choices) and allow_generic:
         # A grounding model may give a graspable source only the generic noun
         # "object" while assigning the public noun to a cabinet or fixture.
         # Admit this only when a single compact, interior proposal survives;
         # ambiguous alternatives stop the episode rather than invent identity.
-        def interior(d):
-            x0,y0,x1,y1 = map(float,d['bbox'])
-            return 4 < x0 < x1 < 764 and 4 < y0 < y1 < 764
         choices = [d for d in detections
                    if d['label'].strip().lower() == 'object'
                    and d['score'] >= .25 and area(d) < .03*768*768
@@ -81,8 +86,12 @@ def pick_visible(detections, label, excluded_box=None, allow_generic=False):
     if excluded_box is not None:
         choices = [d for d in choices if overlap_ratio(d['bbox'], excluded_box) < .45]
     choices.sort(key=lambda d: d['score'], reverse=True)
-    minimum = .25 if selection.startswith('unique compact generic') else .35
-    if not choices or choices[0]['score'] < minimum:
+    if not choices:
+        raise RuntimeError(f'No high-confidence visible {label}')
+    qualified = (choices[0]['score'] >= .25 if
+                 selection.startswith('unique compact generic') else
+                 strong_noun(choices[0]))
+    if not qualified:
         raise RuntimeError(f'No high-confidence visible {label}')
     ambiguity_ratio = .75 if selection.startswith('unique compact generic') else .85
     if (len(choices) > 1 and choices[1]['score'] >= ambiguity_ratio*choices[0]['score'] and
