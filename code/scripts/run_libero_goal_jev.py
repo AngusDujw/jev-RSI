@@ -45,7 +45,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    rim_inset_mm=0,
                    drawer_preorient=False, drawer_clear_to_source=False,
                    empty_hand_fast=False, support_stall_release=False,
-                   drawer_bowl_algorithm='recovery', gentle_carry=False):
+                   drawer_bowl_algorithm='recovery', gentle_carry=False,
+                   visible_container_drop=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -101,6 +102,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                         '--support-stall-release']
             if gentle_carry:
                 cmd += ['--gentle-carry']
+            if visible_container_drop:
+                cmd += ['--visible-container-drop']
             if rim_height_mode != 'top_overlap':
                 cmd += ['--rim-height-mode', rim_height_mode]
             if rim_tilt_deg:
@@ -149,6 +152,8 @@ def main():
     p.add_argument('--empty-hand-fast', action='store_true')
     p.add_argument('--gentle-carry', action='store_true',
                    help='Bound each native carry step when fresh public RGB-D holding passed')
+    p.add_argument('--visible-container-drop', action='store_true',
+                   help='Offer Jev a public RGB-D bounded drop into the opened Goal1202 drawer')
     p.add_argument('--support-stall-release', action='store_true')
     p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0)
     p.add_argument('--dry-run', action='store_true',
@@ -194,6 +199,9 @@ def main():
     if a.gentle_carry and (a.task_id not in RECOVERY_TASKS | {1202} or
                            a.drawer_bowl_algorithm == 'supervisor'):
         p.error('Gentle carry requires a Jev recovery pick/place continuation')
+    if a.visible_container_drop and (a.task_id != 1202 or
+                                     a.drawer_bowl_algorithm != 'recovery'):
+        p.error('Visible container drop requires Goal1202 recovery continuation')
     if a.rim_height_mode != 'top_overlap' and a.task_id != 1202:
         p.error('Alternative rim height requires Goal 1202')
     if a.rim_tilt_deg and a.task_id != 1202:
@@ -219,7 +227,8 @@ def main():
                          a.rim_inset_mm,
                          a.drawer_preorient,a.drawer_clear_to_source,
                          a.empty_hand_fast,a.support_stall_release,
-                         a.drawer_bowl_algorithm,a.gentle_carry)
+                         a.drawer_bowl_algorithm,a.gentle_carry,
+                         a.visible_container_drop)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -309,6 +318,7 @@ def main():
                     drawer_contact_mode=a.drawer_contact_mode,
                     drawer_bowl_algorithm=a.drawer_bowl_algorithm,
                     gentle_carry=a.gentle_carry,
+                    visible_container_drop=a.visible_container_drop,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,

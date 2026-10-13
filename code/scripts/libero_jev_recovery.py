@@ -696,6 +696,43 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 target = recovery_clear_target
             else:
                 raise ValueError(stage)
+            container_drop = dict(status='not_requested')
+            if (stage == 'lower' and rec.cfg.get('visible_container_drop') and
+                    rec.cfg.get('drawer_bowl_continuation')):
+                # A fresh held-object RGB-D fit can show that the bowl bottom
+                # is already inside the visible opening, above its measured
+                # floor. Deeper gripper insertion can dislodge a rim pinch;
+                # offer Jev one bounded gravity-drop trial at this pose.
+                observed = holding.get('observed_tick')
+                measured = holding.get('measured')
+                if (holding.get('status') == 'passed' and measured is not None and
+                        observed is not None):
+                    low = np.asarray(measured['low'], float)
+                    high = np.asarray(measured['high'], float)
+                    center = np.asarray(measured['center'], float)
+                    floor_low = np.asarray(dst['low'], float)
+                    floor_high = np.asarray(dst['high'], float)
+                    span = np.maximum(high[:2]-low[:2], 1e-6)
+                    overlap = np.maximum(0., np.minimum(high[:2], floor_high[:2])-
+                                         np.maximum(low[:2], floor_low[:2]))
+                    footprint = float(np.prod(overlap/span))
+                    floor_gap = float((low[2]-floor_high[2])*1000)
+                    rim_gap = float((low[2]-float(dst['rim_high_z']))*1000)
+                    age = ticks-int(observed)
+                    candidate = bool(0 <= age <= 12 and footprint >= .50 and
+                        np.all(center[:2] >= floor_low[:2]-.005) and
+                        np.all(center[:2] <= floor_high[:2]+.005) and
+                        20 <= floor_gap <= 90 and -20 <= rim_gap <= 20)
+                    container_drop = dict(status='visible_drop_candidate' if candidate
+                        else 'geometry_not_ready', observed_tick=int(observed),
+                        age_native_ticks=int(age), footprint_overlap_ratio=round(footprint,3),
+                        visible_bottom_to_floor_mm=round(floor_gap,2),
+                        visible_bottom_to_rim_mm=round(rim_gap,2),
+                        source='Fresh public held-bowl RGB-D and visible opened-drawer floor/rim')
+                    if candidate:
+                        target = position.copy()
+                        rec.event(dict(kind='visible_container_drop_candidate',
+                                       native_tick=ticks, evidence=container_drop))
             error = target-position
             tol = .003 if stage == 'descend' else .018 if stage == 'clear_receiver' else .006
             arrived = bool(np.max(abs(error)) < tol)
@@ -784,6 +821,14 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     'remaining to the supplied target. Own finger-table '
                     'clearance must be positive. Otherwise choose retry when offered. '
                     'The subsequent visible lift must prove holding.')
+                if stage == 'lower' and container_drop['status']=='visible_drop_candidate':
+                    contracts['lower']=(
+                        'Fresh public RGB-D shows the held bowl bottom partly inside '
+                        'the visible open drawer rim, with its footprint over the '
+                        'measured floor and a bounded drop gap. You may advance '
+                        'now to one gripper-opening trial without deeper insertion; '
+                        'this is not official success. Keep closed for this lower '
+                        'decision, then decide opening in release.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
@@ -834,6 +879,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 complete=bool(oriented and rack_contact_checked and
                     rack_contact_evidence['status'] in ('visible_contact_candidate','visible_low_drop_candidate') and
                     (arrived or stalls>=2))
+            if stage == 'lower' and container_drop['status']=='visible_drop_candidate':
+                complete=bool(oriented)
             if stage in ('carry_lateral','carry') and verify_carry:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
             can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')))
@@ -852,6 +899,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,visible_pad_vertical_gap_mm=pad_vertical_gap_mm,blocked_visible_contact_trial=contact_trial,one_sided_rim_trial=near_rim_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=can_continue,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
             if rack_task and stage == 'lower':
                 state['completion_evidence']['visible_rack_contact'] = rack_contact_evidence
+            if stage == 'lower' and rec.cfg.get('visible_container_drop'):
+                state['completion_evidence']['visible_container_drop'] = container_drop
             if rack_task and stage in ('orient_receiver','lower'):
                 state['visible_receiver_geometry'] = {k:rack_geometry[k] for k in (
                     'center_world_m','visible_surface_z_m','x_rotation_world_rad',
