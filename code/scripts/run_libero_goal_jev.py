@@ -85,7 +85,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-stage-turn-deg', str(plate_stage_turn_deg)]
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
-        if drawer_preorient and task_id == 1098 and drawer_contact_mode == 'high_entry_down_hook':
+        if drawer_preorient and task_id == 1098 and drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook'):
             cmd += ['--drawer-preorient']
         if task_id == 1202:
             cmd += ['--drawer-bowl-continuation', '--local-goal-vision',
@@ -127,7 +127,7 @@ def main():
     p.add_argument('--grasp-hold-ticks', type=int, choices=[18,24,30,36,42,48], default=18)
     p.add_argument('--lift-recheck-mm', type=int, choices=[0,30], default=0)
     p.add_argument('--side-pad-overlap-mm', type=int, choices=[0,12], default=0)
-    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook'],
+    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'],
                    default='top_hook')
     p.add_argument('--rim-height-mode', choices=['top_overlap','visible_sidewall'],
                    default='top_overlap')
@@ -175,7 +175,7 @@ def main():
         p.error('Side pad overlap currently requires angled receiver-side Goal 1423')
     if a.drawer_contact_mode != 'top_hook' and a.task_id not in (1098, 1202):
         p.error('Alternative drawer entry requires a supported drawer task')
-    if a.drawer_contact_mode in ('side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook') and a.task_id != 1098:
+    if a.drawer_contact_mode in ('side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook') and a.task_id != 1098:
         p.error('Middle-handle entry mode requires Goal 1098')
     if a.rim_height_mode != 'top_overlap' and a.task_id != 1202:
         p.error('Alternative rim height requires Goal 1202')
@@ -186,7 +186,7 @@ def main():
     if a.rim_inset_mm and a.task_id != 1202:
         p.error('Rim inset requires Goal 1202')
     if a.drawer_preorient and not (a.task_id == 1202 or
-        (a.task_id == 1098 and a.drawer_contact_mode == 'high_entry_down_hook')):
+        (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook'))):
         p.error('Drawer preorientation requires Goal1202 or Goal1098 high entry')
     if a.drawer_clear_to_source and a.task_id != 1202:
         p.error('Drawer clear-to-source requires Goal 1202')

@@ -116,13 +116,17 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
-    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook')
+    steep_entry = contact_mode == 'steep_tip_hook'
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
     initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-    side_orientation = ((Rotation.from_euler('x', 60, degrees=True).as_matrix()
+    side_orientation = ((Rotation.from_euler('x', 105, degrees=True).as_matrix()
+                         @ initial_orientation)
+                        if steep_entry else
+                        (Rotation.from_euler('x', 60, degrees=True).as_matrix()
                          @ initial_orientation)
                         if contact_mode in ('down_hook', 'high_entry_down_hook') else
                         (Rotation.from_euler('x', -30, degrees=True).as_matrix()
@@ -164,7 +168,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             raise RuntimeError('No rearward own fingerpad for hook')
         contact_offset = pad_center_offset
         tip_tool = None
-        if contact_mode in ('tip_hook', 'down_hook', 'high_entry_down_hook'):
+        if contact_mode in ('tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
             finger_vertices = np.asarray(own['finger_vertices_tool'])
             selected_finger = finger_vertices[
                 np.linalg.norm(finger_vertices-chosen_pad_tool, axis=1) <
@@ -175,7 +179,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # The old tip mode stays within the pad-height corridor. The new
             # downward mode instead uses an own-mesh point below TCP so the
             # same visible rod/gap can be approached with a higher wrist.
-            corridor = ((projected_finger[:, 2] <= -.020) &
+            corridor = ((projected_finger[:, 2] <= -.060) &
+                        (projected_finger[:, 2] >= -.090)
+                        if steep_entry else
+                        (projected_finger[:, 2] <= -.020) &
                         (projected_finger[:, 2] >= -.080)
                         if contact_mode in ('down_hook', 'high_entry_down_hook') else
                         (projected_finger[:, 2] >= 0) &
@@ -188,8 +195,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             contact_offset = tip_tool @ side_orientation.T
             if contact_offset[1] >= pad_center_offset[1]-.015:
                 raise RuntimeError('Own fingertip offers no deeper contact than pad')
-            if contact_mode in ('down_hook', 'high_entry_down_hook') and contact_offset[2] >= -.020:
+            if contact_mode in ('down_hook', 'high_entry_down_hook', 'steep_tip_hook') and contact_offset[2] >= -.020:
                 raise RuntimeError('Own fingertip does not extend below TCP')
+            if steep_entry and contact_offset[1] >= -.015:
+                raise RuntimeError('Own steep fingertip does not reach behind visible rod')
     else:
         pad_center_offset = np.median(
             np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
@@ -299,7 +308,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             contact_rod_position = handle_position.copy()
-            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook'):
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
                 # The middle handle is visibly about 8 cm long. A near-side
                 # contact may leave room for the arm beside the cabinet;
                 # retain the same observed rod point for both hook paths.
@@ -344,6 +353,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     - pad_center_offset[:2])
                 side_entry_tcp[1] = under_tcp[1]
             approach_tcp = side_entry_tcp if side_entry_tcp is not None else under_tcp
+            if steep_entry:
+                upper_z = float(upper_handle['center_world_m'][2])
+                if abs(contact_tcp[2]-upper_z) > .025:
+                    raise RuntimeError('Own steep-tip TCP is not in visible upper-height corridor')
+                approach_tcp = contact_tcp
             high_entry_tcp = None
             high_entry_orientation = None
             if high_entry:
@@ -425,7 +439,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             rotation_error = (Rotation.from_matrix(orientation_goal @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
                 if name in ('align', 'contact', 'grasp', 'pull', 'release') or
-                   (name == 'approach' and (rec.cfg.get('drawer_preorient') or high_entry))
+                   (name == 'approach' and (rec.cfg.get('drawer_preorient') or high_entry or steep_entry))
                 else np.zeros(3))
             oriented = bool(np.max(np.abs(rotation_error)) < .06)
             aperture = float(np.sum(np.abs(obs['robot0_gripper_qpos']))*1000)
@@ -453,7 +467,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             gate = {
                 'observe': True,
                 'select_handle': True,
-                'approach': arrived and oriented if high_entry else arrived,
+                'approach': arrived and oriented if (high_entry or steep_entry) else arrived,
                 'align': arrived and oriented,
                 'contact': exact_contact_pose or blocked_contact_trial,
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
@@ -484,7 +498,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
                                 if contact_mode in ('under_hook', 'side_hook', 'tip_hook', 'down_hook') else None),
                             visible_upper_handle_world_z_m=(float(upper_handle['center_world_m'][2])
-                                if high_entry else None),
+                                if high_entry or steep_entry else None),
                             high_entry_tcp_world_m=(high_entry_tcp.tolist() if high_entry else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
@@ -587,6 +601,20 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'contact_path_leg identifies the active leg. Advance only '
                     'after the own fingertip is measured behind the visible '
                     'middle rod at the final pose.')
+            if steep_entry and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Outside the visible cabinet, orient the open own wrist '
+                    'so its measured fingertip hangs below the TCP. Reach '
+                    'the supplied upper-handle-height corridor. The pose '
+                    'gate requires both translation and orientation before '
+                    'the fingertip moves inward.')
+            if steep_entry and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Keep the already oriented open wrist at the measured '
+                    'upper-handle-height corridor and move the own fingertip '
+                    'inward to the visible middle rod. Advance only after '
+                    'the final own TCP pose and measured fingertip-behind-rod '
+                    'gate are both true.')
             if task_id == 1098 and contact_mode == 'pinch' and name == 'contact':
                 request['state']['stage_contract'] = (
                     'Move open fingers toward the visible rod. If the exact '
