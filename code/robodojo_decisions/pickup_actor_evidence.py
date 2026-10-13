@@ -98,8 +98,12 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
         error = np.asarray(source_pixels['cam_high'])-uv.mean(axis=0)
         predictions[name] = {'fixed_high_pixel_error_after_complete_public_pose_uv':error.round(2).tolist(),
                              'assumption':'Same named CURRENT high green pixel remains static; public open hand follows requested full pose. No depth, contact or object-motion prediction.'}
-    compact['current_source_pixel_alignment'] = pixel_effects
-    compact['fixed_high_pixel_effects_after_complete_actions'] = predictions
+    # Projection parallax already produced an X move opposite the uncertain
+    # 3D feature residual in run231. Preserve this diagnostic off-input.
+    import json
+    (directory / 'pixel_projection_diagnostic_only.json').write_text(json.dumps({
+        'current_source_pixels':pixel_effects,'after_complete_actions':predictions,
+        'scope':'Diagnostic only; NOT submitted to Luna. Prefer uncertain XYZ and actual RGB for control.'},indent=2))
     compact['current_axis_meaning'] = {
         'X_positive':'robot right / rightward fixed-high view',
         'Y_positive':'away from robot bases, toward far table',

@@ -310,7 +310,20 @@ def decode_response(response: dict, asked: list[dict]) -> dict:
     if not isinstance(answers, list):
         raise ValueError("Missing decision answers")
     found = {}
+    # A conditional motion answer is irrelevant after a validated non-motion
+    # family. It may be omitted/refused without authorizing any motion.
+    names = [item.get('name') for item in answers]
+    if len(names) != len(set(names)) or any(name not in expected for name in names):
+        raise ValueError('Duplicate or unexpected decision question')
+    family = next((item.get('choice') for item in answers
+                   if item.get('name')=='action_family' and item.get('type')=='choice'), None)
+    ignore_motion = ('action_family' in expected and 'pickup_action' in expected
+                     and family in ('stop','gripper'))
+    if ignore_motion:
+        found['pickup_action'] = 'ignored_no_motion'
     for item in answers:
+        if ignore_motion and item.get('name') == 'pickup_action':
+            continue
         name = item.get("name")
         if name not in expected or name in found or item.get("type") == "refusal":
             raise ValueError(f"Missing, duplicate or refused decision question: {name}")
@@ -481,13 +494,21 @@ class DecisionClient:
                     {**meta, "latency_s": time.monotonic() - started, "attempts": attempt + 1,
                      "transient_errors": transient_errors}, ensure_ascii=False, indent=2))
                 raise
-        answers = decode_response(response, asked)
         record = {**meta, "latency_s": time.monotonic() - started,
                   "attempts": len(transient_errors) + 1, "transient_errors": transient_errors,
                   "response_id": response.get("id"), "response_model": response.get("model"),
-                  "usage": response.get("usage"), "raw_answers": response.get("answers"),
-                  "decoded_answers": answers}
-        (self.output / f"{record_name}.json").write_text(json.dumps(record, ensure_ascii=False, indent=2))
+                  "usage": response.get("usage"), "raw_answers": response.get("answers")}
+        record_path = self.output / f"{record_name}.json"
+        # Persist the actual returned audit before a validation exception.
+        record_path.write_text(json.dumps(record, ensure_ascii=False, indent=2))
+        try:
+            answers = decode_response(response, asked)
+        except ValueError as error:
+            record['decode_error'] = str(error)
+            record_path.write_text(json.dumps(record, ensure_ascii=False, indent=2))
+            raise
+        record['decoded_answers'] = answers
+        record_path.write_text(json.dumps(record, ensure_ascii=False, indent=2))
         return answers
 
     def decide(self, obs: dict, plan: dict, stage: str, history: list[dict]) -> tuple[dict, dict]:

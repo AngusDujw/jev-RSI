@@ -1149,9 +1149,18 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             rotvec = Rotation.from_matrix(desired[:3,:3] @ current[:3,:3].T).as_rotvec()
             option['description'] = (
                 f"ONE COMPLETE FIVE-step robot pose: right world XYZ delta {delta_mm.round(2).tolist()}mm; world rotation vector {rotvec.round(5).tolist()}rad; right gripper {'CLOSED' if target['gripper_closed'] else 'OPEN'}; left held. All components happen together. Public five-step robot-only path passed; current RGB corridor is independently judged. Candidate effects are in the same-feature/pixel/angle table, not object/contact truth.")
-        answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
-                             f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",
-                             extra_images=identity_crops)
+        try:
+            answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
+                                 f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",
+                                 extra_images=identity_crops)
+        except ValueError as error:
+            status = 'decision_response_invalid_or_refused'
+            record['status'] = status
+            record['decision_decode_error'] = str(error)
+            record['decision_audit_path'] = str(output / 'decisions' / f"pickup_active_{turn:02d}_step{obs['step_id']:03d}.json")
+            trace.append(record)
+            native_result = tools.finish(status)
+            break
         selected = answer["pickup_action"]
         if family_options is not None:
             family = answer["action_family"]
