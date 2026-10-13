@@ -7,13 +7,16 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from pickup_visual_hull import _green_mask
+from pickup_visual_hull import _green_mask, _project_many
+from camera_geometry import eef_transform
+from gripper_pad_projection import inspect as inspect_pads
 
 
-def prepare(observation, full_input, full_experience, output: Path, turn: int):
+def prepare(observation, full_input, full_experience, output: Path, turn: int, targets=None):
     directory = output / 'actor_evidence' / f'{turn:03d}'
     directory.mkdir(parents=True, exist_ok=True)
     images, crops = [], []
+    source_pixels = {}
     for row in observation['images']:
         camera = row['camera']
         if camera not in ('cam_high', 'cam_right_wrist'):
@@ -23,6 +26,9 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int):
         yy, xx = np.nonzero(mask)
         if len(xx) < 30:
             continue
+        pixels = np.column_stack((xx,yy))
+        centre = np.median(pixels,axis=0)
+        source_pixels[camera] = pixels[np.argmin(np.linalg.norm(pixels-centre,axis=1))].tolist()
         width, height = image.size
         # Derived pixels only: context includes handle, nearby blade and hand.
         # Raw three views remain first; this is not a verified object box.
@@ -66,6 +72,35 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int):
               'method_refresh','strict_input_contract')
     compact = {key:full_input.get(key) for key in retain}
     compact['source_context_crops'] = crops
+    pads = inspect_pads(observation, observation['camera_calibration'])
+    world = np.concatenate([np.asarray(pads['rows'][name]['inner_facet_world_xyz_m'])
+                            for name in ('link7','link8')])
+    current = eef_transform(observation['current_eef']['right'])
+    local = (world-current[:3,3]) @ current[:3,:3]
+    pixel_effects = {}
+    for camera,pixel in source_pixels.items():
+        uv, depth = _project_many(observation['camera_calibration']['cameras'][camera],world)
+        pixel_effects[camera] = {
+            'named_CURRENT_actual_green_pixel_uv':pixel,
+            'public_open_facet_projection_centre_uv':uv.mean(axis=0).round(2).tolist(),
+            'image_pixel_error_source_minus_public_facet_centre_uv':(np.asarray(pixel)-uv.mean(axis=0)).round(2).tolist(),
+            'limitation':'A named green pixel vs a public facet projection is only two-dimensional alignment; different cameras have independent pixels, not same-point correspondences or a physical grasp target.'}
+    high = observation['camera_calibration']['cameras']['cam_high']
+    predictions = {}
+    for name,target in (targets or {}).items():
+        if target['right']['gripper_closed'] or 'cam_high' not in source_pixels:
+            continue
+        pose = eef_transform(target['right'])
+        points = local @ pose[:3,:3].T + pose[:3,3]
+        uv, depth = _project_many(high,points)
+        if np.any(depth<=0):
+            continue
+        error = np.asarray(source_pixels['cam_high'])-uv.mean(axis=0)
+        predictions[name] = {'fixed_high_pixel_error_after_complete_public_pose_uv':error.round(2).tolist(),
+                             'pixel_error_norm':round(float(np.linalg.norm(error)),2),
+                             'assumption':'Same named CURRENT high green pixel remains static; public open hand follows requested full pose. No depth, contact or object-motion prediction.'}
+    compact['current_source_pixel_alignment'] = pixel_effects
+    compact['fixed_high_pixel_effects_after_complete_actions'] = predictions
     compact['current_axis_meaning'] = {
         'X_positive':'robot right / rightward fixed-high view',
         'Y_positive':'away from robot bases, toward far table',
