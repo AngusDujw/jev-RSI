@@ -290,6 +290,25 @@ def visible_side_contact(view, plate_mask, plate, direction, central_contact_xy)
 def visible_lateral_stage(view, plate, front_goal, max_turn_deg=0):
     """Find a clear table waypoint beside the visible obstacle before going front."""
     cloud = world_cloud(view)
+    route = front_goal.get('visible_two_leg_route')
+    if front_goal['elevated_corridor_pixels'] >= 80:
+        if route is None:
+            raise RuntimeError('Visible two-leg plate route unavailable')
+        u, v = map(int, route['stage_uv'])
+        patch = cloud[v-4:v+5, u-4:u+5]
+        if patch.shape[:2] != (9, 9) or not np.isfinite(patch).all():
+            raise RuntimeError('Visible route waypoint lost calibrated depth')
+        measured = np.median(patch.reshape(-1, 3), axis=0)
+        if (np.linalg.norm(measured-np.asarray(route['stage_world_m'])) > .002 or
+                abs(measured[2]-front_goal['visible_support_world_z_m']) > .006):
+            raise RuntimeError('Visible route waypoint is not supported tabletop')
+        return dict(goal_uv=[u, v], goal_world_m=measured.tolist(),
+                    travel_m=float(np.linalg.norm(
+                        measured[:2]-np.asarray(plate['center'][:2]))),
+                    elevated_corridor_pixels=route['leg_blockers'][0],
+                    second_leg_elevated_corridor_pixels=route['leg_blockers'][1],
+                    turn_from_lateral_deg=0.,
+                    source='RGB-D verified two-leg table corridor')
     u = int(front_goal['goal_uv'][0])
     v = int(round(plate['uv'][1]))
     if not (10 <= u < 758 and 10 <= v < 758):
@@ -325,12 +344,6 @@ def visible_lateral_stage(view, plate, front_goal, max_turn_deg=0):
                     travel_m=distance, elevated_corridor_pixels=blockers,
                     turn_from_lateral_deg=0.,
                     source='visible table depth at plate row, aligned with front-goal column')
-    if front_goal['elevated_corridor_pixels'] >= 80:
-        route = front_goal.get('visible_two_leg_route')
-        if route is None or route['stage_uv'] != [u, v]:
-            raise RuntimeError('Visible two-leg plate route is inconsistent')
-        return dict(selected, source='RGB-D verified two-leg table corridor',
-                    second_leg_elevated_corridor_pixels=route['leg_blockers'][1])
     if max_turn_deg:
         if not 0 < max_turn_deg <= 20:
             raise ValueError('Invalid visible plate staging turn bound')
