@@ -516,7 +516,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         active_method = initial_refresh["visual_method"]
         active_stage = initial_refresh["initial_stage"]
         active_stage_recipe = initial_refresh["stage_recipe"]
-        refreshed_steps.add(obs["step_id"])
+        if not initial_refresh.get("general_method_schema_reuse"):
+            refreshed_steps.add(obs["step_id"])
     except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
         provenance = plan.get("planner_provenance", {})
         if (provenance.get("model") == "gpt-6.1-sol" and
