@@ -164,6 +164,7 @@ graph LR
     T_2026W42_056["📊 robodojo-decision-stages<br/>Luna新回合55物理步后仅因27px边缘…"]:::experiment
     T_2026W42_057["📊 robodojo-decision-stages<br/>step55真实X负转腕使绿区上移49px…"]:::experiment
     T_2026W42_058["📊 robodojo-decision-stages<br/>输入审计：step60最大Z材料误差却无Z…"]:::experiment
+    T_2026W42_059["📊 robodojo-decision-stages<br/>完整Z空间后190步25次材料入模但无抓持…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -288,6 +289,7 @@ graph LR
   T_2026W42_055 --> T_2026W42_056
   T_2026W42_056 --> T_2026W42_057
   T_2026W42_057 --> T_2026W42_058
+  T_2026W42_058 --> T_2026W42_059
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -440,6 +442,7 @@ graph LR
 | `T-2026W42-056` | 2026-10-13 | experiment | robodojo-decision-stages | Luna新回合55物理步后仅因27px边缘硬停；step45公开X负视角上移47–49px且五步路径合法，改为60px提前交Luna | `EXP-2026W42-160` | - |
 | `T-2026W42-057` | 2026-10-13 | experiment | robodojo-decision-stages | step55真实X负转腕使绿区上移49px且材料误差三次进入Luna，75步仍无抓取；无效重投影改候选拒绝 | `EXP-2026W42-161` | - |
 | `T-2026W42-058` | 2026-10-13 | experiment | robodojo-decision-stages | 输入审计：step60最大Z材料误差却无Z候选，旧日志遗漏完整问题；不能归因Luna能力，补齐问题审计并明确实体目标误差 | `EXP-2026W42-162` | - |
+| `T-2026W42-059` | 2026-10-13 | experiment | robodojo-decision-stages | 完整Z空间后190步25次材料入模但无抓持；官方200步预算下改完整XYZ组合及当前取景路径门 | `EXP-2026W42-164` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

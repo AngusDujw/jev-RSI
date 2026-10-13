@@ -10,10 +10,24 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from scipy.spatial import cKDTree
+from trimesh.triangles import closest_point
 
 from gripper_pad_projection import inspect as inspect_public_pads
 from pickup_visual_hull import _green_mask, _project_many
+
+
+def _surface_nearest(points: np.ndarray, vertices: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Distance to public STL triangles, not only their corner vertices."""
+    best = np.full(len(points), np.inf)
+    nearest = np.zeros_like(points)
+    for triangle in vertices.reshape(-1, 3, 3):
+        candidates = closest_point(
+            np.broadcast_to(triangle, (len(points), 3, 3)), points)
+        distance = np.linalg.norm(points-candidates, axis=1)
+        improve = distance < best
+        best[improve] = distance[improve]
+        nearest[improve] = candidates[improve]
+    return best, nearest
 
 
 def build(observation: dict, temporal_metal: dict,
@@ -71,9 +85,14 @@ def build(observation: dict, temporal_metal: dict,
               for name in ("link7", "link8")]
     midpoint = np.mean([face.mean(axis=0) for face in facets], axis=0)
     relative_mm = (points-midpoint)*1000
-    pad_distances_mm = {name: np.quantile(
-        cKDTree(face).query(points, k=1)[0]*1000, [0.05, 0.5, 0.95]).round(1).tolist()
-        for name, face in zip(("link7", "link8"), facets)}
+    surface_rows = [_surface_nearest(points, face) for face in facets]
+    pad_distances_mm = {
+        name: np.quantile(distance*1000, [0.05, 0.5, 0.95]).round(1).tolist()
+        for name, (distance, _) in zip(("link7", "link8"), surface_rows)}
+    paired_midpoint = (surface_rows[0][1]+surface_rows[1][1])/2
+    paired_error_mm = (points-paired_midpoint)*1000
+    paired_max_distance_mm = np.maximum(
+        surface_rows[0][0], surface_rows[1][0])*1000
     return {
         "source": "Current actual green RGB pixels in right wrist and fixed high view, public K/T, same-episode RGB-matched silver patch height hypothesis, measured robot and public inner-finger STL facets",
         "current_step_id": observation["step_id"],
@@ -86,5 +105,12 @@ def build(observation: dict, temporal_metal: dict,
             key: np.quantile(relative_mm, q, axis=0).round(1).tolist()
             for key, q in (("q05", 0.05), ("q50", 0.5), ("q95", 0.95))},
         "possible_green_to_each_public_facet_distance_mm_q05_q50_q95": pad_distances_mm,
+        "public_facet_distance_metric": "Exact nearest point on each public inward STL triangle; historical records used nearest triangle vertices and could overestimate face distance.",
+        "possible_green_minus_paired_nearest_surface_midpoint_xyz_mm_q05_q50_q95": {
+            key: np.quantile(paired_error_mm, q, axis=0).round(1).tolist()
+            for key, q in (("q05", 0.05), ("q50", 0.5), ("q95", 0.95))},
+        "same_green_sample_max_two_surface_distance_mm_q05_q50_q95":
+            np.quantile(paired_max_distance_mm, [0.05, 0.5, 0.95]).round(1).tolist(),
+        "paired_surface_interpretation": "Each SAME possible green sample is compared with nearest points on both real public inward triangle surfaces; midpoint residual measures alignment to their available surface span, not to their whole-face centroid. Unknown green height, calibration, visibility and true contact remain unresolved.",
         "limitations": "Every retained sample projects to actual green pixels in two CURRENT RGB images, excluding the ring AIR holes. It is a sampled visual-support hypothesis, not confirmed 3D same-point correspondence, contact, a collision-free corridor or a grasp target. Quantiles are not confidence bounds; metal-to-plastic height difference, occlusion, segmentation and calibration add uncertainty. Check actual black finger surfaces and next RGB before motion.",
     }

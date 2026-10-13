@@ -346,6 +346,50 @@ def _translation_options(obs: dict, hull: dict,
                 options[key] = detail["description"]
                 targets[key] = target
                 image_effects[key] = effect
+    if material is not None:
+        residual_mm = np.asarray(material[
+            "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95"
+        ]["q50"], float)
+        residual_m = residual_mm/1000
+        magnitude = float(np.linalg.norm(residual_m))
+        for length in (0.015, 0.020):
+            if magnitude < length + 0.020:
+                continue
+            delta = residual_m/magnitude * length
+            target = _targets(obs, "x", 1, 0.0)
+            target["right"]["position"] = (
+                np.asarray(target["right"]["position"], float)+delta).tolist()
+            path = preview(obs, target["right"], None, steps=5)
+            if not (path["public_path_gate"] and
+                    path["native_eef_single_action_legal"]):
+                continue
+            if delta[2] < 0:
+                support_z = max(
+                    float(hull["support_world_xyz_quantile_m"]["q95"][2]),
+                    float(material["assumed_green_height_slab_m"][1]))
+                height = gripper_height_above_landmark(
+                    obs["current_eef"]["right"], [0, 0, support_z],
+                    descent_m=float(-delta[2]))
+                if height["hand_above_landmark_plane_after_m"] < 0.010:
+                    continue
+            key = f"material_xyz_{int(round(length*1000))}mm"
+            target_delta_mm = (delta*1000).round(2).tolist()
+            effects = _translation_view_prediction(obs, target, hull)
+            targets[key] = target
+            image_effects[key] = effects
+            options[key] = (
+                f"One COMPLETE open-gripper right LINK6 world XYZ translation "
+                f"{target_delta_mm} mm, total norm {length*1000:.0f} mm, "
+                "in FIVE native steps; orientation and left arm held. "
+                "An independent algorithm normalizes the CURRENT possible "
+                "solid-green median-minus-public-pad error. It predicts the "
+                f"same static-support median error norm decreases from "
+                f"{magnitude*1000:.1f} to {(magnitude-length)*1000:.1f} mm "
+                "under ideal robot translation. This is not a verified "
+                "material contact target, scene-clearance proof or planner "
+                "recommendation. Inspect the whole diagonal hand corridor "
+                "in THREE current RGB; every XYZ component occurs together, "
+                "then reobserve actual robot and source motion.")
     return options, targets, image_effects
 
 
@@ -596,9 +640,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             bbox = hull["right_wrist_mask_bbox_xyxy"]
             bottom_margin = 479 - bbox[3]
             right_margin = 639 - bbox[2]
-            if rotations >= 4:
-                axes = ()
-            elif turn == 0 or (ring_count >= 2 and bottom_margin < right_margin):
+            if turn == 0 or (ring_count >= 2 and bottom_margin < right_margin):
                 axes = ("x",)
             elif ring_count < 2:
                 axes = ("y", "x")
@@ -771,6 +813,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "and the local visible hand corridor. Do not close solely because "
                 "a patch or hole residual shrinks.")
         material_option_residual = {}
+        material_option_error_norm = {}
         if material is not None:
             current_position = np.asarray(obs["current_eef"]["right"]["position"], float)
             current_residual = material[
@@ -783,6 +826,14 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 material_option_residual[key] = {
                     quantile: (np.asarray(values, float)-delta_mm).round(1).tolist()
                     for quantile, values in current_residual.items()}
+                before = float(np.linalg.norm(current_residual["q50"]))
+                after = float(np.linalg.norm(
+                    np.asarray(current_residual["q50"], float)-delta_mm))
+                material_option_error_norm[key] = {
+                    "current_median_error_norm_mm": round(before, 2),
+                    "after_ideal_translation_median_error_norm_mm": round(after, 2),
+                    "predicted_reduction_mm": round(before-after, 2),
+                    "limitation": "Uncertain sensor-support median and ideal translation, not true grasp error or contact."}
             instruction += (
                 " An independent image algorithm also offers a POSSIBLE solid-green"
                 " material set: both CURRENT RGB cameras actually show green pixels"
@@ -807,6 +858,9 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "possible_solid_green_material_support": material,
             "green_material_support_error": material_error,
             "material_option_residual": material_option_residual,
+            "material_option_error_norm": material_option_error_norm,
+            "remaining_native_physical_steps": obs["remaining_steps"],
+            "native_episode_physical_step_limit": obs["max_episode_steps"],
             "contact_hypothesis_gate": record.get("contact_hypothesis_gate"),
             "camera_view_prediction": record.get("view_predictions"),
             "translation_view_effects": record.get("translation_view_effects"),
