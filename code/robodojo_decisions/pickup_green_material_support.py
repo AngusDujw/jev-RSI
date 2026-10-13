@@ -189,3 +189,33 @@ def build(observation: dict, temporal_metal: dict | None,
         "paired_surface_interpretation": "Each SAME possible green sample is compared with nearest points on both real public inward triangle surfaces; midpoint residual measures alignment to their available surface span, not to their whole-face centroid. Unknown green height, calibration, visibility and true contact remain unresolved.",
         "limitations": "Every retained sample projects to actual green pixels in two CURRENT RGB images, excluding the ring AIR holes. It is a sampled visual-support hypothesis, not confirmed 3D same-point correspondence, contact, a collision-free corridor or a grasp target. Quantiles are not confidence bounds; metal-to-plastic height difference, occlusion, segmentation and calibration add uncertainty. Check actual black finger surfaces and next RGB before motion.",
     }
+
+
+def predict_feature_residuals(observation: dict, material: dict | None,
+                              targets: dict) -> dict:
+    """Same RGB point vs transformed public faces; no object-state forecast."""
+    if material is None or float(observation['current_eef']['right']['gripper_opening_command']) < .95:
+        return {}
+    from camera_geometry import eef_transform
+    feature = material['representative_material_point']
+    point = np.asarray(feature['estimated_world_xyz_m'], float)[None, :]
+    pads = inspect_public_pads(observation, observation['camera_calibration'])
+    current_inverse = np.linalg.inv(eef_transform(observation['current_eef']['right']))
+    local_faces = []
+    for name in ('link7', 'link8'):
+        face = np.asarray(pads['rows'][name]['inner_facet_world_xyz_m'], float)
+        local_faces.append((face-observation['current_eef']['right']['position']) @ current_inverse[:3, :3].T)
+    rows = {}
+    for name, target in targets.items():
+        if target['right']['gripper_closed']:
+            continue  # Rigid open-hand prediction cannot certify closure/contact.
+        pose = eef_transform(target['right'])
+        faces = [face @ pose[:3, :3].T + pose[:3, 3] for face in local_faces]
+        nearest = [_surface_nearest(point, face) for face in faces]
+        error = (point-(nearest[0][1]+nearest[1][1])/2)[0]*1000
+        rows[name] = {
+            'same_rgb_feature_minus_predicted_surface_span_xyz_mm': error.round(2).tolist(),
+            'region_error_norm_mm': round(float(np.linalg.norm(error)), 2),
+            'each_open_facet_distance_mm': [round(float(row[0][0]*1000), 2) for row in nearest],
+            'assumptions': 'Same uncertain RGB point remains static; measured public open-hand meshes follow the complete requested LINK6 rigid pose exactly. No contact/collision, object motion or grip is predicted. Actual next RGB and robot tracking must verify the hypotheses.'}
+    return rows

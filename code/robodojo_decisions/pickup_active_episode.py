@@ -24,7 +24,8 @@ from pickup_visual_hull import _green_mask, build as build_visual_hull, _project
 from pickup_temporal_stereo import (build as build_temporal_stereo,
                                     build_aperture_geometry,
                                     _high_static_check as source_rgb_static_check)
-from pickup_green_material_support import build as build_green_material_support
+from pickup_green_material_support import (build as build_green_material_support,
+                                          predict_feature_residuals)
 from pickup_table_plane import build as build_table_plane, revalidate as revalidate_table_plane
 from robot_path_preview import preview
 
@@ -1003,6 +1004,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "Only current RGB can show solid green material, real finger faces "
                 "and the local visible hand corridor. Do not close solely because "
                 "a patch or hole residual shrinks.")
+        feature_option_predictions = predict_feature_residuals(obs, material, targets)
+        record["source_feature_after_each_complete_action"] = feature_option_predictions
         material_option_residual = {}
         material_option_error_norm = {}
         if material is not None:
