@@ -48,6 +48,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    drawer_clearance_orientation=False,
                    drawer_high_side_arc=False,
                    drawer_late_preorient=False,
+                   drawer_guarded_late_turn=False,
                    drawer_clear_to_source=False,
                    empty_hand_fast=False, support_stall_release=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
@@ -106,6 +107,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--drawer-high-side-arc']
         if drawer_late_preorient and task_id == 1098:
             cmd += ['--drawer-late-preorient']
+        if drawer_guarded_late_turn and task_id == 1098:
+            cmd += ['--drawer-guarded-late-turn']
         if task_id == 1202:
             cmd += ['--drawer-bowl-continuation', '--local-goal-vision',
                     '--geometry-profile', 'observed_surfaces',
@@ -165,6 +168,8 @@ def main():
                    help='Goal1098: shift 20mm away from visible rack before high Y crossing')
     p.add_argument('--drawer-late-preorient', action='store_true',
                    help='Goal1098: cross high visible route with initial wrist, turn at cabinet side')
+    p.add_argument('--drawer-guarded-late-turn', action='store_true',
+                   help='Goal1098: small turn steps and own-pose gate before descent')
     p.add_argument('--drawer-clear-to-source', action='store_true')
     p.add_argument('--empty-hand-fast', action='store_true')
     p.add_argument('--support-stall-release', action='store_true')
@@ -236,6 +241,8 @@ def main():
         p.error('Late preorientation requires the measured near-side high route')
     if a.drawer_late_preorient and (a.drawer_far_side_insert or a.drawer_high_side_arc):
         p.error('Late preorientation is an isolated straight-path comparison')
+    if a.drawer_guarded_late_turn and not a.drawer_late_preorient:
+        p.error('Guarded late turn requires late preorientation')
     if a.drawer_clear_to_source and a.task_id != 1202:
         p.error('Drawer clear-to-source requires Goal 1202')
     if a.empty_hand_fast and a.task_id != 1202:
@@ -253,6 +260,7 @@ def main():
                          a.drawer_table_clearance,a.drawer_clearance_orientation,
                          a.drawer_high_side_arc,
                          a.drawer_late_preorient,
+                         a.drawer_guarded_late_turn,
                          a.drawer_clear_to_source,
                          a.empty_hand_fast,a.support_stall_release)
     if a.dry_run:

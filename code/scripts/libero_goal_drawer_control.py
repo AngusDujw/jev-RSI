@@ -135,6 +135,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                          rec.cfg.get('drawer_high_side_arc'))
     late_preorient = bool(high_side_insert and not far_side_insert and
                           rec.cfg.get('drawer_late_preorient'))
+    guarded_late_turn = bool(late_preorient and rec.cfg.get(
+        'drawer_guarded_late_turn'))
     table_guard = bool(far_side_insert or rec.cfg.get('drawer_table_clearance'))
     max_native_ticks = 750 if (high_side_arc or late_preorient) else 580 if far_side_insert else 550
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
@@ -653,7 +655,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         not late_turn_reached):
                     side_turn_error = Rotation.from_matrix(side_orientation @
                         Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
-                    if np.max(np.abs(side_turn_error)) < .06:
+                    if (np.max(np.abs(side_turn_error)) < .06 and
+                            (not guarded_late_turn or
+                             np.max(np.abs(position-high_side_tcp)) < .007)):
                         late_turn_reached = True
                         rec.event(dict(kind='late_side_turn_reached',
                             native_tick=ticks,
@@ -1003,10 +1007,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             delta = np.asarray(decision['signs'])*np.minimum(
                 .030 if far_open else .018,
                 (.60 if far_open else .5)*np.abs(error))
+            turn_guard_active = bool(guarded_late_turn and name == 'contact' and
+                                     high_y_insert_reached and not late_turn_reached)
             rotation_delta = np.asarray(decision['rotation_signs'])*np.minimum(
-                .16 if fast_rotation else .10,
+                .025 if turn_guard_active else .16 if fast_rotation else .10,
                 (.60 if fast_rotation else .5)*np.abs(rotation_error))
-            block = 6 if name in ('grasp', 'release') else 3
+            block = (1 if turn_guard_active else
+                     6 if name in ('grasp', 'release') else 3)
             before = position.copy()
             for _ in range(block):
                 if ticks >= max_native_ticks:
