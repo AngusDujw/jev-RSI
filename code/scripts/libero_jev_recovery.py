@@ -301,6 +301,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     lift_verified = False
     lift_recheck_used = False
     carry_verified_stage = None
+    carry_alignment = dict(status='not_checked')
+    carry_alignment_rechecks = 0
     grasp_orientation = grasp_offset = rack_geometry = None
     rack_verified = False
     rack_release_tcp = None
@@ -720,13 +722,16 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     floor_gap = float((low[2]-floor_high[2])*1000)
                     rim_gap = float((low[2]-float(dst['rim_high_z']))*1000)
                     age = ticks-int(observed)
-                    candidate = bool(0 <= age <= 12 and footprint >= .50 and
+                    centered = bool(np.max(np.abs(center[:2]-
+                        np.asarray(dst['center'][:2], float))) <= .010)
+                    candidate = bool(0 <= age <= 12 and footprint >= .50 and centered and
                         np.all(center[:2] >= floor_low[:2]-.005) and
                         np.all(center[:2] <= floor_high[:2]+.005) and
                         20 <= floor_gap <= 90 and -20 <= rim_gap <= 20)
                     container_drop = dict(status='visible_drop_candidate' if candidate
                         else 'geometry_not_ready', observed_tick=int(observed),
                         age_native_ticks=int(age), footprint_overlap_ratio=round(footprint,3),
+                        centered_over_visible_floor=centered,
                         visible_bottom_to_floor_mm=round(floor_gap,2),
                         visible_bottom_to_rim_mm=round(rim_gap,2),
                         source='Fresh public held-bowl RGB-D and visible opened-drawer floor/rim')
@@ -773,6 +778,31 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     carry_verified_stage != stage):
                 check_hold(use_projection=True)
                 carry_verified_stage = stage
+                if (stage == 'carry' and rec.cfg.get('drawer_bowl_continuation')
+                        and holding['status'] == 'passed'):
+                    measured_xy = np.asarray(holding['measured']['center'][:2], float)
+                    receiver_xy = np.asarray(dst['center'][:2], float)
+                    receiver_span = (np.asarray(dst['high'][:2], float) -
+                                     np.asarray(dst['low'][:2], float))
+                    tolerance = np.minimum(.010, np.maximum(.006, .10*receiver_span))
+                    residual = receiver_xy-measured_xy
+                    aligned = bool(np.all(np.abs(residual) <= tolerance))
+                    carry_alignment_rechecks += 1
+                    carry_alignment = dict(
+                        status=('aligned' if aligned else
+                                'failed' if carry_alignment_rechecks >= 3 else
+                                'needs_correction'),
+                        observed_tick=ticks,
+                        receiver_minus_visible_source_xy_mm=np.round(residual*1000, 2).tolist(),
+                        tolerance_xy_mm=np.round(tolerance*1000, 2).tolist(),
+                        rechecks=carry_alignment_rechecks,
+                        source='Fresh public held-bowl RGB-D vs visible opened-drawer floor')
+                    rec.event(dict(kind='visible_carry_alignment', evidence=carry_alignment))
+                    if not aligned and carry_alignment_rechecks < 3:
+                        # check_hold updated the source-to-TCP offset. The
+                        # next loop recomputes the target from the visible
+                        # source, rather than advancing on the stale target.
+                        carry_verified_stage = None
             if stage == 'orient_receiver' and arrived and oriented and not rack_verified:
                 check_hold(use_projection=True, rotation_aware=True)
                 rack_verified = True
@@ -814,6 +844,13 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             if rec.cfg.get('grasp_hold_ticks', 18) < 18:
                 contracts['grasp'] += ' Also require measured own aperture <=12 mm before advancing.'
             if rec.cfg.get('drawer_bowl_continuation'):
+                contracts['carry'] = (
+                    'Keep closed and align the freshly visible held bowl with '
+                    'the visible open drawer floor center. If the camera check '
+                    'reports needs_correction, follow the refreshed XYZ target '
+                    'and keep this stage; advance only when alignment and '
+                    'holding checks pass. If three fresh corrections fail, '
+                    'choose retry when offered. No native success is supplied.')
                 contracts['descend'] = (
                     'Move open fingers toward the visible bowl pad-fit pose. '
                     'If motion stalls, one closure trial is available when own '
@@ -901,7 +938,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 complete=bool(oriented)
             if stage in ('carry_lateral','carry') and verify_carry:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
-            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')))
+            if stage == 'carry' and rec.cfg.get('drawer_bowl_continuation'):
+                complete = complete and carry_alignment['status'] == 'aligned'
+            can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or carry_alignment['status']=='failed' or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')))
             next_stage = ('finish_attempt' if stage=='release' and
                           visible_container_drop_selected else
                           'clear_receiver' if stage=='recover_open' and rack_task else
@@ -915,12 +954,15 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 rack_contact_checked and
                 rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')) and not (
                 rack_task and stage == 'lower' and complete) and not (
-                stage in ('clear_receiver','settle_receiver') and complete)
+                stage in ('clear_receiver','settle_receiver') and complete) and not (
+                stage == 'carry' and carry_alignment['status']=='failed')
             state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,visible_pad_vertical_gap_mm=pad_vertical_gap_mm,blocked_visible_contact_trial=contact_trial,one_sided_rim_trial=near_rim_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=can_continue,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
             if rack_task and stage == 'lower':
                 state['completion_evidence']['visible_rack_contact'] = rack_contact_evidence
             if stage == 'lower' and rec.cfg.get('visible_container_drop'):
                 state['completion_evidence']['visible_container_drop'] = container_drop
+            if stage == 'carry' and rec.cfg.get('drawer_bowl_continuation'):
+                state['completion_evidence']['visible_carry_alignment'] = carry_alignment
             if rack_task and stage in ('orient_receiver','lower'):
                 state['visible_receiver_geometry'] = {k:rack_geometry[k] for k in (
                     'center_world_m','visible_surface_z_m','x_rotation_world_rad',
@@ -934,6 +976,14 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             if stage=='release' and visible_container_drop_selected and complete:
                 block_ticks=3
             state['gripper']['next_action_block_native_ticks']=block_ticks
+            short_edge = bool(rec.cfg.get('drawer_bowl_continuation') and
+                              rec.cfg.get('visible_container_drop'))
+            if short_edge:
+                state['gripper']['advance_action_block_native_ticks'] = 1
+                state['operation_contract'] += (
+                    ' At a satisfied gate, advance executes your selected '
+                    'action for one native tick before the stage edge; '
+                    'continue_phase uses the usual block.')
             state['translation_axes']={a:dict(current_coordinate_m=float(position[i]),goal_coordinate_m=float(target[i]),goal_minus_current_mm=round(float(error[i])*1000,2),relation='within_tolerance' if abs(error[i])<.002 else 'goal_coordinate_larger' if error[i]>0 else 'goal_coordinate_smaller') for i,a in enumerate('xyz')}
             state['rotation_questions']='Only axes outside 0.03rad tolerance are requested; unrequested rotations are zero, not fabricated model choices.'
             if rec.cfg['input_organization']=='local':
@@ -962,17 +1012,19 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             newgrip=gripper if d['gripper']=='keep' else -1 if d['gripper']=='open' else 1
             if newgrip!=gripper:grip_ticks=0
             gripper=newgrip
+            executed_ticks = (1 if short_edge and complete and
+                              d['transition']=='advance' else block_ticks)
             fast_open = bool(rec.cfg.get('empty_hand_fast') and gripper==-1 and
                              stage in ('approach','align') and np.max(abs(error))>.04)
             cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .008 if gentle_carry else .030 if fast_open else .02
-            gain=.55 if fast_open else .35 if block_ticks==6 else .5
+            gain=.55 if fast_open else .35 if executed_ticks==6 else .5
             delta=np.asarray(d['signs'])*np.minimum(cap,gain*abs(error))
             rotation=np.asarray(d['rotation_signs'])*np.minimum(
                 .16 if fast_open and np.max(abs(rot))>.15 else .10,
                 gain*abs(rot))
             before=position.copy()
-            if ticks+block_ticks>native_budget:raise RuntimeError('Native block budget')
-            for _ in range(block_ticks):
+            if ticks+executed_ticks>native_budget:raise RuntimeError('Native block budget')
+            for _ in range(executed_ticks):
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;grip_ticks+=1
             after=obs['robot0_eef_pos'].copy()
             progress=float(np.linalg.norm(error)-np.linalg.norm(target-after))
@@ -985,7 +1037,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             # axis 4 mm from a 3 mm descend target must offer a retry instead
             # of looping until the stage budget on the old 8 mm norm gate.
             stalls=stalls+1 if motion_stalled and np.max(abs(error))>tol else 0
-            rec.branch(dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,selected_gripper=d['gripper'],executed_gripper=gripper,selected_transition=d['transition'],block_native_ticks=block_ticks,selected_candidate=c['id'],rotation_signs=d['rotation_signs'],rotation_error_rad=rot,progress_m=progress))
+            rec.branch(dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,selected_gripper=d['gripper'],executed_gripper=gripper,selected_transition=d['transition'],block_native_ticks=executed_ticks,selected_candidate=c['id'],rotation_signs=d['rotation_signs'],rotation_error_rad=rot,progress_m=progress))
             history.append(dict(gripper=d['gripper'],transition=d['transition'],progress_mm=round(progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()))
             for cam,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{cam}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))
             transition=d['transition']
@@ -1002,6 +1054,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 offset=grasp_offset=grasp_orientation=None
                 lift_verified=False
                 carry_verified_stage=None
+                carry_alignment=dict(status='not_checked')
+                carry_alignment_rechecks=0
                 rack_verified=False
                 rack_contact_checked=False
                 rack_contact_evidence=dict(status='not_checked')
@@ -1023,6 +1077,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     grasp_offset=None
                     lift_verified=False
                     carry_verified_stage=None
+                    carry_alignment=dict(status='not_checked')
+                    carry_alignment_rechecks=0
                     rack_verified=False
                     rack_contact_checked=False
                     rack_contact_evidence=dict(status='not_checked')
