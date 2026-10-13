@@ -86,3 +86,6 @@
 - 【Agent】【2026-10-13 21:00】[run] Goal1423配对共享21/50次受阻支撑面释放候选在公开重叠1.0、碗底可见差106.08mm条件下由Jev选择advance，273步/91 Jev双终局成功，审计0违规；EXP102落盘，固定新初态init5–9已启动。
 - 【Agent】【2026-10-13 21:16】[run] Goal1423冻结55d56ba7新init5–9为1/5双终局；init6/7/9真实持碗后carry受阻，init8在lower请求已耗尽reobserve。EXP103保留负结果。65ef2e0e移除不可用选项并增加新鲜RGB-D支撑面carry转段候选，已SSH push部署，init8配对开始。
 - 【Agent】【2026-10-13 21:26】[run] Goal1423第27次65ef2e0e在align已到达仍选stop，48步失败；第28次979ef046成功放盘且官方success=true，但retreat物理卡住导致program_finished=false。EXP104/105记录；cb400a42局部30mm退离已SSH push并部署，init8配对运行。
+- 【Agent】【2026-10-13 21:27】[result] Goal1423共享29/50次cb400a42的init8配对官方与程序双true，246步/82 Jev；短退离解除旧版最后阶段预算，未见初态稳定性尚待测。
+- 【Agent】【2026-10-13 21:33】[run] Goal1423共享29–30/50次cb400a42在已失败init8/6配对均双终局成功；init6第74次carry新鲜相机重叠0.803、守护底距81.09mm由Jev进lower，第81次自选进release，95/95真实决策0审计违规。EXP106完整记录。
+- 【Agent】【2026-10-13 21:50】[op] Goal1423固定cb400a42在真正未见init10–14五回合双终局5/5、平均262.2步/87.4 Jev，五项原始问答动作审计0违规与本机/5880逐文件一致；EXP108、十任务状态、Discussion、TIMELINE T010更新。仍8/10任务至少一次完成，1098/1202为0。
