@@ -8,7 +8,7 @@ from camera_geometry import eef_transform, gripper_mesh_vertices
 from pickup_visual_hull import _green_mask, _project_many
 
 
-def effect(obs, target):
+def effect(obs, target, material=None):
     image = next(row['path'] for row in obs['images'] if row['camera']=='cam_high')
     source = _green_mask(Path(image), 'cam_high')
     count = int(source.sum())
@@ -32,7 +32,22 @@ def effect(obs, target):
         return float(footprint[source].mean())
     current = fraction(obs['current_eef']['right'])
     predicted = fraction(target['right'])
-    return {'current_actual_high_green_pixels':count,
+    wrist = None
+    if material is not None:
+        point = np.asarray(material['representative_material_point']['estimated_world_xyz_m']).reshape(1,3)
+        camera = dict(obs['camera_calibration']['cameras']['cam_right_wrist'])
+        mount = np.linalg.inv(eef_transform(obs['current_eef']['right'])) @ np.asarray(camera['camera_to_environment'])
+        uv0, depth0 = _project_many(camera, point)
+        camera['camera_to_environment'] = (eef_transform(target['right']) @ mount).tolist()
+        uv1, depth1 = _project_many(camera, point)
+        def margin(uv, depth):
+            return float(min(uv[0,0],639-uv[0,0],uv[0,1],479-uv[0,1])) if depth[0]>0 else -1000.0
+        wrist = {'current_named_green_pixel_projection_uv':uv0[0].round(2).tolist(),
+                 'after_target_named_green_pixel_projection_uv':uv1[0].round(2).tolist(),
+                 'current_edge_margin_px':round(margin(uv0,depth0),2),
+                 'after_target_edge_margin_px':round(margin(uv1,depth1),2),
+                 'scope':'One CURRENT RGB ray/height point hypothesis, propagated PUBLIC rigid wrist mount; not source ground truth, full-object visibility or predicted contact.'}
+    return {'named_source_wrist_field_of_view':wrist,'current_actual_high_green_pixels':count,
             'current_public_hand_footprint_overlap_fraction':round(current,4),
             'after_full_target_public_hand_footprint_overlap_fraction':round(predicted,4),
             'additional_current_source_pixel_overlap_fraction':round(max(0,predicted-current),4),

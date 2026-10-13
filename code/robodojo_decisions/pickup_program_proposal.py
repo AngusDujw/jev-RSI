@@ -29,6 +29,15 @@ def propose(obs, targets, material, green_plane, table, stage):
             sign = 1 if error['xyz'.index(axis)]>0 else -1
             if abs(error['xyz'.index(axis)])>.03:
                 seeds.append((f'world_{axis}_{sign}_30mm',_targets(obs,axis,sign,.03)))
+        if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1':
+            feature = material['representative_material_point']
+            u,v = feature['current_right_pixel_uv']
+            if min(u,639-u,v,479-v) < 60:
+                seed = _targets(obs,'x',1,0)
+                rotation = Rotation.from_rotvec([-.1,0,0]).as_matrix() @ eef_transform(seed['right'])[:3,:3]
+                q = Rotation.from_matrix(rotation).as_quat()
+                seed['right']['quaternion_wxyz'] = q[[3,0,1,2]].tolist()
+                seeds.append(('wrist_source_retention_world_x_negative_100mrad',seed))
         for name,seed in seeds:
             first = preview(obs,seed['right'],None,5)
             adapted = seed
@@ -85,9 +94,13 @@ def propose(obs, targets, material, green_plane, table, stage):
             score=float(angle-newangle)
         visibility = None
         if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
-            visibility = source_visibility_effect(obs, target)
+            visibility = source_visibility_effect(obs, target, material)
             if visibility:
                 score -= 40.0 * visibility['additional_current_source_pixel_overlap_fraction']
+                wrist = visibility.get('named_source_wrist_field_of_view')
+                if wrist:
+                    score -= max(0,35-wrist['after_target_edge_margin_px'])
+                    score += .5 * max(0,min(35,wrist['after_target_edge_margin_px'])-min(35,wrist['current_edge_margin_px']))
         scores[name]={'source_visibility_prediction':visibility,'stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
                      'prediction':predictions.get(name),'scope':'A current controller proposal score under stated RGB/static-source/robot-model hypotheses, not task completion or observed contact.'}
     if not scores:
