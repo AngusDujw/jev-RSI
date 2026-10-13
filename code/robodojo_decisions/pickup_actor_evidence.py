@@ -154,4 +154,10 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
                     'source_error_interpretation','public_tool_orientation_evidence',
                     'current_geometry_validity','contact_approach_evidence'):
             compact.pop(key,None)
+    if os.environ.get('ROBODOJO_PICKUP_MATERIAL_TOPOLOGY') == '1':
+        from pickup_material_topology import measure
+        measured, overlay = measure(observation,directory)
+        compact['current_RGB_material_topology'] = measured
+        if overlay is not None:
+            images.append(overlay)
     return compact, images
