@@ -1062,9 +1062,14 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 cap = .008
             gain=.55 if fast_open else .35 if executed_ticks==6 else .5
             delta=np.asarray(d['signs'])*np.minimum(cap,gain*abs(error))
+            # The gripper is open and already at its free-space hover pose.
+            # Reuse the validated fast-open rotation cap here instead of
+            # spending contact-stage-size blocks on a large wrist turn.
+            free_space_turn = bool(stage in ('approach', 'align') and gripper == -1
+                                   and arrived and np.max(abs(rot)) > .15)
             rotation=np.asarray(d['rotation_signs'])*np.minimum(
-                .16 if fast_open and np.max(abs(rot))>.15 else .10,
-                gain*abs(rot))
+                .16 if (fast_open or free_space_turn) and np.max(abs(rot))>.15 else .10,
+                (.55 if free_space_turn else gain)*abs(rot))
             before=position.copy()
             if ticks+executed_ticks>native_budget:raise RuntimeError('Native block budget')
             for _ in range(executed_ticks):
