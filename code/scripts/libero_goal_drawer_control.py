@@ -757,8 +757,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                           if hook_mode else grip_ticks >= 18 and gripper == 1 and
                           aperture >= 6. if front_pincher else
                           grip_ticks >= 18 and gripper == 1),
-                'pull': bool(extension and extension['passed']) or (
-                    arrived and shift is not None and shift['pixel_displacement'] > 12),
+                'pull': (arrived and (bool(extension and extension['passed']) or
+                    (shift is not None and shift['pixel_displacement'] > 12))
+                    if front_pincher else bool(extension and extension['passed']) or
+                    (arrived and shift is not None and shift['pixel_displacement'] > 12)),
                 'release': grip_ticks >= 24 and gripper == -1 and aperture >= 65,
                 'clear_opening': arrived and gripper == -1,
                 'verify': bool(extension and extension['passed']) or (
@@ -1009,9 +1011,17 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'along the visible cabinet-front normal. Advance only when '
                     'fresh RGB-D shows a protruding drawer surface at the selected '
                     'handle height, or the handle visibly moves and TCP arrives.')
+            if front_pincher and name == 'pull':
+                request['state']['stage_contract'] = (
+                    'Keep the own gripper closed around the middle visible '
+                    'handle and move outward to the supplied TCP goal 180 mm '
+                    'from the measured contact. Partial drawer exposure is '
+                    'insufficient: advance only after own TCP arrival and '
+                    'fresh public RGB-D extension or matched handle motion. '
+                    'This is not the evaluator success predicate.')
             if name in ('pull', 'verify'):
                 request['questions']['transition']['instructions'] = (
-                    'Advance when the fresh visible drawer-extension gate is true. '
+                    'Advance when the current completion_evidence gate is true. '
                     'This is calibrated RGB-D evidence of an outward dark drawer '
                     'surface at the selected handle height, not native task success. '
                     'Otherwise use the allowed transitions from current evidence.')
