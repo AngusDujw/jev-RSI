@@ -121,8 +121,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     side_orientation = ((Rotation.from_euler('x', -30, degrees=True).as_matrix()
                          @ initial_orientation)
                         if contact_mode in ('under_hook', 'side_hook') else
-                        Rotation.from_euler('x', 30, degrees=True).as_matrix()
-                        @ initial_orientation if contact_mode == 'tip_hook' else
+                        initial_orientation if contact_mode == 'tip_hook' else
                         initial_orientation if contact_mode == 'top_hook' else
                         Rotation.from_euler('x', 210, degrees=True).as_matrix()
                         if hook_mode else np.array([[1., 0., 0.],
@@ -166,7 +165,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if not len(selected_finger):
                 raise RuntimeError('Own selected fingertip mesh unavailable')
             projected_finger = selected_finger @ side_orientation.T
-            tip_tool = selected_finger[np.argmin(projected_finger[:, 1])]
+            # Prefer a rearward tip that stays within the own pad-height
+            # corridor. The most rearward mesh vertex is substantially higher
+            # and would force a lower, less reachable TCP entry.
+            corridor = (projected_finger[:, 2] >= 0) & (
+                projected_finger[:, 2] <= min(.030, 3*pad_half_height))
+            if not np.any(corridor):
+                raise RuntimeError('No own fingertip in pad-height corridor')
+            feasible = np.flatnonzero(corridor)
+            tip_tool = selected_finger[feasible[
+                np.argmin(projected_finger[feasible, 1])]]
             contact_offset = tip_tool @ side_orientation.T
             if contact_offset[1] >= pad_center_offset[1]-.015:
                 raise RuntimeError('Own fingertip offers no deeper contact than pad')
