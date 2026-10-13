@@ -144,3 +144,6 @@ This controller is an experimental categorical EEF policy, not the original Robo
 每个 EEF Decision 上限 5 个物理步、相对当前实测 LINK6 位置 0.05 m 和姿态 0.35 rad。执行前检查公开机器人路径与原生只读首 IK；执行后取新三 RGB、实测状态和机器人跟踪误差。公开机器人网格与相机投影都不能证明完整场景无碰撞。完整成功只由原生终局与可见实体过程核对，不由轮廓误差下降或观察动作计数替代。
 
 所有原生运行、图像、Pro 计划、Luna 记录和经验写在 `/home/v4090-1/DataStorage/gpt6-dec`；Git 仓库只保存源码及协议 Markdown。每次回合结束向经验文件追加具体正负结果，下一次 Pro/Luna 调用重新载入原文；对应 EXP 在 `LOGS/2026-W42.md`。
+
+
+2026-10-13 当前推进输入补充：pickup_table_plane.py 从同回合腕图棕色纹理同点和当前高位投影估计局部支撑平面，提供匹配数/覆盖/像素扰动/声明余量；后续只在当前固定高位纹理重核通过时保留。pickup_green_material_support.py 可在当前绿色静止兼容检查通过后使用明确标记的早前RGB银色高度假设，当前双RGB绿色像素支撑仍每步重算。闭爪候选出现时选择题允许完整闭爪动作；闭后5/10/20mm抬升仍由Luna当前RGB独立判断，命令不证明持物。

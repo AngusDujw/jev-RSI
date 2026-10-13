@@ -21,8 +21,10 @@ from fold_cuff_view import _sensor_motion
 from pickup_rgb_axes import _targets
 from pickup_visual_hull import _green_mask, build as build_visual_hull, _project_many
 from pickup_temporal_stereo import (build as build_temporal_stereo,
-                                    build_aperture_geometry)
+                                    build_aperture_geometry,
+                                    _high_static_check as source_rgb_static_check)
 from pickup_green_material_support import build as build_green_material_support
+from pickup_table_plane import build as build_table_plane, revalidate as revalidate_table_plane
 from robot_path_preview import preview
 
 
@@ -91,7 +93,8 @@ def _view_prediction(obs: dict, angle: float = -0.10,
 
 def _plan_refresh(obs: dict, hull: dict, output: Path, experience: Path,
                   temporal: dict | None = None,
-                  historical_obs: dict | None = None) -> dict:
+                  historical_obs: dict | None = None,
+                  table: dict | None = None) -> dict:
     step = obs["step_id"]
     gateway_failure = output / "planner_gateway_unavailable_episode.txt"
     if gateway_failure.exists():
@@ -100,6 +103,8 @@ def _plan_refresh(obs: dict, hull: dict, output: Path, experience: Path,
             gateway_failure.read_text().strip())
     evidence_file = output / f"planner_sensor_geometry_step_{step:03d}.json"
     evidence = {"current_rgb_visual_hull": hull}
+    if table is not None:
+        evidence["current_rgb_support_plane"] = table
     if temporal is not None:
         evidence["current_feature_historical_rgb_triangulation"] = temporal
     evidence_file.write_text(json.dumps(evidence, ensure_ascii=False, indent=2))
@@ -191,7 +196,8 @@ def _translation_view_prediction(obs: dict, target: dict, hull: dict) -> dict:
 def _sensing_descent(obs: dict, hull: dict,
                      temporal: dict | None = None,
                      material: dict | None = None,
-                     amount: float = 0.005) -> tuple[str, dict, dict, dict] | None:
+                     amount: float = 0.005,
+                     table: dict | None = None) -> tuple[str, dict, dict, dict] | None:
     """Public-robot-safe small descent proposal; scene safety remains with Luna."""
     target = _targets(obs, "z", -1, amount)
     path = preview(obs, target["right"], None, steps=5)
@@ -210,9 +216,14 @@ def _sensing_descent(obs: dict, hull: dict,
         support_z = max(
             support_z, float(material["assumed_green_height_slab_m"][1]))
         support_source += " and stated possible solid-green slab upper height"
+    if table is not None:
+        if table["current_step_id"] != obs["step_id"]:
+            raise ValueError("Support-plane evidence is not current")
+        support_z = float(table["upper_height_for_robot_check_m"])
+        support_source = "fresh RGB-revalidated support plane plus declared uncertainty"
     bound = gripper_height_above_landmark(
         obs["current_eef"]["right"], [0, 0, support_z], descent_m=amount)
-    if bound["hand_above_landmark_plane_after_m"] < 0.010:
+    if bound["hand_above_landmark_plane_after_m"] < (0.006 if table is not None else 0.010):
         return None
     effect = _translation_view_prediction(obs, target, hull)
     key = f"z_negative_{int(round(amount*1000))}mm_sensing_descent"
@@ -225,8 +236,8 @@ def _sensing_descent(obs: dict, hull: dict,
         f"{effect['projected_green_bottom_edge_px_range']} px over assumed ray depths. "
         f"Public hand-mesh minimum height after move is "
         f"{bound['min_hand_mesh_z_after_m']:.4f} m, {bound['hand_above_landmark_plane_after_m']*1000:.1f} mm "
-        f"above {support_source} sampled green-support q95 height, which is NOT a bound on true object "
-        "or table height. Luna must judge actual full hand corridor from current RGB; "
+        f"above {support_source}, a sensor-only uncertain height reference, "
+        "not a complete scene or object-clearance proof. Luna must judge the actual full hand corridor from current RGB; "
         "reobserve immediately, with no closure or contact assumption.")
     return key, target, effect, {"description": description,
                                   "public_path": path,
@@ -236,7 +247,8 @@ def _sensing_descent(obs: dict, hull: dict,
 
 def _translation_options(obs: dict, hull: dict,
                          temporal: dict | None = None,
-                         material: dict | None = None) -> tuple[dict, dict, dict]:
+                         material: dict | None = None,
+                         table: dict | None = None) -> tuple[dict, dict, dict]:
     """Select bounded magnitudes from public robot-only IK, not Pro advice."""
     options = {}
     targets = {}
@@ -299,7 +311,7 @@ def _translation_options(obs: dict, hull: dict,
                         "this is not a scene-clearance certificate. Reobserve after execution.")
                     break
     if distance <= 100 or material is not None:
-        descent = _sensing_descent(obs, hull, temporal, material)
+        descent = _sensing_descent(obs, hull, temporal, material, table=table)
         if descent is not None:
             key, target, effect, detail = descent
             options[key] = detail["description"]
@@ -340,7 +352,7 @@ def _translation_options(obs: dict, hull: dict,
         ]["q95"][2]
         if z_q95 < -30:
             descent = _sensing_descent(
-                obs, hull, temporal, material, amount=0.010)
+                obs, hull, temporal, material, amount=0.010, table=table)
             if descent is not None:
                 key, target, effect, detail = descent
                 options[key] = detail["description"]
@@ -367,10 +379,12 @@ def _translation_options(obs: dict, hull: dict,
                 support_z = max(
                     float(hull["support_world_xyz_quantile_m"]["q95"][2]),
                     float(material["assumed_green_height_slab_m"][1]))
+                if table is not None:
+                    support_z = float(table["upper_height_for_robot_check_m"])
                 height = gripper_height_above_landmark(
                     obs["current_eef"]["right"], [0, 0, support_z],
                     descent_m=float(-delta[2]))
-                if height["hand_above_landmark_plane_after_m"] < 0.010:
+                if height["hand_above_landmark_plane_after_m"] < (0.006 if table is not None else 0.010):
                     continue
             key = f"material_xyz_{int(round(length*1000))}mm"
             target_delta_mm = (delta*1000).round(2).tolist()
@@ -405,6 +419,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     rotations = 0
     near_method_refreshed = False
     temporal_references = {}
+    table_cache = None
+    metal_height_cache = None
     status = "active_episode_budget_incomplete"
     native_result = None
     # Plan from the actual fresh reset RGB before any Luna or physical action.
@@ -518,14 +534,50 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             except ValueError as error:
                 failures.append(f"aperture_ref40: {error}")
             temporal_error = "; ".join(failures) if failures else None
+        table = None
+        table_errors = []
+        if table_cache is not None:
+            try:
+                table = revalidate_table_plane(
+                    table_cache, obs, obs["camera_calibration"])
+            except ValueError as error:
+                table_errors.append(str(error))
+        if table is None:
+            planes = []
+            for reference in temporal_references.values():
+                if reference["step_id"] >= obs["step_id"]:
+                    continue
+                try:
+                    planes.append(build_table_plane(
+                        reference, reference["camera_calibration"],
+                        obs, obs["camera_calibration"]))
+                except ValueError as error:
+                    table_errors.append(
+                        f"ref{reference['step_id']}: {error}")
+            if planes:
+                table = max(planes, key=lambda row:
+                            row["accepted_texture_match_count"])
+                table_cache = table
         material = None
         material_error = None
         if (temporal is not None and
                 temporal.get("accepted_sift_feature_count", 0) >= 3):
+            metal_height_cache = (temporal, obs)
             try:
                 material = build_green_material_support(obs, temporal)
             except ValueError as error:
                 material_error = str(error)
+        elif metal_height_cache is not None:
+            old_height, old_obs = metal_height_cache
+            try:
+                height_evidence = dict(old_height)
+                height_evidence["fixed_high_rgb_static_check"] = (
+                    source_rgb_static_check(old_obs, obs))
+                height_evidence["height_static_check_current_step_id"] = obs["step_id"]
+                material = build_green_material_support(
+                    obs, height_evidence, historical_height=True)
+            except ValueError as error:
+                material_error = "Historical height revalidation failed: " + str(error)
         margin = hull["right_wrist_mask_image_edge_margin_px"]
         nearest = hull["pad_to_visual_support_distance_mm_q05_q50_q95"][0]
         near_refresh = None
@@ -533,7 +585,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             try:
                 near_refresh = _plan_refresh(obs, hull, output,
                                              experience_root, temporal,
-                                             temporal_reference)
+                                             temporal_reference, table=table)
                 active_method = near_refresh["visual_method"]
                 active_stage = near_refresh["initial_stage"]
                 active_stage_recipe = near_refresh["stage_recipe"]
@@ -565,6 +617,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                   "temporal_geometry_error": temporal_error,
                   "possible_solid_green_material_support": material,
                   "green_material_support_error": material_error,
+                  "current_rgb_support_plane": table,
+                  "support_plane_errors": table_errors,
                   "stage": ("closed_gripper_visual_test" if gripper_closed else
                             "visibility_recovery" if view_stage else
                             "near_contact_preparation" if nearest <= 80 else
@@ -577,7 +631,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             targets = {}
             options = {}
             effects = {}
-            for amount in (0.005, 0.010):
+            for amount in (0.005, 0.010, 0.020):
                 target = _targets(obs, "z", 1, amount)
                 target["right"]["gripper_closed"] = True
                 public_path = preview(obs, target["right"], None, steps=5)
@@ -621,7 +675,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     record["method_refresh"] = _plan_refresh(obs, hull, output,
                                                               experience_root,
                                                               temporal,
-                                                              temporal_reference)
+                                                              temporal_reference, table=table)
                     active_method = record["method_refresh"]["visual_method"]
                     active_stage = record["method_refresh"]["initial_stage"]
                     active_stage_recipe = record["method_refresh"]["stage_recipe"]
@@ -666,7 +720,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     "verify from the next actual image. Public robot path passes, but "
                     "scene and hand sweep clearance remain visual judgments.")
             if nearest <= 100:
-                descent = _sensing_descent(obs, hull, temporal, material)
+                descent = _sensing_descent(obs, hull, temporal, material, table=table)
                 if descent is not None:
                     key, target, effect, detail = descent
                     targets[key] = target
@@ -705,7 +759,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "visual-support height quantile is not a physical obstacle bound.")
         else:
             options, targets, image_effects = _translation_options(
-                obs, hull, temporal, material)
+                obs, hull, temporal, material, table=table)
             record["translation_view_effects"] = image_effects
             if (material is not None and ring_count >= 2 and margin > 30):
                 facet_distance = material[
@@ -773,6 +827,18 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "remains an identified source even when precise contact geometry is "
                 "uncertain. Judge the offered "
                 "full short corridor in current RGB and reobserve after execution.")
+        if "close_right_gripper_hold_link6" in targets:
+            instruction = instruction.replace(
+                "choose ONE complete short open-gripper precontact action",
+                "choose ONE complete offered motion or gripper action")
+            instruction += (
+                " A held-LINK6 gripper CLOSE candidate is explicitly offered. "
+                "It is a grasp attempt requiring CURRENT visible solid material "
+                "between real opposing inner faces and a clear finger sweep; "
+                "it is not forbidden by the earlier open-hand approach stage. "
+                "Judge it against the translation options. After any closure, "
+                "the next RGB and a separate lift test must establish actual "
+                "source following; closing alone never establishes capture.")
         temporal_option_residual = {}
         if temporal is not None:
             patch_error = (np.asarray(
@@ -857,6 +923,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "temporal_option_metal_patch_residual": temporal_option_residual,
             "possible_solid_green_material_support": material,
             "green_material_support_error": material_error,
+            "current_rgb_support_plane": table,
+            "support_plane_errors": table_errors,
             "material_option_residual": material_option_residual,
             "material_option_error_norm": material_option_error_norm,
             "remaining_native_physical_steps": obs["remaining_steps"],

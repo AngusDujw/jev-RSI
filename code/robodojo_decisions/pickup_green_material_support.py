@@ -31,10 +31,18 @@ def _surface_nearest(points: np.ndarray, vertices: np.ndarray) -> tuple[np.ndarr
 
 
 def build(observation: dict, temporal_metal: dict,
-          half_height_m: float = 0.020) -> dict:
+          half_height_m: float = 0.020,
+          historical_height: bool = False) -> dict:
     if observation["task"] != "general_pickup":
         raise ValueError("Green-handle material support is pickup-specific")
-    if temporal_metal.get("current_step_id") != observation["step_id"]:
+    reference_step = temporal_metal.get("current_step_id")
+    if historical_height:
+        if (not isinstance(reference_step, int) or
+                reference_step >= observation["step_id"] or
+                temporal_metal.get("height_static_check_current_step_id") !=
+                observation["step_id"]):
+            raise ValueError("Historical RGB height lacks a current static-source check")
+    elif reference_step != observation["step_id"]:
         raise ValueError("Metal depth and current RGB step disagree")
     if temporal_metal.get("accepted_sift_feature_count", 0) < 3:
         raise ValueError("No independently matched temporal metal patch")
@@ -96,6 +104,11 @@ def build(observation: dict, temporal_metal: dict,
     return {
         "source": "Current actual green RGB pixels in right wrist and fixed high view, public K/T, same-episode RGB-matched silver patch height hypothesis, measured robot and public inner-finger STL facets",
         "current_step_id": observation["step_id"],
+        "height_reference_step_id": reference_step,
+        "height_evidence_mode": (
+            "Earlier same-episode RGB-matched silver height; CURRENT fixed-high source stability and CURRENT high/right green-pixel support are revalidated. No current silver match is claimed."
+            if historical_height else
+            "Current same-episode silver texture match plus current high/right green-pixel support"),
         "metal_patch_height_m": round(metal_z, 5),
         "assumed_green_height_slab_m": [round(float(levels[0]), 5),
                                         round(float(levels[-1]), 5)],
