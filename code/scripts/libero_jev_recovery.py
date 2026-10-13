@@ -66,6 +66,17 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
             raise RuntimeError('Own open pads have no opposed inner faces')
         inner_gap = float(np.min(positive) - np.max(negative))
         if inner_gap > 0 and width > inner_gap:
+            # The top quantile of a visible open vessel can be a thin lip.
+            # The ordinary top-overlap pose may contact only the thin lip
+            # and slide off during a lift. For a sidewall trial, lower the
+            # *own* pad by a fraction of the observed height
+            # band, bounded by the measured table clearance. This uses no
+            # asset dimensions or simulator contact state.
+            rim_drop = (min(.008, .15*float(extent[2]))
+                        if cfg.get('rim_height_mode') == 'visible_sidewall' else 0.)
+            rim_target_z = max(
+                float(c[1]['target'][2])-rim_drop,
+                level-ee['finger_low_z_offset']+cfg['table_margin_mm']/1000)
             # To pinch one side of an open rim, the closing plane must pass
             # through that rim. A tiny shift based on width-inner_gap leaves
             # the bowl centered between the two fingers, so both pads close
@@ -80,7 +91,18 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
                 # reachable; only change the jaw-closing axis for a rim pinch.
                 candidate['target'] = c[1]['target'].copy()
                 candidate['target'][:2] += side*rim_offset*minor[:2]
+                candidate['target'][2] = rim_target_z
                 candidate['grasp_height_source'] = 'visible one-sided rim pinch'
+                candidate['rim_height_mode'] = cfg.get('rim_height_mode', 'top_overlap')
+                candidate['visible_sidewall_drop_mm'] = float(
+                    (c[1]['target'][2]-rim_target_z)*1000)
+                pad_low = rim_target_z+ee['pad_low_offset'][2]
+                pad_high = rim_target_z+ee['pad_high_offset'][2]
+                candidate['pad_z_interval_m'] = [pad_low, pad_high]
+                candidate['estimated_pad_overlap_mm'] = float(max(0.,
+                    min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000)
+                candidate['estimated_finger_table_clearance_mm'] = float(
+                    (rim_target_z+ee['finger_low_z_offset']-level)*1000)
                 candidate['own_open_inner_pad_gap_mm'] = inner_gap*1000
                 candidate['one_sided_rim_offset_mm'] = side*rim_offset*1000
                 candidate['approach_distance_mm'] = float(np.linalg.norm(
