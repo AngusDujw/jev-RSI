@@ -163,3 +163,10 @@
 - 【Agent】【2026-10-13 07:17】[op] 更新EXP101、积木经验与Discussion/Timeline：只计非接触推进，不计原生完整成功。
 - 【Agent】【2026-10-13 07:24】[run] 积木第二段不同侧抬视角：Pro high审查、du Luna两段批准，共10原生步；当前top面IoU0.862、第二段末端误差1.273mm，记EXP102与任务经验。
 - 【Agent】【2026-10-13 07:29】[op] 积木step10 Pro接触审查只给STOP，记EXP102-103、经验与主线；启动按数字按钮任务新鲜预检与Pro首按审查。
+- 【Agent】【2026-10-13 07:30】[op] 本聊天sess_024f025c636f4c6b 2026-10-13续轮提交12b0f07（EXP098-103、代码与议题），经DataStorage bundle回本机，以Git SSH推送同名远程分支。
+- 【Agent】【2026-10-13 07:41】[run] 按钮左腕原位偏航5步对照：未同步卡角0px，同步公开相机挂载后−31/−4px吻合K/T；写EXP104-105与经验并发起首按Pro复审。
+- 【Agent】【2026-10-13 08:08】[op] 基于EXP113当前GPU Fabric三RGB与Pro高位计划146，扩展按钮三段原生控制：新增step10后撤轻抬候选，只在独立公共5步路径和Luna三图批准后执行，计划/日志均在DataStorage。
+- 【Agent】【2026-10-13 08:08】[run] 启动press_by_number GPU Fabric三段新回合148；重放已审查两段，再从新鲜step10检查Pro第三候选的公共路径与du Luna门，最多3个五步动作。
+- 【Agent】【2026-10-13 08:15】[op] Pro高位在当前step10三RGB与15条公开路径扫描上，将失败的Y-20/Z+5mm缩为Y-16/Z+5mm完整五步候选；预测终点1.026mm并数值计算红帽样本左上投影，更新条件式控制器与DataStorage计划151。
+- 【Agent】【2026-10-13 08:15】[run] 启动press_by_number GPU Fabric新独立回合152，第三动作须经新鲜原生首步IK、完整五步公开路径和du Luna三RGB视觉否决门。
+- 【Agent】【2026-10-13 08:22】[result] 按钮GPU Fabric路径感知三段15步：第三段跟踪1.683mm、卡角匹配0.993，但Pro当前图STOP_HOLD，仍0按压/0完整成功；经验与EXP114-116已沉淀。

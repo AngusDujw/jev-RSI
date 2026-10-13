@@ -151,6 +151,9 @@ graph LR
     T_2026W42_043["📊 robodojo-decision-stages<br/>数字2较短局部8mm把实际跟踪收敛到1.4…"]:::experiment
     T_2026W42_044["📊 robodojo-decision-stages<br/>积木黄色源五步非接触首段实测误差1.872…"]:::experiment
     T_2026W42_045["📊 robodojo-decision-stages<br/>积木第二侧视原生10步仍缺对侧源面与两指垫…"]:::experiment
+    T_2026W42_046["📊 robodojo-decision-stages<br/>按钮CPU非Fabric腕相机旧图静止；用…"]:::experiment
+    T_2026W42_047["📊 robodojo-decision-stages<br/>按钮GPU Fabric恢复物理与渲染同步…"]:::experiment
+    T_2026W42_048["📊 robodojo-decision-stages<br/>按钮第三视角真实15步后Pro仍只准STO…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -263,6 +266,9 @@ graph LR
   T_2026W42_042 --> T_2026W42_043
   T_2026W42_043 --> T_2026W42_044
   T_2026W42_044 --> T_2026W42_045
+  T_2026W42_045 --> T_2026W42_046
+  T_2026W42_046 --> T_2026W42_047
+  T_2026W42_047 --> T_2026W42_048
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -402,6 +408,9 @@ graph LR
 | `T-2026W42-043` | 2026-10-13 | experiment | robodojo-decision-stages | 数字2较短局部8mm把实际跟踪收敛到1.467mm，但25步仍高位遮挡、无物体移动；停同类预接近转首物体操作 | `EXP-2026W42-099` | - |
 | `T-2026W42-044` | 2026-10-13 | experiment | robodojo-decision-stages | 积木黄色源五步非接触首段实测误差1.872mm且当前双图顶面IoU0.870；高位源未动，转指垫和侧面门 | `EXP-2026W42-101` | - |
 | `T-2026W42-045` | 2026-10-13 | experiment | robodojo-decision-stages | 积木第二侧视原生10步仍缺对侧源面与两指垫，Pro只给STOP；转按钮首操作 | `EXP-2026W42-103` | - |
+| `T-2026W42-046` | 2026-10-13 | experiment | robodojo-decision-stages | 按钮CPU非Fabric腕相机旧图静止；用实测LINK6同步公开挂载后同动作卡角位移0→31px且吻合K/T | `EXP-2026W42-105` | - |
+| `T-2026W42-047` | 2026-10-13 | experiment | robodojo-decision-stages | 按钮GPU Fabric恢复物理与渲染同步，双视点原生10步可见机器人运动；第三后撤候选五步路径2.061mm越门未执行，下一步按数值重选或转首物体操作 | `EXP-2026W42-114` | - |
+| `T-2026W42-048` | 2026-10-13 | experiment | robodojo-decision-stages | 按钮第三视角真实15步后Pro仍只准STOP：红帽/底座/工具关系不可见，停止同类取景并转高优先级首物体操作 | `EXP-2026W42-116` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

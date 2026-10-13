@@ -123,6 +123,19 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
         if key_file is None:
             raise ValueError("--key-file is required for control")
         model = DecisionClient(key_file, output / "decisions")
+        if controller_version in ("v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view"):
+            expected = {"v1_button_camera_audit": 1, "v1_button_two_view": 2,
+                        "v1_button_three_view": 3}[controller_version]
+            if initial_camera_calibration is None or max_decisions != expected:
+                raise ValueError("Button camera sequence requires calibration and exact decision budget")
+            if ("followup_plan" in plan) != (expected >= 2):
+                raise ValueError("Button followup plan and controller mismatch")
+            if expected == 3 and "next_review" not in plan["followup_plan"]:
+                raise ValueError("Three-view controller needs step-ten Pro review")
+            from button_camera_audit import run_audit
+            result.update(run_audit(tools, obs, model, plan, output,
+                                    initial_camera_calibration, initial_eef))
+            return result
         if controller_version == "v1_button_view":
             if initial_camera_calibration is None:
                 raise ValueError("Button view requires public RGB calibration")
@@ -426,7 +439,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_stack_first_advance", "v1_stack_side_sequence", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_stack_first_advance", "v1_stack_side_sequence", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -435,7 +448,7 @@ def main() -> None:
         parser.error("layout/max-decisions must be nonnegative; max-wall-seconds must be 1..6900")
     if args.controller == "v5_probe_y" and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
-    if args.controller in ("v1_button_view", "v1_button_sequence") and (args.task != "press_by_number" or args.layout != 0):
+    if args.controller in ("v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view", "v1_button_view", "v1_button_sequence") and (args.task != "press_by_number" or args.layout != 0):
         parser.error("Button view controllers are press_by_number layout-0 pilots")
     if args.controller in ("v1_stack_first_advance", "v1_stack_side_sequence") and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("First stack advance is a stack_blocks layout-0 pilot")
