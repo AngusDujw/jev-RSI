@@ -53,6 +53,25 @@ def compact(data, observation):
     orientation = result.get('public_tool_orientation_evidence')
     if isinstance(orientation,dict):
         result['public_tool_orientation_evidence']={k:v for k,v in orientation.items() if k!='candidate_diagnostics'}
+    phase = data['current_stage']
+    if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS','1') != '0':
+        orientation = data.get('public_tool_orientation_evidence') or {}
+        if phase == 'strict_tool_geometry_review' and orientation:
+            before = orientation['finger_extension_vs_downward_normal_angle_deg']
+            after = score.get('predicted_axis_angle_deg')
+            result['current_phase_error_change'] = {
+                'objective':'Reduce finger-extension angular mismatch to the declared downward source-normal hypothesis',
+                'unit':'degrees','current_error':before,'predicted_after_error':after,
+                'predicted_reduction':round(before-after,3) if after is not None else None,
+                'interpretation':'Evaluate ANGULAR progress in this phase. LINK6 may rise while the public finger-span pivot stays approximately fixed; equal source XYZ distance does not mean this rotation has no phase progress. This is robot/RGB hypothesis evidence, not a measured object normal.'}
+        elif data.get('source_control_feature') and score.get('prediction'):
+            before = np.asarray(data['source_control_feature']['nearest_opposing_surface_midpoint_delta_xyz_mm'])
+            after = np.asarray(score['prediction']['same_rgb_feature_minus_predicted_surface_span_xyz_mm'])
+            axes = slice(0,2) if phase=='coarse_directional_alignment_review' else slice(0,3)
+            old,new = float(np.linalg.norm(before[axes])),float(np.linalg.norm(after[axes]))
+            result['current_phase_error_change'] = {'objective':'Reduce lateral XY error' if axes.stop==2 else 'Reduce same-feature XYZ error',
+                'unit':'mm','current_error':round(old,3),'predicted_after_error':round(new,3),
+                'predicted_reduction':round(old-new,3),'interpretation':'Same CURRENT uncertain RGB point vs public robot surfaces, assuming a static source and exact requested robot pose. Not source ground truth, contact or guaranteed progress.'}
     result['proposed_complete_program']=program
     result['single_program_input_scope']='Only the CURRENT full program and its numerical effect are provided. Complete source/solver alternatives remain in saved diagnostics, not actor context. Preserve every stated uncertainty; short stage progress does not require completing the whole task in one action.'
     return result

@@ -35,6 +35,20 @@ from pickup_table_plane import build as build_table_plane, revalidate as revalid
 from robot_path_preview import preview
 
 
+def _runtime_planner_stage(stages: dict, runtime: str):
+    aliases = {
+        'coarse_directional_alignment_review': ('coarse_directional_alignment', 'precontact_semantic_gate'),
+        'strict_tool_geometry_review': ('strict_tool_geometry',),
+        'visibility_recovery': ('identity_and_view', 'source_identity'),
+        'closed_gripper_visual_test': ('capture_and_following', 'capture_verification'),
+        'grasp_hypothesis_review': ('contact_verification', 'capture_gate'),
+        'near_contact_preparation': ('contact_verification', 'calibrated_geometry_gate'),
+        'planar_precontact': ('coarse_directional_alignment', 'precontact_semantic_gate'),
+    }
+    name = next((key for key in aliases.get(runtime, ()) if key in stages), None)
+    return name, stages.get(name) if name else None
+
+
 def _tracking_limit(obs: dict, record: dict, target: dict) -> float:
     """Coarse open lateral moves use measured feedback; contact keeps 2 mm."""
     if os.environ.get("ROBODOJO_PICKUP_COARSE_TRACKING_5MM") != "1":
@@ -169,6 +183,7 @@ def _plan_refresh(obs: dict, hull: dict, output: Path, experience: Path,
     return {"path": str(directory / "plan.json"),
             "initial_stage": plan["initial_stage"],
             "stage_keys": list(plan["stages"]),
+            "stage_rules": plan["stages"],
             "stage_recipe": plan["stages"][plan["initial_stage"]],
             "visual_method": plan["visual_method"]}
 
@@ -577,6 +592,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             return {"status": status, "decisions": 0, "visual_queries": 0,
                     "method_refreshes": 0, "native_result": native_result,
                     "trace": str(path)}
+    active_stage_rules = dict(initial_refresh.get("stage_rules", plan["stages"]))
     for turn in range(max_decisions):
         if obs["rollout_finished"]:
             status = "native_terminal"
@@ -740,6 +756,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 active_method = near_refresh["visual_method"]
                 active_stage = near_refresh["initial_stage"]
                 active_stage_recipe = near_refresh["stage_recipe"]
+                active_stage_rules = near_refresh.get("stage_rules", active_stage_rules)
                 near_method_refreshed = True
                 refreshed_steps.add(obs["step_id"])
             except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
@@ -851,6 +868,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     active_method = record["method_refresh"]["visual_method"]
                     active_stage = record["method_refresh"]["initial_stage"]
                     active_stage_recipe = record["method_refresh"]["stage_recipe"]
+                    active_stage_rules = record["method_refresh"].get("stage_rules", active_stage_rules)
                     refreshed_steps.add(obs["step_id"])
                 except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
                     record["method_refresh"] = {
@@ -1164,6 +1182,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             choice("action_family", "Independently judge ONE feasible action family from CURRENT RGB and numerical effects. If current source identity is unavailable, choose STOP. Do not rely on any other question answer. Different X/Y/Z/rotation options are alternative complete motions, not independent competing reasons to stop. Gripper not ready alone means evaluate motion, not STOP. CLOSE only when offered and actual solid material is visibly in the finite opposing-finger sweep; an old close is not proof of holding.", family_options)]
         if motion_options:
             questions.append(choice("pickup_action", "Independently RANK the ONE most promising COMPLETE offered motion for current-stage progress from the XYZ/angle effects and current RGB. Answer this ranking without referencing other question outputs. Use the explicit abstain if no progress candidate can be ranked. This ranking alone does not authorize execution; the harness separately requires confirmed identity and the motion family. World +X is robot-right, +Y away from robot bases, +Z up. XYZ millimetres and world rotation-vector radians occur together as one pose target. Compare the same-feature predicted XYZ/angle effects and whole visible corridor. Source identity, depth and contact are separate; reobserve after one bounded five-step action.", motion_options))
+        mapped_stage, mapped_rule = _runtime_planner_stage(active_stage_rules,record["stage"])
         model_input = {
             "task": obs["task"], "instruction": obs["instruction"],
             "source_control_feature": material.get('representative_material_point') if material else None,
@@ -1193,19 +1212,13 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "camera_view_prediction": record.get("view_predictions"),
             "translation_view_effects": record.get("translation_view_effects"),
             "descent_public_evidence": record.get("descent_public_evidence"),
-            "planner_stage": active_stage,
-            "planner_stage_evidence_rule": active_stage_recipe,
-            "planner_stage_interpretation": (
-                "A prior method schema is fallback-only after a gateway failure; "
-                "its old pixels, calibration and past stage status are NOT current. "
-                "The current_stage label, current three RGB, current numeric "
-                "geometry and Luna's own visual veto take precedence."
-                if initial_refresh.get("fallback") else
-                "Current-episode method schema; current RGB and geometry still determine stage progress."),
+            "planner_stage": mapped_stage,
+            "planner_stage_evidence_rule": mapped_rule,
+            "planner_stage_interpretation": "Runtime REVIEW mapped onto the last valid planner's semantic stage rule; not a new planner call, completed phase or verified contact. Missing matching rule is explicitly null, never the stale initial identity stage.",
             "planner_visual_processing_method": active_method,
             "method_refresh": ({key: value for key, value in
                                  record["method_refresh"].items()
-                                 if key not in ("visual_method", "stage_recipe")}
+                                 if key not in ("visual_method", "stage_recipe", "stage_rules")}
                                 if "method_refresh" in record else None),
             "latest_experience_files": experience,
             "last_executed_action_and_visible_change":
