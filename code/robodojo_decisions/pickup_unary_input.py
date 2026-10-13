@@ -1,4 +1,5 @@
 """Single-program actor facts with explicit world effects; solver detail stays off-input."""
+import os
 import numpy as np
 from scipy.spatial.transform import Rotation
 from camera_geometry import eef_transform
@@ -20,7 +21,11 @@ def compact(data, observation):
         'meaning':'All components form ONE simultaneous complete command. +X robot-right, +Y away from bases, +Z up; these are WORLD axes, not moving image axes. A close command is a grasp attempt, not holding evidence.'}
     score = program.get('stage_score') or {}
     result.pop('source_feature_after_each_complete_action',None)
-    result['source_feature_after_proposed_program'] = score.get('prediction')
+    if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS','1') != '0':
+        result['source_feature_after_proposed_program'] = score.get('prediction')
+    contact = result.get('contact_approach_evidence')
+    if isinstance(contact,dict):
+        result['contact_approach_evidence'] = {program['id']:contact[program['id']]} if program['id'] in contact else None
     evidence = program.get('public_five_step_evidence') or {}
     paths = evidence.get('five_step_retarget_previews') or []
     if paths:
