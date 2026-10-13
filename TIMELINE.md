@@ -110,6 +110,9 @@ graph LR
     T_2026W42_002["⛔ libero-goal-ten<br/>Goal1202同一完整任务意图三次连续不…"]:::blocker
     T_2026W42_003["📊 libero-goal-ten<br/>5880 Goal1202阶段门已通但两种…"]:::experiment
     T_2026W42_004["📊 libero-goal-ten<br/>5880 Goal1458冻结新版GPU未…"]:::experiment
+    T_2026W42_005["📊 libero-goal-ten<br/>Goal1202可见抓持通过：12度内倾碗…"]:::experiment
+    T_2026W42_006["📊 libero-goal-ten<br/>Goal1144同一冻结策略在未见init…"]:::experiment
+    T_2026W42_007["📊 libero-goal-ten<br/>Goal1252同一冻结策略未见init4…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -183,6 +186,9 @@ graph LR
   T_2026W42_001 --> T_2026W42_002
   T_2026W42_002 --> T_2026W42_003
   T_2026W42_003 --> T_2026W42_004
+  T_2026W42_004 --> T_2026W42_005
+  T_2026W42_005 --> T_2026W42_006
+  T_2026W42_006 --> T_2026W42_007
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -281,6 +287,9 @@ graph LR
 | `T-2026W42-002` | 2026-10-12 | blocker | libero-goal-ten | Goal1202同一完整任务意图三次连续不收敛；最新回合45次完成门为真仍未切换，暂停新增物理实跑 | `EXP-2026W42-038` | - |
 | `T-2026W42-003` | 2026-10-12 | experiment | libero-goal-ten | 5880 Goal1202阶段门已通但两种公开碗沿候选均空抓；Goal1098两种近端入杆路径仍受阻，转新初态稳定性检验 | `EXP-2026W42-046` | - |
 | `T-2026W42-004` | 2026-10-12 | experiment | libero-goal-ten | 5880 Goal1458冻结新版GPU未见init9/10为2/2，CPU视觉后备init11/12为2/2；十项仍仅8项曾完整成功，需继续跨初态验证与两项接触路线 | `EXP-2026W42-063` | - |
+| `T-2026W42-005` | 2026-10-13 | experiment | libero-goal-ten | Goal1202可见抓持通过：12度内倾碗沿，升高44.79mm、共运动误差8.84mm；整项因579步搬运未完 | `EXP-2026W42-071` | - |
+| `T-2026W42-006` | 2026-10-13 | experiment | libero-goal-ten | Goal1144同一冻结策略在未见init5–9五个初态5/5双终局成功；Goal1202仅短抬持有，carry滑落被视觉门阻止 | `EXP-2026W42-085` | - |
+| `T-2026W42-007` | 2026-10-13 | experiment | libero-goal-ten | Goal1252同一冻结策略未见init4–8五个初态5/5双终局成功；Goal1202低位双侧夹持仍待进入阶段验证 | `EXP-2026W42-086` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
