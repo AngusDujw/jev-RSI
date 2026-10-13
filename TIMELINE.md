@@ -178,6 +178,7 @@ graph LR
     T_2026W42_070["📊 robodojo-decision-stages<br/>裁图开局推进65步；二维CLOSE门导致远…"]:::experiment
     T_2026W42_071["📊 robodojo-decision-stages<br/>227运动概率分散而身份STOP；分解身份…"]:::experiment
     T_2026W42_072["📊 robodojo-decision-stages<br/>三问实际推进4姿态动作至61.5度，响应校…"]:::experiment
+    T_2026W42_073["📊 robodojo-decision-stages<br/>独立排名与六阶段通用方法；腕图恢复，比较显…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -316,6 +317,7 @@ graph LR
   T_2026W42_069 --> T_2026W42_070
   T_2026W42_070 --> T_2026W42_071
   T_2026W42_071 --> T_2026W42_072
+  T_2026W42_072 --> T_2026W42_073
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -482,6 +484,7 @@ graph LR
 | `T-2026W42-070` | 2026-10-14 | experiment | robodojo-decision-stages | 裁图开局推进65步；二维CLOSE门导致远端族STOP，改公共有限闭合体积与早期RGB姿态 | `EXP-2026W42-177` | - |
 | `T-2026W42-071` | 2026-10-14 | experiment | robodojo-decision-stages | 227运动概率分散而身份STOP；分解身份/动作族，粗XYZ开局与严格接触分门 | `EXP-2026W42-178` | - |
 | `T-2026W42-072` | 2026-10-14 | experiment | robodojo-decision-stages | 三问实际推进4姿态动作至61.5度，响应校验中断；先保存原文并安全处理条件答案 | `EXP-2026W42-179` | - |
+| `T-2026W42-073` | 2026-10-14 | experiment | robodojo-decision-stages | 独立排名与六阶段通用方法；腕图恢复，比较显式数值误差补充 | `EXP-2026W42-180` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
