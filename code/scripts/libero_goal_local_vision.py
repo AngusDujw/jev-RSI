@@ -61,7 +61,7 @@ def pick_visible(detections, label, excluded_box=None, allow_generic=False):
         # A uniquely localized small item can be less confidently named than
         # a fixture. Keep the relaxed tier tied to visible shape and position.
         return d['score'] >= .35 or (
-            d['score'] >= .30 and area(d) < .03*768*768 and interior(d))
+            d['score'] >= .25 and area(d) < .03*768*768 and interior(d))
     scene_limit = .10*768*768
     choices = [d for d in detections
                if d['label'].strip().lower() == label and area(d) < scene_limit]
