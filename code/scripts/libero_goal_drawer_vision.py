@@ -128,6 +128,38 @@ def visible_cabinet_front(rgb, depth, intrinsic, extrinsic, handle_world_m):
                 source="dark visible RGB-D front plane near measured handle")
 
 
+def visible_cabinet_near_side(rgb, depth, intrinsic, extrinsic, front, handle):
+    """Measure the camera-visible near X edge of the cabinet front at handle height."""
+    image = np.asarray(rgb)
+    distance = np.asarray(depth, float)
+    k = np.asarray(intrinsic, float)
+    t = np.asarray(extrinsic, float)
+    if (image.shape != (768, 768, 3) or distance.shape != (768, 768) or
+            k.shape != (3, 3) or t.shape != (4, 4)):
+        raise ValueError('Invalid calibrated cabinet-side observation')
+    v, u = np.mgrid[300:640:2, 60:260:2]
+    d = distance[v, u]
+    colour = image[v, u]
+    valid = ((colour.max(axis=2) < 70) & np.isfinite(d) &
+             (d > .02) & (d < 3.))
+    u, v, d = u[valid], v[valid], d[valid]
+    camera = np.stack(((u-k[0, 2])*d/k[0, 0],
+                       (v-k[1, 2])*d/k[1, 1], d), axis=1)
+    world = camera @ t[:3, :3].T + t[:3, 3]
+    face_y = float(front['point_world_m'][1])
+    handle_z = float(handle['center_world_m'][2])
+    face = world[(np.abs(world[:, 1]-face_y) < .006) &
+                 (np.abs(world[:, 2]-handle_z) < .055)]
+    if len(face) < 500:
+        raise RuntimeError('Visible cabinet side lacks front-plane pixels')
+    xs = face[:, 0]
+    if float(np.quantile(xs, .95)-np.quantile(xs, .05)) < .12:
+        raise RuntimeError('Visible cabinet front too narrow for side entry')
+    return dict(near_side_world_x_m=float(np.quantile(xs, .01)),
+                front_world_y_m=face_y, visible_pixels=int(len(face)),
+                source='Camera RGB-D dark cabinet/front-plane pixels at public middle-handle height')
+
+
 def select_public_handle(handles, requested_level):
     """Map the public words top/middle/bottom to measured visible candidates."""
     if len(handles) != 3:

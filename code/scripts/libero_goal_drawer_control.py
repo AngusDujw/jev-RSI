@@ -15,7 +15,8 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 from libero_goal_drawer_vision import (visible_cabinet_front,
-    visible_drawer_handles, select_public_handle, visible_drawer_extension)
+    visible_cabinet_near_side, visible_drawer_handles, select_public_handle,
+    visible_drawer_extension)
 from libero_robot_geometry import gripper_geometry
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
@@ -117,7 +118,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
-    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
+    cabinet_side_entry = contact_mode == 'cabinet_side_hook'
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
@@ -131,7 +133,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         if contact_mode in ('down_hook', 'high_entry_down_hook') else
                         (Rotation.from_euler('x', -30, degrees=True).as_matrix()
                          @ initial_orientation)
-                        if contact_mode in ('under_hook', 'side_hook') else
+                        if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook') else
                         initial_orientation if contact_mode == 'tip_hook' else
                         initial_orientation if contact_mode == 'top_hook' else
                         Rotation.from_euler('x', 210, degrees=True).as_matrix()
@@ -164,7 +166,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         projected_pad = selected_vertices @ side_orientation.T
         pad_half_height = float(np.max(np.abs(
             projected_pad[:, 2]-pad_center_offset[2])))
-        if contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook') and pad_center_offset[1] >= 0:
+        if contact_mode in ('top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook') and pad_center_offset[1] >= 0:
             raise RuntimeError('No rearward own fingerpad for hook')
         contact_offset = pad_center_offset
         tip_tool = None
@@ -303,6 +305,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         initial_rgb, initial_depth, initial_k, initial_t = frame()
         initial_extension_pixels = visible_drawer_extension(
             initial_rgb, initial_depth, initial_k, initial_t, handle)['candidate_pixels']
+        cabinet_side = (visible_cabinet_near_side(initial_rgb, initial_depth,
+            initial_k, initial_t, front_plane, handle)
+            if cabinet_side_entry else None)
+        if cabinet_side is not None:
+            dump(rec.folder/'visible-cabinet-near-side.json', cabinet_side)
         dump(rec.folder/'selected-handle.json', dict(
             initial_handle, public_requested_level=requested_level))
         if task_id == 1202 and rec.cfg.get('drawer_clear_to_source'):
@@ -325,7 +332,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             contact_rod_position = handle_position.copy()
-            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
                 # The middle handle is visibly about 8 cm long. A near-side
                 # contact may leave room for the arm beside the cabinet;
                 # retain the same observed rod point for both hook paths.
@@ -354,7 +361,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 finger_behind = False
                 pad_now = None
             under_tcp = pad_entry_z = side_entry_tcp = None
-            if contact_mode in ('under_hook', 'side_hook', 'tip_hook', 'down_hook'):
+            if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook'):
                 under_tcp, pad_entry_z = under_hook_waypoints(
                     handle, lower_handle, contact_tcp, contact_offset,
                     pad_half_height)
@@ -369,6 +376,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     toward_robot*(.5*float(handle['visible_rod_length_m'])+.018)*axis[:2]
                     - pad_center_offset[:2])
                 side_entry_tcp[1] = under_tcp[1]
+            if cabinet_side_entry:
+                # Bypass the measured cabinet's near *body* edge rather than
+                # just the visible rod end. The whole own finger envelope is
+                # outside the observed front before the Y insertion leg.
+                projected_fingers = np.asarray(own['finger_vertices_tool']) @ side_orientation.T
+                side_entry_tcp = under_tcp.copy()
+                side_entry_tcp[0] = (cabinet_side['near_side_world_x_m'] -
+                    float(np.max(projected_fingers[:, 0])) - .020)
+                if abs(side_entry_tcp[0]-initial_robot_x) > .35:
+                    raise RuntimeError('Visible cabinet side outside bounded own reach')
             approach_tcp = side_entry_tcp if side_entry_tcp is not None else under_tcp
             if steep_entry:
                 upper_z = float(upper_handle['center_world_m'][2])
@@ -451,6 +468,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     contact_leg = 'side_x_slide'
                 else:
                     contact_leg = 'side_rise'
+            if cabinet_side_entry and name == 'contact':
+                if position[1] > side_entry_tcp[1] + .009:
+                    target = side_entry_tcp.copy()
+                    contact_leg = 'cabinet_side_y_insert'
+                elif abs(position[0]-under_tcp[0]) > .007:
+                    target = under_tcp.copy()
+                    contact_leg = 'cabinet_side_x_slide'
+                else:
+                    contact_leg = 'cabinet_side_rise'
             orientation_goal = (high_entry_orientation if high_entry and
                 name in ('approach', 'align') else side_orientation)
             rotation_error = (Rotation.from_matrix(orientation_goal @
@@ -479,7 +505,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 oriented and np.linalg.norm(target-position) < .030 and
                 rod_gap < .025)
             exact_contact_pose = bool(name == 'contact' and arrived and oriented and
-                contact_leg in ('final', 'under_rise', 'side_rise', 'tip_rise', 'high_entry_descend') and
+                contact_leg in ('final', 'under_rise', 'side_rise', 'cabinet_side_rise', 'tip_rise', 'high_entry_descend') and
                 (finger_behind if hook_mode else True))
             gate = {
                 'observe': True,
@@ -513,7 +539,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
-                                if contact_mode in ('under_hook', 'side_hook', 'tip_hook', 'down_hook') else None),
+                                if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook') else None),
+                            visible_cabinet_near_side_world_x_m=(cabinet_side['near_side_world_x_m']
+                                if cabinet_side is not None else None),
                             visible_upper_handle_world_z_m=(float(upper_handle['center_world_m'][2])
                                 if high_entry or steep_entry else None),
                             high_entry_tcp_world_m=(high_entry_tcp.tolist() if high_entry else None),
@@ -591,6 +619,19 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'contact_path_leg names the current waypoint. Advance only '
                     'when the finger is visibly measured behind the rod at '
                     'the final pose.')
+            if cabinet_side_entry and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Move the open own fingers beyond the camera-measured near '
+                    'edge of the cabinet body, aligned with the visible gap '
+                    'between middle and lower rods. The clearance includes '
+                    'the own finger mesh. Advance only on own-pose evidence.')
+            if cabinet_side_entry and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'At the cabinet body side, insert the own finger into the '
+                    'camera-measured middle/lower rod gap, then slide along X '
+                    'behind the middle rod, then rise to it. contact_path_leg '
+                    'names the active waypoint. Advance only when the selected '
+                    'own finger is behind the visible rod at the final pose.')
             if contact_mode in ('tip_hook', 'down_hook') and name in ('approach', 'align'):
                 request['state']['stage_contract'] = (
                     'Keep the hand outside the cabinet and align the selected '

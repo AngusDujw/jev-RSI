@@ -220,7 +220,7 @@ def main():
                    help='Let Jev orient own wrist during drawer approach, then verify in align')
     p.add_argument('--knob-supervisor', action='store_true',
                    help='Jev-controlled visible stove control Goal 1383 trial')
-    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'], default='pinch',
+    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'], default='pinch',
                    help='Fixed public-vision handle contact method; Jev still selects gripper and stages')
     p.add_argument('--offline-goal-vision', action='store_true',
                    help='Use predeclared init0 Goal image boxes and runtime RGB-D/SAM; no GPT-6 calls')
@@ -299,7 +299,7 @@ def main():
     if a.drawer_preorient and not (a.drawer_bowl_continuation or
         (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook'))):
         p.error('--drawer-preorient requires Goal1202 or Goal1098 high entry')
-    if a.drawer_contact_mode in ('side_hook', 'tip_hook') and a.task_id != 1098:
+    if a.drawer_contact_mode in ('side_hook', 'cabinet_side_hook', 'tip_hook') and a.task_id != 1098:
         p.error('Middle-handle entry mode requires Goal1098')
     if a.rim_height_mode != 'top_overlap' and not a.drawer_bowl_continuation:
         p.error('--rim-height-mode visible_sidewall requires Goal1202 drawer continuation')
