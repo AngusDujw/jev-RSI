@@ -218,7 +218,7 @@ def main():
                    help='After Jev opens Goal1202 top drawer, continue in the same episode to visible bowl pick/place')
     p.add_argument('--knob-supervisor', action='store_true',
                    help='Jev-controlled visible stove control Goal 1383 trial')
-    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook'], default='pinch',
+    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook'], default='pinch',
                    help='Fixed public-vision handle contact method; Jev still selects gripper and stages')
     p.add_argument('--offline-goal-vision', action='store_true',
                    help='Use predeclared init0 Goal image boxes and runtime RGB-D/SAM; no GPT-6 calls')
@@ -282,8 +282,8 @@ def main():
     if a.drawer_bowl_continuation and (not a.drawer_supervisor or a.task_id != 1202 or
                                         not a.local_goal_vision):
         p.error('--drawer-bowl-continuation requires Goal1202 drawer and local visible vision')
-    if a.drawer_contact_mode == 'side_hook' and a.task_id != 1098:
-        p.error('--drawer-contact-mode side_hook requires Goal1098')
+    if a.drawer_contact_mode in ('side_hook', 'tip_hook') and a.task_id != 1098:
+        p.error('Middle-handle entry mode requires Goal1098')
     if a.rim_height_mode != 'top_overlap' and not a.drawer_bowl_continuation:
         p.error('--rim-height-mode visible_sidewall requires Goal1202 drawer continuation')
     if a.knob_supervisor and (a.suite != 'libero_goal' or a.task_id != 1383 or
