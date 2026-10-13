@@ -1,6 +1,7 @@
 """Public five-step reachable programs and stage-specific progress scores."""
 from __future__ import annotations
 
+import os
 import numpy as np
 from scipy.spatial.transform import Rotation
 
@@ -17,12 +18,13 @@ def propose(obs, targets, material, green_plane, table, stage):
         error = np.asarray(material['representative_material_point']['nearest_opposing_surface_midpoint_delta_xyz_mm'])/1000
         size = float(np.linalg.norm(error))
         seeds = []
-        for amount in (.03,.04):
+        lateral_only = os.environ.get("ROBODOJO_PICKUP_SINGLE_PROGRAM_LATERAL") == "1" and stage == "coarse_directional_alignment_review"
+        for amount in (() if lateral_only else (.03,.04)):
             if size > amount*1.05:
                 t = _targets(obs,'x',1,0)
                 t['right']['position']=(np.asarray(t['right']['position'])+error/size*amount).tolist()
                 seeds.append((f'rgb_xyz_{int(amount*1000)}mm',t))
-        for axis in ('x','y','z'):
+        for axis in (('x','y') if lateral_only else ('x','y','z')):
             sign = 1 if error['xyz'.index(axis)]>0 else -1
             if abs(error['xyz'.index(axis)])>.03:
                 seeds.append((f'world_{axis}_{sign}_30mm',_targets(obs,axis,sign,.03)))
@@ -60,6 +62,9 @@ def propose(obs, targets, material, green_plane, table, stage):
     angle = np.degrees(np.arccos(np.clip(current_axis@[0,0,-1],-1,1)))
     current_error = (np.asarray(material['representative_material_point']['nearest_opposing_surface_midpoint_delta_xyz_mm']) if material else None)
     for name,target in targets.items():
+        if (os.environ.get('ROBODOJO_PICKUP_SINGLE_PROGRAM_LATERAL')=='1' and stage=='coarse_directional_alignment_review' and
+                (target['right']['gripper_closed'] or abs(target['right']['position'][2]-obs['current_eef']['right']['position'][2])>.003)):
+            continue
         desired=eef_transform(target['right'])
         newangle=np.degrees(np.arccos(np.clip(desired[:3,0]@[0,0,-1],-1,1)))
         delta=(desired[:3,3]-np.asarray(obs['current_eef']['right']['position']))*1000

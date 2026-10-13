@@ -1220,7 +1220,15 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             questions=[questions[0],choice('full_program_decision',
                 'Judge THIS ONE COMPLETE proposed five-step simulated robot program against CURRENT RGB and the supplied stage/error/robot-only evidence. It needs only incremental stage progress, not immediate full-task completion. All robot XYZ and rotation components execute together. Approve only with current source identity and a supported whole short corridor; reject a visible contradiction or unsupported program. Robot/RGB hypotheses are not object ground truth.',
                 {'execute_this_complete_program':'Execute the exact proposed full robot target once for five steps and reobserve.',
-                 'stop_program_unsupported':'Do not execute this program; current evidence does not support it.'})]
+                 'stop_program_unsupported':'Do not execute this program; current evidence does not support it.'}),
+                choice('program_evidence_assessment',
+                    'Independently identify the DOMINANT CURRENT evidence issue for this exact short-stage program. Do not reference other question answers; this diagnostic does not authorize execution.',
+                    {'no_current_contradiction':'Current identity, short-stage direction and visible corridor support this limited increment; contact has not been certified.',
+                     'robot_camera_or_finger_mismatch':'Current RGB visibly contradicts the public robot/camera/finger geometry.',
+                     'specific_visible_corridor_blocker':'A specific current visible scene object blocks this proposed whole short sweep.',
+                     'corridor_unobservable':'The proposed short corridor cannot be judged from current RGB.',
+                     'geometry_too_uncertain_for_this_stage':'The supplied camera-derived uncertainty is insufficient for this specific stage/program, not merely unknown future contact.',
+                     'no_incremental_stage_progress':'This exact program does not plausibly advance the current short-stage objective.'})]
             record['proposed_complete_program']=unary_program
         try:
             answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
@@ -1238,6 +1246,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     else 'stop_program_unsupported') if unary_program else answer.get("pickup_action", "ignored_no_motion")
         if unary_program:
             record['luna_program_decision']=answer['full_program_decision']
+            record['luna_program_evidence_assessment']=answer['program_evidence_assessment']
         if unary_program is None and family_options is not None:
             family = answer["action_family"]
             record["luna_action_family"] = family
