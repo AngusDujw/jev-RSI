@@ -54,7 +54,8 @@ def effect(obs, target, material=None, source_mask_override=None, source_step_id
             'historical_view_proxy_step_id':source_step_id,
             'current_public_hand_footprint_overlap_fraction':round(current,4),
             'after_full_target_public_hand_footprint_overlap_fraction':round(predicted,4),
-            'additional_current_source_pixel_overlap_fraction':round(max(0,predicted-current),4),
+            ('additional_current_source_pixel_overlap_fraction' if source_mask_override is None else
+             'additional_reference_view_proxy_overlap_fraction'):round(max(0,predicted-current),4),
             'scope':('Conservative per-link convex PUBLIC mesh projections against CURRENT visible green pixels; assumes those pixels remain fixed. ' if source_mask_override is None else
                      'Conservative PUBLIC hand-mesh projections against an explicitly HISTORICAL fixed-high source-BBOX view proxy, under a declared static-source hypothesis. The bbox includes unknown/negative space and is NEVER current material, depth or contact evidence. ')+
                     'Not a rendered future image, guaranteed visibility, collision or contact certificate. Hidden source pixels are unknown.'}

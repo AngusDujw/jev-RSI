@@ -17,7 +17,8 @@ def recover(tools, obs, model, output, experience, turn, cause, reference=None):
     target = _targets(obs,'z',1,.015)
     path = preview(obs,target['right'],None,steps=5)
     record['public_five_step_path'] = path
-    if not (path['public_path_gate'] and path['native_eef_single_action_legal']):
+    if (os.environ.get('ROBODOJO_PICKUP_PREDICTED_VIEW_RECOVERY') != '1' and
+            not (path['public_path_gate'] and path['native_eef_single_action_legal'])):
         record['status'] = 'missing_view_public_path_rejected'
         return None, record
     programs = None
@@ -82,6 +83,9 @@ def recover(tools, obs, model, output, experience, turn, cause, reference=None):
         record['status']='missing_view_luna_stopped'
         return None, record
     target=choices[answer['full_program_decision']]
+    if programs is not None:
+        selected_index=list(choices).index(answer['full_program_decision'])
+        record['public_five_step_path']=programs[selected_index]['public_path']
     first = tools._rpc('eef_joint_target',targets=target)
     record['native_first_IK']=first
     if first.get('physical_steps')!=0 or len(first.get('action',[]))!=14:
