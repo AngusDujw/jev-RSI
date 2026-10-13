@@ -51,7 +51,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
                       observed_rear_extent_m=None, rear_standoff_m=.010,
                       preserve_downward=True, lateral_contact_offset_m=0.,
                       contact_mode='rear_edge', top_contact_rear_fraction=0.,
-                      allow_short_push=False):
+                      allow_short_push=False, overshoot_extra_m=0.):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -82,6 +82,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         raise ValueError('Lateral contact offset outside visible object support')
     if not 0. <= top_contact_rear_fraction <= .8:
         raise ValueError('Top contact rear fraction outside visible support')
+    if not 0. <= overshoot_extra_m <= .020:
+        raise ValueError('Extra supported push outside bounded range')
     lateral_axis = np.array([direction[1], -direction[0]])
     if contact_mode == 'rear_edge':
         contact_xy = (source['center'][:2] - direction*(rear_extent+leading+.004)
@@ -116,7 +118,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     # moving until the visible plate can approach the visible stove-front goal.
     # A short goal residual does not shorten the travel needed to reach the
     # plate from a rear top contact. Keep the same visible-extent sweep.
-    overshoot = .060 if contact_mode == 'top_surface' else .025
+    overshoot = (.060 if contact_mode == 'top_surface' else .025) + overshoot_extra_m
     push_end = np.r_[contact_xy+direction*(distance+overshoot), contact_z]
     retreat = push_end+np.array([0., 0., .10])
     return dict(orientation=orientation,
@@ -357,6 +359,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # Use the same support-relative contact rule in both segments.
             contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
             allow_short_push=bool(visible_goal_plate and segment >= 2),
+            overshoot_extra_m=(
+                rec.cfg.get('plate_final_overshoot_mm', 0)/1000.
+                if visible_goal_plate and segment >= 2 else 0.),
             # A visually blocked direct corridor needs a lateral first leg.
             # The second crosswise push in that route can slip from a far-rear
             # plate contact; use the same more central supported contact as
@@ -483,6 +488,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 vision.goal['visible_support_world_z_m'])
                 if visible_goal_plate and segment >= 2 and
                    observed_after is not None else None)
+            if front_relation is not None and rec.cfg.get('plate_front_margin_px', 0):
+                margin = int(rec.cfg['plate_front_margin_px'])
+                front_relation = dict(front_relation,
+                    base_passed=front_relation['passed'],
+                    required_front_margin_px=margin,
+                    passed=bool(front_relation['passed'] and
+                        front_relation['visible_front_gap_px'] <=
+                        front_relation['allowed_front_gap_px'][1]-margin))
             front_relation_passed = bool(front_relation and front_relation['passed'])
             goal_tolerance = .020 if visible_goal_plate and segment >= 2 else .045
             residual_correction_available = bool(visible_goal_plate and

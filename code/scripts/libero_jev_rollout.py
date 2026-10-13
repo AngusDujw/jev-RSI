@@ -235,6 +235,10 @@ def main():
                    help='Optional visible first-push turn bound relative to the supported lateral corridor')
     p.add_argument('--plate-coast-gate', action='store_true',
                    help='Let Jev advance the first plate push at a public RGB-only predicted stopping point')
+    p.add_argument('--plate-final-overshoot-mm', type=int, choices=[0, 10], default=0,
+                   help='Bounded extra supported second push toward the public stove-front goal')
+    p.add_argument('--plate-front-margin-px', type=int, choices=[0, 3], default=0,
+                   help='Require a visible interior margin before Jev may finish the plate task')
     p.add_argument('--input-organization', choices=['contract','evidence','local','focused'], default='contract')
     p.add_argument('--grasp-algorithm', choices=['legacy_clearance','pad_fit'], default='pad_fit')
     p.add_argument('--rim-height-mode', choices=['top_overlap','visible_sidewall'],
@@ -326,6 +330,8 @@ def main():
         p.error('--plate-stage-turn-deg requires --goal-plate-push')
     if a.plate_coast_gate and not a.goal_plate_push:
         p.error('--plate-coast-gate requires --goal-plate-push')
+    if (a.plate_final_overshoot_mm or a.plate_front_margin_px) and not a.goal_plate_push:
+        p.error('Plate final clearance parameters require --goal-plate-push')
     if a.visible_goal_check and (not a.recovery_supervisor or a.task_id not in (1163,1458) or
                                  not a.local_goal_vision):
         p.error('--visible-goal-check currently requires local recovery Goal 1163 or 1458')
@@ -343,7 +349,7 @@ def main():
                    existing_root+'/controller/config/api.company.local.json'),
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, support_stall_release=a.support_stall_release, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,drawer_clear_to_source=a.drawer_clear_to_source,empty_hand_fast=a.empty_hand_fast,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,plate_coast_gate=a.plate_coast_gate,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,rim_inset_mm=a.rim_inset_mm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, support_stall_release=a.support_stall_release, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,drawer_clear_to_source=a.drawer_clear_to_source,empty_hand_fast=a.empty_hand_fast,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,plate_coast_gate=a.plate_coast_gate,plate_final_overshoot_mm=a.plate_final_overshoot_mm,plate_front_margin_px=a.plate_front_margin_px,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,rim_inset_mm=a.rim_inset_mm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
