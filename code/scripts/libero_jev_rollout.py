@@ -254,7 +254,7 @@ def main():
                    help='Use smaller native translation blocks while a visibly held source is carried')
     p.add_argument('--visible-container-drop', action='store_true',
                    help='Offer Jev one gravity-drop edge when fresh RGB-D places the held object within a visible open container')
-    p.add_argument('--grasp-hold-ticks',type=int,choices=range(18,49,6),default=18)
+    p.add_argument('--grasp-hold-ticks',type=int,choices=range(12,49,6),default=18)
     p.add_argument('--lift-recheck-mm',type=int,choices=[0,30],default=0)
     p.add_argument('--side-pad-overlap-mm',type=int,choices=[0,12],default=0)
     p.add_argument('--contact-angle-deg',type=float,default=0.)

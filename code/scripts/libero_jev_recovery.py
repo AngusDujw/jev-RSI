@@ -811,6 +811,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             required_open = stage in ['approach','align','descend','release','retreat','recover_open','clear_receiver','settle_receiver']
             required_close = stage in ['grasp','test_lift','lift','carry_lateral','carry','orient_receiver','lower']
             contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open. If fresh visible support evidence passed, choose finish_if_visible instead of another grasp.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp=f'Hold TCP, close for at least {rec.cfg.get("grasp_hold_ticks", 18)} native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. A borderline visible rise may extend this goal once for a fresh RGB-D check. Advance only if measured holding passed; retry if the final check failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
+            if rec.cfg.get('grasp_hold_ticks', 18) < 18:
+                contracts['grasp'] += ' Also require measured own aperture <=12 mm before advancing.'
             if rec.cfg.get('drawer_bowl_continuation'):
                 contracts['descend'] = (
                     'Move open fingers toward the visible bowl pad-fit pose. '
@@ -878,7 +880,11 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     c['estimated_finger_table_clearance_mm'] > 1.)
                 complete = bool(complete or contact_trial)
             if stage == 'select':complete=True
-            if stage == 'grasp':complete=grip_ticks>=rec.cfg.get('grasp_hold_ticks', 18) and gripper==1
+            if stage == 'grasp':
+                short_closure = rec.cfg.get('grasp_hold_ticks', 18) < 18
+                complete = (grip_ticks >= rec.cfg.get('grasp_hold_ticks', 18)
+                            and gripper == 1
+                            and (not short_closure or aperture <= 12.))
             if stage in ['release','recover_open']:
                 release_ticks=(12 if stage=='release' and
                                visible_container_drop_selected else 24)

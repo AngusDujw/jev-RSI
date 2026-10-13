@@ -66,6 +66,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                     '--grasp-hold-ticks', str(grasp_hold_ticks)]
             if lift_recheck_mm:
                 cmd += ['--lift-recheck-mm', str(lift_recheck_mm)]
+        if task_id == 1202 and grasp_hold_ticks != 18:
+            cmd += ['--grasp-hold-ticks', str(grasp_hold_ticks)]
         if task_id == 1458:
             cmd += ['--visible-goal-check']
             if lift_recheck_mm:
@@ -135,7 +137,7 @@ def main():
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
     p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
-    p.add_argument('--grasp-hold-ticks', type=int, choices=[18,24,30,36,42,48], default=18)
+    p.add_argument('--grasp-hold-ticks', type=int, choices=[12,18,24,30,36,42,48], default=18)
     p.add_argument('--lift-recheck-mm', type=int, choices=[0,30], default=0)
     p.add_argument('--side-pad-overlap-mm', type=int, choices=[0,12], default=0)
     p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook'],
@@ -182,8 +184,10 @@ def main():
         p.error('Alternative approach mode is currently evaluated only for Goal 1423')
     if a.entry_side != 'robot_side' and (a.task_id != 1423 or a.approach_mode == 'top'):
         p.error('Receiver entry side requires an angled or side Goal 1423 approach')
-    if a.grasp_hold_ticks != 18 and a.task_id != 1163:
-        p.error('Extended closure is currently evaluated only for Goal 1163')
+    if a.grasp_hold_ticks != 18 and not (
+            a.task_id == 1163 and a.grasp_hold_ticks >= 18 or
+            a.task_id == 1202 and a.grasp_hold_ticks == 12):
+        p.error('Alternative closure is evaluated only for Goal 1163 or Goal 1202 short feedback closure')
     if a.lift_recheck_mm and a.task_id not in (1163, 1458):
         p.error('Extended lift recheck is currently evaluated only for Goal 1163/1458')
     if a.side_pad_overlap_mm and (a.task_id != 1423 or
