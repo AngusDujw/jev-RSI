@@ -235,6 +235,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     own = gripper_geometry(env, obs)
     dump(rec.folder/'own-gripper.json', own)
     ticks = int(prior_native_ticks)
+    native_budget = 590 if rec.cfg.get('empty_hand_fast') else NATIVE_BUDGET
     stage_ticks = stage_decisions = grip_ticks = 0
     gripper = -1
     stage = 'select'
@@ -566,7 +567,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             else .12)
         while True:
             rec.check_budget()
-            if ticks >= NATIVE_BUDGET or stage_decisions >= 45:
+            if ticks >= native_budget or stage_decisions >= 45:
                 raise RuntimeError('Stage/native budget: '+stage)
             if (rec.cfg.get('visible_goal_check') and stage == 'select' and grasp_tries and
                     visible_goal_evidence['status']=='not_checked'):
@@ -805,12 +806,16 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             newgrip=gripper if d['gripper']=='keep' else -1 if d['gripper']=='open' else 1
             if newgrip!=gripper:grip_ticks=0
             gripper=newgrip
-            cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .02
-            gain=.35 if block_ticks==6 else .5
+            fast_open = bool(rec.cfg.get('empty_hand_fast') and gripper==-1 and
+                             stage in ('approach','align') and np.max(abs(error))>.04)
+            cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .030 if fast_open else .02
+            gain=.55 if fast_open else .35 if block_ticks==6 else .5
             delta=np.asarray(d['signs'])*np.minimum(cap,gain*abs(error))
-            rotation=np.asarray(d['rotation_signs'])*np.minimum(.10,gain*abs(rot))
+            rotation=np.asarray(d['rotation_signs'])*np.minimum(
+                .16 if fast_open and np.max(abs(rot))>.15 else .10,
+                gain*abs(rot))
             before=position.copy()
-            if ticks+block_ticks>NATIVE_BUDGET:raise RuntimeError('Native block budget')
+            if ticks+block_ticks>native_budget:raise RuntimeError('Native block budget')
             for _ in range(block_ticks):
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;grip_ticks+=1
             after=obs['robot0_eef_pos'].copy()
