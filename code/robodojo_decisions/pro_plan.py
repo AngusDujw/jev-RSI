@@ -26,9 +26,13 @@ def main():
     parser.add_argument("--geometry-evidence", type=Path,
                         help="Optional camera-derived landmark/projection checks from current RGB and measured LINK6")
     parser.add_argument("--template", type=Path)
+    parser.add_argument("--method-only", action="store_true",
+                        help="Planner defines perception and stages; runtime geometry/Luna own actions")
     parser.add_argument("--global-experience", type=Path, required=True)
     parser.add_argument("--task-experience", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--response-file", type=Path,
+                        help="Revalidate a saved response for exactly the same public input")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     obs = json.loads(args.observation.read_text())
@@ -68,6 +72,10 @@ def main():
         "global": args.global_experience.read_text(),
         "task": args.task_experience.read_text() if args.task_experience else "",
     }
+    # Experience evolves after every round. Preserve the exact model-facing
+    # text beside the immutable response and input hashes for later audit.
+    (args.output / "planner-experience-global.md").write_text(experience["global"])
+    (args.output / "planner-experience-task.md").write_text(experience["task"])
     system = (
         "You are GPT-6.1 Sol high, the stage and visual-method planner for a RoboDojo robot. "
         "Use ONLY the task instruction, three supplied RGB frames, measured robot state, "
@@ -80,7 +88,7 @@ def main():
            if template else
            "Choose 4 to 12 task-specific stages and an initial_stage that is one of them. ") +
         "stages maps each key to "
-        "a concise actionable recipe with visual pass criterion and bounded recovery. "
+        "a concise observation and stage-transition recipe with visual pass criterion and bounded recovery. "
         "visual_method must describe how to use RGB and measured robot state to construct "
         "the decision model input, including image identity, color/shape measurements, "
         "camera/frame ambiguities, actual provided calibration (if any), freshness and "
@@ -93,12 +101,17 @@ def main():
         "physical steps per Decision, at most 0.05 m position change and 0.35 rad "
         "orientation change from each arm's current measured LINK6 pose. A longer "
         "10/15/20-step robot path preview is diagnostic only: it cannot be submitted "
-        "as one EEF action. Split longer sensing paths into independently planned, "
-        "observed and Luna-approved legal segments. If historical RGB is provided, "
+        "as one EEF action. Every executed segment needs fresh observation and Luna approval. "
+        "If historical RGB is provided, "
         "use it only to compare actual visual motion and validate the public camera "
         "projection; never reuse old pixels as current contact or target evidence. "
         "Calculate image u/v motion signs from numeric K/T rather than prose. Return JSON only."
         + (" Camera-derived geometry evidence is provided from the CURRENT RGB, "
+           "public camera calibration and measured LINK6. Use it only to refine "
+           "the semantic stage criteria, feature extraction, uncertainty and "
+           "reobservation method. Never select or suggest a motion. "
+           if args.geometry_evidence and args.method_only else
+           " Camera-derived geometry evidence is provided from the CURRENT RGB, "
            "public camera calibration and measured LINK6. Compare predicted "
            "image margin, public robot-path reachability, visible obstacles and "
            "any available conservative clearance estimate for each candidate "
@@ -118,13 +131,34 @@ def main():
            "its bounded robot-state path can be specified, or explicitly report "
            "that current RGB cannot justify a safe observation action."
            if args.geometry_evidence else "")
-        + (" Camera calibration IS provided. In visual_method.initial_correspondences, "
+        + (" Camera calibration IS provided. Describe how to derive a current "
+           "sensor-only geometric uncertainty from public K/T: use a named physical "
+           "same-point correspondence with pixel radii, ray-gap and reprojection "
+           "checks only when genuinely visible in two cameras; otherwise describe "
+           "silhouette/ray support or report unknown depth. Never call a visual "
+           "support set a true object pose, contact or grasp point." if args.calibration and args.method_only else
+           " Camera calibration IS provided. In visual_method.initial_correspondences, "
            "name the same physical grasp-relevant landmark in two current RGB views and "
            "give each visible view's pixel_uv and an uncertainty radius in pixels. Omit "
            "uncertain views. Explain a calibrated ray-gap and reprojection check before "
            "any 3D estimate; if no reliable correspondence exists, request a bounded "
            "camera viewpoint move as a sensing action." if args.calibration else "")
     )
+    if args.method_only:
+        system += (
+            " STRICT METHOD-ONLY ROLE: Do not suggest any concrete robot action, "
+            "world-axis sign, absolute target, displacement, rotation, action candidate, "
+            "or gripper command, anywhere in the response. The decision model judges "
+            "actions from current sensor-derived numeric evidence produced by separate "
+            "algorithms. Describe only semantic source/receiver identity, task stages, "
+            "RGB feature extraction, optional same-point correspondence or silhouette "
+            "support, calibrated geometry "
+            "and uncertainty gates, freshness, visible post-action checks, and recovery "
+            "conditions. Include landmark_spec only when the CURRENT named physical "
+            "point is visible in every listed view; otherwise describe the visual "
+            "source region and its uncertainty without inventing a correspondence. "
+            "visual_method must be an object. Never expose native evaluation."
+        )
     details = {
         "public_observation": public,
         "experience": experience,
@@ -162,8 +196,9 @@ def main():
         "messages": [{"role": "system", "content": system},
                      {"role": "user", "content": parts}],
     }
-    write_json(args.output / "planner-input-manifest.json", {
+    manifest = {
         "model": payload["model"], "reasoning_effort": payload["reasoning_effort"],
+        "method_only": args.method_only,
         "public_observation": public, "images": image_meta,
         "historical_images_for_motion_only": previous_image_meta,
         "template_sha256": (hashlib.sha256(args.template.read_bytes()).hexdigest()
@@ -172,23 +207,34 @@ def main():
                                      if args.geometry_evidence else None),
         "experience_sha256": {k: hashlib.sha256(v.encode()).hexdigest()
                               for k, v in experience.items()},
-    })
-    request = urllib.request.Request("http://127.0.0.1:18883/v1/chat/completions",
-        data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"},
-        method="POST")
-    last_error = None
-    for attempt in range(4):
-        try:
-            with urllib.request.urlopen(request, timeout=1300) as handle:
-                response = json.load(handle)
-            break
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
-            last_error = str(error)
-            time.sleep(min(20 * (attempt + 1), 60))
+    }
+    if args.response_file:
+        prior_manifest = json.loads((args.response_file.parent / "planner-input-manifest.json").read_text())
+        if prior_manifest != manifest:
+            raise ValueError("Saved response public-input manifest differs")
+    write_json(args.output / "planner-input-manifest.json", manifest)
+    if args.response_file:
+        response = json.loads(args.response_file.read_text())
     else:
-        raise RuntimeError("Planner bridge failed: " + str(last_error))
+        request = urllib.request.Request("http://127.0.0.1:18883/v1/chat/completions",
+            data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"},
+            method="POST")
+        last_error = None
+        for attempt in range(4):
+            try:
+                with urllib.request.urlopen(request, timeout=1300) as handle:
+                    response = json.load(handle)
+                break
+            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
+                last_error = str(error)
+                time.sleep(min(20 * (attempt + 1), 60))
+        else:
+            raise RuntimeError("Planner bridge failed: " + str(last_error))
     write_json(args.output / "planner-response.json", response)
     plan = json.loads(response["choices"][0]["message"]["content"])
+    if (args.method_only and not plan.get("landmark_spec") and
+            isinstance(plan.get("visual_method"), dict)):
+        plan["landmark_spec"] = plan["visual_method"].get("landmark_spec")
     if isinstance(plan.get("task"), dict) and plan["task"].get("id") == obs["task"]:
         plan["task_detail"] = plan["task"]
         plan["task"] = obs["task"]
@@ -210,11 +256,35 @@ def main():
             not isinstance(plan.get("visual_method"), (dict, str)) or
             not isinstance(plan.get("experience"), list)):
         raise ValueError("Planner output failed contract validation")
+    if args.method_only:
+        forbidden = ("action_candidate", "selected_action", "selected_motion",
+                     "target_pose", "target_position", "world_delta", "move_xyz")
+        def inspect_keys(value):
+            if isinstance(value, dict):
+                for key, item in value.items():
+                    if any(word in key.lower() for word in forbidden):
+                        raise ValueError("Method-only planner emitted action field: " + key)
+                    inspect_keys(item)
+            elif isinstance(value, list):
+                for item in value:
+                    inspect_keys(item)
+        inspect_keys(plan)
+        spec = plan.get("landmark_spec")
+        if not isinstance(plan["visual_method"], dict):
+            raise ValueError("Method-only visual-method contract failed")
+        if spec is not None and (not isinstance(spec, dict) or
+                not set(spec.get("required_views", [])).issubset(
+                    {item["camera"] for item in obs["images"]}) or
+                not all(isinstance(spec.get(key), str) and spec[key]
+                        for key in ("landmark_id", "target_identity", "physical_landmark"))):
+            raise ValueError("Method-only optional landmark contract failed")
     plan["planner_provenance"] = {
         "model": "gpt-6.1-sol", "reasoning_effort": "high",
         "auth": "local ChatGPT Pro subscription bridge",
         "input_manifest": str(args.output / "planner-input-manifest.json"),
     }
+    if args.method_only:
+        plan["method_only"] = True
     write_json(args.output / "plan.json", plan)
     print(json.dumps({"plan": str(args.output / "plan.json"),
                       "stage_count": len(plan["stages"]),

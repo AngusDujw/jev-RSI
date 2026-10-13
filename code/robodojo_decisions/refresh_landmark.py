@@ -21,8 +21,11 @@ def refresh_landmark(obs: dict, plan: dict, output: Path) -> dict:
     output.mkdir(parents=True, exist_ok=False)
     data = Path(os.environ.get("ROBODOJO_GPT6_DATA_ROOT", str(Path.home() / "DataStorage/gpt6-dec")))
     experience = {}
+    experience_root = data / "experience" / ("model" if plan.get("method_only") else "")
     for label, name in (("global", "global.md"), ("task", f"{obs['task']}.md")):
-        path = data / "experience" / name
+        path = experience_root / name
+        if plan.get("method_only") and not path.is_file():
+            raise FileNotFoundError(f"Model-facing experience missing: {path}")
         experience[label] = path.read_text() if path.is_file() else ""
     previous = plan.get("initial_landmark_estimate")
     spec = plan.get("landmark_spec") or {
@@ -123,7 +126,22 @@ def refresh_landmark(obs: dict, plan: dict, output: Path) -> dict:
     (output / "annotation.json").write_text(json.dumps(annotation, ensure_ascii=False, indent=2))
     (output / "geometry.json").write_text(json.dumps(geometry, ensure_ascii=False, indent=2))
     if not geometry["accepted"]:
-        raise ValueError("Current two-view ray/reprojection check rejected landmark")
+        errors = [item["reprojection_error_px"] for item in geometry["checks"].values()]
+        radii = [item["annotation_uncertainty_radius_px"] for item in geometry["checks"].values()]
+        diagnostic_only = bool(
+            plan.get("method_only") and
+            all(depth > 0 for depth in geometry["positive_ray_distances_m"]) and
+            geometry["ray_condition"] <= 30 and geometry["ray_gap_m"] <= 0.010 and
+            all(error is not None and error <= 4.0 and error <= radius + 0.5
+                for error, radius in zip(errors, radii)))
+        if not diagnostic_only:
+            raise ValueError("Current two-view ray/reprojection check rejected landmark")
+        geometry["diagnostic_only_near_consistent"] = True
+        geometry["diagnostic_limits"] = (
+            "Strict same-point stereo acceptance failed. This near-consistent ray result "
+            "may inform only a <=5mm open-gripper precontact direction with full RGB veto; "
+            "it may not justify object contact, grasp, closure, or a precise world target.")
+        (output / "geometry.json").write_text(json.dumps(geometry, ensure_ascii=False, indent=2))
     return geometry
 
 
