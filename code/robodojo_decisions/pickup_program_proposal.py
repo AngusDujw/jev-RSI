@@ -100,8 +100,9 @@ def propose(obs, targets, material, green_plane, table, stage):
                 wrist = visibility.get('named_source_wrist_field_of_view')
                 if wrist:
                     score -= max(0,35-wrist['after_target_edge_margin_px'])
-                    score += .5 * max(0,min(35,wrist['after_target_edge_margin_px'])-min(35,wrist['current_edge_margin_px']))
-        scores[name]={'source_visibility_prediction':visibility,'stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
+                    if wrist['current_edge_margin_px'] < 35:
+                        score += .5 * min(60,max(0,wrist['after_target_edge_margin_px']-wrist['current_edge_margin_px']))
+        scores[name]={'source_visibility_prediction':visibility,'score_definition':'Controller utility: phase gain minus 40mm per added high-footprint overlap fraction, minus 1mm per wrist margin pixel below35; when current margin<35, plus0.5mm per restored margin pixel capped60. These are chosen utility weights, not physical error or success probabilities.','stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
                      'prediction':predictions.get(name),'scope':'A current controller proposal score under stated RGB/static-source/robot-model hypotheses, not task completion or observed contact.'}
     if not scores:
         return None,targets,diagnostics,scores
