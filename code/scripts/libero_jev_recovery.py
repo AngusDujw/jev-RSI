@@ -834,7 +834,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     contracts['release']=(
                         'Hold the release pose and command the gripper open. '
                         'After at least 12 native open ticks and measured aperture '
-                        'at least 70 mm, choose advance to withdraw. The held '
+                        'at least 70 mm, choose advance to end this attempt. The held '
                         'bowl was already above the visible open drawer when '
                         'you selected this gravity-drop route; this does not '
                         'declare official task success.')
@@ -896,7 +896,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             if stage in ('carry_lateral','carry') and verify_carry:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
             can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')))
-            next_stage = ('clear_receiver' if stage=='recover_open' and rack_task else
+            next_stage = ('finish_attempt' if stage=='release' and
+                          visible_container_drop_selected else
+                          'clear_receiver' if stage=='recover_open' and rack_task else
                           'settle_receiver' if stage=='clear_receiver' else
                           'select' if stage in ('recover_open','settle_receiver') else
                           'recover_open' if stage=='recover_up' else
