@@ -44,3 +44,5 @@
 - 【User】【2026-10-13 11:06】[prompt] 看一下现在的vgpu是否还有之前的问题
 - 【Agent】【2026-10-13 11:06】[result] 5880在2026-10-13 11:04复核：nvidia-smi仍Unlicensed (Restricted)、nvidia-gridd仍failed且无新许可日志；但cuCtxCreate_v2=0、PyTorch CUDA张量和1024x1024矩阵计算通过、GPU DINO/SAM worker完整加载ready=true。前日断言CUDA故障确定由24h许可锁定造成过强；许可异常仍存在，昨日CUDA错误具体原因未证实。无驱动/服务改动。
 - 【Agent】【2026-10-13 11:08】[result] 5880同日完整GPU视觉复核：在已存Goal1458公开agentview图像上，GPU GroundingDINO+SAM worker成功输出8个检测及mask，8.39秒，进程0退出；最小CUDA上下文/张量/矩阵均成功。vGPU状态仍Unlicensed (Restricted)、nvidia-gridd failed，故许可异常未恢复；昨天CUDA失败原因不能确定为许可锁定。未运行机器人回合或改动驱动。
+- 【User】【2026-10-13 15:54】[prompt] 现在还差哪些任务完成不了
+- 【Agent】【2026-10-13 15:54】[note] 复核本机与5880逐任务终局：选定10个Goal中1098(共享24次)、1202(共享17次)仍0整项双终局；另外1423仅旧init0历史成功，1163/1296等跨初态不稳。总体8/10曾成功，只有1383与1458具较清晰冻结多初态证据。
