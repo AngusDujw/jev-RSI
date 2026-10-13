@@ -35,6 +35,11 @@ def _green_mask(path: Path, camera: str) -> np.ndarray:
     roi = (((xx > 370) & (yy > 150) & (yy < 350)) if camera == "cam_high"
            else np.ones_like(yy, dtype=bool))
     mask = color & roi
+    if camera == 'cam_high' and os.environ.get('ROBODOJO_PICKUP_HIGH_MASK_COMPONENT_FILTER') == '1':
+        components,count=label_components(mask)
+        areas=np.bincount(components.ravel(),minlength=count+1)
+        areas[0]=0
+        mask &= areas[components]>=3
     if camera == "cam_right_wrist":
         components, count = label_components(mask)
         areas = np.bincount(components.ravel(), minlength=count + 1)
