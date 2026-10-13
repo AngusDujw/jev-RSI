@@ -35,7 +35,8 @@ class DecisionModel(Jev):
             questions['transition']['criteria'].pop('reobserve')
         status=state.get('measurement_status',{})
         arrived=bool(status.get('target_arrival'))
-        ready=arrived and (state['stage'] in ('approach','align','descend','lower','retreat') or
+        ready=arrived and state.get('orientation_arrived',True) and (
+                           state['stage'] in ('approach','align','descend','lower','retreat') or
                            state['stage'] in ('lift','carry') and status.get('holding_check')=='passed')
         if ready:
             questions['transition']['instructions']=(
@@ -45,6 +46,15 @@ class DecisionModel(Jev):
                 'current XYZ and gripper choices. A future-stage check is not '
                 'needed yet. This does not declare official task success.')
             questions['transition']['criteria'].pop('stop')
+        if (state.get('rotation_control') and not state.get('orientation_arrived')
+                and state['stage'] in ('approach','align','descend')):
+            questions['transition']['criteria'].pop('advance',None)
+            questions['transition']['instructions']=(
+                'The own wrist has not reached the supplied grasp orientation. '
+                'Choose rotation directions using required_rotation_world_rad, '
+                'keep this positioning phase until orientation_arrived, or stop '
+                'if the robot is physically blocked. The orientation goal is '
+                'the robot pose recorded before this episode, not scene truth.')
         if (state['stage']=='insert' and
                 state.get('measurement_status',{}).get('visible_contact_candidate')):
             questions['transition']['instructions']=(
@@ -114,6 +124,9 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn,prior_native_ticks=0):
     vision=GenericVision(rec);model=DecisionModel(rec)
     from scipy.spatial.transform import Rotation
     side=rec.cfg.get('approach_mode') in ('side','angled')
+    restore_orientation=bool(rec.cfg.get('drawer_bowl_algorithm')=='supervisor'
+                             and rec.cfg.get('task_id')==1202)
+    rotation_active=side or restore_orientation
     tilt=np.pi/4 if rec.cfg.get('approach_mode')=='angled' else np.pi/2
     entry_clearance=.055 if rec.cfg.get('approach_mode')=='angled' else .10
     phases=list(PHASES)
@@ -121,7 +134,9 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn,prior_native_ticks=0):
     notes=dict(NOTES,insert='Insert horizontally at the observed grasp height with gripper open; advance when target reached. Do not close before arrival.')
     initial_source_extent=None;side_sign=-1
     carry_hover_replans=0;carry_support_checked=False
-    orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
+    orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else (
+        Rotation.from_quat(json.loads((rec.folder/'robot.json').read_text())['quaternion']).as_matrix()
+        if restore_orientation else None)
     ticks=int(prior_native_ticks);phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
     initial_drawer_interior=None
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
@@ -423,7 +438,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn,prior_native_ticks=0):
                     recent_actions=history[-3:],gripper_aperture_mm=float(np.sum(abs(obs['robot0_gripper_qpos']))*1000),
                     feedback_note='valid=False holding is NOT success; gripper tick count is measured execution, not a recommended answer')
             rotation_error=np.zeros(3)
-            if side:
+            if rotation_active:
                 rotation_error=Rotation.from_matrix(orientation_goal@Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
                 state.update(rotation_control=True,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rotation_error.tolist())),rotation_relations={a:('hold' if abs(e)<.03 else 'target needs positive rotation' if e>0 else 'target needs negative rotation') for a,e in zip(['rx','ry','rz'],rotation_error)},rotation_tolerance_rad=.03,
                     orientation_arrived=bool(np.max(abs(rotation_error))<.03))
@@ -454,7 +469,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn,prior_native_ticks=0):
                            carry_hover_replans=carry_hover_replans,
                            recent_actions=history[-1:],
                            information_sources='Public task, rendered RGB-D/calibration, own robot state and executed actions only.')
-                if side:
+                if rotation_active:
                     state.update(rotation_control=True,
                                  required_rotation_world_rad=full['required_rotation_world_rad'],
                                  orientation_arrived=full['orientation_arrived'])
