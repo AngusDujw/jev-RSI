@@ -118,6 +118,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     side_plan_logged = False
     high_side_plan_logged = False
     high_y_insert_reached = False
+    high_arc_out_reached = False
+    high_arc_y_reached = False
     route_preorient_reached = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
@@ -128,8 +130,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     far_side_insert = bool(high_side_insert and rec.cfg.get('drawer_far_side_insert'))
     clearance_orientation = bool(thin_side_entry and rec.cfg.get(
         'drawer_clearance_orientation'))
+    high_side_arc = bool(high_side_insert and not far_side_insert and
+                         rec.cfg.get('drawer_high_side_arc'))
     table_guard = bool(far_side_insert or rec.cfg.get('drawer_table_clearance'))
-    max_native_ticks = 580 if far_side_insert else 550
+    max_native_ticks = 750 if high_side_arc else 580 if far_side_insert else 550
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
@@ -359,7 +363,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     reason=str(exc)))
         while phase < len(sequence):
             rec.check_budget()
-            stage_cap = (240 if far_side_insert and sequence[phase]['name'] == 'approach'
+            stage_cap = (330 if high_side_arc and sequence[phase]['name'] == 'contact'
+                         else 240 if far_side_insert and sequence[phase]['name'] == 'approach'
                          else 230 if high_side_insert and sequence[phase]['name'] == 'contact'
                          else 145)
             if ticks >= max_native_ticks or stage_ticks >= stage_cap:
@@ -478,6 +483,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         source='Public camera RGB-D/links plus own gripper collision mesh and proprioception'))
                     side_plan_logged = True
             high_side_tcp = None
+            high_arc_out_tcp = high_arc_in_tcp = None
             if high_side_insert:
                 # The low sideward segment visibly stopped near the foreground
                 # bowl. Cross its projected lane while above the visible upper
@@ -490,9 +496,18 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     upper_z+.02-float(np.min(projected_fingers[:, 2])))
                 if high_side_tcp[2]-side_entry_tcp[2] > .24:
                     raise RuntimeError('Visible high side route outside bounded reach')
+                if high_side_arc:
+                    # The original straight high-Y leg stalled 20 mm short
+                    # of its target. A bounded X detour was screened against
+                    # initial public RGB-D and own hand mesh; actual tracking
+                    # remains observable and each waypoint is Jev-controlled.
+                    high_arc_in_tcp = high_side_tcp + [0.020, 0., 0.]
+                    high_arc_out_tcp = high_arc_in_tcp + [0., .14, 0.]
                 if not high_side_plan_logged:
                     dump(rec.folder/'cabinet-side-high-route.json', dict(
                         high_side_tcp_world_m=high_side_tcp,
+                        high_arc_out_tcp_world_m=high_arc_out_tcp,
+                        high_arc_in_tcp_world_m=high_arc_in_tcp,
                         low_side_tcp_world_m=side_entry_tcp,
                         visible_upper_rod_world_z_m=upper_z,
                         own_full_hand_min_z_offset_m=float(
@@ -606,20 +621,44 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 # foreground object. Match the 2 mm Jev axis hold tolerance.
                 side_y_arrival_tol = (.002 if rec.cfg.get(
                     'drawer_table_clearance') else .009)
+                if high_side_arc and not high_arc_out_reached and \
+                        abs(position[0]-high_arc_out_tcp[0]) <= .005:
+                    high_arc_out_reached = True
+                    rec.event(dict(kind='high_arc_out_reached', native_tick=ticks,
+                        current_tcp_world_m=position.tolist(),
+                        target_tcp_world_m=high_arc_out_tcp.tolist(),
+                        source='own TCP feedback and public RGB-D/own mesh waypoint'))
+                if high_side_arc and high_arc_out_reached and not high_arc_y_reached and \
+                        position[1] <= high_arc_in_tcp[1]+side_y_arrival_tol:
+                    high_arc_y_reached = True
+                    rec.event(dict(kind='high_arc_y_reached', native_tick=ticks,
+                        current_tcp_world_m=position.tolist(),
+                        target_tcp_world_m=high_arc_in_tcp.tolist(),
+                        source='own TCP feedback and public RGB-D/own mesh waypoint'))
                 if (high_side_insert and not high_y_insert_reached and
-                        position[1] <= side_entry_tcp[1]+side_y_arrival_tol):
+                        position[1] <= side_entry_tcp[1]+side_y_arrival_tol and
+                        (not high_side_arc or (high_arc_y_reached and
+                         abs(position[0]-high_side_tcp[0]) <= .007))):
                     high_y_insert_reached = True
                     rec.event(dict(kind='high_side_y_waypoint_reached',
                         native_tick=ticks,
                         current_tcp_world_m=position.tolist(),
                         target_tcp_world_m=high_side_tcp.tolist(),
                         source='own TCP feedback and public RGB-D waypoint'))
-                if (high_side_insert and not high_y_insert_reached) or (
+                if high_side_arc and not high_arc_out_reached:
+                    target = high_arc_out_tcp.copy()
+                    contact_leg = 'cabinet_side_high_arc_out'
+                elif high_side_arc and not high_arc_y_reached:
+                    target = high_arc_in_tcp.copy()
+                    contact_leg = 'cabinet_side_high_arc_y'
+                elif high_side_insert and not high_y_insert_reached:
+                    target = high_side_tcp.copy()
+                    contact_leg = ('cabinet_side_high_arc_return' if high_side_arc
+                                   else 'cabinet_side_high_y_insert')
+                elif (
                         not high_side_insert and position[1] > side_entry_tcp[1] + .009):
-                    target = (high_side_tcp if high_side_insert else
-                              side_entry_tcp).copy()
-                    contact_leg = ('cabinet_side_high_y_insert' if high_side_insert
-                                   else 'cabinet_side_y_insert')
+                    target = side_entry_tcp.copy()
+                    contact_leg = 'cabinet_side_y_insert'
                 elif high_side_insert and position[2] > side_entry_tcp[2] + .009:
                     target = side_entry_tcp.copy()
                     contact_leg = 'cabinet_side_descend'
@@ -710,6 +749,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                 if high_side_tcp is not None else None),
                             high_side_y_waypoint_reached=(high_y_insert_reached
                                 if high_side_insert else None),
+                            high_arc_out_reached=(high_arc_out_reached
+                                if high_side_arc else None),
+                            high_arc_y_reached=(high_arc_y_reached
+                                if high_side_arc else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
@@ -821,6 +864,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'contact_path_leg names the active waypoint. Advance only '
                     'after the selected own finger is behind the visible rod '
                     'at the final pose.')
+            if high_side_arc and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Follow the supplied camera/own-mesh high side detour: '
+                    'shift right away from the visible rack, cross the '
+                    'foreground in Y, return to the measured cabinet side '
+                    'in X, descend into the visible middle/lower rod gap, '
+                    'slide behind the rod, then rise. contact_path_leg names '
+                    'the active waypoint. Advance only when the selected '
+                    'own finger is behind the rod at the final pose.')
             if contact_mode in ('tip_hook', 'down_hook') and name in ('approach', 'align'):
                 request['state']['stage_contract'] = (
                     'Keep the hand outside the cabinet and align the selected '
