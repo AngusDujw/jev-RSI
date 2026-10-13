@@ -240,6 +240,8 @@ def main():
                    help='Visible rim contact height from RGB-D bounds and own finger clearance')
     p.add_argument('--rim-tilt-deg', type=int, choices=[0,12,20], default=0,
                    help='Inward tilt of own fingers around a visible one-sided rim')
+    p.add_argument('--rim-axis', choices=['short','long'], default='short',
+                   help='Which visible horizontal bowl axis the own fingers close across')
     p.add_argument('--grasp-hold-ticks',type=int,choices=range(18,49,6),default=18)
     p.add_argument('--lift-recheck-mm',type=int,choices=[0,30],default=0)
     p.add_argument('--side-pad-overlap-mm',type=int,choices=[0,12],default=0)
@@ -294,6 +296,8 @@ def main():
         p.error('--rim-height-mode visible_sidewall requires Goal1202 drawer continuation')
     if a.rim_tilt_deg and not a.drawer_bowl_continuation:
         p.error('--rim-tilt-deg requires Goal1202 drawer continuation')
+    if a.rim_axis != 'short' and not a.drawer_bowl_continuation:
+        p.error('--rim-axis long requires Goal1202 drawer continuation')
     if a.knob_supervisor and (a.suite != 'libero_goal' or a.task_id != 1383 or
                               a.camera_size != 768 or
                               os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
@@ -321,7 +325,7 @@ def main():
                    existing_root+'/controller/config/api.company.local.json'),
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',

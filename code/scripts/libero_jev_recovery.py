@@ -20,7 +20,10 @@ NATIVE_BUDGET = 580  # Env horizon is 600; initial gripper opening uses 10 ticks
 def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_candidates):
     extent = src['high']-src['low']
     # Horizontal observed bounding range, no hidden object shape/PCA metadata.
-    major = np.array([1.,0.,0.]) if extent[0] >= extent[1] else np.array([0.,1.,0.])
+    close_on_long_axis = (cfg.get('task_id') == 1202 and
+                          cfg.get('rim_axis', 'short') == 'long')
+    major_is_x = (extent[0] < extent[1]) if close_on_long_axis else (extent[0] >= extent[1])
+    major = np.array([1.,0.,0.]) if major_is_x else np.array([0.,1.,0.])
     minor = np.array([-major[1],major[0],0.])
     R = np.column_stack([major, -minor, [0.,0.,-1.]])
     current = Rotation.from_quat(quaternion).as_matrix()
@@ -100,6 +103,7 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
                 candidate['target'] = np.r_[target_xy,target_z]
                 candidate['orientation'] = R_side
                 candidate['grasp_height_source'] = 'visible one-sided rim pinch'
+                candidate['visible_rim_axis'] = cfg.get('rim_axis', 'short')
                 candidate['rim_height_mode'] = cfg.get('rim_height_mode', 'top_overlap')
                 candidate['visible_sidewall_drop_mm'] = float(
                     rim_drop*1000)
