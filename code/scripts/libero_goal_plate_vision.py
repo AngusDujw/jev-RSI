@@ -119,6 +119,18 @@ def visible_front_goal(view, plate, stove):
     stove_x0, _, stove_x1, stove_y1 = stove['bbox']
     centre_u = (stove_x0+stove_x1)//2
     source_v = int(round(plate['uv'][1]))
+    # Estimate the visible tabletop separately from candidate goal patches.
+    # A shallow object can be only 1--2 cm tall: accepting its top as a table
+    # patch and then thresholding obstacles relative to that top hides it.
+    support_region = cloud[360:740, 250:740, 2]
+    near_plate_level = support_region[np.isfinite(support_region) &
+        (support_region > float(plate['low'][2])-.025) &
+        (support_region < float(plate['low'][2])+.010)]
+    if len(near_plate_level) < 2000:
+        raise RuntimeError('Visible tabletop support insufficient')
+    support_z = float(np.quantile(near_plate_level, .3))
+    if int((np.abs(near_plate_level-support_z) < .004).sum()) < 1000:
+        raise RuntimeError('Visible tabletop plane ambiguous')
     goals = []
     # The receiving relation is to the visible stove, not to the plate's
     # initial image row. A source-relative row can leave a farther plate
@@ -138,7 +150,7 @@ def visible_front_goal(view, plate, stove):
             if not np.isfinite(patch).all():
                 continue
             goal = np.median(patch, axis=0)
-            if abs(goal[2]-plate['low'][2]) > .025:
+            if abs(goal[2]-support_z) > .006:
                 continue
             vector = goal[:2]-source[:2]
             distance = np.linalg.norm(vector)
@@ -148,8 +160,8 @@ def visible_front_goal(view, plate, stove):
             # Only visible tabletop pixels are considered. Ignore the source
             # plate itself; elevated bowl/carton/bottle points remain obstacles.
             valid = np.isfinite(cloud).all(axis=2)
-            elevated = valid & (cloud[:, :, 2] > goal[2]+.025) & (
-                cloud[:, :, 2] < goal[2]+.30)
+            elevated = valid & (cloud[:, :, 2] > support_z+.008) & (
+                cloud[:, :, 2] < support_z+.30)
             elevated[:320] = 0
             elevated[:, :250] = 0
             elevated &= ~plate['mask']
@@ -177,7 +189,7 @@ def visible_front_goal(view, plate, stove):
                     first_length = float(np.linalg.norm(first))
                     second = goal[:2]-waypoint[:2]
                     second_length = float(np.linalg.norm(second))
-                    if (abs(waypoint[2]-goal[2]) < .025 and
+                    if (abs(waypoint[2]-support_z) < .006 and
                             .06 < first_length < .40 and
                             .025 < second_length < .30):
                         leg_counts = []
@@ -213,7 +225,9 @@ def visible_front_goal(view, plate, stove):
             if row['visible_two_leg_route'] else row['elevated_corridor_pixels'],
         abs(row['goal_uv'][0]-centre_u),
         row['travel_m']))
-    return dict(selected, evaluated_visible_candidates=goals,
+    return dict(selected, visible_support_world_z_m=support_z,
+                elevated_threshold_world_z_m=support_z+.008,
+                evaluated_visible_candidates=goals,
                 selection_reason='frontmost visible table row with clear swept plate corridor')
 
 
