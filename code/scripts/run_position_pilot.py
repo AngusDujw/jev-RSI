@@ -122,28 +122,42 @@ class Jev:
         self.api = API(config, recorder.event, "jev")
 
     def post_with_connect_retry(self, endpoint, payload):
-        """Retry only failures before the HTTP request reaches the model service.
+        """Retry an unanswered decision before any robot action is executed.
 
-        A TLS/proxy connection failure has no model answer to act on. Other
-        failures, including interrupted response reads, remain terminal so a
-        possibly completed model call is never silently duplicated.
+        Connect failures never reach the service. An interrupted response may
+        have been computed remotely; record that possible duplicate explicitly
+        and retry the exact same observation at most once. Only an answer that
+        reaches this process is allowed to drive a robot action.
         """
         import httpx
 
-        for attempt in range(3):
+        connect_failures = read_failures = 0
+        request_sha256 = hashlib.sha256(json.dumps(payload,
+            sort_keys=True).encode()).hexdigest()
+        while True:
             self.rec.check_budget()
             try:
                 return self.api.post(endpoint, payload)
             except (httpx.ConnectError, httpx.ConnectTimeout, httpx.ProxyError) as exc:
-                if attempt == 2:
+                connect_failures += 1
+                if connect_failures >= 3:
                     raise
-                delay = .75 * (attempt + 1)
+                delay = .75 * connect_failures
                 self.rec.event(dict(kind='jev_connect_retry',
-                    request_sha256=hashlib.sha256(json.dumps(payload,
-                        sort_keys=True).encode()).hexdigest(),
-                    failed_call=attempt + 1, error_type=type(exc).__name__,
+                    request_sha256=request_sha256,
+                    failed_call=connect_failures, error_type=type(exc).__name__,
                     delay_seconds=delay))
                 time.sleep(delay)
+            except (httpx.ReadError, httpx.ReadTimeout) as exc:
+                read_failures += 1
+                if read_failures >= 2:
+                    raise
+                self.rec.event(dict(kind='jev_unanswered_read_retry',
+                    request_sha256=request_sha256,
+                    error_type=type(exc).__name__,
+                    possible_duplicate_model_call=True,
+                    robot_action_executed=False, delay_seconds=.75))
+                time.sleep(.75)
 
     def choose(self, state, metadata):
         self.rec.check_budget()
