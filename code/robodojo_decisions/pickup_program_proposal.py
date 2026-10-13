@@ -9,6 +9,7 @@ from camera_geometry import eef_transform, gripper_height_above_landmark
 from pickup_rgb_axes import _targets
 from pickup_green_material_support import predict_feature_residuals
 from robot_path_preview import preview
+from pickup_source_visibility import effect as source_visibility_effect
 
 
 def propose(obs, targets, material, green_plane, table, stage):
@@ -82,7 +83,12 @@ def propose(obs, targets, material, green_plane, table, stage):
                    float(np.linalg.norm(current_error)-np.linalg.norm(after)))
         else:
             score=float(angle-newangle)
-        scores[name]={'stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
+        visibility = None
+        if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
+            visibility = source_visibility_effect(obs, target)
+            if visibility:
+                score -= 30.0 * visibility['additional_current_source_pixel_overlap_fraction']
+        scores[name]={'source_visibility_prediction':visibility,'stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
                      'prediction':predictions.get(name),'scope':'A current controller proposal score under stated RGB/static-source/robot-model hypotheses, not task completion or observed contact.'}
     if not scores:
         return None,targets,diagnostics,scores
