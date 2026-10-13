@@ -77,12 +77,11 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
             rim_target_z = max(
                 float(c[1]['target'][2])-rim_drop,
                 level-ee['finger_low_z_offset']+cfg['table_margin_mm']/1000)
-            # To pinch one side of an open rim, the closing plane must pass
-            # through that rim. A tiny shift based on width-inner_gap leaves
-            # the bowl centered between the two fingers, so both pads close
-            # into the empty interior. Keep a 4 mm inward margin for the
-            # visible-boundary uncertainty; both sides remain Jev choices.
-            rim_offset = max(.004, width/2-.004)
+            # Center the opposed open inner pad faces on one visible boundary.
+            # An inward offset makes the outer face touch first and can push
+            # a movable source aside before the inner face reaches it.
+            # Both visible sides remain Jev choices.
+            rim_offset = width/2
             rim_candidates = []
             for i, side in enumerate((1., -1.)):
                 candidate = dict(c[1])
