@@ -136,7 +136,11 @@ def visible_front_goal(view, plate, stove):
         cloud[:, :, 2] < support_z+.30)
     elevated[:320] = 0
     elevated[:, :250] = 0
-    elevated &= ~plate['mask']
+    # The red-ring hull omits parts of the white plate and its outer bevel.
+    # Keep those observed pixels out of obstacle counting near the start.
+    source_footprint = cv2.dilate(plate['mask'].astype(np.uint8),
+                                  np.ones((25, 25), np.uint8)).astype(bool)
+    elevated &= ~source_footprint
     obstacles_xy = cloud[elevated][:, :2]
     radius = .5*max(np.asarray(plate['high'])[:2]-
                     np.asarray(plate['low'])[:2]) + .008
