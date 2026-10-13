@@ -127,3 +127,7 @@ CIRCLE-3  lr-schedule：未决节点已跨 3 个周——长期悬而未决
 ## License
 
 模板本身按需自选；衍生的科研仓库内容版权归各使用者所有。
+
+## RoboDojo 原始实验证据网站
+
+只读实验台：[使用说明](code/robodojo_decisions/review_site/README.md)。按任务选择整段回合，审阅原始计划、阶段、三RGB、实际推进器输入输出、视频和原生终局。只有预检的任务以及历史缺失questions均明确标记；complete不等于success。网站服务不调用模型或仿真。
