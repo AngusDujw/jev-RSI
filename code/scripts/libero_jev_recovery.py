@@ -308,6 +308,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     rack_contact_checked = False
     rack_contact_evidence = dict(status='not_checked')
     visible_goal_evidence = dict(status='not_checked')
+    visible_container_drop_selected = False
 
     def views():
         return {c: dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]), depth=depth_fn(env.sim, obs[c+'_depth'])[::-1].squeeze(), K=k_fn(env.sim,c,obs[c+'_image'].shape[0],obs[c+'_image'].shape[1]), T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
@@ -829,6 +830,14 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         'now to one gripper-opening trial without deeper insertion; '
                         'this is not official success. Keep closed for this lower '
                         'decision, then decide opening in release.')
+                if stage == 'release' and visible_container_drop_selected:
+                    contracts['release']=(
+                        'Hold the release pose and command the gripper open. '
+                        'After at least 12 native open ticks and measured aperture '
+                        'at least 70 mm, choose advance to withdraw. The held '
+                        'bowl was already above the visible open drawer when '
+                        'you selected this gravity-drop route; this does not '
+                        'declare official task success.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
@@ -870,7 +879,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 complete = bool(complete or contact_trial)
             if stage == 'select':complete=True
             if stage == 'grasp':complete=grip_ticks>=rec.cfg.get('grasp_hold_ticks', 18) and gripper==1
-            if stage in ['release','recover_open']:complete=grip_ticks>=24 and aperture>=70 and gripper==-1
+            if stage in ['release','recover_open']:
+                release_ticks=(12 if stage=='release' and
+                               visible_container_drop_selected else 24)
+                complete=grip_ticks>=release_ticks and aperture>=70 and gripper==-1
             if stage == 'settle_receiver':complete=stage_ticks>=12 and aperture>=70 and gripper==-1
             if stage == 'test_lift':complete=complete and holding['status']=='passed'
             if stage == 'lift' and lift_verified:complete=complete and holding['status']=='passed'
@@ -911,6 +923,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             block_ticks=(3 if gentle_carry else 6 if adaptive and
                 (stage in ['grasp','release','recover_open','settle_receiver'] or
                  np.max(abs(error))>.06) else 3)
+            if stage=='release' and visible_container_drop_selected and complete:
+                block_ticks=3
             state['gripper']['next_action_block_native_ticks']=block_ticks
             state['translation_axes']={a:dict(current_coordinate_m=float(position[i]),goal_coordinate_m=float(target[i]),goal_minus_current_mm=round(float(error[i])*1000,2),relation='within_tolerance' if abs(error[i])<.002 else 'goal_coordinate_larger' if error[i]>0 else 'goal_coordinate_smaller') for i,a in enumerate('xyz')}
             state['rotation_questions']='Only axes outside 0.03rad tolerance are requested; unrequested rotations are zero, not fabricated model choices.'
@@ -985,6 +999,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 rack_contact_evidence=dict(status='not_checked')
             elif transition=='advance':
                 to_stage=next_stage
+                if stage=='lower' and container_drop['status']=='visible_drop_candidate':
+                    visible_container_drop_selected=True
+                    rec.event(dict(kind='jev_selected_visible_container_drop',
+                                   native_tick=ticks, decision_id=d['decision_id']))
                 if stage=='select':
                     if selected in failed_candidates:raise RuntimeError('Jev repeated failed candidate')
                     grasp_tries+=1
