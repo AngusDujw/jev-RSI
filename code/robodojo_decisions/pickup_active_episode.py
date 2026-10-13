@@ -1327,6 +1327,21 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                          'execute_program_b':'Execute only full program B once, then reobserve.',
                          'stop_program_unsupported':'Execute neither; current evidence supports neither complete program.'})]
                     record['complete_program_choice_map'] = program_choice_map
+        offered = list(model_input.get('complete_robot_action_targets',{}).values())
+        if (os.environ.get('ROBODOJO_PICKUP_STAGE_PROGRESS_DECISION') == '1'
+                and record['stage'] in ('coarse_directional_alignment_review','strict_tool_geometry_review')
+                and offered and all(not target['right']['gripper_closed'] for target in offered)):
+            policy = (
+                'This is a NATIVE SIMULATED open-hand incremental stage decision, not a real-hardware deployment or contact certificate. '
+                'Compare the offered COMPLETE legal five-step programs for expected progress toward the CURRENT stage objective using current RGB, measured robot state and whatever uncertain numerical evidence this variant actually supplies. '
+                'Choose one whole supported program, or STOP for current source ambiguity, a current RGB/robot contradiction, a visible blocker, or no plausible current-stage progress. '
+                'Declared unresolved future grasp/contact geometry and the absence of a scene-wide collision proof alone do not rule out every bounded OPEN precontact increment. '
+                'Never certify contact, close the hand, infer holding, combine components or override STOP; reobserve after the selected program. Strict contact/close gates are separate and unchanged.')
+            model_input['open_stage_decision_policy'] = policy
+            for question in questions:
+                if question['name'] == 'full_program_decision':
+                    question['instructions'] = policy
+            record['decision_policy_variant'] = 'open_current_stage_increment'
         try:
             answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
                                  f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",
