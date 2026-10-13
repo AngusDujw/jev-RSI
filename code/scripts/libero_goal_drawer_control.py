@@ -120,6 +120,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     high_y_insert_reached = False
     high_arc_out_reached = False
     high_arc_y_reached = False
+    late_turn_reached = False
     route_preorient_reached = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
@@ -132,8 +133,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         'drawer_clearance_orientation'))
     high_side_arc = bool(high_side_insert and not far_side_insert and
                          rec.cfg.get('drawer_high_side_arc'))
+    late_preorient = bool(high_side_insert and not far_side_insert and
+                          rec.cfg.get('drawer_late_preorient'))
     table_guard = bool(far_side_insert or rec.cfg.get('drawer_table_clearance'))
-    max_native_ticks = 750 if high_side_arc else 580 if far_side_insert else 550
+    max_native_ticks = 750 if (high_side_arc or late_preorient) else 580 if far_side_insert else 550
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
@@ -363,7 +366,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     reason=str(exc)))
         while phase < len(sequence):
             rec.check_budget()
-            stage_cap = (330 if high_side_arc and sequence[phase]['name'] == 'contact'
+            stage_cap = (330 if (high_side_arc or late_preorient) and
+                         sequence[phase]['name'] == 'contact'
                          else 240 if far_side_insert and sequence[phase]['name'] == 'approach'
                          else 230 if high_side_insert and sequence[phase]['name'] == 'contact'
                          else 145)
@@ -556,7 +560,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     route_preorient_reached = True
                     rec.event(dict(kind='route_preorient_reached',
                         native_tick=ticks, source='Actual robot wrist feedback'))
-                approach_leg = ('high_free_space_turn' if
+                approach_leg = ('high_free_space_turn' if not late_preorient and
                     np.max(np.abs(turn_error)) >= .06 and
                     not (route_preorient_reached and
                          (far_side_insert or clearance_orientation))
@@ -645,6 +649,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         current_tcp_world_m=position.tolist(),
                         target_tcp_world_m=high_side_tcp.tolist(),
                         source='own TCP feedback and public RGB-D waypoint'))
+                if (late_preorient and high_y_insert_reached and
+                        not late_turn_reached):
+                    side_turn_error = Rotation.from_matrix(side_orientation @
+                        Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
+                    if np.max(np.abs(side_turn_error)) < .06:
+                        late_turn_reached = True
+                        rec.event(dict(kind='late_side_turn_reached',
+                            native_tick=ticks,
+                            current_tcp_world_m=position.tolist(),
+                            source='own wrist feedback at public RGB-D waypoint'))
                 if high_side_arc and not high_arc_out_reached:
                     target = high_arc_out_tcp.copy()
                     contact_leg = 'cabinet_side_high_arc_out'
@@ -659,6 +673,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         not high_side_insert and position[1] > side_entry_tcp[1] + .009):
                     target = side_entry_tcp.copy()
                     contact_leg = 'cabinet_side_y_insert'
+                elif late_preorient and not late_turn_reached:
+                    target = high_side_tcp.copy()
+                    contact_leg = 'cabinet_side_high_turn'
                 elif high_side_insert and position[2] > side_entry_tcp[2] + .009:
                     target = side_entry_tcp.copy()
                     contact_leg = 'cabinet_side_descend'
@@ -667,7 +684,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     contact_leg = 'cabinet_side_x_slide'
                 else:
                     contact_leg = 'cabinet_side_rise'
-            orientation_goal = (high_entry_orientation if high_entry and
+            orientation_goal = (initial_orientation if late_preorient and
+                (name in ('approach', 'align') or
+                 (name == 'contact' and not high_y_insert_reached)) else
+                high_entry_orientation if high_entry and
                 name in ('approach', 'align') else side_orientation)
             rotation_error = (Rotation.from_matrix(orientation_goal @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
@@ -753,6 +773,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                 if high_side_arc else None),
                             high_arc_y_reached=(high_arc_y_reached
                                 if high_side_arc else None),
+                            late_side_turn_reached=(late_turn_reached
+                                if late_preorient else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
@@ -855,6 +877,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'camera-measured cabinet side above the visible upper rod. '
                     'The selected whole-hand mesh stays outside the measured '
                     'cabinet edge. Advance only after own pose evidence.')
+            if late_preorient and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Reach the camera-measured high cabinet-side approach '
+                    'with the initial own wrist orientation. Keep the '
+                    'gripper open. Advance only after own pose evidence.')
             if high_side_insert and name == 'contact':
                 request['state']['stage_contract'] = (
                     'Cross the visible foreground at the supplied high side '
@@ -864,6 +891,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'contact_path_leg names the active waypoint. Advance only '
                     'after the selected own finger is behind the visible rod '
                     'at the final pose.')
+            if late_preorient and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Cross the visible foreground in Y while retaining the '
+                    'initial wrist orientation, then turn the open wrist at '
+                    'the measured cabinet side, descend into the visible '
+                    'middle/lower rod gap, slide behind the rod and rise. '
+                    'contact_path_leg names the active waypoint. Advance '
+                    'only when the own finger is behind the rod.')
             if high_side_arc and name == 'contact':
                 request['state']['stage_contract'] = (
                     'Follow the supplied camera/own-mesh high side detour: '
