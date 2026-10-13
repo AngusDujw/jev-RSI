@@ -626,8 +626,14 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 table_cache = table
         green_plane = None
         green_plane_errors = []
+        try:
+            green_plane = build_green_plane(obs)
+        except ValueError as error:
+            green_plane_errors.append(f"current_high_right: {error}")
         for reference in sorted(temporal_references.values(),
                                 key=lambda row: row['step_id']):
+            if green_plane is not None:
+                break
             if obs['step_id'] - reference['step_id'] < 20:
                 continue
             try:
@@ -655,6 +661,12 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     obs, height_evidence, historical_height=True, green_plane=green_plane)
             except ValueError as error:
                 material_error = "Historical height revalidation failed: " + str(error)
+        if material is None and green_plane is not None:
+            try:
+                material = build_green_material_support(
+                    obs, None, green_plane=green_plane)
+            except ValueError as error:
+                material_error = "Independent current RGB plane failed: " + str(error)
         margin = hull["right_wrist_mask_image_edge_margin_px"]
         nearest = hull["pad_to_visual_support_distance_mm_q05_q50_q95"][0]
         near_refresh = None

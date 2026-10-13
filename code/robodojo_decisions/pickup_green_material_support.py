@@ -30,30 +30,49 @@ def _surface_nearest(points: np.ndarray, vertices: np.ndarray) -> tuple[np.ndarr
     return best, nearest
 
 
-def build(observation: dict, temporal_metal: dict,
+def build(observation: dict, temporal_metal: dict | None,
           half_height_m: float = 0.020,
           historical_height: bool = False,
           green_plane: dict | None = None) -> dict:
     if observation["task"] != "general_pickup":
         raise ValueError("Green-handle material support is pickup-specific")
-    reference_step = temporal_metal.get("current_step_id")
-    if historical_height:
-        if (not isinstance(reference_step, int) or
-                reference_step >= observation["step_id"] or
-                temporal_metal.get("height_static_check_current_step_id") !=
-                observation["step_id"]):
-            raise ValueError("Historical RGB height lacks a current static-source check")
-    elif reference_step != observation["step_id"]:
-        raise ValueError("Metal depth and current RGB step disagree")
-    if temporal_metal.get("accepted_sift_feature_count", 0) < 3:
-        raise ValueError("No independently matched temporal metal patch")
-    if not temporal_metal["fixed_high_rgb_static_check"][
-            "stable_enough_for_temporal_ray_check"]:
-        raise ValueError("Fixed-camera RGB does not support a static source")
-    metal_z = float(temporal_metal[
-        "visual_metal_patch_world_xyz_median_m"][2])
-    if not 0.65 <= metal_z <= 0.85 or not 0.005 <= half_height_m <= 0.040:
-        raise ValueError("Metal-height or stated slab range is invalid")
+    reference_step = observation["step_id"]
+    metal_z = None
+    if temporal_metal is None:
+        if historical_height or green_plane is None:
+            raise ValueError("No RGB plane or independently matched metal height")
+        # No synthetic silver matches: a validated current RGB plane is an
+        # independent height hypothesis with its own identity/uncertainty.
+        if (green_plane['current_step_id'] != observation['step_id'] or
+                green_plane['best_iou'] < .55 or
+                min(green_plane['right_green_coverage'],
+                    green_plane['projected_high_green_coverage']) < .65 or
+                green_plane['pixel_shift_height_p95_mm'] > 5):
+            raise ValueError("Current green-plane evidence failed its own gates")
+        if green_plane['reference_step_id'] != observation['step_id']:
+            check = green_plane.get('current_fixed_high_static_check')
+            if not check or not check['stable_enough_for_temporal_ray_check']:
+                raise ValueError("Earlier silhouette lacks current static-source check")
+        reference_step = green_plane['reference_step_id']
+    else:
+        reference_step = temporal_metal.get("current_step_id")
+        if historical_height:
+            if (not isinstance(reference_step, int) or
+                    reference_step >= observation["step_id"] or
+                    temporal_metal.get("height_static_check_current_step_id") !=
+                    observation["step_id"]):
+                raise ValueError("Historical RGB height lacks a current static-source check")
+        elif reference_step != observation["step_id"]:
+            raise ValueError("Metal depth and current RGB step disagree")
+        if temporal_metal.get("accepted_sift_feature_count", 0) < 3:
+            raise ValueError("No independently matched temporal metal patch")
+        if not temporal_metal["fixed_high_rgb_static_check"][
+                "stable_enough_for_temporal_ray_check"]:
+            raise ValueError("Fixed-camera RGB does not support a static source")
+        metal_z = float(temporal_metal[
+            "visual_metal_patch_world_xyz_median_m"][2])
+        if not 0.65 <= metal_z <= 0.85 or not 0.005 <= half_height_m <= 0.040:
+            raise ValueError("Metal-height or stated slab range is invalid")
     calibration = observation["camera_calibration"]
     if calibration["step_id"] != observation["step_id"]:
         raise ValueError("Camera calibration is not current")
@@ -135,18 +154,18 @@ def build(observation: dict, temporal_metal: dict,
         'localization_hypothesis_sample_count': int(same_ray.sum()),
         'limitations': 'This is a RGB-supported planar/slab point hypothesis, not verified same-point correspondence or true object pose. The paired nearest public surfaces define current reachable face span, not a recommended physical action or observed contact. Same-pixel depth samples are not calibrated confidence bounds. Whole-object quantiles below describe spatial extent and must not be confused with this point localization.'}
     return {
-        "source": ("Current actual green pixels in high/right RGB, current temporal wrist silhouette plane fit, public K/T, measured robot and public inner-finger STL; silver is separate identity/stability corroboration"
+        "source": (("Current actual green pixels in high/right RGB, validated current/temporal silhouette plane, public K/T, measured robot and public inner-finger STL; no silver match is claimed" if temporal_metal is None else "Current actual green pixels in high/right RGB, current temporal wrist silhouette plane fit, public K/T, measured robot and public inner-finger STL; silver is separate identity/stability corroboration")
                    if green_plane is not None else
                    "Current actual green pixels in high/right RGB, public K/T, same-episode silver height hypothesis, measured robot and public inner-finger STL"),
         "current_step_id": observation["step_id"],
         "height_reference_step_id": reference_step,
         "height_evidence_mode": (
-            "CURRENT temporal green-plane fit with explicit uncertainty; earlier wrist reference has a current fixed-high static-source check"
+            "CURRENT green-plane fit with explicit uncertainty; any earlier wrist reference has a current fixed-high static-source check"
             if green_plane is not None else
             "Earlier same-episode RGB-matched silver height; CURRENT fixed-high source stability and CURRENT high/right green-pixel support are revalidated. No current silver match is claimed."
             if historical_height else
             "Current same-episode silver texture match plus current high/right green-pixel support"),
-        "metal_patch_height_m": round(metal_z, 5),
+        "metal_patch_height_m": round(metal_z, 5) if metal_z is not None else None,
         "current_green_plane_fit": green_plane,
         "assumed_green_height_slab_m": [round(float(levels[0]), 5),
                                         round(float(levels[-1]), 5)],
