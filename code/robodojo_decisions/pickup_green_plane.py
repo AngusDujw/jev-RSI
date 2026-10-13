@@ -43,12 +43,17 @@ def build(obs, reference=None):
         raise ValueError('Near-horizontal source rays')
     heights = np.arange(.700, .851, .001)
     transforms = []
+    valid_heights = []
     for z in heights:
         xyz = t[:3, 3] + rays*((z-t[2, 3])/rays[:, 2])[:, None]
         uv, depth = _project_many(cb, xyz)
         if np.any(depth <= 0):
-            raise ValueError('Source ROI projects behind current wrist')
+            continue
+        valid_heights.append(float(z))
         transforms.append(cv2.getPerspectiveTransform(corners, uv.astype(np.float32)))
+    if len(valid_heights) < 40:
+        raise ValueError('Insufficient positive-depth plane search range')
+    heights = valid_heights
 
     def shifted(mask, dx, dy):
         return cv2.warpAffine(mask.astype(np.uint8), np.float32([[1, 0, dx], [0, 1, dy]]),
@@ -66,7 +71,8 @@ def build(obs, reference=None):
 
     nominal = curve(high, wrist)
     best = max(nominal, key=lambda r: r[1])
-    if best[1] < .55 or min(best[2:]) < .65 or not .703 < best[0] < .847:
+    if (best[1] < .55 or min(best[2:]) < .65 or
+            not heights[0]+.003 < best[0] < heights[-1]-.003):
         raise ValueError(f'Green plane fit insufficient: best IoU={best[1]:.3f}')
     jitter = []
     for dx, dy in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
@@ -92,6 +98,7 @@ def build(obs, reference=None):
             'best_iou': round(best[1], 4), 'right_green_coverage': round(best[2], 4),
             'projected_high_green_coverage': round(best[3], 4),
             'near_optimal_height_range_m': [round(min(compatible), 6), round(max(compatible), 6)],
+            'positive_depth_height_search_range_m': [round(heights[0], 6), round(heights[-1], 6)],
             'pixel_shift_height_p95_mm': round(p95*1000, 3),
             'declared_systematic_allowance_mm': 5, 'jitter_trials': jitter,
             'limitations': 'Horizontal planar green surface and RGB identity are hypotheses. Occlusion, different visible surfaces, segmentation and unknown calibration bias remain. Pixel sensitivity is not a calibrated confidence bound. Added5mm is a declared allowance, not certified clearance. Not true object pose, same-point stereo, contact or a grasp target.'}
