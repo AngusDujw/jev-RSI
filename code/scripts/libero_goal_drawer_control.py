@@ -334,7 +334,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     contact_leg = 'side_rise'
             rotation_error = (Rotation.from_matrix(side_orientation @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
-                if name in ('align', 'contact', 'grasp', 'pull', 'release')
+                if name in ('align', 'contact', 'grasp', 'pull', 'release') or
+                   (name == 'approach' and rec.cfg.get('drawer_preorient'))
                 else np.zeros(3))
             oriented = bool(np.max(np.abs(rotation_error)) < .06)
             aperture = float(np.sum(np.abs(obs['robot0_gripper_qpos']))*1000)
@@ -421,6 +422,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'executes before the stage edge. When false, choose '
                 'continue_phase or stop. This is a local visible/proprioceptive '
                 'stage gate, not official task success.')
+            if name == 'approach' and rec.cfg.get('drawer_preorient'):
+                request['state']['stage_contract'] += (
+                    ' Rotate toward the supplied own-wrist target while '
+                    'translating. Advance on TCP arrival; the next align '
+                    'stage checks and completes any remaining orientation.')
             if hook_mode and name == 'grasp':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open and place one own finger behind the '
