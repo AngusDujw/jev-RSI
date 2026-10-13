@@ -45,6 +45,7 @@ def _runtime_planner_stage(stages: dict, runtime: str):
         'closed_gripper_visual_test': ('capture_and_following', 'capture_verification'),
         'grasp_hypothesis_review': ('contact_verification', 'capture_gate'),
         'near_contact_preparation': ('contact_verification', 'calibrated_geometry_gate'),
+        'visual_grasp_attempt_review': ('contact_verification', 'calibrated_geometry_gate'),
         'planar_precontact': ('coarse_directional_alignment', 'precontact_semantic_gate'),
     }
     name = next((key for key in aliases.get(runtime, ()) if key in stages), None)
@@ -1089,7 +1090,30 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     "the PUBLIC facet midpoint is held approximately, not LINK6. "
                     "They are manipulation-orientation hypotheses, not extra view sweeps. "
                     "Compare supplied angular/point errors and actual whole-hand RGB corridor.")
-        if "close_right_gripper_hold_link6" in targets:
+        if (os.environ.get('ROBODOJO_PICKUP_VISUAL_GRASP_ATTEMPT') == '1' and not gripper_closed
+                and not any(name.startswith('close_') for name in targets)):
+            from pickup_visual_grasp import propose as propose_visual_grasp
+            visual_target,visual_evidence=propose_visual_grasp(obs,material,tool_alignment)
+            record['visual_grasp_attempt_evidence']=visual_evidence
+            repeated=False
+            if visual_target is not None:
+                pose=eef_transform(visual_target['right'])
+                for old in trace:
+                    action=old.get('post_action',{}).get('action',{})
+                    previous=action.get('target',{}).get('right',{})
+                    if previous.get('gripper_closed'):
+                        prior=eef_transform(previous)
+                        if (np.linalg.norm(pose[:3,3]-prior[:3,3])<.005 and
+                                Rotation.from_matrix(pose[:3,:3] @ prior[:3,:3].T).magnitude()<.025):
+                            repeated=True
+                if not repeated:
+                    key='close_visual_material_attempt_hold_link6'
+                    targets[key]=visual_target
+                    options[key]='One complete five-step CLOSE attempt with both measured LINK6 poses held; NOT a metric contact certificate. Inspect actual solid material and true opposing fingers in current RGB; choose further alignment or STOP if unsupported. Reobserve and verify source-following separately.'
+                    record['stage']='visual_grasp_attempt_review'
+                    record['current_phase_goal']='Assess an explicitly uncertain SIMULATED qualitative grasp attempt versus further open alignment. Holding is UNKNOWN; closure changes fingers, not LINK6 XYZ. The strict metric gate remains independently reported and may be false; this pilot does not certify it.'
+            record['visual_grasp_same_pose_repeat_blocked']=repeated
+        if any(name.startswith('close_') for name in targets):
             instruction = instruction.replace(
                 "choose ONE complete short open-gripper precontact action",
                 "choose ONE complete offered motion or gripper action")
@@ -1252,6 +1276,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         full_input_path.write_text(json.dumps(model_input, ensure_ascii=False, indent=2))
         model_input, identity_crops = prepare_actor_evidence(
             obs, model_input, experience, output, turn, targets)
+        if record.get('visual_grasp_attempt_evidence'):
+            model_input['visual_grasp_attempt_evidence']={k:v for k,v in record['visual_grasp_attempt_evidence'].items() if k!='public_path'}
         record["actor_input_variant"] = model_input['actor_error_input_variant']
         if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS', '1') == '0':
             for question in questions:
@@ -1295,7 +1321,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             model_input['proposed_complete_program']={'id':unary_program,'target':targets[unary_program],
                 'stage_score':progress_scores[unary_program],
                 'public_five_step_evidence':program_diagnostics.get(unary_program),
-                'step_objective':'Only incremental progress in THIS stage over FIVE simulated physical steps. The full pick-up/10cm task is for later stages; this one open approach need not grasp or finish it.'}
+                'step_objective':('Attempt capture with the exact CLOSE target, then reobserve; holding/contact is NOT established by this command.' if targets[unary_program]['right']['gripper_closed'] else
+                                  'Only incremental progress in THIS stage over FIVE simulated physical steps; full task completion is not required in this one action.')}
             if os.environ.get('ROBODOJO_PICKUP_COMPACT_UNARY') == '1':
                 (output / f"full_unary_input_step_{obs['step_id']:03d}.json").write_text(
                     json.dumps(model_input,ensure_ascii=False,indent=2))
@@ -1330,6 +1357,12 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                          'execute_program_b':'Execute only full program B once, then reobserve.',
                          'stop_program_unsupported':'Execute neither; current evidence supports neither complete program.'})]
                     record['complete_program_choice_map'] = program_choice_map
+            if record['stage'] in ('visual_grasp_attempt_review','closed_gripper_visual_test'):
+                scope=('Compare CURRENT actual solid material and real opposing fingers. One option may be an explicitly uncertain simulated CLOSE attempt, another further OPEN alignment. No precise contact certificate or holding is claimed; choose STOP if neither is supported. After closure require fresh RGB and source-following, not a command alone.' if record['stage']=='visual_grasp_attempt_review' else
+                       'A previous CLOSE command is NOT holding evidence. Choose a full CLOSED lift TEST only if CURRENT source material is visibly enclosed and the short lift is supported. If the actual fingers are visibly EMPTY, choose the separate held-pose OPEN recovery; if neither is supported STOP. Verify the SAME source moves in the next fixed-high RGB after a lift, not only wrist-image/LINK6 motion.')
+                model_input['capture_decision_contract']=scope
+                for question in questions:
+                    if question['name']=='full_program_decision':question['instructions']=scope
         offered = list(model_input.get('complete_robot_action_targets',{}).values())
         if (os.environ.get('ROBODOJO_PICKUP_STAGE_PROGRESS_DECISION') == '1'
                 and record['stage'] in ('coarse_directional_alignment_review','strict_tool_geometry_review')

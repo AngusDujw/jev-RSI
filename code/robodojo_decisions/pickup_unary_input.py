@@ -56,7 +56,12 @@ def compact(data, observation):
     phase = data['current_stage']
     if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS','1') != '0':
         orientation = data.get('public_tool_orientation_evidence') or {}
-        if phase == 'strict_tool_geometry_review' and orientation:
+        if phase in ('closed_gripper_visual_test','visual_grasp_attempt_review'):
+            result['current_phase_error_change']={'objective':'Verify actual capture/source-following or recover an empty hand; not minimize unchanged LINK6 XYZ during closure',
+                'commanded_robot_delta_xyz_mm':delta.round(3).tolist(),'gripper_command':program['complete_world_command_effect']['right_gripper_command'],
+                'holding_status':'UNKNOWN; requires current RGB and independently observed source co-motion',
+                'interpretation':'CLOSE is only an attempt. A supported lift tests capture; a held-pose OPEN is only for visibly empty fingers. Robot displacement or gripper command alone never proves holding.'}
+        elif phase == 'strict_tool_geometry_review' and orientation:
             before = orientation['finger_extension_vs_downward_normal_angle_deg']
             after = score.get('predicted_axis_angle_deg')
             result['current_phase_error_change'] = {

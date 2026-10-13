@@ -11,21 +11,24 @@ def build(data, obs, primary, targets, scores, diagnostics):
     first = eef_transform(targets[primary]['right'])
     candidates = []
     for name, score in scores.items():
-        if name == primary or score['stage_progress_score'] <= 0 or name.startswith('open_empty_'):
+        empty_recovery=data['current_stage']=='closed_gripper_visual_test' and name.startswith('open_empty_')
+        visual_attempt=data['current_stage']=='visual_grasp_attempt_review'
+        if name == primary or (score['stage_progress_score'] <= 0 and not empty_recovery) or (name.startswith('open_empty_') and not empty_recovery):
             continue
         target = targets[name]
-        if target['right']['gripper_closed'] != targets[primary]['right']['gripper_closed']:
+        if target['right']['gripper_closed'] != targets[primary]['right']['gripper_closed'] and not (empty_recovery or visual_attempt):
             continue
         other = eef_transform(target['right'])
         distance = np.linalg.norm(other[:3,3]-first[:3,3])
         angle = Rotation.from_matrix(other[:3,:3] @ first[:3,:3].T).magnitude()
-        if distance < .004 and angle < .025:
+        if distance < .004 and angle < .025 and target['right']['gripper_closed']==targets[primary]['right']['gripper_closed']:
             continue
         # Targets are only the candidates admitted by the existing public gates.
         candidates.append(name)
     if not candidates:
         return None
-    secondary = max(candidates, key=lambda k:scores[k]['stage_progress_score'])
+    empty=[k for k in candidates if k.startswith('open_empty_')]
+    secondary = empty[0] if empty else max(candidates, key=lambda k:scores[k]['stage_progress_score'])
     result = copy.deepcopy(data)
     programs = []
     for label, name in zip(('execute_program_a', 'execute_program_b'), (primary,secondary)):
