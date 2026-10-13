@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+from scipy.ndimage import binary_closing, binary_fill_holes, label as label_components
 
 from gripper_pad_projection import inspect as inspect_public_pads
 
@@ -22,15 +23,34 @@ def _green_mask(path: Path, camera: str) -> np.ndarray:
              (rgb[:, :, 1] > rgb[:, :, 2] + 8) &
              (rgb[:, :, 2] > 70))
     roi = (((xx > 370) & (yy > 150) & (yy < 350)) if camera == "cam_high"
-           else ((xx > 300) & (yy > 180)))
+           else (yy > 100))
     mask = color & roi
+    if camera == "cam_right_wrist":
+        components, count = label_components(mask)
+        areas = np.bincount(components.ravel(), minlength=count + 1)
+        areas[0] = 0
+        if count:
+            leading = np.argsort(areas[1:])[-2:][::-1] + 1
+            accepted = [int(item) for item in leading
+                        if areas[item] >= max(100, 0.20 * areas[leading[0]])]
+            if len(accepted) == 2:
+                y0, x0 = np.nonzero(components == accepted[0])
+                y1, x1 = np.nonzero(components == accepted[1])
+                gap_x = max(0, int(x1.min() - x0.max()),
+                            int(x0.min() - x1.max()))
+                gap_y = max(0, int(y1.min() - y0.max()),
+                            int(y0.min() - y1.max()))
+                if max(gap_x, gap_y) > 35:
+                    accepted = accepted[:1]
+            mask &= np.isin(components, accepted)
     y, x = np.nonzero(mask)
     if len(x) < (150 if camera == "cam_high" else 500):
         raise ValueError(f"Current {camera} handle mask unavailable")
     if camera == "cam_high" and not (460 <= x.min() and x.max() <= 525):
         raise ValueError("High mask not the layout-0 right scissors")
-    if camera == "cam_right_wrist" and not (370 <= x.min() and x.max() <= 550):
-        raise ValueError("Wrist mask not the layout-0 right scissors")
+    # A legitimate wrist viewpoint change can move the same scissors across
+    # the frame. The broad image ROI, two-view support and fresh ring/identity
+    # checks below replace the old hard x>=370 layout-0 position assertion.
     return mask
 
 
@@ -55,6 +75,21 @@ def build(obs: dict) -> dict:
     high_mask = _green_mask(images["cam_high"], "cam_high")
     wrist_mask = _green_mask(images["cam_right_wrist"], "cam_right_wrist")
     wrist_y, wrist_x = np.nonzero(wrist_mask)
+    # Small color gaps can leave a visibly complete loop open in the raw
+    # threshold. Two-pixel closing retained the truly hidden step45 loop while
+    # restoring both visible step65/85 loops. Raw pixels still define geometry.
+    contour_mask = binary_closing(wrist_mask, iterations=2)
+    hole_labels, hole_total = label_components(
+        binary_fill_holes(contour_mask) & ~contour_mask)
+    visible_ring_holes = []
+    for hole_id in range(1, hole_total + 1):
+        yy, xx = np.nonzero(hole_labels == hole_id)
+        if len(xx) >= 200:
+            visible_ring_holes.append({
+                "area_px": len(xx),
+                "centre_uv": [round(float(xx.mean()), 1),
+                              round(float(yy.mean()), 1)]})
+    visible_ring_holes.sort(key=lambda row: row["centre_uv"][0])
     wrist_bbox = [int(wrist_x.min()), int(wrist_y.min()),
                   int(wrist_x.max()), int(wrist_y.max())]
     wrist_margin = min(wrist_bbox[0], wrist_bbox[1],
@@ -97,6 +132,17 @@ def build(obs: dict) -> dict:
     facets = [np.asarray(pads["rows"][name]["inner_facet_world_xyz_m"], float)
               for name in ("link7", "link8")]
     midpoint = np.mean([facet.mean(axis=0) for facet in facets], axis=0)
+    pad_bbox_wrist = {name: pads["rows"][name]["projected_bbox_xyxy"]
+                      for name in ("link7", "link8")}
+    pad_bbox_high = {}
+    for name, facet in zip(("link7", "link8"), facets):
+        uv, depth = _project_many(calibration["cameras"]["cam_high"], facet)
+        if np.any(depth <= 0):
+            raise ValueError("Public pad is behind current high camera")
+        pad_bbox_high[name] = [round(float(uv[:, 0].min()), 1),
+                               round(float(uv[:, 1].min()), 1),
+                               round(float(uv[:, 0].max()), 1),
+                               round(float(uv[:, 1].max()), 1)]
     residual = support - midpoint
     distances_before = np.linalg.norm(residual, axis=1)
     actions = {}
@@ -117,6 +163,10 @@ def build(obs: dict) -> dict:
         "current_rgb_support_points": len(support),
         "right_wrist_mask_bbox_xyxy": wrist_bbox,
         "right_wrist_mask_image_edge_margin_px": int(wrist_margin),
+        "right_wrist_closed_green_ring_holes_area_ge_200px": visible_ring_holes,
+        "right_wrist_closed_green_ring_count": len(visible_ring_holes),
+        "public_inner_pad_bbox_right_wrist_xyxy": pad_bbox_wrist,
+        "public_inner_pad_bbox_high_xyxy": pad_bbox_high,
         "support_world_xyz_quantile_m": {
             "q05": np.quantile(support, 0.05, axis=0).round(4).tolist(),
             "q50": np.quantile(support, 0.50, axis=0).round(4).tolist(),
@@ -130,5 +180,5 @@ def build(obs: dict) -> dict:
             (1000 * np.quantile(distances_before, [0.05, 0.50, 0.95])).round(1).tolist(),
         "world_axis_5mm_distance_change": actions,
         "method": "Current high and right-wrist RGB color masks intersected by public K/T rays within a declared broad workspace, against measured-robot public X5 inner-pad midpoint.",
-        "limits": "Visual hull support is an occupancy possibility set, not object XYZ, a physical corresponding point, grasp target or collision certificate. Quantiles sample a gridded support set, not a calibrated probability distribution. Search depth/workspace are assumptions; no simulator object pose, contact or evaluator state is used.",
+        "limits": "Visual hull support is an occupancy possibility set, not object XYZ, a physical corresponding point, grasp target or collision certificate. Quantiles sample a gridded support set, not a calibrated probability distribution. Public pad boxes have not been verified against visible finger surfaces. Green mask holes are a fragile contour cue, not a proof of full object visibility: occlusion, perspective or segmentation can remove them. Search depth/workspace are assumptions; no simulator object pose, contact or evaluator state is used.",
     }

@@ -158,6 +158,9 @@ graph LR
     T_2026W42_050["📊 robodojo-decision-stages<br/>同图双段回放Luna否决首段；中途Pro刷…"]:::experiment
     T_2026W42_051["📊 robodojo-decision-stages<br/>双RGB视觉支撑区间让Luna连续40物理…"]:::experiment
     T_2026W42_052["📊 robodojo-decision-stages<br/>完整RGB掩膜门在145原生步真实26px…"]:::experiment
+    T_2026W42_053["📊 robodojo-decision-stages<br/>同回合剪刀双环视觉深度与金属铰链相差约75…"]:::experiment
+    T_2026W42_054["📊 robodojo-decision-stages<br/>时序误差已22次到Luna但170步仍无实…"]:::experiment
+    T_2026W42_055["📊 robodojo-decision-stages<br/>网关确认GPT-6.1 Sol high身…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -276,6 +279,9 @@ graph LR
   T_2026W42_048 --> T_2026W42_050
   T_2026W42_050 --> T_2026W42_051
   T_2026W42_051 --> T_2026W42_052
+  T_2026W42_052 --> T_2026W42_053
+  T_2026W42_053 --> T_2026W42_054
+  T_2026W42_054 --> T_2026W42_055
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -422,6 +428,9 @@ graph LR
 | `T-2026W42-050` | 2026-10-13 | experiment | robodojo-decision-stages | 同图双段回放Luna否决首段；中途Pro刷新优于终止后重采样 | `EXP-2026W42-130` | - |
 | `T-2026W42-051` | 2026-10-13 | experiment | robodojo-decision-stages | 双RGB视觉支撑区间让Luna连续40物理步接近剪刀；仍无抓持或任务成功 | `EXP-2026W42-136` | - |
 | `T-2026W42-052` | 2026-10-13 | experiment | robodojo-decision-stages | 完整RGB掩膜门在145原生步真实26px边缘停止；旧裁剪区间作废，转视野恢复 | `EXP-2026W42-139` | - |
+| `T-2026W42-053` | 2026-10-13 | experiment | robodojo-decision-stages | 同回合剪刀双环视觉深度与金属铰链相差约75毫米，旧遮挡门使190步回合没有把误差送达Luna；已修复并进入实测 | `EXP-2026W42-154` | - |
+| `T-2026W42-054` | 2026-10-13 | experiment | robodojo-decision-stages | 时序误差已22次到Luna但170步仍无实物运动；双RGB实体绿材料Y中位约74mm且旧转腕预算误停 | `EXP-2026W42-156` | - |
+| `T-2026W42-055` | 2026-10-13 | experiment | robodojo-decision-stages | 网关确认GPT-6.1 Sol high身份但一图与短选取经验规划均不可用；原生控制用既有同模型方法结构加当前RGB继续实体操作 | `EXP-2026W42-158` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

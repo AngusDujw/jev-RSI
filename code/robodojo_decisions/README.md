@@ -125,3 +125,22 @@ ROBODOJO_DECISION_TRANSPORT=curl_socks "$HOME/zjc/Gpt6Astra_Π0.5/envs/robodojo/
 ```
 
 This controller is an experimental categorical EEF policy, not the original RoboProbe GPT-6 Astra harness. Stability requires frozen code/plan and independent native episodes, including standard/random layouts where the official cell is paired.
+
+---
+
+# RoboDojo GPT-6.1 Sol high 阶段规划 + du Luna 推进
+
+本目录的 `run_episode.py` 是单个原生回合入口。官方 42 个任务均有 layout0 三 RGB 零动作入口；截至 EXP-2026W42-154，完整原生成功仍为 0/42。`v2_pickup_active_episode` 目前只是 `general_pickup` layout0 的持续回合实验，不是整套任务的已验证控制器。
+
+## 角色和输入
+
+- `pro_plan.py --method-only` 经任务专用私有配置 DataStorage/gpt6-dec/secrets/ai2robcowork-codex 的 AI2RobCoWork Responses 接口调用 GPT-6.1 Sol high。输出目标身份、阶段、图像处理方法、误差定义及失效门；强制校验不含具体运动目标或动作建议。网关诊断显示该模型 high 的单张极小图像也返回 `server_is_overloaded`，所以当前原生控制通过 `--omit-image-payload` 发送三幅当前 RGB 的**算法导出特征与不确定度**、公开 K/T、实测机器人状态；每次读取并快照完整经验原文，网关请求逐字选取全局经验与本任务的身份条目及最近两条经验，并记录原文/选取哈希，并在计划中标记原始像素未传给规划器；Luna 仍直接接收当前三 RGB。运行中在新鲜观测出现证据缺口时由 `pickup_active_episode.py` 在**同一原生回合**再次调用该网关；若暂时过载，仅复用已验证的同模型 high 方法结构，删去历史像素/标定，所有具体几何仍从本回合新图重算。
+- `pickup_active_episode.py` 由独立图像/机器人算法产生互斥的完整短动作候选与具体 STOP。每次读 `DataStorage/gpt6-dec/experience/model/global.md`、`general_pickup.md` 原文，并把当前三 RGB、轴向说明、公开五步路径、当前带不确定度的传感器几何、候选效果及最新规划方法交给 du GPT-6 Luna；只有 Luna 选中的一个完整动作才会交原生执行。
+- `pickup_visual_hull.py` 用当前高位/右腕 RGB 绿轮廓及公开相机 K/T 生成**可能视觉支撑集合**。集合分位数不是物体真实位姿、接触间隙或概率置信区间。
+- `pickup_temporal_stereo.py` 只读同一回合的历史/当前三 RGB 与公开 K/T。固定高位图先检查源物可见像素在同坐标的静止支持；金属连接片用右腕 SIFT 同纹理射线交会，绿色双环用孔轮廓中心跨时间交会，两类估计分别记录像素敏感性。金属片不是抓点；环孔中心是空气；历史像素不能证明当前接触或遮挡状态。失效时明确报告原因，不能补用真物体位姿。
+
+新增的 pickup_green_material_support.py 用同回合银色纹理高度和当前高位/右腕实际绿色像素构造显式±20mm高度假设下的可能实体绿色支撑，输出相对公开真实指面的世界轴与距离分位；它不等于真实物体表面或接触证书。pickup_active_episode.py 在新的近物体证据门通过时提供闭合候选，闭合后单独以新鲜RGB和小幅抬升审查物体是否随动。截至EXP-2026W42-156，绿色实体诊断尚未在Luna原生回合验证，原生完整成功仍为0/42。历史Pro计划保留原模型来源，不重标。
+
+每个 EEF Decision 上限 5 个物理步、相对当前实测 LINK6 位置 0.05 m 和姿态 0.35 rad。执行前检查公开机器人路径与原生只读首 IK；执行后取新三 RGB、实测状态和机器人跟踪误差。公开机器人网格与相机投影都不能证明完整场景无碰撞。完整成功只由原生终局与可见实体过程核对，不由轮廓误差下降或观察动作计数替代。
+
+所有原生运行、图像、Pro 计划、Luna 记录和经验写在 `/home/v4090-1/DataStorage/gpt6-dec`；Git 仓库只保存源码及协议 Markdown。每次回合结束向经验文件追加具体正负结果，下一次 Pro/Luna 调用重新载入原文；对应 EXP 在 `LOGS/2026-W42.md`。

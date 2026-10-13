@@ -1,0 +1,869 @@
+"""Continuous general_pickup RGB controller with a sensor-triggered view stage.
+
+Pro defines only the current perception/stage method. Runtime public-camera
+geometry proposes complete short actions; du Luna selects one or a stop.
+"""
+
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+import numpy as np
+from scipy.spatial.transform import Rotation
+
+from camera_geometry import (eef_transform, gripper_height_above_landmark,
+                             propagate_wrist_calibration)
+from controller import choice
+from fold_cuff_view import _sensor_motion
+from pickup_rgb_axes import _targets
+from pickup_visual_hull import _green_mask, build as build_visual_hull, _project_many
+from pickup_temporal_stereo import (build as build_temporal_stereo,
+                                    build_aperture_geometry)
+from pickup_green_material_support import build as build_green_material_support
+from robot_path_preview import preview
+
+
+def _rotation_target(obs: dict, angle: float, axis: str = "x") -> dict:
+    target = _targets(obs, "x", 1, 0.0)
+    link = eef_transform(obs["current_eef"]["right"])
+    rotation = np.zeros(3)
+    rotation["xyz".index(axis)] = angle
+    matrix = Rotation.from_rotvec(rotation).as_matrix() @ link[:3, :3]
+    xyzw = Rotation.from_matrix(matrix).as_quat()
+    target["right"]["quaternion_wxyz"] = xyzw[[3, 0, 1, 2]].tolist()
+    return target
+
+
+def _view_prediction(obs: dict, angle: float = -0.10,
+                     axis: str = "x") -> dict:
+    """Project the current RGB green-region rays, never a simulator object pose."""
+    camera = obs["camera_calibration"]["cameras"]["cam_right_wrist"]
+    image = next(Path(row["path"]) for row in obs["images"]
+                 if row["camera"] == "cam_right_wrist")
+    mask = _green_mask(image, "cam_right_wrist")
+    y, x = np.nonzero(mask)
+    bbox = [int(x.min()), int(y.min()), int(x.max()), int(y.max())]
+    edge = (y >= np.quantile(y, 0.97) if axis == "x" else
+            x >= np.quantile(x, 0.97))
+    take = np.linspace(0, np.count_nonzero(edge) - 1,
+                       min(400, np.count_nonzero(edge)), dtype=int)
+    edge_x, edge_y = x[edge][take], y[edge][take]
+    k = np.asarray(camera["intrinsic"], float)
+    cam = np.asarray(camera["camera_to_environment"], float)
+    rays = np.column_stack(((edge_x - k[0, 2]) / k[0, 0],
+                            -(edge_y - k[1, 2]) / k[1, 1],
+                            -np.ones(len(edge_x)))) @ cam[:3, :3].T
+    rays /= np.linalg.norm(rays, axis=1, keepdims=True)
+    assumed_ray_distances = [0.20, 0.30, 0.40, 0.50, 0.60]
+    points = (cam[:3, 3] + rays[:, None, :] *
+              np.asarray(assumed_ray_distances)[None, :, None]).reshape(-1, 3)
+    link = eef_transform(obs["current_eef"]["right"])
+    moved_link = eef_transform(_rotation_target(obs, angle, axis)["right"])
+    changed = dict(camera)
+    changed["camera_to_environment"] = (
+        moved_link @ np.linalg.inv(link) @ cam).tolist()
+    uv, valid_depth = _project_many(changed, points)
+    if np.any(valid_depth <= 0):
+        raise ValueError("Projected source rays move behind camera")
+    after = uv[:, 1 if axis == "x" else 0].reshape(len(edge_x), -1)
+    before_edge = float(np.quantile(edge_y if axis == "x" else edge_x, 0.95))
+    predicted_edge = np.quantile(after, 0.95, axis=0)
+    gains = before_edge - predicted_edge
+    result = {
+        "source": "current right-wrist full RGB color-mask rays + public K/T + measured LINK6 rigid mount",
+        "current_green_bbox_xyxy": bbox,
+        "current_true_frame_margin_px": min(bbox[0], bbox[1], 639-bbox[2], 479-bbox[3]),
+        "world_rotation_axis": axis,
+        "world_rotation_rad": angle,
+        "hypothetical_ray_distances_m": assumed_ray_distances,
+        "limitation": "The unknown true ray depth is not estimated. RGB green region is only part of the scissors; no hidden blade, free-space clearance or object pose is certified.",
+    }
+    label = "upward" if axis == "x" else "leftward"
+    result[f"green_{'lower' if axis == 'x' else 'right'}_edge_95th_pixel_before"] = round(before_edge, 1)
+    result[f"green_{'lower' if axis == 'x' else 'right'}_edge_95th_pixel_after_by_distance"] = predicted_edge.round(1).tolist()
+    result[f"predicted_{label}_gain_px_range"] = [round(float(gains.min()), 1),
+                                                  round(float(gains.max()), 1)]
+    return result
+
+
+def _plan_refresh(obs: dict, hull: dict, output: Path, experience: Path,
+                  temporal: dict | None = None,
+                  historical_obs: dict | None = None) -> dict:
+    step = obs["step_id"]
+    evidence_file = output / f"planner_sensor_geometry_step_{step:03d}.json"
+    evidence = {"current_rgb_visual_hull": hull}
+    if temporal is not None:
+        evidence["current_feature_historical_rgb_triangulation"] = temporal
+    evidence_file.write_text(json.dumps(evidence, ensure_ascii=False, indent=2))
+    directory = output / f"planner_method_refresh_step_{step:03d}"
+    calibration_path = (output / "camera_calibration_initial.json"
+                        if step == 0 else
+                        output / f"camera_calibration_step_{step:03d}.json")
+    command = [sys.executable, "-B", str(Path(__file__).with_name("pro_plan.py")),
+               "--observation", obs["observation_path"],
+               "--calibration", str(calibration_path),
+               "--geometry-evidence", str(evidence_file), "--method-only",
+               "--omit-image-payload", "--select-recent-experience",
+               "--global-experience", str(experience / "global.md"),
+               "--task-experience", str(experience / "general_pickup.md"),
+               "--output", str(directory)]
+    if temporal is not None and historical_obs is not None:
+        command.extend([
+            "--previous-observation", historical_obs["observation_path"],
+            "--previous-calibration", str(output / f"camera_calibration_step_{historical_obs['step_id']:03d}.json")])
+    completed = subprocess.run(command, text=True, capture_output=True,
+                               timeout=120, check=False)
+    (output / f"planner_refresh_step_{step:03d}.log").write_text(
+        completed.stdout + "\n" + completed.stderr)
+    if completed.returncode:
+        raise RuntimeError(f"Pro method refresh failed at step {step}: {completed.returncode}")
+    plan = json.loads((directory / "plan.json").read_text())
+    if not plan.get("method_only") or plan["task"] != obs["task"]:
+        raise ValueError("Refreshed plan violates method-only task contract")
+    return {"path": str(directory / "plan.json"),
+            "initial_stage": plan["initial_stage"],
+            "stage_keys": list(plan["stages"]),
+            "stage_recipe": plan["stages"][plan["initial_stage"]],
+            "visual_method": plan["visual_method"]}
+
+
+def _translation_view_prediction(obs: dict, target: dict, hull: dict) -> dict:
+    """Bound next wrist RGB region/real-pad separation over assumed ray depths."""
+    camera = obs["camera_calibration"]["cameras"]["cam_right_wrist"]
+    image = next(Path(row["path"]) for row in obs["images"]
+                 if row["camera"] == "cam_right_wrist")
+    mask = _green_mask(image, "cam_right_wrist")
+    y, x = np.nonzero(mask)
+    take = np.linspace(0, len(x) - 1, min(len(x), 700), dtype=int)
+    x, y = x[take], y[take]
+    intrinsic = np.asarray(camera["intrinsic"], float)
+    current_camera = np.asarray(camera["camera_to_environment"], float)
+    rays = np.column_stack(((x - intrinsic[0, 2]) / intrinsic[0, 0],
+                            -(y - intrinsic[1, 2]) / intrinsic[1, 1],
+                            -np.ones(len(x)))) @ current_camera[:3, :3].T
+    rays /= np.linalg.norm(rays, axis=1, keepdims=True)
+    assumed = np.asarray([0.20, 0.30, 0.40, 0.50, 0.60])
+    points = (current_camera[:3, 3] + rays[:, None, :] *
+              assumed[None, :, None]).reshape(-1, 3)
+    current_link = eef_transform(obs["current_eef"]["right"])
+    next_link = eef_transform(target["right"])
+    moved = dict(camera)
+    moved["camera_to_environment"] = (
+        next_link @ np.linalg.inv(current_link) @ current_camera).tolist()
+    uv, depth = _project_many(moved, points)
+    if np.any(depth <= 0):
+        raise ValueError("Candidate moves visual support behind wrist camera")
+    uv = uv.reshape(len(x), len(assumed), 2)
+    right = np.quantile(uv[:, :, 0], 0.95, axis=0)
+    bottom = np.quantile(uv[:, :, 1], 0.95, axis=0)
+    right_pad_left = float(hull["public_inner_pad_bbox_right_wrist_xyxy"]["link8"][0])
+    return {
+        "assumed_ray_distances_m": assumed.tolist(),
+        "projected_green_right_edge_px_range": [round(float(right.min()), 1),
+                                                  round(float(right.max()), 1)],
+        "projected_green_bottom_edge_px_range": [round(float(bottom.min()), 1),
+                                                   round(float(bottom.max()), 1)],
+        "projected_bottom_frame_margin_px_range": [round(float((479-bottom).min()), 1),
+                                                    round(float((479-bottom).max()), 1)],
+        "right_pad_box_left_minus_green_right_edge_px_range": [
+            round(float((right_pad_left-right).min()), 1),
+            round(float((right_pad_left-right).max()), 1)],
+        "limitation": "Current green RGB mask rays across assumed depths, not measured object points. Public right-pad image box is not RGB verified; overlapping 2D boxes do not prove contact or collision.",
+    }
+
+
+def _sensing_descent(obs: dict, hull: dict,
+                     temporal: dict | None = None,
+                     material: dict | None = None) -> tuple[str, dict, dict, dict] | None:
+    """Public-robot-safe small descent proposal; scene safety remains with Luna."""
+    target = _targets(obs, "z", -1, 0.005)
+    path = preview(obs, target["right"], None, steps=5)
+    if not path["public_path_gate"] or not path["native_eef_single_action_legal"]:
+        return None
+    support_source = "current two-view RGB silhouette"
+    support_z = float(hull["support_world_xyz_quantile_m"]["q95"][2])
+    if (temporal is not None and
+            temporal["accepted_sift_feature_count"] >= 3 and
+            temporal["fixed_high_rgb_static_check"]["stability_mode"] ==
+            "full_bbox"):
+        support_source = "current plus historical three-view green RGB silhouette"
+        support_z = float(temporal["temporal_green_visual_support"][
+            "visual_green_support_world_xyz_q05_q50_q95_m"]["q95"][2])
+    if material is not None:
+        support_z = max(
+            support_z, float(material["assumed_green_height_slab_m"][1]))
+        support_source += " and stated possible solid-green slab upper height"
+    bound = gripper_height_above_landmark(
+        obs["current_eef"]["right"], [0, 0, support_z], descent_m=0.005)
+    if bound["hand_above_landmark_plane_after_m"] < 0.010:
+        return None
+    effect = _translation_view_prediction(obs, target, hull)
+    key = "z_negative_5mm_sensing_descent"
+    description = (
+        "One complete right LINK6 world-Z NEGATIVE 5 mm sensing descent, five native "
+        "steps, other coordinates/orientation and left arm held, both grippers OPEN. "
+        f"Public robot-only path predicts terminal error "
+        f"{path['predicted_joint_path'][-1]['predicted_link6_translation_residual_m']*1000:.2f} mm; "
+        f"current RGB/K/T predicts green q95 bottom at "
+        f"{effect['projected_green_bottom_edge_px_range']} px over assumed ray depths. "
+        f"Public hand-mesh minimum height after move is "
+        f"{bound['min_hand_mesh_z_after_m']:.4f} m, {bound['hand_above_landmark_plane_after_m']*1000:.1f} mm "
+        f"above {support_source} sampled green-support q95 height, which is NOT a bound on true object "
+        "or table height. Luna must judge actual full hand corridor from current RGB; "
+        "reobserve immediately, with no closure or contact assumption.")
+    return key, target, effect, {"description": description,
+                                  "public_path": path,
+                                  "hand_vs_visual_support": bound,
+                                  "visual_support_source": support_source}
+
+
+def _translation_options(obs: dict, hull: dict,
+                         temporal: dict | None = None,
+                         material: dict | None = None) -> tuple[dict, dict, dict]:
+    """Select bounded magnitudes from public robot-only IK, not Pro advice."""
+    options = {}
+    targets = {}
+    image_effects = {}
+    distance = hull["pad_to_visual_support_distance_mm_q05_q50_q95"][0]
+    # Robot-only IK was optimistic for a 15 mm action near reset: actual LINK6
+    # terminal error was 2.248 mm. Ramp the candidate size with measured steps.
+    limit = (0.005 if distance <= 80 else
+             0.01 if obs["step_id"] <= 30 else
+             0.015 if obs["step_id"] <= 70 else
+             0.02 if distance > 120 else 0.01)
+    if temporal is not None:
+        rings = temporal.get("green_aperture_centre_temporal_geometry")
+        if rings is not None:
+            y_errors = [row["aperture_centre_minus_public_pad_midpoint_xyz_mm"][1]
+                        for row in rings["rows"]]
+            if min(y_errors) > 50:
+                # The earlier broad-support q05 can be near the metal hinge
+                # while both observed green handle rings remain far ahead.
+                # This only expands the action OPTIONS; Luna still judges the
+                # fresh RGB full corridor and public path for every segment.
+                limit = max(limit, 0.015 if min(y_errors) > 100 else 0.01)
+    material_forward_limit = 0.0
+    if material is not None:
+        green_y_q05 = material[
+            "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95"
+        ]["q05"][1]
+        if green_y_q05 > 80:
+            material_forward_limit = 0.020
+        elif green_y_q05 > 50:
+            material_forward_limit = 0.015
+        elif green_y_q05 > 30:
+            material_forward_limit = 0.010
+    for axis in "xy":
+        for sign, word in ((-1, "negative"), (1, "positive")):
+            axis_limit = (max(limit, material_forward_limit)
+                          if axis == "y" and sign > 0 else limit)
+            for amount in (0.02, 0.015, 0.01, 0.005):
+                if amount > axis_limit:
+                    continue
+                target = _targets(obs, axis, sign, amount)
+                path = preview(obs, target["right"], None, steps=5)
+                if path["public_path_gate"] and path["native_eef_single_action_legal"]:
+                    key = f"{axis}_{word}_{int(round(amount*1000))}mm"
+                    targets[key] = target
+                    effect = _translation_view_prediction(obs, target, hull)
+                    image_effects[key] = effect
+                    gain = hull["world_axis_5mm_distance_change"][f"{axis}_{word}"]
+                    options[key] = (
+                        f"Right LINK6 world {axis.upper()} {word} {amount*1000:.0f} mm, "
+                        "orientation and left arm held, both grippers open, five native steps. "
+                        f"Public robot-only 5-step terminal error "
+                        f"{path['predicted_joint_path'][-1]['predicted_link6_translation_residual_m']*1000:.2f} mm. "
+                        f"Current RGB silhouette-support distance gain for the FIRST 5 mm "
+                        f"has q05/q50/q95 {gain['pad_to_visual_support_distance_reduction_mm_q05_q50_q95']} mm; "
+                        "Current RGB ray-depth projection of the FULL candidate gives "
+                        f"green bottom frame margin {effect['projected_bottom_frame_margin_px_range']} px "
+                        f"and right-pad-box-left minus green-right-edge "
+                        f"{effect['right_pad_box_left_minus_green_right_edge_px_range']} px. "
+                        "this is not a scene-clearance certificate. Reobserve after execution.")
+                    break
+    if distance <= 100:
+        descent = _sensing_descent(obs, hull, temporal, material)
+        if descent is not None:
+            key, target, effect, detail = descent
+            options[key] = detail["description"]
+            targets[key] = target
+            image_effects[key] = effect
+            if temporal is not None:
+                rings = temporal.get("green_aperture_centre_temporal_geometry")
+                if rings is not None and min(
+                    row["aperture_centre_minus_public_pad_midpoint_xyz_mm"][1]
+                    for row in rings["rows"]) > 50:
+                    combined = _targets(obs, "y", 1, 0.01)
+                    combined["right"]["position"][2] -= 0.005
+                    combined_path = preview(obs, combined["right"], None,
+                                            steps=5)
+                    if (combined_path["public_path_gate"] and
+                            combined_path["native_eef_single_action_legal"]):
+                        combined_key = "y_positive_10mm_z_negative_5mm"
+                        combined_effect = _translation_view_prediction(
+                            obs, combined, hull)
+                        options[combined_key] = (
+                            "One complete right LINK6 world-Y positive 10 mm "
+                            "and world-Z negative 5 mm open-gripper sensing "
+                            "action in five native steps, left arm held. "
+                            "Both green AIR-hole centres are >50 mm ahead "
+                            "of the public inner-pad midpoint; this is depth "
+                            "context, not a solid grip target. Robot-only "
+                            f"five-step predicted terminal error "
+                            f"{combined_path['predicted_joint_path'][-1]['predicted_link6_translation_residual_m']*1000:.2f} mm. "
+                            "The separate Z-only sampled green-support height "
+                            "heuristic passes, but does not prove this diagonal "
+                            "scene corridor clear. Inspect the whole hand sweep "
+                            "in current RGB, then reobserve; no closure.")
+                        targets[combined_key] = combined
+                        image_effects[combined_key] = combined_effect
+    return options, targets, image_effects
+
+
+def run(tools, obs: dict, model, plan: dict, output: Path,
+        max_decisions: int, initial_calibration: dict, initial_eef: dict) -> dict:
+    import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
+
+    if obs["task"] != "general_pickup" or not plan.get("method_only"):
+        raise ValueError("Active pickup requires general_pickup method-only plan")
+    experience_root = output.parents[1] / "experience/model"
+    trace = []
+    refreshed_steps = set()
+    rotations = 0
+    near_method_refreshed = False
+    temporal_references = {}
+    status = "active_episode_budget_incomplete"
+    native_result = None
+    # Plan from the actual fresh reset RGB before any Luna or physical action.
+    # The CLI plan supplies only the method-only schema; its historical stage
+    # cannot substitute for this episode's current observations.
+    try:
+        initial_hull = build_visual_hull(obs)
+        initial_refresh = _plan_refresh(obs, initial_hull, output,
+                                        experience_root)
+        active_method = initial_refresh["visual_method"]
+        active_stage = initial_refresh["initial_stage"]
+        active_stage_recipe = initial_refresh["stage_recipe"]
+        refreshed_steps.add(obs["step_id"])
+    except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
+        provenance = plan.get("planner_provenance", {})
+        if (provenance.get("model") == "gpt-6.1-sol" and
+                provenance.get("reasoning_effort") == "high" and
+                isinstance(plan.get("visual_method"), dict) and
+                plan["initial_stage"] in plan["stages"]):
+            # Gateway failure cannot silently turn a historical pixel into
+            # a current landmark. Reuse only the already authored method
+            # schema; all current geometry and pixels come from this episode.
+            active_method = {
+                key: value for key, value in plan["visual_method"].items()
+                if key not in ("image_identity", "initial_correspondences",
+                               "landmark_spec", "provided_calibration")}
+            active_method["fallback_freshness_rule"] = (
+                "Prior GPT-6.1 Sol high method schema only. No historical "
+                "pixel or camera pose is current; use this episode's three "
+                "fresh RGB, public K/T and measured robot state for all "
+                "specific geometry and action review.")
+            active_stage = plan["initial_stage"]
+            active_stage_recipe = plan["stages"][active_stage]
+            initial_refresh = {
+                "path": provenance.get("input_manifest"),
+                "fallback": "prior_method_schema_after_gateway_error",
+                "method_refresh_error": str(error),
+                "initial_stage": active_stage,
+                "stage_keys": list(plan["stages"]),
+            }
+        else:
+            status = "initial_planner_method_plan_incomplete"
+            native_result = tools.finish(status)
+            trace.append({"turn": 0, "step_id": obs["step_id"], "status": status,
+                          "method_refresh_error": str(error)})
+            path = output / "pickup_active_trace.json"
+            path.write_text(json.dumps({"task": obs["task"], "status": status,
+                                        "records": trace, "native_result": native_result},
+                                       ensure_ascii=False, indent=2))
+            return {"status": status, "decisions": 0, "visual_queries": 0,
+                    "method_refreshes": 0, "native_result": native_result,
+                    "trace": str(path)}
+    for turn in range(max_decisions):
+        if obs["rollout_finished"]:
+            status = "native_terminal"
+            native_result = obs.get("result")
+            break
+        experience = {name: (experience_root / name).read_text()
+                      for name in ("global.md", "general_pickup.md")}
+        try:
+            hull = build_visual_hull(obs)
+        except ValueError as error:
+            status = "current_rgb_visual_geometry_incomplete"
+            trace.append({"turn": turn, "step_id": obs["step_id"],
+                          "status": status, "geometry_error": str(error)})
+            native_result = tools.finish(status)
+            break
+        # Capture an actual earlier sensor state from THIS native episode.
+        # It is never substituted for current contact or object motion.
+        if obs["step_id"] in (40, 60, 100):
+            temporal_references[obs["step_id"]] = obs
+        temporal = None
+        temporal_error = None
+        temporal_reference = None
+        if 40 in temporal_references and obs["step_id"] >= 60:
+            alternatives = []
+            failures = []
+            for reference in temporal_references.values():
+                if reference["step_id"] >= obs["step_id"]:
+                    continue
+                try:
+                    result = build_temporal_stereo(
+                        reference, reference["camera_calibration"],
+                        obs, obs["camera_calibration"])
+                    alternatives.append((result, reference))
+                except ValueError as error:
+                    failures.append(f"ref{reference['step_id']}: {error}")
+            if alternatives:
+                temporal, temporal_reference = max(
+                    alternatives, key=lambda item: (
+                        item[0]["accepted_sift_feature_count"],
+                        item[0]["inlier_ray_angle_deg_min"]))
+            try:
+                aperture = build_aperture_geometry(
+                    temporal_references[40],
+                    temporal_references[40]["camera_calibration"],
+                    obs, obs["camera_calibration"])
+                if temporal is None:
+                    temporal = {"accepted_sift_feature_count": 0,
+                                "metal_patch_minus_public_pad_midpoint_xyz_mm": None,
+                                "fixed_high_rgb_static_check": aperture[
+                                    "fixed_high_rgb_static_check"],
+                                "reference_step_id": 40,
+                                "current_step_id": obs["step_id"]}
+                    temporal_reference = temporal_references[40]
+                temporal["green_aperture_centre_temporal_geometry"] = aperture[
+                    "green_aperture_centre_temporal_geometry"]
+                temporal["green_aperture_reference_step_id"] = 40
+                temporal["green_aperture_static_check"] = aperture[
+                    "fixed_high_rgb_static_check"]
+            except ValueError as error:
+                failures.append(f"aperture_ref40: {error}")
+            temporal_error = "; ".join(failures) if failures else None
+        material = None
+        material_error = None
+        if (temporal is not None and
+                temporal.get("accepted_sift_feature_count", 0) >= 3):
+            try:
+                material = build_green_material_support(obs, temporal)
+            except ValueError as error:
+                material_error = str(error)
+        margin = hull["right_wrist_mask_image_edge_margin_px"]
+        nearest = hull["pad_to_visual_support_distance_mm_q05_q50_q95"][0]
+        near_refresh = None
+        if nearest <= 80 and not near_method_refreshed:
+            try:
+                near_refresh = _plan_refresh(obs, hull, output,
+                                             experience_root, temporal,
+                                             temporal_reference)
+                active_method = near_refresh["visual_method"]
+                active_stage = near_refresh["initial_stage"]
+                active_stage_recipe = near_refresh["stage_recipe"]
+                near_method_refreshed = True
+                refreshed_steps.add(obs["step_id"])
+            except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
+                # Keep the last valid method; the current geometry is still
+                # recomputed from the fresh RGB before Luna sees any option.
+                near_method_refreshed = True
+                near_refresh = {
+                    "fallback": "last_valid_method_after_gateway_error",
+                    "method_refresh_error": str(error),
+                    "initial_stage": active_stage,
+                    "stage_keys": list(plan["stages"]),
+                }
+        # The first episode used a planar move then offered a vague
+        # "unverified corridor" stop, which Luna selected on the nearly
+        # unchanged next RGB. Start this distinct run with a real camera
+        # viewpoint change supported by the current full-frame projection.
+        ring_count = hull["right_wrist_closed_green_ring_count"]
+        gripper_closed = bool(obs["current_eef"]["right"]["gripper_closed"])
+        view_stage = not gripper_closed and (margin <= 45 or ring_count < 2)
+        record = {"turn": turn, "step_id": obs["step_id"],
+                  "sensor_derived_geometry": hull,
+                  "temporal_metal_and_green_support": temporal,
+                  "temporal_geometry_error": temporal_error,
+                  "possible_solid_green_material_support": material,
+                  "green_material_support_error": material_error,
+                  "stage": ("closed_gripper_visual_test" if gripper_closed else
+                            "visibility_recovery" if view_stage else
+                            "near_contact_preparation" if nearest <= 80 else
+                            "planar_precontact")}
+        if turn == 0:
+            record["method_refresh"] = initial_refresh
+        if near_refresh is not None:
+            record["method_refresh"] = near_refresh
+        if gripper_closed:
+            targets = {}
+            options = {}
+            effects = {}
+            for amount in (0.005, 0.010):
+                target = _targets(obs, "z", 1, amount)
+                target["right"]["gripper_closed"] = True
+                public_path = preview(obs, target["right"], None, steps=5)
+                if not (public_path["public_path_gate"] and
+                        public_path["native_eef_single_action_legal"]):
+                    continue
+                key = f"closed_gripper_lift_{int(round(amount*1000))}mm"
+                targets[key] = target
+                effects[key] = _translation_view_prediction(obs, target, hull)
+                options[key] = (
+                    f"Keep right gripper CLOSED and raise right LINK6 world-Z "
+                    f"{amount*1000:.0f} mm in five native steps, left arm held. "
+                    "This is a TEST of visible capture, not evidence that the "
+                    "previous close actually held the scissors. Public robot-only "
+                    f"path predicts {public_path['predicted_joint_path'][-1]['predicted_link6_translation_residual_m']*1000:.2f} mm "
+                    "terminal error; inspect the entire RGB hand/table corridor "
+                    "and require the SAME green scissors to move with the hand "
+                    "in the next fixed-high and wrist RGB before carrying.")
+            record["translation_view_effects"] = effects
+            options["stop_no_visible_capture"] = (
+                "The same green scissors is not visibly within the closed fingers, "
+                "or the last real RGB change shows no source response; stop and "
+                "replan instead of declaring a held object.")
+            options["stop_visible_blocker"] = (
+                "Current RGB shows a specific collision blocker in every offered lift corridor.")
+            instruction = (
+                "The previous gripper-close command is NOT a contact sensor. "
+                "Judge fresh THREE RGB, current measured robot state and prior "
+                "visible source change. Select one full bounded closed-gripper "
+                "lift only if the source is visibly between the true black "
+                "finger faces and the full lift corridor appears clear; "
+                "otherwise select a named STOP. After a lift, verify actual "
+                "green source translation in the fixed high camera, not merely "
+                "the moving wrist image or LINK6.")
+        elif view_stage:
+            if margin <= 30:
+                status = "visibility_view_budget_or_edge_incomplete"
+                record["status"] = status
+                trace.append(record)
+                native_result = tools.finish(status)
+                break
+            entering_view = not trace or trace[-1].get("stage") != "visibility_recovery"
+            if (obs["step_id"] != 0 and entering_view and
+                    near_refresh is None and
+                    obs["step_id"] not in refreshed_steps):
+                try:
+                    record["method_refresh"] = _plan_refresh(obs, hull, output,
+                                                              experience_root,
+                                                              temporal,
+                                                              temporal_reference)
+                    active_method = record["method_refresh"]["visual_method"]
+                    active_stage = record["method_refresh"]["initial_stage"]
+                    active_stage_recipe = record["method_refresh"]["stage_recipe"]
+                    refreshed_steps.add(obs["step_id"])
+                except (RuntimeError, ValueError, subprocess.TimeoutExpired) as error:
+                    record["method_refresh"] = {
+                        "fallback": "last_valid_method_after_gateway_error",
+                        "method_refresh_error": str(error),
+                        "initial_stage": active_stage,
+                        "stage_keys": list(plan["stages"]),
+                    }
+            predictions = {}
+            paths = {}
+            targets = {}
+            options = {}
+            bbox = hull["right_wrist_mask_bbox_xyxy"]
+            bottom_margin = 479 - bbox[3]
+            right_margin = 639 - bbox[2]
+            if rotations >= 4:
+                axes = ()
+            elif turn == 0 or (ring_count >= 2 and bottom_margin < right_margin):
+                axes = ("x",)
+            elif ring_count < 2:
+                axes = ("y", "x")
+            else:
+                axes = ("y",)
+            for axis in axes:
+                prediction = _view_prediction(obs, axis=axis)
+                target = _rotation_target(obs, -0.10, axis=axis)
+                public_path = preview(obs, target["right"], None, steps=5)
+                gain_label = "upward" if axis == "x" else "leftward"
+                gain = prediction[f"predicted_{gain_label}_gain_px_range"]
+                predictions[axis] = prediction
+                paths[axis] = public_path
+                if gain[0] < 15 or not public_path["public_path_gate"]:
+                    continue
+                key = f"rotate_{axis}_negative_100mrad"
+                targets[key] = target
+                options[key] = (
+                    f"One complete right LINK6 world-{axis.upper()} negative 0.10 rad "
+                    "in five native steps, same LINK6 position, gripper open, left arm held. "
+                    f"Current RGB/K/T ray-depth sweep predicts the visible green region "
+                    f"moves {gain_label.upper()} {gain} pixels in right-wrist RGB; "
+                    "verify from the next actual image. Public robot path passes, but "
+                    "scene and hand sweep clearance remain visual judgments.")
+            if nearest <= 100:
+                descent = _sensing_descent(obs, hull, temporal, material)
+                if descent is not None:
+                    key, target, effect, detail = descent
+                    targets[key] = target
+                    options[key] = detail["description"]
+                    record["translation_view_effects"] = {key: effect}
+                    record["descent_public_evidence"] = {
+                        "public_path": detail["public_path"],
+                        "hand_vs_visual_support": detail["hand_vs_visual_support"]}
+            record["view_predictions"] = predictions
+            record["public_view_paths"] = paths
+            if not targets:
+                status = "view_rotation_public_gate_incomplete"
+                record["status"] = status
+                trace.append(record)
+                native_result = tools.finish(status)
+                break
+            options.update({
+                "stop_visible_blocker": "A specific current visible hand-sweep blocker makes every offered complete sensing action unsafe.",
+                "stop_identity_ambiguous": "Current three RGB cannot identify the same green scissors source.",
+                "stop_pad_mismatch": "The public inner-pad image boxes visibly contradict the actual gripper fingers."})
+            instruction = (
+                "Inspect all THREE CURRENT RGB images. Judge exactly one complete "
+                "visibility action or a specific STOP. Rotation options turn about the "
+                "measured right LINK6 center; a separate Z-negative option, when present, "
+                "lowers the hand 5 mm and must have its own visibly clear corridor. "
+                "WORLD X is robot-right in the fixed high view; current K/T predicts "
+                "its negative rotation moves the visible scissors UP in the wrist image. "
+                "WORLD Y points away from robot bases; its negative rotation instead "
+                "predicts the visible scissors LEFT, which may expose the ring hidden "
+                "behind the black hand. The current image algorithm counts closed "
+                f"green ring contours={ring_count}; zero/one is an occlusion or "
+                "segmentation warning, not proof of object loss. Compare BOTH current "
+                "RGB occlusion and frame "
+                "edge, and require a clear full hand sweep. Public robot-only paths "
+                "and camera projections cannot establish scene clearance. A sampled "
+                "visual-support height quantile is not a physical obstacle bound.")
+        else:
+            options, targets, image_effects = _translation_options(
+                obs, hull, temporal, material)
+            record["translation_view_effects"] = image_effects
+            if (material is not None and ring_count >= 2 and margin > 30):
+                facet_distance = material[
+                    "possible_green_to_each_public_facet_distance_mm_q05_q50_q95"]
+                axes = material[
+                    "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95"]
+                pad_boxes = hull["public_inner_pad_bbox_right_wrist_xyxy"]
+                green_box = hull["right_wrist_mask_bbox_xyxy"]
+                between_projected_pads = (
+                    green_box[0] >= pad_boxes["link7"][2] - 20 and
+                    green_box[2] <= pad_boxes["link8"][0] + 20)
+                close_gate = (
+                    max(facet_distance["link7"][0],
+                        facet_distance["link8"][0]) <= 45 and
+                    abs(axes["q50"][2]) <= 30 and
+                    abs(axes["q50"][1]) <= 35 and
+                    between_projected_pads)
+                record["contact_hypothesis_gate"] = {
+                    "candidate": close_gate,
+                    "public_facet_distance_q05_mm": {
+                        "link7": facet_distance["link7"][0],
+                        "link8": facet_distance["link8"][0]},
+                    "green_material_q50_minus_pad_xyz_mm": axes["q50"],
+                    "green_wrist_bbox_between_public_pad_boxes":
+                        between_projected_pads,
+                    "limitation": "These are visual-support and public-mesh tests, not observed contact or a scene clearance certificate."}
+                if close_gate:
+                    target = _targets(obs, "x", 1, 0.0)
+                    target["right"]["gripper_closed"] = True
+                    public_path = preview(obs, target["right"], None, steps=5)
+                    if (public_path["public_path_gate"] and
+                            public_path["native_eef_single_action_legal"]):
+                        key = "close_right_gripper_hold_link6"
+                        targets[key] = target
+                        options[key] = (
+                            "One complete five-native-step right gripper CLOSE "
+                            "command while both LINK6 poses stay measured-current "
+                            "and the left gripper remains open. This is a "
+                            "physical grasp attempt, not proof of contact. "
+                            "Current two-RGB possible solid-green support is "
+                            "near BOTH public STL inward facets, but its "
+                            "metal-height slab and real black finger visibility "
+                            "remain uncertain. Luna must confirm actual green "
+                            "material lies between real opposing finger faces "
+                            "and a clear finger sweep in all current RGB; "
+                            "after closing, reobserve and test source-following "
+                            "with a separate bounded lift.")
+                        record["stage"] = "grasp_hypothesis_review"
+            options.update({
+                "stop_visible_blocker": "A specific current visible obstacle blocks every offered short move.",
+                "stop_identity_ambiguous": "The mint-green scissors identity itself is ambiguous in current RGB.",
+                "stop_pad_mismatch": "The public inner-pad image boxes visibly contradict the actual gripper fingers."})
+            instruction = (
+                "Inspect all THREE CURRENT RGB images and choose ONE complete short "
+                "open-gripper precontact action or a specific STOP. WORLD X positive "
+                "moves right in the fixed high view; WORLD Y positive moves away from "
+                "robot bases toward the far table; WORLD Z positive raises the hand. "
+                "The wrist camera rides with the hand so stationary objects can move "
+                "opposite its motion in pixels. Current RGB silhouette-support residual "
+                "intervals give possible source region minus public inner finger pad "
+                "locations, NOT object pose or a grasp target. The 5 mm gain is specific "
+                "to the first 5 mm only, not the whole larger action. Public URDF/STL "
+                "projects each REAL inner pad's image box; confirm these against the "
+                "visible black fingers. A clearly identifiable green scissors region "
+                "remains an identified source even when precise contact geometry is "
+                "uncertain. Judge the offered "
+                "full short corridor in current RGB and reobserve after execution.")
+        temporal_option_residual = {}
+        if temporal is not None:
+            patch_error = (np.asarray(
+                temporal["metal_patch_minus_public_pad_midpoint_xyz_mm"], float)
+                           if temporal.get("metal_patch_minus_public_pad_midpoint_xyz_mm")
+                           is not None else None)
+            ring_geometry = temporal.get("green_aperture_centre_temporal_geometry")
+            ring_errors = ([np.asarray(row[
+                "aperture_centre_minus_public_pad_midpoint_xyz_mm"], float)
+                            for row in ring_geometry["rows"]]
+                           if ring_geometry is not None else [])
+            current_position = np.asarray(obs["current_eef"]["right"]["position"],
+                                          float)
+            for key, target in targets.items():
+                if key.startswith("rotate_"):
+                    continue
+                target_position = np.asarray(target["right"]["position"], float)
+                delta_mm = (target_position-current_position)*1000
+                temporal_option_residual[key] = {
+                    "metal_patch_minus_pad_after_commanded_translation_xyz_mm":
+                        (np.round(patch_error-delta_mm, 1).tolist()
+                         if patch_error is not None else None),
+                    "green_air_hole_centres_minus_pad_after_commanded_translation_xyz_mm":
+                        [np.round(error-delta_mm, 1).tolist()
+                         for error in ring_errors],
+                    "assumptions": "Static source and ideal commanded pad translation; metal patch and green AIR-hole centres are not graspable solid material or contact targets; actual motion must be measured after execution."}
+            instruction += (
+                " A same-episode RGB temporal check offers independently "
+                "validated visible SILVER patch geometry when metal texture "
+                "matches pass, and two GREEN ring APERTURE centres only when "
+                "the separate contour-hole ray gate passes. Missing values are "
+                "unknown; do not invent them. Ring-hole centres are AIR, not "
+                "solid grip material. When both estimates exist, their world-Y "
+                "depths differ; inspect the supplied axis residuals rather than "
+                "aligning the hand to the pivot by appearance. "
+                "±2px sensitivity omits calibration and systematic contour error. "
+                "Only current RGB can show solid green material, real finger faces "
+                "and the local visible hand corridor. Do not close solely because "
+                "a patch or hole residual shrinks.")
+        material_option_residual = {}
+        if material is not None:
+            current_position = np.asarray(obs["current_eef"]["right"]["position"], float)
+            current_residual = material[
+                "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95"]
+            for key, target in targets.items():
+                if key.startswith("rotate_"):
+                    continue
+                delta_mm = (np.asarray(target["right"]["position"], float) -
+                            current_position)*1000
+                material_option_residual[key] = {
+                    quantile: (np.asarray(values, float)-delta_mm).round(1).tolist()
+                    for quantile, values in current_residual.items()}
+            instruction += (
+                " An independent image algorithm also offers a POSSIBLE solid-green"
+                " material set: both CURRENT RGB cameras actually show green pixels"
+                " at every sampled projection, excluding AIR holes. It assumes"
+                " green plastic lies within a declared vertical slab around a"
+                " separately RGB-matched silver texture height. Use its axis"
+                " residual and per-candidate change only as uncertain direction"
+                " context. The slab is not a verified surface, clearance or"
+                " contact target; compare the real black inner fingers in fresh RGB.")
+        record["temporal_option_metal_patch_residual"] = temporal_option_residual
+        record["material_option_residual"] = material_option_residual
+        question = choice("pickup_action", instruction, options)
+        model_input = {
+            "task": obs["task"], "instruction": obs["instruction"],
+            "step_id": obs["step_id"], "current_stage": record["stage"],
+            "measured_eef": obs["current_eef"],
+            "measured_joint_state": obs["current_state"],
+            "sensor_derived_geometry": hull,
+            "temporal_metal_and_green_support": temporal,
+            "temporal_geometry_error": temporal_error,
+            "temporal_option_metal_patch_residual": temporal_option_residual,
+            "possible_solid_green_material_support": material,
+            "green_material_support_error": material_error,
+            "material_option_residual": material_option_residual,
+            "contact_hypothesis_gate": record.get("contact_hypothesis_gate"),
+            "camera_view_prediction": record.get("view_predictions"),
+            "translation_view_effects": record.get("translation_view_effects"),
+            "descent_public_evidence": record.get("descent_public_evidence"),
+            "planner_stage": active_stage,
+            "planner_stage_evidence_rule": active_stage_recipe,
+            "planner_stage_interpretation": (
+                "A prior method schema is fallback-only after a gateway failure; "
+                "its old pixels, calibration and past stage status are NOT current. "
+                "The current_stage label, current three RGB, current numeric "
+                "geometry and Luna's own visual veto take precedence."
+                if initial_refresh.get("fallback") else
+                "Current-episode method schema; current RGB and geometry still determine stage progress."),
+            "planner_visual_processing_method": active_method,
+            "method_refresh": ({key: value for key, value in
+                                 record["method_refresh"].items()
+                                 if key not in ("visual_method", "stage_recipe")}
+                                if "method_refresh" in record else None),
+            "latest_experience_files": experience,
+            "last_executed_action_and_visible_change":
+                trace[-1].get("post_action") if trace else None,
+            "strict_input_contract": "Three current RGB plus same-episode historical RGB only for a current-feature match and fixed-camera static check, public K/T, measured robot state, public robot-only paths and RGB-derived uncertain geometry. Metal patch is NOT graspable green handle or contact; no true scene object pose, contact or evaluator outcome.",
+        }
+        answer = model.query(obs, [question], json.dumps(model_input, ensure_ascii=False),
+                             f"pickup_active_{turn:02d}_step{obs['step_id']:03d}")
+        selected = answer["pickup_action"]
+        record["luna_choice"] = selected
+        trace.append(record)
+        if selected.startswith("stop_"):
+            status = selected + "_incomplete"
+            record["status"] = status
+            native_result = tools.finish(status)
+            break
+        target = targets[selected]
+        first = tools._rpc("eef_joint_target", targets=target)
+        if first.get("physical_steps") != 0 or len(first.get("action", [])) != 14:
+            raise ValueError("Native first IK is no longer read-only")
+        path = preview(obs, target["right"], first["action"][7:13], steps=5)
+        record["native_first_IK"] = first
+        record["public_five_step_path"] = path
+        if not path["model_path_gate"]:
+            status = "public_robot_path_incomplete"
+            record["status"] = status
+            native_result = tools.finish(status)
+            break
+        action = {"request_id": obs["request_id"], "mode": "eef", "steps": 5,
+                  "reason": "du Luna continuous RGB+public-sensor pickup action",
+                  "target": target}
+        native.validate_action(action, tools.request)
+        call = tools.next_call()
+        call.pop("tool")
+        call["response"] = action
+        after = tools.act(**call)
+        after["camera_calibration"] = propagate_wrist_calibration(
+            initial_calibration, initial_eef, after["current_eef"], after["step_id"])
+        (output / f"camera_calibration_step_{after['step_id']:03d}.json").write_text(
+            json.dumps(after["camera_calibration"], ensure_ascii=False, indent=2))
+        error = float(np.linalg.norm(
+            np.asarray(after["current_eef"]["right"]["position"], float) -
+            np.asarray(target["right"]["position"], float)))
+        record["post_action"] = {
+            "action": action, "new_step_id": after["step_id"],
+            "measured_right_LINK6_position_residual_m": error,
+            "sensor_motion": _sensor_motion(obs, after)}
+        if selected.startswith("rotate_"):
+            rotations += 1
+        obs = after
+        if error > 0.002:
+            status = "robot_tracking_incomplete"
+            record["status"] = status
+            native_result = tools.finish(status)
+            break
+    else:
+        native_result = obs.get("result") if obs["rollout_finished"] else tools.finish(status)
+    report = {"task": obs["task"], "status": status,
+              "records": trace, "native_result": native_result}
+    path = output / "pickup_active_trace.json"
+    path.write_text(json.dumps(report, ensure_ascii=False, indent=2))
+    return {"status": status,
+            "decisions": sum("post_action" in row for row in trace),
+            "visual_queries": sum("luna_choice" in row for row in trace),
+            "method_refreshes": len(refreshed_steps),
+            "native_result": native_result, "trace": str(path)}

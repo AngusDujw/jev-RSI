@@ -1,13 +1,12 @@
-"""Build a sensor-only RoboDojo stage plan through the local Pro bridge."""
+"""Build a sensor-only RoboDojo stage plan through the authorized Responses provider."""
 
 import argparse
 import base64
+import cv2
 import hashlib
 import json
 from pathlib import Path
-import time
-import urllib.error
-import urllib.request
+from planner_responses import build_payload, load_config, output_text, request
 
 
 def write_json(path, value):
@@ -28,6 +27,10 @@ def main():
     parser.add_argument("--template", type=Path)
     parser.add_argument("--method-only", action="store_true",
                         help="Planner defines perception and stages; runtime geometry/Luna own actions")
+    parser.add_argument("--omit-image-payload", action="store_true",
+                        help="Use RGB-derived sensor summaries when gateway cannot carry GPT-6.1 Sol images")
+    parser.add_argument("--select-recent-experience", action="store_true",
+                        help="Read and snapshot full notes, submit identity and two newest task lessons verbatim")
     parser.add_argument("--global-experience", type=Path, required=True)
     parser.add_argument("--task-experience", type=Path)
     parser.add_argument("--output", type=Path, required=True)
@@ -62,22 +65,31 @@ def main():
         previous_calibration = json.loads(args.previous_calibration.read_text())
         if int(previous_calibration["step_id"]) != int(previous["step_id"]):
             raise ValueError("Historical RGB/calibration step mismatch")
-        public["historical_observation_for_motion_only"] = {
+        public["historical_observation_for_motion_or_current_feature"] = {
             "step_id": previous["step_id"],
             "current_eef": previous["current_eef"],
             "current_joint_state": previous["current_state"],
             "camera_calibration": previous_calibration,
         }
-    experience = {
+    full_experience = {
         "global": args.global_experience.read_text(),
         "task": args.task_experience.read_text() if args.task_experience else "",
     }
-    # Experience evolves after every round. Preserve the exact model-facing
-    # text beside the immutable response and input hashes for later audit.
-    (args.output / "planner-experience-global.md").write_text(experience["global"])
-    (args.output / "planner-experience-task.md").write_text(experience["task"])
+    experience = dict(full_experience)
+    if args.select_recent_experience:
+        task_lessons = [line for line in full_experience["task"].splitlines()
+                        if line.startswith("- ")]
+        chosen = task_lessons[:1] + task_lessons[-2:]
+        experience["task"] = (
+            "# Verbatim selected general_pickup experience\n\n" +
+            "\n".join(dict.fromkeys(chosen)) + "\n")
+    # Preserve both the entire notes read and the exact subset sent.
+    for role, contents in full_experience.items():
+        (args.output / f"planner-experience-{role}.md").write_text(contents)
+        (args.output / f"planner-selected-experience-{role}.md").write_text(
+            experience[role])
     system = (
-        "You are GPT-6.1 Sol high, the stage and visual-method planner for a RoboDojo robot. "
+        "You are GPT-6.1 Sol with high reasoning, the method-only stage and visual-processing planner for a RoboDojo robot. "
         "Use ONLY the task instruction, three supplied RGB frames, measured robot state, "
         "and the supplied experience notes. No hidden simulator object pose, contacts, reward, "
         "evaluation state, or task layout data are available. Produce one JSON object with "
@@ -102,12 +114,15 @@ def main():
         "orientation change from each arm's current measured LINK6 pose. A longer "
         "10/15/20-step robot path preview is diagnostic only: it cannot be submitted "
         "as one EEF action. Every executed segment needs fresh observation and Luna approval. "
-        "If historical RGB is provided, "
-        "use it only to compare actual visual motion and validate the public camera "
-        "projection; never reuse old pixels as current contact or target evidence. "
+        "If historical RGB is provided, use it for actual visual motion, public "
+        "camera projection validation, and same-feature temporal triangulation only "
+        "when a current RGB feature is matched and a fixed-view image supports "
+        "source stability. Historical pixels cannot establish current contact, "
+        "visibility or a current grasp target. "
         "Calculate image u/v motion signs from numeric K/T rather than prose. Return JSON only."
-        + (" Camera-derived geometry evidence is provided from the CURRENT RGB, "
-           "public camera calibration and measured LINK6. Use it only to refine "
+        + (" Camera-derived geometry evidence is provided from current RGB and "
+           "may include same-feature matches from earlier RGB in the same episode, "
+           "with public camera calibration and measured LINK6. Use it only to refine "
            "the semantic stage criteria, feature extraction, uncertainty and "
            "reobservation method. Never select or suggest a motion. "
            if args.geometry_evidence and args.method_only else
@@ -162,9 +177,23 @@ def main():
     details = {
         "public_observation": public,
         "experience": experience,
+        "camera_input_mode": ("RGB-derived numeric and semantic features; raw RGB bytes not transmitted"
+                              if args.omit_image_payload else
+                              "three current RGB frames transmitted as JPEG"),
     }
     if template:
         details["existing_stage_template"] = template
+    if args.omit_image_payload:
+        system = system.replace("three supplied RGB frames",
+                                "algorithm-derived summaries of three current RGB frames")
+        system += (
+            " The API gateway did not accept GPT-6.1 Sol high image payloads "
+            "in a preceding isolated diagnostic. You are NOT viewing raw RGB "
+            "pixels in this call. Use only named RGB-derived features and "
+            "their uncertainty from the supplied sensor evidence; do not "
+            "invent a visible landmark, pixel coordinate, appearance, "
+            "clearance or contact. Luna receives all three current raw RGB "
+            "frames independently and makes the action decision.")
     parts = [{"type": "text", "text": json.dumps(details, ensure_ascii=False)}]
     image_meta = []
     for item in obs["images"]:
@@ -172,11 +201,23 @@ def main():
             raise ValueError("Unexpected camera")
         image = Path(item["path"])
         raw = image.read_bytes()
+        pixels = cv2.imread(str(image))
+        original_hw = list(pixels.shape[:2])
+        sent_hw = [240, 320]
+        pixels = cv2.resize(pixels, (sent_hw[1], sent_hw[0]),
+                            interpolation=cv2.INTER_AREA)
+        encoded = cv2.imencode(".jpg", pixels,
+                               [cv2.IMWRITE_JPEG_QUALITY, 85])[1].tobytes()
         image_meta.append({"camera": item["camera"], "path": str(image),
-                           "sha256": hashlib.sha256(raw).hexdigest()})
-        parts.append({"type": "text", "text": "Current RGB: " + item["camera"]})
-        parts.append({"type": "image_url", "image_url": {
-            "url": "data:image/png;base64," + base64.b64encode(raw).decode("ascii")}})
+                           "sha256": hashlib.sha256(raw).hexdigest(),
+                           "submitted_jpeg_quality": 85,
+                           "original_hw": original_hw, "submitted_hw": sent_hw,
+                           "submitted_sha256": hashlib.sha256(encoded).hexdigest()})
+        parts.append({"type": "text", "text":
+                      f"Current RGB {item['camera']}; transmitted {sent_hw[1]}x{sent_hw[0]} JPEG from original {original_hw[1]}x{original_hw[0]} RGB. Map image pixels back to original resolution before numeric K/T use."})
+        if not args.omit_image_payload:
+            parts.append({"type": "image_url", "image_url": {
+                "url": "data:image/jpeg;base64," + base64.b64encode(encoded).decode("ascii")}})
     previous_image_meta = []
     if previous:
         for item in previous["images"]:
@@ -184,29 +225,45 @@ def main():
                 raise ValueError("Unexpected historical camera")
             old_image = Path(item["path"])
             old_raw = old_image.read_bytes()
+            old_pixels = cv2.imread(str(old_image))
+            old_original_hw = list(old_pixels.shape[:2])
+            old_sent_hw = [240, 320]
+            old_pixels = cv2.resize(
+                old_pixels, (old_sent_hw[1], old_sent_hw[0]),
+                interpolation=cv2.INTER_AREA)
+            old_encoded = cv2.imencode(
+                ".jpg", old_pixels,
+                [cv2.IMWRITE_JPEG_QUALITY, 85])[1].tobytes()
             previous_image_meta.append({"camera": item["camera"], "path": str(old_image),
-                                        "sha256": hashlib.sha256(old_raw).hexdigest()})
+                                        "sha256": hashlib.sha256(old_raw).hexdigest(),
+                                        "submitted_jpeg_quality": 85,
+                                        "original_hw": old_original_hw,
+                                        "submitted_hw": old_sent_hw,
+                                        "submitted_sha256": hashlib.sha256(old_encoded).hexdigest()})
             parts.append({"type": "text", "text":
-                          f"HISTORICAL RGB step_id={previous['step_id']} for motion comparison ONLY: " + item["camera"]})
-            parts.append({"type": "image_url", "image_url": {
-                "url": "data:image/png;base64," + base64.b64encode(old_raw).decode("ascii")}})
-    payload = {
-        "model": "gpt-6.1-sol", "reasoning_effort": "high",
-        "response_format": {"type": "json_object"}, "stream": False,
-        "messages": [{"role": "system", "content": system},
-                     {"role": "user", "content": parts}],
-    }
+                          f"HISTORICAL RGB step_id={previous['step_id']} for motion or current-feature temporal correspondence, never current contact: {item['camera']}. Transmitted {old_sent_hw[1]}x{old_sent_hw[0]} JPEG from original {old_original_hw[1]}x{old_original_hw[0]}; map pixels back to original resolution before K/T use."})
+            if not args.omit_image_payload:
+                parts.append({"type": "image_url", "image_url": {
+                    "url": "data:image/jpeg;base64," + base64.b64encode(old_encoded).decode("ascii")}})
+    configuration = load_config()
+    payload = build_payload(system, parts, configuration["model"])
     manifest = {
-        "model": payload["model"], "reasoning_effort": payload["reasoning_effort"],
+        "model": payload["model"], "reasoning_effort": payload["reasoning"]["effort"],
+        "provider": "ai2robcowork", "wire_api": "responses",
         "method_only": args.method_only,
+        "raw_rgb_transmitted_to_planner": not args.omit_image_payload,
+        "selected_recent_experience": args.select_recent_experience,
         "public_observation": public, "images": image_meta,
-        "historical_images_for_motion_only": previous_image_meta,
+        "historical_images_for_motion_or_current_feature": previous_image_meta,
         "template_sha256": (hashlib.sha256(args.template.read_bytes()).hexdigest()
                             if args.template else None),
         "geometry_evidence_sha256": (hashlib.sha256(args.geometry_evidence.read_bytes()).hexdigest()
                                      if args.geometry_evidence else None),
         "experience_sha256": {k: hashlib.sha256(v.encode()).hexdigest()
-                              for k, v in experience.items()},
+                              for k, v in full_experience.items()},
+        "selected_experience_sha256": {
+            k: hashlib.sha256(v.encode()).hexdigest()
+            for k, v in experience.items()},
     }
     if args.response_file:
         prior_manifest = json.loads((args.response_file.parent / "planner-input-manifest.json").read_text())
@@ -216,22 +273,9 @@ def main():
     if args.response_file:
         response = json.loads(args.response_file.read_text())
     else:
-        request = urllib.request.Request("http://127.0.0.1:18883/v1/chat/completions",
-            data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"},
-            method="POST")
-        last_error = None
-        for attempt in range(4):
-            try:
-                with urllib.request.urlopen(request, timeout=1300) as handle:
-                    response = json.load(handle)
-                break
-            except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
-                last_error = str(error)
-                time.sleep(min(20 * (attempt + 1), 60))
-        else:
-            raise RuntimeError("Planner bridge failed: " + str(last_error))
+        response = request(payload, configuration)
     write_json(args.output / "planner-response.json", response)
-    plan = json.loads(response["choices"][0]["message"]["content"])
+    plan = json.loads(output_text(response))
     if (args.method_only and not plan.get("landmark_spec") and
             isinstance(plan.get("visual_method"), dict)):
         plan["landmark_spec"] = plan["visual_method"].get("landmark_spec")
@@ -279,8 +323,10 @@ def main():
                         for key in ("landmark_id", "target_identity", "physical_landmark"))):
             raise ValueError("Method-only optional landmark contract failed")
     plan["planner_provenance"] = {
-        "model": "gpt-6.1-sol", "reasoning_effort": "high",
-        "auth": "local ChatGPT Pro subscription bridge",
+        "model": configuration["model"], "reasoning_effort": payload["reasoning"]["effort"],
+        "auth": "task-scoped AI2RobCoWork API key over Responses",
+        "provider": "ai2robcowork", "wire_api": "responses",
+        "raw_rgb_transmitted": not args.omit_image_payload,
         "input_manifest": str(args.output / "planner-input-manifest.json"),
     }
     if args.method_only:

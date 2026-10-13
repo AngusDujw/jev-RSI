@@ -1,0 +1,90 @@
+"""Constrain visible green handle material with RGB and an uncertain metal-depth slab.
+
+This is a camera-derived *possibility set*. The metal patch supplies a nearby
+height hypothesis; neither it nor a green silhouette supplies contact or a
+simulator object pose. No reward, contact, or privileged scene fields enter.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import numpy as np
+from scipy.spatial import cKDTree
+
+from gripper_pad_projection import inspect as inspect_public_pads
+from pickup_visual_hull import _green_mask, _project_many
+
+
+def build(observation: dict, temporal_metal: dict,
+          half_height_m: float = 0.020) -> dict:
+    if observation["task"] != "general_pickup":
+        raise ValueError("Green-handle material support is pickup-specific")
+    if temporal_metal.get("current_step_id") != observation["step_id"]:
+        raise ValueError("Metal depth and current RGB step disagree")
+    if temporal_metal.get("accepted_sift_feature_count", 0) < 3:
+        raise ValueError("No independently matched temporal metal patch")
+    if not temporal_metal["fixed_high_rgb_static_check"][
+            "stable_enough_for_temporal_ray_check"]:
+        raise ValueError("Fixed-camera RGB does not support a static source")
+    metal_z = float(temporal_metal[
+        "visual_metal_patch_world_xyz_median_m"][2])
+    if not 0.65 <= metal_z <= 0.85 or not 0.005 <= half_height_m <= 0.040:
+        raise ValueError("Metal-height or stated slab range is invalid")
+    calibration = observation["camera_calibration"]
+    if calibration["step_id"] != observation["step_id"]:
+        raise ValueError("Camera calibration is not current")
+    image_paths = {row["camera"]: Path(row["path"])
+                   for row in observation["images"]}
+    wrist = _green_mask(image_paths["cam_right_wrist"], "cam_right_wrist")
+    high = _green_mask(image_paths["cam_high"], "cam_high")
+    yy, xx = np.nonzero(wrist)
+    sample = np.arange(0, len(xx), 2)
+    uv = np.column_stack((xx[sample], yy[sample]))
+    wrist_camera = calibration["cameras"]["cam_right_wrist"]
+    high_camera = calibration["cameras"]["cam_high"]
+    k = np.asarray(wrist_camera["intrinsic"], float)
+    pose = np.asarray(wrist_camera["camera_to_environment"], float)
+    rays = np.column_stack(((uv[:, 0]-k[0, 2])/k[0, 0],
+                            -(uv[:, 1]-k[1, 2])/k[1, 1],
+                            -np.ones(len(uv)))) @ pose[:3, :3].T
+    rays /= np.linalg.norm(rays, axis=1, keepdims=True)
+    if np.any(np.abs(rays[:, 2]) < 0.02):
+        raise ValueError("Near-horizontal green rays invalidate height slab")
+    levels = metal_z + np.linspace(-half_height_m, half_height_m, 9)
+    depths = (levels[None, :]-pose[None, 2, 3])/rays[:, 2, None]
+    points = (pose[None, None, :3, 3] +
+              depths[:, :, None]*rays[:, None, :]).reshape(-1, 3)
+    depth_ok = depths.reshape(-1) > 0
+    point_uv, high_depth = _project_many(high_camera, points)
+    pixels = np.rint(point_uv).astype(int)
+    in_frame = (depth_ok & (high_depth > 0) &
+                (pixels[:, 0] >= 0) & (pixels[:, 0] < high.shape[1]) &
+                (pixels[:, 1] >= 0) & (pixels[:, 1] < high.shape[0]))
+    accepted = np.zeros(len(points), bool)
+    accepted[in_frame] = high[pixels[in_frame, 1], pixels[in_frame, 0]]
+    points = points[accepted]
+    if len(points) < 100:
+        raise ValueError(f"Solid-green two-RGB slab support too sparse: {len(points)}")
+    pads = inspect_public_pads(observation, calibration)
+    facets = [np.asarray(pads["rows"][name]["inner_facet_world_xyz_m"], float)
+              for name in ("link7", "link8")]
+    midpoint = np.mean([face.mean(axis=0) for face in facets], axis=0)
+    relative_mm = (points-midpoint)*1000
+    pad_distances_mm = {name: np.quantile(
+        cKDTree(face).query(points, k=1)[0]*1000, [0.05, 0.5, 0.95]).round(1).tolist()
+        for name, face in zip(("link7", "link8"), facets)}
+    return {
+        "source": "Current actual green RGB pixels in right wrist and fixed high view, public K/T, same-episode RGB-matched silver patch height hypothesis, measured robot and public inner-finger STL facets",
+        "current_step_id": observation["step_id"],
+        "metal_patch_height_m": round(metal_z, 5),
+        "assumed_green_height_slab_m": [round(float(levels[0]), 5),
+                                        round(float(levels[-1]), 5)],
+        "height_assumption": "The visible green plastic could lie within 20 mm vertically of the independent silver texture patch. This is a declared proxy, not a measured green surface height; the result is invalid if the handle is outside it.",
+        "green_rgb_consistent_sample_count": len(points),
+        "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95": {
+            key: np.quantile(relative_mm, q, axis=0).round(1).tolist()
+            for key, q in (("q05", 0.05), ("q50", 0.5), ("q95", 0.95))},
+        "possible_green_to_each_public_facet_distance_mm_q05_q50_q95": pad_distances_mm,
+        "limitations": "Every retained sample projects to actual green pixels in two CURRENT RGB images, excluding the ring AIR holes. It is a sampled visual-support hypothesis, not confirmed 3D same-point correspondence, contact, a collision-free corridor or a grasp target. Quantiles are not confidence bounds; metal-to-plastic height difference, occlusion, segmentation and calibration add uncertainty. Check actual black finger surfaces and next RGB before motion.",
+    }
