@@ -176,6 +176,7 @@ graph LR
     T_2026W42_068["📊 robodojo-decision-stages<br/>具名XYZ接近仍无抓持；公共指面/手底高度…"]:::experiment
     T_2026W42_069["📊 robodojo-decision-stages<br/>223当前可见剪刀仍身份STOP；分开身份…"]:::experiment
     T_2026W42_070["📊 robodojo-decision-stages<br/>裁图开局推进65步；二维CLOSE门导致远…"]:::experiment
+    T_2026W42_071["📊 robodojo-decision-stages<br/>227运动概率分散而身份STOP；分解身份…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -312,6 +313,7 @@ graph LR
   T_2026W42_067 --> T_2026W42_068
   T_2026W42_068 --> T_2026W42_069
   T_2026W42_069 --> T_2026W42_070
+  T_2026W42_070 --> T_2026W42_071
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -476,6 +478,7 @@ graph LR
 | `T-2026W42-068` | 2026-10-13 | experiment | robodojo-decision-stages | 具名XYZ接近仍无抓持；公共指面/手底高度揭示姿态约束，早期工具轴路径验证 | `EXP-2026W42-175` | - |
 | `T-2026W42-069` | 2026-10-14 | experiment | robodojo-decision-stages | 223当前可见剪刀仍身份STOP；分开身份与接触，用目标局部图和相关原文验证 | `EXP-2026W42-176` | - |
 | `T-2026W42-070` | 2026-10-14 | experiment | robodojo-decision-stages | 裁图开局推进65步；二维CLOSE门导致远端族STOP，改公共有限闭合体积与早期RGB姿态 | `EXP-2026W42-177` | - |
+| `T-2026W42-071` | 2026-10-14 | experiment | robodojo-decision-stages | 227运动概率分散而身份STOP；分解身份/动作族，粗XYZ开局与严格接触分门 | `EXP-2026W42-178` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
