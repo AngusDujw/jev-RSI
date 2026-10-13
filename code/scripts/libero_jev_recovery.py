@@ -99,6 +99,8 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg,
                           if receiver is not None else 0.)
         entry_sign = (-1. if receiver_delta > 0 else 1.) if abs(receiver_delta) > .025 else (
             1. if (position[:2]-src['center'][:2]) @ major[:2] >= 0 else -1.)
+        if cfg.get('bowl_side_entry') == 'receiver' and abs(receiver_delta) > .025:
+            entry_sign *= -1.
         # The own fingertips extend along local -Z. Point them inward from
         # the selected exterior side before planning the horizontal insert.
         R_side = Rotation.from_rotvec(-minor*entry_sign*np.pi/2).as_matrix() @ R
@@ -140,7 +142,9 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg,
             outer_xy = xy + major[:2]*(outside-xy@major[:2])
             fits.append(dict(target=np.r_[xy,target_z],
                 side_entry_outer_tcp_world_m=np.r_[outer_xy,target_z],
-                side_entry_basis='opposite visible receiver' if abs(receiver_delta) > .025 else 'own current TCP side',
+                side_entry_basis=(cfg.get('bowl_side_entry','opposite')+
+                                  ' visible receiver side' if abs(receiver_delta) > .025
+                                  else 'own current TCP side'),
                 orientation=R_side, visible_width_mm=section_width*1000,
                 visible_section_width_mm=section_width*1000,
                 own_open_inner_pad_gap_mm=open_gap*1000,
