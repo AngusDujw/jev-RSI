@@ -17,6 +17,7 @@ from pickup_green_plane import build as build_green_plane
 from pickup_tool_alignment import build as build_tool_alignment
 from pickup_actor_evidence import prepare as prepare_actor_evidence
 from pickup_program_proposal import propose as propose_program
+from pickup_unary_input import compact as compact_unary_input
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import (eef_transform, gripper_height_above_landmark,
@@ -1259,6 +1260,10 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 'stage_score':progress_scores[unary_program],
                 'public_five_step_evidence':program_diagnostics.get(unary_program),
                 'step_objective':'Only incremental progress in THIS stage over FIVE simulated physical steps. The full pick-up/10cm task is for later stages; this one open approach need not grasp or finish it.'}
+            if os.environ.get('ROBODOJO_PICKUP_COMPACT_UNARY') == '1':
+                (output / f"full_unary_input_step_{obs['step_id']:03d}.json").write_text(
+                    json.dumps(model_input,ensure_ascii=False,indent=2))
+                model_input = compact_unary_input(model_input,obs)
             if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS', '1') == '0':
                 # Proposal selection still uses the same geometry scaffold;
                 # the actor receives no current object-error/progress numbers.
