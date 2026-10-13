@@ -124,7 +124,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
     ticks=0;phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
-    src=dst=sem=None;grasp=None;hover=None;offset=None;place=None;tcp_grasp=None;source_grasp=None
+    src=dst=sem=None;grasp=None;hover=None;offset=None;place=None;tcp_grasp=None;source_grasp=None;release_tcp=None
     last_verification_tick=-1;reobserved=False;start_tcp=obs['robot0_eef_pos'].copy();finished=False
     def views():
         return {c:dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),depth=depth_fn(env.sim,obs[c+'_depth'])[::-1].squeeze(),K=k_fn(env.sim,c,obs[c+'_image'].shape[0],obs[c+'_image'].shape[1]),T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
@@ -291,7 +291,14 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             elif stage=='insert':target=grasp
             elif stage in ['grasp','release']:target=obs['robot0_eef_pos'].copy()
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
-            elif stage in ['carry','retreat']:target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
+            elif stage=='carry':target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
+            elif stage=='retreat':
+                # After a guarded support release, withdraw locally from the
+                # actually executed release pose. Returning to the old carry
+                # hover can be unreachable and is not required for clearance.
+                target=(release_tcp+np.array([0.,0.,.03])
+                        if rec.cfg.get('support_stall_release') and release_tcp is not None
+                        else np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover])
             elif stage=='lower':
                 mode=rec.cfg.get('placement_height_mode')
                 if mode in ('visible_bottom','contact_seat','occlusion_guarded_bottom'):
@@ -464,6 +471,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 if stage=='approach':sem,src,dst=locate('pregrasp');grasp=grasp_target()
                 if stage=='grasp':tcp_grasp=obs['robot0_eef_pos'].copy();source_grasp=src['center'].copy()
                 if stage=='lift' and offset is None:raise RuntimeError('Jev advanced without usable held-object geometry')
+                if stage=='release':release_tcp=obs['robot0_eef_pos'].copy()
                 phase+=1;stage_ticks=0;stage_decisions=0;gripper_ticks=0;stalls=0
         finished=True
     except Exception as e:
