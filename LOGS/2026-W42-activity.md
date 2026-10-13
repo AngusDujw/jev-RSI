@@ -170,3 +170,4 @@
 - 【Agent】【2026-10-13 08:15】[op] Pro高位在当前step10三RGB与15条公开路径扫描上，将失败的Y-20/Z+5mm缩为Y-16/Z+5mm完整五步候选；预测终点1.026mm并数值计算红帽样本左上投影，更新条件式控制器与DataStorage计划151。
 - 【Agent】【2026-10-13 08:15】[run] 启动press_by_number GPU Fabric新独立回合152，第三动作须经新鲜原生首步IK、完整五步公开路径和du Luna三RGB视觉否决门。
 - 【Agent】【2026-10-13 08:22】[result] 按钮GPU Fabric路径感知三段15步：第三段跟踪1.683mm、卡角匹配0.993，但Pro当前图STOP_HOLD，仍0按压/0完整成功；经验与EXP114-116已沉淀。
+- 【Agent】【2026-10-13 08:24】[op] 本聊天sess_024f025c636f4c6b 2026-10-13续轮提交49096c8（EXP104-116、按钮GPU Fabric与三图动作审计），经DataStorage bundle回本机，以Git SSH推送同名远程分支；下一轮不重复按钮支线。
