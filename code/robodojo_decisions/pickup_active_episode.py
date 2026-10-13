@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np
 from pickup_green_plane import build as build_green_plane
 from pickup_tool_alignment import build as build_tool_alignment
+from pickup_actor_evidence import prepare as prepare_actor_evidence
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import (eef_transform, gripper_height_above_landmark,
@@ -1140,8 +1141,14 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 trace[-1].get("post_action") if trace else None,
             "strict_input_contract": "Three current RGB plus same-episode historical RGB only for a current-feature match and fixed-camera static check, public K/T, measured robot state, public robot-only paths and RGB-derived uncertain geometry. Metal patch is NOT graspable green handle or contact; no true scene object pose, contact or evaluator outcome.",
         }
+        full_input_path = output / f"full_actor_geometry_step_{obs['step_id']:03d}.json"
+        full_input_path.write_text(json.dumps(model_input, ensure_ascii=False, indent=2))
+        model_input, identity_crops = prepare_actor_evidence(
+            obs, model_input, experience, output, turn)
+        record["actor_input_variant"] = "compact_current_feature_with_rgb_context_crops"
         answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
-                             f"pickup_active_{turn:02d}_step{obs['step_id']:03d}")
+                             f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",
+                             extra_images=identity_crops)
         selected = answer["pickup_action"]
         if family_options is not None:
             family = answer["action_family"]
