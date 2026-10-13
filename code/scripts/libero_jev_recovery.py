@@ -74,9 +74,6 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
             # asset dimensions or simulator contact state.
             rim_drop = (min(.008, .15*float(extent[2]))
                         if cfg.get('rim_height_mode') == 'visible_sidewall' else 0.)
-            rim_target_z = max(
-                float(c[1]['target'][2])-rim_drop,
-                level-ee['finger_low_z_offset']+cfg['table_margin_mm']/1000)
             # Center the opposed open inner pad faces on one visible boundary.
             # An inward offset makes the outer face touch first and can push
             # a movable source aside before the inner face reaches it.
@@ -86,23 +83,42 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
             for i, side in enumerate((1., -1.)):
                 candidate = dict(c[1])
                 candidate['id'] = f'candidate_{i}'
-                # Preserve the longitudinal candidate that was already
-                # reachable; only change the jaw-closing axis for a rim pinch.
-                candidate['target'] = c[1]['target'].copy()
-                candidate['target'][:2] += side*rim_offset*minor[:2]
-                candidate['target'][2] = rim_target_z
+                # Recompute the own pad envelope after tilting inward. Merely
+                # changing orientation while retaining the old TCP offset
+                # would move the pads away from the visible rim.
+                tilt = np.deg2rad(cfg.get('rim_tilt_deg', 0.))
+                R_side = Rotation.from_rotvec(side*major*tilt).as_matrix() @ R
+                own_side = envelope(own, R_side)
+                lateral = src['center'][:2] + major[:2]*(-.012)
+                lateral += side*rim_offset*minor[:2]
+                target_xy = lateral-own_side['pad_center_offset'][:2]
+                overlap_requested = cfg['pad_overlap_mm']/1000+.003
+                target_z = (src['high'][2]-overlap_requested-
+                            own_side['pad_low_offset'][2]-rim_drop)
+                target_z = max(target_z, level-
+                    own_side['finger_low_z_offset']+cfg['table_margin_mm']/1000)
+                candidate['target'] = np.r_[target_xy,target_z]
+                candidate['orientation'] = R_side
                 candidate['grasp_height_source'] = 'visible one-sided rim pinch'
                 candidate['rim_height_mode'] = cfg.get('rim_height_mode', 'top_overlap')
                 candidate['visible_sidewall_drop_mm'] = float(
-                    (c[1]['target'][2]-rim_target_z)*1000)
-                pad_low = rim_target_z+ee['pad_low_offset'][2]
-                pad_high = rim_target_z+ee['pad_high_offset'][2]
+                    rim_drop*1000)
+                candidate['rim_inward_tilt_deg'] = float(np.rad2deg(tilt))
+                pad_low = target_z+own_side['pad_low_offset'][2]
+                pad_high = target_z+own_side['pad_high_offset'][2]
                 candidate['pad_z_interval_m'] = [pad_low, pad_high]
                 candidate['estimated_pad_overlap_mm'] = float(max(0.,
                     min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000)
                 candidate['estimated_finger_table_clearance_mm'] = float(
-                    (rim_target_z+ee['finger_low_z_offset']-level)*1000)
-                candidate['own_open_inner_pad_gap_mm'] = inner_gap*1000
+                    (target_z+own_side['finger_low_z_offset']-level)*1000)
+                projected_side = np.asarray(own['pad_vertices_tool']) @ R_side.T
+                side_axis = projected_side @ minor
+                positive_side = side_axis[side_axis > 0]
+                negative_side = side_axis[side_axis < 0]
+                if not len(positive_side) or not len(negative_side):
+                    raise RuntimeError('Tilted own pads have no opposed inner faces')
+                candidate['own_open_inner_pad_gap_mm'] = float(
+                    (np.min(positive_side)-np.max(negative_side))*1000)
                 candidate['one_sided_rim_offset_mm'] = side*rim_offset*1000
                 candidate['approach_distance_mm'] = float(np.linalg.norm(
                     candidate['target'][:2]-position[:2])*1000)

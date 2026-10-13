@@ -41,7 +41,7 @@ POLICY_FILES = (
 def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    approach_mode, entry_side, grasp_hold_ticks, drawer_contact_mode,
                    plate_stage_turn_deg, lift_recheck_mm=0, side_pad_overlap_mm=0,
-                   rim_height_mode='top_overlap'):
+                   rim_height_mode='top_overlap', rim_tilt_deg=0):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -88,6 +88,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                     '--execution-profile', 'adaptive', '--allow-retry']
             if rim_height_mode != 'top_overlap':
                 cmd += ['--rim-height-mode', rim_height_mode]
+            if rim_tilt_deg:
+                cmd += ['--rim-tilt-deg', str(rim_tilt_deg)]
     return cmd
 
 
@@ -112,6 +114,7 @@ def main():
                    default='top_hook')
     p.add_argument('--rim-height-mode', choices=['top_overlap','visible_sidewall'],
                    default='top_overlap')
+    p.add_argument('--rim-tilt-deg', type=int, choices=[0,12,20], default=0)
     p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0)
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
@@ -153,12 +156,14 @@ def main():
         p.error('Middle-handle entry mode requires Goal 1098')
     if a.rim_height_mode != 'top_overlap' and a.task_id != 1202:
         p.error('Alternative rim height requires Goal 1202')
+    if a.rim_tilt_deg and a.task_id != 1202:
+        p.error('Rim tilt requires Goal 1202')
     if a.plate_stage_turn_deg and a.task_id != 1296:
         p.error('Alternative plate stage is currently evaluated only for Goal 1296')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
                          a.grasp_profile,a.approach_mode,a.entry_side,a.grasp_hold_ticks,
                          a.drawer_contact_mode,a.plate_stage_turn_deg,a.lift_recheck_mm,
-                         a.side_pad_overlap_mm,a.rim_height_mode)
+                         a.side_pad_overlap_mm,a.rim_height_mode,a.rim_tilt_deg)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
