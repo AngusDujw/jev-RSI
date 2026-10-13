@@ -387,6 +387,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 under_tcp, pad_entry_z = under_hook_waypoints(
                     handle, lower_handle, contact_tcp, contact_offset,
                     pad_half_height)
+                if thin_side_entry:
+                    # The prior midpoint was 16 mm below the lowest observed
+                    # reachable own TCP. Stay below the measured middle rod
+                    # by at least one own pad half-height plus 10 mm instead.
+                    middle_z = float(handle['center_world_m'][2])
+                    lower_z = float(lower_handle['center_world_m'][2])
+                    pad_entry_z = middle_z-max(.019, pad_half_height+.010)
+                    if pad_entry_z-lower_z <= pad_half_height+.010:
+                        raise RuntimeError('Visible handle gap too narrow for raised own pad')
+                    under_tcp[2] = pad_entry_z-float(contact_offset[2])
             if contact_mode == 'side_hook':
                 # First pass the measured near end of the rod at the visible
                 # middle/lower gap, then slide along its axis behind the rod.
