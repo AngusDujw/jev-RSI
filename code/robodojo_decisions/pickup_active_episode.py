@@ -954,6 +954,13 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 between_projected_pads = (
                     green_box[0] >= pad_boxes["link7"][2] - 20 and
                     green_box[2] <= pad_boxes["link8"][0] + 20)
+                if material['representative_material_point'].get('public_finger_window_scope_xyxy') is not None:
+                    # A long scissors handle may extend beyond the fingers.
+                    # Judge the CURRENT fitted grasp-region feature, not the
+                    # containment of the whole object in a 2D box.
+                    feature_u = material['representative_material_point']['current_right_pixel_uv'][0]
+                    between_projected_pads = (pad_boxes['link7'][2]-20 <= feature_u <= pad_boxes['link8'][0]+20)
+                    record['grasp_image_association_scope'] = 'current_local_finger_window_RGB_feature; finite 3D closing-volume/precision gates still required'
                 # The height slab and sampled quantiles are hypotheses, not
                 # exact physical grasp errors. Keep their values as evidence
                 # for Luna instead of hiding CLOSE with arbitrary thresholds
