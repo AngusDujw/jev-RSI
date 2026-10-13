@@ -8,9 +8,10 @@ from camera_geometry import eef_transform, gripper_mesh_vertices
 from pickup_visual_hull import _green_mask, _project_many
 
 
-def effect(obs, target, material=None):
+def effect(obs, target, material=None, source_mask_override=None, source_step_id=None):
     image = next(row['path'] for row in obs['images'] if row['camera']=='cam_high')
-    source = _green_mask(Path(image), 'cam_high')
+    source = (_green_mask(Path(image), 'cam_high') if source_mask_override is None
+              else np.asarray(source_mask_override,dtype=bool))
     count = int(source.sum())
     if count < 80:
         return None
@@ -47,8 +48,13 @@ def effect(obs, target, material=None):
                  'current_edge_margin_px':round(margin(uv0,depth0),2),
                  'after_target_edge_margin_px':round(margin(uv1,depth1),2),
                  'scope':'One CURRENT RGB ray/height point hypothesis, propagated PUBLIC rigid wrist mount; not source ground truth, full-object visibility or predicted contact.'}
-    return {'named_source_wrist_field_of_view':wrist,'current_actual_high_green_pixels':count,
+    return {'named_source_wrist_field_of_view':wrist,
+            'current_actual_high_green_pixels':count if source_mask_override is None else None,
+            'historical_view_proxy_pixel_count':count if source_mask_override is not None else None,
+            'historical_view_proxy_step_id':source_step_id,
             'current_public_hand_footprint_overlap_fraction':round(current,4),
             'after_full_target_public_hand_footprint_overlap_fraction':round(predicted,4),
             'additional_current_source_pixel_overlap_fraction':round(max(0,predicted-current),4),
-            'scope':'Conservative per-link convex PUBLIC collision-mesh projections against CURRENT visible green pixels; assumes those pixels remain fixed. Not a rendered future image, guaranteed visibility, collision or contact certificate. Hidden source pixels are unknown.'}
+            'scope':('Conservative per-link convex PUBLIC mesh projections against CURRENT visible green pixels; assumes those pixels remain fixed. ' if source_mask_override is None else
+                     'Conservative PUBLIC hand-mesh projections against an explicitly HISTORICAL fixed-high source-BBOX view proxy, under a declared static-source hypothesis. The bbox includes unknown/negative space and is NEVER current material, depth or contact evidence. ')+
+                    'Not a rendered future image, guaranteed visibility, collision or contact certificate. Hidden source pixels are unknown.'}

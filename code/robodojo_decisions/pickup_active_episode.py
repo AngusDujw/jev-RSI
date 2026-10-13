@@ -531,6 +531,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     table_cache = None
     metal_height_cache = None
     missing_view_recoveries = 0
+    last_valid_view_observation = None
     status = "active_episode_budget_incomplete"
     native_result = None
     # Plan from the actual fresh reset RGB before any Luna or physical action.
@@ -609,7 +610,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             if (os.environ.get('ROBODOJO_PICKUP_MISSING_VIEW_RECOVERY') == '1'
                     and missing_view_recoveries < 2
                     and int(obs.get('remaining_steps',0)) >= 5):
-                after, recovery = recover_missing_view(tools,obs,model,output,experience,turn,error)
+                after, recovery = recover_missing_view(tools,obs,model,output,experience,turn,error,
+                                                       reference=last_valid_view_observation)
                 trace.append(recovery)
                 if after is not None:
                     missing_view_recoveries += 1
@@ -628,6 +630,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                           "status": status, "geometry_error": str(error)})
             native_result = tools.finish(status)
             break
+        last_valid_view_observation = obs
         # Capture an actual earlier sensor state from THIS native episode.
         # It is never substituted for current contact or object motion.
         if obs["step_id"] % 20 == 0:

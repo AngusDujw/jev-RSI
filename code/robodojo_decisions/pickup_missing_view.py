@@ -1,13 +1,14 @@
 """Explicit unknown geometry -> Luna-reviewed open-hand observation recovery."""
 import hashlib
 import json
+import os
 import numpy as np
 from controller import choice
 from pickup_rgb_axes import _targets
 from robot_path_preview import preview
 
 
-def recover(tools, obs, model, output, experience, turn, cause):
+def recover(tools, obs, model, output, experience, turn, cause, reference=None):
     record = {'turn':turn, 'step_id':obs['step_id'], 'stage':'missing_view_recovery',
               'geometry_error':str(cause), 'source_metric_geometry':'UNKNOWN'}
     if float(obs['current_eef']['right']['gripper_opening_command']) < .95:
@@ -19,6 +20,17 @@ def recover(tools, obs, model, output, experience, turn, cause):
     if not (path['public_path_gate'] and path['native_eef_single_action_legal']):
         record['status'] = 'missing_view_public_path_rejected'
         return None, record
+    programs = None
+    if os.environ.get('ROBODOJO_PICKUP_PREDICTED_VIEW_RECOVERY') == '1':
+        from pickup_view_recovery_proposal import propose
+        if reference is None:
+            record['status']='missing_view_no_recent_reference'
+            return None,record
+        programs,diagnostics=propose(obs,reference)
+        record['view_recovery_proposal_diagnostics']=diagnostics
+        if not programs:
+            record['status']='missing_view_no_predicted_visibility_gain'
+            return None,record
     snapshots = output / f"missing_view_experience_step_{obs['step_id']:03d}"
     snapshots.mkdir(exist_ok=False)
     hashes = {}
@@ -40,6 +52,22 @@ def recover(tools, obs, model, output, experience, turn, cause):
         choice('full_program_decision','Judge only the exact OPEN +Z15mm five-step observation-recovery program. Unknown depth is not permission for contact. Execute only if current source identity and visible short corridor support it; otherwise STOP.',
         {'execute_open_up_recovery':'Execute this exact whole target once, then reobserve all cameras.',
          'stop_program_unsupported':'Do not execute this recovery.'})]
+    choices={'execute_open_up_recovery':target}
+    if programs is not None:
+        choices={}
+        offered=[]
+        for label,program in zip(('execute_view_a','execute_view_b'),programs):
+            choices[label]=program['target']
+            offered.append({'decision_value':label,'id':program['id'],'target':program['target'],
+                'right_LINK6_delta_xyz_mm':program['delta_xyz_mm'],'rotation':'held',
+                'gripper':'OPEN','physical_steps':5,'view_prediction':program['view_prediction']})
+        evidence.pop('complete_robot_target');evidence.pop('complete_world_effect')
+        evidence['complete_view_program_alternatives']=offered
+        evidence['view_proxy_reference']={k:v for k,v in diagnostics.items() if k!='programs'}
+        evidence['scope']='Runtime PUBLIC robot/camera view hypotheses, NOT planner actions. Choose one exact five-step OPEN 20mm world-axis target or STOP from current three RGB. World X is robot-right, Y away from robot bases, Z up. Recent fixed-high source bbox is explicitly HISTORICAL and assumes no source displacement only for predicting possible visibility. It includes unknown/negative space and supplies NO current source material, depth, contact, clearance or holding. Current RGB must support source identity and the short whole hand/arm sweep. Predictions are not rendered future images or guaranteed recovery; reobserve after one selected program.'
+        questions[1]=choice('full_program_decision',evidence['scope'],
+            {**{label:'Execute only this exact complete view program once, then reobserve.' for label in choices},
+             'stop_program_unsupported':'Execute none of these view programs.'})
     try:
         answer = model.query(obs,questions,json.dumps(evidence,ensure_ascii=False),
                              f"pickup_active_{turn:02d}_step{obs['step_id']:03d}")
@@ -50,9 +78,10 @@ def recover(tools, obs, model, output, experience, turn, cause):
     record['luna_choice']=answer['full_program_decision']
     record['luna_source_identity']=answer['source_identity']
     if (answer['source_identity']!='visible_mint_green_scissors' or
-            answer['full_program_decision']!='execute_open_up_recovery'):
+            answer['full_program_decision'] not in choices):
         record['status']='missing_view_luna_stopped'
         return None, record
+    target=choices[answer['full_program_decision']]
     first = tools._rpc('eef_joint_target',targets=target)
     record['native_first_IK']=first
     if first.get('physical_steps')!=0 or len(first.get('action',[]))!=14:
