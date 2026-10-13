@@ -171,6 +171,7 @@ graph LR
     T_2026W42_063["📊 robodojo-decision-stages<br/>首次闭爪为空抓；闭爪0.23高于各运动单项…"]:::experiment
     T_2026W42_064["📊 robodojo-decision-stages<br/>分层110步低置信停止，原生仍0；交付全任…"]:::experiment
     T_2026W42_065["📊 robodojo-decision-stages<br/>低像素高图峰非精度；时序腕图通过像素门，明…"]:::experiment
+    T_2026W42_066["📊 robodojo-decision-stages<br/>时序轮廓200步接近到XYZ7.6/8.3…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -302,6 +303,7 @@ graph LR
   T_2026W42_062 --> T_2026W42_063
   T_2026W42_063 --> T_2026W42_064
   T_2026W42_064 --> T_2026W42_065
+  T_2026W42_065 --> T_2026W42_066
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -461,6 +463,7 @@ graph LR
 | `T-2026W42-063` | 2026-10-13 | experiment | robodojo-decision-stages | 首次闭爪为空抓；闭爪0.23高于各运动单项但低于运动合计0.63，检验分层动作族与恢复 | `EXP-2026W42-169` | - |
 | `T-2026W42-064` | 2026-10-13 | experiment | robodojo-decision-stages | 分层110步低置信停止，原生仍0；交付全任务原始输入/阶段/执行证据网站供具体审阅 | `EXP-2026W42-171` | - |
 | `T-2026W42-065` | 2026-10-13 | experiment | robodojo-decision-stages | 低像素高图峰非精度；时序腕图通过像素门，明确声明12–14mm高度代理并待原生 | `EXP-2026W42-172` | - |
+| `T-2026W42-066` | 2026-10-13 | experiment | robodojo-decision-stages | 时序轮廓200步接近到XYZ7.6/8.3/-28mm但无抓持；拆分接触高度门，待原生215 | `EXP-2026W42-173` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
