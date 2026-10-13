@@ -13,6 +13,7 @@ from pathlib import Path
 
 import numpy as np
 from pickup_green_plane import build as build_green_plane
+from pickup_tool_alignment import build as build_tool_alignment
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import (eef_transform, gripper_height_above_landmark,
@@ -953,6 +954,21 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "remains an identified source even when precise contact geometry is "
                 "uncertain. Judge the offered "
                 "full short corridor in current RGB and reobserve after execution.")
+        tool_alignment = None
+        if not gripper_closed and material is not None:
+            alignment_options, alignment_targets, tool_alignment = build_tool_alignment(
+                obs, green_plane, table)
+            options.update(alignment_options)
+            targets.update(alignment_targets)
+            record["public_tool_orientation_evidence"] = tool_alignment
+            if alignment_targets:
+                instruction += (
+                    " Additional complete pose alternatives test finger-extension "
+                    "alignment to the RGB horizontal-source-plane hypothesis. "
+                    "Their world XYZ and world rotation vector occur together; "
+                    "the PUBLIC facet midpoint is held approximately, not LINK6. "
+                    "They are manipulation-orientation hypotheses, not extra view sweeps. "
+                    "Compare supplied angular/point errors and actual whole-hand RGB corridor.")
         if "close_right_gripper_hold_link6" in targets:
             instruction = instruction.replace(
                 "choose ONE complete short open-gripper precontact action",
@@ -1081,6 +1097,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "task": obs["task"], "instruction": obs["instruction"],
             "source_control_feature": material.get('representative_material_point') if material else None,
             "source_feature_after_each_complete_action": feature_option_predictions,
+            "public_tool_orientation_evidence": tool_alignment,
             "source_error_interpretation": "Whole-material quantiles include object extent. The named RGB-supported point has separate same-pixel height hypotheses and a nearest-opposing-public-surface midpoint residual; use it as uncertain grasp-region alignment context, not true pose/contact or planner action advice.",
             "step_id": obs["step_id"], "current_stage": record["stage"],
             "measured_eef": obs["current_eef"],
