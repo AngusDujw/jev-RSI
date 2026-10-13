@@ -17,6 +17,37 @@ PHASES = ['select', 'approach', 'align', 'descend', 'grasp', 'test_lift', 'lift'
 NATIVE_BUDGET = 580  # Env horizon is 600; initial gripper opening uses 10 ticks.
 
 
+def restrict_visible_source_cloud(measured, view, visible_cloud, initial_cloud,
+                                  source_grasp, expected, relative_rotation):
+    """Reject robot/background pixels mixed into a lifted source mask.
+
+    The gate only uses previously segmented RGB-D points transported by the
+    robot's executed TCP motion. It is a visibility check, not scene truth.
+    """
+    mask = np.load(measured['visible_mask_path']).astype(bool)
+    prediction = ((initial_cloud-source_grasp) @ relative_rotation.T + expected)
+    low_pred, high_pred = np.quantile(prediction, [.05, .95], axis=0)
+    depth = view['depth']
+    selected = (mask & np.isfinite(depth) & (depth > .02) & (depth < 3.) &
+                np.all((visible_cloud >= low_pred-.010) &
+                       (visible_cloud <= high_pred+.010), axis=2))
+    count = int(selected.sum())
+    enough = count >= max(100, int(.15*len(initial_cloud))) and \
+             count >= .20*int(mask.sum())
+    evidence = dict(selected_points=count, mask_points=int(mask.sum()),
+                    initial_visible_points=len(initial_cloud),
+                    predicted_low_world_m=low_pred.tolist(),
+                    predicted_high_world_m=high_pred.tolist(),
+                    margin_mm=10., sufficient=bool(enough),
+                    source='Fresh public RGB-D/SAM intersected with transported initial visible cloud')
+    if not enough:
+        return None, evidence
+    data = visible_cloud[selected]
+    low, high = np.quantile(data, [.05, .95], axis=0)
+    return dict(measured, low=low, high=high, center=(low+high)/2,
+                points=count, source=evidence['source']), evidence
+
+
 def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_candidates):
     extent = src['high']-src['low']
     # Horizontal observed bounding range, no hidden object shape/PCA metadata.
@@ -393,6 +424,26 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             dump(rec.folder/f'holding-{ticks:04d}.json',holding)
             return
         appearance_filtered = False
+        geometry_filtered = False
+        geometry_filter_evidence = None
+        raw_ratio = float(np.linalg.norm(h['high']-h['low']) /
+                          max(np.linalg.norm(initial_src['high']-initial_src['low']),1e-6))
+        raw_mismatch = float(np.linalg.norm(h['center']-expected))
+        if raw_ratio > 1.5 or raw_mismatch > .05:
+            v = vv[ob['camera']]
+            h_filtered, geometry_filter_evidence = restrict_visible_source_cloud(
+                h, v, cloud(v), initial_source_points_world, source_grasp,
+                expected, relative_rotation)
+            dump(rec.folder/f'holding-geometry-{ticks:04d}.json',
+                 geometry_filter_evidence)
+            if h_filtered is None:
+                holding = dict(valid=None,status='unavailable',
+                    reason='Insufficient visible source points after generic geometry filter',
+                    geometry_filter=geometry_filter_evidence,observed_tick=ticks)
+                dump(rec.folder/f'holding-{ticks:04d}.json',holding)
+                return
+            h = h_filtered
+            geometry_filtered = True
         if dark_source:
             v = vv[ob['camera']]
             mask = np.load(h['visible_mask_path']).astype(bool)
@@ -429,6 +480,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                        source='Visible RGB-D co-motion proxy',
                        source_rise_mm=rise*1000,co_motion_error_mm=mismatch*1000,
                        visible_span_ratio=size_ratio,appearance_filtered=appearance_filtered,
+                       geometry_filtered=geometry_filtered,
+                       geometry_filter=geometry_filter_evidence,
                        second_lift_check=use_projection,measured=h,expected=expected,
                        observed_tick=ticks)
         if valid:
