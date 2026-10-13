@@ -167,6 +167,7 @@ graph LR
     T_2026W42_059["📊 robodojo-decision-stages<br/>完整Z空间后190步25次材料入模但无抓持…"]:::experiment
     T_2026W42_060["📊 robodojo-decision-stages<br/>200步XYZ组合有效接近但无抓持；修复闭…"]:::experiment
     T_2026W42_061["📊 robodojo-decision-stages<br/>桌面与实体25次入模仍无抓持；修复有实体却…"]:::experiment
+    T_2026W42_062["📊 robodojo-decision-stages<br/>实体优先200步接近但CLOSE仍被代理硬…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -294,6 +295,7 @@ graph LR
   T_2026W42_058 --> T_2026W42_059
   T_2026W42_059 --> T_2026W42_060
   T_2026W42_060 --> T_2026W42_061
+  T_2026W42_061 --> T_2026W42_062
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -449,6 +451,7 @@ graph LR
 | `T-2026W42-059` | 2026-10-13 | experiment | robodojo-decision-stages | 完整Z空间后190步25次材料入模但无抓持；官方200步预算下改完整XYZ组合及当前取景路径门 | `EXP-2026W42-164` | - |
 | `T-2026W42-060` | 2026-10-13 | experiment | robodojo-decision-stages | 200步XYZ组合有效接近但无抓持；修复闭爪提示冲突并以RGB支撑平面维持当前近物体证据 | `EXP-2026W42-166` | - |
 | `T-2026W42-061` | 2026-10-13 | experiment | robodojo-decision-stages | 桌面与实体25次入模仍无抓持；修复有实体却强制转腕的四处候选丢失 | `EXP-2026W42-167` | - |
+| `T-2026W42-062` | 2026-10-13 | experiment | robodojo-decision-stages | 实体优先200步接近但CLOSE仍被代理硬阈值隐藏；改显式闭爪假设供Luna审查 | `EXP-2026W42-168` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

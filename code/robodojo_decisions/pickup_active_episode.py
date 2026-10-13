@@ -766,7 +766,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             options, targets, image_effects = _translation_options(
                 obs, hull, temporal, material, table=table)
             record["translation_view_effects"] = image_effects
-            if (material is not None and ring_count >= 2 and margin > 30):
+            if material is not None and margin > 0:
                 facet_distance = material[
                     "possible_green_to_each_public_facet_distance_mm_q05_q50_q95"]
                 axes = material[
@@ -776,12 +776,11 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 between_projected_pads = (
                     green_box[0] >= pad_boxes["link7"][2] - 20 and
                     green_box[2] <= pad_boxes["link8"][0] + 20)
-                close_gate = (
-                    max(facet_distance["link7"][0],
-                        facet_distance["link8"][0]) <= 45 and
-                    abs(axes["q50"][2]) <= 30 and
-                    abs(axes["q50"][1]) <= 35 and
-                    between_projected_pads)
+                # The height slab and sampled quantiles are hypotheses, not
+                # exact physical grasp errors. Keep their values as evidence
+                # for Luna instead of hiding CLOSE with arbitrary thresholds
+                # or requiring both AIR-hole contours to be unoccluded.
+                close_gate = between_projected_pads
                 record["contact_hypothesis_gate"] = {
                     "candidate": close_gate,
                     "public_facet_distance_q05_mm": {
@@ -804,8 +803,9 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                             "command while both LINK6 poses stay measured-current "
                             "and the left gripper remains open. This is a "
                             "physical grasp attempt, not proof of contact. "
-                            "Current two-RGB possible solid-green support is "
-                            "near BOTH public STL inward facets, but its "
+                            "Current two-RGB possible solid-green support projects "
+                            "between the public finger boxes, but distance to "
+                            "BOTH true STL inward facets and its "
                             "metal-height slab and real black finger visibility "
                             "remain uncertain. Luna must confirm actual green "
                             "material lies between real opposing finger faces "
