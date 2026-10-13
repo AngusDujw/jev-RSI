@@ -189,7 +189,7 @@ def run_detail(name):
                 url = public_asset(file)
                 if url:
                     evidence_assets.append({'name': filename, 'url': url})
-        geometry_file = path / f"full_actor_geometry_step_{raw.get('step_id', 0):03d}.json"
+        geometry_file = path / f"full_actor_geometry_step_{step:03d}.json" if isinstance(step, int) else None
         geometry_url = public_asset(geometry_file)
         if geometry_url:
             evidence_assets.append({'name': '未精简几何快照（非实际输入）', 'url': geometry_url})
