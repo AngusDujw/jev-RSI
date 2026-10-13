@@ -183,6 +183,7 @@ graph LR
     T_2026W42_075["📊 robodojo-decision-stages<br/>单程序被否决；经验阶段范围冲突修正、保留原…"]:::experiment
     T_2026W42_076["📊 robodojo-decision-stages<br/>245实际三动作15步，统一2mm跟踪门停…"]:::experiment
     T_2026W42_077["📊 robodojo-decision-stages<br/>246 50步后遮挡失拟合；色度/可见子集…"]:::experiment
+    T_2026W42_078["📊 robodojo-decision-stages<br/>两组各40步相同动作，无数值控制收益证据；…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -326,6 +327,7 @@ graph LR
   T_2026W42_074 --> T_2026W42_075
   T_2026W42_075 --> T_2026W42_076
   T_2026W42_076 --> T_2026W42_077
+  T_2026W42_077 --> T_2026W42_078
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -497,6 +499,7 @@ graph LR
 | `T-2026W42-075` | 2026-10-14 | experiment | robodojo-decision-stages | 单程序被否决；经验阶段范围冲突修正、保留原文，以不同横向程序查具体原因 | `EXP-2026W42-182` | - |
 | `T-2026W42-076` | 2026-10-14 | experiment | robodojo-decision-stages | 245实际三动作15步，统一2mm跟踪门停止；新246仅粗横向容差分阶段，接触仍严格 | `EXP-2026W42-183` | - |
 | `T-2026W42-077` | 2026-10-14 | experiment | robodojo-decision-stages | 246 50步后遮挡失拟合；色度/可见子集仅粗方向，250实际验证 | `EXP-2026W42-184` | - |
+| `T-2026W42-078` | 2026-10-14 | experiment | robodojo-decision-stages | 两组各40步相同动作，无数值控制收益证据；255预测当前源物自遮挡 | `EXP-2026W42-185` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
