@@ -16,6 +16,7 @@ import numpy as np
 from pickup_green_plane import build as build_green_plane
 from pickup_tool_alignment import build as build_tool_alignment
 from pickup_actor_evidence import prepare as prepare_actor_evidence
+from pickup_program_proposal import propose as propose_program
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import (eef_transform, gripper_height_above_landmark,
@@ -1194,6 +1195,29 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             rotvec = Rotation.from_matrix(desired[:3,:3] @ current[:3,:3].T).as_rotvec()
             option['description'] = (
                 f"ONE COMPLETE FIVE-step robot pose: right world XYZ delta {delta_mm.round(2).tolist()}mm; world rotation vector {rotvec.round(5).tolist()}rad; right gripper {'CLOSED' if target['gripper_closed'] else 'OPEN'}; left held. All components happen together. Public five-step robot-only path passed; current RGB corridor is independently judged. Judge current RGB and the available variant-specific evidence; this target is a robot pose, not object/contact truth.")
+        unary_program = None
+        if os.environ.get('ROBODOJO_PICKUP_SINGLE_PROGRAM')=='1':
+            unary_program, program_targets, program_diagnostics, progress_scores = propose_program(
+                obs, targets, material, green_plane, table, record['stage'])
+            record['public_program_proposals'] = program_diagnostics
+            record['public_program_progress_scores'] = progress_scores
+            if unary_program is None:
+                status='no_supported_program_proposal'
+                record['status']=status
+                trace.append(record)
+                native_result=tools.finish(status)
+                break
+            targets=program_targets
+            model_input['complete_robot_action_targets']={unary_program:targets[unary_program]}
+            model_input['proposed_complete_program']={'id':unary_program,'target':targets[unary_program],
+                'stage_score':progress_scores[unary_program],
+                'public_five_step_evidence':program_diagnostics.get(unary_program),
+                'step_objective':'Only incremental progress in THIS stage over FIVE simulated physical steps. The full pick-up/10cm task is for later stages; this one open approach need not grasp or finish it.'}
+            questions=[questions[0],choice('full_program_decision',
+                'Judge THIS ONE COMPLETE proposed five-step simulated robot program against CURRENT RGB and the supplied stage/error/robot-only evidence. It needs only incremental stage progress, not immediate full-task completion. All robot XYZ and rotation components execute together. Approve only with current source identity and a supported whole short corridor; reject a visible contradiction or unsupported program. Robot/RGB hypotheses are not object ground truth.',
+                {'execute_this_complete_program':'Execute the exact proposed full robot target once for five steps and reobserve.',
+                 'stop_program_unsupported':'Do not execute this program; current evidence does not support it.'})]
+            record['proposed_complete_program']=unary_program
         try:
             answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
                                  f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",
@@ -1206,8 +1230,11 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             trace.append(record)
             native_result = tools.finish(status)
             break
-        selected = answer.get("pickup_action", "ignored_no_motion")
-        if family_options is not None:
+        selected = (unary_program if answer.get('full_program_decision')=='execute_this_complete_program'
+                    else 'stop_program_unsupported') if unary_program else answer.get("pickup_action", "ignored_no_motion")
+        if unary_program:
+            record['luna_program_decision']=answer['full_program_decision']
+        if unary_program is None and family_options is not None:
             family = answer["action_family"]
             record["luna_action_family"] = family
             record["luna_motion_choice"] = selected
