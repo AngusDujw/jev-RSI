@@ -51,7 +51,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
                       observed_rear_extent_m=None, rear_standoff_m=.010,
                       preserve_downward=True, lateral_contact_offset_m=0.,
                       contact_mode='rear_edge', top_contact_rear_fraction=0.,
-                      allow_short_push=False, overshoot_extra_m=0.):
+                      allow_short_push=False, overshoot_extra_m=0.,
+                      hover_clearance_m=.20):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -84,6 +85,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         raise ValueError('Top contact rear fraction outside visible support')
     if not 0. <= overshoot_extra_m <= .020:
         raise ValueError('Extra supported push outside bounded range')
+    if not .12 <= hover_clearance_m <= .20:
+        raise ValueError('Hover clearance outside bounded range')
     lateral_axis = np.array([direction[1], -direction[0]])
     if contact_mode == 'rear_edge':
         contact_xy = (source['center'][:2] - direction*(rear_extent+leading+.004)
@@ -109,7 +112,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
             (finger_low_world > source['high'][2]-.001 or
              finger_high_world < source['low'][2]+.001)):
         raise RuntimeError('Own finger envelope misses observed object height')
-    hover_z = max(contact_z+.20, source['high'][2]+.20)
+    hover_z = max(contact_z+hover_clearance_m,
+                  source['high'][2]+hover_clearance_m)
     standoff = rear_standoff_m if contact_mode == 'rear_edge' else 0.
     approach = np.r_[contact_xy-direction*standoff, hover_z]
     lower = np.r_[contact_xy-direction*standoff, contact_z]
@@ -130,6 +134,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         contact_mode=contact_mode,
         top_contact_rear_fraction=top_contact_rear_fraction,
         planned_overshoot_m=overshoot,
+        hover_clearance_m=hover_clearance_m,
         short_visible_correction=bool(allow_short_push and distance < .04),
         lateral_contact_offset_m=lateral_contact_offset_m,
         lateral_contact_axis_xy=lateral_axis,
@@ -349,9 +354,13 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             T=t_fn(env.sim, c)) for c in ('agentview', 'robot0_eye_in_hand')}
 
     def build_plan(source, rear_extent, observed_views, own, standoff=.010):
+        rim_second = bool(visible_goal_plate and segment >= 2 and
+                          rec.cfg.get('plate_second_rim_contact'))
         kwargs = dict(current_orientation=Rotation.from_quat(
             obs['robot0_eef_quat']).as_matrix(),
-            observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
+            observed_rear_extent_m=rear_extent,
+            rear_standoff_m=0. if rim_second else standoff,
+            hover_clearance_m=.14 if rim_second else .20,
             preserve_downward=not visible_goal_plate,
             # Both plate segments concern the same visible, broad support
             # surface.  Trailing top contact maintained the second segment
@@ -359,8 +368,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # Use the same support-relative contact rule in both segments.
             # Crosswise top contact can slide over the plate. The optional
             # second contact starts behind the visible rim using own fingers.
-            contact_mode=('rear_edge' if visible_goal_plate and segment >= 2
-                          and rec.cfg.get('plate_second_rim_contact') else
+            contact_mode=('rear_edge' if rim_second else
                           'top_surface' if visible_goal_plate else 'rear_edge'),
             allow_short_push=bool(visible_goal_plate and segment >= 2),
             overshoot_extra_m=(
