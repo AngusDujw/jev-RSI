@@ -3,9 +3,10 @@ from pathlib import Path
 import cv2
 import numpy as np
 from pickup_visual_hull import _green_mask, _project_many
+from pickup_temporal_stereo import _high_static_check
 
 
-def build(obs):
+def build(obs, reference=None):
     cal = obs['camera_calibration']
     if obs['task'] != 'general_pickup' or cal['step_id'] != obs['step_id']:
         raise ValueError('Current pickup RGB/calibration required')
@@ -14,7 +15,23 @@ def build(obs):
     wrist = _green_mask(paths['cam_right_wrist'], 'cam_right_wrist')
     if high.sum() < 80 or wrist.sum() < 100:
         raise ValueError('Insufficient green pixels for plane fit')
-    ca, cb = cal['cameras']['cam_high'], cal['cameras']['cam_right_wrist']
+    source_label = 'high'
+    static_check = None
+    if reference is not None:
+        if reference['task'] != obs['task'] or reference['step_id'] >= obs['step_id']:
+            raise ValueError('Reference must be earlier same-task RGB')
+        if reference.get('episode_id') != obs.get('episode_id'):
+            raise ValueError('Reference must be from the same native episode')
+        static_check = _high_static_check(reference, obs)
+        if not static_check['stable_enough_for_temporal_ray_check']:
+            raise ValueError('Current high RGB does not support static source')
+        ref_paths = {r['camera']: Path(r['path']) for r in reference['images']}
+        high = _green_mask(ref_paths['cam_right_wrist'], 'cam_right_wrist').astype(np.uint8)
+        source_label = 'reference_right'
+        ca = reference['camera_calibration']['cameras']['cam_right_wrist']
+    else:
+        ca = cal['cameras']['cam_high']
+    cb = cal['cameras']['cam_right_wrist']
     k = np.asarray(ca['intrinsic'], float)
     t = np.asarray(ca['camera_to_environment'], float)
     yy, xx = np.nonzero(high)
@@ -54,7 +71,7 @@ def build(obs):
     jitter = []
     for dx, dy in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
         trial = max(curve(shifted(high, dx, dy), wrist), key=lambda r: r[1])
-        jitter.append({'camera': 'high', 'shift_px': [dx, dy], 'best_height_m': trial[0], 'iou': trial[1]})
+        jitter.append({'camera': source_label, 'shift_px': [dx, dy], 'best_height_m': trial[0], 'iou': trial[1]})
     for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
         trial = max(curve(high, shifted(wrist, dx, dy)), key=lambda r: r[1])
         jitter.append({'camera': 'right', 'shift_px': [dx, dy], 'best_height_m': trial[0], 'iou': trial[1]})
@@ -67,7 +84,9 @@ def build(obs):
     halfwidth = max(.005, max(abs(best[0]-z) for z in compatible)+p95+.005)
     if halfwidth > .020:
         raise ValueError('Fit cannot narrow original 20mm height hypothesis')
-    return {'source': 'CURRENT fixed-high/right green RGB silhouettes, public K/T; horizontal plane homography sweep',
+    return {'source': ('Same-episode earlier/current right-wrist green silhouettes, CURRENT fixed-high static-source check, public K/T; horizontal plane homography' if reference is not None else 'CURRENT fixed-high/right green silhouettes, public K/T; horizontal plane homography'),
+            'reference_step_id': reference['step_id'] if reference is not None else obs['step_id'],
+            'current_fixed_high_static_check': static_check,
             'current_step_id': obs['step_id'], 'estimated_green_plane_height_m': round(best[0], 6),
             'declared_green_height_halfwidth_m': round(halfwidth, 6),
             'best_iou': round(best[1], 4), 'right_green_coverage': round(best[2], 4),
