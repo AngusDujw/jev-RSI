@@ -967,12 +967,19 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             options.update(alignment_options)
             targets.update(alignment_targets)
             record["public_tool_orientation_evidence"] = tool_alignment
-            if (alignment_targets and tool_alignment.get('finger_extension_vs_downward_normal_angle_deg',0) > 30):
-                record['stage'] = 'tool_axis_alignment_review'
+            lateral_error = (float(np.linalg.norm(np.asarray(material['representative_material_point']['pad_centroid_delta_xyz_mm'])[:2]))
+                             if material is not None else None)
+            if lateral_error is not None and lateral_error > 60:
+                record['stage'] = 'coarse_directional_alignment_review'
                 record['current_phase_goal'] = (
-                    'Review the large public finger-extension / assumed horizontal-source-normal angular mismatch. '
-                    'Current opposing finger faces must be able to reach actual solid material while the whole hand remains clear; '
-                    'compare complete pose angular and XYZ effects in fresh RGB. This is a current controller geometry-review hypothesis, not a new planner call or verified object normal.')
+                    'Planner general-method stage coarse_directional_alignment: review the large uncertain source/finger lateral separation and current corridor while retaining source visibility during turning. '
+                    'Use uncertain named-feature XYZ, current three RGB plus crops and full candidate effects; image-centre alignment is not metric distance. '
+                    'Tool angular mismatch remains unresolved; current controller 60mm lateral threshold only selects a REVIEW phase, not physical alignment or contact certification.')
+            elif alignment_targets and tool_alignment.get('finger_extension_vs_downward_normal_angle_deg',0) > 30:
+                record['stage'] = 'strict_tool_geometry_review'
+                record['current_phase_goal'] = (
+                    'Planner general-method stage strict_tool_geometry: review the public finger-extension / assumed horizontal-source-normal angular mismatch and actual finite inward faces. '
+                    'Compare complete pose angular and XYZ effects and retain source visibility in current RGB. This current geometry review is not a new layout-specific planner call or verified object normal.')
             if alignment_targets:
                 instruction += (
                     " Additional complete pose alternatives test finger-extension "
