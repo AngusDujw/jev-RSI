@@ -214,6 +214,9 @@ def run_detail(name):
 
 
 class Handler(BaseHTTPRequestHandler):
+    def do_HEAD(self):
+        self.do_GET()
+
     def do_GET(self):
         route = urlsplit(self.path)
         try:
@@ -244,6 +247,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.send_header('Cache-Control', 'no-store')
         self.end_headers()
+        if self.command == 'HEAD':
+            return
         try:
             self.wfile.write(body)
         except (BrokenPipeError, ConnectionResetError):
@@ -271,6 +276,8 @@ class Handler(BaseHTTPRequestHandler):
         if requested:
             self.send_header('Content-Range', f'bytes {start}-{end}/{size}')
         self.end_headers()
+        if self.command == 'HEAD':
+            return
         try:
             with file.open('rb') as stream:
                 stream.seek(start)
