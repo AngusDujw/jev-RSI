@@ -87,7 +87,7 @@ def propose(obs, targets, material, green_plane, table, stage):
         if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
             visibility = source_visibility_effect(obs, target)
             if visibility:
-                score -= 30.0 * visibility['additional_current_source_pixel_overlap_fraction']
+                score -= 40.0 * visibility['additional_current_source_pixel_overlap_fraction']
         scores[name]={'source_visibility_prediction':visibility,'stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
                      'prediction':predictions.get(name),'scope':'A current controller proposal score under stated RGB/static-source/robot-model hypotheses, not task completion or observed contact.'}
     if not scores:
