@@ -1080,6 +1080,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         model_input = {
             "task": obs["task"], "instruction": obs["instruction"],
             "source_control_feature": material.get('representative_material_point') if material else None,
+            "source_feature_after_each_complete_action": feature_option_predictions,
             "source_error_interpretation": "Whole-material quantiles include object extent. The named RGB-supported point has separate same-pixel height hypotheses and a nearest-opposing-public-surface midpoint residual; use it as uncertain grasp-region alignment context, not true pose/contact or planner action advice.",
             "step_id": obs["step_id"], "current_stage": record["stage"],
             "measured_eef": obs["current_eef"],
