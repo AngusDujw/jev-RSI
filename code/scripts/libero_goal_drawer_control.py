@@ -173,6 +173,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             selected_finger = finger_vertices[
                 np.linalg.norm(finger_vertices-chosen_pad_tool, axis=1) <
                 np.linalg.norm(finger_vertices-other_pad_tool, axis=1)]
+            if steep_entry:
+                # At a steep wrist angle the rearward pad can switch sides.
+                # Search both fingers before associating the chosen own tip
+                # with its nearest own pad; no scene geometry is involved.
+                selected_finger = finger_vertices
             if not len(selected_finger):
                 raise RuntimeError('Own selected fingertip mesh unavailable')
             projected_finger = selected_finger @ side_orientation.T
@@ -192,6 +197,18 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             feasible = np.flatnonzero(corridor)
             tip_tool = selected_finger[feasible[
                 np.argmin(projected_finger[feasible, 1])]]
+            if steep_entry:
+                hook_finger, pad_names, pad_center_offset, chosen_pad_tool = min(
+                    finger_options,
+                    key=lambda row: np.linalg.norm(row[3]-tip_tool))
+                other_pad_tool = next(row[3] for row in finger_options
+                                      if row[0] != hook_finger)
+                selected_vertices = own_pad_vertices[
+                    np.linalg.norm(own_pad_vertices-chosen_pad_tool, axis=1) <
+                    np.linalg.norm(own_pad_vertices-other_pad_tool, axis=1)]
+                projected_pad = selected_vertices @ side_orientation.T
+                pad_half_height = float(np.max(np.abs(
+                    projected_pad[:, 2]-pad_center_offset[2])))
             contact_offset = tip_tool @ side_orientation.T
             if contact_offset[1] >= pad_center_offset[1]-.015:
                 raise RuntimeError('Own fingertip offers no deeper contact than pad')
