@@ -179,6 +179,7 @@ graph LR
     T_2026W42_071["📊 robodojo-decision-stages<br/>227运动概率分散而身份STOP；分解身份…"]:::experiment
     T_2026W42_072["📊 robodojo-decision-stages<br/>三问实际推进4姿态动作至61.5度，响应校…"]:::experiment
     T_2026W42_073["📊 robodojo-decision-stages<br/>独立排名与六阶段通用方法；腕图恢复，比较显…"]:::experiment
+    T_2026W42_074["📊 robodojo-decision-stages<br/>两组motion高但排名弃选；以公开可实现…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -318,6 +319,7 @@ graph LR
   T_2026W42_070 --> T_2026W42_071
   T_2026W42_071 --> T_2026W42_072
   T_2026W42_072 --> T_2026W42_073
+  T_2026W42_073 --> T_2026W42_074
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -485,6 +487,7 @@ graph LR
 | `T-2026W42-071` | 2026-10-14 | experiment | robodojo-decision-stages | 227运动概率分散而身份STOP；分解身份/动作族，粗XYZ开局与严格接触分门 | `EXP-2026W42-178` | - |
 | `T-2026W42-072` | 2026-10-14 | experiment | robodojo-decision-stages | 三问实际推进4姿态动作至61.5度，响应校验中断；先保存原文并安全处理条件答案 | `EXP-2026W42-179` | - |
 | `T-2026W42-073` | 2026-10-14 | experiment | robodojo-decision-stages | 独立排名与六阶段通用方法；腕图恢复，比较显式数值误差补充 | `EXP-2026W42-180` | - |
+| `T-2026W42-074` | 2026-10-14 | experiment | robodojo-decision-stages | 两组motion高但排名弃选；以公开可实现末端的一完整程序审批验证实际控制 | `EXP-2026W42-181` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
