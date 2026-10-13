@@ -48,6 +48,49 @@ def restrict_visible_source_cloud(measured, view, visible_cloud, initial_cloud,
                 points=count, source=evidence['source']), evidence
 
 
+def track_visible_appearance(view, visible_cloud, projected_box, expected,
+                             hue_center):
+    """Find one near-TCP color component learned from the initial RGB mask.
+
+    The projected cloud can miss a carried object that rotates in the grasp.
+    Search a bounded nearby image area, then require fresh depth, matching
+    hue, a single dominant component, and proximity to executed TCP motion.
+    """
+    box = np.asarray(projected_box, float)
+    width, height = box[2]-box[0], box[3]-box[1]
+    xpad, ypad = max(24., width), max(18., .25*height)
+    vv, uu = np.indices(view['depth'].shape)
+    hsv = cv2.cvtColor(view['rgb'], cv2.COLOR_RGB2HSV)
+    hue_distance = np.abs(hsv[:, :, 0].astype(int)-hue_center)
+    hue_distance = np.minimum(hue_distance, 180-hue_distance)
+    depth = view['depth']
+    selected = ((uu >= box[0]-xpad) & (uu <= box[2]+xpad) &
+                (vv >= box[1]-ypad) & (vv <= box[3]+ypad) &
+                (hue_distance <= 12) & (hsv[:, :, 1] > 50) &
+                (hsv[:, :, 2] < 100) & np.isfinite(depth) &
+                (depth > .02) & (depth < 3.) &
+                (np.linalg.norm(visible_cloud-expected, axis=2) < .10))
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(
+        selected.astype(np.uint8))
+    components = sorted(((int(stats[i, cv2.CC_STAT_AREA]), i)
+                         for i in range(1, count)), reverse=True)
+    evidence = dict(hue_center=int(hue_center), hue_tolerance=12,
+                    search_bbox_xyxy=[float(box[0]-xpad), float(box[1]-ypad),
+                                      float(box[2]+xpad), float(box[3]+ypad)],
+                    near_expected_m=.10, candidate_pixels=int(selected.sum()),
+                    largest_components=[n for n, _ in components[:3]],
+                    source='Initial public RGB/SAM appearance + current RGB-D near own TCP')
+    if not components or components[0][0] < 300 or (
+            len(components) > 1 and components[1][0] >= .4*components[0][0]):
+        evidence['sufficient'] = False
+        return None, evidence
+    data = visible_cloud[labels == components[0][1]]
+    low, high = np.quantile(data, [.05, .95], axis=0)
+    evidence['sufficient'] = True
+    return dict(low=low, high=high, center=(low+high)/2,
+                points=len(data), source=evidence['source']), evidence
+
+
 def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_candidates):
     extent = src['high']-src['low']
     # Horizontal observed bounding range, no hidden object shape/PCA metadata.
@@ -254,6 +297,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     cached_external = None
     initial_source_points_world = None
     dark_source = False
+    source_hue_center = None
     lift_verified = False
     lift_recheck_used = False
     carry_verified_stage = None
@@ -274,7 +318,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
         return np.stack([(uu-K[0,2])*d/K[0,0], (vv-K[1,2])*d/K[1,1], d], -1) @ T[:3,:3].T + T[:3,3]
 
     def locate(reason):
-        nonlocal identity, cached_external, initial_source_points_world, dark_source, rack_geometry, initial_drawer_interior
+        nonlocal identity, cached_external, initial_source_points_world, dark_source, source_hue_center, rack_geometry, initial_drawer_interior
         vv = views()
         identity = vision.recognize(vv, task.language, reason)
         result = {}
@@ -314,11 +358,23 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 hsv = cv2.cvtColor(v['rgb'], cv2.COLOR_RGB2HSV)
                 dark_source = bool(np.mean((hsv[:, :, 2][valid] < 100) &
                                            (hsv[:, :, 1][valid] > 50)) > .8)
+                dark_pixels = valid & (hsv[:, :, 2] < 100) & (hsv[:, :, 1] > 50)
+                hue_concentration = 0.
+                if dark_source and dark_pixels.sum() >= 300:
+                    hues = hsv[:, :, 0][dark_pixels].astype(int)
+                    mode = int(np.argmax(np.bincount(hues, minlength=180)))
+                    distances = np.abs(hues-mode)
+                    hue_concentration = float(np.mean(
+                        np.minimum(distances, 180-distances) <= 12))
+                    if hue_concentration >= .7:
+                        source_hue_center = mode
                 dump(rec.folder/'source-appearance.json', dict(
                     dark_saturated_fraction=float(np.mean(
                         (hsv[:, :, 2][valid] < 100) &
                         (hsv[:, :, 1][valid] > 50))),
                     use_dark_foreground_filter=dark_source,
+                    hue_center=source_hue_center,
+                    hue_within_12_fraction=hue_concentration,
                     source='Initial public RGB and SAM mask'))
             if role == 'source' and ob['camera'] == 'agentview':
                 cached_external = dict(ob)
@@ -425,6 +481,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             dump(rec.folder/f'holding-{ticks:04d}.json',holding)
             return
         appearance_filtered = False
+        appearance_track_evidence = None
         geometry_filtered = False
         geometry_filter_evidence = None
         raw_ratio = float(np.linalg.norm(h['high']-h['low']) /
@@ -438,14 +495,26 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             dump(rec.folder/f'holding-geometry-{ticks:04d}.json',
                  geometry_filter_evidence)
             if h_filtered is None:
-                holding = dict(valid=None,status='unavailable',
-                    reason='Insufficient visible source points after generic geometry filter',
-                    geometry_filter=geometry_filter_evidence,observed_tick=ticks)
-                dump(rec.folder/f'holding-{ticks:04d}.json',holding)
-                return
-            h = h_filtered
-            geometry_filtered = True
-        if dark_source:
+                tracked = None
+                if projection and dark_source and source_hue_center is not None:
+                    tracked, appearance_track_evidence = track_visible_appearance(
+                        vv['agentview'], cloud(vv['agentview']), box, expected,
+                        source_hue_center)
+                    dump(rec.folder/f'holding-appearance-track-{ticks:04d}.json',
+                         appearance_track_evidence)
+                if tracked is None:
+                    holding = dict(valid=None,status='unavailable',
+                        reason='Insufficient visible source points after generic geometry and appearance filters',
+                        geometry_filter=geometry_filter_evidence,
+                        appearance_track=appearance_track_evidence,observed_tick=ticks)
+                    dump(rec.folder/f'holding-{ticks:04d}.json',holding)
+                    return
+                h = tracked
+                appearance_filtered = True
+            else:
+                h = h_filtered
+                geometry_filtered = True
+        if dark_source and not appearance_filtered:
             v = vv[ob['camera']]
             mask = np.load(h['visible_mask_path']).astype(bool)
             hsv = cv2.cvtColor(v['rgb'], cv2.COLOR_RGB2HSV)
@@ -459,16 +528,27 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             raw_mismatch = float(np.linalg.norm(h['center']-expected))
             if raw_ratio > 1.5 or raw_mismatch > .05:
                 if selected.sum() < 400 or selected.sum() < .25*mask.sum():
-                    holding = dict(valid=None,status='unavailable',
-                                   reason='Visible appearance insufficient to separate held source from gripper',
-                                   observed_tick=ticks)
-                    dump(rec.folder/f'holding-{ticks:04d}.json', holding)
-                    return
-                data = cloud(v)[selected]
-                low, high = np.quantile(data,[.05,.95],axis=0)
-                h = dict(h, low=low, high=high, center=(low+high)/2,
-                         points=len(data),
-                         source='SAM/RGB-D with initial visible dark-foreground appearance gate')
+                    tracked = None
+                    if projection and source_hue_center is not None:
+                        tracked, appearance_track_evidence = track_visible_appearance(
+                            vv['agentview'], cloud(vv['agentview']), box,
+                            expected, source_hue_center)
+                        dump(rec.folder/f'holding-appearance-track-{ticks:04d}.json',
+                             appearance_track_evidence)
+                    if tracked is None:
+                        holding = dict(valid=None,status='unavailable',
+                                       reason='Visible appearance insufficient to separate held source from gripper',
+                                       appearance_track=appearance_track_evidence,
+                                       observed_tick=ticks)
+                        dump(rec.folder/f'holding-{ticks:04d}.json', holding)
+                        return
+                    h = tracked
+                else:
+                    data = cloud(v)[selected]
+                    low, high = np.quantile(data,[.05,.95],axis=0)
+                    h = dict(h, low=low, high=high, center=(low+high)/2,
+                             points=len(data),
+                             source='SAM/RGB-D with initial visible dark-foreground appearance gate')
                 appearance_filtered = True
                 dump(rec.folder/f'holding-appearance-{ticks:04d}.json',h)
         rise = float(h['center'][2]-source_grasp[2])
@@ -481,6 +561,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                        source='Visible RGB-D co-motion proxy',
                        source_rise_mm=rise*1000,co_motion_error_mm=mismatch*1000,
                        visible_span_ratio=size_ratio,appearance_filtered=appearance_filtered,
+                       appearance_track=appearance_track_evidence,
                        geometry_filtered=geometry_filtered,
                        geometry_filter=geometry_filter_evidence,
                        second_lift_check=use_projection,measured=h,expected=expected,
