@@ -118,11 +118,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     side_plan_logged = False
     high_side_plan_logged = False
     high_y_insert_reached = False
+    front_lower_reached = False
     high_arc_out_reached = False
     high_arc_y_reached = False
     late_turn_reached = False
     route_preorient_reached = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
+    front_pincher = contact_mode == 'front_pincher'
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
     yaw_side_entry = contact_mode == 'cabinet_side_yaw_hook'
@@ -175,7 +177,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                                     [0., 0., -1.],
                                                     [0., 1., 0.]]))
     own = gripper_geometry(env, obs)
-    own_hand_tool = own_hand_vertices_tool(env, obs) if thin_side_entry else None
+    own_hand_tool = own_hand_vertices_tool(env, obs) if thin_side_entry or front_pincher else None
     own_full_hand_low_z_offset = (float(np.min(np.concatenate((
         np.asarray(own['finger_vertices_tool']), own_hand_tool)) @
         side_orientation.T, axis=0)[2]) if thin_side_entry else None)
@@ -312,7 +314,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         chosen = select_public_handle(measured, requested_level)
         dump(rec.folder/f'handles-{ticks:04d}.json', measured)
         front = (visible_cabinet_front(image, depth, intrinsic, extrinsic,
-                 chosen['center_world_m']) if hook_mode else None)
+                 chosen['center_world_m']) if hook_mode or front_pincher else None)
         lower = select_public_handle(measured, 'bottom')
         upper = select_public_handle(measured, 'top')
         return image, chosen, front, lower, upper
@@ -417,6 +419,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_tcp = handle_position - pad_center_offset
                 finger_behind = False
                 pad_now = None
+                if front_pincher:
+                    # The whole own hand must remain in front of the visible
+                    # cabinet face while open fingertips surround the rod.
+                    own_min_y = float(np.min(np.concatenate((
+                        np.asarray(own['finger_vertices_tool']), own_hand_tool)) @
+                        side_orientation.T, axis=0)[1])
+                    contact_tcp[1] -= .006
+                    if contact_tcp[1]+own_min_y <= float(front_plane['point_world_m'][1])+.003:
+                        raise RuntimeError('Own hand would cross visible cabinet face')
             under_tcp = pad_entry_z = side_entry_tcp = None
             if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook'):
                 under_tcp, pad_entry_z = under_hook_waypoints(
@@ -586,6 +597,18 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     # the separately visible source. Both legs remain Jev XYZ.
                     target[0] = clear_start[0]
             contact_leg = 'final'
+            if front_pincher and name == 'contact':
+                front_lower_tcp = contact_tcp + [0., .146, 0.]
+                if not front_lower_reached and np.max(np.abs(position-front_lower_tcp)) < .007:
+                    front_lower_reached = True
+                    rec.event(dict(kind='front_pinch_lower_reached', native_tick=ticks,
+                        current_tcp_world_m=position.tolist(),
+                        source='own TCP at publicly observed handle height outside cabinet'))
+                if not front_lower_reached:
+                    target = front_lower_tcp.copy()
+                    contact_leg = 'front_lower'
+                else:
+                    contact_leg = 'front_insert'
             if contact_mode == 'top_hook' and name == 'contact' and \
                     position[1] > contact_tcp[1] + .009:
                 # Keep the finger above the selected visible handle while
@@ -719,8 +742,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 oriented and np.linalg.norm(target-position) < .030 and
                 rod_gap < .025)
             exact_contact_pose = bool(name == 'contact' and arrived and oriented and
-                contact_leg in ('final', 'under_rise', 'side_rise', 'cabinet_side_rise', 'tip_rise', 'high_entry_descend') and
-                (finger_behind if hook_mode else True))
+                contact_leg in ('final', 'front_insert', 'under_rise', 'side_rise', 'cabinet_side_rise', 'tip_rise', 'high_entry_descend') and
+                (finger_behind if hook_mode else rod_gap < .006 if front_pincher else True))
             gate = {
                 'observe': True,
                 'select_handle': True,
@@ -731,7 +754,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'align': arrived and oriented,
                 'contact': exact_contact_pose or blocked_contact_trial,
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
-                          if hook_mode else grip_ticks >= 18 and gripper == 1),
+                          if hook_mode else grip_ticks >= 18 and gripper == 1 and
+                          aperture >= 6. if front_pincher else
+                          grip_ticks >= 18 and gripper == 1),
                 'pull': bool(extension and extension['passed']) or (
                     arrived and shift is not None and shift['pixel_displacement'] > 12),
                 'release': grip_ticks >= 24 and gripper == -1 and aperture >= 65,
@@ -753,8 +778,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             hook_pad_current_world_m=pad_now.tolist() if hook_mode and tip_tool is None else None,
                             hook_tip_current_world_m=pad_now.tolist() if tip_tool is not None else None,
                             contact_path_leg=contact_leg if name == 'contact' else None,
+                            front_pinch_lower_reached=(front_lower_reached if front_pincher else None),
                             approach_path_leg=approach_leg,
-                            visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
+                            visible_cabinet_front_world_y_m=(face_y if hook_mode else
+                                float(front_plane['point_world_m'][1]) if front_pincher else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
                                 if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook') else None),
@@ -961,6 +988,21 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'is within 25 mm of the rod, you may advance to one '
                     'closure trial. This does not prove grasp; the later '
                     'visible drawer-motion gate must still pass.')
+            if front_pincher and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'With the open gripper rotated to put its two pads above '
+                    'and below the visible middle rod, first lower outside '
+                    'the measured cabinet face to the rod height. Then hold '
+                    'that height and advance the own fingers around the rod '
+                    'from the front. contact_path_leg reports the current leg. '
+                    'Advance only after own TCP/orientation arrival and own '
+                    'pad envelope within 6 mm of the public RGB-D rod point.')
+            if front_pincher and name == 'grasp':
+                request['state']['stage_contract'] = (
+                    'Close the two own pads around the visible middle rod. '
+                    'Advance only after at least 18 executed closure ticks '
+                    'and own gripper aperture at least 6 mm; near-zero '
+                    'aperture means the previous approach missed the rod.')
             if hook_mode and name == 'pull':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open; pull the measured finger hook outward '
