@@ -131,6 +131,24 @@ def visible_front_goal(view, plate, stove):
     support_z = float(np.quantile(near_plate_level, .3))
     if int((np.abs(near_plate_level-support_z) < .004).sum()) < 1000:
         raise RuntimeError('Visible tabletop plane ambiguous')
+    valid = np.isfinite(cloud).all(axis=2)
+    elevated = valid & (cloud[:, :, 2] > support_z+.008) & (
+        cloud[:, :, 2] < support_z+.30)
+    elevated[:320] = 0
+    elevated[:, :250] = 0
+    elevated &= ~plate['mask']
+    obstacles_xy = cloud[elevated][:, :2]
+    radius = .5*max(np.asarray(plate['high'])[:2]-
+                    np.asarray(plate['low'])[:2]) + .008
+
+    def swept_blockers(start, vector, length):
+        unit = vector/length
+        relative = obstacles_xy-start
+        along = relative @ unit
+        across = np.abs(relative[:, 0]*unit[1]-relative[:, 1]*unit[0])
+        return int(((along > .015) & (along < length+.02) &
+                    (across < radius)).sum())
+
     goals = []
     # The receiving relation is to the visible stove, not to the plate's
     # initial image row. A source-relative row can leave a farther plate
@@ -156,58 +174,44 @@ def visible_front_goal(view, plate, stove):
             distance = np.linalg.norm(vector)
             if not .07 < distance < .45:
                 continue
-            direction = vector/distance
-            # Only visible tabletop pixels are considered. Ignore the source
-            # plate itself; elevated bowl/carton/bottle points remain obstacles.
-            valid = np.isfinite(cloud).all(axis=2)
-            elevated = valid & (cloud[:, :, 2] > support_z+.008) & (
-                cloud[:, :, 2] < support_z+.30)
-            elevated[:320] = 0
-            elevated[:, :250] = 0
-            elevated &= ~plate['mask']
-            points = cloud[elevated][:, :2]
-            radius = .5*max(np.asarray(plate['high'])[:2]-
-                            np.asarray(plate['low'])[:2]) + .008
-            if len(points):
-                along = (points-source[:2]) @ direction
-                lateral = np.abs((points-source[:2])[:, 0]*direction[1] -
-                                 (points-source[:2])[:, 1]*direction[0])
-                blocked = (along > .015) & (along < distance+.02) & (lateral < radius)
-                blockers = int(blocked.sum())
-            else:
-                blockers = 0
-            # The first straight segment can be blocked by a visible bowl
-            # even though a table waypoint to the side of it gives two clear
-            # segments. Only use an actually measured tabletop patch and
-            # check both swept corridors against the same RGB-D obstacle set.
+            # Include low visible objects in both corridor checks. A route
+            # may go to either side of them; the waypoint need not share the
+            # source plate's image row.
+            blockers = swept_blockers(source[:2], vector, distance)
             routed = None
-            if 10 <= source_v < 758:
-                stage_patch = cloud[source_v-4:source_v+5, u-4:u+5]
-                if stage_patch.shape[:2] == (9, 9) and np.isfinite(stage_patch).all():
-                    waypoint = np.median(stage_patch.reshape(-1, 3), axis=0)
-                    first = waypoint[:2]-source[:2]
-                    first_length = float(np.linalg.norm(first))
-                    second = goal[:2]-waypoint[:2]
-                    second_length = float(np.linalg.norm(second))
-                    if (abs(waypoint[2]-support_z) < .006 and
-                            .06 < first_length < .40 and
-                            .025 < second_length < .30):
-                        leg_counts = []
-                        for start, vector, length in (
-                                (source[:2], first, first_length),
-                                (waypoint[:2], second, second_length)):
-                            unit = vector/length
-                            relative = points-start
-                            along_leg = relative @ unit
-                            across_leg = np.abs(relative[:, 0]*unit[1]-
-                                                relative[:, 1]*unit[0])
-                            leg_counts.append(int(((along_leg > .015) &
-                                (along_leg < length+.02) &
-                                (across_leg < radius)).sum()))
-                        if max(leg_counts) < 80:
-                            routed = dict(stage_uv=[u, source_v],
-                                          stage_world_m=waypoint.tolist(),
-                                          leg_blockers=leg_counts)
+            if blockers >= 80:
+                route_candidates = []
+                for stage_v in (source_v, source_v+20, source_v+40,
+                                source_v+60, source_v+80, source_v-20):
+                    for stage_u in (u, u+25, u+50, u-25, u-50):
+                        if not (5 <= stage_u < 763 and 5 <= stage_v < 763):
+                            continue
+                        stage_patch = cloud[stage_v-4:stage_v+5,
+                                            stage_u-4:stage_u+5]
+                        if (stage_patch.shape[:2] != (9, 9) or
+                                not np.isfinite(stage_patch).all()):
+                            continue
+                        waypoint = np.median(stage_patch.reshape(-1, 3), axis=0)
+                        if abs(waypoint[2]-support_z) >= .006:
+                            continue
+                        first = waypoint[:2]-source[:2]
+                        first_length = float(np.linalg.norm(first))
+                        second = goal[:2]-waypoint[:2]
+                        second_length = float(np.linalg.norm(second))
+                        if .06 < first_length < .40 and .025 < second_length < .30:
+                            leg_counts = [
+                                swept_blockers(source[:2], first, first_length),
+                                swept_blockers(waypoint[:2], second, second_length)]
+                            if max(leg_counts) < 80:
+                                route_candidates.append(dict(
+                                    stage_uv=[stage_u, stage_v],
+                                    stage_world_m=waypoint.tolist(),
+                                    leg_blockers=leg_counts,
+                                    route_length_m=first_length+second_length))
+                if route_candidates:
+                    routed = min(route_candidates, key=lambda row:(
+                        max(row['leg_blockers']), sum(row['leg_blockers']),
+                        row['route_length_m']))
             goals.append(dict(goal_uv=[u, v], goal_world_m=goal.tolist(),
                               travel_m=float(distance), elevated_corridor_pixels=blockers,
                               visible_two_leg_route=routed))
