@@ -107,6 +107,19 @@ def propose(obs, targets, material, green_plane, table, stage):
     if not scores:
         return None,targets,diagnostics,scores
     selected=max(scores,key=lambda key:scores[key]['stage_progress_score'])
+    if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
+        best = scores[selected]['stage_progress_score']
+        near_ties = [key for key,value in scores.items()
+                     if value['stage_progress_score'] >= best-2 and value['source_visibility_prediction']]
+        if near_ties:
+            def tie_cost(key):
+                v = scores[key]['source_visibility_prediction']
+                wrist = v.get('named_source_wrist_field_of_view')
+                return (max(0,35-wrist['after_target_edge_margin_px']) if wrist else 0,
+                        v['additional_current_source_pixel_overlap_fraction'],
+                        -scores[key]['stage_progress_score'])
+            selected = min(near_ties,key=tie_cost)
+            scores[selected]['near_tie_retention_rule'] = 'Within2 controller utility units of maximum, prefer a wrist margin>=35 then least added current-high-source footprint overlap; chosen controller tolerance, not a confidence bound.'
     if selected.startswith('open_empty_'):
         return None,targets,diagnostics,scores
     return selected,targets,diagnostics,scores
