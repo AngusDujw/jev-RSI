@@ -37,3 +37,21 @@ def envelope(geometry, orientation):
     return dict(pad_low_offset=p.min(axis=0), pad_high_offset=p.max(axis=0),
                 pad_center_offset=(p.min(axis=0)+p.max(axis=0))/2,
                 finger_low_z_offset=float(f[:, 2].min()))
+
+
+def own_hand_vertices_tool(env, obs):
+    """Own Panda hand collision mesh in the observed TCP frame; no scene mesh."""
+    from scipy.spatial.transform import Rotation
+    sim = env.sim
+    name = env.robots[0].gripper.naming_prefix + 'hand_collision'
+    gid = sim.model.geom_name2id(name)
+    if int(sim.model.geom_type[gid]) != 7:
+        raise RuntimeError('Own hand collision geometry is not a mesh')
+    mesh = int(sim.model.geom_dataid[gid])
+    start = int(sim.model.mesh_vertadr[mesh])
+    count = int(sim.model.mesh_vertnum[mesh])
+    vertices = sim.model.mesh_vert[start:start+count]
+    world = vertices @ sim.data.geom_xmat[gid].reshape(3, 3).T + sim.data.geom_xpos[gid]
+    tcp = np.asarray(obs['robot0_eef_pos'])
+    R = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+    return (world-tcp) @ R

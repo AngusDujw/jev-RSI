@@ -17,7 +17,7 @@ from scipy.spatial.transform import Rotation
 from libero_goal_drawer_vision import (visible_cabinet_front,
     visible_cabinet_near_side, visible_drawer_handles, select_public_handle,
     visible_drawer_extension)
-from libero_robot_geometry import gripper_geometry
+from libero_robot_geometry import gripper_geometry, own_hand_vertices_tool
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
 
@@ -115,18 +115,24 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     clear_source_x = None
     blocked_contact_blocks = 0
     expected = None
+    side_plan_logged = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
     yaw_side_entry = contact_mode == 'cabinet_side_yaw_hook'
-    cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook')
-    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
+    thin_side_entry = contact_mode == 'cabinet_side_thin_hook'
+    cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
     initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-    side_orientation = ((Rotation.from_euler('z', 90, degrees=True).as_matrix()
+    side_orientation = ((Rotation.from_euler('z', 75, degrees=True).as_matrix()
+                         @ Rotation.from_euler('x', -60, degrees=True).as_matrix()
+                         @ initial_orientation)
+                        if thin_side_entry else
+                        (Rotation.from_euler('z', 90, degrees=True).as_matrix()
                          @ Rotation.from_euler('x', -30, degrees=True).as_matrix()
                          @ initial_orientation)
                         if yaw_side_entry else
@@ -146,6 +152,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                                     [0., 0., -1.],
                                                     [0., 1., 0.]]))
     own = gripper_geometry(env, obs)
+    own_hand_tool = own_hand_vertices_tool(env, obs) if thin_side_entry else None
     if hook_mode:
         initial_rotation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
         finger_options = []
@@ -337,7 +344,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             contact_rod_position = handle_position.copy()
-            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
                 # The middle handle is visibly about 8 cm long. A near-side
                 # contact may leave room for the arm beside the cabinet;
                 # retain the same observed rod point for both hook paths.
@@ -348,7 +355,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if hook_mode:
                 face_y = float(front_plane['point_world_m'][1])
                 back_y = float(handle['rod_back_world_y_m'])
-                hook_y = face_y + (.0165 if yaw_side_entry else .012)
+                hook_y = face_y + (.018 if thin_side_entry else .0165 if yaw_side_entry else .012)
                 if not face_y + .008 < hook_y < back_y - .003:
                     raise RuntimeError('Visible finger-hook gap unavailable')
                 hook_pad = np.array([contact_rod_position[0], hook_y,
@@ -358,6 +365,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     own_fingers = np.asarray(own['finger_vertices_tool']) @ side_orientation.T
                     if contact_tcp[1] + float(np.min(own_fingers[:, 1])) <= face_y + .002:
                         raise RuntimeError('Own yawed fingers do not clear visible cabinet front')
+                if thin_side_entry:
+                    own_envelope = np.concatenate((
+                        np.asarray(own['finger_vertices_tool']), own_hand_tool)) @ side_orientation.T
+                    if contact_tcp[1] + float(np.min(own_envelope[:, 1])) <= face_y + .002:
+                        raise RuntimeError('Own entire hand does not clear visible cabinet front')
                 pad_now = (position +
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix() @ tip_tool
                     if tip_tool is not None else np.mean([env.sim.data.geom_xpos[
@@ -370,7 +382,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 finger_behind = False
                 pad_now = None
             under_tcp = pad_entry_z = side_entry_tcp = None
-            if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook'):
+            if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook'):
                 under_tcp, pad_entry_z = under_hook_waypoints(
                     handle, lower_handle, contact_tcp, contact_offset,
                     pad_half_height)
@@ -386,15 +398,32 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     - pad_center_offset[:2])
                 side_entry_tcp[1] = under_tcp[1]
             if cabinet_side_entry:
-                # Bypass the measured cabinet's near *body* edge rather than
-                # just the visible rod end. The whole own finger envelope is
-                # outside the observed front before the Y insertion leg.
-                projected_fingers = np.asarray(own['finger_vertices_tool']) @ side_orientation.T
+                # Bypass the measured cabinet body edge. For the thin option
+                # include the own palm as well as both fingers; the prior
+                # finger-only estimate missed a physical collision.
+                own_side_mesh = (np.concatenate((
+                    np.asarray(own['finger_vertices_tool']), own_hand_tool))
+                    if thin_side_entry else np.asarray(own['finger_vertices_tool']))
+                projected_fingers = own_side_mesh @ side_orientation.T
                 side_entry_tcp = under_tcp.copy()
                 side_entry_tcp[0] = (cabinet_side['near_side_world_x_m'] -
                     float(np.max(projected_fingers[:, 0])) - .020)
                 if abs(side_entry_tcp[0]-initial_robot_x) > .35:
                     raise RuntimeError('Visible cabinet side outside bounded own reach')
+                if thin_side_entry and not side_plan_logged:
+                    clearance = (contact_tcp[1] +
+                        float(np.min(projected_fingers[:, 1])) - face_y)
+                    dump(rec.folder/'cabinet-side-plan.json', dict(
+                        approach_tcp_world_m=(side_entry_tcp + [0., .14, 0.]).tolist(),
+                        side_entry_tcp_world_m=side_entry_tcp,
+                        under_rod_tcp_world_m=under_tcp,
+                        contact_tcp_world_m=contact_tcp,
+                        own_hand_and_fingers_to_visible_front_clearance_mm=round(clearance*1000,2),
+                        visible_cabinet_near_side_world_x_m=cabinet_side['near_side_world_x_m'],
+                        visible_front_world_y_m=face_y,
+                        visible_rod_back_world_y_m=back_y,
+                        source='Public camera RGB-D/links plus own gripper collision mesh and proprioception'))
+                    side_plan_logged = True
             approach_tcp = side_entry_tcp if side_entry_tcp is not None else under_tcp
             if steep_entry:
                 upper_z = float(upper_handle['center_world_m'][2])
@@ -548,7 +577,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
-                                if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook') else None),
+                                if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook') else None),
                             visible_cabinet_near_side_world_x_m=(cabinet_side['near_side_world_x_m']
                                 if cabinet_side is not None else None),
                             visible_upper_handle_world_z_m=(float(upper_handle['center_world_m'][2])
@@ -633,9 +662,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'Move the open own fingers beyond the camera-measured near '
                     'edge of the cabinet body, aligned with the visible gap '
                     'between middle and lower rods. The clearance includes '
-                    'the own finger mesh. The yawed option places the own finger '
-                    'length along the visible handle rod to reduce depth into '
-                    'the cabinet front. Advance only on own-pose evidence.')
+                    'the own finger mesh; the thin option also checks the own '
+                    'palm mesh. Yawed options place the own finger length '
+                    'along the visible rod. Advance only on own-pose evidence.')
             if cabinet_side_entry and name == 'contact':
                 request['state']['stage_contract'] = (
                     'At the cabinet body side, insert the own finger into the '
