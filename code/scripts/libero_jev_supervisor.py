@@ -367,7 +367,12 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 if ticks>=550:raise RuntimeError('native budget')
                 rotation=np.array(d['rotation_signs'])*np.minimum(.12,.5*abs(rotation_error))
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;gripper_ticks+=1
-            after=obs['robot0_eef_pos'].copy();last_progress=float(np.linalg.norm(error)-np.linalg.norm(target-after));stalls=stalls+1 if np.linalg.norm(after-before)<.0008 and np.linalg.norm(error)>.015 else 0
+            after=obs['robot0_eef_pos'].copy();last_progress=float(np.linalg.norm(error)-np.linalg.norm(target-after))
+            # Count blocked motion whenever an axis remains outside the same
+            # stage arrival gate Jev sees. The old 15 mm norm gate concealed
+            # an 8.74 mm carry-axis block from the recovery waypoint logic.
+            stalls=stalls+1 if (np.linalg.norm(after-before)<.0008 and
+                                np.max(abs(error))>arrival_tolerance) else 0
             event=dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,
                        selected_gripper=selected,executed_gripper=gripper,rotation_signs=d['rotation_signs'],rotation_error_rad=rotation_error,selected_transition=d['transition'],progress_m=last_progress)
             rec.branch(event);history.append(dict(gripper=selected,transition=d['transition'],progress_mm=round(last_progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()));save(stage)
