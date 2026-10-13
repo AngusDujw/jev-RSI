@@ -825,7 +825,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             # retain the prior displacement check in other stages.
             motion_stalled = (progress < .001 if stage == 'descend' else
                               np.linalg.norm(after-before) < .0008)
-            stalls=stalls+1 if motion_stalled and np.linalg.norm(error)>.008 else 0
+            # Use the same per-axis arrival gate exposed to Jev. A blocked
+            # axis 4 mm from a 3 mm descend target must offer a retry instead
+            # of looping until the stage budget on the old 8 mm norm gate.
+            stalls=stalls+1 if motion_stalled and np.max(abs(error))>tol else 0
             rec.branch(dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,selected_gripper=d['gripper'],executed_gripper=gripper,selected_transition=d['transition'],block_native_ticks=block_ticks,selected_candidate=c['id'],rotation_signs=d['rotation_signs'],rotation_error_rad=rot,progress_m=progress))
             history.append(dict(gripper=d['gripper'],transition=d['transition'],progress_mm=round(progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()))
             for cam,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{cam}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))
