@@ -220,7 +220,7 @@ def main():
                    help='Let Jev orient own wrist during drawer approach, then verify in align')
     p.add_argument('--knob-supervisor', action='store_true',
                    help='Jev-controlled visible stove control Goal 1383 trial')
-    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook'], default='pinch',
+    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook'], default='pinch',
                    help='Fixed public-vision handle contact method; Jev still selects gripper and stages')
     p.add_argument('--offline-goal-vision', action='store_true',
                    help='Use predeclared init0 Goal image boxes and runtime RGB-D/SAM; no GPT-6 calls')

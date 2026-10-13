@@ -115,13 +115,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     blocked_contact_blocks = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
-    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook')
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
     initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-    side_orientation = ((Rotation.from_euler('x', -30, degrees=True).as_matrix()
+    side_orientation = ((Rotation.from_euler('x', 60, degrees=True).as_matrix()
+                         @ initial_orientation)
+                        if contact_mode == 'down_hook' else
+                        (Rotation.from_euler('x', -30, degrees=True).as_matrix()
                          @ initial_orientation)
                         if contact_mode in ('under_hook', 'side_hook') else
                         initial_orientation if contact_mode == 'tip_hook' else
@@ -156,11 +159,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         projected_pad = selected_vertices @ side_orientation.T
         pad_half_height = float(np.max(np.abs(
             projected_pad[:, 2]-pad_center_offset[2])))
-        if contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook') and pad_center_offset[1] >= 0:
+        if contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook') and pad_center_offset[1] >= 0:
             raise RuntimeError('No rearward own fingerpad for hook')
         contact_offset = pad_center_offset
         tip_tool = None
-        if contact_mode == 'tip_hook':
+        if contact_mode in ('tip_hook', 'down_hook'):
             finger_vertices = np.asarray(own['finger_vertices_tool'])
             selected_finger = finger_vertices[
                 np.linalg.norm(finger_vertices-chosen_pad_tool, axis=1) <
@@ -168,11 +171,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if not len(selected_finger):
                 raise RuntimeError('Own selected fingertip mesh unavailable')
             projected_finger = selected_finger @ side_orientation.T
-            # Prefer a rearward tip that stays within the own pad-height
-            # corridor. The most rearward mesh vertex is substantially higher
-            # and would force a lower, less reachable TCP entry.
-            corridor = (projected_finger[:, 2] >= 0) & (
-                projected_finger[:, 2] <= min(.030, 3*pad_half_height))
+            # The old tip mode stays within the pad-height corridor. The new
+            # downward mode instead uses an own-mesh point below TCP so the
+            # same visible rod/gap can be approached with a higher wrist.
+            corridor = ((projected_finger[:, 2] <= -.020) &
+                        (projected_finger[:, 2] >= -.080)
+                        if contact_mode == 'down_hook' else
+                        (projected_finger[:, 2] >= 0) &
+                        (projected_finger[:, 2] <= min(.030, 3*pad_half_height)))
             if not np.any(corridor):
                 raise RuntimeError('No own fingertip in pad-height corridor')
             feasible = np.flatnonzero(corridor)
@@ -181,6 +187,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             contact_offset = tip_tool @ side_orientation.T
             if contact_offset[1] >= pad_center_offset[1]-.015:
                 raise RuntimeError('Own fingertip offers no deeper contact than pad')
+            if contact_mode == 'down_hook' and contact_offset[2] >= -.020:
+                raise RuntimeError('Own fingertip does not extend below TCP')
     else:
         pad_center_offset = np.median(
             np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
@@ -289,7 +297,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             contact_rod_position = handle_position.copy()
-            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook'):
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook', 'down_hook'):
                 # The middle handle is visibly about 8 cm long. A near-side
                 # contact may leave room for the arm beside the cabinet;
                 # retain the same observed rod point for both hook paths.
@@ -318,7 +326,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 finger_behind = False
                 pad_now = None
             under_tcp = pad_entry_z = side_entry_tcp = None
-            if contact_mode in ('under_hook', 'side_hook', 'tip_hook'):
+            if contact_mode in ('under_hook', 'side_hook', 'tip_hook', 'down_hook'):
                 under_tcp, pad_entry_z = under_hook_waypoints(
                     handle, lower_handle, contact_tcp, contact_offset,
                     pad_half_height)
@@ -372,11 +380,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_leg = 'under_y_insert'
             elif contact_mode == 'under_hook' and name == 'contact':
                 contact_leg = 'under_rise'
-            if contact_mode == 'tip_hook' and name == 'contact' and \
+            if contact_mode in ('tip_hook', 'down_hook') and name == 'contact' and \
                     position[1] > contact_tcp[1] + .009:
                 target = under_tcp.copy()
                 contact_leg = 'tip_y_insert'
-            elif contact_mode == 'tip_hook' and name == 'contact':
+            elif contact_mode in ('tip_hook', 'down_hook') and name == 'contact':
                 contact_leg = 'tip_rise'
             if contact_mode == 'side_hook' and name == 'contact':
                 if position[1] > side_entry_tcp[1] + .009:
@@ -447,7 +455,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
-                                if contact_mode in ('under_hook', 'side_hook', 'tip_hook') else None),
+                                if contact_mode in ('under_hook', 'side_hook', 'tip_hook', 'down_hook') else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
@@ -522,12 +530,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'contact_path_leg names the current waypoint. Advance only '
                     'when the finger is visibly measured behind the rod at '
                     'the final pose.')
-            if contact_mode == 'tip_hook' and name in ('approach', 'align'):
+            if contact_mode in ('tip_hook', 'down_hook') and name in ('approach', 'align'):
                 request['state']['stage_contract'] = (
                     'Keep the hand outside the cabinet and align the selected '
                     'own fingertip with the visible middle/lower handle gap. '
-                    'The fingertip is from own mesh; the TCP remains in front.')
-            if contact_mode == 'tip_hook' and name == 'contact':
+                    'The fingertip is from own mesh; the TCP remains in front '
+                    'and, for a downward tip, above the visible rod.')
+            if contact_mode in ('tip_hook', 'down_hook') and name == 'contact':
                 request['state']['stage_contract'] = (
                     'Insert the selected own fingertip into the measured gap '
                     'from the front, then rise behind the middle visible rod. '
