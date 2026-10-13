@@ -118,6 +118,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     side_plan_logged = False
     high_side_plan_logged = False
     high_y_insert_reached = False
+    far_preorient_reached = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
@@ -526,8 +527,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     name == 'approach'):
                 turn_error = Rotation.from_matrix(side_orientation @
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
+                if (far_side_insert and not far_preorient_reached and
+                        np.max(np.abs(turn_error)) < .06):
+                    far_preorient_reached = True
+                    rec.event(dict(kind='far_side_preorient_reached',
+                        native_tick=ticks, source='Actual robot wrist feedback'))
                 approach_leg = ('high_free_space_turn' if
-                    np.max(np.abs(turn_error)) >= .06 else 'side_approach')
+                    np.max(np.abs(turn_error)) >= .06 and
+                    not (far_side_insert and far_preorient_reached)
+                    else 'side_approach')
                 if approach_leg == 'high_free_space_turn':
                     target = initial_robot_position.copy()
             if name == 'clear_opening':
