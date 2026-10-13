@@ -72,6 +72,7 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
               'planner_stage','planner_stage_evidence_rule','planner_stage_interpretation',
               'method_refresh','strict_input_contract')
     compact = {key:full_input.get(key) for key in retain}
+    compact['environment_context'] = {'benchmark':'RoboDojo', 'execution':'SIMULATION_ONLY', 'real_robot_control':False, 'source':'current IsaacSim benchmark sensor frame; no scene object ground-truth state supplied'}
     compact['source_context_crops'] = crops
     pads = inspect_pads(observation, observation['camera_calibration'])
     world = np.concatenate([np.asarray(pads['rows'][name]['inner_facet_world_xyz_m'])
