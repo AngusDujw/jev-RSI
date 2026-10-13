@@ -655,11 +655,25 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     "terminal error; inspect the entire RGB hand/table corridor "
                     "and require the SAME green scissors to move with the hand "
                     "in the next fixed-high and wrist RGB before carrying.")
+            reopen = _targets(obs, "x", 1, 0.0)
+            reopen["right"]["gripper_closed"] = False
+            reopen_path = preview(obs, reopen["right"], None, steps=5)
+            if (reopen_path["public_path_gate"] and
+                    reopen_path["native_eef_single_action_legal"]):
+                key = "open_empty_right_gripper_hold_link6"
+                targets[key] = reopen
+                options[key] = (
+                    "One complete five-native-step right gripper OPEN action, "
+                    "both measured LINK6 poses held and left gripper open. "
+                    "Select ONLY when current three RGB show the last close "
+                    "left the actual fingers EMPTY and the whole opening sweep "
+                    "is visibly clear. This releases no verified held source; "
+                    "it enables same-episode approach recovery, not a reset.")
             record["translation_view_effects"] = effects
             options["stop_no_visible_capture"] = (
                 "The same green scissors is not visibly within the closed fingers, "
-                "or the last real RGB change shows no source response; stop and "
-                "replan instead of declaring a held object.")
+                "and an offered OPEN recovery cannot be visually approved; stop "
+                "instead of declaring a held object or inventing opening clearance.")
             options["stop_visible_blocker"] = (
                 "Current RGB shows a specific collision blocker in every offered lift corridor.")
             instruction = (
@@ -668,7 +682,9 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "visible source change. Select one full bounded closed-gripper "
                 "lift only if the source is visibly between the true black "
                 "finger faces and the full lift corridor appears clear; "
-                "otherwise select a named STOP. After a lift, verify actual "
+                "if actual fingers are visibly empty, assess the separate held-pose "
+                "OPEN recovery and its entire finger sweep; select STOP when "
+                "neither full lift nor full opening is supported. After a lift, verify actual "
                 "green source translation in the fixed high camera, not merely "
                 "the moving wrist image or LINK6.")
         elif view_stage:
@@ -916,7 +932,43 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 " contact target; compare the real black inner fingers in fresh RGB.")
         record["temporal_option_metal_patch_residual"] = temporal_option_residual
         record["material_option_residual"] = material_option_residual
-        question = choice("pickup_action", instruction, options)
+        special_key = ("close_right_gripper_hold_link6"
+                       if "close_right_gripper_hold_link6" in targets else
+                       "open_empty_right_gripper_hold_link6"
+                       if "open_empty_right_gripper_hold_link6" in targets else None)
+        family_options = None
+        if special_key is not None:
+            special_is_close = special_key.startswith("close_")
+            family_options = {
+                "motion": (
+                    "Judge a complete offered robot translation/rotation/lift "
+                    "using pickup_action. All such motions form ONE family; "
+                    "different axes/signs are NOT separate evidence for closing."),
+                "gripper": options[special_key],
+                "stop": "Neither a complete robot motion nor the complete gripper action is supported by current RGB/identity/sweep evidence."}
+            family_instruction = instruction + (
+                " FIRST choose action_family independently of how many motion "
+                "candidates there are. A CLOSE requires solid source material "
+                "visibly between the OPPOSING ACTUAL inward faces at grasp "
+                "height, not just within 2D boxes or near a sampled proxy. "
+                if special_is_close else
+                " FIRST choose action_family: keep holding and test lift only "
+                "with visible capture; OPEN recovery only with visibly EMPTY "
+                "fingers and a clear whole spreading sweep. ") + (
+                "THEN answer pickup_action for the motion family only; that "
+                "answer is ignored if action_family is gripper or stop. Exactly "
+                "ONE complete target executes, never combine these answers.")
+            motion_options = {key: value for key, value in options.items()
+                              if key != special_key}
+            question = choice("pickup_action", instruction +
+                              " This question selects a complete motion ONLY "
+                              "IF action_family=motion; otherwise it is ignored.",
+                              motion_options)
+            questions = [choice("action_family", family_instruction,
+                                family_options), question]
+        else:
+            question = choice("pickup_action", instruction, options)
+            questions = [question]
         model_input = {
             "task": obs["task"], "instruction": obs["instruction"],
             "step_id": obs["step_id"], "current_stage": record["stage"],
@@ -957,9 +1009,17 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 trace[-1].get("post_action") if trace else None,
             "strict_input_contract": "Three current RGB plus same-episode historical RGB only for a current-feature match and fixed-camera static check, public K/T, measured robot state, public robot-only paths and RGB-derived uncertain geometry. Metal patch is NOT graspable green handle or contact; no true scene object pose, contact or evaluator outcome.",
         }
-        answer = model.query(obs, [question], json.dumps(model_input, ensure_ascii=False),
+        answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
                              f"pickup_active_{turn:02d}_step{obs['step_id']:03d}")
         selected = answer["pickup_action"]
+        if family_options is not None:
+            family = answer["action_family"]
+            record["luna_action_family"] = family
+            record["luna_motion_choice"] = selected
+            if family == "gripper":
+                selected = special_key
+            elif family == "stop":
+                selected = "stop_family_evidence"
         record["luna_choice"] = selected
         trace.append(record)
         if selected.startswith("stop_"):

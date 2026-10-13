@@ -151,3 +151,5 @@ This controller is an experimental categorical EEF policy, not the original Robo
 Current revalidated solid-material support takes precedence over missing AIR-hole contours for candidate availability. Missing ring segmentation alone no longer forces a rotation-only branch; Luna retains fresh-RGB veto and the measured tracking gate remains unchanged.
 
 A CLOSE hypothesis is available with current solid-source support between public pad projections and a valid public five-step path. AIR-hole counts and uncertain sampled XYZ/facet quantiles no longer hide it. All values remain in Luna input; Luna judges real plastic/pads and the entire closure sweep, then actual fresh-RGB source following is required.
+
+With a gripper candidate, Luna answers action_family (motion/gripper/stop) and pickup_action (a complete motion only). Exactly one full target is selected; the second answer is ignored outside motion. An empty closed hand can choose a separate held-LINK6 five-step OPEN recovery after fresh RGB validates the whole spreading sweep. Planner retry boundary240s now accommodates two95s transport attempts plus20s interval.
