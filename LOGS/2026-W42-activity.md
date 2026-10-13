@@ -41,3 +41,5 @@
 - 【Agent】【2026-10-12 21:43】[note] 5880复核：nvidia-smi识别RTX5880-Ada-24Q，但isaaclab环境最小torch CUDA张量报operation not supported；Goal1458 init9/10视觉GPU，init11–13显式CPU视觉，仿真仍用GPU0 EGL。
 - 【User】【2026-10-12 21:53】[prompt] 再检查一下确定一下是什么问题
 - 【Agent】【2026-10-12 21:53】[result] 5880只读诊断：vGPU RTX5880-Ada-24Q显示Unlicensed；nvidia-gridd自2026-10-11 20:50因license服务器证书校验失败退出，虽ClientConfigToken目录有token但gridd.conf缺失。GPU成功回合在开机后23小时、首次CUDA失败在24小时后；独立CUDA驱动cuCtxCreate_v2返回801，和NVIDIA未授权24小时后CUDA失效规则吻合。未改驱动/服务。
+- 【User】【2026-10-13 11:06】[prompt] 看一下现在的vgpu是否还有之前的问题
+- 【Agent】【2026-10-13 11:06】[result] 5880在2026-10-13 11:04复核：nvidia-smi仍Unlicensed (Restricted)、nvidia-gridd仍failed且无新许可日志；但cuCtxCreate_v2=0、PyTorch CUDA张量和1024x1024矩阵计算通过、GPU DINO/SAM worker完整加载ready=true。前日断言CUDA故障确定由24h许可锁定造成过强；许可异常仍存在，昨日CUDA错误具体原因未证实。无驱动/服务改动。
