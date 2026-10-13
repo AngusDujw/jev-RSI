@@ -610,7 +610,12 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         # EEF action targets use the separate gripper_closed Boolean.
         gripper_closed = (
             float(obs["current_eef"]["right"]["gripper_opening_command"]) < 0.5)
-        view_stage = not gripper_closed and (margin <= 60 or ring_count < 2)
+        # Missing closed AIR-hole contours does not invalidate current solid
+        # material evidence. With a current revalidated material set, let
+        # Luna judge complete approach/closure options against fresh RGB;
+        # do not force a view-only branch solely from ring segmentation.
+        view_stage = (not gripper_closed and material is None and
+                      (margin <= 60 or ring_count < 2))
         record = {"turn": turn, "step_id": obs["step_id"],
                   "sensor_derived_geometry": hull,
                   "temporal_metal_and_green_support": temporal,

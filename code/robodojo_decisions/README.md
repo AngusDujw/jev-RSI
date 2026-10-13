@@ -147,3 +147,5 @@ This controller is an experimental categorical EEF policy, not the original Robo
 
 
 2026-10-13 当前推进输入补充：pickup_table_plane.py 从同回合腕图棕色纹理同点和当前高位投影估计局部支撑平面，提供匹配数/覆盖/像素扰动/声明余量；后续只在当前固定高位纹理重核通过时保留。pickup_green_material_support.py 可在当前绿色静止兼容检查通过后使用明确标记的早前RGB银色高度假设，当前双RGB绿色像素支撑仍每步重算。闭爪候选出现时选择题允许完整闭爪动作；闭后5/10/20mm抬升仍由Luna当前RGB独立判断，命令不证明持物。
+
+Current revalidated solid-material support takes precedence over missing AIR-hole contours for candidate availability. Missing ring segmentation alone no longer forces a rotation-only branch; Luna retains fresh-RGB veto and the measured tracking gate remains unchanged.
