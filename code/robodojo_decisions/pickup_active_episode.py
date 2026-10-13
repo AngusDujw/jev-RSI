@@ -190,9 +190,10 @@ def _translation_view_prediction(obs: dict, target: dict, hull: dict) -> dict:
 
 def _sensing_descent(obs: dict, hull: dict,
                      temporal: dict | None = None,
-                     material: dict | None = None) -> tuple[str, dict, dict, dict] | None:
+                     material: dict | None = None,
+                     amount: float = 0.005) -> tuple[str, dict, dict, dict] | None:
     """Public-robot-safe small descent proposal; scene safety remains with Luna."""
-    target = _targets(obs, "z", -1, 0.005)
+    target = _targets(obs, "z", -1, amount)
     path = preview(obs, target["right"], None, steps=5)
     if not path["public_path_gate"] or not path["native_eef_single_action_legal"]:
         return None
@@ -210,13 +211,13 @@ def _sensing_descent(obs: dict, hull: dict,
             support_z, float(material["assumed_green_height_slab_m"][1]))
         support_source += " and stated possible solid-green slab upper height"
     bound = gripper_height_above_landmark(
-        obs["current_eef"]["right"], [0, 0, support_z], descent_m=0.005)
+        obs["current_eef"]["right"], [0, 0, support_z], descent_m=amount)
     if bound["hand_above_landmark_plane_after_m"] < 0.010:
         return None
     effect = _translation_view_prediction(obs, target, hull)
-    key = "z_negative_5mm_sensing_descent"
+    key = f"z_negative_{int(round(amount*1000))}mm_sensing_descent"
     description = (
-        "One complete right LINK6 world-Z NEGATIVE 5 mm sensing descent, five native "
+        f"One complete right LINK6 world-Z NEGATIVE {amount*1000:.0f} mm sensing descent, five native "
         "steps, other coordinates/orientation and left arm held, both grippers OPEN. "
         f"Public robot-only path predicts terminal error "
         f"{path['predicted_joint_path'][-1]['predicted_link6_translation_residual_m']*1000:.2f} mm; "
@@ -297,7 +298,7 @@ def _translation_options(obs: dict, hull: dict,
                         f"{effect['right_pad_box_left_minus_green_right_edge_px_range']} px. "
                         "this is not a scene-clearance certificate. Reobserve after execution.")
                     break
-    if distance <= 100:
+    if distance <= 100 or material is not None:
         descent = _sensing_descent(obs, hull, temporal, material)
         if descent is not None:
             key, target, effect, detail = descent
@@ -333,6 +334,18 @@ def _translation_options(obs: dict, hull: dict,
                             "in current RGB, then reobserve; no closure.")
                         targets[combined_key] = combined
                         image_effects[combined_key] = combined_effect
+    if material is not None:
+        z_q95 = material[
+            "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95"
+        ]["q95"][2]
+        if z_q95 < -30:
+            descent = _sensing_descent(
+                obs, hull, temporal, material, amount=0.010)
+            if descent is not None:
+                key, target, effect, detail = descent
+                options[key] = detail["description"]
+                targets[key] = target
+                image_effects[key] = effect
     return options, targets, image_effects
 
 
