@@ -585,9 +585,12 @@ def main() -> None:
     (output / "launch.json").write_text(json.dumps({"command": command, "layout": args.layout,
         "started": dt.datetime.now().astimezone().isoformat(),
         "source": "existing read-only RoboDojo + GPT-as-Policy installation",
-        "planner_model": "gpt-6.1-sol high via local Pro bridge",
+        "planner_model": "gpt-6.1-sol high",
+        "planner_refresh_transport": ("requested AI2RobCoWork Responses gateway; explicit supplied-method fallback if unavailable"
+                                      if args.controller == "v2_pickup_active_episode" else "supplied plan provenance"),
+        "planner_schema_provenance": plan.get("planner_provenance", {}),
         "decision_model": "gpt-6-luna via du cad/direct key",
-        "input_contract": "current three RGB views and measured robot state only"}, indent=2))
+        "input_contract": "fresh three RGB plus labelled current derived crops, public K/T and robot URDF/STL, measured robot state, uncertain camera-derived geometry and model-facing experience; no true object pose, contact or evaluator outcomes"}, indent=2))
     os.environ.update(environment)
     os.environ["ROBODOJO_RPC_PORT"] = str(port)
     simlog = output / "sim.log"
