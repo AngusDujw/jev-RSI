@@ -19,6 +19,7 @@ from pickup_actor_evidence import prepare as prepare_actor_evidence
 from pickup_program_proposal import propose as propose_program
 from pickup_unary_input import compact as compact_unary_input
 from pickup_program_pair import build as build_program_pair
+from pickup_missing_view import recover as recover_missing_view
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import (eef_transform, gripper_height_above_landmark,
@@ -529,6 +530,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     temporal_references = {}
     table_cache = None
     metal_height_cache = None
+    missing_view_recoveries = 0
     status = "active_episode_budget_incomplete"
     native_result = None
     # Plan from the actual fresh reset RGB before any Luna or physical action.
@@ -604,6 +606,23 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         try:
             hull = build_visual_hull(obs)
         except ValueError as error:
+            if (os.environ.get('ROBODOJO_PICKUP_MISSING_VIEW_RECOVERY') == '1'
+                    and missing_view_recoveries < 2
+                    and int(obs.get('remaining_steps',0)) >= 5):
+                after, recovery = recover_missing_view(tools,obs,model,output,experience,turn,error)
+                trace.append(recovery)
+                if after is not None:
+                    missing_view_recoveries += 1
+                    after['camera_calibration'] = propagate_wrist_calibration(
+                        initial_calibration,initial_eef,after['current_eef'],after['step_id'])
+                    (output / f"camera_calibration_step_{after['step_id']:03d}.json").write_text(
+                        json.dumps(after['camera_calibration'],ensure_ascii=False,indent=2))
+                    obs = after
+                    if recovery['status'] == 'missing_view_reobserve':
+                        continue
+                status = recovery['status']
+                native_result = tools.finish(status)
+                break
             status = "current_rgb_visual_geometry_incomplete"
             trace.append({"turn": turn, "step_id": obs["step_id"],
                           "status": status, "geometry_error": str(error)})
