@@ -1236,6 +1236,12 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 'stage_score':progress_scores[unary_program],
                 'public_five_step_evidence':program_diagnostics.get(unary_program),
                 'step_objective':'Only incremental progress in THIS stage over FIVE simulated physical steps. The full pick-up/10cm task is for later stages; this one open approach need not grasp or finish it.'}
+            if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS', '1') == '0':
+                # Proposal selection still uses the same geometry scaffold;
+                # the actor receives no current object-error/progress numbers.
+                model_input['proposed_complete_program'].pop('stage_score', None)
+                model_input['proposed_complete_program'].pop('public_five_step_evidence', None)
+                model_input['proposed_complete_program']['public_robot_five_step_gate_passed'] = True
             questions=[questions[0],choice('full_program_decision',
                 'Judge THIS ONE COMPLETE proposed five-step simulated robot program against CURRENT RGB and the supplied stage/error/robot-only evidence. It needs only incremental stage progress, not immediate full-task completion. All robot XYZ and rotation components execute together. Approve only with current source identity and a supported whole short corridor; reject a visible contradiction or unsupported program. Robot/RGB hypotheses are not object ground truth.',
                 {'execute_this_complete_program':'Execute the exact proposed full robot target once for five steps and reobserve.',
