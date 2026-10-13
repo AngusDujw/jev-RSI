@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from pickup_green_plane import build as build_green_plane
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import (eef_transform, gripper_height_above_landmark,
@@ -558,13 +559,24 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 table = max(planes, key=lambda row:
                             row["accepted_texture_match_count"])
                 table_cache = table
+        green_plane = None
+        green_plane_errors = []
+        for reference in sorted(temporal_references.values(),
+                                key=lambda row: row['step_id']):
+            if obs['step_id'] - reference['step_id'] < 20:
+                continue
+            try:
+                green_plane = build_green_plane(obs, reference)
+                break
+            except ValueError as error:
+                green_plane_errors.append(f"ref{reference['step_id']}: {error}")
         material = None
         material_error = None
         if (temporal is not None and
                 temporal.get("accepted_sift_feature_count", 0) >= 3):
             metal_height_cache = (temporal, obs)
             try:
-                material = build_green_material_support(obs, temporal)
+                material = build_green_material_support(obs, temporal, green_plane=green_plane)
             except ValueError as error:
                 material_error = str(error)
         elif metal_height_cache is not None:
@@ -575,7 +587,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     source_rgb_static_check(old_obs, obs))
                 height_evidence["height_static_check_current_step_id"] = obs["step_id"]
                 material = build_green_material_support(
-                    obs, height_evidence, historical_height=True)
+                    obs, height_evidence, historical_height=True, green_plane=green_plane)
             except ValueError as error:
                 material_error = "Historical height revalidation failed: " + str(error)
         margin = hull["right_wrist_mask_image_edge_margin_px"]
@@ -623,6 +635,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                   "possible_solid_green_material_support": material,
                   "green_material_support_error": material_error,
                   "current_rgb_support_plane": table,
+                  "current_green_silhouette_plane": green_plane,
+                  "green_silhouette_plane_errors": green_plane_errors,
                   "support_plane_errors": table_errors,
                   "stage": ("closed_gripper_visual_test" if gripper_closed else
                             "visibility_recovery" if view_stage else
@@ -981,6 +995,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "possible_solid_green_material_support": material,
             "green_material_support_error": material_error,
             "current_rgb_support_plane": table,
+                  "current_green_silhouette_plane": green_plane,
+                  "green_silhouette_plane_errors": green_plane_errors,
             "support_plane_errors": table_errors,
             "material_option_residual": material_option_residual,
             "material_option_error_norm": material_option_error_norm,

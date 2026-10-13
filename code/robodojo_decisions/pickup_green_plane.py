@@ -77,7 +77,7 @@ def build(obs, reference=None):
         jitter.append({'camera': 'right', 'shift_px': [dx, dy], 'best_height_m': trial[0], 'iou': trial[1]})
     changes = np.abs(np.array([r['best_height_m'] for r in jitter])-best[0])
     p95 = float(np.quantile(changes, .95))
-    if p95 > .005 or min(r['iou'] for r in jitter) < .45:
+    if round(p95, 9) > .005 or min(r['iou'] for r in jitter) < .45:
         raise ValueError(f'Green plane pixel sensitivity too large: {p95*1000:.2f}mm')
     compatible = [r[0] for r in nominal if r[1] >= best[1]-.03]
     # Declared systematic allowance is deliberately separate from pixel jitter.

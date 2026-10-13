@@ -32,7 +32,8 @@ def _surface_nearest(points: np.ndarray, vertices: np.ndarray) -> tuple[np.ndarr
 
 def build(observation: dict, temporal_metal: dict,
           half_height_m: float = 0.020,
-          historical_height: bool = False) -> dict:
+          historical_height: bool = False,
+          green_plane: dict | None = None) -> dict:
     if observation["task"] != "general_pickup":
         raise ValueError("Green-handle material support is pickup-specific")
     reference_step = temporal_metal.get("current_step_id")
@@ -73,7 +74,15 @@ def build(observation: dict, temporal_metal: dict,
     rays /= np.linalg.norm(rays, axis=1, keepdims=True)
     if np.any(np.abs(rays[:, 2]) < 0.02):
         raise ValueError("Near-horizontal green rays invalidate height slab")
-    levels = metal_z + np.linspace(-half_height_m, half_height_m, 9)
+    center_z = metal_z
+    if green_plane is not None:
+        if green_plane['current_step_id'] != observation['step_id']:
+            raise ValueError('Green-plane fit is not current')
+        center_z = float(green_plane['estimated_green_plane_height_m'])
+        half_height_m = float(green_plane['declared_green_height_halfwidth_m'])
+        if not .005 <= half_height_m <= .020:
+            raise ValueError('Invalid fitted green height uncertainty')
+    levels = center_z + np.linspace(-half_height_m, half_height_m, 9)
     depths = (levels[None, :]-pose[None, 2, 3])/rays[:, 2, None]
     points = (pose[None, None, :3, 3] +
               depths[:, :, None]*rays[:, None, :]).reshape(-1, 3)
@@ -110,9 +119,13 @@ def build(observation: dict, temporal_metal: dict,
             if historical_height else
             "Current same-episode silver texture match plus current high/right green-pixel support"),
         "metal_patch_height_m": round(metal_z, 5),
+        "current_green_plane_fit": green_plane,
         "assumed_green_height_slab_m": [round(float(levels[0]), 5),
                                         round(float(levels[-1]), 5)],
-        "height_assumption": "The visible green plastic could lie within 20 mm vertically of the independent silver texture patch. This is a declared proxy, not a measured green surface height; the result is invalid if the handle is outside it.",
+        "height_assumption": (
+            "Current RGB planar-silhouette fitted height with explicit pixel sensitivity and declared5mm systematic allowance; still a planar hypothesis, not certified surface/contact."
+            if green_plane is not None else
+            "Declared20mm vertical proxy around independent silver patch; not measured green surface or contact."),
         "green_rgb_consistent_sample_count": len(points),
         "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95": {
             key: np.quantile(relative_mm, q, axis=0).round(1).tolist()
