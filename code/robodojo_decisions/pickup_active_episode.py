@@ -246,7 +246,8 @@ def _sensing_descent(obs: dict, hull: dict,
                                   "visual_support_source": support_source}
 
 
-def _contact_approach_descent(obs, hull, material, table, green_plane):
+def _contact_approach_descent(obs, hull, material, table, green_plane,
+                              vector_length_m=None):
     """Explicit contact hypothesis, separate from the free-space height gate."""
     if any(value is None for value in (material, table, green_plane)):
         return None
@@ -261,21 +262,37 @@ def _contact_approach_descent(obs, hull, material, table, green_plane):
     if source_z - nominal_table < .002:
         return None
     target = _targets(obs, 'z', -1, .005)
+    delta = np.array([0., 0., -.005])
+    if vector_length_m is not None:
+        feature = material.get('representative_material_point')
+        if feature is None:
+            return None
+        error = np.asarray(feature['nearest_opposing_surface_midpoint_delta_xyz_mm'])/1000
+        size = float(np.linalg.norm(error))
+        if size <= vector_length_m*1.05:
+            return None
+        delta = error/size*vector_length_m
+        if delta[2] >= -.001:
+            return None
+        target['right']['position'] = (
+            np.asarray(obs['current_eef']['right']['position'])+delta).tolist()
     path = preview(obs, target['right'], None, steps=5)
     if not (path['public_path_gate'] and path['native_eef_single_action_legal']):
         return None
     nominal = gripper_height_above_landmark(
-        obs['current_eef']['right'], [0, 0, nominal_table], descent_m=.005)
+        obs['current_eef']['right'], [0, 0, nominal_table], descent_m=float(-delta[2]))
     upper = gripper_height_above_landmark(
-        obs['current_eef']['right'], [0, 0, table['upper_height_for_robot_check_m']], descent_m=.005)
+        obs['current_eef']['right'], [0, 0, table['upper_height_for_robot_check_m']], descent_m=float(-delta[2]))
     if nominal['hand_above_landmark_plane_after_m'] < .002:
         return None
     # Do not duplicate the existing free-space candidate or falsify its bound.
     if upper['hand_above_landmark_plane_after_m'] >= .006:
         return None
     key = 'z_negative_5mm_contact_approach'
+    if vector_length_m is not None:
+        key = f'feature_xyz_{int(round(vector_length_m*1000))}mm_contact_approach'
     description = (
-        'One COMPLETE five-native-step OPEN-gripper right LINK6 world-Z -5mm, '
+        f'One COMPLETE five-native-step OPEN-gripper right LINK6 world XYZ delta {(delta*1000).round(2).tolist()}mm, '
         'orientation and left arm held. This is an INTENTIONAL SOURCE-CONTACT '
         'APPROACH hypothesis, separate from a certified free-space claim. '
         f'Public whole-hand mesh nominal table gap after move is '
@@ -407,13 +424,14 @@ def _translation_options(obs: dict, hull: dict,
                 targets[key] = target
                 image_effects[key] = effect
     if material is not None:
-        residual_mm = np.asarray(material[
-            "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95"
-        ]["q50"], float)
+        feature = material.get('representative_material_point')
+        residual_mm = np.asarray(
+            feature['nearest_opposing_surface_midpoint_delta_xyz_mm'] if feature else
+            material['possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95']['q50'], float)
         residual_m = residual_mm/1000
         magnitude = float(np.linalg.norm(residual_m))
-        for length in (0.015, 0.020):
-            if magnitude < length + 0.020:
+        for length in (0.010, 0.015, 0.020):
+            if magnitude < length * 1.05:
                 continue
             delta = residual_m/magnitude * length
             target = _targets(obs, "x", 1, 0.0)
@@ -444,7 +462,7 @@ def _translation_options(obs: dict, hull: dict,
                 f"{target_delta_mm} mm, total norm {length*1000:.0f} mm, "
                 "in FIVE native steps; orientation and left arm held. "
                 "An independent algorithm normalizes the CURRENT possible "
-                "solid-green median-minus-public-pad error. It predicts the "
+                "RGB-supported named-point minus nearest-opposing-surface midpoint error when available, otherwise the material median. It predicts the "
                 f"same static-support median error norm decreases from "
                 f"{magnitude*1000:.1f} to {(magnitude-length)*1000:.1f} mm "
                 "under ideal robot translation. This is not a verified "
@@ -668,7 +686,9 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         # Native observations expose the measured opening command, while
         # EEF action targets use the separate gripper_closed Boolean.
         gripper_closed = (
-            float(obs["current_eef"]["right"]["gripper_opening_command"]) < 0.5)
+            trace[-1]['post_action']['action']['target']['right']['gripper_closed']
+            if trace and 'post_action' in trace[-1] else
+            float(obs['current_eef']['right']['gripper_opening_command']) < .5)
         # Missing closed AIR-hole contours does not invalidate current solid
         # material evidence. With a current revalidated material set, let
         # Luna judge complete approach/closure options against fresh RGB;
@@ -843,14 +863,17 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             options, targets, image_effects = _translation_options(
                 obs, hull, temporal, material, table=table)
             record["translation_view_effects"] = image_effects
-            contact_approach = _contact_approach_descent(
-                obs, hull, material, table, green_plane)
-            if contact_approach is not None:
-                key, target, effect, evidence = contact_approach
-                options[key] = evidence['description']
-                targets[key] = target
-                image_effects[key] = effect
-                record['contact_approach_evidence'] = evidence
+            contact_evidence = {}
+            for vector_length in (None, .010, .015):
+                contact_approach = _contact_approach_descent(
+                    obs, hull, material, table, green_plane, vector_length)
+                if contact_approach is not None:
+                    key, target, effect, evidence = contact_approach
+                    options[key] = evidence['description']
+                    targets[key] = target
+                    image_effects[key] = effect
+                    contact_evidence[key] = evidence
+            record['contact_approach_evidence'] = contact_evidence
             if material is not None and margin > 0:
                 facet_distance = material[
                     "possible_green_to_each_public_facet_distance_mm_q05_q50_q95"]
@@ -1041,6 +1064,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             questions = [question]
         model_input = {
             "task": obs["task"], "instruction": obs["instruction"],
+            "source_control_feature": material.get('representative_material_point') if material else None,
+            "source_error_interpretation": "Whole-material quantiles include object extent. The named RGB-supported point has separate same-pixel height hypotheses and a nearest-opposing-public-surface midpoint residual; use it as uncertain grasp-region alignment context, not true pose/contact or planner action advice.",
             "step_id": obs["step_id"], "current_stage": record["stage"],
             "measured_eef": obs["current_eef"],
             "measured_joint_state": obs["current_state"],

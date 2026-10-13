@@ -87,6 +87,8 @@ def build(observation: dict, temporal_metal: dict,
     points = (pose[None, None, :3, 3] +
               depths[:, :, None]*rays[:, None, :]).reshape(-1, 3)
     depth_ok = depths.reshape(-1) > 0
+    ray_indices = np.repeat(np.arange(len(uv)), len(levels))
+    level_indices = np.tile(np.arange(len(levels)), len(uv))
     point_uv, high_depth = _project_many(high_camera, points)
     pixels = np.rint(point_uv).astype(int)
     in_frame = (depth_ok & (high_depth > 0) &
@@ -95,6 +97,8 @@ def build(observation: dict, temporal_metal: dict,
     accepted = np.zeros(len(points), bool)
     accepted[in_frame] = high[pixels[in_frame, 1], pixels[in_frame, 0]]
     points = points[accepted]
+    ray_indices = ray_indices[accepted]
+    level_indices = level_indices[accepted]
     if len(points) < 100:
         raise ValueError(f"Solid-green two-RGB slab support too sparse: {len(points)}")
     pads = inspect_public_pads(observation, calibration)
@@ -110,6 +114,26 @@ def build(observation: dict, temporal_metal: dict,
     paired_error_mm = (points-paired_midpoint)*1000
     paired_max_distance_mm = np.maximum(
         surface_rows[0][0], surface_rows[1][0])*1000
+    candidates = np.flatnonzero(level_indices == 4)
+    if not len(candidates):
+        candidates = np.arange(len(points))
+    centre = np.median(points, axis=0)
+    chosen = int(candidates[np.argmin(np.linalg.norm(points[candidates]-centre, axis=1))])
+    same_ray = ray_indices == ray_indices[chosen]
+    representative = {
+        'source': 'ONE sampled point projecting to actual green pixels in both CURRENT RGB; nearest nominal-height valid sample to material-set median, not the median itself',
+        'current_right_pixel_uv': uv[ray_indices[chosen]].astype(int).tolist(),
+        'current_high_projected_uv': _project_many(high_camera, points[[chosen]])[0][0].round(2).tolist(),
+        'estimated_world_xyz_m': points[chosen].round(6).tolist(),
+        'pad_centroid_delta_xyz_mm': relative_mm[chosen].round(2).tolist(),
+        'nearest_opposing_surface_midpoint_delta_xyz_mm': paired_error_mm[chosen].round(2).tolist(),
+        'each_open_facet_distance_mm': {name: round(float(row[0][chosen]*1000), 2)
+                                      for name, row in zip(('link7', 'link8'), surface_rows)},
+        'same_named_pixel_height_hypothesis_region_error_xyz_mm': {
+            key: np.quantile(paired_error_mm[same_ray], q, axis=0).round(2).tolist()
+            for key, q in (('q05', .05), ('q50', .5), ('q95', .95))},
+        'localization_hypothesis_sample_count': int(same_ray.sum()),
+        'limitations': 'This is a RGB-supported planar/slab point hypothesis, not verified same-point correspondence or true object pose. The paired nearest public surfaces define current reachable face span, not a recommended physical action or observed contact. Same-pixel depth samples are not calibrated confidence bounds. Whole-object quantiles below describe spatial extent and must not be confused with this point localization.'}
     return {
         "source": ("Current actual green pixels in high/right RGB, current temporal wrist silhouette plane fit, public K/T, measured robot and public inner-finger STL; silver is separate identity/stability corroboration"
                    if green_plane is not None else
@@ -131,6 +155,8 @@ def build(observation: dict, temporal_metal: dict,
             if green_plane is not None else
             "Declared20mm vertical proxy around independent silver patch; not measured green surface or contact."),
         "green_rgb_consistent_sample_count": len(points),
+        "representative_material_point": representative,
+        "whole_material_quantiles_include_object_extent": True,
         "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95": {
             key: np.quantile(relative_mm, q, axis=0).round(1).tolist()
             for key, q in (("q05", 0.05), ("q50", 0.5), ("q95", 0.95))},
