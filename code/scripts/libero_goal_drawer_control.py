@@ -112,7 +112,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     blocked_contact_blocks = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
-    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook')
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
@@ -120,7 +120,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
     side_orientation = ((Rotation.from_euler('x', -30, degrees=True).as_matrix()
                          @ initial_orientation)
-                        if contact_mode == 'under_hook' else
+                        if contact_mode in ('under_hook', 'side_hook') else
                         initial_orientation if contact_mode == 'top_hook' else
                         Rotation.from_euler('x', 210, degrees=True).as_matrix()
                         if hook_mode else np.array([[1., 0., 0.],
@@ -152,7 +152,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         projected_pad = selected_vertices @ side_orientation.T
         pad_half_height = float(np.max(np.abs(
             projected_pad[:, 2]-pad_center_offset[2])))
-        if contact_mode in ('top_hook', 'under_hook') and pad_center_offset[1] >= 0:
+        if contact_mode in ('top_hook', 'under_hook', 'side_hook') and pad_center_offset[1] >= 0:
             raise RuntimeError('No rearward own fingerpad for hook')
     else:
         pad_center_offset = np.median(
@@ -217,7 +217,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             contact_rod_position = handle_position.copy()
-            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook'):
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook'):
                 # The middle handle is visibly about 8 cm long. A near-side
                 # contact may leave room for the arm beside the cabinet;
                 # retain the same observed rod point for both hook paths.
@@ -243,16 +243,28 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_tcp = handle_position - pad_center_offset
                 finger_behind = False
                 pad_now = None
-            under_tcp = pad_entry_z = None
-            if contact_mode == 'under_hook':
+            under_tcp = pad_entry_z = side_entry_tcp = None
+            if contact_mode in ('under_hook', 'side_hook'):
                 under_tcp, pad_entry_z = under_hook_waypoints(
                     handle, lower_handle, contact_tcp, pad_center_offset,
                     pad_half_height)
+            if contact_mode == 'side_hook':
+                # First pass the measured near end of the rod at the visible
+                # middle/lower gap, then slide along its axis behind the rod.
+                # This changes the collision path, not the final hook point.
+                axis = np.asarray(handle['rod_axis_world'], float)
+                toward_robot = 1. if (initial_robot_x-handle_position[0])*axis[0] >= 0 else -1.
+                side_entry_tcp = under_tcp.copy()
+                side_entry_tcp[:2] = (handle_position[:2] +
+                    toward_robot*(.5*float(handle['visible_rod_length_m'])+.018)*axis[:2]
+                    - pad_center_offset[:2])
+                side_entry_tcp[1] = under_tcp[1]
+            approach_tcp = side_entry_tcp if side_entry_tcp is not None else under_tcp
             targets = {
-                'approach': (under_tcp if under_tcp is not None else contact_tcp)
-                            + [0., .14, 0. if under_tcp is not None else contact_clearance],
-                'align': (under_tcp if under_tcp is not None else contact_tcp)
-                         + [0., .14, 0. if under_tcp is not None else contact_clearance],
+                'approach': (approach_tcp if approach_tcp is not None else contact_tcp)
+                            + [0., .14, 0. if approach_tcp is not None else contact_clearance],
+                'align': (approach_tcp if approach_tcp is not None else contact_tcp)
+                         + [0., .14, 0. if approach_tcp is not None else contact_clearance],
                 'contact': contact_tcp,
                 'pull': contact_tcp + [0., .18, 0.],
             }
@@ -274,6 +286,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_leg = 'under_y_insert'
             elif contact_mode == 'under_hook' and name == 'contact':
                 contact_leg = 'under_rise'
+            if contact_mode == 'side_hook' and name == 'contact':
+                if position[1] > side_entry_tcp[1] + .009:
+                    target = side_entry_tcp.copy()
+                    contact_leg = 'side_y_insert'
+                elif abs(position[0]-under_tcp[0]) > .007:
+                    target = under_tcp.copy()
+                    contact_leg = 'side_x_slide'
+                else:
+                    contact_leg = 'side_rise'
             rotation_error = (Rotation.from_matrix(side_orientation @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
                 if name in ('align', 'contact', 'grasp', 'pull', 'release')
@@ -299,7 +320,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 oriented and np.linalg.norm(target-position) < .030 and
                 rod_gap < .025)
             exact_contact_pose = bool(name == 'contact' and arrived and oriented and
-                contact_leg in ('final', 'under_rise') and
+                contact_leg in ('final', 'under_rise', 'side_rise') and
                 (finger_behind if hook_mode else True))
             gate = {
                 'observe': True,
@@ -330,7 +351,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
-                                if contact_mode == 'under_hook' else None),
+                                if contact_mode in ('under_hook', 'side_hook') else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
@@ -387,6 +408,19 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'middle handle rod. contact_path_leg names the current '
                     'waypoint. Advance only after the selected finger is '
                     'measured behind the middle rod at the final pose.')
+            if contact_mode == 'side_hook' and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Keep the hand outside the cabinet and align the own finger '
+                    'with the measured middle/lower gap just beyond the near '
+                    'end of the visible handle rod. Advance after own pose evidence.')
+            if contact_mode == 'side_hook' and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Insert the selected own finger at the visible gap beside '
+                    'the near rod end, slide sideways behind the rod to the '
+                    'measured contact X, then rise to the middle rod. '
+                    'contact_path_leg names the current waypoint. Advance only '
+                    'when the finger is visibly measured behind the rod at '
+                    'the final pose.')
             if task_id == 1098 and contact_mode == 'pinch' and name == 'contact':
                 request['state']['stage_contract'] = (
                     'Move open fingers toward the visible rod. If the exact '
