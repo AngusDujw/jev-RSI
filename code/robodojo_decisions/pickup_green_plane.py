@@ -1,5 +1,6 @@
 """Current two-RGB planar silhouette fit; no simulator scene state."""
 from pathlib import Path
+import os
 import cv2
 import numpy as np
 from pickup_visual_hull import _green_mask, _project_many
@@ -45,16 +46,24 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
             chroma_new = new_rgb / np.maximum(new_rgb.sum(axis=2, keepdims=True), 1)
             chroma_p95 = (float(np.quantile(np.linalg.norm(chroma_old[shared]-chroma_new[shared],axis=1),.95))
                           if shared.sum() >= 80 else 1.0)
+            subset_fraction=static_check['current_green_pixels_present_in_reference_fraction']
+            mask_radius=0
+            if os.environ.get('ROBODOJO_PICKUP_MASK_MATCH_RADIUS2') == '1':
+                expanded=cv2.dilate(ref_high.astype(np.uint8),np.ones((5,5),np.uint8))>0
+                subset_fraction=float(expanded[high.astype(bool)].mean())
+                mask_radius=2
             coarse_occlusion = bool(allow_coarse_occlusion and
                 obs['step_id']-reference['step_id'] <= 60 and
                 static_check['area_ratio'] >= .5 and
-                static_check['current_green_pixels_present_in_reference_fraction'] >= .98 and
+                subset_fraction >= .98 and
                 static_check['centroid_change_px'] <= 4 and
                 static_check['shared_green_rgb_abs_change_p95'] <= 40 and
                 chroma_p95 <= .08)
             if not coarse_occlusion:
                 raise ValueError('Current high RGB does not support static source')
             static_check = dict(static_check, directional_subset_shadow_hypothesis=True,
+                declared_fixed_view_mask_match_radius_px=mask_radius,
+                current_pixels_inside_reference_with_declared_radius_fraction=round(subset_fraction,4),
                 shared_green_chromaticity_change_p95=round(chroma_p95,4),
                 limitation='Current visible fixed-high green subset and chromaticity support only a coarse stationary-source hypothesis under occlusion/shadow; not strict stationarity/contact evidence.')
         ref_paths = {r['camera']: Path(r['path']) for r in reference['images']}
@@ -128,7 +137,7 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
     return {'current_public_finger_wrist_fit_region_xyxy': wrist_fit_region,
             'coarse_occlusion_hypothesis': coarse_occlusion,
             'contact_precision_eligible': contact_precision,
-            'geometry_scope': 'strict_5mm_pixel_gate_hypothesis' if contact_precision else 'COARSE_DIRECTIONAL_APPROACH_ONLY: no CLOSE or contact-approach candidate',
+            'geometry_scope': 'strict_5mm_pixel_gate_hypothesis' if contact_precision else 'COARSE_DIRECTIONAL_ESTIMATE_ONLY: does not certify strict metric CLOSE/contact-approach; any separate qualitative attempt needs independent CURRENT RGB review',
             'declared_pixel_sensitivity_limit_mm': max_pixel_p95_mm,
             'source': ('Same-episode earlier/current right-wrist green silhouettes, CURRENT fixed-high static-source check, public K/T; horizontal plane homography' if reference is not None else 'CURRENT fixed-high/right green silhouettes, public K/T; horizontal plane homography'),
             'reference_step_id': reference['step_id'] if reference is not None else obs['step_id'],
