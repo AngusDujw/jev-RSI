@@ -148,6 +148,7 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
     compact['actor_error_input_variant'] = ('current_RGB_plus_numeric_feature_errors' if metric_errors else
         'current_RGB_without_current_numeric_errors; SAME geometry-generated candidate and gate scaffold')
     if not metric_errors:
+        compact['current_phase_goal'] = 'Review the current semantic phase from CURRENT RGB, labelled current crops and measured robot state. Current per-axis source/angle error and geometry-effect tables are intentionally absent in this comparison.'
         for key in ('source_control_feature','source_feature_after_each_complete_action',
                     'source_error_interpretation','public_tool_orientation_evidence',
                     'current_geometry_validity','contact_approach_evidence'):
