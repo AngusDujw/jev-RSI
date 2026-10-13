@@ -1,7 +1,10 @@
 """Audit recorded ownership and model input allowlist, without simulation access."""
 import argparse,json,collections,hashlib
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('--output',type=Path);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('--output',type=Path)
+p.add_argument('--mixed-drawer',action='store_true',
+               help='Audit the pick/place continuation after Jev drawer decisions in one episode')
+a=p.parse_args()
 base_keys={'task','stage','next_phase','phase_contract','position_m','target_position_m','error_m','hold_tolerance_m','arrival_tolerance_m','gripper_qpos_m','last_gripper_command','current_phase_gripper_ticks','phase_native_ticks','phase_decisions','holding_evidence','geometry_source','source_label','destination_label','recovery_remaining','last_progress_m','stalls','error_mm','axis_relations','max_error_mm','phase_goal_distance_mm','recent_actions','gripper_aperture_mm','feedback_note','measurement_status','decision_protocol','rotation_control','rotation_error_rad','required_rotation_world_rad','rotation_relations','rotation_tolerance_rad','orientation_arrived','observation_age_native_steps','translation_axes','gripper','information_sources','carry_hover_replans'}
 forbidden={'reward','success','object_poses','object_id','object_ids','goal_predicates','true_state','scene_layout','bddl','task_id','init_state'}
 def check_forbidden(value):
@@ -14,9 +17,13 @@ results=[]
 for result_path in sorted(a.root.glob('**/result.json')):
  q=result_path.parent
  if not (q/'decisions.jsonl').exists():continue
- rows=[json.loads(l) for l in (q/'decisions.jsonl').read_text().splitlines()];ds={r['decision_id']:r for r in rows}
+ rows=[json.loads(l) for l in (q/'decisions.jsonl').read_text().splitlines()]
+ if a.mixed_drawer:
+  rows=[r for r in rows if not r['stage'].startswith('0:open_drawer:')]
+ ds={r['decision_id']:r for r in rows}
  if not rows or not all('transition' in r or 'error' in r for r in rows):continue
  branches=[json.loads(l) for l in (q/'branches.jsonl').read_text().splitlines()] if (q/'branches.jsonl').exists() else []
+ branches=[b for b in branches if b['decision_id'] in ds]
  prev=-1
  for b in branches:
   d=ds[b['decision_id']];assert d['gripper']==b['selected_gripper'];assert d['transition']==b['selected_transition']
@@ -24,7 +31,7 @@ for result_path in sorted(a.root.glob('**/result.json')):
   assert expected==b['executed_gripper'];prev=expected
   assert all(x*s>=-1e-12 for x,s in zip(b['delta'],d['signs']))
  events=[json.loads(l) for l in (q/'events.jsonl').read_text().splitlines()]
- edges=[e for e in events if e.get('kind')=='phase_transition']
+ edges=[e for e in events if e.get('kind')=='phase_transition' and e.get('decision_id') in ds]
  for e in edges:assert ds[e['decision_id']]['transition']=='advance' and ds[e['decision_id']]['stage']==e['from_stage']
  for r in rows:
   request=json.load(open(q/r['decision_id']/'request.json'));assert set(request['state'])<=base_keys,set(request['state'])-base_keys
