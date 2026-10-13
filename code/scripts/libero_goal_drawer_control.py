@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import time
+from types import SimpleNamespace
 
 import cv2
 import numpy as np
@@ -109,6 +110,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     image_template = None
     initial_extension_pixels = 0
     clear_target = None
+    clear_start = None
     blocked_contact_blocks = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
@@ -199,6 +201,34 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         image = np.ascontiguousarray(obs[cam+'_image'][::-1])
         depth = depth_fn(env.sim, obs[cam+'_depth'])[::-1].squeeze()
         return image, depth, k_fn(env.sim, cam, 768, 768), t_fn(env.sim, cam)
+
+    def visible_source_x_for_clearance():
+        """Locate the public source while the empty hand exits the drawer."""
+        from libero_generic_vision import GenericVision
+        from libero_goal_local_vision import SOURCE_LABEL, pick_visible
+        folder = rec.folder/'clear-source-vision'
+        folder.mkdir()
+        vision = GenericVision(SimpleNamespace(cfg=rec.cfg, folder=folder))
+        try:
+            rgb, depth, intrinsic, extrinsic = frame()
+            image = folder/'agentview.png'
+            cv2.imwrite(str(image), cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
+            label = SOURCE_LABEL[task_id]
+            request = dict(image=str(image), instruction=label+' .',
+                           output=str(folder/'grounding-source'))
+            dump(folder/'grounding-source-request.json', request)
+            vision.worker.stdin.write(json.dumps(request)+'\n')
+            vision.worker.stdin.flush()
+            detections = vision.receive()['objects']
+            dump(folder/'grounding-source-response.json', detections)
+            source = pick_visible(detections, label)
+            measured = vision.measure(dict(rgb=rgb, depth=depth,
+                K=intrinsic, T=extrinsic), source['bbox'], label,
+                'public-source-clearance')
+            dump(folder/'source-geometry.json', measured)
+            return float(measured['center'][0])
+        finally:
+            vision.close()
 
     def measure_handle():
         image, depth, intrinsic, extrinsic = frame()
@@ -302,8 +332,24 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             target = np.asarray(targets.get(name, position), float)
             if name == 'clear_opening':
                 if clear_target is None:
+                    clear_start = position.copy()
                     clear_target = position + np.array([0., .14, .15])
+                    if task_id == 1202 and rec.cfg.get('drawer_clear_to_source'):
+                        try:
+                            clear_target[0] = visible_source_x_for_clearance()
+                            rec.event(dict(kind='clear_to_public_source',
+                                target_tcp_world_m=clear_target.tolist(),
+                                source='fresh agentview RGB-D + public noun + own TCP'))
+                        except RuntimeError as exc:
+                            rec.event(dict(kind='clear_to_source_unavailable',
+                                reason=str(exc)))
                 target = clear_target.copy()
+                if (rec.cfg.get('drawer_clear_to_source') and
+                        (position[1] < clear_start[1]+.045 or
+                         position[2] < clear_start[2]+.045)):
+                    # Clear the observed drawer mouth before crossing toward
+                    # the separately visible source. Both legs remain Jev XYZ.
+                    target[0] = clear_start[0]
             contact_leg = 'final'
             if contact_mode == 'top_hook' and name == 'contact' and \
                     position[1] > contact_tcp[1] + .009:
@@ -504,6 +550,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'pose above and outward of the visibly open drawer. Advance '
                     'only after own TCP arrival; the next stage measures fresh '
                     'RGB-D with the hand out of the opening.')
+                if rec.cfg.get('drawer_clear_to_source'):
+                    request['state']['stage_contract'] += (
+                        ' First leave the visible drawer mouth outward and up '
+                        'by 45 mm while holding X; then move X toward the '
+                        'fresh publicly detected source during clearance.')
             decision = model.decide(request, stage['id'])
             edge = decision['transition']
             if edge == 'stop':
