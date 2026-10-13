@@ -186,6 +186,7 @@ graph LR
     T_2026W42_078["📊 robodojo-decision-stages<br/>两组各40步相同动作，无数值控制收益证据；…"]:::experiment
     T_2026W42_079["📊 robodojo-decision-stages<br/>255 75步后腕图真实出框；258提前公…"]:::experiment
     T_2026W42_080["📊 robodojo-decision-stages<br/>258 50步STOP；可达X/Y分数微差…"]:::experiment
+    T_2026W42_081["📊 robodojo-decision-stages<br/>260 170步工具朝下并接近；近距改当前…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -332,6 +333,7 @@ graph LR
   T_2026W42_077 --> T_2026W42_078
   T_2026W42_078 --> T_2026W42_079
   T_2026W42_079 --> T_2026W42_080
+  T_2026W42_080 --> T_2026W42_081
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -506,6 +508,7 @@ graph LR
 | `T-2026W42-078` | 2026-10-14 | experiment | robodojo-decision-stages | 两组各40步相同动作，无数值控制收益证据；255预测当前源物自遮挡 | `EXP-2026W42-185` | - |
 | `T-2026W42-079` | 2026-10-14 | experiment | robodojo-decision-stages | 255 75步后腕图真实出框；258提前公共视野预测与合法完整姿态 | `EXP-2026W42-186` | - |
 | `T-2026W42-080` | 2026-10-14 | experiment | robodojo-decision-stages | 258 50步STOP；可达X/Y分数微差，260近似并列保留源物 | `EXP-2026W42-187` | - |
+| `T-2026W42-081` | 2026-10-14 | experiment | robodojo-decision-stages | 260 170步工具朝下并接近；近距改当前局部指面材料，265检验抓持 | `EXP-2026W42-188` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
