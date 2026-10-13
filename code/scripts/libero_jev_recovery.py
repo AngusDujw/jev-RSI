@@ -49,7 +49,7 @@ def restrict_visible_source_cloud(measured, view, visible_cloud, initial_cloud,
 
 
 def fit_candidates(src, own, position, quaternion, level, points, cfg,
-                   failed_candidates, source_cloud=None):
+                   failed_candidates, source_cloud=None, receiver=None):
     extent = src['high']-src['low']
     # Horizontal observed bounding range, no hidden object shape/PCA metadata.
     close_on_long_axis = (cfg.get('task_id') == 1202 and
@@ -92,7 +92,13 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg,
     if cfg.get('task_id') == 1202 and cfg.get('bowl_side_grasp'):
         if source_cloud is None or len(source_cloud) < 500:
             raise RuntimeError('Visible source cloud insufficient for side grasp')
-        entry_sign = 1. if (position[:2]-src['center'][:2]) @ major[:2] >= 0 else -1.
+        # After opening a drawer, the TCP remains by the receiver/cabinet.
+        # Enter the source from its opposite, visible side rather than from
+        # whichever side the robot currently occupies.
+        receiver_delta = ((receiver['center'][:2]-src['center'][:2]) @ major[:2]
+                          if receiver is not None else 0.)
+        entry_sign = (-1. if receiver_delta > 0 else 1.) if abs(receiver_delta) > .025 else (
+            1. if (position[:2]-src['center'][:2]) @ major[:2] >= 0 else -1.)
         # The own fingertips extend along local -Z. Point them inward from
         # the selected exterior side before planning the horizontal insert.
         R_side = Rotation.from_rotvec(-minor*entry_sign*np.pi/2).as_matrix() @ R
@@ -134,6 +140,7 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg,
             outer_xy = xy + major[:2]*(outside-xy@major[:2])
             fits.append(dict(target=np.r_[xy,target_z],
                 side_entry_outer_tcp_world_m=np.r_[outer_xy,target_z],
+                side_entry_basis='opposite visible receiver' if abs(receiver_delta) > .025 else 'own current TCP side',
                 orientation=R_side, visible_width_mm=section_width*1000,
                 visible_section_width_mm=section_width*1000,
                 own_open_inner_pad_gap_mm=open_gap*1000,
@@ -431,7 +438,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
         level, points = support_level()
         c = fit_candidates(src, own, obs['robot0_eef_pos'], obs['robot0_eef_quat'],
                            level, points, rec.cfg, failed_candidates,
-                           initial_source_points_world)
+                           initial_source_points_world, dst)
         dump(rec.folder/f'candidates-{grasp_tries:02d}.json',c)
         return c
 
@@ -647,6 +654,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 check_visible_support_goal()
             c = cs[selected]
             Rgoal = c['orientation']
+            if side_bowl and stage == 'approach':
+                # Cross from the opened drawer to the visible source exterior
+                # before rotating a horizontal gripper near the cabinet.
+                Rgoal = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
             if rack_task and stage in ('orient_receiver','lower','release','retreat'):
                 Rgoal = (Rotation.from_rotvec(
                     np.array([rack_geometry['x_rotation_world_rad'],0.,0.])).as_matrix()
@@ -771,7 +782,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             required_close = stage in ['grasp','test_lift','lift','carry_lateral','carry','orient_receiver','lower']
             contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open. If fresh visible support evidence passed, choose finish_if_visible instead of another grasp.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp=f'Hold TCP, close for at least {rec.cfg.get("grasp_hold_ticks", 18)} native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. A borderline visible rise may extend this goal once for a fresh RGB-D check. Advance only if measured holding passed; retry if the final check failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
             if side_bowl:
-                contracts['approach'] = 'Move the open sideways-oriented gripper to the visible source-side exterior at high clearance.'
+                contracts['approach'] = 'Move the open gripper to the visible source-side exterior at high clearance, holding its present orientation.'
                 contracts['align'] = 'Reach the source-side exterior hover pose and sideways orientation with the gripper open.'
                 contracts['descend'] = 'Lower outside the visible source to the measured narrow-sidewall height; keep fingers open and outside its bounds.'
                 contracts['insert'] = ('Move the open fingers horizontally from the measured exterior corridor toward the visible narrow-sidewall target. '
