@@ -18,6 +18,7 @@ from pickup_tool_alignment import build as build_tool_alignment
 from pickup_actor_evidence import prepare as prepare_actor_evidence
 from pickup_program_proposal import propose as propose_program
 from pickup_unary_input import compact as compact_unary_input
+from pickup_program_pair import build as build_program_pair
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import (eef_transform, gripper_height_above_landmark,
@@ -1255,6 +1256,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             option['description'] = (
                 f"ONE COMPLETE FIVE-step robot pose: right world XYZ delta {delta_mm.round(2).tolist()}mm; world rotation vector {rotvec.round(5).tolist()}rad; right gripper {'CLOSED' if target['gripper_closed'] else 'OPEN'}; left held. All components happen together. Public five-step robot-only path passed; current RGB corridor is independently judged. Judge current RGB and the available variant-specific evidence; this target is a robot pose, not object/contact truth.")
         unary_program = None
+        program_choice_map = None
         if os.environ.get('ROBODOJO_PICKUP_SINGLE_PROGRAM')=='1':
             unary_program, program_targets, program_diagnostics, progress_scores = propose_program(
                 obs, targets, material, green_plane, table, record['stage'])
@@ -1295,6 +1297,17 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                      'geometry_too_uncertain_for_this_stage':'The supplied camera-derived uncertainty is insufficient for this specific stage/program, not merely unknown future contact.',
                      'no_incremental_stage_progress':'This exact program does not plausibly advance the current short-stage objective.'})]
             record['proposed_complete_program']=unary_program
+            if os.environ.get('ROBODOJO_PICKUP_PROGRAM_PAIR') == '1':
+                pair = build_program_pair(model_input,obs,unary_program,targets,
+                                          progress_scores,program_diagnostics)
+                if pair is not None:
+                    model_input, program_choice_map = pair
+                    questions = [questions[0], choice('full_program_decision',
+                        'Compare the TWO mutually exclusive COMPLETE five-step programs against CURRENT RGB and stage evidence. Choose exactly one supported incremental program or STOP if neither is supported. Never combine components; unknown future grasp is not evidence against every open-hand approach. Preserve uncertainty and reject visible contradictions or an unsupported short corridor.',
+                        {'execute_program_a':'Execute only full program A once, then reobserve.',
+                         'execute_program_b':'Execute only full program B once, then reobserve.',
+                         'stop_program_unsupported':'Execute neither; current evidence supports neither complete program.'})]
+                    record['complete_program_choice_map'] = program_choice_map
         try:
             answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
                                  f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",
@@ -1309,9 +1322,12 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             break
         selected = (unary_program if answer.get('full_program_decision')=='execute_this_complete_program'
                     else 'stop_program_unsupported') if unary_program else answer.get("pickup_action", "ignored_no_motion")
+        if program_choice_map is not None:
+            selected = program_choice_map.get(answer.get('full_program_decision'),
+                                               'stop_program_unsupported')
         if unary_program:
             record['luna_program_decision']=answer['full_program_decision']
-            record['luna_program_evidence_assessment']=answer['program_evidence_assessment']
+            record['luna_program_evidence_assessment']=answer.get('program_evidence_assessment')
         if unary_program is None and family_options is not None:
             family = answer["action_family"]
             record["luna_action_family"] = family

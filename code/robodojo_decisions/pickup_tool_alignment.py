@@ -6,6 +6,7 @@ The horizontal source-plane assumption remains explicitly uncertain.
 from __future__ import annotations
 
 import numpy as np
+import os
 from scipy.spatial.transform import Rotation
 
 from camera_geometry import eef_transform, gripper_height_above_landmark
@@ -53,7 +54,8 @@ def build(observation: dict, green_plane: dict | None, table: dict | None):
         reference_kind = 'UNKNOWN source/table height: no numerical scene-clearance claim; mandatory current RGB whole-hand review'
         margin = None
     options, targets = {}, {}
-    for size in (.10, .20, .30):
+    sizes = (.05, .10, .20, .30) if os.environ.get('ROBODOJO_PICKUP_PROGRAM_PAIR') == '1' else (.10, .20, .30)
+    for size in sizes:
         size = min(size, angle)
         rotated = Rotation.from_rotvec(rotation_axis*size).as_matrix() @ current[:3, :3]
         target = _targets(observation, 'x', 1, 0.0)
