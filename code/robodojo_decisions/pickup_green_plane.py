@@ -6,7 +6,7 @@ from pickup_visual_hull import _green_mask, _project_many
 from pickup_temporal_stereo import _high_static_check
 
 
-def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow_coarse_occlusion=False):
+def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow_coarse_occlusion=False, wrist_fit_region=None):
     if not 5 <= max_pixel_p95_mm <= 10 or not .020 <= max_halfwidth_m <= .035:
         raise ValueError("Invalid declared approach-only sensitivity allowance")
     cal = obs['camera_calibration']
@@ -17,6 +17,13 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
     wrist = _green_mask(paths['cam_right_wrist'], 'cam_right_wrist')
     if high.sum() < 80 or wrist.sum() < 100:
         raise ValueError('Insufficient green pixels for plane fit')
+    fit_region = np.ones(wrist.shape, dtype=bool)
+    if wrist_fit_region is not None:
+        x0,y0,x1,y1 = wrist_fit_region
+        yy,xx = np.indices(wrist.shape)
+        fit_region = (xx>=x0)&(xx<=x1)&(yy>=y0)&(yy<=y1)
+        if (wrist & fit_region).sum()<500:
+            raise ValueError('Insufficient CURRENT green material in public-finger fit region')
     source_label = 'high'
     static_check = None
     coarse_occlusion = False
@@ -89,9 +96,11 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
         for z, transform in zip(heights, transforms):
             warped = cv2.warpPerspective(a.astype(np.uint8), transform, (640, 480),
                                          flags=cv2.INTER_NEAREST).astype(bool)
-            overlap = int((warped & b).sum())
-            rows.append((float(z), overlap/max(1, int((warped | b).sum())),
-                         overlap/max(1, int(b.sum())), overlap/max(1, int(warped.sum()))))
+            observed = b & fit_region
+            warped &= fit_region
+            overlap = int((warped & observed).sum())
+            rows.append((float(z), overlap/max(1, int((warped | observed).sum())),
+                         overlap/max(1, int(observed.sum())), overlap/max(1, int(warped.sum()))))
         return rows
 
     nominal = curve(high, wrist)
@@ -116,7 +125,8 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
     if halfwidth > max_halfwidth_m:
         raise ValueError('Fit cannot narrow original 20mm height hypothesis')
     contact_precision = bool(not coarse_occlusion and round(p95, 9) <= .005 and halfwidth <= .020)
-    return {'coarse_occlusion_hypothesis': coarse_occlusion,
+    return {'current_public_finger_wrist_fit_region_xyxy': wrist_fit_region,
+            'coarse_occlusion_hypothesis': coarse_occlusion,
             'contact_precision_eligible': contact_precision,
             'geometry_scope': 'strict_5mm_pixel_gate_hypothesis' if contact_precision else 'COARSE_DIRECTIONAL_APPROACH_ONLY: no CLOSE or contact-approach candidate',
             'declared_pixel_sensitivity_limit_mm': max_pixel_p95_mm,
