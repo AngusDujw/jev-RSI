@@ -34,6 +34,24 @@ from pickup_table_plane import build as build_table_plane, revalidate as revalid
 from robot_path_preview import preview
 
 
+def _tracking_limit(obs: dict, record: dict, target: dict) -> float:
+    """Coarse open lateral moves use measured feedback; contact keeps 2 mm."""
+    if os.environ.get("ROBODOJO_PICKUP_COARSE_TRACKING_5MM") != "1":
+        return 0.002
+    if record.get("stage") != "coarse_directional_alignment_review":
+        return 0.002
+    right = target["right"]
+    current = obs["current_eef"]["right"]
+    delta = np.asarray(right["position"]) - np.asarray(current["position"])
+    rotation = eef_transform(right)[:3, :3] @ eef_transform(current)[:3, :3].T
+    if (right.get("gripper_closed", False) or
+            float(current["gripper_opening_command"]) < .95 or
+            abs(float(delta[2])) > .003 or
+            Rotation.from_matrix(rotation).magnitude() > .001):
+        return 0.002
+    return 0.005
+
+
 def _rotation_target(obs: dict, angle: float, axis: str = "x") -> dict:
     target = _targets(obs, "x", 1, 0.0)
     link = eef_transform(obs["current_eef"]["right"])
@@ -1266,6 +1284,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             native_result = tools.finish(status)
             break
         target = targets[selected]
+        tracking_limit = _tracking_limit(obs, record, target)
+        record["actual_position_tracking_limit_m"] = tracking_limit
         first = tools._rpc("eef_joint_target", targets=target)
         if first.get("physical_steps") != 0 or len(first.get("action", [])) != 14:
             raise ValueError("Native first IK is no longer read-only")
@@ -1299,7 +1319,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         if selected.startswith("rotate_"):
             rotations += 1
         obs = after
-        if error > 0.002:
+        if error > tracking_limit:
             status = "robot_tracking_incomplete"
             record["status"] = status
             native_result = tools.finish(status)
