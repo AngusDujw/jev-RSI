@@ -25,6 +25,10 @@ SIGNS = {'negative': -1, 'hold': 0, 'positive': 1}
 
 
 def rows(path):
+    # A transport failure before the first executed action leaves no branch
+    # file; retain the unanswered request in the audit instead of crashing.
+    if not path.exists():
+        return []
     return [json.loads(line) for line in path.read_text().splitlines() if line]
 
 
