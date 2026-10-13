@@ -44,7 +44,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    rim_height_mode='top_overlap', rim_tilt_deg=0, rim_axis='short',
                    rim_inset_mm=0,
                    drawer_preorient=False, drawer_clear_to_source=False,
-                   empty_hand_fast=False):
+                   empty_hand_fast=False, support_stall_release=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -70,6 +70,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
         cmd += ['--jev-supervisor', '--schema', 'focused']
         if task_id == 1423:
             cmd += ['--placement-height-mode', 'occlusion_guarded_bottom']
+            if support_stall_release:
+                cmd += ['--support-stall-release']
             cmd += ['--grasp-profile', grasp_profile,
                     '--approach-mode', approach_mode,
                     '--entry-side', entry_side]
@@ -133,6 +135,7 @@ def main():
     p.add_argument('--drawer-preorient', action='store_true')
     p.add_argument('--drawer-clear-to-source', action='store_true')
     p.add_argument('--empty-hand-fast', action='store_true')
+    p.add_argument('--support-stall-release', action='store_true')
     p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0)
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
@@ -186,6 +189,8 @@ def main():
         p.error('Drawer clear-to-source requires Goal 1202')
     if a.empty_hand_fast and a.task_id != 1202:
         p.error('Empty-hand fast profile requires Goal 1202')
+    if a.support_stall_release and a.task_id != 1423:
+        p.error('Guarded support release trial currently requires Goal 1423')
     if a.plate_stage_turn_deg and a.task_id != 1296:
         p.error('Alternative plate stage is currently evaluated only for Goal 1296')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
@@ -194,7 +199,7 @@ def main():
                          a.side_pad_overlap_mm,a.rim_height_mode,a.rim_tilt_deg,a.rim_axis,
                          a.rim_inset_mm,
                          a.drawer_preorient,a.drawer_clear_to_source,
-                         a.empty_hand_fast)
+                         a.empty_hand_fast,a.support_stall_release)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -283,6 +288,7 @@ def main():
                     side_pad_overlap_mm=a.side_pad_overlap_mm,
                     drawer_contact_mode=a.drawer_contact_mode,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
+                    support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',

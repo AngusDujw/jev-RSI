@@ -47,6 +47,19 @@ class DecisionModel(Jev):
                 'does not justify the trial. Reobserve only if available.')
             questions['transition']['criteria']['advance']=(
                 'Enter grasp for one test closure using measured pad proximity')
+        if (state['stage']=='lower' and
+                state.get('measurement_status',{}).get('support_stall_release_candidate')):
+            questions['transition']['instructions']=(
+                'You own the phase edge. The held object is visibly over a support '
+                'surface, the conservative visible footprint fits the receiver, '
+                'and repeated closed-gripper lowering commands have produced no '
+                'TCP motion. The measured visible-bottom gap is bounded but target '
+                'arrival is false. You may choose advance for one guarded release '
+                'trial; keep the gripper closed for this lower decision, then decide '
+                'opening in the release phase. This is a drop candidate, not proof '
+                'of placement or official success. You may instead continue or stop.')
+            questions['transition']['criteria']['advance']=(
+                'Enter release for one visible-support drop trial despite blocked lowering')
         payload=dict(model=self.api.cfg['model'],state=state,questions=questions)
         dump(folder/'request.json',payload)
         row=dict(decision_id=f'decision-{i:04d}',stage=state['stage'],observation=state,prompt_version='supervisor-'+self.rec.cfg['schema'],request_sha256=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest())
@@ -313,6 +326,29 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 if stage=='lower' and rec.cfg.get('placement_height_mode')=='occlusion_guarded_bottom':
                     state['measurement_status']['estimated_guarded_bottom_to_receiver_mm']=float(
                         (position[2]+holding['guarded_low_tcp_offset_m']-dst['high'][2])*1000)
+                if stage=='lower' and rec.cfg.get('support_stall_release'):
+                    candidate=False;overlap=0.;visible_gap=float('inf');guarded_gap=float('inf')
+                    if holding.get('valid') and 'measured' in holding and sem['destination'].get('receiver_kind')=='support_surface':
+                        h=holding['measured']
+                        center=np.asarray(h['center'])[:2]
+                        half=np.maximum((np.asarray(h['high'])-np.asarray(h['low']))[:2],
+                                        initial_source_extent[:2])*.5
+                        low=center-half;high=center+half
+                        intersection=np.maximum(0.,np.minimum(high,dst['high'][:2])-
+                                                np.maximum(low,dst['low'][:2]))
+                        overlap=float(np.prod(intersection)/max(np.prod(high-low),1e-9))
+                        visible_gap=float((position[2]+holding['visible_low_tcp_offset_m']-dst['high'][2])*1000)
+                        guarded_gap=float((position[2]+holding['guarded_low_tcp_offset_m']-dst['high'][2])*1000)
+                        candidate=bool(stalls>=3 and gripper_ticks>=16 and
+                                       ticks-(holding.get('observed_tick') or -1000)<=30 and
+                                       overlap>=.8 and 0<guarded_gap<=100 and
+                                       0<visible_gap<=120)
+                    state['measurement_status'].update(
+                        support_stall_release_candidate=candidate,
+                        visible_footprint_overlap_ratio=round(overlap,3),
+                        estimated_visible_bottom_to_receiver_mm=round(visible_gap,2) if np.isfinite(visible_gap) else None,
+                        estimated_guarded_bottom_to_receiver_mm=round(guarded_gap,2) if np.isfinite(guarded_gap) else None,
+                        support_candidate_observed_tick=holding.get('observed_tick'))
                 state['decision_protocol']='At lift while still far from lift target, holding check not_checked_yet is normal: keep closed and move, not a failure. Reobserve only after at least 3 stalled actions or an actual failed visual check; do not reobserve because a future check is pending. Never request reobserve when unavailable. At grasp/release continue chosen close/open until the phase contract duration and aperture requirements are met. Advance is your choice when the current phase contract is met.'
                 state.update(error_mm=np.round(error*1000,2).tolist(),axis_relations={a:('within tolerance' if abs(e)<.004 else 'target higher coordinate' if e>0 else 'target lower coordinate') for a,e in zip('xyz',error)},
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
