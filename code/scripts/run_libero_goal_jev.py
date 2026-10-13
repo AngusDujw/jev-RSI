@@ -44,7 +44,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    rim_height_mode='top_overlap', rim_tilt_deg=0, rim_axis='short',
                    rim_inset_mm=0,
                    drawer_preorient=False, drawer_high_side_insert=False,
-                   drawer_far_side_insert=False,
+                   drawer_far_side_insert=False, drawer_table_clearance=False,
                    drawer_clear_to_source=False,
                    empty_hand_fast=False, support_stall_release=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
@@ -94,6 +94,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--drawer-high-side-insert']
         if drawer_far_side_insert and task_id == 1098:
             cmd += ['--drawer-far-side-insert']
+        if drawer_table_clearance and task_id == 1098:
+            cmd += ['--drawer-table-clearance']
         if task_id == 1202:
             cmd += ['--drawer-bowl-continuation', '--local-goal-vision',
                     '--geometry-profile', 'observed_surfaces',
@@ -145,6 +147,8 @@ def main():
     p.add_argument('--drawer-high-side-insert', action='store_true')
     p.add_argument('--drawer-far-side-insert', action='store_true',
                    help='Goal1098 high thin hook from opposite visible cabinet edge')
+    p.add_argument('--drawer-table-clearance', action='store_true',
+                   help='Guard own full hand above public tabletop on near-side route')
     p.add_argument('--drawer-clear-to-source', action='store_true')
     p.add_argument('--empty-hand-fast', action='store_true')
     p.add_argument('--support-stall-release', action='store_true')
@@ -203,6 +207,8 @@ def main():
         p.error('High side insertion requires Goal1098 thin hook and preorientation')
     if a.drawer_far_side_insert and not a.drawer_high_side_insert:
         p.error('Far side insertion requires high side insertion')
+    if a.drawer_table_clearance and not a.drawer_high_side_insert:
+        p.error('Table clearance requires high side insertion')
     if a.drawer_clear_to_source and a.task_id != 1202:
         p.error('Drawer clear-to-source requires Goal 1202')
     if a.empty_hand_fast and a.task_id != 1202:
@@ -217,6 +223,7 @@ def main():
                          a.side_pad_overlap_mm,a.rim_height_mode,a.rim_tilt_deg,a.rim_axis,
                          a.rim_inset_mm,
                          a.drawer_preorient,a.drawer_high_side_insert,a.drawer_far_side_insert,
+                         a.drawer_table_clearance,
                          a.drawer_clear_to_source,
                          a.empty_hand_fast,a.support_stall_release)
     if a.dry_run:
@@ -307,6 +314,7 @@ def main():
                     side_pad_overlap_mm=a.side_pad_overlap_mm,
                     drawer_contact_mode=a.drawer_contact_mode,
                     drawer_far_side_insert=a.drawer_far_side_insert,
+                    drawer_table_clearance=a.drawer_table_clearance,
                     drawer_high_side_insert=a.drawer_high_side_insert,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     support_stall_release=a.support_stall_release,

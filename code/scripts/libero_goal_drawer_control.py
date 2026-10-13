@@ -126,6 +126,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     thin_side_entry = contact_mode == 'cabinet_side_thin_hook'
     high_side_insert = bool(thin_side_entry and rec.cfg.get('drawer_high_side_insert'))
     far_side_insert = bool(high_side_insert and rec.cfg.get('drawer_far_side_insert'))
+    table_guard = bool(far_side_insert or rec.cfg.get('drawer_table_clearance'))
     max_native_ticks = 580 if far_side_insert else 550
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
@@ -331,7 +332,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             initial_k, initial_t, front_plane, handle)
             if cabinet_side_entry else None)
         table_support = (visible_tabletop_height(initial_depth, initial_k, initial_t)
-                         if far_side_insert else None)
+                         if table_guard else None)
         if cabinet_side is not None:
             dump(rec.folder/'visible-cabinet-near-side.json', cabinet_side)
         if table_support is not None:
@@ -414,7 +415,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     if pad_entry_z-lower_z <= pad_half_height+.010:
                         raise RuntimeError('Visible handle gap too narrow for raised own pad')
                     under_tcp[2] = pad_entry_z-float(contact_offset[2])
-                    if far_side_insert:
+                    if table_guard:
                         # The old low-side hand would penetrate the visible
                         # tabletop by ~2 mm on init4. Guard the entire own
                         # hand, not merely the selected fingerpad.
