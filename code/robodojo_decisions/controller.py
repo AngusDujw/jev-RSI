@@ -435,7 +435,9 @@ class DecisionClient:
             raise ValueError("Key file does not contain an OpenAI API key")
         meta = {"record_name": record_name, "step_id": obs["step_id"], "model": MODEL,
                 "input_text": content[0]["text"], "images": image_info,
-                "question_names": [q["name"] for q in payload["questions"]]}
+                "question_names": [q["name"] for q in payload["questions"]],
+                "questions": payload["questions"],
+                "request_schema": "full_question_audit_v2"}
         self.output.mkdir(parents=True, exist_ok=True)
         started = time.monotonic()
         request = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode(),

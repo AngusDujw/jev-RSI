@@ -93,6 +93,11 @@ def _plan_refresh(obs: dict, hull: dict, output: Path, experience: Path,
                   temporal: dict | None = None,
                   historical_obs: dict | None = None) -> dict:
     step = obs["step_id"]
+    gateway_failure = output / "planner_gateway_unavailable_episode.txt"
+    if gateway_failure.exists():
+        raise RuntimeError(
+            "Earlier GPT-6.1 Sol high gateway refresh failed in this episode: " +
+            gateway_failure.read_text().strip())
     evidence_file = output / f"planner_sensor_geometry_step_{step:03d}.json"
     evidence = {"current_rgb_visual_hull": hull}
     if temporal is not None:
@@ -114,12 +119,20 @@ def _plan_refresh(obs: dict, hull: dict, output: Path, experience: Path,
         command.extend([
             "--previous-observation", historical_obs["observation_path"],
             "--previous-calibration", str(output / f"camera_calibration_step_{historical_obs['step_id']:03d}.json")])
-    completed = subprocess.run(command, text=True, capture_output=True,
-                               timeout=120, check=False)
+    try:
+        completed = subprocess.run(command, text=True, capture_output=True,
+                                   timeout=120, check=False)
+    except subprocess.TimeoutExpired:
+        gateway_failure.write_text(f"step={step} timeout=120s\n")
+        raise
     (output / f"planner_refresh_step_{step:03d}.log").write_text(
         completed.stdout + "\n" + completed.stderr)
     if completed.returncode:
-        raise RuntimeError(f"Pro method refresh failed at step {step}: {completed.returncode}")
+        gateway_failure.write_text(
+            f"step={step} returncode={completed.returncode}\n")
+        raise RuntimeError(
+            f"GPT-6.1 Sol high gateway method refresh failed at step {step}: "
+            f"{completed.returncode}")
     plan = json.loads((directory / "plan.json").read_text())
     if not plan.get("method_only") or plan["task"] != obs["task"]:
         raise ValueError("Refreshed plan violates method-only task contract")
