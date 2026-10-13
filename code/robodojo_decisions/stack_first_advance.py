@@ -195,7 +195,10 @@ def run_probe(tools, obs: dict, model, plan: dict, output: Path,
                     initial_calibration, initial_eef)
                 trace["followup"] = second
                 trace["status"] = second["status"]
-                decisions = 1 + int("action" in second)
+                decisions = 1 + int("action" in second) + int(
+                    "next_view" in second and "action" in second["next_view"]) + int(
+                    "next_view" in second and "pad_advance" in second["next_view"] and
+                    "action" in second["next_view"]["pad_advance"])
             else:
                 result = after.get("result") if after["rollout_finished"] else tools.finish(
                     trace["status"])
@@ -204,7 +207,12 @@ def run_probe(tools, obs: dict, model, plan: dict, output: Path,
         json.dumps(trace, ensure_ascii=False, indent=2))
     return {"status": trace["status"], "decisions": decisions,
             "visual_queries": int("luna_choice" in trace) +
-            int("followup" in trace and "luna_choice" in trace["followup"]),
+            int("followup" in trace and "luna_choice" in trace["followup"]) +
+            int("followup" in trace and "next_view" in trace["followup"] and
+                "luna_choice" in trace["followup"]["next_view"]) +
+            int("followup" in trace and "next_view" in trace["followup"] and
+                "pad_advance" in trace["followup"]["next_view"] and
+                "luna_choice" in trace["followup"]["next_view"]["pad_advance"]),
             "native_result": result,
             "trace": str(output / "stack_first_advance_trace.json")}
 
@@ -359,5 +367,12 @@ def _run_side_up_followup(tools, obs: dict, model, review: dict,
                    if translation_error <= 0.002 and rotation_error <= 0.01
                    else "side_up_tracking_incomplete"),
     })
+    if "next_review" in review and trace["status"] == "side_up_sense_incomplete":
+        from stack_distinct_view import run_view
+        third, result = run_view(tools, after, model, review["next_review"],
+                                 output, initial_calibration, initial_eef)
+        trace["next_view"] = third
+        trace["status"] = third["status"]
+        return trace, result
     return trace, after.get("result") if after["rollout_finished"] else tools.finish(
         trace["status"])

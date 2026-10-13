@@ -100,6 +100,7 @@ def preview(observation: dict, target: dict, native_first_joint_action: list[flo
         if index == 0 and first_native is not None:
             first_agreement = float(np.max(np.abs(next_q - first_native)))
         eef = right_root @ fk.matrix(next_q)
+        eef_xyzw = Rotation.from_matrix(eef[:3, :3]).as_quat()
         translation_error = float(np.linalg.norm(
             desired[:3, 3] - eef[:3, 3]))
         rotation_error = float(Rotation.from_matrix(
@@ -114,6 +115,8 @@ def preview(observation: dict, target: dict, native_first_joint_action: list[flo
         joint_margin = float(np.min(np.minimum(
             next_q - limits[:, 0], limits[:, 1] - next_q)))
         rows.append({"step": index + 1,
+                     "predicted_link6_position_m": eef[:3, 3].tolist(),
+                     "predicted_link6_quaternion_wxyz": eef_xyzw[[3, 0, 1, 2]].tolist(),
                      "max_joint_delta_rad": float(np.max(np.abs(next_q - q_right))),
                      "predicted_link6_translation_residual_m": translation_error,
                      "predicted_link6_rotation_residual_rad": rotation_error,

@@ -13,6 +13,14 @@ class SyncedLauncher(_AppLauncher):
         super().__init__(*args, **kwargs)
         from omni.kit.material.library import material_library
 
+        if (os.environ.get("ROBODOJO_TASK") == "fold_clothes" and
+                os.environ.get("ROBODOJO_FOLD_CPU_USD_SYNC_AUDIT") == "1"):
+            import carb
+
+            settings = carb.settings.get_settings()
+            settings.set_bool("/physics/updateToUsd", True)
+            settings.set_bool("/physics/updateParticlesToUsd", True)
+
         cache = Path(os.environ["ROBODOJO_DECISION_CACHE"]) / "kit_material"
         cache.mkdir(parents=True, exist_ok=True)
         if material_library.material_instance is not None:
@@ -112,7 +120,7 @@ def _install_public_wrist_mount_sync():
         return value
 
     def synced_get_obs(self, env_idx_list=None):
-        if os.environ.get("ROBODOJO_TASK") == "press_by_number":
+        if os.environ.get("ROBODOJO_TASK") in ("press_by_number", "fold_clothes"):
             camera_manager = self.camera_manager
             robot_manager = self.robot_manager
             if camera_manager is not None and robot_manager is not None:

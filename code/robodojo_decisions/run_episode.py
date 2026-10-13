@@ -179,14 +179,49 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
             result.update(run_bowl_view_sequence(tools, obs, model, plan, output,
                                                   initial_camera_calibration, initial_eef))
             return result
-        if controller_version in ("v1_stack_first_advance", "v1_stack_side_sequence"):
-            expected = 2 if controller_version == "v1_stack_side_sequence" else 1
+        if controller_version in ("v1_stack_first_advance", "v1_stack_side_sequence", "v1_stack_three_view", "v1_stack_four_view"):
+            expected = {"v1_stack_first_advance": 1,
+                        "v1_stack_side_sequence": 2,
+                        "v1_stack_three_view": 3,
+                        "v1_stack_four_view": 4}[controller_version]
             if initial_camera_calibration is None or max_decisions != expected:
                 raise ValueError("Stack sequence requires calibration and exact decision budget")
-            if ("followup_plan" in plan) != (expected == 2):
+            if ("followup_plan" in plan) != (expected >= 2):
                 raise ValueError("Stack followup plan and controller mismatch")
+            if expected == 3 and "next_review" not in plan["followup_plan"]:
+                raise ValueError("Third stack view requires a fresh step-ten Pro review")
+            if expected == 4 and "next_review" not in plan["followup_plan"].get("next_review", {}):
+                raise ValueError("Fourth stack view requires a fresh step-fifteen Pro review")
             from stack_first_advance import run_probe as run_stack_first_advance
             result.update(run_stack_first_advance(
+                tools, obs, model, plan, output,
+                initial_camera_calibration, initial_eef))
+            return result
+        if controller_version == "v1_fold_cuff_view":
+            if initial_camera_calibration is None or max_decisions != 1:
+                raise ValueError("Fold cuff view requires calibration and one decision")
+            from fold_cuff_view import run_view as run_fold_cuff_view
+            result.update(run_fold_cuff_view(
+                tools, obs, model, plan, output,
+                initial_camera_calibration, initial_eef))
+            return result
+        if controller_version == "v1_fold_synced_view":
+            if initial_camera_calibration is None or max_decisions != 1:
+                raise ValueError("Synchronized fold view requires calibration and one decision")
+            if os.environ.get("ROBODOJO_FOLD_CPU_USD_SYNC_AUDIT") != "1":
+                raise ValueError("Synchronized fold view requires CPU/USD cloth and robot updates")
+            from fold_synced_view import run_view as run_fold_synced_view
+            result.update(run_fold_synced_view(
+                tools, obs, model, plan, output,
+                initial_camera_calibration, initial_eef))
+            return result
+        if controller_version == "v1_fold_synced_two_view":
+            if initial_camera_calibration is None or max_decisions != 2:
+                raise ValueError("Two synchronized fold views require calibration and two decisions")
+            if os.environ.get("ROBODOJO_FOLD_CPU_USD_SYNC_AUDIT") != "1":
+                raise ValueError("Two synchronized fold views require CPU/USD cloth and robot updates")
+            from fold_synced_sequence import run_two_view
+            result.update(run_two_view(
                 tools, obs, model, plan, output,
                 initial_camera_calibration, initial_eef))
             return result
@@ -439,7 +474,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_stack_first_advance", "v1_stack_side_sequence", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v1", "v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_stack_first_advance", "v1_stack_side_sequence", "v1_stack_three_view", "v1_stack_four_view", "v1_fold_cuff_view", "v1_fold_synced_view", "v1_fold_synced_two_view", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -450,8 +485,14 @@ def main() -> None:
         parser.error("v5_probe_y is a stack_blocks layout-0 calibration pilot")
     if args.controller in ("v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view", "v1_button_view", "v1_button_sequence") and (args.task != "press_by_number" or args.layout != 0):
         parser.error("Button view controllers are press_by_number layout-0 pilots")
-    if args.controller in ("v1_stack_first_advance", "v1_stack_side_sequence") and (args.task != "stack_blocks" or args.layout != 0):
+    if args.controller in ("v1_stack_first_advance", "v1_stack_side_sequence", "v1_stack_three_view", "v1_stack_four_view") and (args.task != "stack_blocks" or args.layout != 0):
         parser.error("First stack advance is a stack_blocks layout-0 pilot")
+    if args.controller == "v1_fold_cuff_view" and (args.task != "fold_clothes" or args.layout != 0):
+        parser.error("First cuff view is a fold_clothes layout-0 pilot")
+    if args.controller == "v1_fold_synced_view" and (args.task != "fold_clothes" or args.layout != 0):
+        parser.error("Synchronized cuff view is a fold_clothes layout-0 pilot")
+    if args.controller == "v1_fold_synced_two_view" and (args.task != "fold_clothes" or args.layout != 0):
+        parser.error("Two synchronized cuff views are a fold_clothes layout-0 pilot")
     if args.controller in ("v1_push_preapproach", "v1_push_followup") and (args.task != "push_T" or args.layout != 0):
         parser.error("Push controllers are push_T layout-0 pilots")
     if args.controller in ("v1_bowl_view", "v1_bowl_view_sequence") and (args.task != "stack_bowls" or args.layout != 0):

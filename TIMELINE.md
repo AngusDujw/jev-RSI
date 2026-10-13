@@ -154,6 +154,8 @@ graph LR
     T_2026W42_046["📊 robodojo-decision-stages<br/>按钮CPU非Fabric腕相机旧图静止；用…"]:::experiment
     T_2026W42_047["📊 robodojo-decision-stages<br/>按钮GPU Fabric恢复物理与渲染同步…"]:::experiment
     T_2026W42_048["📊 robodojo-decision-stages<br/>按钮第三视角真实15步后Pro仍只准STO…"]:::experiment
+    T_2026W42_049["📊 robodojo-sensor-sync<br/>fold_clothes CPU Phys…"]:::experiment
+    T_2026W42_050["📊 robodojo-decision-stages<br/>同图双段回放Luna否决首段；中途Pro刷…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -269,6 +271,7 @@ graph LR
   T_2026W42_045 --> T_2026W42_046
   T_2026W42_046 --> T_2026W42_047
   T_2026W42_047 --> T_2026W42_048
+  T_2026W42_048 --> T_2026W42_050
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -411,6 +414,8 @@ graph LR
 | `T-2026W42-046` | 2026-10-13 | experiment | robodojo-decision-stages | 按钮CPU非Fabric腕相机旧图静止；用实测LINK6同步公开挂载后同动作卡角位移0→31px且吻合K/T | `EXP-2026W42-105` | - |
 | `T-2026W42-047` | 2026-10-13 | experiment | robodojo-decision-stages | 按钮GPU Fabric恢复物理与渲染同步，双视点原生10步可见机器人运动；第三后撤候选五步路径2.061mm越门未执行，下一步按数值重选或转首物体操作 | `EXP-2026W42-114` | - |
 | `T-2026W42-048` | 2026-10-13 | experiment | robodojo-decision-stages | 按钮第三视角真实15步后Pro仍只准STOP：红帽/底座/工具关系不可见，停止同类取景并转高优先级首物体操作 | `EXP-2026W42-116` | - |
+| `T-2026W42-049` | 2026-10-13 | experiment | robodojo-sensor-sync | fold_clothes CPU PhysX→USD同步让机器人/腕相机/粒子衣物新RGB共同更新；旧冻结袖口注释作废，原生成功仍0 | `EXP-2026W42-125` | - |
+| `T-2026W42-050` | 2026-10-13 | experiment | robodojo-decision-stages | 同图双段回放Luna否决首段；中途Pro刷新优于终止后重采样 | `EXP-2026W42-130` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
