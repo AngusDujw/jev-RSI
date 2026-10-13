@@ -651,13 +651,17 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             green_plane_errors.append(f"current_high_right: {error}")
         for reference in sorted(temporal_references.values(),
                                 key=lambda row: row['step_id']):
-            if green_plane is not None:
+            if green_plane is not None and green_plane.get('contact_precision_eligible', False):
                 break
             if obs['step_id'] - reference['step_id'] < 20:
                 continue
             try:
-                green_plane = build_green_plane(obs, reference, max_pixel_p95_mm=10, max_halfwidth_m=.035)
-                break
+                alternative = build_green_plane(obs, reference, max_pixel_p95_mm=10, max_halfwidth_m=.035)
+                if (green_plane is None or alternative['contact_precision_eligible'] or
+                        alternative['declared_green_height_halfwidth_m'] < green_plane['declared_green_height_halfwidth_m']):
+                    green_plane = alternative
+                if green_plane['contact_precision_eligible']:
+                    break
             except ValueError as error:
                 green_plane_errors.append(f"ref{reference['step_id']}: {error}")
         material = None
