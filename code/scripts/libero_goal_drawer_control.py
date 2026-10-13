@@ -111,6 +111,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     initial_extension_pixels = 0
     clear_target = None
     clear_start = None
+    clear_source_x = None
     blocked_contact_blocks = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
@@ -203,7 +204,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         return image, depth, k_fn(env.sim, cam, 768, 768), t_fn(env.sim, cam)
 
     def visible_source_x_for_clearance():
-        """Locate the public source while the empty hand exits the drawer."""
+        """Locate the public source before drawer motion can occlude it."""
         from libero_generic_vision import GenericVision
         from libero_goal_local_vision import SOURCE_LABEL, pick_visible
         folder = rec.folder/'clear-source-vision'
@@ -268,6 +269,18 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             initial_rgb, initial_depth, initial_k, initial_t, handle)['candidate_pixels']
         dump(rec.folder/'selected-handle.json', dict(
             initial_handle, public_requested_level=requested_level))
+        if task_id == 1202 and rec.cfg.get('drawer_clear_to_source'):
+            try:
+                clear_source_x = visible_source_x_for_clearance()
+                if not np.isfinite(clear_source_x) or \
+                        abs(clear_source_x-initial_robot_x) > .35:
+                    raise RuntimeError('Visible source X is outside own bounded reach')
+                rec.event(dict(kind='initial_public_source_for_clearance',
+                    visible_source_x_world_m=clear_source_x,
+                    source='Initial unobstructed agentview RGB-D + public noun'))
+            except (RuntimeError, OSError, ValueError) as exc:
+                rec.event(dict(kind='clear_to_source_unavailable',
+                    reason=str(exc)))
         while phase < len(sequence):
             rec.check_budget()
             if ticks >= 550 or stage_ticks >= 145:
@@ -334,15 +347,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 if clear_target is None:
                     clear_start = position.copy()
                     clear_target = position + np.array([0., .14, .15])
-                    if task_id == 1202 and rec.cfg.get('drawer_clear_to_source'):
-                        try:
-                            clear_target[0] = visible_source_x_for_clearance()
-                            rec.event(dict(kind='clear_to_public_source',
-                                target_tcp_world_m=clear_target.tolist(),
-                                source='fresh agentview RGB-D + public noun + own TCP'))
-                        except RuntimeError as exc:
-                            rec.event(dict(kind='clear_to_source_unavailable',
-                                reason=str(exc)))
+                    if clear_source_x is not None:
+                        clear_target[0] = clear_source_x
+                        rec.event(dict(kind='clear_to_public_source',
+                            target_tcp_world_m=clear_target.tolist(),
+                            source='initial public RGB-D source X + current own TCP'))
                 target = clear_target.copy()
                 if (rec.cfg.get('drawer_clear_to_source') and
                         (position[1] < clear_start[1]+.045 or
@@ -554,7 +563,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     request['state']['stage_contract'] += (
                         ' First leave the visible drawer mouth outward and up '
                         'by 45 mm while holding X; then move X toward the '
-                        'fresh publicly detected source during clearance.')
+                        'initial publicly detected source during clearance.')
             decision = model.decide(request, stage['id'])
             edge = decision['transition']
             if edge == 'stop':
