@@ -64,7 +64,7 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
     memory = {'global.md':full_experience['global.md'],
               'general_pickup.md':'\n'.join(selected)}
     (directory/'selected-task-experience.md').write_text(memory['general_pickup.md'])
-    retain = ('task','instruction','step_id','current_stage','measured_eef',
+    retain = ('task','instruction','step_id','current_stage','current_phase_goal','measured_eef',
               'measured_joint_state','source_control_feature',
               'source_feature_after_each_complete_action','source_error_interpretation',
               'remaining_native_physical_steps','native_episode_physical_step_limit',

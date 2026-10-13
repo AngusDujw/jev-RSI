@@ -967,6 +967,12 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             options.update(alignment_options)
             targets.update(alignment_targets)
             record["public_tool_orientation_evidence"] = tool_alignment
+            if (alignment_targets and tool_alignment.get('finger_extension_vs_downward_normal_angle_deg',0) > 30):
+                record['stage'] = 'tool_axis_alignment_review'
+                record['current_phase_goal'] = (
+                    'Review the large public finger-extension / assumed horizontal-source-normal angular mismatch. '
+                    'Current opposing finger faces must be able to reach actual solid material while the whole hand remains clear; '
+                    'compare complete pose angular and XYZ effects in fresh RGB. This is a current controller geometry-review hypothesis, not a new planner call or verified object normal.')
             if alignment_targets:
                 instruction += (
                     " Additional complete pose alternatives test finger-extension "
@@ -1087,6 +1093,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "public_tool_orientation_evidence": tool_alignment,
             "source_error_interpretation": "Whole-material quantiles include object extent. The named RGB-supported point has separate same-pixel height hypotheses and a nearest-opposing-public-surface midpoint residual; use it as uncertain grasp-region alignment context, not true pose/contact or planner action advice.",
             "step_id": obs["step_id"], "current_stage": record["stage"],
+            "current_phase_goal": record.get("current_phase_goal"),
             "measured_eef": obs["current_eef"],
             "measured_joint_state": obs["current_state"],
             "sensor_derived_geometry": hull,
