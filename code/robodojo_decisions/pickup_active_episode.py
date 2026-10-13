@@ -1080,8 +1080,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             break
         motion_options = {key:description for key,description in options.items()
                           if key in targets and key != special_key}
-        if len(motion_options) == 1:
-            motion_options['stop_decline_only_motion'] = 'The sole complete motion cannot be visually supported; do not execute it.'
+        if motion_options:
+            motion_options['stop_no_progress_candidate'] = 'None of the offered complete motions is a plausible progress candidate from current RGB and the uncertain XYZ/angle effects; abstain without execution.'
         family_options = {
             "motion": "At least ONE offered complete open-hand pose/motion or closed-hand lift has a visually supported corridor. Judge pickup_action next. All direction/size alternatives belong to THIS ONE family; their count is not extra evidence for STOP or CLOSE.",
             "stop": "No offered complete motion or available gripper action can be judged from CURRENT RGB: a specific visible blocker, unknown whole corridor, or actual finger/model mismatch. Historical failed contact or a gripper not yet ready does not alone rule out current motion."}
@@ -1094,9 +1094,9 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "visible_mint_green_scissors": "Current RGB supports the requested mint-green scissors identity.",
                 "identity_ambiguous": "Current visible colour/shape/semantic evidence genuinely cannot distinguish the requested source.",
                 "source_absent_or_hidden": "The requested scissors is absent or so occluded that current identity is unavailable."}),
-            choice("action_family", "FIRST judge source_identity. If identity is unavailable, choose STOP. Otherwise choose ONE action family from CURRENT RGB and numerical effects. Different X/Y/Z/rotation options are alternative complete motions, not independent competing reasons to stop. Gripper not ready alone means evaluate motion, not STOP. CLOSE only when offered and actual solid material is visibly in the finite opposing-finger sweep; an old close is not proof of holding.", family_options)]
+            choice("action_family", "Independently judge ONE feasible action family from CURRENT RGB and numerical effects. If current source identity is unavailable, choose STOP. Do not rely on any other question answer. Different X/Y/Z/rotation options are alternative complete motions, not independent competing reasons to stop. Gripper not ready alone means evaluate motion, not STOP. CLOSE only when offered and actual solid material is visibly in the finite opposing-finger sweep; an old close is not proof of holding.", family_options)]
         if motion_options:
-            questions.append(choice("pickup_action", "Select ONE COMPLETE offered motion if action_family=motion. Otherwise this answer is ignored and may be omitted. World +X is robot-right, +Y away from robot bases, +Z up. XYZ millimetres and world rotation-vector radians occur together as one pose target. Compare the same-feature predicted XYZ/angle effects and whole visible corridor. Source identity, depth and contact are separate; reobserve after one bounded five-step action.", motion_options))
+            questions.append(choice("pickup_action", "Independently RANK the ONE most promising COMPLETE offered motion for current-stage progress from the XYZ/angle effects and current RGB. Answer this ranking without referencing other question outputs. Use the explicit abstain if no progress candidate can be ranked. This ranking alone does not authorize execution; the harness separately requires confirmed identity and the motion family. World +X is robot-right, +Y away from robot bases, +Z up. XYZ millimetres and world rotation-vector radians occur together as one pose target. Compare the same-feature predicted XYZ/angle effects and whole visible corridor. Source identity, depth and contact are separate; reobserve after one bounded five-step action.", motion_options))
         model_input = {
             "task": obs["task"], "instruction": obs["instruction"],
             "source_control_feature": material.get('representative_material_point') if material else None,
