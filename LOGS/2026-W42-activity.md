@@ -92,3 +92,20 @@
 - 【User】【2026-10-13 22:12】[prompt] 继续优化吧直到完成目标
 - 【Agent】【2026-10-13 22:12】[result] Goal1335冻结1f80c6c7新init23–27五次双终局5/5，平均304.8步/76 Jev，55阶段边、0审计违规；五项本机/5880原始目录rsync校验一致。完成W42 EXP110、十任务状态、Discussion及T011，剩余11次共享预算。  ↪ `EXP-2026W42-110`
 - 【Agent】【2026-10-13 22:17】[result] Goal1098第28/50次down_hook预检通过后261步/87 Jev仍停contact、抽屉0像素伸出；自身指尖相对TCP低约32mm，但Y≈+1mm距公开杆约131mm，46块Y命令无实动，物理路径被驳斥。原始文件逐一校验、审计0违规，EXP111保留负结果。  ↪ `EXP-2026W42-111`
+- 【Agent】【2026-10-13 22:30】[run] Goal1202共享34/50次4376c78f新接续流程在init2打开上抽屉249步、2620新伸出像素；后续supervisor到descend但腕姿延续抽屉pinch横向姿态，目标Z差77mm连续受阻，Jev第115请求自选stop，369步双终局false。raw逐文件一致；45969eb8新增基于机器人初始自身反馈的回正腕姿并SSH推送，待配对。  ↪ `DISC-2026W39-001`
+- 【Agent】【2026-10-13 22:52】[op] Goal1202配对连续负结果EXP112/113：上抽屉始终可开，但借用1423顶部抓碗在抽屉旁Z下降受阻；EXP114的低幅carry把碗保持到抽屉上方，第588步lower预算而未释放。已SSH推送ff493596公开RGB-D抽屉早释放候选，正在共享第37/50次实测，仍须双终局确认。  ↪ `EXP-2026W42-114`
+- 【User】【2026-10-13 23:06】[prompt] 继续优化吧直到完成目标
+- 【Agent】【2026-10-13 23:09】[result] Goal1202第38/50次init2：公开视觉持碗且进入抽屉早释放，终局官方success=true但program_finished=false，588步169 Jev；EXP116已写入，不能计完整成功。
+- 【Agent】【2026-10-13 23:09】[run] 5880 GPU/EGL预检通过后，以24d41d2d的实测开口释放门启动Goal1202第39/50次同init2配对正式回合。
+- 【Agent】【2026-10-13 23:13】[result] Goal1202第39/50次init2：开爪实测门让Jev进入retreat，官方success=true但程序在退离前588步耗尽；EXP117记录并以公开可见放置路线结束边做第40次配对。
+- 【Agent】【2026-10-13 23:15】[result] Goal1202第40/50次init2在冻结前开发配对中585步168 Jev，success/program_finished双true，Jev问答/动作及阶段边审计0违规；原始文件本机/5880逐文件一致。现固定f6bb0b49测试未见init3–7。
+- 【Agent】【2026-10-13 23:26】[result] Goal1202冻结f6bb0b49在首次未见init3联合0/1，588步170 Jev；公开持物偏移增大且释放晚6步，EXP119、双段审计与本机/5880逐文件核对完成。
+- 【Agent】【2026-10-13 23:26】[run] SSH推送034d7d0c后5880以自身夹爪开口≤12mm门、闭爪12步在Goal1202 init3开展第42/50次同初态配对；GPU/EGL预检通过。
+- 【Agent】【2026-10-13 23:29】[op] Discussion追加Goal1202首次双终局和冻结init3失败硬证据；TIMELINE追加T-2026W42-012并检查，两个CIRCLE-1按失败机制→单因素配对→未见初态固定复验收敛。
+- 【Agent】【2026-10-13 23:33】[result] Goal1202第42/50次短闭爪外层参数未传到drawer复合子命令，实际Jev合同仍18步，双false不是该方法的有效负证据；EXP120、审计及原始文件核对完成。修复5169f9ac经服务器dry-run确认传入12步。
+- 【Agent】【2026-10-13 23:59】[result] Goal1202第43/50次短闭爪合同实际生效，程序585步完成但官方false；末端公开碗心相对抽屉底板中心X差23.89mm，落在抽屉外，EXP121与审计原始核对完成。
+- 【Agent】【2026-10-13 23:59】[run] SSH推送d8d56fd8并在5880预检后启动Goal1202第44/50次init3，新增公开RGB-D携物目标回正、窄化可见释放门及完成边1步执行。
+- 【Agent】【2026-10-14 00:05】[result] Goal1202第44/50次开柜后视觉worker因5880 CUDA operation not supported退出，无后段终局；最小torch GPU转移同样失败，EXP122记录为Crashed，非新策略负结果。
+- 【Agent】【2026-10-14 00:05】[run] CPU视觉worker现有环境90秒内预检ready，EGL GPU0通过；以同策略d8d56fd8和--cpu-vision启动Goal1202第45/50次init3配对，未改底层驱动。
+- 【Agent】【2026-10-14 00:12】[result] Goal1202第45/50次CPU视觉ready但第1条Jev请求SSL ReadError、0正式步；EXP123保留，独立最小Jev请求随后成功。
+- 【Agent】【2026-10-14 00:12】[run] SSH推送86f0ded9，加入未答Jev读取中断最多一次显式重试；CPU视觉/EGL预检与独立最小Jev请求通过后启动Goal1202第46/50次init3。

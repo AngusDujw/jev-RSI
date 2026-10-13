@@ -117,6 +117,7 @@ graph LR
     T_2026W42_009["📊 libero-goal-ten<br/>Goal1423可见支撑面释放配对成功，但…"]:::experiment
     T_2026W42_010["📊 libero-goal-ten<br/>Goal1423公开支撑面转段与退离固定版…"]:::experiment
     T_2026W42_011["📊 libero-goal-ten<br/>Goal1335固定视觉候选门在未见ini…"]:::experiment
+    T_2026W42_012["📊 libero-goal-ten<br/>Goal1202首次联合完成，但冻结未见i…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -197,6 +198,7 @@ graph LR
   T_2026W42_008 --> T_2026W42_009
   T_2026W42_009 --> T_2026W42_010
   T_2026W42_010 --> T_2026W42_011
+  T_2026W42_011 --> T_2026W42_012
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -302,6 +304,7 @@ graph LR
 | `T-2026W42-009` | 2026-10-13 | experiment | libero-goal-ten | Goal1423可见支撑面释放配对成功，但固定新init5–9仅1/5；carry物理受阻与耗尽选项仍限制十任务稳定性 | `EXP-2026W42-103` | - |
 | `T-2026W42-010` | 2026-10-13 | experiment | libero-goal-ten | Goal1423公开支撑面转段与退离固定版在未见init10–14五次双终局5/5，旧固定版init5–9仅1/5 | `EXP-2026W42-108` | - |
 | `T-2026W42-011` | 2026-10-13 | experiment | libero-goal-ten | Goal1335固定视觉候选门在未见init23–27五次双终局5/5，原旧版各4/5另列 | `EXP-2026W42-110` | - |
+| `T-2026W42-012` | 2026-10-13 | experiment | libero-goal-ten | Goal1202首次联合完成，但冻结未见init3失败，十项9/10曾成功而跨初态稳定尚未成立 | `EXP-2026W42-118` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
