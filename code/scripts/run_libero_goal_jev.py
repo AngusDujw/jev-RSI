@@ -45,7 +45,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    rim_inset_mm=0,
                    drawer_preorient=False, drawer_clear_to_source=False,
                    empty_hand_fast=False, support_stall_release=False,
-                   drawer_bowl_algorithm='recovery'):
+                   drawer_bowl_algorithm='recovery', gentle_carry=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -58,6 +58,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
         cmd += ['--recovery-supervisor', '--input-organization', 'focused',
                 '--grasp-algorithm', 'pad_fit', '--preserve-source',
                 '--allow-retry', '--execution-profile', 'adaptive']
+        if gentle_carry:
+            cmd += ['--gentle-carry']
         if task_id == 1163:
             cmd += ['--carry-route', 'lateral_first', '--visible-goal-check',
                     '--grasp-hold-ticks', str(grasp_hold_ticks)]
@@ -97,6 +99,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                         '--schema', 'focused',
                         '--placement-height-mode', 'occlusion_guarded_bottom',
                         '--support-stall-release']
+            if gentle_carry:
+                cmd += ['--gentle-carry']
             if rim_height_mode != 'top_overlap':
                 cmd += ['--rim-height-mode', rim_height_mode]
             if rim_tilt_deg:
@@ -143,6 +147,8 @@ def main():
     p.add_argument('--drawer-preorient', action='store_true')
     p.add_argument('--drawer-clear-to-source', action='store_true')
     p.add_argument('--empty-hand-fast', action='store_true')
+    p.add_argument('--gentle-carry', action='store_true',
+                   help='Bound each native carry step when fresh public RGB-D holding passed')
     p.add_argument('--support-stall-release', action='store_true')
     p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0)
     p.add_argument('--dry-run', action='store_true',
@@ -185,6 +191,9 @@ def main():
         p.error('Middle-handle entry mode requires Goal 1098')
     if a.drawer_bowl_algorithm != 'recovery' and a.task_id != 1202:
         p.error('Alternative bowl continuation requires Goal1202')
+    if a.gentle_carry and (a.task_id not in RECOVERY_TASKS | {1202} or
+                           a.drawer_bowl_algorithm == 'supervisor'):
+        p.error('Gentle carry requires a Jev recovery pick/place continuation')
     if a.rim_height_mode != 'top_overlap' and a.task_id != 1202:
         p.error('Alternative rim height requires Goal 1202')
     if a.rim_tilt_deg and a.task_id != 1202:
@@ -210,7 +219,7 @@ def main():
                          a.rim_inset_mm,
                          a.drawer_preorient,a.drawer_clear_to_source,
                          a.empty_hand_fast,a.support_stall_release,
-                         a.drawer_bowl_algorithm)
+                         a.drawer_bowl_algorithm,a.gentle_carry)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -299,6 +308,7 @@ def main():
                     side_pad_overlap_mm=a.side_pad_overlap_mm,
                     drawer_contact_mode=a.drawer_contact_mode,
                     drawer_bowl_algorithm=a.drawer_bowl_algorithm,
+                    gentle_carry=a.gentle_carry,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,

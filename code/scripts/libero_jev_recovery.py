@@ -857,7 +857,11 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     'center_world_m','visible_surface_z_m','x_rotation_world_rad',
                     'support_slope_dz_dy','line_residual_p90_m','source')}
             adaptive=rec.cfg.get('execution_profile','baseline')=='adaptive'
-            block_ticks=6 if adaptive and (stage in ['grasp','release','recover_open','settle_receiver'] or np.max(abs(error))>.06) else 3
+            gentle_carry=bool(rec.cfg.get('gentle_carry') and
+                stage in ('carry_lateral','carry') and holding.get('status')=='passed')
+            block_ticks=(3 if gentle_carry else 6 if adaptive and
+                (stage in ['grasp','release','recover_open','settle_receiver'] or
+                 np.max(abs(error))>.06) else 3)
             state['gripper']['next_action_block_native_ticks']=block_ticks
             state['translation_axes']={a:dict(current_coordinate_m=float(position[i]),goal_coordinate_m=float(target[i]),goal_minus_current_mm=round(float(error[i])*1000,2),relation='within_tolerance' if abs(error[i])<.002 else 'goal_coordinate_larger' if error[i]>0 else 'goal_coordinate_smaller') for i,a in enumerate('xyz')}
             state['rotation_questions']='Only axes outside 0.03rad tolerance are requested; unrequested rotations are zero, not fabricated model choices.'
@@ -889,7 +893,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             gripper=newgrip
             fast_open = bool(rec.cfg.get('empty_hand_fast') and gripper==-1 and
                              stage in ('approach','align') and np.max(abs(error))>.04)
-            cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .030 if fast_open else .02
+            cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .008 if gentle_carry else .030 if fast_open else .02
             gain=.55 if fast_open else .35 if block_ticks==6 else .5
             delta=np.asarray(d['signs'])*np.minimum(cap,gain*abs(error))
             rotation=np.asarray(d['rotation_signs'])*np.minimum(
