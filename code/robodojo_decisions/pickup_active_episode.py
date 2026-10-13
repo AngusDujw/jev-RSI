@@ -671,6 +671,22 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             green_plane = build_green_plane(obs, max_pixel_p95_mm=10, max_halfwidth_m=.035)
         except ValueError as error:
             green_plane_errors.append(f"current_high_right: {error}")
+        if (os.environ.get('ROBODOJO_PICKUP_LOCAL_FINGER_FIT') == '1' and not gripper_closed and
+                (green_plane is None or not green_plane.get('contact_precision_eligible')) and
+                hull['pad_to_visual_support_distance_mm_q05_q50_q95'][0] <= 100):
+            axis = eef_transform(obs['current_eef']['right'])[:3,0]
+            angle = np.degrees(np.arccos(np.clip(axis@[0,0,-1],-1,1)))
+            if angle <= 35:
+                boxes = list(hull['public_inner_pad_bbox_right_wrist_xyxy'].values())
+                region = [max(0,min(b[0] for b in boxes)-20),max(0,min(b[1] for b in boxes)-20),
+                          min(639,max(b[2] for b in boxes)+20),min(479,max(b[3] for b in boxes)+20)]
+                try:
+                    local_fit = build_green_plane(obs,max_pixel_p95_mm=10,max_halfwidth_m=.035,
+                                                  wrist_fit_region=region)
+                    if green_plane is None or local_fit['contact_precision_eligible']:
+                        green_plane = local_fit
+                except ValueError as error:
+                    green_plane_errors.append(f'current_finger_window: {error}')
         for reference in sorted(temporal_references.values(),
                                 key=lambda row: row['step_id']):
             if green_plane is not None and green_plane.get('contact_precision_eligible', False):
@@ -771,7 +787,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             targets = {}
             options = {}
             effects = {}
-            for amount in (0.005, 0.010, 0.020):
+            for amount in ((0.005,0.010,0.020,0.030,0.040,0.050) if os.environ.get("ROBODOJO_PICKUP_LIFT_RANGE50")=="1" else (0.005,0.010,0.020)):
                 target = _targets(obs, "z", 1, amount)
                 target["right"]["gripper_closed"] = True
                 public_path = preview(obs, target["right"], None, steps=5)

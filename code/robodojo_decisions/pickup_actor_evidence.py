@@ -136,7 +136,7 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
     compact['current_geometry_validity'] = {
         'material_present':material is not None,
         'green_plane_present':full_input.get('current_green_silhouette_plane') is not None,
-        'green_plane_scope': {key:(full_input.get('current_green_silhouette_plane') or {}).get(key) for key in ('geometry_scope','contact_precision_eligible','pixel_shift_height_p95_mm','declared_green_height_halfwidth_m')},
+        'green_plane_scope': {key:(full_input.get('current_green_silhouette_plane') or {}).get(key) for key in ('geometry_scope','contact_precision_eligible','pixel_shift_height_p95_mm','declared_green_height_halfwidth_m','current_public_finger_wrist_fit_region_xyxy')},
         'green_plane_errors':full_input.get('green_silhouette_plane_errors'),
         'table_plane':full_input.get('current_rgb_support_plane'),
         'contact_hypothesis_gate':full_input.get('contact_hypothesis_gate'),

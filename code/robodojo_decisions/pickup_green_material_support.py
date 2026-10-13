@@ -51,7 +51,10 @@ def build(observation: dict, temporal_metal: dict | None,
             raise ValueError("Current green-plane evidence failed its own gates")
         if green_plane['reference_step_id'] != observation['step_id']:
             check = green_plane.get('current_fixed_high_static_check')
-            if not check or not check['stable_enough_for_temporal_ray_check']:
+            coarse_subset = bool(check and green_plane.get('coarse_occlusion_hypothesis') and
+                                 check.get('directional_subset_shadow_hypothesis') and
+                                 not green_plane.get('contact_precision_eligible'))
+            if not check or not (check['stable_enough_for_temporal_ray_check'] or coarse_subset):
                 raise ValueError("Earlier silhouette lacks current static-source check")
         reference_step = green_plane['reference_step_id']
     else:
@@ -80,6 +83,13 @@ def build(observation: dict, temporal_metal: dict | None,
                    for row in observation["images"]}
     wrist = _green_mask(image_paths["cam_right_wrist"], "cam_right_wrist")
     high = _green_mask(image_paths["cam_high"], "cam_high")
+    local_region = green_plane.get('current_public_finger_wrist_fit_region_xyxy') if green_plane else None
+    if local_region is not None:
+        x0,y0,x1,y1 = local_region
+        py,px = np.indices(wrist.shape)
+        wrist &= (px>=x0)&(px<=x1)&(py>=y0)&(py<=y1)
+        if wrist.sum()<500:
+            raise ValueError('Current local finger-window material unavailable')
     yy, xx = np.nonzero(wrist)
     sample = np.arange(0, len(xx), 2)
     uv = np.column_stack((xx[sample], yy[sample]))
@@ -157,6 +167,7 @@ def build(observation: dict, temporal_metal: dict | None,
     chosen = int(candidates[np.argmin(np.linalg.norm(points[candidates]-centre, axis=1))])
     same_ray = ray_indices == ray_indices[chosen]
     representative = {
+        'public_finger_window_scope_xyxy': local_region,
         'source': 'ONE sampled point projecting to actual green pixels in both CURRENT RGB; nearest nominal-height valid sample to material-set median, not the median itself',
         'current_right_pixel_uv': uv[ray_indices[chosen]].astype(int).tolist(),
         'current_high_projected_uv': _project_many(high_camera, points[[chosen]])[0][0].round(2).tolist(),
