@@ -126,9 +126,9 @@ def _plan_refresh(obs: dict, hull: dict, output: Path, experience: Path,
             "--previous-calibration", str(output / f"camera_calibration_step_{historical_obs['step_id']:03d}.json")])
     try:
         completed = subprocess.run(command, text=True, capture_output=True,
-                                   timeout=120, check=False)
+                                   timeout=240, check=False)
     except subprocess.TimeoutExpired:
-        gateway_failure.write_text(f"step={step} timeout=120s\n")
+        gateway_failure.write_text(f"step={step} timeout=240s\n")
         raise
     (output / f"planner_refresh_step_{step:03d}.log").write_text(
         completed.stdout + "\n" + completed.stderr)
