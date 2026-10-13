@@ -33,6 +33,18 @@ class DecisionModel(Jev):
         questions['transition']=dict(type='choice',instructions='You own the phase switch. Use the phase contract and measured feedback. Continue while target not reached or required gripper ticks incomplete. Advance only when the current contract is met. For stalled motion or missing visual holding evidence reobserve; if recovery budget unavailable stop. This choice is applied AFTER current actions, and does not declare task success.',criteria=dict(continue_phase='Remain in this phase and execute selected motion/gripper',advance='Finish current phase and enter next predefined phase',reobserve='Remain, refresh permitted visual measurement once if budget allows',stop='Terminate incomplete attempt'))
         if not state.get('measurement_status',{}).get('reobserve_available',False):
             questions['transition']['criteria'].pop('reobserve')
+        status=state.get('measurement_status',{})
+        arrived=bool(status.get('target_arrival'))
+        ready=arrived and (state['stage'] in ('approach','align','descend','lower','retreat') or
+                           state['stage'] in ('lift','carry') and status.get('holding_check')=='passed')
+        if ready:
+            questions['transition']['instructions']=(
+                'The current stage target and its required visible holding check '
+                'are already complete. Choose advance now to the named next '
+                'stage; this edge still belongs to you and executes after your '
+                'current XYZ and gripper choices. A future-stage check is not '
+                'needed yet. This does not declare official task success.')
+            questions['transition']['criteria'].pop('stop')
         if (state['stage']=='insert' and
                 state.get('measurement_status',{}).get('visible_contact_candidate')):
             questions['transition']['instructions']=(
