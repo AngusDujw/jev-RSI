@@ -84,7 +84,7 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
             'named_CURRENT_actual_green_pixel_uv':pixel,
             'public_open_facet_projection_centre_uv':uv.mean(axis=0).round(2).tolist(),
             'image_pixel_error_source_minus_public_facet_centre_uv':(np.asarray(pixel)-uv.mean(axis=0)).round(2).tolist(),
-            'limitation':'A named green pixel vs a public facet projection is only two-dimensional alignment; different cameras have independent pixels, not same-point correspondences or a physical grasp target.'}
+            'limitation':'A named green pixel vs a public facet projection is ONLY a 2D diagnostic. Different source/pad heights cause parallax: reducing pixel error does NOT imply reducing 3D distance, and its preferred X sign can disagree with a genuine XYZ feature error. Camera pixels are independent, not same-point correspondences or a grasp target.'}
     high = observation['camera_calibration']['cameras']['cam_high']
     predictions = {}
     for name,target in (targets or {}).items():
@@ -97,7 +97,6 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
             continue
         error = np.asarray(source_pixels['cam_high'])-uv.mean(axis=0)
         predictions[name] = {'fixed_high_pixel_error_after_complete_public_pose_uv':error.round(2).tolist(),
-                             'pixel_error_norm':round(float(np.linalg.norm(error)),2),
                              'assumption':'Same named CURRENT high green pixel remains static; public open hand follows requested full pose. No depth, contact or object-motion prediction.'}
     compact['current_source_pixel_alignment'] = pixel_effects
     compact['fixed_high_pixel_effects_after_complete_actions'] = predictions
@@ -131,6 +130,7 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
     compact['current_geometry_validity'] = {
         'material_present':material is not None,
         'green_plane_present':full_input.get('current_green_silhouette_plane') is not None,
+        'green_plane_scope': {key:(full_input.get('current_green_silhouette_plane') or {}).get(key) for key in ('geometry_scope','contact_precision_eligible','pixel_shift_height_p95_mm','declared_green_height_halfwidth_m')},
         'green_plane_errors':full_input.get('green_silhouette_plane_errors'),
         'table_plane':full_input.get('current_rgb_support_plane'),
         'contact_hypothesis_gate':full_input.get('contact_hypothesis_gate'),

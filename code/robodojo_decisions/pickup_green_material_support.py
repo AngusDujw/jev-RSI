@@ -47,7 +47,7 @@ def build(observation: dict, temporal_metal: dict | None,
                 green_plane['best_iou'] < .55 or
                 min(green_plane['right_green_coverage'],
                     green_plane['projected_high_green_coverage']) < .65 or
-                green_plane['pixel_shift_height_p95_mm'] > 5):
+                green_plane['pixel_shift_height_p95_mm'] > 10):
             raise ValueError("Current green-plane evidence failed its own gates")
         if green_plane['reference_step_id'] != observation['step_id']:
             check = green_plane.get('current_fixed_high_static_check')
@@ -99,7 +99,7 @@ def build(observation: dict, temporal_metal: dict | None,
             raise ValueError('Green-plane fit is not current')
         center_z = float(green_plane['estimated_green_plane_height_m'])
         half_height_m = float(green_plane['declared_green_height_halfwidth_m'])
-        if not .005 <= half_height_m <= .020:
+        if not .005 <= half_height_m <= .035:
             raise ValueError('Invalid fitted green height uncertainty')
     levels = center_z + np.linspace(-half_height_m, half_height_m, 9)
     depths = (levels[None, :]-pose[None, 2, 3])/rays[:, 2, None]
@@ -184,6 +184,8 @@ def build(observation: dict, temporal_metal: dict | None,
             "Current same-episode silver texture match plus current high/right green-pixel support"),
         "metal_patch_height_m": round(metal_z, 5) if metal_z is not None else None,
         "current_green_plane_fit": green_plane,
+        "contact_precision_eligible": green_plane.get("contact_precision_eligible", True) if green_plane else True,
+        "geometry_scope": green_plane.get("geometry_scope", "legacy_strict") if green_plane else "uncertain_silver_height_proxy_with_RGB_review",
         "assumed_green_height_slab_m": [round(float(levels[0]), 5),
                                         round(float(levels[-1]), 5)],
         "height_assumption": (

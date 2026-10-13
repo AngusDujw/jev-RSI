@@ -256,6 +256,8 @@ def _contact_approach_descent(obs, hull, material, table, green_plane,
         return None
     if table['current_step_id'] != obs['step_id'] or green_plane['current_step_id'] != obs['step_id']:
         raise ValueError('Contact-approach camera evidence is not current')
+    if not green_plane.get('contact_precision_eligible', True):
+        return None
     boxes = hull['public_inner_pad_bbox_right_wrist_xyxy']
     box = hull['right_wrist_mask_bbox_xyxy']
     if not (box[0] >= boxes['link7'][2]-20 and box[2] <= boxes['link8'][0]+20):
@@ -630,7 +632,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         green_plane = None
         green_plane_errors = []
         try:
-            green_plane = build_green_plane(obs)
+            green_plane = build_green_plane(obs, max_pixel_p95_mm=10, max_halfwidth_m=.035)
         except ValueError as error:
             green_plane_errors.append(f"current_high_right: {error}")
         for reference in sorted(temporal_references.values(),
@@ -640,7 +642,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             if obs['step_id'] - reference['step_id'] < 20:
                 continue
             try:
-                green_plane = build_green_plane(obs, reference)
+                green_plane = build_green_plane(obs, reference, max_pixel_p95_mm=10, max_halfwidth_m=.035)
                 break
             except ValueError as error:
                 green_plane_errors.append(f"ref{reference['step_id']}: {error}")
@@ -904,7 +906,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 # for Luna instead of hiding CLOSE with arbitrary thresholds
                 # or requiring both AIR-hole contours to be unoccluded.
                 close_volume = material["public_finite_closing_volume_support"]
-                close_gate = between_projected_pads and close_volume["possible_material_sample_count"] > 0
+                close_gate = (between_projected_pads and close_volume["possible_material_sample_count"] > 0
+                              and material.get("contact_precision_eligible", False))
                 record["contact_hypothesis_gate"] = {
                     "candidate": close_gate,
                     "public_finite_closing_volume_support": close_volume,

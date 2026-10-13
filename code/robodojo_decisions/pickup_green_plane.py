@@ -6,7 +6,9 @@ from pickup_visual_hull import _green_mask, _project_many
 from pickup_temporal_stereo import _high_static_check
 
 
-def build(obs, reference=None):
+def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020):
+    if not 5 <= max_pixel_p95_mm <= 10 or not .020 <= max_halfwidth_m <= .035:
+        raise ValueError("Invalid declared approach-only sensitivity allowance")
     cal = obs['camera_calibration']
     if obs['task'] != 'general_pickup' or cal['step_id'] != obs['step_id']:
         raise ValueError('Current pickup RGB/calibration required')
@@ -83,14 +85,18 @@ def build(obs, reference=None):
         jitter.append({'camera': 'right', 'shift_px': [dx, dy], 'best_height_m': trial[0], 'iou': trial[1]})
     changes = np.abs(np.array([r['best_height_m'] for r in jitter])-best[0])
     p95 = float(np.quantile(changes, .95))
-    if round(p95, 9) > .005 or min(r['iou'] for r in jitter) < .45:
+    if round(p95, 9) > max_pixel_p95_mm/1000 or min(r['iou'] for r in jitter) < .45:
         raise ValueError(f'Green plane pixel sensitivity too large: {p95*1000:.2f}mm')
     compatible = [r[0] for r in nominal if r[1] >= best[1]-.03]
     # Declared systematic allowance is deliberately separate from pixel jitter.
     halfwidth = max(.005, max(abs(best[0]-z) for z in compatible)+p95+.005)
-    if halfwidth > .020:
+    if halfwidth > max_halfwidth_m:
         raise ValueError('Fit cannot narrow original 20mm height hypothesis')
-    return {'source': ('Same-episode earlier/current right-wrist green silhouettes, CURRENT fixed-high static-source check, public K/T; horizontal plane homography' if reference is not None else 'CURRENT fixed-high/right green silhouettes, public K/T; horizontal plane homography'),
+    contact_precision = bool(round(p95, 9) <= .005 and halfwidth <= .020)
+    return {'contact_precision_eligible': contact_precision,
+            'geometry_scope': 'strict_5mm_pixel_gate_hypothesis' if contact_precision else 'COARSE_DIRECTIONAL_APPROACH_ONLY: no CLOSE or contact-approach candidate',
+            'declared_pixel_sensitivity_limit_mm': max_pixel_p95_mm,
+            'source': ('Same-episode earlier/current right-wrist green silhouettes, CURRENT fixed-high static-source check, public K/T; horizontal plane homography' if reference is not None else 'CURRENT fixed-high/right green silhouettes, public K/T; horizontal plane homography'),
             'reference_step_id': reference['step_id'] if reference is not None else obs['step_id'],
             'current_fixed_high_static_check': static_check,
             'current_step_id': obs['step_id'], 'estimated_green_plane_height_m': round(best[0], 6),
