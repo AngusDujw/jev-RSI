@@ -148,11 +148,15 @@ def _ring_centres(reference: dict, reference_calibration: dict,
             raise ValueError(f"Green aperture centre {index} ray gate failed")
         jitter = []
         for _ in range(120):
-            moved = _triangulate(
-                camera_a, (np.asarray(uv_a)+rng.uniform(-2, 2, 2)).tolist(),
-                camera_b, (np.asarray(uv_b)+rng.uniform(-2, 2, 2)).tolist())
-            if min(moved["forward_depth_m"]) > 0:
-                jitter.append(moved["point"])
+            try:
+                moved = _triangulate(
+                    camera_a, (np.asarray(uv_a)+rng.uniform(-2, 2, 2)).tolist(),
+                    camera_b, (np.asarray(uv_b)+rng.uniform(-2, 2, 2)).tolist())
+            except ValueError:
+                continue
+            jitter.append(moved["point"])
+        if len(jitter) < 10:
+            raise ValueError("Green aperture pixel-jitter depth support is insufficient")
         values = np.asarray(jitter)
         rows.append({
             "ring_left_to_right": index,
@@ -208,9 +212,19 @@ def _triangulate(camera_a: dict, uv_a: list[float], camera_b: dict,
     p_a = eye_a + distances[0]*ray_a
     p_b = eye_b + distances[1]*ray_b
     point = (p_a+p_b)/2
+    if (not np.all(np.isfinite(distances)) or
+            not np.all(np.isfinite(point)) or min(distances) <= 0):
+        raise ValueError("Temporal rays do not meet in front of both cameras")
     angle = float(np.degrees(np.arccos(np.clip(abs(ray_a @ ray_b), -1, 1))))
     reproj_a = project(camera_a, point)
     reproj_b = project(camera_b, point)
+    if reproj_a is None or reproj_b is None:
+        raise ValueError("Temporal point cannot be projected into both public cameras")
+    reproj_a, reproj_b = np.asarray(reproj_a, float), np.asarray(reproj_b, float)
+    if (reproj_a.shape != (2,) or reproj_b.shape != (2,) or
+            not np.all(np.isfinite(reproj_a)) or
+            not np.all(np.isfinite(reproj_b))):
+        raise ValueError("Temporal reprojection is non-finite or malformed")
     return {"point": point, "ray_gap_mm": float(np.linalg.norm(p_a-p_b)*1000),
             "ray_angle_deg": angle, "forward_depth_m": distances.tolist(),
             "reprojection_error_px": [float(np.linalg.norm(np.asarray(uv_a)-reproj_a)),
@@ -316,7 +330,10 @@ def build(reference: dict, reference_calibration: dict,
         unique_b = tuple(np.rint(uv_b).astype(int))
         if unique_a in used_reference or unique_b in used_current:
             continue
-        tri = _triangulate(camera_a, uv_a.tolist(), camera_b, uv_b.tolist())
+        try:
+            tri = _triangulate(camera_a, uv_a.tolist(), camera_b, uv_b.tolist())
+        except ValueError:
+            continue
         point = tri["point"]
         if (min(tri["forward_depth_m"]) <= 0 or
                 tri["ray_gap_mm"] > 1.5 or tri["ray_angle_deg"] < 5.0 or
@@ -349,12 +366,16 @@ def build(reference: dict, reference_calibration: dict,
         for _ in range(80):
             offset_a = rng.uniform(-2, 2, 2)
             offset_b = rng.uniform(-2, 2, 2)
-            moved = _triangulate(camera_a,
-                                 (np.asarray(row["reference_uv"])+offset_a).tolist(),
-                                 camera_b,
-                                 (np.asarray(row["current_uv"])+offset_b).tolist())
-            if min(moved["forward_depth_m"]) > 0:
-                perturbed.append(moved["point"])
+            try:
+                moved = _triangulate(camera_a,
+                                     (np.asarray(row["reference_uv"])+offset_a).tolist(),
+                                     camera_b,
+                                     (np.asarray(row["current_uv"])+offset_b).tolist())
+            except ValueError:
+                continue
+            perturbed.append(moved["point"])
+    if len(perturbed) < 20:
+        raise ValueError("Metal-patch pixel-jitter depth support is insufficient")
     sensitivity = np.asarray(perturbed)
     obs_with_calibration = dict(current)
     obs_with_calibration["camera_calibration"] = current_calibration
