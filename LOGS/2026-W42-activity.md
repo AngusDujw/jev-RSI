@@ -81,3 +81,8 @@
 - 【Agent】【2026-10-13 20:29】[run] Goal1163同一冻结5522a0d0在未见init5–9为5/5双终局、平均390步/100.4 Jev；init5有Jev恢复和新鲜可见柜顶证据，其余四次常规完成。  ↪ `EXP-2026W42-098`
 - 【Agent】【2026-10-13 20:31】[op] 更新十Goal最新共享尝试、Goal1163五新初态证据、Goal1335三组4/5负结果和Goal1202两侧可达性失败；回写Discussion与TIMELINE T-2026W42-008。  ↪ `EXP-2026W42-098`
 - 【Agent】【2026-10-13 20:38】[run] Goal1423 init4默认顶部边缘抓取真实持碗后在carry目标Y差8.74mm时停滞门仍0，276步/92Jev双终局失败；3bfcd4ef通用阶段门修复已SSH推送并同初态配对实测中。  ↪ `EXP-2026W42-099`
+- 【Agent】【2026-10-13 20:53】[run] Goal1423共享19/50次Jev第25请求读取超时，72步；20/50次通用carry停滞修复到达lower但夹爪下不去，222步/75 Jev官方失败。EXP100/101保留负结果；独立受阻支撑面释放候选55d56ba7已SSH push，待实测。
+- 【Agent】【2026-10-13 20:57】[result] Goal1423共享21/50次在55d56ba7显式可见支撑面受阻释放候选下273正式步/91 Jev双终局成功；原始轨迹同步与审计中，尚不计为新初态稳定率。
+- 【Agent】【2026-10-13 21:00】[run] Goal1423配对共享21/50次受阻支撑面释放候选在公开重叠1.0、碗底可见差106.08mm条件下由Jev选择advance，273步/91 Jev双终局成功，审计0违规；EXP102落盘，固定新初态init5–9已启动。
+- 【Agent】【2026-10-13 21:16】[run] Goal1423冻结55d56ba7新init5–9为1/5双终局；init6/7/9真实持碗后carry受阻，init8在lower请求已耗尽reobserve。EXP103保留负结果。65ef2e0e移除不可用选项并增加新鲜RGB-D支撑面carry转段候选，已SSH push部署，init8配对开始。
+- 【Agent】【2026-10-13 21:26】[run] Goal1423第27次65ef2e0e在align已到达仍选stop，48步失败；第28次979ef046成功放盘且官方success=true，但retreat物理卡住导致program_finished=false。EXP104/105记录；cb400a42局部30mm退离已SSH push并部署，init8配对运行。
