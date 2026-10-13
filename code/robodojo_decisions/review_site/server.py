@@ -181,6 +181,19 @@ def run_detail(name):
                'runtime_stage': runtime_stage, 'planner_stage': obj.get('planner_stage'),
                'model_stage': decoded.get('stage'), 'execution': execution,
                'trace': trace, 'questions_available': bool(raw.get('questions'))}
+        snapshot = obj.get('memory_read_manifest', {}).get('full_snapshot_directory')
+        evidence_assets = []
+        if snapshot:
+            for filename in ('global.md', 'general_pickup.md', 'selected-task-experience.md'):
+                file = Path(snapshot) / filename
+                url = public_asset(file)
+                if url:
+                    evidence_assets.append({'name': filename, 'url': url})
+        geometry_file = path / f"full_actor_geometry_step_{raw.get('step_id', 0):03d}.json"
+        geometry_url = public_asset(geometry_file)
+        if geometry_url:
+            evidence_assets.append({'name': '未精简几何快照（非实际输入）', 'url': geometry_url})
+        row['evidence_assets'] = evidence_assets
         decisions.append(row)
     plans = []
     plan_paths = [path / 'plan.json'] + sorted(path.glob('planner_method_refresh_step_*/plan.json'))

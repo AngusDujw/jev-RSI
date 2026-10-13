@@ -13,3 +13,5 @@ python3 code/robodojo_decisions/review_site/server.py --root /home/v4090-1/DataS
 ```
 
 持久服务由 user systemd 管理；本机 SSH 转发通过独立 user systemd 服务运行，日志落在指定 DataStorage 下。网页“刷新”重新扫描实际落盘数据。网站不启动实验、不调用模型，不读取密钥。
+
+新版本回合还显示推进器实际收到的当前RGB局部裁图。完整经验原文快照、阶段原文检索片段与未精简几何快照提供单独链接；实际模型输入仍以保存的input_text为准，未精简快照不假称已经送入模型。
