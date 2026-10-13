@@ -129,6 +129,23 @@ def build(observation: dict, temporal_metal: dict | None,
     pad_distances_mm = {
         name: np.quantile(distance*1000, [0.05, 0.5, 0.95]).round(1).tolist()
         for name, (distance, _) in zip(("link7", "link8"), surface_rows)}
+    from camera_geometry import eef_transform
+    pose = eef_transform(observation['current_eef']['right'])
+    local_points = (points-pose[:3, 3]) @ pose[:3, :3]
+    local_facets = [(face-pose[:3, 3]) @ pose[:3, :3] for face in facets]
+    # Finite public opposing facets swept along the prismatic closing axis.
+    # AABB intersection is an overapproximation, never an observed contact.
+    lower = np.maximum(local_facets[0].min(axis=0), local_facets[1].min(axis=0))
+    upper = np.minimum(local_facets[0].max(axis=0), local_facets[1].max(axis=0))
+    lower[1] = min(face[:,1].min() for face in local_facets)
+    upper[1] = max(face[:,1].max() for face in local_facets)
+    in_closing = np.all((local_points >= lower-.001)&(local_points <= upper+.001),axis=1)
+    closing_evidence = {
+        'possible_material_sample_count': int(in_closing.sum()),
+        'current_right_pixel_count': int(len(np.unique(ray_indices[in_closing]))),
+        'finite_public_open_to_close_volume_link6_xyz_bounds_m': [lower.round(6).tolist(),upper.round(6).tolist()],
+        'declared_mesh_projection_allowance_mm': 1,
+        'interpretation': 'CURRENT two-RGB uncertain material samples intersect a public finite opposing-face closing-volume AABB overapproximation. No contact/hold is inferred; uncertainty, triangle shape and real visible fingers still require Luna review. No intersection means this height/material hypothesis does not support offering CLOSE, not that identity or all motion is invalid.'}
     paired_midpoint = (surface_rows[0][1]+surface_rows[1][1])/2
     paired_error_mm = (points-paired_midpoint)*1000
     paired_max_distance_mm = np.maximum(
@@ -175,6 +192,7 @@ def build(observation: dict, temporal_metal: dict | None,
             "Declared20mm vertical proxy around independent silver patch; not measured green surface or contact."),
         "green_rgb_consistent_sample_count": len(points),
         "representative_material_point": representative,
+        "public_finite_closing_volume_support": closing_evidence,
         "whole_material_quantiles_include_object_extent": True,
         "possible_green_material_minus_public_pad_midpoint_xyz_mm_q05_q50_q95": {
             key: np.quantile(relative_mm, q, axis=0).round(1).tolist()

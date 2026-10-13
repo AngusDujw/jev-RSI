@@ -903,9 +903,11 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 # exact physical grasp errors. Keep their values as evidence
                 # for Luna instead of hiding CLOSE with arbitrary thresholds
                 # or requiring both AIR-hole contours to be unoccluded.
-                close_gate = between_projected_pads
+                close_volume = material["public_finite_closing_volume_support"]
+                close_gate = between_projected_pads and close_volume["possible_material_sample_count"] > 0
                 record["contact_hypothesis_gate"] = {
                     "candidate": close_gate,
+                    "public_finite_closing_volume_support": close_volume,
                     "public_facet_distance_q05_mm": {
                         "link7": facet_distance["link7"][0],
                         "link8": facet_distance["link8"][0]},
@@ -956,7 +958,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "uncertain. Judge the offered "
                 "full short corridor in current RGB and reobserve after execution.")
         tool_alignment = None
-        if not gripper_closed and material is not None:
+        if not gripper_closed:
             alignment_options, alignment_targets, tool_alignment = build_tool_alignment(
                 obs, green_plane, table)
             options.update(alignment_options)
@@ -1070,7 +1072,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     "using pickup_action. All such motions form ONE family; "
                     "different axes/signs are NOT separate evidence for closing."),
                 "gripper": options[special_key],
-                "stop": "Neither a complete robot motion nor the complete gripper action is supported by current RGB/identity/sweep evidence."}
+                "stop": "CURRENT RGB shows a specific blocker in every offered complete motion corridor, actual source identity ambiguity, or actual public-pad mismatch. A gripper action not being ready alone does not rule out the offered open-hand motion family; depth/contact uncertainty alone is not target identity loss."}
             family_instruction = instruction + (
                 " FIRST choose action_family independently of how many motion "
                 "candidates there are. A CLOSE requires solid source material "
