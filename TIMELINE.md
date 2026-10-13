@@ -120,6 +120,8 @@ graph LR
     T_2026W42_012["📊 libero-goal-ten<br/>Goal1202首次联合完成，但冻结未见i…"]:::experiment
     T_2026W42_013["📊 libero-goal-ten<br/>Goal1458同一冻结CPU视觉配置在未…"]:::experiment
     T_2026W42_014["📊 libero-goal-ten<br/>Goal1296末段余量冻结未见init1…"]:::experiment
+    T_2026W42_015["📊 libero-goal-ten<br/>Goal1098初始腕姿能穿过高位Y路点，…"]:::experiment
+    T_2026W42_016["📊 libero-goal-ten<br/>Goal1296放宽第二段高位自身悬停门后…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -203,6 +205,8 @@ graph LR
   T_2026W42_011 --> T_2026W42_012
   T_2026W42_012 --> T_2026W42_013
   T_2026W42_013 --> T_2026W42_014
+  T_2026W42_014 --> T_2026W42_015
+  T_2026W42_015 --> T_2026W42_016
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -311,6 +315,8 @@ graph LR
 | `T-2026W42-012` | 2026-10-13 | experiment | libero-goal-ten | Goal1202首次联合完成，但冻结未见init3失败，十项9/10曾成功而跨初态稳定尚未成立 | `EXP-2026W42-118` | - |
 | `T-2026W42-013` | 2026-10-14 | experiment | libero-goal-ten | Goal1458同一冻结CPU视觉配置在未见init11–15五次双终局5/5；十任务仍有1098零成功、1202仅开发单次成功 | `EXP-2026W42-138` | - |
 | `T-2026W42-014` | 2026-10-14 | experiment | libero-goal-ten | Goal1296末段余量冻结未见init11失败，Goal1098远近两侧路径仍0完整成功；十项仅7项有固定五初态5/5 | `EXP-2026W42-150` | - |
+| `T-2026W42-015` | 2026-10-14 | experiment | libero-goal-ten | Goal1098初始腕姿能穿过高位Y路点，但侧腕姿转到终点时真实TCP退回约20mm；小步转腕仍不能同时守住侧腕姿和路点 | `EXP-2026W42-161` | - |
+| `T-2026W42-016` | 2026-10-14 | experiment | libero-goal-ten | Goal1296放宽第二段高位自身悬停门后首次进入lower，但低位X仍差10.5mm且盘沿未推动；50次上限耗尽 | `EXP-2026W42-162` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
