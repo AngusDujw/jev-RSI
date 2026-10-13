@@ -593,7 +593,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             break
         # Capture an actual earlier sensor state from THIS native episode.
         # It is never substituted for current contact or object motion.
-        if obs["step_id"] in (40, 60, 100):
+        if obs["step_id"] % 20 == 0:
             temporal_references[obs["step_id"]] = obs
         temporal = None
         temporal_error = None
@@ -674,7 +674,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             if obs['step_id'] - reference['step_id'] < 20:
                 continue
             try:
-                alternative = build_green_plane(obs, reference, max_pixel_p95_mm=10, max_halfwidth_m=.035)
+                alternative = build_green_plane(obs, reference, max_pixel_p95_mm=10, max_halfwidth_m=.035,
+                    allow_coarse_occlusion=not gripper_closed)
                 if (green_plane is None or alternative['contact_precision_eligible'] or
                         alternative['declared_green_height_halfwidth_m'] < green_plane['declared_green_height_halfwidth_m']):
                     green_plane = alternative

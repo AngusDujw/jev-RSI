@@ -6,7 +6,7 @@ from pickup_visual_hull import _green_mask, _project_many
 from pickup_temporal_stereo import _high_static_check
 
 
-def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020):
+def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow_coarse_occlusion=False):
     if not 5 <= max_pixel_p95_mm <= 10 or not .020 <= max_halfwidth_m <= .035:
         raise ValueError("Invalid declared approach-only sensitivity allowance")
     cal = obs['camera_calibration']
@@ -19,6 +19,7 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020):
         raise ValueError('Insufficient green pixels for plane fit')
     source_label = 'high'
     static_check = None
+    coarse_occlusion = False
     if reference is not None:
         if reference['task'] != obs['task'] or reference['step_id'] >= obs['step_id']:
             raise ValueError('Reference must be earlier same-task RGB')
@@ -26,7 +27,29 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020):
             raise ValueError('Reference must be from the same native episode')
         static_check = _high_static_check(reference, obs)
         if not static_check['stable_enough_for_temporal_ray_check']:
-            raise ValueError('Current high RGB does not support static source')
+            # Shadow changes raw brightness; keep this alternative directional
+            # only, never elevate it to strict contact geometry.
+            ref_high = _green_mask(Path(next(r['path'] for r in reference['images']
+                                      if r['camera']=='cam_high')), 'cam_high')
+            shared = ref_high.astype(bool) & high.astype(bool)
+            old_rgb = cv2.imread(next(r['path'] for r in reference['images'] if r['camera']=='cam_high')).astype(float)
+            new_rgb = cv2.imread(str(paths['cam_high'])).astype(float)
+            chroma_old = old_rgb / np.maximum(old_rgb.sum(axis=2, keepdims=True), 1)
+            chroma_new = new_rgb / np.maximum(new_rgb.sum(axis=2, keepdims=True), 1)
+            chroma_p95 = (float(np.quantile(np.linalg.norm(chroma_old[shared]-chroma_new[shared],axis=1),.95))
+                          if shared.sum() >= 80 else 1.0)
+            coarse_occlusion = bool(allow_coarse_occlusion and
+                obs['step_id']-reference['step_id'] <= 60 and
+                static_check['area_ratio'] >= .5 and
+                static_check['current_green_pixels_present_in_reference_fraction'] >= .98 and
+                static_check['centroid_change_px'] <= 4 and
+                static_check['shared_green_rgb_abs_change_p95'] <= 40 and
+                chroma_p95 <= .08)
+            if not coarse_occlusion:
+                raise ValueError('Current high RGB does not support static source')
+            static_check = dict(static_check, directional_subset_shadow_hypothesis=True,
+                shared_green_chromaticity_change_p95=round(chroma_p95,4),
+                limitation='Current visible fixed-high green subset and chromaticity support only a coarse stationary-source hypothesis under occlusion/shadow; not strict stationarity/contact evidence.')
         ref_paths = {r['camera']: Path(r['path']) for r in reference['images']}
         high = _green_mask(ref_paths['cam_right_wrist'], 'cam_right_wrist').astype(np.uint8)
         source_label = 'reference_right'
@@ -92,8 +115,9 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020):
     halfwidth = max(.005, max(abs(best[0]-z) for z in compatible)+p95+.005)
     if halfwidth > max_halfwidth_m:
         raise ValueError('Fit cannot narrow original 20mm height hypothesis')
-    contact_precision = bool(round(p95, 9) <= .005 and halfwidth <= .020)
-    return {'contact_precision_eligible': contact_precision,
+    contact_precision = bool(not coarse_occlusion and round(p95, 9) <= .005 and halfwidth <= .020)
+    return {'coarse_occlusion_hypothesis': coarse_occlusion,
+            'contact_precision_eligible': contact_precision,
             'geometry_scope': 'strict_5mm_pixel_gate_hypothesis' if contact_precision else 'COARSE_DIRECTIONAL_APPROACH_ONLY: no CLOSE or contact-approach candidate',
             'declared_pixel_sensitivity_limit_mm': max_pixel_p95_mm,
             'source': ('Same-episode earlier/current right-wrist green silhouettes, CURRENT fixed-high static-source check, public K/T; horizontal plane homography' if reference is not None else 'CURRENT fixed-high/right green silhouettes, public K/T; horizontal plane homography'),
