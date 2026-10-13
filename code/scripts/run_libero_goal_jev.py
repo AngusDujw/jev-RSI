@@ -43,7 +43,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    plate_stage_turn_deg, lift_recheck_mm=0, side_pad_overlap_mm=0,
                    rim_height_mode='top_overlap', rim_tilt_deg=0, rim_axis='short',
                    rim_inset_mm=0,
-                   drawer_preorient=False, drawer_clear_to_source=False,
+                   drawer_preorient=False, drawer_high_side_insert=False,
+                   drawer_clear_to_source=False,
                    empty_hand_fast=False, support_stall_release=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
@@ -87,6 +88,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
         if drawer_preorient and task_id == 1098 and drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook', 'cabinet_side_thin_hook'):
             cmd += ['--drawer-preorient']
+        if drawer_high_side_insert and task_id == 1098:
+            cmd += ['--drawer-high-side-insert']
         if task_id == 1202:
             cmd += ['--drawer-bowl-continuation', '--local-goal-vision',
                     '--geometry-profile', 'observed_surfaces',
@@ -135,6 +138,7 @@ def main():
     p.add_argument('--rim-axis', choices=['short','long'], default='short')
     p.add_argument('--rim-inset-mm', type=int, choices=[0,2,4], default=0)
     p.add_argument('--drawer-preorient', action='store_true')
+    p.add_argument('--drawer-high-side-insert', action='store_true')
     p.add_argument('--drawer-clear-to-source', action='store_true')
     p.add_argument('--empty-hand-fast', action='store_true')
     p.add_argument('--support-stall-release', action='store_true')
@@ -188,6 +192,9 @@ def main():
     if a.drawer_preorient and not (a.task_id == 1202 or
         (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook', 'cabinet_side_thin_hook'))):
         p.error('Drawer preorientation requires Goal1202 or Goal1098 high entry')
+    if a.drawer_high_side_insert and not (a.task_id == 1098 and
+        a.drawer_contact_mode == 'cabinet_side_thin_hook' and a.drawer_preorient):
+        p.error('High side insertion requires Goal1098 thin hook and preorientation')
     if a.drawer_clear_to_source and a.task_id != 1202:
         p.error('Drawer clear-to-source requires Goal 1202')
     if a.empty_hand_fast and a.task_id != 1202:
@@ -201,7 +208,8 @@ def main():
                          a.drawer_contact_mode,a.plate_stage_turn_deg,a.lift_recheck_mm,
                          a.side_pad_overlap_mm,a.rim_height_mode,a.rim_tilt_deg,a.rim_axis,
                          a.rim_inset_mm,
-                         a.drawer_preorient,a.drawer_clear_to_source,
+                         a.drawer_preorient,a.drawer_high_side_insert,
+                         a.drawer_clear_to_source,
                          a.empty_hand_fast,a.support_stall_release)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
@@ -290,6 +298,7 @@ def main():
                     lift_recheck_mm=a.lift_recheck_mm,
                     side_pad_overlap_mm=a.side_pad_overlap_mm,
                     drawer_contact_mode=a.drawer_contact_mode,
+                    drawer_high_side_insert=a.drawer_high_side_insert,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,

@@ -116,11 +116,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     blocked_contact_blocks = 0
     expected = None
     side_plan_logged = False
+    high_side_plan_logged = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
     yaw_side_entry = contact_mode == 'cabinet_side_yaw_hook'
     thin_side_entry = contact_mode == 'cabinet_side_thin_hook'
+    high_side_insert = bool(thin_side_entry and rec.cfg.get('drawer_high_side_insert'))
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
@@ -339,7 +341,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     reason=str(exc)))
         while phase < len(sequence):
             rec.check_budget()
-            if ticks >= 550 or stage_ticks >= 145:
+            stage_cap = 230 if high_side_insert and sequence[phase]['name'] == 'contact' else 145
+            if ticks >= 550 or stage_ticks >= stage_cap:
                 raise RuntimeError('Drawer native/stage budget')
             stage = sequence[phase]
             name = stage['name']
@@ -435,7 +438,30 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         visible_rod_back_world_y_m=back_y,
                         source='Public camera RGB-D/links plus own gripper collision mesh and proprioception'))
                     side_plan_logged = True
-            approach_tcp = side_entry_tcp if side_entry_tcp is not None else under_tcp
+            high_side_tcp = None
+            if high_side_insert:
+                # The low sideward segment visibly stopped near the foreground
+                # bowl. Cross its projected lane while above the visible upper
+                # rod, with the whole own hand clear; descend only at the
+                # measured cabinet side. No scene object pose is read.
+                high_side_tcp = side_entry_tcp.copy()
+                upper_z = float(upper_handle['center_world_m'][2])
+                high_side_tcp[2] = max(
+                    float(side_entry_tcp[2])+.12,
+                    upper_z+.02-float(np.min(projected_fingers[:, 2])))
+                if high_side_tcp[2]-side_entry_tcp[2] > .24:
+                    raise RuntimeError('Visible high side route outside bounded reach')
+                if not high_side_plan_logged:
+                    dump(rec.folder/'cabinet-side-high-route.json', dict(
+                        high_side_tcp_world_m=high_side_tcp,
+                        low_side_tcp_world_m=side_entry_tcp,
+                        visible_upper_rod_world_z_m=upper_z,
+                        own_full_hand_min_z_offset_m=float(
+                            np.min(projected_fingers[:, 2])),
+                        source='Public RGB-D handles/cabinet side + own hand mesh'))
+                    high_side_plan_logged = True
+            approach_tcp = (high_side_tcp if high_side_insert else
+                            side_entry_tcp if side_entry_tcp is not None else under_tcp)
             if steep_entry:
                 upper_z = float(upper_handle['center_world_m'][2])
                 if abs(contact_tcp[2]-upper_z) > .025:
@@ -528,8 +554,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     contact_leg = 'side_rise'
             if cabinet_side_entry and name == 'contact':
                 if position[1] > side_entry_tcp[1] + .009:
+                    target = (high_side_tcp if high_side_insert else
+                              side_entry_tcp).copy()
+                    contact_leg = ('cabinet_side_high_y_insert' if high_side_insert
+                                   else 'cabinet_side_y_insert')
+                elif high_side_insert and position[2] > side_entry_tcp[2] + .009:
                     target = side_entry_tcp.copy()
-                    contact_leg = 'cabinet_side_y_insert'
+                    contact_leg = 'cabinet_side_descend'
                 elif abs(position[0]-under_tcp[0]) > .007:
                     target = under_tcp.copy()
                     contact_leg = 'cabinet_side_x_slide'
@@ -605,8 +636,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             visible_cabinet_near_side_world_x_m=(cabinet_side['near_side_world_x_m']
                                 if cabinet_side is not None else None),
                             visible_upper_handle_world_z_m=(float(upper_handle['center_world_m'][2])
-                                if high_entry or steep_entry else None),
+                                if high_entry or steep_entry or high_side_insert else None),
                             high_entry_tcp_world_m=(high_entry_tcp.tolist() if high_entry else None),
+                            high_side_tcp_world_m=(high_side_tcp.tolist()
+                                if high_side_tcp is not None else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
@@ -703,6 +736,21 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'behind the middle rod, then rise to it. contact_path_leg '
                     'names the active waypoint. Advance only when the selected '
                     'own finger is behind the visible rod at the final pose.')
+            if high_side_insert and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Turn the open own wrist in high free space, then reach the '
+                    'camera-measured cabinet side above the visible upper rod. '
+                    'The selected whole-hand mesh stays outside the measured '
+                    'cabinet edge. Advance only after own pose evidence.')
+            if high_side_insert and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Cross the visible foreground at the supplied high side '
+                    'waypoint, then lower outside the measured cabinet edge '
+                    'into the visible middle/lower rod gap, slide along X '
+                    'behind the middle rod, and rise to it. '
+                    'contact_path_leg names the active waypoint. Advance only '
+                    'after the selected own finger is behind the visible rod '
+                    'at the final pose.')
             if contact_mode in ('tip_hook', 'down_hook') and name in ('approach', 'align'):
                 request['state']['stage_contract'] = (
                     'Keep the hand outside the cabinet and align the selected '

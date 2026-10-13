@@ -218,6 +218,8 @@ def main():
                    help='After Jev opens Goal1202 top drawer, continue in the same episode to visible bowl pick/place')
     p.add_argument('--drawer-preorient', action='store_true',
                    help='Let Jev orient own wrist during drawer approach, then verify in align')
+    p.add_argument('--drawer-high-side-insert', action='store_true',
+                   help='Goal1098 thin hook: cross foreground at camera/own-mesh high side waypoint before descending')
     p.add_argument('--knob-supervisor', action='store_true',
                    help='Jev-controlled visible stove control Goal 1383 trial')
     p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'], default='pinch',
@@ -299,6 +301,9 @@ def main():
     if a.drawer_preorient and not (a.drawer_bowl_continuation or
         (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook', 'cabinet_side_thin_hook'))):
         p.error('--drawer-preorient requires Goal1202 or Goal1098 high entry')
+    if a.drawer_high_side_insert and not (a.task_id == 1098 and
+        a.drawer_contact_mode == 'cabinet_side_thin_hook' and a.drawer_preorient):
+        p.error('--drawer-high-side-insert requires Goal1098 thin hook and preorientation')
     if a.drawer_contact_mode in ('side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook') and a.task_id != 1098:
         p.error('Middle-handle entry mode requires Goal1098')
     if a.rim_height_mode != 'top_overlap' and not a.drawer_bowl_continuation:
@@ -340,7 +345,7 @@ def main():
                    existing_root+'/controller/config/api.company.local.json'),
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, support_stall_release=a.support_stall_release, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,drawer_clear_to_source=a.drawer_clear_to_source,empty_hand_fast=a.empty_hand_fast,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,rim_inset_mm=a.rim_inset_mm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, support_stall_release=a.support_stall_release, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,drawer_high_side_insert=a.drawer_high_side_insert,drawer_clear_to_source=a.drawer_clear_to_source,empty_hand_fast=a.empty_hand_fast,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,rim_inset_mm=a.rim_inset_mm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
