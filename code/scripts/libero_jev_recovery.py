@@ -81,7 +81,8 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
             # An inward offset makes the outer face touch first and can push
             # a movable source aside before the inner face reaches it.
             # Both visible sides remain Jev choices.
-            rim_offset = width/2
+            rim_inset = min(cfg.get('rim_inset_mm', 0.)/1000., width/4)
+            rim_offset = width/2-rim_inset
             rim_candidates = []
             for i, side in enumerate((1., -1.)):
                 candidate = dict(c[1])
@@ -104,6 +105,7 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
                 candidate['orientation'] = R_side
                 candidate['grasp_height_source'] = 'visible one-sided rim pinch'
                 candidate['visible_rim_axis'] = cfg.get('rim_axis', 'short')
+                candidate['visible_rim_inset_mm'] = float(rim_inset*1000)
                 candidate['rim_height_mode'] = cfg.get('rim_height_mode', 'top_overlap')
                 candidate['visible_sidewall_drop_mm'] = float(
                     rim_drop*1000)
