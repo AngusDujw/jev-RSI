@@ -297,7 +297,7 @@ def main():
                                         not a.local_goal_vision):
         p.error('--drawer-bowl-continuation requires Goal1202 drawer and local visible vision')
     if a.drawer_preorient and not (a.drawer_bowl_continuation or
-        (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook'))):
+        (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook', 'cabinet_side_thin_hook'))):
         p.error('--drawer-preorient requires Goal1202 or Goal1098 high entry')
     if a.drawer_contact_mode in ('side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook') and a.task_id != 1098:
         p.error('Middle-handle entry mode requires Goal1098')

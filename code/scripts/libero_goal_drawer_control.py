@@ -124,6 +124,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
+    initial_robot_position = np.asarray(obs['robot0_eef_pos'], float).copy()
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
@@ -454,6 +455,15 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'pull': contact_tcp + [0., .18, 0.],
             }
             target = np.asarray(targets.get(name, position), float)
+            approach_leg = None
+            if (thin_side_entry and rec.cfg.get('drawer_preorient') and
+                    name == 'approach'):
+                turn_error = Rotation.from_matrix(side_orientation @
+                    Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
+                approach_leg = ('high_free_space_turn' if
+                    np.max(np.abs(turn_error)) >= .06 else 'side_approach')
+                if approach_leg == 'high_free_space_turn':
+                    target = initial_robot_position.copy()
             if name == 'clear_opening':
                 if clear_target is None:
                     clear_start = position.copy()
@@ -548,7 +558,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             gate = {
                 'observe': True,
                 'select_handle': True,
-                'approach': arrived and oriented if (high_entry or steep_entry) else arrived,
+                'approach': (arrived and oriented and
+                    approach_leg != 'high_free_space_turn') if
+                    (high_entry or steep_entry or
+                     (thin_side_entry and rec.cfg.get('drawer_preorient'))) else arrived,
                 'align': arrived and oriented,
                 'contact': exact_contact_pose or blocked_contact_trial,
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
@@ -574,6 +587,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             hook_pad_current_world_m=pad_now.tolist() if hook_mode and tip_tool is None else None,
                             hook_tip_current_world_m=pad_now.tolist() if tip_tool is not None else None,
                             contact_path_leg=contact_leg if name == 'contact' else None,
+                            approach_path_leg=approach_leg,
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
@@ -617,6 +631,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     ' Rotate toward the supplied own-wrist target while '
                     'translating. Advance on TCP arrival; the next align '
                     'stage checks and completes any remaining orientation.')
+            if thin_side_entry and rec.cfg.get('drawer_preorient') and name == 'approach':
+                request['state']['stage_contract'] = (
+                    'First turn the open own wrist at its high free-space pose, '
+                    'then follow the supplied low cabinet-side TCP goal. '
+                    'completion_evidence.approach_path_leg names the active leg. '
+                    'Advance only after both low TCP arrival and own-wrist '
+                    'orientation are measured; Jev decides every direction and edge.')
             if hook_mode and name == 'grasp':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open and place one own finger behind the '

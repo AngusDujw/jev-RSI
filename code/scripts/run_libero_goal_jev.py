@@ -85,7 +85,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-stage-turn-deg', str(plate_stage_turn_deg)]
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
-        if drawer_preorient and task_id == 1098 and drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook'):
+        if drawer_preorient and task_id == 1098 and drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook', 'cabinet_side_thin_hook'):
             cmd += ['--drawer-preorient']
         if task_id == 1202:
             cmd += ['--drawer-bowl-continuation', '--local-goal-vision',
@@ -186,7 +186,7 @@ def main():
     if a.rim_inset_mm and a.task_id != 1202:
         p.error('Rim inset requires Goal 1202')
     if a.drawer_preorient and not (a.task_id == 1202 or
-        (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook'))):
+        (a.task_id == 1098 and a.drawer_contact_mode in ('high_entry_down_hook', 'steep_tip_hook', 'cabinet_side_thin_hook'))):
         p.error('Drawer preorientation requires Goal1202 or Goal1098 high entry')
     if a.drawer_clear_to_source and a.task_id != 1202:
         p.error('Drawer clear-to-source requires Goal 1202')
