@@ -1072,20 +1072,31 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                        if "close_right_gripper_hold_link6" in targets else
                        "open_empty_right_gripper_hold_link6"
                        if "open_empty_right_gripper_hold_link6" in targets else None)
+        if not targets:
+            status = 'no_legal_complete_public_action'
+            record['status'] = status
+            trace.append(record)
+            native_result = tools.finish(status)
+            break
+        motion_options = {key:description for key,description in options.items()
+                          if key in targets and key != special_key}
+        if len(motion_options) == 1:
+            motion_options['stop_decline_only_motion'] = 'The sole complete motion cannot be visually supported; do not execute it.'
         family_options = {
             "motion": "At least ONE offered complete open-hand pose/motion or closed-hand lift has a visually supported corridor. Judge pickup_action next. All direction/size alternatives belong to THIS ONE family; their count is not extra evidence for STOP or CLOSE.",
             "stop": "No offered complete motion or available gripper action can be judged from CURRENT RGB: a specific visible blocker, unknown whole corridor, or actual finger/model mismatch. Historical failed contact or a gripper not yet ready does not alone rule out current motion."}
         if special_key is not None:
             family_options["gripper"] = options[special_key]
+        if not motion_options:
+            family_options.pop("motion")
         questions = [
             choice("source_identity", "Judge ONLY current visual source identity in the THREE original images and current context crops. Is the mint-green object with two loop handles, a hinge and metal blades identifiable as the task scissors? Depth, pose, grasp, robot clearance and historical failures are separate questions; do not turn their uncertainty into identity ambiguity.", {
                 "visible_mint_green_scissors": "Current RGB supports the requested mint-green scissors identity.",
                 "identity_ambiguous": "Current visible colour/shape/semantic evidence genuinely cannot distinguish the requested source.",
                 "source_absent_or_hidden": "The requested scissors is absent or so occluded that current identity is unavailable."}),
-            choice("action_family", "FIRST judge source_identity. If identity is unavailable, choose STOP. Otherwise choose ONE action family from CURRENT RGB and numerical effects. Different X/Y/Z/rotation options are alternative complete motions, not independent competing reasons to stop. Gripper not ready alone means evaluate motion, not STOP. CLOSE only when offered and actual solid material is visibly in the finite opposing-finger sweep; an old close is not proof of holding.", family_options),
-            choice("pickup_action", "Select ONE COMPLETE offered motion only IF action_family=motion; otherwise this answer is ignored. World +X is robot-right, +Y away from robot bases, +Z up. XYZ millimetres and world rotation-vector radians occur together as one pose target. Compare current source/pad pixel alignment, same-feature predicted XYZ/angle effects and whole visible corridor. Source identity, depth and contact are separate; reobserve after one bounded five-step action.",
-                   {key:description for key,description in options.items()
-                    if key in targets and key != special_key})]
+            choice("action_family", "FIRST judge source_identity. If identity is unavailable, choose STOP. Otherwise choose ONE action family from CURRENT RGB and numerical effects. Different X/Y/Z/rotation options are alternative complete motions, not independent competing reasons to stop. Gripper not ready alone means evaluate motion, not STOP. CLOSE only when offered and actual solid material is visibly in the finite opposing-finger sweep; an old close is not proof of holding.", family_options)]
+        if motion_options:
+            questions.append(choice("pickup_action", "Select ONE COMPLETE offered motion if action_family=motion. Otherwise this answer is ignored and may be omitted. World +X is robot-right, +Y away from robot bases, +Z up. XYZ millimetres and world rotation-vector radians occur together as one pose target. Compare the same-feature predicted XYZ/angle effects and whole visible corridor. Source identity, depth and contact are separate; reobserve after one bounded five-step action.", motion_options))
         model_input = {
             "task": obs["task"], "instruction": obs["instruction"],
             "source_control_feature": material.get('representative_material_point') if material else None,
@@ -1141,14 +1152,17 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         record["actor_input_variant"] = "compact_current_feature_with_rgb_context_crops"
         # Full targets are public robot poses; no source ground-truth enters.
         model_input["complete_robot_action_targets"] = targets
-        for option in questions[-1]["choices"]:
+        motion_question = next((question for question in questions if question["name"]=="pickup_action"), None)
+        for option in motion_question["choices"] if motion_question else []:
+            if option["value"] not in targets:
+                continue
             target = targets[option["value"]]['right']
             current = eef_transform(obs['current_eef']['right'])
             desired = eef_transform(target)
             delta_mm = (desired[:3,3]-current[:3,3])*1000
             rotvec = Rotation.from_matrix(desired[:3,:3] @ current[:3,:3].T).as_rotvec()
             option['description'] = (
-                f"ONE COMPLETE FIVE-step robot pose: right world XYZ delta {delta_mm.round(2).tolist()}mm; world rotation vector {rotvec.round(5).tolist()}rad; right gripper {'CLOSED' if target['gripper_closed'] else 'OPEN'}; left held. All components happen together. Public five-step robot-only path passed; current RGB corridor is independently judged. Candidate effects are in the same-feature/pixel/angle table, not object/contact truth.")
+                f"ONE COMPLETE FIVE-step robot pose: right world XYZ delta {delta_mm.round(2).tolist()}mm; world rotation vector {rotvec.round(5).tolist()}rad; right gripper {'CLOSED' if target['gripper_closed'] else 'OPEN'}; left held. All components happen together. Public five-step robot-only path passed; current RGB corridor is independently judged. Candidate effects are in the same-feature XYZ/angle table, not object/contact truth.")
         try:
             answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
                                  f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",
@@ -1161,7 +1175,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             trace.append(record)
             native_result = tools.finish(status)
             break
-        selected = answer["pickup_action"]
+        selected = answer.get("pickup_action", "ignored_no_motion")
         if family_options is not None:
             family = answer["action_family"]
             record["luna_action_family"] = family
