@@ -313,6 +313,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     visible_container_drop_selected = False
     drawer_lower_target = None
     drawer_lower_verified = False
+    rim_drop_rechecks = 0
 
     def views():
         return {c: dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]), depth=depth_fn(env.sim, obs[c+'_depth'])[::-1].squeeze(), K=k_fn(env.sim,c,obs[c+'_image'].shape[0],obs[c+'_image'].shape[1]), T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
@@ -724,6 +725,28 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                                 source='Fresh public held-bowl RGB-D and visible drawer floor/rim'))
                     if drawer_lower_target is not None:
                         target = drawer_lower_target.copy()
+                    if (rec.cfg.get('rim_relative_drop') and
+                            drawer_lower_verified and
+                            holding.get('status') == 'passed' and
+                            rim_drop_rechecks < 2):
+                        measured = holding['measured']
+                        xy_error = (np.asarray(dst['center'][:2], float)-
+                                    np.asarray(measured['center'][:2], float))
+                        height_error = (float(dst['rim_high_z'])+.012-
+                                        float(measured['low'][2]))
+                        if (np.max(np.abs(xy_error)) > .010 or
+                                height_error > .007 or height_error < -.008):
+                            correction = np.r_[np.clip(xy_error, -.015, .015),
+                                                np.clip(height_error, -.015, .015)]
+                            drawer_lower_target = position+correction
+                            drawer_lower_verified = False
+                            target = drawer_lower_target.copy()
+                            rec.event(dict(kind='drawer_visible_rim_drop_correction',
+                                native_tick=ticks,
+                                receiver_minus_visible_bowl_xy_mm=np.round(xy_error*1000,2).tolist(),
+                                desired_bottom_height_error_mm=round(height_error*1000,2),
+                                bounded_tcp_correction_mm=np.round(correction*1000,2).tolist(),
+                                source='Fresh public held-bowl RGB-D and visible drawer floor/rim'))
             elif stage == 'recover_up':
                 target = recovery_target
             elif stage == 'clear_receiver':
@@ -785,6 +808,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     arrived and not drawer_lower_verified):
                 check_hold(use_projection=True)
                 drawer_lower_verified = True
+                if rec.cfg.get('rim_relative_drop'):
+                    rim_drop_rechecks += 1
                 rec.event(dict(kind=('drawer_visible_rim_drop_recheck' if
                     rec.cfg.get('rim_relative_drop') else 'drawer_visible_insert_recheck'),
                     native_tick=ticks, holding_status=holding['status'],
@@ -902,8 +927,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         + ('rim-relative release height above the visible open drawer. '
                            if rec.cfg.get('rim_relative_drop') else
                            'short downward goal into the visible open drawer. ')
-                        + 'After arrival a fresh public RGB-D holding and floor '
-                        'check is required before any release. If it fails, '
+                        + 'If fresh RGB-D provides another bounded XYZ correction, '
+                        'follow that target while the gripper stays closed. '
+                        'After arrival a fresh public RGB-D holding and floor '
+                        'check is required before any release. If the final check fails, '
                         'choose retry when offered. Do not infer native success.')
                 contracts['descend'] = (
                     'Move open fingers toward the visible bowl pad-fit pose. '
@@ -990,6 +1017,12 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     (arrived or stalls>=2))
             if stage == 'lower' and container_drop['status']=='visible_drop_candidate':
                 complete=bool(oriented)
+            if stage == 'lower' and rec.cfg.get('rim_relative_drop'):
+                # A TCP arrival alone did not preserve visible bowl alignment
+                # during the first height adjustment. Require the fresh held-
+                # object/rim contract before Jev can select the release edge.
+                complete=bool(oriented and
+                    container_drop['status']=='visible_drop_candidate')
             if stage in ('carry_lateral','carry') and verify_carry:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
             if stage == 'carry' and rec.cfg.get('drawer_bowl_continuation'):
@@ -1121,6 +1154,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 carry_alignment_rechecks=0
                 drawer_lower_target=None
                 drawer_lower_verified=False
+                rim_drop_rechecks=0
                 rack_verified=False
                 rack_contact_checked=False
                 rack_contact_evidence=dict(status='not_checked')
@@ -1146,6 +1180,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     carry_alignment_rechecks=0
                     drawer_lower_target=None
                     drawer_lower_verified=False
+                    rim_drop_rechecks=0
                     rack_verified=False
                     rack_contact_checked=False
                     rack_contact_evidence=dict(status='not_checked')
