@@ -111,10 +111,14 @@ def build(observation: dict, temporal_metal: dict,
     paired_max_distance_mm = np.maximum(
         surface_rows[0][0], surface_rows[1][0])*1000
     return {
-        "source": "Current actual green RGB pixels in right wrist and fixed high view, public K/T, same-episode RGB-matched silver patch height hypothesis, measured robot and public inner-finger STL facets",
+        "source": ("Current actual green pixels in high/right RGB, current temporal wrist silhouette plane fit, public K/T, measured robot and public inner-finger STL; silver is separate identity/stability corroboration"
+                   if green_plane is not None else
+                   "Current actual green pixels in high/right RGB, public K/T, same-episode silver height hypothesis, measured robot and public inner-finger STL"),
         "current_step_id": observation["step_id"],
         "height_reference_step_id": reference_step,
         "height_evidence_mode": (
+            "CURRENT temporal green-plane fit with explicit uncertainty; earlier wrist reference has a current fixed-high static-source check"
+            if green_plane is not None else
             "Earlier same-episode RGB-matched silver height; CURRENT fixed-high source stability and CURRENT high/right green-pixel support are revalidated. No current silver match is claimed."
             if historical_height else
             "Current same-episode silver texture match plus current high/right green-pixel support"),
