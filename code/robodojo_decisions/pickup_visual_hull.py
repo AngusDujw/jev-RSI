@@ -23,6 +23,15 @@ def _green_mask(path: Path, camera: str) -> np.ndarray:
              (rgb[:, :, 1] > rgb[:, :, 0] + 8) &
              (rgb[:, :, 1] > rgb[:, :, 2] + 8) &
              (rgb[:, :, 2] > 70))
+    if os.environ.get('ROBODOJO_PICKUP_CHROMA_GREEN_MASK') == '1':
+        red,green,blue=rgb[:,:,0],rgb[:,:,1],rgb[:,:,2]
+        total=red+green+blue
+        saturation=(rgb.max(axis=2)-rgb.min(axis=2))/np.maximum(rgb.max(axis=2),1)
+        # Preserve the old high-luminance evidence; add only chromatic,
+        # sufficiently lit pixels instead of rejecting every R<=90 shadow.
+        relative=((red>20)&(green>50)&(blue>15)&(total>100)&
+                  ((green-red)>.012*total)&((green-blue)>.010*total)&(saturation>=.08))
+        color |= relative
     roi = (((xx > 370) & (yy > 150) & (yy < 350)) if camera == "cam_high"
            else np.ones_like(yy, dtype=bool))
     mask = color & roi
