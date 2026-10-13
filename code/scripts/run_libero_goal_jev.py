@@ -50,7 +50,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
-           '--max-jev-decisions', '240' if mode == 'push' or task_id == 1202 else '160',
+           '--max-jev-decisions', '240' if mode == 'push' or task_id == 1202 or
+                (task_id == 1098 and drawer_far_side_insert) else '160',
            '--wall-limit-seconds', '1200',
            '--output', str(episode)]
     if mode in ('recovery', 'supervisor'):

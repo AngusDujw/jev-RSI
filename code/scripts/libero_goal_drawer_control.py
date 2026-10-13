@@ -125,6 +125,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     thin_side_entry = contact_mode == 'cabinet_side_thin_hook'
     high_side_insert = bool(thin_side_entry and rec.cfg.get('drawer_high_side_insert'))
     far_side_insert = bool(high_side_insert and rec.cfg.get('drawer_far_side_insert'))
+    max_native_ticks = 580 if far_side_insert else 550
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
     hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
@@ -351,7 +352,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         while phase < len(sequence):
             rec.check_budget()
             stage_cap = 230 if high_side_insert and sequence[phase]['name'] == 'contact' else 145
-            if ticks >= 550 or stage_ticks >= stage_cap:
+            if ticks >= max_native_ticks or stage_ticks >= stage_cap:
                 raise RuntimeError('Drawer native/stage budget')
             stage = sequence[phase]
             name = stage['name']
