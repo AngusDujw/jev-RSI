@@ -484,7 +484,10 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         # unchanged next RGB. Start this distinct run with a real camera
         # viewpoint change supported by the current full-frame projection.
         ring_count = hull["right_wrist_closed_green_ring_count"]
-        gripper_closed = bool(obs["current_eef"]["right"]["gripper_closed"])
+        # Native observations expose the measured opening command, while
+        # EEF action targets use the separate gripper_closed Boolean.
+        gripper_closed = (
+            float(obs["current_eef"]["right"]["gripper_opening_command"]) < 0.5)
         view_stage = not gripper_closed and (margin <= 45 or ring_count < 2)
         record = {"turn": turn, "step_id": obs["step_id"],
                   "sensor_derived_geometry": hull,
