@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import os
 import numpy as np
 from PIL import Image
 from scipy.ndimage import binary_closing, binary_fill_holes, label as label_components
@@ -99,7 +100,8 @@ def build(obs: dict) -> dict:
     # range. The range is a declared search assumption, not a measured depth.
     pixel_index = np.arange(0, len(wrist_x), 3)
     wrist_uv = np.column_stack((wrist_x[pixel_index], wrist_y[pixel_index]))
-    distances = np.arange(0.15, 1.201, 0.005)
+    minimum_ray_distance = .02 if os.environ.get("ROBODOJO_PICKUP_NEAR_RAYS") == "1" else .15
+    distances = np.arange(minimum_ray_distance, 1.201, 0.005)
     camera = calibration["cameras"]["cam_right_wrist"]
     k = np.asarray(camera["intrinsic"], float)
     transform = np.asarray(camera["camera_to_environment"], float)
@@ -158,7 +160,7 @@ def build(obs: dict) -> dict:
                 "fraction_of_support_points_distance_reduced":
                     round(float(np.mean(gain_mm > 0)), 3),
             }
-    return {
+    return {"declared_optical_ray_distance_search_range_m": [minimum_ray_distance, 1.2],
         "step_id": obs["step_id"],
         "current_rgb_support_points": len(support),
         "right_wrist_mask_bbox_xyxy": wrist_bbox,

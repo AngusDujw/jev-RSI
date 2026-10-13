@@ -673,8 +673,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         except ValueError as error:
             green_plane_errors.append(f"current_high_right: {error}")
         if (os.environ.get('ROBODOJO_PICKUP_LOCAL_FINGER_FIT') == '1' and not gripper_closed and
-                (green_plane is None or not green_plane.get('contact_precision_eligible')) and
-                hull['pad_to_visual_support_distance_mm_q05_q50_q95'][0] <= 100):
+                (green_plane is None or not green_plane.get('contact_precision_eligible'))):
             axis = eef_transform(obs['current_eef']['right'])[:3,0]
             angle = np.degrees(np.arccos(np.clip(axis@[0,0,-1],-1,1)))
             if angle <= 35:
