@@ -117,6 +117,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     expected = None
     side_plan_logged = False
     high_side_plan_logged = False
+    high_y_insert_reached = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
@@ -553,7 +554,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 else:
                     contact_leg = 'side_rise'
             if cabinet_side_entry and name == 'contact':
-                if position[1] > side_entry_tcp[1] + .009:
+                if (high_side_insert and not high_y_insert_reached and
+                        position[1] <= side_entry_tcp[1]+.009):
+                    high_y_insert_reached = True
+                    rec.event(dict(kind='high_side_y_waypoint_reached',
+                        native_tick=ticks,
+                        current_tcp_world_m=position.tolist(),
+                        target_tcp_world_m=high_side_tcp.tolist(),
+                        source='own TCP feedback and public RGB-D waypoint'))
+                if (high_side_insert and not high_y_insert_reached) or (
+                        not high_side_insert and position[1] > side_entry_tcp[1] + .009):
                     target = (high_side_tcp if high_side_insert else
                               side_entry_tcp).copy()
                     contact_leg = ('cabinet_side_high_y_insert' if high_side_insert
@@ -640,6 +650,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             high_entry_tcp_world_m=(high_entry_tcp.tolist() if high_entry else None),
                             high_side_tcp_world_m=(high_side_tcp.tolist()
                                 if high_side_tcp is not None else None),
+                            high_side_y_waypoint_reached=(high_y_insert_reached
+                                if high_side_insert else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
