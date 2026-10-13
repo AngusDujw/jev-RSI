@@ -425,7 +425,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             rotation_error = (Rotation.from_matrix(orientation_goal @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
                 if name in ('align', 'contact', 'grasp', 'pull', 'release') or
-                   (name == 'approach' and rec.cfg.get('drawer_preorient'))
+                   (name == 'approach' and (rec.cfg.get('drawer_preorient') or high_entry))
                 else np.zeros(3))
             oriented = bool(np.max(np.abs(rotation_error)) < .06)
             aperture = float(np.sum(np.abs(obs['robot0_gripper_qpos']))*1000)
@@ -453,7 +453,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             gate = {
                 'observe': True,
                 'select_handle': True,
-                'approach': arrived,
+                'approach': arrived and oriented if high_entry else arrived,
                 'align': arrived and oriented,
                 'contact': exact_contact_pose or blocked_contact_trial,
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
