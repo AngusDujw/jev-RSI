@@ -47,7 +47,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    empty_hand_fast=False, support_stall_release=False,
                    plate_coast_gate=False, plate_final_overshoot_mm=0,
                    plate_front_margin_px=0, plate_second_rim_contact=False,
-                   plate_second_rim_hover_gate=False):
+                   plate_second_rim_hover_gate=False,
+                   plate_second_visible_contact_gate=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -96,6 +97,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-second-rim-contact']
         if plate_second_rim_hover_gate:
             cmd += ['--plate-second-rim-hover-gate']
+        if plate_second_visible_contact_gate:
+            cmd += ['--plate-second-visible-contact-gate']
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
         if task_id == 1202:
@@ -156,6 +159,8 @@ def main():
     p.add_argument('--plate-front-margin-px', type=int, choices=[0, 3], default=0)
     p.add_argument('--plate-second-rim-contact', action='store_true')
     p.add_argument('--plate-second-rim-hover-gate', action='store_true')
+    p.add_argument('--plate-second-visible-contact-gate', action='store_true',
+                   help='Offer Jev a bounded plate-rim contact trial from public RGB-D and own finger feedback')
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     p.add_argument('--preflight-only', action='store_true',
@@ -215,10 +220,14 @@ def main():
     if a.plate_coast_gate and a.task_id != 1296:
         p.error('Plate coast gate requires Goal 1296')
     if (a.plate_final_overshoot_mm or a.plate_front_margin_px or
-            a.plate_second_rim_contact or a.plate_second_rim_hover_gate) and a.task_id != 1296:
+            a.plate_second_rim_contact or a.plate_second_rim_hover_gate or
+            a.plate_second_visible_contact_gate) and a.task_id != 1296:
         p.error('Plate final clearance parameters require Goal 1296')
     if a.plate_second_rim_hover_gate and not a.plate_second_rim_contact:
         p.error('Second rim hover gate requires second rim contact')
+    if a.plate_second_visible_contact_gate and not (a.plate_second_rim_contact and
+                                                    a.plate_second_rim_hover_gate):
+        p.error('Visible contact gate requires the second rim and hover gates')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
                          a.grasp_profile,a.approach_mode,a.entry_side,a.grasp_hold_ticks,
                          a.drawer_contact_mode,a.plate_stage_turn_deg,a.lift_recheck_mm,
@@ -227,7 +236,8 @@ def main():
                          a.drawer_preorient,a.drawer_clear_to_source,
                          a.empty_hand_fast,a.support_stall_release,a.plate_coast_gate,
                          a.plate_final_overshoot_mm,a.plate_front_margin_px,
-                         a.plate_second_rim_contact,a.plate_second_rim_hover_gate)
+                         a.plate_second_rim_contact,a.plate_second_rim_hover_gate,
+                         a.plate_second_visible_contact_gate)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -321,6 +331,7 @@ def main():
                     plate_front_margin_px=a.plate_front_margin_px,
                     plate_second_rim_contact=a.plate_second_rim_contact,
                     plate_second_rim_hover_gate=a.plate_second_rim_hover_gate,
+                    plate_second_visible_contact_gate=a.plate_second_visible_contact_gate,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,
                     policy_source_sha256=hashes, git_commit=commit,

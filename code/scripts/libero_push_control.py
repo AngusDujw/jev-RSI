@@ -24,6 +24,42 @@ from run_position_pilot import Jev, append, direction_metrics, dump, serial
 PHASES = ('prepare', 'approach', 'lower', 'push', 'retreat')
 
 
+def visible_finger_plate_contact(own, tcp, quaternion, source, history,
+                                 position_error, rotation_error, direction):
+    """Offer a bounded push trial from public plate bounds and own finger motion.
+
+    A close mesh/bounding-box distance alone is ambiguous. Require repeated
+    commanded motion toward the planned contact with little actual movement;
+    later RGB-D verification still decides whether the plate moved.
+    """
+    fingers = (np.asarray(own['finger_vertices_tool']) @
+               Rotation.from_quat(quaternion).as_matrix().T + np.asarray(tcp))
+    low, high = (np.asarray(source[k], float) for k in ('low', 'high'))
+    gap = np.linalg.norm(np.maximum(np.maximum(low-fingers, fingers-high), 0.), axis=1)
+    near = bool(np.any(gap < .005))
+    height_overlap = bool(np.min(fingers[:, 2]) <= high[2]+.003 and
+                          np.max(fingers[:, 2]) >= low[2]-.003)
+    rearward = -np.asarray(direction[:2], float)
+    recent = [row for row in history if row['stage'] == 'lower'][-3:]
+    blocked_rearward = bool(len(recent) == 3 and all(
+        np.dot(row['commanded_delta_mm_per_native_step'][:2], rearward) > .5 and
+        abs(np.dot(row['actual_block_displacement_mm'][:2], rearward)) < .3
+        for row in recent))
+    lateral_residual = (rearward[0]*position_error[1] -
+                        rearward[1]*position_error[0])
+    bounded_pose = bool(.008 <= np.dot(position_error[:2], rearward) <= .016 and
+                        abs(lateral_residual) < .010 and
+                        abs(position_error[2]) < .005 and
+                        np.max(np.abs(rotation_error)) < .12)
+    return dict(visible_finger_to_plate_bbox_mm=round(float(np.min(gap))*1000, 2),
+                finger_plate_height_overlap=height_overlap,
+                commanded_rearward_blocked_three_times=blocked_rearward,
+                bounded_own_pose=bounded_pose,
+                contact_trial_available=bool(near and height_overlap and
+                                             blocked_rearward and bounded_pose),
+                source='public RGB-D plate bounds + own finger mesh/pose + executed action history')
+
+
 def world_cloud(view):
     vv, uu = np.indices(view['depth'].shape)
     d, k, t = view['depth'], view['K'], view['T']
@@ -483,6 +519,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 orientation @ Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
             oriented = bool(np.max(np.abs(rot)) <
                 (.06 if second_rim_hover else .07 if second_lower else .03))
+            contact_trial = (visible_finger_plate_contact(
+                own, current, obs['robot0_eef_quat'], source, history,
+                error, rot, direction)
+                if second_lower and rec.cfg.get('plate_second_visible_contact_gate')
+                and plan['contact_mode'] == 'rear_edge' else None)
             verification_stage = ('retreat' if visible_goal_plate else 'push')
             if stage == verification_stage and arrived and observed_after is None:
                 v = views()
@@ -524,6 +565,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     not front_relation_passed and not residual_correction_available):
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
+            if contact_trial is not None and contact_trial['contact_trial_available']:
+                # This is a permitted trial of pushing, not proof of contact
+                # or task success. Jev still chooses the phase edge and fresh
+                # RGB-D after the push must verify plate movement.
+                complete = True
             if stage == 'push' and not visible_goal_plate:
                 complete = bool(complete and visible_error is not None and visible_error < goal_tolerance)
             if coast_enabled and segment == 1 and stage == 'push':
@@ -560,6 +606,15 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'front of and horizontally aligned with the stove. '
                     'The latter uses visible bounding boxes and the plate '
                     'radius, not the evaluator.')
+            if contact_trial is not None:
+                contracts['lower'] = (
+                    'Lower the own fingertip to the visible plate rim. '
+                    'Advance when position and orientation arrive, or when '
+                    'completion_evidence.visible_contact_trial.contact_trial_available '
+                    'is true: own fingers overlap the public plate bounds, '
+                    'three commanded rearward blocks barely move, and own '
+                    'pose is bounded. This permits a push trial only; later '
+                    'fresh RGB-D must show the plate moved.')
             if coast_enabled and segment == 1:
                 contracts['push'] = (
                     'Move the supported pusher toward the visible staging lane. '
@@ -599,6 +654,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     visible_front_relation=front_relation,
                     plate_coast_prediction=(coast_evidence if coast_enabled and
                         segment == 1 and stage == 'push' else None),
+                    visible_contact_trial=contact_trial,
                     contract_satisfied=bool(complete)),
                 allowed_transitions=dict(continue_phase=True, advance=bool(complete),
                     reobserve=bool(residual_correction_available or
