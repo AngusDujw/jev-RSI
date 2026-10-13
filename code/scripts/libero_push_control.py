@@ -309,7 +309,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     visible_goal_plate = bool(rec.cfg.get('goal_plate_push'))
     if visible_goal_plate:
         from libero_goal_plate_vision import (GoalPlateVision,
-            visible_plate_in_front_of_stove)
+            visible_plate_in_front_of_stove, visible_plate_rim_progress)
         vision = GoalPlateVision(rec)
     else:
         vision = PushVision(rec)
@@ -328,6 +328,10 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     ultimate_goal = None
     ultimate_goal_uv = None
     segment = 1
+    coast_enabled = bool(visible_goal_plate and rec.cfg.get('plate_coast_gate'))
+    coast_previous = None
+    coast_gate_reached = False
+    coast_evidence = None
     # The official episode horizon is 600 native steps.  The rollout already
     # spent 10 steps opening the gripper before entering this supervisor.
     # Leave a ten-step margin so a correction cannot overrun the simulator.
@@ -368,6 +372,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         public_task = ' '.join(task.language.split()[:-2]) if task.language.split()[-2:-1] == ['light'] else task.language
         v = views()
         identity = vision.locate(v, public_task, 'initial')
+        initial_plate_u = float(vision.last_uv[0]) if coast_enabled else None
         ob = identity['source']
         source = vision.measure(v[ob['camera']], ob['bbox'], ob['label'], 'initial-source')
         goal_uv = np.asarray(identity['goal_uv'], float)
@@ -407,6 +412,41 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             current = obs['robot0_eef_pos'].copy()
             target = dict(prepare=current, approach=approach, lower=lower,
                           push=push_end, retreat=retreat)[stage]
+            if coast_enabled and segment == 1 and stage == 'push':
+                live_rgb = np.ascontiguousarray(obs['agentview_image'][::-1])
+                measured = visible_plate_rim_progress(live_rgb)
+                if measured is not None:
+                    u = measured['u_px']
+                    speed = (None if coast_previous is None or
+                             ticks <= coast_previous[0] else
+                             (u-coast_previous[1])/(ticks-coast_previous[0]))
+                    coast_previous = (ticks, u)
+                    direction_u = np.sign(float(ultimate_goal_uv[0])-initial_plate_u)
+                    along_speed = (None if speed is None else
+                                   float(np.clip(direction_u*speed, 0., 4.)))
+                    predicted_u = (None if along_speed is None else
+                                   u+direction_u*20.*along_speed)
+                    span = abs(float(ultimate_goal_uv[0])-initial_plate_u)
+                    if (not coast_gate_reached and predicted_u is not None and
+                            direction_u*(u-initial_plate_u) >= .5*span and
+                            direction_u*(predicted_u-initial_plate_u) >= span):
+                        coast_gate_reached = True
+                        rec.event(dict(kind='visible_plate_coast_gate',
+                            native_tick=ticks, measured_u_px=u,
+                            speed_px_per_native_step=along_speed,
+                            predicted_settle_u_px=predicted_u,
+                            final_public_goal_u_px=float(ultimate_goal_uv[0]),
+                            source='public agentview red plate rim and executed tick history'))
+                    coast_evidence = dict(**measured,
+                        speed_toward_goal_px_per_native_step=along_speed,
+                        predicted_settle_u_px=predicted_u,
+                        final_public_goal_u_px=float(ultimate_goal_uv[0]),
+                        lookahead_native_steps=20,
+                        visual_stage_reached=coast_gate_reached)
+                if coast_gate_reached:
+                    # Stop commanding the old overshoot endpoint. Jev still
+                    # chooses hold signs and whether to advance the phase.
+                    target = current.copy()
             error = target-current
             second_lower = visible_goal_plate and segment == 2 and stage == 'lower'
             # The rear-edge staging pose is a clearance waypoint, not the
@@ -457,6 +497,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
             if stage == 'push' and not visible_goal_plate:
                 complete = bool(complete and visible_error is not None and visible_error < goal_tolerance)
+            if coast_enabled and segment == 1 and stage == 'push':
+                complete = bool((coast_gate_reached or arrived) and oriented)
             if stage == 'retreat':
                 complete = (bool(arrived and visible_error is not None and
                                  (visible_error < goal_tolerance or
@@ -489,6 +531,15 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'front of and horizontally aligned with the stove. '
                     'The latter uses visible bounding boxes and the plate '
                     'radius, not the evaluator.')
+            if coast_enabled and segment == 1:
+                contracts['push'] = (
+                    'Move the supported pusher toward the visible staging lane. '
+                    'When completion_evidence.plate_coast_prediction.'
+                    'visual_stage_reached is true, the public red rim trajectory '
+                    'predicts the plate will settle near the final stove-front '
+                    'image column; choose advance now to lift the pusher. '
+                    'The old fixed sweep endpoint remains a fallback if the '
+                    'public rim is occluded. This is not official success.')
             if residual_correction_available:
                 contracts['retreat'] = (
                     'Fresh public RGB-D measures a remaining plate-to-goal '
@@ -517,6 +568,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     None if visible_error is None else round(visible_error*1000, 2),
                     visible_goal_tolerance_mm=round(goal_tolerance*1000, 1),
                     visible_front_relation=front_relation,
+                    plate_coast_prediction=(coast_evidence if coast_enabled and
+                        segment == 1 and stage == 'push' else None),
                     contract_satisfied=bool(complete)),
                 allowed_transitions=dict(continue_phase=True, advance=bool(complete),
                     reobserve=bool(residual_correction_available or

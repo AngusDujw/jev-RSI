@@ -24,6 +24,25 @@ def world_cloud(view):
     return xyz @ t[:3, :3].T + t[:3, 3]
 
 
+def visible_plate_rim_progress(rgb):
+    """Track the public red plate rim during a push, including partial occlusion.
+
+    The fixed view's lower-right tabletop is the task-specific public camera
+    workspace. This reads rendered RGB only, not a simulator body or predicate.
+    """
+    image = np.asarray(rgb)
+    if image.shape != (768, 768, 3):
+        raise ValueError('Expected 768x768 public agentview RGB')
+    patch = cv2.cvtColor(image[420:, 270:], cv2.COLOR_RGB2HSV)
+    red = (((patch[:, :, 0] < 12) | (patch[:, :, 0] > 175)) &
+           (patch[:, :, 1] > 55) & (patch[:, :, 2] > 70))
+    v, u = np.where(red)
+    if len(u) < 500:
+        return None
+    return dict(u_px=float(np.median(u)+270), v_px=float(np.median(v)+420),
+                red_pixels=int(len(u)), source='public agentview RGB red plate rim')
+
+
 def visible_plate(view, previous_uv=None, expected_uv=None):
     """Select the flat red-ring plate, rejecting similar round bowls/burners."""
     rgb = np.asarray(view['rgb'])
