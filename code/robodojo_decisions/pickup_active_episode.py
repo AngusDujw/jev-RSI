@@ -488,7 +488,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         # EEF action targets use the separate gripper_closed Boolean.
         gripper_closed = (
             float(obs["current_eef"]["right"]["gripper_opening_command"]) < 0.5)
-        view_stage = not gripper_closed and (margin <= 45 or ring_count < 2)
+        view_stage = not gripper_closed and (margin <= 60 or ring_count < 2)
         record = {"turn": turn, "step_id": obs["step_id"],
                   "sensor_derived_geometry": hull,
                   "temporal_metal_and_green_support": temporal,
@@ -543,12 +543,6 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "green source translation in the fixed high camera, not merely "
                 "the moving wrist image or LINK6.")
         elif view_stage:
-            if margin <= 30:
-                status = "visibility_view_budget_or_edge_incomplete"
-                record["status"] = status
-                trace.append(record)
-                native_result = tools.finish(status)
-                break
             entering_view = not trace or trace[-1].get("stage") != "visibility_recovery"
             if (obs["step_id"] != 0 and entering_view and
                     near_refresh is None and
