@@ -23,7 +23,7 @@ def _green_mask(path: Path, camera: str) -> np.ndarray:
              (rgb[:, :, 1] > rgb[:, :, 2] + 8) &
              (rgb[:, :, 2] > 70))
     roi = (((xx > 370) & (yy > 150) & (yy < 350)) if camera == "cam_high"
-           else (yy > 100))
+           else np.ones_like(yy, dtype=bool))
     mask = color & roi
     if camera == "cam_right_wrist":
         components, count = label_components(mask)
