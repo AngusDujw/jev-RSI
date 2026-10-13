@@ -357,7 +357,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # surface.  Trailing top contact maintained the second segment
             # on init2; init3's centred first contact lost the plate early.
             # Use the same support-relative contact rule in both segments.
-            contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
+            # Crosswise top contact can slide over the plate. The optional
+            # second contact starts behind the visible rim using own fingers.
+            contact_mode=('rear_edge' if visible_goal_plate and segment >= 2
+                          and rec.cfg.get('plate_second_rim_contact') else
+                          'top_surface' if visible_goal_plate else 'rear_edge'),
             allow_short_push=bool(visible_goal_plate and segment >= 2),
             overshoot_extra_m=(
                 rec.cfg.get('plate_final_overshoot_mm', 0)/1000.
