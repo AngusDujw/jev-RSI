@@ -7,6 +7,7 @@ geometry proposes complete short actions; du Luna selects one or a stop.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -499,8 +500,19 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     # cannot substitute for this episode's current observations.
     try:
         initial_hull = build_visual_hull(obs)
-        initial_refresh = _plan_refresh(obs, initial_hull, output,
-                                        experience_root)
+        if os.environ.get('ROBODOJO_PICKUP_USE_GENERAL_SCHEMA') == '1':
+            provenance = plan.get('planner_provenance', {})
+            if (not plan.get('general_method_schema') or provenance.get('model') != 'gpt-6.1-sol'
+                    or provenance.get('reasoning_effort') != 'high'):
+                raise ValueError('General-method reuse requires authored GPT-6.1 Sol high schema')
+            initial_refresh = {'general_method_schema_reuse':True,
+                'path':provenance.get('fresh_stage_source'),
+                'initial_stage':plan['initial_stage'],'stage_recipe':plan['stages'][plan['initial_stage']],
+                'visual_method':plan['visual_method'],
+                'scope':'Task-general authored method; no current-layout planner call claimed; current geometry is rebuilt from fresh sensors.'}
+        else:
+            initial_refresh = _plan_refresh(obs, initial_hull, output,
+                                            experience_root)
         active_method = initial_refresh["visual_method"]
         active_stage = initial_refresh["initial_stage"]
         active_stage_recipe = initial_refresh["stage_recipe"]
@@ -1156,7 +1168,18 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         full_input_path.write_text(json.dumps(model_input, ensure_ascii=False, indent=2))
         model_input, identity_crops = prepare_actor_evidence(
             obs, model_input, experience, output, turn, targets)
-        record["actor_input_variant"] = "compact_current_feature_with_rgb_context_crops"
+        record["actor_input_variant"] = model_input['actor_error_input_variant']
+        if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS', '1') == '0':
+            for question in questions:
+                if question['name'] == 'pickup_action':
+                    question['instructions'] = (
+                        'Independently rank ONE COMPLETE candidate for the current semantic phase from current THREE raw RGB, labelled current crops, measured robot state and WORLD XYZ/rotation descriptions. '
+                        'No current per-axis source error or geometry-effect table is supplied in this variant. Use explicit abstain if no candidate can be ranked. '
+                        'Rank independently of other question answers; ranking alone does not authorize motion. World +X robot-right, +Y away from robot bases, +Z up; robot XYZ and rotation occur together.')
+                elif question['name'] == 'action_family':
+                    question['instructions'] = (
+                        'Independently judge ONE currently feasible action family using current RGB, measured robot state, semantic phase and complete public-robot candidates. '
+                        'Source ambiguity, a visible blocker or unknown whole corridor can support STOP. A gripper not ready alone does not rule out open-hand motion. Do not reference another question answer.')
         # Full targets are public robot poses; no source ground-truth enters.
         model_input["complete_robot_action_targets"] = targets
         motion_question = next((question for question in questions if question["name"]=="pickup_action"), None)
@@ -1169,7 +1192,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             delta_mm = (desired[:3,3]-current[:3,3])*1000
             rotvec = Rotation.from_matrix(desired[:3,:3] @ current[:3,:3].T).as_rotvec()
             option['description'] = (
-                f"ONE COMPLETE FIVE-step robot pose: right world XYZ delta {delta_mm.round(2).tolist()}mm; world rotation vector {rotvec.round(5).tolist()}rad; right gripper {'CLOSED' if target['gripper_closed'] else 'OPEN'}; left held. All components happen together. Public five-step robot-only path passed; current RGB corridor is independently judged. Candidate effects are in the same-feature XYZ/angle table, not object/contact truth.")
+                f"ONE COMPLETE FIVE-step robot pose: right world XYZ delta {delta_mm.round(2).tolist()}mm; world rotation vector {rotvec.round(5).tolist()}rad; right gripper {'CLOSED' if target['gripper_closed'] else 'OPEN'}; left held. All components happen together. Public five-step robot-only path passed; current RGB corridor is independently judged. Judge current RGB and the available variant-specific evidence; this target is a robot pose, not object/contact truth.")
         try:
             answer = model.query(obs, questions, json.dumps(model_input, ensure_ascii=False),
                                  f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",

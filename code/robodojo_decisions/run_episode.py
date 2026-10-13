@@ -586,10 +586,13 @@ def main() -> None:
         "started": dt.datetime.now().astimezone().isoformat(),
         "source": "existing read-only RoboDojo + GPT-as-Policy installation",
         "planner_model": "gpt-6.1-sol high",
-        "planner_refresh_transport": ("requested AI2RobCoWork Responses gateway; explicit supplied-method fallback if unavailable"
+        "planner_refresh_transport": ("supplied authored task-general GPT-6.1 Sol high schema; no fresh per-layout call claimed"
+                                      if os.environ.get("ROBODOJO_PICKUP_USE_GENERAL_SCHEMA") == "1" else
+                                      "requested AI2RobCoWork Responses gateway; explicit supplied-method fallback if unavailable"
                                       if args.controller == "v2_pickup_active_episode" else "supplied plan provenance"),
         "planner_schema_provenance": plan.get("planner_provenance", {}),
         "decision_model": "gpt-6-luna via du cad/direct key",
+        "actor_current_numeric_errors": os.environ.get("ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS", "1") != "0",
         "input_contract": "fresh three RGB plus labelled current derived crops, public K/T and robot URDF/STL, measured robot state, uncertain camera-derived geometry and model-facing experience; no true object pose, contact or evaluator outcomes"}, indent=2))
     os.environ.update(environment)
     os.environ["ROBODOJO_RPC_PORT"] = str(port)

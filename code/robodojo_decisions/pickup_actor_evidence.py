@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 from pathlib import Path
 
 import numpy as np
@@ -143,4 +144,12 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
     # Physical contact candidates retain all actual numerical uncertainty gates.
     compact['contact_approach_evidence'] = full_input.get('contact_approach_evidence')
     compact['last_executed_action_and_visible_change'] = full_input.get('last_executed_action_and_visible_change')
+    metric_errors = os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS', '1') != '0'
+    compact['actor_error_input_variant'] = ('current_RGB_plus_numeric_feature_errors' if metric_errors else
+        'current_RGB_without_current_numeric_errors; SAME geometry-generated candidate and gate scaffold')
+    if not metric_errors:
+        for key in ('source_control_feature','source_feature_after_each_complete_action',
+                    'source_error_interpretation','public_tool_orientation_evidence',
+                    'current_geometry_validity','contact_approach_evidence'):
+            compact.pop(key,None)
     return compact, images
