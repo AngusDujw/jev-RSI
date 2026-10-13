@@ -648,7 +648,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     holding.get('appearance_filtered') and not lift_verified):
                 check_hold(use_projection=True)
                 lift_verified = True
-            if (stage in ('carry_lateral', 'carry') and arrived and dark_source and
+            verify_carry = dark_source or rec.cfg.get('drawer_bowl_continuation')
+            if (stage in ('carry_lateral', 'carry') and arrived and verify_carry and
                     carry_verified_stage != stage):
                 check_hold(use_projection=True)
                 carry_verified_stage = stage
@@ -712,7 +713,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 contracts['lower'] = ('Keep closed and approach the rack using the bottle offset measured after rotation. '
                                       'If blocked, advance to one release trial only when fresh public RGB-D shows the held bottle within the visible rack footprint and either near support or at most 60mm above it. '
                                       'The latter is a bounded gravity-drop trial, not contact or native success.')
-            if dark_source:
+            if verify_carry:
                 contracts['carry'] += ' At arrival, require a fresh visible holding check before advance.'
             if stage == 'lift' and holding.get('appearance_filtered'):
                 contracts['lift'] += ' At clearance, advance only after the second visible holding check passes.'
@@ -751,7 +752,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 complete=bool(oriented and rack_contact_checked and
                     rack_contact_evidence['status'] in ('visible_contact_candidate','visible_low_drop_candidate') and
                     (arrived or stalls>=2))
-            if stage in ('carry_lateral','carry') and dark_source:
+            if stage in ('carry_lateral','carry') and verify_carry:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
             can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')))
             next_stage = ('clear_receiver' if stage=='recover_open' and rack_task else
