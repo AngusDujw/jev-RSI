@@ -2,7 +2,14 @@
 import argparse,json,collections,hashlib
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('--output',type=Path);a=p.parse_args()
-base_keys={'task','stage','next_phase','phase_contract','position_m','target_position_m','error_m','hold_tolerance_m','arrival_tolerance_m','gripper_qpos_m','last_gripper_command','current_phase_gripper_ticks','phase_native_ticks','phase_decisions','holding_evidence','geometry_source','source_label','destination_label','recovery_remaining','last_progress_m','stalls','error_mm','axis_relations','max_error_mm','phase_goal_distance_mm','recent_actions','gripper_aperture_mm','feedback_note','measurement_status','decision_protocol','rotation_control','rotation_error_rad','required_rotation_world_rad','rotation_relations','rotation_tolerance_rad','orientation_arrived','observation_age_native_steps'}
+base_keys={'task','stage','next_phase','phase_contract','position_m','target_position_m','error_m','hold_tolerance_m','arrival_tolerance_m','gripper_qpos_m','last_gripper_command','current_phase_gripper_ticks','phase_native_ticks','phase_decisions','holding_evidence','geometry_source','source_label','destination_label','recovery_remaining','last_progress_m','stalls','error_mm','axis_relations','max_error_mm','phase_goal_distance_mm','recent_actions','gripper_aperture_mm','feedback_note','measurement_status','decision_protocol','rotation_control','rotation_error_rad','required_rotation_world_rad','rotation_relations','rotation_tolerance_rad','orientation_arrived','observation_age_native_steps','translation_axes','gripper','information_sources','carry_hover_replans'}
+forbidden={'reward','success','object_poses','object_id','object_ids','goal_predicates','true_state','scene_layout','bddl','task_id','init_state'}
+def check_forbidden(value):
+ if isinstance(value,dict):
+  assert not set(value)&forbidden,set(value)&forbidden
+  for child in value.values():check_forbidden(child)
+ elif isinstance(value,list):
+  for child in value:check_forbidden(child)
 results=[]
 for result_path in sorted(a.root.glob('**/result.json')):
  q=result_path.parent
@@ -21,6 +28,7 @@ for result_path in sorted(a.root.glob('**/result.json')):
  for e in edges:assert ds[e['decision_id']]['transition']=='advance' and ds[e['decision_id']]['stage']==e['from_stage']
  for r in rows:
   request=json.load(open(q/r['decision_id']/'request.json'));assert set(request['state'])<=base_keys,set(request['state'])-base_keys
+  check_forbidden(request)
   assert json.dumps(request,ensure_ascii=False).isascii()
   if 'answers' in r:
    actual=json.load(open(q/r['decision_id']/'response.json'))['answers'];assert actual==r['answers'];assert set(actual)==set(request['questions'])
@@ -30,9 +38,8 @@ for result_path in sorted(a.root.glob('**/result.json')):
    if request['state'].get('rotation_control'):
     assert [signs[actual[k]['choice']] for k in ['rx','ry','rz']]==r['rotation_signs']
    else:assert r['rotation_signs']==[0,0,0]
-  assert not any(k in request['state'] for k in ['reward','success','object_poses','goal_predicates','true_state','scene_layout'])
  out=dict(path=str(q),result=json.load(open(result_path)),decisions=len(rows),executed_decisions=len(branches),transitions=len(edges),gripper_choices=dict(collections.Counter(r.get('gripper') for r in rows)),transition_choices=dict(collections.Counter(r.get('transition') for r in rows)))
  results.append(out)
-report=json.dumps(dict(episodes=len(results),audit='actual Jev responses match recorded directions/gripper/transitions and executed actions/phase edges; request text ASCII; root input fields allowlisted; code/source review still required for provenance',rows=results),indent=2)
+report=json.dumps(dict(episodes=len(results),audit='actual Jev responses match recorded directions/gripper/transitions and executed actions/phase edges; request text ASCII; root fields allowlisted and recursive forbidden keys absent; code/source review still required for provenance',rows=results),indent=2)
 if a.output:a.output.write_text(report+'\n')
 print(report)

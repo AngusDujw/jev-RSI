@@ -31,6 +31,20 @@ class DecisionModel(Jev):
                 questions[a]=dict(type='choice',instructions=f'For {a} read required_rotation_world_rad[{a}]. This is target relative to current (NOT current minus target). Positive value means choose positive rotation; negative value means negative rotation. hold if magnitude below 0.03 radians. Do NOT negate the supplied required rotation. Only this axis, not other axes.',criteria=dict(negative='Negative world-axis rotation',hold='No rotation',positive='Positive world-axis rotation'))
         questions['gripper']=dict(type='choice',instructions='You control the gripper. Open during approach/align/descend/insert; close during grasp/lift/carry/lower; open during release/retreat. keep preserves last motor command. Choose based on current phase and feedback, not the next phase.',criteria=dict(open='Command open',close='Command close',keep='Keep prior commanded gripper state'))
         questions['transition']=dict(type='choice',instructions='You own the phase switch. Use the phase contract and measured feedback. Continue while target not reached or required gripper ticks incomplete. Advance only when the current contract is met. For stalled motion or missing visual holding evidence reobserve; if recovery budget unavailable stop. This choice is applied AFTER current actions, and does not declare task success.',criteria=dict(continue_phase='Remain in this phase and execute selected motion/gripper',advance='Finish current phase and enter next predefined phase',reobserve='Remain, refresh permitted visual measurement once if budget allows',stop='Terminate incomplete attempt'))
+        if not state.get('measurement_status',{}).get('reobserve_available',False):
+            questions['transition']['criteria'].pop('reobserve')
+        status=state.get('measurement_status',{})
+        arrived=bool(status.get('target_arrival'))
+        ready=arrived and (state['stage'] in ('approach','align','descend','lower','retreat') or
+                           state['stage'] in ('lift','carry') and status.get('holding_check')=='passed')
+        if ready:
+            questions['transition']['instructions']=(
+                'The current stage target and its required visible holding check '
+                'are already complete. Choose advance now to the named next '
+                'stage; this edge still belongs to you and executes after your '
+                'current XYZ and gripper choices. A future-stage check is not '
+                'needed yet. This does not declare official task success.')
+            questions['transition']['criteria'].pop('stop')
         if (state['stage']=='insert' and
                 state.get('measurement_status',{}).get('visible_contact_candidate')):
             questions['transition']['instructions']=(
@@ -47,12 +61,37 @@ class DecisionModel(Jev):
                 'does not justify the trial. Reobserve only if available.')
             questions['transition']['criteria']['advance']=(
                 'Enter grasp for one test closure using measured pad proximity')
+        if (state['stage']=='lower' and
+                state.get('measurement_status',{}).get('support_stall_release_candidate')):
+            questions['transition']['instructions']=(
+                'You own the phase edge. The held object is visibly over a support '
+                'surface, the conservative visible footprint fits the receiver, '
+                'and repeated closed-gripper lowering commands have produced no '
+                'TCP motion. The measured visible-bottom gap is bounded but target '
+                'arrival is false. You may choose advance for one guarded release '
+                'trial; keep the gripper closed for this lower decision, then decide '
+                'opening in the release phase. This is a drop candidate, not proof '
+                'of placement or official success. You may instead continue or stop.')
+            questions['transition']['criteria']['advance']=(
+                'Enter release for one visible-support drop trial despite blocked lowering')
+        if (state['stage']=='carry' and
+                state.get('measurement_status',{}).get('carry_support_transfer_candidate')):
+            questions['transition']['instructions']=(
+                'You own the phase edge. Two clearance-height replans have stalled, '
+                'but a new visible RGB-D holding check passed and the estimated '
+                'full held footprint overlaps the observed support surface. The '
+                'current bottom-to-support gap is bounded. You may advance to the '
+                'lower phase now despite target_arrival=false; keep the gripper '
+                'closed. This is only a placement-route candidate, not a release '
+                'or official success. You may continue or stop if evidence is weak.')
+            questions['transition']['criteria']['advance']=(
+                'Enter lower with measured support overlap despite blocked hover')
         payload=dict(model=self.api.cfg['model'],state=state,questions=questions)
         dump(folder/'request.json',payload)
         row=dict(decision_id=f'decision-{i:04d}',stage=state['stage'],observation=state,prompt_version='supervisor-'+self.rec.cfg['schema'],request_sha256=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest())
         self.rec.decisions.append(row);start=time.monotonic()
         try:
-            raw=self.api.post('/systemone',payload);dump(folder/'response.json',raw)
+            raw=self.post_with_connect_retry('/systemone',payload);dump(folder/'response.json',raw)
             answers=raw['answers']
             for name,q in questions.items():
                 a=answers[name];p=a['probabilities']
@@ -81,11 +120,11 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
     if side:phases.insert(phases.index('grasp'),'insert')
     notes=dict(NOTES,insert='Insert horizontally at the observed grasp height with gripper open; advance when target reached. Do not close before arrival.')
     initial_source_extent=None;side_sign=-1
-    carry_hover_replans=0
+    carry_hover_replans=0;carry_support_checked=False
     orientation_goal=(Rotation.from_rotvec([0,np.pi/2,0])*Rotation.from_quat(obs['robot0_eef_quat'])).as_matrix() if side else None
     ticks=0;phase=0;stage_ticks=0;stage_decisions=0;gripper=-1;gripper_ticks=0
     history=[];stalls=0;last_progress=None;error_message=None;holding=dict(valid=False,reason='not yet tested')
-    src=dst=sem=None;grasp=None;hover=None;offset=None;place=None;tcp_grasp=None;source_grasp=None
+    src=dst=sem=None;grasp=None;hover=None;offset=None;place=None;tcp_grasp=None;source_grasp=None;release_tcp=None
     last_verification_tick=-1;reobserved=False;start_tcp=obs['robot0_eef_pos'].copy();finished=False
     def views():
         return {c:dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),depth=depth_fn(env.sim,obs[c+'_depth'])[::-1].squeeze(),K=k_fn(env.sim,c,obs[c+'_image'].shape[0],obs[c+'_image'].shape[1]),T=t_fn(env.sim,c)) for c in ['agentview','robot0_eye_in_hand']}
@@ -241,13 +280,25 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                                    visible_clearance_floor_m=floor,
                                    source='fresh visible source/receiver extent + robot stall'))
                     hover=lowered;carry_hover_replans+=1;stalls=0
+            if (stage=='carry' and rec.cfg.get('support_stall_release') and
+                    carry_hover_replans>=2 and stalls>=3 and not carry_support_checked):
+                # A new rendered wrist RGB-D observation validates co-motion
+                # after both height replans. This is not a simulator object pose.
+                measure_held();carry_support_checked=True
             if stage=='approach':target=np.r_[src['center'][:2]+(np.array([side_sign*entry_clearance,0]) if side else 0),hover]
             elif stage=='align':target=np.r_[grasp[:2]+(np.array([side_sign*entry_clearance,0]) if side else 0),hover]
             elif stage=='descend':target=grasp+(np.array([side_sign*entry_clearance,0,0]) if side else 0)
             elif stage=='insert':target=grasp
             elif stage in ['grasp','release']:target=obs['robot0_eef_pos'].copy()
             elif stage=='lift':target=np.r_[tcp_grasp[:2],hover]
-            elif stage in ['carry','retreat']:target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
+            elif stage=='carry':target=np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
+            elif stage=='retreat':
+                # After a guarded support release, withdraw locally from the
+                # actually executed release pose. Returning to the old carry
+                # hover can be unreachable and is not required for clearance.
+                target=(release_tcp+np.array([0.,0.,.03])
+                        if rec.cfg.get('support_stall_release') and release_tcp is not None
+                        else np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover])
             elif stage=='lower':
                 mode=rec.cfg.get('placement_height_mode')
                 if mode in ('visible_bottom','contact_seat','occlusion_guarded_bottom'):
@@ -313,6 +364,41 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 if stage=='lower' and rec.cfg.get('placement_height_mode')=='occlusion_guarded_bottom':
                     state['measurement_status']['estimated_guarded_bottom_to_receiver_mm']=float(
                         (position[2]+holding['guarded_low_tcp_offset_m']-dst['high'][2])*1000)
+                if stage in ('carry','lower') and rec.cfg.get('support_stall_release'):
+                    candidate=False;overlap=0.;visible_gap=float('inf');guarded_gap=float('inf')
+                    if holding.get('valid') and 'measured' in holding and sem['destination'].get('receiver_kind')=='support_surface':
+                        h=holding['measured']
+                        center=np.asarray(h['center'])[:2]
+                        half=np.maximum((np.asarray(h['high'])-np.asarray(h['low']))[:2],
+                                        initial_source_extent[:2])*.5
+                        low=center-half;high=center+half
+                        intersection=np.maximum(0.,np.minimum(high,dst['high'][:2])-
+                                                np.maximum(low,dst['low'][:2]))
+                        overlap=float(np.prod(intersection)/max(np.prod(high-low),1e-9))
+                        visible_gap=float((position[2]+holding['visible_low_tcp_offset_m']-dst['high'][2])*1000)
+                        guarded_gap=float((position[2]+holding['guarded_low_tcp_offset_m']-dst['high'][2])*1000)
+                        phase_gate=(gripper_ticks>=16 if stage=='lower' else
+                                    carry_hover_replans>=2 and carry_support_checked)
+                        candidate=bool(stalls>=3 and phase_gate and
+                                       ticks-(holding.get('observed_tick') or -1000)<=30 and
+                                       overlap>=.8 and 0<guarded_gap<=110 and
+                                       0<visible_gap<=140)
+                    state['measurement_status'].update(
+                        **{('carry_support_transfer_candidate' if stage=='carry' else
+                            'support_stall_release_candidate'):candidate},
+                        visible_footprint_overlap_ratio=round(overlap,3),
+                        estimated_visible_bottom_to_receiver_mm=round(visible_gap,2) if np.isfinite(visible_gap) else None,
+                        estimated_guarded_bottom_to_receiver_mm=round(guarded_gap,2) if np.isfinite(guarded_gap) else None,
+                        support_candidate_observed_tick=holding.get('observed_tick'))
+                    if candidate:
+                        state['phase_contract']=(
+                            'Current closed-gripper motion is physically blocked. '
+                            'Observed support overlap and bounded bottom gap permit '
+                            'one Jev-selected transfer to lower; still no release.'
+                            if stage=='carry' else
+                            'Closed-gripper lowering is physically blocked above a '
+                            'visible overlapping support. Jev may select one guarded '
+                            'release trial; target arrival and success are unproven.')
                 state['decision_protocol']='At lift while still far from lift target, holding check not_checked_yet is normal: keep closed and move, not a failure. Reobserve only after at least 3 stalled actions or an actual failed visual check; do not reobserve because a future check is pending. Never request reobserve when unavailable. At grasp/release continue chosen close/open until the phase contract duration and aperture requirements are met. Advance is your choice when the current phase contract is met.'
                 state.update(error_mm=np.round(error*1000,2).tolist(),axis_relations={a:('within tolerance' if abs(e)<.004 else 'target higher coordinate' if e>0 else 'target lower coordinate') for a,e in zip('xyz',error)},
                     max_error_mm=float(np.max(abs(error))*1000),phase_goal_distance_mm=float(np.linalg.norm(error)*1000),
@@ -367,7 +453,12 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 if ticks>=550:raise RuntimeError('native budget')
                 rotation=np.array(d['rotation_signs'])*np.minimum(.12,.5*abs(rotation_error))
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;gripper_ticks+=1
-            after=obs['robot0_eef_pos'].copy();last_progress=float(np.linalg.norm(error)-np.linalg.norm(target-after));stalls=stalls+1 if np.linalg.norm(after-before)<.0008 and np.linalg.norm(error)>.015 else 0
+            after=obs['robot0_eef_pos'].copy();last_progress=float(np.linalg.norm(error)-np.linalg.norm(target-after))
+            # Count blocked motion whenever an axis remains outside the same
+            # stage arrival gate Jev sees. The old 15 mm norm gate concealed
+            # an 8.74 mm carry-axis block from the recovery waypoint logic.
+            stalls=stalls+1 if (np.linalg.norm(after-before)<.0008 and
+                                np.max(abs(error))>arrival_tolerance) else 0
             event=dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,
                        selected_gripper=selected,executed_gripper=gripper,rotation_signs=d['rotation_signs'],rotation_error_rad=rotation_error,selected_transition=d['transition'],progress_m=last_progress)
             rec.branch(event);history.append(dict(gripper=selected,transition=d['transition'],progress_mm=round(last_progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()));save(stage)
@@ -380,6 +471,7 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
                 if stage=='approach':sem,src,dst=locate('pregrasp');grasp=grasp_target()
                 if stage=='grasp':tcp_grasp=obs['robot0_eef_pos'].copy();source_grasp=src['center'].copy()
                 if stage=='lift' and offset is None:raise RuntimeError('Jev advanced without usable held-object geometry')
+                if stage=='release':release_tcp=obs['robot0_eef_pos'].copy()
                 phase+=1;stage_ticks=0;stage_decisions=0;gripper_ticks=0;stalls=0
         finished=True
     except Exception as e:

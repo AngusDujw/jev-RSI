@@ -120,11 +120,12 @@ def visible_front_goal(view, plate, stove):
     centre_u = (stove_x0+stove_x1)//2
     source_v = int(round(plate['uv'][1]))
     goals = []
-    # More frontal rows are tried first only if the swept visible corridor is
-    # free. The ranges refer to image layout, while geometry comes from depth.
-    for v in (max(stove_y1+75, source_v-55),
-              max(stove_y1+100, source_v-25),
-              max(stove_y1+125, source_v)):
+    # The receiving relation is to the visible stove, not to the plate's
+    # initial image row. A source-relative row can leave a farther plate
+    # farther from the stove even when it reaches its computed target exactly.
+    # Try fixed visible clearances from the stove face; depth and the swept
+    # corridor still decide whether each candidate is actually usable.
+    for v in (stove_y1+75, stove_y1+100, stove_y1+125):
         for offset in (0, -18, 18, -28, 28, -44, 44, -60, 60):
             u = centre_u+offset
             if not (20 <= u < 748 and 20 <= v < 748):
@@ -153,26 +154,64 @@ def visible_front_goal(view, plate, stove):
             elevated[:, :250] = 0
             elevated &= ~plate['mask']
             points = cloud[elevated][:, :2]
+            radius = .5*max(np.asarray(plate['high'])[:2]-
+                            np.asarray(plate['low'])[:2]) + .008
             if len(points):
                 along = (points-source[:2]) @ direction
                 lateral = np.abs((points-source[:2])[:, 0]*direction[1] -
                                  (points-source[:2])[:, 1]*direction[0])
-                radius = .5*max(np.asarray(plate['high'])[:2]-
-                                np.asarray(plate['low'])[:2]) + .008
                 blocked = (along > .015) & (along < distance+.02) & (lateral < radius)
                 blockers = int(blocked.sum())
             else:
                 blockers = 0
+            # The first straight segment can be blocked by a visible bowl
+            # even though a table waypoint to the side of it gives two clear
+            # segments. Only use an actually measured tabletop patch and
+            # check both swept corridors against the same RGB-D obstacle set.
+            routed = None
+            if 10 <= source_v < 758:
+                stage_patch = cloud[source_v-4:source_v+5, u-4:u+5]
+                if stage_patch.shape[:2] == (9, 9) and np.isfinite(stage_patch).all():
+                    waypoint = np.median(stage_patch.reshape(-1, 3), axis=0)
+                    first = waypoint[:2]-source[:2]
+                    first_length = float(np.linalg.norm(first))
+                    second = goal[:2]-waypoint[:2]
+                    second_length = float(np.linalg.norm(second))
+                    if (abs(waypoint[2]-goal[2]) < .025 and
+                            .06 < first_length < .40 and
+                            .025 < second_length < .30):
+                        leg_counts = []
+                        for start, vector, length in (
+                                (source[:2], first, first_length),
+                                (waypoint[:2], second, second_length)):
+                            unit = vector/length
+                            relative = points-start
+                            along_leg = relative @ unit
+                            across_leg = np.abs(relative[:, 0]*unit[1]-
+                                                relative[:, 1]*unit[0])
+                            leg_counts.append(int(((along_leg > .015) &
+                                (along_leg < length+.02) &
+                                (across_leg < radius)).sum()))
+                        if max(leg_counts) < 80:
+                            routed = dict(stage_uv=[u, source_v],
+                                          stage_world_m=waypoint.tolist(),
+                                          leg_blockers=leg_counts)
             goals.append(dict(goal_uv=[u, v], goal_world_m=goal.tolist(),
-                              travel_m=float(distance), elevated_corridor_pixels=blockers))
-    clear = [candidate for candidate in goals if candidate['elevated_corridor_pixels'] < 80]
+                              travel_m=float(distance), elevated_corridor_pixels=blockers,
+                              visible_two_leg_route=routed))
+    clear = [candidate for candidate in goals if
+             candidate['elevated_corridor_pixels'] < 80 or
+             candidate['visible_two_leg_route'] is not None]
     if not clear:
         raise RuntimeError('No visible collision-clear plate corridor in front of stove')
     # The public request is a spatial relation to the stove. Prefer the
     # closest visible *front row* that has a clear swept path, even when a
     # farther route around a visible tabletop obstacle is needed.
     selected = min(clear, key=lambda row: (row['goal_uv'][1],
-        row['elevated_corridor_pixels'], abs(row['goal_uv'][0]-centre_u),
+        row['elevated_corridor_pixels'] >= 80,
+        sum(row['visible_two_leg_route']['leg_blockers'])
+            if row['visible_two_leg_route'] else row['elevated_corridor_pixels'],
+        abs(row['goal_uv'][0]-centre_u),
         row['travel_m']))
     return dict(selected, evaluated_visible_candidates=goals,
                 selection_reason='frontmost visible table row with clear swept plate corridor')
@@ -264,6 +303,12 @@ def visible_lateral_stage(view, plate, front_goal, max_turn_deg=0):
                     travel_m=distance, elevated_corridor_pixels=blockers,
                     turn_from_lateral_deg=0.,
                     source='visible table depth at plate row, aligned with front-goal column')
+    if front_goal['elevated_corridor_pixels'] >= 80:
+        route = front_goal.get('visible_two_leg_route')
+        if route is None or route['stage_uv'] != [u, v]:
+            raise RuntimeError('Visible two-leg plate route is inconsistent')
+        return dict(selected, source='RGB-D verified two-leg table corridor',
+                    second_leg_elevated_corridor_pixels=route['leg_blockers'][1])
     if max_turn_deg:
         if not 0 < max_turn_deg <= 20:
             raise ValueError('Invalid visible plate staging turn bound')
@@ -292,6 +337,53 @@ def visible_lateral_stage(view, plate, front_goal, max_turn_deg=0):
                             elevated_corridor_pixels=row['elevated_corridor_pixels'],
                             turn_from_lateral_deg=turn,
                             source='visible table corridor with bounded turn from supported lateral push')
+        # A fixed image row can leave a large world-X residual after a long
+        # first push. Search nearby *visible tabletop* rows/columns within
+        # the public turn and obstacle bound, and favour a waypoint that
+        # leaves a shorter visible second segment.
+        final_xy = np.asarray(front_goal['goal_world_m'][:2], float)
+        candidates = [selected]
+        for candidate_v in range(int(front_goal['goal_uv'][1]), v+1, 5):
+            if not 10 <= candidate_v < 758:
+                continue
+            for du in (-32, -16, 0, 16, 32):
+                candidate_u = u+du
+                if not 10 <= candidate_u < 758:
+                    continue
+                candidate_patch = cloud[candidate_v-4:candidate_v+5,
+                                        candidate_u-4:candidate_u+5]
+                if candidate_patch.shape[:2] != (9, 9) or not np.isfinite(candidate_patch).all():
+                    continue
+                waypoint = np.median(candidate_patch.reshape(-1, 3), axis=0)
+                if abs(waypoint[2]-plate['low'][2]) > .025:
+                    continue
+                vector = waypoint[:2]-source[:2]
+                length = float(np.linalg.norm(vector))
+                if not .06 < length < .40:
+                    continue
+                unit = vector/length
+                turn = float(np.degrees(np.arccos(np.clip(np.dot(unit, direction), -1., 1.))))
+                if turn > max_turn_deg:
+                    continue
+                along = (points-source[:2]) @ unit
+                lateral = np.abs((points-source[:2])[:, 0]*unit[1] -
+                                 (points-source[:2])[:, 1]*unit[0])
+                blockers = int(((along > .015) & (along < length+.02) &
+                                (lateral < radius)).sum())
+                if blockers >= 80:
+                    continue
+                candidates.append(dict(goal_uv=[candidate_u, candidate_v],
+                                       goal_world_m=waypoint.tolist(),
+                                       travel_m=length,
+                                       elevated_corridor_pixels=blockers,
+                                       turn_from_lateral_deg=turn,
+                                       source='visible tabletop with bounded turn toward final goal'))
+        best = min(candidates, key=lambda row: (
+            np.linalg.norm(np.asarray(row['goal_world_m'][:2])-final_xy),
+            row['elevated_corridor_pixels'], row['turn_from_lateral_deg']))
+        if (np.linalg.norm(np.asarray(selected['goal_world_m'][:2])-final_xy) -
+                np.linalg.norm(np.asarray(best['goal_world_m'][:2])-final_xy) >= .008):
+            selected = best
     return selected
 
 

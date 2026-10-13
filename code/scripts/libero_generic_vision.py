@@ -24,7 +24,9 @@ class GenericVision:
             self.api=API({'model':'gpt-6-sol'},rec.event,'semantic_vision')
         self.log=(rec.folder/'grounding-worker.log').open('w')
         env=dict(os.environ,HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
-        self.worker=subprocess.Popen(['/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python','-B',str(Path(__file__).with_name('libero_grounding_worker.py'))],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.log,text=True,env=env)
+        vision_python=os.environ.get('JEV_RSI_VISION_PYTHON',
+            '/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python')
+        self.worker=subprocess.Popen([vision_python,'-B',str(Path(__file__).with_name('libero_grounding_worker.py'))],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.log,text=True,env=env)
         try:
             if not self.receive().get('ready'):raise RuntimeError('Grounding worker not ready')
         except Exception:

@@ -73,7 +73,7 @@ PHASES = {
         ("observe", "identify specified handle and visible cabinet front", "handle_visible"),
         ("approach", "move open gripper to handle approach pose", "handle_hover_reached"),
         ("align", "align own fingers to visible handle and cabinet-front normal", "orientation_reached"),
-        ("contact", "reach handle without crossing cabinet front", "handle_contact_pose_reached"),
+        ("contact", "reach visible handle contact pose, or use one bounded blocked-contact closure trial", "handle_contact_trial_ready"),
         ("grasp", "close on handle and measure actual aperture", "closure_executed"),
         ("pull", "pull outward along estimated cabinet-front normal; measure handle displacement", "visible_handle_displacement"),
         ("release", "open gripper", "opening_executed"),
@@ -108,6 +108,10 @@ def stages(task_id: int) -> tuple[dict, ...]:
             phases.insert(1, ("select_handle",
                 "separate visible handles and select requested world-height rank",
                 "handle_unambiguous"))
+            if task_id == 1202:
+                phases.insert(-1, ("clear_opening",
+                    "withdraw the open own gripper up and outward before observing the drawer interior",
+                    "tcp_clear_of_drawer"))
         if primitive == "pick_place" and task_id in (1163, 1252):
             phases.insert(1, ("inspect_receiver",
                 "measure a visible cabinet-top support polygon; do not extrapolate hidden top",

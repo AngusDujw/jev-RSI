@@ -121,6 +121,30 @@ class Jev:
             config = dict(config, proxy=proxy)
         self.api = API(config, recorder.event, "jev")
 
+    def post_with_connect_retry(self, endpoint, payload):
+        """Retry only failures before the HTTP request reaches the model service.
+
+        A TLS/proxy connection failure has no model answer to act on. Other
+        failures, including interrupted response reads, remain terminal so a
+        possibly completed model call is never silently duplicated.
+        """
+        import httpx
+
+        for attempt in range(3):
+            self.rec.check_budget()
+            try:
+                return self.api.post(endpoint, payload)
+            except (httpx.ConnectError, httpx.ConnectTimeout, httpx.ProxyError) as exc:
+                if attempt == 2:
+                    raise
+                delay = .75 * (attempt + 1)
+                self.rec.event(dict(kind='jev_connect_retry',
+                    request_sha256=hashlib.sha256(json.dumps(payload,
+                        sort_keys=True).encode()).hexdigest(),
+                    failed_call=attempt + 1, error_type=type(exc).__name__,
+                    delay_seconds=delay))
+                time.sleep(delay)
+
     def choose(self, state, metadata):
         self.rec.check_budget()
         index = len(self.rec.decisions)

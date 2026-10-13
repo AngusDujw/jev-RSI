@@ -13,7 +13,8 @@ import cv2
 import numpy as np
 from run_position_pilot import Recorder, Jev, dump
 
-ROOT = '/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'
+ROOT = os.environ.get('JEV_RSI_LIBERO_ROOT',
+    '/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus')
 
 def perceive(rgb, depth, K, T, held_tcp=None):
     """Task-specific colour/shape frontend, no simulator object data.
@@ -213,9 +214,13 @@ def main():
     p.add_argument('--capture-only', action='store_true')
     p.add_argument('--drawer-supervisor', action='store_true',
                    help='Jev-controlled visible-handle Goal 1098 drawer trial')
+    p.add_argument('--drawer-bowl-continuation', action='store_true',
+                   help='After Jev opens Goal1202 top drawer, continue in the same episode to visible bowl pick/place')
+    p.add_argument('--drawer-preorient', action='store_true',
+                   help='Let Jev orient own wrist during drawer approach, then verify in align')
     p.add_argument('--knob-supervisor', action='store_true',
                    help='Jev-controlled visible stove control Goal 1383 trial')
-    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook'], default='pinch',
+    p.add_argument('--drawer-contact-mode', choices=['pinch', 'hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook'], default='pinch',
                    help='Fixed public-vision handle contact method; Jev still selects gripper and stages')
     p.add_argument('--offline-goal-vision', action='store_true',
                    help='Use predeclared init0 Goal image boxes and runtime RGB-D/SAM; no GPT-6 calls')
@@ -226,10 +231,23 @@ def main():
                    help='Visible RGB-D contact pushing with model-owned gripper and phase edges')
     p.add_argument('--goal-plate-push', action='store_true',
                    help='Task 1296 visible plate/stove/table geometry with runtime Jev push decisions')
-    p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9], default=0,
+    p.add_argument('--plate-stage-turn-deg', type=int, choices=[0, 9, 15], default=0,
                    help='Optional visible first-push turn bound relative to the supported lateral corridor')
     p.add_argument('--input-organization', choices=['contract','evidence','local','focused'], default='contract')
     p.add_argument('--grasp-algorithm', choices=['legacy_clearance','pad_fit'], default='pad_fit')
+    p.add_argument('--rim-height-mode', choices=['top_overlap','visible_sidewall'],
+                   default='top_overlap',
+                   help='Visible rim contact height from RGB-D bounds and own finger clearance')
+    p.add_argument('--rim-tilt-deg', type=int, choices=[0,12,20], default=0,
+                   help='Inward tilt of own fingers around a visible one-sided rim')
+    p.add_argument('--rim-axis', choices=['short','long'], default='short',
+                   help='Which visible horizontal bowl axis the own fingers close across')
+    p.add_argument('--rim-inset-mm', type=int, choices=[0,2,4], default=0,
+                   help='Bounded inward contact margin from the visible rim')
+    p.add_argument('--drawer-clear-to-source', action='store_true',
+                   help='Overlap empty-hand drawer clearance with fresh visible source X')
+    p.add_argument('--empty-hand-fast', action='store_true',
+                   help='Larger bounded XYZ/rotation steps only before source grasp')
     p.add_argument('--grasp-hold-ticks',type=int,choices=range(18,49,6),default=18)
     p.add_argument('--lift-recheck-mm',type=int,choices=[0,30],default=0)
     p.add_argument('--side-pad-overlap-mm',type=int,choices=[0,12],default=0)
@@ -249,6 +267,8 @@ def main():
     p.add_argument('--grasp-fraction', type=float, default=.4)
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--placement-height-mode', choices=['center_extent','visible_bottom','contact_seat','occlusion_guarded_bottom'], default='center_extent')
+    p.add_argument('--support-stall-release', action='store_true',
+                   help='Offer Jev a guarded release candidate on a visible support after physically stalled lowering')
     p.add_argument('--geometry-profile',choices=['base','observed_surfaces'],default='base')
     p.add_argument('--generic-vision', dest='generic_vision', action='store_true', default=True)
     p.add_argument('--legacy-vision', dest='generic_vision', action='store_false', help='Reproduce archived task-specific colour/rim policy only')
@@ -265,7 +285,7 @@ def main():
     if a.offline_goal_vision and (a.suite != 'libero_goal' or a.init_index != 0 or a.camera_size != 768):
         p.error('--offline-goal-vision requires libero_goal init0 at 768x768')
     if a.local_goal_vision and (a.offline_goal_vision or a.suite != 'libero_goal' or
-                                a.task_id not in (1144, 1163, 1252, 1335, 1423, 1458) or
+                                a.task_id not in (1144, 1163, 1202, 1252, 1335, 1423, 1458) or
                                 a.camera_size != 768 or
                                 os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
         p.error('--local-goal-vision requires a supported Goal task, 768px and Jev backend')
@@ -273,6 +293,25 @@ def main():
                                 a.camera_size != 768 or
                                 os.environ.get('JEV_RSI_MODEL_BACKEND') == 'codex_pro'):
         p.error('--drawer-supervisor requires Goal 1098 or 1202, 768px, and Jev backend')
+    if a.drawer_bowl_continuation and (not a.drawer_supervisor or a.task_id != 1202 or
+                                        not a.local_goal_vision):
+        p.error('--drawer-bowl-continuation requires Goal1202 drawer and local visible vision')
+    if a.drawer_preorient and not a.drawer_bowl_continuation:
+        p.error('--drawer-preorient requires Goal1202 drawer continuation')
+    if a.drawer_contact_mode in ('side_hook', 'tip_hook') and a.task_id != 1098:
+        p.error('Middle-handle entry mode requires Goal1098')
+    if a.rim_height_mode != 'top_overlap' and not a.drawer_bowl_continuation:
+        p.error('--rim-height-mode visible_sidewall requires Goal1202 drawer continuation')
+    if a.rim_tilt_deg and not a.drawer_bowl_continuation:
+        p.error('--rim-tilt-deg requires Goal1202 drawer continuation')
+    if a.rim_axis != 'short' and not a.drawer_bowl_continuation:
+        p.error('--rim-axis long requires Goal1202 drawer continuation')
+    if a.rim_inset_mm and not a.drawer_bowl_continuation:
+        p.error('--rim-inset-mm requires Goal1202 drawer continuation')
+    if a.drawer_clear_to_source and not a.drawer_bowl_continuation:
+        p.error('--drawer-clear-to-source requires Goal1202 drawer continuation')
+    if a.empty_hand_fast and not a.drawer_bowl_continuation:
+        p.error('--empty-hand-fast requires Goal1202 drawer continuation')
     if a.knob_supervisor and (a.suite != 'libero_goal' or a.task_id != 1383 or
                               a.camera_size != 768 or
                               os.environ.get('JEV_RSI_MODEL_BACKEND') != 'jev'):
@@ -286,18 +325,21 @@ def main():
     if a.visible_goal_check and (not a.recovery_supervisor or a.task_id not in (1163,1458) or
                                  not a.local_goal_vision):
         p.error('--visible-goal-check currently requires local recovery Goal 1163 or 1458')
-    if a.lift_recheck_mm and (not a.recovery_supervisor or a.task_id != 1163):
-        p.error('--lift-recheck-mm currently requires recovery Goal 1163')
+    if a.lift_recheck_mm and (not a.recovery_supervisor or a.task_id not in (1163, 1458)):
+        p.error('--lift-recheck-mm currently requires recovery Goal 1163/1458')
     if a.side_pad_overlap_mm and (not a.jev_supervisor or a.recovery_supervisor or
                                   a.task_id != 1423 or a.approach_mode != 'angled' or
                                   a.entry_side != 'receiver_side'):
         p.error('--side-pad-overlap-mm currently requires angled receiver-side Goal 1423 supervisor')
     out = Path(a.output).resolve()
-    cfg = dict(existing_root='/root/yekangjie/project/robodojo-jev',
-               api_config='/root/yekangjie/project/robodojo-jev/controller/config/api.company.local.json',
+    existing_root = os.environ.get('JEV_RSI_EXISTING_ROOT',
+        '/root/yekangjie/project/robodojo-jev')
+    cfg = dict(existing_root=existing_root,
+               api_config=os.environ.get('JEV_RSI_API_CONFIG',
+                   existing_root+'/controller/config/api.company.local.json'),
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
                suite=a.suite, task_id=a.task_id, seed=a.seed, init_index=a.init_index, relation=a.relation,
-               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
+               permissions='RGB-D/calibration/robot feedback; NO object truth', deepseek_calls=0, generic_vision=a.generic_vision, supervisor=a.jev_supervisor, schema=a.schema, grasp_fraction=a.grasp_fraction, grasp_profile=a.grasp_profile, placement_height_mode=a.placement_height_mode, support_stall_release=a.support_stall_release, geometry_profile=a.geometry_profile, camera_size=a.camera_size,approach_mode=a.approach_mode,entry_side=a.entry_side,lift_check=a.lift_check, recovery_supervisor=a.recovery_supervisor,push_supervisor=a.push_supervisor,knob_supervisor=a.knob_supervisor,drawer_contact_mode=a.drawer_contact_mode,drawer_bowl_continuation=a.drawer_bowl_continuation,drawer_preorient=a.drawer_preorient,drawer_clear_to_source=a.drawer_clear_to_source,empty_hand_fast=a.empty_hand_fast,goal_plate_push=a.goal_plate_push,plate_stage_turn_deg=a.plate_stage_turn_deg,input_organization=a.input_organization,grasp_algorithm=a.grasp_algorithm,rim_height_mode=a.rim_height_mode,rim_tilt_deg=a.rim_tilt_deg,rim_axis=a.rim_axis,rim_inset_mm=a.rim_inset_mm,grasp_hold_ticks=a.grasp_hold_ticks,lift_recheck_mm=a.lift_recheck_mm,side_pad_overlap_mm=a.side_pad_overlap_mm,contact_angle_deg=a.contact_angle_deg,pad_overlap_mm=a.pad_overlap_mm,table_margin_mm=a.table_margin_mm,preserve_source=a.preserve_source,allow_retry=a.allow_retry,execution_profile=a.execution_profile,carry_route=a.carry_route,visible_goal_check=a.visible_goal_check,offline_goal_vision=a.offline_goal_vision,local_goal_vision=a.local_goal_vision)
     rec = Recorder(out, cfg)
     cache = out / 'cache'; cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=ROOT+'/.libero-config', MUJOCO_GL='egl',
@@ -330,7 +372,15 @@ def main():
             rec.finish('capture_only'); return
         if a.drawer_supervisor:
             from libero_goal_drawer_control import run_drawer
-            run_drawer(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
+            handoff = run_drawer(env,obs,rec,task,get_real_depth_map,
+                                 get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)
+            if a.drawer_bowl_continuation and handoff is not None:
+                from libero_jev_recovery import run_recovery
+                obs, used_ticks = handoff
+                run_recovery(env, obs, rec, task, get_real_depth_map,
+                             get_camera_intrinsic_matrix,
+                             get_camera_extrinsic_matrix,
+                             prior_native_ticks=used_ticks)
         elif a.knob_supervisor:
             from libero_goal_knob_control import run_knob
             run_knob(env,obs,rec,task,get_real_depth_map,get_camera_intrinsic_matrix,get_camera_extrinsic_matrix)

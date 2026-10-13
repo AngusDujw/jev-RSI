@@ -136,3 +136,92 @@ def select_public_handle(handles, requested_level):
     if requested_level not in order:
         raise ValueError("Unknown public drawer level")
     return handles[order[requested_level]]
+
+
+def visible_drawer_extension(rgb, depth, intrinsic, extrinsic, handle, baseline_pixels=0):
+    """Measure a protruding dark drawer surface from camera pixels and depth.
+
+    The image window follows the selected visible handle. A dark patch only
+    counts when its reconstructed height matches that handle and it lies
+    outward of the handle's initial measured Y. No drawer body state is read.
+    """
+    image = np.asarray(rgb)
+    distance = np.asarray(depth, float)
+    k = np.asarray(intrinsic, float)
+    t = np.asarray(extrinsic, float)
+    if (image.shape != (768, 768, 3) or distance.shape != (768, 768)
+            or k.shape != (3, 3) or t.shape != (4, 4)):
+        raise ValueError('Drawer extension requires calibrated agentview RGB-D')
+    u, v = (int(round(value)) for value in handle['center_uv'])
+    x0, x1, y0, y1 = u+25, u+155, v-110, v-55
+    if not (0 <= x0 < x1 <= 768 and 0 <= y0 < y1 <= 768):
+        raise RuntimeError('Visible drawer-extension window outside agentview')
+    vv, uu = np.mgrid[y0:y1, x0:x1]
+    z = distance[vv, uu]
+    camera = np.stack(((uu-k[0, 2])*z/k[0, 0],
+                       (vv-k[1, 2])*z/k[1, 1], z), axis=-1)
+    world = camera @ t[:3, :3].T + t[:3, 3]
+    h = np.asarray(handle['center_world_m'], float)
+    candidate = ((image[vv, uu].max(axis=2) < 70) & np.isfinite(z)
+                 & (np.abs(world[:, :, 2]-h[2]) < .04)
+                 & (world[:, :, 1] > h[1]+.04)
+                 & (world[:, :, 1] < h[1]+.30))
+    count = int(candidate.sum())
+    gain = count-int(baseline_pixels)
+    return dict(candidate_pixels=count, initial_candidate_pixels=int(baseline_pixels),
+                new_candidate_pixels=gain,
+                passed=bool(count >= 1200 and gain >= 1000),
+                window_xyxy=[x0, y0, x1, y1],
+                source='agentview dark surface at selected visible handle height, calibrated outward depth')
+
+
+def visible_drawer_interior(rgb, depth, intrinsic, extrinsic, handle):
+    """Fit an actually exposed drawer-floor patch relative to a visible handle."""
+    image = np.asarray(rgb)
+    distance = np.asarray(depth, float)
+    k = np.asarray(intrinsic, float)
+    t = np.asarray(extrinsic, float)
+    if (image.shape != (768, 768, 3) or distance.shape != (768, 768)
+            or k.shape != (3, 3) or t.shape != (4, 4)):
+        raise ValueError('Drawer interior requires calibrated agentview RGB-D')
+    u, v = (int(round(value)) for value in handle['center_uv'])
+    x0, x1, y0, y1 = u-10, u+95, v-60, v+65
+    if not (0 <= x0 < x1 <= 768 and 0 <= y0 < y1 <= 768):
+        raise RuntimeError('Visible interior window outside agentview')
+    vv, uu = np.mgrid[y0:y1, x0:x1]
+    z = distance[vv, uu]
+    camera = np.stack(((uu-k[0, 2])*z/k[0, 0],
+                       (vv-k[1, 2])*z/k[1, 1], z), axis=-1)
+    world = camera @ t[:3, :3].T + t[:3, 3]
+    h = np.asarray(handle['center_world_m'], float)
+    candidate = ((image[vv, uu].max(axis=2) < 70) & np.isfinite(z)
+                 & (world[:, :, 1] > h[1]+.01)
+                 & (world[:, :, 1] < h[1]+.11)
+                 & (world[:, :, 2] > h[2]-.15)
+                 & (world[:, :, 2] < h[2]+.05))
+    if int(candidate.sum()) < 1200:
+        raise RuntimeError('Opened drawer interior not sufficiently visible')
+    heights = world[:, :, 2][candidate]
+    counts, edges = np.histogram(heights, bins=100,
+                                 range=(h[2]-.15, h[2]+.05))
+    floor_z = float((edges[np.argmax(counts)]+edges[np.argmax(counts)+1])/2)
+    floor_mask = candidate & (np.abs(world[:, :, 2]-floor_z) < .006)
+    floor = world[floor_mask]
+    if len(floor) < 1200:
+        raise RuntimeError('Visible drawer floor plane insufficient')
+    low_xy, high_xy = np.quantile(floor[:, :2], [.05, .95], axis=0)
+    if np.any(high_xy-low_xy < [.08, .04]):
+        raise RuntimeError('Visible drawer interior lacks placement area')
+    rim = world[:, :, 2][candidate & (world[:, :, 2] > floor_z+.035)]
+    if len(rim) < 200:
+        raise RuntimeError('Visible drawer rim height unavailable')
+    pixels = np.column_stack((uu[floor_mask], vv[floor_mask]))
+    low_uv, high_uv = np.quantile(pixels, [.05, .95], axis=0)
+    return dict(center=np.r_[np.median(floor[:, :2], axis=0), floor_z],
+                low=np.r_[low_xy, floor_z-.003],
+                high=np.r_[high_xy, floor_z+.003],
+                rim_high_z=float(np.quantile(rim, .9)),
+                points=len(floor),
+                bbox_xyxy=np.r_[low_uv, high_uv].tolist(),
+                label='visible open drawer interior floor',
+                source='calibrated RGB-D dark floor plane and visible rim relative to public handle')

@@ -9,7 +9,7 @@ import numpy as np
 
 
 SOURCE_LABEL = {
-    1144: 'bowl', 1163: 'wine bottle', 1252: 'bowl',
+    1144: 'bowl', 1163: 'wine bottle', 1202: 'bowl', 1252: 'bowl',
     1335: 'cream cheese box', 1423: 'bowl', 1458: 'wine bottle',
 }
 DESTINATION_LABEL = {1335: 'bowl', 1423: 'plate'}
@@ -49,25 +49,55 @@ def associate_precontact(detections, label, prior_box):
     return choices[0][2]
 
 
-def pick_visible(detections, label, excluded_box=None):
-    """Prefer exact public nouns; admit a tight compound label if none exists."""
-    choices = [d for d in detections if d['label'].strip().lower() == label]
-    if not choices:
+def pick_visible(detections, label, excluded_box=None, allow_generic=False):
+    """Reject scene-scale proposals; use a unique compact fallback if needed."""
+    def area(d):
+        box = np.asarray(d['bbox'], float)
+        return float(np.prod(np.maximum(box[2:]-box[:2], 0)))
+    def interior(d):
+        x0,y0,x1,y1 = map(float,d['bbox'])
+        return 4 < x0 < x1 < 764 and 4 < y0 < y1 < 764
+    def strong_noun(d):
+        # A uniquely localized small item can be less confidently named than
+        # a fixture. Keep the relaxed tier tied to visible shape and position.
+        return d['score'] >= .35 or (
+            d['score'] >= .30 and area(d) < .03*768*768 and interior(d))
+    scene_limit = .10*768*768
+    choices = [d for d in detections
+               if d['label'].strip().lower() == label and area(d) < scene_limit]
+    selection = 'exact public noun with scene-scale rejection'
+    if not any(strong_noun(d) for d in choices):
         # Grounding can append a generic noun ("box container") while keeping
         # the public noun intact. A scene-scale box is not an object proposal.
         choices = [d for d in detections
                    if d['label'].strip().lower().startswith(label+' ')
-                   and np.prod(np.asarray(d['bbox'])[2:]-np.asarray(d['bbox'])[:2])
-                   < .10*768*768]
+                   and area(d) < scene_limit]
+        selection = 'public noun compound with scene-scale rejection'
+    if not any(strong_noun(d) for d in choices) and allow_generic:
+        # A grounding model may give a graspable source only the generic noun
+        # "object" while assigning the public noun to a cabinet or fixture.
+        # Admit this only when a single compact, interior proposal survives;
+        # ambiguous alternatives stop the episode rather than invent identity.
+        choices = [d for d in detections
+                   if d['label'].strip().lower() == 'object'
+                   and d['score'] >= .25 and area(d) < .03*768*768
+                   and interior(d)]
+        selection = 'unique compact generic object; public noun not visually confirmed'
     if excluded_box is not None:
         choices = [d for d in choices if overlap_ratio(d['bbox'], excluded_box) < .45]
     choices.sort(key=lambda d: d['score'], reverse=True)
-    if not choices or choices[0]['score'] < .35:
+    if not choices:
         raise RuntimeError(f'No high-confidence visible {label}')
-    if (len(choices) > 1 and choices[1]['score'] >= .85*choices[0]['score'] and
+    qualified = (choices[0]['score'] >= .25 if
+                 selection.startswith('unique compact generic') else
+                 strong_noun(choices[0]))
+    if not qualified:
+        raise RuntimeError(f'No high-confidence visible {label}')
+    ambiguity_ratio = .75 if selection.startswith('unique compact generic') else .85
+    if (len(choices) > 1 and choices[1]['score'] >= ambiguity_ratio*choices[0]['score'] and
             overlap_ratio(choices[0]['bbox'], choices[1]['bbox']) < .5):
         raise RuntimeError(f'Ambiguous visible {label}')
-    return choices[0]
+    return dict(choices[0],selection_mode=selection)
 
 
 def recognize(worker, receive, views, task_id, reason, prior, folder):
@@ -95,15 +125,30 @@ def recognize(worker, receive, views, task_id, reason, prior, folder):
                                           prior['source']['bbox'])
             evidence = 'local RGB detection matched to initial public-visible box before contact'
         except RuntimeError:
-            source = pick_visible(detections, source_label)
-            evidence = 'local GroundingDINO exact public noun + visible SAM box'
+            source = pick_visible(detections, source_label, allow_generic=True)
+            evidence = 'local GroundingDINO '+source['selection_mode']+' + visible SAM box'
     else:
-        source = pick_visible(detections, source_label)
-        evidence = 'local GroundingDINO exact public noun + visible SAM box'
+        source = pick_visible(detections, source_label, allow_generic=True)
+        evidence = 'local GroundingDINO '+source['selection_mode']+' + visible SAM box'
     result = dict(source=dict(label=source_label, camera='agentview',
                               bbox=source['bbox'], visible=True,
                               evidence=evidence))
-    if task_id in DESTINATION_LABEL:
+    if task_id == 1202:
+        from libero_goal_drawer_vision import visible_drawer_interior
+        handle = json.loads((folder.parent/'selected-handle.json').read_text())
+        if reason == 'initial':
+            geometry = visible_drawer_interior(view['rgb'], view['depth'],
+                view['K'], view['T'], handle)
+            bbox = geometry['bbox_xyxy']
+        else:
+            if prior is None or 'destination' not in prior:
+                raise RuntimeError('Initial visible drawer floor missing')
+            bbox = prior['destination']['bbox']
+        result['destination'] = dict(label='visible open drawer interior floor',
+            camera='agentview', bbox=list(bbox), visible=True,
+            receiver_kind='support_surface',
+            evidence='initial public RGB-D drawer-floor fit; bbox retained after hand occlusion')
+    elif task_id in DESTINATION_LABEL:
         destination_label = DESTINATION_LABEL[task_id]
         destination = pick_visible(detect('destination', destination_label),
                                    destination_label, source['bbox'])

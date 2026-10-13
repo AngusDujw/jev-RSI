@@ -50,11 +50,12 @@ def visible_rear_extent(view, mask, source, direction):
 def contact_push_plan(source, goal, own, current_orientation=None,
                       observed_rear_extent_m=None, rear_standoff_m=.010,
                       preserve_downward=True, lateral_contact_offset_m=0.,
-                      contact_mode='rear_edge'):
+                      contact_mode='rear_edge', top_contact_rear_fraction=0.,
+                      allow_short_push=False):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
-    if not .04 < distance < .55:
+    if not (.008 if allow_short_push else .04) < distance < .55:
         raise RuntimeError('Visible push distance outside supported range')
     direction = travel/distance
     if abs(goal[2]-source['low'][2]) > .065:
@@ -79,6 +80,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         raise ValueError('Rear standoff outside declared contact range')
     if not -.045 <= lateral_contact_offset_m <= .045:
         raise ValueError('Lateral contact offset outside visible object support')
+    if not 0. <= top_contact_rear_fraction <= .8:
+        raise ValueError('Top contact rear fraction outside visible support')
     lateral_axis = np.array([direction[1], -direction[0]])
     if contact_mode == 'rear_edge':
         contact_xy = (source['center'][:2] - direction*(rear_extent+leading+.004)
@@ -86,8 +89,9 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         contact_z = goal[2]+.004-own_box['finger_low_z_offset']
     elif contact_mode == 'top_surface':
         if lateral_contact_offset_m:
-            raise ValueError('Top contact must remain at observed source centre')
-        contact_xy = np.asarray(source['center'][:2], float)
+            raise ValueError('Top contact cannot use a lateral offset')
+        contact_xy = (np.asarray(source['center'][:2], float) -
+                      direction*rear_extent*top_contact_rear_fraction)
         surface_z = float(source['contact_surface_world_z_m'])
         if not source['low'][2]-.003 < surface_z < source['high'][2]+.003:
             raise RuntimeError('Visible inner surface inconsistent with plate bounds')
@@ -110,6 +114,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     contact = np.r_[contact_xy, contact_z]
     # Top contact leaves the plate trailing the fingertip; keep the pusher
     # moving until the visible plate can approach the visible stove-front goal.
+    # A short goal residual does not shorten the travel needed to reach the
+    # plate from a rear top contact. Keep the same visible-extent sweep.
     overshoot = .060 if contact_mode == 'top_surface' else .025
     push_end = np.r_[contact_xy+direction*(distance+overshoot), contact_z]
     retreat = push_end+np.array([0., 0., .10])
@@ -120,7 +126,9 @@ def contact_push_plan(source, goal, own, current_orientation=None,
         observed_rear_extent_m=rear_extent,
         rear_standoff_m=rear_standoff_m,
         contact_mode=contact_mode,
+        top_contact_rear_fraction=top_contact_rear_fraction,
         planned_overshoot_m=overshoot,
+        short_visible_correction=bool(allow_short_push and distance < .04),
         lateral_contact_offset_m=lateral_contact_offset_m,
         lateral_contact_axis_xy=lateral_axis,
         rear_extent_source='visible SAM mask/RGB-D 5th percentile' if observed_rear_extent_m is not None else 'RGB-D axis bounds fallback',
@@ -223,6 +231,7 @@ class PushModel(Jev):
             'For an observation-only reobserve, the motor choice is not executed.',
             criteria=dict(open='Command open', close='Command close',
                           keep='Preserve previous command'))
+        residual_correction = bool(state.get('residual_correction_available'))
         questions['transition'] = dict(type='choice', instructions=
             'Choose advance only when current contract_satisfied is true; '
             'otherwise continue or, when offered, reobserve. A correct direction '
@@ -230,17 +239,24 @@ class PushModel(Jev):
             'observed displacement in tracking_axes and recent_actions. Commanded '
             'delta is per native step; observed displacement is over the whole '
             'block, so do not divide them as if they shared a time interval. '
-            'If blocked, reobserve can '
-            'refresh the visible source and contact waypoint once, without motor '
-            'action or phase change. Stop if continued control is not sensible. '
+            'Stop if continued control is not sensible. '
             'When selecting reobserve or stop, no XYZ, rotation or gripper '
             'motor choice from this response is executed. '
             'For continue_phase or advance, your selected motor action executes '
-            'before any phase edge.',
+            'before any phase edge.' + (
+                ' At retreat with a measured residual and '
+                'residual_correction_available=true, choose reobserve to start '
+                'one bounded correction segment using the fresh visible plate; '
+                'this selection has no motor action.' if residual_correction else
+                ' If blocked at approach/lower, reobserve can refresh the '
+                'visible source and contact waypoint once without moving or '
+                'changing phase.'),
             criteria=dict(continue_phase='Remain in current operation',
                           **({'advance': 'Enter next operation'}
                               if state['allowed_transitions']['advance'] else {}),
-                          **({'reobserve': 'Refresh visible geometry without moving or changing phase'}
+                          **({'reobserve': ('Start one visible residual correction segment'
+                               if residual_correction else
+                               'Refresh visible geometry without moving or changing phase')}
                               if state['allowed_transitions']['reobserve'] else {}),
                           stop='End incomplete'))
         request = dict(model=self.api.cfg['model'], state=state, questions=questions)
@@ -252,7 +268,7 @@ class PushModel(Jev):
         self.rec.decisions.append(row)
         started = time.monotonic()
         try:
-            raw = self.api.post('/systemone', request)
+            raw = self.post_with_connect_retry('/systemone', request)
             dump(folder/'response.json', raw)
             answers = raw['answers']
             if set(answers) != set(questions):
@@ -306,11 +322,15 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     error_message = None
     termination_reason = None
     observed_after = None
+    observed_after_identity = None
     goal = None
     ultimate_goal = None
     ultimate_goal_uv = None
     segment = 1
-    max_native_ticks = 900 if visible_goal_plate else 550
+    # The official episode horizon is 600 native steps.  The rollout already
+    # spent 10 steps opening the gripper before entering this supervisor.
+    # Leave a ten-step margin so a correction cannot overrun the simulator.
+    max_native_ticks = 580 if visible_goal_plate else 550
     stalls = 0
     reobservations = 0
     history = []
@@ -326,8 +346,20 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             obs['robot0_eef_quat']).as_matrix(),
             observed_rear_extent_m=rear_extent, rear_standoff_m=standoff,
             preserve_downward=not visible_goal_plate,
-            contact_mode=('top_surface' if visible_goal_plate and segment == 1
-                          else 'rear_edge'))
+            # Both plate segments concern the same visible, broad support
+            # surface.  Trailing top contact maintained the second segment
+            # on init2; init3's centred first contact lost the plate early.
+            # Use the same support-relative contact rule in both segments.
+            contact_mode=('top_surface' if visible_goal_plate else 'rear_edge'),
+            allow_short_push=bool(visible_goal_plate and segment >= 2),
+            # A visually blocked direct corridor needs a lateral first leg.
+            # The second crosswise push in that route can slip from a far-rear
+            # plate contact; use the same more central supported contact as
+            # its first leg. Direct routes keep the previously successful .7.
+            top_contact_rear_fraction=(
+                .5 if visible_goal_plate and (
+                    segment == 1 or vision.goal['elevated_corridor_pixels'] >= 80)
+                else .7 if visible_goal_plate else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
         return candidate
 
@@ -380,7 +412,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             # contact endpoint. At this pose the controller's near-contact
             # residual can persist for >100 ticks; the measured finger envelope
             # still overlaps the visible plate within these bounds.
-            tolerance = .009 if second_lower else .008 if stage == 'push' else .006
+            # Under supported contact, OSC can stall within the last 10–14 mm
+            # of the planned TCP sweep.  The object itself is independently
+            # checked from fresh RGB-D after lifting the pusher.
+            tolerance = (.014 if visible_goal_plate and stage == 'push' else
+                         .009 if second_lower else .008 if stage == 'push' else .006)
             arrived = bool(np.max(np.abs(error)) < tolerance)
             rot = np.zeros(3) if stage in ('prepare', 'retreat') else Rotation.from_matrix(
                 orientation @ Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
@@ -392,6 +428,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     previous=dict(source=ob, destination=identity['destination']),
                     expected_uv=goal_uv if visible_goal_plate else None)
                 later_ob = later['source']
+                observed_after_identity = later_ob
                 observed_after = vision.measure(v[later_ob['camera']],
                     later_ob['bbox'], later_ob['label'], 'after-push-source')
                 dump(rec.folder/(f'after-push-geometry-segment-{segment}.json'
@@ -399,14 +436,21 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     observed_after)
             visible_error = None if observed_after is None else float(np.linalg.norm(
                 observed_after['center'][:2]-goal[:2]))
-            if stage == verification_stage and arrived and visible_error is not None and visible_error >= .045:
+            goal_tolerance = .020 if visible_goal_plate and segment >= 2 else .045
+            residual_correction_available = bool(visible_goal_plate and
+                stage == 'retreat' and arrived and segment == 2 and
+                visible_error is not None and goal_tolerance <= visible_error <= .12 and
+                vision.calls < 5 and max_native_ticks-ticks >= 120)
+            if (stage == verification_stage and arrived and
+                    visible_error is not None and visible_error >= goal_tolerance and
+                    not residual_correction_available):
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
             if stage == 'push' and not visible_goal_plate:
-                complete = bool(complete and visible_error is not None and visible_error < .045)
+                complete = bool(complete and visible_error is not None and visible_error < goal_tolerance)
             if stage == 'retreat':
                 complete = (bool(arrived and visible_error is not None and
-                                 visible_error < .045) if visible_goal_plate
+                                 visible_error < goal_tolerance) if visible_goal_plate
                             else arrived)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
             next_stage = ('approach' if stage == 'retreat' and visible_goal_plate
@@ -414,21 +458,30 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                           else PHASES[PHASES.index(stage)+1])
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
                 approach=('Move to a high-clearance hover above the visible plate centre.'
-                    if visible_goal_plate and segment == 1 else
+                    if visible_goal_plate else
                     'Move to high-clearance hover behind visible source, keeping the selected downward pusher pose.'),
                 lower=('Lower the own fingertip onto the visible plate top for a supported slide; keep the plate on the table.'
-                    if visible_goal_plate and segment == 1 else
+                    if visible_goal_plate else
                     'Lower behind object to own-finger tabletop clearance, without lifting source.'),
                 push=('Translate the supported contact laterally across the table to the visible staging waypoint; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
                     if visible_goal_plate and segment == 1 else
-                    'Push from behind the observed plate toward the visible stove-front goal; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
+                    'Keep supported top contact while pushing the observed plate toward the visible stove-front goal; advance after reaching the sweep endpoint so the pusher can lift before RGB-D verification.'
                     if visible_goal_plate else
                     'Move pusher along table toward the visible goal. Advance only after fresh RGB-D confirms object centre within 45mm of goal.'),
-                retreat=('Raise the pusher to reveal the plate; advance only after fresh RGB-D measures its centre within 45mm of the current segment goal.'
+                retreat=('Raise the pusher to reveal the plate; advance only after fresh RGB-D measures its centre within the supplied visible goal tolerance (45 mm staging, 20 mm final).'
                     if visible_goal_plate else
                     'Raise pusher after the observed push; advance to end attempt.'))
+            if residual_correction_available:
+                contracts['retreat'] = (
+                    'Fresh public RGB-D measures a remaining plate-to-goal '
+                    f'distance above {goal_tolerance*1000:.0f} mm. Reobserve is offered for one '
+                    'additional correction push from the measured plate pose; '
+                    'choose it now if correction is sensible. No motor action '
+                    'executes for reobserve. This is not official success.')
             state = dict(task=public_task, operation=stage, next_operation=next_stage,
-                segment_index=segment, segment_count=2 if visible_goal_plate else 1,
+                segment_index=segment, segment_count=(3 if segment == 3 else 2)
+                    if visible_goal_plate else 1,
+                residual_correction_available=residual_correction_available,
                 operation_contract=contracts[stage],
                 translation_axes={a: dict(current_coordinate_m=float(current[i]),
                     goal_coordinate_m=float(target[i]),
@@ -444,10 +497,12 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 completion_evidence=dict(position_arrived=arrived,
                     orientation_arrived=oriented, visible_object_goal_error_mm=
                     None if visible_error is None else round(visible_error*1000, 2),
+                    visible_goal_tolerance_mm=round(goal_tolerance*1000, 1),
                     contract_satisfied=bool(complete)),
                 allowed_transitions=dict(continue_phase=True, advance=bool(complete),
-                    reobserve=bool(stalls >= 2 and reobservations == 0 and
-                        stage in ('approach', 'lower') and vision.calls < 2),
+                    reobserve=bool(residual_correction_available or
+                        (stalls >= 2 and reobservations == 0 and
+                         stage in ('approach', 'lower') and vision.calls < 2)),
                     stop=True),
                 visible_geometry=dict(source_initial_xy_m=source['center'][:2],
                     goal_xy_m=goal[:2], push_direction_xy=direction,
@@ -480,6 +535,38 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if decision['transition'] == 'reobserve':
                 if not state['allowed_transitions']['reobserve']:
                     raise RuntimeError('Invalid model reobserve choice')
+                if residual_correction_available:
+                    # Reuse the just-measured public RGB-D plate, so the
+                    # correction costs no additional semantic/model call.
+                    v = views()
+                    ob = observed_after_identity
+                    source = observed_after
+                    goal, goal_uv = ultimate_goal.copy(), ultimate_goal_uv.copy()
+                    unit_push = goal[:2]-source['center'][:2]
+                    unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
+                    rear_extent = visible_rear_extent(v[ob['camera']],
+                        np.load(source['visible_mask_path']), source, unit_push)
+                    own = gripper_geometry(env, obs)
+                    segment = 3
+                    plan = build_plan(source, rear_extent, v, own)
+                    direction, orientation = plan['direction'], plan['orientation']
+                    approach, lower, contact = (plan[k] for k in
+                        ('approach', 'lower', 'contact'))
+                    push_end, retreat = plan['push_end'], plan['retreat']
+                    dump(rec.folder/'push-geometry-segment-3.json', dict(
+                        public_task=public_task, source=source,
+                        target_uv=goal_uv, visible_goal_world_m=goal, **plan,
+                        provenance='Fresh visible plate RGB-D and own gripper; Jev chose correction'))
+                    rec.event(dict(kind='visible_residual_correction',
+                        decision_id=decision['decision_id'],
+                        visible_error_mm=round(visible_error*1000, 2),
+                        from_stage='retreat', to_stage='approach',
+                        segment_index=segment))
+                    observed_after = observed_after_identity = None
+                    stage = 'approach'
+                    stage_decisions = stalls = 0
+                    reobservations += 1
+                    continue
                 v = views()
                 refreshed = vision.locate(v, public_task, 'reobserve',
                     previous=dict(source=ob, destination=identity['destination']))

@@ -17,10 +17,87 @@ PHASES = ['select', 'approach', 'align', 'descend', 'grasp', 'test_lift', 'lift'
 NATIVE_BUDGET = 580  # Env horizon is 600; initial gripper opening uses 10 ticks.
 
 
+def restrict_visible_source_cloud(measured, view, visible_cloud, initial_cloud,
+                                  source_grasp, expected, relative_rotation):
+    """Reject robot/background pixels mixed into a lifted source mask.
+
+    The gate only uses previously segmented RGB-D points transported by the
+    robot's executed TCP motion. It is a visibility check, not scene truth.
+    """
+    mask = np.load(measured['visible_mask_path']).astype(bool)
+    prediction = ((initial_cloud-source_grasp) @ relative_rotation.T + expected)
+    low_pred, high_pred = np.quantile(prediction, [.05, .95], axis=0)
+    depth = view['depth']
+    selected = (mask & np.isfinite(depth) & (depth > .02) & (depth < 3.) &
+                np.all((visible_cloud >= low_pred-.010) &
+                       (visible_cloud <= high_pred+.010), axis=2))
+    count = int(selected.sum())
+    enough = count >= max(100, int(.15*len(initial_cloud))) and \
+             count >= .20*int(mask.sum())
+    evidence = dict(selected_points=count, mask_points=int(mask.sum()),
+                    initial_visible_points=len(initial_cloud),
+                    predicted_low_world_m=low_pred.tolist(),
+                    predicted_high_world_m=high_pred.tolist(),
+                    margin_mm=10., sufficient=bool(enough),
+                    source='Fresh public RGB-D/SAM intersected with transported initial visible cloud')
+    if not enough:
+        return None, evidence
+    data = visible_cloud[selected]
+    low, high = np.quantile(data, [.05, .95], axis=0)
+    return dict(measured, low=low, high=high, center=(low+high)/2,
+                points=count, source=evidence['source']), evidence
+
+
+def track_visible_appearance(view, visible_cloud, projected_box, expected,
+                             hue_center):
+    """Find one near-TCP color component learned from the initial RGB mask.
+
+    The projected cloud can miss a carried object that rotates in the grasp.
+    Search a bounded nearby image area, then require fresh depth, matching
+    hue, a single dominant component, and proximity to executed TCP motion.
+    """
+    box = np.asarray(projected_box, float)
+    width, height = box[2]-box[0], box[3]-box[1]
+    xpad, ypad = max(24., width), max(18., .25*height)
+    vv, uu = np.indices(view['depth'].shape)
+    hsv = cv2.cvtColor(view['rgb'], cv2.COLOR_RGB2HSV)
+    hue_distance = np.abs(hsv[:, :, 0].astype(int)-hue_center)
+    hue_distance = np.minimum(hue_distance, 180-hue_distance)
+    depth = view['depth']
+    selected = ((uu >= box[0]-xpad) & (uu <= box[2]+xpad) &
+                (vv >= box[1]-ypad) & (vv <= box[3]+ypad) &
+                (hue_distance <= 12) & (hsv[:, :, 1] > 50) &
+                (hsv[:, :, 2] < 100) & np.isfinite(depth) &
+                (depth > .02) & (depth < 3.) &
+                (np.linalg.norm(visible_cloud-expected, axis=2) < .10))
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(
+        selected.astype(np.uint8))
+    components = sorted(((int(stats[i, cv2.CC_STAT_AREA]), i)
+                         for i in range(1, count)), reverse=True)
+    evidence = dict(hue_center=int(hue_center), hue_tolerance=12,
+                    search_bbox_xyxy=[float(box[0]-xpad), float(box[1]-ypad),
+                                      float(box[2]+xpad), float(box[3]+ypad)],
+                    near_expected_m=.10, candidate_pixels=int(selected.sum()),
+                    largest_components=[n for n, _ in components[:3]],
+                    source='Initial public RGB/SAM appearance + current RGB-D near own TCP')
+    if not components or components[0][0] < 300 or (
+            len(components) > 1 and components[1][0] >= .4*components[0][0]):
+        evidence['sufficient'] = False
+        return None, evidence
+    data = visible_cloud[labels == components[0][1]]
+    low, high = np.quantile(data, [.05, .95], axis=0)
+    evidence['sufficient'] = True
+    return dict(low=low, high=high, center=(low+high)/2,
+                points=len(data), source=evidence['source']), evidence
+
+
 def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_candidates):
     extent = src['high']-src['low']
     # Horizontal observed bounding range, no hidden object shape/PCA metadata.
-    major = np.array([1.,0.,0.]) if extent[0] >= extent[1] else np.array([0.,1.,0.])
+    close_on_long_axis = (cfg.get('task_id') == 1202 and
+                          cfg.get('rim_axis', 'short') == 'long')
+    major_is_x = (extent[0] < extent[1]) if close_on_long_axis else (extent[0] >= extent[1])
+    major = np.array([1.,0.,0.]) if major_is_x else np.array([0.,1.,0.])
     minor = np.array([-major[1],major[0],0.])
     R = np.column_stack([major, -minor, [0.,0.,-1.]])
     current = Rotation.from_quat(quaternion).as_matrix()
@@ -31,6 +108,7 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
     near = 1 if position[:2]@major[:2] > src['center'][:2]@major[:2] else -1
     R = Rotation.from_rotvec(minor*angle*near).as_matrix() @ R
     ee = envelope(own, R)
+    width = float(abs(minor[:2])@extent[:2])
     c = []
     for i, extra in enumerate([0., .003, -.003]):
         overlap = cfg['pad_overlap_mm']/1000+extra
@@ -47,13 +125,86 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
         target = np.r_[src['center'][:2]-ee['pad_center_offset'][:2], z]
         target[:2] += major[:2] * ([0.,-.012,.012][i])
         pad_low, pad_high = z+ee['pad_low_offset'][2],z+ee['pad_high_offset'][2]
-        width = float(abs(minor[:2])@extent[:2])
         c.append(dict(id=f'candidate_{i}', target=target, orientation=R, visible_width_mm=width*1000,
                       estimated_pad_overlap_mm=max(0., min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000,
                       estimated_finger_table_clearance_mm=(z+ee['finger_low_z_offset']-level)*1000,
                       pad_z_interval_m=[pad_low,pad_high],support_z_m=level, support_pixels=points,
                       grasp_height_source='visible tall-slender mid-body' if tall_slender else 'visible top pad-overlap',
                       prior_failed=i in failed_candidates, source='Visible RGB-D bounds/support plane + own robot mesh; geometric estimate only'))
+    if cfg.get('task_id') == 1202:
+        # A visible bowl wider than the open inner pad gap cannot be straddled
+        # symmetrically. Put one pad inside its visible rim and the other
+        # outside. Both sides remain selectable by Jev; no asset dimensions or
+        # scene contact state are consulted.
+        pad_world = np.asarray(own['pad_vertices_tool']) @ R.T
+        pad_axis = pad_world @ minor
+        positive, negative = pad_axis[pad_axis > 0], pad_axis[pad_axis < 0]
+        if not len(positive) or not len(negative):
+            raise RuntimeError('Own open pads have no opposed inner faces')
+        inner_gap = float(np.min(positive) - np.max(negative))
+        if inner_gap > 0 and width > inner_gap:
+            # The top quantile of a visible open vessel can be a thin lip.
+            # The ordinary top-overlap pose may contact only the thin lip
+            # and slide off during a lift. For a sidewall trial, lower the
+            # *own* pad by a fraction of the observed height
+            # band, bounded by the measured table clearance. This uses no
+            # asset dimensions or simulator contact state.
+            rim_drop = (min(.008, .15*float(extent[2]))
+                        if cfg.get('rim_height_mode') == 'visible_sidewall' else 0.)
+            # Center the opposed open inner pad faces on one visible boundary.
+            # An inward offset makes the outer face touch first and can push
+            # a movable source aside before the inner face reaches it.
+            # Both visible sides remain Jev choices.
+            rim_inset = min(cfg.get('rim_inset_mm', 0.)/1000., width/4)
+            rim_offset = width/2-rim_inset
+            rim_candidates = []
+            for i, side in enumerate((1., -1.)):
+                candidate = dict(c[1])
+                candidate['id'] = f'candidate_{i}'
+                # Recompute the own pad envelope after tilting inward. Merely
+                # changing orientation while retaining the old TCP offset
+                # would move the pads away from the visible rim.
+                tilt = np.deg2rad(cfg.get('rim_tilt_deg', 0.))
+                R_side = Rotation.from_rotvec(side*major*tilt).as_matrix() @ R
+                own_side = envelope(own, R_side)
+                lateral = src['center'][:2] + major[:2]*(-.012)
+                lateral += side*rim_offset*minor[:2]
+                target_xy = lateral-own_side['pad_center_offset'][:2]
+                overlap_requested = cfg['pad_overlap_mm']/1000+.003
+                target_z = (src['high'][2]-overlap_requested-
+                            own_side['pad_low_offset'][2]-rim_drop)
+                target_z = max(target_z, level-
+                    own_side['finger_low_z_offset']+cfg['table_margin_mm']/1000)
+                candidate['target'] = np.r_[target_xy,target_z]
+                candidate['orientation'] = R_side
+                candidate['grasp_height_source'] = 'visible one-sided rim pinch'
+                candidate['visible_rim_axis'] = cfg.get('rim_axis', 'short')
+                candidate['visible_rim_inset_mm'] = float(rim_inset*1000)
+                candidate['rim_height_mode'] = cfg.get('rim_height_mode', 'top_overlap')
+                candidate['visible_sidewall_drop_mm'] = float(
+                    rim_drop*1000)
+                candidate['rim_inward_tilt_deg'] = float(np.rad2deg(tilt))
+                pad_low = target_z+own_side['pad_low_offset'][2]
+                pad_high = target_z+own_side['pad_high_offset'][2]
+                candidate['pad_z_interval_m'] = [pad_low, pad_high]
+                candidate['estimated_pad_overlap_mm'] = float(max(0.,
+                    min(pad_high,src['high'][2])-max(pad_low,src['low'][2]))*1000)
+                candidate['estimated_finger_table_clearance_mm'] = float(
+                    (target_z+own_side['finger_low_z_offset']-level)*1000)
+                projected_side = np.asarray(own['pad_vertices_tool']) @ R_side.T
+                side_axis = projected_side @ minor
+                positive_side = side_axis[side_axis > 0]
+                negative_side = side_axis[side_axis < 0]
+                if not len(positive_side) or not len(negative_side):
+                    raise RuntimeError('Tilted own pads have no opposed inner faces')
+                candidate['own_open_inner_pad_gap_mm'] = float(
+                    (np.min(positive_side)-np.max(negative_side))*1000)
+                candidate['one_sided_rim_offset_mm'] = side*rim_offset*1000
+                candidate['approach_distance_mm'] = float(np.linalg.norm(
+                    candidate['target'][:2]-position[:2])*1000)
+                candidate['prior_failed'] = i in failed_candidates
+                rim_candidates.append(candidate)
+            return rim_candidates
     return c
 
 
@@ -80,7 +231,7 @@ class RecoveryModel(Jev):
             transitions['retry'] = 'Withdraw and select another visible-geometry candidate'
         if state['allowed_transitions'].get('finish_if_visible'):
             transitions['finish_if_visible'] = 'End because fresh public RGB-D shows the source resting on the requested support'
-        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. advance only when the current contract is satisfied. If fresh visible_goal_evidence passed at select and the gripper is open, choose finish_if_visible; this is sensor evidence, not native task success. A pending or ambiguous first lift test needs the one supplied recheck goal, not an advance. At descend, a blocked motion with measured open-pad overlap may allow one bounded closure trial; advance then and let the short lift test decide holding. At lower, a fresh visible held-source/rack contact or bounded low-drop candidate after blocked motion may allow one release trial; neither is native task success. On a failed or unavailable final lift/contact check, or blocked motion without release-trial evidence, choose retry if available. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
+        questions['transition'] = dict(type='choice', instructions='Decide the operation edge from completion_evidence and allowed_transitions. When allowed_transitions.advance is true, choose advance now; do not spend another action holding at a completed stage. When it is false, never choose advance. If fresh visible_goal_evidence passed at select and the gripper is open, choose finish_if_visible; this is sensor evidence, not native task success. A pending or ambiguous first lift test needs the one supplied recheck goal, not an advance. At descend, a blocked motion with measured open-pad overlap may allow one bounded closure trial; advance then and let the short lift test decide holding. At lower, a fresh visible held-source/rack contact or bounded low-drop candidate after blocked motion may allow one release trial; neither is native task success. On a failed or unavailable final lift/contact check, or blocked motion without release-trial evidence, choose retry if available. Do not keep repeating a blocked command. stop if a failure cannot be recovered. The selected actions execute before the edge.', criteria=transitions)
         if state['operation'] == 'select' and not state['allowed_transitions'].get('finish_if_visible'):
             choices={c['id']: 'Visible-geometry candidate '+c['id'] for c in state['candidates'] if not c['prior_failed']}
             questions['candidate'] = dict(type='choice', instructions='Select one of the available visible-geometry candidates now. Prefer adequate pad overlap and positive table clearance. This selection and your advance choice apply together. The previously displayed candidate is only a default, not a completed selection. These are geometric estimates, not tested success predictions.', criteria=choices)
@@ -90,7 +241,7 @@ class RecoveryModel(Jev):
         self.rec.decisions.append(row)
         started = time.monotonic()
         try:
-            raw = self.api.post('/systemone', payload)
+            raw = self.post_with_connect_retry('/systemone', payload)
             dump(folder/'response.json', raw)
             answers = raw['answers']
             if set(answers)!=set(questions):raise ValueError('Unexpected or missing Jev question answer')
@@ -113,7 +264,8 @@ class RecoveryModel(Jev):
         return row
 
 
-def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
+def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
+                 prior_native_ticks=0):
     vision = GenericVision(rec)
     model = RecoveryModel(rec)
     phases = list(PHASES)
@@ -125,7 +277,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         phases.insert(phases.index('carry'), 'carry_lateral')
     own = gripper_geometry(env, obs)
     dump(rec.folder/'own-gripper.json', own)
-    ticks = stage_ticks = stage_decisions = grip_ticks = 0
+    ticks = int(prior_native_ticks)
+    native_budget = 590 if rec.cfg.get('empty_hand_fast') else NATIVE_BUDGET
+    stage_ticks = stage_decisions = grip_ticks = 0
     gripper = -1
     stage = 'select'
     selected = 0
@@ -139,9 +293,11 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
     error_message = None
     finished = False
     initial_src = src = dst = identity = None
+    initial_drawer_interior = None
     cached_external = None
     initial_source_points_world = None
     dark_source = False
+    source_hue_center = None
     lift_verified = False
     lift_recheck_used = False
     carry_verified_stage = None
@@ -162,14 +318,28 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         return np.stack([(uu-K[0,2])*d/K[0,0], (vv-K[1,2])*d/K[1,1], d], -1) @ T[:3,:3].T + T[:3,3]
 
     def locate(reason):
-        nonlocal identity, cached_external, initial_source_points_world, dark_source, rack_geometry
+        nonlocal identity, cached_external, initial_source_points_world, dark_source, source_hue_center, rack_geometry, initial_drawer_interior
         vv = views()
         identity = vision.recognize(vv, task.language, reason)
         result = {}
         for role in ['source','destination']:
             ob = identity[role]
             v = vv[ob['camera']]
-            result[role] = vision.measure(v, ob['bbox'], ob['label'], reason+'-'+role)
+            if role == 'destination' and rec.cfg.get('task_id') == 1202:
+                from libero_goal_drawer_vision import visible_drawer_interior
+                handle = json.loads((rec.folder/'selected-handle.json').read_text())
+                try:
+                    result[role] = visible_drawer_interior(
+                        v['rgb'], v['depth'], v['K'], v['T'], handle)
+                    if reason == 'initial':
+                        initial_drawer_interior = result[role]
+                except RuntimeError:
+                    if initial_drawer_interior is None:
+                        raise
+                    result[role] = dict(initial_drawer_interior,
+                        source='previously visible drawer floor retained under hand occlusion')
+            else:
+                result[role] = vision.measure(v, ob['bbox'], ob['label'], reason+'-'+role)
             if role == 'destination' and rack_task and reason == 'initial':
                 mask = np.load(result[role]['visible_mask_path']).astype(bool)
                 depth = v['depth']
@@ -188,11 +358,23 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 hsv = cv2.cvtColor(v['rgb'], cv2.COLOR_RGB2HSV)
                 dark_source = bool(np.mean((hsv[:, :, 2][valid] < 100) &
                                            (hsv[:, :, 1][valid] > 50)) > .8)
+                dark_pixels = valid & (hsv[:, :, 2] < 100) & (hsv[:, :, 1] > 50)
+                hue_concentration = 0.
+                if dark_source and dark_pixels.sum() >= 300:
+                    hues = hsv[:, :, 0][dark_pixels].astype(int)
+                    mode = int(np.argmax(np.bincount(hues, minlength=180)))
+                    distances = np.abs(hues-mode)
+                    hue_concentration = float(np.mean(
+                        np.minimum(distances, 180-distances) <= 12))
+                    if hue_concentration >= .7:
+                        source_hue_center = mode
                 dump(rec.folder/'source-appearance.json', dict(
                     dark_saturated_fraction=float(np.mean(
                         (hsv[:, :, 2][valid] < 100) &
                         (hsv[:, :, 1][valid] > 50))),
                     use_dark_foreground_filter=dark_source,
+                    hue_center=source_hue_center,
+                    hue_within_12_fraction=hue_concentration,
                     source='Initial public RGB and SAM mask'))
             if role == 'source' and ob['camera'] == 'agentview':
                 cached_external = dict(ob)
@@ -299,7 +481,40 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             dump(rec.folder/f'holding-{ticks:04d}.json',holding)
             return
         appearance_filtered = False
-        if dark_source:
+        appearance_track_evidence = None
+        geometry_filtered = False
+        geometry_filter_evidence = None
+        raw_ratio = float(np.linalg.norm(h['high']-h['low']) /
+                          max(np.linalg.norm(initial_src['high']-initial_src['low']),1e-6))
+        raw_mismatch = float(np.linalg.norm(h['center']-expected))
+        if raw_ratio > 1.5 or raw_mismatch > .05:
+            v = vv[ob['camera']]
+            h_filtered, geometry_filter_evidence = restrict_visible_source_cloud(
+                h, v, cloud(v), initial_source_points_world, source_grasp,
+                expected, relative_rotation)
+            dump(rec.folder/f'holding-geometry-{ticks:04d}.json',
+                 geometry_filter_evidence)
+            if h_filtered is None:
+                tracked = None
+                if projection and dark_source and source_hue_center is not None:
+                    tracked, appearance_track_evidence = track_visible_appearance(
+                        vv['agentview'], cloud(vv['agentview']), box, expected,
+                        source_hue_center)
+                    dump(rec.folder/f'holding-appearance-track-{ticks:04d}.json',
+                         appearance_track_evidence)
+                if tracked is None:
+                    holding = dict(valid=None,status='unavailable',
+                        reason='Insufficient visible source points after generic geometry and appearance filters',
+                        geometry_filter=geometry_filter_evidence,
+                        appearance_track=appearance_track_evidence,observed_tick=ticks)
+                    dump(rec.folder/f'holding-{ticks:04d}.json',holding)
+                    return
+                h = tracked
+                appearance_filtered = True
+            else:
+                h = h_filtered
+                geometry_filtered = True
+        if dark_source and not appearance_filtered:
             v = vv[ob['camera']]
             mask = np.load(h['visible_mask_path']).astype(bool)
             hsv = cv2.cvtColor(v['rgb'], cv2.COLOR_RGB2HSV)
@@ -313,16 +528,27 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             raw_mismatch = float(np.linalg.norm(h['center']-expected))
             if raw_ratio > 1.5 or raw_mismatch > .05:
                 if selected.sum() < 400 or selected.sum() < .25*mask.sum():
-                    holding = dict(valid=None,status='unavailable',
-                                   reason='Visible appearance insufficient to separate held source from gripper',
-                                   observed_tick=ticks)
-                    dump(rec.folder/f'holding-{ticks:04d}.json', holding)
-                    return
-                data = cloud(v)[selected]
-                low, high = np.quantile(data,[.05,.95],axis=0)
-                h = dict(h, low=low, high=high, center=(low+high)/2,
-                         points=len(data),
-                         source='SAM/RGB-D with initial visible dark-foreground appearance gate')
+                    tracked = None
+                    if projection and source_hue_center is not None:
+                        tracked, appearance_track_evidence = track_visible_appearance(
+                            vv['agentview'], cloud(vv['agentview']), box,
+                            expected, source_hue_center)
+                        dump(rec.folder/f'holding-appearance-track-{ticks:04d}.json',
+                             appearance_track_evidence)
+                    if tracked is None:
+                        holding = dict(valid=None,status='unavailable',
+                                       reason='Visible appearance insufficient to separate held source from gripper',
+                                       appearance_track=appearance_track_evidence,
+                                       observed_tick=ticks)
+                        dump(rec.folder/f'holding-{ticks:04d}.json', holding)
+                        return
+                    h = tracked
+                else:
+                    data = cloud(v)[selected]
+                    low, high = np.quantile(data,[.05,.95],axis=0)
+                    h = dict(h, low=low, high=high, center=(low+high)/2,
+                             points=len(data),
+                             source='SAM/RGB-D with initial visible dark-foreground appearance gate')
                 appearance_filtered = True
                 dump(rec.folder/f'holding-appearance-{ticks:04d}.json',h)
         rise = float(h['center'][2]-source_grasp[2])
@@ -335,6 +561,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                        source='Visible RGB-D co-motion proxy',
                        source_rise_mm=rise*1000,co_motion_error_mm=mismatch*1000,
                        visible_span_ratio=size_ratio,appearance_filtered=appearance_filtered,
+                       appearance_track=appearance_track_evidence,
+                       geometry_filtered=geometry_filtered,
+                       geometry_filter=geometry_filter_evidence,
                        second_lift_check=use_projection,measured=h,expected=expected,
                        observed_tick=ticks)
         if valid:
@@ -411,10 +640,15 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
         initial_src, dst = locate('initial')
         src = initial_src
         cs = candidates()
-        hover = max(src['high'][2],dst['high'][2])+(.17 if rack_task else .12)
+        # The opened drawer already has a calibrated visible rim. In a
+        # composite episode a shorter, still rim-clearing hover preserves
+        # native steps for grasp verification and placement.
+        hover = max(src['high'][2], dst.get('rim_high_z',dst['high'][2]))+(
+            .17 if rack_task else .06 if rec.cfg.get('drawer_bowl_continuation')
+            else .12)
         while True:
             rec.check_budget()
-            if ticks >= NATIVE_BUDGET or stage_decisions >= 45:
+            if ticks >= native_budget or stage_decisions >= 45:
                 raise RuntimeError('Stage/native budget: '+stage)
             if (rec.cfg.get('visible_goal_check') and stage == 'select' and grasp_tries and
                     visible_goal_evidence['status']=='not_checked'):
@@ -474,7 +708,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 first_mismatch = holding.get('co_motion_error_mm')
                 if (not lift_recheck_used and rec.cfg.get('lift_recheck_mm', 0) > 0 and
                         holding['status'] == 'failed' and first_rise is not None and
-                        7. <= first_rise <= 15. and first_mismatch is not None and
+                        5. <= first_rise <= 15. and first_mismatch is not None and
                         first_mismatch < 65. and .4 < holding['visible_span_ratio'] < 1.7):
                     # A borderline first lift is neither grasp proof nor a
                     # definite slip. Continue the same closed-gripper phase
@@ -496,7 +730,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     holding.get('appearance_filtered') and not lift_verified):
                 check_hold(use_projection=True)
                 lift_verified = True
-            if (stage in ('carry_lateral', 'carry') and arrived and dark_source and
+            verify_carry = dark_source or rec.cfg.get('drawer_bowl_continuation')
+            if (stage in ('carry_lateral', 'carry') and arrived and verify_carry and
                     carry_verified_stage != stage):
                 check_hold(use_projection=True)
                 carry_verified_stage = stage
@@ -538,6 +773,17 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             required_open = stage in ['approach','align','descend','release','retreat','recover_open','clear_receiver','settle_receiver']
             required_close = stage in ['grasp','test_lift','lift','carry_lateral','carry','orient_receiver','lower']
             contracts = dict(select='Choose an unfailed candidate, then advance. Hold XYZ. Gripper open. If fresh visible support evidence passed, choose finish_if_visible instead of another grasp.',approach='Reach hover pose above candidate and align orientation with gripper open.',align='Reach refreshed hover pose/orientation with gripper open.',descend='Reach supplied pad-fit pose with gripper open; if motion stalls but own open pads overlap the latest visible source bounds in all axes, you may advance to one closure trial. This overlap is not grasp proof.',grasp=f'Hold TCP, close for at least {rec.cfg.get("grasp_hold_ticks", 18)} native ticks, then advance to a short lift test. Closure is not holding proof.',test_lift='Keep closed and reach short lift goal. A borderline visible rise may extend this goal once for a fresh RGB-D check. Advance only if measured holding passed; retry if the final check failed and budget remains.',lift='Keep closed and reach clearance height with passed holding evidence.',carry='Keep closed and reach pose over receiver with passed holding evidence.',lower='Keep closed and reach supplied release pose.',release='Hold TCP and open for at least 24 native ticks AND aperture >=70mm.',retreat='Withdraw upward with gripper open, then advance to end attempt.',recover_up='Withdraw to supplied clearance pose. Keep current grip until clear.',recover_open='Hold TCP and open for >=24 ticks AND aperture >=70mm, then advance to select another candidate.')
+            if rec.cfg.get('drawer_bowl_continuation'):
+                contracts['descend'] = (
+                    'Move open fingers toward the visible bowl pad-fit pose. '
+                    'If motion stalls, one closure trial is available when own '
+                    'open pad envelope overlaps the visible bowl by at least '
+                    '5 mm in X, Y and Z. For a selected one-sided rim candidate, '
+                    'the trial is also available with at least 5 mm X/Y '
+                    'overlap, at most 2 mm vertical gap, and less than 20 mm '
+                    'remaining to the supplied target. Own finger-table '
+                    'clearance must be positive. Otherwise choose retry when offered. '
+                    'The subsequent visible lift must prove holding.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
@@ -549,13 +795,15 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contracts['lower'] = ('Keep closed and approach the rack using the bottle offset measured after rotation. '
                                       'If blocked, advance to one release trial only when fresh public RGB-D shows the held bottle within the visible rack footprint and either near support or at most 60mm above it. '
                                       'The latter is a bounded gravity-drop trial, not contact or native success.')
-            if dark_source:
+            if verify_carry:
                 contracts['carry'] += ' At arrival, require a fresh visible holding check before advance.'
             if stage == 'lift' and holding.get('appearance_filtered'):
                 contracts['lift'] += ' At clearance, advance only after the second visible holding check passes.'
             complete = arrived and oriented
             pad_overlap_mm = None
+            pad_vertical_gap_mm = None
             contact_trial = False
+            near_rim_trial = False
             if stage == 'descend':
                 pad_vertices = (np.asarray(own['pad_vertices_tool']) @
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T + position)
@@ -563,8 +811,16 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 overlap = np.maximum(0., np.minimum(pad_high, src['high'])-
                                      np.maximum(pad_low, src['low']))
                 pad_overlap_mm = np.round(overlap*1000, 2).tolist()
+                pad_vertical_gap_mm = float(max(
+                    src['low'][2]-pad_high[2], pad_low[2]-src['high'][2], 0.)*1000)
+                near_rim_trial = bool(
+                    rec.cfg.get('drawer_bowl_continuation') and
+                    c.get('grasp_height_source') == 'visible one-sided rim pinch' and
+                    np.all(overlap[:2] >= .005) and
+                    pad_vertical_gap_mm <= 2. and
+                    np.max(abs(error)) < .020)
                 contact_trial = bool(stalls >= 3 and oriented and
-                    np.all(overlap >= .005) and
+                    (np.all(overlap >= .005) or near_rim_trial) and
                     c['estimated_finger_table_clearance_mm'] > 1.)
                 complete = bool(complete or contact_trial)
             if stage == 'select':complete=True
@@ -578,7 +834,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 complete=bool(oriented and rack_contact_checked and
                     rack_contact_evidence['status'] in ('visible_contact_candidate','visible_low_drop_candidate') and
                     (arrived or stalls>=2))
-            if stage in ('carry_lateral','carry') and dark_source:
+            if stage in ('carry_lateral','carry') and verify_carry:
                 complete=complete and carry_verified_stage==stage and holding['status']=='passed'
             can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')))
             next_stage = ('clear_receiver' if stage=='recover_open' and rack_task else
@@ -593,7 +849,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')) and not (
                 rack_task and stage == 'lower' and complete) and not (
                 stage in ('clear_receiver','settle_receiver') and complete)
-            state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,blocked_visible_contact_trial=contact_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=can_continue,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
+            state = dict(task=task.language,operation=stage,next_operation=next_stage,operation_contract=contracts[stage],position_m=position.tolist(),target_position_m=target.tolist(),target_minus_current_mm=np.round(error*1000,2).tolist(),axis_hold_tolerance_mm=2.,arrival_tolerance_mm=tol*1000,required_rotation_world_rad=dict(zip(['rx','ry','rz'],rot.tolist())),gripper=dict(aperture_mm=aperture,last_command='open' if gripper==-1 else 'close',executed_command_ticks=grip_ticks,required_state='open' if required_open else 'closed' if required_close else 'preserve',closure_nearly_empty=bool(aperture<3)),completion_evidence=dict(position_arrived=arrived,orientation_arrived=oriented,contract_satisfied=bool(complete),holding_status=holding['status'],gripper_command_ticks=grip_ticks,visible_pad_envelope_overlap_xyz_mm=pad_overlap_mm,visible_pad_vertical_gap_mm=pad_vertical_gap_mm,blocked_visible_contact_trial=contact_trial,one_sided_rim_trial=near_rim_trial),holding_evidence=holding,allowed_transitions=dict(continue_phase=can_continue,advance=bool(complete and not finish_if_visible),retry=bool(can_retry),stop=True,finish_if_visible=finish_if_visible),visible_goal_evidence=visible_goal_evidence if stage=='select' else dict(status='not_requested'),selected_candidate=c['id'],candidates=[{k:v for k,v in cc.items() if k not in ['orientation','target']} for cc in cs],failed_candidates=[f'candidate_{i}' for i in failed_candidates],grasp_attempts=grasp_tries,recent_actions=history[-3:],blocked_action_count=stalls,phase_decisions=stage_decisions,information_sources='Public task + rendered RGB-D/calibration + own robot proprioception/mesh. No scene truth/reward/success.')
             if rack_task and stage == 'lower':
                 state['completion_evidence']['visible_rack_contact'] = rack_contact_evidence
             if rack_task and stage in ('orient_receiver','lower'):
@@ -631,17 +887,29 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn):
             newgrip=gripper if d['gripper']=='keep' else -1 if d['gripper']=='open' else 1
             if newgrip!=gripper:grip_ticks=0
             gripper=newgrip
-            cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .02
-            gain=.35 if block_ticks==6 else .5
+            fast_open = bool(rec.cfg.get('empty_hand_fast') and gripper==-1 and
+                             stage in ('approach','align') and np.max(abs(error))>.04)
+            cap=(.02 if np.max(abs(error))>.05 else .006 if np.max(abs(error))>.015 else .003) if stage in ['descend','test_lift','lower'] else .030 if fast_open else .02
+            gain=.55 if fast_open else .35 if block_ticks==6 else .5
             delta=np.asarray(d['signs'])*np.minimum(cap,gain*abs(error))
-            rotation=np.asarray(d['rotation_signs'])*np.minimum(.10,gain*abs(rot))
+            rotation=np.asarray(d['rotation_signs'])*np.minimum(
+                .16 if fast_open and np.max(abs(rot))>.15 else .10,
+                gain*abs(rot))
             before=position.copy()
-            if ticks+block_ticks>NATIVE_BUDGET:raise RuntimeError('Native block budget')
+            if ticks+block_ticks>native_budget:raise RuntimeError('Native block budget')
             for _ in range(block_ticks):
                 obs,_,_,_=env.step(np.r_[delta/.05,rotation/.5,gripper]);ticks+=1;stage_ticks+=1;grip_ticks+=1
             after=obs['robot0_eef_pos'].copy()
             progress=float(np.linalg.norm(error)-np.linalg.norm(target-after))
-            stalls=stalls+1 if np.linalg.norm(after-before)<.0008 and np.linalg.norm(error)>.008 else 0
+            # An arm can jitter by >0.8 mm while making no net progress toward
+            # a blocked descend target. Count target-error reduction there;
+            # retain the prior displacement check in other stages.
+            motion_stalled = (progress < .001 if stage == 'descend' else
+                              np.linalg.norm(after-before) < .0008)
+            # Use the same per-axis arrival gate exposed to Jev. A blocked
+            # axis 4 mm from a 3 mm descend target must offer a retry instead
+            # of looping until the stage budget on the old 8 mm norm gate.
+            stalls=stalls+1 if motion_stalled and np.max(abs(error))>tol else 0
             rec.branch(dict(stage=stage,decision_id=d['decision_id'],delta=delta,before=before,after=after,native_steps=ticks,selected_gripper=d['gripper'],executed_gripper=gripper,selected_transition=d['transition'],block_native_ticks=block_ticks,selected_candidate=c['id'],rotation_signs=d['rotation_signs'],rotation_error_rad=rot,progress_m=progress))
             history.append(dict(gripper=d['gripper'],transition=d['transition'],progress_mm=round(progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()))
             for cam,v in views().items():cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{cam}.png'),cv2.cvtColor(v['rgb'],cv2.COLOR_RGB2BGR))

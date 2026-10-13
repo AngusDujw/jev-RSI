@@ -1,21 +1,21 @@
 """Bounded Jev drawer primitive from public RGB-D handle measurements.
 
 No simulator object state or task predicate is read until terminal evaluation.
-Goal 1202 only executes its first, top-drawer-opening primitive here; placing
-the bowl remains incomplete. Jev chooses motion signs, gripper commands and
-every phase transition.
+Goal 1202 can hand off its opened drawer to bowl placement in the same native
+episode. Jev chooses motion signs, gripper commands and every phase edge.
 """
 import hashlib
 import json
 import os
 import time
+from types import SimpleNamespace
 
 import cv2
 import numpy as np
 from scipy.spatial.transform import Rotation
 
 from libero_goal_drawer_vision import (visible_cabinet_front,
-    visible_drawer_handles, select_public_handle)
+    visible_drawer_handles, select_public_handle, visible_drawer_extension)
 from libero_robot_geometry import gripper_geometry
 from libero_ten_task_workflows import decision_request, stages, validate_choice_set
 from run_position_pilot import Jev, append, direction_metrics, dump, serial
@@ -53,7 +53,7 @@ class DrawerModel(Jev):
         self.rec.decisions.append(row)
         started = time.monotonic()
         try:
-            raw = self.api.post('/systemone', payload)
+            raw = self.post_with_connect_retry('/systemone', payload)
             dump(folder/'response.json', raw)
             answers = raw['answers']
             validate_choice_set(payload, answers)
@@ -108,16 +108,23 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     failure = None
     initial_handle = None
     image_template = None
+    initial_extension_pixels = 0
+    clear_target = None
+    clear_start = None
+    clear_source_x = None
+    blocked_contact_blocks = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
-    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook')
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'tip_hook')
+    initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
     initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
     side_orientation = ((Rotation.from_euler('x', -30, degrees=True).as_matrix()
                          @ initial_orientation)
-                        if contact_mode == 'under_hook' else
+                        if contact_mode in ('under_hook', 'side_hook') else
+                        initial_orientation if contact_mode == 'tip_hook' else
                         initial_orientation if contact_mode == 'top_hook' else
                         Rotation.from_euler('x', 210, degrees=True).as_matrix()
                         if hook_mode else np.array([[1., 0., 0.],
@@ -149,15 +156,43 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         projected_pad = selected_vertices @ side_orientation.T
         pad_half_height = float(np.max(np.abs(
             projected_pad[:, 2]-pad_center_offset[2])))
-        if contact_mode in ('top_hook', 'under_hook') and pad_center_offset[1] >= 0:
+        if contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook') and pad_center_offset[1] >= 0:
             raise RuntimeError('No rearward own fingerpad for hook')
+        contact_offset = pad_center_offset
+        tip_tool = None
+        if contact_mode == 'tip_hook':
+            finger_vertices = np.asarray(own['finger_vertices_tool'])
+            selected_finger = finger_vertices[
+                np.linalg.norm(finger_vertices-chosen_pad_tool, axis=1) <
+                np.linalg.norm(finger_vertices-other_pad_tool, axis=1)]
+            if not len(selected_finger):
+                raise RuntimeError('Own selected fingertip mesh unavailable')
+            projected_finger = selected_finger @ side_orientation.T
+            # Prefer a rearward tip that stays within the own pad-height
+            # corridor. The most rearward mesh vertex is substantially higher
+            # and would force a lower, less reachable TCP entry.
+            corridor = (projected_finger[:, 2] >= 0) & (
+                projected_finger[:, 2] <= min(.030, 3*pad_half_height))
+            if not np.any(corridor):
+                raise RuntimeError('No own fingertip in pad-height corridor')
+            feasible = np.flatnonzero(corridor)
+            tip_tool = selected_finger[feasible[
+                np.argmin(projected_finger[feasible, 1])]]
+            contact_offset = tip_tool @ side_orientation.T
+            if contact_offset[1] >= pad_center_offset[1]-.015:
+                raise RuntimeError('Own fingertip offers no deeper contact than pad')
     else:
         pad_center_offset = np.median(
             np.asarray(own['pad_vertices_tool']) @ side_orientation.T, axis=0)
         pad_half_height = None
+        contact_offset = pad_center_offset
+        tip_tool = None
     dump(rec.folder/'own-pad-contact-offset.json', dict(
         side_orientation=side_orientation,
         pad_center_offset_world_m=pad_center_offset,
+        contact_feature_offset_world_m=contact_offset,
+        contact_feature='own fingertip mesh' if tip_tool is not None else 'own fingerpad',
+        tip_vertex_tool_m=tip_tool,
         selected_pad_half_height_world_z_m=pad_half_height,
         hook_finger=hook_finger if hook_mode else None,
         source='own gripper collision pads and robot TCP only'))
@@ -167,6 +202,34 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         image = np.ascontiguousarray(obs[cam+'_image'][::-1])
         depth = depth_fn(env.sim, obs[cam+'_depth'])[::-1].squeeze()
         return image, depth, k_fn(env.sim, cam, 768, 768), t_fn(env.sim, cam)
+
+    def visible_source_x_for_clearance():
+        """Locate the public source before drawer motion can occlude it."""
+        from libero_generic_vision import GenericVision
+        from libero_goal_local_vision import SOURCE_LABEL, pick_visible
+        folder = rec.folder/'clear-source-vision'
+        folder.mkdir()
+        vision = GenericVision(SimpleNamespace(cfg=rec.cfg, folder=folder))
+        try:
+            rgb, depth, intrinsic, extrinsic = frame()
+            image = folder/'agentview.png'
+            cv2.imwrite(str(image), cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR))
+            label = SOURCE_LABEL[task_id]
+            request = dict(image=str(image), instruction=label+' .',
+                           output=str(folder/'grounding-source'))
+            dump(folder/'grounding-source-request.json', request)
+            vision.worker.stdin.write(json.dumps(request)+'\n')
+            vision.worker.stdin.flush()
+            detections = vision.receive()['objects']
+            dump(folder/'grounding-source-response.json', detections)
+            source = pick_visible(detections, label)
+            measured = vision.measure(dict(rgb=rgb, depth=depth,
+                K=intrinsic, T=extrinsic), source['bbox'], label,
+                'public-source-clearance')
+            dump(folder/'source-geometry.json', measured)
+            return float(measured['center'][0])
+        finally:
+            vision.close()
 
     def measure_handle():
         image, depth, intrinsic, extrinsic = frame()
@@ -201,8 +264,23 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image_template = gray[y:y+height, x:x+width].copy()
         initial_handle = dict(handle, template_origin=[x, y])
+        initial_rgb, initial_depth, initial_k, initial_t = frame()
+        initial_extension_pixels = visible_drawer_extension(
+            initial_rgb, initial_depth, initial_k, initial_t, handle)['candidate_pixels']
         dump(rec.folder/'selected-handle.json', dict(
             initial_handle, public_requested_level=requested_level))
+        if task_id == 1202 and rec.cfg.get('drawer_clear_to_source'):
+            try:
+                clear_source_x = visible_source_x_for_clearance()
+                if not np.isfinite(clear_source_x) or \
+                        abs(clear_source_x-initial_robot_x) > .35:
+                    raise RuntimeError('Visible source X is outside own bounded reach')
+                rec.event(dict(kind='initial_public_source_for_clearance',
+                    visible_source_x_world_m=clear_source_x,
+                    source='Initial unobstructed agentview RGB-D + public noun'))
+            except (RuntimeError, OSError, ValueError) as exc:
+                rec.event(dict(kind='clear_to_source_unavailable',
+                    reason=str(exc)))
         while phase < len(sequence):
             rec.check_budget()
             if ticks >= 550 or stage_ticks >= 145:
@@ -210,38 +288,77 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             stage = sequence[phase]
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
+            contact_rod_position = handle_position.copy()
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'tip_hook'):
+                # The middle handle is visibly about 8 cm long. A near-side
+                # contact may leave room for the arm beside the cabinet;
+                # retain the same observed rod point for both hook paths.
+                axis = np.asarray(handle['rod_axis_world'], float)
+                toward_robot = 1. if (initial_robot_x-handle_position[0])*axis[0] >= 0 else -1.
+                contact_rod_position += (toward_robot *
+                    min(.024, .30*float(handle['visible_rod_length_m'])) * axis)
             if hook_mode:
                 face_y = float(front_plane['point_world_m'][1])
                 back_y = float(handle['rod_back_world_y_m'])
                 hook_y = face_y + .012
                 if not face_y + .008 < hook_y < back_y - .003:
                     raise RuntimeError('Visible finger-hook gap unavailable')
-                hook_pad = np.array([handle_position[0], hook_y,
-                                     handle_position[2]])
-                contact_tcp = hook_pad - pad_center_offset
-                pad_now = np.mean([env.sim.data.geom_xpos[
-                    env.sim.model.geom_name2id(name)] for name in pad_names], axis=0)
+                hook_pad = np.array([contact_rod_position[0], hook_y,
+                                     contact_rod_position[2]])
+                contact_tcp = hook_pad - contact_offset
+                pad_now = (position +
+                    Rotation.from_quat(obs['robot0_eef_quat']).as_matrix() @ tip_tool
+                    if tip_tool is not None else np.mean([env.sim.data.geom_xpos[
+                    env.sim.model.geom_name2id(name)] for name in pad_names], axis=0))
                 finger_behind = bool(face_y + .003 < pad_now[1] < back_y - .003
-                    and abs(pad_now[0]-handle_position[0]) < .018
-                    and abs(pad_now[2]-handle_position[2]) < .012)
+                    and abs(pad_now[0]-contact_rod_position[0]) < .018
+                    and abs(pad_now[2]-contact_rod_position[2]) < .012)
             else:
                 contact_tcp = handle_position - pad_center_offset
                 finger_behind = False
                 pad_now = None
-            under_tcp = pad_entry_z = None
-            if contact_mode == 'under_hook':
+            under_tcp = pad_entry_z = side_entry_tcp = None
+            if contact_mode in ('under_hook', 'side_hook', 'tip_hook'):
                 under_tcp, pad_entry_z = under_hook_waypoints(
-                    handle, lower_handle, contact_tcp, pad_center_offset,
+                    handle, lower_handle, contact_tcp, contact_offset,
                     pad_half_height)
+            if contact_mode == 'side_hook':
+                # First pass the measured near end of the rod at the visible
+                # middle/lower gap, then slide along its axis behind the rod.
+                # This changes the collision path, not the final hook point.
+                axis = np.asarray(handle['rod_axis_world'], float)
+                toward_robot = 1. if (initial_robot_x-handle_position[0])*axis[0] >= 0 else -1.
+                side_entry_tcp = under_tcp.copy()
+                side_entry_tcp[:2] = (handle_position[:2] +
+                    toward_robot*(.5*float(handle['visible_rod_length_m'])+.018)*axis[:2]
+                    - pad_center_offset[:2])
+                side_entry_tcp[1] = under_tcp[1]
+            approach_tcp = side_entry_tcp if side_entry_tcp is not None else under_tcp
             targets = {
-                'approach': (under_tcp if under_tcp is not None else contact_tcp)
-                            + [0., .14, 0. if under_tcp is not None else contact_clearance],
-                'align': (under_tcp if under_tcp is not None else contact_tcp)
-                         + [0., .14, 0. if under_tcp is not None else contact_clearance],
+                'approach': (approach_tcp if approach_tcp is not None else contact_tcp)
+                            + [0., .14, 0. if approach_tcp is not None else contact_clearance],
+                'align': (approach_tcp if approach_tcp is not None else contact_tcp)
+                         + [0., .14, 0. if approach_tcp is not None else contact_clearance],
                 'contact': contact_tcp,
                 'pull': contact_tcp + [0., .18, 0.],
             }
             target = np.asarray(targets.get(name, position), float)
+            if name == 'clear_opening':
+                if clear_target is None:
+                    clear_start = position.copy()
+                    clear_target = position + np.array([0., .14, .15])
+                    if clear_source_x is not None:
+                        clear_target[0] = clear_source_x
+                        rec.event(dict(kind='clear_to_public_source',
+                            target_tcp_world_m=clear_target.tolist(),
+                            source='initial public RGB-D source X + current own TCP'))
+                target = clear_target.copy()
+                if (rec.cfg.get('drawer_clear_to_source') and
+                        (position[1] < clear_start[1]+.045 or
+                         position[2] < clear_start[2]+.045)):
+                    # Clear the observed drawer mouth before crossing toward
+                    # the separately visible source. Both legs remain Jev XYZ.
+                    target[0] = clear_start[0]
             contact_leg = 'final'
             if contact_mode == 'top_hook' and name == 'contact' and \
                     position[1] > contact_tcp[1] + .009:
@@ -255,26 +372,63 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_leg = 'under_y_insert'
             elif contact_mode == 'under_hook' and name == 'contact':
                 contact_leg = 'under_rise'
+            if contact_mode == 'tip_hook' and name == 'contact' and \
+                    position[1] > contact_tcp[1] + .009:
+                target = under_tcp.copy()
+                contact_leg = 'tip_y_insert'
+            elif contact_mode == 'tip_hook' and name == 'contact':
+                contact_leg = 'tip_rise'
+            if contact_mode == 'side_hook' and name == 'contact':
+                if position[1] > side_entry_tcp[1] + .009:
+                    target = side_entry_tcp.copy()
+                    contact_leg = 'side_y_insert'
+                elif abs(position[0]-under_tcp[0]) > .007:
+                    target = under_tcp.copy()
+                    contact_leg = 'side_x_slide'
+                else:
+                    contact_leg = 'side_rise'
             rotation_error = (Rotation.from_matrix(side_orientation @
                 Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
-                if name in ('align', 'contact', 'grasp', 'pull', 'release')
+                if name in ('align', 'contact', 'grasp', 'pull', 'release') or
+                   (name == 'approach' and rec.cfg.get('drawer_preorient'))
                 else np.zeros(3))
             oriented = bool(np.max(np.abs(rotation_error)) < .06)
             aperture = float(np.sum(np.abs(obs['robot0_gripper_qpos']))*1000)
             shift = handle_shift() if name in ('pull', 'verify') else None
+            extension = (visible_drawer_extension(*frame(), handle,
+                baseline_pixels=initial_extension_pixels)
+                if name in ('pull', 'verify') else None)
             arrived = bool(np.max(np.abs(target-position)) < .007)
+            # An actual contact can block the final exact TCP pose. This only
+            # offers a closure trial from permitted RGB-D and own pad geometry;
+            # opening is still verified from fresh public images later.
+            pad_bounds = (np.asarray(own['pad_vertices_tool']) @
+                Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T + position)
+            pad_low, pad_high = np.min(pad_bounds, axis=0), np.max(pad_bounds, axis=0)
+            rod_gap = float(np.linalg.norm(np.maximum(
+                np.maximum(pad_low-contact_rod_position,
+                           contact_rod_position-pad_high), 0.)))
+            blocked_contact_trial = bool(task_id == 1098 and name == 'contact' and
+                contact_mode == 'pinch' and blocked_contact_blocks >= 3 and
+                oriented and np.linalg.norm(target-position) < .030 and
+                rod_gap < .025)
+            exact_contact_pose = bool(name == 'contact' and arrived and oriented and
+                contact_leg in ('final', 'under_rise', 'side_rise', 'tip_rise') and
+                (finger_behind if hook_mode else True))
             gate = {
                 'observe': True,
                 'select_handle': True,
                 'approach': arrived,
                 'align': arrived and oriented,
-                'contact': arrived and oriented and contact_leg in ('final', 'under_rise')
-                           and (finger_behind if contact_mode in ('top_hook', 'under_hook') else True),
+                'contact': exact_contact_pose or blocked_contact_trial,
                 'grasp': (grip_ticks >= 18 and gripper == -1 and finger_behind
                           if hook_mode else grip_ticks >= 18 and gripper == 1),
-                'pull': arrived and shift is not None and shift['pixel_displacement'] > 12,
+                'pull': bool(extension and extension['passed']) or (
+                    arrived and shift is not None and shift['pixel_displacement'] > 12),
                 'release': grip_ticks >= 24 and gripper == -1 and aperture >= 65,
-                'verify': shift is not None and shift['pixel_displacement'] > 12,
+                'clear_opening': arrived and gripper == -1,
+                'verify': bool(extension and extension['passed']) or (
+                    shift is not None and shift['pixel_displacement'] > 12),
             }[name]
             evidence = dict(sources=['public_task', 'agentview_rgbd',
                                      'camera_calibration', 'robot_proprioception',
@@ -282,22 +436,31 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                      'executed_action_history'],
                             observed_native_tick=ticks,
                             handle_world_m=handle_position.tolist(),
+                            contact_rod_world_m=contact_rod_position.tolist(),
                             own_pad_center_offset_world_m=pad_center_offset.tolist(),
+                            own_contact_feature_offset_world_m=contact_offset.tolist(),
+                            own_contact_feature='fingertip' if tip_tool is not None else 'fingerpad',
                             hook_finger_behind_visible_rod=finger_behind if hook_mode else None,
-                            hook_pad_current_world_m=pad_now.tolist() if hook_mode else None,
+                            hook_pad_current_world_m=pad_now.tolist() if hook_mode and tip_tool is None else None,
+                            hook_tip_current_world_m=pad_now.tolist() if tip_tool is not None else None,
                             contact_path_leg=contact_leg if name == 'contact' else None,
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
-                                if contact_mode == 'under_hook' else None),
+                                if contact_mode in ('under_hook', 'side_hook', 'tip_hook') else None),
                             under_entry_pad_world_z_m=pad_entry_z,
                             own_pad_half_height_world_z_m=pad_half_height,
                             current_tcp_world_m=position.tolist(),
+                            own_pad_to_visible_rod_gap_mm=round(rod_gap*1000, 2),
+                            blocked_contact_blocks=blocked_contact_blocks,
+                            handle_contact_pose_reached=exact_contact_pose,
+                            blocked_contact_closure_trial=blocked_contact_trial,
                             position_arrived=arrived,
                             orientation_arrived=oriented,
                             gripper_command_ticks=grip_ticks,
                             gripper_aperture_mm=aperture,
                             visible_handle_shift=shift,
+                            visible_drawer_extension=extension,
                             **{stage['gate']: bool(gate)})
             request = decision_request(task_id, stage['id'], tcp_xyz_m=position,
                 target_xyz_m=target, rotation_error_world_rad=rotation_error,
@@ -308,6 +471,17 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 reobserve_available=not reobserved and name in ('observe', 'select_handle', 'approach', 'align'),
                 required_gripper_state=('close' if name in ('grasp', 'pull')
                     and not hook_mode else 'open'))
+            request['questions']['transition']['instructions'] = (
+                f'The current completion gate is completion_evidence.{stage["gate"]}. '
+                'When it is true, choose advance now; the selected action '
+                'executes before the stage edge. When false, choose '
+                'continue_phase or stop. This is a local visible/proprioceptive '
+                'stage gate, not official task success.')
+            if name == 'approach' and rec.cfg.get('drawer_preorient'):
+                request['state']['stage_contract'] += (
+                    ' Rotate toward the supplied own-wrist target while '
+                    'translating. Advance on TCP arrival; the next align '
+                    'stage checks and completes any remaining orientation.')
             if hook_mode and name == 'grasp':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open and place one own finger behind the '
@@ -335,11 +509,61 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'middle handle rod. contact_path_leg names the current '
                     'waypoint. Advance only after the selected finger is '
                     'measured behind the middle rod at the final pose.')
+            if contact_mode == 'side_hook' and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Keep the hand outside the cabinet and align the own finger '
+                    'with the measured middle/lower gap just beyond the near '
+                    'end of the visible handle rod. Advance after own pose evidence.')
+            if contact_mode == 'side_hook' and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Insert the selected own finger at the visible gap beside '
+                    'the near rod end, slide sideways behind the rod to the '
+                    'measured contact X, then rise to the middle rod. '
+                    'contact_path_leg names the current waypoint. Advance only '
+                    'when the finger is visibly measured behind the rod at '
+                    'the final pose.')
+            if contact_mode == 'tip_hook' and name in ('approach', 'align'):
+                request['state']['stage_contract'] = (
+                    'Keep the hand outside the cabinet and align the selected '
+                    'own fingertip with the visible middle/lower handle gap. '
+                    'The fingertip is from own mesh; the TCP remains in front.')
+            if contact_mode == 'tip_hook' and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Insert the selected own fingertip into the measured gap '
+                    'from the front, then rise behind the middle visible rod. '
+                    'Only advance after own fingertip coordinates are behind '
+                    'the rod and the supplied final TCP pose is reached.')
+            if task_id == 1098 and contact_mode == 'pinch' and name == 'contact':
+                request['state']['stage_contract'] = (
+                    'Move open fingers toward the visible rod. If the exact '
+                    'pose is blocked but three executed blocks have stalled '
+                    'within 30 mm of the RGB-D target and own pad envelope '
+                    'is within 25 mm of the rod, you may advance to one '
+                    'closure trial. This does not prove grasp; the later '
+                    'visible drawer-motion gate must still pass.')
             if hook_mode and name == 'pull':
                 request['state']['stage_contract'] = (
                     'Keep the gripper open; pull the measured finger hook outward '
                     'along the visible cabinet-front normal. Advance only when '
-                    'the handle image actually moves and TCP reaches the target.')
+                    'fresh RGB-D shows a protruding drawer surface at the selected '
+                    'handle height, or the handle visibly moves and TCP arrives.')
+            if name in ('pull', 'verify'):
+                request['questions']['transition']['instructions'] = (
+                    'Advance when the fresh visible drawer-extension gate is true. '
+                    'This is calibrated RGB-D evidence of an outward dark drawer '
+                    'surface at the selected handle height, not native task success. '
+                    'Otherwise use the allowed transitions from current evidence.')
+            if name == 'clear_opening':
+                request['state']['stage_contract'] = (
+                    'Keep the gripper open and move to the supplied clearance '
+                    'pose above and outward of the visibly open drawer. Advance '
+                    'only after own TCP arrival; the next stage measures fresh '
+                    'RGB-D with the hand out of the opening.')
+                if rec.cfg.get('drawer_clear_to_source'):
+                    request['state']['stage_contract'] += (
+                        ' First leave the visible drawer mouth outward and up '
+                        'by 45 mm while holding X; then move X toward the '
+                        'initial publicly detected source during clearance.')
             decision = model.decide(request, stage['id'])
             edge = decision['transition']
             if edge == 'stop':
@@ -355,8 +579,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 grip_ticks = 0
             gripper = selected_gripper
             error = target-position
-            delta = np.asarray(decision['signs'])*np.minimum(.018, .5*np.abs(error))
-            rotation_delta = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rotation_error))
+            fast_open = bool(rec.cfg.get('empty_hand_fast') and gripper == -1 and
+                             name in ('approach', 'align', 'clear_opening'))
+            far_open = fast_open and np.max(np.abs(error)) > .04
+            fast_rotation = fast_open and np.max(np.abs(rotation_error)) > .15
+            delta = np.asarray(decision['signs'])*np.minimum(
+                .030 if far_open else .018,
+                (.60 if far_open else .5)*np.abs(error))
+            rotation_delta = np.asarray(decision['rotation_signs'])*np.minimum(
+                .16 if fast_rotation else .10,
+                (.60 if fast_rotation else .5)*np.abs(rotation_error))
             block = 6 if name in ('grasp', 'release') else 3
             before = position.copy()
             for _ in range(block):
@@ -367,6 +599,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 stage_ticks += 1
                 grip_ticks += 1
             after = np.asarray(obs['robot0_eef_pos'], float)
+            if name == 'contact':
+                blocked_contact_blocks = (blocked_contact_blocks+1 if
+                    np.linalg.norm(after-before) < .0008 and
+                    np.linalg.norm(target-before) > .007 else 0)
             motion = np.round((after-before)*1000, 2).tolist()
             rec.branch(dict(stage=stage['id'], decision_id=decision['decision_id'],
                             before=before, after=after, delta=delta,
@@ -385,13 +621,17 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                decision_id=decision['decision_id']))
                 phase += 1
                 stage_ticks = grip_ticks = 0
+                blocked_contact_blocks = 0
         finished = True
     except Exception as exc:
         failure = str(exc)
         rec.event(dict(kind='stop', reason=failure))
     finally:
+        handoff = bool(task_id == 1202 and finished and
+                       rec.cfg.get('drawer_bowl_continuation'))
         current_image, agent_depth, agent_k, agent_t = frame()
-        cv2.imwrite(str(rec.folder/f'{ticks:04d}-terminal-agentview.jpg'),
+        label = 'drawer-primitive' if handoff else 'terminal'
+        cv2.imwrite(str(rec.folder/f'{ticks:04d}-{label}-agentview.jpg'),
                     cv2.cvtColor(current_image, cv2.COLOR_RGB2BGR))
         if task_id == 1202:
             np.save(rec.folder/'terminal-agentview-depth.npy', agent_depth)
@@ -400,14 +640,19 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             wrist = 'robot0_eye_in_hand'
             wrist_rgb = np.ascontiguousarray(obs[wrist+'_image'][::-1])
             wrist_depth = depth_fn(env.sim, obs[wrist+'_depth'])[::-1].squeeze()
-            cv2.imwrite(str(rec.folder/f'{ticks:04d}-terminal-wrist.jpg'),
+            cv2.imwrite(str(rec.folder/f'{ticks:04d}-{label}-wrist.jpg'),
                         cv2.cvtColor(wrist_rgb, cv2.COLOR_RGB2BGR))
             np.save(rec.folder/'terminal-wrist-depth.npy', wrist_depth)
             dump(rec.folder/'terminal-wrist-calibration.json', dict(
                  K=k_fn(env.sim, wrist, 768, 768), T=t_fn(env.sim, wrist)))
         visible_shift = handle_shift()
-        success = bool(env.check_success())
-        dump(rec.folder/'result.json', dict(success=success,
+        visible_extension = (visible_drawer_extension(
+            current_image, agent_depth, agent_k, agent_t, handle,
+            baseline_pixels=initial_extension_pixels)
+            if initial_handle is not None else None)
+        success = None if handoff else bool(env.check_success())
+        result_file = ('drawer-primitive-result.json' if handoff else 'result.json')
+        dump(rec.folder/result_file, dict(success=success,
             program_finished=finished and task_id == 1098,
             drawer_primitive_finished=finished,
             remaining_primitive='pick_place_bowl_in_open_drawer' if task_id == 1202 else None,
@@ -417,7 +662,11 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             stage=sequence[phase]['name'] if phase < len(sequence) else (
                 'await_bowl_placement' if task_id == 1202 else 'finished'),
             visible_handle_shift=visible_shift,
+            visible_drawer_extension=visible_extension,
             ownership='Jev XYZ/gripper/phase; fixed public RGB-D handle geometry'))
-        rec.finish('success' if success and finished and task_id == 1098
-                   else 'failed')
+        if not handoff:
+            rec.finish('success' if success and finished and task_id == 1098
+                       else 'failed')
         model.close()
+    if handoff:
+        return obs, ticks
