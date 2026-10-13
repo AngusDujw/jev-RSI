@@ -118,7 +118,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     side_plan_logged = False
     high_side_plan_logged = False
     high_y_insert_reached = False
-    far_preorient_reached = False
+    route_preorient_reached = False
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
@@ -126,6 +126,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     thin_side_entry = contact_mode == 'cabinet_side_thin_hook'
     high_side_insert = bool(thin_side_entry and rec.cfg.get('drawer_high_side_insert'))
     far_side_insert = bool(high_side_insert and rec.cfg.get('drawer_far_side_insert'))
+    clearance_orientation = bool(thin_side_entry and rec.cfg.get(
+        'drawer_clearance_orientation'))
     table_guard = bool(far_side_insert or rec.cfg.get('drawer_table_clearance'))
     max_native_ticks = 580 if far_side_insert else 550
     cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook', 'cabinet_side_thin_hook')
@@ -136,8 +138,12 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
     initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-    side_orientation = ((Rotation.from_euler('z', 75, degrees=True).as_matrix()
-                         @ Rotation.from_euler('x', -60, degrees=True).as_matrix()
+    side_orientation = ((Rotation.from_euler(
+                         'z', 80 if clearance_orientation else 75,
+                         degrees=True).as_matrix()
+                         @ Rotation.from_euler(
+                         'x', -57 if clearance_orientation else -60,
+                         degrees=True).as_matrix()
                          @ initial_orientation)
                         if thin_side_entry else
                         (Rotation.from_euler('z', 90, degrees=True).as_matrix()
@@ -419,7 +425,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         # The old low-side hand would penetrate the visible
                         # tabletop by ~2 mm on init4. Guard the entire own
                         # hand, not merely the selected fingerpad.
-                        floor_tcp_z = (float(table_support['world_z_m'])+.005-
+                        floor_tcp_z = (float(table_support['world_z_m'])+
+                                       (.010 if clearance_orientation else .005)-
                                        own_full_hand_low_z_offset)
                         under_tcp[2] = max(under_tcp[2], floor_tcp_z)
                         pad_entry_z = under_tcp[2]+float(contact_offset[2])
@@ -528,14 +535,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     name == 'approach'):
                 turn_error = Rotation.from_matrix(side_orientation @
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
-                if (far_side_insert and not far_preorient_reached and
+                if ((far_side_insert or clearance_orientation) and
+                        not route_preorient_reached and
                         np.max(np.abs(turn_error)) < .06):
-                    far_preorient_reached = True
-                    rec.event(dict(kind='far_side_preorient_reached',
+                    route_preorient_reached = True
+                    rec.event(dict(kind='route_preorient_reached',
                         native_tick=ticks, source='Actual robot wrist feedback'))
                 approach_leg = ('high_free_space_turn' if
                     np.max(np.abs(turn_error)) >= .06 and
-                    not (far_side_insert and far_preorient_reached)
+                    not (route_preorient_reached and
+                         (far_side_insert or clearance_orientation))
                     else 'side_approach')
                 if approach_leg == 'high_free_space_turn':
                     target = initial_robot_position.copy()
