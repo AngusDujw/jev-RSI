@@ -741,6 +741,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 contact_mode == 'pinch' and blocked_contact_blocks >= 3 and
                 oriented and np.linalg.norm(target-position) < .030 and
                 rod_gap < .025)
+            recent_pull = history[-3:]
+            own_pull_mm = float((position[1]-contact_tcp[1])*1000)
+            pull_stall_trial = bool(front_pincher and name == 'pull' and
+                aperture >= 6. and extension and extension['passed'] and
+                own_pull_mm >= 140. and 0. < target[1]-position[1] <= .025 and
+                len(recent_pull) == 3 and all(
+                    row['stage'] == 'pull' and
+                    row['commanded_delta_mm'][1] > 3. and
+                    abs(row['actual_displacement_mm'][1]) < .3
+                    for row in recent_pull))
             exact_contact_pose = bool(name == 'contact' and arrived and oriented and
                 contact_leg in ('final', 'front_insert', 'under_rise', 'side_rise', 'cabinet_side_rise', 'tip_rise', 'high_entry_descend') and
                 (finger_behind if hook_mode else rod_gap < .006 if front_pincher else True))
@@ -757,7 +767,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                           if hook_mode else grip_ticks >= 18 and gripper == 1 and
                           aperture >= 6. if front_pincher else
                           grip_ticks >= 18 and gripper == 1),
-                'pull': (arrived and (bool(extension and extension['passed']) or
+                'pull': (pull_stall_trial or arrived and (bool(extension and extension['passed']) or
                     (shift is not None and shift['pixel_displacement'] > 12))
                     if front_pincher else bool(extension and extension['passed']) or
                     (arrived and shift is not None and shift['pixel_displacement'] > 12)),
@@ -813,6 +823,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             current_tcp_world_m=position.tolist(),
                             own_pad_to_visible_rod_gap_mm=round(rod_gap*1000, 2),
                             blocked_contact_blocks=blocked_contact_blocks,
+                            own_pull_distance_mm=(round(own_pull_mm, 2) if name == 'pull' else None),
+                            bounded_pull_stall_trial=(pull_stall_trial if front_pincher and name == 'pull' else None),
                             handle_contact_pose_reached=exact_contact_pose,
                             blocked_contact_closure_trial=blocked_contact_trial,
                             position_arrived=arrived,
@@ -1016,8 +1028,13 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'Keep the own gripper closed around the middle visible '
                     'handle and move outward to the supplied TCP goal 180 mm '
                     'from the measured contact. Partial drawer exposure is '
-                    'insufficient: advance only after own TCP arrival and '
-                    'fresh public RGB-D extension or matched handle motion. '
+                    'insufficient: advance after own TCP arrival with fresh '
+                    'public RGB-D extension, or when '
+                    'completion_evidence.bounded_pull_stall_trial is true. '
+                    'That fallback requires at least 140 mm of actual own '
+                    'outward travel, visible extension, retained gripper '
+                    'aperture, and three executed blocked pull commands '
+                    'within 25 mm of the goal. '
                     'This is not the evaluator success predicate.')
             if name in ('pull', 'verify'):
                 request['questions']['transition']['instructions'] = (
