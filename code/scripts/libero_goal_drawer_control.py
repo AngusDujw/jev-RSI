@@ -118,14 +118,19 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
     high_entry = contact_mode == 'high_entry_down_hook'
     steep_entry = contact_mode == 'steep_tip_hook'
-    cabinet_side_entry = contact_mode == 'cabinet_side_hook'
-    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
+    yaw_side_entry = contact_mode == 'cabinet_side_yaw_hook'
+    cabinet_side_entry = contact_mode in ('cabinet_side_hook', 'cabinet_side_yaw_hook')
+    hook_mode = contact_mode in ('hook', 'top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook')
     initial_robot_x = float(obs['robot0_eef_pos'][0])
     front_plane = None
     # The three visible handles protrude from the cabinet face toward +world Y.
     # Approach with tool Z toward -world Y to avoid a top-down collision.
     initial_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
-    side_orientation = ((Rotation.from_euler('x', 105, degrees=True).as_matrix()
+    side_orientation = ((Rotation.from_euler('z', 90, degrees=True).as_matrix()
+                         @ Rotation.from_euler('x', -30, degrees=True).as_matrix()
+                         @ initial_orientation)
+                        if yaw_side_entry else
+                        (Rotation.from_euler('x', 105, degrees=True).as_matrix()
                          @ initial_orientation)
                         if steep_entry else
                         (Rotation.from_euler('x', 60, degrees=True).as_matrix()
@@ -332,7 +337,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             name = stage['name']
             position = np.asarray(obs['robot0_eef_pos'], float)
             contact_rod_position = handle_position.copy()
-            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
+            if task_id == 1098 and contact_mode in ('top_hook', 'under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook', 'high_entry_down_hook', 'steep_tip_hook'):
                 # The middle handle is visibly about 8 cm long. A near-side
                 # contact may leave room for the arm beside the cabinet;
                 # retain the same observed rod point for both hook paths.
@@ -343,12 +348,16 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if hook_mode:
                 face_y = float(front_plane['point_world_m'][1])
                 back_y = float(handle['rod_back_world_y_m'])
-                hook_y = face_y + .012
+                hook_y = face_y + (.0165 if yaw_side_entry else .012)
                 if not face_y + .008 < hook_y < back_y - .003:
                     raise RuntimeError('Visible finger-hook gap unavailable')
                 hook_pad = np.array([contact_rod_position[0], hook_y,
                                      contact_rod_position[2]])
                 contact_tcp = hook_pad - contact_offset
+                if yaw_side_entry:
+                    own_fingers = np.asarray(own['finger_vertices_tool']) @ side_orientation.T
+                    if contact_tcp[1] + float(np.min(own_fingers[:, 1])) <= face_y + .002:
+                        raise RuntimeError('Own yawed fingers do not clear visible cabinet front')
                 pad_now = (position +
                     Rotation.from_quat(obs['robot0_eef_quat']).as_matrix() @ tip_tool
                     if tip_tool is not None else np.mean([env.sim.data.geom_xpos[
@@ -361,7 +370,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 finger_behind = False
                 pad_now = None
             under_tcp = pad_entry_z = side_entry_tcp = None
-            if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook'):
+            if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook'):
                 under_tcp, pad_entry_z = under_hook_waypoints(
                     handle, lower_handle, contact_tcp, contact_offset,
                     pad_half_height)
@@ -539,7 +548,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             visible_cabinet_front_world_y_m=(face_y if hook_mode else None),
                             visible_rod_back_world_y_m=(back_y if hook_mode else None),
                             lower_neighbor_rod_world_z_m=(float(lower_handle['center_world_m'][2])
-                                if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'tip_hook', 'down_hook') else None),
+                                if contact_mode in ('under_hook', 'side_hook', 'cabinet_side_hook', 'cabinet_side_yaw_hook', 'tip_hook', 'down_hook') else None),
                             visible_cabinet_near_side_world_x_m=(cabinet_side['near_side_world_x_m']
                                 if cabinet_side is not None else None),
                             visible_upper_handle_world_z_m=(float(upper_handle['center_world_m'][2])
@@ -624,7 +633,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'Move the open own fingers beyond the camera-measured near '
                     'edge of the cabinet body, aligned with the visible gap '
                     'between middle and lower rods. The clearance includes '
-                    'the own finger mesh. Advance only on own-pose evidence.')
+                    'the own finger mesh. The yawed option places the own finger '
+                    'length along the visible handle rod to reduce depth into '
+                    'the cabinet front. Advance only on own-pose evidence.')
             if cabinet_side_entry and name == 'contact':
                 request['state']['stage_contract'] = (
                     'At the cabinet body side, insert the own finger into the '
