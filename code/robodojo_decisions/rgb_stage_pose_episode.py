@@ -69,7 +69,8 @@ def select_approach_program(geometry, programs, horizontal_first=False):
     return (max(candidates)[1] if candidates else None),horizontal
 
 
-def sequential_role_stage(model,obs,data,questions,prefix,images,reread_memory):
+def sequential_role_stage(model,obs,data,questions,prefix,images,reread_memory,
+                          identity_exit_routing=False,completed_identity=None):
     """Pass a fresh role answer into a distinct stage question, not a retry.
 
     Decisions questions in one request are independently answerable. A stage
@@ -87,15 +88,36 @@ def sequential_role_stage(model,obs,data,questions,prefix,images,reread_memory):
         'record':prefix+'_roles','step_id':obs['step_id'],
         'scope':'Fresh Luna semantic hypothesis on these same CURRENT RGB, not ground truth. Recheck its support before choosing the first unfinished planner stage.'}
     stage_question=dict(next(q for q in questions if q['name']=='observable_stage'))
+    if identity_exit_routing:
+        if not {'identity','far_open_alignment'} <= data['planner_stages'].keys():
+            raise ValueError('Explicit identity EXIT routing requires the reviewed identity/FAR method')
+        completed=(completed_identity is not None and
+                   completed_identity['source_receiver_roles']==pair and pair!='unknown')
+        if not completed:
+            asked=choice('identity_stage_EXIT',
+                'Judge ONLY whether CURRENT raw RGB and the supplied fresh conditional role assignment satisfy the planner identity EXIT exactly as written: '+data['planner_stages']['identity']+
+                ' This is an observation judgment, not a motion recommendation. Supported EXIT advances to the declared FAR OPEN working stage; it does not certify corridor, contact or approve any robot program. Missing FUTURE enclosure is not an identity requirement. Choose not_yet_supported if current required identities/roles are unsupported.',
+                {'supported':'CURRENT identity EXIT is supported.',
+                 'not_yet_supported':'CURRENT identity EXIT is not yet supported.'})
+            result=model.query(obs,[asked],json.dumps(stage_data,ensure_ascii=False),
+                               prefix+'_identity_EXIT',extra_images=images)
+            evidence=({'stage':'identity','source_receiver_roles':pair,
+                       'supported_step_id':obs['step_id'],'record':prefix+'_identity_EXIT'}
+                      if result['identity_stage_EXIT']=='supported' and pair!='unknown' else None)
+            return {**roles,**result,'observable_stage':'far_open_alignment' if evidence else 'identity',
+                    '_completed_identity':evidence},2
+        stage_data['completed_semantic_stage_evidence']=completed_identity
+        stage_question['choices']=[row for row in stage_question['choices'] if row['value']!='identity']
     stage_question['instructions']=(
         'Choose the CURRENT first unfinished working stage under planner entry/EXIT rules. '
         'The just-returned source/receiver hypothesis is explicitly supplied in current_semantic_roles; '
         'recheck it against these CURRENT RGB. Supported roles can finish identity; future grasp/contact '
         'or source-following need not already be proven for FAR OPEN alignment. Do not infer stage '
-        'completion from this label, robot movement or a future action. This question requests no motion.')
+        'completion from this label, robot movement or a future action. This question requests no motion. '
+        +('The supplied completed_semantic_stage_evidence records a prior explicit identity EXIT judgment for this SAME freshly rechecked pair; choose the first unfinished remaining stage. Current role loss still stops control, and no robot program is approved by this label.' if identity_exit_routing else ''))
     stage=model.query(obs,[stage_question],json.dumps(stage_data,ensure_ascii=False),
                       prefix+'_stage',extra_images=images)
-    return {**roles,**stage},2
+    return {**roles,**stage,**({'_completed_identity':completed_identity} if identity_exit_routing else {})},2
 
 
 def load_authored(path,task,data_root):
@@ -175,6 +197,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
         raise ValueError('Fresh action-free method planner required')
     (output/'plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2))
     stage=plan['initial_stage'];records=[];previous=None;result=None;queries=0
+    completed_identity=None
     initial_calibration=json.loads((output/'camera_calibration_initial.json').read_text())
     initial_eef=json.loads(json.dumps(obs['current_eef']))
     status='rgb_pose_native_budget_incomplete'
@@ -360,6 +383,9 @@ def run(tools, obs, model, output, max_decisions, deadline):
             pairs['unknown']='A coherent source/receiver identity pair is unsupported in current RGB.'
             perception_questions.append(choice('source_receiver_roles',
                 'Inspect CURRENT three RGB and task: choose ONE coherent source and supported base/receiver pair for the next placement. Follow any supplied planner_task_role_assignment conditionally on current identities and the first unfinished transfer; other valid ordering preferences alone do not mean identity is unknown. Semantic roles only; this does not request a robot action or establish enclosure/corridor permission.',pairs))
+        if (os.environ.get('ROBODOJO_RGB_STAGE_IDENTITY_EXIT_ROUTING')=='1' and
+                not (bind_roles and os.environ.get('ROBODOJO_RGB_STAGE_SEQUENTIAL_ROLE_STAGE')=='1')):
+            raise ValueError('Identity EXIT routing requires fresh sequential role review')
         if bind_roles and os.environ.get('ROBODOJO_RGB_STAGE_SEQUENTIAL_ROLE_STAGE')=='1':
             def reread_stage_memory():
                 fresh={name:(memory/name).read_text() for name in ['global.md',obs['task']+'.md']}
@@ -368,13 +394,19 @@ def run(tools, obs, model, output, max_decisions, deadline):
                 return {'experience_original_text':fresh,
                         'experience_raw_sha256':{name:hashlib.sha256(text.encode()).hexdigest() for name,text in fresh.items()}}
             phase,count=sequential_role_stage(model,obs,stage_data,perception_questions,
-                f'rgb_pose_perception_{turn:03d}_step{step:03d}',images,reread_stage_memory)
+                f'rgb_pose_perception_{turn:03d}_step{step:03d}',images,reread_stage_memory,
+                identity_exit_routing=os.environ.get('ROBODOJO_RGB_STAGE_IDENTITY_EXIT_ROUTING')=='1',
+                completed_identity=completed_identity)
             queries+=count
         else:
             phase=model.query(obs,perception_questions,
                               json.dumps(stage_data,ensure_ascii=False),f'rgb_pose_stage_{turn:03d}_step{step:03d}',extra_images=images)
             queries+=1
         stage=phase['observable_stage']
+        if os.environ.get('ROBODOJO_RGB_STAGE_IDENTITY_EXIT_ROUTING')=='1':
+            completed_identity=phase.get('_completed_identity')
+            data['completed_semantic_stage_evidence']=completed_identity
+            data['semantic_stage_routing_scope']='Identity can advance only after the separate explicit current-RGB EXIT judgment; no robot action is authorized by that transition. Current roles are rechecked every step.'
         data['current_stage']=stage;data['current_stage_rule']=plan['stages'][stage]
         if bind_roles:
             pair=phase['source_receiver_roles']
