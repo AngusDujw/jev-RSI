@@ -760,6 +760,13 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             gripper = newgripper
             cap = .012 if stage in ('lower', 'push') else .02
             delta = np.asarray(decision['signs'])*np.minimum(cap, .5*np.abs(error))
+            if (stage == 'push' and segment >= 2 and visible_goal_plate and
+                    rec.cfg.get('plate_second_line_step')):
+                # Independent axis clipping turned a 15-degree push into a
+                # 45-degree command. Share one planar gain, preserving every
+                # Jev sign and hold while keeping each axis below the cap.
+                planar_gain = min(.5, cap/max(float(np.max(np.abs(error[:2]))), 1e-9))
+                delta[:2] = np.asarray(decision['signs'][:2])*planar_gain*np.abs(error[:2])
             rotations = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rot))
             block = 6 if stage == 'prepare' or np.max(np.abs(error))>.06 else 3
             if ticks+block > max_native_ticks:
