@@ -1,5 +1,6 @@
 """Image-only blade-feature displacement; robot motion is reported separately."""
 from pathlib import Path
+import os
 import cv2
 import numpy as np
 from pickup_fixed_blade_anchor import check
@@ -26,7 +27,9 @@ def measure(previous, current):
     points=cv2.goodFeaturesToTrack(gray_a,50,.01,3,mask=mask)
     if points is None:return {'available':False,'reason':'No image features in proposed blade region'}
     future,ok,_=cv2.calcOpticalFlowPyrLK(gray_a,gray_b,points,None)
+    if future is None:return {'available':False,'reason':'No forward image feature tracks'}
     back,ok2,_=cv2.calcOpticalFlowPyrLK(gray_b,gray_a,future,None)
+    if back is None:return {'available':False,'reason':'No backward image feature tracks'}
     good=(ok.ravel()>0)&(ok2.ravel()>0)&(np.linalg.norm(back-points,axis=2).ravel()<.5)
     delta=(future-points).reshape(-1,2)[good]
     result={'available':len(delta)>=6,'previous_step_id':previous['step_id'],'current_step_id':current['step_id'],
@@ -38,4 +41,9 @@ def measure(previous, current):
         result.update(median_feature_flow_xy_px=np.median(delta,axis=0).round(4).tolist(),
             median_feature_displacement_px=round(float(np.median(distance)),4),
             p95_feature_displacement_px=round(float(np.percentile(distance,95)),4))
+    if len(delta)>=6 and os.environ.get('ROBODOJO_PICKUP_SOURCE_FLOW_ROBOT_HYPOTHESIS')=='1':
+        from rgb_flow_robot_hypotheses import compare
+        try:result['past_robot_motion_image_hypothesis_residuals']=compare(
+            previous,current,points.reshape(-1,2)[good],future.reshape(-1,2)[good])
+        except ValueError as error:result['past_robot_motion_image_hypothesis_residuals']={'available':False,'reason':str(error)}
     return result
