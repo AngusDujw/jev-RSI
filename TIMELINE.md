@@ -207,6 +207,9 @@ graph LR
     T_2026W42_099["📊 robodojo-decision-stages<br/>410配置复验0/2，阶段66mm远距误映…"]:::experiment
     T_2026W42_100["📊 robodojo-decision-stages<br/>积木新七阶段与当前角色绑定仍0步STOP；…"]:::experiment
     T_2026W42_101["📊 robodojo-decision-stages<br/>442横向接近真实5步后定位腕相机T漏传播…"]:::experiment
+    T_2026W42_102["📊 robodojo-decision-stages<br/>445/452英文原生完整成功，冻结配置2…"]:::experiment
+    T_2026W42_103["📊 robodojo-gpt6-dec<br/>EXP245阶段标签1/2对旧英文0/2，…"]:::experiment
+    T_2026W42_104["📝 robodojo-decision-stages<br/>T-2026W42-103主题键误用了ro…"]:::note
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -374,6 +377,8 @@ graph LR
   T_2026W42_098 --> T_2026W42_099
   T_2026W42_099 --> T_2026W42_100
   T_2026W42_100 --> T_2026W42_101
+  T_2026W42_101 --> T_2026W42_102
+  T_2026W42_102 --> T_2026W42_104
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -569,6 +574,9 @@ graph LR
 | `T-2026W42-099` | 2026-10-14 | experiment | robodojo-decision-stages | 410配置复验0/2，阶段66mm远距误映射已修；积木XYZ与整手余量单程序仍0步STOP，不认定数值收益 | `EXP-2026W42-226` | - |
 | `T-2026W42-100` | 2026-10-14 | experiment | robodojo-decision-stages | 积木新七阶段与当前角色绑定仍0步STOP；角色已识别不等于操作推进，英文拾取冻结复验进行中 | `EXP-2026W42-230` | - |
 | `T-2026W42-101` | 2026-10-14 | experiment | robodojo-decision-stages | 442横向接近真实5步后定位腕相机T漏传播；同图fit0.645→0.855，英文拾取复验0/2需修跟随证据 | `EXP-2026W42-232`, `EXP-2026W42-233` | - |
+| `T-2026W42-102` | 2026-10-14 | experiment | robodojo-decision-stages | 445/452英文原生完整成功，冻结配置2/3仍不稳；经验阶段错配已修四路验证，OPEN准备policy遗漏待原生 | `EXP-2026W42-239`, `EXP-2026W42-243` | - |
+| `T-2026W42-103` | 2026-10-14 | experiment | robodojo-gpt6-dec | EXP245阶段标签1/2对旧英文0/2，累计10完整回合仍1/42未稳定；实际接触与闭后STOP仍未收敛 | `EXP-2026W42-245` | - |
+| `T-2026W42-104` | 2026-10-14 | note | robodojo-decision-stages | T-2026W42-103主题键误用了robodojo-gpt6-dec；其EXP245结果属于既有robodojo-decision-stages主线，不表示新议题或转向，后续继续原键 | `EXP-2026W42-245` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

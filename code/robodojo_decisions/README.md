@@ -1,5 +1,13 @@
 # RoboDojo RGB Decisions pilot
 
+## Latest checkpoint (2026-10-14, EXP245)
+
+The campaign is active. Native complete success covers **one of 42 tasks**, general_pickup, with ten successful episodes; the newest is461 at193 physical steps. Frozen445 settings achieved2/3 including445. The predeclared phase-tagged memory batch achieved1/2 versus0/2 for legacy English memory; this does not establish stability or a causal benefit. All other41 tasks remain without complete success.42/42 refers only to zero-action layout0 sensor preflights. Earlier dated zero-success and pause statements below are historical.
+
+Planner requests use the authorized AI2RobCoWork Responses gateway with **gpt-6.1-sol/high**, never a model downgrade. English-only text is checked before every planner/actor request; original scene pixels are retained. The planner supplies semantic roles, stages and perception methods without robot motion recommendations. The du Luna actor receives fresh RGB and explicit current-stage evidence, and selects one algorithm-generated complete bounded program or STOP. Native evaluator output is never model input. Phase-tagged model notes are retrieved literally by identity/alignment/contact/capture; frozen memory roots make independent comparisons reviewable.
+
+An optional `ROBODOJO_PICKUP_PUBLIC_FACET_INSET_MM` (default0, range0..4mm) defines an interior subset of each public robot finger facet. The current and predicted residuals use the same subset, while the full-pad centroid remains unchanged. Default0 exactly preserves the earlier producer/predictor output. This changes the declared robot reference region, not object localization or observed contact. It has passed offline geometry and historical-frame consistency checks; no native performance benefit is established.
+
 ## Current v4090 campaign (2026-10-13)
 
 - Checkout: `/home/v4090-1/ykj/project/jev-RSI-gpt6-dec`, branch `codex/robodojo-gpt6-dec-v4090-20261012`. Reuse RoboDojo at `/home/v4090-1/DataStorage/jev-router/sources/RoboDojo` and its existing Python environment. All run RGB, native trajectories, plans, reviewed experiences, service logs and the mode-600 `du` Decisions key are under `/home/v4090-1/DataStorage/gpt6-dec`.

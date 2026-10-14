@@ -15,6 +15,7 @@ from trimesh.triangles import closest_point
 
 from gripper_pad_projection import inspect as inspect_public_pads
 from pickup_visual_hull import _green_mask, _project_many
+from public_facet_region import selected_facets
 
 
 def _surface_nearest(points: np.ndarray, vertices: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -145,9 +146,8 @@ def build(observation: dict, temporal_metal: dict | None,
     if len(points) < 100:
         raise ValueError(f"Solid-green two-RGB slab support too sparse: {len(points)}")
     pads = inspect_public_pads(observation, calibration)
-    facets = [np.asarray(pads["rows"][name]["inner_facet_world_xyz_m"], float)
-              for name in ("link7", "link8")]
-    midpoint = np.mean([face.mean(axis=0) for face in facets], axis=0)
+    full_facets, facets, inset_mm = selected_facets(pads)
+    midpoint = np.mean([face.mean(axis=0) for face in full_facets], axis=0)
     relative_mm = (points-midpoint)*1000
     surface_rows = [_surface_nearest(points, face) for face in facets]
     pad_distances_mm = {
@@ -209,6 +209,14 @@ def build(observation: dict, temporal_metal: dict | None,
             for key, q in (('q05', .05), ('q50', .5), ('q95', .95))},
         'localization_hypothesis_sample_count': int(same_ray.sum()),
         'limitations': 'This is a RGB-supported planar/slab point hypothesis, not verified same-point correspondence or true object pose. The paired nearest public surfaces define current reachable face span, not a recommended physical action or observed contact. Same-pixel depth samples are not calibrated confidence bounds. Whole-object quantiles below describe spatial extent and must not be confused with this point localization.'}
+    if inset_mm:
+        full_nearest = [_surface_nearest(points[[chosen]], face)[1]
+                        for face in full_facets]
+        representative['selected_public_facet_region'] = {
+            'boundary_inset_mm': inset_mm,
+            'original_full_surface_span_delta_xyz_mm':
+                ((points[[chosen]]-(full_nearest[0]+full_nearest[1])/2)*1000)[0].round(2).tolist(),
+            'scope': 'The nearest-surface residual and finite closing-volume support use an interior subset of each PUBLIC robot finger facet. The full pad centroid is unchanged. This is a declared control-reference choice, not extra source localization, actual contact, friction or holding evidence.'}
     if control_reference is not None:
         representative['source']='CURRENT RGB-supported uncertain-height sample nearest the persistent camera-derived material reference; not the newly recomputed material-set median'
         representative['persistent_material_control_reference']={**control_reference,
@@ -269,10 +277,10 @@ def predict_feature_residuals(observation: dict, material: dict | None,
     feature = material['representative_material_point']
     point = np.asarray(feature['estimated_world_xyz_m'], float)[None, :]
     pads = inspect_public_pads(observation, observation['camera_calibration'])
+    _, selected, inset_mm = selected_facets(pads)
     current_inverse = np.linalg.inv(eef_transform(observation['current_eef']['right']))
     local_faces = []
-    for name in ('link7', 'link8'):
-        face = np.asarray(pads['rows'][name]['inner_facet_world_xyz_m'], float)
+    for face in selected:
         local_faces.append((face-observation['current_eef']['right']['position']) @ current_inverse[:3, :3].T)
     rows = {}
     for name, target in targets.items():
@@ -287,4 +295,6 @@ def predict_feature_residuals(observation: dict, material: dict | None,
             'region_error_norm_mm': round(float(np.linalg.norm(error)), 2),
             'each_open_facet_distance_mm': [round(float(row[0][0]*1000), 2) for row in nearest],
             'assumptions': 'Same uncertain RGB point remains static; measured public open-hand meshes follow the complete requested LINK6 rigid pose exactly. No contact/collision, object motion or grip is predicted. Actual next RGB and robot tracking must verify the hypotheses.'}
+        if inset_mm:
+            rows[name]['public_facet_boundary_inset_mm'] = inset_mm
     return rows
