@@ -281,7 +281,6 @@ def main():
         "method_only": args.method_only,
         "raw_rgb_transmitted_to_planner": not args.omit_image_payload,
         "selected_recent_experience": args.select_recent_experience,
-        "experience_selection_policy": "Literal first identity lesson plus latest tagged lesson per phase when tags exist; legacy first/last-two otherwise",
         "public_observation": public, "images": image_meta,
         "historical_images_for_motion_or_current_feature": previous_image_meta,
         "template_sha256": (hashlib.sha256(args.template.read_bytes()).hexdigest()
@@ -294,6 +293,8 @@ def main():
             k: hashlib.sha256(v.encode()).hexdigest()
             for k, v in experience.items()},
     }
+    if args.select_recent_experience and '- [phase:' in full_experience['task']:
+        manifest['experience_selection_policy']='Literal first identity lesson plus latest tagged lesson per phase'
     if args.response_file:
         prior_manifest = json.loads((args.response_file.parent / "planner-input-manifest.json").read_text())
         if prior_manifest != manifest:
