@@ -197,6 +197,7 @@ graph LR
     T_2026W42_089["📊 robodojo-decision-stages<br/>290拒绝有据：混合单位排序选反向；294…"]:::experiment
     T_2026W42_090["📊 robodojo-decision-stages<br/>299/301仍无闭爪；当前轮廓条件粗估计…"]:::experiment
     T_2026W42_091["📊 robodojo-decision-stages<br/>313首次原生闭爪/20mm抬腕，无源物随…"]:::experiment
+    T_2026W42_092["📊 robodojo-decision-stages<br/>325满200步仍失败：材料代表点跳换造成…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -354,6 +355,7 @@ graph LR
   T_2026W42_088 --> T_2026W42_089
   T_2026W42_089 --> T_2026W42_090
   T_2026W42_090 --> T_2026W42_091
+  T_2026W42_091 --> T_2026W42_092
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -539,6 +541,7 @@ graph LR
 | `T-2026W42-089` | 2026-10-14 | experiment | robodojo-decision-stages | 290拒绝有据：混合单位排序选反向；294正进展回归修复、299验证色度处理 | `EXP-2026W42-201` | - |
 | `T-2026W42-090` | 2026-10-14 | experiment | robodojo-decision-stages | 299/301仍无闭爪；当前轮廓条件粗估计与闭爪后RGB分支进入310原生验证 | `EXP-2026W42-203` | - |
 | `T-2026W42-091` | 2026-10-14 | experiment | robodojo-decision-stages | 313首次原生闭爪/20mm抬腕，无源物随动；视野维护方向得到真实像素支持 | `EXP-2026W42-205` | - |
+| `T-2026W42-092` | 2026-10-14 | experiment | robodojo-decision-stages | 325满200步仍失败：材料代表点跳换造成反向误差；332持续RGB参考回归消除大幅切换 | `EXP-2026W42-208` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
