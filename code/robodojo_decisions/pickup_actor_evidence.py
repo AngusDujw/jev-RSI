@@ -23,7 +23,8 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
         if camera not in ('cam_high', 'cam_right_wrist'):
             continue
         image = Image.open(row['path']).convert('RGB')
-        mask = _green_mask(Path(row['path']), camera)
+        try:mask = _green_mask(Path(row['path']), camera)
+        except ValueError:continue  # Keep the original current RGB; do not fabricate a crop from history.
         yy, xx = np.nonzero(mask)
         if len(xx) < 30:
             continue
@@ -72,6 +73,9 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
               'planner_stage','planner_stage_evidence_rule','planner_stage_interpretation',
               'method_refresh','strict_input_contract')
     compact = {key:full_input.get(key) for key in retain}
+    geometry=full_input.get('sensor_derived_geometry') or {}
+    compact['source_geometry_observation_basis']={key:geometry.get(key) for key in
+        ('source_observation_basis','current_high_material_observed','high_support_reference_step_id','current_source_contour_check')}
     compact['environment_context'] = {'benchmark':'RoboDojo', 'execution':'SIMULATION_ONLY', 'real_robot_control':False, 'source':'current IsaacSim benchmark sensor frame; no scene object ground-truth state supplied'}
     compact['source_context_crops'] = crops
     pads = inspect_pads(observation, observation['camera_calibration'])

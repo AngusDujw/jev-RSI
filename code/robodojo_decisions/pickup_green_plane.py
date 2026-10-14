@@ -14,12 +14,24 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
     if obs['task'] != 'general_pickup' or cal['step_id'] != obs['step_id']:
         raise ValueError('Current pickup RGB/calibration required')
     paths = {r['camera']: Path(r['path']) for r in obs['images']}
-    high = _green_mask(paths['cam_high'], 'cam_high').astype(np.uint8)
+    tracked_anchor=None
+    if (reference is not None and allow_coarse_occlusion and
+            os.environ.get('ROBODOJO_PICKUP_TRACKED_SOURCE_BELIEF')=='1' and
+            0<obs['step_id']-reference['step_id']<=200):
+        from pickup_fixed_blade_anchor import check
+        candidate=check(reference,obs)
+        if candidate['passed']:tracked_anchor=candidate
+    high_observed=True
+    try:high = _green_mask(paths['cam_high'], 'cam_high').astype(np.uint8)
+    except ValueError:
+        if tracked_anchor is None:raise
+        high=np.zeros((cal['cameras']['cam_high']['size'][1],cal['cameras']['cam_high']['size'][0]),np.uint8)
+        high_observed=False  # Unknown mask, never a substituted CURRENT RGB image/material claim.
     partial_mode=os.environ.get('ROBODOJO_PICKUP_PARTIAL_HIGH_SOURCE')=='1'
     low_high_visibility=bool(partial_mode and high.sum()<150)
     wrist = _green_mask(paths['cam_right_wrist'], 'cam_right_wrist')
     minimum_high=30 if partial_mode and os.environ.get('ROBODOJO_PICKUP_FIXED_BLADE_ANCHOR')=='1' else 80
-    if high.sum() < minimum_high or wrist.sum() < 100:
+    if (high.sum() < minimum_high and tracked_anchor is None) or wrist.sum() < 100:
         raise ValueError('Insufficient green pixels for plane fit')
     fit_region = np.ones(wrist.shape, dtype=bool)
     if wrist_fit_region is not None:
@@ -36,8 +48,17 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
             raise ValueError('Reference must be earlier same-task RGB')
         if reference.get('episode_id') != obs.get('episode_id'):
             raise ValueError('Reference must be from the same native episode')
-        static_check = _high_static_check(reference, obs)
-        if not static_check['stable_enough_for_temporal_ray_check']:
+        try:static_check = _high_static_check(reference, obs)
+        except ValueError:
+            if tracked_anchor is None:raise
+            static_check={'stable_enough_for_temporal_ray_check':False,
+                          'current_high_green_observation':'Unavailable under current mask gate; no visibility/material inferred'}
+        if not static_check['stable_enough_for_temporal_ray_check'] and tracked_anchor is not None:
+            coarse_occlusion=True
+            static_check=dict(static_check,directional_subset_shadow_hypothesis=True,
+                proposed_fixed_metal_source_anchor=tracked_anchor,tracked_source_coarse_belief=True,
+                limitation='CURRENT visible metal-contour consistency conditions a PRIOR rigid/static source belief and earlier/current wrist fit; high green material may be occluded. Not stationarity truth, current high material visibility, metric contact or holding.')
+        if not static_check['stable_enough_for_temporal_ray_check'] and not coarse_occlusion:
             # Shadow changes raw brightness; keep this alternative directional
             # only, never elevate it to strict contact geometry.
             ref_high = _green_mask(Path(next(r['path'] for r in reference['images']
@@ -147,6 +168,7 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
         raise ValueError('Fit cannot narrow original 20mm height hypothesis')
     contact_precision = bool(not coarse_occlusion and not low_high_visibility and round(p95, 9) <= .005 and halfwidth <= .020)
     return {'current_public_finger_wrist_fit_region_xyxy': wrist_fit_region,
+            'current_high_green_observed_for_plane_check':high_observed,
             'low_current_high_visibility':low_high_visibility,
             'extra_low_visibility_allowance_mm':10 if low_high_visibility else 0,
             'coarse_occlusion_hypothesis': coarse_occlusion,

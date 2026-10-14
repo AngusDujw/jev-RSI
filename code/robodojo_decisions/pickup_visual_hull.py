@@ -82,14 +82,24 @@ def _project_many(camera: dict, points: np.ndarray) -> tuple[np.ndarray, np.ndar
     return uv, depth
 
 
-def build(obs: dict) -> dict:
+def build(obs: dict, high_reference=None, current_anchor=None) -> dict:
     if obs["task"] != "general_pickup":
         raise ValueError("Scissors silhouette pilot only")
     calibration = obs["camera_calibration"]
     if calibration["step_id"] != obs["step_id"]:
         raise ValueError("Current RGB/calibration step mismatch")
     images = {row["camera"]: Path(row["path"]) for row in obs["images"]}
-    high_mask = _green_mask(images["cam_high"], "cam_high")
+    if high_reference is not None:
+        if (high_reference['episode_id']!=obs['episode_id'] or
+                not current_anchor or not current_anchor.get('passed')):
+            raise ValueError('Tracked source requires same episode and CURRENT source-contour check')
+        a=calibration['cameras']['cam_high'];b=high_reference['camera_calibration']['cameras']['cam_high']
+        if not np.allclose(a['camera_to_environment'],b['camera_to_environment'],atol=1e-6):
+            raise ValueError('Prior source silhouette requires a fixed high camera')
+        high_path=Path(next(x['path'] for x in high_reference['images'] if x['camera']=='cam_high'))
+    else:
+        high_path=images['cam_high']
+    high_mask = _green_mask(high_path, "cam_high")
     wrist_mask = _green_mask(images["cam_right_wrist"], "cam_right_wrist")
     wrist_y, wrist_x = np.nonzero(wrist_mask)
     # Small color gaps can leave a visibly complete loop open in the raw
@@ -177,6 +187,10 @@ def build(obs: dict) -> dict:
                     round(float(np.mean(gain_mm > 0)), 3),
             }
     return {"declared_optical_ray_distance_search_range_m": [minimum_ray_distance, 1.2],
+        "source_observation_basis":('CURRENT wrist green + PRIOR fixed-high silhouette under CURRENT proposed source-contour consistency; conditional rigid/static belief, NOT current two-view material visibility/contact' if high_reference is not None else 'CURRENT high/right green silhouette support hypothesis'),
+        "current_high_material_observed":high_reference is None,
+        "high_support_reference_step_id":high_reference['step_id'] if high_reference is not None else obs['step_id'],
+        "current_source_contour_check":current_anchor,
         "step_id": obs["step_id"],
         "current_rgb_support_points": len(support),
         "right_wrist_mask_bbox_xyxy": wrist_bbox,

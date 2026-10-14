@@ -637,7 +637,11 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 status=capture_record['status'];native_result=tools.finish(status);break
             continue
         try:
-            hull = build_visual_hull(obs)
+            if os.environ.get('ROBODOJO_PICKUP_TRACKED_SOURCE_BELIEF')=='1':
+                from pickup_tracked_source_hull import build as build_tracked_source_hull
+                hull=build_tracked_source_hull(obs,temporal_references)
+            else:
+                hull = build_visual_hull(obs)
         except ValueError as error:
             if (os.environ.get('ROBODOJO_PICKUP_MISSING_VIEW_RECOVERY') == '1'
                     and missing_view_recoveries < 2

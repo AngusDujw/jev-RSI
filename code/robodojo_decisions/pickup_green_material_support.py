@@ -83,7 +83,7 @@ def build(observation: dict, temporal_metal: dict | None,
     image_paths = {row["camera"]: Path(row["path"])
                    for row in observation["images"]}
     wrist = _green_mask(image_paths["cam_right_wrist"], "cam_right_wrist")
-    high = _green_mask(image_paths["cam_high"], "cam_high")
+    high = None
     prior_high_support=False
     if green_plane is not None and os.environ.get('ROBODOJO_PICKUP_ANCHORED_WRIST_SUPPORT')=='1':
         check=green_plane.get('current_fixed_high_static_check') or {}
@@ -95,6 +95,8 @@ def build(observation: dict, temporal_metal: dict | None,
             high=cv2.dilate(_green_mask(Path(prior_path),'cam_high').astype(np.uint8),
                             np.ones((5,5),np.uint8))>0
             prior_high_support=True
+    if high is None:
+        high=_green_mask(image_paths['cam_high'],'cam_high')
     local_region = green_plane.get('current_public_finger_wrist_fit_region_xyxy') if green_plane else None
     if local_region is not None:
         x0,y0,x1,y1 = local_region
