@@ -306,3 +306,14 @@
 - 【Agent】【2026-10-14 17:18】[op] 5880同项目/同盘创建自有独立detached工作树.worktrees/goal1202-goal-ten-20261014@c04f3546，使用原环境/资产，code/runs仅自建symlink共享原账本，同inode flock计数。main冻结6d07源码保持；可用RAM17GiB/同盘965GiB，放碗限制CPU线程2并共享EGL，最多两实验并行。
 - 【Agent】【2026-10-14 17:19】[run] 独立工作树Goal1202共享账本第63/80次c04f3546同init3，向内12°→向外12°，其余v40策略保持；CPU线程2属于执行资源配置并明确记录。5880-jump前台session99905；root Goal1296固定新init12已成功110Jev/513步，batch进入init13，源码SHA检查继续。
 - 【Agent】【2026-10-14 17:20】[op] EXP195追加真实grasp/test_lift与双相机纠正，保留误判历史不再误称两次皆未抓取；第一候选无成功持有，第二候选下降受阻。严格lint通过。
+- 【Agent】【2026-10-14 17:21】[note] 独立worktree首次启动session99905在env执行入口就退出127：工作树没有相对.venv-libero-plus，仿真/runner未启动。改用原根项目环境绝对路径，不安装新环境；先核对原账本与输出未创建，前次“第63次启动”是未预留尝试，追加纠正。
+- 【Agent】【2026-10-14 17:21】[run] 核对共享账本1202仍62、输出不存在后，使用原UV绝对路径正式启动worktree outward12 v41；5880-jump前台session79447，预期原共享第63/80，等待实际reservation确认。
+- 【Agent】【2026-10-14 17:24】[result] Goal1296冻结6d07新init12/13双终局2/2：110Jev/513步、117Jev/534步，批次继续init14。不要把开发init11合入冻结分母，不据2/2提前称稳定。
+- 【Agent】【2026-10-14 17:25】[op] 十任务状态表更新：1296桌面滑动开发成功、冻结新init12/13双true且init14在跑；1202第63次outward在独立工作树，稳定总数仍8而非提前9。完整协议四变量纠正明确引用。
+- 【Agent】【2026-10-14 17:33】[run] Goal1202共享第64/80次c04f3546同init3，恢复0度已能抓取基线，改公开visible_sidewall抓持高度（由可见高度15%且<=8mm），floor反馈/partial-opening/记忆/线程2保持；5880-jump前台session41603。此为与v39的高度机制比较，不把相对v41两变量变化称单因素。
+- 【Agent】【2026-10-14 17:38】[result] Goal1296冻结新init12–15四次双终局4/4，110/117/122/113Jev、513/534/558/534步；init16仍运行。前三回合真实问答动作/每例12阶段边审计0违规，raw已回本机。
+- 【Agent】【2026-10-14 18:00】[op] e68d00e3新可选可见侵入释放证据：两次鲜RGB-D高度复核、visible footprint>=.90/中心<=10mm、观察最低点至少clip(.35*初始可见高度,10,20)mm低于rim，允许一次有界开爪试验。明确physical_bottom_unknown/support_contact_unknown，不声称成功；Jev选择lower→release→retreat。AST/diff/完整dryrun通过，真实回合待测。
+- 【Agent】【2026-10-14 18:02】[result] Goal1296固定6d07新init12–16双终局5/5，均同策略SHA256、不同实际初始机器人反馈；平均115.4Jev/533.4步，577真实问答动作/60阶段边/0违规。6个原始目录（含pilot及27.2s视频）本机/5880逐文件SHA256聚合一致。稳定标准现9/10，1202继续，不能将5初态扩大全benchmark性能。
+- 【Agent】【2026-10-14 18:02】[run] Goal1202共享第65/80次e68d00e3同init3，仅加入visible-insertion有界release证据，sidewall0/floor反馈/记忆/partial-opening/线程2保持v42；5880-jump前台session65110。model输入仅公开测量和不确定性，不含上一回合官方true。
+- 【Agent】【2026-10-14 18:06】[op] EXP198/199补全开发117Jev/546步成功与冻结五未见初态5/5、577问答动作/60阶段边/0违规；支持9项固定标准但不宣称全benchmark，严格lint通过。
+- 【Agent】【2026-10-14 18:09】[op] 更新十任务表到9项固定五新初态5/5，1296冻结67/80完成与开发示例视频；1202第64次物理达成但程序失败、第65次公开partial-geometry输入修复运行中，尚不称稳定。
