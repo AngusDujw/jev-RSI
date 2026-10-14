@@ -173,6 +173,12 @@ def main():
             "point is visible in every listed view; otherwise describe the visual "
             "source region and its uncertainty without inventing a correspondence. "
             "visual_method must be an object. Never expose native evaluation."
+            " In each stage distinguish its purpose, currently available entry evidence, "
+            "and EXIT evidence for advancing to another stage. Missing evidence that a "
+            "bounded observation/test is meant to acquire cannot also be required as "
+            "already proven before that test. EXIT capture/source-following criteria "
+            "are not assertions of holding or automatic action permission. Describe "
+            "uncertainty/reobservation conditions without proposing robot actions."
         )
     details = {
         "public_observation": public,
