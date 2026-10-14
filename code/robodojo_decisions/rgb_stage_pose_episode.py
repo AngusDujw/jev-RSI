@@ -120,12 +120,25 @@ def run(tools, obs, model, output, max_decisions, deadline):
         t=held();t['right']['gripper_closed']=not closed
         targets['OPEN_at_current_pose' if closed else 'CLOSE_attempt_at_current_pose']=t
         programs={};diagnostics={}
-        for name,target in targets.items():
+        pending=list(targets.items())
+        adaptive=os.environ.get('ROBODOJO_RGB_STAGE_REACHABLE_TRANSLATION_SCALE')=='1'
+        for name,target in pending:
             first=tools._rpc('eef_joint_target',targets=target)
             if first.get('physical_steps')!=0 or len(first.get('action',[]))!=14:
                 raise ValueError('Native first IK must be read-only 14-action')
             path=preview(obs,target['right'],first['action'][7:13],steps=5)
             diagnostics[name]={'native_first_IK':first,'public_five_step_path':path}
+            # Keep each direction available at a smaller independently checked
+            # scale when the five-step robot path cannot track the larger one.
+            # This uses robot kinematics only; Luna still judges scene clearance.
+            if adaptive and not (path['model_path_gate'] and path['native_eef_single_action_legal']):
+                parts=name.split('_')
+                if len(parts)==4 and parts[0]=='world' and parts[1] in 'xyz':
+                    smaller={'15mm':10,'10mm':5}.get(parts[3])
+                    if smaller is not None:
+                        axis='xyz'.index(parts[1]);sign=1 if parts[2]=='plus' else -1
+                        reduced=held();reduced['right']['position'][axis]+=smaller*.001*sign
+                        pending.append(('_'.join(parts[:3])+f'_{smaller}mm',reduced))
             if path['model_path_gate'] and path['native_eef_single_action_legal']:
                 end=path['predicted_joint_path'][-1]
                 programs[name]={'target':target,'physical_steps':5,
