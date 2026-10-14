@@ -49,6 +49,35 @@ def select_approach_program(geometry, programs, horizontal_first=False):
     return (max(candidates)[1] if candidates else None),horizontal
 
 
+def sequential_role_stage(model,obs,data,questions,prefix,images,reread_memory):
+    """Pass a fresh role answer into a distinct stage question, not a retry.
+
+    Decisions questions in one request are independently answerable. A stage
+    question cannot rely on another answer that has not yet been returned.
+    """
+    role_question=next(q for q in questions if q['name']=='source_receiver_roles')
+    roles=model.query(obs,[role_question],json.dumps(data,ensure_ascii=False),
+                      prefix+'_roles',extra_images=images)
+    pair=roles['source_receiver_roles']
+    source,receiver=pair.split('_onto_') if pair!='unknown' else ('unknown','unknown')
+    stage_data=dict(data)
+    stage_data.update(reread_memory())
+    stage_data['current_semantic_roles']={'source_role':source,'receiver_role':receiver}
+    stage_data['role_hypothesis_provenance']={
+        'record':prefix+'_roles','step_id':obs['step_id'],
+        'scope':'Fresh Luna semantic hypothesis on these same CURRENT RGB, not ground truth. Recheck its support before choosing the first unfinished planner stage.'}
+    stage_question=dict(next(q for q in questions if q['name']=='observable_stage'))
+    stage_question['instructions']=(
+        'Choose the CURRENT first unfinished working stage under planner entry/EXIT rules. '
+        'The just-returned source/receiver hypothesis is explicitly supplied in current_semantic_roles; '
+        'recheck it against these CURRENT RGB. Supported roles can finish identity; future grasp/contact '
+        'or source-following need not already be proven for FAR OPEN alignment. Do not infer stage '
+        'completion from this label, robot movement or a future action. This question requests no motion.')
+    stage=model.query(obs,[stage_question],json.dumps(stage_data,ensure_ascii=False),
+                      prefix+'_stage',extra_images=images)
+    return {**roles,**stage},2
+
+
 def load_authored(path,task,data_root):
     path=Path(path).resolve()
     if not path.is_relative_to((data_root/'plans').resolve()):
@@ -250,9 +279,21 @@ def run(tools, obs, model, output, max_decisions, deadline):
             pairs['unknown']='A coherent source/receiver identity pair is unsupported in current RGB.'
             perception_questions.append(choice('source_receiver_roles',
                 'Inspect CURRENT three RGB and task: choose ONE coherent source and supported base/receiver pair for the next placement. Semantic roles only; this does not request a robot action or establish enclosure/corridor permission.',pairs))
-        phase=model.query(obs,perception_questions,
-                          json.dumps(stage_data,ensure_ascii=False),f'rgb_pose_stage_{turn:03d}_step{step:03d}',extra_images=images)
-        queries+=1;stage=phase['observable_stage']
+        if bind_roles and os.environ.get('ROBODOJO_RGB_STAGE_SEQUENTIAL_ROLE_STAGE')=='1':
+            def reread_stage_memory():
+                fresh={name:(memory/name).read_text() for name in ['global.md',obs['task']+'.md']}
+                directory=output/f'raw_experience_stage_step_{step:03d}';directory.mkdir()
+                for name,text in fresh.items():(directory/name).write_text(text)
+                return {'experience_original_text':fresh,
+                        'experience_raw_sha256':{name:hashlib.sha256(text.encode()).hexdigest() for name,text in fresh.items()}}
+            phase,count=sequential_role_stage(model,obs,stage_data,perception_questions,
+                f'rgb_pose_perception_{turn:03d}_step{step:03d}',images,reread_stage_memory)
+            queries+=count
+        else:
+            phase=model.query(obs,perception_questions,
+                              json.dumps(stage_data,ensure_ascii=False),f'rgb_pose_stage_{turn:03d}_step{step:03d}',extra_images=images)
+            queries+=1
+        stage=phase['observable_stage']
         data['current_stage']=stage;data['current_stage_rule']=plan['stages'][stage]
         if bind_roles:
             pair=phase['source_receiver_roles']
