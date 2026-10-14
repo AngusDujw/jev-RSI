@@ -105,6 +105,9 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     action={'request_id':obs['request_id'],'mode':'eef','steps':5,'reason':'du Luna current-RGB capture/following feedback','target':target}
     native.validate_action(action,tools.request);call=tools.next_call();call.pop('tool');call['response']=action;after=tools.act(**call)
     error=float(np.linalg.norm(np.asarray(after['current_eef']['right']['position'])-np.asarray(target['right']['position'])))
-    record['post_action']={'action':action,'new_step_id':after['step_id'],'measured_right_LINK6_position_residual_m':error}
-    record['status']='capture_reobserve' if error<=.002 else 'capture_tracking_incomplete'
+    record['post_action']={'action':action,'new_step_id':after['step_id'],
+        'actual_native_physical_steps':after['step_id']-obs['step_id'],
+        'measured_right_LINK6_position_residual_m':error}
+    record['status']=('native_terminal' if after.get('rollout_finished') else
+                      'capture_reobserve' if error<=.002 else 'capture_tracking_incomplete')
     return after,record

@@ -639,6 +639,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             (output / f"camera_calibration_step_{after['step_id']:03d}.json").write_text(
                 json.dumps(after['camera_calibration'],ensure_ascii=False,indent=2))
             previous_observation_for_capture=obs;obs=after
+            if obs.get('rollout_finished'):
+                status='native_terminal';native_result=obs.get('result');break
             if not capture_record['post_action']['action']['target']['right']['gripper_closed']:
                 capture_robot_reference_z=None
             if capture_record['status']!='capture_reobserve':
@@ -1548,6 +1550,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         obs = after
         if target['right']['gripper_closed'] and not gripper_closed:
             capture_robot_reference_z=float(after['current_eef']['right']['position'][2])
+        if obs.get('rollout_finished'):
+            status='native_terminal';native_result=obs.get('result');break
         if error > tracking_limit:
             if (os.environ.get('ROBODOJO_PICKUP_CLOSE_TRACKING_STABILIZATION')=='1' and
                     target['right']['gripper_closed'] and not gripper_closed and error<=.005 and
@@ -1562,6 +1566,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             native_result = tools.finish(status)
             break
     else:
+        if obs['rollout_finished']:status='native_terminal'
         native_result = obs.get("result") if obs["rollout_finished"] else tools.finish(status)
     report = {"task": obs["task"], "status": status,
               "records": trace, "native_result": native_result}
