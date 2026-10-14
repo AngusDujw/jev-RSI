@@ -120,7 +120,8 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
              ('Current source appears enclosed by actual visible fingers; FOLLOWING has not yet been tested. This is only a plausible enclosure hypothesis, not holding evidence.' if pretest_enclosure else
               'Current source/fingers and actual image motion support a following hypothesis, not a contact certificate.'),
              'visible_detachment_or_empty_fingers':'Current RGB supports source left behind, slipping or visibly empty fingers.',
-             'source_relation_ambiguous':'Current source/tool association or enclosure is ambiguous; distinguish this from following merely not yet being tested.',
+             'source_relation_ambiguous':('Current source/tool association or enclosure is ambiguous; distinguish this from following merely not yet being tested.' if pretest_enclosure else
+                                          'Current source/tool association or enclosure is ambiguous.'),
              'visible_corridor_or_robot_contradiction':'The candidate corridor or robot evidence has a concrete current contradiction.',
              'other_evidence_insufficient':'Another specific evidence requirement remains unsupported.'}
         questions.append(choice('capture_evidence_assessment',
