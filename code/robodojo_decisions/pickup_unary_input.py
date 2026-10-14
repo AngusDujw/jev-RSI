@@ -20,6 +20,17 @@ def compact(data, observation):
         'left_arm':'held', 'physical_steps':5,
         'meaning':'All components form ONE simultaneous complete command. +X robot-right, +Y away from bases, +Z up; these are WORLD axes, not moving image axes. A close command is a grasp attempt, not holding evidence.'}
     score = program.get('stage_score') or {}
+    if program['id'].startswith(('close_', 'open_empty_')):
+        # Generator eligibility priorities (+/-1000) are not physical gains.
+        # Keep them in solver diagnostics, never portray them as actor evidence.
+        program['stage_score'] = {k:v for k,v in score.items() if k not in (
+            'predicted_stage_gain_before_visibility_utility', 'stage_progress_score',
+            'score_definition')}
+        program['stage_score']['physical_progress_prediction'] = None
+        program['stage_score']['scope'] = (
+            'Gripper eligibility was checked by the candidate generator; there is no '
+            'quantitative capture/holding gain prediction. Judge CURRENT real material '
+            'and fingers, independently choose this full attempt or STOP.')
     result.pop('source_feature_after_each_complete_action',None)
     if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS','1') != '0':
         result['source_feature_after_proposed_program'] = score.get('prediction')
