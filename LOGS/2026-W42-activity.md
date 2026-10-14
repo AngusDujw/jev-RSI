@@ -253,3 +253,17 @@
 - 【Agent】【2026-10-14 13:39】[note] Goal1202第54次正式前台跟踪session为93070；上一条run先记录了意图，回合只启动一次。
 - 【Agent】【2026-10-14 13:39】[op] Goal1296 a1f7ce92新增可选首段保留初始向下腕姿，仍用自体mesh计算顶面接触，二段沿等价yaw与共享平面gain；AST/参数dry-run/diff通过SSH推送，未变更当前1202运行源码。
 - 【Agent】【2026-10-14 13:43】[op] 已记录EXP173–176：宽夹持合同死门、共享步长失败、18tick持有后carry受阻，以及旧ROI低估完整可见地板；Discussion/Timeline/十Goal状态同步且严格lint通过，未把离线几何算成功。
+- 【Agent】【2026-10-14 13:46】[run] Goal1296第55/80次a1f7ce92同init11增加首段保留初始向下腕姿，其他参数同v10；前台session87263，串行单回合运行。
+- 【Agent】【2026-10-14 13:58】[run] Goal1202第55/80次f9cb7591同init3仅关闭gentle-carry，恢复已有标准搬运执行profile，18tick宽夹持/完整可见地板/近受阻复核不变；前台session39608。
+- 【Agent】【2026-10-14 13:58】[note] 复核第54次carry末8块每块实际接近目标约6.09–6.11mm，尚在有效推进而非停滞；近受阻复核未触发符合条件，当前主要是原生时域不足，不能把末剩16.86mm直接称运动学受阻。
+- 【Agent】【2026-10-14 14:08】[run] Goal1296第56/80次e18a6511同init11，首段恢复原向下朝向，二段保留v10等价yaw和共享gain、启用public-height-compatible平面接触目标；所有Jev选择仍照实执行，前台session34386。
+- 【Agent】【2026-10-14 15:02】[run] Goal1202第56/80次1c38bb00同init3验证开柜前公开RGB-D/SAM源实体记忆；当前两相机深度/LAB参考匹配、保留过去可见完整界，恢复真实碗的12tick/gentle配置，其余full-floor/rim-drop不变；前台session57018。
+- 【Agent】【2026-10-14 15:02】[op] 通用ObservedEntityMemory在错误抓盒回合的开柜末帧验证：1787当前像素/1641不同初始点匹配原碗，p90残差0.006mm、估计平移0；不是按固定碗颜色筛选。1c38bb00 AST/完整参数dry-run/离线验证通过已SSH推送部署，源码纳入冻结SHA256。
+- 【Agent】【2026-10-14 15:43】[run] Goal1296第57/80次e615af65同init11启动后方净空下降与水平接触分阶段，由Jev决定阶段边/夹爪/方向；5880-jump前台session44209。仅公开RGB-D及自体反馈，运行时GPT/DeepSeek0。
+- 【Agent】【2026-10-14 15:46】[op] 提交并SSH推送4b835926：Goal1202新可选source-sized拉距=clip(开柜前公开RGB-D物体Y跨度+5mm,90,140)；真实自体外拉、可见伸出、夹持门保持，新鲜接收地板90%包含门保持。AST/diff及完整参数dryrun通过，尚未物理验证。
+- 【Agent】【2026-10-14 15:47】[run] Goal1202第57/80次4b835926同init3启动source-memory+source-sized拉距；新尺寸来自开柜前公开RGB-D，12tick/gentlecarry等保持v34。5880-jump前台session70953。Goal1296第57次76Jev/348步、approach受阻双false，保留并分析后方入口。
+- 【Agent】【2026-10-14 15:50】[result] 纠正Goal1202 v34前次摘要：两次候选不是抓持验证失败，真实请求无grasp/test_lift阶段，holding始终not_checked_yet；两次descend受阻，指垫可见垂直间隙11.39/12.57mm且无XYZ重叠门，Jev合理retry。165calls/588步结束recover_open。实体记忆已保持原碗，但抓取尚未发生。
+- 【Agent】【2026-10-14 15:50】[result] Goal1202第57次v35启动参数误用top_hook而v34为pinch，非单因素配对；66Jev/198步contact阶段预算结束，未触达尺寸拉距。保留失败计数，下一次恢复manifest中的pinch，仅比较source-sized拉距。不能将该失败归于新拉距算法。
+- 【Agent】【2026-10-14 15:50】[run] Goal1202第58/80次4b835926同init3恢复pinch，与v34仅source-sized拉距变更；5880-jump前台session28855。保留v35参数错误负结果与预算。
+- 【Agent】【2026-10-14 15:52】[op] 补全EXP177-183七项真实负结果并严格lint通过；append纠正v30-33所抓蓝盒、v32仍前进非停滞、v34下降受阻未进入抓持。保留原负结果和次数。
+- 【Agent】【2026-10-14 15:53】[op] 回写Discussion及T-W42-021实体混淆与接触机制纠正；更新十任务表至1202第58次运行中、1296第57次完成。议题保持Open，未改正式假设、目标或评价。

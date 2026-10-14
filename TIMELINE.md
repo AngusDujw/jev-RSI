@@ -126,6 +126,7 @@ graph LR
     T_2026W42_018["📊 libero-goal-ten<br/>Goal1098固定控制版未见init6–…"]:::experiment
     T_2026W42_019["📊 libero-goal-ten<br/>Goal1202可见中心对齐仍官方失败：地…"]:::experiment
     T_2026W42_020["📊 libero-goal-ten<br/>离线RGB-D证明Goal1202旧固定R…"]:::experiment
+    T_2026W42_021["📊 libero-goal-ten<br/>公开历史实体匹配纠正Goal1202抓蓝盒…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -215,6 +216,7 @@ graph LR
   T_2026W42_017 --> T_2026W42_018
   T_2026W42_018 --> T_2026W42_019
   T_2026W42_019 --> T_2026W42_020
+  T_2026W42_020 --> T_2026W42_021
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -329,6 +331,7 @@ graph LR
 | `T-2026W42-018` | 2026-10-14 | experiment | libero-goal-ten | Goal1098固定控制版未见init6–10联合成功5/5；十项中8项达到冻结五初态复测标准 | `EXP-2026W42-169` | - |
 | `T-2026W42-019` | 2026-10-14 | experiment | libero-goal-ten | Goal1202可见中心对齐仍官方失败：地板深度50mm不足容纳80mm碗，需联合设计充分开柜与释放包含门 | `EXP-2026W42-171` | - |
 | `T-2026W42-020` | 2026-10-14 | experiment | libero-goal-ten | 离线RGB-D证明Goal1202旧固定ROI低估可见地板：充分开柜60.23→132.79mm，同floorZ；需修正此前空间不足解释 | `EXP-2026W42-176` | - |
+| `T-2026W42-021` | 2026-10-14 | experiment | libero-goal-ten | 公开历史实体匹配纠正Goal1202抓蓝盒，原碗下降受阻；1296平面移腕未推盘，后方翻转腕姿入口受阻 | `EXP-2026W42-180` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
