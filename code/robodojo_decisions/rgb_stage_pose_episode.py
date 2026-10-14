@@ -13,6 +13,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 from controller import choice
 from robot_path_preview import preview
+from camera_geometry import propagate_wrist_calibration
 
 
 def select_approach_program(geometry, programs, horizontal_first=False):
@@ -125,6 +126,8 @@ def run(tools, obs, model, output, max_decisions, deadline):
         raise ValueError('Fresh action-free method planner required')
     (output/'plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2))
     stage=plan['initial_stage'];records=[];previous=None;result=None;queries=0
+    initial_calibration=json.loads((output/'camera_calibration_initial.json').read_text())
+    initial_eef=json.loads(json.dumps(obs['current_eef']))
     status='rgb_pose_native_budget_incomplete'
     for turn in range(max_decisions):
         if obs.get('rollout_finished'):
@@ -132,10 +135,14 @@ def run(tools, obs, model, output, max_decisions, deadline):
         if time.monotonic()>=deadline:
             status='rgb_pose_wall_budget';break
         step=int(obs['step_id'])
-        calibration=tools._rpc('public_camera_calibration')
+        reported_calibration=tools._rpc('public_camera_calibration')
         encoders=tools._rpc('public_robot_gripper_state')
-        if calibration['step_id']!=step or encoders['step_id']!=step or encoders['physical_steps']!=0:
+        if reported_calibration['step_id']!=step or encoders['step_id']!=step or encoders['physical_steps']!=0:
             raise ValueError('Fresh public state/RGB synchronization failed')
+        # This RPC exposes authored mounts, not the moving camera world pose.
+        # A fresh step id alone does not make its wrist extrinsics current.
+        calibration=propagate_wrist_calibration(initial_calibration,initial_eef,obs['current_eef'],step)
+        (output/f'camera_calibration_rpc_step_{step:03d}.json').write_text(json.dumps(reported_calibration,indent=2))
         obs['camera_calibration']=calibration;obs['measured_gripper_joint_state']=encoders
         for name,value in [('camera_calibration',calibration),('robot_gripper_state',encoders)]:
             (output/f'{name}_step_{step:03d}.json').write_text(json.dumps(value,indent=2))
