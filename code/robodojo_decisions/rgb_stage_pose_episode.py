@@ -25,7 +25,8 @@ def load_authored(path,task,data_root):
             p.get('reasoning_effort')!='high' or p.get('provider')!='ai2robcowork'):
         raise ValueError('Unreviewed or mismatched authored task-general method')
     response=json.loads((path.parent/'response.json').read_text())
-    if response.get('status')!='completed' or response.get('id')!=p.get('response_id') or response.get('model')!='gpt-6.1-sol':
+    if (response.get('status')!='completed' or response.get('id')!=p.get('response_id') or
+            response.get('model')!='gpt-6.1-sol' or response.get('reasoning',{}).get('effort')!='high'):
         raise ValueError('Authored method lacks the matching completed provider receipt')
     from planner_responses import output_text
     original=json.loads(output_text(response))
@@ -38,6 +39,11 @@ def load_authored(path,task,data_root):
 def run(tools, obs, model, output, max_decisions, deadline):
     import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
     memory = output.parents[1]/'experience/model'
+    frozen_memory=os.environ.get('ROBODOJO_RGB_STAGE_MODEL_MEMORY_ROOT')
+    if frozen_memory:
+        memory=Path(frozen_memory).resolve()
+        if not memory.is_relative_to((output.parents[1]/'experience/model_versions').resolve()):
+            raise ValueError('Frozen model notes must be within model_versions, never human evaluation notes')
     planner = output/'initial_fresh_method'
     if (output/'plan.json').exists():
         (output/'bootstrap_task_plan.json').write_text((output/'plan.json').read_text())
@@ -138,6 +144,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
               'current_robot_joint_state':obs['current_state'], 'actual_finger_encoders':encoders,
               'public_camera_calibration':calibration,'complete_programs':programs,
               'experience_original_text':notes,'experience_raw_sha256':hashes,
+              'experience_original_file_directory':str(memory),
               'contract':'RGB-only full-pose baseline: no processed object XYZ/errors. All programs are complete independent five-step commands, at most15mm or0.1rad. Select ONE or STOP, never assemble axes. WORLD +X robot-right, +Y away from bases, +Z up; rotations are right-hand rule about fixed WORLD axes, not wrist/image axes. Wrist cameras ride with the hand. Current public robot geometry does not prove scene clearance. Identify an accessible task object from CURRENT raw RGB; avoid prior failed routes. CLOSE only for current actual opposing fingers/material, OPEN only as supported by current task/object support. Observe same-source co-motion after a grasp. Stage EXIT conditions are not prerequisites before the first bounded evidence acquisition. Never claim source height/holding from robot displacement. If object/tool/corridor cannot be supported, STOP.'}
         options={name:f'Execute exactly complete_programs[{name}], five native steps then fresh RGB.' for name in programs}
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
