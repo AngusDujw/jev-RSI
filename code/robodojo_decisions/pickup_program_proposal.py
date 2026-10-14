@@ -17,6 +17,12 @@ def propose(obs, targets, material, green_plane, table, stage):
     phase_gain_ranking=(os.environ.get('ROBODOJO_PICKUP_PHASE_GAIN_RANKING')=='1' and
                         stage in ('coarse_directional_alignment_review','strict_tool_geometry_review'))
     diagnostics = {}
+    separate_view = (os.environ.get('ROBODOJO_PICKUP_SEPARATE_VIEW_PHASE')=='1' and
+                     stage=='coarse_directional_alignment_review' and material is not None and
+                     min(material['representative_material_point']['current_right_pixel_uv'][0],
+                         639-material['representative_material_point']['current_right_pixel_uv'][0],
+                         material['representative_material_point']['current_right_pixel_uv'][1],
+                         479-material['representative_material_point']['current_right_pixel_uv'][1])<60)
     if material is not None and float(obs['current_eef']['right']['gripper_opening_command'])>.95:
         error = np.asarray(material['representative_material_point']['nearest_opposing_surface_midpoint_delta_xyz_mm'])/1000
         size = float(np.linalg.norm(error))
@@ -35,11 +41,13 @@ def propose(obs, targets, material, green_plane, table, stage):
             feature = material['representative_material_point']
             u,v = feature['current_right_pixel_uv']
             if min(u,639-u,v,479-v) < 60:
-                seed = _targets(obs,'x',1,0)
-                rotation = Rotation.from_rotvec([-.1,0,0]).as_matrix() @ eef_transform(seed['right'])[:3,:3]
-                q = Rotation.from_matrix(rotation).as_quat()
-                seed['right']['quaternion_wxyz'] = q[[3,0,1,2]].tolist()
-                seeds.append(('wrist_source_retention_world_x_negative_100mrad',seed))
+                for axis,sign in ([(0,-1),(0,1),(1,-1),(1,1)] if separate_view else [(0,-1)]):
+                    seed = _targets(obs,'x',1,0)
+                    rotvec=np.zeros(3);rotvec[axis]=sign*.1
+                    rotation = Rotation.from_rotvec(rotvec).as_matrix() @ eef_transform(seed['right'])[:3,:3]
+                    q = Rotation.from_matrix(rotation).as_quat()
+                    seed['right']['quaternion_wxyz'] = q[[3,0,1,2]].tolist()
+                    seeds.append((f'wrist_source_retention_world_{"xy"[axis]}_{sign}_100mrad',seed))
         for name,seed in seeds:
             first = preview(obs,seed['right'],None,5)
             adapted = seed
@@ -113,6 +121,19 @@ def propose(obs, targets, material, green_plane, table, stage):
                          'Controller utility: phase gain minus 40mm per added high-footprint overlap fraction, minus 1mm per wrist margin pixel below35; when current margin<35, plus0.5mm per restored margin pixel capped60. These are chosen utility weights, not physical error or success probabilities.'),
                      'stage_progress_score':round(score,3),'predicted_axis_angle_deg':round(float(newangle),2),
                      'prediction':predictions.get(name),'scope':'A current controller proposal score under stated RGB/static-source/robot-model hypotheses, not task completion or observed contact.'}
+        if separate_view:
+            wrist=(visibility or {}).get('named_source_wrist_field_of_view')
+            gain=(wrist['after_target_edge_margin_px']-wrist['current_edge_margin_px']) if wrist else 0
+            # A different phase: pixels are never added to millimetres. All
+            # admitted alternatives must improve this same visibility objective.
+            scores[name]['stage_progress_score']=round(gain,3) if wrist and wrist['after_target_edge_margin_px']>=35 else 0
+            scores[name]['view_phase_error_change']={
+                'objective':'Restore current named RGB-feature wrist-image edge margin before continuing lateral approach',
+                'unit':'pixels','current_edge_margin_px':wrist['current_edge_margin_px'] if wrist else None,
+                'predicted_after_edge_margin_px':wrist['after_target_edge_margin_px'] if wrist else None,
+                'predicted_margin_gain':round(gain,3),
+                'interpretation':'CURRENT ray/uncertain-height feature, static-source assumption and PUBLIC rigid camera mount. Not future RGB, full-object visibility, material depth or contact. Reobserve after ONE selected program.'}
+            scores[name]['score_definition']='Separate visibility phase: positive wrist edge-margin gain in pixels, never a source-distance reduction.'
     if not scores:
         return None,targets,diagnostics,scores
     eligible={key:value for key,value in scores.items()
@@ -120,7 +141,7 @@ def propose(obs, targets, material, green_plane, table, stage):
     if not eligible:
         return None,targets,diagnostics,scores
     selected=max(eligible,key=lambda key:scores[key]['stage_progress_score'])
-    if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
+    if not separate_view and os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
         best = scores[selected]['stage_progress_score']
         near_ties = [key for key,value in eligible.items()
                      if value['stage_progress_score'] >= best-2 and value['source_visibility_prediction']]

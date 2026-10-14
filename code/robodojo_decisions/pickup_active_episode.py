@@ -1362,6 +1362,13 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 trace.append(record)
                 native_result=tools.finish(status)
                 break
+            if progress_scores[unary_program].get('view_phase_error_change'):
+                record['stage']='source_view_maintenance_review'
+                model_input['current_stage']=record['stage']
+                model_input['current_phase_goal']='Restore wrist visibility of the CURRENT RGB source feature with one complete public-robot program, then reobserve before resuming lateral approach. Judge pixel margin, not millimetre error decrease; no contact/holding inferred.'
+                model_input['planner_stage']='identity_and_view' if 'identity_and_view' in active_stage_rules else None
+                model_input['planner_stage_evidence_rule']=active_stage_rules.get('identity_and_view')
+                model_input['planner_stage_interpretation']='Runtime view-maintenance review under the existing planner identity/view rule; not a new planner call or source-distance objective.'
             targets=program_targets
             model_input['complete_robot_action_targets']={unary_program:targets[unary_program]}
             model_input['proposed_complete_program']={'id':unary_program,'target':targets[unary_program],
