@@ -187,6 +187,7 @@ def build(observation: dict, temporal_metal: dict | None,
                 not control_reference['current_fixed_source_check']['passed']):
             raise ValueError('Persistent material reference lacks current same-episode source check')
         anchor=np.asarray(control_reference['camera_derived_world_point_m'],float)
+        candidates=np.arange(len(points))  # Current uncertainty levels, not a forced new median height.
         distances=np.linalg.norm(points[candidates]-anchor,axis=1)
         chosen=int(candidates[np.argmin(distances)])
         reference_distance=float(distances.min()*1000)
@@ -209,7 +210,7 @@ def build(observation: dict, temporal_metal: dict | None,
         'localization_hypothesis_sample_count': int(same_ray.sum()),
         'limitations': 'This is a RGB-supported planar/slab point hypothesis, not verified same-point correspondence or true object pose. The paired nearest public surfaces define current reachable face span, not a recommended physical action or observed contact. Same-pixel depth samples are not calibrated confidence bounds. Whole-object quantiles below describe spatial extent and must not be confused with this point localization.'}
     if control_reference is not None:
-        representative['source']='CURRENT RGB-supported nominal-height sample nearest the persistent camera-derived material reference; not the newly recomputed material-set median'
+        representative['source']='CURRENT RGB-supported uncertain-height sample nearest the persistent camera-derived material reference; not the newly recomputed material-set median'
         representative['persistent_material_control_reference']={**control_reference,
             'current_sample_distance_to_camera_reference_mm':round(reference_distance,3),
             'scope':'Same nearby material-point hypothesis under CURRENT green-pixel/height support and fixed-high source appearance. Not verified physical point identity, scene pose or contact. Reference is invalidated by closure/object motion.'}
