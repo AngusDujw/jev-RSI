@@ -619,9 +619,10 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         command_closed=(trace[-1]['post_action']['action']['target']['right']['gripper_closed']
                         if trace and 'post_action' in trace[-1] else
                         float(obs['current_eef']['right']['gripper_opening_command'])<.5)
-        if os.environ.get('ROBODOJO_PICKUP_CAPTURE_RGB_LOOP')=='1' and command_closed:
+        if command_closed:
             material_feature_reference=None
             obs.pop('material_control_reference',None)
+        if os.environ.get('ROBODOJO_PICKUP_CAPTURE_RGB_LOOP')=='1' and command_closed:
             from pickup_capture_rgb import step as capture_rgb_step
             if capture_robot_reference_z is None:
                 capture_robot_reference_z=float(obs['current_eef']['right']['position'][2])
