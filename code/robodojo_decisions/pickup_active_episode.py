@@ -533,6 +533,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     metal_height_cache = None
     missing_view_recoveries = 0
     last_valid_view_observation = None
+    previous_observation_for_capture = None
     status = "active_episode_budget_incomplete"
     native_result = None
     # Plan from the actual fresh reset RGB before any Luna or physical action.
@@ -605,6 +606,13 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             break
         experience = {name: (experience_root / name).read_text()
                       for name in ("global.md", "general_pickup.md")}
+        if os.environ.get('ROBODOJO_MEASURED_GRIPPER_STATE') == '1':
+            measured=tools._rpc('public_robot_gripper_state')
+            if measured.get('physical_steps')!=0 or measured.get('step_id')!=obs['step_id']:
+                raise ValueError('Robot encoder read must remain current and zero-step')
+            obs['measured_gripper_joint_state']=measured
+            (output / f"robot_gripper_state_step_{obs['step_id']:03d}.json").write_text(
+                json.dumps(measured,ensure_ascii=False,indent=2))
         try:
             hull = build_visual_hull(obs)
         except ValueError as error:
@@ -620,6 +628,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                         initial_calibration,initial_eef,after['current_eef'],after['step_id'])
                     (output / f"camera_calibration_step_{after['step_id']:03d}.json").write_text(
                         json.dumps(after['camera_calibration'],ensure_ascii=False,indent=2))
+                    previous_observation_for_capture=obs
                     obs = after
                     if recovery['status'] == 'missing_view_reobserve':
                         continue
@@ -1278,6 +1287,16 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             obs, model_input, experience, output, turn, targets)
         if record.get('visual_grasp_attempt_evidence'):
             model_input['visual_grasp_attempt_evidence']={k:v for k,v in record['visual_grasp_attempt_evidence'].items() if k!='public_path'}
+        if obs.get('measured_gripper_joint_state'):
+            model_input['measured_gripper_joint_state']=obs['measured_gripper_joint_state']
+        if (os.environ.get('ROBODOJO_PICKUP_CAPTURE_VISUAL_HISTORY') == '1' and gripper_closed
+                and previous_observation_for_capture is not None):
+            previous=previous_observation_for_capture
+            model_input['capture_visible_change_reference']={'previous_step_id':previous['step_id'],
+                'current_step_id':obs['step_id'],'previous_robot_eef':previous['current_eef'],
+                'scope':'Earlier same-episode images ONLY for named CURRENT-source identity and visible change/source-following comparison. They do NOT establish current contact/holding. Judge CURRENT actual fingers and material; fixed-camera source change is distinct from wrist-camera/robot motion.'}
+            identity_crops.extend({'camera':f"PREVIOUS same-episode {row['camera']} step{previous['step_id']} for CURRENT source feature/change comparison; NOT current contact evidence",'path':row['path']}
+                for row in previous['images'] if row['camera'] in ('cam_high','cam_right_wrist'))
         record["actor_input_variant"] = model_input['actor_error_input_variant']
         if os.environ.get('ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS', '1') == '0':
             for question in questions:
@@ -1451,6 +1470,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             "sensor_motion": _sensor_motion(obs, after)}
         if selected.startswith("rotate_"):
             rotations += 1
+        previous_observation_for_capture=obs
         obs = after
         if error > tracking_limit:
             status = "robot_tracking_incomplete"

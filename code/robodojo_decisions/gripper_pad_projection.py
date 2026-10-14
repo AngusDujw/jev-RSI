@@ -41,6 +41,15 @@ def inspect(observation: dict, calibration: dict) -> dict:
     eef = observation["current_eef"]["right"]
     link = eef_transform(eef)
     command = float(eef["gripper_opening_command"])
+    encoders=observation.get('measured_gripper_joint_state')
+    measured={}
+    if encoders is not None:
+        if encoders['step_id'] != observation['step_id'] or encoders.get('physical_steps')!=0:
+            raise ValueError('Gripper encoders must be current zero-step robot reads')
+        values=encoders['arms']['right']
+        measured=dict(zip(values['joint_names'],values['joint_positions_m']))
+        if not {'joint7','joint8'} <= measured.keys():
+            raise ValueError('Actual X5 finger joint encoders incomplete')
     camera = calibration["cameras"]["cam_right_wrist"]
     rows = {}
     for name, joint_name, sign in (("link7", "joint7", -1), ("link8", "joint8", 1)):
@@ -48,7 +57,10 @@ def inspect(observation: dict, calibration: dict) -> dict:
         origin = np.fromstring(joint.find("origin").get("xyz"), sep=" ")
         axis = np.fromstring(joint.find("axis").get("xyz"), sep=" ")
         upper = float(joint.find("limit").get("upper"))
-        offset = origin + axis * np.clip(command, 0, 1) * upper
+        translation=float(measured[joint_name]) if measured else float(np.clip(command,0,1)*upper)
+        if not np.isfinite(translation) or not -.001 <= translation <= upper+.001:
+            raise ValueError('Public finger encoder outside declared prismatic range')
+        offset = origin + axis * translation
         mesh = trimesh.load_mesh(root / f"meshes/{name}.STL", process=False)
         vertices = np.asarray(mesh.vertices, float)
         centers = np.asarray(mesh.triangles_center, float)
@@ -67,7 +79,8 @@ def inspect(observation: dict, calibration: dict) -> dict:
         rows[name] = {
             "public_source": f"X5A.urdf {joint_name} + meshes/{name}.STL",
             "gripper_command": command,
-            "joint_translation_m": float(np.clip(command, 0, 1) * upper),
+            "joint_translation_m": translation,
+            "joint_translation_source": 'Current robot joint_pos encoder' if measured else 'Command-derived URDF prediction; not a measured finger position',
             "inner_facet_selection": "mesh triangles with inward y-normal >0.99, within 1mm of inner y-extremum, distal local x>40mm",
             "facet_count": int(np.sum(faces)),
             "inner_facet_world_xyz_m": np.round(world_points, 6).tolist(),
