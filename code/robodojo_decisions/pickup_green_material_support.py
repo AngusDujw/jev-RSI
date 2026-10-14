@@ -179,6 +179,19 @@ def build(observation: dict, temporal_metal: dict | None,
         candidates = np.arange(len(points))
     centre = np.median(points, axis=0)
     chosen = int(candidates[np.argmin(np.linalg.norm(points[candidates]-centre, axis=1))])
+    control_reference=observation.get('material_control_reference')
+    reference_distance=None
+    if control_reference is not None:
+        if (control_reference['episode_id']!=observation['episode_id'] or
+                control_reference['reference_step_id']>=observation['step_id'] or
+                not control_reference['current_fixed_source_check']['passed']):
+            raise ValueError('Persistent material reference lacks current same-episode source check')
+        anchor=np.asarray(control_reference['camera_derived_world_point_m'],float)
+        distances=np.linalg.norm(points[candidates]-anchor,axis=1)
+        chosen=int(candidates[np.argmin(distances)])
+        reference_distance=float(distances.min()*1000)
+        if reference_distance>3:
+            raise ValueError(f'CURRENT RGB/plane samples do not support persistent source reference within3mm: {reference_distance:.3f}mm')
     same_ray = ray_indices == ray_indices[chosen]
     representative = {
         'public_finger_window_scope_xyxy': local_region,
@@ -195,6 +208,10 @@ def build(observation: dict, temporal_metal: dict | None,
             for key, q in (('q05', .05), ('q50', .5), ('q95', .95))},
         'localization_hypothesis_sample_count': int(same_ray.sum()),
         'limitations': 'This is a RGB-supported planar/slab point hypothesis, not verified same-point correspondence or true object pose. The paired nearest public surfaces define current reachable face span, not a recommended physical action or observed contact. Same-pixel depth samples are not calibrated confidence bounds. Whole-object quantiles below describe spatial extent and must not be confused with this point localization.'}
+    if control_reference is not None:
+        representative['persistent_material_control_reference']={**control_reference,
+            'current_sample_distance_to_camera_reference_mm':round(reference_distance,3),
+            'scope':'Same nearby material-point hypothesis under CURRENT green-pixel/height support and fixed-high source appearance. Not verified physical point identity, scene pose or contact. Reference is invalidated by closure/object motion.'}
     if prior_high_support:
         representative['source']='ONE CURRENT wrist-green pixel ray at an uncertain temporal plane height, constrained by a PRIOR high-green mask under CURRENT fixed-metal contour/source consistency. Its high projection may be occluded; NOT current two-view material visibility, verified 3D correspondence or object pose.'
         representative['current_high_material_visibility_required']=False

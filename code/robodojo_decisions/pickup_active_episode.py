@@ -601,6 +601,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     "method_refreshes": 0, "native_result": native_result,
                     "trace": str(path)}
     active_stage_rules = dict(initial_refresh.get("stage_rules", plan["stages"]))
+    material_feature_reference=None
     for turn in range(max_decisions):
         if obs["rollout_finished"]:
             status = "native_terminal"
@@ -619,6 +620,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                         if trace and 'post_action' in trace[-1] else
                         float(obs['current_eef']['right']['gripper_opening_command'])<.5)
         if os.environ.get('ROBODOJO_PICKUP_CAPTURE_RGB_LOOP')=='1' and command_closed:
+            material_feature_reference=None
+            obs.pop('material_control_reference',None)
             from pickup_capture_rgb import step as capture_rgb_step
             if capture_robot_reference_z is None:
                 capture_robot_reference_z=float(obs['current_eef']['right']['position'][2])
@@ -782,6 +785,14 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 green_plane_errors.append(f"ref{reference['step_id']}: {error}")
         material = None
         material_error = None
+        if material_feature_reference is not None:
+            from pickup_fixed_blade_anchor import check as check_fixed_material_source
+            anchor_obs,anchor_point=material_feature_reference
+            fixed_check=check_fixed_material_source(anchor_obs,obs)
+            obs['material_control_reference']={'episode_id':obs['episode_id'],
+                'reference_step_id':anchor_obs['step_id'],
+                'camera_derived_world_point_m':anchor_point,
+                'current_fixed_source_check':fixed_check}
         if (temporal is not None and
                 temporal.get("accepted_sift_feature_count", 0) >= 3):
             metal_height_cache = (temporal, obs)
@@ -806,6 +817,18 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     obs, None, green_plane=green_plane)
             except ValueError as error:
                 material_error = "Independent current RGB plane failed: " + str(error)
+        if (os.environ.get('ROBODOJO_PICKUP_PERSISTENT_MATERIAL_REFERENCE')=='1' and
+                material_feature_reference is None and material is not None and not gripper_closed and
+                green_plane is not None and green_plane.get('contact_precision_eligible')):
+            feature=material['representative_material_point']
+            axis=eef_transform(obs['current_eef']['right'])[:3,0]
+            angle=np.degrees(np.arccos(np.clip(axis@[0,0,-1],-1,1)))
+            if np.linalg.norm(feature['nearest_opposing_surface_midpoint_delta_xyz_mm'])<=35 and angle<=10:
+                material_feature_reference=(obs,feature['estimated_world_xyz_m'])
+        if material_feature_reference is not None and material is None:
+            record={'turn':turn,'step_id':obs['step_id'],'stage':'material_reference_reacquisition',
+                'material_error':material_error,'status':'current_material_reference_unavailable'}
+            trace.append(record);status=record['status'];native_result=tools.finish(status);break
         margin = hull["right_wrist_mask_image_edge_margin_px"]
         nearest = hull["pad_to_visual_support_distance_mm_q05_q50_q95"][0]
         near_refresh = None
