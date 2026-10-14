@@ -33,6 +33,16 @@ def load_authored(path,task,data_root):
     stages={k:json.dumps(v,ensure_ascii=False) if isinstance(v,dict) else v for k,v in original['stages'].items()}
     if stages!=plan['stages'] or original['visual_method']!=plan['visual_method'] or original['initial_stage']!=plan['initial_stage']:
         raise ValueError('Authored semantic method differs from provider output')
+    if plan['initial_stage'] not in stages:
+        # A provider may prefix its initial-stage reference while the map uses
+        # the canonical key. Resolve only this explicit, unique label alias;
+        # never invent a stage or alter the provider's observational rules.
+        aliases=[key for key in stages if plan['initial_stage']=='current_rgb_'+key]
+        if len(aliases)!=1:
+            raise ValueError('Planner initial stage does not reference a defined stage')
+        plan['initial_stage_label_normalization']={'provider_label':plan['initial_stage'],
+            'canonical_key':aliases[0],'rule':'Exact current_rgb_ prefix alias; semantic stages unchanged'}
+        plan['initial_stage']=aliases[0]
     return plan
 
 
@@ -189,10 +199,31 @@ def run(tools, obs, model, output, max_decisions, deadline):
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])
         stage_data={k:v for k,v in data.items() if k!='complete_programs'}
-        phase=model.query(obs,[choice('observable_stage','Classify the CURRENT observable working stage under planner entry/EXIT rules; no motion is requested by this perception-only question.',plan['stages'])],
+        perception_questions=[choice('observable_stage','Classify the CURRENT observable working stage under planner entry/EXIT rules; no motion is requested by this perception-only question.',plan['stages'])]
+        bind_roles=os.environ.get('ROBODOJO_RGB_STAGE_ROLE_BINDING')=='1' and obs['task']=='stack_blocks'
+        if bind_roles:
+            identities={'pale_wood_block':'Current pale yellow wood-textured block.',
+                        'purple_block':'Current purple textured block.',
+                        'white_block':'Current white textured block.',
+                        'unknown':'Current identity or role is unsupported.'}
+            perception_questions.extend([
+                choice('source_role','Independently inspect CURRENT three RGB and task: identify the source block to be placed next. This is semantic identity selection, no robot action or permission.',identities),
+                choice('receiver_role','Independently inspect CURRENT three RGB and task: identify the supported base/receiver for the next placement. Do not use the source question answer; choose unknown if no coherent role can be grounded.',identities)])
+        phase=model.query(obs,perception_questions,
                           json.dumps(stage_data,ensure_ascii=False),f'rgb_pose_stage_{turn:03d}_step{step:03d}',extra_images=images)
         queries+=1;stage=phase['observable_stage']
         data['current_stage']=stage;data['current_stage_rule']=plan['stages'][stage]
+        if bind_roles:
+            data['current_semantic_roles']={k:phase[k] for k in ['source_role','receiver_role']}
+            roles_valid=(phase['source_role']!='unknown' and phase['receiver_role']!='unknown'
+                         and phase['source_role']!=phase['receiver_role'])
+            if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1' and phase['source_role']!='pale_wood_block':
+                roles_valid=False
+                data['geometry_role_mismatch']='This optional processor supports only the current pale-material source; no geometry/action proposal is transferred to another source.'
+            if not roles_valid:
+                programs={};data['complete_programs']={}
+                options={'STOP_current_evidence_insufficient':options['STOP_current_evidence_insufficient']}
+            data['semantic_role_binding_valid']=roles_valid
         notes={name:(memory/name).read_text() for name in ['global.md',obs['task']+'.md']}
         second=output/f'raw_experience_action_step_{step:03d}';second.mkdir()
         for name,text in notes.items():(second/name).write_text(text)
