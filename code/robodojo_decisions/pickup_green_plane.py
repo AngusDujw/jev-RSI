@@ -18,7 +18,8 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
     partial_mode=os.environ.get('ROBODOJO_PICKUP_PARTIAL_HIGH_SOURCE')=='1'
     low_high_visibility=bool(partial_mode and high.sum()<150)
     wrist = _green_mask(paths['cam_right_wrist'], 'cam_right_wrist')
-    if high.sum() < 80 or wrist.sum() < 100:
+    minimum_high=30 if partial_mode and os.environ.get('ROBODOJO_PICKUP_FIXED_BLADE_ANCHOR')=='1' else 80
+    if high.sum() < minimum_high or wrist.sum() < 100:
         raise ValueError('Insufficient green pixels for plane fit')
     fit_region = np.ones(wrist.shape, dtype=bool)
     if wrist_fit_region is not None:
@@ -47,7 +48,12 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
             chroma_old = old_rgb / np.maximum(old_rgb.sum(axis=2, keepdims=True), 1)
             chroma_new = new_rgb / np.maximum(new_rgb.sum(axis=2, keepdims=True), 1)
             chroma_p95 = (float(np.quantile(np.linalg.norm(chroma_old[shared]-chroma_new[shared],axis=1),.95))
-                          if shared.sum() >= 80 else 1.0)
+                          if shared.sum() >= (20 if minimum_high==30 else 80) else 1.0)
+            anchor=None
+            if partial_mode and os.environ.get('ROBODOJO_PICKUP_FIXED_BLADE_ANCHOR')=='1':
+                from pickup_fixed_blade_anchor import check
+                anchor=check(reference,obs)
+            anchored=bool(anchor and anchor['passed'])
             subset_fraction=static_check['current_green_pixels_present_in_reference_fraction']
             mask_radius=0
             if os.environ.get('ROBODOJO_PICKUP_MASK_MATCH_RADIUS2') == '1':
@@ -56,10 +62,10 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
                 mask_radius=2
             coarse_occlusion = bool(allow_coarse_occlusion and
                 obs['step_id']-reference['step_id'] <= 60 and
-                static_check['area_ratio'] >= (.20 if partial_mode else .5) and
+                (anchored or static_check['area_ratio'] >= (.20 if partial_mode else .5)) and
                 subset_fraction >= .98 and
                 (partial_mode or static_check['centroid_change_px'] <= 4) and
-                static_check['shared_green_rgb_abs_change_p95'] <= 40 and
+                (anchored or static_check['shared_green_rgb_abs_change_p95'] <= 40) and
                 chroma_p95 <= .08)
             if not coarse_occlusion:
                 raise ValueError('Current high RGB does not support static source')
@@ -67,6 +73,7 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
                 declared_fixed_view_mask_match_radius_px=mask_radius,
                 current_pixels_inside_reference_with_declared_radius_fraction=round(subset_fraction,4),
                 partial_subset_directional_mode=partial_mode,
+                proposed_fixed_metal_source_anchor=anchor,
                 shared_green_chromaticity_change_p95=round(chroma_p95,4),
                 limitation='Current visible fixed-high green subset and chromaticity support only a coarse stationary-source hypothesis under occlusion/shadow; not strict stationarity/contact evidence.')
         ref_paths = {r['camera']: Path(r['path']) for r in reference['images']}
@@ -148,6 +155,7 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
             'declared_pixel_sensitivity_limit_mm': max_pixel_p95_mm,
             'source': ('Same-episode earlier/current right-wrist green silhouettes, CURRENT fixed-high static-source check, public K/T; horizontal plane homography' if reference is not None else 'CURRENT fixed-high/right green silhouettes, public K/T; horizontal plane homography'),
             'reference_step_id': reference['step_id'] if reference is not None else obs['step_id'],
+            'reference_high_mask_image_path':str(ref_paths['cam_high']) if reference is not None else None,
             'current_fixed_high_static_check': static_check,
             'current_step_id': obs['step_id'], 'estimated_green_plane_height_m': round(best[0], 6),
             'declared_green_height_halfwidth_m': round(halfwidth, 6),
