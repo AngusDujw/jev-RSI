@@ -284,3 +284,9 @@
 - 【User】【2026-10-14 16:23】[intent] 用户替换AGENTS指令，新增机器人项目GPT输入全部英文；保持无特权、Jev推进及既有80次授权。运行时GPT/DeepSeek0，现有模型请求英文审计继续。
 - 【Agent】【2026-10-14 16:24】[result] v36/v37/v14/v15原始备份本机与5880逐文件SHA256聚合一致：757/787/411/581文件，digest9d88d0d8/447f5418/dee230ac/9c28470e。Discussion引用旧研究笔记已复读：平滑单阶段成本结论不能推广为完整操作成功，当前仍按物理接触/实体/阶段机制实测，不改形式化假设。
 - 【Agent】【2026-10-14 16:26】[op] Discussion回写EXP186/188/189/190的新证据与下一单因素比较；仅支持阶段机制，不将平滑单阶段理论推广到完整操作或自行关闭议题。
+- 【Agent】【2026-10-14 16:28】[run] Goal1296第60/80次8e90d266同init11，rear_insert/原位orient保持、仅compact4mm及自体几何净空门下0.12rad；5880-jump前台session45142。
+- 【Agent】【2026-10-14 16:32】[result] Goal1202第60次176Jev/590步未完成：fresh lower时holding仍passed、包含0.957/中心通过，但实际碗底floor距50.13mm而目标25mm、rim距-6.74mm；自体TCP到达不代表源高度到达，Jev按门合理retry，剩余预算不足第二次。新增floor-close共享鲜视觉XYZ最多3次15mm修正，阶段仍Jev推进，AST/diff通过。
+- 【Agent】【2026-10-14 16:33】[op] d09b320b修复floor-close新鲜偏移反馈：最多3次RGB-D到达复核、每次XYZ最多15mm，并独立于rim开关计数/标记；AST/diff通过。1296第60次首段lower的Jev读取超时，27calls/126步、未触达新二段候选；基础设施崩溃不计新路径证伪，次数保留。
+- 【Agent】【2026-10-14 16:34】[run] Goal1202第61/80次d09b320b同init3，floor-close/撤离等保持，只新增最多3次 fresh视觉XYZ15mm反馈；5880-jump前台session12767。
+- 【Agent】【2026-10-14 16:37】[op] 补全EXP191低位目标到达但源高度未达、EXP192首段Jev读取超时Crashed，严格lint通过。推盘审计发现最后请求没有response，原auditor未支持未回答请求，需修正报告未回答而不是冒称0违规完整问答。
+- 【Agent】【2026-10-14 16:38】[op] 修复推盘审计对服务断连的处理：请求仍做英文/hash/禁字段检查，未答复只能无实际branch，独立统计answered/unanswered。v16为27请求/26回答/26动作、1未回答、2边/0合同违规；v15正常109回答/109动作/6边保持。AST/diff及实际正负记录验证通过。
