@@ -879,8 +879,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
             rot = Rotation.from_matrix(Rgoal@Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
             oriented = bool(np.max(abs(rot)) < .03)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
+            lower_near_contact = bool(rec.cfg.get('drawer_contact_reobserve') and stage == 'lower' and drawer_lower_target is not None and not drawer_lower_verified and rim_drop_rechecks < 3 and oriented and np.max(np.abs(error)) < .015 and stalls >= 2)
             if (stage == 'lower' and drawer_lower_target is not None and
-                    arrived and not drawer_lower_verified):
+                    (arrived or lower_near_contact) and not drawer_lower_verified):
                 check_hold(use_projection=True)
                 drawer_lower_verified = True
                 if rec.cfg.get('rim_relative_drop') or rec.cfg.get('drawer_floor_drop'):
@@ -888,6 +889,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 rec.event(dict(kind=('drawer_visible_floor_drop_recheck' if rec.cfg.get('drawer_floor_drop') else 'drawer_visible_rim_drop_recheck' if
                     rec.cfg.get('rim_relative_drop') else 'drawer_visible_insert_recheck'),
                     native_tick=ticks, holding_status=holding['status'],
+                    own_pose_arrived=arrived, check_trigger='blocked_near_target' if lower_near_contact and not arrived else 'pose_arrival',
                     source='Fresh public RGB-D after own closed-gripper height adjustment'))
                 continue
             if stage == 'test_lift' and arrived and holding['status'] in ('not_checked_yet', 'ambiguous'):
