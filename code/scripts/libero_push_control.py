@@ -400,7 +400,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             obs['robot0_eef_quat']).as_matrix(),
             yaw_flip=bool(rim_second and rec.cfg.get('plate_second_yaw_flip')),
             observed_rear_extent_m=rear_extent,
-            rear_standoff_m=(.015 if rim_second and rec.cfg.get('plate_second_rear_insert') else
+            rear_standoff_m=((.004 if rec.cfg.get('plate_rear_compact') else .015) if rim_second and rec.cfg.get('plate_second_rear_insert') else
                             0. if rim_second else standoff),
             hover_clearance_m=.14 if rim_second else .20,
             preserve_downward=(not visible_goal_plate or
@@ -626,7 +626,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if rear_insert and stage == 'approach':
                 complete = bool(gripper == 1 and rear_clearance >= .003 and
                     rear_low_z >= float(source['high'][2])+.10 and
-                    np.max(np.abs(error[:2])) < .025 and np.max(np.abs(rot)) < .06)
+                    np.max(np.abs(error[:2])) < .025 and np.max(np.abs(rot)) < (.12 if rec.cfg.get('plate_rear_compact') else .06))
             if rear_insert and stage == 'lower':
                 complete = bool(gripper == 1 and rear_clearance >= .003 and low_ready and
                     np.max(np.abs(error[:2])) < .025 and np.max(np.abs(rot)) < .12)
