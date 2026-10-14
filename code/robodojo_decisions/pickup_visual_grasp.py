@@ -18,6 +18,8 @@ def propose(obs,material,orientation):
     tighter=os.environ.get('ROBODOJO_PICKUP_TIGHTER_GRASP_ALIGNMENT')=='1'
     max_error,max_angle=(12,10) if tighter else (35,30)
     if tighter and os.environ.get('ROBODOJO_PICKUP_CONTACT_POSITIONING_ATTEMPT')=='1':max_error=5
+    if os.environ.get('ROBODOJO_PICKUP_CLOSE_ERROR_3MM')=='1':
+        max_error=min(max_error,3)
     interval=material['representative_material_point'].get('same_named_pixel_height_hypothesis_region_error_xyz_mm',{})
     all_below=bool(tighter and interval and interval['q95'][2]<-5)
     if norm>max_error or angle>max_angle or all_below:
@@ -38,6 +40,7 @@ def propose(obs,material,orientation):
         'current_thick_green_pixels_between_projected_faces':count,
         'public_projected_band_xyxy':[left,top,right,bottom],
         'declared_projection_margin_px':12,'uncertain_error_norm_mm':round(norm,3),
+        'maximum_attempt_error_mm':max_error,
         'robot_axis_angle_deg':angle,
         'scope':'SIMULATED qualitative grasp ATTEMPT hypothesis. Current thick green pixels are between projected PUBLIC faces in 2D, not verified true opposing-pad enclosure. Depth remains uncertain; this does NOT pass or replace the strict metric precision/3D closing-volume certificate. Luna must inspect actual current fingers/material and may choose further alignment or STOP. Closing never establishes holding; require next RGB and independent source-following.'}
     if count<100:return None,evidence
