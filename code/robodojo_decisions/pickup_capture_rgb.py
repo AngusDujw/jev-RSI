@@ -105,17 +105,27 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
         try:
             extra,facts=pad_crop(obs,output);images.append(extra);data['current_measured_public_pad_crop']=facts
         except ValueError as error:data['current_measured_public_pad_crop']={'available':False,'reason':str(error)}
+    pretest_enclosure=(os.environ.get('ROBODOJO_PICKUP_PRETEST_ENCLOSURE_DIAGNOSTIC')=='1'
+                      and test_once and not test_motion_executed and not failure_review)
+    if pretest_enclosure:
+        data['first_test_evidence_role']='No informative lift TEST has executed. Unknown holding/following is EXPECTED, not by itself a contradiction. Review CURRENT plausible enclosure and the short upward robot corridor to acquire following evidence; never assert following before its first informative test. A visibly empty/outside source, unsupported enclosure/identity or unsupported corridor still permits STOP.'
+    stop_description=('Execute none for unsupported CURRENT source/enclosure/corridor or a concrete robot contradiction; unknown FOLLOWING before the first evidence TEST alone is not a contradiction.'
+                      if pretest_enclosure else 'Execute none; current evidence insufficient or contradictory.')
     questions=[choice('source_identity','Is the SAME mint-green scissors currently identifiable in any CURRENT RGB, including material within the true fingers? Historical images alone cannot establish current visibility.',
         {'visible_mint_green_scissors':'Source identifiable NOW.','source_identity_unavailable':'Current source identity unavailable.'}),
-        choice('full_program_decision',data['contract'],{**descriptions,'stop_program_unsupported':'Execute none; current evidence insufficient or contradictory.'})]
+        choice('full_program_decision',data['contract'],{**descriptions,'stop_program_unsupported':stop_description})]
     if os.environ.get('ROBODOJO_PICKUP_CAPTURE_EVIDENCE_DIAGNOSTIC')=='1':
+        evidence_options={
+             ('plausible_current_enclosure_following_not_tested' if pretest_enclosure else 'source_tool_following_supported'):
+             ('Current source appears enclosed by actual visible fingers; FOLLOWING has not yet been tested. This is only a plausible enclosure hypothesis, not holding evidence.' if pretest_enclosure else
+              'Current source/fingers and actual image motion support a following hypothesis, not a contact certificate.'),
+             'visible_detachment_or_empty_fingers':'Current RGB supports source left behind, slipping or visibly empty fingers.',
+             'source_relation_ambiguous':'Current source/tool association or enclosure is ambiguous; distinguish this from following merely not yet being tested.',
+             'visible_corridor_or_robot_contradiction':'The candidate corridor or robot evidence has a concrete current contradiction.',
+             'other_evidence_insufficient':'Another specific evidence requirement remains unsupported.'}
         questions.append(choice('capture_evidence_assessment',
             'Independently classify the DOMINANT CURRENT visual/robot evidence. Do not reference another answer. This diagnostic NEVER authorizes motion or overrides STOP; no private contact/holding truth is available.',
-            {'source_tool_following_supported':'Current source/fingers and actual image motion support a following hypothesis, not a contact certificate.',
-             'visible_detachment_or_empty_fingers':'Current RGB supports source left behind, slipping or visibly empty fingers.',
-             'source_relation_ambiguous':'Current source/tool association or enclosure is ambiguous.',
-             'visible_corridor_or_robot_contradiction':'The candidate corridor or robot evidence has a concrete current contradiction.',
-             'other_evidence_insufficient':'Another specific evidence requirement remains unsupported.'}))
+            evidence_options))
     try:answer=model.query(obs,questions,json.dumps(data,ensure_ascii=False),f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",extra_images=images)
     except ValueError as error:
         record.update(status='capture_decision_invalid_or_refused',decision_decode_error=str(error));return None,record
