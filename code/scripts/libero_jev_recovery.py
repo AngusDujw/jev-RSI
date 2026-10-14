@@ -850,9 +850,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     arrived and not drawer_lower_verified):
                 check_hold(use_projection=True)
                 drawer_lower_verified = True
-                if rec.cfg.get('rim_relative_drop'):
+                if rec.cfg.get('rim_relative_drop') or rec.cfg.get('drawer_floor_drop'):
                     rim_drop_rechecks += 1
-                rec.event(dict(kind=('drawer_visible_rim_drop_recheck' if
+                rec.event(dict(kind=('drawer_visible_floor_drop_recheck' if rec.cfg.get('drawer_floor_drop') else 'drawer_visible_rim_drop_recheck' if
                     rec.cfg.get('rim_relative_drop') else 'drawer_visible_insert_recheck'),
                     native_tick=ticks, holding_status=holding['status'],
                     source='Fresh public RGB-D after own closed-gripper height adjustment'))
