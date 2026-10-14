@@ -385,6 +385,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
     stalls = 0
     reobservations = 0
     history = []
+    clearance_orientation_target = None
 
     def views():
         return {c: dict(rgb=np.ascontiguousarray(obs[c+'_image'][::-1]),
@@ -474,7 +475,10 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             current = obs['robot0_eef_pos'].copy()
             rear_insert = bool(visible_goal_plate and segment >= 2 and
                                rec.cfg.get('plate_second_rear_insert'))
-            target = dict(prepare=current, approach=approach, lower=lower,
+            orient_clearance = bool(rear_insert and rec.cfg.get('plate_second_orient_clearance'))
+            if orient_clearance and stage == 'orient_clearance' and clearance_orientation_target is None:
+                clearance_orientation_target = current.copy()
+            target = dict(orient_clearance=(clearance_orientation_target if clearance_orientation_target is not None else current), prepare=current, approach=approach, lower=lower,
                           side_contact=contact, push=push_end, retreat=retreat)[stage]
             stage_orientation = orientation
             rear_path = None
@@ -617,6 +621,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     not front_relation_passed and not residual_correction_available):
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
+            if orient_clearance and stage == 'orient_clearance':
+                complete = bool(arrived and np.max(np.abs(rot)) < .06 and gripper == 1)
             if rear_insert and stage == 'approach':
                 complete = bool(gripper == 1 and rear_clearance >= .003 and
                     rear_low_z >= float(source['high'][2])+.10 and
@@ -651,8 +657,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                   front_relation_passed)) if visible_goal_plate
                             else arrived)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
-            phase_order = ('prepare', 'approach', 'lower', 'side_contact', 'push', 'retreat') if rear_insert else PHASES
-            next_stage = ('approach' if stage == 'retreat' and visible_goal_plate
+            phase_order = (('prepare', 'orient_clearance', 'approach', 'lower', 'side_contact', 'push', 'retreat') if orient_clearance else ('prepare', 'approach', 'lower', 'side_contact', 'push', 'retreat')) if rear_insert else PHASES
+            next_stage = (('orient_clearance' if rec.cfg.get('plate_second_orient_clearance') else 'approach') if stage == 'retreat' and visible_goal_plate
                           and segment == 1 else 'finish_attempt' if stage == 'retreat'
                           else phase_order[phase_order.index(stage)+1])
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
@@ -711,6 +717,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'The supplied Z and wrist goals then preserve the current own pose; '
                     'select planar directions toward the supplied endpoint. This is a '
                     'contact-compatible trial only; later fresh RGB-D verifies object movement.')
+            if orient_clearance:
+                contracts['orient_clearance'] = 'Hold the measured clearance TCP location and align the downward pusher orientation before lateral approach. Advance only after own position arrival and rotation residual below 0.06 rad with closed fingers. No source contact is claimed.'
             if rear_insert:
                 contracts['approach'] = 'Move to the rear hover. Advance only when own fingers are at least 3 mm behind the public trailing boundary and 100 mm above the visible plate, with bounded own pose.'
                 contracts['lower'] = 'Lower outside the visible plate. If rear clearance is lost, follow the temporary raised goal to restore it. Advance only with rear clearance >=3 mm and own finger bottom inside the measured side-contact height band.'
