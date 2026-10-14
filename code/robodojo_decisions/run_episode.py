@@ -512,6 +512,9 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
 
 
 def main() -> None:
+    if (os.environ.get('ROBODOJO_DECISION_TRANSPORT')=='ssh_stdio' or
+            os.environ.get('ROBODOJO_PLANNER_TRANSPORT')=='ssh_stdio'):
+        os.environ['ROBODOJO_STDIO_RELAY_PARENT_PID']=str(os.getpid())
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task", choices=TASKS, required=True)
     parser.add_argument("--layout", type=int, default=0)
@@ -615,7 +618,8 @@ def main() -> None:
             if (key.startswith("ROBODOJO_PICKUP_") and value in ("0", "1")) or key in (
                 "ROBODOJO_MEASURED_GRIPPER_STATE", "ROBODOJO_PUBLIC_CAMERA_CALIBRATION",
                 "ROBODOJO_DECISION_TRANSPORT", "ROBODOJO_PLANNER_LONG_REQUEST",
-                "ROBODOJO_PLANNER_REQUEST_TIMEOUT_SECONDS", "ROBODOJO_RGB_STAGE_TASK_GENERAL_TEXT_PLAN")},
+                "ROBODOJO_PLANNER_REQUEST_TIMEOUT_SECONDS", "ROBODOJO_RGB_STAGE_TASK_GENERAL_TEXT_PLAN",
+                "ROBODOJO_PLANNER_TRANSPORT")},
         "input_contract": "fresh three RGB plus labelled current derived crops, public K/T and robot URDF/STL, measured robot state, uncertain camera-derived geometry and model-facing experience; no true object pose, contact or evaluator outcomes"}, indent=2))
     os.environ.update(environment)
     os.environ["ROBODOJO_RPC_PORT"] = str(port)
@@ -623,7 +627,8 @@ def main() -> None:
     with simlog.open("w") as logfile:
         deadline = time.monotonic() + args.max_wall_seconds
         process = subprocess.Popen(command, cwd=output / "native_runtime", env=environment,
-                                   stdout=logfile, stderr=subprocess.STDOUT)
+                                   stdout=logfile, stderr=subprocess.STDOUT,
+                                   stdin=(subprocess.DEVNULL if os.environ.get('ROBODOJO_STDIO_RELAY_PARENT_PID') else None))
         try:
             wait_ready(process, simlog, min(1200, args.max_wall_seconds))
             result = run_control(args.task, args.layout, output, args.key_file, plan,

@@ -124,8 +124,12 @@ def request(payload: dict, configuration: dict) -> dict:
     for attempt in range(attempts):
         call = urllib.request.Request(url, data=body, headers=header, method="POST")
         try:
-            with urllib.request.urlopen(call, timeout=timeout) as handle:
-                response = json.load(handle)
+            if os.environ.get('ROBODOJO_PLANNER_TRANSPORT')=='ssh_stdio':
+                from decision_stdio import request as stdio_request
+                response=stdio_request(payload,timeout,service='planner')
+            else:
+                with urllib.request.urlopen(call, timeout=timeout) as handle:
+                    response = json.load(handle)
             output_text(response)
             return response
         except PlannerRetryable as error:

@@ -459,7 +459,10 @@ class DecisionClient:
         transient_errors = []
         for attempt in range(MAX_QUERY_ATTEMPTS):
             try:
-                if os.environ.get("ROBODOJO_DECISION_TRANSPORT") == "curl_socks":
+                if os.environ.get("ROBODOJO_DECISION_TRANSPORT") == "ssh_stdio":
+                    from decision_stdio import request as stdio_request
+                    response = stdio_request(payload, self.timeout, service='luna')
+                elif os.environ.get("ROBODOJO_DECISION_TRANSPORT") == "curl_socks":
                     response = curl_socks_decision(payload, key, self.timeout)
                 else:
                     with urllib.request.urlopen(request, timeout=self.timeout) as handle:
