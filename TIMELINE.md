@@ -124,6 +124,7 @@ graph LR
     T_2026W42_016["📊 libero-goal-ten<br/>Goal1296放宽第二段高位自身悬停门后…"]:::experiment
     T_2026W42_017["📊 libero-goal-ten<br/>Goal1098正面双指夹持+可见伸出/自…"]:::experiment
     T_2026W42_018["📊 libero-goal-ten<br/>Goal1098固定控制版未见init6–…"]:::experiment
+    T_2026W42_019["📊 libero-goal-ten<br/>Goal1202可见中心对齐仍官方失败：地…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -211,6 +212,7 @@ graph LR
   T_2026W42_015 --> T_2026W42_016
   T_2026W42_016 --> T_2026W42_017
   T_2026W42_017 --> T_2026W42_018
+  T_2026W42_018 --> T_2026W42_019
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -323,6 +325,7 @@ graph LR
 | `T-2026W42-016` | 2026-10-14 | experiment | libero-goal-ten | Goal1296放宽第二段高位自身悬停门后首次进入lower，但低位X仍差10.5mm且盘沿未推动；50次上限耗尽 | `EXP-2026W42-162` | - |
 | `T-2026W42-017` | 2026-10-14 | experiment | libero-goal-ten | Goal1098正面双指夹持+可见伸出/自有受阻门首次双终局成功；十Goal各有至少一次成功，仍仅七项固定未见初态5/5 | `EXP-2026W42-168` | - |
 | `T-2026W42-018` | 2026-10-14 | experiment | libero-goal-ten | Goal1098固定控制版未见init6–10联合成功5/5；十项中8项达到冻结五初态复测标准 | `EXP-2026W42-169` | - |
+| `T-2026W42-019` | 2026-10-14 | experiment | libero-goal-ten | Goal1202可见中心对齐仍官方失败：地板深度50mm不足容纳80mm碗，需联合设计充分开柜与释放包含门 | `EXP-2026W42-171` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
