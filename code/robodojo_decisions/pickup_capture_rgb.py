@@ -1,0 +1,69 @@
+"""Capture/recovery feedback from current RGB and robot state, without static-source geometry."""
+import hashlib
+import json
+import numpy as np
+from controller import choice
+from pickup_rgb_axes import _targets
+from robot_path_preview import preview
+
+
+def step(tools,obs,model,output,experience,turn,reference_z,previous):
+    record={'turn':turn,'step_id':obs['step_id'],'stage':'capture_and_following_review'}
+    rise=float(obs['current_eef']['right']['position'][2]-reference_z)
+    targets={};paths={}
+    requests=[('open_visibly_empty_hand',0,False)]
+    if rise<.25:requests += [('closed_lift_test_20mm',.020,True),('closed_lift_50mm',.050,True)]
+    if rise>=.12:requests += [('hold_visibly_captured_source',0,True)]
+    for name,dz,closed in requests:
+        target=_targets(obs,'z',1,dz);target['right']['gripper_closed']=closed
+        check=preview(obs,target['right'],None,5)
+        if check['public_path_gate'] and check['native_eef_single_action_legal']:
+            targets[name]=target;paths[name]=check
+    if not targets:
+        record['status']='capture_no_public_program';return None,record
+    directory=output/f"capture_experience_step_{obs['step_id']:03d}";directory.mkdir(exist_ok=False)
+    hashes={}
+    for name,text in experience.items():
+        (directory/name).write_text(text);hashes[name]=hashlib.sha256(text.encode()).hexdigest()
+    task_lines=[line for line in experience['general_pickup.md'].splitlines() if line.startswith('- ') and any(k in line for k in ('闭爪','抓持','随动','EMPTY','抬升'))][-4:]
+    programs={name:{'target':target,'right_world_delta_xyz_mm':[0,0,round((target['right']['position'][2]-obs['current_eef']['right']['position'][2])*1000,3)],
+        'right_gripper':'CLOSED' if target['right']['gripper_closed'] else 'OPEN','physical_steps':5,'public_robot_five_step_gate':True}
+        for name,target in targets.items()}
+    data={'task':obs['task'],'instruction':obs['instruction'],'step_id':obs['step_id'],
+        'current_stage':'capture_and_following_review','current_measured_eef':obs['current_eef'],
+        'current_robot_joints':obs['current_state'],'measured_gripper_joint_state':obs.get('measured_gripper_joint_state'),
+        'robot_LINK6_rise_since_close_mm':round(rise*1000,3),
+        'source_height_and_holding':'UNKNOWN; robot rise is NOT measured object height',
+        'complete_program_alternatives':programs,'memory_sha256':hashes,'memory_snapshot_directory':str(directory),
+        'experience_global_original':experience['global.md'],'task_experience_selected_original_lines':task_lines,
+        'contract':'This is native SIMULATION feedback after a CLOSE command, not proof of contact/holding. Judge CURRENT actual source material and fingers. A CLOSED +Z20mm is a small visible-following TEST; +Z50mm is a separate full lift. Select a lift only when current source enclosure/short corridor supports it, then compare the SAME source in fresh fixed-high and wrist images. OPEN at held poses is ONLY for visibly EMPTY fingers/source left behind, never release a verified held source. If neither lift/open/hold is supported choose STOP. HOLD only maintains a visibly captured, sufficiently elevated source through native horizon; native task result is never presumed. All actions are mutually exclusive complete five-step programs, left arm/orientation held, world Z up. No static object-plane fit is required for a possibly moving captured source.'}
+    images=[]
+    if previous is not None:
+        data['previous_public_robot_state_for_feature_change']={'step_id':previous['step_id'],'eef':previous['current_eef']}
+        images=[{'camera':f"PREVIOUS same-episode {row['camera']} step{previous['step_id']} for CURRENT feature-change comparison, NOT current contact",'path':row['path']}
+            for row in previous['images'] if row['camera'] in ('cam_high','cam_right_wrist')]
+    descriptions={name:('OPEN only visibly empty fingers at held poses.' if name.startswith('open_') else
+        'HOLD CLOSED at exact current poses only with current visible capture/elevation.' if name.startswith('hold_') else
+        f"One complete CLOSED lift by world Z+{20 if '20mm' in name else 50}mm, then verify actual source-following.") for name in targets}
+    questions=[choice('source_identity','Is the SAME mint-green scissors currently identifiable in any CURRENT RGB, including material within the true fingers? Historical images alone cannot establish current visibility.',
+        {'visible_mint_green_scissors':'Source identifiable NOW.','source_identity_unavailable':'Current source identity unavailable.'}),
+        choice('full_program_decision',data['contract'],{**descriptions,'stop_program_unsupported':'Execute none; current evidence insufficient or contradictory.'})]
+    try:answer=model.query(obs,questions,json.dumps(data,ensure_ascii=False),f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",extra_images=images)
+    except ValueError as error:
+        record.update(status='capture_decision_invalid_or_refused',decision_decode_error=str(error));return None,record
+    selected=answer['full_program_decision'];record['luna_choice']=selected;record['luna_source_identity']=answer['source_identity']
+    if selected not in targets or answer['source_identity']!='visible_mint_green_scissors':
+        record['status']='capture_rgb_luna_stopped';return None,record
+    target=targets[selected];first=tools._rpc('eef_joint_target',targets=target)
+    if first.get('physical_steps')!=0 or len(first.get('action',[]))!=14:raise ValueError('Capture first IK must be read-only')
+    verified=preview(obs,target['right'],first['action'][7:13],5)
+    record['native_first_IK']=first;record['public_five_step_path']=verified
+    if not verified['model_path_gate']:
+        record['status']='capture_native_public_path_rejected';return None,record
+    import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
+    action={'request_id':obs['request_id'],'mode':'eef','steps':5,'reason':'du Luna current-RGB capture/following feedback','target':target}
+    native.validate_action(action,tools.request);call=tools.next_call();call.pop('tool');call['response']=action;after=tools.act(**call)
+    error=float(np.linalg.norm(np.asarray(after['current_eef']['right']['position'])-np.asarray(target['right']['position'])))
+    record['post_action']={'action':action,'new_step_id':after['step_id'],'measured_right_LINK6_position_residual_m':error}
+    record['status']='capture_reobserve' if error<=.002 else 'capture_tracking_incomplete'
+    return after,record

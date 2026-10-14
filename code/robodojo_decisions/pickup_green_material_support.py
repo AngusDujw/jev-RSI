@@ -8,6 +8,7 @@ simulator object pose. No reward, contact, or privileged scene fields enter.
 from __future__ import annotations
 
 from pathlib import Path
+import os
 
 import numpy as np
 from trimesh.triangles import closest_point
@@ -83,6 +84,17 @@ def build(observation: dict, temporal_metal: dict | None,
                    for row in observation["images"]}
     wrist = _green_mask(image_paths["cam_right_wrist"], "cam_right_wrist")
     high = _green_mask(image_paths["cam_high"], "cam_high")
+    prior_high_support=False
+    if green_plane is not None and os.environ.get('ROBODOJO_PICKUP_ANCHORED_WRIST_SUPPORT')=='1':
+        check=green_plane.get('current_fixed_high_static_check') or {}
+        anchor=check.get('proposed_fixed_metal_source_anchor') or {}
+        prior_path=green_plane.get('reference_high_mask_image_path')
+        if (anchor.get('passed') and prior_path and green_plane.get('coarse_occlusion_hypothesis')
+                and not green_plane.get('contact_precision_eligible')):
+            import cv2
+            high=cv2.dilate(_green_mask(Path(prior_path),'cam_high').astype(np.uint8),
+                            np.ones((5,5),np.uint8))>0
+            prior_high_support=True
     local_region = green_plane.get('current_public_finger_wrist_fit_region_xyxy') if green_plane else None
     if local_region is not None:
         x0,y0,x1,y1 = local_region
@@ -181,10 +193,15 @@ def build(observation: dict, temporal_metal: dict | None,
             for key, q in (('q05', .05), ('q50', .5), ('q95', .95))},
         'localization_hypothesis_sample_count': int(same_ray.sum()),
         'limitations': 'This is a RGB-supported planar/slab point hypothesis, not verified same-point correspondence or true object pose. The paired nearest public surfaces define current reachable face span, not a recommended physical action or observed contact. Same-pixel depth samples are not calibrated confidence bounds. Whole-object quantiles below describe spatial extent and must not be confused with this point localization.'}
+    if prior_high_support:
+        representative['source']='ONE CURRENT wrist-green pixel ray at an uncertain temporal plane height, constrained by a PRIOR high-green mask under CURRENT fixed-metal contour/source consistency. Its high projection may be occluded; NOT current two-view material visibility, verified 3D correspondence or object pose.'
+        representative['current_high_material_visibility_required']=False
+        representative['prior_high_support_image_path']=green_plane['reference_high_mask_image_path']
+        closing_evidence['interpretation']='Conditional CURRENT wrist-green ray/height samples plus PRIOR high mask under explicit fixed-source appearance hypothesis. NOT current two-view material/contact. Strict contact precision remains false; any separate qualitative attempt needs current actual fingers/material RGB review.'
     return {
-        "source": (("Current actual green pixels in high/right RGB, validated current/temporal silhouette plane, public K/T, measured robot and public inner-finger STL; no silver match is claimed" if temporal_metal is None else "Current actual green pixels in high/right RGB, current temporal wrist silhouette plane fit, public K/T, measured robot and public inner-finger STL; silver is separate identity/stability corroboration")
+        "source": (representative['source'] if prior_high_support else (("Current actual green pixels in high/right RGB, validated current/temporal silhouette plane, public K/T, measured robot and public inner-finger STL; no silver match is claimed" if temporal_metal is None else "Current actual green pixels in high/right RGB, current temporal wrist silhouette plane fit, public K/T, measured robot and public inner-finger STL; silver is separate identity/stability corroboration")
                    if green_plane is not None else
-                   "Current actual green pixels in high/right RGB, public K/T, same-episode silver height hypothesis, measured robot and public inner-finger STL"),
+                   "Current actual green pixels in high/right RGB, public K/T, same-episode silver height hypothesis, measured robot and public inner-finger STL")),
         "current_step_id": observation["step_id"],
         "height_reference_step_id": reference_step,
         "height_evidence_mode": (

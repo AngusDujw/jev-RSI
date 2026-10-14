@@ -534,6 +534,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     missing_view_recoveries = 0
     last_valid_view_observation = None
     previous_observation_for_capture = None
+    capture_robot_reference_z = None
     status = "active_episode_budget_incomplete"
     native_result = None
     # Plan from the actual fresh reset RGB before any Luna or physical action.
@@ -613,6 +614,28 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             obs['measured_gripper_joint_state']=measured
             (output / f"robot_gripper_state_step_{obs['step_id']:03d}.json").write_text(
                 json.dumps(measured,ensure_ascii=False,indent=2))
+        command_closed=(trace[-1]['post_action']['action']['target']['right']['gripper_closed']
+                        if trace and 'post_action' in trace[-1] else
+                        float(obs['current_eef']['right']['gripper_opening_command'])<.5)
+        if os.environ.get('ROBODOJO_PICKUP_CAPTURE_RGB_LOOP')=='1' and command_closed:
+            from pickup_capture_rgb import step as capture_rgb_step
+            if capture_robot_reference_z is None:
+                capture_robot_reference_z=float(obs['current_eef']['right']['position'][2])
+            after,capture_record=capture_rgb_step(tools,obs,model,output,experience,turn,
+                capture_robot_reference_z,previous_observation_for_capture)
+            trace.append(capture_record)
+            if after is None:
+                status=capture_record['status'];native_result=tools.finish(status);break
+            after['camera_calibration']=propagate_wrist_calibration(
+                initial_calibration,initial_eef,after['current_eef'],after['step_id'])
+            (output / f"camera_calibration_step_{after['step_id']:03d}.json").write_text(
+                json.dumps(after['camera_calibration'],ensure_ascii=False,indent=2))
+            previous_observation_for_capture=obs;obs=after
+            if not capture_record['post_action']['action']['target']['right']['gripper_closed']:
+                capture_robot_reference_z=None
+            if capture_record['status']!='capture_reobserve':
+                status=capture_record['status'];native_result=tools.finish(status);break
+            continue
         try:
             hull = build_visual_hull(obs)
         except ValueError as error:
@@ -1472,6 +1495,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             rotations += 1
         previous_observation_for_capture=obs
         obs = after
+        if target['right']['gripper_closed'] and not gripper_closed:
+            capture_robot_reference_z=float(after['current_eef']['right']['position'][2])
         if error > tracking_limit:
             status = "robot_tracking_incomplete"
             record["status"] = status
