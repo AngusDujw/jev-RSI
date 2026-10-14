@@ -55,12 +55,14 @@ def require_english_model_input(value, context="model request", _path="$", _dept
 def select_task_experience(text, phase, limit=4):
     """Retrieve literal English lessons without depending on Chinese keywords."""
     require_english_model_input(text, "task experience")
-    tagged=[line for line in text.splitlines() if line.startswith('- [phase:'+phase+'] ')]
-    if tagged:
+    bullets=[line for line in text.splitlines() if line.startswith('- ')]
+    tagged=[line for line in bullets if line.startswith('- [phase:'+phase+'] ')]
+    if any(line.startswith('- [phase:') for line in bullets):
         return tagged[-limit:]
     tokens = {
         "identity": ("identity", "coordinate", "world", "material"),
         "alignment": ("finger", "facet", "pad", "xyz", "tool", "pose", "material point"),
+        "contact": ("finger", "facet", "pad", "xyz", "tool", "pose", "material point"),
         "capture": ("capture", "closed", "closing", "grasp", "holding", "lift", "following", "empty"),
     }[phase]
     return [line for line in text.splitlines()
@@ -73,7 +75,7 @@ def select_planner_experience(text):
     bullets=[line for line in text.splitlines() if line.startswith('- ')]
     if any(line.startswith('- [phase:') for line in bullets):
         chosen=bullets[:1]
-        for phase in ('identity','alignment','capture'):
+        for phase in ('identity','alignment','contact','capture'):
             chosen.extend(select_task_experience(text,phase,limit=1))
     else:
         chosen=bullets[:1]+bullets[-2:]

@@ -347,3 +347,4 @@
 - 【Agent】【2026-10-14 17:40】[op] 定位通用STOP选项把unsupported enclosure无条件施加全部阶段，与FAR OPEN契约冲突。新增可选OPEN_STOP_SCOPE仅移除未来包夹/持物前提，保留当前身份/整手短廊/机器人相机矛盾STOP，CLOSE真实材料指面要求保持。新独立原生验证，不在451旧图重采样。
 - 【Agent】【2026-10-14 17:48】[op] 经验检索改进：显式英文[phase:identity/alignment/capture]优先，避免alignment因为finger/pad关键词误取最近capture失败经验；规划器逐字选每阶段最新条目，保留旧文件回退规则与完整原文快照。新增pickup受限model_versions路径用于冻结对照；6回归与全AST通过。
 - 【Agent】【2026-10-14 17:48】[op] 规划经验manifest仅在实际启用阶段标签检索时记录新policy字段；未带标签的旧响应复审保持原manifest格式，不因新元数据无故失效。
+- 【Agent】【2026-10-14 17:50】[op] 阶段经验补充分离contact与far alignment；显式tag文件缺某阶段时返回无匹配经验，不从其他阶段关键词回退。未tag旧文件contact保持旧alignment字词规则。7个分离/缺失/兼容回归通过；全部原文仍逐次快照。

@@ -52,6 +52,7 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
                       'limitation':'Colour segmentation is a proposed visual region, not object identity or geometry. Compare full original scene and actual mint-green loops, hinge and metal blades.'})
     material = full_input.get('source_control_feature')
     phase = ('capture' if full_input['current_stage']=='closed_gripper_visual_test'
+             else 'contact' if full_input['current_stage'] in ('visual_grasp_attempt_review','contact_positioning_attempt_review')
              else 'alignment' if material else 'identity')
     task = full_experience['general_pickup.md']
     selected = select_task_experience(task, phase)
