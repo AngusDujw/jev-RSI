@@ -206,18 +206,22 @@ def run(tools, obs, model, output, max_decisions, deadline):
                         'purple_block':'Current purple textured block.',
                         'white_block':'Current white textured block.',
                         'unknown':'Current identity or role is unsupported.'}
-            perception_questions.extend([
-                choice('source_role','Independently inspect CURRENT three RGB and task: identify the source block to be placed next. This is semantic identity selection, no robot action or permission.',identities),
-                choice('receiver_role','Independently inspect CURRENT three RGB and task: identify the supported base/receiver for the next placement. Do not use the source question answer; choose unknown if no coherent role can be grounded.',identities)])
+            pairs={source+'_onto_'+receiver:f'Source: {identities[source]} Receiver: {identities[receiver]}'
+                   for source in identities for receiver in identities
+                   if source!=receiver and 'unknown' not in (source,receiver)}
+            pairs['unknown']='A coherent source/receiver identity pair is unsupported in current RGB.'
+            perception_questions.append(choice('source_receiver_roles',
+                'Inspect CURRENT three RGB and task: choose ONE coherent source and supported base/receiver pair for the next placement. Semantic roles only; this does not request a robot action or establish enclosure/corridor permission.',pairs))
         phase=model.query(obs,perception_questions,
                           json.dumps(stage_data,ensure_ascii=False),f'rgb_pose_stage_{turn:03d}_step{step:03d}',extra_images=images)
         queries+=1;stage=phase['observable_stage']
         data['current_stage']=stage;data['current_stage_rule']=plan['stages'][stage]
         if bind_roles:
-            data['current_semantic_roles']={k:phase[k] for k in ['source_role','receiver_role']}
-            roles_valid=(phase['source_role']!='unknown' and phase['receiver_role']!='unknown'
-                         and phase['source_role']!=phase['receiver_role'])
-            if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1' and phase['source_role']!='pale_wood_block':
+            pair=phase['source_receiver_roles']
+            source,receiver=pair.split('_onto_') if pair!='unknown' else ('unknown','unknown')
+            data['current_semantic_roles']={'source_role':source,'receiver_role':receiver}
+            roles_valid=(source!='unknown' and receiver!='unknown' and source!=receiver)
+            if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1' and source!='pale_wood_block':
                 roles_valid=False
                 data['geometry_role_mismatch']='This optional processor supports only the current pale-material source; no geometry/action proposal is transferred to another source.'
             if not roles_valid:
