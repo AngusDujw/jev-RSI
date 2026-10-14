@@ -617,7 +617,7 @@ def main() -> None:
         "actor_current_numeric_errors": (False if args.controller == "v2_rgb_stage_pose_episode" else
                                          os.environ.get("ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS", "1") != "0"),
         "runtime_feature_flags": {key: value for key, value in os.environ.items()
-            if (key.startswith("ROBODOJO_PICKUP_") and value in ("0", "1")) or key in (
+            if (key.startswith(("ROBODOJO_PICKUP_", "ROBODOJO_RGB_STAGE_")) and value in ("0", "1")) or key in (
                 "ROBODOJO_MEASURED_GRIPPER_STATE", "ROBODOJO_PUBLIC_CAMERA_CALIBRATION",
                 "ROBODOJO_DECISION_TRANSPORT", "ROBODOJO_PLANNER_LONG_REQUEST",
                 "ROBODOJO_PLANNER_REQUEST_TIMEOUT_SECONDS", "ROBODOJO_RGB_STAGE_TASK_GENERAL_TEXT_PLAN",

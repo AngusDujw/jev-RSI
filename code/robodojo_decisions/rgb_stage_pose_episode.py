@@ -233,6 +233,14 @@ def run(tools, obs, model, output, max_decisions, deadline):
         for name,text in notes.items():(second/name).write_text(text)
         data['experience_original_text']=notes
         data['experience_raw_sha256']={name:hashlib.sha256(text.encode()).hexdigest() for name,text in notes.items()}
+        if not programs:
+            # An unsupported role or failed geometry may leave no proposal.
+            # Do not submit a malformed one-option Choice or invent a move.
+            (output/f'no_program_evidence_step_{step:03d}.json').write_text(json.dumps(data,indent=2))
+            records.append({'step_id':step,'stage':stage,'perception_answers':phase,
+                'controller_stop':'No executable proposal remains after current role/geometry checks; no action query submitted.',
+                'memory_sha256':hashes})
+            status='rgb_pose_no_supported_role_program';break
         answer=model.query(obs,[choice('complete_pose_program','Under CURRENT_STAGE and its observation rule, use CURRENT RGB/robot state to choose ONE complete bounded program or STOP. This is the only action judgment for this frame.',options)],
                            json.dumps(data,ensure_ascii=False),f'rgb_pose_action_{turn:03d}_step{step:03d}',extra_images=images)
         queries+=1;selected=answer['complete_pose_program']
