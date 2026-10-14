@@ -15,6 +15,8 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
         raise ValueError('Current pickup RGB/calibration required')
     paths = {r['camera']: Path(r['path']) for r in obs['images']}
     high = _green_mask(paths['cam_high'], 'cam_high').astype(np.uint8)
+    partial_mode=os.environ.get('ROBODOJO_PICKUP_PARTIAL_HIGH_SOURCE')=='1'
+    low_high_visibility=bool(partial_mode and high.sum()<150)
     wrist = _green_mask(paths['cam_right_wrist'], 'cam_right_wrist')
     if high.sum() < 80 or wrist.sum() < 100:
         raise ValueError('Insufficient green pixels for plane fit')
@@ -54,9 +56,9 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
                 mask_radius=2
             coarse_occlusion = bool(allow_coarse_occlusion and
                 obs['step_id']-reference['step_id'] <= 60 and
-                static_check['area_ratio'] >= .5 and
+                static_check['area_ratio'] >= (.20 if partial_mode else .5) and
                 subset_fraction >= .98 and
-                static_check['centroid_change_px'] <= 4 and
+                (partial_mode or static_check['centroid_change_px'] <= 4) and
                 static_check['shared_green_rgb_abs_change_p95'] <= 40 and
                 chroma_p95 <= .08)
             if not coarse_occlusion:
@@ -64,6 +66,7 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
             static_check = dict(static_check, directional_subset_shadow_hypothesis=True,
                 declared_fixed_view_mask_match_radius_px=mask_radius,
                 current_pixels_inside_reference_with_declared_radius_fraction=round(subset_fraction,4),
+                partial_subset_directional_mode=partial_mode,
                 shared_green_chromaticity_change_p95=round(chroma_p95,4),
                 limitation='Current visible fixed-high green subset and chromaticity support only a coarse stationary-source hypothesis under occlusion/shadow; not strict stationarity/contact evidence.')
         ref_paths = {r['camera']: Path(r['path']) for r in reference['images']}
@@ -131,10 +134,14 @@ def build(obs, reference=None, max_pixel_p95_mm=5.0, max_halfwidth_m=.020, allow
     compatible = [r[0] for r in nominal if r[1] >= best[1]-.03]
     # Declared systematic allowance is deliberately separate from pixel jitter.
     halfwidth = max(.005, max(abs(best[0]-z) for z in compatible)+p95+.005)
+    if low_high_visibility:
+        halfwidth += .010
     if halfwidth > max_halfwidth_m:
         raise ValueError('Fit cannot narrow original 20mm height hypothesis')
-    contact_precision = bool(not coarse_occlusion and round(p95, 9) <= .005 and halfwidth <= .020)
+    contact_precision = bool(not coarse_occlusion and not low_high_visibility and round(p95, 9) <= .005 and halfwidth <= .020)
     return {'current_public_finger_wrist_fit_region_xyxy': wrist_fit_region,
+            'low_current_high_visibility':low_high_visibility,
+            'extra_low_visibility_allowance_mm':10 if low_high_visibility else 0,
             'coarse_occlusion_hypothesis': coarse_occlusion,
             'contact_precision_eligible': contact_precision,
             'geometry_scope': 'strict_5mm_pixel_gate_hypothesis' if contact_precision else 'COARSE_DIRECTIONAL_ESTIMATE_ONLY: does not certify strict metric CLOSE/contact-approach; any separate qualitative attempt needs independent CURRENT RGB review',

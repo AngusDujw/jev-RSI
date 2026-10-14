@@ -59,7 +59,8 @@ def _green_mask(path: Path, camera: str) -> np.ndarray:
                     accepted = accepted[:1]
             mask &= np.isin(components, accepted)
     y, x = np.nonzero(mask)
-    if len(x) < (150 if camera == "cam_high" else 500):
+    minimum_high=80 if os.environ.get('ROBODOJO_PICKUP_PARTIAL_HIGH_SOURCE')=='1' else 150
+    if len(x) < (minimum_high if camera == "cam_high" else 500):
         raise ValueError(f"Current {camera} handle mask unavailable")
     if (camera == "cam_high" and os.environ.get('ROBODOJO_PICKUP_ALLOW_SOURCE_IMAGE_MOTION') != '1'
             and not (460 <= x.min() and x.max() <= 525)):
