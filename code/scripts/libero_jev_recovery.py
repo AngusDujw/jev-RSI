@@ -846,7 +846,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 check_hold(use_projection=True)
                 lift_verified = True
             verify_carry = dark_source or rec.cfg.get('drawer_bowl_continuation')
-            if (stage in ('carry_lateral', 'carry') and arrived and verify_carry and
+            near_stalled_carry = bool(stage == 'carry' and
+                rec.cfg.get('drawer_bowl_continuation') and stalls >= 3 and
+                oriented and np.max(np.abs(error)) < .020)
+            if (stage in ('carry_lateral', 'carry') and (arrived or near_stalled_carry) and verify_carry and
                     carry_verified_stage != stage):
                 check_hold(use_projection=True)
                 carry_verified_stage = stage
@@ -875,6 +878,11 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         # next loop recomputes the target from the visible
                         # source, rather than advancing on the stale target.
                         carry_verified_stage = None
+                if near_stalled_carry:
+                    # Rebuild the TCP goal from fresh visible held-object
+                    # offset before asking Jev; do not execute a stale target.
+                    stalls = 0
+                    continue
             if stage == 'orient_receiver' and arrived and oriented and not rack_verified:
                 check_hold(use_projection=True, rotation_aware=True)
                 rack_verified = True
@@ -920,7 +928,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     'Keep closed and align the freshly visible held bowl with '
                     'the visible open drawer floor center. If the camera check '
                     'reports needs_correction, follow the refreshed XYZ target '
-                    'and keep this stage; advance only when alignment and '
+                    'and keep this stage. A blocked own pose within 20 mm may '
+                    'trigger a fresh RGB-D offset check before the exact TCP '
+                    'goal arrives; use its refreshed target. Advance only when alignment and '
                     'holding checks pass. If three fresh corrections fail, '
                     'choose retry when offered. No native success is supplied.')
                 if stage == 'lower' and drawer_lower_target is not None:
