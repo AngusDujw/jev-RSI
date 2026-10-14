@@ -46,6 +46,7 @@ def _runtime_planner_stage(stages: dict, runtime: str):
         'grasp_hypothesis_review': ('contact_verification', 'capture_gate'),
         'near_contact_preparation': ('contact_verification', 'calibrated_geometry_gate'),
         'visual_grasp_attempt_review': ('contact_verification', 'calibrated_geometry_gate'),
+        'contact_positioning_attempt_review': ('contact_verification', 'calibrated_geometry_gate'),
         'planar_precontact': ('coarse_directional_alignment', 'precontact_semantic_gate'),
     }
     name = next((key for key in aliases.get(runtime, ()) if key in stages), None)
@@ -1126,6 +1127,15 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     "the PUBLIC facet midpoint is held approximately, not LINK6. "
                     "They are manipulation-orientation hypotheses, not extra view sweeps. "
                     "Compare supplied angular/point errors and actual whole-hand RGB corridor.")
+        if (os.environ.get('ROBODOJO_PICKUP_CONTACT_POSITIONING_ATTEMPT')=='1' and not gripper_closed
+                and not any(name.startswith('close_') for name in targets)):
+            from pickup_contact_positioning import build as build_contact_positioning
+            extra_options,extra_targets,contact_attempt=build_contact_positioning(obs,material,tool_alignment,green_plane,table)
+            record['contact_positioning_attempt_evidence']=contact_attempt
+            options.update(extra_options);targets.update(extra_targets)
+            if extra_targets:
+                record['stage']='contact_positioning_attempt_review'
+                record['current_phase_goal']='Review ONE small OPEN near-contact positioning attempt with current source/robot XYZ evidence and actual RGB. It may not satisfy the conservative upper-table 6mm free-space gate; nominal RGB table height is uncertain, not clearance/contact truth. Preserve STOP and reobserve before closing.'
         if (os.environ.get('ROBODOJO_PICKUP_VISUAL_GRASP_ATTEMPT') == '1' and not gripper_closed
                 and not any(name.startswith('close_') for name in targets)):
             from pickup_visual_grasp import propose as propose_visual_grasp
@@ -1314,6 +1324,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             obs, model_input, experience, output, turn, targets)
         if record.get('visual_grasp_attempt_evidence'):
             model_input['visual_grasp_attempt_evidence']={k:v for k,v in record['visual_grasp_attempt_evidence'].items() if k!='public_path'}
+        if record.get('contact_positioning_attempt_evidence'):
+            model_input['contact_positioning_attempt_evidence']=record['contact_positioning_attempt_evidence']
         if obs.get('measured_gripper_joint_state'):
             model_input['measured_gripper_joint_state']=obs['measured_gripper_joint_state']
         if (os.environ.get('ROBODOJO_PICKUP_CAPTURE_VISUAL_HISTORY') == '1' and gripper_closed

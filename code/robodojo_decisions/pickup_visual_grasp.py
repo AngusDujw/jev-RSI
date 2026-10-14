@@ -17,6 +17,7 @@ def propose(obs,material,orientation):
     angle=(orientation or {}).get('finger_extension_vs_downward_normal_angle_deg',180)
     tighter=os.environ.get('ROBODOJO_PICKUP_TIGHTER_GRASP_ALIGNMENT')=='1'
     max_error,max_angle=(12,10) if tighter else (35,30)
+    if tighter and os.environ.get('ROBODOJO_PICKUP_CONTACT_POSITIONING_ATTEMPT')=='1':max_error=5
     interval=material['representative_material_point'].get('same_named_pixel_height_hypothesis_region_error_xyz_mm',{})
     all_below=bool(tighter and interval and interval['q95'][2]<-5)
     if norm>max_error or angle>max_angle or all_below:
