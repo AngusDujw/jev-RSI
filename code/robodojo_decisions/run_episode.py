@@ -256,6 +256,12 @@ def run_control(task: str, layout: int, output: Path, key_file: Path | None,
                                               initial_calibration=initial_camera_calibration,
                                               initial_eef=initial_eef))
             return result
+        if controller_version == "v2_rgb_stage_pose_episode":
+            if initial_camera_calibration is None or not 1 <= max_decisions <= 110:
+                raise ValueError("RGB stage pose baseline requires public K/T and1..110 Decisions")
+            from rgb_stage_pose_episode import run as run_rgb_stage_pose
+            result.update(run_rgb_stage_pose(tools,obs,model,output,max_decisions,deadline))
+            return result
         if controller_version == "v2_pickup_active_episode":
             if initial_camera_calibration is None or not 1 <= max_decisions <= 40:
                 raise ValueError("Active pickup requires public K/T and 1..40 Decisions")
@@ -513,7 +519,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--run-name", required=True)
     parser.add_argument("--max-decisions", type=int, default=30)
-    parser.add_argument("--controller", choices=("v1", "v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_stack_first_advance", "v1_stack_side_sequence", "v1_stack_three_view", "v1_stack_four_view", "v1_fold_cuff_view", "v1_fold_synced_view", "v1_fold_synced_two_view", "v2_pickup_axis_effect", "v2_pickup_rgb_axes", "v2_pickup_rgb_axes_numeric", "v2_pickup_rgb_axes_hull", "v2_pickup_active_episode", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
+    parser.add_argument("--controller", choices=("v2_rgb_stage_pose_episode", "v1", "v1_button_camera_audit", "v1_button_two_view", "v1_button_three_view", "v1_button_view", "v1_button_sequence", "v1_push_preapproach", "v1_push_followup", "v1_bowl_view", "v1_bowl_view_sequence", "v1_stack_first_advance", "v1_stack_side_sequence", "v1_stack_three_view", "v1_stack_four_view", "v1_fold_cuff_view", "v1_fold_synced_view", "v1_fold_synced_two_view", "v2_pickup_axis_effect", "v2_pickup_rgb_axes", "v2_pickup_rgb_axes_numeric", "v2_pickup_rgb_axes_hull", "v2_pickup_active_episode", "v1_number_first_view", "v1_number_view_sequence", "v1_source_view", "v1_source_view_sequence", "v1_source_single_view", "v1_source_double_view", "v1_source_right_view", "v1_source_right_followup", "v1_geometry_sign", "v1_geometry_candidate", "v1_geometry_candidate_refresh", "v1_geometry_candidate_margin", "v2", "v3", "v4", "v5_probe_y", "v6", "v7", "v8", "v9", "v10_y_probe", "v11_edge_probe", "v12_confirm_probe", "v13_yellow_first", "v14_yellow_x_first", "v15_yellow_margin_gate"), default="v1")
     parser.add_argument("--max-wall-seconds", type=int, default=6800)
     parser.add_argument("--preflight-only", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
