@@ -51,7 +51,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    plate_second_visible_contact_gate=False,
                    plate_second_preserve_downward=False,
                    plate_second_line_step=False,
-                   plate_second_yaw_flip=False):
+                   plate_second_yaw_flip=False,
+                   plate_first_preserve_downward=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -108,6 +109,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-second-line-step']
         if plate_second_yaw_flip:
             cmd += ['--plate-second-yaw-flip']
+        if plate_first_preserve_downward:
+            cmd += ['--plate-first-preserve-downward']
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
         if task_id == 1202:
@@ -176,6 +179,8 @@ def main():
                    help='Scale planar Jev-directed push steps with one shared error-proportional gain')
     p.add_argument('--plate-second-yaw-flip', action='store_true',
                    help='Use the equivalent 180-degree alternate downward yaw for second rim contact')
+    p.add_argument('--plate-first-preserve-downward', action='store_true',
+                   help='Keep the initial own downward wrist for the first supported push')
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     p.add_argument('--preflight-only', action='store_true',
@@ -237,7 +242,8 @@ def main():
     if (a.plate_final_overshoot_mm or a.plate_front_margin_px or
             a.plate_second_rim_contact or a.plate_second_rim_hover_gate or
             a.plate_second_visible_contact_gate or a.plate_second_preserve_downward or
-            a.plate_second_line_step or a.plate_second_yaw_flip) and a.task_id != 1296:
+            a.plate_second_line_step or a.plate_second_yaw_flip or
+            a.plate_first_preserve_downward) and a.task_id != 1296:
         p.error('Plate final clearance parameters require Goal 1296')
     if a.plate_second_rim_hover_gate and not a.plate_second_rim_contact:
         p.error('Second rim hover gate requires second rim contact')
@@ -260,7 +266,8 @@ def main():
                          a.plate_second_visible_contact_gate,
                          a.plate_second_preserve_downward,
                          a.plate_second_line_step,
-                         a.plate_second_yaw_flip)
+                         a.plate_second_yaw_flip,
+                         a.plate_first_preserve_downward)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -359,6 +366,7 @@ def main():
                     plate_second_preserve_downward=a.plate_second_preserve_downward,
                     plate_second_line_step=a.plate_second_line_step,
                     plate_second_yaw_flip=a.plate_second_yaw_flip,
+                    plate_first_preserve_downward=a.plate_first_preserve_downward,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,
                     policy_source_sha256=hashes, git_commit=commit,

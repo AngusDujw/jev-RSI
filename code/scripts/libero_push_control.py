@@ -401,8 +401,9 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             observed_rear_extent_m=rear_extent,
             rear_standoff_m=0. if rim_second else standoff,
             hover_clearance_m=.14 if rim_second else .20,
-            preserve_downward=(not visible_goal_plate or rim_second and
-                rec.cfg.get('plate_second_preserve_downward')),
+            preserve_downward=(not visible_goal_plate or
+                visible_goal_plate and segment == 1 and rec.cfg.get('plate_first_preserve_downward') or
+                rim_second and rec.cfg.get('plate_second_preserve_downward')),
             # Both plate segments concern the same visible, broad support
             # surface.  Trailing top contact maintained the second segment
             # on init2; init3's centred first contact lost the plate early.
