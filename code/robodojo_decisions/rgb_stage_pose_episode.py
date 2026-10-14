@@ -18,6 +18,11 @@ def run(tools, obs, model, output, max_decisions, deadline):
     import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
     memory = output.parents[1]/'experience/model'
     planner = output/'initial_fresh_method'
+    if (output/'plan.json').exists():
+        (output/'bootstrap_task_plan.json').write_text((output/'plan.json').read_text())
+    (output/'plan.json').write_text(json.dumps({'task':obs['task'], 'stages':{},
+        'status':'waiting_for_fresh_method_no_control',
+        'scope':'Bootstrap task metadata is not an executed planner plan.'}))
     command = [sys.executable, '-B', str(Path(__file__).with_name('pro_plan.py')),
                '--observation', obs['observation_path'], '--calibration',
                str(output/'camera_calibration_initial.json'), '--method-only',
@@ -33,6 +38,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
     plan=json.loads((planner/'plan.json').read_text())
     if not plan.get('method_only'):
         raise ValueError('Fresh action-free method planner required')
+    (output/'plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2))
     stage=plan['initial_stage'];records=[];previous=None;result=None
     status='rgb_pose_native_budget_incomplete'
     for turn in range(max_decisions):
