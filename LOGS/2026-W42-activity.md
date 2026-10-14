@@ -274,3 +274,10 @@
 - 【Agent】【2026-10-14 16:02】[run] Goal1202第59/80次e7d47862同init3：source_memory/source_sized/pinch保持，仅启用释放后Jev张爪撤离60mm；5880-jump前台session95534。Goal1296第58次原yaw仍75Jev/348步、二段approach受阻，说明不仅是yaw_flip。
 - 【Agent】【2026-10-14 16:05】[op] Goal1296新增可选orient_clearance：首段Jev retreat边后进入自体当前净空TCP固定、纯旋转对齐阶段，再由Jev推进横移到盘后悬停，分离同时降高/旋转/横移。原/翻转yaw皆入口受阻，明确新机制比较；AST/diff/完整dryrun通过，尚未实跑。
 - 【Agent】【2026-10-14 16:07】[op] 补全EXP186/187尺寸拉距真实碗可抓但释放未成、原yaw后方入口仍受阻，两个审计0违规；严格周志lint通过，保留负结果。
+- 【Agent】【2026-10-14 16:08】[op] 用普通rm删除已确认本会话自建、已部署验证的五个Git传输bundle；保留待部署e96b0ac5，不清理任何他人或原始实验文件。此前rm-f调用被工具要求改为更安全方式，未执行。
+- 【Agent】【2026-10-14 16:10】[run] Goal1296第59/80次e96b0ac5同init11，原yaw+后方插入保留，仅启用首段撤离后原位对齐腕姿再横移；5880-jump前台新session待返回后补记。Goal1202第59次程序true官方false，162Jev/533步，一次抓取，释放后撤离仍未成，需查看落稳和可见空间。
+- 【Agent】【2026-10-14 16:11】[note] Goal1296 v15前台实际session29939，上一条新session占位已补记，不重复启动。
+- 【Agent】【2026-10-14 16:17】[op] 公开深度法线离线核对：可见floor1.063839m约9998点，叠图确为打开抽屉内部，未支持误选柜面；rim平面1.122/1.124m约843/830点。v37释放后碗脱离但落到外侧盘旁，64mm高落仍失败。新floor-drop给Jev25mm可见floor距目标、15–35mm门、>=90%包含，仍Jev张爪/撤离，不读成功。AST/dryrun/diff通过。
+- 【Agent】【2026-10-14 16:19】[run] Goal1202第60/80次6f99307b同init3仅新增floor-close25mm可见释放目标/15–35mm门，source_memory/source_sized/pinch/撤离保持；5880-jump前台session82399。
+- 【Agent】【2026-10-14 16:20】[op] 8e90d266提交SSH推送紧凑盘后候选：后方standoff15→4mm，允许已验证几何净空门下旋转残差<=0.12rad；实际指尖距可见后沿>=3mm及高位100mm门不放宽，lower保留自体高度带、Jev所有阶段边。AST/diff/dryrun通过，尚未物理验证。
+- 【Agent】【2026-10-14 16:21】[op] 补全EXP188撤离仍落出、189原位旋转已过但净空不足、190离线法线叠图驳斥误选柜面；严格lint通过，负结果保留。
