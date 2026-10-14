@@ -345,6 +345,8 @@ def main():
     out.mkdir()
     episode = out/'episode'  # Recorder creates this directory itself.
     manifest = dict(reservation=reservation, mode=mode,
+                    launch_command=cmd,
+                    cli_options={k:str(v) if isinstance(v, Path) else v for k,v in vars(a).items()},
                     grasp_profile=a.grasp_profile,
                     approach_mode=a.approach_mode,
                     entry_side=a.entry_side,
