@@ -99,6 +99,13 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
             data['contract']='Review CURRENT same-source following, actual fingers and the offered short corridor. Choose the ONE offered independently legal five-step CLOSED height-progress program, OPEN only visibly empty fingers, HOLD only visibly captured/elevated material if offered, or STOP for insufficient/contradictory current evidence. The program follows the declared algorithmic remaining-budget policy; it is not a collision/contact/holding certificate. Robot rise is NOT source height. Reobserve after one complete command.'
     images=[]
     if previous is not None:
+        if os.environ.get('ROBODOJO_PICKUP_CAPTURE_FIXED_HIGH_PAIR')=='1':
+            from capture_high_context import build as high_pair
+            try:
+                extra,facts=high_pair(previous,obs,output);images.append(extra)
+                data['current_fixed_high_source_context_pair']=facts
+            except ValueError as error:
+                data['current_fixed_high_source_context_pair']={'available':False,'reason':str(error)}
         if os.environ.get('ROBODOJO_PICKUP_CAPTURE_WRIST_MOTION')=='1':
             from capture_wrist_motion import measure as wrist_motion
             try:data['current_source_vs_brown_wrist_motion']=wrist_motion(previous,obs)
@@ -108,7 +115,7 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
             try:data['algorithmic_current_source_image_change']=measure(previous,obs)
             except ValueError as error:data['algorithmic_current_source_image_change']={'available':False,'reason':str(error)}
         data['previous_public_robot_state_for_feature_change']={'step_id':previous['step_id'],'eef':previous['current_eef']}
-        images=[{'camera':f"PREVIOUS same-episode {row['camera']} step{previous['step_id']} for CURRENT feature-change comparison, NOT current contact",'path':row['path']}
+        images += [{'camera':f"PREVIOUS same-episode {row['camera']} step{previous['step_id']} for CURRENT feature-change comparison, NOT current contact",'path':row['path']}
             for row in previous['images'] if row['camera'] in ('cam_high','cam_right_wrist')]
     descriptions={name:('OPEN only visibly empty fingers at held poses.' if name.startswith('open_') else
         'ONE five-step settling of the existing CLOSED command at CURRENT measured poses; no lift, no holding proof; offered at most once.' if name.startswith('settle_') else
