@@ -1,5 +1,6 @@
 """Current image evidence for an explicitly uncertain simulated grasp attempt."""
 from pathlib import Path
+import os
 import numpy as np
 from scipy.ndimage import distance_transform_edt
 from pickup_visual_hull import _green_mask
@@ -14,8 +15,15 @@ def propose(obs,material,orientation):
     error=material['representative_material_point']['nearest_opposing_surface_midpoint_delta_xyz_mm']
     norm=float(np.linalg.norm(error))
     angle=(orientation or {}).get('finger_extension_vs_downward_normal_angle_deg',180)
-    if norm>35 or angle>30:
-        return None,{'eligible':False,'reason':'Not a near-source, approximately downward attempt','uncertain_error_norm_mm':norm,'robot_axis_angle_deg':angle}
+    tighter=os.environ.get('ROBODOJO_PICKUP_TIGHTER_GRASP_ALIGNMENT')=='1'
+    max_error,max_angle=(12,10) if tighter else (35,30)
+    interval=material['representative_material_point'].get('same_named_pixel_height_hypothesis_region_error_xyz_mm',{})
+    all_below=bool(tighter and interval and interval['q95'][2]<-5)
+    if norm>max_error or angle>max_angle or all_below:
+        return None,{'eligible':False,'reason':'Not a near-source, approximately downward attempt; a projected material band alone is insufficient',
+            'uncertain_error_norm_mm':norm,'robot_axis_angle_deg':angle,
+            'maximum_attempt_error_mm':max_error,'maximum_attempt_axis_angle_deg':max_angle,
+            'entire_same_pixel_height_interval_below_public_surface_by_over_5mm':all_below}
     pads=inspect(obs,obs['camera_calibration'])['rows']
     boxes=sorted([row['projected_bbox_xyxy'] for row in pads.values()],key=lambda box:(box[0]+box[2])/2)
     left=max(0,int(np.ceil(boxes[0][2])));right=min(639,int(np.floor(boxes[1][0])))

@@ -1113,7 +1113,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     'Planner general-method stage coarse_directional_alignment: review the large uncertain source/finger lateral separation and current corridor while retaining source visibility during turning. '
                     'Use uncertain named-feature XYZ, current three RGB plus crops and full candidate effects; image-centre alignment is not metric distance. '
                     'Tool angular mismatch remains unresolved; current controller 60mm lateral threshold only selects a REVIEW phase, not physical alignment or contact certification.')
-            elif alignment_targets and tool_alignment.get('finger_extension_vs_downward_normal_angle_deg',0) > 30:
+            elif alignment_targets and tool_alignment.get('finger_extension_vs_downward_normal_angle_deg',0) > (10 if os.environ.get('ROBODOJO_PICKUP_TIGHTER_GRASP_ALIGNMENT')=='1' else 30):
                 record['stage'] = 'strict_tool_geometry_review'
                 record['current_phase_goal'] = (
                     'Planner general-method stage strict_tool_geometry: review the public finger-extension / assumed horizontal-source-normal angular mismatch and actual finite inward faces. '
