@@ -11,6 +11,7 @@ from robot_path_preview import preview
 def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_stages=None):
     failure_review=obs.get('close_tracking_failure_review')
     test_once=os.environ.get('ROBODOJO_PICKUP_CAPTURE_TEST_ONCE')=='1'
+    single_progress=os.environ.get('ROBODOJO_PICKUP_CAPTURE_SINGLE_PROGRESS_PROGRAM')=='1'
     rise=float(obs['current_eef']['right']['position'][2]-reference_z)
     test_motion_executed=test_once and rise>=.015
     stage=('close_tracking_stabilization_review' if failure_review else
@@ -40,8 +41,15 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
             if os.environ.get('ROBODOJO_PICKUP_CAPTURE_PROGRESS_PAIR')=='1':
                 moderate=[n for n in lifts if targets[n]['right']['position'][2]-obs['current_eef']['right']['position'][2]>=.029]
                 if moderate:retained.add(min(moderate,key=lambda n:targets[n]['right']['position'][2]))
+            if single_progress:
+                remaining=int(obs.get('remaining_steps',obs['max_episode_steps']-obs['step_id']))
+                retained=({min(lifts,key=lambda n:abs(targets[n]['right']['position'][2]-obs['current_eef']['right']['position'][2]-.030))}
+                          if remaining>=15 else {largest})
             for name in lifts:
                 if name not in retained:targets.pop(name);paths.pop(name)
+    if single_progress and not failure_review and not test_motion_executed:
+        for name in ['closed_lift_50mm','settle_existing_close_once']:
+            targets.pop(name,None);paths.pop(name,None)
     if not targets:
         record['status']='capture_no_public_program';return None,record
     directory=output/f"capture_experience_step_{obs['step_id']:03d}";directory.mkdir(exist_ok=False)
@@ -82,6 +90,10 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
         data['contract']='A small robot lift TEST already executed. Judge whether the SAME source visibly followed and remains enclosed in the CURRENT real fingers. If supported, select the offered independently legal five-step CLOSED lift toward the instructed 10cm source-height gain; it is the largest public-robot-reachable increment among20/30/40/50mm, NOT certified scene clearance or object height. Do not default to repeating a small test forever. OPEN only a visibly empty hand, HOLD only a visibly captured/elevated source, or STOP for insufficient/contradictory evidence. Robot rise is NOT source height and does not certify task completion. All actions remain independent full programs; reobserve after one.'
         if os.environ.get('ROBODOJO_PICKUP_CAPTURE_PROGRESS_PAIR')=='1':
             data['contract']+=' A separate moderate reachable lift of at least30mm may also be offered. Judge each COMPLETE program separately; if its shorter corridor supports progress while the larger is uncertain, that is a valid different choice. Never combine actions or sum probabilities to override STOP.'
+    if single_progress:
+        data['capture_program_generation_policy']='Algorithm proposes one phase-appropriate progress program: first20mm evidence TEST; after a test, nearest legal30mm increment while at least15 native physical steps remain, otherwise the largest legal increment. Failed-CLOSE stabilization remains a separate required recovery branch. Public budget scheduling is not source height/holding evidence. OPEN/STOP remain independent choices; no probabilities are combined.'
+        if test_motion_executed and not failure_review:
+            data['contract']='Review CURRENT same-source following, actual fingers and the offered short corridor. Choose the ONE offered independently legal five-step CLOSED height-progress program, OPEN only visibly empty fingers, HOLD only visibly captured/elevated material if offered, or STOP for insufficient/contradictory current evidence. The program follows the declared algorithmic remaining-budget policy; it is not a collision/contact/holding certificate. Robot rise is NOT source height. Reobserve after one complete command.'
     images=[]
     if previous is not None:
         if os.environ.get('ROBODOJO_PICKUP_CAPTURE_WRIST_MOTION')=='1':
