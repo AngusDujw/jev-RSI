@@ -15,6 +15,39 @@ from controller import choice
 from robot_path_preview import preview
 
 
+def select_approach_program(geometry, programs, horizontal_first=False):
+    """Generate one proposal from conditional RGB residuals, not permission.
+
+    FAR horizontal alignment preserves height rather than descending merely
+    because a larger legal Z step reduces Euclidean distance more quickly.
+    The signed interval must agree with the proposed horizontal direction.
+    """
+    current=geometry.get('top_minus_pad_midpoint_world_xyz_mm',[])
+    horizontal=(horizontal_first and len(current)==3 and
+                sum(v*v for v in current[:2])**.5>25)
+    candidates=[]
+    for name,relation in geometry.get('candidate_endpoint_relations',{}).items():
+        parts=name.split('_')
+        if (name not in programs or len(parts)!=4 or parts[0]!='world' or
+                parts[1] not in ('x','y','z') or
+                relation.get('minimum_whole_hand_above_source_top_upper_hypothesis_mm',-1)<6):
+            continue
+        if horizontal:
+            if parts[1]=='z':continue
+            axis='xyz'.index(parts[1])
+            intervals=geometry.get('top_minus_pad_midpoint_xyz_interval_mm',[])
+            if len(intervals)!=3:continue
+            lo,hi=intervals[axis]
+            delta=programs[name]['right_world_delta_xyz_mm'][axis]
+            if not ((delta>0 and lo>0) or (delta<0 and hi<0)):continue
+            after=relation['top_minus_pad_midpoint_world_xyz_mm']
+            gain=sum(v*v for v in current[:2])**.5-sum(v*v for v in after[:2])**.5
+        else:
+            gain=geometry['current_hypothesis_distance_mm']-relation['hypothesis_distance_mm']
+        if gain>0:candidates.append((gain,name))
+    return (max(candidates)[1] if candidates else None),horizontal
+
+
 def load_authored(path,task,data_root):
     path=Path(path).resolve()
     if not path.is_relative_to((data_root/'plans').resolve()):
@@ -184,17 +217,15 @@ def run(tools, obs, model, output, max_decisions, deadline):
             mode.update(actor_object_numeric_errors=True,geometry_operator_origin='User-authorized algorithm extension; not a fresh planner endorsement')
             (output/'planner_input_mode.json').write_text(json.dumps(mode,indent=2))
             if os.environ.get('ROBODOJO_RGB_STAGE_SINGLE_APPROACH_PROGRAM')=='1':
-                candidates=[]
-                for name,relation in geometry.get('candidate_endpoint_relations',{}).items():
-                    if (name.startswith('world_') and not name.startswith('world_rot_')
-                            and relation.get('minimum_whole_hand_above_source_top_upper_hypothesis_mm',-1)>=6):
-                        gain=geometry['current_hypothesis_distance_mm']-relation['hypothesis_distance_mm']
-                        if gain>0:candidates.append((gain,name))
-                best=max(candidates)[1] if candidates else None
+                best,horizontal=select_approach_program(geometry,programs,
+                    os.environ.get('ROBODOJO_RGB_STAGE_FAR_HORIZONTAL_PROGRAM')=='1')
                 programs={best:programs[best]} if best else {}
                 options={name:options[name] for name in programs}
                 data['complete_programs']=programs
-                data['candidate_generation_policy']='Algorithm offers the translation with greatest predicted decrease of CURRENT conditional top-to-pad distance among independently reachable five-step paths whose entire hand stays at least6mm above this source-plane upper hypothesis. This only selects a proposal, not execution permission or scene clearance. Luna independently accepts it or STOP from current RGB; no probabilities combined.'
+                data['candidate_generation_policy']=(
+                    'FAR OPEN horizontal alignment: while conditional horizontal residual exceeds25mm, algorithm offers only an independently reachable X/Y program with interval-supported sign and greatest predicted horizontal-distance reduction, preserving LINK6 height. This is a stage objective, not a descent/contact target. '
+                    if horizontal else 'Algorithm offers the translation with greatest predicted decrease of CURRENT conditional top-to-pad distance. ')+(
+                    'All five predicted hand poses remain at least6mm above this SOURCE-plane upper hypothesis only; other obstacles and short corridor remain for CURRENT RGB review. This selects a proposal, not execution permission or scene clearance. Luna independently accepts it or STOP; no probabilities combined.')
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])
