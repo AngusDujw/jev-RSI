@@ -160,6 +160,19 @@ def run(tools, obs, model, output, max_decisions, deadline):
               'experience_original_file_directory':str(memory),
               'contract':'RGB-only full-pose baseline: no processed object XYZ/errors. All programs are complete independent five-step commands, at most15mm or0.1rad. Select ONE or STOP, never assemble axes. WORLD +X robot-right, +Y away from bases, +Z up; rotations are right-hand rule about fixed WORLD axes, not wrist/image axes. Wrist cameras ride with the hand. Current public robot geometry does not prove scene clearance. Identify an accessible task object from CURRENT raw RGB; avoid prior failed routes. CLOSE only for current actual opposing fingers/material, OPEN only as supported by current task/object support. Observe same-source co-motion after a grasp. Stage EXIT conditions are not prerequisites before the first bounded evidence acquisition. Never claim source height/holding from robot displacement. If object/tool/corridor cannot be supported, STOP.'}
         options={name:f'Execute exactly complete_programs[{name}], five native steps then fresh RGB.' for name in programs}
+        if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1':
+            from stack_top_approach_evidence import build
+            try:
+                geometry=build(obs,programs)
+            except ValueError as error:
+                geometry={'status':'UNKNOWN','reason':str(error),'step_id':step}
+            data['algorithmic_far_approach_evidence']=geometry
+            data['contract']=data['contract'].replace('RGB-only full-pose baseline: no processed object XYZ/errors.',
+                'RGB plus explicitly conditional algorithmic top-minus-pad residuals for FAR OPEN approach; not contact geometry.')
+            (output/f'stack_top_approach_step_{step:03d}.json').write_text(json.dumps(geometry,indent=2))
+            mode=json.loads((output/'planner_input_mode.json').read_text())
+            mode.update(actor_object_numeric_errors=True,geometry_operator_origin='User-authorized algorithm extension; not a fresh planner endorsement')
+            (output/'planner_input_mode.json').write_text(json.dumps(mode,indent=2))
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])
