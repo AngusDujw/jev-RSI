@@ -291,6 +291,8 @@ def main() -> None:
                "response_format": {"type": "json_object"}, "stream": False,
                "messages": [{"role": "system", "content": system},
                             {"role": "user", "content": parts}]}
+    from model_input_language import require_english_model_input
+    require_english_model_input(payload, "legacy shaft planner request")
     request = urllib.request.Request("http://127.0.0.1:18883/v1/chat/completions",
         data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"},
         method="POST")

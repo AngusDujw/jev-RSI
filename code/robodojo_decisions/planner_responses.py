@@ -9,6 +9,7 @@ import time
 import tomllib
 import urllib.error
 import urllib.request
+from model_input_language import ENGLISH_ONLY, require_english_model_input
 
 
 DEFAULT_CODEX_HOME = Path(
@@ -49,17 +50,19 @@ def build_payload(system: str, legacy_parts: list[dict], model: str) -> dict:
                             "detail": "high"})
         else:
             raise ValueError("Planner input has an unsupported content type")
-    return {
+    payload = {
         "model": model,
         "reasoning": {"effort": "high"},
         "text": {"format": {"type": "json_object"}},
         "store": False,
         "stream": False,
         "input": [
-            {"role": "system", "content": system},
+            {"role": "system", "content": ENGLISH_ONLY + "\n\n" + system},
             {"role": "user", "content": content},
         ],
     }
+    require_english_model_input(payload, "planner complete request")
+    return payload
 
 
 class PlannerRetryable(RuntimeError):
@@ -112,6 +115,7 @@ def output_text(response: dict) -> str:
 
 
 def request(payload: dict, configuration: dict) -> dict:
+    require_english_model_input(payload, "planner Responses request")
     url = configuration["base_url"].rstrip("/") + "/responses"
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     header = {

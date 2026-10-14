@@ -6,12 +6,14 @@ import select
 import sys
 import urllib.error
 import uuid
+from model_input_language import require_english_model_input
 
 REQUEST_PREFIX='ROBODOJO_API_REQUEST '
 RESPONSE_PREFIX='ROBODOJO_API_RESPONSE '
 
 
 def request(payload, timeout, service='luna'):
+    require_english_model_input(payload, service + " SSH request")
     identifier=uuid.uuid4().hex
     frame={'id':identifier,'service':service,'timeout':timeout,'payload':payload}
     parent=int(os.environ.get('ROBODOJO_STDIO_RELAY_PARENT_PID',os.getpid()))

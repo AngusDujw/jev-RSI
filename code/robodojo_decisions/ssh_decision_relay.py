@@ -11,9 +11,11 @@ import subprocess
 import sys
 import time
 from decision_stdio import REQUEST_PREFIX,RESPONSE_PREFIX
+from model_input_language import require_english_model_input
 
 
 def call(payload,key,timeout,url):
+    require_english_model_input(payload, "model relay request")
     read_fd,write_fd=os.pipe()
     try:os.write(write_fd,f'header = "Authorization: Bearer {key}"\n'.encode())
     finally:os.close(write_fd)

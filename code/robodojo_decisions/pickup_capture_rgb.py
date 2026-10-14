@@ -6,6 +6,7 @@ import numpy as np
 from controller import choice
 from pickup_rgb_axes import _targets
 from robot_path_preview import preview
+from model_input_language import select_task_experience
 
 
 def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_stages=None):
@@ -58,7 +59,7 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     hashes={}
     for name,text in experience.items():
         (directory/name).write_text(text);hashes[name]=hashlib.sha256(text.encode()).hexdigest()
-    task_lines=[line for line in experience['general_pickup.md'].splitlines() if line.startswith('- ') and any(k in line for k in ('闭爪','抓持','随动','EMPTY','抬升'))][-4:]
+    task_lines=select_task_experience(experience['general_pickup.md'], 'capture')
     programs={name:{'target':target,'right_world_delta_xyz_mm':[0,0,round((target['right']['position'][2]-obs['current_eef']['right']['position'][2])*1000,3)],
         'right_gripper':'CLOSED' if target['right']['gripper_closed'] else 'OPEN','physical_steps':5,'public_robot_five_step_gate':True}
         for name,target in targets.items()}

@@ -16,6 +16,7 @@ from pathlib import Path
 
 import numpy as np
 from scipy.spatial.transform import Rotation
+from model_input_language import ENGLISH_ONLY, require_english_model_input
 
 MODEL = "gpt-6-luna"
 ENDPOINT = "https://api.openai.com/v1/decisions"
@@ -351,6 +352,7 @@ def decode_answers(response: dict, plan: dict) -> dict:
 
 def curl_socks_decision(payload: dict, key: str, timeout: int) -> dict:
     """Send one Decisions read over local SOCKS without putting the key in argv or on disk."""
+    require_english_model_input(payload, "Luna SOCKS request")
     config_fd, config_writer = os.pipe()
     try:
         os.write(config_writer, f'header = "Authorization: Bearer {key}"\n'.encode())
@@ -426,7 +428,9 @@ class DecisionClient:
     def query(self, obs: dict, asked: list[dict], evidence: str, record_name: str,
               reference_image: Path | None = None,
               extra_images: list[dict] | None = None) -> dict:
-        content = [{"type": "input_text", "text": evidence}]
+        require_english_model_input(evidence, "Luna evidence")
+        content = [{"type": "input_text", "text": evidence},
+                   {"type": "input_text", "text": ENGLISH_ONLY}]
         image_info = []
         images = list(obs["images"])
         if reference_image is not None:
@@ -443,6 +447,7 @@ class DecisionClient:
                                "bytes": len(raw)})
         payload = {"model": MODEL, "input": [{"role": "user", "content": content}],
                    "questions": asked}
+        require_english_model_input(payload, "Luna complete request")
         key = self.key_file.read_text().strip()
         if not key.startswith("sk-"):
             raise ValueError("Key file does not contain an OpenAI API key")
@@ -450,6 +455,7 @@ class DecisionClient:
                 "input_text": content[0]["text"], "images": image_info,
                 "question_names": [q["name"] for q in payload["questions"]],
                 "questions": payload["questions"],
+                "model_input_language_contract": ENGLISH_ONLY,
                 "request_schema": "full_question_audit_v2"}
         self.output.mkdir(parents=True, exist_ok=True)
         started = time.monotonic()

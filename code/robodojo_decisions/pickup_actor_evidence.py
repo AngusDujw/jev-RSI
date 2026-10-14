@@ -11,6 +11,7 @@ from PIL import Image
 from pickup_visual_hull import _green_mask, _project_many
 from camera_geometry import eef_transform
 from gripper_pad_projection import inspect as inspect_pads
+from model_input_language import select_task_experience
 
 
 def prepare(observation, full_input, full_experience, output: Path, turn: int, targets=None):
@@ -52,13 +53,8 @@ def prepare(observation, full_input, full_experience, output: Path, turn: int, t
     material = full_input.get('source_control_feature')
     phase = ('capture' if full_input['current_stage']=='closed_gripper_visual_test'
              else 'alignment' if material else 'identity')
-    tokens = {'identity':('身份','坐标','WORLD','world-','实体'),
-              'alignment':('指面','XYZ','工具','姿态','实体点'),
-              'capture':('闭爪','抓持','抬升','随动','EMPTY')}[phase]
     task = full_experience['general_pickup.md']
-    bullets = [line for line in task.splitlines() if line.startswith('- ')]
-    relevant = [line for line in bullets if any(token in line for token in tokens)]
-    selected = relevant[-4:]
+    selected = select_task_experience(task, phase)
     hashes = {}
     for name, text in full_experience.items():
         (directory / name).write_text(text)

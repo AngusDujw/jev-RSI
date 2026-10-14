@@ -130,6 +130,8 @@ This controller is an experimental categorical EEF policy, not the original Robo
 
 # RoboDojo GPT-6.1 Sol high 阶段规划 + du Luna 推进
 
+2026-10-14 输入语言约束：规划器与推进器的提示、任务说明、阶段、问题/选项、图注和经验全部使用英文。`model_input_language.py` 在完整请求发送前检查汉字，包含文本中嵌套 JSON 的 Unicode 转义；发现中文直接报错，不删除内容或自动重试。该检查不做图像 OCR，也不能证明任意非中文文本都是英文。Luna、Responses、SSH relay 与旧标注入口均接入检查。模型经验只读取 DataStorage 的 `experience/model`，中文原文已保留到 `experience/model_versions/pre-english-20261014`，英文版本及逐条替换记录在 `experience/model_versions/english-20261014`。拾取经验检索已同步改为英文关键词。历史请求保持原样，不能重标为英文；经验/语言改动后的成功率须待用户恢复实验后独立测量，当前实验暂停。
+
 本目录的 `run_episode.py` 是单个原生回合入口。官方 42 个任务均有 layout0 三 RGB 零动作入口；截至 EXP-2026W42-154，完整原生成功仍为 0/42。`v2_pickup_active_episode` 目前只是 `general_pickup` layout0 的持续回合实验，不是整套任务的已验证控制器。
 
 ## 角色和输入
