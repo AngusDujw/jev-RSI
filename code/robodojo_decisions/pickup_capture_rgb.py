@@ -103,10 +103,19 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     questions=[choice('source_identity','Is the SAME mint-green scissors currently identifiable in any CURRENT RGB, including material within the true fingers? Historical images alone cannot establish current visibility.',
         {'visible_mint_green_scissors':'Source identifiable NOW.','source_identity_unavailable':'Current source identity unavailable.'}),
         choice('full_program_decision',data['contract'],{**descriptions,'stop_program_unsupported':'Execute none; current evidence insufficient or contradictory.'})]
+    if os.environ.get('ROBODOJO_PICKUP_CAPTURE_EVIDENCE_DIAGNOSTIC')=='1':
+        questions.append(choice('capture_evidence_assessment',
+            'Independently classify the DOMINANT CURRENT visual/robot evidence. Do not reference another answer. This diagnostic NEVER authorizes motion or overrides STOP; no private contact/holding truth is available.',
+            {'source_tool_following_supported':'Current source/fingers and actual image motion support a following hypothesis, not a contact certificate.',
+             'visible_detachment_or_empty_fingers':'Current RGB supports source left behind, slipping or visibly empty fingers.',
+             'source_relation_ambiguous':'Current source/tool association or enclosure is ambiguous.',
+             'visible_corridor_or_robot_contradiction':'The candidate corridor or robot evidence has a concrete current contradiction.',
+             'other_evidence_insufficient':'Another specific evidence requirement remains unsupported.'}))
     try:answer=model.query(obs,questions,json.dumps(data,ensure_ascii=False),f"pickup_active_{turn:02d}_step{obs['step_id']:03d}",extra_images=images)
     except ValueError as error:
         record.update(status='capture_decision_invalid_or_refused',decision_decode_error=str(error));return None,record
     selected=answer['full_program_decision'];record['luna_choice']=selected;record['luna_source_identity']=answer['source_identity']
+    if 'capture_evidence_assessment' in answer:record['luna_capture_evidence_assessment']=answer['capture_evidence_assessment']
     if selected not in targets or answer['source_identity']!='visible_mint_green_scissors':
         record['status']='capture_rgb_luna_stopped';return None,record
     target=targets[selected];first=tools._rpc('eef_joint_target',targets=target)
