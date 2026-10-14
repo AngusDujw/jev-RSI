@@ -88,7 +88,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
                       preserve_downward=True, lateral_contact_offset_m=0.,
                       contact_mode='rear_edge', top_contact_rear_fraction=0.,
                       allow_short_push=False, overshoot_extra_m=0.,
-                      hover_clearance_m=.20):
+                      hover_clearance_m=.20, yaw_flip=False):
     """Derive a pushing line only from RGB-D bounds and the robot's own mesh."""
     travel = goal[:2]-source['center'][:2]
     distance = float(np.linalg.norm(travel))
@@ -102,6 +102,8 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     proposed = np.column_stack((xaxis, yaxis, [0., 0., -1.]))
     if np.linalg.det(proposed) < 0:
         proposed[:, 1] *= -1
+    if yaw_flip:
+        proposed[:, :2] *= -1
     # A downward pusher needs no yaw alignment to make side contact. Keep an
     # already-downward wrist pose to avoid sweeping the arm through obstacles.
     preserve = preserve_downward and current_orientation is not None and float(
@@ -163,6 +165,7 @@ def contact_push_plan(source, goal, own, current_orientation=None,
     retreat = push_end+np.array([0., 0., .10])
     return dict(orientation=orientation,
         orientation_source='preserved downward robot pose' if preserve else
+            'alternate downward yaw from visible push direction' if yaw_flip else
             'downward pose derived from visible push direction',
         direction=direction,
         observed_rear_extent_m=rear_extent,
@@ -394,6 +397,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                           rec.cfg.get('plate_second_rim_contact'))
         kwargs = dict(current_orientation=Rotation.from_quat(
             obs['robot0_eef_quat']).as_matrix(),
+            yaw_flip=bool(rim_second and rec.cfg.get('plate_second_yaw_flip')),
             observed_rear_extent_m=rear_extent,
             rear_standoff_m=0. if rim_second else standoff,
             hover_clearance_m=.14 if rim_second else .20,

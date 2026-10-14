@@ -50,7 +50,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    plate_second_rim_hover_gate=False,
                    plate_second_visible_contact_gate=False,
                    plate_second_preserve_downward=False,
-                   plate_second_line_step=False):
+                   plate_second_line_step=False,
+                   plate_second_yaw_flip=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -105,6 +106,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-second-preserve-downward']
         if plate_second_line_step:
             cmd += ['--plate-second-line-step']
+        if plate_second_yaw_flip:
+            cmd += ['--plate-second-yaw-flip']
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
         if task_id == 1202:
@@ -171,6 +174,8 @@ def main():
                    help='Preserve the own downward wrist on the second rim-push segment')
     p.add_argument('--plate-second-line-step', action='store_true',
                    help='Scale planar Jev-directed push steps with one shared error-proportional gain')
+    p.add_argument('--plate-second-yaw-flip', action='store_true',
+                   help='Use the equivalent 180-degree alternate downward yaw for second rim contact')
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     p.add_argument('--preflight-only', action='store_true',
@@ -232,7 +237,7 @@ def main():
     if (a.plate_final_overshoot_mm or a.plate_front_margin_px or
             a.plate_second_rim_contact or a.plate_second_rim_hover_gate or
             a.plate_second_visible_contact_gate or a.plate_second_preserve_downward or
-            a.plate_second_line_step) and a.task_id != 1296:
+            a.plate_second_line_step or a.plate_second_yaw_flip) and a.task_id != 1296:
         p.error('Plate final clearance parameters require Goal 1296')
     if a.plate_second_rim_hover_gate and not a.plate_second_rim_contact:
         p.error('Second rim hover gate requires second rim contact')
@@ -241,6 +246,8 @@ def main():
         p.error('Visible contact gate requires the second rim and hover gates')
     if a.plate_second_preserve_downward and not a.plate_second_rim_contact:
         p.error('Preserved downward wrist requires second rim contact')
+    if a.plate_second_yaw_flip and (not a.plate_second_rim_contact or a.plate_second_preserve_downward):
+        p.error('Alternate yaw requires second rim contact and no preserved wrist')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
                          a.grasp_profile,a.approach_mode,a.entry_side,a.grasp_hold_ticks,
                          a.drawer_contact_mode,a.plate_stage_turn_deg,a.lift_recheck_mm,
@@ -252,7 +259,8 @@ def main():
                          a.plate_second_rim_contact,a.plate_second_rim_hover_gate,
                          a.plate_second_visible_contact_gate,
                          a.plate_second_preserve_downward,
-                         a.plate_second_line_step)
+                         a.plate_second_line_step,
+                         a.plate_second_yaw_flip)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -350,6 +358,7 @@ def main():
                     plate_second_visible_contact_gate=a.plate_second_visible_contact_gate,
                     plate_second_preserve_downward=a.plate_second_preserve_downward,
                     plate_second_line_step=a.plate_second_line_step,
+                    plate_second_yaw_flip=a.plate_second_yaw_flip,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,
                     policy_source_sha256=hashes, git_commit=commit,
