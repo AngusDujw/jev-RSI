@@ -54,7 +54,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    plate_second_yaw_flip=False,
                    plate_first_preserve_downward=False,
                    plate_second_planar_contact=False,
-                   plate_second_rear_insert=False,plate_second_orient_clearance=False,plate_rear_compact=False):
+                   plate_second_rear_insert=False,plate_second_orient_clearance=False,plate_rear_compact=False,plate_second_rim_slide=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -115,6 +115,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-first-preserve-downward']
         if plate_second_planar_contact:
             cmd += ['--plate-second-planar-contact']
+        if plate_second_rim_slide:
+            cmd += ['--plate-second-rim-slide']
         if plate_rear_compact:
             cmd += ['--plate-rear-compact']
         if plate_second_orient_clearance:
@@ -193,6 +195,7 @@ def main():
                    help='Keep the initial own downward wrist for the first supported push')
     p.add_argument('--plate-second-planar-contact', action='store_true',
                    help='Relieve Z and wrist goals while own fingers remain within public plate height')
+    p.add_argument('--plate-second-rim-slide', action='store_true')
     p.add_argument('--plate-rear-compact', action='store_true')
     p.add_argument('--plate-second-orient-clearance', action='store_true')
     p.add_argument('--plate-second-rear-insert', action='store_true',
@@ -273,6 +276,8 @@ def main():
         p.error('Alternate yaw requires second rim contact and no preserved wrist')
     if a.plate_second_planar_contact and not a.plate_second_rim_contact:
         p.error('Planar contact requires second rim contact')
+    if a.plate_second_rim_slide and (a.task_id != 1296 or a.plate_second_rear_insert):
+        p.error('Rim slide is Goal1296 only and excludes rear insertion')
     if a.plate_rear_compact and not a.plate_second_rear_insert:
         p.error('Compact clearance requires staged rear insertion')
     if a.plate_second_orient_clearance and not a.plate_second_rear_insert:
@@ -294,7 +299,7 @@ def main():
                          a.plate_second_yaw_flip,
                          a.plate_first_preserve_downward,
                          a.plate_second_planar_contact,
-                         a.plate_second_rear_insert,a.plate_second_orient_clearance,a.plate_rear_compact)
+                         a.plate_second_rear_insert,a.plate_second_orient_clearance,a.plate_rear_compact,a.plate_second_rim_slide)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -400,6 +405,7 @@ def main():
                     plate_second_rear_insert=a.plate_second_rear_insert,
                     plate_second_orient_clearance=a.plate_second_orient_clearance,
                     plate_rear_compact=a.plate_rear_compact,
+                    plate_second_rim_slide=a.plate_second_rim_slide,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,
                     policy_source_sha256=hashes, git_commit=commit,

@@ -24,6 +24,40 @@ from run_position_pilot import Jev, append, direction_metrics, dump, serial
 PHASES = ('prepare', 'approach', 'lower', 'push', 'retreat')
 
 
+def visible_rim_slide_plan(source, goal, own, robot_reference, current_orientation):
+    """Plan table-height rim contact from observed bounds and own geometry."""
+    center = np.asarray(source['center'], float)
+    extent = np.asarray(source['high'])-np.asarray(source['low'])
+    toward_robot = np.asarray(robot_reference)[:2]-center[:2]
+    axis = int(np.argmax(np.abs(toward_robot)))
+    close_axis = np.eye(3)[axis]
+    long_axis = np.array([close_axis[1], -close_axis[0], 0.])
+    rotation = np.column_stack([long_axis, -close_axis, [0., 0., -1.]])
+    if np.linalg.det(rotation) < 0:
+        rotation[:, 1] *= -1
+    other = rotation @ Rotation.from_euler('z', np.pi).as_matrix()
+    rotation = min((rotation, other), key=lambda candidate: np.linalg.norm(
+        Rotation.from_matrix(candidate@current_orientation.T).as_rotvec()))
+    box = envelope(own, rotation)
+    side = 1. if toward_robot[axis] >= 0 else -1.
+    rim = center[:2]+side*close_axis[:2]*extent[axis]/2
+    xy = rim-np.asarray(box['pad_center_offset'])[:2]
+    z = max(float(source['high'][2])-.004-float(box['pad_low_offset'][2]),
+            float(goal[2])+.002-float(box['finger_low_z_offset']))
+    contact = np.r_[xy, z]
+    direction = (goal[:2]-center[:2])/max(np.linalg.norm(goal[:2]-center[:2]), 1e-9)
+    end = contact.copy()
+    end[:2] += goal[:2]-center[:2]
+    return dict(orientation=rotation, direction=direction,
+        approach=contact+np.array([0., 0., .14]), lower=contact,
+        contact=contact, push_end=end, retreat=end+np.array([0., 0., .12]),
+        contact_mode='robot_near_visible_rim_slide', observed_rear_extent_m=0.,
+        own_finger_table_clearance_mm=(z+box['finger_low_z_offset']-goal[2])*1000,
+        rim_axis_world=close_axis, rim_side=side,
+        rim_source='visible plate bounds and initial own TCP reference',
+        own_envelope=box)
+
+
 def visible_finger_plate_contact(own, tcp, quaternion, source, history,
                                  position_error, rotation_error, direction):
     """Offer a bounded push trial from public plate bounds and own finger motion.
@@ -273,7 +307,7 @@ class PushModel(Jev):
                                   hold='No rotation', positive='Positive world rotation'))
         questions['gripper'] = dict(type='choice', instructions=
             'Choose open, close or keep based on the current contact-push contract. '
-            'The source remains supported by the table, so never claim a grasp. '
+            'Follow gripper.needed_for_contract; closure is only a contact trial, not holding proof. Keep the source supported by the table. '
             'For an observation-only reobserve, the motor choice is not executed.',
             criteria=dict(open='Command open', close='Command close',
                           keep='Preserve previous command'))
@@ -361,6 +395,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
         vision = PushVision(rec)
     model = PushModel(rec)
     own = gripper_geometry(env, obs)
+    robot_reference = np.asarray(obs['robot0_eef_pos']).copy()
     dump(rec.folder/'own-gripper.json', own)
     ticks = grip_ticks = stage_decisions = 0
     stage = 'prepare'
@@ -394,6 +429,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             T=t_fn(env.sim, c)) for c in ('agentview', 'robot0_eye_in_hand')}
 
     def build_plan(source, rear_extent, observed_views, own, standoff=.010):
+        if visible_goal_plate and segment >= 2 and rec.cfg.get('plate_second_rim_slide'):
+            return visible_rim_slide_plan(source, goal, own, robot_reference, Rotation.from_quat(obs['robot0_eef_quat']).as_matrix())
         rim_second = bool(visible_goal_plate and segment >= 2 and
                           rec.cfg.get('plate_second_rim_contact'))
         kwargs = dict(current_orientation=Rotation.from_quat(
@@ -475,10 +512,12 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             current = obs['robot0_eef_pos'].copy()
             rear_insert = bool(visible_goal_plate and segment >= 2 and
                                rec.cfg.get('plate_second_rear_insert'))
+            rim_slide = bool(visible_goal_plate and segment >= 2 and rec.cfg.get('plate_second_rim_slide'))
+            slide_open = bool(rim_slide and stage in ('prepare','approach','lower','release','retreat'))
             orient_clearance = bool(rear_insert and rec.cfg.get('plate_second_orient_clearance'))
             if orient_clearance and stage == 'orient_clearance' and clearance_orientation_target is None:
                 clearance_orientation_target = current.copy()
-            target = dict(orient_clearance=(clearance_orientation_target if clearance_orientation_target is not None else current), prepare=current, approach=approach, lower=lower,
+            target = dict(orient_clearance=(clearance_orientation_target if clearance_orientation_target is not None else current), prepare=current, grasp=current, release=current, approach=approach, lower=lower,
                           side_contact=contact, push=push_end, retreat=retreat)[stage]
             stage_orientation = orientation
             rear_path = None
@@ -621,6 +660,21 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     not front_relation_passed and not residual_correction_available):
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
+            slide_evidence = None
+            if rim_slide:
+                if stage == 'prepare': complete = bool(grip_ticks >= 18 and gripper == -1)
+                if stage == 'grasp': complete = bool(grip_ticks >= 18 and gripper == 1)
+                if stage == 'release': complete = bool(grip_ticks >= 18 and gripper == -1 and float(np.sum(abs(obs['robot0_gripper_qpos'])))*1000 >= 65)
+                if stage == 'lower':
+                    measured_rotation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+                    vertices = np.asarray(own['pad_vertices_tool']) @ measured_rotation.T + current
+                    low_pad, high_pad = np.quantile(vertices, [.05,.95],axis=0)
+                    overlap = np.maximum(0.,np.minimum(high_pad,source['high'])-np.maximum(low_pad,source['low']))
+                    gap = float(max(low_pad[2]-source['high'][2],source['low'][2]-high_pad[2],0.))
+                    finger_low = float((np.asarray(own['finger_vertices_tool']) @ measured_rotation.T + current)[:,2].min())
+                    contact_ready = bool(gripper == -1 and np.all(overlap[:2] >= .003) and gap <= .002 and finger_low >= float(goal[2])+.001 and np.max(np.abs(error)) < .015 and np.max(np.abs(rot)) < .08)
+                    complete = contact_ready
+                    slide_evidence = dict(closure_trial_ready=contact_ready,visible_pad_overlap_mm=(overlap*1000).tolist(),vertical_gap_mm=gap*1000,own_finger_table_clearance_mm=(finger_low-goal[2])*1000,source='public plate RGB-D bounds and own open finger mesh; not holding proof')
             if orient_clearance and stage == 'orient_clearance':
                 complete = bool(arrived and np.max(np.abs(rot)) < .06 and gripper == 1)
             if rear_insert and stage == 'approach':
@@ -656,9 +710,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                  (visible_error < goal_tolerance or
                                   front_relation_passed)) if visible_goal_plate
                             else arrived)
+            support_height_passed = (bool(float(goal[2])-.005 <= float(observed_after['low'][2]) <= float(goal[2])+.025) if rim_slide and observed_after is not None else None)
+            if rim_slide and stage == 'retreat':
+                complete = bool(complete and support_height_passed)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
             phase_order = (('prepare', 'orient_clearance', 'approach', 'lower', 'side_contact', 'push', 'retreat') if orient_clearance else ('prepare', 'approach', 'lower', 'side_contact', 'push', 'retreat')) if rear_insert else PHASES
-            next_stage = (('orient_clearance' if rec.cfg.get('plate_second_orient_clearance') else 'approach') if stage == 'retreat' and visible_goal_plate
+            if rim_slide:
+                phase_order = ('prepare','approach','lower','grasp','push','release','retreat')
+            next_stage = (('prepare' if rec.cfg.get('plate_second_rim_slide') else 'orient_clearance' if rec.cfg.get('plate_second_orient_clearance') else 'approach') if stage == 'retreat' and visible_goal_plate
                           and segment == 1 else 'finish_attempt' if stage == 'retreat'
                           else phase_order[phase_order.index(stage)+1])
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
@@ -717,6 +776,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'The supplied Z and wrist goals then preserve the current own pose; '
                     'select planar directions toward the supplied endpoint. This is a '
                     'contact-compatible trial only; later fresh RGB-D verifies object movement.')
+            if rim_slide:
+                contracts.update(prepare='Hold TCP and open for 18 native ticks before approaching the visible robot-near rim.',approach='Reach the clearance hover above the visible robot-near rim with open fingers; align the supplied downward pose.',lower='Lower open fingers toward the visible rim. Advance only on the supplied bounded pad-overlap and positive table-clearance closure-trial gate. This is not grasp proof.',grasp='Hold TCP and close for 18 native ticks for one rim-assisted slide trial. Closure does not prove holding. No source lifting goal is supplied.',push='Keep closed and translate the rim contact along the table toward the visible stove-front goal. Keep the supplied table-height Z; advance after the endpoint. Final fresh RGB-D after open withdrawal must verify the plate.',release='Hold TCP and open for 18 native ticks with aperture at least 65 mm, then advance to upward withdrawal.',retreat='Withdraw with open fingers to reveal the plate; advance only if fresh public RGB-D verifies the final visible stove-front relation or goal tolerance.')
             if orient_clearance:
                 contracts['orient_clearance'] = 'Hold the measured clearance TCP location and align the downward pusher orientation before lateral approach. Advance only after own position arrival and rotation residual below 0.06 rad with closed fingers. No source contact is claimed.'
             if rear_insert:
@@ -739,7 +800,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     zip(('rx','ry','rz'), rot.tolist())),
                 gripper=dict(aperture_mm=aperture,
                     last_command='open' if gripper==-1 else 'close',
-                    command_ticks=grip_ticks, needed_for_contract='close'),
+                    command_ticks=grip_ticks, needed_for_contract='open' if slide_open else 'close'),
                 completion_evidence=dict(position_arrived=arrived,
                     orientation_arrived=oriented, visible_object_goal_error_mm=
                     None if visible_error is None else round(visible_error*1000, 2),
@@ -771,6 +832,10 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 recent_actions=history[-3:],
                 phase_decisions=stage_decisions, information_sources=
                 'Public instruction, rendered RGB-D/calibration, own robot pose/finger mesh, executed history only.')
+            if rim_slide:
+                state['completion_evidence']['visible_source_on_support'] = support_height_passed
+            if slide_evidence is not None:
+                state['completion_evidence']['rim_slide_contact'] = slide_evidence
             if planar_contact is not None:
                 state['completion_evidence']['visible_planar_contact'] = planar_contact
             if rear_path is not None:
@@ -866,7 +931,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 planar_gain = min(.5, cap/max(float(np.max(np.abs(error[:2]))), 1e-9))
                 delta[:2] = np.asarray(decision['signs'][:2])*planar_gain*np.abs(error[:2])
             rotations = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rot))
-            block = 6 if stage == 'prepare' or np.max(np.abs(error))>.06 else 3
+            block = 6 if stage in ('prepare','grasp','release') or np.max(np.abs(error))>.06 else 3
             if rear_insert and decision['transition'] == 'advance' and stage in ('approach', 'lower', 'side_contact'):
                 block = 1
             if ticks+block > max_native_ticks:
@@ -944,7 +1009,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     # The pusher geometry is recalculated from its *actual* closed
                     # finger mesh before setting the approach/contact line.
                     own = gripper_geometry(env, obs)
-                    dump(rec.folder/'own-gripper-after-close.json', own)
+                    dump(rec.folder/('own-gripper-after-open.json' if rim_slide else 'own-gripper-after-close.json'), own)
                     plan = build_plan(source, rear_extent, v, own)
                     direction, orientation = plan['direction'], plan['orientation']
                     approach, lower, contact = (plan[k] for k in ('approach','lower','contact'))
