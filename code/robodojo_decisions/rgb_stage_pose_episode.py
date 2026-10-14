@@ -339,7 +339,14 @@ def run(tools, obs, model, output, max_decisions, deadline):
             data['stop_criterion_scope']='Current stage only; far OPEN does not require future enclosure.'
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])
-        stage_data={k:v for k,v in data.items() if k!='complete_programs'}
+        compact_evidence=os.environ.get('ROBODOJO_RGB_STAGE_COMPACT_EVIDENCE')=='1'
+        if compact_evidence:
+            from rgb_stage_actor_input import compact
+            (output/f'full_perception_evidence_step_{step:03d}.json').write_text(json.dumps(data,indent=2))
+            stage_input=compact(data)
+        else:
+            stage_input=data
+        stage_data={k:v for k,v in stage_input.items() if k!='complete_programs'}
         perception_questions=[choice('observable_stage','Classify the CURRENT observable working stage under planner entry/EXIT rules; no motion is requested by this perception-only question.',plan['stages'])]
         bind_roles=os.environ.get('ROBODOJO_RGB_STAGE_ROLE_BINDING')=='1' and obs['task']=='stack_blocks'
         if bind_roles:
@@ -394,8 +401,13 @@ def run(tools, obs, model, output, max_decisions, deadline):
                 'controller_stop':'No executable proposal remains after current role/geometry checks; no action query submitted.',
                 'memory_sha256':hashes})
             status='rgb_pose_no_supported_role_program';break
+        if compact_evidence:
+            (output/f'full_action_evidence_step_{step:03d}.json').write_text(json.dumps(data,indent=2))
+            action_input=compact(data,action=True)
+        else:
+            action_input=data
         answer=model.query(obs,[choice('complete_pose_program','Under CURRENT_STAGE and its observation rule, use CURRENT RGB/robot state to choose ONE complete bounded program or STOP. This is the only action judgment for this frame.',options)],
-                           json.dumps(data,ensure_ascii=False),f'rgb_pose_action_{turn:03d}_step{step:03d}',extra_images=images)
+                           json.dumps(action_input,ensure_ascii=False),f'rgb_pose_action_{turn:03d}_step{step:03d}',extra_images=images)
         queries+=1;selected=answer['complete_pose_program']
         record={'step_id':step,'stage':stage,'luna_choice':selected,'memory_sha256':hashes};records.append(record)
         if selected.startswith('STOP'):

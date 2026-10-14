@@ -614,7 +614,7 @@ def main() -> None:
                                       if args.controller == "v2_pickup_active_episode" else "supplied plan provenance"),
         "planner_schema_provenance": plan.get("planner_provenance", {}),
         "decision_model": "gpt-6-luna via du cad/direct key",
-        "actor_current_numeric_errors": (False if args.controller == "v2_rgb_stage_pose_episode" else
+        "actor_current_numeric_errors": (os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1' if args.controller == "v2_rgb_stage_pose_episode" else
                                          os.environ.get("ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS", "1") != "0"),
         "runtime_feature_flags": {key: value for key, value in os.environ.items()
             if (key.startswith(("ROBODOJO_PICKUP_", "ROBODOJO_RGB_STAGE_")) and value in ("0", "1")) or key in (
