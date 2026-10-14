@@ -627,7 +627,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             if capture_robot_reference_z is None:
                 capture_robot_reference_z=float(obs['current_eef']['right']['position'][2])
             after,capture_record=capture_rgb_step(tools,obs,model,output,experience,turn,
-                capture_robot_reference_z,previous_observation_for_capture)
+                capture_robot_reference_z,previous_observation_for_capture,planner_stages=active_stage_rules)
             trace.append(capture_record)
             if after is None:
                 status=capture_record['status'];native_result=tools.finish(status);break

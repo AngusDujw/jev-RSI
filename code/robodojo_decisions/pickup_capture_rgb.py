@@ -8,7 +8,7 @@ from pickup_rgb_axes import _targets
 from robot_path_preview import preview
 
 
-def step(tools,obs,model,output,experience,turn,reference_z,previous):
+def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_stages=None):
     failure_review=obs.get('close_tracking_failure_review')
     test_once=os.environ.get('ROBODOJO_PICKUP_CAPTURE_TEST_ONCE')=='1'
     rise=float(obs['current_eef']['right']['position'][2]-reference_z)
@@ -53,6 +53,10 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous):
         'complete_program_alternatives':programs,'memory_sha256':hashes,'memory_snapshot_directory':str(directory),
         'experience_global_original':experience['global.md'],'task_experience_selected_original_lines':task_lines,
         'contract':'This is native SIMULATION feedback after a CLOSE command, not proof of contact/holding. Judge CURRENT actual source material and fingers. A CLOSED +Z20mm is a small visible-following TEST; +Z50mm is a separate full lift. Select a lift only when current source enclosure/short corridor supports it, then compare the SAME source in fresh fixed-high and wrist images. OPEN at held poses is ONLY for visibly EMPTY fingers/source left behind, never release a verified held source. If neither lift/open/hold is supported choose STOP. HOLD only maintains a visibly captured, sufficiently elevated source through native horizon; native task result is never presumed. All actions are mutually exclusive complete five-step programs, left arm/orientation held, world Z up. No static object-plane fit is required for a possibly moving captured source.'}
+    planner_stage='height_gain_verification' if test_motion_executed and not failure_review else 'capture_and_following'
+    data['planner_stage']=planner_stage
+    data['planner_stage_evidence_rule']=(planner_stages or {}).get(planner_stage)
+    data['planner_stage_interpretation']='Last valid planner semantic rule, if available; runtime review label/test-motion history is not planner refresh, confirmed capture, source height or phase completion.'
     if failure_review:
         data['previous_close_tracking_gate_FAILURE']=failure_review
         data['contract']='The preceding held-EEF CLOSE FAILED its original 2mm tracking gate. It is NOT accepted as successful tracking/capture. From these FRESH RGB and measured state choose ONE zero-pose-change CLOSED stabilization at the CURRENT measured poses, or OPEN only visibly empty fingers, or STOP. No lift or old missed target is offered. Stabilization itself requires a NEW native first IK, independent five-step robot path and <=2mm actual tracking; it is not holding proof. Only after a successful new stabilization and fresh RGB may a later independent decision consider a lift. At most one such stabilization is offered for this failed CLOSE; no automatic repeated HOLD.'
