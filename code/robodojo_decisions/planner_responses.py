@@ -113,10 +113,12 @@ def request(payload: dict, configuration: dict) -> dict:
         "Content-Type": "application/json",
     }
     last_error = None
-    for attempt in range(2):
+    long_request = os.environ.get('ROBODOJO_PLANNER_LONG_REQUEST') == '1'
+    attempts, timeout = (1, 210) if long_request else (2, 95)
+    for attempt in range(attempts):
         call = urllib.request.Request(url, data=body, headers=header, method="POST")
         try:
-            with urllib.request.urlopen(call, timeout=95) as handle:
+            with urllib.request.urlopen(call, timeout=timeout) as handle:
                 response = json.load(handle)
             output_text(response)
             return response
@@ -129,6 +131,6 @@ def request(payload: dict, configuration: dict) -> dict:
             last_error = f"HTTP {error.code}"
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
             last_error = type(error).__name__
-        if attempt == 0:
+        if attempt + 1 < attempts:
             time.sleep(20)
     raise RuntimeError("Planner Responses failed after bounded retries: " + str(last_error))
