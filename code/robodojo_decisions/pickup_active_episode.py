@@ -58,6 +58,15 @@ def _runtime_planner_stage(stages: dict, runtime: str):
     return name, stages.get(name) if name else None
 
 
+def _open_increment_scope(runtime, offered, precontact_scope):
+    """Keep OPEN preparation under incremental rules, never actual contact."""
+    stages={'coarse_directional_alignment_review','strict_tool_geometry_review'}
+    if precontact_scope:
+        stages.update(('near_contact_preparation','planar_precontact'))
+    return bool(runtime in stages and offered and
+                all(not target['right']['gripper_closed'] for target in offered))
+
+
 def _tracking_limit(obs: dict, record: dict, target: dict) -> float:
     """Coarse open lateral moves use measured feedback; contact keeps 2 mm."""
     if os.environ.get("ROBODOJO_PICKUP_COARSE_TRACKING_5MM") != "1":
@@ -1325,7 +1334,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
             questions.append(choice("pickup_action", "Independently RANK the ONE most promising COMPLETE offered motion for current-stage progress from the XYZ/angle effects and current RGB. Answer this ranking without referencing other question outputs. Use the explicit abstain if no progress candidate can be ranked. This ranking alone does not authorize execution; the harness separately requires confirmed identity and the motion family. World +X is robot-right, +Y away from robot bases, +Z up. XYZ millimetres and world rotation-vector radians occur together as one pose target. Compare the same-feature predicted XYZ/angle effects and whole visible corridor. Source identity, depth and contact are separate; reobserve after one bounded five-step action.", motion_options))
         mapped_stage, mapped_rule = _runtime_planner_stage(active_stage_rules,record["stage"])
         if (os.environ.get('ROBODOJO_PICKUP_PRECONTACT_STAGE_SCOPE')=='1'
-                and record['stage']=='near_contact_preparation'):
+                and record['stage'] in ('near_contact_preparation','planar_precontact')
+                and material is not None):
             record['current_phase_goal']=(
                 'Continue OPEN source-to-finger geometric alignment using the current uncertain named-feature XYZ residual, '
                 'actual public finger facets and the entire visible short corridor. This preparation phase may still be tens '
@@ -1485,8 +1495,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                     if question['name']=='full_program_decision':question['instructions']=scope
         offered = list(model_input.get('complete_robot_action_targets',{}).values())
         if (os.environ.get('ROBODOJO_PICKUP_STAGE_PROGRESS_DECISION') == '1'
-                and record['stage'] in ('coarse_directional_alignment_review','strict_tool_geometry_review')
-                and offered and all(not target['right']['gripper_closed'] for target in offered)):
+                and _open_increment_scope(record['stage'],offered,
+                    os.environ.get('ROBODOJO_PICKUP_PRECONTACT_STAGE_SCOPE')=='1')):
             policy = (
                 'This is a NATIVE SIMULATED open-hand incremental stage decision, not a real-hardware deployment or contact certificate. '
                 'Compare the offered COMPLETE legal five-step programs for expected progress toward the CURRENT stage objective using current RGB, measured robot state and whatever uncertain numerical evidence this variant actually supplies. '

@@ -348,3 +348,6 @@
 - 【Agent】【2026-10-14 17:48】[op] 经验检索改进：显式英文[phase:identity/alignment/capture]优先，避免alignment因为finger/pad关键词误取最近capture失败经验；规划器逐字选每阶段最新条目，保留旧文件回退规则与完整原文快照。新增pickup受限model_versions路径用于冻结对照；6回归与全AST通过。
 - 【Agent】【2026-10-14 17:48】[op] 规划经验manifest仅在实际启用阶段标签检索时记录新policy字段；未带标签的旧响应复审保持原manifest格式，不因新元数据无故失效。
 - 【Agent】【2026-10-14 17:50】[op] 阶段经验补充分离contact与far alignment；显式tag文件缺某阶段时返回无匹配经验，不从其他阶段关键词回退。未tag旧文件contact保持旧alignment字词规则。7个分离/缺失/兼容回归通过；全部原文仍逐次快照。
+- 【Agent】【2026-10-14 17:53】[result] 445冻结复验452再次193步原生成功、453145步STOP；该配置含首轮2/3，累计9完整成功回合仍1/42未稳定。451顺序感知5步STOP；458按阶段修正STOP仍0步。457规划3072输出预算耗尽无方法、459增6144后网关过载。阶段tag经验461/462准备，不冒称模型/控制收益。
+- 【Agent】【2026-10-14 17:55】[run] 启动四路前台原生冻结对照461/464阶段tag经验、462/465旧英文经验；同dd5d0c68代码，仅版本化memory_root不同，全部200步原生horizon。预声明每臂2独立reset，原文逐次重读，批次中不合并新经验。
+- 【Agent】【2026-10-14 17:59】[op] 补齐同一PRECONTACT_STAGE_SCOPE在动作问题的作用：已有阶段映射/goal修正，但近接近/planar OPEN此前未进入增量决策policy。现在仅OPEN准备共享既有increment规则，并给有当前材料的planar阶段补显式goal；实际contact-position/CLOSE/闭手阶段不变。10边界回归通过，当前四路仍冻结dd5d0c68。
