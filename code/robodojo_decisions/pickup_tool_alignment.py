@@ -55,6 +55,10 @@ def build(observation: dict, green_plane: dict | None, table: dict | None):
         margin = None
     options, targets = {}, {}
     sizes = (.05, .10, .20, .30) if os.environ.get('ROBODOJO_PICKUP_PROGRAM_PAIR') == '1' else (.10, .20, .30)
+    if os.environ.get('ROBODOJO_PICKUP_TIGHTER_GRASP_ALIGNMENT')=='1' and np.degrees(angle)<20:
+        sizes=(.05,)  # Native run317 overshot the 2mm tracking gate with .10rad here.
+        evidence['fine_orientation_increment_rad']=.05
+        evidence['fine_orientation_reason']='Near-vertical .10rad public prediction underestimated actual tracking error; use a smaller target, never relax the native 2mm gate.'
     for size in sizes:
         size = min(size, angle)
         rotated = Rotation.from_rotvec(rotation_axis*size).as_matrix() @ current[:3, :3]
