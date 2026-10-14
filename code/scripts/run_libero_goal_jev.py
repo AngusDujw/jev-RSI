@@ -306,8 +306,9 @@ def main():
         previous = [json.loads(line) for line in stream if line.strip()]
         count = sum(row.get('suite') == 'libero_goal' and
                     row.get('task') == a.task_id for row in previous)
-        if count >= 50:
-            raise RuntimeError(f'Task {a.task_id} already at 50 attempts')
+        attempt_limit = 80 if a.task_id in (1098, 1202, 1296) else 50
+        if count >= attempt_limit:
+            raise RuntimeError(f'Task {a.task_id} already at {attempt_limit} attempts')
         reservation = dict(suite='libero_goal', task=a.task_id,
                            init=a.init_index, attempt=count+1,
                            campaign=out.name, output=str(out),
