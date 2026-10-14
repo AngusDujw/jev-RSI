@@ -1,6 +1,7 @@
 """Capture/recovery feedback from current RGB and robot state, without static-source geometry."""
 import hashlib
 import json
+import os
 import numpy as np
 from controller import choice
 from pickup_rgb_axes import _targets
@@ -39,6 +40,10 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous):
         'contract':'This is native SIMULATION feedback after a CLOSE command, not proof of contact/holding. Judge CURRENT actual source material and fingers. A CLOSED +Z20mm is a small visible-following TEST; +Z50mm is a separate full lift. Select a lift only when current source enclosure/short corridor supports it, then compare the SAME source in fresh fixed-high and wrist images. OPEN at held poses is ONLY for visibly EMPTY fingers/source left behind, never release a verified held source. If neither lift/open/hold is supported choose STOP. HOLD only maintains a visibly captured, sufficiently elevated source through native horizon; native task result is never presumed. All actions are mutually exclusive complete five-step programs, left arm/orientation held, world Z up. No static object-plane fit is required for a possibly moving captured source.'}
     images=[]
     if previous is not None:
+        if os.environ.get('ROBODOJO_PICKUP_SOURCE_FOLLOWING_RGB_EVIDENCE')=='1':
+            from pickup_source_following_rgb import measure
+            try:data['algorithmic_current_source_image_change']=measure(previous,obs)
+            except ValueError as error:data['algorithmic_current_source_image_change']={'available':False,'reason':str(error)}
         data['previous_public_robot_state_for_feature_change']={'step_id':previous['step_id'],'eef':previous['current_eef']}
         images=[{'camera':f"PREVIOUS same-episode {row['camera']} step{previous['step_id']} for CURRENT feature-change comparison, NOT current contact",'path':row['path']}
             for row in previous['images'] if row['camera'] in ('cam_high','cam_right_wrist')]
