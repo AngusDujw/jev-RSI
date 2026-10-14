@@ -220,3 +220,7 @@
 - 【User】【2026-10-14 06:19】[prompt] 继续优化吧直到完成目标
 - 【Agent】【2026-10-14 06:19】[op] Goal1098第48–50次EXP、Discussion证据、时间线和十Goal状态已严格lint并提交90ffa78e，SSH推送main；原始目录经rsync逐文件校验。
 - 【Agent】【2026-10-14 06:22】[op] 5880正式账本另存为本机code/runs/2026-10-14-5880-ledger-snapshot.jsonl并逐文件校验；旧code/runs/libero-supervisor-ledger.jsonl是指向旧服务器root路径的失效软链接，保留未动。1098/1202/1296均50/50。
+- 【User】【2026-10-14 12:11】[decision] 确认将Goal1098、1202、1296各自正式尝试上限从50提高到80次，继续冻结新初态验证及优化。
+- 【Agent】【2026-10-14 12:13】[run] 用户确认三项各80次后，Goal1098仅入口上限改为80，d117d332已SSH推送/Git bundle部署；启动未见init6第51/80次，控制策略与e9319db1一致，前台session88204，GPU0 EGL/CPU视觉。
+- 【Agent】【2026-10-14 12:15】[op] 80次上限已同步Goal1098/1202/1296三个独立分支并SSH推送；5880 GitHub直接拉取停滞仅终止本次自有git进程，已验证Git bundle快进部署1098，部署bundle两端已删除。
+- 【Agent】【2026-10-14 12:17】[result] Goal1098固定控制版未见init6第51/80次双终局成功，99Jev/324步；继续同d117d332未见init7第52/80次，先审计init6再串行启动，前台session85657。
