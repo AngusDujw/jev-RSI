@@ -163,7 +163,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
         if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1':
             from stack_top_approach_evidence import build
             try:
-                geometry=build(obs,programs)
+                geometry=build(obs,programs,diagnostics)
             except ValueError as error:
                 geometry={'status':'UNKNOWN','reason':str(error),'step_id':step}
             data['algorithmic_far_approach_evidence']=geometry
@@ -173,6 +173,18 @@ def run(tools, obs, model, output, max_decisions, deadline):
             mode=json.loads((output/'planner_input_mode.json').read_text())
             mode.update(actor_object_numeric_errors=True,geometry_operator_origin='User-authorized algorithm extension; not a fresh planner endorsement')
             (output/'planner_input_mode.json').write_text(json.dumps(mode,indent=2))
+            if os.environ.get('ROBODOJO_RGB_STAGE_SINGLE_APPROACH_PROGRAM')=='1':
+                candidates=[]
+                for name,relation in geometry.get('candidate_endpoint_relations',{}).items():
+                    if (name.startswith('world_') and not name.startswith('world_rot_')
+                            and relation.get('minimum_whole_hand_above_source_top_upper_hypothesis_mm',-1)>=6):
+                        gain=geometry['current_hypothesis_distance_mm']-relation['hypothesis_distance_mm']
+                        if gain>0:candidates.append((gain,name))
+                best=max(candidates)[1] if candidates else None
+                programs={best:programs[best]} if best else {}
+                options={name:options[name] for name in programs}
+                data['complete_programs']=programs
+                data['candidate_generation_policy']='Algorithm offers the translation with greatest predicted decrease of CURRENT conditional top-to-pad distance among independently reachable five-step paths whose entire hand stays at least6mm above this source-plane upper hypothesis. This only selects a proposal, not execution permission or scene clearance. Luna independently accepts it or STOP from current RGB; no probabilities combined.'
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])

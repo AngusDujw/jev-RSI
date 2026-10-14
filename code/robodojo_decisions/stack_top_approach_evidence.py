@@ -3,7 +3,7 @@ from pathlib import Path
 import itertools
 import cv2
 import numpy as np
-from camera_geometry import ray, eef_transform
+from camera_geometry import ray, eef_transform, gripper_height_above_landmark
 from gripper_pad_projection import inspect
 from planar_patch_geometry import fit
 
@@ -20,13 +20,13 @@ def _region(path, minimum):
     return (x,y,x+w-1,y+h-1),area
 
 
-def build(obs, programs):
+def build(obs, programs, paths=None):
     if obs['task']!='stack_blocks' or 'measured_gripper_joint_state' not in obs:
         raise ValueError('Current stack RGB and actual finger encoders required')
     if float(obs['current_eef']['right']['gripper_opening_command'])<.5:
         raise ValueError('Top-plane operator is only for open-hand approach')
-    paths={x['camera']:Path(x['path']) for x in obs['images']}
-    hi,hn=_region(paths['cam_high'],20);wr,wn=_region(paths['cam_right_wrist'],50)
+    image_paths={x['camera']:Path(x['path']) for x in obs['images']}
+    hi,hn=_region(image_paths['cam_high'],20);wr,wn=_region(image_paths['cam_right_wrist'],50)
     cal=obs['camera_calibration']
     fitted=fit(obs,cal,hi,wr,(220,210,150),.74,.85,.001)
     if fitted['best_mask_iou']<.65:
@@ -52,6 +52,14 @@ def build(obs, programs):
         newcenter=(eef_transform(target)@local)[:3]
         predicted[name]={'top_minus_pad_midpoint_world_xyz_mm':((point-newcenter)*1000).round(2).tolist(),
                          'hypothesis_distance_mm':round(float(np.linalg.norm(point-newcenter)*1000),2)}
+        if paths is not None:
+            gaps=[]
+            for row in paths[name]['public_five_step_path']['predicted_joint_path']:
+                pose={'position':row['predicted_link6_position_m'],
+                      'quaternion_wxyz':row['predicted_link6_quaternion_wxyz']}
+                gaps.append(gripper_height_above_landmark(pose,[0,0,up+.002],0)['hand_above_landmark_plane_after_m']*1000)
+            predicted[name]['minimum_whole_hand_above_source_top_upper_hypothesis_mm']=round(min(gaps),2)
+            predicted[name]['height_scope']='Public hand mesh over all openings and predicted five-step robot path vs this SOURCE top-height hypothesis only. Other objects and entire visible short corridor still require RGB; not scene collision certification.'
     fitted.pop('score_grid')
     return {'status':'current_conditional_top_hypothesis',
             'entity':'Unique CURRENT pale yellow wood-textured region candidate; Luna must verify identity and role from raw RGB.',
