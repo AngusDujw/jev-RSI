@@ -49,6 +49,11 @@ def _runtime_planner_stage(stages: dict, runtime: str):
         'contact_positioning_attempt_review': ('contact_verification', 'calibrated_geometry_gate'),
         'planar_precontact': ('coarse_directional_alignment', 'precontact_semantic_gate'),
     }
+    if os.environ.get('ROBODOJO_PICKUP_PRECONTACT_STAGE_SCOPE')=='1':
+        # Preparation can still be tens of millimetres from material. It is
+        # geometry/alignment review, while explicit contact attempts retain
+        # their own existing contact-verification rule.
+        aliases['near_contact_preparation']=('strict_tool_geometry','calibrated_geometry_gate')
     name = next((key for key in aliases.get(runtime, ()) if key in stages), None)
     return name, stages.get(name) if name else None
 
@@ -1314,6 +1319,13 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         if motion_options:
             questions.append(choice("pickup_action", "Independently RANK the ONE most promising COMPLETE offered motion for current-stage progress from the XYZ/angle effects and current RGB. Answer this ranking without referencing other question outputs. Use the explicit abstain if no progress candidate can be ranked. This ranking alone does not authorize execution; the harness separately requires confirmed identity and the motion family. World +X is robot-right, +Y away from robot bases, +Z up. XYZ millimetres and world rotation-vector radians occur together as one pose target. Compare the same-feature predicted XYZ/angle effects and whole visible corridor. Source identity, depth and contact are separate; reobserve after one bounded five-step action.", motion_options))
         mapped_stage, mapped_rule = _runtime_planner_stage(active_stage_rules,record["stage"])
+        if (os.environ.get('ROBODOJO_PICKUP_PRECONTACT_STAGE_SCOPE')=='1'
+                and record['stage']=='near_contact_preparation'):
+            record['current_phase_goal']=(
+                'Continue OPEN source-to-finger geometric alignment using the current uncertain named-feature XYZ residual, '
+                'actual public finger facets and the entire visible short corridor. This preparation phase may still be tens '
+                'of millimetres from material. Contact evidence is a later EXIT observation, not already established here; '
+                'this mapping grants no contact or motion permission. Current RGB and each complete program are judged independently.')
         model_input = {
             "task": obs["task"], "instruction": obs["instruction"],
             "source_control_feature": material.get('representative_material_point') if material else None,
