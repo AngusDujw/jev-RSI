@@ -112,6 +112,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     clear_target = None
     clear_start = None
     clear_source_x = None
+    required_pull_mm = 140.
     pull_anchor_y = None
     blocked_contact_blocks = 0
     expected = None
@@ -206,6 +207,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
 
     def visible_source_x_for_clearance():
         """Locate the public source before drawer motion can occlude it."""
+        nonlocal required_pull_mm
         from libero_generic_vision import GenericVision
         from libero_goal_local_vision import SOURCE_LABEL, pick_visible
         folder = rec.folder/'clear-source-vision'
@@ -228,6 +230,10 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 K=intrinsic, T=extrinsic), source['bbox'], label,
                 'public-source-clearance')
             dump(folder/'source-geometry.json', measured)
+            if rec.cfg.get('drawer_pull_from_source'):
+                span_mm = float((measured['high'][1]-measured['low'][1])*1000)
+                required_pull_mm = float(np.clip(span_mm+5., 90., 140.))
+                dump(folder/'source-sized-pull.json', dict(visible_source_span_y_mm=span_mm, required_pull_mm=required_pull_mm, source='pre-opening public RGB-D'))
             return float(measured['center'][0])
         finally:
             vision.close()
@@ -440,7 +446,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     # displacement and public extension; the next primitive
                     # must freshly measure the opened floor before placement.
                     gate = bool(extension and extension['passed'] and
-                        own_pull_mm is not None and own_pull_mm >= 140. and
+                        own_pull_mm is not None and own_pull_mm >= required_pull_mm and
                         aperture >= 6.)
                 if name == 'release' and rec.cfg.get('empty_hand_fast'):
                     # Observable aperture replaces excess fixed open ticks,
@@ -471,7 +477,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             blocked_contact_blocks=blocked_contact_blocks,
                             own_pull_distance_mm=(round(own_pull_mm, 2)
                                                   if name == 'pull' and own_pull_mm is not None else None),
-                            required_own_pull_distance_mm=(140. if task_id == 1202 and name == 'pull' else None),
+                            required_own_pull_distance_mm=(required_pull_mm if task_id == 1202 and name == 'pull' else None),
                             handle_contact_pose_reached=exact_contact_pose,
                             blocked_contact_closure_trial=blocked_contact_trial,
                             position_arrived=arrived,
@@ -511,7 +517,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 request['state']['stage_contract'] = (
                     'Keep holding the visible top drawer handle and move outward. '
                     'Partial exposure is insufficient for the bowl placement. '
-                    'Advance only after own outward travel reaches 140 mm, '
+                    f'Advance only after own outward travel reaches {required_pull_mm:.2f} mm, '
                     'the own gripper remains nonempty, and fresh public RGB-D '
                     'shows drawer extension. The next primitive freshly measures '
                     'the exposed floor and must check object containment before release.')
