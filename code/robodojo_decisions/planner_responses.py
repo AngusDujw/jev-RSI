@@ -115,6 +115,12 @@ def request(payload: dict, configuration: dict) -> dict:
     last_error = None
     long_request = os.environ.get('ROBODOJO_PLANNER_LONG_REQUEST') == '1'
     attempts, timeout = (1, 210) if long_request else (2, 95)
+    explicit_timeout = os.environ.get('ROBODOJO_PLANNER_REQUEST_TIMEOUT_SECONDS')
+    if explicit_timeout is not None:
+        timeout = int(explicit_timeout)
+        if not 30 <= timeout <= 600:
+            raise ValueError('Planner explicit timeout must be within30..600 seconds')
+        attempts = 1
     for attempt in range(attempts):
         call = urllib.request.Request(url, data=body, headers=header, method="POST")
         try:
@@ -129,7 +135,12 @@ def request(payload: dict, configuration: dict) -> dict:
                 raise RuntimeError(
                     f"Planner Responses HTTP {error.code} from requested provider") from error
             last_error = f"HTTP {error.code}"
-        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
+        except urllib.error.URLError as error:
+            # Diagnose transport vs provider latency without logging headers,
+            # credentials or potentially sensitive exception text.
+            last_error = ('URLError reason_type=' + type(error.reason).__name__ +
+                          ' errno=' + str(getattr(error.reason, 'errno', None)))
+        except (TimeoutError, json.JSONDecodeError) as error:
             last_error = type(error).__name__
         if attempt + 1 < attempts:
             time.sleep(20)
