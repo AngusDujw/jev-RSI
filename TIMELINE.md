@@ -123,6 +123,7 @@ graph LR
     T_2026W42_015["📊 libero-goal-ten<br/>Goal1098初始腕姿能穿过高位Y路点，…"]:::experiment
     T_2026W42_016["📊 libero-goal-ten<br/>Goal1296放宽第二段高位自身悬停门后…"]:::experiment
     T_2026W42_017["📊 libero-goal-ten<br/>Goal1098正面双指夹持+可见伸出/自…"]:::experiment
+    T_2026W42_018["📊 libero-goal-ten<br/>Goal1098固定控制版未见init6–…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -209,6 +210,7 @@ graph LR
   T_2026W42_014 --> T_2026W42_015
   T_2026W42_015 --> T_2026W42_016
   T_2026W42_016 --> T_2026W42_017
+  T_2026W42_017 --> T_2026W42_018
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -320,6 +322,7 @@ graph LR
 | `T-2026W42-015` | 2026-10-14 | experiment | libero-goal-ten | Goal1098初始腕姿能穿过高位Y路点，但侧腕姿转到终点时真实TCP退回约20mm；小步转腕仍不能同时守住侧腕姿和路点 | `EXP-2026W42-161` | - |
 | `T-2026W42-016` | 2026-10-14 | experiment | libero-goal-ten | Goal1296放宽第二段高位自身悬停门后首次进入lower，但低位X仍差10.5mm且盘沿未推动；50次上限耗尽 | `EXP-2026W42-162` | - |
 | `T-2026W42-017` | 2026-10-14 | experiment | libero-goal-ten | Goal1098正面双指夹持+可见伸出/自有受阻门首次双终局成功；十Goal各有至少一次成功，仍仅七项固定未见初态5/5 | `EXP-2026W42-168` | - |
+| `T-2026W42-018` | 2026-10-14 | experiment | libero-goal-ten | Goal1098固定控制版未见init6–10联合成功5/5；十项中8项达到冻结五初态复测标准 | `EXP-2026W42-169` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
