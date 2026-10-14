@@ -76,6 +76,12 @@ def output_text(response: dict) -> str:
             if data:
                 events.append(json.loads("\n".join(data)))
         for event in events:
+            if event.get('type')=='response.incomplete':
+                incomplete=event.get('response',{})
+                reason=(incomplete.get('incomplete_details') or {}).get('reason','unknown')
+                usage=incomplete.get('usage') or {}
+                raise ValueError('Planner incomplete: '+reason+'; output_tokens='+
+                                 str(usage.get('output_tokens'))+'; no completed method')
             if event.get("type") in ("error", "response.failed"):
                 detail = event.get("error") or event.get("response", {}).get("error") or {}
                 code = detail.get("code", "unknown")
@@ -118,8 +124,8 @@ def request(payload: dict, configuration: dict) -> dict:
     explicit_timeout = os.environ.get('ROBODOJO_PLANNER_REQUEST_TIMEOUT_SECONDS')
     if explicit_timeout is not None:
         timeout = int(explicit_timeout)
-        if not 30 <= timeout <= 600:
-            raise ValueError('Planner explicit timeout must be within30..600 seconds')
+        if not 30 <= timeout <= 1800:
+            raise ValueError('Planner explicit timeout must be within30..1800 seconds')
         attempts = 1
     for attempt in range(attempts):
         call = urllib.request.Request(url, data=body, headers=header, method="POST")

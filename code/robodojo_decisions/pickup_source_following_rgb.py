@@ -1,4 +1,4 @@
-"""Image-only blade-feature displacement; robot motion is reported separately."""
+"""Observed blade-region flow with optional past-robot projection residuals."""
 from pathlib import Path
 import os
 import cv2

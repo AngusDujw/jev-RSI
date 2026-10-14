@@ -64,7 +64,8 @@ def main():
                     raise ValueError('Relay cannot substitute authorized model/reasoning')
                 url='https://api.openai.com/v1/decisions' if service=='luna' else 'https://ai2robcowork.site/openai/v1/responses'
                 timeout=int(frame['timeout'])
-                if not 1<=timeout<=600:raise ValueError('Relay timeout outside bounded range')
+                limit=1800 if service=='planner' else 600
+                if not 1<=timeout<=limit:raise ValueError('Relay timeout outside bounded range')
                 start=time.monotonic()
                 try:answer=call(payload,key(service),timeout,url)
                 except Exception as error:answer={'transport_error':type(error).__name__}
