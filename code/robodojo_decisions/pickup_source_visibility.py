@@ -10,13 +10,16 @@ from pickup_visual_hull import _green_mask, _project_many
 
 def effect(obs, target, material=None, source_mask_override=None, source_step_id=None):
     image = next(row['path'] for row in obs['images'] if row['camera']=='cam_high')
-    source = (_green_mask(Path(image), 'cam_high') if source_mask_override is None
-              else np.asarray(source_mask_override,dtype=bool))
-    count = int(source.sum())
-    if count < 80:
-        return None
+    try:
+        source = (_green_mask(Path(image), 'cam_high') if source_mask_override is None
+                  else np.asarray(source_mask_override,dtype=bool))
+        count = int(source.sum())
+    except ValueError:
+        source,count=None,None
+    high_available=bool(count is not None and count>=80)
+    if not high_available and material is None:return None
     mesh_root = Path(pwd.getpwuid(os.getuid()).pw_dir) / 'DataStorage/jev-router/sources/RoboDojo/Assets/Robots/x5/meshes'
-    vertices = gripper_mesh_vertices(str(mesh_root))
+    vertices = gripper_mesh_vertices(str(mesh_root)) if high_available else []
     calibration = obs['camera_calibration']['cameras']['cam_high']
     def fraction(pose):
         transform = eef_transform(pose)
@@ -31,8 +34,8 @@ def effect(obs, target, material=None, source_mask_override=None, source_step_id
                 hull = cv2.convexHull(np.round(uv[valid]).astype(np.int32))
                 cv2.fillConvexPoly(footprint, hull, 1)
         return float(footprint[source].mean())
-    current = fraction(obs['current_eef']['right'])
-    predicted = fraction(target['right'])
+    current = fraction(obs['current_eef']['right']) if high_available else None
+    predicted = fraction(target['right']) if high_available else None
     wrist = None
     if material is not None:
         point = np.asarray(material['representative_material_point']['estimated_world_xyz_m']).reshape(1,3)
@@ -52,10 +55,11 @@ def effect(obs, target, material=None, source_mask_override=None, source_step_id
             'current_actual_high_green_pixels':count if source_mask_override is None else None,
             'historical_view_proxy_pixel_count':count if source_mask_override is not None else None,
             'historical_view_proxy_step_id':source_step_id,
-            'current_public_hand_footprint_overlap_fraction':round(current,4),
-            'after_full_target_public_hand_footprint_overlap_fraction':round(predicted,4),
+            'current_high_footprint_evidence_available':high_available,
+            'current_public_hand_footprint_overlap_fraction':round(current,4) if current is not None else None,
+            'after_full_target_public_hand_footprint_overlap_fraction':round(predicted,4) if predicted is not None else None,
             ('additional_current_source_pixel_overlap_fraction' if source_mask_override is None else
-             'additional_reference_view_proxy_overlap_fraction'):round(max(0,predicted-current),4),
+             'additional_reference_view_proxy_overlap_fraction'):round(max(0,predicted-current),4) if current is not None else None,
             'scope':('Conservative per-link convex PUBLIC mesh projections against CURRENT visible green pixels; assumes those pixels remain fixed. ' if source_mask_override is None else
                      'Conservative PUBLIC hand-mesh projections against an explicitly HISTORICAL fixed-high source-BBOX view proxy, under a declared static-source hypothesis. The bbox includes unknown/negative space and is NEVER current material, depth or contact evidence. ')+
-                    'Not a rendered future image, guaranteed visibility, collision or contact certificate. Hidden source pixels are unknown.'}
+                    'High-footprint values may be null when current high evidence is insufficient; null is UNKNOWN, not zero overlap. Wrist named-point FOV is independently available from current wrist-supported uncertain geometry. Not a rendered future image, guaranteed visibility, collision or contact certificate. Hidden source pixels are unknown.'}

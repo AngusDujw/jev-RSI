@@ -107,7 +107,7 @@ def propose(obs, targets, material, green_plane, table, stage):
         if os.environ.get('ROBODOJO_PICKUP_RETAIN_SOURCE_VIEW') == '1' and stage=='coarse_directional_alignment_review':
             visibility = source_visibility_effect(obs, target, material)
             if visibility:
-                score -= 40.0 * visibility['additional_current_source_pixel_overlap_fraction']
+                score -= 40.0 * (visibility['additional_current_source_pixel_overlap_fraction'] or 0)
                 wrist = visibility.get('named_source_wrist_field_of_view')
                 if wrist:
                     score -= max(0,35-wrist['after_target_edge_margin_px'])
@@ -150,7 +150,7 @@ def propose(obs, targets, material, green_plane, table, stage):
                 v = scores[key]['source_visibility_prediction']
                 wrist = v.get('named_source_wrist_field_of_view')
                 return (max(0,35-wrist['after_target_edge_margin_px']) if wrist else 0,
-                        v['additional_current_source_pixel_overlap_fraction'],
+                        v['additional_current_source_pixel_overlap_fraction'] or 0,
                         -scores[key]['stage_progress_score'])
             selected = min(near_ties,key=tie_cost)
             scores[selected]['near_tie_retention_rule'] = ('Within2 units of positive phase gain (mm or degrees for this phase), prefer wrist margin>=35 then lower high-source footprint overlap; chosen tie tolerance, not confidence.' if phase_gain_ranking else
