@@ -622,6 +622,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         if command_closed:
             material_feature_reference=None
             obs.pop('material_control_reference',None)
+        else:obs.pop('capture_settle_performed',None)
         if os.environ.get('ROBODOJO_PICKUP_CAPTURE_RGB_LOOP')=='1' and command_closed:
             from pickup_capture_rgb import step as capture_rgb_step
             if capture_robot_reference_z is None:
@@ -633,6 +634,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 status=capture_record['status'];native_result=tools.finish(status);break
             after['camera_calibration']=propagate_wrist_calibration(
                 initial_calibration,initial_eef,after['current_eef'],after['step_id'])
+            after['capture_settle_performed']=bool(obs.get('capture_settle_performed') or
+                capture_record.get('luna_choice','').startswith(('settle_','stabilize_')))
             (output / f"camera_calibration_step_{after['step_id']:03d}.json").write_text(
                 json.dumps(after['camera_calibration'],ensure_ascii=False,indent=2))
             previous_observation_for_capture=obs;obs=after

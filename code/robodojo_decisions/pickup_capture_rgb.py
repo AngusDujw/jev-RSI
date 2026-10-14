@@ -24,6 +24,9 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     elif test_motion_executed and rise<.25:
         requests=[r for r in requests if not r[0].startswith('closed_lift')]
         requests += [(f'closed_following_lift_{int(dz*1000)}mm',dz,True) for dz in (.020,.030,.040,.050)]
+    if (not failure_review and not test_motion_executed and
+            os.environ.get('ROBODOJO_PICKUP_CAPTURE_SINGLE_SETTLE')=='1' and not obs.get('capture_settle_performed')):
+        requests.append(('settle_existing_close_once',0,True))
     for name,dz,closed in requests:
         target=_targets(obs,'z',1,dz);target['right']['gripper_closed']=closed
         check=preview(obs,target['right'],None,5)
@@ -57,6 +60,11 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     data['planner_stage']=planner_stage
     data['planner_stage_evidence_rule']=(planner_stages or {}).get(planner_stage)
     data['planner_stage_interpretation']='Last valid planner semantic rule, if available; runtime review label/test-motion history is not planner refresh, confirmed capture, source height or phase completion.'
+    data['planner_criterion_role']='Planner pass/next is an EXIT criterion for advancing the semantic stage, NOT a precondition already proven before every bounded observation/test within the stage. A test may acquire missing evidence without claiming the criterion passed.'
+    data['current_phase_goal']=('Acquire source-following evidence with ONE bounded lift TEST from a CURRENT plausible enclosure/short corridor; closure alone is not holding. No informative lift has occurred yet, so closure-frame flow cannot establish lift-following. Do not require already verified co-motion before its first test. OPEN only visibly empty fingers, or STOP for a contradiction/unsupported corridor.' if not test_motion_executed else
+        'Evaluate actual CURRENT source-following after the previous test and review a height-gain increment; do not declare source height from robot rise.')
+    if any(name.startswith('settle_') for name in targets):
+        data['single_settle_scope']='An optional ONCE-only five-step continuation of the existing CLOSED command at CURRENT measured poses acquires closure/visibility evidence before a lift. It is not capture/height evidence and cannot be repeated automatically. Judge current actual material/fingers; STOP remains available.'
     if failure_review:
         data['previous_close_tracking_gate_FAILURE']=failure_review
         data['contract']='The preceding held-EEF CLOSE FAILED its original 2mm tracking gate. It is NOT accepted as successful tracking/capture. From these FRESH RGB and measured state choose ONE zero-pose-change CLOSED stabilization at the CURRENT measured poses, or OPEN only visibly empty fingers, or STOP. No lift or old missed target is offered. Stabilization itself requires a NEW native first IK, independent five-step robot path and <=2mm actual tracking; it is not holding proof. Only after a successful new stabilization and fresh RGB may a later independent decision consider a lift. At most one such stabilization is offered for this failed CLOSE; no automatic repeated HOLD.'
@@ -73,6 +81,7 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
         images=[{'camera':f"PREVIOUS same-episode {row['camera']} step{previous['step_id']} for CURRENT feature-change comparison, NOT current contact",'path':row['path']}
             for row in previous['images'] if row['camera'] in ('cam_high','cam_right_wrist')]
     descriptions={name:('OPEN only visibly empty fingers at held poses.' if name.startswith('open_') else
+        'ONE five-step settling of the existing CLOSED command at CURRENT measured poses; no lift, no holding proof; offered at most once.' if name.startswith('settle_') else
         'One CLOSED stabilization at exact CURRENT measured poses; previous tracking remains failed, no lift/holding inferred.' if name.startswith('stabilize_') else
         'HOLD CLOSED at exact current poses only with current visible capture/elevation.' if name.startswith('hold_') else
         f"One complete CLOSED lift by world Z+{round((targets[name]['right']['position'][2]-obs['current_eef']['right']['position'][2])*1000):g}mm, then verify actual source-following.") for name in targets}
