@@ -203,6 +203,7 @@ graph LR
     T_2026W42_095["📊 robodojo-decision-stages<br/>间距/独立较短抬升冻结批次0/3，224经…"]:::experiment
     T_2026W42_096["📊 robodojo-decision-stages<br/>372当前指面特写+腕图诊断193步原生成…"]:::experiment
     T_2026W42_097["📊 robodojo-decision-stages<br/>379收紧3mm闭爪门原生193步成功；特…"]:::experiment
+    T_2026W42_098["📊 robodojo-decision-stages<br/>397/410原生完整成功累计7回合1任务…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -366,6 +367,7 @@ graph LR
   T_2026W42_094 --> T_2026W42_095
   T_2026W42_095 --> T_2026W42_096
   T_2026W42_096 --> T_2026W42_097
+  T_2026W42_097 --> T_2026W42_098
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -557,6 +559,7 @@ graph LR
 | `T-2026W42-095` | 2026-10-14 | experiment | robodojo-decision-stages | 间距/独立较短抬升冻结批次0/3，224经验原文SHA一致；不能认定收益，当前腕图运动/实测指面特写原生对照371/372 | `EXP-2026W42-213` | - |
 | `T-2026W42-096` | 2026-10-14 | experiment | robodojo-decision-stages | 372当前指面特写+腕图诊断193步原生成功；371空手/静源STOP；材料SIFT四帧无同点，不认定特写因果收益，375/377继续独立复验 | `EXP-2026W42-214` | - |
 | `T-2026W42-097` | 2026-10-14 | experiment | robodojo-decision-stages | 379收紧3mm闭爪门原生193步成功；特写复验仍1/2。383规划400秒超时零动作，393显式通用文本方法/当前RGB推进；390/391新经验冻结运行 | `EXP-2026W42-219` | - |
+| `T-2026W42-098` | 2026-10-14 | experiment | robodojo-decision-stages | 397/410原生完整成功累计7回合1任务未稳定；新运动残差未见收益；417纯RGB0步STOP，路径缩放补Y+10可达方向，423验证 | `EXP-2026W42-224` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
