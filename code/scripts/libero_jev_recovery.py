@@ -314,6 +314,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     rack_contact_evidence = dict(status='not_checked')
     visible_goal_evidence = dict(status='not_checked')
     visible_container_drop_selected = False
+    release_retreat_target = None
     drawer_lower_target = None
     drawer_lower_verified = False
     rim_drop_rechecks = 0
@@ -714,6 +715,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 target = np.r_[dst['center'][0]-offset[0],tcp_grasp[1],hover]
             elif stage in ['carry','orient_receiver']:
                 target = np.r_[dst['center'][:2]-(offset[:2] if offset is not None else 0),hover]
+            elif stage == 'retreat' and release_retreat_target is not None:
+                target = release_retreat_target.copy()
             elif stage == 'retreat' and rack_task:
                 target = np.r_[rack_release_tcp[:2],hover]
             elif stage == 'retreat':
@@ -999,6 +1002,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         'bowl was already above the visible open drawer when '
                         'you selected this gravity-drop route; this does not '
                         'declare official task success.')
+                    if rec.cfg.get('drawer_drop_retreat'):
+                        contracts['release'] = ('Hold the release pose and open for at least 12 native ticks with aperture >=70 mm, then advance to open-gripper withdrawal. Opening alone is not source release proof or official success.')
             contracts['carry_lateral'] = 'Keep closed and move sideways at source-side Y to the visible receiver X corridor. Advance only after arrival and passed visual holding check.'
             contracts['orient_receiver'] = ('Keep closed at the high hover pose. Rotate the held bottle toward the slope measured from the visible rack RGB-D surface. '
                                             'Advance only after arrival and a fresh rotated visible holding check passes.')
@@ -1072,7 +1077,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 container_drop['status']!='visible_drop_candidate')
             can_retry = rec.cfg['allow_retry'] and grasp_tries<3 and stage not in ['select','release','retreat','recover_up','recover_open','clear_receiver','settle_receiver'] and (stalls>=3 or holding['status'] in ('failed','unavailable') or carry_alignment['status']=='failed' or drawer_insert_failed or (stage=='lower' and rack_contact_checked and rack_contact_evidence['status'] not in ('visible_contact_candidate','visible_low_drop_candidate')))
             next_stage = ('finish_attempt' if stage=='release' and
-                          visible_container_drop_selected else
+                          visible_container_drop_selected and not rec.cfg.get('drawer_drop_retreat') else
                           'clear_receiver' if stage=='recover_open' and rack_task else
                           'settle_receiver' if stage=='clear_receiver' else
                           'select' if stage in ('recover_open','settle_receiver') else
@@ -1207,6 +1212,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 to_stage=next_stage
                 if stage=='lower' and container_drop['status']=='visible_drop_candidate':
                     visible_container_drop_selected=True
+                    if rec.cfg.get('drawer_drop_retreat'):
+                        release_retreat_target = np.r_[after[:2], max(hover, after[2]+.06)]
                     rec.event(dict(kind='jev_selected_visible_container_drop',
                                    native_tick=ticks, decision_id=d['decision_id']))
                 if stage=='select':
