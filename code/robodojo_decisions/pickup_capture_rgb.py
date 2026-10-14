@@ -10,19 +10,31 @@ from robot_path_preview import preview
 
 def step(tools,obs,model,output,experience,turn,reference_z,previous):
     failure_review=obs.get('close_tracking_failure_review')
-    stage='close_tracking_stabilization_review' if failure_review else 'capture_and_following_review'
-    record={'turn':turn,'step_id':obs['step_id'],'stage':stage}
+    test_once=os.environ.get('ROBODOJO_PICKUP_CAPTURE_TEST_ONCE')=='1'
     rise=float(obs['current_eef']['right']['position'][2]-reference_z)
+    test_motion_executed=test_once and rise>=.015
+    stage=('close_tracking_stabilization_review' if failure_review else
+           'source_following_height_gain_review' if test_motion_executed else 'capture_and_following_review')
+    record={'turn':turn,'step_id':obs['step_id'],'stage':stage}
     targets={};paths={}
     requests=[('open_visibly_empty_hand',0,False)]
     if rise<.25:requests += [('closed_lift_test_20mm',.020,True),('closed_lift_50mm',.050,True)]
     if rise>=.12:requests += [('hold_visibly_captured_source',0,True)]
     if failure_review:requests=[('open_visibly_empty_hand',0,False),('stabilize_closed_at_current_measured_pose',0,True)]
+    elif test_motion_executed and rise<.25:
+        requests=[r for r in requests if not r[0].startswith('closed_lift')]
+        requests += [(f'closed_following_lift_{int(dz*1000)}mm',dz,True) for dz in (.020,.030,.040,.050)]
     for name,dz,closed in requests:
         target=_targets(obs,'z',1,dz);target['right']['gripper_closed']=closed
         check=preview(obs,target['right'],None,5)
         if check['public_path_gate'] and check['native_eef_single_action_legal']:
             targets[name]=target;paths[name]=check
+    if test_motion_executed and not failure_review:
+        lifts=[name for name in targets if name.startswith('closed_following_lift_')]
+        if lifts:
+            largest=max(lifts,key=lambda name:targets[name]['right']['position'][2])
+            for name in lifts:
+                if name!=largest:targets.pop(name);paths.pop(name)
     if not targets:
         record['status']='capture_no_public_program';return None,record
     directory=output/f"capture_experience_step_{obs['step_id']:03d}";directory.mkdir(exist_ok=False)
@@ -44,6 +56,9 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous):
     if failure_review:
         data['previous_close_tracking_gate_FAILURE']=failure_review
         data['contract']='The preceding held-EEF CLOSE FAILED its original 2mm tracking gate. It is NOT accepted as successful tracking/capture. From these FRESH RGB and measured state choose ONE zero-pose-change CLOSED stabilization at the CURRENT measured poses, or OPEN only visibly empty fingers, or STOP. No lift or old missed target is offered. Stabilization itself requires a NEW native first IK, independent five-step robot path and <=2mm actual tracking; it is not holding proof. Only after a successful new stabilization and fresh RGB may a later independent decision consider a lift. At most one such stabilization is offered for this failed CLOSE; no automatic repeated HOLD.'
+    elif test_motion_executed:
+        data['phase_transition_basis']='A prior robot lift TEST has executed, NOT a declaration that the source is captured/elevated. Judge current source-following from fresh RGB and measured image-feature change.'
+        data['contract']='A small robot lift TEST already executed. Judge whether the SAME source visibly followed and remains enclosed in the CURRENT real fingers. If supported, select the offered independently legal five-step CLOSED lift toward the instructed 10cm source-height gain; it is the largest public-robot-reachable increment among20/30/40/50mm, NOT certified scene clearance or object height. Do not default to repeating a small test forever. OPEN only a visibly empty hand, HOLD only a visibly captured/elevated source, or STOP for insufficient/contradictory evidence. Robot rise is NOT source height and does not certify task completion. All actions remain independent full programs; reobserve after one.'
     images=[]
     if previous is not None:
         if os.environ.get('ROBODOJO_PICKUP_SOURCE_FOLLOWING_RGB_EVIDENCE')=='1':
@@ -56,7 +71,7 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous):
     descriptions={name:('OPEN only visibly empty fingers at held poses.' if name.startswith('open_') else
         'One CLOSED stabilization at exact CURRENT measured poses; previous tracking remains failed, no lift/holding inferred.' if name.startswith('stabilize_') else
         'HOLD CLOSED at exact current poses only with current visible capture/elevation.' if name.startswith('hold_') else
-        f"One complete CLOSED lift by world Z+{20 if '20mm' in name else 50}mm, then verify actual source-following.") for name in targets}
+        f"One complete CLOSED lift by world Z+{round((targets[name]['right']['position'][2]-obs['current_eef']['right']['position'][2])*1000):g}mm, then verify actual source-following.") for name in targets}
     questions=[choice('source_identity','Is the SAME mint-green scissors currently identifiable in any CURRENT RGB, including material within the true fingers? Historical images alone cannot establish current visibility.',
         {'visible_mint_green_scissors':'Source identifiable NOW.','source_identity_unavailable':'Current source identity unavailable.'}),
         choice('full_program_decision',data['contract'],{**descriptions,'stop_program_unsupported':'Execute none; current evidence insufficient or contradictory.'})]
