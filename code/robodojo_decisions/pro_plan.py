@@ -7,6 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 from planner_responses import build_payload, load_config, output_text, request
+from model_input_language import select_planner_experience
 
 
 def write_json(path, value):
@@ -81,9 +82,7 @@ def main():
     }
     experience = dict(full_experience)
     if args.select_recent_experience:
-        task_lessons = [line for line in full_experience["task"].splitlines()
-                        if line.startswith("- ")]
-        chosen = task_lessons[:1] + task_lessons[-2:]
+        chosen = select_planner_experience(full_experience["task"])
         experience["task"] = (
             "# Verbatim selected general_pickup experience\n\n" +
             "\n".join(dict.fromkeys(chosen)) + "\n")
@@ -282,6 +281,7 @@ def main():
         "method_only": args.method_only,
         "raw_rgb_transmitted_to_planner": not args.omit_image_payload,
         "selected_recent_experience": args.select_recent_experience,
+        "experience_selection_policy": "Literal first identity lesson plus latest tagged lesson per phase when tags exist; legacy first/last-two otherwise",
         "public_observation": public, "images": image_meta,
         "historical_images_for_motion_or_current_feature": previous_image_meta,
         "template_sha256": (hashlib.sha256(args.template.read_bytes()).hexdigest()

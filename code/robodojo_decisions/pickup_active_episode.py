@@ -530,6 +530,11 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     if obs["task"] != "general_pickup" or not plan.get("method_only"):
         raise ValueError("Active pickup requires general_pickup method-only plan")
     experience_root = output.parents[1] / "experience/model"
+    frozen_memory=os.environ.get('ROBODOJO_PICKUP_MODEL_MEMORY_ROOT')
+    if frozen_memory:
+        experience_root=Path(frozen_memory).resolve()
+        if not experience_root.is_relative_to((output.parents[1]/'experience/model_versions').resolve()):
+            raise ValueError('Frozen pickup model notes must be within model_versions, never human evaluation notes')
     trace = []
     refreshed_steps = set()
     rotations = 0

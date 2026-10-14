@@ -345,3 +345,4 @@
 - 【Agent】【2026-10-14 17:27】[result] 449两次完整Y接近/10步后STOP0.68，当前T修复使fit连续有效但非抓取。441第三种紧凑复审仍server_is_overloaded；不更换模型/强度，继续444/445原生。  ↪ `EXP-2026W42-236`, `EXP-2026W42-237`
 - 【Agent】【2026-10-14 17:31】[op] 新增可选顺序Luna感知：先返回当前source/receiver，再将其作为有来源、非真值的语义假设输入单独阶段判断，最后独立完整动作。每次调用前重读原文经验并各存快照；不覆盖stage输出、不重采样动作。离线依赖/先后顺序/经验重读回归通过。
 - 【Agent】【2026-10-14 17:40】[op] 定位通用STOP选项把unsupported enclosure无条件施加全部阶段，与FAR OPEN契约冲突。新增可选OPEN_STOP_SCOPE仅移除未来包夹/持物前提，保留当前身份/整手短廊/机器人相机矛盾STOP，CLOSE真实材料指面要求保持。新独立原生验证，不在451旧图重采样。
+- 【Agent】【2026-10-14 17:48】[op] 经验检索改进：显式英文[phase:identity/alignment/capture]优先，避免alignment因为finger/pad关键词误取最近capture失败经验；规划器逐字选每阶段最新条目，保留旧文件回退规则与完整原文快照。新增pickup受限model_versions路径用于冻结对照；6回归与全AST通过。

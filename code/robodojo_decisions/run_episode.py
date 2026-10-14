@@ -622,7 +622,7 @@ def main() -> None:
                 "ROBODOJO_DECISION_TRANSPORT", "ROBODOJO_PLANNER_LONG_REQUEST",
                 "ROBODOJO_PLANNER_REQUEST_TIMEOUT_SECONDS", "ROBODOJO_RGB_STAGE_TASK_GENERAL_TEXT_PLAN",
                 "ROBODOJO_PLANNER_TRANSPORT", "ROBODOJO_RGB_STAGE_AUTHORED_METHOD",
-                "ROBODOJO_RGB_STAGE_MODEL_MEMORY_ROOT")},
+                "ROBODOJO_RGB_STAGE_MODEL_MEMORY_ROOT", "ROBODOJO_PICKUP_MODEL_MEMORY_ROOT")},
         "input_contract": "fresh three RGB plus labelled current derived crops, public K/T and robot URDF/STL, measured robot state, uncertain camera-derived geometry and model-facing experience; no true object pose, contact or evaluator outcomes"}, indent=2))
     os.environ.update(environment)
     os.environ["ROBODOJO_RPC_PORT"] = str(port)
