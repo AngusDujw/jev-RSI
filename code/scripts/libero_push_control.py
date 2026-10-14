@@ -68,7 +68,7 @@ def world_cloud(view):
     return cam @ t[:3, :3].T + t[:3, 3]
 
 
-def visible_rear_extent(view, mask, source, direction):
+def visible_rear_extent(view, mask, source, direction, quantile=.05):
     """Robust trailing support of any segmented tabletop object along a push."""
     if mask.shape != view['depth'].shape:
         raise RuntimeError('Visible source mask/depth shape mismatch')
@@ -77,7 +77,7 @@ def visible_rear_extent(view, mask, source, direction):
         raise RuntimeError('Insufficient visible source pixels for push extent')
     points = world_cloud(view)[good]
     projection = (points[:, :2]-source['center'][:2]) @ direction
-    rear = -float(np.quantile(projection, .05))
+    rear = -float(np.quantile(projection, quantile))
     if not .005 < rear < .20:
         raise RuntimeError('Visible rear push extent outside supported range')
     return rear
@@ -399,7 +399,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             obs['robot0_eef_quat']).as_matrix(),
             yaw_flip=bool(rim_second and rec.cfg.get('plate_second_yaw_flip')),
             observed_rear_extent_m=rear_extent,
-            rear_standoff_m=0. if rim_second else standoff,
+            rear_standoff_m=(.015 if rim_second and rec.cfg.get('plate_second_rear_insert') else
+                            0. if rim_second else standoff),
             hover_clearance_m=.14 if rim_second else .20,
             preserve_downward=(not visible_goal_plate or
                 visible_goal_plate and segment == 1 and rec.cfg.get('plate_first_preserve_downward') or
@@ -425,6 +426,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     segment == 1 or vision.goal['elevated_corridor_pixels'] >= 80)
                 else .7 if visible_goal_plate else 0.))
         candidate = contact_push_plan(source, goal, own, **kwargs)
+        if rim_second and rec.cfg.get('plate_second_rear_insert'):
+            candidate['rear_extent_source'] = 'visible SAM mask/RGB-D 1st percentile'
         return candidate
 
     try:
@@ -469,9 +472,31 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if visible_goal_plate and stalls >= 6 and reobservations >= 1:
                 raise RuntimeError('Visible plate push halted after six blocked blocks following reobserve')
             current = obs['robot0_eef_pos'].copy()
+            rear_insert = bool(visible_goal_plate and segment >= 2 and
+                               rec.cfg.get('plate_second_rear_insert'))
             target = dict(prepare=current, approach=approach, lower=lower,
-                          push=push_end, retreat=retreat)[stage]
+                          side_contact=contact, push=push_end, retreat=retreat)[stage]
             stage_orientation = orientation
+            rear_path = None
+            if rear_insert and stage in ('approach', 'lower', 'side_contact'):
+                current_rotation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+                rear_fingers = np.asarray(own['finger_vertices_tool']) @ current_rotation.T + current
+                rear_boundary = float(np.dot(source['center'][:2], direction)-plan['observed_rear_extent_m'])
+                leading_projection = float(np.max(rear_fingers[:, :2] @ direction))
+                rear_clearance = rear_boundary-leading_projection
+                rear_low_z, rear_high_z = float(rear_fingers[:, 2].min()), float(rear_fingers[:, 2].max())
+                low_ready = bool(max(float(goal[2])+.002, float(source['low'][2])-.004) <=
+                                 rear_low_z <= float(source['high'][2])-.001)
+                leg = 'rear_hover' if stage == 'approach' else 'lower_outside' if stage == 'lower' else 'insert_sideways'
+                if stage == 'lower' and rear_clearance < .003:
+                    target = lower.copy()
+                    target[2] = max(float(current[2]), float(source['high'][2])+.03-(rear_low_z-current[2]))
+                    leg = 'restore_rear_clearance'
+                rear_path = dict(leg=leg, visible_rear_boundary_projection_m=rear_boundary,
+                    own_leading_projection_m=leading_projection, rear_clearance_mm=round(rear_clearance*1000, 2),
+                    own_finger_low_world_z_m=rear_low_z, own_finger_high_world_z_m=rear_high_z,
+                    side_contact_height_ready=low_ready,
+                    source='public RGB-D trailing support + own finger mesh/pose')
             planar_contact = None
             if (visible_goal_plate and segment == 2 and stage == 'push' and
                     rec.cfg.get('plate_second_planar_contact')):
@@ -549,7 +574,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             contact_trial = (visible_finger_plate_contact(
                 own, current, obs['robot0_eef_quat'], source, history,
                 error, rot, direction)
-                if second_lower and rec.cfg.get('plate_second_visible_contact_gate')
+                if second_lower and not rear_insert and rec.cfg.get('plate_second_visible_contact_gate')
                 and plan['contact_mode'] == 'rear_edge' else None)
             verification_stage = ('retreat' if visible_goal_plate else 'push')
             if stage == verification_stage and arrived and observed_after is None:
@@ -592,6 +617,25 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     not front_relation_passed and not residual_correction_available):
                 raise RuntimeError(f'Observed push missed visible target by {visible_error*1000:.1f}mm')
             complete = (grip_ticks >= 18 and gripper == 1) if stage == 'prepare' else arrived and oriented
+            if rear_insert and stage == 'approach':
+                complete = bool(gripper == 1 and rear_clearance >= .003 and
+                    rear_low_z >= float(source['high'][2])+.10 and
+                    np.max(np.abs(error[:2])) < .025 and np.max(np.abs(rot)) < .06)
+            if rear_insert and stage == 'lower':
+                complete = bool(gripper == 1 and rear_clearance >= .003 and low_ready and
+                    np.max(np.abs(error[:2])) < .025 and np.max(np.abs(rot)) < .12)
+            if rear_insert and stage == 'side_contact':
+                bounds_low, bounds_high = np.asarray(source['low']), np.asarray(source['high'])
+                gap = np.linalg.norm(np.maximum(np.maximum(bounds_low-rear_fingers, rear_fingers-bounds_high), 0.), axis=1)
+                recent = [row for row in history if row['stage'] == 'side_contact'][-3:]
+                blocked_forward = bool(len(recent) == 3 and all(
+                    np.dot(row['commanded_delta_mm_per_native_step'][:2], direction) > .5 and
+                    abs(np.dot(row['actual_block_displacement_mm'][:2], direction)) < .3 for row in recent))
+                trial = bool(float(np.min(gap)) < .005 and low_ready and blocked_forward and
+                    np.max(np.abs(error)) < .015 and np.max(np.abs(rot)) < .12)
+                rear_path.update(forward_blocked_three_times=blocked_forward,
+                    own_finger_to_visible_bbox_mm=round(float(np.min(gap))*1000, 2), side_contact_trial=trial)
+                complete = bool(gripper == 1 and ((arrived and oriented) or trial))
             if contact_trial is not None and contact_trial['contact_trial_available']:
                 # This is a permitted trial of pushing, not proof of contact
                 # or task success. Jev still chooses the phase edge and fresh
@@ -607,9 +651,10 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                   front_relation_passed)) if visible_goal_plate
                             else arrived)
             aperture = float(np.sum(abs(obs['robot0_gripper_qpos']))*1000)
+            phase_order = ('prepare', 'approach', 'lower', 'side_contact', 'push', 'retreat') if rear_insert else PHASES
             next_stage = ('approach' if stage == 'retreat' and visible_goal_plate
                           and segment == 1 else 'finish_attempt' if stage == 'retreat'
-                          else PHASES[PHASES.index(stage)+1])
+                          else phase_order[phase_order.index(stage)+1])
             contracts = dict(prepare='Stay still; close gripper for at least 18 native ticks to make a compact pusher.',
                 approach=('Move to a high-clearance hover above the visible plate centre.'
                     if visible_goal_plate else
@@ -666,6 +711,11 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'The supplied Z and wrist goals then preserve the current own pose; '
                     'select planar directions toward the supplied endpoint. This is a '
                     'contact-compatible trial only; later fresh RGB-D verifies object movement.')
+            if rear_insert:
+                contracts['approach'] = 'Move to the rear hover. Advance only when own fingers are at least 3 mm behind the public trailing boundary and 100 mm above the visible plate, with bounded own pose.'
+                contracts['lower'] = 'Lower outside the visible plate. If rear clearance is lost, follow the temporary raised goal to restore it. Advance only with rear clearance >=3 mm and own finger bottom inside the measured side-contact height band.'
+                contracts['side_contact'] = 'Keep closed and insert horizontally from the verified rear staging pose toward the visible rim. Advance at supplied pose arrival or after a bounded forward-blocked side-contact trial; this is not task success.'
+                contracts['push'] = 'Keep closed and push from the verified rear-side entry toward the supplied visible stove-front endpoint. The own contact height and wrist goal were latched at the verified rear staging pose. Later fresh RGB-D must verify plate movement.'
             state = dict(task=public_task, operation=stage, next_operation=next_stage,
                 segment_index=segment, segment_count=(3 if segment == 3 else 2)
                     if visible_goal_plate else 1,
@@ -715,6 +765,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'Public instruction, rendered RGB-D/calibration, own robot pose/finger mesh, executed history only.')
             if planar_contact is not None:
                 state['completion_evidence']['visible_planar_contact'] = planar_contact
+            if rear_path is not None:
+                state['completion_evidence']['rear_insert_path'] = rear_path
             state = json.loads(json.dumps(state, default=serial, allow_nan=False))
             decision = model.decide(state)
             stage_decisions += 1
@@ -739,7 +791,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     unit_push = goal[:2]-source['center'][:2]
                     unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
                     rear_extent = visible_rear_extent(v[ob['camera']],
-                        np.load(source['visible_mask_path']), source, unit_push)
+                        np.load(source['visible_mask_path']), source, unit_push,
+                        quantile=.01 if rec.cfg.get('plate_second_rear_insert') and segment >= 2 else .05)
                     own = gripper_geometry(env, obs)
                     segment = 3
                     plan = build_plan(source, rear_extent, v, own)
@@ -770,7 +823,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 unit_push = goal[:2]-source['center'][:2]
                 unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
                 rear_extent = visible_rear_extent(v[ob['camera']],
-                    np.load(source['visible_mask_path']), source, unit_push)
+                    np.load(source['visible_mask_path']), source, unit_push,
+                    quantile=.01 if rec.cfg.get('plate_second_rear_insert') and segment >= 2 else .05)
                 own = gripper_geometry(env, obs)
                 plan = build_plan(source, rear_extent, v, own)
                 direction, orientation = plan['direction'], plan['orientation']
@@ -794,7 +848,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             if newgripper != gripper:
                 grip_ticks = 0
             gripper = newgripper
-            cap = .012 if stage in ('lower', 'push') else .02
+            cap = .012 if stage in ('lower', 'side_contact', 'push') else .02
             delta = np.asarray(decision['signs'])*np.minimum(cap, .5*np.abs(error))
             if (stage == 'push' and segment >= 2 and visible_goal_plate and
                     rec.cfg.get('plate_second_line_step')):
@@ -805,6 +859,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 delta[:2] = np.asarray(decision['signs'][:2])*planar_gain*np.abs(error[:2])
             rotations = np.asarray(decision['rotation_signs'])*np.minimum(.10, .5*np.abs(rot))
             block = 6 if stage == 'prepare' or np.max(np.abs(error))>.06 else 3
+            if rear_insert and decision['transition'] == 'advance' and stage in ('approach', 'lower', 'side_contact'):
+                block = 1
             if ticks+block > max_native_ticks:
                 raise RuntimeError('Native block budget')
             before = current.copy()
@@ -829,6 +885,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 cv2.imwrite(str(rec.folder/f'{ticks:04d}-{stage}-{camera}.png'),
                     cv2.cvtColor(view['rgb'], cv2.COLOR_RGB2BGR))
             if decision['transition'] == 'advance':
+                if rear_insert and stage == 'lower':
+                    contact, push_end, retreat = contact.copy(), push_end.copy(), retreat.copy()
+                    contact[2] = push_end[2] = float(obs['robot0_eef_pos'][2])
+                    retreat[2] = contact[2]+.10
+                    orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+                    rec.event(dict(kind='verified_rear_pose_latch', native_tick=ticks,
+                        own_contact_z_m=float(contact[2]), own_orientation_world=orientation,
+                        source='own pose after Jev advance from visible rear-clearance/height gate'))
                 rec.event(dict(kind='phase_transition', from_stage=stage,
                     to_stage=next_stage, decision_id=decision['decision_id'],
                     selected_transition='advance', segment_index=segment))
@@ -844,7 +908,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                         unit_push = goal[:2]-source['center'][:2]
                         unit_push /= max(float(np.linalg.norm(unit_push)), 1e-9)
                         rear_extent = visible_rear_extent(v[ob['camera']],
-                            np.load(source['visible_mask_path']), source, unit_push)
+                            np.load(source['visible_mask_path']), source, unit_push,
+                            quantile=.01 if rec.cfg.get('plate_second_rear_insert') else .05)
                         own = gripper_geometry(env, obs)
                         segment = 2
                         plan = build_plan(source, rear_extent, v, own)

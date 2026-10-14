@@ -53,7 +53,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    plate_second_line_step=False,
                    plate_second_yaw_flip=False,
                    plate_first_preserve_downward=False,
-                   plate_second_planar_contact=False):
+                   plate_second_planar_contact=False,
+                   plate_second_rear_insert=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -114,6 +115,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             cmd += ['--plate-first-preserve-downward']
         if plate_second_planar_contact:
             cmd += ['--plate-second-planar-contact']
+        if plate_second_rear_insert:
+            cmd += ['--plate-second-rear-insert']
     else:
         cmd += ['--drawer-supervisor', '--drawer-contact-mode', drawer_contact_mode]
         if task_id == 1202:
@@ -186,6 +189,8 @@ def main():
                    help='Keep the initial own downward wrist for the first supported push')
     p.add_argument('--plate-second-planar-contact', action='store_true',
                    help='Relieve Z and wrist goals while own fingers remain within public plate height')
+    p.add_argument('--plate-second-rear-insert', action='store_true',
+                   help='Lower behind the visible plate, then let Jev insert horizontally before pushing')
     p.add_argument('--dry-run', action='store_true',
                    help='Print exact launch command without a reservation or filesystem write')
     p.add_argument('--preflight-only', action='store_true',
@@ -248,7 +253,8 @@ def main():
             a.plate_second_rim_contact or a.plate_second_rim_hover_gate or
             a.plate_second_visible_contact_gate or a.plate_second_preserve_downward or
             a.plate_second_line_step or a.plate_second_yaw_flip or
-            a.plate_first_preserve_downward or a.plate_second_planar_contact) and a.task_id != 1296:
+            a.plate_first_preserve_downward or a.plate_second_planar_contact or
+            a.plate_second_rear_insert) and a.task_id != 1296:
         p.error('Plate final clearance parameters require Goal 1296')
     if a.plate_second_rim_hover_gate and not a.plate_second_rim_contact:
         p.error('Second rim hover gate requires second rim contact')
@@ -261,6 +267,8 @@ def main():
         p.error('Alternate yaw requires second rim contact and no preserved wrist')
     if a.plate_second_planar_contact and not a.plate_second_rim_contact:
         p.error('Planar contact requires second rim contact')
+    if a.plate_second_rear_insert and (not a.plate_second_rim_contact or a.plate_second_planar_contact):
+        p.error('Rear insertion requires rim contact and no planar-pose relief')
     cmd = launch_command(source,a.task_id,a.init_index,out/'episode',mode,
                          a.grasp_profile,a.approach_mode,a.entry_side,a.grasp_hold_ticks,
                          a.drawer_contact_mode,a.plate_stage_turn_deg,a.lift_recheck_mm,
@@ -275,7 +283,8 @@ def main():
                          a.plate_second_line_step,
                          a.plate_second_yaw_flip,
                          a.plate_first_preserve_downward,
-                         a.plate_second_planar_contact)
+                         a.plate_second_planar_contact,
+                         a.plate_second_rear_insert)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -376,6 +385,7 @@ def main():
                     plate_second_yaw_flip=a.plate_second_yaw_flip,
                     plate_first_preserve_downward=a.plate_first_preserve_downward,
                     plate_second_planar_contact=a.plate_second_planar_contact,
+                    plate_second_rear_insert=a.plate_second_rear_insert,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,
                     policy_source_sha256=hashes, git_commit=commit,
