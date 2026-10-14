@@ -195,6 +195,7 @@ graph LR
     T_2026W42_087["📊 robodojo-decision-stages<br/>278 160步高位掩码失效；279 RG…"]:::experiment
     T_2026W42_088["📊 robodojo-decision-stages<br/>285恢复准确但未恢复观测；289预测Y后…"]:::experiment
     T_2026W42_089["📊 robodojo-decision-stages<br/>290拒绝有据：混合单位排序选反向；294…"]:::experiment
+    T_2026W42_090["📊 robodojo-decision-stages<br/>299/301仍无闭爪；当前轮廓条件粗估计…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -350,6 +351,7 @@ graph LR
   T_2026W42_086 --> T_2026W42_087
   T_2026W42_087 --> T_2026W42_088
   T_2026W42_088 --> T_2026W42_089
+  T_2026W42_089 --> T_2026W42_090
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -533,6 +535,7 @@ graph LR
 | `T-2026W42-087` | 2026-10-14 | experiment | robodojo-decision-stages | 278 160步高位掩码失效；279 RGB复审聚焦实心颈部拓扑但无精确对应 | `EXP-2026W42-195` | - |
 | `T-2026W42-088` | 2026-10-14 | experiment | robodojo-decision-stages | 285恢复准确但未恢复观测；289预测Y后撤优于Z上移，290新原生 | `EXP-2026W42-198` | - |
 | `T-2026W42-089` | 2026-10-14 | experiment | robodojo-decision-stages | 290拒绝有据：混合单位排序选反向；294正进展回归修复、299验证色度处理 | `EXP-2026W42-201` | - |
+| `T-2026W42-090` | 2026-10-14 | experiment | robodojo-decision-stages | 299/301仍无闭爪；当前轮廓条件粗估计与闭爪后RGB分支进入310原生验证 | `EXP-2026W42-203` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
