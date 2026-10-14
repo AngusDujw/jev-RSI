@@ -294,6 +294,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     finished = False
     initial_src = src = dst = identity = None
     initial_drawer_interior = None
+    source_memory = None
+    source_memory_evidence = None
+    source_memory_tracks = 0
     cached_external = None
     initial_source_points_world = None
     dark_source = False
@@ -325,8 +328,25 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
 
     def locate(reason):
         nonlocal identity, cached_external, initial_source_points_world, dark_source, source_hue_center, rack_geometry, initial_drawer_interior
+        nonlocal source_memory_evidence, source_memory_tracks
         vv = views()
-        identity = vision.recognize(vv, task.language, reason)
+        memory_geometry = None
+        if source_memory is not None:
+            memory_geometry, memory_object, source_memory_evidence = source_memory.track(
+                vv, rec.folder/f'observed-source-memory-{reason}')
+            source_memory_tracks += 1
+            source_memory_evidence = dict(source_memory_evidence,
+                reference_age_native_ticks=ticks, observed_native_tick=ticks, reason=reason)
+            rec.event(dict(kind='observed_source_memory', evidence=source_memory_evidence))
+            identity = dict(source=memory_object, destination=dict(
+                label='visible open drawer interior floor', camera='agentview',
+                bbox=[0, 0, vv['agentview']['rgb'].shape[1]-1, vv['agentview']['rgb'].shape[0]-1],
+                visible=True, receiver_kind='support_surface',
+                evidence='current public RGB-D floor fit'))
+            vision.identity = identity
+            vision.reasons.add(reason)
+        else:
+            identity = vision.recognize(vv, task.language, reason)
         result = {}
         for role in ['source','destination']:
             ob = identity[role]
@@ -344,8 +364,12 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         raise
                     result[role] = dict(initial_drawer_interior,
                         source='previously visible drawer floor retained under hand occlusion')
+            elif role == 'source' and memory_geometry is not None:
+                result[role] = memory_geometry
             else:
                 result[role] = vision.measure(v, ob['bbox'], ob['label'], reason+'-'+role)
+            if role == 'destination' and source_memory is not None:
+                identity[role]['bbox'] = result[role]['bbox_xyxy']
             if role == 'destination' and rack_task and reason == 'initial':
                 mask = np.load(result[role]['visible_mask_path']).astype(bool)
                 depth = v['depth']
@@ -357,6 +381,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 valid = (mask & np.isfinite(v['depth']) &
                          (v['depth'] > .02) & (v['depth'] < 3.))
                 initial_source_points_world = cloud(v)[valid]
+                if source_memory is not None:
+                    initial_source_points_world = source_memory.current_reference_points.copy()
                 if len(initial_source_points_world) < 80:
                     raise RuntimeError('Insufficient initial visible source points')
                 np.save(rec.folder/'initial-visible-source-cloud.npy',
@@ -643,6 +669,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
         dump(rec.folder/f'visible-goal-{ticks:04d}.json',visible_goal_evidence)
 
     try:
+        if rec.cfg.get('drawer_source_memory'):
+            from libero_visible_entity_memory import ObservedEntityMemory
+            source_memory = ObservedEntityMemory(rec.folder/'clear-source-vision')
         initial_src, dst = locate('initial')
         src = initial_src
         cs = candidates()
@@ -1064,6 +1093,10 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 state['completion_evidence']['visible_container_drop'] = container_drop
             if stage == 'carry' and rec.cfg.get('drawer_bowl_continuation'):
                 state['completion_evidence']['visible_carry_alignment'] = carry_alignment
+            if source_memory_evidence is not None:
+                state['completion_evidence']['observed_source_identity'] = dict(
+                    source_memory_evidence, age_native_ticks=ticks-source_memory_evidence['observed_native_tick'])
+                state['information_sources'] += ' Prior observed RGB-D entity reference verified in current camera depth; no scene identity.'
             if rack_task and stage in ('orient_receiver','lower'):
                 state['visible_receiver_geometry'] = {k:rack_geometry[k] for k in (
                     'center_world_m','visible_surface_z_m','x_rotation_world_rad',
@@ -1215,5 +1248,5 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
     finally:
         success=bool(env.check_success())  # Terminal evaluation only.
         backend='gpt-6-sol/xhigh via ChatGPT Codex' if os.environ.get('JEV_RSI_MODEL_BACKEND')=='codex_pro' else 'Jev'
-        dump(rec.folder/'result.json',dict(success=success,program_finished=finished,error=error_message,native_steps=ticks,jev_calls=len(rec.decisions),model_control_calls=len(rec.decisions),semantic_calls=vision.calls,deepseek_calls=0,stage=stage,grasp_attempts=grasp_tries,failed_candidates=failed_candidates,ownership=backend+' XYZ/rotation/gripper/candidate/phase/retry',input_organization=rec.cfg['input_organization'],model_backend=backend))
+        dump(rec.folder/'result.json',dict(success=success,program_finished=finished,error=error_message,native_steps=ticks,jev_calls=len(rec.decisions),model_control_calls=len(rec.decisions),semantic_calls=vision.calls,visible_source_memory_tracks=source_memory_tracks,pre_open_local_detection_calls=int((rec.folder/'clear-source-vision/grounding-source-response.json').exists()),deepseek_calls=0,stage=stage,grasp_attempts=grasp_tries,failed_candidates=failed_candidates,ownership=backend+' XYZ/rotation/gripper/candidate/phase/retry',input_organization=rec.cfg['input_organization'],model_backend=backend))
         rec.finish('success' if success else 'failed');model.close();vision.close()

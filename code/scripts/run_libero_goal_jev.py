@@ -33,6 +33,7 @@ POLICY_FILES = (
     'libero_goal_knob_vision.py', 'libero_goal_knob_control.py',
     'libero_goal_plate_vision.py', 'libero_goal_drawer_control.py',
     'libero_goal_drawer_vision.py',
+    'libero_visible_entity_memory.py',
     'libero_push_control.py',
     'libero_ten_task_workflows.py',
 )
@@ -46,7 +47,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    drawer_preorient=False, drawer_clear_to_source=False,
                    empty_hand_fast=False, support_stall_release=False,
                    drawer_bowl_algorithm='recovery', gentle_carry=False,
-                   visible_container_drop=False, rim_relative_drop=False):
+                   visible_container_drop=False, rim_relative_drop=False,
+                   drawer_source_memory=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -108,6 +110,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                 cmd += ['--visible-container-drop']
             if rim_relative_drop:
                 cmd += ['--rim-relative-drop']
+            if drawer_source_memory:
+                cmd += ['--drawer-source-memory']
             if rim_height_mode != 'top_overlap':
                 cmd += ['--rim-height-mode', rim_height_mode]
             if rim_tilt_deg:
@@ -153,6 +157,8 @@ def main():
     p.add_argument('--rim-inset-mm', type=int, choices=[0,2,4], default=0)
     p.add_argument('--drawer-preorient', action='store_true')
     p.add_argument('--drawer-clear-to-source', action='store_true')
+    p.add_argument('--drawer-source-memory', action='store_true',
+                   help='Verify the pre-opening observed source in current RGB-D instead of replacing its identity')
     p.add_argument('--empty-hand-fast', action='store_true')
     p.add_argument('--gentle-carry', action='store_true',
                    help='Bound each native carry step when fresh public RGB-D holding passed')
@@ -212,6 +218,9 @@ def main():
         p.error('Visible container drop requires Goal1202 recovery continuation')
     if a.rim_relative_drop and (a.task_id != 1202 or not a.visible_container_drop):
         p.error('Rim-relative drop requires Goal1202 visible container drop')
+    if a.drawer_source_memory and (a.task_id != 1202 or not a.drawer_clear_to_source or
+                                   a.drawer_bowl_algorithm != 'recovery'):
+        p.error('Source memory requires Goal1202 recovery and pre-opening source capture')
     if a.rim_height_mode != 'top_overlap' and a.task_id != 1202:
         p.error('Alternative rim height requires Goal 1202')
     if a.rim_tilt_deg and a.task_id != 1202:
@@ -238,7 +247,8 @@ def main():
                          a.drawer_preorient,a.drawer_clear_to_source,
                          a.empty_hand_fast,a.support_stall_release,
                          a.drawer_bowl_algorithm,a.gentle_carry,
-                         a.visible_container_drop,a.rim_relative_drop)
+                         a.visible_container_drop,a.rim_relative_drop,
+                         a.drawer_source_memory)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -331,6 +341,7 @@ def main():
                     gentle_carry=a.gentle_carry,
                     visible_container_drop=a.visible_container_drop,
                     rim_relative_drop=a.rim_relative_drop,
+                    drawer_source_memory=a.drawer_source_memory,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     support_stall_release=a.support_stall_release,
                     cpu_vision=a.cpu_vision,
