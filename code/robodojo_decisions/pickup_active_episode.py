@@ -788,7 +788,8 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         if material_feature_reference is not None:
             from pickup_fixed_blade_anchor import check as check_fixed_material_source
             anchor_obs,anchor_point=material_feature_reference
-            fixed_check=check_fixed_material_source(anchor_obs,obs)
+            try:fixed_check=check_fixed_material_source(anchor_obs,obs)
+            except ValueError as error:fixed_check={'passed':False,'reason':str(error)}
             obs['material_control_reference']={'episode_id':obs['episode_id'],
                 'reference_step_id':anchor_obs['step_id'],
                 'camera_derived_world_point_m':anchor_point,
