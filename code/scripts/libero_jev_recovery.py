@@ -764,15 +764,15 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                                 source='Fresh public held-bowl RGB-D and visible drawer floor/rim'))
                     if drawer_lower_target is not None:
                         target = drawer_lower_target.copy()
-                    if (rec.cfg.get('rim_relative_drop') and not rec.cfg.get('drawer_floor_drop') and
+                    if ((rec.cfg.get('rim_relative_drop') or rec.cfg.get('drawer_floor_drop')) and
                             drawer_lower_verified and
                             holding.get('status') == 'passed' and
-                            rim_drop_rechecks < 2):
+                            rim_drop_rechecks < (3 if rec.cfg.get('drawer_floor_drop') else 2)):
                         measured = holding['measured']
                         xy_error = (np.asarray(dst['center'][:2], float)-
                                     np.asarray(measured['center'][:2], float))
-                        height_error = (float(dst['rim_high_z'])+.012-
-                                        float(measured['low'][2]))
+                        desired_bottom = (float(dst['high'][2])+.025 if rec.cfg.get('drawer_floor_drop') else float(dst['rim_high_z'])+.012)
+                        height_error = desired_bottom-float(measured['low'][2])
                         if (np.max(np.abs(xy_error)) > .010 or
                                 height_error > .007 or height_error < -.008):
                             correction = np.r_[np.clip(xy_error, -.015, .015),
@@ -780,7 +780,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                             drawer_lower_target = position+correction
                             drawer_lower_verified = False
                             target = drawer_lower_target.copy()
-                            rec.event(dict(kind='drawer_visible_rim_drop_correction',
+                            rec.event(dict(kind=('drawer_visible_floor_drop_correction' if rec.cfg.get('drawer_floor_drop') else 'drawer_visible_rim_drop_correction'),
                                 native_tick=ticks,
                                 receiver_minus_visible_bowl_xy_mm=np.round(xy_error*1000,2).tolist(),
                                 desired_bottom_height_error_mm=round(height_error*1000,2),
