@@ -15,6 +15,26 @@ from controller import choice
 from robot_path_preview import preview
 
 
+def load_authored(path,task,data_root):
+    path=Path(path).resolve()
+    if not path.is_relative_to((data_root/'plans').resolve()):
+        raise ValueError('Authored method must be a DataStorage plan asset')
+    plan=json.loads(path.read_text());p=plan.get('planner_provenance',{})
+    if (plan.get('task')!=task or not plan.get('method_only') or not plan.get('task_general') or
+            plan.get('review_status')!='ready_for_rgb_baseline' or p.get('model')!='gpt-6.1-sol' or
+            p.get('reasoning_effort')!='high' or p.get('provider')!='ai2robcowork'):
+        raise ValueError('Unreviewed or mismatched authored task-general method')
+    response=json.loads((path.parent/'response.json').read_text())
+    if response.get('status')!='completed' or response.get('id')!=p.get('response_id') or response.get('model')!='gpt-6.1-sol':
+        raise ValueError('Authored method lacks the matching completed provider receipt')
+    from planner_responses import output_text
+    original=json.loads(output_text(response))
+    stages={k:json.dumps(v,ensure_ascii=False) if isinstance(v,dict) else v for k,v in original['stages'].items()}
+    if stages!=plan['stages'] or original['visual_method']!=plan['visual_method'] or original['initial_stage']!=plan['initial_stage']:
+        raise ValueError('Authored semantic method differs from provider output')
+    return plan
+
+
 def run(tools, obs, model, output, max_decisions, deadline):
     import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
     memory = output.parents[1]/'experience/model'
@@ -35,18 +55,27 @@ def run(tools, obs, model, output, max_decisions, deadline):
         'task_general_text_method':text_method,'planner_images_transmitted':not text_method,
         'actor_current_raw_RGB_count':3,'actor_object_numeric_errors':False,
         'scope':'Explicit RGB actor baseline; task-general text method is not per-layout visual review.'},indent=2))
-    started=time.monotonic()
-    with (output/'initial_fresh_method.log').open('w') as log:
-        process=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=650)
-    if process.returncode:
-        return {'status':'fresh_method_unavailable_no_actions', 'decisions':0,
-                'native_result':tools.finish('fresh_method_unavailable_no_actions'),
-                'planner_wall_seconds':time.monotonic()-started}
-    plan=json.loads((planner/'plan.json').read_text())
+    authored=os.environ.get('ROBODOJO_RGB_STAGE_AUTHORED_METHOD')
+    if authored:
+        plan=load_authored(authored,obs['task'],output.parents[1])
+        (output/'planner_input_mode.json').write_text(json.dumps({
+            'method_acquisition':'reviewed task-general method library reuse',
+            'source_method':authored,'source_method_sha256':hashlib.sha256(Path(authored).read_bytes()).hexdigest(),
+            'planner_images_transmitted':False,'fresh_layout_review_claimed':False,
+            'actor_current_raw_RGB_count':3,'actor_object_numeric_errors':False},indent=2))
+    else:
+        started=time.monotonic()
+        with (output/'initial_fresh_method.log').open('w') as log:
+            process=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=650)
+        if process.returncode:
+            return {'status':'fresh_method_unavailable_no_actions', 'decisions':0,
+                    'native_result':tools.finish('fresh_method_unavailable_no_actions'),
+                    'planner_wall_seconds':time.monotonic()-started}
+        plan=json.loads((planner/'plan.json').read_text())
     if not plan.get('method_only'):
         raise ValueError('Fresh action-free method planner required')
     (output/'plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2))
-    stage=plan['initial_stage'];records=[];previous=None;result=None
+    stage=plan['initial_stage'];records=[];previous=None;result=None;queries=0
     status='rgb_pose_native_budget_incomplete'
     for turn in range(max_decisions):
         if obs.get('rollout_finished'):
@@ -94,6 +123,9 @@ def run(tools, obs, model, output, max_decisions, deadline):
             if path['model_path_gate'] and path['native_eef_single_action_legal']:
                 end=path['predicted_joint_path'][-1]
                 programs[name]={'target':target,'physical_steps':5,
+                    'right_world_delta_xyz_mm':((np.asarray(target['right']['position'])-obs['current_eef']['right']['position'])*1000).round(3).tolist(),
+                    'right_world_rotation_vector_rad':(Rotation.from_quat(np.asarray(target['right']['quaternion_wxyz'])[[1,2,3,0]])*
+                        Rotation.from_quat(np.asarray(obs['current_eef']['right']['quaternion_wxyz'])[[1,2,3,0]]).inv()).as_rotvec().round(6).tolist(),
                     'predicted_robot_position_residual_mm':end['predicted_link6_translation_residual_m']*1000,
                     'predicted_robot_rotation_residual_rad':end['predicted_link6_rotation_residual_rad'],
                     'scope':'Public ROBOT path, no scene collision/contact certification. Grip command is not holding evidence.'}
@@ -109,18 +141,27 @@ def run(tools, obs, model, output, max_decisions, deadline):
               'contract':'RGB-only full-pose baseline: no processed object XYZ/errors. All programs are complete independent five-step commands, at most15mm or0.1rad. Select ONE or STOP, never assemble axes. WORLD +X robot-right, +Y away from bases, +Z up; rotations are right-hand rule about fixed WORLD axes, not wrist/image axes. Wrist cameras ride with the hand. Current public robot geometry does not prove scene clearance. Identify an accessible task object from CURRENT raw RGB; avoid prior failed routes. CLOSE only for current actual opposing fingers/material, OPEN only as supported by current task/object support. Observe same-source co-motion after a grasp. Stage EXIT conditions are not prerequisites before the first bounded evidence acquisition. Never claim source height/holding from robot displacement. If object/tool/corridor cannot be supported, STOP.'}
         options={name:f'Execute exactly complete_programs[{name}], five native steps then fresh RGB.' for name in programs}
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
-        questions=[choice('observable_stage','Classify the stage justified by CURRENT RGB and planner entry/EXIT rules; this does not certify task completion.',plan['stages']),
-                   choice('complete_pose_program','Use CURRENT RGB, prior observed change, explicit WORLD axes and the planner stage rules to choose ONE complete bounded program or STOP.',options)]
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])
-        answer=model.query(obs,questions,json.dumps(data,ensure_ascii=False),f'rgb_pose_{turn:03d}_step{step:03d}',extra_images=images)
-        selected=answer['complete_pose_program'];stage=answer['observable_stage']
+        stage_data={k:v for k,v in data.items() if k!='complete_programs'}
+        phase=model.query(obs,[choice('observable_stage','Classify the CURRENT observable working stage under planner entry/EXIT rules; no motion is requested by this perception-only question.',plan['stages'])],
+                          json.dumps(stage_data,ensure_ascii=False),f'rgb_pose_stage_{turn:03d}_step{step:03d}',extra_images=images)
+        queries+=1;stage=phase['observable_stage']
+        data['current_stage']=stage;data['current_stage_rule']=plan['stages'][stage]
+        notes={name:(memory/name).read_text() for name in ['global.md',obs['task']+'.md']}
+        second=output/f'raw_experience_action_step_{step:03d}';second.mkdir()
+        for name,text in notes.items():(second/name).write_text(text)
+        data['experience_original_text']=notes
+        data['experience_raw_sha256']={name:hashlib.sha256(text.encode()).hexdigest() for name,text in notes.items()}
+        answer=model.query(obs,[choice('complete_pose_program','Under CURRENT_STAGE and its observation rule, use CURRENT RGB/robot state to choose ONE complete bounded program or STOP. This is the only action judgment for this frame.',options)],
+                           json.dumps(data,ensure_ascii=False),f'rgb_pose_action_{turn:03d}_step{step:03d}',extra_images=images)
+        queries+=1;selected=answer['complete_pose_program']
         record={'step_id':step,'stage':stage,'luna_choice':selected,'memory_sha256':hashes};records.append(record)
         if selected.startswith('STOP'):
             status='rgb_pose_luna_stopped';break
         target=programs[selected]['target']
         action={'request_id':obs['request_id'],'mode':'eef','steps':5,
-                'reason':'du Luna complete RGB pose program under fresh action-free method planner','target':target}
+                'reason':'du Luna complete RGB pose program under action-free method and current classified stage','target':target}
         native.validate_action(action,tools.request)
         call=tools.next_call();call.pop('tool');call['response']=action
         after=tools.act(**call)
@@ -138,4 +179,4 @@ def run(tools, obs, model, output, max_decisions, deadline):
     trace=output/'rgb_stage_pose_trace.json'
     trace.write_text(json.dumps({'records':records,'status':status,'native_result':result},indent=2))
     return {'status':status,'decisions':sum('post_action' in x for x in records),
-            'visual_queries':len(records),'native_result':result,'trace':str(trace)}
+            'visual_queries':queries,'native_result':result,'trace':str(trace)}

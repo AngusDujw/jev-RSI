@@ -602,7 +602,9 @@ def main() -> None:
         "started": dt.datetime.now().astimezone().isoformat(),
         "source": "existing read-only RoboDojo + GPT-as-Policy installation",
         "planner_model": "gpt-6.1-sol high",
-        "planner_refresh_transport": (("explicit task-general TEXT method; planner does not inspect layout RGB; actor receives current three RGB"
+        "planner_refresh_transport": ("reviewed authored GPT-6.1 Sol high task-general method library; current layout RGB goes to actor"
+                                      if args.controller=='v2_rgb_stage_pose_episode' and os.environ.get('ROBODOJO_RGB_STAGE_AUTHORED_METHOD') else
+                                      ("explicit task-general TEXT method; planner does not inspect layout RGB; actor receives current three RGB"
                                        if os.environ.get('ROBODOJO_RGB_STAGE_TASK_GENERAL_TEXT_PLAN')=='1' else
                                        "fresh current-RGB AI2RobCoWork method-only plan required before any action; no fallback")
                                       if args.controller == "v2_rgb_stage_pose_episode" else
@@ -619,7 +621,7 @@ def main() -> None:
                 "ROBODOJO_MEASURED_GRIPPER_STATE", "ROBODOJO_PUBLIC_CAMERA_CALIBRATION",
                 "ROBODOJO_DECISION_TRANSPORT", "ROBODOJO_PLANNER_LONG_REQUEST",
                 "ROBODOJO_PLANNER_REQUEST_TIMEOUT_SECONDS", "ROBODOJO_RGB_STAGE_TASK_GENERAL_TEXT_PLAN",
-                "ROBODOJO_PLANNER_TRANSPORT")},
+                "ROBODOJO_PLANNER_TRANSPORT", "ROBODOJO_RGB_STAGE_AUTHORED_METHOD")},
         "input_contract": "fresh three RGB plus labelled current derived crops, public K/T and robot URDF/STL, measured robot state, uncertain camera-derived geometry and model-facing experience; no true object pose, contact or evaluator outcomes"}, indent=2))
     os.environ.update(environment)
     os.environ["ROBODOJO_RPC_PORT"] = str(port)
