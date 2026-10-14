@@ -601,7 +601,7 @@ def main() -> None:
         "decision_model": "gpt-6-luna via du cad/direct key",
         "actor_current_numeric_errors": os.environ.get("ROBODOJO_PICKUP_ACTOR_METRIC_ERRORS", "1") != "0",
         "runtime_feature_flags": {key: value for key, value in os.environ.items()
-            if key.startswith("ROBODOJO_PICKUP_") or key in (
+            if (key.startswith("ROBODOJO_PICKUP_") and value in ("0", "1")) or key in (
                 "ROBODOJO_MEASURED_GRIPPER_STATE", "ROBODOJO_PUBLIC_CAMERA_CALIBRATION",
                 "ROBODOJO_DECISION_TRANSPORT", "ROBODOJO_PLANNER_LONG_REQUEST")},
         "input_contract": "fresh three RGB plus labelled current derived crops, public K/T and robot URDF/STL, measured robot state, uncertain camera-derived geometry and model-facing experience; no true object pose, contact or evaluator outcomes"}, indent=2))
