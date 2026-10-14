@@ -84,6 +84,10 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
             data['contract']+=' A separate moderate reachable lift of at least30mm may also be offered. Judge each COMPLETE program separately; if its shorter corridor supports progress while the larger is uncertain, that is a valid different choice. Never combine actions or sum probabilities to override STOP.'
     images=[]
     if previous is not None:
+        if os.environ.get('ROBODOJO_PICKUP_CAPTURE_WRIST_MOTION')=='1':
+            from capture_wrist_motion import measure as wrist_motion
+            try:data['current_source_vs_brown_wrist_motion']=wrist_motion(previous,obs)
+            except ValueError as error:data['current_source_vs_brown_wrist_motion']={'available':False,'reason':str(error)}
         if os.environ.get('ROBODOJO_PICKUP_SOURCE_FOLLOWING_RGB_EVIDENCE')=='1':
             from pickup_source_following_rgb import measure
             try:data['algorithmic_current_source_image_change']=measure(previous,obs)
