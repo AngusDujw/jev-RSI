@@ -17,6 +17,36 @@ PHASES = ['select', 'approach', 'align', 'descend', 'grasp', 'test_lift', 'lift'
 NATIVE_BUDGET = 580  # Env horizon is 600; initial gripper opening uses 10 ticks.
 
 
+def visible_insertion_release_trial(holding, receiver, initial_source, checks, tick):
+    """A visible insertion supports a release trial, not hidden-bottom proof."""
+    measured = holding.get('measured')
+    observed = holding.get('observed_tick')
+    if holding.get('status') != 'passed' or measured is None or observed is None:
+        return dict(ready=False, reason='Fresh visible source unavailable')
+    low, high = np.asarray(measured['low']), np.asarray(measured['high'])
+    center = np.asarray(measured['center'])
+    floor_low, floor_high = np.asarray(receiver['low']), np.asarray(receiver['high'])
+    span = np.maximum(high[:2]-low[:2], 1e-6)
+    overlap = np.maximum(0., np.minimum(high[:2], floor_high[:2])-
+                         np.maximum(low[:2], floor_low[:2]))
+    footprint = float(np.prod(overlap/span))
+    gap = float(low[2]-floor_high[2])
+    intrusion = float(receiver['rim_high_z']-low[2])
+    required = float(np.clip(.35*(initial_source['high'][2]-initial_source['low'][2]), .010, .020))
+    age = int(tick)-int(observed)
+    ready = bool(checks >= 2 and 0 <= age <= 12 and footprint >= .90 and
+                 np.max(np.abs(center[:2]-np.asarray(receiver['center'])[:2])) <= .010 and
+                 .015 <= gap <= .050 and intrusion >= required and measured.get('points',0) >= 300)
+    return dict(ready=ready, height_checks=checks, age_native_ticks=age,
+        visible_footprint_overlap_ratio=round(footprint,3),
+        visible_lowest_points_to_floor_mm=round(gap*1000,2),
+        visible_rim_intrusion_mm=round(intrusion*1000,2),
+        required_visible_intrusion_mm=round(required*1000,2),
+        physical_bottom_unknown=True, support_contact_unknown=True,
+        meaning='One bounded opening trial after visible insertion; not task success',
+        source='Fresh public RGB-D, observed receiver rim/floor, prior visible source height')
+
+
 def restrict_visible_source_cloud(measured, view, visible_cloud, initial_cloud,
                                   source_grasp, expected, relative_rotation):
     """Reject robot/background pixels mixed into a lifted source mask.
@@ -773,8 +803,9 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                                     np.asarray(measured['center'][:2], float))
                         desired_bottom = (float(dst['high'][2])+.025 if rec.cfg.get('drawer_floor_drop') else float(dst['rim_high_z'])+.012)
                         height_error = desired_bottom-float(measured['low'][2])
-                        if (np.max(np.abs(xy_error)) > .010 or
-                                height_error > .007 or height_error < -.008):
+                        insertion_trial = (visible_insertion_release_trial(holding,dst,initial_src,rim_drop_rechecks,ticks) if rec.cfg.get('drawer_visible_insertion_release') else dict(ready=False))
+                        if (not insertion_trial['ready'] and (np.max(np.abs(xy_error)) > .010 or
+                                height_error > .007 or height_error < -.008)):
                             correction = np.r_[np.clip(xy_error, -.015, .015),
                                                 np.clip(height_error, -.015, .015)]
                             drawer_lower_target = position+correction
@@ -821,7 +852,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     rim_low = (-50 if rec.cfg.get('drawer_floor_drop') else 5 if rec.cfg.get('rim_relative_drop') else
                                -35 if drawer_lower_verified else -20)
                     minimum_footprint = .90 if rec.cfg.get('rim_relative_drop') or rec.cfg.get('drawer_floor_drop') else .50
-                    floor_ready = 15 <= floor_gap <= 35 if rec.cfg.get('drawer_floor_drop') else 20 <= floor_gap <= 90
+                    insertion_trial = (visible_insertion_release_trial(holding,dst,initial_src,rim_drop_rechecks,ticks) if rec.cfg.get('drawer_visible_insertion_release') else dict(ready=False))
+                    floor_ready = (15 <= floor_gap <= 35 or insertion_trial['ready']) if rec.cfg.get('drawer_floor_drop') else 20 <= floor_gap <= 90
                     candidate = bool(insertion_ready and 0 <= age <= 12 and
                         footprint >= minimum_footprint and centered and
                         np.all(center[:2] >= floor_low[:2]-.005) and
@@ -835,6 +867,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         visible_insertion_ready=insertion_ready,
                         visible_bottom_to_floor_mm=round(floor_gap,2),
                         visible_bottom_to_rim_mm=round(rim_gap,2),
+                        visible_insertion_release_trial=insertion_trial,
                         source='Fresh public held-bowl RGB-D and visible opened-drawer floor/rim')
                     if candidate:
                         target = position.copy()
@@ -1002,6 +1035,8 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         'drop gap. You may advance now to one gripper-opening trial; '
                         'this is not official success. Keep closed for this lower '
                         'decision, then decide opening in release.')
+                if stage == 'lower' and container_drop.get('visible_insertion_release_trial',{}).get('ready'):
+                    contracts['lower'] = ('Two fresh height checks show the visible source region contained in the observed receiver footprint and sufficiently below its visible rim. Lowest visible points are not a known physical bottom, and support contact is unknown. One bounded opening trial is offered: advance with closed fingers now, decide opening in release, then withdraw. This is not official success.')
                 if stage == 'release' and visible_container_drop_selected:
                     contracts['release']=(
                         'Hold the release pose and command the gripper open. '

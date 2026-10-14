@@ -48,7 +48,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    empty_hand_fast=False, support_stall_release=False,
                    drawer_bowl_algorithm='recovery', gentle_carry=False,
                    visible_container_drop=False, rim_relative_drop=False,
-                   drawer_source_memory=False, drawer_pull_from_source=False, drawer_drop_retreat=False,drawer_floor_drop=False,rim_tilt_outward=False):
+                   drawer_source_memory=False, drawer_pull_from_source=False, drawer_drop_retreat=False,drawer_floor_drop=False,rim_tilt_outward=False,drawer_visible_insertion_release=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -110,6 +110,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                 cmd += ['--visible-container-drop']
             if rim_relative_drop:
                 cmd += ['--rim-relative-drop']
+            if drawer_visible_insertion_release:
+                cmd += ['--drawer-visible-insertion-release']
             if drawer_floor_drop:
                 cmd += ['--drawer-floor-drop']
             if drawer_drop_retreat:
@@ -166,6 +168,7 @@ def main():
     p.add_argument('--rim-inset-mm', type=int, choices=[0,2,4], default=0)
     p.add_argument('--drawer-preorient', action='store_true')
     p.add_argument('--drawer-clear-to-source', action='store_true')
+    p.add_argument('--drawer-visible-insertion-release', action='store_true')
     p.add_argument('--drawer-floor-drop', action='store_true')
     p.add_argument('--drawer-drop-retreat', action='store_true')
     p.add_argument('--drawer-pull-from-source', action='store_true')
@@ -230,6 +233,8 @@ def main():
         p.error('Visible container drop requires Goal1202 recovery continuation')
     if a.rim_relative_drop and (a.task_id != 1202 or not a.visible_container_drop):
         p.error('Rim-relative drop requires Goal1202 visible container drop')
+    if a.drawer_visible_insertion_release and not a.drawer_floor_drop:
+        p.error('Visible insertion release requires floor-close mode')
     if a.drawer_floor_drop and (a.task_id != 1202 or not a.visible_container_drop):
         p.error('Floor-close drop requires Goal1202 visible drop')
     if a.drawer_drop_retreat and (a.task_id != 1202 or not a.visible_container_drop):
@@ -268,7 +273,7 @@ def main():
                          a.empty_hand_fast,a.support_stall_release,
                          a.drawer_bowl_algorithm,a.gentle_carry,
                          a.visible_container_drop,a.rim_relative_drop,
-                         a.drawer_source_memory,a.drawer_pull_from_source,a.drawer_drop_retreat,a.drawer_floor_drop,a.rim_tilt_outward)
+                         a.drawer_source_memory,a.drawer_pull_from_source,a.drawer_drop_retreat,a.drawer_floor_drop,a.rim_tilt_outward,a.drawer_visible_insertion_release)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
