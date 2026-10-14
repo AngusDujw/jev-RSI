@@ -36,8 +36,12 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
         lifts=[name for name in targets if name.startswith('closed_following_lift_')]
         if lifts:
             largest=max(lifts,key=lambda name:targets[name]['right']['position'][2])
+            retained={largest}
+            if os.environ.get('ROBODOJO_PICKUP_CAPTURE_PROGRESS_PAIR')=='1':
+                moderate=[n for n in lifts if targets[n]['right']['position'][2]-obs['current_eef']['right']['position'][2]>=.029]
+                if moderate:retained.add(min(moderate,key=lambda n:targets[n]['right']['position'][2]))
             for name in lifts:
-                if name!=largest:targets.pop(name);paths.pop(name)
+                if name not in retained:targets.pop(name);paths.pop(name)
     if not targets:
         record['status']='capture_no_public_program';return None,record
     directory=output/f"capture_experience_step_{obs['step_id']:03d}";directory.mkdir(exist_ok=False)
@@ -60,6 +64,10 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     data['planner_stage']=planner_stage
     data['planner_stage_evidence_rule']=(planner_stages or {}).get(planner_stage)
     data['planner_stage_interpretation']='Last valid planner semantic rule, if available; runtime review label/test-motion history is not planner refresh, confirmed capture, source height or phase completion.'
+    if os.environ.get('ROBODOJO_PICKUP_MEASURED_GAP_DESCRIPTION')=='1':
+        from gripper_measured_gap import evidence as measured_gap_evidence
+        try:data['measured_public_finger_gap_meaning']=measured_gap_evidence(obs,previous)
+        except ValueError as error:data['measured_public_finger_gap_meaning']={'available':False,'reason':str(error)}
     data['planner_criterion_role']='Planner pass/next is an EXIT criterion for advancing the semantic stage, NOT a precondition already proven before every bounded observation/test within the stage. A test may acquire missing evidence without claiming the criterion passed.'
     data['current_phase_goal']=('Acquire source-following evidence with ONE bounded lift TEST from a CURRENT plausible enclosure/short corridor; closure alone is not holding. No informative lift has occurred yet, so closure-frame flow cannot establish lift-following. Do not require already verified co-motion before its first test. OPEN only visibly empty fingers, or STOP for a contradiction/unsupported corridor.' if not test_motion_executed else
         'Evaluate actual CURRENT source-following after the previous test and review a height-gain increment; do not declare source height from robot rise.')
@@ -72,6 +80,8 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     elif test_motion_executed:
         data['phase_transition_basis']='A prior robot lift TEST has executed, NOT a declaration that the source is captured/elevated. Judge current source-following from fresh RGB and measured image-feature change.'
         data['contract']='A small robot lift TEST already executed. Judge whether the SAME source visibly followed and remains enclosed in the CURRENT real fingers. If supported, select the offered independently legal five-step CLOSED lift toward the instructed 10cm source-height gain; it is the largest public-robot-reachable increment among20/30/40/50mm, NOT certified scene clearance or object height. Do not default to repeating a small test forever. OPEN only a visibly empty hand, HOLD only a visibly captured/elevated source, or STOP for insufficient/contradictory evidence. Robot rise is NOT source height and does not certify task completion. All actions remain independent full programs; reobserve after one.'
+        if os.environ.get('ROBODOJO_PICKUP_CAPTURE_PROGRESS_PAIR')=='1':
+            data['contract']+=' A separate moderate reachable lift of at least30mm may also be offered. Judge each COMPLETE program separately; if its shorter corridor supports progress while the larger is uncertain, that is a valid different choice. Never combine actions or sum probabilities to override STOP.'
     images=[]
     if previous is not None:
         if os.environ.get('ROBODOJO_PICKUP_SOURCE_FOLLOWING_RGB_EVIDENCE')=='1':
