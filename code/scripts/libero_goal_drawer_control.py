@@ -112,6 +112,7 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
     clear_target = None
     clear_start = None
     clear_source_x = None
+    pull_anchor_y = None
     blocked_contact_blocks = 0
     expected = None
     contact_mode = rec.cfg.get('drawer_contact_mode', 'pinch')
@@ -430,6 +431,21 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 'verify': bool(extension and extension['passed']) or (
                     shift is not None and shift['pixel_displacement'] > 12),
             }[name]
+            own_pull_mm = (float((position[1]-pull_anchor_y)*1000)
+                           if pull_anchor_y is not None else None)
+            if task_id == 1202 and rec.cfg.get('drawer_bowl_continuation'):
+                if name == 'pull':
+                    # Partial exposure left a 50 mm visible floor for an
+                    # approximately 80 mm bowl. Pull farther using only own
+                    # displacement and public extension; the next primitive
+                    # must freshly measure the opened floor before placement.
+                    gate = bool(extension and extension['passed'] and
+                        own_pull_mm is not None and own_pull_mm >= 140. and
+                        aperture >= 6.)
+                if name == 'release' and rec.cfg.get('empty_hand_fast'):
+                    # Observable aperture replaces excess fixed open ticks,
+                    # leaving native horizon for the fuller drawer opening.
+                    gate = bool(grip_ticks >= 12 and gripper == -1 and aperture >= 65.)
             evidence = dict(sources=['public_task', 'agentview_rgbd',
                                      'camera_calibration', 'robot_proprioception',
                                      'own_robot_mesh',
@@ -453,6 +469,9 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                             current_tcp_world_m=position.tolist(),
                             own_pad_to_visible_rod_gap_mm=round(rod_gap*1000, 2),
                             blocked_contact_blocks=blocked_contact_blocks,
+                            own_pull_distance_mm=(round(own_pull_mm, 2)
+                                                  if name == 'pull' and own_pull_mm is not None else None),
+                            required_own_pull_distance_mm=(140. if task_id == 1202 and name == 'pull' else None),
                             handle_contact_pose_reached=exact_contact_pose,
                             blocked_contact_closure_trial=blocked_contact_trial,
                             position_arrived=arrived,
@@ -488,6 +507,14 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     f'visible {requested_level} handle rod, with RGB-D front-plane clearance. '
                     'Advance only after the measured finger hook and open-command '
                     'hold are confirmed.')
+            if task_id == 1202 and name == 'pull' and rec.cfg.get('drawer_bowl_continuation'):
+                request['state']['stage_contract'] = (
+                    'Keep holding the visible top drawer handle and move outward. '
+                    'Partial exposure is insufficient for the bowl placement. '
+                    'Advance only after own outward travel reaches 140 mm, '
+                    'the own gripper remains nonempty, and fresh public RGB-D '
+                    'shows drawer extension. The next primitive freshly measures '
+                    'the exposed floor and must check object containment before release.')
             if contact_mode == 'top_hook' and name == 'contact':
                 request['state']['stage_contract'] = (
                     'First move the selected own finger to the measured '
@@ -613,6 +640,8 @@ def run_drawer(env, obs, rec, task, depth_fn, k_fn, t_fn):
                                 commanded_delta_mm=np.round(delta*1000, 2).tolist(),
                                 transition=edge))
             if edge == 'advance':
+                if name == 'grasp':
+                    pull_anchor_y = float(after[1])
                 current_image, _, _, _ = frame()
                 cv2.imwrite(str(rec.folder/f'{ticks:04d}-{name}-agentview.jpg'),
                             cv2.cvtColor(current_image, cv2.COLOR_RGB2BGR))

@@ -781,14 +781,16 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     insertion_ready = (drawer_lower_target is None or drawer_lower_verified)
                     rim_low = (5 if rec.cfg.get('rim_relative_drop') else
                                -35 if drawer_lower_verified else -20)
+                    minimum_footprint = .90 if rec.cfg.get('rim_relative_drop') else .50
                     candidate = bool(insertion_ready and 0 <= age <= 12 and
-                        footprint >= .50 and centered and
+                        footprint >= minimum_footprint and centered and
                         np.all(center[:2] >= floor_low[:2]-.005) and
                         np.all(center[:2] <= floor_high[:2]+.005) and
                         20 <= floor_gap <= 90 and rim_low <= rim_gap <= 20)
                     container_drop = dict(status='visible_drop_candidate' if candidate
                         else 'geometry_not_ready', observed_tick=int(observed),
                         age_native_ticks=int(age), footprint_overlap_ratio=round(footprint,3),
+                        required_footprint_overlap_ratio=minimum_footprint,
                         centered_over_visible_floor=centered,
                         visible_insertion_ready=insertion_ready,
                         visible_bottom_to_floor_mm=round(floor_gap,2),
