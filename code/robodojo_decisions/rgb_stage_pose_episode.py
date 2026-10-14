@@ -263,6 +263,21 @@ def run(tools, obs, model, output, max_decisions, deadline):
                     if horizontal else 'Algorithm offers the translation with greatest predicted decrease of CURRENT conditional top-to-pad distance. ')+(
                     'All five predicted hand poses remain at least6mm above this SOURCE-plane upper hypothesis only; other obstacles and short corridor remain for CURRENT RGB review. This selects a proposal, not execution permission or scene clearance. Luna independently accepts it or STOP; no probabilities combined.')
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
+        if os.environ.get('ROBODOJO_RGB_STAGE_OPEN_STOP_SCOPE')=='1':
+            options['STOP_current_evidence_insufficient']=(
+                'Execute none for unsupported CURRENT source identity, unsupported/contradictory '
+                'short corridor of the offered program, or a concrete robot/camera contradiction. '
+                'Apply CURRENT stage requirements: missing FUTURE enclosure/contact/holding is '
+                'expected during FAR OPEN approach and is not a reason for this STOP. A CLOSE '
+                'still requires current actual material/opposing-finger evidence; never override STOP.')
+            data['contract']+=(
+                ' OPEN-stage scope: judge current source identity, the visible short whole-hand '
+                'corridor and public robot path for an OPEN far increment. Future grasp enclosure, '
+                'contact precision and holding are later-stage evidence, not prerequisites for '
+                'this increment. An occluded pad facet cannot certify contact, but missing pad '
+                'enclosure alone does not prohibit supported FAR OPEN progress. Unsupported '
+                'CURRENT corridor or contradictory robot/camera data still requires STOP.')
+            data['stop_criterion_scope']='Current stage only; far OPEN does not require future enclosure.'
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])
         stage_data={k:v for k,v in data.items() if k!='complete_programs'}
