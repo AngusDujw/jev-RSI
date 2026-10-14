@@ -40,7 +40,8 @@ def measure(previous,current):
         yy,xx=np.nonzero(source)
         # Exclude the whole source column band, including its holes and metal
         # extension, rather than treating source reflections as background.
-        mask[:,max(0,int(xx.min())-30):min(mask.shape[1],int(xx.max())+31)]=False
+        if len(xx):
+            mask[:,max(0,int(xx.min())-30):min(mask.shape[1],int(xx.max())+31)]=False
         return mask
     source=_flow(a,b,source_a,source_b);background=_flow(a,b,brown(a,source_a),brown(b,source_b))
     ratio=None
