@@ -12,6 +12,8 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
     failure_review=obs.get('close_tracking_failure_review')
     test_once=os.environ.get('ROBODOJO_PICKUP_CAPTURE_TEST_ONCE')=='1'
     single_progress=os.environ.get('ROBODOJO_PICKUP_CAPTURE_SINGLE_PROGRESS_PROGRAM')=='1'
+    if single_progress and not test_once:
+        raise ValueError('Single progress scheduling requires CAPTURE_TEST_ONCE')
     rise=float(obs['current_eef']['right']['position'][2]-reference_z)
     test_motion_executed=test_once and rise>=.015
     stage=('close_tracking_stabilization_review' if failure_review else

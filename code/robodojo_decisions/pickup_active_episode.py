@@ -528,7 +528,15 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
     trace = []
     refreshed_steps = set()
     rotations = 0
-    near_method_refreshed = False
+    freeze_method=os.environ.get('ROBODOJO_PICKUP_FREEZE_AUTHORED_METHOD')=='1'
+    if freeze_method and os.environ.get('ROBODOJO_PICKUP_USE_GENERAL_SCHEMA')!='1':
+        raise ValueError('Frozen method ablation requires supplied authored general schema')
+    near_method_refreshed = freeze_method
+    if freeze_method:
+        (output/'planner_method_schedule.json').write_text(json.dumps({
+            'policy':'Explicit frozen authored task-general method for actor-input ablation',
+            'fresh_per_layout_planner_call':False,
+            'scope':'Current RGB/robot geometry and experience are still reread at each actor decision; no gateway refresh is claimed.'},indent=2))
     temporal_references = {}
     table_cache = None
     metal_height_cache = None
@@ -948,7 +956,7 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
                 "the moving wrist image or LINK6.")
         elif view_stage:
             entering_view = not trace or trace[-1].get("stage") != "visibility_recovery"
-            if (obs["step_id"] != 0 and entering_view and
+            if (not freeze_method and obs["step_id"] != 0 and entering_view and
                     near_refresh is None and
                     obs["step_id"] not in refreshed_steps):
                 try:
