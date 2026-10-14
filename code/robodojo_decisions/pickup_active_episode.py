@@ -1546,6 +1546,14 @@ def run(tools, obs: dict, model, plan: dict, output: Path,
         if target['right']['gripper_closed'] and not gripper_closed:
             capture_robot_reference_z=float(after['current_eef']['right']['position'][2])
         if error > tracking_limit:
+            if (os.environ.get('ROBODOJO_PICKUP_CLOSE_TRACKING_STABILIZATION')=='1' and
+                    target['right']['gripper_closed'] and not gripper_closed and error<=.005 and
+                    np.linalg.norm(np.asarray(target['right']['position'])-np.asarray(previous_observation_for_capture['current_eef']['right']['position']))<=.001):
+                record['status']='close_tracking_FAILED_requires_fresh_stabilization_review'
+                obs['close_tracking_failure_review']={'failed_step_id':record['step_id'],
+                    'actual_position_error_mm':round(error*1000,4),'original_tracking_limit_mm':tracking_limit*1000,
+                    'original_gate_passed':False,'scope':'Failure retained. Next decision may only stabilize at CURRENT measured pose, open visibly empty fingers or STOP; never directly lift.'}
+                continue
             status = "robot_tracking_incomplete"
             record["status"] = status
             native_result = tools.finish(status)

@@ -9,12 +9,15 @@ from robot_path_preview import preview
 
 
 def step(tools,obs,model,output,experience,turn,reference_z,previous):
-    record={'turn':turn,'step_id':obs['step_id'],'stage':'capture_and_following_review'}
+    failure_review=obs.get('close_tracking_failure_review')
+    stage='close_tracking_stabilization_review' if failure_review else 'capture_and_following_review'
+    record={'turn':turn,'step_id':obs['step_id'],'stage':stage}
     rise=float(obs['current_eef']['right']['position'][2]-reference_z)
     targets={};paths={}
     requests=[('open_visibly_empty_hand',0,False)]
     if rise<.25:requests += [('closed_lift_test_20mm',.020,True),('closed_lift_50mm',.050,True)]
     if rise>=.12:requests += [('hold_visibly_captured_source',0,True)]
+    if failure_review:requests=[('open_visibly_empty_hand',0,False),('stabilize_closed_at_current_measured_pose',0,True)]
     for name,dz,closed in requests:
         target=_targets(obs,'z',1,dz);target['right']['gripper_closed']=closed
         check=preview(obs,target['right'],None,5)
@@ -31,13 +34,16 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous):
         'right_gripper':'CLOSED' if target['right']['gripper_closed'] else 'OPEN','physical_steps':5,'public_robot_five_step_gate':True}
         for name,target in targets.items()}
     data={'task':obs['task'],'instruction':obs['instruction'],'step_id':obs['step_id'],
-        'current_stage':'capture_and_following_review','current_measured_eef':obs['current_eef'],
+        'current_stage':stage,'current_measured_eef':obs['current_eef'],
         'current_robot_joints':obs['current_state'],'measured_gripper_joint_state':obs.get('measured_gripper_joint_state'),
         'robot_LINK6_rise_since_close_mm':round(rise*1000,3),
         'source_height_and_holding':'UNKNOWN; robot rise is NOT measured object height',
         'complete_program_alternatives':programs,'memory_sha256':hashes,'memory_snapshot_directory':str(directory),
         'experience_global_original':experience['global.md'],'task_experience_selected_original_lines':task_lines,
         'contract':'This is native SIMULATION feedback after a CLOSE command, not proof of contact/holding. Judge CURRENT actual source material and fingers. A CLOSED +Z20mm is a small visible-following TEST; +Z50mm is a separate full lift. Select a lift only when current source enclosure/short corridor supports it, then compare the SAME source in fresh fixed-high and wrist images. OPEN at held poses is ONLY for visibly EMPTY fingers/source left behind, never release a verified held source. If neither lift/open/hold is supported choose STOP. HOLD only maintains a visibly captured, sufficiently elevated source through native horizon; native task result is never presumed. All actions are mutually exclusive complete five-step programs, left arm/orientation held, world Z up. No static object-plane fit is required for a possibly moving captured source.'}
+    if failure_review:
+        data['previous_close_tracking_gate_FAILURE']=failure_review
+        data['contract']='The preceding held-EEF CLOSE FAILED its original 2mm tracking gate. It is NOT accepted as successful tracking/capture. From these FRESH RGB and measured state choose ONE zero-pose-change CLOSED stabilization at the CURRENT measured poses, or OPEN only visibly empty fingers, or STOP. No lift or old missed target is offered. Stabilization itself requires a NEW native first IK, independent five-step robot path and <=2mm actual tracking; it is not holding proof. Only after a successful new stabilization and fresh RGB may a later independent decision consider a lift. At most one such stabilization is offered for this failed CLOSE; no automatic repeated HOLD.'
     images=[]
     if previous is not None:
         if os.environ.get('ROBODOJO_PICKUP_SOURCE_FOLLOWING_RGB_EVIDENCE')=='1':
@@ -48,6 +54,7 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous):
         images=[{'camera':f"PREVIOUS same-episode {row['camera']} step{previous['step_id']} for CURRENT feature-change comparison, NOT current contact",'path':row['path']}
             for row in previous['images'] if row['camera'] in ('cam_high','cam_right_wrist')]
     descriptions={name:('OPEN only visibly empty fingers at held poses.' if name.startswith('open_') else
+        'One CLOSED stabilization at exact CURRENT measured poses; previous tracking remains failed, no lift/holding inferred.' if name.startswith('stabilize_') else
         'HOLD CLOSED at exact current poses only with current visible capture/elevation.' if name.startswith('hold_') else
         f"One complete CLOSED lift by world Z+{20 if '20mm' in name else 50}mm, then verify actual source-following.") for name in targets}
     questions=[choice('source_identity','Is the SAME mint-green scissors currently identifiable in any CURRENT RGB, including material within the true fingers? Historical images alone cannot establish current visibility.',
