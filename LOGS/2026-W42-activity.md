@@ -296,3 +296,13 @@
 - 【Agent】【2026-10-14 16:43】[run] Goal1296第61/80次8e90d266，同init11原样复测超时中断的rear_compact配置；当前前台session89936，SSH临时keepalive；未重置计数。Goal1202第61次原进程最终179请求/585步recover_open预算结束，双false，继续检查闭环修正真实证据。
 - 【Agent】【2026-10-14 16:46】[result] 完整protocol差异审计纠正单因素口径：v34→v36除source_sized外，drawer_preorient false→true、rim_height visible_sidewall→top_overlap、rim_tilt12→0。只算组合能抓原碗，不单独归因拉距；v36→37仅drop_retreat、37→38仅floor_drop、38→39 cfg相同仅源码反馈修复。保存goal1202-config-delta-audit.json并追加纠正，不删历史。
 - 【Agent】【2026-10-14 16:47】[op] 三个runner补存完整launch_command/所有CLI选项（仅参数和配置文件路径，不记录密钥/环境变量），防止旧manifest漏掉rim_tilt/height/preorient导致误判配对；不改控制策略或账本。三个AST/diff通过。
+- 【Agent】【2026-10-14 16:52】[run] Goal1202第62/80次fe00cc9b同init3，仅rim_tilt0→12，top_overlap/预对齐/相机源尺寸/记忆/floor-feedback/撤离保持v39；runner仅补完整参数记录，5880-jump前台session14777。比较腕姿与接收边框的实际入口，不宣称拉距单独收益。
+- 【Agent】【2026-10-14 16:59】[op] 新增Goal1296 opt-in robot-near rim_slide阶段prepare(open)→approach→lower可见pad/table-clearance门→grasp(close trial)→水平push固定Z→release(open)→retreat/鲜RGB-D炉前与桌面高度检查；0真值。近边由公开初始TCP与可见盘范围选，非场景ID。AST/diff/完整dryrun及纯几何校验通过，未物理验证。
+- 【Agent】【2026-10-14 17:02】[run] Goal1296第62/80次6d07aee0同init11，首段15deg/coast保持，第二段改公开近盘沿夹持辅助水平滑动（不抬盘），夹爪/所有阶段边Jev选择；5880-jump前台session14336。已离线候选contact x.035/y.193/z.914，自体指尖表面净空3.70mm，非物理成功。
+- 【Agent】【2026-10-14 17:03】[op] Goal1202 inward12第62次两候选下降均未完成，166Jev/586步；新opt-in outward反转已声明12°候选，重新计算自身pad/finger envelope与table-clearance，不改变源对象几何真值边界。比较手指身体向接收边框外侧倾斜；AST/diff/dryrun通过，未实跑。
+- 【Agent】【2026-10-14 17:07】[op] 补全EXP193-197：floor反馈受阻、rear compact正常复测失败、inward12仍下降受阻、完整协议四变量纠正、近盘沿离线候选；严格lint通过。
+- 【Agent】【2026-10-14 17:12】[run] 冻结6d07aee0 Goal1296完整v18参数与全部策略SHA256；已核对init12–16此前未预留，依次正式验证，首个双终局不成立即停止该冻结批，不改变控制策略、不重置计数。5880-jump前台session91224，全部运行时Jev，GPT/DeepSeek0。
+- 【Agent】【2026-10-14 17:16】[result] v40补充纠正：实际第一候选有3个grasp决策/13个test_lift决策，0398 holding unavailable（几何筛选仅163点）；双相机显示碗仍在原桌面，非成功持有。第二候选descend受阻。不能写成两次皆未进入抓持；EXP195追加注释待补全。
+- 【Agent】【2026-10-14 17:18】[op] 5880同项目/同盘创建自有独立detached工作树.worktrees/goal1202-goal-ten-20261014@c04f3546，使用原环境/资产，code/runs仅自建symlink共享原账本，同inode flock计数。main冻结6d07源码保持；可用RAM17GiB/同盘965GiB，放碗限制CPU线程2并共享EGL，最多两实验并行。
+- 【Agent】【2026-10-14 17:19】[run] 独立工作树Goal1202共享账本第63/80次c04f3546同init3，向内12°→向外12°，其余v40策略保持；CPU线程2属于执行资源配置并明确记录。5880-jump前台session99905；root Goal1296固定新init12已成功110Jev/513步，batch进入init13，源码SHA检查继续。
+- 【Agent】【2026-10-14 17:20】[op] EXP195追加真实grasp/test_lift与双相机纠正，保留误判历史不再误称两次皆未抓取；第一候选无成功持有，第二候选下降受阻。严格lint通过。
