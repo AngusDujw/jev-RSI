@@ -185,7 +185,10 @@ def visible_drawer_interior(rgb, depth, intrinsic, extrinsic, handle):
             or k.shape != (3, 3) or t.shape != (4, 4)):
         raise ValueError('Drawer interior requires calibrated agentview RGB-D')
     u, v = (int(round(value)) for value in handle['center_uv'])
-    x0, x1, y0, y1 = u-10, u+95, v-60, v+65
+    # Cover the public 180 mm pull envelope instead of retaining a narrow
+    # closed-handle crop after opening. Depth/colour still select only the
+    # actually visible floor; this does not infer an occluded interior.
+    x0, x1, y0, y1 = max(0, u-25), min(768, u+180), max(0, v-75), min(768, v+95)
     if not (0 <= x0 < x1 <= 768 and 0 <= y0 < y1 <= 768):
         raise RuntimeError('Visible interior window outside agentview')
     vv, uu = np.mgrid[y0:y1, x0:x1]
@@ -195,8 +198,9 @@ def visible_drawer_interior(rgb, depth, intrinsic, extrinsic, handle):
     world = camera @ t[:3, :3].T + t[:3, 3]
     h = np.asarray(handle['center_world_m'], float)
     candidate = ((image[vv, uu].max(axis=2) < 70) & np.isfinite(z)
-                 & (world[:, :, 1] > h[1]+.01)
-                 & (world[:, :, 1] < h[1]+.11)
+                 & (np.abs(world[:, :, 0]-h[0]) < max(.08, 1.5*float(handle['visible_rod_length_m'])))
+                 & (world[:, :, 1] > h[1]-.03)
+                 & (world[:, :, 1] < h[1]+.22)
                  & (world[:, :, 2] > h[2]-.15)
                  & (world[:, :, 2] < h[2]+.05))
     if int(candidate.sum()) < 1200:
