@@ -290,3 +290,9 @@
 - 【Agent】【2026-10-14 16:34】[run] Goal1202第61/80次d09b320b同init3，floor-close/撤离等保持，只新增最多3次 fresh视觉XYZ15mm反馈；5880-jump前台session12767。
 - 【Agent】【2026-10-14 16:37】[op] 补全EXP191低位目标到达但源高度未达、EXP192首段Jev读取超时Crashed，严格lint通过。推盘审计发现最后请求没有response，原auditor未支持未回答请求，需修正报告未回答而不是冒称0违规完整问答。
 - 【Agent】【2026-10-14 16:38】[op] 修复推盘审计对服务断连的处理：请求仍做英文/hash/禁字段检查，未答复只能无实际branch，独立统计answered/unanswered。v16为27请求/26回答/26动作、1未回答、2边/0合同违规；v15正常109回答/109动作/6边保持。AST/diff及实际正负记录验证通过。
+- 【Agent】【2026-10-14 16:39】[note] Goal1202第61次SSH session12767返回255 localhost超时；最近Jev call28为HTTP200。先只读核对原服务器进程与result，不自动重启、不重置次数。
+- 【Agent】【2026-10-14 16:40】[run] 确认原Goal1202第61次launcher828257/rollout828314仍运行，HTTP200到call64；未重复启动。只读前台监测恢复session38438，等待原result，开启SSH keepalive不改系统配置。
+- 【Agent】【2026-10-14 16:41】[note] 精确计数澄清：floor反馈上限3是包含第一次目标到达后的RGB-D复核，总共最多2次额外15mm XYZ纠偏/3次复核；前次“最多3次修正”的口径过宽，以实际源码/事件为准。保留原记录并追加纠正，不改变当前冻结版本。
+- 【Agent】【2026-10-14 16:43】[run] Goal1296第61/80次8e90d266，同init11原样复测超时中断的rear_compact配置；当前前台session89936，SSH临时keepalive；未重置计数。Goal1202第61次原进程最终179请求/585步recover_open预算结束，双false，继续检查闭环修正真实证据。
+- 【Agent】【2026-10-14 16:46】[result] 完整protocol差异审计纠正单因素口径：v34→v36除source_sized外，drawer_preorient false→true、rim_height visible_sidewall→top_overlap、rim_tilt12→0。只算组合能抓原碗，不单独归因拉距；v36→37仅drop_retreat、37→38仅floor_drop、38→39 cfg相同仅源码反馈修复。保存goal1202-config-delta-audit.json并追加纠正，不删历史。
+- 【Agent】【2026-10-14 16:47】[op] 三个runner补存完整launch_command/所有CLI选项（仅参数和配置文件路径，不记录密钥/环境变量），防止旧manifest漏掉rim_tilt/height/preorient导致误判配对；不改控制策略或账本。三个AST/diff通过。
