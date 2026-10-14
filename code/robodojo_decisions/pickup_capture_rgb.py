@@ -100,6 +100,11 @@ def step(tools,obs,model,output,experience,turn,reference_z,previous,planner_sta
         'One CLOSED stabilization at exact CURRENT measured poses; previous tracking remains failed, no lift/holding inferred.' if name.startswith('stabilize_') else
         'HOLD CLOSED at exact current poses only with current visible capture/elevation.' if name.startswith('hold_') else
         f"One complete CLOSED lift by world Z+{round((targets[name]['right']['position'][2]-obs['current_eef']['right']['position'][2])*1000):g}mm, then verify actual source-following.") for name in targets}
+    if os.environ.get('ROBODOJO_PICKUP_CAPTURE_PAD_CROP')=='1':
+        from capture_pad_crop import build as pad_crop
+        try:
+            extra,facts=pad_crop(obs,output);images.append(extra);data['current_measured_public_pad_crop']=facts
+        except ValueError as error:data['current_measured_public_pad_crop']={'available':False,'reason':str(error)}
     questions=[choice('source_identity','Is the SAME mint-green scissors currently identifiable in any CURRENT RGB, including material within the true fingers? Historical images alone cannot establish current visibility.',
         {'visible_mint_green_scissors':'Source identifiable NOW.','source_identity_unavailable':'Current source identity unavailable.'}),
         choice('full_program_decision',data['contract'],{**descriptions,'stop_program_unsupported':'Execute none; current evidence insufficient or contradictory.'})]
