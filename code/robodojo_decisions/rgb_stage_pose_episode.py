@@ -4,6 +4,7 @@ An explicit full-pose baseline for another task, not a geometric grasp solver.
 """
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import time
@@ -25,9 +26,15 @@ def run(tools, obs, model, output, max_decisions, deadline):
         'scope':'Bootstrap task metadata is not an executed planner plan.'}))
     command = [sys.executable, '-B', str(Path(__file__).with_name('pro_plan.py')),
                '--observation', obs['observation_path'], '--calibration',
-               str(output/'camera_calibration_initial.json'), '--method-only',
+               str(output/'camera_calibration_initial.json'), '--method-only', '--rgb-pose-baseline',
                '--global-experience', str(memory/'global.md'), '--task-experience',
                str(memory/(obs['task']+'.md')), '--output', str(planner)]
+    text_method=os.environ.get('ROBODOJO_RGB_STAGE_TASK_GENERAL_TEXT_PLAN')=='1'
+    if text_method:command.append('--omit-image-payload')
+    (output/'planner_input_mode.json').write_text(json.dumps({
+        'task_general_text_method':text_method,'planner_images_transmitted':not text_method,
+        'actor_current_raw_RGB_count':3,'actor_object_numeric_errors':False,
+        'scope':'Explicit RGB actor baseline; task-general text method is not per-layout visual review.'},indent=2))
     started=time.monotonic()
     with (output/'initial_fresh_method.log').open('w') as log:
         process=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=650)

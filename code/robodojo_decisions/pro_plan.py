@@ -27,6 +27,8 @@ def main():
     parser.add_argument("--template", type=Path)
     parser.add_argument("--method-only", action="store_true",
                         help="Planner defines perception and stages; runtime geometry/Luna own actions")
+    parser.add_argument("--rgb-pose-baseline", action="store_true",
+                        help="Define an explicit raw-RGB actor baseline without object-error processors")
     parser.add_argument("--omit-image-payload", action="store_true",
                         help="Use RGB-derived sensor summaries when gateway cannot carry GPT-6.1 Sol images")
     parser.add_argument("--select-recent-experience", action="store_true",
@@ -37,6 +39,8 @@ def main():
     parser.add_argument("--response-file", type=Path,
                         help="Revalidate a saved response for exactly the same public input")
     args = parser.parse_args()
+    if args.rgb_pose_baseline and not args.method_only:
+        raise ValueError('RGB pose baseline requires strict method-only planning')
     args.output.mkdir(parents=True, exist_ok=False)
     obs = json.loads(args.observation.read_text())
     if bool(args.previous_observation) != bool(args.previous_calibration):
@@ -159,6 +163,25 @@ def main():
            "any 3D estimate; if no reliable correspondence exists, request a bounded "
            "camera viewpoint move as a sensing action." if args.calibration else "")
     )
+    if args.rgb_pose_baseline:
+        system += (
+            ' This is an explicitly experimental RAW-RGB actor baseline. Runtime supplies '
+            'three current raw RGB, measured robot/finger state, public camera K/T and '
+            'independent public robot paths. Object-error processors are not enabled in '
+            'this baseline. Define task-specific semantic object roles, visual parts '
+            'to inspect, stage entry/EXIT criteria and uncertainty that Luna can review '
+            'with these actual inputs. Describe extra image processing only as a future '
+            'requirement if the baseline fails; never imply absent object metrics or '
+            '3D contact certificates are supplied. Preserve current visual veto. '
+            'The first bounded observation/test acquires missing evidence; stage EXIT '
+            'evidence need not already be proved before that test. No concrete actions.')
+        if args.omit_image_payload:
+            system += (
+                ' No image payload is supplied to YOU in this request. This is a '
+                'TASK-GENERAL method from instruction/public robot state and experience, '
+                'not a per-layout visual inspection. Never invent observed colors, '
+                'positions or selected physical source identities. Luna later sees '
+                'the current raw RGB and resolves visual identity under your criteria.')
     if args.method_only:
         system += (
             " STRICT METHOD-ONLY ROLE: Do not suggest any concrete robot action, "
