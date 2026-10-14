@@ -8,6 +8,8 @@ Planner requests use the authorized AI2RobCoWork Responses gateway with **gpt-6.
 
 An optional `ROBODOJO_PICKUP_PUBLIC_FACET_INSET_MM` (default0, range0..4mm) defines an interior subset of each public robot finger facet. The current and predicted residuals use the same subset, while the full-pad centroid remains unchanged. Default0 exactly preserves the earlier producer/predictor output. This changes the declared robot reference region, not object localization or observed contact. It has passed offline geometry and historical-frame consistency checks; no native performance benefit is established.
 
+For authored stack methods, the actor receives `task_role_assignment` explicitly. Historical `visual_method.reported_cues` remain in the original provider artifact but are excluded from current actor evidence. The optional `ROBODOJO_RGB_STAGE_STACK_TOOL_PROGRAM=1` adds one public robot tool-axis proposal alongside the FAR translation; native first IK, five-step public path,10mm above the uncertain source upper plane and current RGB Luna review are required. This extends the FAR prototype with orientation; it is not yet a complete grasp/placement controller. Offline478/480 accepted0.1/0.2rad proposals, rejected0.3rad by the public path, and verified fresh/OPEN and projected-view gates.
+
 ## Current v4090 campaign (2026-10-13)
 
 - Checkout: `/home/v4090-1/ykj/project/jev-RSI-gpt6-dec`, branch `codex/robodojo-gpt6-dec-v4090-20261012`. Reuse RoboDojo at `/home/v4090-1/DataStorage/jev-router/sources/RoboDojo` and its existing Python environment. All run RGB, native trajectories, plans, reviewed experiences, service logs and the mode-600 `du` Decisions key are under `/home/v4090-1/DataStorage/gpt6-dec`.

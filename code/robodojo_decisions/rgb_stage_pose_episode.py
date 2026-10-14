@@ -13,7 +13,27 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 from controller import choice
 from robot_path_preview import preview
-from camera_geometry import propagate_wrist_calibration
+from camera_geometry import propagate_wrist_calibration, gripper_height_above_landmark
+
+
+def actor_method_fields(plan):
+    """Forward semantic roles, excluding explicitly historical example sensors.
+
+    Keep the original provider plan unchanged for receipt verification. Runtime
+    geometry is always recomputed; a reported example is never a current sensor.
+    """
+    visual = plan['visual_method']
+    fields = {'planner_visual_method': visual}
+    if isinstance(visual, dict) and 'reported_cues' in visual:
+        fields['planner_visual_method'] = {k: v for k, v in visual.items() if k != 'reported_cues'}
+        fields['planner_historical_cue_policy'] = (
+            'The original authored plan contains historical reported_cues. '
+            'Those example sensor values are withheld from this runtime input; '
+            'only CURRENT RGB, robot state and freshly computed geometry apply. '
+            'The original plan and completed provider receipt are preserved.')
+    if 'task_role_assignment' in plan:
+        fields['planner_task_role_assignment'] = plan['task_role_assignment']
+    return fields
 
 
 def select_approach_program(geometry, programs, horizontal_first=False):
@@ -238,6 +258,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
               'experience_original_text':notes,'experience_raw_sha256':hashes,
               'experience_original_file_directory':str(memory),
               'contract':'RGB-only full-pose baseline: no processed object XYZ/errors. All programs are complete independent five-step commands, at most15mm or0.1rad. Select ONE or STOP, never assemble axes. WORLD +X robot-right, +Y away from bases, +Z up; rotations are right-hand rule about fixed WORLD axes, not wrist/image axes. Wrist cameras ride with the hand. Current public robot geometry does not prove scene clearance. Identify an accessible task object from CURRENT raw RGB; avoid prior failed routes. CLOSE only for current actual opposing fingers/material, OPEN only as supported by current task/object support. Observe same-source co-motion after a grasp. Stage EXIT conditions are not prerequisites before the first bounded evidence acquisition. Never claim source height/holding from robot displacement. If object/tool/corridor cannot be supported, STOP.'}
+        data.update(actor_method_fields(plan))
         options={name:f'Execute exactly complete_programs[{name}], five native steps then fresh RGB.' for name in programs}
         if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1':
             from stack_top_approach_evidence import build
@@ -262,6 +283,44 @@ def run(tools, obs, model, output, max_decisions, deadline):
                     'FAR OPEN horizontal alignment: while conditional horizontal residual exceeds25mm, algorithm offers only an independently reachable X/Y program with interval-supported sign and greatest predicted horizontal-distance reduction, preserving LINK6 height. This is a stage objective, not a descent/contact target. '
                     if horizontal else 'Algorithm offers the translation with greatest predicted decrease of CURRENT conditional top-to-pad distance. ')+(
                     'All five predicted hand poses remain at least6mm above this SOURCE-plane upper hypothesis only; other obstacles and short corridor remain for CURRENT RGB review. This selects a proposal, not execution permission or scene clearance. Luna independently accepts it or STOP; no probabilities combined.')
+            if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOOL_PROGRAM') == '1':
+                from stack_tool_proposal import build as tool_programs
+                tool_options, tool_targets, tool_evidence = tool_programs(obs, geometry)
+                for name, target in tool_targets.items():
+                    first = tools._rpc('eef_joint_target', targets=target)
+                    if first.get('physical_steps') != 0 or len(first.get('action', [])) != 14:
+                        raise ValueError('Tool program native first IK must be zero-step and14-action')
+                    path = preview(obs, target['right'], first['action'][7:13], steps=5)
+                    tool_evidence['candidate_diagnostics'][name]['native_first_IK'] = first
+                    tool_evidence['candidate_diagnostics'][name]['native_checked_public_path'] = path
+                    if not (path['public_path_gate'] and path['native_eef_single_action_legal']):
+                        continue
+                    upper = geometry['fit']['near_best_z_m_at_iou_within_0p05'][1]+.002
+                    gap = min(gripper_height_above_landmark(
+                        {'position': row['predicted_link6_position_m'],
+                         'quaternion_wxyz': row['predicted_link6_quaternion_wxyz']},
+                        [0, 0, upper], 0)['hand_above_landmark_plane_after_m']
+                        for row in path['predicted_joint_path'])
+                    tool_evidence['candidate_diagnostics'][name]['native_checked_source_upper_gap_m'] = gap
+                    if gap < .010:
+                        continue
+                    end = path['predicted_joint_path'][-1]
+                    programs[name] = {'target': target, 'physical_steps': 5,
+                        'predicted_robot_position_residual_mm': end['predicted_link6_translation_residual_m']*1000,
+                        'predicted_robot_rotation_error_rad': end['predicted_link6_rotation_residual_rad'],
+                        'scope': 'Algorithmic OPEN tool-axis increment, native first IK and public five-step path checked. No object/contact or scene clearance certificate.'}
+                    options[name] = tool_options[name]
+                (output/f'stack_public_tool_step_{step:03d}.json').write_text(json.dumps(tool_evidence, indent=2))
+                data['algorithmic_tool_orientation_evidence'] = {
+                    k: v for k, v in tool_evidence.items() if k != 'candidate_diagnostics'}
+                data['complete_programs'] = programs
+                data['contract'] = data['contract'].replace(
+                    'All programs are complete independent five-step commands, at most15mm or0.1rad.',
+                    'All programs are complete independent five-step commands within50mm/0.35rad; baseline translations use at most15mm and baseline rotations0.1rad.')
+                data['contract'] += (
+                    ' Additional algorithmic tool-axis proposals include simultaneous pivot-preserving XYZ and rotation, within50mm/0.35rad over five steps. '
+                    'Choose at most ONE complete translation or orientation program under the current semantic stage, never combine them. '
+                    'These remain FAR OPEN increments; this branch does not supply a contact/grasp certificate.')
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
         if os.environ.get('ROBODOJO_RGB_STAGE_OPEN_STOP_SCOPE')=='1':
             options['STOP_current_evidence_insufficient']=(
@@ -293,7 +352,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
                    if source!=receiver and 'unknown' not in (source,receiver)}
             pairs['unknown']='A coherent source/receiver identity pair is unsupported in current RGB.'
             perception_questions.append(choice('source_receiver_roles',
-                'Inspect CURRENT three RGB and task: choose ONE coherent source and supported base/receiver pair for the next placement. Semantic roles only; this does not request a robot action or establish enclosure/corridor permission.',pairs))
+                'Inspect CURRENT three RGB and task: choose ONE coherent source and supported base/receiver pair for the next placement. Follow any supplied planner_task_role_assignment conditionally on current identities and the first unfinished transfer; other valid ordering preferences alone do not mean identity is unknown. Semantic roles only; this does not request a robot action or establish enclosure/corridor permission.',pairs))
         if bind_roles and os.environ.get('ROBODOJO_RGB_STAGE_SEQUENTIAL_ROLE_STAGE')=='1':
             def reread_stage_memory():
                 fresh={name:(memory/name).read_text() for name in ['global.md',obs['task']+'.md']}
