@@ -471,6 +471,27 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
             current = obs['robot0_eef_pos'].copy()
             target = dict(prepare=current, approach=approach, lower=lower,
                           push=push_end, retreat=retreat)[stage]
+            stage_orientation = orientation
+            planar_contact = None
+            if (visible_goal_plate and segment == 2 and stage == 'push' and
+                    rec.cfg.get('plate_second_planar_contact')):
+                current_orientation = Rotation.from_quat(obs['robot0_eef_quat']).as_matrix()
+                fingers = np.asarray(own['finger_vertices_tool']) @ current_orientation.T + current
+                finger_low = float(np.min(fingers[:, 2]))
+                finger_high = float(np.max(fingers[:, 2]))
+                compatible = bool(float(goal[2])+.001 < finger_low <= float(source['high'][2])+.003 and
+                    finger_high >= float(source['low'][2])-.003 and
+                    abs(float(current[2]-lower[2])) < .025)
+                planar_contact = dict(own_finger_low_world_z_m=finger_low,
+                    own_finger_high_world_z_m=finger_high,
+                    public_plate_z_interval_m=[float(source['low'][2]), float(source['high'][2])],
+                    public_support_world_z_m=float(goal[2]),
+                    relieved_own_pose=compatible,
+                    source='public RGB-D plate/support heights + own finger mesh/pose')
+                if compatible:
+                    target = target.copy()
+                    target[2] = current[2]
+                    stage_orientation = current_orientation
             if coast_enabled and segment == 1 and stage == 'push':
                 live_rgb = np.ascontiguousarray(obs['agentview_image'][::-1])
                 measured = visible_plate_rim_progress(live_rgb)
@@ -522,7 +543,7 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                          .009 if second_lower else .008 if stage == 'push' else .006)
             arrived = bool(np.max(np.abs(error)) < tolerance)
             rot = np.zeros(3) if stage in ('prepare', 'retreat') else Rotation.from_matrix(
-                orientation @ Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
+                stage_orientation @ Rotation.from_quat(obs['robot0_eef_quat']).as_matrix().T).as_rotvec()
             oriented = bool(np.max(np.abs(rot)) <
                 (.06 if second_rim_hover else .07 if second_lower else .03))
             contact_trial = (visible_finger_plate_contact(
@@ -637,6 +658,14 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                     'additional correction push from the measured plate pose; '
                     'choose it now if correction is sensible. No motor action '
                     'executes for reobserve. This is not official success.')
+            if planar_contact is not None:
+                contracts['push'] += (
+                    ' When completion_evidence.visible_planar_contact.relieved_own_pose '
+                    'is true, the own finger height overlaps the public plate height '
+                    'above visible support and within 25 mm of planned contact. '
+                    'The supplied Z and wrist goals then preserve the current own pose; '
+                    'select planar directions toward the supplied endpoint. This is a '
+                    'contact-compatible trial only; later fresh RGB-D verifies object movement.')
             state = dict(task=public_task, operation=stage, next_operation=next_stage,
                 segment_index=segment, segment_count=(3 if segment == 3 else 2)
                     if visible_goal_plate else 1,
@@ -684,6 +713,8 @@ def run_push(env, obs, rec, task, depth_fn, k_fn, t_fn):
                 recent_actions=history[-3:],
                 phase_decisions=stage_decisions, information_sources=
                 'Public instruction, rendered RGB-D/calibration, own robot pose/finger mesh, executed history only.')
+            if planar_contact is not None:
+                state['completion_evidence']['visible_planar_contact'] = planar_contact
             state = json.loads(json.dumps(state, default=serial, allow_nan=False))
             decision = model.decide(state)
             stage_decisions += 1
