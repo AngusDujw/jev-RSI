@@ -268,3 +268,9 @@
 - 【Agent】【2026-10-14 15:52】[op] 补全EXP177-183七项真实负结果并严格lint通过；append纠正v30-33所抓蓝盒、v32仍前进非停滞、v34下降受阻未进入抓持。保留原负结果和次数。
 - 【Agent】【2026-10-14 15:53】[op] 回写Discussion及T-W42-021实体混淆与接触机制纠正；更新十任务表至1202第58次运行中、1296第57次完成。议题保持Open，未改正式假设、目标或评价。
 - 【Agent】【2026-10-14 15:55】[op] 补全EXP184实体记忆离线正/反例与EXP185错误top_hook启动负结果，严格lint无告警；v35真实66问答动作/4阶段边审计0违规。
+- 【Agent】【2026-10-14 15:56】[result] 原始备份SHA256核对一致：v34实体记忆742文件digest088bf232...03d6b；v35错误top_hook251文件70bc6029...bbbd4；v13后方入口416文件74fa0fd7...ae46f。按相对路径排序+逐文件SHA256聚合，排除本机新增audit。
+- 【Agent】【2026-10-14 15:58】[run] Goal1296第58/80次e615af65同init11：保留rear_insert、共享gain，移除yaw_flip；5880-jump前台session3572。Goal1202第58次程序true官方false，156Jev/517步、一次抓取可见持有通过，需核对释放终局。
+- 【Agent】【2026-10-14 16:01】[op] e7d47862提交SSH推送：Goal1202新可选drop-retreat由Jev张爪后推进上撤60mm，避免仅12tick开度就结束。v36末帧碗仍倾斜在手指旁，不能称脱离。AST/完整dryrun/diff通过，未物理验证。
+- 【Agent】【2026-10-14 16:02】[run] Goal1202第59/80次e7d47862同init3：source_memory/source_sized/pinch保持，仅启用释放后Jev张爪撤离60mm；5880-jump前台session95534。Goal1296第58次原yaw仍75Jev/348步、二段approach受阻，说明不仅是yaw_flip。
+- 【Agent】【2026-10-14 16:05】[op] Goal1296新增可选orient_clearance：首段Jev retreat边后进入自体当前净空TCP固定、纯旋转对齐阶段，再由Jev推进横移到盘后悬停，分离同时降高/旋转/横移。原/翻转yaw皆入口受阻，明确新机制比较；AST/diff/完整dryrun通过，尚未实跑。
+- 【Agent】【2026-10-14 16:07】[op] 补全EXP186/187尺寸拉距真实碗可抓但释放未成、原yaw后方入口仍受阻，两个审计0违规；严格周志lint通过，保留负结果。
