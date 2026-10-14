@@ -735,7 +735,14 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                         visible_low = float(holding['measured']['low'][2])
                         floor_gap = visible_low-float(dst['high'][2])
                         rim_gap = visible_low-float(dst['rim_high_z'])
-                        if rec.cfg.get('rim_relative_drop'):
+                        if rec.cfg.get('drawer_floor_drop'):
+                            correction = float(dst['high'][2])+.025-visible_low
+                            if abs(correction) > .09:
+                                raise RuntimeError('Visible floor-close correction exceeds 90 mm')
+                            drawer_lower_target = position.copy()
+                            drawer_lower_target[2] += correction
+                            rec.event(dict(kind='drawer_visible_floor_drop_target', native_tick=ticks, correction_mm=round(correction*1000,2), desired_bowl_bottom_above_floor_mm=25., source='Fresh public held-source RGB-D and visible receiver support'))
+                        elif rec.cfg.get('rim_relative_drop'):
                             correction = float(dst['rim_high_z'])+.012-visible_low
                             if abs(correction) > .04:
                                 raise RuntimeError('Visible rim-relative height correction exceeds 40 mm')
@@ -757,7 +764,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                                 source='Fresh public held-bowl RGB-D and visible drawer floor/rim'))
                     if drawer_lower_target is not None:
                         target = drawer_lower_target.copy()
-                    if (rec.cfg.get('rim_relative_drop') and
+                    if (rec.cfg.get('rim_relative_drop') and not rec.cfg.get('drawer_floor_drop') and
                             drawer_lower_verified and
                             holding.get('status') == 'passed' and
                             rim_drop_rechecks < 2):
@@ -811,14 +818,15 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                     centered = bool(np.max(np.abs(center[:2]-
                         np.asarray(dst['center'][:2], float))) <= .010)
                     insertion_ready = (drawer_lower_target is None or drawer_lower_verified)
-                    rim_low = (5 if rec.cfg.get('rim_relative_drop') else
+                    rim_low = (-50 if rec.cfg.get('drawer_floor_drop') else 5 if rec.cfg.get('rim_relative_drop') else
                                -35 if drawer_lower_verified else -20)
-                    minimum_footprint = .90 if rec.cfg.get('rim_relative_drop') else .50
+                    minimum_footprint = .90 if rec.cfg.get('rim_relative_drop') or rec.cfg.get('drawer_floor_drop') else .50
+                    floor_ready = 15 <= floor_gap <= 35 if rec.cfg.get('drawer_floor_drop') else 20 <= floor_gap <= 90
                     candidate = bool(insertion_ready and 0 <= age <= 12 and
                         footprint >= minimum_footprint and centered and
                         np.all(center[:2] >= floor_low[:2]-.005) and
                         np.all(center[:2] <= floor_high[:2]+.005) and
-                        20 <= floor_gap <= 90 and rim_low <= rim_gap <= 20)
+                        floor_ready and rim_low <= rim_gap <= 20)
                     container_drop = dict(status='visible_drop_candidate' if candidate
                         else 'geometry_not_ready', observed_tick=int(observed),
                         age_native_ticks=int(age), footprint_overlap_ratio=round(footprint,3),
@@ -968,7 +976,7 @@ def run_recovery(env, obs, rec, task, depth_fn, k_fn, t_fn,
                 if stage == 'lower' and drawer_lower_target is not None:
                     contracts['lower'] = (
                         'Keep the gripper closed and follow the supplied '
-                        + ('rim-relative release height above the visible open drawer. '
+                        + ('floor-close release height 25 mm above the visible receiver support. ' if rec.cfg.get('drawer_floor_drop') else 'rim-relative release height above the visible open drawer. '
                            if rec.cfg.get('rim_relative_drop') else
                            'short downward goal into the visible open drawer. ')
                         + 'If fresh RGB-D provides another bounded XYZ correction, '
