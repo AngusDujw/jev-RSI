@@ -238,3 +238,18 @@
 - 【Agent】【2026-10-14 12:55】[op] 推盘v7第98决策剩余X/Y约167/50mm却两轴命令12/12mm，偏离计划15度推线；8b64e044新增可选二段共享平面gain，完全保留Jev符号/hold，XY按误差比例缩放且每轴≤12mm，Z/旋转不改；AST/dry-run/diff通过SSH推送，待同init11配对。
 - 【Agent】【2026-10-14 12:57】[result] Goal1296第52/80次3a0067e0同init11保留腕姿双false：二段approach在X/Z分别差17.61/17.68mm处连续受阻；77Jev/351步、5阶段边审计0违规，EXP172。
 - 【Agent】【2026-10-14 12:57】[op] 已完整记录Goal1296可见接触试推失败EXP170、Goal1202接收空间不足EXP171和Goal1296保留腕姿失败EXP172；Discussion/Timeline/十Goal状态同步，严格lint通过。
+- 【Agent】【2026-10-14 12:59】[result] Goal1202第52/80次845612bf同init3双false，152Jev/589步在抓碗阶段native预算结束；抽屉外拉142.44mm才推进，但公开floorY仍60.23mm；前段79问答动作10边及后段73问答72动作4边审计0违规，EXP待补。
+- 【Agent】【2026-10-14 12:59】[run] Goal1296第53/80次8b64e044同init11，仅启用第二段平面共享gain、关闭保留腕姿，其他参数同v7；前台session66835，验证幅度组织是否保持计划推线。
+- 【Agent】【2026-10-14 13:05】[result] Goal1296第53/80次8b64e044同init11共享平面gain双false，120Jev/549步，二段push连续六块受阻终止，7阶段边审计0违规；新幅度未实现官方完成，需比较末段实际位置。
+- 【Agent】【2026-10-14 13:05】[run] Goal1202第53/80次同845612bf/init3，仅grasp-hold-ticks12改18，使用无≤12mm硬门的现有短抬验证路径；其他充分开柜/90%包含参数不变，前台session待工具1296后记录。
+- 【Agent】【2026-10-14 13:07】[op] Goal1296共享gain后实际TCP仍上抬/前偏受阻，准备a7a3144b可选二段等价180度向下yaw，用自体mesh重算leading/接触，维持同可见目标与Jev所有权；AST/参数dry-run/diff通过已SSH推送，待配对。
+- 【Agent】【2026-10-14 13:07】[note] 更正上一条Goal1202第53次run的前台跟踪session为86770；回合只启动一次。
+- 【Agent】【2026-10-14 13:25】[op] Goal1202固定初始把手窄ROI确实低估公开地板：保存init2成功/旧init3失败/充分开柜init3的Y跨度旧49.26/49.90/60.23mm，扩大公开拉动包络后85.16/85.77/132.79mm，同floorZ；0Jev/0新正式动作，floor-compare.json保存源码哈希。fcae4667已AST/diff通过SSH推送，待物理验证。
+- 【Agent】【2026-10-14 13:30】[result] Goal1202第53/80次845612bf+18tick同init3已通过短抬持有，178Jev/589步在carry预算耗尽双false；末TCP Y还差12.81mm，X/Z已近到位且腕姿误差<0.011rad，前段79动作10边/后段99请求98动作7边审计0违规。
+- 【Agent】【2026-10-14 13:30】[run] Goal1296第54/80次a7a3144b同init11开启二段等价180度向下yaw，保持v9平面共享gain和其他参数；前台session35184。
+- 【Agent】【2026-10-14 13:30】[op] Goal1202 f9cb7591新增距carry目标<20mm且姿态到位、连续执行受阻时复核新鲜可见持有偏移，先重建目标再请求Jev；同支包含fcae4667全可见地板拟合，AST/diff通过已SSH推送，未改变正在运行1296。
+- 【Agent】【2026-10-14 13:37】[result] Goal1296第54/80次a7a3144b同init11等价yaw双false，128请求127动作/579步、7边审计0违规；末X剩79.76mm、Z剩6.16mm、腕姿误差0.031rad，比旧路线Z18mm/腕0.103更贴近但时域用尽。
+- 【Agent】【2026-10-14 13:37】[run] Goal1202第54/80次f9cb7591/init3整合全可见drawer floor+近目标受阻持有偏移复核，沿用18tick夹持，前台session待追加确号；GPS/奖励/物体真值不进入处理。
+- 【Agent】【2026-10-14 13:39】[note] Goal1202第54次正式前台跟踪session为93070；上一条run先记录了意图，回合只启动一次。
+- 【Agent】【2026-10-14 13:39】[op] Goal1296 a1f7ce92新增可选首段保留初始向下腕姿，仍用自体mesh计算顶面接触，二段沿等价yaw与共享平面gain；AST/参数dry-run/diff通过SSH推送，未变更当前1202运行源码。
+- 【Agent】【2026-10-14 13:43】[op] 已记录EXP173–176：宽夹持合同死门、共享步长失败、18tick持有后carry受阻，以及旧ROI低估完整可见地板；Discussion/Timeline/十Goal状态同步且严格lint通过，未把离线几何算成功。
