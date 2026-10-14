@@ -164,7 +164,7 @@ def fit_candidates(src, own, position, quaternion, level, points, cfg, failed_ca
                 # Recompute the own pad envelope after tilting inward. Merely
                 # changing orientation while retaining the old TCP offset
                 # would move the pads away from the visible rim.
-                tilt = np.deg2rad(cfg.get('rim_tilt_deg', 0.))
+                tilt = np.deg2rad(cfg.get('rim_tilt_deg', 0.)) * (-1. if cfg.get('rim_tilt_outward') else 1.)
                 R_side = Rotation.from_rotvec(side*major*tilt).as_matrix() @ R
                 own_side = envelope(own, R_side)
                 lateral = src['center'][:2] + major[:2]*(-.012)

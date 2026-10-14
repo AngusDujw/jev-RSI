@@ -48,7 +48,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    empty_hand_fast=False, support_stall_release=False,
                    drawer_bowl_algorithm='recovery', gentle_carry=False,
                    visible_container_drop=False, rim_relative_drop=False,
-                   drawer_source_memory=False, drawer_pull_from_source=False, drawer_drop_retreat=False,drawer_floor_drop=False):
+                   drawer_source_memory=False, drawer_pull_from_source=False, drawer_drop_retreat=False,drawer_floor_drop=False,rim_tilt_outward=False):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -120,6 +120,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                 cmd += ['--drawer-source-memory']
             if rim_height_mode != 'top_overlap':
                 cmd += ['--rim-height-mode', rim_height_mode]
+            if rim_tilt_outward:
+                cmd += ['--rim-tilt-outward']
             if rim_tilt_deg:
                 cmd += ['--rim-tilt-deg', str(rim_tilt_deg)]
             if rim_axis != 'short':
@@ -158,6 +160,7 @@ def main():
                    default='recovery', help='Goal1202 pick/place continuation after opening the visible top drawer')
     p.add_argument('--rim-height-mode', choices=['top_overlap','visible_sidewall'],
                    default='top_overlap')
+    p.add_argument('--rim-tilt-outward', action='store_true')
     p.add_argument('--rim-tilt-deg', type=int, choices=[0,12,20], default=0)
     p.add_argument('--rim-axis', choices=['short','long'], default='short')
     p.add_argument('--rim-inset-mm', type=int, choices=[0,2,4], default=0)
@@ -238,6 +241,8 @@ def main():
         p.error('Source memory requires Goal1202 recovery and pre-opening source capture')
     if a.rim_height_mode != 'top_overlap' and a.task_id != 1202:
         p.error('Alternative rim height requires Goal 1202')
+    if a.rim_tilt_outward and (not a.rim_tilt_deg or a.task_id != 1202):
+        p.error('Outward rim tilt requires a nonzero Goal1202 rim angle')
     if a.rim_tilt_deg and a.task_id != 1202:
         p.error('Rim tilt requires Goal 1202')
     if a.rim_axis != 'short' and a.task_id != 1202:
@@ -263,7 +268,7 @@ def main():
                          a.empty_hand_fast,a.support_stall_release,
                          a.drawer_bowl_algorithm,a.gentle_carry,
                          a.visible_container_drop,a.rim_relative_drop,
-                         a.drawer_source_memory,a.drawer_pull_from_source,a.drawer_drop_retreat,a.drawer_floor_drop)
+                         a.drawer_source_memory,a.drawer_pull_from_source,a.drawer_drop_retreat,a.drawer_floor_drop,a.rim_tilt_outward)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
