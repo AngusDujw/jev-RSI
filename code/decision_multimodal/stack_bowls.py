@@ -81,7 +81,7 @@ class Bowls(Fold):
             seeds[name]=dict(box=[*(uv.min(0)-8),*(uv.max(0)+8)],center=middle[0].tolist())
         if 'cam_high' not in seeds or len(seeds)<2:
             return False
-        result,_=fit(public,seeds,self.z,prior=self.receiver)
+        result,_=fit(public,seeds,self.z,prior=self.receiver,arc_quantile=.75)
         save(self.ep.folder/('bowl_released_top_'+str(self.ep.tick)+'.json'),result)
         if not result.get('usable'):
             return False
@@ -142,7 +142,7 @@ class Bowls(Fold):
 def run(ep):
     path=ep.folder/'bowl_geometry.json'
     if not path.exists() and not bowl_setup.run(ep,continue_immediately=True):return
-    plan_path=Path(__file__).with_name('plans')/'stack_bowls_v2.json'
+    plan_path=Path(__file__).with_name('plans')/'stack_bowls_v3.json'
     save(ep.folder/'fixed_plan.json',json.loads(plan_path.read_text()))
     controller=Bowls(ep,json.loads(path.read_text()));results=[]
     for identity,arm,deadline in [('left','left',400),('right','right',780)]:

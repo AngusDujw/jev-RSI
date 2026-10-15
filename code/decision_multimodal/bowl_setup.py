@@ -33,7 +33,10 @@ def run(ep,continue_immediately=False):
         if min(depth)<=0 or min(uv.min(0)-6)<0 or uv.max(0)[0]>634 or uv.max(0)[1]>474:
             return dict(usable=False,reason='Receiver search outline not fully in current wrist image')
         views={'cam_high':seeds['high']['center'],'cam_right_wrist':dict(box=[*(uv.min(0)-12),*(uv.max(0)+12)],center=center_uv[0].tolist())}
-        result,_=fit(public,views,z);return result
+        result,_=fit(public,views,z,arc_quantile=.75)
+        result['usable']=bool(result.get('usable') and result['rim_rms_px']<=1.5 and
+            max(result['sensitivity_xyz_radius_m'][:3])<=.012 and result['sensitivity_xyz_radius_m'][3]<=.006)
+        return result
     def observed(public):
         result=receiver_fit(public);save(ep.folder/f'frame-{public["step"]:06d}'/'receiver_view_fit.json',result)
         return bool(result.get('usable'))

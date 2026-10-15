@@ -98,7 +98,8 @@ def refresh(public,prior,height):
         contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         pixels=max(contours,key=cv2.contourArea).reshape(-1,2).astype(float)
         vertical,_=project(camera,np.stack([center,center+[0,0,.01]]));up=vertical[1]-vertical[0];up/=np.linalg.norm(up)
-        pixels=pixels[pixels@up>=np.quantile(pixels@up,.55)]
+        quantile=1-prior.get('retained_upper_contour_fraction',.45)
+        pixels=pixels[pixels@up>=np.quantile(pixels@up,quantile)]
         hand=tool_mask(public,name);indices=pixels.astype(int);pixels=pixels[hand[indices[:,1],indices[:,0]]==0]
         if len(pixels)>=12:
             pixels=pixels[np.linspace(0,len(pixels)-1,min(90,len(pixels))).astype(int)]
@@ -123,6 +124,7 @@ def refresh(public,prior,height):
     interior=bool(min(np.min(fit.x-lower),np.min(upper-fit.x))>.0005)
     return dict(usable=bool(rms<2.5 and max(width)<.015 and interior),center_m=fit.x.tolist(),radius_m=radius,
         rim_rms_px=rms,sensitivity_xyz_radius_m=[*width,.002],camera_names=[n for n,_ in views],step=public['step'],
+        retained_upper_contour_fraction=prior.get('retained_upper_contour_fraction',.45),
         radius_scope='Fixed radius from independent earlier same-episode calibrated two-view RGB',
         source='CURRENT RGB exposed upper rim with public K/T; earlier radius only initializes metric scale',
         limits='Upright rigid bowl and radius invariance hypotheses; no current object pose from robot prediction. Conditional local sensitivity, not calibrated confidence.'),masks
