@@ -27,15 +27,22 @@ def projected_source_margin(obs, geometry, target):
     return min(rows)
 
 
+def supported_xy_direction(residual, intervals):
+    """Hold an uncertain component while using a separately supported one."""
+    residual=np.asarray(residual,float)
+    intervals=np.asarray(intervals,float)
+    supported=((residual>0)&(intervals[:,0]>0))|((residual<0)&(intervals[:,1]<0))
+    usable=np.where(supported,residual,0)
+    length=float(np.linalg.norm(usable))
+    return (usable/length,length) if length>=5 else (None,length)
+
+
 def build(obs, geometry, base_targets, maximum_mrad):
     residual=np.asarray(geometry['top_minus_pad_midpoint_world_xyz_mm'],float)[:2]
     intervals=np.asarray(geometry['top_minus_pad_midpoint_xyz_interval_mm'],float)[:2]
-    length=float(np.linalg.norm(residual))
-    if length<5:return {},{}, {'available':False,'reason':'No supported horizontal direction for coupled recovery'}
-    direction=residual/length
-    if any((d>1e-6 and lo<=0) or (d<-1e-6 and hi>=0)
-           for d,(lo,hi) in zip(direction,intervals)):
-        return {},{}, {'available':False,'reason':'Conditional XY interval does not support the proposed direction'}
+    direction,length=supported_xy_direction(residual,intervals)
+    if direction is None:
+        return {},{}, {'available':False,'reason':'No individually supported XY component for coupled recovery'}
     descriptions={};targets={};diagnostics={}
     upper=geometry['fit']['near_best_z_m_at_iou_within_0p05'][1]+.002
     start=eef_transform(obs['current_eef']['right'])[:3,3]
@@ -45,6 +52,10 @@ def build(obs, geometry, base_targets, maximum_mrad):
         if size>maximum_mrad:continue
         for mm in (0,5,10,15,20,25,30):
             if mm>=length:continue
+            xy=direction*mm
+            minimum_dot=float(np.sum(np.where(xy>=0,intervals[:,0],intervals[:,1])*xy))
+            minimum_squared_gain=2*minimum_dot-float(xy@xy)
+            if mm and minimum_squared_gain<=0:continue
             target=copy.deepcopy(base)
             target['right']['position'][:2]=(np.asarray(target['right']['position'][:2])+direction*mm*.001).tolist()
             margin=projected_source_margin(obs,geometry,target)
@@ -60,6 +71,8 @@ def build(obs, geometry, base_targets, maximum_mrad):
             key=name+f'_with_source_xy_{mm}mm'
             targets[key]=target
             diagnostics[key]={'rotation_mrad':size,'additional_source_directed_xy_mm':mm,
+                'supported_xy_unit_direction':direction.tolist(),
+                'minimum_conditional_horizontal_squared_error_decrease_mm2':minimum_squared_gain,
                 'minimum_uncertain_source_wrist_margin_px':margin,
                 'minimum_public_hand_source_upper_gap_m':gap,'public_path':path}
             descriptions[key]=(
