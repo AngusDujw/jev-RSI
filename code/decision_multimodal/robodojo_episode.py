@@ -156,6 +156,9 @@ class Episode:
         gripper = self.rpc('public_robot_gripper_state')
         # Strict whitelist; never copy ACK, native result, reward or scene metadata.
         public = dict(step=self.tick, instruction=raw['instruction'],
+            execution_budget=dict(physical_step_limit=int(self.metadata['max_episode_steps']),
+                physical_steps_remaining=max(0,int(self.metadata['max_episode_steps'])-self.tick),
+                control_dt_s=float(self.metadata.get('control_dt',.04))),
             robot={k: np.asarray(raw[k]).tolist() for k in
                    ('states', 'eef_positions', 'eef_quaternions_wxyz')},
             measured_gripper=gripper['arms'], calibration=calibration,
@@ -176,6 +179,7 @@ class Episode:
             os.environ['DECISION_MM_KEY_FILE'] = str(self.args.key_file.resolve())
             os.environ['DECISION_MM_PROXY'] = 'http://127.0.0.1:7897'
             self.actor = LegacyAPI({}, self.event, 'jev')
+        state=dict(state,execution_budget=self.public['execution_budget'])
         answer = self.actor.post('/systemone', dict(model='gpt-6-luna', state=state, questions=questions))
         self.last_decision_tick, self.action_used = self.tick, False
         return answer['answers']
