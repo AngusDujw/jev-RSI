@@ -3,7 +3,7 @@
 > 本文件回答三个问题：**主线现在走到哪、怎么走到这里的、有没有在绕圈子。**
 > 唯一写入口是 `python3 tools/timeline.py add`（AGENTS.md § 12），图由脚本生成，节点表只增不改。
 
-- **当前主线一句话**：构建高层规划器—低层推进器框架：GPT-6 等大模型可随反馈多次规划，Jev、OpenAI decision model 等决策模型持续推进；先覆盖 RoboDojo 与 LIBERO-Plus 整套多任务 benchmark，并尽可能提高原生评测成绩。静态末端方向与步长理论作为局部方法和诊断保留，现有成绩仍按原实验口径报告。
+- **当前主线一句话**：按2026-10-16用户拍板，先冻结LIBERO十Goal方案仅将Jev替换du Luna，五配对回合比较；随后RoboDojo官方前五任务各三次稳定，再比较RGB增加与逐类减少处理输入。规划/迭代使用本机Pro GPT-6.1 Sol high，仅公司GPU4–7；当前不要求全42泛化，经验仅收集不注入。
 
 ---
 
@@ -128,6 +128,7 @@ graph LR
     T_2026W42_020["📊 libero-goal-ten<br/>离线RGB-D证明Goal1202旧固定R…"]:::experiment
     T_2026W42_021["📊 libero-goal-ten<br/>公开历史实体匹配纠正Goal1202抓蓝盒…"]:::experiment
     T_2026W42_022["📊 libero-goal-ten<br/>Goal1296公开近盘沿桌面滑动固定五未…"]:::experiment
+    T_2026W42_023["🔀 decision-multimodal<br/>用户限定三阶段：冻结十Goal纯文本替换五…"]:::pivot
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -224,6 +225,7 @@ graph LR
   T_2026W40_006 ==> T_2026W40_023
   T_2026W40_023 ==> T_2026W41_009
   T_2026W41_009 ==> T_2026W41_042
+  T_2026W41_042 ==> T_2026W42_023
 ```
 <!-- TIMELINE:GRAPH:END -->
 
@@ -335,6 +337,7 @@ graph LR
 | `T-2026W42-020` | 2026-10-14 | experiment | libero-goal-ten | 离线RGB-D证明Goal1202旧固定ROI低估可见地板：充分开柜60.23→132.79mm，同floorZ；需修正此前空间不足解释 | `EXP-2026W42-176` | - |
 | `T-2026W42-021` | 2026-10-14 | experiment | libero-goal-ten | 公开历史实体匹配纠正Goal1202抓蓝盒，原碗下降受阻；1296平面移腕未推盘，后方翻转腕姿入口受阻 | `EXP-2026W42-180` | - |
 | `T-2026W42-022` | 2026-10-14 | experiment | libero-goal-ten | Goal1296公开近盘沿桌面滑动固定五未见初态5/5，115.4Jev/533.4步，稳定项9/10 | `EXP-2026W42-199` | - |
+| `T-2026W42-023` | 2026-10-16 | pivot | decision-multimodal | 用户限定三阶段：冻结十Goal纯文本替换五配对→RoboDojo前五各三成功→RGB和处理输入消融，不要求全42泛化 | `EXP-2026W42-202` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
