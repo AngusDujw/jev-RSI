@@ -62,6 +62,8 @@ class Episode:
             handle.write(json.dumps(dict(wall_time=time.time(), **value))+'\n')
 
     def open(self):
+        # Also constrain any CUDA-using imports in this controller parent.
+        os.environ['CUDA_VISIBLE_DEVICES'] = GPU_UUIDS[self.args.gpu]
         paths = [Path(__file__).resolve().parent, ROOT/'GPT-as-Policy',
                  ROOT/'robodojo', ROOT/'robodojo/XPolicyLab', ROOT/'controller/src']
         for path in paths:

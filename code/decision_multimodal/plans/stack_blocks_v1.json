@@ -1,0 +1,136 @@
+{
+  "planner_response": {
+    "status": "Proposal for empirical validation; no successful capture or stacking outcome is asserted.",
+    "order": {
+      "bottom": "purple",
+      "middle": "wood",
+      "top": "white",
+      "placements": [
+        "wood onto purple",
+        "white onto wood"
+      ],
+      "reason": "Wood is the first source because its metric geometry already has a two-camera conditional fit. Purple needs a measured support top before placement; white needs fresh grasp geometry before its later capture."
+    },
+    "setup": {
+      "episode_boundary": "Use fresh synchronized images and measured robot kinematics. Original ROIs and wood dimensions initialize identity and shape hypotheses only; refit current geometry before execution.",
+      "geometry_preparation": "Compute segmentation, calibrated camera transforms, conditional cuboid families, robot masks, grasp candidates, collision clearance and placement candidates outside the actor's physical stages. Missing geometry selects bounded view recovery, never a passive refinement stage.",
+      "uncertainty": "Preserve conditional intervals and competing fits. Treat the declared 2 mm sensitivity floor as a lower bound on relevant metric sensitivity, not calibrated confidence. Do not require uncertainty below that floor.",
+      "release_budget": "Declare accepted_drop_m and minimum clearance from the task's physical constraints before execution. If geometry cannot support a release within that budget, recover or stop."
+    },
+    "processing_contract": {
+      "calibration": "Verify camera-axis conventions against projected visible robot geometry. Update wrist extrinsics from measured kinematics and known camera mounts; reject inconsistent reprojections.",
+      "images": "Segment appearance and texture with temporal association; mask projected fingers and robot links. Search outside initial ROIs. Mark truncated or occluded boundaries as missing, never as object edges.",
+      "metric_fitting": "Jointly fit visible cuboid edges, silhouettes and matched texture across calibrated views. Triangulate actual corresponding features, never silhouette centroids. Retain plausible fits using image residuals, calibration sensitivity and the metric floor. A low silhouette residual alone does not establish usable geometry.",
+      "grasp_check": "For each candidate jaw direction, calculate source projected width interval [w_low,w_high], measured aperture interval [a_low,a_high], lateral centering error interval and finger engagement clearance. Require a_low-w_high-2*worst_lateral_error>0 before descent between the fingers. Derive allowable position and orientation errors from this remaining clearance.",
+      "support_check": "For every retained source/support fit, intersect their horizontal footprints. Report minimum intersection widths, minimum overlap-area fraction and minimum signed distance from the source's geometric-center projection to the intersection boundary. Require positive intersection widths and a center reserve exceeding predicted release drift. Derive lateral/yaw error allowances from these margins. Allow overhang; do not require full-footprint containment. These are geometric acceptance checks, not contact or physical stability proof.",
+      "held_measurements": "Track exposed wood grain, purple texture, white corners and visible edges using fixed-camera images and updated wrist views. Fit partial observations with pre-capture dimension intervals; do not require complete silhouettes. Estimate displacement and block-to-tool drift from independently observed features. If occlusion leaves these quantities unidentifiable, output null and enter bounded recovery; tool motion alone cannot establish source motion.",
+      "actor_fields": [
+        "stage, source_id, destination_id",
+        "position_error_m: numeric XYZ or null",
+        "orientation_error_rad: numeric symmetry-aware error or null",
+        "allowed_position_error_m, allowed_orientation_error_rad",
+        "measured_aperture_m, aperture_change_m",
+        "closing_attempts, stalled_attempts",
+        "visible_source_displacement_m, source_tool_drift_m",
+        "overlap_widths_m, center_reserve_m, release_gap_interval_m",
+        "missing_measurements, pass, failure_reason"
+      ]
+    },
+    "stages": [
+      {
+        "name": "Open and approach source",
+        "objective": "Bring open fingers above the measured source.",
+        "pass": "Position/orientation errors satisfy clearance-derived allowances; aperture margin and swept-volume clearance are positive."
+      },
+      {
+        "name": "Enter grasp",
+        "objective": "Move opposing fingers beside the source at the fitted grasp height.",
+        "pass": "Grasp errors satisfy aperture-derived allowances and visible engagement remains measurable."
+      },
+      {
+        "name": "Close candidate grasp",
+        "objective": "Reduce measured aperture around the source.",
+        "pass": "After aperture reduction, two consecutive attempts show no change beyond encoder sensitivity, and aperture is compatible with the fitted width plus declared measurement/compliance bounds. Advance only to capture testing.",
+        "bound": "At most five closing attempts; an incompatible aperture or missing measurement triggers recovery."
+      },
+      {
+        "name": "Active lift capture test",
+        "objective": "Lift enough to distinguish source motion from tracking uncertainty while preserving clearance.",
+        "pass": "Observed upward source displacement exceeds its displacement-error bound, a positive support gap is resolved, and source/tool relative drift stays within the measured tracking bound."
+      },
+      {
+        "name": "Transfer and align",
+        "objective": "Carry the captured source above the freshly measured destination.",
+        "pass": "Numeric errors satisfy overlap-derived allowances; robust overlap, center reserve and clearance remain positive."
+      },
+      {
+        "name": "Lower and open",
+        "objective": "Reach the lowest conservative release height and separate the fingers.",
+        "pass": "Worst-case bottom does not penetrate the fitted support; worst-case release gap is within accepted_drop_m; measured aperture clears the source. This establishes release readiness, not contact."
+      },
+      {
+        "name": "Retreat and verify",
+        "objective": "Separate the tool and expose the placed block.",
+        "pass": "Across three observations spanning retreat, tool separation exceeds measurement uncertainty, source/support drift stays within measured tracking bounds, and observed stacking geometry persists. Rebind white onto wood, or finish."
+      }
+    ],
+    "bounded_recovery": {
+      "view_recovery": "Move an unloaded wrist camera along a collision-checked path to reveal the missing face or edge with a distinct calibrated baseline. Permit two moves per placement. Progress requires reduced truncation, additional independent edges/features, or narrower task-relevant intervals. Otherwise stop.",
+      "capture_recovery": "After failed lift, return to the last visibly supported configuration only if its path remains measured and clear; reopen, refit and retry once. Otherwise stop. Never retry from an unmeasured held state."
+    }
+  },
+  "initial_perception_seed_rois": {
+    "format": "[xmin, ymin, xmax, ymax], pixels; initial perception seeds only",
+    "wood": {
+      "appearance": "Pale yellow wood grain",
+      "cam_high": [
+        453,
+        207,
+        482,
+        234
+      ],
+      "cam_left_wrist": null,
+      "cam_right_wrist": [
+        324,
+        286,
+        383,
+        361
+      ]
+    },
+    "purple": {
+      "appearance": "Purple textured block",
+      "cam_high": [
+        434,
+        281,
+        466,
+        310
+      ],
+      "cam_left_wrist": null,
+      "cam_right_wrist": null
+    },
+    "white": {
+      "appearance": "White block, partly obscured",
+      "cam_high": [
+        492,
+        251,
+        529,
+        284
+      ],
+      "cam_left_wrist": null,
+      "cam_right_wrist": [
+        438,
+        437,
+        527,
+        480
+      ]
+    },
+    "null_meaning": "No reliable initial seed; not evidence of absence."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "planner_response_sha256": "b58520ee77a39562df9c681f1822af0f4500546bf8d2116c2ba70cb1c849efd3",
+    "status": "Unvalidated fixed-case method, not a successful result"
+  }
+}

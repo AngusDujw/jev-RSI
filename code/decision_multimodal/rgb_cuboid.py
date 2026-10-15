@@ -34,7 +34,7 @@ def material(rgb, name):
     if name == 'white':
         return (np.min(x, axis=2) > 175) & (np.ptp(x, axis=2) < 35)
     if name == 'purple':
-        return (r > 55) & (b > 40) & (g < r*.75) & (g < b*.85) & (r+b > 125)
+        return (r > 35) & (b > 30) & (g < r*.75) & (g < b*.85) & (r+b > 90)
     raise ValueError('Unknown declared block material')
 
 
@@ -101,7 +101,8 @@ def vertices(parameters):
 
 def fit(views, prior=None, support_z=None):
     """views = [(public camera, current binary material mask), ...]."""
-    if not views or (len(views) < 2 and support_z is None):
+    shape_prior = prior is not None and prior.get('status') == 'fitted_visual_hypothesis'
+    if not views or (len(views) < 2 and support_z is None and not shape_prior):
         return dict(status='unavailable', reason='Need two views or a declared measured support-plane hypothesis')
     records = [(camera, boundary(contour(mask)), contour(mask)) for camera, mask in views]
     if prior is not None and prior.get('status') == 'fitted_visual_hypothesis':
@@ -118,6 +119,9 @@ def fit(views, prior=None, support_z=None):
         initial = np.r_[center, [.04, .04, .04], 0.]
     lower = np.array([-1., -1., .1, .008, .008, .008, -10.])
     upper = np.array([1., 1., 1.8, .15, .15, .15, 10.])
+    if shape_prior:
+        lower[3:6] = np.maximum(lower[3:6], np.asarray(prior['size_m'])-.004)
+        upper[3:6] = np.minimum(upper[3:6], np.asarray(prior['size_m'])+.004)
     initial = np.clip(initial, lower+1e-5, upper-1e-5)
 
     def residual(parameters):
@@ -138,6 +142,10 @@ def fit(views, prior=None, support_z=None):
         if support_z is not None:
             # Explicit common-flat-table model, not a measured object support.
             result.append((parameters[2]-parameters[5]/2-support_z)*1000)
+        if shape_prior:
+            # Rigid dimensions learned from earlier RGB, not an asset lookup.
+            # This also permits current monocular fitting after partial occlusion.
+            result.extend((parameters[3:6]-np.asarray(prior['size_m']))/.003)
         return np.asarray(result)
 
     solutions = []
@@ -151,12 +159,19 @@ def fit(views, prior=None, support_z=None):
     error = residual(solution.x)
     covariance = np.linalg.pinv(solution.jac.T @ solution.jac) * max(1., np.mean(error**2))
     uncertainty = np.sqrt(np.maximum(np.diag(covariance)[:3], 0))*2+.002
+    _, singular, vh = np.linalg.svd(solution.jac, full_matrices=False)
+    rank = int(np.sum(singular > 1e-4))
+    if rank < 7:
+        null = vh[rank:]
+        uncertainty[np.linalg.norm(null[:, :3], axis=0) > .01] = .1
     center, size, yaw = solution.x[:3], solution.x[3:6], solution.x[6]
     fit_error = float(np.sqrt(np.mean(error**2)))
     return dict(status='fitted_visual_hypothesis', center_m=center.tolist(), size_m=size.tolist(),
         yaw_rad=float(yaw), bottom_z_m=float(center[2]-size[2]/2),
         top_z_m=float(center[2]+size[2]/2), silhouette_rmse_px=fit_error,
         conditional_center_halfwidth_m=uncertainty.tolist(), cameras=len(records),
+        conditional_size_halfwidth_m=(np.sqrt(np.maximum(np.diag(covariance)[3:6], 0))*2+.001).tolist(),
+        prior_image_derived_rigid_dimensions=shape_prior,
         support_z_hypothesis_m=support_z,
         usable=bool(fit_error < 4 and max(uncertainty) < .025),
         assumptions='Upright cuboid; visible segmentation silhouette; public camera calibration; optional common flat support plane',
