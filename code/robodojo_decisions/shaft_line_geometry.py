@@ -253,7 +253,7 @@ def main() -> None:
               "validated_mallet_wood_free_end": anchor,
               "experience": experience}
     system = (
-        "You are GPT-6.1 Sol high, a sensor-only RoboDojo visual planner. "
+        "Identify the specified wooden shaft using the supplied observations. "
         "Using ONLY current three RGB, public camera calibration, measured robot "
         "state and validated camera-derived mallet wooden free-end, identify the "
         "SAME bare wooden shaft in cam_high and cam_left_wrist. In each current "

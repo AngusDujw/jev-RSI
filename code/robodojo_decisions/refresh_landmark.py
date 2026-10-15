@@ -53,7 +53,7 @@ def refresh_landmark(obs: dict, plan: dict, output: Path) -> dict:
         "landmark_spec": spec,
     }
     system = (
-        "You are GPT-6.1 Sol high, a sensor-only RoboDojo visual planner. "
+        "Locate the specified visual landmark using the supplied observations. "
         "Identify only landmark_spec.target_identity and the SAME physical point "
         "described by landmark_spec.physical_landmark in both named CURRENT RGB "
         "views. Do not switch to a nearby but different object or point. Camera "

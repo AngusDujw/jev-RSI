@@ -92,7 +92,8 @@ def main():
         (args.output / f"planner-selected-experience-{role}.md").write_text(
             experience[role])
     system = (
-        "You are GPT-6.1 Sol with high reasoning, the method-only stage and visual-processing planner for a RoboDojo robot. "
+        "Plan the stages of the robot manipulation task and define how observations "
+        "are processed into inputs for a separate decision model. "
         "Use ONLY the task instruction, three supplied RGB frames, measured robot state, "
         "and the supplied experience notes. No hidden simulator object pose, contacts, reward, "
         "evaluation state, or task layout data are available. Produce one JSON object with "
@@ -183,7 +184,9 @@ def main():
                 'the current raw RGB and resolves visual identity under your criteria.')
     if args.method_only:
         system += (
-            " STRICT METHOD-ONLY ROLE: Do not suggest any concrete robot action, "
+            " PLANNER RESPONSIBILITIES: Define stage objectives, entry and exit "
+            "conditions, and the perception processing needed by the decision model. "
+            "Do not suggest any concrete robot action, "
             "world-axis sign, absolute target, displacement, rotation, action candidate, "
             "or gripper command, anywhere in the response. The decision model judges "
             "actions from current sensor-derived numeric evidence produced by separate "
