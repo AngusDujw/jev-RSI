@@ -1,7 +1,7 @@
 """Visible cap travel from RGB rim arcs with public robot occlusion masking."""
 import cv2
 import numpy as np
-from scipy.optimize import minimize_scalar
+from scipy.optimize import minimize_scalar,least_squares
 from rgb_cuboid import project
 from rgb_circle import color_component
 from robot_tool import Tool
@@ -27,7 +27,9 @@ def tool_mask(public,camera):
 def cap_height(public,cap,camera='cam_high'):
     calibration=public['calibration'][camera];rgb=public['rgb'][camera]
     center=np.asarray(cap['center_m']);uv,_=project(calibration,center.reshape(1,3))
-    mask=color_component(rgb,'red',uv[0])
+    k=np.asarray(calibration['intrinsic']);_,depth=project(calibration,center.reshape(1,3))
+    distance=max(12.,1.8*k[0,0]*cap['radius_m']/depth[0])
+    mask=color_component(rgb,'red',uv[0],max_distance=distance)
     if mask is None:
         return dict(usable=False,reason='No current red cap region')
     contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
@@ -50,3 +52,49 @@ def cap_height(public,cap,camera='cam_high'):
     return dict(usable=bool(rms<3.),height_m=float(fitted.x),rim_rms_px=rms,rim_pixels=len(pixels),
         source='Current fixed-camera cap rim arcs, public finger/palm occlusion mask, initial RGB circle radius/XY',
         limits='Vertical-spring and rigid-circle hypotheses; incomplete arcs can bias travel. No joint/contact/electrical state.')
+
+
+def cap_pose(public,cap):
+    """Refit cap translation using a previously RGB-measured radius."""
+    center=np.asarray(cap['center_m']);views=[]
+    for camera,rgb in public['rgb'].items():
+        calibration=public['calibration'][camera]
+        uv,depth=project(calibration,center.reshape(1,3))
+        if depth[0]<=0:
+            continue
+        k=np.asarray(calibration['intrinsic'])
+        radius_px=k[0,0]*cap['radius_m']/depth[0]
+        mask=color_component(rgb,'red',uv[0],max_distance=max(12.,1.8*radius_px))
+        if mask is None:
+            continue
+        contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        pixels=max(contours,key=cv2.contourArea).reshape(-1,2).astype(float)
+        hand=tool_mask(public,camera);index=pixels.astype(int)
+        pixels=pixels[hand[index[:,1],index[:,0]]==0]
+        if len(pixels)>=12:
+            views.append((camera,pixels))
+    if not views:
+        return dict(usable=False,reason='No unoccluded associated cap rim')
+    angles=np.linspace(0,2*np.pi,360,endpoint=False)
+    offsets=cap['radius_m']*np.column_stack([np.cos(angles),np.sin(angles),np.zeros(len(angles))])
+    def residual(p):
+        values=[]
+        for name,pixels in views:
+            model,_=project(public['calibration'][name],offsets+p)
+            distance=np.linalg.norm(pixels[:,None,:]-model[None,:,:],axis=2)
+            values.extend((pixels-model[distance.argmin(1)]).ravel())
+        return np.asarray(values)
+    lower=center+[-.008,-.008,-.022];upper=center+[.008,.008,.008]
+    result=least_squares(residual,center,bounds=(lower,upper),loss='soft_l1',f_scale=2.,max_nfev=80)
+    rms=float(np.sqrt(np.mean(residual(result.x)**2)))
+    cov=np.linalg.pinv(result.jac.T@result.jac)*max(1.,rms)**2
+    width=np.maximum(.002,2*np.sqrt(np.maximum(0,np.diag(cov))))
+    rank=int(np.linalg.matrix_rank(result.jac))
+    interior=bool(min(np.min(result.x-lower),np.min(upper-result.x))>.0002)
+    return dict(usable=bool(rms<3. and max(width)<.008 and rank==3 and interior),center_m=result.x.tolist(),
+        downward_displacement_m=float(center[2]-result.x[2]),rim_rms_px=rms,
+        jacobian_rank=rank,interior_solution=interior,
+        conditional_halfwidth_m=width.tolist(),camera_names=[n for n,_ in views],
+        rim_pixel_counts={n:len(p) for n,p in views},
+        source='Current associated rim arcs minus public robot occlusion; horizontal cap and previously RGB-measured radius',
+        limits='Radius/base/vertical-spring hypotheses; local sensitivity excludes unknown radius and calibration biases. No contact, joint or electrical state.')

@@ -5,7 +5,7 @@ from scipy.optimize import least_squares
 from rgb_cuboid import project, ray
 
 
-def color_component(rgb, color, uv):
+def color_component(rgb, color, uv, max_distance=80):
     r,g,b=rgb.astype(float).transpose(2,0,1)
     # Brown table texture also has R>G and R>B. The bright cap top is
     # substantially brighter; including the table joins the entire image.
@@ -16,7 +16,7 @@ def color_component(rgb, color, uv):
         if stats[i,4]<12:
             continue
         distance=np.linalg.norm(centers[i]-uv)
-        if distance<80:
+        if distance<max_distance:
             items.append((stats[i,4]/(1+distance),i))
     return (labels==max(items)[1]).astype(np.uint8) if items else None
 
