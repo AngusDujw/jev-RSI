@@ -67,6 +67,8 @@ class Scissors:
         fit = least_squares(lambda h:residual(h[0]), [self.height0+.008],
             bounds=([self.height0+.001],[self.height0+.030]), loss='soft_l1', f_scale=2.)
         self.top_height = float(fit.x[0])
+        ys0,xs0=np.nonzero(masks['cam_high'])
+        self.initial_high_mask_centroid=np.array([xs0.mean(),ys0.mean()])
         self.initial_rms = float(np.sqrt(np.mean(residual(self.top_height)**2)))
         self.points0 = intersect(self.cameras['cam_high'], high, self.top_height)
         a,b,c,d = seeds['cam_high']['neck_roi']
@@ -112,7 +114,15 @@ class Scissors:
             forward=observed-model[distance.argmin(1)]
             backward=model-observed[distance.argmin(0)]
             return np.r_[forward.ravel(),backward.ravel()]
-        fit=least_squares(residual,self.resting_estimate,bounds=([-.015,-.015,-.15],[.015,.015,.15]),loss='soft_l1',f_scale=1.5)
+        yy,xx=np.nonzero(mask)
+        now_centroid=intersect(camera,[[xx.mean(),yy.mean()]],self.top_height)[0]
+        old_centroid=intersect(camera,[self.initial_high_mask_centroid],self.top_height)[0]
+        centroid_seed=np.r_[now_centroid[:2]-old_centroid[:2],self.resting_estimate[2]]
+        trials=[]
+        for seed in (self.resting_estimate,centroid_seed):
+            seed=np.clip(seed,[-.01499,-.01499,-.1499],[.01499,.01499,.1499])
+            trials.append(least_squares(residual,seed,bounds=([-.015,-.015,-.15],[.015,.015,.15]),loss='soft_l1',f_scale=1.5))
+        fit=min(trials,key=lambda result:result.cost)
         rms=float(np.sqrt(np.mean(np.asarray(residual(fit.x))**2)))
         cov=np.linalg.pinv(fit.jac.T@fit.jac)*max(1.,rms)**2
         halfwidth=np.maximum(.003,2*np.sqrt(np.maximum(0,np.diag(cov)[:2])))
