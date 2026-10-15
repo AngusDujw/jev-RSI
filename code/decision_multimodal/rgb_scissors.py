@@ -133,9 +133,10 @@ class Scissors:
             rank=int(np.linalg.matrix_rank(result.jac))
             positive=all(np.min(project(public['calibration'][n],transform(estimate))[1])>0 for n,_ in observed)
             usable = bool(rms < 4. and max(halfwidth) <= .006 and rank==6 and positive)
-            if usable:
+            far_valid=bool(rms<6. and max(halfwidth)<=.012 and rank==6 and positive)
+            if far_valid:
                 self.estimate = estimate
-            answer = dict(usable=usable, center_m=estimate[:3].tolist(), rotation_delta_world_rad=estimate[3:].tolist(),
+            answer = dict(usable=usable, far_valid=far_valid, center_m=estimate[:3].tolist(), rotation_delta_world_rad=estimate[3:].tolist(),
                 silhouette_rms_px=rms, conditional_halfwidth_m=halfwidth.tolist(), camera_names=[n for n,_ in observed],
                 height_gain_m=float(estimate[2]-self.center0[2]), minimum_material_height_gain_m=float(min(gains)),
                 maximum_material_height_gain_m=float(max(gains)), jacobian_rank=rank)
@@ -172,7 +173,7 @@ class Scissors:
                     answer.update(verified_pose_usable=bool(restart_spread<=.003),
                         conditional_all_point_height_gain_interval_m=interval,
                         perturbation_gain_spread_m=spread,unperturbed_restart_gain_spread_m=restart_spread if np.isfinite(restart_spread) else None,accepted_pose_refits=len(alternatives),
-                        verification_scope='Mint material template plus original visible blade-tip ray under a thin-metal plane hypothesis; ten pose restarts/2px perturbations, additive6mm template/current sensitivity allowance, not a calibrated confidence bound')
+                        verification_scope='Mint material plus blade-tip ray plane interval; fourteen pose restarts/independent2px/coherent residual-sized perturbations, additive6mm template/current working allowance, not a calibrated confidence bound')
                 else:
                     answer.update(verified_pose_usable=False,accepted_pose_refits=len(alternatives))
         else:

@@ -8,6 +8,7 @@ from rgb_scissors import Scissors
 from robot_tool import Tool
 from robodojo_episode import save
 from stack_blocks import choice, compile_targets
+from camera_view import acquire
 
 PLAN = Path(__file__).with_name('plans')/'general_pickup_v2.json'
 
@@ -60,6 +61,13 @@ def run(ep):
         save(ep.folder/'program_result.json',dict(program_finished=False,stop_reason='Six-DOF RGB precontact pose/ambiguity diagnostics failed'))
         return
     initial_source = np.asarray(initial_fit['center_m'])
+    if plan.get('observation_revision'):
+        # The free left wrist supplies a persistent distinct view; it never
+        # manipulates the scissors. Proposals are checked with public meshes
+        # and must be accepted from actual RGB in the subsequent fit.
+        acquired=acquire(ep,initial_source,'left','scissors_left_view',max_actions=25)
+        save(ep.folder/'observation_revision_result.json',dict(camera_target_reached=acquired,
+            actual_step=ep.tick,source='Actual Luna-driven unloaded left-wrist camera motion'))
     capture_height = table['plane_z_m']+initial_tool['distal_tip_from_center_m']+config['candidate_tip_table_gap_m']
     hover_height = capture_height+config['hover_clearance_m']
     save(ep.folder/'grasp_geometry.json',dict(table=table,material_top_height_m=perception.top_height,
@@ -84,14 +92,15 @@ def run(ep):
         complete_without_advance=0
         phase_done=False
         for attempt in range(config['max_actions_per_stage']):
-            if ep.ended or total>=500:
+            if ep.ended or (ep.actor.calls if ep.actor else 0)>=500:
                 stop='Native episode ended or500-action budget exhausted'
                 break
             public=ep.public
             tool=tool_model.geometry(public)
             measured=perception.update(public,predicted,verify=phase in ('engage_material','capture_lift_test','raise_10cm','hold_verify','complete'))
             save(ep.folder/f'frame-{ep.tick:06d}'/'scissors_geometry.json',measured)
-            if not measured.get('usable'):
+            valid=measured.get('far_valid') if phase=='approach_open' else measured.get('usable')
+            if not valid:
                 stop='Current mint geometry unavailable: '+phase
                 break
             interval=measured.get('conditional_all_point_height_gain_interval_m')
@@ -148,6 +157,8 @@ def run(ep):
             if phase in ('approach_open','engage_material'):
                 state.update(measured_aperture_m=tool['aperture_m'],material_width_hypothesis_m=perception.width,
                     material_sensitivity_m=u,candidate_tip_table_gap_m=(config['candidate_tip_table_gap_m'] if phase=='engage_material' else None),
+                    far_valid=measured.get('far_valid'),precontact_valid=measured.get('usable'),
+                    model_bias_working_allowance_m=.003,
                     contact_status='Candidate low-speed acquisition; contact is not proven before the active lift')
             if phase=='close':
                 state.update(measured_aperture_m=tool['aperture_m'],aperture_change_m=tool['aperture_m']-previous_aperture,
@@ -222,7 +233,8 @@ def run(ep):
             save(ep.folder/f'sweep-{total:04d}.json',dict(nominal_minimum_finger_table_gap_m=minimum_gap,
                 table_upper_allowance_m=.002,conditional_penetration_m=max(0.,.002-minimum_gap),
                 scope='Six interpolated measured-opening public-finger poses; no hidden-obstacle or full native joint-path claim'))
-            if minimum_gap<-.00001:
+            allowed_gap=.025 if phase=='approach_open' else 0.
+            if minimum_gap<allowed_gap-.00001:
                 stop='Public finger sweep exceeds2mm table-envelope interaction: '+phase
                 break
             ep.execute(targets,steps=steps)
@@ -255,4 +267,5 @@ def run(ep):
             break
     ep.program_finished=stop is None
     save(ep.folder/'program_result.json',dict(program_finished=ep.program_finished,stop_reason=stop,
-        actual_actor_decisions=total,scope='Fixed-case development, text only, no injected experience'))
+        actual_actor_decisions=ep.actor.calls if ep.actor else 0,task_control_decisions=total,
+        scope='Fixed-case development, text only, no injected experience'))

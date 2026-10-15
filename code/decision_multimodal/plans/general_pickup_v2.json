@@ -161,6 +161,46 @@
     "Stage labels map approach_open->align, engage_material->descend, capture_lift_test->verify_attachment, raise_10cm->raise, hold_verify->hold.",
     "Use the user-authorized120-action per-stage ceiling and500 overall. A3mm alignment increment cannot cover the initial measured displacement in the proposed50actions.",
     "A stalled measured aperture across two actions may advance to the active test, as explicitly allowed in the preceding Pro execution plan; no capture is inferred.",
-    "Sampled uncertainty intervals and robot/table sweeps are conditional, not complete scene collision or contact certificates."
-  ]
+    "Sampled uncertainty intervals and robot/table sweeps are conditional, not complete scene collision or contact certificates.",
+    "The observation revision incorrectly counted105physical steps as105actions; the completed prior episode actually used21actor actions. New episodes start at0 and enforce500 actual actor calls, including camera acquisition."
+  ],
+  "observation_revision": {
+    "decision": "Acquire a bounded left-camera view if feasible, while separating coarse approach validity from precontact validity. The current 4.02px/6.24mm result does not by itself forbid far approach or demonstrate an obstacle.",
+    "control": {
+      "actor": "Text-only categorical XYZ, rotation, gripper and transition commands.",
+      "compiler": "Choose bounded magnitudes; reject commands whose swept geometry or stage prerequisites fail.",
+      "budgets": "At most 120 actions per stage and 500 overall. Conservatively counting step 105 as consumed leaves 395: left acquisition 25, far approach 100, precontact 100, existing closure/lift 120, recovery 50. One recovery total; unused allocations do not increase either cap."
+    },
+    "left_camera": {
+      "search": "Use public camera calibration and link6/7/8 meshes to search bounded left-wrist orientation candidates. Require predicted target visibility without self-occlusion or cropping. A search result is provisional until actual RGB confirms it.",
+      "execution": "Keep the left gripper unloaded and open. Execute a feasible candidate through bounded categorical rotations, with applicable motion checks. Hold the resulting viewpoint while the right hand approaches.",
+      "limits": "No candidate is guaranteed. Camera visibility does not establish collision clearance. If acquisition is unavailable, retain high/right RGB and permit only independently valid far motion."
+    },
+    "geometry_processing": {
+      "uncertainty": "Report local sensitivity separately from an operational uncertainty envelope. Include calibration uncertainty and systematic planar-template bias from curved, thick material; additional views must not merely shrink same-model variance.",
+      "cross_view": "Test source-pose consistency against simultaneous contours in all available views and plausible nonplanar/thickness alternatives. Do not claim independent feature tracking, unique pose or certified bounds. Initial/current agreement shares modeling assumptions."
+    },
+    "far_approach": {
+      "validity": "Replace the single usable flag with far_valid and precontact_valid. Far validity requires current synchronized target evidence, observable relevant motion, bounded disagreement and a conservative working envelope including model bias.",
+      "execution": "For each compiled motion, compare that envelope plus swept robot geometry and stopping margin against actual estimated far clearance to the table and observed scene geometry. Allow a step only when the available clearance exceeds these margins. Missing clearance stays unknown; two visible targets alone cannot authorize motion.",
+      "current_result": "The slightly exceeded previous gate may still support far_valid. Numerical authorization cannot be asserted from the supplied target fit alone."
+    },
+    "precontact": {
+      "validity": "Require fresh geometry at the changed right-wrist angle, the previous RMS <=4px and Y sensitivity <=6mm gates, and additional bias-aware pose/height consistency. Passing sensitivity gates alone is insufficient.",
+      "height": "Preserve nominal grasp height: table plus mesh downward extent plus 0.5mm. Evaluate height uncertainty with table Z 0.76477m, its conditional 2mm allowance, and the initial resting top 4.5mm above table. Resolve ambiguous material/table relationships before closure; do not infer contact."
+    },
+    "recovery": {
+      "trigger": "Processor failure, stale geometry, unresolved bias or failed stage prerequisites freezes right-hand advance.",
+      "action": "Use the single bounded recovery to acquire a materially different feasible left view or a checked right-hand retreat/reorientation, then refit. Repeated passive reprocessing is not recovery. Persistent failure ends progression."
+    },
+    "actor_requests": {
+      "common": "Stage, action budget, timestamps, camera names, target visibility, pose reference, center, rotation delta, separate validity flags, reason codes and limitations.",
+      "left_acquisition": "Candidate orientation, projected crop/self-occlusion checks, feasible motion bounds and actual-view acceptance criteria.",
+      "far": "Conditional halfwidths, bias envelope, swept-clearance margins, unknown regions and allowed categorical directions.",
+      "precontact": "Fresh RMS/sensitivity, downward extent, table/material height intervals and nominal grasp height.",
+      "recovery": "Failure reason, consumed recovery status, selected viewpoint change and acceptance conditions.",
+      "existing_postclosure": "Retain visible capture and whole-object 100\u2013130mm gain interval requirements; no outcomes are currently available."
+    }
+  },
+  "observation_revision_sha256": "955139d1ecb79a2104d7a43a86776003166b255844a5d9661f2ffad59c9b39e3"
 }
