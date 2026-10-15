@@ -303,7 +303,8 @@ def run(ep):
                         interpretation='Postclosure candidate only; no holding claim; original task height reference unchanged'))
                 break
         if stop or not passed_stage:
-            stop=stop or 'Native physical-stage budget exhausted: '+phase
+            stop=stop or ('Native episode ended before additional visual program checks: '+phase if ep.ended
+                else 'Native physical-stage budget exhausted: '+phase)
             break
     ep.program_finished=stop is None
     save(ep.folder/'program_result.json',dict(program_finished=ep.program_finished,stop_reason=stop,
