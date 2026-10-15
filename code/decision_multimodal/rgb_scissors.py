@@ -94,6 +94,42 @@ class Scissors:
         self.last_tick = None
         self.last_result = None
         self.resting_estimate=np.zeros(3)
+        self.feature_tracks={}
+        for name,mask in masks.items():
+            gray=cv2.cvtColor(public['rgb'][name],cv2.COLOR_RGB2GRAY)
+            corners=cv2.goodFeaturesToTrack(gray,maxCorners=60,qualityLevel=.015,minDistance=5,
+                mask=mask.astype(np.uint8),blockSize=3)
+            if corners is not None:
+                uv=corners.reshape(-1,2)
+                local=intersect(self.cameras[name],uv,self.top_height)-self.center0
+                self.feature_tracks[name]=dict(gray=gray,uv=uv,local=local)
+
+    def track_features(self,public,name,mask):
+        """Same-episode material landmarks with forward/backward RGB checks."""
+        old=self.feature_tracks.get(name)
+        if old is None or not len(old['uv']):
+            return
+        gray=cv2.cvtColor(public['rgb'][name],cv2.COLOR_RGB2GRAY)
+        points=old['uv'].astype(np.float32).reshape(-1,1,2)
+        current,status,error=cv2.calcOpticalFlowPyrLK(old['gray'],gray,points,None,
+            winSize=(21,21),maxLevel=3)
+        if current is None:
+            self.feature_tracks.pop(name,None)
+            return
+        back,back_status,_=cv2.calcOpticalFlowPyrLK(gray,old['gray'],current,None,
+            winSize=(21,21),maxLevel=3)
+        if back is None:
+            self.feature_tracks.pop(name,None)
+            return
+        uv=current.reshape(-1,2)
+        inside=(uv[:,0]>=1)&(uv[:,0]<gray.shape[1]-1)&(uv[:,1]>=1)&(uv[:,1]<gray.shape[0]-1)
+        keep=inside&(status.ravel()==1)&(back_status.ravel()==1)&(error.ravel()<25)&(
+            np.linalg.norm(back.reshape(-1,2)-old['uv'],axis=1)<1.)
+        xy=np.round(uv).astype(int)
+        for i in np.flatnonzero(keep):
+            if not mask[xy[i,1],xy[i,0]]:
+                keep[i]=False
+        self.feature_tracks[name]=dict(gray=gray,uv=uv[keep],local=old['local'][keep])
 
     def resting(self,public):
         """Current high-view XY/yaw under a declared preclosure support prior."""
@@ -155,6 +191,7 @@ class Scissors:
             if len(points) < 20 or mask[:5].any() or mask[-5:].any() or mask[:,:5].any() or mask[:,-5:].any():
                 continue
             points = points[np.linspace(0,len(points)-1,min(220,len(points))).astype(int)]
+            self.track_features(public,name,mask)
             observed.append((name, points))
         def transform(p, points=None):
             return Rotation.from_rotvec(p[3:6]).apply(self.local_points if points is None else points)+p[:3]
@@ -166,6 +203,10 @@ class Scissors:
                 # Current mint boundary -> reference material contour; missing
                 # occluded model portions do not pull the model toward the hand.
                 values.extend(distances.min(1))
+                tracks=self.feature_tracks.get(name)
+                if tracks is not None and len(tracks['uv'])>=4:
+                    landmarks,_=project(public['calibration'][name],transform(p,tracks['local']))
+                    values.extend((2*(landmarks-tracks['uv'])).ravel())
             return values
         if len(observed) >= 2:
             extent=np.r_[.08,.08,.08,.30,.30,.35]
@@ -192,18 +233,22 @@ class Scissors:
             answer.update(lift_pose_usable=bool(rms<4. and rank==6 and positive and max(halfwidth)<=.010),
                 rotation_halfwidth_rad=(2*np.sqrt(np.maximum(0,np.diag(covariance)[3:6]))).tolist(),
                 minimum_visible_template_z_m=float(verification_points[:,2].min()),
-                uncertainty_semantics='Conditional local two-sigma sensitivity; unknown calibration/model bias is not calibrated coverage')
+                uncertainty_semantics='Conditional local two-sigma sensitivity; unknown calibration/model bias is not calibrated coverage',
+                current_material_landmarks={n:len(self.feature_tracks.get(n,{}).get('uv',[])) for n,_ in observed})
             if verify and usable:
                 alternatives=[]
                 restart_gains=[]
                 rng=np.random.default_rng(public['step']+41016)
                 original=[points.copy() for _,points in observed]
+                original_features={n:t['uv'].copy() for n,t in self.feature_tracks.items()}
                 for trial in range(14):
                     if trial>=4:
                         for i,(_,points) in enumerate(observed):
                             amplitude=2. if trial<10 else max(2.,rms)
                             perturb=rng.uniform(-amplitude,amplitude,points.shape if trial<10 else (1,2))
                             points[:]=original[i]+perturb
+                        for n,uv in original_features.items():
+                            self.feature_tracks[n]['uv']=uv+rng.uniform(-2.,2.,uv.shape if trial<10 else (1,2))
                     start=estimate.copy()
                     if trial<4:
                         start[3:]+=rng.uniform(-.12,.12,3)
@@ -218,6 +263,8 @@ class Scissors:
                             restart_gains.append(candidate_gain)
                 for i,(_,points) in enumerate(observed):
                     points[:]=original[i]
+                for n,uv in original_features.items():
+                    self.feature_tracks[n]['uv']=uv
                 if len(alternatives)>=10:
                     alternatives=np.asarray(alternatives)
                     interval=[float(alternatives.min()-.006),float(alternatives.max()+.006)]

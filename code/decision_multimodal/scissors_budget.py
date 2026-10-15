@@ -169,8 +169,11 @@ def run(ep):
                     if previous_attachment is not None and ascent>previous_attachment['ascent']+.0005:
                         relative_translation=float(np.linalg.norm(local_position-previous_attachment['position']))
                         relative_rotation=float((local_rotation*previous_attachment['rotation'].inv()).magnitude())
-                        good=bool(u<=.010 and ru<=.15 and relative_translation<=.003+u+previous_attachment['u'] and
-                            relative_rotation<=.05+ru+previous_attachment['ru'])
+                        # Orientation is a nuisance under partial planar
+                        # visibility. Use the SAME named material feature,
+                        # stabilized by surviving RGB tracks, for co-motion.
+                        good=bool(u<=.010 and max(measured.get('current_material_landmarks',{}).values(),default=0)>=6 and
+                            relative_translation<=.003+u+previous_attachment['u'])
                         comotion_count=comotion_count+1 if good else 0
                     if moving_anchor is None:
                         moving_anchor=dict(ascent=ascent,height=float(point[2]),u=u)
@@ -191,7 +194,7 @@ def run(ep):
                 passed=verified and lift_hold_steps>=6
                 if verified:
                     error[:]=0;angular[:]=0
-                if ascent>=.050 and not attachment:
+                if ascent>=.050-deadband and not attachment:
                     stop='50mm active probe ended without supported successive source/hand co-motion';break
                 if valid and ascent>=.025 and moving_anchor is not None and point[2]+measured['conditional_halfwidth_m'][2]<moving_anchor['height']-moving_anchor['u']:
                     stop='Current RGB source motion contradicts ascending hand';break

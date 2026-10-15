@@ -116,7 +116,8 @@
     "authentication": "local ChatGPT Pro",
     "response_sha256": "59a148cb4c868dea2b94f40a1d11e3cbdae40b17d6246c29b51ca3d7450b2c16",
     "experience_injection": false,
-    "revision_response_sha256": "572a253d0039821656f6d798d2551f18f264d3553bea641dcbc73963a6a5b4d0"
+    "revision_response_sha256": "572a253d0039821656f6d798d2551f18f264d3553bea641dcbc73963a6a5b4d0",
+    "landmark_revision_sha256": "46d33a12b5f08263b810556eddb0b776971748d5a54b84a05075c85f0f6bd930"
   },
   "compiler_notes": [
     "Three physical steps per far action, two per capture/close/lift and one on explicit stage advance; these remain inside perstage/native budgets.",
@@ -124,7 +125,8 @@
     "Every native step, including stage-transition hold, is counted. Conditional straight-pose finger/table checks are not complete scene collision proofs.",
     "The resting revision adds strictly positive lower table clearance, which contradicts the existing0.5mm nominal gap and2mm table allowance. This infeasible added requirement is rejected; the earlier explicit conditional2mm distal table interaction band remains in force. All candidate and final visual checks are retained.",
     "Measured public DLS feedback at45steps reached the pregrasp position but not the wrist deadband. Redistribute185nominal physical steps as70/40/15/60, preserving15recovery and the unmodified200-step native horizon.",
-    "v4 supersedes the old all-point100..130mm and original-orientation constraints during lift. Current conditional pose sensitivity up to10mm,50mm active probe, POSTclosure co-motion baseline, original resting task-height reference. No native outcome enters runtime model inputs."
+    "v4 supersedes the old all-point100..130mm and original-orientation constraints during lift. Current conditional pose sensitivity up to10mm,50mm active probe, POSTclosure co-motion baseline, original resting task-height reference. No native outcome enters runtime model inputs.",
+    "Persistent original RGB material landmarks stabilize current pose. Translation of the same named neck feature is used for co-motion; unreliable orientation is diagnostic only. Working initial-plane allowance remains explicit, not calibrated coverage. Probe ends within its3mm control deadband."
   ],
   "resting_revision": {
     "decision": "Admit the resting-plane method conditionally for pregrasp processing. This is not evidence of contact, attachment, or task success.",
@@ -264,6 +266,69 @@
       "uncertainty": "Use bounded collision-safe lifting or viewpoint-changing robot motion within remaining probe budget. At the bound, unresolved evidence triggers recovery or STOP.",
       "empty": "Stop ascent immediately when RGB shows an empty grasp with scissors outside the grasp corridor, or observed object motion confidently contradicts hand ascent. If safe and budgeted, OPEN above the table, return to a cleared approach and recapture; otherwise STOP.",
       "evaluation": "Final benchmark evaluation remains outside both models."
+    }
+  },
+  "persistent_landmark_revision": {
+    "assessment": {
+      "verdict": "Useful conditional stabilization, not independent confirmation of grasp or metric lift.",
+      "benefit": "Persistent material correspondences can reduce contour-driven pose jumps under partial occlusion.",
+      "limits": [
+        "Initial plane uncertainty creates correlated 3D errors; more tracked points do not eliminate that uncertainty.",
+        "Planar landmarks and occlusion can leave orientation ambiguous.",
+        "Scissors visible between fingers supports capture but does not establish co-motion."
+      ],
+      "initialization": "Track from the original RGB through saved intermediate frames. Do not treat a direct initial-to-current LK match across large motion as a verified track."
+    },
+    "processing_after_each_action": [
+      "Use calibrated camera poses to account for wrist-camera motion.",
+      "Accept tracks only with forward/backward error below 1 pixel, current mint-material membership, and adequate patch texture.",
+      "Reject occluded, nonmaterial and geometrically inconsistent tracks; never regenerate their 3D coordinates from an unverified pose.",
+      "Robustly fit surviving correspondences together with visible material contours. Exclude gripper occlusion boundaries from object contour constraints.",
+      "Retain plausible pose branches and propagate initial-plane, calibration, tracking and robot-state uncertainty."
+    ],
+    "tests_and_uncertainty": {
+      "image_checks": "Monitor inlier count, spatial coverage and conditioning; numerous points on one small patch are insufficient.",
+      "fit_checks": "Use held-out landmark reprojection, robust contour residuals and agreement across calibrated views. Evaluate orientation ambiguity explicitly.",
+      "sensitivity": "Perturb the original plane and landmark rays within their uncertainty and refit. Report the resulting named-feature height interval, not only optimizer covariance.",
+      "failure_signal": "Large pose jumps without matching image motion, branch disagreement or strong dependence on the initial plane invalidate a confident metric estimate.",
+      "reference": "Keep the original resting named-feature reference and its uncertainty throughout. Never reset the baseline after closure or probe motion."
+    },
+    "co_motion_gate": {
+      "use": "Camera-compensated translation of persistent material features, with uncertainty; treat poorly constrained orientation as a nuisance variable.",
+      "comparison": "Compare observations against both gripper-carried and table-stationary hypotheses using public robot transforms. Marginalize plausible object poses and initial-plane hypotheses.",
+      "pass": "Several action-separated observations favor gripper-carried motion, reject table-stationary motion, and show no resolved slip beyond propagated uncertainty.",
+      "avoid": "Do not require a reliable full relative orientation, preserved object orientation, or a fixed centroid computed from changing track subsets.",
+      "interpretation": "The reported 0.53-radian and 58-mm pose jumps undermine the current full-pose gate; they do not alone prove physical slip."
+    },
+    "stages": [
+      {
+        "name": "approach",
+        "actor_input": "Visible scissors target, gripper alignment, free-space clearance and uncertainty.",
+        "advance_when": "RGB supports a reachable capture corridor."
+      },
+      {
+        "name": "capture",
+        "actor_input": "Visible mint material relative to the finger opening and local clearance.",
+        "advance_when": "RGB supports material lying inside the closing corridor."
+      },
+      {
+        "name": "close",
+        "actor_input": "Finger opening, visible material placement and closure progress.",
+        "advance_when": "Commanded closure is reached with visual capture evidence; co-motion remains unverified."
+      },
+      {
+        "name": "lift",
+        "actor_input": "Persistent-track motion, co-motion evidence, original named-feature height interval, clearance and remaining budget.",
+        "continue_when": "Execute bounded ascent or the diagnostic motion below.",
+        "stop_success_when": "The conservative lower bound of the original named feature's vertical displacement reaches 100 mm with continuing grasp evidence. Do not require every vertex to rise 100 mm."
+      }
+    ],
+    "current_action": {
+      "probe_limit": "End the ascent probe at 50 mm within the 3-mm deadband; do not hold waiting for an unreachable residual.",
+      "if_evidence_insufficient": "Within lift, execute one clearance-checked 10-mm horizontal out-and-back gripper motion at fixed height and grip, tracking after each leg. Test whether material motion follows and reverses with the gripper after camera compensation.",
+      "constraints": "Each command must satisfy at most 5 physical steps, 50 mm translation and 0.35 rad rotation; total physical steps must remain within 200.",
+      "height_accounting": "Do not count the hand's 44.8-mm ascent as verified scissors rise.",
+      "actor_interface": "Use categorical signed XYZ/rotation, grip and CONTINUE/ADVANCE/STOP. The diagnostic remains part of lift, with no passive observation stage."
     }
   }
 }
