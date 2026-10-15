@@ -48,15 +48,22 @@ class ScissorsMasks:
         if names:
             predictions=self.engine.predict_batch(images,boxes,points)
             for name,p,box,point,material in zip(names,predictions,boxes,points,materials):
-                candidates=[i for i,m in enumerate(p['masks']) if p['predicted_iou'][i]>=.75 and
+                cleaned=[]
+                for m in p['masks']:
+                    _,labels=cv2.connectedComponents(m.astype(np.uint8))
+                    label=labels[int(point[1]),int(point[0])]
+                    cleaned.append((labels==label) if label else np.zeros_like(m))
+                candidates=[i for i,m in enumerate(cleaned) if p['predicted_iou'][i]>=.8 and
                     (m&material.astype(bool)).sum()>=.6*material.sum() and m.sum()<.4*m.size]
                 selected=max(candidates,key=lambda i:p['predicted_iou'][i]) if candidates else None
                 directory=self.folder/f'frame-{public["step"]:06d}'
                 for i,m in enumerate(p['masks']):
                     np.save(directory/f'scissors-{name}-sam{i}.npy',m)
                 if selected is not None:
-                    result[name]=p['masks'][selected].astype(np.uint8)
-                records.append(dict(camera=name,box=box,point=point,scores=p['predicted_iou'],selected=selected))
+                    result[name]=cleaned[selected].astype(np.uint8)
+                records.append(dict(camera=name,box=box,point=point,scores=p['predicted_iou'],selected=selected,
+                    associated_component_pixels=int(result[name].sum()) if name in result else 0,
+                    component_rule='Only the connected SAM component containing the visible mint material prompt'))
         save(self.folder/f'frame-{public["step"]:06d}'/'scissors_sam.json',dict(
             records=records,source='Fresh RGB and local cached SAM2.1 tiny, mint material identity; no object assets',
             limits='Predicted mask IoU is not measured task correctness; occlusion and blade/handle height differences remain uncertain'))
