@@ -1,0 +1,161 @@
+{
+  "planner_response": {
+    "task": "Pick up the mint green scissors by 10 cm.",
+    "setup": {
+      "binding": "Use the right gripper. Target the solid mint plastic neck between the handle holes and metal pivot. Pinch its opposing exterior edges; never target a handle hole, blade reflection, or empty bounding-box center. Keep the left arm stationary.",
+      "camera_features": {
+        "cam_high": {
+          "scissors_roi": [
+            472,
+            174,
+            511,
+            265
+          ],
+          "left_hole_center": [
+            481,
+            189
+          ],
+          "right_hole_center": [
+            501,
+            194
+          ],
+          "neck_roi": [
+            484,
+            201,
+            499,
+            216
+          ],
+          "pivot_center": [
+            492,
+            220
+          ],
+          "blade_tip": [
+            502,
+            261
+          ]
+        },
+        "cam_left_wrist": {
+          "scissors_roi": null,
+          "neck_roi": null,
+          "pivot_center": null,
+          "blade_tip": null
+        },
+        "cam_right_wrist": {
+          "scissors_roi": [
+            390,
+            235,
+            487,
+            470
+          ],
+          "left_hole_center": [
+            412,
+            263
+          ],
+          "right_hole_center": [
+            458,
+            269
+          ],
+          "neck_roi": [
+            425,
+            292,
+            452,
+            313
+          ],
+          "pivot_center": [
+            444,
+            320
+          ],
+          "blade_tip": [
+            469,
+            462
+          ]
+        },
+        "correspondences": "Match equally named high/right features; refine seeds before triangulation. Pixel coordinates are approximate."
+      },
+      "assumptions": "The local wooden tabletop is planar. Scissors initially rest approximately flat, with thin metal blades and thicker plastic handles. Estimate actual material contours and thickness; do not substitute an upright cuboid. Public X5 geometry supplies pad surfaces, aperture, TCP transforms and collision meshes.",
+      "unsupported": "RGB cannot establish contact force, friction, hidden underside shape, or native success. Joint aperture alone cannot establish capture."
+    },
+    "processing": {
+      "refresh": "Recompute after every action using fresh synchronized RGB, calibration and robot state. Update wrist extrinsics from public kinematics. Initial ROIs only initialize tracking.",
+      "geometry": "Use camera-local rays [(u-cx)/fx, -(v-cy)/fy, -1] for the supplied graphics-camera convention; verify reprojection and positive forward range. Match named features and textured table patches across high/right views. Triangulate robustly and fit a table plane to at least 20 spatially distributed table matches, excluding objects and robot.",
+      "material": "Segment mint plastic by color and edges, explicitly subtracting handle holes. Track metal boundaries separately. Fit a planar scissors contour with separately estimated plastic and metal thickness intervals from visible side edges. Select the neck cross-section maximizing solid pad overlap and table clearance. Derive closing direction across its exterior edges and pad orientation from the local contour.",
+      "uncertainty": "Propagate 2-pixel feature uncertainty and calibration/reprojection residuals. Set positional uncertainty u=max(0.003 m, propagated 95-percent error). Reject geometry if u>0.012 m. Never require alignment finer than u.",
+      "grasp_geometry": "Let w be measured neck width along closing direction, A measured inner-pad aperture, and P the public pad geometry. Open clearance is A-w-2u. Compute actual pad/material intersection intervals, excluding holes, and swept pad/table clearance. Select a capture height with both pads overlapping the estimated plastic sidewall by at least u while their lower surfaces clear the table by u. If no such interval exists, use the bounded recovery.",
+      "residuals": "Position errors are target-minus-current TCP components in world meters; rotation errors are the world rotation-log components in radians. Normalize pad/material overlap by available solid pad area. Derive yaw tolerance as max(0.10 rad, atan2(2u, usable neck length))."
+    },
+    "actor_interface": {
+      "format": "English structured text containing phase, permitted transitions, confidence, and only that phase's fields below. No images, future-phase metrics, or approach-stage attachment drift.",
+      "actions": "Categorical world XYZ and rotation signs, gripper command, and phase transition; the fixed executor bounds each action."
+    },
+    "stages": [
+      {
+        "name": "approach_open",
+        "fields": [
+          "TCP alignment errors",
+          "rotation errors",
+          "open clearance",
+          "swept clearance"
+        ],
+        "pass": "Above the selected neck, lateral error <=max(0.008 m,2u), orientation within derived tolerances, open clearance >=2u, and collision-free descent corridor."
+      },
+      {
+        "name": "engage_material",
+        "fields": [
+          "remaining descent error",
+          "lateral and rotation errors",
+          "left/right solid-material overlap",
+          "table clearance"
+        ],
+        "pass": "Within the feasible capture-height interval, each predicted pad overlap >=0.25, lateral error <=max(0.008 m,2u), and table clearance >=u."
+      },
+      {
+        "name": "close",
+        "fields": [
+          "measured aperture",
+          "aperture change",
+          "neck containment"
+        ],
+        "pass": "Closure completes or aperture changes by less than u across two action results, with neck still between pads. Store scissors and TCP baselines; immediately advance to active lift."
+      },
+      {
+        "name": "capture_lift_test",
+        "fields": [
+          "TCP upward displacement",
+          "visible material height gain",
+          "material-to-TCP displacement change",
+          "aperture"
+        ],
+        "pass": "Actively lift by max(0.030 m,3u). At least three visible material landmarks show upward gain exceeding 2u, and attachment displacement change <=2u. Otherwise recover."
+      },
+      {
+        "name": "raise_10cm",
+        "fields": [
+          "height deficit",
+          "scissors orientation error",
+          "attachment displacement change",
+          "visibility confidence"
+        ],
+        "pass": "Triangulate both handle landmarks and blade tip. For every landmark, its table-normal height gain from the preclosure baseline minus propagated gain uncertainty is >=0.100 m. Preserve initial scissors orientation within uncertainty; stop lifting immediately when passed."
+      },
+      {
+        "name": "complete",
+        "fields": [
+          "verified minimum height gain"
+        ],
+        "pass": "Keep gripping. Successful pickup requires no release."
+      }
+    ],
+    "bounded_recovery": {
+      "limit": "One recovery total; then report failure if geometry or capture remains inadequate.",
+      "missing_geometry": "With gripper open and clear, move the right wrist laterally by at most 0.03 m through a collision-free corridor, recompute geometry once, and retry approach.",
+      "failed_capture": "If scissors remain held, lower toward their original table support using visible geometry. Once supported within uncertainty, open. Physically retreat upward until pads clear the uncertainty-expanded scissors contour by max(0.020 m,2u). Require scissors height to remain within 2u of table support during retreat. Recompute the material grasp and retry once."
+    }
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "response_sha256": "f2ca6b2dfade95b08ad7a4d438b5aceb3de18843d1f29c425966d66da4e62e6b",
+    "status": "Current initial RGB based proposal; not an executed or successful controller"
+  }
+}

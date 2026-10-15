@@ -8,9 +8,9 @@ from pathlib import Path
 import numpy as np
 from scipy.spatial.transform import Rotation
 from scipy.spatial import QhullError
-from rgb_cuboid import fit, project, segment, vertices
+from rgb_cuboid import fit, project, ray, segment, vertices
 from robot_tool import Tool
-from robodojo_episode import save
+from robodojo_episode import save, transform
 
 PLAN = Path(__file__).with_name('plans')/'stack_blocks_v1.json'
 PHASES = [('approach', 'Move the open fingers above the current source, with the tool pointing down.'),
@@ -82,7 +82,7 @@ class Perception:
     def __init__(self, episode, plan):
         self.ep = episode
         self.seeds = plan['initial_perception_seed_rois']
-        self.models, self.shapes = {}, {}
+        self.models, self.shapes, self.last_good = {}, {}, {}
         self.moved = set()
         self.table_z = None
         self.last_step = None
@@ -92,8 +92,9 @@ class Perception:
             return self.models
         self.last_step = public['step']
         for name in ('wood', 'purple', 'white'):
-            prior = self.models.get(name)
+            prior = self.last_good.get(name)
             views, used = [], []
+            provisional = None
             for camera, rgb in public['rgb'].items():
                 geometry = public['calibration'][camera]
                 seed = self.seeds[name].get(camera)
@@ -106,13 +107,24 @@ class Perception:
                     predicted = uv[0]
                     seed = None
                 elif seed is None:
-                    continue
+                    if provisional is None:
+                        continue
+                    uv, depth = project(geometry, provisional.reshape(1, 3))
+                    if depth[0] <= 0 or not (0 <= uv[0, 0] < rgb.shape[1] and 0 <= uv[0, 1] < rgb.shape[0]):
+                        continue
+                    predicted = uv[0]
                 mask = segment(rgb, name, seed_roi=seed, predicted_uv=predicted)
                 if mask is None:
                     continue
                 # A cropped boundary is not a physical block edge.
-                if mask[0].any() or mask[-1].any() or mask[:, 0].any() or mask[:, -1].any():
+                if mask[:8].any() or mask[-8:].any() or mask[:, :8].any() or mask[:, -8:].any():
                     continue
+                if camera == 'cam_high' and prior is None and self.table_z is not None:
+                    ys, xs = np.nonzero(mask)
+                    origin, direction = ray(geometry, [xs.mean(), ys.mean()])
+                    # Cross-view association seed only; never a metric contact input.
+                    if abs(direction[2]) > 1e-6:
+                        provisional = origin+direction*((self.table_z+.020-origin[2])/direction[2])
                 directory = self.ep.folder/f'frame-{public["step"]:06d}'
                 np.save(directory/f'{name}-{camera}-mask.npy', mask.astype(bool))
                 views.append((geometry, mask))
@@ -130,32 +142,42 @@ class Perception:
                 current = fit(views, prior_fit, plane)
             except (ValueError, QhullError, np.linalg.LinAlgError) as error:
                 current = dict(status='unavailable', reason=type(error).__name__+': '+str(error)[:200])
-            if current.get('status') == 'fitted_visual_hypothesis':
+            if (not current.get('usable') and plane is not None and 'cam_high' in used and len(views) > 1):
+                try:
+                    high_only = fit([views[used.index('cam_high')]], prior_fit, plane)
+                    if high_only.get('usable'):
+                        high_only['rejected_multiview_fit_rmse_px'] = current.get('silhouette_rmse_px')
+                        current, used = high_only, ['cam_high']
+                except (ValueError, QhullError, np.linalg.LinAlgError):
+                    pass
+            if current.get('status') == 'fitted_visual_hypothesis' and current.get('usable'):
                 current['step'] = public['step']
                 current['camera_names'] = used
                 self.models[name] = current
-                if len(views) >= 2 and current['usable'] and name not in self.shapes:
+                self.last_good[name] = current
+                if len(used) >= 2 and name not in self.shapes:
                     self.shapes[name] = current['size_m']
                 if name == 'wood' and self.table_z is None and len(views) >= 2 and current['usable']:
                     self.table_z = current['bottom_z_m']
             elif prior is not None:
                 # Keep history for association; never label it a current fit.
-                self.models[name] = dict(prior, usable=False, missing_current_measurement=True)
+                self.models[name] = dict(prior, usable=False, missing_current_measurement=True,
+                                         latest_rejected_fit=current)
         save(self.ep.folder/f'frame-{public["step"]:06d}'/'rgb_geometry.json',
              dict(step=public['step'], table_z_hypothesis_m=self.table_z,
                   geometry=self.models, source='RGB silhouettes, public calibration and image-derived rigid size memory'))
         return self.models
 
 
-def compile_targets(public, tool, answer, error, rotation_error, phase):
-    index = 1
+def compile_targets(public, tool, answer, error, rotation_error, phase, arm='right'):
+    index = ('left', 'right').index(arm)
     old_rotation = tool['rotation']
     translate, rotate = np.zeros(3), np.zeros(3)
     signs = dict(negative=-1, hold=0, positive=1)
     if phase not in ('close', 'release'):
         for i, axis in enumerate('xyz'):
-            translate[i] = signs[answer[axis]['choice']]*min(.020, .7*abs(error[i]))
-            rotate[i] = signs[answer['rotation_'+axis]['choice']]*min(.12, .7*abs(rotation_error[i]))
+            translate[i] = signs[answer[axis]['choice']]*min(.030, .7*abs(error[i]))
+            rotate[i] = signs[answer['rotation_'+axis]['choice']]*min(.18, .7*abs(rotation_error[i]))
     old_link = np.asarray(public['robot']['eef_positions'][index])
     gain = 1.
     for _ in range(20):
@@ -169,16 +191,80 @@ def compile_targets(public, tool, answer, error, rotation_error, phase):
         raise ValueError('Selected coupled pose action cannot meet the native EEF bound')
     commands = public['robot']['states']
     targets = {}
-    for i, arm in enumerate(('left', 'right')):
-        targets[arm] = dict(position=public['robot']['eef_positions'][i],
+    for i, name in enumerate(('left', 'right')):
+        targets[name] = dict(position=public['robot']['eef_positions'][i],
             quaternion_wxyz=public['robot']['eef_quaternions_wxyz'][i],
             gripper_opening=float(commands[i*7+6]), gripper_closed=bool(commands[i*7+6] < .5))
     grip = answer['gripper']['choice']
-    opening = 1. if grip == 'open' else 0. if grip == 'close' else float(commands[13])
-    targets['right'] = dict(position=target_link.tolist(),
+    opening = 1. if grip == 'open' else 0. if grip == 'close' else float(commands[index*7+6])
+    targets[arm] = dict(position=target_link.tolist(),
         quaternion_wxyz=new_rotation.as_quat()[[3, 0, 1, 2]].tolist(),
         gripper_opening=opening, gripper_closed=opening < .5)
     return targets
+
+
+def prepare_left_view(ep, geometry, tool_model):
+    """A distinct unloaded camera view, chosen from public projection geometry."""
+    public = ep.public
+    models = geometry.update(public)
+    purple = models.get('purple')
+    if purple is None:
+        return False
+    target_point = np.asarray(purple['center_m'])
+    robot = public['robot']
+    old_link = transform(robot['eef_positions'][0], robot['eef_quaternions_wxyz'][0])
+    camera = public['calibration']['cam_left_wrist']
+    mount = np.linalg.inv(old_link) @ np.asarray(camera['camera_to_environment'])
+    candidates = []
+    for yaw in np.linspace(-np.pi/6, np.pi/2, 9):
+        for pitch in (0., .25, .50):
+            orientation = Rotation.from_euler('z', yaw)*Rotation.from_euler('y', pitch)
+            link = old_link.copy()
+            link[:3, :3] = orientation.as_matrix()
+            changed = dict(camera, camera_to_environment=(link @ mount).tolist())
+            uv, depth = project(changed, target_point.reshape(1, 3))
+            w, h = camera['size']
+            margin = min(uv[0, 0], w-uv[0, 0], uv[0, 1], h-uv[0, 1])
+            if depth[0] > .1 and margin > 60:
+                candidates.append((margin, orientation, uv[0]))
+    if not candidates:
+        return False
+    _, desired, predicted_pixel = max(candidates, key=lambda row: row[0])
+    initial_tool = tool_model.geometry(public, 'left')
+    target_tcp = np.asarray(robot['eef_positions'][0])+desired.apply(initial_tool['local_center_m'])
+    save(ep.folder/'left_camera_view_method.json', dict(
+        source='Public camera mount, measured left LINK6, and RGB-derived purple support hypothesis',
+        target_source_pixel_prediction=predicted_pixel.tolist(),
+        target_left_LINK6_position_m=robot['eef_positions'][0],
+        target_left_quaternion_wxyz=desired.as_quat()[[3, 0, 1, 2]].tolist(),
+        scope='One bounded camera reposition, split into independently judged legal short actions; no contact'))
+    for attempt in range(20):
+        public = ep.public
+        models = geometry.update(public)
+        current = models.get('purple', {})
+        supported = current.get('usable') and 'cam_left_wrist' in current.get('camera_names', [])
+        tool = tool_model.geometry(public, 'left')
+        error = target_tcp-tool['world_center_m']
+        rotation_error = (desired*tool['rotation'].inv()).as_rotvec()
+        state = dict(task='Acquire a useful left RGB view before stacking the blocks.',
+            active_arm='left', physical_stage='approach',
+            objective='Reposition the unloaded LEFT wrist camera so the purple support is measured from this distinct view. Keep the RIGHT arm unchanged.',
+            position_error_m=error.round(5).tolist(), position_tolerance_m=.008,
+            orientation_error_rad=rotation_error.round(5).tolist(),
+            frame='World/environment metres; target minus current LEFT public pad midpoint; Z up.',
+            rotation='World rotation vector R_target times inverse(R_current), radians, right-hand rule.',
+            current_left_view_supports_purple_fit=bool(supported), pass_=bool(supported),
+            observation_step=ep.tick)
+        state['pass'] = state.pop('pass_')
+        answer = ep.decide(state, questions(state))
+        if answer['transition']['choice'] == 'stop':
+            return False
+        targets = compile_targets(public, tool, answer, error, rotation_error, 'approach', arm='left')
+        ep.execute(targets, steps=1 if answer['transition']['choice'] == 'advance' else 5)
+        if answer['transition']['choice'] == 'advance':
+            geometry.update(ep.public)
+            return True
+    return False
 
 
 def run(ep):
@@ -190,6 +276,12 @@ def run(ep):
     models = geometry.update(public)
     total = 0
     stop_reason = None
+    if not prepare_left_view(ep, geometry, tool_model):
+        save(ep.folder/'program_result.json', dict(program_finished=False,
+            stop_reason='Distinct left camera view was not established', actual_actor_decisions=ep.actor.calls if ep.actor else 0))
+        return
+    public = ep.public
+    models = geometry.update(public)
     for source, destination in (('wood', 'purple'), ('white', 'wood')):
         model = models.get(source)
         if model is None or not model.get('usable'):
@@ -310,7 +402,7 @@ def run(ep):
                     stage_sequence=[x[0] for x in PHASES],
                     frame='Environment world XYZ, metres; Z is up. Errors are TARGET MINUS CURRENT public finger-pad midpoint.',
                     rotation='World rotation vector of R_target times inverse(R_current); radians; right-hand increments multiply on the left.',
-                    step_rule='Each selected translation is at most20mm and70percent of that axis error. Each selected rotation is at most0.12rad and70percent of its error component. One common positive gain preserves all signs while keeping LINK6 translation within49mm. Rotations pivot about the public pad midpoint.',
+                    step_rule='Each selected translation is at most30mm and70percent of that axis error. Each selected rotation is at most0.18rad and70percent of its error component. One common positive gain preserves all signs while keeping LINK6 translation within49mm. Rotations pivot about the public pad midpoint.',
                     position_error_m=error.round(5).tolist(), position_tolerance_m=tolerance,
                     orientation_error_rad=rotation_error.round(5).tolist(), rotation_component_hold_rad=.045,
                     measured_aperture_m=tool['aperture_m'], aperture_change_m=aperture_change,
@@ -379,5 +471,5 @@ def run(ep):
             break
     ep.program_finished = stop_reason is None
     save(ep.folder/'program_result.json', dict(program_finished=ep.program_finished,
-        stop_reason=stop_reason, actual_actor_decisions=total,
+        stop_reason=stop_reason, actual_actor_decisions=ep.actor.calls if ep.actor else 0,
         scope='Unvalidated fixed-case development, text-only actor, no experience input'))

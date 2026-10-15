@@ -1,0 +1,137 @@
+{
+  "planner_response": {
+    "task": "Fold the visible coral long-sleeved shirt into a compact rectangle.",
+    "setup": {
+      "roles": "The coral garment is the sole manipulated object. The wooden tabletop supports folding. Left and right mean image-left and image-right in the high camera.",
+      "assumptions": [
+        "One shirt lies approximately flat, with sleeves extended, neckline away from the robot and hem toward it.",
+        "The exposed wooden surface is locally planar. Estimate its plane from calibrated RGB correspondences; do not assume its height.",
+        "Initially visible boundaries approximate garment landmarks. Hidden seams, underside geometry, contact, cloth thickness and native success are unavailable."
+      ],
+      "initial_features": {
+        "coordinates": "Approximate pixels [u,v]; ROIs are [xmin,ymin,xmax,ymax]. Seeds must be replaced after every action.",
+        "high": {
+          "shirt_roi": [
+            158,
+            180,
+            488,
+            357
+          ],
+          "neckline_region": [
+            311,
+            181,
+            354,
+            207
+          ],
+          "left_shoulder": [
+            279,
+            202
+          ],
+          "right_shoulder": [
+            371,
+            204
+          ],
+          "left_armpit": [
+            260,
+            260
+          ],
+          "right_armpit": [
+            376,
+            254
+          ],
+          "left_cuff_roi": [
+            158,
+            326,
+            207,
+            358
+          ],
+          "right_cuff_roi": [
+            451,
+            250,
+            487,
+            289
+          ],
+          "left_hem_corner": [
+            264,
+            341
+          ],
+          "right_hem_corner": [
+            411,
+            302
+          ]
+        },
+        "left_wrist": {
+          "visible_left_sleeve_patch_roi": [
+            490,
+            337,
+            552,
+            463
+          ],
+          "cuff": null,
+          "shoulders": null,
+          "hem": null
+        },
+        "right_wrist": {
+          "visible_right_sleeve_patch_roi": [
+            117,
+            313,
+            272,
+            410
+          ],
+          "candidate_cuff_roi": [
+            338,
+            430,
+            395,
+            479
+          ],
+          "confirmed_cuff": null,
+          "shoulders": null,
+          "hem": null
+        },
+        "correspondences": "Wrist patches correspond semantically to their respective sleeves; no exact initial cross-camera point correspondence is asserted."
+      }
+    },
+    "processing": {
+      "algorithm": [
+        "Mask projected X5 geometry using measured robot state. Segment coral cloth using Lab color and connected contours; retain fresh boundaries and optical-flow patch tracks.",
+        "Match synchronized exposed wood texture across calibrated views using bidirectional descriptors, epipolar filtering and triangulation. Robustly fit the support plane.",
+        "Use camera-local rays [(u-cx)/fx,-(v-cy)/fy,-1] with the supplied camera-to-environment transforms. Validate triangulation by positive ray distances and reprojection.",
+        "Intersect initial supported cloth rays with the plane. During lifting, triangulate matched cloth texture or contour features; never intersect elevated cloth with the table.",
+        "Re-estimate cuffs, shoulders, armpits, hem and creases from fresh contours, color patches and temporal associations. Track material identity without transporting a rigid shirt pose.",
+        "Estimate position uncertainty from pixel localization, triangulation conditioning and plane-fit residuals. Reject ambiguous correspondences."
+      ],
+      "scales": "A is measured usable jaw aperture from X5 finger geometry and joints; the initial joint readings are approximately 0.044 m per finger. W and H are current unfolded torso width and length. Set m=max(3*sigma_xy,0.12*A), h=max(3*sigma_z,0.35*A). Reject grasp patches narrower than 2*m or outside reachable, collision-checked space.",
+      "unsupported": "Closure aperture cannot establish capture. Single-view elevated depth, hidden layer alignment, force and exact wrinkle removal remain unsupported."
+    },
+    "recipe": [
+      "Fold the left sleeve inward about the current left shoulder-to-armpit line, grasping its cuff; place the cuff inside the torso below the opposite shoulder.",
+      "Repeat for the right sleeve, placing its cuff below the left shoulder.",
+      "Fold the left torso third inward about a neckline-to-hem longitudinal line one-third across the torso. Grasp the left shoulder-side edge and left hem corner with both arms.",
+      "Fold the right torso third over the center using its shoulder-side edge and hem corner. Re-estimate the existing folded boundary.",
+      "Grasp both current hem corners and fold the lower half toward the shoulder edge about the transverse midpoint. Target a rectangle bounded by the folded side edges."
+    ],
+    "execution": {
+      "order": "For each recipe operation: APPROACH, SEAT, CLOSE, LIFT_TEST, TRANSFER, LOWER, RELEASE, RETREAT_TEST. Advance immediately when the current predicate passes.",
+      "actor_interface": "English structured text contains only operation identity, current phase, relevant visible features, uncertainty and the fields below. Positions and residuals use environment XYZ in meters; rotation residual is log(R_target*R_current^-1).",
+      "phases": {
+        "APPROACH": "Fields: e_xyz=grasp_prepose-current_jaw_center, e_rotation, clearance. Pass when lateral error<=m, height error<=h, and angular error<=atan(m/A).",
+        "SEAT": "Fields: patch-to-jaw lateral residual, patch overlap fraction, jaw-bottom height above supported patch. Pass when error<=m, overlap>=0.7, and height uncertainty band intersects the patch surface.",
+        "CLOSE": "Fields: measured aperture and aperture change. Pass after commanded closure stops changing within encoder uncertainty; proceed to active lift regardless of final aperture.",
+        "LIFT_TEST": "Fields: tool rise, triangulated patch rise, patch/tool displacement mismatch. Pass when tool and patch rise>=h, mismatch<=max(3*sigma_xyz,0.25*h), and the patch remains visibly between jaws across two action-separated frames.",
+        "TRANSFER": "Fields: freshly estimated held-patch target residual, rotation residual and swept clearance. Targets reflect current material landmarks across the prescribed fold line, adjusted inside the intended footprint by m. Pass at error<=max(m,0.05*W) with valid clearance.",
+        "LOWER": "Fields: patch height over support, landing overlap, crease deviation. Pass when height<=h, overlap>=0.8, and deviation<=max(2*m,0.08*W).",
+        "RELEASE": "Fields: measured opening relative to local patch width. Pass when usable opening exceeds patch width plus 2*m.",
+        "RETREAT_TEST": "Fields: tool separation, released-boundary displacement, target-footprint overlap. Pass after retreat>=h, boundary displacement<=2*m and overlap>=0.8; then advance recipe."
+      }
+    },
+    "recovery": "Allow one recovery per operation: open, retreat to verified clearance, and shift the wrist viewpoint within one aperture while preserving table clearance. Recompute geometry and select a broader visible patch on the same cuff or edge; retry once. Missing metric geometry, failed capture or failed retreat after that ends the attempt as incomplete.",
+    "completion": "After the final retreat, require both sleeves inside the folded footprint, paired hem/shoulder edges within max(2*m,0.1*W), and no exposed protrusion larger than that margin. Report visually verified completion or incomplete; do not claim hidden-layer neatness."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "response_sha256": "eed44e2cfd952e04b8c62eb1af49400896b3027d8e13c6c93d9e315339a9451d",
+    "status": "Current initial RGB based proposal; not an executed or successful controller"
+  }
+}

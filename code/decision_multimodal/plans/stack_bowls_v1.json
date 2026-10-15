@@ -1,0 +1,211 @@
+{
+  "planner_response": {
+    "task": "Nest the left bowl into the center bowl, then nest the right bowl into that pair.",
+    "setup": {
+      "bindings": {
+        "base": "Center bowl; initially remains on the table.",
+        "first_source": "Left bowl, handled by the left arm.",
+        "second_source": "Right bowl, handled by the right arm.",
+        "receiver_update": "After the first retreat passes, use the uppermost tracked rim of the pair."
+      },
+      "pixel_seeds": {
+        "format": "Boxes are [xmin,ymin,xmax,ymax]; points are [u,v]. Correspondences are approximate initialization only.",
+        "high": {
+          "left": {
+            "box": [
+              155,
+              189,
+              221,
+              245
+            ],
+            "center": [
+              188,
+              216
+            ],
+            "outboard_rim": [
+              160,
+              211
+            ]
+          },
+          "center": {
+            "box": [
+              307,
+              216,
+              378,
+              280
+            ],
+            "center": [
+              342,
+              248
+            ]
+          },
+          "right": {
+            "box": [
+              404,
+              179,
+              470,
+              233
+            ],
+            "center": [
+              437,
+              206
+            ],
+            "outboard_rim": [
+              464,
+              203
+            ]
+          }
+        },
+        "left_wrist": {
+          "left": {
+            "box": [
+              263,
+              241,
+              462,
+              391
+            ],
+            "aperture_center": [
+              362,
+              295
+            ],
+            "outboard_rim": [
+              269,
+              297
+            ]
+          },
+          "center": null,
+          "right": null
+        },
+        "right_wrist": {
+          "right": {
+            "box": [
+              151,
+              225,
+              337,
+              358
+            ],
+            "aperture_center": [
+              244,
+              274
+            ],
+            "outboard_rim": [
+              329,
+              272
+            ]
+          },
+          "left": null,
+          "center": null
+        },
+        "inner_lip_correspondences": null,
+        "table_features": "Track wood-grain corners outside bowls and robot masks."
+      }
+    },
+    "processing": {
+      "refresh": "After every action, update wrist extrinsics using robot forward kinematics and the initial camera-to-tool transform. Recompute geometry from fresh frames; expand seeds and track identities.",
+      "segmentation": "Within predicted regions, combine low-saturation bright components, gradients and temporal tracking. Separate aperture rim, exterior silhouette and robot projections. Fit robust rim ellipses; do not treat the entire silhouette as a rim.",
+      "reconstruction": "Use calibrated rays with camera coordinates proportional to [(u-cx)/fx,-(v-cy)/fy,-1]. Jointly fit horizontal circular rims across views using reprojection error and robot-free correspondences. Estimate the table plane from matched wood features. Fit visible exterior cross-section radii from multiview silhouettes assuming axial symmetry. Reject inconsistent fits.",
+      "uncertainty": "Bootstrap boundary pixels with at least 3-pixel perturbations. Let s be the larger of the resulting metric uncertainty and calibration/reprojection uncertainty; angular uncertainty is sa. Use margins m=max(3s,0.05R), where R is the current source outer rim radius. Missing aperture boundaries remain unknown.",
+      "gripper_geometry": "From public X5 finger geometry and measured joints, compute actual pad gap g, radial finger thickness t, tangential width b, tip depth, swept volumes and tool-to-pad transforms. The two approximately 0.044 m joint readings are not directly assumed to equal pad clearance."
+    },
+    "grasp": {
+      "points": "Choose the left bowl's negative-world-X rim and right bowl's positive-world-X rim, refining the seeded correspondences. For outward radial unit vector n, outer grasp point is c+Ro*n; inner grasp point is c+Ri*n, both on the fitted lip.",
+      "configuration": "Orient opposing pad faces along n, finger breadth tangent to the rim, and insertion along gravity. Put one finger inside the aperture and the other outside the bowl. Place their midpoint between the measured inner and outer lip points.",
+      "feasibility": "Require open gap greater than lip thickness plus 2m; the inner finger rectangle, including t and b, must fit inside the measured aperture with margin m. Choose insertion depth d from visible inner-wall clearance, exceeding tip uncertainty but keeping both fingers above unresolved interior geometry. If this interval is empty, recover."
+    },
+    "actor_contract": {
+      "coordinates": "Residual translations are desired-minus-measured world XYZ; rotations are shortest signed rotation vectors.",
+      "visibility": "Emit only the listed current-phase fields, uncertainty and action budget. No placement metrics during grasping, or capture-drift metrics before lift.",
+      "advance": "Advance immediately when the current predicate passes. Each phase permits at most 20 bounded actions."
+    },
+    "sequence": [
+      {
+        "phase": "rim_approach",
+        "fields": [
+          "pad-midpoint translation error to the open pre-insertion rim configuration",
+          "rotation error",
+          "gap deficit",
+          "minimum swept clearance"
+        ],
+        "pass": "Translation norm <=m, rotation <=max(3sa,0.1 radians), required gap available, swept clearance >=m."
+      },
+      {
+        "phase": "rim_insert",
+        "fields": [
+          "radial and tangential grasp errors",
+          "remaining insertion depth",
+          "inner and outer finger clearances"
+        ],
+        "pass": "Errors <=m, depth within m of d, both finger clearances nonnegative after uncertainty margins."
+      },
+      {
+        "phase": "close",
+        "fields": [
+          "measured gap",
+          "gap change",
+          "lip alignment error"
+        ],
+        "pass": "After one bounded closure, advance to lift; closure alone never establishes capture."
+      },
+      {
+        "phase": "active_lift_test",
+        "fields": [
+          "tool rise",
+          "source rise",
+          "source-to-tool translation and rotation changes"
+        ],
+        "pass": "Tool and source rise >=max(4s,0.2R); relative translation change <=3s and rotation <=3sa over two successive action observations."
+      },
+      {
+        "phase": "receiver_align",
+        "fields": [
+          "source-receiver horizontal center error",
+          "rim-normal rotation error",
+          "source-bottom clearance above receiver rim",
+          "finger swept clearance"
+        ],
+        "pass": "Center error <=m, rotation <=max(3sa,0.1), bottom clearance >=2m, fingers clear."
+      },
+      {
+        "phase": "nest_entry",
+        "fields": [
+          "bottom insertion depth q",
+          "aperture clearance a-e-r(q)",
+          "source-rim separation",
+          "finger clearance"
+        ],
+        "definitions": "a is receiver aperture radius; e is horizontal center error; r(q) is measured source exterior radius at the receiver rim height.",
+        "pass": "q>=max(3s,0.1H), a-e-r(q)>=m, and fingers clear the receiver by m. H is measured free-standing source height. Full-footprint containment is unnecessary."
+      },
+      {
+        "phase": "release",
+        "fields": [
+          "gap",
+          "gap deficit for lip disengagement"
+        ],
+        "pass": "Measured gap provides lip disengagement plus 2m; advance to retreat."
+      },
+      {
+        "phase": "physical_retreat_test",
+        "fields": [
+          "finger clearance",
+          "bowl displacement between fresh frames",
+          "rim center offset",
+          "rim separation",
+          "normalized projected aperture overlap"
+        ],
+        "pass": "Fingers retreat clear by >=max(4s,0.2R); bowl displacement <=3s over two action observations; center offset <=max(3s,0.2R); overlap >=0.65; rim separation is positive within uncertainty and below H-3s. Repeat for the right bowl, then finish."
+      }
+    ],
+    "limits_and_recovery": {
+      "assumptions": "Rigid upright approximately circular bowls, horizontal table, gravity and passive settling. Hidden wall thickness, cavity depth, contact, force and native success are unsupported.",
+      "recovery": "Once per source, open and retract vertically through the previously cleared corridor, then outward, obtaining fresh geometry before restarting rim approach. After failed capture, use the tracked resting source location. Repeated failure, unsafe clearance or unresolved geometry terminates with an explicit incomplete result."
+    }
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "response_sha256": "2bddd59f0065eb27e8d33c3eae873676890903f2dfb68dc602919598b03dd10e",
+    "status": "Current initial RGB based proposal; not an executed or successful controller"
+  }
+}
