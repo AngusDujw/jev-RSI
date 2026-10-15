@@ -5,10 +5,11 @@ import press_sequence
 from robodojo_episode import save
 
 
-def run(ep,balanced=False,independent_observer=False,anchored=False):
+def run(ep,balanced=False,independent_observer=False,anchored=False,differential=False):
     ep.balanced_button_pair=balanced
     ep.independent_button_observer=independent_observer
     ep.anchored_button_reference=anchored
+    ep.differential_button_observer=differential
     if not press_setup.run(ep,continue_immediately=True):
         return
     if independent_observer:
@@ -23,6 +24,7 @@ def run(ep,balanced=False,independent_observer=False,anchored=False):
         visual_counts_are_native_counts=False,actor_images=0,experience_injection=False))
     result=press_first.run(ep,dict(return_to_sequence=True,release_extra_gap_m=.020,balanced_pair=balanced,
         anchored_world_reference=anchored,
+        adaptive_press_endpoint=differential,
         independent_observer_arm='right' if independent_observer else None,
         refine_unpressed_baseline=True,require_refined_baseline=True))
     if ep.ended:

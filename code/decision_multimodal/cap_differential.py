@@ -44,8 +44,11 @@ def measure(public,baseline,mask,baseline_mask,cap,camera,baseline_z):
         fit=least_squares(lambda h:residual(h,np.asarray(shift)),best.x,bounds=([-.025],[.005]),loss='soft_l1',f_scale=1.,max_nfev=80)
         sensitivity=max(sensitivity,float(abs(fit.x[0]-best.x[0])))
     interior=bool(-.0245<best.x[0]<.0045)
-    return dict(usable=bool(rms<2. and sensitivity<.008 and interior),downward_displacement_m=float(-best.x[0]),
+    maximum=float(np.max(np.linalg.norm(residual(best.x).reshape(-1,2),axis=1)))
+    spread=float(np.ptp([r.x[0] for r in results]))
+    return dict(usable=bool(rms<=1. and maximum<=2. and sensitivity<=.003 and interior and spread<.0005 and len(now)>=24 and len(before)>=24),downward_displacement_m=float(-best.x[0]),
         conditional_travel_halfwidth_m=sensitivity,rim_template_rms_px=rms,baseline_arc_pixels=len(before),current_arc_pixels=len(now),
+        maximum_rim_residual_px=maximum,restart_height_spread_m=spread,
         camera_names=[camera],baseline_step=baseline['step'],step=public['step'],
         source='Current independent RGB rim matched to a same-episode unpressed RGB upper-arc template; public K/T',
         limits='Vertical rigid-cap and baseline rim-plane hypotheses; no radius, object state or contact truth.1px differential perturbation is conditional sensitivity, not calibrated confidence.')

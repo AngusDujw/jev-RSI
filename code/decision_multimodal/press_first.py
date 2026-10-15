@@ -135,14 +135,19 @@ def run(ep,configuration=None):
     previous_aperture=initial['aperture_m'];stable_closure=0
     stalled_press=0;previous_travel=None
     latch_rotation=latch_xy=None
+    adaptive=bool(configuration.get('adaptive_press_endpoint'));extra_depth=0.;endpoint_updates=0;window=[]
+    max_extra=max(0.,height-6*sigma-depth)
+    lowest_press_tip=float('inf');rebound=[]
     for phase,gap in schedule:
         stage_done=False
-        for attempt in range(35):
+        for attempt in range(15 if adaptive and phase=='press' else 10 if adaptive and phase=='release_and_retreat' else 35):
             if ep.ended or ep.tick>=ep.metadata['max_episode_steps']:
                 stop='Native episode budget ended';break
             public=ep.public;tool=tools.geometry(public,arm)
             tip_local=tool['finger_tips_local_m'].mean(0) if balanced else tool['finger_tips_local_m'][finger]
             tip=tool['world_center_m']+tool['rotation'].apply(tip_local-tool['local_center_m'])
+            if phase=='press':
+                lowest_press_tip=min(lowest_press_tip,float(tip[2]))
             if anchored and phase in ('approach','press') and latch_rotation is None:
                 if phase!='approach':
                     stop='No stored precontact world reference for this resumed attempt';break
@@ -153,6 +158,8 @@ def run(ep,configuration=None):
             anchor_active=anchored and latch_rotation is not None and phase in ('approach','press','release_and_retreat')
             stage_rotation=latch_rotation if anchor_active else desired
             target_tip=center+np.array([0.,0.,gap])
+            if adaptive and phase=='press':
+                target_tip[2]-=extra_depth
             if anchor_active:
                 target_tip[:2]=latch_xy
             target_mid=target_tip-stage_rotation.apply(tip_local-tool['local_center_m'])
@@ -178,6 +185,7 @@ def run(ep,configuration=None):
                 stable_closure=stable_closure+1 if abs(tool['aperture_m']-previous_aperture)<.0002 else 0
                 passed=bool(stable_closure>=2 and tool['aperture_m']<.010)
             visible=None
+            propose_endpoint=False
             if (phase in ('press','release_and_retreat') or (anchored and phase=='approach')) and baseline.get('usable'):
                 current=observer.measure(public,cap,identity)
                 if current.get('usable'):
@@ -199,6 +207,14 @@ def run(ep,configuration=None):
                         passed=True
                     if phase=='release_and_retreat':
                         passed=passed and abs(travel)<=3*sigma
+                        if adaptive:
+                            rebound.append(travel);rebound=rebound[-2:]
+                            passed=bool(passed and float(tip[2])-lowest_press_tip>=.027 and len(rebound)==2 and
+                                max(abs(np.asarray(rebound)))<=.002 and np.ptp(rebound)<.0005)
+                    if adaptive and phase=='press':
+                        window.append((travel,float(tip[2])));window=window[-3:]
+                        plateau=bool(len(window)==3 and np.ptp(np.asarray(window)[:,0])<.0005 and np.ptp(np.asarray(window)[:,1])<.0005)
+                        propose_endpoint=bool(not passed and plateau and endpoint_updates<4 and extra_depth<max_extra-1e-6)
             state=dict(task=public['instruction'],phase=phase,active_arm=arm,target_identity=configuration.get('target_description','left red button under card1'),
                 tool_posture='balanced_closed_pair' if balanced else 'open_single_finger',
                 required_cycles=configuration.get('required_cycles',1),completed_proxy_cycles=configuration.get('previous_cycles',0)+count,position_error_m=error.round(5).tolist(),position_tolerance_m=tolerance,
@@ -226,6 +242,10 @@ def run(ep,configuration=None):
             if anchor_active:
                 state.update(control_reference='Stored precontact WORLD tip XY/orientation and fixed stage Z endpoint',
                     hold_semantics='HOLD retains this stored world reference within its deadband; it never relatches the disturbed measured pose.')
+            if adaptive and phase=='press':
+                state.update(extra_endpoint_depth_m=extra_depth,endpoint_update_count=endpoint_updates,
+                    endpoint_update_proposed=propose_endpoint,maximum_extra_endpoint_depth_m=max_extra,
+                    endpoint_update_rule='Only an actual Z-negative answer authorizes at most2mm deeper fixed world endpoint after three fresh low-travel/low-tip-motion observations.')
             query=questions(state)
             if anchor_active:
                 for axis in 'xyz':
@@ -238,6 +258,12 @@ def run(ep,configuration=None):
                     stop='Independent current cap geometry or contained footprint lost during anchored descent';break
             answer=ep.decide(state,query)
             save(ep.folder/f'{control_prefix}-control-{ep.tick:06d}.json',dict(state=state,answers=answer))
+            if adaptive and phase=='press' and propose_endpoint and answer['z']['choice']=='negative':
+                addition=min(.002,max_extra-extra_depth);extra_depth+=addition;endpoint_updates+=1;window=[]
+                target_tip[2]-=addition;error[2]-=addition
+                save(ep.folder/f'{control_prefix}-endpoint-{ep.tick:06d}.json',dict(additional_depth_m=addition,
+                    total_extra_depth_m=extra_depth,update_count=endpoint_updates,
+                    source='Three fresh RGB/tip plateau samples and actual actor Z-negative choice; not force inference'))
             if answer['transition']['choice']=='stop':
                 stop='Actor elected stop: '+phase;break
             signs=dict(negative=-1,hold=0,positive=1)

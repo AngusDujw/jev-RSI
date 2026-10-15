@@ -64,6 +64,7 @@ def run(ep):
             configuration=dict(artifact_prefix=prefix,identity=identity,arm=arm,cap=reference['cap'],
                 balanced_pair=getattr(ep,'balanced_button_pair',False),
                 anchored_world_reference=getattr(ep,'anchored_button_reference',False),
+                adaptive_press_endpoint=getattr(ep,'differential_button_observer',False),
                 independent_observer_arm=('right' if arm=='left' else 'left') if getattr(ep,'independent_button_observer',False) else None,
                 target_description=description,required_cycles=required[identity],previous_cycles=counts[identity],
                 return_to_sequence=True,release_extra_gap_m=.020,skip_clear=counts[identity]>0,

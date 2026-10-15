@@ -17,10 +17,11 @@ def load_public(folder,step):
 
 
 class CapObserver:
-    def __init__(self,folder):
-        self.folder=Path(folder)/'sam-cap'
+    def __init__(self,folder,differential_camera=None):
+        self.folder=Path(folder)/('sam-cap-differential' if differential_camera else 'sam-cap')
         self.folder.mkdir(exist_ok=True)
         self.engine=None
+        self.differential_camera=differential_camera;self.templates={};self.differential_enabled=False
 
     def measure(self,public,cap,identity='red1'):
         directory=self.folder/f'{public["step"]:06d}-{identity}'
@@ -69,6 +70,31 @@ class CapObserver:
                     masks[name]=candidates[index]
         save(directory/'segmentation.json',metadata)
         fit=cap_pose(public,cap,masks)
+        if self.differential_camera and self.differential_enabled:
+            from cap_differential import measure
+            name=self.differential_camera
+            if name not in masks:
+                fit=dict(usable=False,reason='Independent camera material mask unavailable')
+            else:
+                key=(identity,name)
+                if key not in self.templates:
+                    # First call for this identity occurs before the pressing
+                    # hand approaches. These are same-episode sensor references.
+                    self.templates[key]=(public,masks[name].copy(),dict(cap))
+                    save(directory/'template_reference.json',dict(step=public['step'],camera=name,
+                        cap_base_hypothesis=cap,scope='Unpressed same-episode RGB reference, not retrieved experience'))
+                baseline,baseline_mask,base_cap=self.templates[key]
+                old=np.asarray(baseline['calibration'][name]['camera_to_environment']);now=np.asarray(public['calibration'][name]['camera_to_environment'])
+                from scipy.spatial.transform import Rotation
+                drift=float(np.linalg.norm(old[:3,3]-now[:3,3]));angle=float(Rotation.from_matrix(now[:3,:3]@old[:3,:3].T).magnitude())
+                measured=measure(public,baseline,masks[name],baseline_mask,base_cap,name,base_cap['center_m'][2])
+                center=np.asarray(base_cap['center_m'],float).copy();center[2]-=measured.get('downward_displacement_m',0.)
+                fit=dict(usable=bool(measured.get('usable') and drift<=.001 and angle<=.005),center_m=center.tolist(),
+                    conditional_halfwidth_m=[.002,.002,measured.get('conditional_travel_halfwidth_m',.008)],
+                    rim_rms_px=measured.get('rim_template_rms_px',100.),camera_names=[name],differential=measured,
+                    observer_translation_drift_m=drift,observer_rotation_drift_rad=angle,
+                    source='Independent current RGB differential rim travel; absolute base XYZ retained only as a visual hypothesis',
+                    limits='Only travel is currently measured. Base XY/Z are unpressed RGB hypotheses; no fresh absolute object pose, contact or electrical state.')
         fit.update(step=public['step'],identity=identity,actor_images=0,
             current_material_views=list(masks),segmentation_valid=bool(masks),
             segmentation_source='Local cached SAM2.1 tiny; geometry from fresh RGB and public camera/robot data')

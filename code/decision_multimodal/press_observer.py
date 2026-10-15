@@ -9,8 +9,12 @@ from sam_cap import CapObserver
 
 def prepare(ep,cap,arm,identity,closed_tool=False):
     tools=Tool()
+    camera='cam_'+arm+'_wrist'
     if not hasattr(ep,'cap_observer'):
-        ep.cap_observer=CapObserver(ep.folder)
+        ep.cap_observer=CapObserver(ep.folder,differential_camera=camera if getattr(ep,'differential_button_observer',False) else None)
+    elif getattr(ep,'differential_button_observer',False):
+        ep.cap_observer.differential_camera=camera
+    ep.cap_observer.differential_enabled=False
     # Raise a previously used pressing hand before orienting it as an observer.
     for attempt in range(6):
         public=ep.public;tool=tools.geometry(public,arm)
@@ -33,13 +37,13 @@ def prepare(ep,cap,arm,identity,closed_tool=False):
         ep.execute(targets,steps=3)
     else:
         return False
-    camera='cam_'+arm+'_wrist'
     def observed(public):
         current=ep.cap_observer.measure(public,cap,identity+'_observer')
         save(ep.folder/f'frame-{public["step"]:06d}'/(identity+'_observer_geometry.json'),current)
         return bool(current.get('usable') and camera in current.get('camera_names',[]))
     success=acquire(ep,np.asarray(cap['center_m']),arm,identity+'_independent_observer',max_actions=12,
         minimum_surface_z_m=cap['center_m'][2]+.015,observation_gate=observed,closed_tool=closed_tool)
+    ep.cap_observer.differential_enabled=bool(success and getattr(ep,'differential_button_observer',False))
     save(ep.folder/(identity+'_observer_result.json'),dict(usable=bool(success),step=ep.tick,observer_arm=arm,
         scope='Fresh cap RGB geometry from the unloaded wrist; not electrical count or task success'))
     return success

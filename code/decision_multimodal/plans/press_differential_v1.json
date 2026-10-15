@@ -1,0 +1,85 @@
+{
+  "planner_response": {
+    "status": "Plan only; first red visible cycle remains incomplete.",
+    "sequence": [
+      "left red1: 1 visible cycle",
+      "middle red9: 9 visible cycles",
+      "blue: 1 visible cycle"
+    ],
+    "evidence": {
+      "actual": "Same-episode independent-rim estimates: steps 100/104/106/108/110/112 give travel 0.074/5.374/5.394/5.435/5.519/5.519 mm. Measured tip remains approximately 12 mm above its commanded endpoint; this demonstrates tracking lag, not force obstruction.",
+      "hypotheses": "Rigid vertical cap motion, baseline ray-plane height, RGB table height and 2 mm/pixel sensitivity are declared visual engineering hypotheses, not true object geometry.",
+      "excluded": "Do not use the jumping full-contour fit or the absolute-radius fit that reached its lateral search bound. Historical samples do not satisfy the new fresh-observation trigger."
+    },
+    "measurement_gates": {
+      "baseline": "Use this episode's independent-camera unpressed RGB rim template captured before pressing-hand approach. Verify its timestamp, camera calibration and unchanged observer pose. Never replace it with a pressed image. If unavailable, safely release, establish a visibly unpressed baseline and restart without counting the incomplete cycle.",
+      "fresh": "One new timestamped RGB observation after each completed actor decision, paired with measured robot state; never reuse a frame.",
+      "valid": "Match only visible template-rim pixels under the vertical rigid-cap model, with no free radius or lateral-pose search. Require at least 60% template-rim visibility, including three separated rim sectors; RMS <=1 pixel; no matched residual >2 pixels; and a unique interior solution. Reject finger boundaries, saturation and observer motion.",
+      "interval": "For valid travel t, use engineering interval [t-2,t+2] mm from the declared sensitivity; this is not a calibrated confidence interval. Occluded sectors supply no evidence."
+    },
+    "controller": {
+      "unchanged": "Original native IK, drives, joint bounds and proxy thresholds. Each decision uses 1..5 native 40 ms steps; enforce LINK6 <=50 mm and <=0.35 rad. Stop before exceeding 700 total physical steps; 588 remain at this packet.",
+      "locks": "During descent, diagnostic HOLD and release, actively retain the latched world tip XY and orientation.",
+      "actor_questions": {
+        "translation": [
+          "World X: negative, hold, or positive?",
+          "World Y: negative, hold, or positive?",
+          "World Z: negative, hold, or positive?"
+        ],
+        "rotation": [
+          "World-axis rotation X: negative, hold, or positive?",
+          "World-axis rotation Y: negative, hold, or positive?",
+          "World-axis rotation Z: negative, hold, or positive?"
+        ],
+        "constraint": "Require X/Y and all rotations HOLD. Descent requires actual actor Z-negative; release requires Z-positive. Z-HOLD actively retains references and never authorizes endpoint deepening."
+      }
+    },
+    "endpoint": {
+      "definitions": "z0 is the existing measured unpressed-tip reference; zTable is the RGB table-height hypothesis. All lengths below are millimeters.",
+      "initial_depth": 13.87,
+      "maximum_depth": "Dmax=min(27.7-6, z0-(zTable+2+2)). The second term retains the 2 mm table guard plus a 2 mm visual allowance. Unknown reference values must be obtained from permitted evidence, never invented.",
+      "update": "After authorization, Dnew=min(Dold+2,Dmax), zEndpoint=z0-Dnew. No more than one update or 2 mm additional target depth per observation.",
+      "limits": "At most four endpoint updates and fifteen fresh action observations per press attempt; one attempt per requested cycle. Stop deepening when Dmax is reached. Check predicted tool-mesh swept clearance as well as measured clearance."
+    },
+    "stages": [
+      {
+        "name": "DESCEND_OR_HOLD",
+        "predicate": "All measurement, containment and clearance gates hold.",
+        "action": "Continue the stored absolute endpoint or active HOLD. Record fresh travel and measured tip motion."
+      },
+      {
+        "name": "ADAPT",
+        "predicate": "Three consecutive fresh valid action observations each have t<7.87 mm, their travel range is <0.5 mm, and measured tip-Z range is also <0.5 mm. Update budget and table clearance remain available.",
+        "action": "Propose one bounded endpoint update; apply only upon actor Z-negative. Reset the three-observation window after any update."
+      },
+      {
+        "name": "RELEASE",
+        "predicate": "Fresh valid t>=7.87 mm and t-2>0, or any failure/attempt limit occurs.",
+        "action": "Command full 27 mm upward travel from the lowest measured tip Z of this attempt, retaining XY/orientation. Allow at most ten release decisions, subject to the global budget."
+      },
+      {
+        "name": "VERIFY_REBOUND",
+        "predicate": "Measured upward travel >=27 mm and two consecutive valid observations show |t|<=2 mm with travel difference <0.5 mm.",
+        "action": "Count one visible cycle only if the press predicate previously passed; then advance the requested sequence. Otherwise stop without counting."
+      }
+    ],
+    "failure": "On lost travel validity or geometric containment, immediately stop descent and disable adaptation; release vertically only through a verified clear path. If clearance is unknown or release fails, HOLD and request intervention. Never move laterally to recover while depressed. Report visible-cycle evidence only, never electrical activation or task success."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "raw_response_sha256": "2137f5ad4e7a7379bbabff08780fb582bfc4795cb7b6397129a2ce846430acac",
+    "tools_used": 0,
+    "experience_injection": false
+  },
+  "compiled_notes": [
+    "New cold development variant; no success asserted. Existing first-red/9-middle-red/blue order and native IK remain.",
+    "Template is acquired after observer camera settles and before pressing-hand approach. No baseline is captured during observer reorientation. Same-episode RGB references are not experience retrieval.",
+    "The Pro60percent/three-sector visibility proposal is not implemented: recorded working independent arc has35pixels versus59baseline. Instead require at least24pixels, RMS<=1px, maximum residual<=2px, height sensitivity<=3mm, three-restart height agreement<0.5mm, and an interior optimum. This is a different, explicitly empirical processing contract requiring native testing, not a visibility certificate.",
+    "Actual signed-axis answers continue restoring stored XY/orientation if disturbed; forcing HOLD outside the deadband would contradict reference retention and is not adopted.",
+    "After three fresh valid observations with both cap travel range and measured tip-Z range<0.5mm, an actual Z-negative answer may deepen the fixed endpoint by<=2mm, at most four updates. The depth cap is RGB cap-to-table height minus6mm; the unchanged swept-tip table guard remains>=2mm.",
+    "Press attempt cap15decisions and release cap10decisions. Visual acceptance remains original nominal-depth-minus-three-working-sensitivities and positive travel lower bound; no electrical threshold is inferred.",
+    "Release commands the existing full unpressed-cap+27mm endpoint, additionally requiring actual tip rise>=27mm and two differential rebound observations within2mm with spread<0.5mm.",
+    "On lost perception/containment the native development attempt ends incomplete; no blind release, retry, force inference or motor changes are added."
+  ]
+}
