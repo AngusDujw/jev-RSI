@@ -92,8 +92,13 @@ def main():
         (args.output / f"planner-selected-experience-{role}.md").write_text(
             experience[role])
     system = (
-        "Plan the stages of the robot manipulation task and define how observations "
-        "are processed into inputs for a separate decision model. "
+        "You are the planning model in a planning-model/decision-model robot control architecture. "
+        "Your primary responsibility is to divide the task into stages and define "
+        "observable conditions for entering, remaining in, and leaving each stage. "
+        "The decision model accepts only the supplied formal input schema and returns "
+        "choices in the supplied formal output schema. It cannot execute free-form "
+        "instructions or run perception algorithms. Use the observation and execution "
+        "interfaces supplied for this request; do not assume unavailable evidence. "
         "Use ONLY the task instruction, three supplied RGB frames, measured robot state, "
         "and the supplied experience notes. No hidden simulator object pose, contacts, reward, "
         "evaluation state, or task layout data are available. Produce one JSON object with "
@@ -104,13 +109,15 @@ def main():
            if template else
            "Choose 4 to 12 task-specific stages and an initial_stage that is one of them. ") +
         "stages maps each key to "
-        "a concise observation and stage-transition recipe with visual pass criterion and bounded recovery. "
-        "visual_method must describe how to use RGB and measured robot state to construct "
-        "the decision model input, including image identity, color/shape measurements, "
+        "an objective, currently available entry evidence, observable exit conditions, "
+        "and conditions for remaining in the stage or requesting recovery. "
+        "Do not require evidence from a later stage before the current stage can begin. "
+        "visual_method must describe how the supplied observation fields support "
+        "the decision model's stage judgments, including image identity, color/shape measurements, "
         "camera/frame ambiguities, actual provided calibration (if any), freshness and "
         "occlusion handling. experience is a "
         "short list of applicable, evidence-grounded lessons, never an assertion of success. "
-        "The GPT-6 Luna decision model receives all three current RGB frames and may only "
+        "The decision model receives all three current RGB frames and may only "
         "choose among offered discrete motion, gripper and stage options. Do not emit "
         "precise object world coordinates from monocular RGB. Require visible capture and "
         "post-release verification. The native EEF action contract permits only 1 to 5 "
