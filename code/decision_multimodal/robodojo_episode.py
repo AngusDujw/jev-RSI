@@ -120,6 +120,8 @@ class Episode:
                                     policy_version='fixed_task_decision_text')
         self.episode_id = reset['episode_id']
         self.tick = reset['step_id']
+        self.rpc('switch_control_source', source='gpt_eef',
+                 reason='Actual formal du Luna controller; no student policy or proposal')
         save(self.folder/'reset.json', reset)
         return self.observe()
 

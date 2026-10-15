@@ -29,7 +29,8 @@ def choice(instructions, options):
 
 def questions(state):
     result = {}
-    for i, axis in enumerate('xyz'):
+    axes = '' if state['physical_stage'] in ('close', 'release') else 'xyz'
+    for i, axis in enumerate(axes):
         result[axis] = choice(
             f'Select the {axis.upper()} translation direction from position_error_m[{i}], which means target minus current in the ENVIRONMENT frame. Positive increases that coordinate, negative decreases it. Hold within the stated tolerance. During close/release hold all XYZ.',
             dict(negative='Decrease coordinate', hold='No displacement', positive='Increase coordinate'))
@@ -44,8 +45,37 @@ def questions(state):
     if state['pass']:
         transitions['advance'] = 'Current phase condition passed; execute the current action then enter the next phase'
     result['transition'] = choice(
-        'You own the phase switch. Continue while the physical objective is unmet. Advance only when pass=true. In the lift phase, actively reach the short test-lift target before requiring its resulting co-motion evidence. A pose error is not a contact claim. Stop for unresolved failure; do not infer native success.', transitions)
+        'Choose advance when pass=true: the CURRENT physical phase is complete and the next phase must now begin. When pass=false, continue_phase executes this phase toward its stated objective. Choose stop for an unresolved CURRENT failure. Do not demand conditions belonging to later phases. The lift phase actively produces its motion evidence; closing alone is not a capture claim.', transitions)
     return result
+
+
+def scoped_state(full):
+    """Send only measurements used by the current stage, not future-stage tests."""
+    phase = full['physical_stage']
+    common = {'task', 'physical_stage', 'objective', 'source_id', 'destination_id',
+              'stage_sequence', 'observation_step', 'pass', 'source'}
+    motion = {'frame', 'rotation', 'step_rule', 'position_error_m', 'position_tolerance_m',
+              'orientation_error_rad', 'rotation_component_hold_rad'}
+    specific = {
+        'approach': {'measured_aperture_m', 'source_width_hypothesis_m', 'current_source_fit',
+                     'source_geometry_sensitivity_halfwidth_m'},
+        'enter': {'measured_aperture_m', 'source_width_hypothesis_m', 'current_source_fit',
+                  'source_geometry_sensitivity_halfwidth_m'},
+        'close': {'measured_aperture_m', 'aperture_change_m', 'source_width_hypothesis_m',
+                  'closing_attempts', 'stalled_attempts'},
+        'lift': {'current_source_fit', 'source_geometry_sensitivity_halfwidth_m',
+                 'source_displacement_since_stage_entry_m', 'source_tool_displacement_drift_m',
+                 'follows_tool'},
+        'carry': {'current_source_fit', 'current_destination_fit', 'source_tool_offset_drift_m',
+                  'footprint_intersection_widths_m', 'conditional_center_reserve_m'},
+        'lower': {'current_source_fit', 'current_destination_fit', 'source_tool_offset_drift_m',
+                  'footprint_intersection_widths_m', 'conditional_center_reserve_m',
+                  'conditional_source_bottom_to_destination_top_gap_m', 'accepted_release_gap_upper_m'},
+        'release': {'measured_aperture_m', 'aperture_change_m', 'source_width_hypothesis_m'},
+        'retreat': {'current_source_fit', 'source_displacement_since_stage_entry_m'},
+    }[phase]
+    allowed = common | specific | (motion if phase not in ('close', 'release') else set())
+    return {key: value for key, value in full.items() if key in allowed}
 
 
 class Perception:
@@ -190,6 +220,7 @@ def run(ep):
             previous_aperture = entry_tool['aperture_m']
             phase_passed = False
             unresolved_at_arrival = stable_observations = no_progress = 0
+            completed_but_not_advanced = 0
             previous_source_point = None
             for attempt in range(65):
                 if ep.ended or total >= 300:
@@ -216,7 +247,8 @@ def run(ep):
                         stop_reason = 'Current destination geometry or verified capture offset unavailable'
                         break
                     gap = .10 if phase == 'carry' else .006
-                    target = np.r_[np.asarray(dest['center_m'])[:2], dest['top_z_m']+size[2]/2+gap]-held_offset
+                    fresh_offset = (source_point-tool['world_center_m']) if current_valid else held_offset
+                    target = np.r_[np.asarray(dest['center_m'])[:2], dest['top_z_m']+size[2]/2+gap]-fresh_offset
                 else:
                     target = entry_point+np.array([0., 0., .08])
                 error = target-tool['world_center_m']
@@ -295,6 +327,7 @@ def run(ep):
                     pass_=bool(passed), observation_step=ep.tick,
                     source='Current RGB silhouette fits and public calibration; image-derived rigid dimensions; measured robot encoders. No object truth or native result.')
                 state['pass'] = state.pop('pass_')
+                state = scoped_state(state)
                 answer = ep.decide(state, questions(state))
                 total += 1
                 save(ep.folder/f'control-{total:04d}.json', dict(state=state, answers=answer))
@@ -303,8 +336,13 @@ def run(ep):
                     break
                 before = tool['world_center_m'].copy()
                 targets = compile_targets(public, tool, answer, error, rotation_error, phase)
-                public = ep.execute(targets, steps=5)
+                public = ep.execute(targets, steps=1 if answer['transition']['choice'] == 'advance' else 5)
                 after_tool = tool_model.geometry(public)
+                completed_but_not_advanced = (completed_but_not_advanced+1 if
+                    passed and answer['transition']['choice'] == 'continue_phase' else 0)
+                if completed_but_not_advanced >= 4:
+                    stop_reason = 'Four fresh decisions retained a completed phase instead of advancing: '+phase
+                    break
                 changed_position = np.linalg.norm(after_tool['world_center_m']-before)
                 changed_angle = (after_tool['rotation']*tool['rotation'].inv()).magnitude()
                 no_progress = no_progress+1 if (not arrived and phase not in ('close', 'release') and
