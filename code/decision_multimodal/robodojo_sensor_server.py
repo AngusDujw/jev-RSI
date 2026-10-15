@@ -216,7 +216,10 @@ def _install_public_wrist_mount_sync():
                     if normalized not in native_session.CAMERAS:
                         continue
                     annotator=rep.AnnotatorRegistry.get_annotator('CameraParams')
-                    annotator.attach([manager.cameras[0][i].get_render_product_path()])
+                    # RoboDojo captures from its own tiled products; the
+                    # nominal SDK Camera object has no individual product.
+                    product=self.env.obs_manager.capture_manager.tiled_render_products[i]
+                    annotator.attach([product.path if hasattr(product,'path') else str(product)])
                     self._codex_camera_annotators[normalized]=annotator
             except Exception as error:
                 self._codex_render_camera_error=type(error).__name__+': '+str(error)[:250]
