@@ -133,6 +133,7 @@ graph LR
     T_2026W42_025["📊 decision-multimodal<br/>固定LIBERO纯文本50回合原生31/5…"]:::experiment
     T_2026W42_026["📊 decision-multimodal<br/>当前阶段输入与明确切换使木块在149步中真…"]:::experiment
     T_2026W42_027["📊 decision-multimodal<br/>RoboDojo物理预算与输入/几何分离：…"]:::experiment
+    T_2026W42_028["📊 decision-multimodal<br/>剪刀首次native108步成功但固定三次…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -228,6 +229,7 @@ graph LR
   T_2026W42_024 --> T_2026W42_025
   T_2026W42_025 --> T_2026W42_026
   T_2026W42_026 --> T_2026W42_027
+  T_2026W42_027 --> T_2026W42_028
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -350,6 +352,7 @@ graph LR
 | `T-2026W42-025` | 2026-10-16 | experiment | decision-multimodal | 固定LIBERO纯文本50回合原生31/50、双终局28/50，五任务5/5；转前五任务专用处理，不将接口故障当模型判断 | `EXP-2026W42-204` | - |
 | `T-2026W42-026` | 2026-10-16 | experiment | decision-multimodal | 当前阶段输入与明确切换使木块在149步中真实夹持抬升约74mm；尚未完整堆叠，转遮挡目标与薄物主动抓取条件 | `EXP-2026W42-207` | - |
 | `T-2026W42-027` | 2026-10-16 | experiment | decision-multimodal | RoboDojo物理预算与输入/几何分离：剪刀200步时限、一次真实Z反向、逐轴标量后转模板偏差；按钮700步内已有实体按压但未达可见/候选门 | `EXP-2026W42-212` | - |
+| `T-2026W42-028` | 2026-10-16 | experiment | decision-multimodal | 剪刀首次native108步成功但固定三次2/3；按钮11可见周期native仍false。后续探测/遮挡回放拒绝，收敛到公开光学标定与居中双指实体控制，第三组未开。 | `EXP-2026W42-214` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

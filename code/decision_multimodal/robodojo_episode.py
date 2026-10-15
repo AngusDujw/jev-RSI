@@ -115,6 +115,7 @@ class Episode:
             ' --/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true']
         save(self.folder/'launch.json', dict(command=command, gpu=self.args.gpu,
             gpu_uuid=GPU_UUIDS[self.args.gpu], task=self.args.task, layout=self.args.layout,
+            ik_solver=self.args.ik_solver,
             actor='gpt-6-luna', actor_images=0, planner='local ChatGPT Pro gpt-6.1-sol/high',
             inputs='three RGB, public camera calibration and measured robot state only',
             experience_injection=False))
