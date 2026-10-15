@@ -13,6 +13,7 @@ class Tool:
         urdf = ET.parse(ROOT/'X5A.urdf').getroot()
         joints = {entry.get('name'): entry for entry in urdf.findall('joint')}
         self.fingers = []
+        self.palm_triangles=np.asarray(trimesh.load_mesh(ROOT/'meshes/link6.STL',process=False).triangles,float)
         for link, joint_name, sign in (('link7', 'joint7', -1), ('link8', 'joint8', 1)):
             joint = joints[joint_name]
             origin = np.fromstring(joint.find('origin').get('xyz'), sep=' ')
@@ -31,7 +32,17 @@ class Tool:
                 raise ValueError('Public inward finger facet selection failed')
             points = np.asarray(mesh.triangles[faces]).reshape(-1, 3)
             self.fingers.append(dict(joint=joint_name, origin=origin, rotation=rotation,
-                                     axis=axis, upper=upper, points=points, vertices=vertices))
+                                     axis=axis, upper=upper, points=points, vertices=vertices,
+                                     triangles=np.asarray(mesh.triangles,float)))
+
+    def local_triangles(self,public,arm):
+        values=public['measured_gripper'][arm]
+        encoders=dict(zip(values['joint_names'],values['joint_positions_m']))
+        result=[self.palm_triangles]
+        for finger in self.fingers:
+            offset=finger['origin']+finger['rotation']@(finger['axis']*encoders[finger['joint']])
+            result.append(finger['triangles']@finger['rotation'].T+offset)
+        return np.concatenate(result)
 
     def geometry(self, public, arm='right'):
         values = public['measured_gripper'][arm]
