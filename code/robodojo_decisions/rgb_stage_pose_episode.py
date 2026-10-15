@@ -45,6 +45,22 @@ def action_questions(options, diagnostic=False):
     return asked
 
 
+def route_program_family(programs, family, tool_evidence=None):
+    """One geometric objective at a time; this never authorizes execution."""
+    if family not in ('paired', 'translation', 'tool_first'):
+        raise ValueError('Unknown complete-program family')
+    if family=='paired':
+        return dict(programs)
+    translations={k:v for k,v in programs.items() if k.startswith('world_')}
+    if family=='translation':
+        return translations
+    tools={k:v for k,v in programs.items() if k.startswith('orient_finger_extension_down_')}
+    if tools:
+        return tools
+    angle=(tool_evidence or {}).get('finger_extension_vs_downward_normal_angle_deg')
+    return translations if angle is not None and angle<=3 else {}
+
+
 def actor_method_fields(plan):
     """Forward semantic roles, excluding explicitly historical example sensors.
 
@@ -389,6 +405,18 @@ def run(tools, obs, model, output, max_decisions, deadline):
                     ' Additional algorithmic tool-axis proposals include simultaneous pivot-preserving XYZ and rotation, within50mm/0.35rad over five steps. '
                     'Choose at most ONE complete translation or orientation program under the current semantic stage, never combine them. '
                     'These remain FAR OPEN increments; this branch does not supply a contact/grasp certificate.')
+            family=os.environ.get('ROBODOJO_RGB_STAGE_PROGRAM_FAMILY','paired')
+            if family!='paired':
+                programs=route_program_family(programs,family,
+                    tool_evidence if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOOL_PROGRAM')=='1' else None)
+                options={k:v for k,v in options.items() if k in programs}
+                data['complete_programs']=programs
+                data['algorithmic_program_family']=family
+                data['candidate_generation_policy']=(
+                    'Only one algorithmic objective is offered on this frame. '
+                    +('Current public finger-extension alignment to the uncertain horizontal source-plane hypothesis is offered first; its pivot is held approximately, so top-minus-pad distance need not decrease. Once the measured public tool axis is within3deg of downward, offer the current bounded translation. If a required tool proposal fails current public/source-view gates, no program is invented. '
+                      if family=='tool_first' else 'Offer only the independently checked current bounded translation; no competing orientation program. ')
+                    +'This is algorithmic proposal routing, not a planner motion, current contact evidence or action permission. Luna independently chooses the complete program or STOP.')
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
         if os.environ.get('ROBODOJO_RGB_STAGE_OPEN_STOP_SCOPE')=='1':
             options['STOP_current_evidence_insufficient']=(
