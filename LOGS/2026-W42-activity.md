@@ -416,3 +416,5 @@
 - 【User】【2026-10-16 00:15】[intent] 用户要求重新讨论规划器—推进器框架，先列待确定事项，逐项拍板后再在框架内迭代；旧流程不直接沿用。先不用经验注入但继续收集记录，需确定项目底座、提示词模板及迭代/每次运行边界等。
 - 【User】【2026-10-16 00:15】[decision] 新框架处于讨论阶段；不直接沿用旧阶段或启动新实验。经验暂不输入规划/推进模型，但继续收集并记录英文经验；本回合历史反馈与跨回合经验边界、后续框架仍待逐项确认。
 - 【Agent】【2026-10-16 00:15】[note] 只读回顾当前实现/协议，优先检索本机Zotero只读元数据（普通只读被锁后immutable只读取题录），查到Show-Harness/Harness VLA/RoboHarness，并核对作者项目RoboDawn、Inspect Robots、VoxPoser与官方RoboDojo EEF说明；整理待决清单，不选择底座/模型、不写内部提示词、不更改正式研究目标或控制代码。
+- 【User】【2026-10-16 00:59】[intent] 用户将需求聚焦为两个codebase：结构化决策控制机器人（优先参考本项目LIBERO-Plus）与自我迭代；不预定每任务处理过程/输出，由规划框架驱动模型生成处理方法交推进器，自迭代主要优化两个模型提示词协作。
+- 【Agent】【2026-10-16 00:59】[note] 调研只读本机LIBERO-Plus supervisor/workflows/runner及Zotero ETM/ENPIRE题录摘要；核对jev-libero（含仿真碰撞/contact/反事实预演，不能原样用作无特权基线）、Code as Policies、RoboDawn、GEPA adapter源码、DSPy GEPA、TextGrad、Skill-RSI、OpenRSI、SICA、DGM。暂建议抽取本地执行底座+独立GEPAAdapter，CaP只作动态处理方法生成参考；未选定实施、未克隆安装或新增模型/仿真实验。
