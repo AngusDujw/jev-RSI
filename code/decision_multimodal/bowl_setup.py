@@ -26,13 +26,20 @@ def run(ep,continue_immediately=False):
     camera=ep.public['calibration']['cam_high'];origin,direction=ray(camera,seeds['high']['center']['center'])
     receiver=origin+direction*((z+height-origin[2])/direction[2])
     target=(np.asarray(initial['left']['center_m'])+receiver)/2
-    if not acquire(ep,target,'right','bowl_receiver_observation',max_actions=14,minimum_surface_z_m=z+.10):
-        save(ep.folder/'program_result.json',dict(program_finished=False,stop_reason='Receiver wrist viewpoint not reached'));return False
     angles=np.linspace(0,2*np.pi,100,endpoint=False);points=receiver+radius*np.column_stack([np.cos(angles),np.sin(angles),np.zeros(len(angles))])
     points=np.concatenate([points,points-[0,0,height]])
-    camera=ep.public['calibration']['cam_right_wrist'];uv,depth=project(camera,points);center_uv,_=project(camera,receiver.reshape(1,3))
-    views={'cam_high':seeds['high']['center'],'cam_right_wrist':dict(box=[*(uv.min(0)-12),*(uv.max(0)+12)],center=center_uv[0].tolist())}
-    receiver_geometry,masks=fit(ep.public,views,z)
+    def receiver_fit(public):
+        camera=public['calibration']['cam_right_wrist'];uv,depth=project(camera,points);center_uv,_=project(camera,receiver.reshape(1,3))
+        if min(depth)<=0 or min(uv.min(0)-6)<0 or uv.max(0)[0]>634 or uv.max(0)[1]>474:
+            return dict(usable=False,reason='Receiver search outline not fully in current wrist image')
+        views={'cam_high':seeds['high']['center'],'cam_right_wrist':dict(box=[*(uv.min(0)-12),*(uv.max(0)+12)],center=center_uv[0].tolist())}
+        result,_=fit(public,views,z);return result
+    def observed(public):
+        result=receiver_fit(public);save(ep.folder/f'frame-{public["step"]:06d}'/'receiver_view_fit.json',result)
+        return bool(result.get('usable'))
+    if not acquire(ep,target,'right','bowl_receiver_observation',max_actions=14,minimum_surface_z_m=z+.08,observation_gate=observed):
+        save(ep.folder/'program_result.json',dict(program_finished=False,stop_reason='Receiver wrist viewpoint not reached'));return False
+    receiver_geometry=receiver_fit(ep.public)
     sources={}
     for identity in ('left','right'):
         sources[identity],_=refresh(ep.public,initial[identity],height)

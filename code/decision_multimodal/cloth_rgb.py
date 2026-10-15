@@ -57,15 +57,26 @@ def landmark(public,seed,z,kind='cuff'):
             results.append(endpoints.mean(0)+value*normal)
     else:
         # A hem corner is a locally convex contour landmark near its seed.
-        candidates=[]
+        candidates=[];turn_scores=[]
         for contour in contours:
             polygon=cv2.approxPolyDP(contour,2.,True).reshape(-1,2)
-            candidates.extend([p for p in polygon if x0<=p[0]<=x1 and y0<=p[1]<=y1])
+            orientation=np.sign(cv2.contourArea(contour,oriented=True))
+            for i,p in enumerate(polygon):
+                if not (x0<=p[0]<=x1 and y0<=p[1]<=y1):
+                    continue
+                incoming=p-polygon[i-1];outgoing=polygon[(i+1)%len(polygon)]-p
+                cross=float(incoming[0]*outgoing[1]-incoming[1]*outgoing[0])
+                turn=float(np.arctan2(abs(cross),np.dot(incoming,outgoing)))
+                if cross*orientation>0 and turn>=np.pi/4:
+                    candidates.append(p);turn_scores.append(turn)
         if not candidates:
             return dict(usable=False,reason='Declared hem corner not resolved')
         candidates=np.asarray(candidates,float)
         for shift in ([0,0],[2,0],[-2,0],[0,2],[0,-2]):
-            results.append(candidates[np.linalg.norm(candidates-uv-shift,axis=1).argmin()])
+            # A hem corner is a strong convex turn, not the nearest small
+            # wrinkle vertex along the same hem edge.
+            scores=np.asarray(turn_scores)-.005*np.linalg.norm(candidates-uv-shift,axis=1)
+            results.append(candidates[scores.argmax()])
         yy,xx=np.nonzero(mask);normal=np.array([xx.mean(),yy.mean()])-results[0]
         normal/=np.linalg.norm(normal);axis=np.array([-normal[1],normal[0]])
     results=np.asarray(results);uv=np.median(results,axis=0)

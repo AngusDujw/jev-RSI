@@ -1,0 +1,502 @@
+{
+  "planner_response": {
+    "status": "plan_only_not_executed",
+    "task": "Place the left bowl into the center bowl, then place the right bowl into the resulting stack.",
+    "limits": {
+      "physical_step_seconds": 0.04,
+      "total_physical_steps": 800,
+      "action_duration_steps": [
+        1,
+        5
+      ],
+      "maximum_LINK6_translation_m_per_action": 0.05,
+      "maximum_LINK6_rotation_rad_per_action": 0.35,
+      "IK": "Original native IK only.",
+      "coarse_motion_limits_per_step": {
+        "translation_m": 0.008,
+        "rotation_rad": 0.06
+      },
+      "fine_motion_limits_per_step": {
+        "translation_m": 0.002,
+        "rotation_rad": 0.02
+      },
+      "enforcement": "Check measured LINK6 displacement across every action. Reject unreachable or clearance-failing waypoints rather than changing IK."
+    },
+    "assumptions_and_unknowns": {
+      "assumptions": [
+        "Bowls are upright circular vessels, initially supported by the visible tabletop.",
+        "The fitted upper-back circle represents the rim.",
+        "A world-down, 5 mm shallow rim insertion is a bounded interaction hypothesis, tested by an active lift.",
+        "Observed coordinated motion supports a temporary no-slip hypothesis, not proof of attachment.",
+        "An aligned gravity-assisted release may produce nesting; it does not guarantee nesting."
+      ],
+      "unknown": [
+        "Actual wall thickness, cavity depth, material, friction, contact state, true dimensions and true poses.",
+        "Guaranteed collision-clearance and release-gap intervals."
+      ],
+      "uncertainty_policy": "Reported sensitivities describe conditional visual conditioning, not certified errors or confidence intervals. Robot-to-object offsets are trajectory/search predictions only, never object measurements."
+    },
+    "coordinates_and_geometry": {
+      "units": "Meters and radians; world XYZ.",
+      "up": [
+        0,
+        0,
+        1
+      ],
+      "insertion_axis": [
+        0,
+        0,
+        -1
+      ],
+      "closing_axis": "World X; outward sign s=-1 for the left source and s=+1 for the right source.",
+      "table_z_hypothesis": 0.7648343,
+      "table_conditional_sensitivity_m": 0.002,
+      "initial_sources": {
+        "left": {
+          "rim_center": [
+            -0.2740205,
+            -0.0631906,
+            0.814442
+          ],
+          "radius": 0.0598655,
+          "rms_px": 0.322,
+          "conditional_XYZR_sensitivities": [
+            0.00204,
+            0.00406,
+            0.002,
+            0.002
+          ],
+          "supported_height_hypothesis_m": 0.0496077
+        },
+        "right": {
+          "rim_center": [
+            0.2478576,
+            -0.0366154,
+            0.81424
+          ],
+          "radius": 0.059807,
+          "rms_px": 0.29,
+          "conditional_XYZR_sensitivities": [
+            0.00411,
+            0.0098,
+            0.00377,
+            0.0021
+          ],
+          "supported_height_hypothesis_m": 0.0494057
+        }
+      },
+      "center_receiver_seed": {
+        "high_view_pixel": [
+          342,
+          248
+        ],
+        "bounding_box_pixels": [
+          307,
+          216,
+          378,
+          280
+        ],
+        "world_center": null,
+        "radius": null,
+        "requirement": "Obtain a second wrist view before planning receiver-relative transport."
+      },
+      "height_estimation": "At initial support, set H=measured rim_z-table_z independently for each source. This estimates rim-to-lowest-supported-bottom height under the support assumption, not cavity depth. Recompute from accepted fits; report 10 mm height perturbation sensitivity as an engineering robustness test, not a certified uncertainty.",
+      "pad_reference": "P is the midpoint between the opposing actual pad contact surfaces at their common shallow contact level. Derive T_LINK6_to_P from public finger meshes and measured aperture; do not treat a fingertip or LINK6 origin as P.",
+      "orientation": "Use public finger geometry to align insertion world-down and closing world-X, with one pad inside and the other outside. Maintain this orientation throughout loaded motion."
+    },
+    "perception_and_operational_gates": {
+      "initial_and_receiver_fit": {
+        "model": "Two-view calibrated reprojection fit with free XYZ and independent radius for each bowl; upright normal is an explicit assumption.",
+        "minimum_camera_baseline_m": 0.08,
+        "minimum_viewing_ray_angle_deg": 12,
+        "minimum_combined_visible_rim_arc_deg": 100,
+        "maximum_reprojection_RMS_px": 1.5,
+        "maximum_per_view_RMS_px": 2,
+        "maximum_conditional_XYZ_sensitivity_m": 0.012,
+        "maximum_conditional_radius_sensitivity_m": 0.006,
+        "minimum_nominal_radius_m": 0.035,
+        "maximum_nominal_radius_m": 0.08,
+        "radius_range_meaning": "Engineering plausibility gate only; never force equal radii.",
+        "failure_action": "Acquire one alternate wrist view within the stage budget; otherwise STOP."
+      },
+      "source_tracking_under_occlusion": {
+        "model": "Use its own accepted two-view radius as a fixed prior only when a free-radius current fit is poorly conditioned.",
+        "minimum_combined_visible_arc_deg": 60,
+        "maximum_RMS_px": 1.5,
+        "maximum_conditional_XYZ_sensitivity_m": 0.012,
+        "required_report": "Current residual, XYZ sensitivities, visible arc, radius-prior usage and prior age.",
+        "prohibition": "Do not substitute gripper pose plus stored offset for a missing source fit."
+      },
+      "freshness": {
+        "maximum_image_age_steps": 2,
+        "maximum_paired_view_timestamp_separation_steps": 1,
+        "maximum_current_source_fit_age_steps": 3,
+        "maximum_motion_decision_geometry_age_steps": 5,
+        "maximum_static_receiver_full_fit_age_steps": 20,
+        "receiver_partial_validation": "Within 3 steps, observe at least 45 degrees of receiver rim with RMS <=2 px against its retained fit.",
+        "receiver_invalidation": "Any visible displacement >5 mm, unexplained reprojection shift >3 px, contact-like disturbance, or loss of identity requires a new two-view fit.",
+        "expired_data_action": "HOLD and observe; do not continue blind transport."
+      },
+      "approach_and_entry": {
+        "minimum_measured_OPEN_gap_m": 0.08,
+        "maximum_actual_pad_gap_m": 0.089,
+        "minimum_projected_inner_pad_to_visible_cavity_boundary_px": 3,
+        "minimum_projected_outer_pad_to_bowl_silhouette_clearance_px": 3,
+        "support_rule": "Use current cavity/rim visibility and projected public finger meshes to validate an inside/outside straddle. This is an image-space operational gate, not cavity-depth certification.",
+        "minimum_nominal_public_mesh_table_clearance_m": 0.008,
+        "entry_position_tolerance_m": 0.003,
+        "entry_orientation_tolerance_rad": 0.05,
+        "no_contact_requirement": "No invented wall-thickness, force or contact test is required before the shallow grasp attempt."
+      },
+      "motion_clearance": {
+        "minimum_nominal_robot_robot_clearance_m": 0.02,
+        "minimum_nominal_robot_table_clearance_m_outside_entry": 0.012,
+        "unrelated_bowl_proxy": "Use each fitted rim radius plus 20 mm and its supported-height hypothesis plus 10 mm as a visual exclusion proxy; not a certified physical envelope.",
+        "minimum_nominal_clearance_to_unrelated_proxy_m": 0.02,
+        "target_exception": "The selected source at pinch and selected receiver at release are excluded only from their intended interaction region.",
+        "failure_action": "HOLD, reobserve and replan within budget; STOP if no accepted route exists."
+      }
+    },
+    "waypoint_formulas": {
+      "notation": "C and R denote fresh measured source rim center and independently fitted radius; D denotes the current receiver top-rim center; H is the source supported-height hypothesis; eX=[1,0,0], eZ=[0,0,1].",
+      "receiver_observation": {
+        "midpoint": "M=(initial_left_C+receiver_high_view_ray_intersection_with_z_plane(initial_left_C.z))/2; the ray intersection is only a camera-aiming hypothesis.",
+        "camera_candidate_positions": [
+          "M+[0.14,-0.16,0.22]",
+          "M+[0.14,0.16,0.22]"
+        ],
+        "orientation": "Point calibrated camera optical axis toward M, with roll chosen nearest the current camera roll.",
+        "selection": "Use the first reachable candidate satisfying public-mesh clearance, image visibility and two-view baseline gates; otherwise try the second. Refit receiver XYZ and R rather than retaining the ray-plane seed.",
+        "arm": "Unloaded right wrist for the first operation; a safely positioned unloaded wrist for subsequent observation."
+      },
+      "rim_pinch": {
+        "P_entry": "C+s*R*eX-0.005*eZ",
+        "P_approach": "P_entry+0.065*eZ",
+        "open_pad_positions": "Use measured gap and actual pad meshes about P_entry. Confirm the inner pad projects inside the visible cavity and the outer pad outside the bowl.",
+        "entry": "Descend from P_approach to P_entry with fine actions; do not increase the nominal insertion beyond 5 mm."
+      },
+      "active_lift": {
+        "P_lift": "P_at_close+0.020*eZ",
+        "command": "After one CLOSE step, issue the lift without requiring prior source rise."
+      },
+      "loaded_prediction": {
+        "offset": "o=P_measured-C_measured after accepted active-lift observations.",
+        "command_mapping": "P_target=C_target+o, converted to LINK6 using the public pad transform.",
+        "measurement_rule": "Refresh C from images. Use o only to predict motion and search regions."
+      },
+      "carry": {
+        "source_rim_transport_z": "Zt=max(D.z+H+0.060, table_z+H+0.150, C.z+0.040)",
+        "raise": "C_target=[C.x,C.y,Zt]",
+        "translate": "C_target=[D.x,D.y,Zt]",
+        "path": "Raise vertically before horizontal transfer. Maintain the source's accepted upright pinch orientation."
+      },
+      "above_rim_lower": {
+        "nominal_source_bottom_release_gap_m": 0.03,
+        "source_rim_target": "C_release=[D.x,D.y,D.z+H+0.030]",
+        "bottom_gap_estimate": "g_est=C_measured.z-H-D_measured.z",
+        "fine_lowering": "Move vertically toward C_release only after measured XY alignment passes.",
+        "uncertainty_report": "Report g_est, source-Z sensitivity, receiver-Z sensitivity, table sensitivity and the 10 mm height perturbation separately. Their sum may be reported as a sensitivity budget, never as a guaranteed interval."
+      },
+      "retreat_and_park": {
+        "after_release": "OPEN, then raise P vertically by 0.080 m before lateral retreat.",
+        "left_lateral_park": "P_park=[min(P_current.x,-0.40),P_current.y,P_current.z]",
+        "right_lateral_park": "P_park=[max(P_current.x,0.40),P_current.y,P_current.z]",
+        "fallback": "If the lateral target is unreachable, remain at the last reached clearance-accepted height/Y and move outward only as far as reachable. Exact initial-pose return is unnecessary."
+      }
+    },
+    "active_lift_test": {
+      "budget_steps": 24,
+      "sequence": [
+        "Capture a current pre-lift source fit and measured pad pose.",
+        "Issue a 20 mm world-up lift over up to 10 physical steps with grip HOLD.",
+        "Acquire at least three source observations spanning at least 6 steps, including after the lift.",
+        "Use remaining steps for a brief HOLD and one viewpoint adjustment if necessary."
+      ],
+      "acceptance": {
+        "measured_source_rise_m": [
+          0.012,
+          0.035
+        ],
+        "maximum_source_Z_conditional_sensitivity_m": 0.006,
+        "maximum_difference_between_source_and_pad_vertical_displacement_m": 0.008,
+        "maximum_change_in_measured_source_to_pad_offset_m": 0.006,
+        "minimum_source_tracked_features": 6,
+        "minimum_median_camera_compensated_source_motion_px": 3,
+        "maximum_tracked_feature_fit_residual_px": 2.5,
+        "maximum_static_table_compensation_residual_px": 1.5,
+        "interpretation": "Independent RGB motion and stable measured relative position authorize candidate transport, not certified holding."
+      },
+      "transport_no_slip_monitor": {
+        "maximum_offset_drift_m": 0.008,
+        "maximum_uncommanded_source_drop_m": 0.008,
+        "maximum_upright_rim_reprojection_RMS_px": 2,
+        "requirement": "Fresh source observations at least every 3 steps; source motion must agree with commanded transport over a rolling window of at least 5 steps.",
+        "failure_action": "Stop translation immediately. Reobserve; lower to a visually clear supported recovery location only if current source tracking remains available."
+      },
+      "failure_before_transport": "If the bowl remains supported or clearly slips, return vertically to the recorded pinch height, OPEN, retreat 30 mm and reobserve. Never tighten repeatedly based only on aperture."
+    },
+    "release_and_inspection": {
+      "release_gates": {
+        "maximum_measured_XY_center_error_m": 0.008,
+        "maximum_measured_upright_orientation_error_rad": 0.06,
+        "estimated_bottom_gap_m": [
+          0.02,
+          0.045
+        ],
+        "maximum_pad_speed_m_per_s": 0.02,
+        "maximum_source_offset_drift_m": 0.008,
+        "direct_receiver_support": "Require a current receiver rim arc >=45 degrees and visible cavity evidence in at least one calibrated view. If the source occludes the cavity, obtain that evidence within 5 steps immediately before final alignment, then retain current rim validation.",
+        "cavity_evidence": "At least 100 visible cavity pixels and the projected source center inside the visible rim-supported opening model with a nominal 10 mm inward margin.",
+        "meaning": "These measured gates authorize a candidate above-rim drop, not guaranteed clearance, nesting or contact."
+      },
+      "release_command": "Issue one OPEN step, maintain pose briefly, then begin vertical retreat. Do not push the bowl down into the receiver.",
+      "post_release": {
+        "minimum_settle_steps": 5,
+        "minimum_observation_span_steps": 5,
+        "maximum_top_rim_center_drift_m": 0.005,
+        "requirement": "After retreat, obtain two-view free XYZ+R fits of the newly placed top rim and visible receiver structure. Track the released source visually; do not infer its location from the hand.",
+        "first_operation_advance": "Proceed only if the released left bowl is visibly supported over the center receiver, remains stable, and its top rim has a fresh accepted independent fit. It becomes the second receiver.",
+        "unclear_result": "Use bounded additional observation. If support, identity or stable placement remains unclear, STOP without declaring success.",
+        "final_report": "Report observed rim alignment, stability, visible bowl identities and any occlusion. Do not claim certified nesting or infer a hidden bowl count."
+      }
+    },
+    "stages_and_budgets": {
+      "accounting": "All motion, OPEN/CLOSE/HOLD, settling, active observation and recovery physical steps count. Images without a physical step do not consume extra steps. Unused budget may remain unused.",
+      "initialization": {
+        "steps": 40,
+        "actions": "OPEN both hands first; verify measured aperture, measured robot state and public-mesh clearances; preserve or move to safe observation poses."
+      },
+      "each_operation": {
+        "steps": 300,
+        "order": [
+          {
+            "phase": "observe_and_fit",
+            "steps": 40,
+            "action": "Acquire source and receiver two-view geometry and validate pinch visibility."
+          },
+          {
+            "phase": "approach",
+            "steps": 45,
+            "action": "Move OPEN to P_approach."
+          },
+          {
+            "phase": "enter",
+            "steps": 15,
+            "action": "Fine world-down motion to P_entry."
+          },
+          {
+            "phase": "close",
+            "steps": 1,
+            "action": "One native CLOSE step; aperture is diagnostic only."
+          },
+          {
+            "phase": "active_lift",
+            "steps": 24,
+            "action": "Lift first, then test independent visual motion."
+          },
+          {
+            "phase": "carry",
+            "steps": 65,
+            "action": "Raise, then translate with current source tracking."
+          },
+          {
+            "phase": "above_rim_lower",
+            "steps": 35,
+            "action": "Align and lower to the nominal 30 mm bottom-gap hypothesis."
+          },
+          {
+            "phase": "release",
+            "steps": 5,
+            "action": "OPEN and briefly HOLD."
+          },
+          {
+            "phase": "retreat",
+            "steps": 25,
+            "action": "Vertical separation followed by lateral parking."
+          },
+          {
+            "phase": "inspect_and_refit",
+            "steps": 45,
+            "action": "Observe settling and refit the released top rim before advancing."
+          }
+        ],
+        "operation_1": "Left arm, left source, center receiver; right hand remains unloaded and clear.",
+        "operation_2": "Right arm, right source, freshly refitted left-bowl top rim as receiver; left hand remains parked."
+      },
+      "shared_recovery": {
+        "steps": 100,
+        "maximum_grasp_retries_total": 1,
+        "allocation": {
+          "lower_open_retreat_observe": 30,
+          "reapproach": 30,
+          "reenter": 15,
+          "close": 1,
+          "active_lift": 24
+        },
+        "rule": "Retry only with fresh geometry and a clear supported source. If recovery cannot fit its remaining budget, STOP."
+      },
+      "final_observation_and_safe_parking": {
+        "steps": 40
+      },
+      "shared_observation_slack": {
+        "steps": 20
+      },
+      "total_steps": 800,
+      "timeout_rule": "At a phase or global budget limit, stop safely without declaring completion. HOLD a potentially loaded hand; do not blindly OPEN."
+    },
+    "minimal_actor_interface": {
+      "responsibility": "External code computes perception, geometry, clearance, freshness and phase gates. The actor chooses categorical error signs, grip command and phase decision; it does not certify geometry.",
+      "common_scalar_inputs": [
+        "phase_id",
+        "error_x_m",
+        "error_y_m",
+        "error_z_m",
+        "error_rx_rad",
+        "error_ry_rad",
+        "error_rz_rad",
+        "pose_valid_0_or_1",
+        "clearance_gate_0_or_1",
+        "phase_ready_0_or_1",
+        "phase_steps_remaining",
+        "global_steps_remaining"
+      ],
+      "error_definition": "Desired minus measured. Use measured pad pose for approach/entry/retreat, independently measured source center for loaded translation, and measured pad orientation for rotation. Invalid errors are null and require UNKNOWN signs.",
+      "phase_scoped_additional_scalar_inputs": {
+        "observe_and_fit": [
+          "fit_RMS_px",
+          "max_XYZ_sensitivity_m",
+          "radius_sensitivity_m",
+          "view_angle_deg",
+          "fit_age_steps"
+        ],
+        "approach": [
+          "aperture_m",
+          "entry_visibility_gate_0_or_1"
+        ],
+        "enter": [
+          "aperture_m",
+          "nominal_insertion_m",
+          "entry_visibility_gate_0_or_1"
+        ],
+        "close": [
+          "close_already_issued_0_or_1",
+          "aperture_m"
+        ],
+        "active_lift": [
+          "source_rise_m",
+          "source_Z_sensitivity_m",
+          "motion_px",
+          "tracked_feature_count",
+          "offset_drift_m",
+          "lift_evidence_gate_0_or_1"
+        ],
+        "carry": [
+          "source_fit_age_steps",
+          "offset_drift_m",
+          "uncommanded_drop_m",
+          "motion_evidence_gate_0_or_1"
+        ],
+        "above_rim_lower": [
+          "alignment_XY_m",
+          "bottom_gap_estimate_m",
+          "source_Z_sensitivity_m",
+          "receiver_Z_sensitivity_m",
+          "height_perturbation_m",
+          "receiver_support_gate_0_or_1"
+        ],
+        "release": [
+          "release_gate_0_or_1",
+          "open_already_issued_0_or_1"
+        ],
+        "retreat": [
+          "vertical_separation_m",
+          "hand_unloaded_visual_gate_0_or_1"
+        ],
+        "inspect_and_refit": [
+          "top_fit_RMS_px",
+          "top_fit_age_steps",
+          "top_center_drift_m",
+          "visual_support_gate_0_or_1"
+        ]
+      },
+      "categorical_response_fields": {
+        "x": [
+          "NEGATIVE",
+          "ZERO",
+          "POSITIVE",
+          "UNKNOWN"
+        ],
+        "y": [
+          "NEGATIVE",
+          "ZERO",
+          "POSITIVE",
+          "UNKNOWN"
+        ],
+        "z": [
+          "NEGATIVE",
+          "ZERO",
+          "POSITIVE",
+          "UNKNOWN"
+        ],
+        "rx": [
+          "NEGATIVE",
+          "ZERO",
+          "POSITIVE",
+          "UNKNOWN"
+        ],
+        "ry": [
+          "NEGATIVE",
+          "ZERO",
+          "POSITIVE",
+          "UNKNOWN"
+        ],
+        "rz": [
+          "NEGATIVE",
+          "ZERO",
+          "POSITIVE",
+          "UNKNOWN"
+        ],
+        "grip": [
+          "OPEN",
+          "CLOSE",
+          "HOLD"
+        ],
+        "decision": [
+          "ADVANCE",
+          "CONTINUE",
+          "STOP"
+        ]
+      },
+      "deadbands": {
+        "coarse_translation_m": 0.005,
+        "fine_translation_m": 0.002,
+        "rotation_rad": 0.03
+      },
+      "execution_rules": [
+        "External code selects 1..5 physical steps and bounded motion magnitude; the actor does not output continuous controls.",
+        "ADVANCE requires the external phase-ready gate; STOP overrides all motion.",
+        "Use OPEN before entry, CLOSE exactly once in the close phase, HOLD while lifting/carrying, and OPEN only at authorized release or supported recovery.",
+        "Do not infer holding from aperture, source rise from robot motion, or task success from ADVANCE."
+      ]
+    }
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "raw_response_sha256": "2c8568294e8112490bec9e79f9fcefed43954d4ac14b59976948abdbf7480269",
+    "experience_injection": false,
+    "tools_used": 0
+  },
+  "compiled_notes": [
+    "Development candidate, not a frozen or successful policy. Raw Pro response retained verbatim.",
+    "Existing categorical signed-axis compiler is reused; primitive enter maps to insert and active lift maps to transfer with a separate metric co-motion gate.",
+    "Source tracking uses fresh circular-rim XYZ with an independently earlier RGB radius and2mm radius perturbation. Six material texture tracks are NOT implemented or fabricated; current three-dimensional rim motion is the alternative lift evidence. This deviation needs empirical validation.",
+    "Nominal straddling and5mm shallow insertion are conditional visible-hollow-bowl interaction hypotheses. No3px inner-cavity contour certificate is implemented or claimed; no cavity depth/wall thickness is invented.",
+    "Whole-hand table sweep and30mm inter-hand AABB separation are checked. Full-arm/scene collision proof and unknown object envelopes are not claimed.",
+    "Active receiver observation stops on an accepted actual two-view fit, not only a camera pose. Unloaded-hand floor is table+80mm, leaving about30mm nominal clearance above initial rim.",
+    "Closure waits for measured aperture settling after native CLOSE; source capture is tested only by active lift. Close/open may consume several physicalsteps.",
+    "Current receiver consistency is checked every action; retained stationary receiver estimate expires after20steps. Robot-relative offsets are search predictions, never current object measurements.",
+    "First operation deadline400, second780, global800 include all observation/setup/transit/settling. No automatic recovery or grasp retry is currently implemented.",
+    "Robot recipe completion is kept separate from full visual/native task success; native outcome remains outside both model inputs."
+  ]
+}

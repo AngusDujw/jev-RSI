@@ -57,11 +57,15 @@ class Fold:
         ep=self.ep;start=ep.tick;arms=tuple(bindings);unknown_extra=False
         while not ep.ended and ep.tick<deadline and ep.tick-start<cap:
             public=ep.public;states={};errors={};angles={};tools={};ready=True
+            feedback=visual(public) if visual is not None else {}
+            if feedback.get('valid') is False:
+                return False,feedback.get('reason','Current visual feedback unavailable')
+            goals.update(feedback.get('goals',{}))
             for arm in arms:
                 tool=tools[arm]=self.tools.geometry(public,arm)
                 error=np.asarray(goals[arm])-tool['world_center_m'];errors[arm]=error
                 angular=(rotations[arm]*tool['rotation'].inv()).as_rotvec();angles[arm]=angular
-                tolerance=.004 if phase=='insert' else .010
+                tolerance=feedback.get('position_tolerance_m',.004 if phase=='insert' else .010)
                 passed=bool(max(abs(error))<=tolerance and np.linalg.norm(angular)<=.07)
                 aperture=tool['aperture_m'];previous=self.last_aperture.get(arm,aperture)
                 if phase=='close':
@@ -85,6 +89,7 @@ class Fold:
                 if phase in ('close','release'):
                     errors[arm]=np.zeros(3);angles[arm]=np.zeros(3)
                 state['phase_ready']=passed;states[arm]=state;ready&=passed
+            ready=ready and feedback.get('phase_gate',True)
             state=dict(task=public['instruction'],operation=operation,phase=phase,active_arms=list(arms),arms=states,
                 operation_steps_left=deadline-ep.tick,stage_pass=bool(ready),
                 measurement_scope='Errors are ROBOT pad trajectory errors. Lifted cloth XYZ is not measured; candidate transport does not certify attachment.',
@@ -92,6 +97,10 @@ class Fold:
                     close='Close once, then actively test cloth movement',lift_test='Raise and inspect local garment deformation',
                     transfer='Transport the candidate grasp along the saved fold recipe',lower='Lower the candidate to the supported landing region',
                     release='Open to release the candidate',retreat='Retreat from the garment',park='Park the unloaded hand outward')[phase])
+            state.update(feedback.get('state',{}))
+            if getattr(self,'object_kind','garment')!='garment':
+                state['measurement_scope']='Robot pad trajectory plus explicitly labeled current RGB bowl geometry; robot search predictions are not object measurements.'
+                state['objective']=feedback.get('objective',phase+' the selected bowl candidate')
             questions={}
             for arm in arms:
                 for i,axis in enumerate('xyz'):
@@ -112,7 +121,8 @@ class Fold:
                 transitions['advance']='Current phase passed: execute this final short action and enter the next phase'
             questions['transition']=choice('Advance when stage_pass=true. Otherwise continue the current physical stage. Close does not require a capture certificate; lift_test creates its evidence.',transitions)
             answer=ep.decide(state,questions)
-            save(ep.folder/f'cloth-control-{ep.tick:06d}.json',dict(state=state,answers=answer))
+            artifact=getattr(self,'artifact_prefix','cloth')
+            save(ep.folder/f'{artifact}-control-{ep.tick:06d}.json',dict(state=state,answers=answer))
             if answer['transition']['choice']=='stop':
                 return False,'Actor stopped current cloth stage'
             targets=None
@@ -126,7 +136,7 @@ class Fold:
                 else:
                     targets[arm]=compiled[arm]
             ok,guard=self.guard(public,targets,arms)
-            save(ep.folder/f'cloth-guard-{ep.tick:06d}.json',guard)
+            save(ep.folder/f'{artifact}-guard-{ep.tick:06d}.json',guard)
             if not ok:
                 return False,guard['reason']
             steps=1 if ready or phase in ('close','release') else 3
