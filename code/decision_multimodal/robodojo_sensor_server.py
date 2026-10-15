@@ -4,6 +4,12 @@ import os
 from pathlib import Path
 
 import cv2  # Import before Kit adds its extension library paths.
+# Kit also imports an unrelated `utils` package. Resolve RoboDojo's own utility
+# namespace before native reward/task modules import utils.transformer.
+from env.global_configs import ROOT_DIR
+import utils
+utils.__path__ = [str(Path(ROOT_DIR).resolve() / 'utils')]
+import utils.load_file
 from isaaclab.app import AppLauncher as _AppLauncher
 import isaaclab.app as app_module
 
