@@ -130,6 +130,7 @@ graph LR
     T_2026W42_022["📊 libero-goal-ten<br/>Goal1296公开近盘沿桌面滑动固定五未…"]:::experiment
     T_2026W42_023["🔀 decision-multimodal<br/>用户限定三阶段：冻结十Goal纯文本替换五…"]:::pivot
     T_2026W42_024["📊 decision-multimodal<br/>固定抽屉策略由Luna纯文本99问答完成双…"]:::experiment
+    T_2026W42_025["📊 decision-multimodal<br/>固定LIBERO纯文本50回合原生31/5…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -222,6 +223,7 @@ graph LR
   T_2026W42_020 --> T_2026W42_021
   T_2026W42_021 --> T_2026W42_022
   T_2026W42_023 --> T_2026W42_024
+  T_2026W42_024 --> T_2026W42_025
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -341,6 +343,7 @@ graph LR
 | `T-2026W42-022` | 2026-10-14 | experiment | libero-goal-ten | Goal1296公开近盘沿桌面滑动固定五未见初态5/5，115.4Jev/533.4步，稳定项9/10 | `EXP-2026W42-199` | - |
 | `T-2026W42-023` | 2026-10-16 | pivot | decision-multimodal | 用户限定三阶段：冻结十Goal纯文本替换五配对→RoboDojo前五各三成功→RGB和处理输入消融，不要求全42泛化 | `EXP-2026W42-202` | - |
 | `T-2026W42-024` | 2026-10-16 | experiment | decision-multimodal | 固定抽屉策略由Luna纯文本99问答完成双终局；首波其余三项为部署缺陷，补原提交依赖与共享审计 | `EXP-2026W42-203` | - |
+| `T-2026W42-025` | 2026-10-16 | experiment | decision-multimodal | 固定LIBERO纯文本50回合原生31/50、双终局28/50，五任务5/5；转前五任务专用处理，不将接口故障当模型判断 | `EXP-2026W42-204` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
