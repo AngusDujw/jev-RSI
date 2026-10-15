@@ -51,11 +51,20 @@ def run(ep):
                 stop='Current target material identity unavailable before safe hover: '+identity
                 break
             reference=dict(cap=cap,baseline_step=None,baseline_geometry=None)
+        if getattr(ep,'independent_button_observer',False):
+            from press_observer import prepare
+            observer_arm='right' if arm=='left' else 'left'
+            closed=bool(ep.public['robot']['states'][('left','right').index(observer_arm)*7+6]<.5)
+            if not prepare(ep,reference['cap'],observer_arm,identity,closed_tool=closed):
+                stop='Independent current cap view unavailable: '+identity
+                break
         while counts[identity]<required[identity] and not ep.ended:
             number=counts[identity]+1
             prefix=identity+f'_cycle{number:02d}'
             configuration=dict(artifact_prefix=prefix,identity=identity,arm=arm,cap=reference['cap'],
                 balanced_pair=getattr(ep,'balanced_button_pair',False),
+                anchored_world_reference=getattr(ep,'anchored_button_reference',False),
+                independent_observer_arm=('right' if arm=='left' else 'left') if getattr(ep,'independent_button_observer',False) else None,
                 target_description=description,required_cycles=required[identity],previous_cycles=counts[identity],
                 return_to_sequence=True,release_extra_gap_m=.020,skip_clear=counts[identity]>0,
                 refine_unpressed_baseline=reference.get('baseline_step') is None,

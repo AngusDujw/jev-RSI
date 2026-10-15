@@ -1,0 +1,116 @@
+{
+  "planner_response": {
+    "variant": "latched_world_reference",
+    "task": [
+      {
+        "cap": "red1",
+        "candidate_visible_cycles": 1
+      },
+      {
+        "cap": "red9",
+        "candidate_visible_cycles": 9
+      },
+      {
+        "cap": "blue",
+        "candidate_visible_cycles": 1
+      }
+    ],
+    "evidence": "Fresh RGB, public calibration/transforms, measured robot state and public robot mesh only.",
+    "interpretation": "The repeating rotation errors and measured following lag are compatible with reference switching and transient tracking; they do not establish force obstruction.",
+    "latch": {
+      "when": "After high-clearance approach, before descent.",
+      "predicates": [
+        "Fresh independent wrist-camera RGB visibly resolves the actual cap and pressing-tip footprint.",
+        "The projected footprint is contained, allowing 2 mm of center-placement uncertainty.",
+        "The tip is visibly above the cap with clearance for approach.",
+        "Measured orientation is within 0.10 rad of the approach orientation goal."
+      ],
+      "store": [
+        "Measured absolute world orientation R_latch.",
+        "Measured absolute distal-tip world X_latch and Y_latch.",
+        "Precontact world Z_latch and RGB-estimated unpressed cap surface."
+      ],
+      "persistence": "Keep X_latch, Y_latch and R_latch unchanged throughout descent, dwell and release. Relatch only after full release and a fresh precontact check."
+    },
+    "actor": {
+      "fields": {
+        "dx_mm": "signed world-X correction",
+        "dy_mm": "signed world-Y correction",
+        "dz_mm": "signed world-Z correction",
+        "drx_rad": "signed world-frame rotation-vector correction",
+        "dry_rad": "signed world-frame rotation-vector correction",
+        "drz_rad": "signed world-frame rotation-vector correction",
+        "grip": 0,
+        "steps": 1,
+        "transition": "HOLD"
+      },
+      "grip_zero": "Preserve the existing gripper target.",
+      "errors": "Compute continuous translation errors and log(R_latch * R_measured^T) from fresh measurements. Containment never changes the reference or zeroes an error.",
+      "limits": "Each action uses 1\u20135 physical steps, translation norm <=50 mm and rotation-vector norm <=0.35 rad. During descent, commanded downward travel per observed action is <=2 mm.",
+      "HOLD": "Remain in the current state and actively track its stored absolute pose target. HOLD does not mean zero corrections, freeze the latest measured pose, or relatch."
+    },
+    "stroke": {
+      "rgb_proxy_mm": 13.7,
+      "center_working_allowance_mm": 2,
+      "travel_working_allowance_mm": 4,
+      "conservative_planned_cap_travel_mm": 9.7,
+      "meaning": "Reserve 4 mm from the uncertain 13.7 mm proxy. Account separately for the visible precontact gap; neither distance is an electrical activation threshold."
+    },
+    "transitions": [
+      {
+        "from": "PRECONTACT",
+        "to": "PRESS",
+        "when": "All latch predicates pass.",
+        "action": "Latch references and advance the absolute Z target downward in observed increments."
+      },
+      {
+        "from": "PRESS",
+        "to": "DWELL",
+        "when": "The planned Z endpoint is reached with fresh visible containment.",
+        "action": "Hold that absolute endpoint for at most 5 physical steps, with fresh RGB checks. This is a position dwell; maintained force is unverified."
+      },
+      {
+        "from": "DWELL",
+        "to": "RELEASE",
+        "when": "The bounded dwell finishes.",
+        "action": "Raise the absolute Z target toward Z_latch while preserving latched XY and orientation."
+      },
+      {
+        "from": "RELEASE",
+        "to": "PRECONTACT",
+        "when": "Fresh RGB shows tip clearance and visible cap recovery.",
+        "action": "Record at most one candidate visible cycle, then recheck before the next requested cycle."
+      }
+    ],
+    "stop": [
+      "During descent, immediately stop downward advancement if fresh cap geometry is unavailable or containment fails.",
+      "Do not realign laterally during press or release. Retract along the stored release path only while that path remains visibly clear; otherwise stop.",
+      "An ambiguous cycle triggers reassessment, not automatic identical retries."
+    ],
+    "budget": {
+      "total_physical_steps": 700,
+      "per_candidate_cycle_max": 60,
+      "eleven_cycles_max": 660,
+      "shared_setup_and_recovery_reserve": 40,
+      "accounting": "Count both hands, camera repositioning, approach, descent, dwell and release. Stop before exceeding the remaining budget."
+    },
+    "reporting": {
+      "candidate_visible_cycle": "RGB-supported cap depression followed by recovery and tip clearance.",
+      "electrical_counts": "Unknown; never infer them from commanded strokes or visible cycles."
+    },
+    "constraints": "No motor-setting or joint-bound changes."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "response_sha256": "5aa3ca491b883ba68cab4def620b89efb3b68e818a358d2e5f536fc6d253d826",
+    "experience_injection": false
+  },
+  "compiled_scope": {
+    "adopted": "Measured high-clearance precontact tip XY/orientation stay latched through approach, press and release. HOLD inside its numeric deadband actively retains this reference. Independent unloaded wrist supplies actual fresh cap geometry before and during descent. Original calibrated K/T and native robot solver/drives.",
+    "preserved": "Keep the existing RGB-derived13.7mm stroke proxy,2mm center working scale,4mm relative travel allowance and original native action magnitudes. These are not electrical thresholds. Keep the full27mm release target.",
+    "not_implemented": "The new proposal9.7mm stroke,2mm command progression and extra dwell are not adopted in this combined reference/view development variant; preserve source thresholds to avoid silently attributing multiple numeric changes.",
+    "scope": "Candidate geometric cycles; external native evaluation alone determines the full task. No exposure of button joint/contact/electrical state."
+  }
+}

@@ -32,6 +32,29 @@ def questions(state):
     return result
 
 
+def retain_world_hold(public,tool,answer,error,angular,targets,tolerance,arm):
+    """HOLD retains a stored world reference, not the disturbed measured pose."""
+    target=targets[arm]
+    rotation=Rotation.from_quat(np.asarray(target['quaternion_wxyz'])[[1,2,3,0]])
+    displacement=np.asarray(target['position'])+rotation.apply(tool['local_center_m'])-tool['world_center_m']
+    increment=(rotation*tool['rotation'].inv()).as_rotvec()
+    for i,axis in enumerate('xyz'):
+        if answer[axis]['choice']=='hold' and abs(error[i])<=tolerance+1e-7:
+            displacement[i]=error[i]
+        if answer['rotation_'+axis]['choice']=='hold' and abs(angular[i])<=.020001:
+            increment[i]=angular[i]
+    old=np.asarray(public['robot']['eef_positions'][('left','right').index(arm)])
+    gain=1.
+    for _ in range(24):
+        rotation=Rotation.from_rotvec(gain*increment)*tool['rotation']
+        link=tool['world_center_m']+gain*displacement-rotation.apply(tool['local_center_m'])
+        if np.linalg.norm(link-old)<=.049 and gain*np.linalg.norm(increment)<=.35:
+            target['position']=link.tolist();target['quaternion_wxyz']=rotation.as_quat()[[3,0,1,2]].tolist()
+            return targets
+        gain*=.8
+    raise ValueError('Stored world hold cannot meet the original action bound')
+
+
 def run(ep,configuration=None):
     configuration=configuration or {}
     prefix=configuration.get('artifact_prefix','first_press')
@@ -40,6 +63,7 @@ def run(ep,configuration=None):
     arm=configuration.get('arm','left')
     arm_index=('left','right').index(arm)
     balanced=bool(configuration.get('balanced_pair'))
+    anchored=bool(configuration.get('anchored_world_reference'))
     importlib.reload(robot_tool)
     tools=robot_tool.Tool()
     plan=json.loads(Path(__file__).with_name('plans').joinpath('press_by_number_v1.json').read_text())
@@ -110,6 +134,7 @@ def run(ep,configuration=None):
         schedule=[row for row in schedule if row[0] not in ('clear_and_orient','close_tool')]
     previous_aperture=initial['aperture_m'];stable_closure=0
     stalled_press=0;previous_travel=None
+    latch_rotation=latch_xy=None
     for phase,gap in schedule:
         stage_done=False
         for attempt in range(35):
@@ -118,17 +143,28 @@ def run(ep,configuration=None):
             public=ep.public;tool=tools.geometry(public,arm)
             tip_local=tool['finger_tips_local_m'].mean(0) if balanced else tool['finger_tips_local_m'][finger]
             tip=tool['world_center_m']+tool['rotation'].apply(tip_local-tool['local_center_m'])
+            if anchored and phase in ('approach','press') and latch_rotation is None:
+                if phase!='approach':
+                    stop='No stored precontact world reference for this resumed attempt';break
+                latch_rotation=tool['rotation'];latch_xy=tip[:2].copy()
+                save(ep.folder/(prefix+'_world_reference.json'),dict(step=ep.tick,tip_xy_m=latch_xy.tolist(),
+                    quaternion_wxyz=latch_rotation.as_quat()[[3,0,1,2]].tolist(),
+                    scope='Measured precontact world reference, retained through press and release'))
+            anchor_active=anchored and latch_rotation is not None and phase in ('approach','press','release_and_retreat')
+            stage_rotation=latch_rotation if anchor_active else desired
             target_tip=center+np.array([0.,0.,gap])
-            target_mid=target_tip-desired.apply(tip_local-tool['local_center_m'])
+            if anchor_active:
+                target_tip[:2]=latch_xy
+            target_mid=target_tip-stage_rotation.apply(tip_local-tool['local_center_m'])
             error=target_mid-tool['world_center_m']
-            angular=(desired*tool['rotation'].inv()).as_rotvec()
+            angular=(stage_rotation*tool['rotation'].inv()).as_rotvec()
             if balanced and phase not in ('clear_and_orient','close_tool'):
                 tips=tool['rotation'].apply(tool['finger_tips_local_m']-tool['local_center_m'])+tool['world_center_m']
                 radius=max(float(np.linalg.norm(t[:2]-tip[:2])+r) for t,r in zip(tips,tool['finger_tip_footprint_radius_m']))
                 margin=cap['radius_m']-radius-3*sigma
                 if margin<=0 or tool['aperture_m']>.010:
                     stop='Measured closed paired footprint does not fit cap';break
-            if phase in ('press','release_and_retreat') and np.linalg.norm(tip[:2]-center[:2])<margin and np.linalg.norm(angular)<.10:
+            if not anchored and phase in ('press','release_and_retreat') and np.linalg.norm(tip[:2]-center[:2])<margin and np.linalg.norm(angular)<.10:
                 # Keep the already contained lateral point and admissible
                 # tilt; apply the stage's vertical residual directly.
                 error=np.array([0.,0.,target_tip[2]-tip[2]])
@@ -142,20 +178,24 @@ def run(ep,configuration=None):
                 stable_closure=stable_closure+1 if abs(tool['aperture_m']-previous_aperture)<.0002 else 0
                 passed=bool(stable_closure>=2 and tool['aperture_m']<.010)
             visible=None
-            if phase in ('press','release_and_retreat') and baseline.get('usable'):
+            if (phase in ('press','release_and_retreat') or (anchored and phase=='approach')) and baseline.get('usable'):
                 current=observer.measure(public,cap,identity)
                 if current.get('usable'):
                     travel=float(baseline['center_m'][2]-current['center_m'][2])
                     allowance=float(baseline['conditional_halfwidth_m'][2]+current['conditional_halfwidth_m'][2])
                     visible=dict(downward_displacement_m=travel,conditional_travel_interval_m=[travel-allowance,travel+allowance],
                         desired_displacement_m=depth,current_rim_rms_px=current['rim_rms_px'],
+                        camera_names=current.get('camera_names',[]),
                         source='Current RGB SAM rim relative to the prepress RGB SAM rim; public K/T and robot masks')
                     if phase=='press' and travel-allowance>0:
                         visible_press_evidence=True
+                    if anchored and phase=='approach' and travel-allowance>0 and np.linalg.norm(tip[:2]-center[:2])<margin:
+                        passed=True
                     if phase=='press' and travel-allowance>0 and travel>=depth-3*sigma and np.linalg.norm(tip[:2]-center[:2])<margin:
                         # Direct object effect takes precedence over a nominal
                         # tool endpoint when collision geometry differs.
-                        error=np.array([0.,0.,travel-depth]);angular[:]=0
+                        if not anchored:
+                            error=np.array([0.,0.,travel-depth]);angular[:]=0
                         passed=True
                     if phase=='release_and_retreat':
                         passed=passed and abs(travel)<=3*sigma
@@ -183,7 +223,20 @@ def run(ep,configuration=None):
                     state['position_error_m']=error.round(5).tolist()
                     state['control_reference']='Visible cap height residual mapped to vertical pressing; contained XY held'
             state['pass']=state.pop('pass_')
-            answer=ep.decide(state,questions(state))
+            if anchor_active:
+                state.update(control_reference='Stored precontact WORLD tip XY/orientation and fixed stage Z endpoint',
+                    hold_semantics='HOLD retains this stored world reference within its deadband; it never relatches the disturbed measured pose.')
+            query=questions(state)
+            if anchor_active:
+                for axis in 'xyz':
+                    query[axis]['criteria']['hold']+='; actively retain the stored world reference'
+                    query['rotation_'+axis]['criteria']['hold']+='; actively retain stored world orientation'
+                independent=configuration.get('independent_observer_arm')
+                independent_name='cam_'+independent+'_wrist' if independent else None
+                if phase in ('approach','press') and (np.linalg.norm(tip[:2]-center[:2])>=margin or visible is None or
+                    (independent_name and independent_name not in visible.get('camera_names',[]))):
+                    stop='Independent current cap geometry or contained footprint lost during anchored descent';break
+            answer=ep.decide(state,query)
             save(ep.folder/f'{control_prefix}-control-{ep.tick:06d}.json',dict(state=state,answers=answer))
             if answer['transition']['choice']=='stop':
                 stop='Actor elected stop: '+phase;break
@@ -191,6 +244,8 @@ def run(ep,configuration=None):
             if any(a in answer and signs[answer[a]['choice']]*error[i]<-1e-7 for i,a in enumerate('xyz')):
                 stop='Actor sign opposes current formal residual: '+phase;break
             targets=compile_targets(public,tool,answer,error,angular,'close' if phase=='close_tool' else 'approach',arm=arm)
+            if anchor_active:
+                targets=retain_world_hold(public,tool,answer,error,angular,targets,tolerance,arm)
             old_link=np.asarray(public['robot']['eef_positions'][arm_index]);new_link=np.asarray(targets[arm]['position'])
             new_rotation=Rotation.from_quat(np.asarray(targets[arm]['quaternion_wxyz'])[[1,2,3,0]])
             delta=new_link-old_link;rot=(new_rotation*tool['rotation'].inv()).as_rotvec()
