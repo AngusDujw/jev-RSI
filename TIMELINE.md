@@ -132,6 +132,7 @@ graph LR
     T_2026W42_024["📊 decision-multimodal<br/>固定抽屉策略由Luna纯文本99问答完成双…"]:::experiment
     T_2026W42_025["📊 decision-multimodal<br/>固定LIBERO纯文本50回合原生31/5…"]:::experiment
     T_2026W42_026["📊 decision-multimodal<br/>当前阶段输入与明确切换使木块在149步中真…"]:::experiment
+    T_2026W42_027["📊 decision-multimodal<br/>RoboDojo物理预算与输入/几何分离：…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -226,6 +227,7 @@ graph LR
   T_2026W42_023 --> T_2026W42_024
   T_2026W42_024 --> T_2026W42_025
   T_2026W42_025 --> T_2026W42_026
+  T_2026W42_026 --> T_2026W42_027
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -347,6 +349,7 @@ graph LR
 | `T-2026W42-024` | 2026-10-16 | experiment | decision-multimodal | 固定抽屉策略由Luna纯文本99问答完成双终局；首波其余三项为部署缺陷，补原提交依赖与共享审计 | `EXP-2026W42-203` | - |
 | `T-2026W42-025` | 2026-10-16 | experiment | decision-multimodal | 固定LIBERO纯文本50回合原生31/50、双终局28/50，五任务5/5；转前五任务专用处理，不将接口故障当模型判断 | `EXP-2026W42-204` | - |
 | `T-2026W42-026` | 2026-10-16 | experiment | decision-multimodal | 当前阶段输入与明确切换使木块在149步中真实夹持抬升约74mm；尚未完整堆叠，转遮挡目标与薄物主动抓取条件 | `EXP-2026W42-207` | - |
+| `T-2026W42-027` | 2026-10-16 | experiment | decision-multimodal | RoboDojo物理预算与输入/几何分离：剪刀200步时限、一次真实Z反向、逐轴标量后转模板偏差；按钮700步内已有实体按压但未达可见/候选门 | `EXP-2026W42-212` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
