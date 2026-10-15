@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RoboDojo · 提示词与决策复盘</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/prompts.css"></head>
+<body>
+<header><div><span class="kicker">ROBODOJO / CALL RECORDS</span><h1>提示词与决策复盘</h1></div><nav><a href="/">完整实验台 ↗</a><button id="refresh">刷新记录</button></nav></header>
+<main>
+<section class="picker" aria-label="选择任务和回合"><div><label for="task">任务</label><select id="task" disabled><option>读取中…</option></select></div><div class="run-picker"><label for="run">已保存回合</label><select id="run" disabled><option>读取中…</option></select></div></section>
+<div id="examples" class="examples"></div><div id="status" role="status" class="status">正在读取实验目录…</div>
+<div id="summary"></div>
+<div class="workspace">
+<section class="panel" aria-labelledby="planner-title"><div class="section-heading"><span class="number">01</span><div><h2 id="planner-title">规划模型</h2><p>实际请求 → 模型返回的阶段计划</p></div></div>
+<div class="body"><label for="planner-source">规划调用来源</label><select id="planner-source" disabled></select><p id="planner-origin" class="note"></p><div id="planner">选择回合后读取。</div></div></section>
+<section class="panel" aria-labelledby="actor-title"><div class="section-heading"><span class="number">02</span><div><h2 id="actor-title">Decision model</h2><p>逐次核对输入图像、提示词、选项和输出</p></div></div>
+<div class="body"><label for="call">本回合全部模型调用</label><div class="call-picker"><button id="prev" aria-label="上一次模型调用">←</button><select id="call" disabled></select><button id="next" aria-label="下一次模型调用">→</button></div><div id="actor">选择回合后读取。</div></div></section>
+</div>
+<section class="panel"><div class="section-heading"><span class="number">03</span><div><h2>阶段怎样影响这一次判断</h2><p>直接摘取本次真实输入中的阶段字段</p></div></div><div id="phase" class="body">尚未选择调用。</div></section>
+<footer>只读保存记录。缺失的历史提示词不从现有源码补造；原生终局单独展示，不作为模型输入。</footer>
+</main>
+<dialog id="image-dialog"><button id="close-image">关闭图片</button><img id="large-image" alt="模型实际收到的图像"></dialog>
+<script src="/prompts.js"></script>
+</body></html>

@@ -9,7 +9,7 @@
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="brandmark">R</div><div><strong>RoboDojo · 实验证据台</strong><div class="small">计划 / 阶段 / 感知 / 决策 / 原生执行</div></div></div><div class="head-actions"><span class="small" id="updated">正在读取记录</span><button id="refresh">刷新</button></div></header>
+<header><div class="brand"><div class="brandmark">R</div><div><strong>RoboDojo · 实验证据台</strong><div class="small">计划 / 阶段 / 感知 / 决策 / 原生执行</div></div></div><div class="head-actions"><a class="small" href="/prompts">提示词与决策复盘 ↗</a><span class="small" id="updated">正在读取记录</span><button id="refresh">刷新</button></div></header>
 <div class="layout"><aside><div class="aside-title">TASK REGISTER / 任务档案</div><input id="search" aria-label="搜索任务" placeholder="搜索任务 / task name"><div id="task-list"></div><div class="aside-note">只读展示原始实验记录。<br>任务成功只认原生 <code>success=true</code>。<br><code>complete=true</code> 可只是回合终止。<br><br>“只有预检”表示没有推进器控制记录，不是任务跑通。</div></aside>
 <main><div class="overview" id="overview"></div><div class="notice">这些是已结束或已落盘的完整回合记录，不代表完整任务成功。老日志未保存的题目原文会标为缺失；不会用当前提示词补写历史输入。</div><div id="content"><div class="empty loading">正在载入实验档案…</div></div></main></div>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="相机原图"><button id="close-modal">关闭 ✕</button><img id="modal-image" alt="相机原图"></div>

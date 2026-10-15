@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, quote, unquote, urlsplit
+from planner_audit import PlannerArchive
 
 ROOT = Path('/home/v4090-1/DataStorage/gpt6-dec')
 WEB = Path(__file__).resolve().parent
@@ -35,7 +36,8 @@ LABELS = {'general_pickup': '拾取剪刀', 'stack_blocks': '叠积木',
           'put_bottles_into_dustbin': '丢瓶子', 'sort_nesting_dolls_by_size': '套娃排序',
           'store_laptop_and_headphones': '收纳电脑耳机', 'store_tools_in_toolbox': '收纳工具',
           'swap_T': '交换 T', 'swap_blocks': '交换积木', 'sweep_blocks': '扫积木'}
-CURATED = {'general_pickup': '2026-10-13-gpt61-du-pickup-close-hypothesis-native-204',
+CURATED = {'general_pickup': '2026-10-14-gpt61-du-pickup-phase-tagged-native-461',
+           'stack_blocks': '2026-10-14-gpt61-du-stack-roles477-tool-pair-native-482',
            'press_by_number': '2026-10-13-gpt6-dec-press-gpu-fabric-path-aware-three-view-152'}
 
 
@@ -162,16 +164,20 @@ def run_detail(name):
         elif isinstance(data, list):
             traces.extend(data)
     decisions = []
-    files = sorted((path / 'decisions').glob('*.json'),
-                   key=lambda f: ((read(f, {}) or {}).get('step_id', -1), f.name))
-    for file in files:
-        raw = read(file, {})
+    files = [(file, read(file, {}) or {}) for file in (path / 'decisions').glob('*.json')]
+    files.sort(key=lambda pair: (pair[1].get('step_id', -1), pair[0].stat().st_mtime, pair[0].name))
+    last_by_step = {raw.get('step_id'): i for i, (_, raw) in enumerate(files)}
+    for i, (file, raw) in enumerate(files):
         if not isinstance(raw, dict):
             continue
         obj = input_object(raw)
         step = raw.get('step_id')
         trace = next((r for r in traces if isinstance(r, dict) and r.get('step_id') == step), {})
-        execution = next((r for r in history if r.get('start_tick') == step), None)
+        names = set(raw.get('question_names', [])) | {q.get('name') for q in raw.get('questions', [])}
+        perception_only = bool(names) and names <= {'source_receiver_roles', 'observable_stage', 'identity_stage_EXIT'}
+        later_same_step = last_by_step.get(step) != i
+        execution = (next((r for r in history if r.get('start_tick') == step), None)
+                     if not perception_only and not later_same_step else None)
         runtime_stage = obj.get('current_stage') or obj.get('active_stage') or obj.get('stage')
         if runtime_stage is None:
             runtime_stage = trace.get('stage')
@@ -179,7 +185,8 @@ def run_detail(name):
         row = {**raw, 'file': file.name, 'url': public_asset(file),
                'input_object': obj, 'images': images(raw.get('images')),
                'runtime_stage': runtime_stage, 'planner_stage': obj.get('planner_stage'),
-               'model_stage': decoded.get('stage'), 'execution': execution,
+               'model_stage': decoded.get('observable_stage') or decoded.get('stage'), 'execution': execution,
+               'perception_only': perception_only,
                'trace': trace, 'questions_available': bool(raw.get('questions'))}
         snapshot = obj.get('memory_read_manifest', {}).get('full_snapshot_directory')
         evidence_assets = []
@@ -226,6 +233,21 @@ def run_detail(name):
             'historical_question_gap': sum(not d['questions_available'] for d in decisions)}
 
 
+def review_detail(name):
+    data = run_detail(name)
+    data.pop('traces', None)
+    data.pop('history', None)
+    keep = {'stage', 'luna_choice', 'status', 'luna_action_family', 'post_action',
+            'luna_program_decision', 'luna_source_identity', 'proposed_complete_program',
+            'luna_capture_evidence_assessment', 'decision_policy_variant'}
+    for row in data['decisions']:
+        row['trace'] = {k: v for k, v in row['trace'].items() if k in keep}
+    archive = PlannerArchive(ROOT, public_asset)
+    data['planner_sources'] = archive.sources_for_run(ROOT / 'runs' / name)
+    data['planner_catalog'] = archive.catalog()
+    return data
+
+
 class Handler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.do_GET()
@@ -237,6 +259,12 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_json(index(parse_qs(route.query).get('refresh') == ['1']))
             elif route.path == '/api/run':
                 self.send_json(run_detail(parse_qs(route.query).get('name', [''])[0]))
+            elif route.path == '/api/review':
+                self.send_json(review_detail(parse_qs(route.query).get('name', [''])[0]))
+            elif route.path == '/api/planner':
+                self.send_json(PlannerArchive(ROOT, public_asset).detail(parse_qs(route.query).get('source', [''])[0]))
+            elif route.path in ('/prompts', '/prompts.html', '/prompts.js', '/prompts.css'):
+                self.send_file(WEB / ('prompts.html' if route.path in ('/prompts', '/prompts.html') else route.path[1:]))
             elif route.path in ('/', '/index.html'):
                 self.send_file(WEB / 'index.html')
             elif route.path.startswith('/assets/'):
