@@ -92,7 +92,8 @@ class Episode:
             '--task', self.args.task, '--eval-seed', '0', '--output', str(self.folder/'native'),
             '--port', str(port), '--headless', '--enable_cameras', '--device', 'cuda:0',
             '--kit_args=--/renderer/activeGpu='+str(self.args.gpu)+
-            ' --/renderer/multiGpu/enabled=false --/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true']
+            ' --/renderer/multiGpu/enabled=false --/app/updateOrder/checkForHydraRenderComplete=1000'
+            ' --/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true']
         save(self.folder/'launch.json', dict(command=command, gpu=self.args.gpu,
             gpu_uuid=GPU_UUIDS[self.args.gpu], task=self.args.task, layout=self.args.layout,
             actor='gpt-6-luna', actor_images=0, planner='local ChatGPT Pro gpt-6.1-sol/high',
