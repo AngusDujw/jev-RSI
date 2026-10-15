@@ -84,8 +84,13 @@ def run(ep):
             measured=perception.update(public,predicted,verify=phase in ('CAPTURE_ALIGNMENT','LIFT_AND_HOLD'))
             if plan.get('resting_revision') and phase in ('APPROACH','CAPTURE_ALIGNMENT'):
                 unrestricted=measured
-                measured=perception.resting(public)
-                measured['unrestricted_model_diagnostic']=unrestricted
+                resting=perception.resting(public)
+                delta=np.asarray(unrestricted.get('center_m',initial))-initial
+                supported=bool(unrestricted.get('usable') and np.max(abs(delta[:2]))<=.006 and abs(delta[2])<=.006)
+                if supported and (not resting.get('usable') or unrestricted.get('silhouette_rms_px',99)<1.5):
+                    measured=dict(unrestricted,estimate_method='current_multiview',resting_model_diagnostic=resting)
+                else:
+                    measured=dict(resting,estimate_method='conditional_preclosure_high_plane',unrestricted_model_diagnostic=unrestricted)
             save(ep.folder/f'frame-{ep.tick:06d}'/'scissors_geometry.json',measured)
             strict=bool(measured.get('usable'))
             source_uv,_=project(public['calibration']['cam_high'],initial.reshape(1,3))
@@ -167,6 +172,8 @@ def run(ep):
                 state['strict_fit_valid']=strict
             if phase in ('APPROACH','CAPTURE_ALIGNMENT'):
                 state.update(material_center_sensitivity_m=measured.get('conditional_halfwidth_m'),
+                    source_estimate_method=measured.get('estimate_method','current_multiview'),
+                    source_camera_names=measured.get('camera_names'),
                     nominal_table_z_m=table['plane_z_m'],conditional_table_allowance_m=.002,
                     current_finger_table_gap_m=tool['world_center_m'][2]-tool['downward_extent_m']-table['plane_z_m'])
             if phase=='CLOSE':
