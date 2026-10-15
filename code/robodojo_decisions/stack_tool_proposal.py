@@ -19,7 +19,9 @@ def build(obs, geometry):
     plane = {'current_step_id': obs['step_id'],
              'estimated_green_plane_height_m': (lo+hi)/2,
              'declared_green_height_halfwidth_m': (hi-lo)/2+.002}
-    descriptions, targets, evidence = tool_hypotheses(obs, plane, None)
+    view_recovery=os.environ.get('ROBODOJO_RGB_STAGE_COUPLED_TOOL_VIEW')=='1'
+    descriptions, targets, evidence = tool_hypotheses(obs, plane, None,
+        rotation_sizes=(.025,.05,.10,.20,.30) if view_recovery else None)
     evidence['source_plane_adapter_scope'] = (
         'The legacy helper field names refer here to the CURRENT stack RGB '
         'top-height interval plus2mm sensitivity, not green material or an object pose.')
@@ -51,4 +53,16 @@ def build(obs, geometry):
     if accepted:
         best = min(accepted, key=lambda name: evidence['candidate_diagnostics'][name]['remaining_axis_angle_deg'])
         accepted = {best: accepted[best]}
+    if not accepted and view_recovery:
+        from stack_tool_view_recovery import build as recover_view
+        recovered_options,recovered_targets,recovery=recover_view(obs,geometry,targets,max_mrad)
+        evidence['coupled_source_view_recovery']={k:v for k,v in recovery.items() if k!='candidate_diagnostics'}
+        if recovered_targets:
+            for key,row in recovery['candidate_diagnostics'].items():
+                evidence['candidate_diagnostics'][key]=row
+            selected=next(iter(recovered_targets))
+            evidence['coupled_source_view_recovery']['proposal']={
+                'program':selected,**{k:v for k,v in recovery['candidate_diagnostics'][selected].items()
+                                    if k!='public_path'}}
+            return recovered_options,recovered_targets,evidence
     return {k: descriptions[k] for k in accepted}, accepted, evidence

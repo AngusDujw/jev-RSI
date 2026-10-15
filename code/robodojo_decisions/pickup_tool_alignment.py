@@ -15,7 +15,8 @@ from pickup_rgb_axes import _targets
 from robot_path_preview import preview
 
 
-def build(observation: dict, green_plane: dict | None, table: dict | None):
+def build(observation: dict, green_plane: dict | None, table: dict | None,
+          rotation_sizes=None):
     if green_plane is not None and green_plane['current_step_id'] != observation['step_id']:
         return {}, {}, {'unavailable': 'Stale RGB plane hypothesis'}
     current = eef_transform(observation['current_eef']['right'])
@@ -55,6 +56,10 @@ def build(observation: dict, green_plane: dict | None, table: dict | None):
         margin = None
     options, targets = {}, {}
     sizes = (.05, .10, .20, .30) if os.environ.get('ROBODOJO_PICKUP_PROGRAM_PAIR') == '1' else (.10, .20, .30)
+    if rotation_sizes is not None:
+        sizes=tuple(rotation_sizes)
+        if not sizes or any(not 0<size<=.30 for size in sizes):
+            raise ValueError('Explicit tool rotation samples must be within0..0.30rad')
     if os.environ.get('ROBODOJO_PICKUP_TIGHTER_GRASP_ALIGNMENT')=='1' and np.degrees(angle)<20:
         sizes=(.05,)  # Native run317 overshot the 2mm tracking gate with .10rad here.
         evidence['fine_orientation_increment_rad']=.05
