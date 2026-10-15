@@ -7,7 +7,9 @@ from rgb_cuboid import project, ray
 
 def color_component(rgb, color, uv):
     r,g,b=rgb.astype(float).transpose(2,0,1)
-    binary=((r>100)&(r>g*1.5)&(r>b*1.5)) if color=='red' else ((b>90)&(b>r*1.5)&(b>g*1.3))
+    # Brown table texture also has R>G and R>B. The bright cap top is
+    # substantially brighter; including the table joins the entire image.
+    binary=((r>205)&(r>g*1.5)&(r>b*1.5)) if color=='red' else ((b>130)&(b>r*1.5)&(b>g*1.3))
     n,labels,stats,centers=cv2.connectedComponentsWithStats(binary.astype(np.uint8))
     items=[]
     for i in range(1,n):
