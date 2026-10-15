@@ -84,12 +84,13 @@ class Campaign:
         self.children = set()
         self.pending = queue.Queue()
         self.rows = []
+        self.claimed = 0
         self.tasks = json.loads((args.baselines/'campaign.json').read_text())['tasks']
         for task in self.tasks:
             verify(args.baselines/f'task-{task["task_id"]}', task)
         specification = dict(phase='1_frozen_text_only', actor_model='gpt-6-luna',
             key_origin='du', actor_images=0, experience_injection=False,
-            gpus=args.gpus, jobs_per_gpu=args.jobs_per_gpu,
+            allowed_physical_gpus=[4, 5, 6, 7],
             expected_episodes=sum(len(t['paired_init_indices']) for t in self.tasks),
             tasks=[{k: t[k] for k in ('task_id', 'source_commit', 'source_sha256',
                 'paired_init_indices', 'original_options', 'cpu_vision', 'baseline_status')} for t in self.tasks])
@@ -196,10 +197,14 @@ class Campaign:
                 self.stop.set()
                 self.ledger(dict(event='storage_guard', free_bytes=shutil.disk_usage(self.root).free))
                 return
-            try:
-                task, init, folder = self.pending.get_nowait()
-            except queue.Empty:
-                return
+            with self.lock:
+                if self.args.max_new_episodes is not None and self.claimed >= self.args.max_new_episodes:
+                    return
+                try:
+                    task, init, folder = self.pending.get_nowait()
+                except queue.Empty:
+                    return
+                self.claimed += 1
             try:
                 self.run_one(task, init, folder, gpu)
             except Exception as error:
@@ -213,6 +218,8 @@ class Campaign:
         signal.signal(signal.SIGTERM, self.interrupt)
         signal.signal(signal.SIGINT, self.interrupt)
         slots = self.args.gpus*self.args.jobs_per_gpu
+        self.ledger(dict(event='foreground_invocation', gpus=self.args.gpus,
+            jobs_per_gpu=self.args.jobs_per_gpu, max_new_episodes=self.args.max_new_episodes))
         with ThreadPoolExecutor(max_workers=len(slots)) as pool:
             futures = [pool.submit(self.worker, gpu) for gpu in slots]
             for future in futures:
@@ -231,11 +238,15 @@ def main():
     parser.add_argument('--key-file', required=True, type=Path)
     parser.add_argument('--gpus', type=int, nargs='+', default=[4, 5, 6, 7])
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3], default=1)
+    parser.add_argument('--max-new-episodes', type=int,
+                        help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
     parser.add_argument('--controller-root', type=Path, default=Path('/root/yekangjie/project/robodojo-jev'))
     parser.add_argument('--libero-root', type=Path, default=Path('/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'))
     parser.add_argument('--vision-python', type=Path, default=Path('/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python'))
     parser.add_argument('--model-cache', type=Path, default=Path('/root/yekangjie/project/robodojo-jev/.cache/models'))
     args = parser.parse_args()
+    if args.max_new_episodes is not None and args.max_new_episodes < 1:
+        parser.error('Episode limit must be positive')
     if not args.gpus or len(set(args.gpus)) != len(args.gpus) or not set(args.gpus) <= set(GPU_UUIDS):
         parser.error('Only distinct physical GPUs4..7 are authorized')
     args.baselines = args.baselines.resolve()
