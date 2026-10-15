@@ -1,5 +1,6 @@
 """Freeze exact per-task policy sources and original options, without running them."""
 import argparse
+import ast
 import hashlib
 import importlib.util
 import inspect
@@ -18,6 +19,36 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, allow_nan=False) + '\n')
 
 
+def dependency_sources(repo, commit, declared):
+    """Close local Python imports, including lazy imports absent from old exports."""
+    paths = subprocess.check_output(['git', '-C', str(repo), 'ls-tree', '-r',
+        '--name-only', commit, 'code/scripts'], text=True).splitlines()
+    available = {Path(p).name for p in paths
+                 if Path(p).parent.as_posix() == 'code/scripts' and p.endswith('.py')}
+    seen = set(declared)
+    todo = list(seen)
+    sources = {}
+    while todo:
+        name = todo.pop()
+        if Path(name).name != name:
+            raise ValueError('Invalid policy source filename')
+        raw = subprocess.check_output(['git', '-C', str(repo), 'show',
+            commit + ':code/scripts/' + name])
+        sha = hashlib.sha256(raw).hexdigest()
+        if name in declared and sha != declared[name]:
+            raise ValueError('Original archived source mismatch: ' + name)
+        sources[name] = (raw, sha)
+        for node in ast.walk(ast.parse(raw)):
+            names = ([a.name.split('.')[0] for a in node.names] if isinstance(node, ast.Import)
+                     else [node.module.split('.')[0]] if isinstance(node, ast.ImportFrom) and node.module else [])
+            for module in names:
+                filename = module + '.py'
+                if filename in available and filename not in seen:
+                    seen.add(filename)
+                    todo.append(filename)
+    return sources
+
+
 def prepare(repo, output):
     report = repo / 'code/reports/libero-ten-workflows/data.js'
     text = report.read_text()
@@ -31,13 +62,8 @@ def prepare(repo, output):
         protocol = json.loads((original / 'episode/protocol.json').read_text())
         folder = output / f'task-{task}'
         folder.mkdir()
-        for name, expected in case['sources'].items():
-            if Path(name).name != name:
-                raise ValueError('Invalid policy source filename')
-            raw = subprocess.check_output(['git', '-C', str(repo), 'show',
-                case['commit'] + ':code/scripts/' + name])
-            if hashlib.sha256(raw).hexdigest() != expected:
-                raise ValueError(f'Frozen source mismatch: {task}/{name}')
+        sources = dependency_sources(repo, case['commit'], case['sources'])
+        for name, (raw, sha) in sources.items():
             (folder / name).write_bytes(raw)
         write(folder / 'decision-api-config.json', {'jev': {'model': 'gpt-6-luna'}})
         settings = {**protocol, **manifest, **manifest.get('cli_options', {})}
@@ -63,7 +89,9 @@ def prepare(repo, output):
                 frozen_options[name] = value
         command = launcher.launch_command(**kwargs)
         item = dict(task_id=task, source_commit=case['commit'],
-            source_run=case['source_run'], source_sha256=case['sources'],
+            source_run=case['source_run'], source_sha256={name: sha for name, (raw, sha) in sources.items()},
+            original_archive_source_sha256=case['sources'],
+            additional_import_dependencies='Resolved from the same original task Git commit; old archive omitted lazy imports',
             source_folder=str(folder), original_options=frozen_options,
             cpu_vision=bool(manifest['cpu_vision']), paired_init_indices=INITS[task],
             native_python=command[0], argv_template=command[1:],

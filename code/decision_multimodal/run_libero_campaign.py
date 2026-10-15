@@ -60,18 +60,19 @@ def classify(directory, returncode, termination):
     path = directory/'episode/result.json'
     result = json.loads(path.read_text()) if path.is_file() else None
     failures = sorted((directory/'episode/decision-api').glob('*/failure.json'))
+    answers = len(list((directory/'episode/decision-api').glob('*/response.json')))
     native = result.get('success') if result else None
     program = result.get('program_finished') if result else None
     joint = (native is True and program is True)
     category = ('transport_or_schema_failure' if failures else
                 'external_termination' if termination else
-                'environment_or_startup_failure' if result is None else
+                'environment_or_startup_failure' if result is None or (not answers and result.get('error')) else
                 'joint_success' if joint else 'task_failure')
     return dict(returncode=returncode, termination=termination, category=category,
                 native_success=native, program_finished=program,
                 joint_success=joint, native_result=result,
                 api_failure_files=[str(p.relative_to(directory)) for p in failures],
-                decision_answers=len(list((directory/'episode/decision-api').glob('*/response.json'))))
+                decision_answers=answers)
 
 
 class Campaign:

@@ -48,6 +48,13 @@ mount without the required explicit confirmation. No driver or CUDA changes.
 
 The old LIBERO policies use RGB-D for processing and local GroundingDINO/SAM
 where specified; only their structured text reaches the Phase1 actor. Source
-freezing covers181 original files across10 task versions. The50 episodes are
+freezing covers181 files declared by the old archive plus150 lazy-import
+dependencies from the same per-task Git commits (331 files total). The archive
+omitted `libero_goal_static_vision.py`; the first deployment wave exposed this.
+Task1202 also creates two sequential actor instances in one recorder, requiring
+append-only shared request numbering. Neither fix changes the original policy.
+The four deployment episodes remain saved separately from the complete-bundle
+50-episode campaign, including its drawer success and three setup failures.
+The50 episodes are
 paired against previously used initial states, not unseen-state evaluation.
 Task1202 is explicitly labeled an unstable development reference.

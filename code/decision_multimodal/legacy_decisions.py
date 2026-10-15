@@ -126,8 +126,11 @@ class LegacyAPI:
         if recorder is None or not hasattr(recorder, 'folder'):
             raise ValueError('Original recorder is required for model request audit')
         self.folder = Path(recorder.folder) / 'decision-api'
-        self.folder.mkdir()
-        self.calls = 0
+        self.folder.mkdir(exist_ok=True)
+        # Drawer+bowl has two sequential model instances in one recorder.
+        # Keep one append-only audit stream across that handoff.
+        numbers = [int(p.name) for p in self.folder.iterdir() if p.is_dir() and p.name.isdigit()]
+        self.calls = max(numbers, default=-1) + 1
         proxy = os.environ.get('DECISION_MM_PROXY')
         if proxy not in (None, 'http://127.0.0.1:7897'):
             raise ValueError('Only the authorized loopback proxy is supported')
@@ -138,9 +141,14 @@ class LegacyAPI:
         if endpoint != '/systemone':
             raise ValueError('Frozen policy requested an unexpected endpoint')
         payload = convert_request(legacy)
-        directory = self.folder / f'{self.calls:04d}'
-        self.calls += 1
-        directory.mkdir()
+        while True:
+            directory = self.folder / f'{self.calls:04d}'
+            self.calls += 1
+            try:
+                directory.mkdir()
+                break
+            except FileExistsError:
+                continue  # Allocation only; never retries the model request.
         def save(name, value):
             (directory / name).write_text(json.dumps(value, ensure_ascii=False,
                 allow_nan=False, indent=2) + '\n')
