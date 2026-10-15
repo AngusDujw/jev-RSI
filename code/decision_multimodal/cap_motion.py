@@ -56,7 +56,7 @@ def cap_height(public,cap,camera='cam_high'):
 
 def cap_pose(public,cap,material_masks=None):
     """Refit cap translation using a previously RGB-measured radius."""
-    center=np.asarray(cap['center_m']);views=[]
+    center=np.asarray(cap['center_m']);views=[];color=cap.get('color','red')
     for camera,rgb in public['rgb'].items():
         calibration=public['calibration'][camera]
         uv,depth=project(calibration,center.reshape(1,3))
@@ -68,9 +68,10 @@ def cap_pose(public,cap,material_masks=None):
             if camera not in material_masks:
                 continue
             r,g,b=rgb.astype(float).transpose(2,0,1)
-            mask=(np.asarray(material_masks[camera],bool)&(r>80)&(r>1.25*g)&(r>1.25*b)).astype(np.uint8)
+            chroma=((r>80)&(r>1.25*g)&(r>1.25*b)) if color=='red' else ((b>80)&(b>1.25*r)&(b>1.25*g))
+            mask=(np.asarray(material_masks[camera],bool)&chroma).astype(np.uint8)
         else:
-            mask=color_component(rgb,'red',uv[0],max_distance=max(12.,1.8*radius_px))
+            mask=color_component(rgb,color,uv[0],max_distance=max(12.,1.8*radius_px))
         if mask is None:
             continue
         contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)

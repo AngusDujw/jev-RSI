@@ -28,6 +28,7 @@ class CapObserver:
             return json.loads((directory/'geometry.json').read_text())
         directory.mkdir(exist_ok=True)
         center=np.asarray(cap['center_m'])
+        color=cap.get('color','red')
         angles=np.linspace(0,2*np.pi,100,endpoint=False)
         offsets=cap['radius_m']*np.column_stack([np.cos(angles),np.sin(angles),np.zeros(len(angles))])
         images=[];boxes=[];points=[];names=[]
@@ -41,7 +42,8 @@ class CapObserver:
             if np.any(upper-lower<8):
                 continue
             r,g,b=rgb.astype(float).transpose(2,0,1)
-            red=(r>180)&(r>1.8*g)&(r>1.8*b)&(tool_mask(public,name)==0)
+            material=((r>180)&(r>1.8*g)&(r>1.8*b)) if color=='red' else ((b>180)&(b>1.8*r)&(b>1.8*g))
+            red=material&(tool_mask(public,name)==0)
             region=np.zeros(red.shape,bool)
             region[int(lower[1]):int(upper[1])+1,int(lower[0]):int(upper[0])+1]=True
             yy,xx=np.nonzero(red&region)
@@ -67,6 +69,7 @@ class CapObserver:
         save(directory/'segmentation.json',metadata)
         fit=cap_pose(public,cap,masks)
         fit.update(step=public['step'],identity=identity,actor_images=0,
+            current_material_views=list(masks),segmentation_valid=bool(masks),
             segmentation_source='Local cached SAM2.1 tiny; geometry from fresh RGB and public camera/robot data')
         save(directory/'geometry.json',fit)
         return fit

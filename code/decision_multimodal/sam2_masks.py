@@ -27,5 +27,5 @@ class Segmenter:
         masks=self.processor.post_process_masks(outputs.pred_masks.cpu(),inputs['original_sizes'].cpu())
         scores=outputs.iou_scores.detach().cpu().numpy()
         return [dict(masks=value[0].numpy().astype(bool),predicted_iou=scores[i,0].tolist(),
-            source='Current RGB with camera-derived box and visible red material point; local cached SAM2.1 tiny')
+            source='Current RGB with camera-derived box and visible material point; local cached SAM2.1 tiny')
             for i,value in enumerate(masks)]

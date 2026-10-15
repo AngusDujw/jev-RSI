@@ -16,7 +16,7 @@ def questions(state):
     reference=state.get('control_reference','public pad midpoint')
     for i,axis in enumerate('xyz'):
         e=1000*state['position_error_m'][i];d=1000*state['position_tolerance_m']
-        result[axis]=choice(f'Current button stage={state["phase"]}, active arm=LEFT. Reference={reference}. World {axis.upper()} target minus current: ERROR_MM={e:.3f}, DEADBAND_MM={d:.3f}. Classify this scalar.',
+        result[axis]=choice(f'Current button stage={state["phase"]}, active arm={state["active_arm"]}. Reference={reference}. World {axis.upper()} target minus current: ERROR_MM={e:.3f}, DEADBAND_MM={d:.3f}. Classify this scalar.',
             dict(negative=f'ERROR_MM < -{d:.3f}: decrease coordinate',hold=f'-{d:.3f} <= ERROR_MM <= {d:.3f}: hold',positive=f'ERROR_MM > {d:.3f}: increase coordinate'))
         e=state['orientation_error_rad'][i]
         result['rotation_'+axis]=choice(f'World {axis.upper()} rotation-log target minus current: ERROR_RAD={e:.5f}, DEADBAND_RAD=0.02000. Positive is right-hand world rotation.',
@@ -29,40 +29,50 @@ def questions(state):
     return result
 
 
-def run(ep):
+def run(ep,configuration=None):
+    configuration=configuration or {}
+    prefix=configuration.get('artifact_prefix','first_press')
+    control_prefix=prefix.replace('_','-')
+    identity=configuration.get('identity','red1')
+    arm=configuration.get('arm','left')
+    arm_index=('left','right').index(arm)
     importlib.reload(robot_tool)
     tools=robot_tool.Tool()
     plan=json.loads(Path(__file__).with_name('plans').joinpath('press_by_number_v1.json').read_text())
-    save(ep.folder/'first_press_fixed_plan.json',plan)
+    save(ep.folder/(prefix+'_fixed_plan.json'),plan)
     table=json.loads((ep.folder/'table_geometry.json').read_text())
     # Refit current RGB using the corrected bright-top mask in a fresh module.
     import rgb_circle
     importlib.reload(rgb_circle)
-    previous_path=ep.folder/'first_press_result.json'
+    previous_path=ep.folder/(prefix+'_result.json')
     previous=json.loads(previous_path.read_text()) if previous_path.exists() else None
     resume=bool(previous and previous.get('stop_reason')=='Stage budget exhausted: press' and
                 previous.get('completed_proxy_cycles')==0 and previous.get('physical_step')==ep.tick)
-    old_method=json.loads((ep.folder/'first_press_method.json').read_text()) if resume else None
-    cap=old_method['cap'] if resume else rgb_circle.fit_cap(ep.public,[244,267],'red',table['plane_z_m'])
+    old_method=json.loads((ep.folder/(prefix+'_method.json')).read_text()) if resume else None
+    cap=old_method['cap'] if resume else configuration.get('cap')
+    if cap is None:
+        cap=rgb_circle.fit_cap(ep.public,[244,267],'red',table['plane_z_m'])
     if resume:
-        save(ep.folder/f'first_press_resume_step{ep.tick}.json',dict(previous=previous,
+        save(ep.folder/f'{prefix}_resume_step{ep.tick}.json',dict(previous=previous,
             method='Continue the existing candidate with a vertical target, containment rather than exact lateral centering, and the saved Pro3-times-working-uncertainty endpoint criterion; do not repeat approach or reset unpressed baseline'))
     else:
-        save(ep.folder/'first_press_source_geometry.json',cap)
+        save(ep.folder/(prefix+'_source_geometry.json'),cap)
     if not cap.get('usable'):
-        save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=0,stop_reason='Current cap geometry unavailable'))
-        return
+        result=dict(completed_proxy_cycles=0,stop_reason='Current cap geometry unavailable')
+        save(ep.folder/(prefix+'_result.json'),result)
+        return result
     center=np.asarray(cap['center_m']);sigma=max(cap['conditional_halfwidth_m'])
     height=center[2]-table['plane_z_m']
     depth=min(.5*height,height-6*sigma)
     clearance=max(3*sigma,.25*cap['radius_m'])
-    initial=tools.geometry(ep.public,'left')
+    initial=tools.geometry(ep.public,arm)
     finger=int(np.argmax(initial['finger_tips_local_m'][:,1]))
     radius=initial['finger_tip_footprint_radius_m'][finger]
     margin=cap['radius_m']-radius-3*sigma
     if depth<=3*sigma or margin<=0:
-        save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=0,stop_reason='Pro cap-height/footprint inequalities failed',depth_m=depth,margin_m=margin))
-        return
+        result=dict(completed_proxy_cycles=0,stop_reason='Pro cap-height/footprint inequalities failed',depth_m=depth,margin_m=margin)
+        save(ep.folder/(prefix+'_result.json'),result)
+        return result
     desired=Rotation.from_euler('y',np.pi/2)
     # This is an intra-episode sensor reference, not retrieved experience.
     import cap_motion
@@ -71,26 +81,29 @@ def run(ep):
     if not hasattr(ep,'cap_observer'):
         ep.cap_observer=CapObserver(ep.folder)
     observer=ep.cap_observer
-    source_steps=[int(path.stem.rsplit('-',1)[1]) for path in ep.folder.glob('first-press-control-*.json')]
-    source_step=min(source_steps) if source_steps else ep.tick
-    baseline=observer.measure(load_public(ep.folder,source_step),cap)
-    save(ep.folder/'first_press_visual_baseline.json',baseline)
-    method=dict(cap=cap,active_arm='left',active_public_finger_index=finger,
+    source_steps=[int(path.stem.rsplit('-',1)[1]) for path in ep.folder.glob(control_prefix+'-control-*.json')]
+    source_step=configuration.get('source_step',min(source_steps) if source_steps else ep.tick)
+    baseline=configuration.get('baseline_geometry') or observer.measure(load_public(ep.folder,source_step),cap,identity)
+    save(ep.folder/(prefix+'_visual_baseline.json'),baseline)
+    method=dict(cap=cap,active_arm=arm,active_public_finger_index=finger,
         pad_footprint_radius_m=radius,contained_contact_margin_m=margin,approach_gap_m=clearance,
         press_depth_m=depth,working_uncertainty_m=sigma,
         uncertainty_interpretation='Conditional fit halfwidth used as a conservative working scale in the Pro formulas; not calibrated standard deviation',
         source_step=source_step,
         scope='Saved Pro plan formulas; geometric actuation proxy, no electrical/contact state')
     if not resume:
-        save(ep.folder/'first_press_method.json',method)
+        save(ep.folder/(prefix+'_method.json'),method)
     count=0;stop=None;latched=False;visible=None;visible_press_evidence=False
-    schedule=[('press',-depth),('release_and_retreat',clearance)] if resume else [('clear_and_orient',clearance+.05),('approach',clearance),('press',-depth),('release_and_retreat',clearance)]
+    release_gap=clearance+configuration.get('release_extra_gap_m',0.)
+    schedule=[('press',-depth),('release_and_retreat',release_gap)] if resume else [('clear_and_orient',clearance+.05),('approach',clearance),('press',-depth),('release_and_retreat',release_gap)]
+    if configuration.get('skip_clear') and not resume:
+        schedule=schedule[1:]
     for phase,gap in schedule:
         stage_done=False
         for attempt in range(35):
             if ep.ended or ep.tick>=ep.metadata['max_episode_steps']:
                 stop='Native episode budget ended';break
-            public=ep.public;tool=tools.geometry(public,'left')
+            public=ep.public;tool=tools.geometry(public,arm)
             tip_local=tool['finger_tips_local_m'][finger]
             tip=tool['world_center_m']+tool['rotation'].apply(tip_local-tool['local_center_m'])
             target_tip=center+np.array([0.,0.,gap])
@@ -106,7 +119,7 @@ def run(ep):
             passed=bool(max(abs(error))<=tolerance and np.linalg.norm(angular)<=.05 and np.linalg.norm(tip[:2]-center[:2])<margin)
             visible=None
             if phase in ('press','release_and_retreat') and baseline.get('usable'):
-                current=observer.measure(public,cap)
+                current=observer.measure(public,cap,identity)
                 if current.get('usable'):
                     travel=float(baseline['center_m'][2]-current['center_m'][2])
                     allowance=float(baseline['conditional_halfwidth_m'][2]+current['conditional_halfwidth_m'][2])
@@ -122,10 +135,10 @@ def run(ep):
                         passed=True
                     if phase=='release_and_retreat':
                         passed=passed and abs(travel)<=3*sigma
-            state=dict(task=public['instruction'],phase=phase,active_arm='left',target_identity='left red button under card1',
-                required_cycles=1,completed_proxy_cycles=count,position_error_m=error.round(5).tolist(),position_tolerance_m=tolerance,
+            state=dict(task=public['instruction'],phase=phase,active_arm=arm,target_identity=configuration.get('target_description','left red button under card1'),
+                required_cycles=configuration.get('required_cycles',1),completed_proxy_cycles=configuration.get('previous_cycles',0)+count,position_error_m=error.round(5).tolist(),position_tolerance_m=tolerance,
                 orientation_error_rad=angular.round(5).tolist(),pass_=passed,
-                source='Current two-view RGB circular cap hypothesis and measured public distal finger geometry',
+                source='Current RGB circle/radius hypothesis and measured public distal finger geometry',
                 limits='Unpressed cap pose is retained as a stationary base hypothesis; native electrical state is unavailable')
             if phase in ('clear_and_orient','approach'):
                 state.update(contained_contact_margin_m=margin,current_tip_to_unpressed_cap_gap_m=float(tip[2]-center[2]),target_gap_m=gap)
@@ -144,22 +157,22 @@ def run(ep):
                     state['control_reference']='Visible cap height residual mapped to vertical pressing; contained XY held'
             state['pass']=state.pop('pass_')
             answer=ep.decide(state,questions(state))
-            save(ep.folder/f'first-press-control-{ep.tick:06d}.json',dict(state=state,answers=answer))
+            save(ep.folder/f'{control_prefix}-control-{ep.tick:06d}.json',dict(state=state,answers=answer))
             if answer['transition']['choice']=='stop':
                 stop='Actor elected stop: '+phase;break
             signs=dict(negative=-1,hold=0,positive=1)
             if any(signs[answer[a]['choice']]*error[i]<-1e-7 for i,a in enumerate('xyz')):
                 stop='Actor sign opposes current formal residual: '+phase;break
-            targets=compile_targets(public,tool,answer,error,angular,'approach',arm='left')
-            targets['left']['gripper_opening']=1.;targets['left']['gripper_closed']=False
-            old_link=np.asarray(public['robot']['eef_positions'][0]);new_link=np.asarray(targets['left']['position'])
-            new_rotation=Rotation.from_quat(np.asarray(targets['left']['quaternion_wxyz'])[[1,2,3,0]])
+            targets=compile_targets(public,tool,answer,error,angular,'approach',arm=arm)
+            targets[arm]['gripper_opening']=1.;targets[arm]['gripper_closed']=False
+            old_link=np.asarray(public['robot']['eef_positions'][arm_index]);new_link=np.asarray(targets[arm]['position'])
+            new_rotation=Rotation.from_quat(np.asarray(targets[arm]['quaternion_wxyz'])[[1,2,3,0]])
             delta=new_link-old_link;rot=(new_rotation*tool['rotation'].inv()).as_rotvec()
             maximum=.035 if phase=='clear_and_orient' else .015 if phase=='approach' else .020
             angle_cap=.25 if phase=='clear_and_orient' else .08
             gain=min(1.,maximum/max(1e-12,np.linalg.norm(delta)),angle_cap/max(1e-12,np.linalg.norm(rot)))
-            targets['left']['position']=(old_link+gain*delta).tolist()
-            targets['left']['quaternion_wxyz']=(Rotation.from_rotvec(gain*rot)*tool['rotation']).as_quat()[[3,0,1,2]].tolist()
+            targets[arm]['position']=(old_link+gain*delta).tolist()
+            targets[arm]['quaternion_wxyz']=(Rotation.from_rotvec(gain*rot)*tool['rotation']).as_quat()[[3,0,1,2]].tolist()
             # The other finger is explicitly behind the row, and its public
             # mesh shares this conditional tabletop clearance calculation.
             minimum_gap=float('inf')
@@ -167,15 +180,29 @@ def run(ep):
                 predicted=dict(public,robot=dict(public['robot']))
                 predicted['robot']['eef_positions']=[list(x) for x in public['robot']['eef_positions']]
                 predicted['robot']['eef_quaternions_wxyz']=[list(x) for x in public['robot']['eef_quaternions_wxyz']]
-                predicted['robot']['eef_positions'][0]=(old_link+alpha*gain*delta).tolist()
-                predicted['robot']['eef_quaternions_wxyz'][0]=(Rotation.from_rotvec(alpha*gain*rot)*tool['rotation']).as_quat()[[3,0,1,2]].tolist()
-                shape=tools.geometry(predicted,'left')
+                predicted['robot']['eef_positions'][arm_index]=(old_link+alpha*gain*delta).tolist()
+                predicted['robot']['eef_quaternions_wxyz'][arm_index]=(Rotation.from_rotvec(alpha*gain*rot)*tool['rotation']).as_quat()[[3,0,1,2]].tolist()
+                shape=tools.geometry(predicted,arm)
                 minimum_gap=min(minimum_gap,shape['world_center_m'][2]-shape['downward_extent_m']-table['plane_z_m'])
             if minimum_gap<.002:
                 stop='Public finger sweep loses table-envelope clearance';break
             ep.execute(targets,steps=1 if answer['transition']['choice']=='advance' else 3 if phase=='clear_and_orient' else 2)
             if answer['transition']['choice']=='advance':
                 stage_done=True
+                if phase=='clear_and_orient' and configuration.get('refine_unpressed_baseline'):
+                    current_reference=observer.measure(ep.public,cap,identity)
+                    if current_reference.get('usable'):
+                        baseline=current_reference;source_step=ep.tick
+                        refined_center=np.asarray(current_reference['center_m'])
+                        if np.max(abs(refined_center[:2]-center[:2]))<.010:
+                            center[:2]=refined_center[:2]
+                            cap=dict(cap,center_m=center.tolist())
+                        save(ep.folder/(prefix+'_refined_unpressed_reference.json'),dict(
+                            baseline=baseline,source_step=source_step,control_cap=cap,
+                            interpretation='Refine an unpressed sensor reference at high clearance; keep the original RGB-class cap height for commanded depth and use SAM height only for relative motion'))
+                    elif configuration.get('require_refined_baseline'):
+                        stop='Current cap geometry unavailable after safe hover'
+                        stage_done=False
                 if phase=='press':
                     latched=True
                 if phase=='release_and_retreat' and latched:
@@ -183,12 +210,14 @@ def run(ep):
                 break
         if stop or not stage_done:
             stop=stop or 'Stage budget exhausted: '+phase;break
-    save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=count,visible_depression_verified=visible_press_evidence,
+    result=dict(completed_proxy_cycles=count,visible_depression_verified=visible_press_evidence,
         press_depth_m=depth,stop_reason=stop,physical_step=ep.tick,
-        scope='Only first red1 cycle; full task and electrical count are not established'))
+        baseline_step=source_step,baseline_geometry=baseline,reference_cap=cap,
+        scope='One visible/geometric press cycle; full task and electrical count are not established')
+    save(ep.folder/(prefix+'_result.json'),result)
     print(json.dumps(dict(event='first_red_cycle_finished',proxy_cycles=count,step=ep.tick,stop_reason=stop)),flush=True)
-    if ep.ended:
-        return
+    if ep.ended or configuration.get('return_to_sequence'):
+        return result
     request=wait_command(ep)
     if request.get('op')=='finish':
         return
