@@ -169,11 +169,16 @@ class Fold:
             ok,reason=self.phase(name,phase,bindings,goals,rotations,'open' if phase in ('release','retreat') else 'close',deadline,cap=45)
             if not ok:
                 return False,reason
-        # The initial pad point with a DOWNWARD tool is a different LINK6
-        # target, and can be unreachable. Restore the complete measured
-        # initial public pose, including orientation, for unloaded parking.
-        ok,reason=self.phase(name,'park',bindings,{a:self.park[a] for a in arms},
-            {a:self.park_rotation[a] for a in arms},'open',deadline,cap=55)
+        # Clear the next arm's corridor laterally at the reached retreat
+        # height/Y. Returning toward the robot body while rotating to its
+        # initial pose stalled in dev004, so do not repeat that path.
+        parking={};parking_rotations={}
+        for arm,s in bindings.items():
+            tool=self.tools.geometry(ep.public,arm);point=tool['world_center_m'].copy()
+            outward=-1. if arm=='left' else 1.
+            point[0]=s['source_m'][0]+outward*.045
+            parking[arm]=point;parking_rotations[arm]=tool['rotation']
+        ok,reason=self.phase(name,'park',bindings,parking,parking_rotations,'open',deadline,cap=55)
         result={a:deformation(ep.public,self.baseline,s['edge_pixel']) for a,s in bindings.items()}
         save(ep.folder/(name+'_visible_result.json'),dict(evidence=result,
             scope='Post-retreat source-region change only; detailed fold identity and native outcome remain separate'))
