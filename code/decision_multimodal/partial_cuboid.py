@@ -12,11 +12,16 @@ from rgb_cuboid import vertices,project,model_vertices
 from cap_motion import tool_mask
 
 
-def fit_partial(public,name,views,camera_names,prior,models,support_z=None):
+def fit_partial(public,name,views,camera_names,prior,models,support_z=None,extra_occlusion=None,straight_only=False):
     center=np.asarray(prior['center_m']);size=np.asarray(prior['size_m'])
     records=[];families=[]
     for (camera,material),camera_name in zip(views,camera_names):
         occlusion=tool_mask(public,camera_name)
+        if extra_occlusion and camera_name in extra_occlusion:
+            # Current foreground-object SAM silhouettes, not their fitted
+            # world poses, can explain a T-junction occlusion boundary.
+            observed=np.asarray(extra_occlusion[camera_name],np.uint8)*255
+            occlusion=np.maximum(occlusion,cv2.dilate(observed,np.ones((7,7),np.uint8)))
         _,own_depth=project(camera,center.reshape(1,3))
         for other,model in models.items():
             if other==name or not model.get('usable') or model.get('step')!=public['step']:
@@ -34,6 +39,17 @@ def fit_partial(public,name,views,camera_names,prior,models,support_z=None):
             continue
         edge=np.zeros(material.shape,np.uint8);edge[pixels[:,1],pixels[:,0]]=255
         lines=cv2.HoughLinesP(edge,1,np.pi/180,threshold=8,minLineLength=12,maxLineGap=2)
+        if straight_only:
+            if lines is None:
+                continue
+            keep=np.zeros(len(pixels),bool)
+            for x1,y1,x2,y2 in lines[:,0]:
+                a=np.array([x1,y1]);b=np.array([x2,y2]);segment=b-a
+                t=np.clip((pixels-a)@segment/(segment@segment+1e-12),0,1)
+                keep|=np.linalg.norm(pixels-a-t[:,None]*segment,axis=1)<=1.5
+            pixels=pixels[keep]
+            if len(pixels)<12:
+                continue
         angles=[] if lines is None else [np.arctan2(y2-y1,x2-x1)%np.pi for x1,y1,x2,y2 in lines[:,0]]
         independent=any(abs(np.sin(a-b))>.25 for a in angles for b in angles)
         families.append(dict(camera=camera_name,pixels=len(pixels),two_edge_directions=independent))
@@ -103,5 +119,6 @@ def fit_partial(public,name,views,camera_names,prior,models,support_z=None):
         edge_families=families,camera_names=[f['camera'] for f in families],step=public['step'],
         provenance='CURRENT_PARTIAL_WITH_STATIONARY_PRIOR' if support_z is not None else 'CURRENT_PARTIAL_DYNAMIC',
         prior_step=prior.get('step'),support_z_hypothesis_m=support_z,
+        extra_RGB_foreground_occlusion=bool(extra_occlusion),straight_silhouette_segments_only=bool(straight_only),
         source='Current unoccluded material edges plus earlier same-episode RGB dimensions; public robot/held-object projections',
         limits='Local conditional fit,2mm size/shape sensitivity and optional stationary-flat-support hypothesis; not a full current silhouette, calibrated confidence, exact interval set or contact evidence')
