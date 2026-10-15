@@ -11,7 +11,7 @@ from camera_view import acquire
 from stack_blocks import choice,compile_targets
 from robodojo_episode import save
 
-PLAN=Path(__file__).with_name('plans')/'general_pickup_v4.json'
+PLAN=Path(__file__).with_name('plans')/'general_pickup_v5.json'
 
 
 def questions(state):
@@ -172,8 +172,7 @@ def run(ep):
                         # Orientation is a nuisance under partial planar
                         # visibility. Use the SAME named material feature,
                         # stabilized by surviving RGB tracks, for co-motion.
-                        good=bool(u<=.010 and max(measured.get('current_material_landmarks',{}).values(),default=0)>=6 and
-                            relative_translation<=.003+u+previous_attachment['u'])
+                        good=bool(u<=.010 and relative_translation<=.003+u+previous_attachment['u'])
                         comotion_count=comotion_count+1 if good else 0
                     if moving_anchor is None:
                         moving_anchor=dict(ascent=ascent,height=float(point[2]),u=u)
@@ -181,11 +180,14 @@ def run(ep):
                     attachment=bool(comotion_count>=2 and ascent>=.025 and moving_anchor is not None and
                         point[2]-moving_anchor['height']>u+moving_anchor['u'])
                     target[2]=tool['world_center_m'][2]+max(0.,.103-interval[0])
-                    if not attachment:
+                    candidate_allowed=bool(interval[0]>=.010 and clearance>0.)
+                    target[2]=min(target[2],close_tcp[2]+.125)
+                    if not candidate_allowed:
                         target[2]=min(target[2],close_tcp[2]+.050)
                     error=target-tool['world_center_m']
                 else:
                     attachment=False
+                    candidate_allowed=False
                 # Natural object rotation is allowed; hold the measured hand
                 # orientation after candidate closure, without restoring an
                 # object's original orientation or demanding all points rise10cm.
@@ -194,8 +196,12 @@ def run(ep):
                 passed=verified and lift_hold_steps>=6
                 if verified:
                     error[:]=0;angular[:]=0
-                if ascent>=.050-deadband and not attachment:
-                    stop='50mm active probe ended without supported successive source/hand co-motion';break
+                if ascent>=.050-deadband and not candidate_allowed:
+                    stop='50mm probe lacks positive current source-rise/clearance evidence';break
+                if ascent>=.125-deadband and not verified:
+                    stop='125mm development bound reached without verified visual goal';break
+                if valid and interval[0]>=.100 and not attachment:
+                    stop='Named-feature goal reached with unresolved attachment; no success claim';break
                 if valid and ascent>=.025 and moving_anchor is not None and point[2]+measured['conditional_halfwidth_m'][2]<moving_anchor['height']-moving_anchor['u']:
                     stop='Current RGB source motion contradicts ascending hand';break
             else:
@@ -224,6 +230,7 @@ def run(ep):
                     state.update(active_capture_probe=True,current_material_visible=visible,current_pose_verified=False)
                 else:
                     state.update(named_neck_height_gain_interval_m=interval,attachment_valid=attachment,
+                        bounded_candidate_lift_permitted=candidate_allowed,
                         active_probe_ascent_m=ascent,successive_comotion_intervals=comotion_count,
                         relative_translation_residual_m=relative_translation,relative_rotation_residual_rad=relative_rotation,
                         conditional_table_clearance_lower_m=clearance,stable_hold_steps=lift_hold_steps)

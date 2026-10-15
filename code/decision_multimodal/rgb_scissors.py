@@ -42,7 +42,7 @@ def intersect(camera, uv, height):
 
 
 class Scissors:
-    def __init__(self, public, seeds, table, mask_provider=None):
+    def __init__(self, public, seeds, table, mask_provider=None,track_material=False):
         self.table = table
         self.mask_provider=mask_provider
         self.cameras = public['calibration']
@@ -99,7 +99,7 @@ class Scissors:
         self.last_result = None
         self.resting_estimate=np.zeros(3)
         self.feature_tracks={}
-        for name,mask in masks.items():
+        for name,mask in (masks.items() if track_material else []):
             gray=cv2.cvtColor(public['rgb'][name],cv2.COLOR_RGB2GRAY)
             corners=cv2.goodFeaturesToTrack(gray,maxCorners=60,qualityLevel=.015,minDistance=5,
                 mask=mask.astype(np.uint8),blockSize=3)
