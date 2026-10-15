@@ -1,137 +1,500 @@
 {
   "planner_response": {
-    "task": "Fold the visible coral long-sleeved shirt into a compact rectangle.",
-    "setup": {
-      "roles": "The coral garment is the sole manipulated object. The wooden tabletop supports folding. Left and right mean image-left and image-right in the high camera.",
-      "assumptions": [
-        "One shirt lies approximately flat, with sleeves extended, neckline away from the robot and hem toward it.",
-        "The exposed wooden surface is locally planar. Estimate its plane from calibrated RGB correspondences; do not assume its height.",
-        "Initially visible boundaries approximate garment landmarks. Hidden seams, underside geometry, contact, cloth thickness and native success are unavailable."
+    "policy": "two_sleeves_inward_then_hem_half_fold",
+    "status": "DESIGNED_NOT_EXECUTED",
+    "rationale": "The visible shirt is spread flat with both cuffs exposed. Fold each sleeve onto the torso, then lift both hem corners together for one approximately transverse half-fold. Three operations avoid extra side-panel folds within the 500-step horizon.",
+    "units": "meters, radians, pixels, physical steps",
+    "image_coordinates": "640x480; origin top-left; points are [u,v]",
+    "control": {
+      "dt_s": 0.04,
+      "max_physical_steps": 500,
+      "decision_steps": [
+        1,
+        5
       ],
-      "initial_features": {
-        "coordinates": "Approximate pixels [u,v]; ROIs are [xmin,ymin,xmax,ymax]. Seeds must be replaced after every action.",
-        "high": {
-          "shirt_roi": [
-            158,
-            180,
-            488,
-            357
+      "max_LINK6_translation_per_decision_m": 0.05,
+      "max_rotation_per_decision_rad": 0.35,
+      "controller": "Original native robot IK and drives.",
+      "actor_output": {
+        "left": [
+          "signed_world_dx",
+          "signed_world_dy",
+          "signed_world_dz",
+          "signed_world_rotation_vector",
+          "OPEN|CLOSE|KEEP"
+        ],
+        "right": [
+          "signed_world_dx",
+          "signed_world_dy",
+          "signed_world_dz",
+          "signed_world_rotation_vector",
+          "OPEN|CLOSE|KEEP"
+        ],
+        "transition": "CONTINUE|ADVANCE|STOP",
+        "physical_steps": "integer 1..5"
+      },
+      "rule": "External processing supplies bounded increments and pass booleans. Actor chooses their signs and grip commands; no geometry proof is requested. ADVANCE requires stage_pass. Deadline exhaustion triggers recovery or STOP, never assumed completion."
+    },
+    "initial_landmark_seeds": {
+      "camera": "cam_high",
+      "meaning": "Approximate semantic seeds from current RGB, not completed segmentation measurements.",
+      "left_cuff": {
+        "edge_endpoints": [
+          [
+            163,
+            334
           ],
-          "neckline_region": [
-            311,
-            181,
-            354,
-            207
-          ],
-          "left_shoulder": [
-            279,
-            202
-          ],
-          "right_shoulder": [
-            371,
-            204
-          ],
-          "left_armpit": [
-            260,
-            260
-          ],
-          "right_armpit": [
-            376,
-            254
-          ],
-          "left_cuff_roi": [
-            158,
-            326,
-            207,
-            358
-          ],
-          "right_cuff_roi": [
-            451,
-            250,
-            487,
-            289
-          ],
-          "left_hem_corner": [
-            264,
-            341
-          ],
-          "right_hem_corner": [
-            411,
-            302
+          [
+            198,
+            354
           ]
-        },
-        "left_wrist": {
-          "visible_left_sleeve_patch_roi": [
-            490,
-            337,
-            552,
-            463
+        ],
+        "seed": [
+          181,
+          344
+        ],
+        "roi": [
+          155,
+          319,
+          213,
+          363
+        ]
+      },
+      "right_cuff": {
+        "edge_endpoints": [
+          [
+            464,
+            282
           ],
-          "cuff": null,
-          "shoulders": null,
-          "hem": null
-        },
-        "right_wrist": {
-          "visible_right_sleeve_patch_roi": [
-            117,
-            313,
-            272,
-            410
-          ],
-          "candidate_cuff_roi": [
-            338,
-            430,
-            395,
-            479
-          ],
-          "confirmed_cuff": null,
-          "shoulders": null,
-          "hem": null
-        },
-        "correspondences": "Wrist patches correspond semantically to their respective sleeves; no exact initial cross-camera point correspondence is asserted."
+          [
+            480,
+            260
+          ]
+        ],
+        "seed": [
+          472,
+          271
+        ],
+        "roi": [
+          447,
+          246,
+          491,
+          294
+        ]
+      },
+      "left_shoulder": [
+        269,
+        207
+      ],
+      "right_shoulder": [
+        370,
+        207
+      ],
+      "left_armpit": [
+        257,
+        260
+      ],
+      "right_armpit": [
+        382,
+        251
+      ],
+      "neck_center": [
+        332,
+        190
+      ],
+      "left_hem": {
+        "seed": [
+          265,
+          338
+        ],
+        "roi": [
+          251,
+          320,
+          285,
+          350
+        ]
+      },
+      "right_hem": {
+        "seed": [
+          411,
+          303
+        ],
+        "roi": [
+          391,
+          286,
+          423,
+          318
+        ]
+      },
+      "left_sleeve_destination": [
+        323,
+        251
+      ],
+      "right_sleeve_destination": [
+        329,
+        275
+      ],
+      "torso_polygon_seed": [
+        [
+          269,
+          207
+        ],
+        [
+          370,
+          207
+        ],
+        [
+          382,
+          251
+        ],
+        [
+          411,
+          303
+        ],
+        [
+          265,
+          338
+        ],
+        [
+          257,
+          260
+        ]
+      ]
+    },
+    "operation_bindings": {
+      "LEFT_SLEEVE": {
+        "source": "Refined left cuff boundary, grasp center 8 mm inward.",
+        "target": "Initially supported torso patch around [323,251].",
+        "active_arm": "left",
+        "other_arm": "right parked"
+      },
+      "RIGHT_SLEEVE": {
+        "source": "Refined right cuff boundary, grasp center 8 mm inward.",
+        "target": "Initially supported torso patch around [329,275].",
+        "active_arm": "right",
+        "other_arm": "left parked"
+      },
+      "HEM_HALF": {
+        "sources": [
+          "Refined left hem corner, 8 mm inward",
+          "Refined right hem corner, 8 mm inward"
+        ],
+        "targets": "Initial supported-plane reflections across the transverse torso midpoint line, defined below.",
+        "active_arms": "both, paired motion"
       }
     },
     "processing": {
-      "algorithm": [
-        "Mask projected X5 geometry using measured robot state. Segment coral cloth using Lab color and connected contours; retain fresh boundaries and optical-flow patch tracks.",
-        "Match synchronized exposed wood texture across calibrated views using bidirectional descriptors, epipolar filtering and triangulation. Robustly fit the support plane.",
-        "Use camera-local rays [(u-cx)/fx,-(v-cy)/fy,-1] with the supplied camera-to-environment transforms. Validate triangulation by positive ray distances and reprojection.",
-        "Intersect initial supported cloth rays with the plane. During lifting, triangulate matched cloth texture or contour features; never intersect elevated cloth with the table.",
-        "Re-estimate cuffs, shoulders, armpits, hem and creases from fresh contours, color patches and temporal associations. Track material identity without transporting a rigid shirt pose.",
-        "Estimate position uncertainty from pixel localization, triangulation conditioning and plane-fit residuals. Reject ambiguous correspondences."
+      "allowed_inputs": "Current RGB, public calibration, measured robot joints/poses, public X5 meshes and joint limits. No object truth, cloth vertices, contacts, forces, reward, outcomes or experience files.",
+      "segmentation": [
+        "Initialize coral/SAM garment mask using the supplied seeds; refine semantic edges inside their ROIs.",
+        "Exclude robot pixels using public meshes projected with measured state.",
+        "Keep source identity through local RGB descriptors and image tracks; nearest arbitrary garment boundary is insufficient.",
+        "Reacquire each source before its operation. A source must visibly rest on the table before plane projection; otherwise wait, recover or stop."
       ],
-      "scales": "A is measured usable jaw aperture from X5 finger geometry and joints; the initial joint readings are approximately 0.044 m per finger. W and H are current unfolded torso width and length. Set m=max(3*sigma_xy,0.12*A), h=max(3*sigma_z,0.35*A). Reject grasp patches narrower than 2*m or outside reachable, collision-checked space.",
-      "unsupported": "Closure aperture cannot establish capture. Single-view elevated depth, hidden layer alignment, force and exact wrinkle removal remain unsupported."
-    },
-    "recipe": [
-      "Fold the left sleeve inward about the current left shoulder-to-armpit line, grasping its cuff; place the cuff inside the torso below the opposite shoulder.",
-      "Repeat for the right sleeve, placing its cuff below the left shoulder.",
-      "Fold the left torso third inward about a neckline-to-hem longitudinal line one-third across the torso. Grasp the left shoulder-side edge and left hem corner with both arms.",
-      "Fold the right torso third over the center using its shoulder-side edge and hem corner. Re-estimate the existing folded boundary.",
-      "Grasp both current hem corners and fold the lower half toward the shoulder edge about the transverse midpoint. Target a rectangle bounded by the folded side edges."
-    ],
-    "execution": {
-      "order": "For each recipe operation: APPROACH, SEAT, CLOSE, LIFT_TEST, TRANSFER, LOWER, RELEASE, RETREAT_TEST. Advance immediately when the current predicate passes.",
-      "actor_interface": "English structured text contains only operation identity, current phase, relevant visible features, uncertainty and the fields below. Positions and residuals use environment XYZ in meters; rotation residual is log(R_target*R_current^-1).",
-      "phases": {
-        "APPROACH": "Fields: e_xyz=grasp_prepose-current_jaw_center, e_rotation, clearance. Pass when lateral error<=m, height error<=h, and angular error<=atan(m/A).",
-        "SEAT": "Fields: patch-to-jaw lateral residual, patch overlap fraction, jaw-bottom height above supported patch. Pass when error<=m, overlap>=0.7, and height uncertainty band intersects the patch surface.",
-        "CLOSE": "Fields: measured aperture and aperture change. Pass after commanded closure stops changing within encoder uncertainty; proceed to active lift regardless of final aperture.",
-        "LIFT_TEST": "Fields: tool rise, triangulated patch rise, patch/tool displacement mismatch. Pass when tool and patch rise>=h, mismatch<=max(3*sigma_xyz,0.25*h), and the patch remains visibly between jaws across two action-separated frames.",
-        "TRANSFER": "Fields: freshly estimated held-patch target residual, rotation residual and swept clearance. Targets reflect current material landmarks across the prescribed fold line, adjusted inside the intended footprint by m. Pass at error<=max(m,0.05*W) with valid clearance.",
-        "LOWER": "Fields: patch height over support, landing overlap, crease deviation. Pass when height<=h, overlap>=0.8, and deviation<=max(2*m,0.08*W).",
-        "RELEASE": "Fields: measured opening relative to local patch width. Pass when usable opening exceeds patch width plus 2*m.",
-        "RETREAT_TEST": "Fields: tool separation, released-boundary displacement, target-footprint overlap. Pass after retreat>=h, boundary displacement<=2*m and overlap>=0.8; then advance recipe."
+      "camera_projection": {
+        "convention": "Use supplied graphics-camera transforms: ray_camera=[(u-cx)/fx,-(v-cy)/fy,-1]. Check that projected public robot geometry agrees with RGB; do not silently substitute an optical +Z convention.",
+        "supported_point": "d=R*ray_camera; lambda=(z_table-camera_z)/d_z; P=camera_translation+lambda*d.",
+        "z_table_m": 0.7646983141,
+        "conditional_plane_sensitivity_m": 0.002,
+        "restriction": "Plane intersection is permitted only for visibly table-supported landmarks. Never apply it to lifted cloth."
+      },
+      "demonstrated_refinement_required": {
+        "initial_search_radius_px": 8,
+        "procedure": "Run boundary refinement from the seed and four starts offset by (+/-2,0),(0,+/-2) pixels. Report all five resulting points and their maximum pairwise spread. Inspect the local edge overlay.",
+        "pass": "Correct semantic edge, overlay agrees with visible boundary, spread<=3 px, and edge remains inside its ROI.",
+        "uncertainty_envelope": "Project the refined pixel neighborhood of +/-3 px at z_table-0.002, z_table, z_table+0.002. Report the maximum horizontal distance from nominal as source_uncertainty_mm; this is conditional sensitivity, not calibrated confidence.",
+        "source_pass": "source_supported_visible AND refinement_pass AND source_uncertainty_mm<=15.",
+        "current_result": "Pending external processing; no refinement result or millimeter accuracy is claimed from the supplied packet."
+      },
+      "hem_geometry": {
+        "definition": "Let H_L,H_R be initial supported hem grasp points and U_L,U_R the initial supported shoulder points. H=(H_L+H_R)/2; U=(U_L+U_R)/2; n=normalize(U-H) in XY; C=(H+U)/2. Fold line passes through C perpendicular to n. T_i=H_i-2*n*dot(H_i-C,n), retaining table-plane Z.",
+        "meaning": "T_i are intended landing locations computed from initial landmarks, not measured final cloth locations.",
+        "check": "Preserve left/right ordering and reject an unreachable or robot-colliding pair. Do not silently change to another recipe."
+      },
+      "gripper_geometry": {
+        "current_joint_opening_sum_m": {
+          "left": 0.0879987776,
+          "right": 0.0879987776
+        },
+        "aperture": "Compute opposing-pad gap from public finger meshes transformed by measured joints. Joint-position sum is not automatically the pad gap.",
+        "orientation": "Insertion axis points world-down. Opposing pads lie across the refined edge normal, with one pad outside and one inside the visible edge before closure.",
+        "LINK6_target": "Convert desired pad pose through the public measured-joint finger geometry; do not treat the reported EEF origin as the fingertip.",
+        "support_band": "Allow finger-tip nominal Z only within [z_table-0.002,z_table+0.008] during initial insertion. Target z_table+0.002 first; one shallow descent to z_table-0.001 is allowed within the stage budget.",
+        "body_clearance": "All non-tip hand geometry remains at least 10 mm above the upper table hypothesis z_table+0.002. The shallow band is an interaction allowance, not evidence of contact.",
+        "approach_aperture": "Use a measured pad gap of 40..60 mm, subject to public limits and source uncertainty. Straddling must remain valid across the reported uncertainty envelope."
+      },
+      "candidate_transport": {
+        "offset": "At closure, o=R_LINK6^T*(P_source_supported-p_LINK6). Freeze o for this attempt and label it CANDIDATE.",
+        "trajectory_conversion": "For a desired candidate patch point W and hand rotation R, command p_LINK6_target=W-R*o.",
+        "restriction": "This predicts a robot trajectory only. It does not establish attachment or observe elevated cloth XYZ.",
+        "tracking_error": "Measured LINK6 position and orientation versus commanded LINK6 pose.",
+        "source_error": "Supported-landmark pixel/plane uncertainty. Keep separate from robot tracking error; successful robot tracking does not prove cloth transport."
+      },
+      "lift_feedback": {
+        "baseline": "Save unoccluded fixed-camera garment mask and RGB tracks immediately before lift.",
+        "local_regions": "Use each source's fixed-camera 40x40-pixel neighborhood plus the connected sleeve or hem region; exclude robot pixels.",
+        "deformation": "Require either at least 25 valid local cloth tracks with median displacement>=3 px, or at least 80 changed garment pixels connected to the source region with boundary displacement>=3 px.",
+        "motion_agreement": "When tracks are available, at least 60% must agree in image direction with projected candidate motion. Candidate projection is a hypothesis, not cloth pose.",
+        "aperture_feedback": "Report current gap, gap change since closure and difference from public empty-closure gap. Thin cloth may close nearly to the empty gap; aperture alone neither proves nor disproves capture.",
+        "evidence_pass": "hand_rise_mm>=35 AND local_deformation_visible AND motion_not_contradictory AND NOT visible_escape.",
+        "failure": "Hand rises>=35 mm while adequately visible local cloth remains unchanged, or cloth visibly leaves the jaws.",
+        "unknown": "Occlusion or insufficient image tracks is UNKNOWN. Use the remaining lift-test allowance for one further small lift/view update; then recover if unresolved.",
+        "bilateral": "For hem transfer require separate left and right local evidence after active lifting. No pre-lift capture certificate or strict triangulation is required."
       }
     },
-    "recovery": "Allow one recovery per operation: open, retreat to verified clearance, and shift the wrist viewpoint within one aperture while preserving table clearance. Recompute geometry and select a broader visible patch on the same cuff or edge; retry once. Missing metric geometry, failed capture or failed retreat after that ends the attempt as incomplete.",
-    "completion": "After the final retreat, require both sleeves inside the folded footprint, paired hem/shoulder edges within max(2*m,0.1*W), and no exposed protrusion larger than that margin. Report visually verified completion or incomplete; do not claim hidden-layer neatness."
+    "stage_order": [
+      "PREPARE",
+      "LEFT_SLEEVE",
+      "RIGHT_SLEEVE",
+      "HEM_HALF",
+      "FINAL"
+    ],
+    "budgets": {
+      "PREPARE": 24,
+      "LEFT_SLEEVE": 128,
+      "RIGHT_SLEEVE": 128,
+      "HEM_HALF": 184,
+      "FINAL": 36,
+      "total": 500,
+      "accounting": "Includes both arms, gripping, observations, retries and retreat. Simultaneous arm actions consume shared physical steps once. Unused steps need not be spent."
+    },
+    "trajectory": {
+      "notation": "S=currently supported source; T=bound destination; all coordinates world. Heights are candidate patch heights relative to z_table, not observations of elevated cloth.",
+      "park": {
+        "left_LINK6": [
+          -0.2995291,
+          -0.3522999,
+          0.9215
+        ],
+        "right_LINK6": [
+          0.3004709,
+          -0.3522999,
+          0.9215
+        ],
+        "condition": "Retain a collision-free measured pose near the initial pose; move the parked hand outward if the active swept mesh would approach it."
+      },
+      "sleeve_points": [
+        "A=(S.x,S.y,z_table+0.075), OPEN and orient",
+        "B=source insertion pad pose within shallow band, CLOSE",
+        "C=S+[0,0,0.055], KEEP; active lift evidence",
+        "D=0.5*S+0.5*T+[0,0,0.100], KEEP",
+        "E=T+[0,0,0.045], KEEP",
+        "F=T+[0,0,0.012], OPEN",
+        "G=T+[0,0,0.090], OPEN; then outward park"
+      ],
+      "hem_points": [
+        "Both A_i=(S_i.x,S_i.y,z_table+0.075), OPEN",
+        "Both B_i=source insertion pad poses, CLOSE",
+        "Both C_i=S_i+[0,0,0.055], KEEP; bilateral lift evidence",
+        "Both D_i=0.5*S_i+0.5*T_i+[0,0,0.130], KEEP",
+        "Both E_i=T_i+[0,0,0.045], KEEP",
+        "Both F_i=T_i+[0,0,0.015], OPEN",
+        "Both G_i=T_i+[0,0,0.100], OPEN; then outward park"
+      ],
+      "noncrossing": "Sleeves run sequentially with the other arm parked. For hem, left and right retain their source ordering and use the same normalized trajectory progress. Interpolate within each arm's side corridor; prohibit hand swaps.",
+      "collision_guard": "Externally check full public robot swept meshes, table clearance and native reachability for every bounded command. Require >=30 mm inter-hand mesh clearance and no predicted arm-arm intersection. If violated, hold and recover within budget.",
+      "transfer_feedback": "Refresh fixed-camera deformation, source identity evidence and measured aperture at every decision. Visible escape or clear loss of cloth motion stops transfer immediately."
+    },
+    "fixed_operation_phases": {
+      "sleeve": [
+        {
+          "phase": "APPROACH",
+          "cap": 28
+        },
+        {
+          "phase": "INSERT_CLOSE",
+          "cap": 16
+        },
+        {
+          "phase": "LIFT_TEST",
+          "cap": 12
+        },
+        {
+          "phase": "TRANSFER",
+          "cap": 28
+        },
+        {
+          "phase": "LOWER_OPEN",
+          "cap": 12
+        },
+        {
+          "phase": "RETREAT_CHECK",
+          "cap": 8
+        },
+        {
+          "phase": "RECOVERY_OR_RETRY_RESERVE",
+          "cap": 24
+        }
+      ],
+      "hem": [
+        {
+          "phase": "APPROACH",
+          "cap": 32
+        },
+        {
+          "phase": "INSERT_CLOSE",
+          "cap": 20
+        },
+        {
+          "phase": "LIFT_TEST",
+          "cap": 16
+        },
+        {
+          "phase": "TRANSFER",
+          "cap": 48
+        },
+        {
+          "phase": "LOWER_OPEN",
+          "cap": 20
+        },
+        {
+          "phase": "RETREAT_CHECK",
+          "cap": 16
+        },
+        {
+          "phase": "RECOVERY_OR_RETRY_RESERVE",
+          "cap": 32
+        }
+      ],
+      "deadline_rule": "Caps are maxima, not required dwell times. Reserve may fund recovery or one changed capture attempt, including its lift evidence. Retry only if remaining operation budget also covers the unfinished transfer, release and retreat. Otherwise recover and STOP."
+    },
+    "actor_packet": {
+      "always": [
+        "stage_id",
+        "phase_id",
+        "operation_steps_left",
+        "total_steps_left",
+        "left_dx_m,left_dy_m,left_dz_m,left_rx_rad,left_ry_rad,left_rz_rad",
+        "right_dx_m,right_dy_m,right_dz_m,right_rx_rad,right_ry_rad,right_rz_rad",
+        "left_tracking_error_mm,right_tracking_error_mm",
+        "left_rotation_error_rad,right_rotation_error_rad",
+        "left_pad_gap_mm,right_pad_gap_mm",
+        "collision_guard_ok",
+        "stage_pass",
+        "recover_now"
+      ],
+      "PREPARE": {
+        "fields": [
+          "camera_convention_ok",
+          "mask_ok",
+          "refinement_spread_px",
+          "source_uncertainty_mm",
+          "supported_sources_ok",
+          "public_meshes_ok",
+          "trajectory_reachable"
+        ],
+        "pass": "All booleans true; refinement_spread_px<=3; source_uncertainty_mm<=15."
+      },
+      "APPROACH": {
+        "fields": [
+          "source_pass",
+          "straddle_possible",
+          "tip_height_mm",
+          "body_clearance_mm",
+          "orientation_ready"
+        ],
+        "pass": "source_pass AND straddle_possible AND orientation_ready AND tracking_error_mm<=12 AND rotation_error_rad<=0.15."
+      },
+      "INSERT_CLOSE": {
+        "fields": [
+          "tips_in_shallow_band",
+          "edge_straddled",
+          "body_clearance_ok",
+          "closure_settled",
+          "pad_gap_mm"
+        ],
+        "pass": "tips_in_shallow_band AND edge_straddled AND body_clearance_ok AND closure_settled.",
+        "meaning": "Allows lift testing; does not certify capture."
+      },
+      "LIFT_TEST": {
+        "fields": [
+          "hand_rise_mm",
+          "local_deformation_visible",
+          "motion_not_contradictory",
+          "visible_escape",
+          "evidence_unknown",
+          "lift_evidence_pass"
+        ],
+        "pass": "lift_evidence_pass for each active arm."
+      },
+      "TRANSFER": {
+        "fields": [
+          "waypoint_index",
+          "waypoint_error_mm",
+          "cloth_motion_consistent",
+          "feedback_unknown",
+          "visible_escape",
+          "gap_change_mm"
+        ],
+        "pass": "Final elevated waypoint reached within 12 mm robot error, collision guard true, and recent cloth-motion feedback remains consistent.",
+        "hold_or_recover": "Unknown feedback permits only an in-budget observation hold; visible escape or contradictory motion triggers recovery."
+      },
+      "LOWER_OPEN": {
+        "fields": [
+          "landing_robot_error_mm",
+          "lowering_clearance_ok",
+          "opening_reached"
+        ],
+        "pass": "landing_robot_error_mm<=12 AND lowering_clearance_ok AND opening_reached.",
+        "meaning": "Robot release completed; cloth landing quality is checked after retreat."
+      },
+      "RETREAT_CHECK": {
+        "fields": [
+          "hands_clear",
+          "garment_unoccluded",
+          "operation_visible_check",
+          "check_unknown"
+        ],
+        "pass": "hands_clear AND garment_unoccluded AND operation_visible_check."
+      },
+      "FINAL": {
+        "fields": [
+          "hands_parked",
+          "garment_unoccluded",
+          "sleeves_compact",
+          "hem_fold_visible",
+          "single_main_garment",
+          "visible_result"
+        ],
+        "pass": "hands_parked AND garment_unoccluded; report visible_result separately."
+      }
+    },
+    "recovery": {
+      "attempt_limit": "At most one physically changed capture retry per operation; the bilateral hem operation shares one retry.",
+      "procedure": "Stop horizontal transfer. If cloth may still be held, lower the current candidate patch vertically toward the declared release height, maintaining clearance; OPEN and retreat. If geometry cannot be made safe, STOP.",
+      "changed_retry": "After a source is visibly supported again, reacquire its semantic edge. Shift the grasp 8 mm along the local edge and change yaw by 0.15 rad while preserving down insertion and pad straddling. Recompute uncertainty and candidate offset.",
+      "hem_failure": "Lower and release both sides before retrying. Change the failed grasp; reacquire both sources. Do not transfer with one unsupported capture.",
+      "forbidden": "No repeated identical close commands counted as new evidence; no second retry; no table projection of hanging cloth.",
+      "exit": "If visible checks fail after release, report incomplete and STOP; do not add an unbudgeted refolding operation."
+    },
+    "visible_checks": {
+      "sleeve": "After retreat, the corresponding cuff identity or connected sleeve boundary has moved into the torso target region expanded by 20 px, and the original cuff neighborhood loses at least 60% of its initial garment pixels. Occlusion or lost identity gives UNKNOWN.",
+      "hem": "After retreat, the initial lower-hem source neighborhoods lose at least 60% of their garment pixels, a folded edge is visible near the intended upper landing region, and garment extent along the initial body axis is <=0.70 of its initial extent.",
+      "final": "Both sleeve checks and hem check pass; main connected garment contains >=95% of garment-mask pixels; no obvious extended sleeve remains; hands are clear.",
+      "result_values": [
+        "VISIBLY_FOLDED",
+        "INCOMPLETE",
+        "UNKNOWN"
+      ],
+      "separation": "These are RGB appearance checks. They neither access nor substitute for external benchmark success evaluation."
+    }
   },
   "provenance": {
     "model": "gpt-6.1-sol",
     "reasoning_effort": "high",
     "authentication": "local ChatGPT Pro",
-    "response_sha256": "eed44e2cfd952e04b8c62eb1af49400896b3027d8e13c6c93d9e315339a9451d",
-    "status": "Current initial RGB based proposal; not an executed or successful controller"
-  }
+    "raw_response_sha256": "b20d8134774d29cb92185f257566a8883a019d83286f3b220b8c1a6ca3597ae6",
+    "experience_injection": false
+  },
+  "compiled_notes": [
+    "Actual development controller; no frozen success claim.",
+    "Initial semantic pixel seeds and raw Pro recipe are retained; all world landmarks are externally measured from current RGB under a declared table-support hypothesis.",
+    "Operation deadlines160/310/500 redistribute unused preparation/final allowances to physical approach, release and outward parking. Original per-phase caps are not claimed executable.",
+    "Distal15mm of each finger is the shallow interaction region; proximal hand mesh must stay10mm above the upper2mm table hypothesis. Swept hand AABB separation30mm is checked; no full-arm/scene collision certification is claimed.",
+    "Pregrasp opening55mm is derived from public URDF aperture endpoints. OPEN during release maps to native full opening.",
+    "Deformation uses visible source-connected mask boundary change; source visibility is explicitly reported. Initial RGB before approach is the deformation baseline.",
+    "Candidate transport uses a frozen closure offset only as a robot path hypothesis; lifted cloth XYZ is never table-projected.",
+    "One extra10mm lift is allowed for unknown local visibility. No retry or new fold is added automatically after a failed operation.",
+    "This first candidate does not yet implement full visible fold certification; robot recipe completion remains separate from program/native success."
+  ]
 }
