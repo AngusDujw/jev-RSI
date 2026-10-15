@@ -17,7 +17,7 @@ def white_region(rgb,box,seed):
     return (labels==min(choices)[1]).astype(np.uint8)
 
 
-def fit(public,seeds,table_z,prior=None):
+def fit(public,seeds,table_z,prior=None,arc_quantile=.55):
     views=[];masks={}
     high=seeds['cam_high'];camera=public['calibration']['cam_high']
     origin,direction=ray(camera,high['center'])
@@ -35,7 +35,7 @@ def fit(public,seeds,table_z,prior=None):
         uv,depth=project(camera,np.stack([nominal,nominal+[0,0,.01]]))
         up=uv[1]-uv[0];up/=np.linalg.norm(up)
         coordinate=pixels@up
-        selected=pixels[coordinate>=np.quantile(coordinate,.55)]
+        selected=pixels[coordinate>=np.quantile(coordinate,arc_quantile)]
         if len(selected)<12:
             continue
         views.append((name,selected));masks[name]=mask
@@ -75,6 +75,7 @@ def fit(public,seeds,table_z,prior=None):
         sensitivity_xyz_radius_m=sensitivity.tolist(),camera_names=[name for name,_ in views],
         rim_pixels={name:len(pixels) for name,pixels in views},upper_arc_pixels={name:pixels.tolist() for name,pixels in views},
         interior_solution=interior,jacobian_rank=rank,
+        retained_upper_contour_fraction=float(1-arc_quantile),
         source='Upper45percent of associated RGB white silhouette contours and public calibrated circle projection',
         limits='Horizontal circular rim and upper-silhouette arc identity are hypotheses. Not cavity depth, wall thickness, contact or object truth. Sensitivity is conditional, not a calibrated confidence interval.'),masks
 

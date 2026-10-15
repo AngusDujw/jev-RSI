@@ -78,7 +78,7 @@ class Fold:
                     position_deadband_mm=tolerance*1000,rotation_deadband_rad=.025,measured_pad_gap_mm=aperture*1000,
                     grip_command=grip,robot_waypoint_ready=passed)
                 if phase=='lift_test':
-                    evidence=deformation(public,self.baseline,bindings[arm]['edge_pixel'])
+                    evidence=deformation(public,getattr(self,'operation_baseline',self.baseline),bindings[arm]['edge_pixel'])
                     rise=tool['world_center_m'][2]-bindings[arm]['closure_pad_z']
                     state.update(evidence,hand_rise_mm=rise*1000)
                     if rise>=.035 and not evidence['local_deformation_visible'] and not evidence['evidence_unknown']:
@@ -150,6 +150,9 @@ class Fold:
 
     def operate(self,name,bindings,targets,deadline):
         ep=self.ep;arms=tuple(bindings);rotations={};goals={}
+        # A later fold must be compared with its own unoccluded preapproach
+        # garment, not with deformation caused by earlier sleeve operations.
+        self.operation_baseline=ep.public['rgb']['cam_high'].copy()
         for arm,source in bindings.items():
             tool=self.tools.geometry(ep.public,arm);r=self.orientation(source['inward_normal_world'],tool['rotation']);rotations[arm]=r
             # Downward distal extent depends on the measured aperture, but with
@@ -158,7 +161,8 @@ class Fold:
             goals[arm]=np.asarray(source['source_m'])+[0,0,extent+.075]
         for phase in ('approach','insert','close'):
             if phase=='insert':
-                goals={a:np.asarray(s['source_m'])+[0,0,self.tools.geometry(ep.public,a)['distal_tip_from_center_m']+.002] for a,s in bindings.items()}
+                insertion=-.001 if name=='hem_half' else .002
+                goals={a:np.asarray(s['source_m'])+[0,0,self.tools.geometry(ep.public,a)['distal_tip_from_center_m']+insertion] for a,s in bindings.items()}
             ok,reason=self.phase(name,phase,bindings,goals,rotations,'close' if phase=='close' else 'preopen',deadline,cap=75 if phase=='approach' else 30)
             if not ok:
                 return False,reason
@@ -189,7 +193,7 @@ class Fold:
             point[0]=s['source_m'][0]+outward*.045
             parking[arm]=point;parking_rotations[arm]=tool['rotation']
         ok,reason=self.phase(name,'park',bindings,parking,parking_rotations,'open',deadline,cap=55)
-        result={a:deformation(ep.public,self.baseline,s['edge_pixel']) for a,s in bindings.items()}
+        result={a:deformation(ep.public,self.operation_baseline,s['edge_pixel']) for a,s in bindings.items()}
         save(ep.folder/(name+'_visible_result.json'),dict(evidence=result,
             scope='Post-retreat source-region change only; detailed fold identity and native outcome remain separate'))
         return ok,reason
