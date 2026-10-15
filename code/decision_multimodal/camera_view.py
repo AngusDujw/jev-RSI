@@ -64,6 +64,8 @@ def acquire(ep, point, arm, label, max_actions=16):
         expected_pixel=pixel.tolist(),rotation_wxyz=desired.as_quat()[[3,0,1,2]].tolist(),
         source='Public camera mount, measured robot, current RGB table point hypothesis and public palm/finger ray-mesh occlusion checks; camera acquisition only'))
     for attempt in range(max_actions):
+        if ep.ended:
+            return False
         public = ep.public
         tool = tools.geometry(public,arm)
         error = target_tcp-tool['world_center_m']

@@ -1,0 +1,125 @@
+{
+  "planner_response": {
+    "task": "Lift mint scissors 100 mm and retain grip.",
+    "horizon": {
+      "physical_steps": 200,
+      "control_dt_s": 0.04,
+      "total_simulated_s": 8,
+      "accounting": "Count every executed physics step, including views, gripping, recovery and stabilization. Phase changes alone execute zero steps. Unused budgets may transfer forward; never exceed 200."
+    },
+    "interface": {
+      "actor_input": "Text-only categorical signed errors and phase-scoped validity flags.",
+      "actor_output": {
+        "translation": [
+          "X_SIGN",
+          "Y_SIGN",
+          "Z_SIGN"
+        ],
+        "rotation": [
+          "RX_SIGN",
+          "RY_SIGN",
+          "RZ_SIGN"
+        ],
+        "gripper": [
+          "OPEN",
+          "CLOSE",
+          "KEEP"
+        ],
+        "transition": [
+          "CONTINUE",
+          "ADVANCE",
+          "STOP"
+        ]
+      },
+      "compiler": "Preserve selected signs; choose magnitudes and 1\u20135 physical steps. Cap the vector norm of each LINK6 target displacement at 50 mm and rotation at 0.35 rad. Recompute targets from measured pose after each physical step; incremental DLS need not reach a commanded target.",
+      "gripper": "OPEN commands 1; CLOSE commands 0 immediately. KEEP retains the previous command. Use measured aperture as feedback; require neither slow closure nor force or speed certificates."
+    },
+    "processor": {
+      "sources": "Current calibrated RGB views, K/T, initial RGB metric template, robot pose, measured aperture and public geometry only.",
+      "fit": "Fit six-DOF rigid pose using mint contours including holes. Check positive reconstructed depth, rank 6, RMS and conditional sensitivities internally. Keep unperturbed restarts separate from boundary-noise intervals.",
+      "geometry": "Convert pad targets to LINK6 using the rotated public pad-local offset [0.15007,0,0] m. Update transformed gripper mesh extents during wrist rotation.",
+      "capture": "Neck approximately [0.396,-0.008,0.769] m, width 31 mm. Candidate pad Z = 0.76477 m + current downward mesh extent + 0.0005 m; nominally 0.77277 m when extent is 7.5 mm. Include table sensitivity of 2 mm. Distal tabletop interaction is conditional, without a contact certificate.",
+      "actor_exclusions": "Never transmit images, depth, simulated object state, contact, reward, outcomes or experience files."
+    },
+    "stages": [
+      {
+        "phase": "APPROACH",
+        "budget": 45,
+        "action": "OPEN; translate from initial pad midpoint [0.300,-0.202,0.921] m toward a neck pregrasp while turning the wrist approximately 90 degrees. Maintain visible clearance through the source/table corridor.",
+        "chunk": "3\u20135 steps; translation <=50 mm; rotation <=0.35 rad.",
+        "deadband": "15 mm translation; 0.10 rad rotation.",
+        "fields": [
+          "pregrasp_XYZ_sign",
+          "orientation_sign",
+          "corridor_valid",
+          "coarse_fit_valid"
+        ],
+        "pass": "Measured pregrasp pose enters deadbands. A declared coarse bias envelope is allowed only where represented clearance greatly exceeds it."
+      },
+      {
+        "phase": "CAPTURE_ALIGNMENT",
+        "budget": 50,
+        "action": "OPEN; center the neck between pads, align jaws and descend to the current mesh-based capture candidate.",
+        "chunk": "1\u20132 steps; translation <=8 mm; rotation <=0.08 rad.",
+        "deadband": "2 mm translation; 0.04 rad rotation.",
+        "fields": [
+          "capture_XYZ_sign",
+          "orientation_sign",
+          "strict_fit_valid",
+          "capture_geometry_valid"
+        ],
+        "pass": "Fit RMS <=4 px and sensitivity <=6 mm; measured pose enters deadbands; uncertainty-aware geometry supports neck capture and conditional tabletop interaction."
+      },
+      {
+        "phase": "CLOSE",
+        "budget": 25,
+        "action": "Command CLOSE=0 and hold capture pose; monitor measured aperture and current RGB.",
+        "chunk": "1\u20135 steps; corrective translation <=2 mm; rotation <=0.03 rad.",
+        "fields": [
+          "hold_pose_sign",
+          "strict_fit_valid",
+          "closure_pending"
+        ],
+        "pass": "Native closure settles and visible neck remains between pads. Aperture alone does not establish attachment."
+      },
+      {
+        "phase": "LIFT_AND_HOLD",
+        "budget": 65,
+        "action": "Retain CLOSE; lift toward 115 mm whole-template height gain, correcting lateral drift. Include six final stabilization steps.",
+        "chunk": "1\u20133 steps; translation <=12 mm; rotation <=0.06 rad.",
+        "deadband": "3 mm lateral; 0.04 rad orientation; height controlled by gain interval.",
+        "fields": [
+          "lift_XYZ_sign",
+          "orientation_sign",
+          "strict_fit_valid",
+          "attachment_valid"
+        ],
+        "pass": "Mint template and blade-tip gain intervals relative to initial RGB both have lower bound >=100 mm and upper bound <=130 mm, with stable visible attachment throughout final stabilization."
+      }
+    ],
+    "recovery": {
+      "budget": 15,
+      "limit": "One short active recovery, including any wrist view. Initial two views already support geometry.",
+      "policy": "If prerequisites fail, use represented-clearance retreat or one viewpoint adjustment, refit, then resume only when validity returns. Persistent invalidity requires STOP."
+    },
+    "termination": "ADVANCE requires the current phase pass condition. STOP after final stabilization or when validity cannot be restored within remaining steps. Retain the close command when stopping after grasp."
+  },
+  "objectives": {
+    "APPROACH": "OPEN; translate from initial pad midpoint [0.300,-0.202,0.921] m toward a neck pregrasp while turning the wrist approximately 90 degrees. Maintain visible clearance through the source/table corridor.",
+    "CAPTURE_ALIGNMENT": "OPEN; center the neck between pads, align jaws and descend to the current mesh-based capture candidate.",
+    "CLOSE": "Command CLOSE=0 and hold capture pose; monitor measured aperture and current RGB.",
+    "LIFT_AND_HOLD": "Retain CLOSE; lift toward 115 mm whole-template height gain, correcting lateral drift. Include six final stabilization steps."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "response_sha256": "59a148cb4c868dea2b94f40a1d11e3cbdae40b17d6246c29b51ca3d7450b2c16",
+    "experience_injection": false
+  },
+  "compiler_notes": [
+    "Three physical steps per far action, two per capture/close/lift and one on explicit stage advance; these remain inside perstage/native budgets.",
+    "No initial left-view stage; at most three independently judged five-step actions for the single active recovery.",
+    "Every native step, including stage-transition hold, is counted. Conditional straight-pose finger/table checks are not complete scene collision proofs."
+  ]
+}
