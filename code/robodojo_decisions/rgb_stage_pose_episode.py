@@ -227,6 +227,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
     (output/'plan.json').write_text(json.dumps(plan,ensure_ascii=False,indent=2))
     stage=plan['initial_stage'];records=[];previous=None;result=None;queries=0
     completed_identity=None
+    stack_high_reference=None
     initial_calibration=json.loads((output/'camera_calibration_initial.json').read_text())
     initial_eef=json.loads(json.dumps(obs['current_eef']))
     status='rgb_pose_native_budget_incomplete'
@@ -318,6 +319,21 @@ def run(tools, obs, model, output, max_decisions, deadline):
                 geometry=build(obs,programs,diagnostics)
             except ValueError as error:
                 geometry={'status':'UNKNOWN','reason':str(error),'step_id':step}
+                if (os.environ.get('ROBODOJO_RGB_STAGE_PARTIAL_HIGH_REFERENCE')=='1'
+                        and stack_high_reference is not None):
+                    try:
+                        geometry=build(obs,programs,diagnostics,high_reference=stack_high_reference)
+                        geometry['current_two_view_failure']=str(error)
+                    except ValueError as reference_error:
+                        geometry['prior_reference_rejection']=str(reference_error)
+            if (geometry.get('status')=='current_conditional_top_hypothesis'
+                    and geometry.get('current_full_two_view_top_supported')
+                    and (stack_high_reference is None or
+                         geometry['current_component_pixels']['high']>=stack_high_reference['high_pixels'])):
+                stack_high_reference={'episode_id':obs['episode_id'],'step_id':step,
+                    'images':json.loads(json.dumps(obs['images'])),
+                    'camera_calibration':json.loads(json.dumps(calibration)),
+                    'high_pixels':geometry['current_component_pixels']['high']}
             data['algorithmic_far_approach_evidence']=geometry
             data['contract']=data['contract'].replace('RGB-only full-pose baseline: no processed object XYZ/errors.',
                 'RGB plus explicitly conditional algorithmic top-minus-pad residuals for FAR OPEN approach; not contact geometry.')
@@ -391,6 +407,10 @@ def run(tools, obs, model, output, max_decisions, deadline):
             data['stop_criterion_scope']='Current stage only; far OPEN does not require future enclosure.'
         images=([{'camera':f'PREVIOUS same-episode {x["camera"]} step{previous["step_id"]}; comparison only','path':x['path']}
                  for x in previous['images'] if x['camera'] in ['cam_high','cam_right_wrist']] if previous else [])
+        if (os.environ.get('ROBODOJO_RGB_STAGE_PARTIAL_HIGH_REFERENCE')=='1'
+                and data.get('algorithmic_far_approach_evidence',{}).get('prior_high_source_check')):
+            image=next(x for x in stack_high_reference['images'] if x['camera']=='cam_high')
+            images.append({'camera':f'PRIOR fixed-high source reference step{stack_high_reference["step_id"]}; historical pixels, CURRENT partial-high/wrist revalidation only, never current contact','path':image['path']})
         compact_evidence=os.environ.get('ROBODOJO_RGB_STAGE_COMPACT_EVIDENCE')=='1'
         if compact_evidence:
             from rgb_stage_actor_input import compact
