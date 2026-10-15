@@ -61,7 +61,10 @@ class Tool:
         quaternion = np.asarray(robot['eef_quaternions_wxyz'][index])
         rotation = Rotation.from_quat(quaternion[[1, 2, 3, 0]])
         point = np.asarray(robot['eef_positions'][index])+rotation.apply(local)
+        tips=[v[v[:,0]>v[:,0].max()-.001].mean(0) for v in vertices]
+        radii=[float(np.max(np.linalg.norm(v[v[:,0]>v[:,0].max()-.001,1:]-tip[1:],axis=1))) for v,tip in zip(vertices,tips)]
         return dict(local_center_m=local, world_center_m=point,
+            finger_tips_local_m=np.asarray(tips),finger_tip_footprint_radius_m=radii,
             aperture_m=float(np.linalg.norm(centers[0]-centers[1])),
             distal_tip_from_center_m=float(max(v[:, 0].max() for v in vertices)-local[0]),
             downward_extent_m=float(max(np.max(-rotation.apply(v-local)[:,2]) for v in vertices)),
