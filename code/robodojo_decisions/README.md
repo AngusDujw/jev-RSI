@@ -1,8 +1,8 @@
 # RoboDojo RGB Decisions pilot
 
-## Latest checkpoint (2026-10-14, EXP245)
+## Latest checkpoint (2026-10-15, EXP253 and later)
 
-The campaign is active. Native complete success covers **one of 42 tasks**, general_pickup, with ten successful episodes; the newest is461 at193 physical steps. Frozen445 settings achieved2/3 including445. The predeclared phase-tagged memory batch achieved1/2 versus0/2 for legacy English memory; this does not establish stability or a causal benefit. All other41 tasks remain without complete success.42/42 refers only to zero-action layout0 sensor preflights. Earlier dated zero-success and pause statements below are historical.
+The campaign is active. Native complete success covers **one of 42 tasks**, general_pickup, with eleven successful episodes; the newest is488 at193 physical steps. Additional exactly frozen461 resets488/489 achieved1/2; together with461/464 the tagged-memory condition is2/4 at layout0, not stable. All other41 tasks remain without complete success. Stack490 executed eight10mm programs/40 physical steps before current top-plane fitting failed; no grasp. The completed action-free high495 method scopes identity to the current transfer pair, but497/498 still stopped at5/0 steps.42/42 refers only to zero-action layout0 sensor preflights. Earlier dated zero-success and pause statements below are historical.
 
 Planner requests use the authorized AI2RobCoWork Responses gateway with **gpt-6.1-sol/high**, never a model downgrade. English-only text is checked before every planner/actor request; original scene pixels are retained. The planner supplies semantic roles, stages and perception methods without robot motion recommendations. The du Luna actor receives fresh RGB and explicit current-stage evidence, and selects one algorithm-generated complete bounded program or STOP. Native evaluator output is never model input. Phase-tagged model notes are retrieved literally by identity/alignment/contact/capture; frozen memory roots make independent comparisons reviewable.
 
