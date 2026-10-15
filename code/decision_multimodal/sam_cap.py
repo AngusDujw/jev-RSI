@@ -63,6 +63,7 @@ class CapObserver:
                 index=int(np.argmax(result['predicted_iou']))
                 np.save(directory/(name+'-candidates.npy'),candidates)
                 result.update(camera=name,box=np.asarray(box).tolist(),point=point,selected_index=index)
+                result['source']='Current RGB, camera-derived box and visible '+color+' material point; local cached SAM2.1 tiny'
                 metadata.append(result)
                 if result['predicted_iou'][index]>=.8:
                     masks[name]=candidates[index]
