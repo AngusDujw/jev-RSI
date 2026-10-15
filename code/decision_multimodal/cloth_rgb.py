@@ -7,7 +7,9 @@ from cap_motion import tool_mask
 
 def garment(rgb):
     r,g,b=np.asarray(rgb,float).transpose(2,0,1)
-    mask=((r>35)&(g<.72*r)&(b>.70*g)&(r>1.4*b)).astype(np.uint8)
+    # Coral has nearly equal G/B; the brown tabletop is also red-dominant
+    # but has a much larger green-minus-blue difference.
+    mask=((r>35)&(g<.62*r)&(b>.90*g)&(g-b<9)&(r>1.4*b)).astype(np.uint8)
     mask[:120]=0;mask[390:]=0;mask[:,:110]=0;mask[:,515:]=0
     mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((3,3),np.uint8))
     count,labels,stats,_=cv2.connectedComponentsWithStats(mask)
@@ -48,6 +50,8 @@ def landmark(public,seed,z,kind='cuff'):
         for shift in ([0,0],[2,0],[-2,0],[0,2],[0,-2]):
             center=uv+shift
             selected=region[abs((region-center)@axis)<18]
+            if len(selected)<6:
+                return dict(usable=False,reason='Insufficient declared cuff edge support at a refinement start')
             # Median signed line offset is robust to a few side-edge pixels.
             value=np.median((selected-endpoints.mean(0))@normal)
             results.append(endpoints.mean(0)+value*normal)
