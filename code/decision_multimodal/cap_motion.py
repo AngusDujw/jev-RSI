@@ -54,7 +54,7 @@ def cap_height(public,cap,camera='cam_high'):
         limits='Vertical-spring and rigid-circle hypotheses; incomplete arcs can bias travel. No joint/contact/electrical state.')
 
 
-def cap_pose(public,cap):
+def cap_pose(public,cap,material_masks=None):
     """Refit cap translation using a previously RGB-measured radius."""
     center=np.asarray(cap['center_m']);views=[]
     for camera,rgb in public['rgb'].items():
@@ -64,7 +64,13 @@ def cap_pose(public,cap):
             continue
         k=np.asarray(calibration['intrinsic'])
         radius_px=k[0,0]*cap['radius_m']/depth[0]
-        mask=color_component(rgb,'red',uv[0],max_distance=max(12.,1.8*radius_px))
+        if material_masks is not None:
+            if camera not in material_masks:
+                continue
+            r,g,b=rgb.astype(float).transpose(2,0,1)
+            mask=(np.asarray(material_masks[camera],bool)&(r>80)&(r>1.25*g)&(r>1.25*b)).astype(np.uint8)
+        else:
+            mask=color_component(rgb,'red',uv[0],max_distance=max(12.,1.8*radius_px))
         if mask is None:
             continue
         contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
