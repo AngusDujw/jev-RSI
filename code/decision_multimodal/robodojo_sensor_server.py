@@ -143,7 +143,13 @@ def _install_public_wrist_mount_sync():
         return value
 
     def synced_get_obs(self, env_idx_list=None):
-        if os.environ.get("ROBODOJO_TASK") in ("press_by_number", "fold_clothes"):
+        task=os.environ.get('ROBODOJO_TASK')
+        manual_mount=(task=='fold_clothes' or (task=='press_by_number' and
+            os.environ.get('ROBODOJO_PRESS_GPU_FABRIC_AUDIT')!='1'))
+        # GPU Fabric already propagates mounted cameras through the robot
+        # hierarchy. Reapplying the CPU USD repair can move the render view
+        # twice even though its USD parent pose agrees with FK propagation.
+        if manual_mount:
             camera_manager = self.camera_manager
             robot_manager = self.robot_manager
             if camera_manager is not None and robot_manager is not None:
