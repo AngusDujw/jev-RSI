@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import numpy as np
 from scipy.spatial.transform import Rotation
+from scipy.spatial import QhullError
 from rgb_cuboid import fit, project, segment, vertices
 from robot_tool import Tool
 from robodojo_episode import save
@@ -95,7 +96,10 @@ class Perception:
             plane = self.table_z if name not in self.moved else None
             if name == 'wood' and prior is None:
                 plane = None
-            current = fit(views, prior_fit, plane)
+            try:
+                current = fit(views, prior_fit, plane)
+            except (ValueError, QhullError, np.linalg.LinAlgError) as error:
+                current = dict(status='unavailable', reason=type(error).__name__+': '+str(error)[:200])
             if current.get('status') == 'fitted_visual_hypothesis':
                 current['step'] = public['step']
                 current['camera_names'] = used
@@ -122,13 +126,17 @@ def compile_targets(public, tool, answer, error, rotation_error, phase):
         for i, axis in enumerate('xyz'):
             translate[i] = signs[answer[axis]['choice']]*min(.020, .7*abs(error[i]))
             rotate[i] = signs[answer['rotation_'+axis]['choice']]*min(.12, .7*abs(rotation_error[i]))
-    new_rotation = Rotation.from_rotvec(rotate)*old_rotation
-    target_tcp = tool['world_center_m']+translate
-    target_link = target_tcp-new_rotation.apply(tool['local_center_m'])
     old_link = np.asarray(public['robot']['eef_positions'][index])
-    delta = target_link-old_link
-    if np.linalg.norm(delta) > .049:
-        target_link = old_link+delta*.049/np.linalg.norm(delta)
+    gain = 1.
+    for _ in range(20):
+        new_rotation = Rotation.from_rotvec(rotate*gain)*old_rotation
+        target_tcp = tool['world_center_m']+translate*gain
+        target_link = target_tcp-new_rotation.apply(tool['local_center_m'])
+        if np.linalg.norm(target_link-old_link) <= .049:
+            break
+        gain *= .8
+    else:
+        raise ValueError('Selected coupled pose action cannot meet the native EEF bound')
     commands = public['robot']['states']
     targets = {}
     for i, arm in enumerate(('left', 'right')):
@@ -270,6 +278,7 @@ def run(ep):
                     stage_sequence=[x[0] for x in PHASES],
                     frame='Environment world XYZ, metres; Z is up. Errors are TARGET MINUS CURRENT public finger-pad midpoint.',
                     rotation='World rotation vector of R_target times inverse(R_current); radians; right-hand increments multiply on the left.',
+                    step_rule='Each selected translation is at most20mm and70percent of that axis error. Each selected rotation is at most0.12rad and70percent of its error component. One common positive gain preserves all signs while keeping LINK6 translation within49mm. Rotations pivot about the public pad midpoint.',
                     position_error_m=error.round(5).tolist(), position_tolerance_m=tolerance,
                     orientation_error_rad=rotation_error.round(5).tolist(), rotation_component_hold_rad=.045,
                     measured_aperture_m=tool['aperture_m'], aperture_change_m=aperture_change,
