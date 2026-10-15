@@ -11,7 +11,7 @@ from cloth_rgb import garment,landmark,supported,deformation
 from stack_blocks import choice,compile_targets
 from robodojo_episode import save
 
-PLAN=Path(__file__).with_name('plans')/'fold_clothes_v1.json'
+PLAN=Path(__file__).with_name('plans')/'fold_clothes_v2.json'
 
 
 class Fold:
@@ -19,6 +19,7 @@ class Fold:
         self.ep=ep;self.plan=plan;self.table=table;self.z=table['plane_z_m'];self.tools=Tool()
         self.baseline=ep.public['rgb']['cam_high'].copy();self.initial_mask=garment(self.baseline)
         self.park={a:self.tools.geometry(ep.public,a)['world_center_m'].copy() for a in ('left','right')}
+        self.park_rotation={a:self.tools.geometry(ep.public,a)['rotation'] for a in ('left','right')}
         self.sources={};self.results=[];self.last_aperture={};self.closure_count={}
 
     def orientation(self,normal,current):
@@ -168,7 +169,11 @@ class Fold:
             ok,reason=self.phase(name,phase,bindings,goals,rotations,'open' if phase in ('release','retreat') else 'close',deadline,cap=45)
             if not ok:
                 return False,reason
-        ok,reason=self.phase(name,'park',bindings,{a:self.park[a] for a in arms},rotations,'open',deadline,cap=35)
+        # The initial pad point with a DOWNWARD tool is a different LINK6
+        # target, and can be unreachable. Restore the complete measured
+        # initial public pose, including orientation, for unloaded parking.
+        ok,reason=self.phase(name,'park',bindings,{a:self.park[a] for a in arms},
+            {a:self.park_rotation[a] for a in arms},'open',deadline,cap=55)
         result={a:deformation(ep.public,self.baseline,s['edge_pixel']) for a,s in bindings.items()}
         save(ep.folder/(name+'_visible_result.json'),dict(evidence=result,
             scope='Post-retreat source-region change only; detailed fold identity and native outcome remain separate'))
@@ -203,8 +208,8 @@ class Fold:
         shoulder=(supported(camera,seeds['left_shoulder'],self.z)+supported(camera,seeds['right_shoulder'],self.z))/2
         hem=(left+right)/2;normal=shoulder-hem;normal[2]=0;normal/=np.linalg.norm(normal);middle=(shoulder+hem)/2
         hem_targets={a:p-2*normal*np.dot(p-middle,normal) for a,p in (('left',left),('right',right))}
-        recipe=[('left_sleeve',{'left':sources['left_cuff']},{'left':supported(camera,seeds['left_sleeve_destination'],self.z)},160),
-            ('right_sleeve',{'right':sources['right_cuff']},{'right':supported(camera,seeds['right_sleeve_destination'],self.z)},310),
+        recipe=[('left_sleeve',{'left':sources['left_cuff']},{'left':supported(camera,seeds['left_sleeve_destination'],self.z)},190),
+            ('right_sleeve',{'right':sources['right_cuff']},{'right':supported(camera,seeds['right_sleeve_destination'],self.z)},350),
             ('hem_half',{'left':sources['left_hem'],'right':sources['right_hem']},hem_targets,500)]
         for name,bindings,targets,deadline in recipe:
             if ep.ended:
