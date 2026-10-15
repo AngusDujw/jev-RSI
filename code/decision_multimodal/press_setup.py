@@ -23,6 +23,8 @@ def run(ep):
     origin,direction=ray(camera,[244,267])
     point=origin+direction*((table['plane_z_m']+.010-origin[2])/direction[2])
     import camera_view
+    import robot_tool
+    importlib.reload(robot_tool)
     importlib.reload(camera_view)
     if not camera_view.acquire(ep,point,'left','first_red_cap_step'+str(ep.tick)):
         save(ep.folder/'program_result.json',dict(program_finished=False,stop_reason='Active first-cap camera acquisition incomplete'))
