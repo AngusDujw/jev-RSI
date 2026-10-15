@@ -33,7 +33,9 @@ def measure(public,baseline,mask,baseline_mask,cap,camera,baseline_z):
     # only reference-supported points forward, after removing a fixed union
     # of robot occlusion over the entire allowed height family. This exclusion
     # is chosen before fitting and never based on the residual.
-    hand=tool_mask(public,camera);keep=np.ones(len(points),bool)
+    # The public-mesh raster boundary has a declared3px image allowance.
+    # Exclude it geometrically before any height fit, not by residual ranking.
+    hand=cv2.dilate(tool_mask(public,camera),np.ones((7,7),np.uint8));keep=np.ones(len(points),bool)
     for height in np.linspace(-.025,.005,9):
         pixels,depth=project(public['calibration'][camera],points+[0,0,height])
         ij=pixels.round().astype(int)
