@@ -1,0 +1,269 @@
+{
+  "planner_response": {
+    "task": "Lift mint scissors 100 mm and retain grip.",
+    "horizon": {
+      "physical_steps": 200,
+      "control_dt_s": 0.04,
+      "total_simulated_s": 8,
+      "accounting": "Count every executed physics step, including views, gripping, recovery and stabilization. Phase changes alone execute zero steps. Unused budgets may transfer forward; never exceed 200."
+    },
+    "interface": {
+      "actor_input": "Text-only categorical signed errors and phase-scoped validity flags.",
+      "actor_output": {
+        "translation": [
+          "X_SIGN",
+          "Y_SIGN",
+          "Z_SIGN"
+        ],
+        "rotation": [
+          "RX_SIGN",
+          "RY_SIGN",
+          "RZ_SIGN"
+        ],
+        "gripper": [
+          "OPEN",
+          "CLOSE",
+          "KEEP"
+        ],
+        "transition": [
+          "CONTINUE",
+          "ADVANCE",
+          "STOP"
+        ]
+      },
+      "compiler": "Preserve selected signs; choose magnitudes and 1\u20135 physical steps. Cap the vector norm of each LINK6 target displacement at 50 mm and rotation at 0.35 rad. Recompute targets from measured pose after each physical step; incremental DLS need not reach a commanded target.",
+      "gripper": "OPEN commands 1; CLOSE commands 0 immediately. KEEP retains the previous command. Use measured aperture as feedback; require neither slow closure nor force or speed certificates."
+    },
+    "processor": {
+      "sources": "Current calibrated RGB views, K/T, initial RGB metric template, robot pose, measured aperture and public geometry only.",
+      "fit": "Fit six-DOF rigid pose using mint contours including holes. Check positive reconstructed depth, rank 6, RMS and conditional sensitivities internally. Keep unperturbed restarts separate from boundary-noise intervals.",
+      "geometry": "Convert pad targets to LINK6 using the rotated public pad-local offset [0.15007,0,0] m. Update transformed gripper mesh extents during wrist rotation.",
+      "capture": "Neck approximately [0.396,-0.008,0.769] m, width 31 mm. Candidate pad Z = 0.76477 m + current downward mesh extent + 0.0005 m; nominally 0.77277 m when extent is 7.5 mm. Include table sensitivity of 2 mm. Distal tabletop interaction is conditional, without a contact certificate.",
+      "actor_exclusions": "Never transmit images, depth, simulated object state, contact, reward, outcomes or experience files."
+    },
+    "stages": [
+      {
+        "phase": "APPROACH",
+        "budget": 45,
+        "action": "OPEN; translate from initial pad midpoint [0.300,-0.202,0.921] m toward a neck pregrasp while turning the wrist approximately 90 degrees. Maintain visible clearance through the source/table corridor.",
+        "chunk": "3\u20135 steps; translation <=50 mm; rotation <=0.35 rad.",
+        "deadband": "15 mm translation; 0.10 rad rotation.",
+        "fields": [
+          "pregrasp_XYZ_sign",
+          "orientation_sign",
+          "corridor_valid",
+          "coarse_fit_valid"
+        ],
+        "pass": "Measured pregrasp pose enters deadbands. A declared coarse bias envelope is allowed only where represented clearance greatly exceeds it."
+      },
+      {
+        "phase": "CAPTURE_ALIGNMENT",
+        "budget": 50,
+        "action": "OPEN; center the neck between pads, align jaws and descend to the current mesh-based capture candidate.",
+        "chunk": "1\u20132 steps; translation <=8 mm; rotation <=0.08 rad.",
+        "deadband": "2 mm translation; 0.04 rad rotation.",
+        "fields": [
+          "capture_XYZ_sign",
+          "orientation_sign",
+          "strict_fit_valid",
+          "capture_geometry_valid"
+        ],
+        "pass": "Fit RMS <=4 px and sensitivity <=6 mm; measured pose enters deadbands; uncertainty-aware geometry supports neck capture and conditional tabletop interaction."
+      },
+      {
+        "phase": "CLOSE",
+        "budget": 25,
+        "action": "Command CLOSE=0 and hold capture pose; monitor measured aperture and current RGB.",
+        "chunk": "1\u20135 steps; corrective translation <=2 mm; rotation <=0.03 rad.",
+        "fields": [
+          "hold_pose_sign",
+          "strict_fit_valid",
+          "closure_pending"
+        ],
+        "pass": "Native closure settles and visible neck remains between pads. Aperture alone does not establish attachment."
+      },
+      {
+        "phase": "LIFT_AND_HOLD",
+        "budget": 65,
+        "action": "Retain CLOSE; lift toward 115 mm whole-template height gain, correcting lateral drift. Include six final stabilization steps.",
+        "chunk": "1\u20133 steps; translation <=12 mm; rotation <=0.06 rad.",
+        "deadband": "3 mm lateral; 0.04 rad orientation; height controlled by gain interval.",
+        "fields": [
+          "lift_XYZ_sign",
+          "orientation_sign",
+          "strict_fit_valid",
+          "attachment_valid"
+        ],
+        "pass": "Mint template and blade-tip gain intervals relative to initial RGB both have lower bound >=100 mm and upper bound <=130 mm, with stable visible attachment throughout final stabilization."
+      }
+    ],
+    "recovery": {
+      "budget": 15,
+      "limit": "One short active recovery, including any wrist view. Initial two views already support geometry.",
+      "policy": "If prerequisites fail, use represented-clearance retreat or one viewpoint adjustment, refit, then resume only when validity returns. Persistent invalidity requires STOP."
+    },
+    "termination": "ADVANCE requires the current phase pass condition. STOP after final stabilization or when validity cannot be restored within remaining steps. Retain the close command when stopping after grasp."
+  },
+  "objectives": {
+    "APPROACH": "Move the open hand above the solid mint neck and orient the public finger tool downward.",
+    "CAPTURE_ALIGNMENT": "Align the open opposing fingers beside the neck at the computed shallow acquisition height.",
+    "CLOSE": "Close around the neck and measure aperture settling. This creates a candidate grasp.",
+    "LIFT_AND_HOLD": "Lift with a closed hand; establish successive visual co-motion after closure, then a confidence-supported100mm named-neck height gain. Natural object rotation is allowed."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "response_sha256": "59a148cb4c868dea2b94f40a1d11e3cbdae40b17d6246c29b51ca3d7450b2c16",
+    "experience_injection": false,
+    "revision_response_sha256": "572a253d0039821656f6d798d2551f18f264d3553bea641dcbc73963a6a5b4d0"
+  },
+  "compiler_notes": [
+    "Three physical steps per far action, two per capture/close/lift and one on explicit stage advance; these remain inside perstage/native budgets.",
+    "No initial left-view stage; at most three independently judged five-step actions for the single active recovery.",
+    "Every native step, including stage-transition hold, is counted. Conditional straight-pose finger/table checks are not complete scene collision proofs.",
+    "The resting revision adds strictly positive lower table clearance, which contradicts the existing0.5mm nominal gap and2mm table allowance. This infeasible added requirement is rejected; the earlier explicit conditional2mm distal table interaction band remains in force. All candidate and final visual checks are retained.",
+    "Measured public DLS feedback at45steps reached the pregrasp position but not the wrist deadband. Redistribute185nominal physical steps as70/40/15/60, preserving15recovery and the unmodified200-step native horizon.",
+    "v4 supersedes the old all-point100..130mm and original-orientation constraints during lift. Current conditional pose sensitivity up to10mm,50mm active probe, POSTclosure co-motion baseline, original resting task-height reference. No native outcome enters runtime model inputs."
+  ],
+  "resting_revision": {
+    "decision": "Admit the resting-plane method conditionally for pregrasp processing. This is not evidence of contact, attachment, or task success.",
+    "current_stage": {
+      "name": "open_hand_far_approach",
+      "fit": "Fit XY translation and yaw of the initial metric mint template to current fixed-high-camera contours, preserving holes.",
+      "assumption": "The visibly resting source occupies a horizontal material plane until closure.",
+      "original_baseline_m": [
+        0.396,
+        -0.008,
+        0.769
+      ],
+      "center_displacement_guard_m": 0.003,
+      "working_XYZ_intervals_m": {
+        "X": [
+          0.393,
+          0.399
+        ],
+        "Y": [
+          -0.011,
+          -0.005
+        ],
+        "Z": [
+          0.763,
+          0.775
+        ]
+      },
+      "interval_semantics": "XY are conditional support envelopes from the stated center stability, not measured confidence intervals. Current high-view fit uncertainty must be bounded and contained before using them operationally. Z uses the original RGB-derived height plus/minus 3 mm initial sensitivity and 3 mm model bias; it excludes simulator truth.",
+      "far_guards": [
+        "Public finger/table clearance lower bound exceeds 25 mm.",
+        "Open fingers remain outside the source silhouette and above the source."
+      ]
+    },
+    "minimum_corrections": [
+      "Remove exact-plane and unrestricted sixDOF claims from the current two-view contour fit: RMS 6.63 px, vertical sensitivity 8.25 mm, and curved/thick sidewalls undermine that interpretation.",
+      "Use consistent right-view evidence as corroboration. Flag contradictions and block dependent advancement; never silently blend them.",
+      "Do not spend the recovery allowance repeatedly seeking the unreliable unloaded-left view."
+    ],
+    "progressive_handoff": [
+      {
+        "stage": "approach_and_align",
+        "closure_guards": [
+          "Fresh high-view contour agreement and target identity pass.",
+          "Aperture lower bound exceeds source-width upper bound.",
+          "Source exterior-edge alignment passes an explicit validated tolerance.",
+          "Finger/table clearance interval fits a declared shallow band with strictly positive lower clearance."
+        ],
+        "numeric_status": "Contour tolerance, edge tolerance, aperture measurements, and shallow-band limits were not supplied. Record them explicitly; closure remains unsupported until these guards are evaluated."
+      },
+      {
+        "stage": "conditional_closure",
+        "rule": "Permit only a candidate contact under the declared intervals. Immediately withdraw the resting-plane assumption upon closure."
+      },
+      {
+        "stage": "active_short_lift",
+        "rule": "Require current visible co-motion and an unrestricted rigid-pose height-gain interval from two current views or a genuinely validated alternative.",
+        "acceptance": {
+          "whole_mint_and_blade_gain_lower_mm": ">=100",
+          "whole_mint_and_blade_gain_upper_mm": "<=130",
+          "attachment": "must pass"
+        }
+      }
+    ],
+    "baseline_and_budget": {
+      "physical_step_horizon": 200,
+      "recovery_allowance_steps": 15,
+      "template_refinement": "Before closure only, within original support/identity intervals; record as estimation, never height gain. Preserve the original resting baseline."
+    },
+    "unsupported": "Force/contact confirmation, postclosure resting-plane inference, native outcomes, command-only success, and successful grasp.",
+    "actor_boundary": "Provide text processing instructions and declared intervals only; no experience files, images, or privileged scene data."
+  },
+  "resting_revision_sha256": "bbd9c25ce43393da1932ab3e688980448ea77e04ed5d28eba86a8cdf754d1495",
+  "compiled_stage_budgets": {
+    "APPROACH": 70,
+    "CAPTURE_ALIGNMENT": 40,
+    "CLOSE": 15,
+    "LIFT_AND_HOLD": 60
+  },
+  "capture_settling_revision": {
+    "reference": {
+      "feature": "Named neck material point on the rigid scissors template.",
+      "height_reference": "Preserve its original resting RGB estimate, template identity, uncertainty and table reference. Gain equals current feature height minus original resting height in the same frame. Preclosure re-estimation contributes zero task gain.",
+      "working_envelope": "Seek a confidence-supported 100 mm gain; use nominal 100\u2013125 mm for planning. This is not an all-vertex requirement or a mandatory upper bound."
+    },
+    "budget": {
+      "physical_steps": 200,
+      "allocations": {
+        "approach": 70,
+        "capture": 40,
+        "close": 15,
+        "lift_including_probe": 60,
+        "recovery": 15
+      },
+      "decision_steps": "1\u20135, capped by remaining stage and total budgets.",
+      "LINK6_increment_limits": "At most 50 mm translation and 0.35 rad rotation per decision."
+    },
+    "capture_and_settling": {
+      "inputs": "Current RGB neck pose, uncertainty, grasp corridor, public finger meshes and robot state.",
+      "pass": "The uncertainty-expanded neck fits the capture corridor and closing sweep under public collision hypotheses. Use corridor-relative precision; do not impose a universal 6 mm vertical gate.",
+      "settling": "Allow approximately 17 mm horizontal displacement and 0.17 rad rotation during closure. Refresh geometry during closing and active lifting.",
+      "baseline": "Use an available POSTclosure RGB pose and synchronized hand pose to initialize a candidate object-to-hand transform. Never compare PREclosure alignment directly against later observations to classify slip.",
+      "holding": "Closure and aperture alone never establish holding."
+    },
+    "active_lift": {
+      "probe": "Record the hand height at closure completion. Actively ascend in 5\u201315 mm increments, stopping at 50 mm cumulative upward hand excursion from that anchor unless evidence resolves earlier. Include any initial 20\u201330 mm lift in this allowance. Acquire RGB after each commanded movement; no passive observation stage.",
+      "precision": "For free-space lifting, accept feature-height 95% halfwidth up to 10 mm when geometry remains safe. RMS 1.856 px, rank 6 and halfwidth 6.357 mm therefore need not fail. Rank and reprojection error alone do not prove holding.",
+      "comotion": "For successive moving observations, compute X_i = inverse(T_hand_i) * T_object_i. Require two consecutive intervals consistent with constant X: translation residual <=3 mm plus propagated 95% uncertainty, rotation residual <=0.05 rad plus propagated uncertainty. Require relative uncertainty <=10 mm/0.15 rad, cumulative observed hand ascent >=25 mm and confidence-supported positive object rise.",
+      "clearance": "Separately require the uncertainty-expanded whole-object mesh to clear the table by at least 5 mm before continued free-space ascent.",
+      "orientation": "Permit natural reorientation; update current mesh and swept collision hypotheses without enforcing original orientation."
+    },
+    "actor": {
+      "scalar_fields": [
+        "stage_id",
+        "stage_steps_remaining",
+        "total_steps_remaining",
+        "error_x_mm",
+        "error_y_mm",
+        "error_z_mm",
+        "error_roll_rad",
+        "error_pitch_rad",
+        "error_yaw_rad",
+        "gain_mm",
+        "gain_halfwidth_mm",
+        "table_clearance_lower_mm",
+        "probe_ascent_mm",
+        "relative_translation_residual_mm",
+        "relative_rotation_residual_rad",
+        "comotion_interval_count",
+        "pose_valid_0_or_1",
+        "collision_safe_0_or_1",
+        "visibly_empty_0_or_1"
+      ],
+      "outputs": "Categorical motion signs, OPEN/CLOSE/KEEP, CONTINUE/ADVANCE/STOP; unavailable measurements are null with validity zero."
+    },
+    "termination": {
+      "pass": "STOP when gain minus propagated 95% halfwidth >=100 mm, co-motion is supported, and current clearance/collision checks pass.",
+      "uncertainty": "Use bounded collision-safe lifting or viewpoint-changing robot motion within remaining probe budget. At the bound, unresolved evidence triggers recovery or STOP.",
+      "empty": "Stop ascent immediately when RGB shows an empty grasp with scissors outside the grasp corridor, or observed object motion confidently contradicts hand ascent. If safe and budgeted, OPEN above the table, return to a cleared approach and recapture; otherwise STOP.",
+      "evaluation": "Final benchmark evaluation remains outside both models."
+    }
+  }
+}

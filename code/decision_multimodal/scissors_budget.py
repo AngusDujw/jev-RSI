@@ -11,7 +11,7 @@ from camera_view import acquire
 from stack_blocks import choice,compile_targets
 from robodojo_episode import save
 
-PLAN=Path(__file__).with_name('plans')/'general_pickup_v3.json'
+PLAN=Path(__file__).with_name('plans')/'general_pickup_v4.json'
 
 
 def questions(state):
@@ -74,6 +74,9 @@ def run(ep):
     aperture_last=current_tool['aperture_m'];stable_aperture=0
     lift_hold_steps=0
     preclose_source=initial.copy()
+    original_feature_z=float(initial[2])
+    initial_feature_u=float(first['conditional_halfwidth_m'][2])
+    previous_attachment=None;comotion_count=0;moving_anchor=None
     for phase,budget in stages:
         stage_end+=budget
         if phase=='CAPTURE_ALIGNMENT':
@@ -102,10 +105,12 @@ def run(ep):
                 # Aperture settling uses current material visibility, not a
                 # postclosure assumption that the object is still resting.
                 valid=visible
+            elif phase=='LIFT_AND_HOLD':
+                valid=bool(measured.get('lift_pose_usable'))
             else:
                 valid=strict
             probing=bool(phase=='LIFT_AND_HOLD' and close_tcp is not None and
-                         tool['world_center_m'][2]-close_tcp[2]<.020 and visible)
+                         tool['world_center_m'][2]-close_tcp[2]<.050 and visible and comotion_count<2)
             if not valid and not probing:
                 if not recovery and phase in ('APPROACH','CAPTURE_ALIGNMENT'):
                     recovery=True
@@ -132,7 +137,7 @@ def run(ep):
                 deadband=.002;rot_deadband=.015;passed_angle=.04
                 steps=2;translation=.002;rotation=.03
             else:
-                target=close_tcp+np.array([0.,0.,.020 if probing and not valid else .115])
+                target=close_tcp+np.array([0.,0.,.050 if probing else .125])
                 deadband=.003;rot_deadband=.020;passed_angle=.04
                 steps=2;translation=.012;rotation=.06
             error=target-tool['world_center_m']
@@ -141,9 +146,6 @@ def run(ep):
                 error[:]=0;angular[:]=0
             arrived=bool(max(abs(error))<=deadband and np.linalg.norm(angular)<=passed_angle)
             interval=measured.get('conditional_all_point_height_gain_interval_m')
-            if phase=='LIFT_AND_HOLD' and interval and valid:
-                target[2]=min(close_tcp[2]+.130,tool['world_center_m'][2]+max(0.,.103-interval[0]))
-                error=target-tool['world_center_m']
             drift=float(np.linalg.norm((point-close_source)-(tool['world_center_m']-close_tcp))) if close_source is not None else None
             rotation_drift=(Rotation.from_rotvec(measured.get('rotation_delta_world_rad',[0.,0.,0.]))*close_orientation.inv()).magnitude() if close_orientation is not None else None
             attachment=bool(drift is not None and drift<.015 and rotation_drift<.10)
@@ -151,14 +153,48 @@ def run(ep):
                 stable_aperture=stable_aperture+1 if abs(tool['aperture_m']-aperture_last)<.001 else 0
                 passed=stable_aperture>=2 and .005<tool['aperture_m']<perception.width+.010
             elif phase=='LIFT_AND_HOLD':
-                verified=bool(measured.get('verified_pose_usable') and interval and interval[0]>=.100 and interval[1]<=.130 and attachment)
+                ascent=float(tool['world_center_m'][2]-close_tcp[2])
+                gain=float(point[2]-original_feature_z) if valid else None
+                gain_u=float(measured['conditional_halfwidth_m'][2]+initial_feature_u+.003) if valid else None
+                interval=[gain-gain_u,gain+gain_u] if valid else None
+                clearance=float(measured.get('minimum_visible_template_z_m',-1)-table['plane_z_m']-
+                    max(measured.get('conditional_halfwidth_m',[1,1,1]))-.005) if valid else None
+                relative_translation=relative_rotation=None
+                if valid:
+                    source_rotation=Rotation.from_rotvec(measured['rotation_delta_world_rad'])
+                    local_position=tool['rotation'].inv().apply(point-tool['world_center_m'])
+                    local_rotation=tool['rotation'].inv()*source_rotation
+                    u=float(max(measured['conditional_halfwidth_m']))
+                    ru=float(np.linalg.norm(measured['rotation_halfwidth_rad']))
+                    if previous_attachment is not None and ascent>previous_attachment['ascent']+.0005:
+                        relative_translation=float(np.linalg.norm(local_position-previous_attachment['position']))
+                        relative_rotation=float((local_rotation*previous_attachment['rotation'].inv()).magnitude())
+                        good=bool(u<=.010 and ru<=.15 and relative_translation<=.003+u+previous_attachment['u'] and
+                            relative_rotation<=.05+ru+previous_attachment['ru'])
+                        comotion_count=comotion_count+1 if good else 0
+                    if moving_anchor is None:
+                        moving_anchor=dict(ascent=ascent,height=float(point[2]),u=u)
+                    previous_attachment=dict(ascent=ascent,position=local_position,rotation=local_rotation,u=u,ru=ru)
+                    attachment=bool(comotion_count>=2 and ascent>=.025 and moving_anchor is not None and
+                        point[2]-moving_anchor['height']>u+moving_anchor['u'])
+                    target[2]=tool['world_center_m'][2]+max(0.,.103-interval[0])
+                    if not attachment:
+                        target[2]=min(target[2],close_tcp[2]+.050)
+                    error=target-tool['world_center_m']
+                else:
+                    attachment=False
+                # Natural object rotation is allowed; hold the measured hand
+                # orientation after candidate closure, without restoring an
+                # object's original orientation or demanding all points rise10cm.
+                angular[:]=0
+                verified=bool(valid and interval[0]>=.100 and attachment and clearance>=.005)
                 passed=verified and lift_hold_steps>=6
                 if verified:
                     error[:]=0;angular[:]=0
-                if tool['world_center_m'][2]-close_tcp[2]>.130:
-                    stop='Native-bounded lift exceeded130mm rise';break
-                if tool['world_center_m'][2]-close_tcp[2]>.025 and drift>.025 and point[2]-close_source[2]<.010:
-                    stop='Active lift lacks visible source following';break
+                if ascent>=.050 and not attachment:
+                    stop='50mm active probe ended without supported successive source/hand co-motion';break
+                if valid and ascent>=.025 and moving_anchor is not None and point[2]+measured['conditional_halfwidth_m'][2]<moving_anchor['height']-moving_anchor['u']:
+                    stop='Current RGB source motion contradicts ascending hand';break
             else:
                 passed=arrived and (strict if phase=='CAPTURE_ALIGNMENT' else True)
             state=dict(task=public['instruction'],phase=phase,objective=plan['objectives'][phase],
@@ -169,7 +205,7 @@ def run(ep):
             if phase=='APPROACH':
                 state['coarse_fit_valid']=bool(measured.get('far_valid'))
             elif phase!='CLOSE':
-                state['strict_fit_valid']=strict
+                state['current_stage_pose_valid']=valid
             if phase in ('APPROACH','CAPTURE_ALIGNMENT'):
                 state.update(material_center_sensitivity_m=measured.get('conditional_halfwidth_m'),
                     source_estimate_method=measured.get('estimate_method','current_multiview'),
@@ -181,12 +217,13 @@ def run(ep):
                     stable_aperture_observations=stable_aperture,candidate_only=True)
             if phase=='LIFT_AND_HOLD':
                 if not valid:
-                    state['objective']='Perform the first20mm active lift to obtain current visual following evidence. Maintain the closed gripper.'
-                    state.pop('strict_fit_valid',None)
+                    state['objective']='Actively lift within the remaining50mm probe allowance to obtain current visual following evidence. Maintain the closed gripper.'
                     state.update(active_capture_probe=True,current_material_visible=visible,current_pose_verified=False)
                 else:
-                    state.update(conditional_shape_height_gain_interval_m=interval,attachment_drift_m=drift,
-                        rotation_drift_rad=rotation_drift,attachment_valid=attachment,stable_hold_steps=lift_hold_steps)
+                    state.update(named_neck_height_gain_interval_m=interval,attachment_valid=attachment,
+                        active_probe_ascent_m=ascent,successive_comotion_intervals=comotion_count,
+                        relative_translation_residual_m=relative_translation,relative_rotation_residual_rad=relative_rotation,
+                        conditional_table_clearance_lower_m=clearance,stable_hold_steps=lift_hold_steps)
             state['pass']=state.pop('pass_')
             answer=ep.decide(state,questions(state));total+=1
             save(ep.folder/f'control-{total:04d}.json',dict(state=state,answers=answer))
@@ -245,8 +282,15 @@ def run(ep):
                         except ValueError as error:
                             save(ep.folder/'preclosure_template_refinement.json',dict(admitted=False,reason=str(error)))
                 if phase=='CLOSE':
-                    close_source=preclose_source.copy();close_tcp=after['world_center_m'].copy()
-                    close_orientation=Rotation.identity()
+                    close_tcp=after['world_center_m'].copy()
+                    # The first usable POSTclosure RGB fit initializes only a
+                    # candidate attachment; task height keeps the resting reference.
+                    close_fit=perception.update(public,verify=True)
+                    close_source=np.asarray(close_fit.get('center_m',preclose_source))
+                    close_orientation=Rotation.from_rotvec(close_fit.get('rotation_delta_world_rad',[0.,0.,0.]))
+                    save(ep.folder/'postclosure_candidate_baseline.json',dict(geometry=close_fit,
+                        hand_center_m=close_tcp.tolist(),original_feature_z_m=original_feature_z,
+                        interpretation='Postclosure candidate only; no holding claim; original task height reference unchanged'))
                 break
         if stop or not passed_stage:
             stop=stop or 'Native physical-stage budget exhausted: '+phase

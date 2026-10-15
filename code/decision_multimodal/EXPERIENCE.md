@@ -12,3 +12,7 @@ These notes are experiment records, not runtime prompts. Evidence is case-specif
 | The fixed legacy interface can contain single-option questions. | Two Goal1202 text-baseline episodes hit the Decisions minimum-two-options constraint. | Audit interface compatibility separately; preserve these failures in the frozen comparison. |
 
 Full formal LIBERO results: [PHASE1_RESULTS.md](PHASE1_RESULTS.md).
+
+- A good current multiview fit can survive failure of a resting-plane tracker. Prefer the valid current estimate, rather than rejecting both. General pickup dev008: native success at108 steps; frozen v1:2/3 native successes, not stable.
+- Closure can shift a thin object. Initialize candidate hand/object attachment after closure, then test successive co-motion during active lifting. A preclosure offset confounds settling with slip; validation episode2 also hit a6.357mm lift sensitivity against an overly strict6mm universal gate.
+- Visible button depression/release is insufficient to establish electrical counts. Button dev004 completed11 proxy cycles at415 steps but native success was false. Preserve both results and improve stroke/release evidence before another full sequence.

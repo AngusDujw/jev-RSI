@@ -189,6 +189,10 @@ class Scissors:
                 silhouette_rms_px=rms, conditional_halfwidth_m=halfwidth.tolist(), camera_names=[n for n,_ in observed],
                 height_gain_m=float(estimate[2]-self.center0[2]), minimum_material_height_gain_m=float(min(gains)),
                 maximum_material_height_gain_m=float(max(gains)), jacobian_rank=rank)
+            answer.update(lift_pose_usable=bool(rms<4. and rank==6 and positive and max(halfwidth)<=.010),
+                rotation_halfwidth_rad=(2*np.sqrt(np.maximum(0,np.diag(covariance)[3:6]))).tolist(),
+                minimum_visible_template_z_m=float(verification_points[:,2].min()),
+                uncertainty_semantics='Conditional local two-sigma sensitivity; unknown calibration/model bias is not calibrated coverage')
             if verify and usable:
                 alternatives=[]
                 restart_gains=[]
