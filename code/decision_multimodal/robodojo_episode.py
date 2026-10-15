@@ -146,7 +146,8 @@ class Episode:
 
     def observe(self):
         raw = self.rpc('teacher_observation')
-        calibration = self.rpc('public_camera_calibration')['cameras']
+        calibration_raw=self.rpc('public_camera_calibration')
+        calibration = {name:dict(value) for name,value in calibration_raw['cameras'].items()}
         for index, arm in enumerate(ARMS):
             name = 'cam_'+arm+'_wrist'
             link = transform(raw['eef_positions'][index], raw['eef_quaternions_wxyz'][index])
@@ -167,6 +168,8 @@ class Episode:
         directory = self.folder/f'frame-{self.tick:06d}'
         if not directory.exists():
             directory.mkdir()
+            save(directory/'camera_sensor_audit.json',calibration_raw)
+            save(directory/'camera_render_audit.json',self.rpc('public_camera_render_calibration'))
             for name in CAMERAS:
                 Image.fromarray(public['rgb'][name]).save(directory/(name+'.png'))
             save(directory/'public.json', {k: v for k, v in public.items() if k != 'rgb'})

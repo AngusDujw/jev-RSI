@@ -69,6 +69,8 @@ class SyncedLauncher(_AppLauncher):
 app_module.AppLauncher = SyncedLauncher
 
 def _install_sensor_calibration():
+    import numpy as np
+    from scipy.spatial.transform import Rotation
     from hybrid_rollout.robodojo.robodojo_server import session as native_session
 
     native_dispatch = native_session.RoboDojoSession.dispatch
@@ -92,6 +94,12 @@ def _install_sensor_calibration():
                     'source':'Current robot articulation joint_pos, not prev_control command'}
             return {'step_id':self.step_id,'physical_steps':0,'arms':measured,
                 'scope':'Robot prismatic joint encoders only; no object state, contacts, force, reward or outcome.'}
+        if op == 'public_camera_render_calibration':
+            self._check_identity(args['episode_id'],args['step_id'])
+            return dict(step_id=self.step_id,physical_steps=0,
+                source='Camera-only renderer parameter audit; no scene geometry or labels',
+                cameras=getattr(self,'_codex_render_camera_data',{}),
+                error=getattr(self,'_codex_render_camera_error',None))
         if op != "public_camera_calibration":
             return native_dispatch(self, op, args)
         self._check_identity(args["episode_id"], args["step_id"])
@@ -111,6 +119,17 @@ def _install_sensor_calibration():
             cameras[name] = {"intrinsic": intrinsic.tolist(),
                              "camera_to_environment": transform.tolist(),
                              "size": [width, height]}
+            # Audit the optical sensor itself; the legacy primary calibration
+            # remains unchanged until compared with current image evidence.
+            sensor=manager.cameras[0][index]
+            def host(value):
+                return value.detach().cpu().numpy() if hasattr(value,'detach') else np.asarray(value)
+            position,quaternion=map(host,sensor.get_world_pose(camera_axes='usd'))
+            optical=np.eye(4)
+            optical[:3,:3]=Rotation.from_quat(quaternion[[1,2,3,0]]).as_matrix()
+            optical[:3,3]=position-origin
+            cameras[name]['optical_sensor_intrinsic']=host(sensor.get_intrinsics_matrix()).tolist()
+            cameras[name]['authored_optical_sensor_to_environment']=optical.tolist()
         if set(cameras) != set(native_session.CAMERAS):
             raise RuntimeError("Current public camera calibration incomplete")
         return {"source": "RoboDojo RGB intrinsics and authored mount transforms; wrist pose requires measured LINK6 propagation",
@@ -187,7 +206,33 @@ def _install_public_wrist_mount_sync():
         if self.step_id == 0 and not getattr(self, "_codex_wrist_mount_reset", False):
             self.env.obs_manager._codex_wrist_sync_anchor = {}
             self._codex_wrist_mount_reset = True
-        return original_observe(self, record=record)
+        if not hasattr(self,'_codex_camera_annotators'):
+            try:
+                import omni.replicator.core as rep
+                manager=self.env.camera_manager
+                self._codex_camera_annotators={}
+                for i,name in enumerate(manager.camera_names[0]):
+                    normalized='cam_high' if name=='cam_head' else name
+                    if normalized not in native_session.CAMERAS:
+                        continue
+                    annotator=rep.AnnotatorRegistry.get_annotator('CameraParams')
+                    annotator.attach([manager.cameras[0][i].get_render_product_path()])
+                    self._codex_camera_annotators[normalized]=annotator
+            except Exception as error:
+                self._codex_render_camera_error=type(error).__name__+': '+str(error)[:250]
+                self._codex_camera_annotators={}
+        result=original_observe(self, record=record)
+        # Read only camera matrices from the same render products as RGB.
+        # https://docs.omniverse.nvidia.com/kit/docs/omni_replicator/1.13.30/source/extensions/omni.replicator.core/docs/API.html
+        try:
+            allowed=('cameraViewTransform','cameraProjection','cameraFocalLength','cameraHorizontalAperture','cameraVerticalAperture','renderProductResolution')
+            self._codex_render_camera_data={}
+            for name,annotator in self._codex_camera_annotators.items():
+                raw=annotator.get_data()
+                self._codex_render_camera_data[name]={key:np.asarray(raw[key]).tolist() for key in allowed if key in raw}
+        except Exception as error:
+            self._codex_render_camera_error=type(error).__name__+': '+str(error)[:250]
+        return result
 
     ObsManager.get_obs = synced_get_obs
     native_session.RoboDojoSession._observe = reset_anchor_before_first_observation
