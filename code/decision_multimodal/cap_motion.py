@@ -54,7 +54,7 @@ def cap_height(public,cap,camera='cam_high'):
         limits='Vertical-spring and rigid-circle hypotheses; incomplete arcs can bias travel. No joint/contact/electrical state.')
 
 
-def cap_pose(public,cap,material_masks=None):
+def cap_pose(public,cap,material_masks=None,upper_arc=False):
     """Refit cap translation using a previously RGB-measured radius."""
     center=np.asarray(cap['center_m']);views=[];color=cap.get('color','red')
     for camera,rgb in public['rgb'].items():
@@ -76,9 +76,20 @@ def cap_pose(public,cap,material_masks=None):
             continue
         contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
         pixels=max(contours,key=cv2.contourArea).reshape(-1,2).astype(float)
+        if upper_arc:
+            # Select a top/back arc before removing projected finger pixels.
+            # The front colored sidewall is not part of a horizontal top rim.
+            vertical,_=project(calibration,np.stack([center,center+[0,0,.01]]))
+            up=vertical[1]-vertical[0];up/=np.linalg.norm(up)
+            coordinate=pixels@up
+            pixels=pixels[coordinate>=np.quantile(coordinate,.55)]
         hand=tool_mask(public,camera);index=pixels.astype(int)
         pixels=pixels[hand[index[:,1],index[:,0]]==0]
         if len(pixels)>=12:
+            if upper_arc:
+                # A close pressing wrist must not dominate an independent
+                # observer merely by providing more contour pixels.
+                pixels=pixels[np.linspace(0,len(pixels)-1,min(80,len(pixels))).astype(int)]
             views.append((camera,pixels))
     if not views:
         return dict(usable=False,reason='No unoccluded associated cap rim')
@@ -103,5 +114,6 @@ def cap_pose(public,cap,material_masks=None):
         jacobian_rank=rank,interior_solution=interior,
         conditional_halfwidth_m=width.tolist(),camera_names=[n for n,_ in views],
         rim_pixel_counts={n:len(p) for n,p in views},
+        rim_method='upper45percent_balanced_views' if upper_arc else 'full_associated_contours',
         source='Current associated rim arcs minus public robot occlusion; horizontal cap and previously RGB-measured radius',
         limits='Radius/base/vertical-spring hypotheses; local sensitivity excludes unknown radius and calibration biases. No contact, joint or electrical state.')
