@@ -32,7 +32,7 @@ def build(obs, geometry, programs):
         width,height=camera['size']
         margin=None if uv is None else min(uv[0],width-1-uv[0],uv[1],height-1-uv[1])
         rows[name]={
-            'actual_public_pad_midpoint_world_delta_mm':delta.round(3).tolist(),
+            'predicted_public_pad_midpoint_world_delta_mm':delta.round(3).tolist(),
             'same_hypothesis_top_minus_pad_world_xyz_mm_before':before.tolist(),
             'same_hypothesis_top_minus_pad_world_xyz_mm_after':after.round(3).tolist(),
             'same_hypothesis_xyz_interval_mm_after':(interval-delta[:,None]).round(3).tolist(),
