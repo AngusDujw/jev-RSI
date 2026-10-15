@@ -10,6 +10,8 @@ from model_input_language import require_english_model_input
 
 
 def project(data, kind):
+    if data.get('task')!='stack_blocks':
+        raise ValueError('Question-specific stack projection is task-scoped')
     require_english_model_input(data,'full evidence before question-specific projection')
     notes=data['experience_original_text'];hashes=data['experience_raw_sha256']
     selected={}
@@ -38,7 +40,8 @@ def project(data, kind):
         out['scope']='CURRENT active-pair semantic identity only. No robot action is requested and no future third-object/grasp evidence is presumed.'
         return out
     out.update({k:data[k] for k in ('current_stage','current_stage_rule',
-        'previous_stage_assessment') if k in data})
+        'previous_stage_assessment','planner_visual_method',
+        'current_robot_eef','actual_finger_encoders') if k in data})
     geometry=data.get('algorithmic_far_approach_evidence',{})
     out['current_source_reference']={k:geometry[k] for k in (
         'status','step_id','entity','current_component_pixels','high_source_basis',
