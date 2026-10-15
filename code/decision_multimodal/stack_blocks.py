@@ -209,8 +209,15 @@ def prepare_left_view(ep, geometry, tool_model):
     models = geometry.update(public)
     purple = models.get('purple')
     if purple is None:
-        return False
-    target_point = np.asarray(purple['center_m'])
+        roi = geometry.seeds['purple']['cam_high']
+        mask = segment(public['rgb']['cam_high'], 'purple', seed_roi=roi)
+        if mask is None or geometry.table_z is None:
+            return False
+        ys, xs = np.nonzero(mask)
+        origin, direction = ray(public['calibration']['cam_high'], [xs.mean(), ys.mean()])
+        target_point = origin+direction*((geometry.table_z+.020-origin[2])/direction[2])
+    else:
+        target_point = np.asarray(purple['center_m'])
     robot = public['robot']
     old_link = transform(robot['eef_positions'][0], robot['eef_quaternions_wxyz'][0])
     camera = public['calibration']['cam_left_wrist']
