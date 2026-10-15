@@ -11,7 +11,7 @@ from rgb_circle import fit_cap
 from robodojo_episode import save, wait_command
 
 
-def run(ep):
+def run(ep,continue_immediately=False):
     table_path=ep.folder/'table_geometry.json'
     table=json.loads(table_path.read_text()) if table_path.exists() else fit_horizontal_texture(ep.public)
     if not table_path.exists():
@@ -37,6 +37,8 @@ def run(ep):
     save(ep.folder/f'button_geometry-step{ep.tick}.json',geometry)
     save(ep.folder/'button_geometry.json',geometry)
     print(json.dumps(dict(event='current_button_geometry_ready',step=ep.tick,output=str(ep.folder))),flush=True)
+    if continue_immediately:
+        return True
     # The outer experiment agent can inspect these actual observations and
     # compile a revised fixed task controller without resetting this episode.
     request=wait_command(ep)
