@@ -8,7 +8,7 @@ from camera_view import acquire
 from rgb_cuboid import ray
 from rgb_plane import fit_horizontal_texture
 from rgb_circle import fit_cap
-from robodojo_episode import save
+from robodojo_episode import save, wait_command
 
 
 def run(ep):
@@ -31,7 +31,7 @@ def run(ep):
     print(json.dumps(dict(event='current_button_geometry_ready',step=ep.tick,output=str(ep.folder))),flush=True)
     # The outer experiment agent can inspect these actual observations and
     # compile a revised fixed task controller without resetting this episode.
-    request=json.loads(sys.stdin.readline())
+    request=wait_command(ep)
     if request.get('op')=='finish':
         return
     if request.get('op')!='run_controller':

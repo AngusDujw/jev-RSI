@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import select
 import socket
 import subprocess
 import sys
@@ -25,6 +26,21 @@ ROOT = Path('/root/yekangjie/project/robodojo-jev')
 PYTHON = ROOT/'envs/robodojo-isaac51/bin/python'
 ARMS = ('left', 'right')
 CAMERAS = ('cam_high', 'cam_left_wrist', 'cam_right_wrist')
+
+
+def wait_command(episode):
+    """Read a command while maintaining the native single-owner connection."""
+    while True:
+        ready,_,_=select.select([sys.stdin],[],[],30.)
+        if ready:
+            line=sys.stdin.readline()
+            if not line:
+                raise EOFError('Controller command input closed')
+            return json.loads(line)
+        # The native900s idle timeout finalizes a disconnected episode.
+        # This foreground read-only heartbeat never steps physics or a model.
+        episode.rpc('public_robot_gripper_state')
+        episode.event(dict(kind='paused_read_only_heartbeat',step=episode.tick))
 
 
 def save(path, value):
@@ -249,13 +265,12 @@ def main():
         controller = args.controller
         if controller is None:
             # Keep this native episode paused while its current images are reviewed.
-            for line in sys.stdin:
-                request = json.loads(line)
-                if request.get('op') == 'run_controller':
-                    controller = Path(request['controller'])
-                    break
-                if request.get('op') == 'finish':
-                    return
+            request = wait_command(episode)
+            if request.get('op') == 'run_controller':
+                controller = Path(request['controller'])
+            elif request.get('op') == 'finish':
+                return
+            else:
                 raise ValueError('Expected a fixed controller path or explicit finish')
         if controller is not None:
             source = controller.resolve()
