@@ -13,9 +13,10 @@ from robodojo_episode import save,wait_command
 
 def questions(state):
     result={}
+    reference=state.get('control_reference','public pad midpoint')
     for i,axis in enumerate('xyz'):
         e=1000*state['position_error_m'][i];d=1000*state['position_tolerance_m']
-        result[axis]=choice(f'Current button stage={state["phase"]}, active arm=LEFT. World {axis.upper()} PAD target minus current: ERROR_MM={e:.3f}, DEADBAND_MM={d:.3f}. Classify this scalar.',
+        result[axis]=choice(f'Current button stage={state["phase"]}, active arm=LEFT. Reference={reference}. World {axis.upper()} target minus current: ERROR_MM={e:.3f}, DEADBAND_MM={d:.3f}. Classify this scalar.',
             dict(negative=f'ERROR_MM < -{d:.3f}: decrease coordinate',hold=f'-{d:.3f} <= ERROR_MM <= {d:.3f}: hold',positive=f'ERROR_MM > {d:.3f}: increase coordinate'))
         e=state['orientation_error_rad'][i]
         result['rotation_'+axis]=choice(f'World {axis.upper()} rotation-log target minus current: ERROR_RAD={e:.5f}, DEADBAND_RAD=0.02000. Positive is right-hand world rotation.',
@@ -63,14 +64,24 @@ def run(ep):
         save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=0,stop_reason='Pro cap-height/footprint inequalities failed',depth_m=depth,margin_m=margin))
         return
     desired=Rotation.from_euler('y',np.pi/2)
+    # This is an intra-episode sensor reference, not retrieved experience.
+    import cap_motion
+    importlib.reload(cap_motion)
+    from sam_cap import CapObserver,load_public
+    observer=CapObserver(ep.folder)
+    source_steps=[int(path.stem.rsplit('-',1)[1]) for path in ep.folder.glob('first-press-control-*.json')]
+    source_step=min(source_steps) if source_steps else ep.tick
+    baseline=observer.measure(load_public(ep.folder,source_step),cap)
+    save(ep.folder/'first_press_visual_baseline.json',baseline)
     method=dict(cap=cap,active_arm='left',active_public_finger_index=finger,
         pad_footprint_radius_m=radius,contained_contact_margin_m=margin,approach_gap_m=clearance,
         press_depth_m=depth,working_uncertainty_m=sigma,
         uncertainty_interpretation='Conditional fit halfwidth used as a conservative working scale in the Pro formulas; not calibrated standard deviation',
+        source_step=source_step,
         scope='Saved Pro plan formulas; geometric actuation proxy, no electrical/contact state')
     if not resume:
         save(ep.folder/'first_press_method.json',method)
-    count=0;stop=None;latched=False
+    count=0;stop=None;latched=False;visible=None;visible_press_evidence=False
     schedule=[('press',-depth),('release_and_retreat',clearance)] if resume else [('clear_and_orient',clearance+.05),('approach',clearance),('press',-depth),('release_and_retreat',clearance)]
     for phase,gap in schedule:
         stage_done=False
@@ -91,6 +102,24 @@ def run(ep):
                 angular[:]=0
             tolerance=max(.003,3*sigma) if phase in ('press','release_and_retreat') else .006
             passed=bool(max(abs(error))<=tolerance and np.linalg.norm(angular)<=.05 and np.linalg.norm(tip[:2]-center[:2])<margin)
+            visible=None
+            if phase in ('press','release_and_retreat') and baseline.get('usable'):
+                current=observer.measure(public,cap)
+                if current.get('usable'):
+                    travel=float(baseline['center_m'][2]-current['center_m'][2])
+                    allowance=float(baseline['conditional_halfwidth_m'][2]+current['conditional_halfwidth_m'][2])
+                    visible=dict(downward_displacement_m=travel,conditional_travel_interval_m=[travel-allowance,travel+allowance],
+                        desired_displacement_m=depth,current_rim_rms_px=current['rim_rms_px'],
+                        source='Current RGB SAM rim relative to the prepress RGB SAM rim; public K/T and robot masks')
+                    if phase=='press' and travel-allowance>0:
+                        visible_press_evidence=True
+                    if phase=='press' and travel-allowance>0 and travel>=depth-3*sigma and np.linalg.norm(tip[:2]-center[:2])<margin:
+                        # Direct object effect takes precedence over a nominal
+                        # tool endpoint when collision geometry differs.
+                        error=np.array([0.,0.,travel-depth]);angular[:]=0
+                        passed=True
+                    if phase=='release_and_retreat':
+                        passed=passed and abs(travel)<=3*sigma
             state=dict(task=public['instruction'],phase=phase,active_arm='left',target_identity='left red button under card1',
                 required_cycles=1,completed_proxy_cycles=count,position_error_m=error.round(5).tolist(),position_tolerance_m=tolerance,
                 orientation_error_rad=angular.round(5).tolist(),pass_=passed,
@@ -103,6 +132,14 @@ def run(ep):
                     geometric_proxy_only=True)
             else:
                 state.update(press_candidate_latched=latched,required_separation_m=clearance,current_tip_to_unpressed_cap_gap_m=float(tip[2]-center[2]))
+            if visible is not None:
+                state['visible_cap_motion']=visible
+                if phase=='press':
+                    state.pop('remaining_press_depth_m',None)
+                    state['cap_displacement_remaining_m']=max(0.,depth-visible['downward_displacement_m'])
+                if phase=='press' and passed:
+                    state['position_error_m']=error.round(5).tolist()
+                    state['control_reference']='Visible cap height residual mapped to vertical pressing; contained XY held'
             state['pass']=state.pop('pass_')
             answer=ep.decide(state,questions(state))
             save(ep.folder/f'first-press-control-{ep.tick:06d}.json',dict(state=state,answers=answer))
@@ -144,7 +181,7 @@ def run(ep):
                 break
         if stop or not stage_done:
             stop=stop or 'Stage budget exhausted: '+phase;break
-    save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=count,visible_depression_verified=False,
+    save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=count,visible_depression_verified=visible_press_evidence,
         press_depth_m=depth,stop_reason=stop,physical_step=ep.tick,
         scope='Only first red1 cycle; full task and electrical count are not established'))
     print(json.dumps(dict(event='first_red_cycle_finished',proxy_cycles=count,step=ep.tick,stop_reason=stop)),flush=True)

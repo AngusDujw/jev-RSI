@@ -14,6 +14,7 @@ CACHE=Path('/root/yekangjie/project/robodojo-jev/.cache/models')
 
 class Segmenter:
     def __init__(self):
+        torch.set_num_threads(2)
         self.processor=Sam2Processor.from_pretrained(MODEL,cache_dir=str(CACHE),local_files_only=True)
         self.model=Sam2Model.from_pretrained(MODEL,cache_dir=str(CACHE),local_files_only=True).eval().to('cuda:0')
 
