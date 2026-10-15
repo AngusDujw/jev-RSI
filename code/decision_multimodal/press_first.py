@@ -37,8 +37,17 @@ def run(ep):
     # Refit current RGB using the corrected bright-top mask in a fresh module.
     import rgb_circle
     importlib.reload(rgb_circle)
-    cap=rgb_circle.fit_cap(ep.public,[244,267],'red',table['plane_z_m'])
-    save(ep.folder/'first_press_source_geometry.json',cap)
+    previous_path=ep.folder/'first_press_result.json'
+    previous=json.loads(previous_path.read_text()) if previous_path.exists() else None
+    resume=bool(previous and previous.get('stop_reason')=='Stage budget exhausted: press' and
+                previous.get('completed_proxy_cycles')==0 and previous.get('physical_step')==ep.tick)
+    old_method=json.loads((ep.folder/'first_press_method.json').read_text()) if resume else None
+    cap=old_method['cap'] if resume else rgb_circle.fit_cap(ep.public,[244,267],'red',table['plane_z_m'])
+    if resume:
+        save(ep.folder/f'first_press_resume_step{ep.tick}.json',dict(previous=previous,
+            method='Continue the existing candidate with a vertical target, containment rather than exact lateral centering, and the saved Pro3-times-working-uncertainty endpoint criterion; do not repeat approach or reset unpressed baseline'))
+    else:
+        save(ep.folder/'first_press_source_geometry.json',cap)
     if not cap.get('usable'):
         save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=0,stop_reason='Current cap geometry unavailable'))
         return
@@ -54,13 +63,16 @@ def run(ep):
         save(ep.folder/'first_press_result.json',dict(completed_proxy_cycles=0,stop_reason='Pro cap-height/footprint inequalities failed',depth_m=depth,margin_m=margin))
         return
     desired=Rotation.from_euler('y',np.pi/2)
-    save(ep.folder/'first_press_method.json',dict(cap=cap,active_arm='left',active_public_finger_index=finger,
+    method=dict(cap=cap,active_arm='left',active_public_finger_index=finger,
         pad_footprint_radius_m=radius,contained_contact_margin_m=margin,approach_gap_m=clearance,
         press_depth_m=depth,working_uncertainty_m=sigma,
         uncertainty_interpretation='Conditional fit halfwidth used as a conservative working scale in the Pro formulas; not calibrated standard deviation',
-        scope='Saved Pro plan formulas; geometric actuation proxy, no electrical/contact state'))
+        scope='Saved Pro plan formulas; geometric actuation proxy, no electrical/contact state')
+    if not resume:
+        save(ep.folder/'first_press_method.json',method)
     count=0;stop=None;latched=False
-    for phase,gap in [('clear_and_orient',clearance+.05),('approach',clearance),('press',-depth),('release_and_retreat',clearance)]:
+    schedule=[('press',-depth),('release_and_retreat',clearance)] if resume else [('clear_and_orient',clearance+.05),('approach',clearance),('press',-depth),('release_and_retreat',clearance)]
+    for phase,gap in schedule:
         stage_done=False
         for attempt in range(35):
             if ep.ended or ep.tick>=ep.metadata['max_episode_steps']:
@@ -72,7 +84,12 @@ def run(ep):
             target_mid=target_tip-desired.apply(tip_local-tool['local_center_m'])
             error=target_mid-tool['world_center_m']
             angular=(desired*tool['rotation'].inv()).as_rotvec()
-            tolerance=.006 if phase in ('clear_and_orient','approach') else .003
+            if phase in ('press','release_and_retreat') and np.linalg.norm(tip[:2]-center[:2])<margin and np.linalg.norm(angular)<.10:
+                # Keep the already contained lateral point and admissible
+                # tilt; apply the stage's vertical residual directly.
+                error=np.array([0.,0.,target_tip[2]-tip[2]])
+                angular[:]=0
+            tolerance=max(.003,3*sigma) if phase in ('press','release_and_retreat') else .006
             passed=bool(max(abs(error))<=tolerance and np.linalg.norm(angular)<=.05 and np.linalg.norm(tip[:2]-center[:2])<margin)
             state=dict(task=public['instruction'],phase=phase,active_arm='left',target_identity='left red button under card1',
                 required_cycles=1,completed_proxy_cycles=count,position_error_m=error.round(5).tolist(),position_tolerance_m=tolerance,
@@ -99,7 +116,7 @@ def run(ep):
             old_link=np.asarray(public['robot']['eef_positions'][0]);new_link=np.asarray(targets['left']['position'])
             new_rotation=Rotation.from_quat(np.asarray(targets['left']['quaternion_wxyz'])[[1,2,3,0]])
             delta=new_link-old_link;rot=(new_rotation*tool['rotation'].inv()).as_rotvec()
-            maximum=.035 if phase=='clear_and_orient' else .015 if phase=='approach' else .006
+            maximum=.035 if phase=='clear_and_orient' else .015 if phase=='approach' else .020
             angle_cap=.25 if phase=='clear_and_orient' else .08
             gain=min(1.,maximum/max(1e-12,np.linalg.norm(delta)),angle_cap/max(1e-12,np.linalg.norm(rot)))
             targets['left']['position']=(old_link+gain*delta).tolist()
