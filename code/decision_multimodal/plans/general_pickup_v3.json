@@ -105,10 +105,10 @@
     "termination": "ADVANCE requires the current phase pass condition. STOP after final stabilization or when validity cannot be restored within remaining steps. Retain the close command when stopping after grasp."
   },
   "objectives": {
-    "APPROACH": "OPEN; translate from initial pad midpoint [0.300,-0.202,0.921] m toward a neck pregrasp while turning the wrist approximately 90 degrees. Maintain visible clearance through the source/table corridor.",
-    "CAPTURE_ALIGNMENT": "OPEN; center the neck between pads, align jaws and descend to the current mesh-based capture candidate.",
-    "CLOSE": "Command CLOSE=0 and hold capture pose; monitor measured aperture and current RGB.",
-    "LIFT_AND_HOLD": "Retain CLOSE; lift toward 115 mm whole-template height gain, correcting lateral drift. Include six final stabilization steps."
+    "APPROACH": "Move the open hand above the solid mint neck and orient the public finger tool downward.",
+    "CAPTURE_ALIGNMENT": "Align the open opposing fingers beside the neck at the computed shallow acquisition height.",
+    "CLOSE": "Close around the neck and measure aperture settling. This creates a candidate grasp.",
+    "LIFT_AND_HOLD": "Lift the represented scissors until the visual height-gain interval lies within100..130mm, then hold with visible attachment."
   },
   "provenance": {
     "model": "gpt-6.1-sol",

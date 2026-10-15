@@ -146,8 +146,11 @@ def run(ep):
                 frame='Environment/world metres; errors are TARGET MINUS CURRENT public pad midpoint; +Z up.',
                 position_error_m=error.round(5).tolist(),position_deadband_m=deadband,
                 orientation_error_rad=angular.round(5).tolist(),rotation_component_deadband_rad=rot_deadband,
-                coarse_fit_valid=bool(measured.get('far_valid')),strict_fit_valid=strict,
                 stage_physical_steps_remaining=max(0,stage_end-ep.tick),pass_=bool(passed))
+            if phase=='APPROACH':
+                state['coarse_fit_valid']=bool(measured.get('far_valid'))
+            elif phase!='CLOSE':
+                state['strict_fit_valid']=strict
             if phase in ('APPROACH','CAPTURE_ALIGNMENT'):
                 state.update(material_center_sensitivity_m=measured.get('conditional_halfwidth_m'),
                     nominal_table_z_m=table['plane_z_m'],conditional_table_allowance_m=.002,
