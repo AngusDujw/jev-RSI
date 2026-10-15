@@ -99,6 +99,15 @@ def vertices(parameters):
     return (signs*size) @ rotation.T + center
 
 
+def model_vertices(model):
+    """Current RGB model, including object tilt when independently fitted."""
+    if model.get('rotation_vector_world_rad') is None:
+        return vertices(np.r_[model['center_m'],model['size_m'],model['yaw_rad']])
+    from scipy.spatial.transform import Rotation
+    signs=np.array([[x,y,z] for x in (-.5,.5) for y in (-.5,.5) for z in (-.5,.5)])
+    return Rotation.from_rotvec(model['rotation_vector_world_rad']).apply(signs*np.asarray(model['size_m']))+model['center_m']
+
+
 def fit(views, prior=None, support_z=None):
     """views = [(public camera, current binary material mask), ...]."""
     shape_prior = prior is not None and prior.get('status') == 'fitted_visual_hypothesis'

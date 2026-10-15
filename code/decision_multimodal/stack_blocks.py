@@ -8,11 +8,11 @@ from pathlib import Path
 import numpy as np
 from scipy.spatial.transform import Rotation
 from scipy.spatial import QhullError
-from rgb_cuboid import fit, project, ray, segment, vertices
+from rgb_cuboid import fit, project, ray, segment, vertices,model_vertices
 from robot_tool import Tool
 from robodojo_episode import save, transform
 
-PLAN = Path(__file__).with_name('plans')/'stack_blocks_v2.json'
+PLAN = Path(__file__).with_name('plans')/'stack_blocks_v3.json'
 PHASES = [('approach', 'Move the open fingers above the current source, with the tool pointing down.'),
     ('enter', 'Move the open opposing finger pads beside the current source at the computed grasp height.'),
     ('close', 'Close around the source and measure the aperture response; capture is not yet verified.'),
@@ -142,6 +142,9 @@ class Perception:
                 current = fit(views, prior_fit, plane)
             except (ValueError, QhullError, np.linalg.LinAlgError) as error:
                 current = dict(status='unavailable', reason=type(error).__name__+': '+str(error)[:200])
+            if prior_fit is not None and prior_fit.get('rotation_vector_world_rad') is not None:
+                current['usable']=False
+                current['reason']='Current dynamic full-rotation model requires a full-rotation refit'
             if (not current.get('usable') and plane is not None and 'cam_high' in used and len(views) > 1):
                 try:
                     high_only = fit([views[used.index('cam_high')]], prior_fit, plane)
@@ -383,8 +386,8 @@ def run(ep):
                 overlap_widths = center_reserve = gap_interval = None
                 support_ok = False
                 if current_valid and dest_valid:
-                    source_vertices = vertices(np.r_[current['center_m'], current['size_m'], current['yaw_rad']])
-                    dest_vertices = vertices(np.r_[dest['center_m'], dest['size_m'], dest['yaw_rad']])
+                    source_vertices = model_vertices(current)
+                    dest_vertices = model_vertices(dest)
                     low = np.maximum(source_vertices[:, :2].min(0), dest_vertices[:, :2].min(0))
                     high = np.minimum(source_vertices[:, :2].max(0), dest_vertices[:, :2].max(0))
                     overlap_widths = (high-low).tolist()
@@ -392,7 +395,7 @@ def run(ep):
                     center_reserve = float(min(np.min(source_point[:2]-low), np.min(high-source_point[:2]))-uncertainty_xy)
                     support_ok = bool(min(overlap_widths) > 0 and center_reserve > .003)
                     gap = current['bottom_z_m']-dest['top_z_m']
-                    gap_uncertainty = current['conditional_center_halfwidth_m'][2]+dest['conditional_center_halfwidth_m'][2]
+                    gap_uncertainty = current.get('conditional_bottom_top_halfwidth_m',current['conditional_center_halfwidth_m'][2])+dest.get('conditional_bottom_top_halfwidth_m',dest['conditional_center_halfwidth_m'][2])
                     gap_interval = [gap-gap_uncertainty, gap+gap_uncertainty]
                 if current_valid and previous_source_point is not None and np.linalg.norm(source_point-previous_source_point) < .010:
                     stable_observations += 1
