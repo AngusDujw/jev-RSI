@@ -17,10 +17,17 @@ def questions(state):
     result={}
     if state['phase']!='CLOSE':
         for i,axis in enumerate('xyz'):
-            result[axis]=choice(f'World {axis.upper()} translation: position_error_m[{i}] is TARGET MINUS CURRENT pad midpoint in metres. Positive increases that world coordinate; negative decreases it; Z positive lifts. Hold at absolute error <=position_deadband_m.',
-                dict(negative='Decrease world coordinate',hold='No displacement',positive='Increase world coordinate'))
-            result['rotation_'+axis]=choice(f'World {axis.upper()} rotation: orientation_error_rad[{i}] is Log(R_target times inverse R_current), radians. Positive is right-hand world rotation. Hold at absolute component <=rotation_component_deadband_rad.',
-                dict(negative='Negative world rotation',hold='No rotation',positive='Positive world rotation'))
+            error=float(state['position_error_m'][i])*1000
+            tolerance=float(state['position_deadband_m'])*1000
+            result[axis]=choice(f'CURRENT stage={state["phase"]}. Classify the current world-{axis.upper()} target-minus-current PAD error. ERROR_MM={error:.3f}; DEADBAND_MM={tolerance:.3f}. Select its interval. The executor decreases this stage error; positive world Z is upward.',
+                dict(negative=f'ERROR_MM < -{tolerance:.3f}: decrease world {axis.upper()}',
+                     hold=f'-{tolerance:.3f} <= ERROR_MM <= {tolerance:.3f}: hold',
+                     positive=f'ERROR_MM > {tolerance:.3f}: increase world {axis.upper()}'))
+            error=float(state['orientation_error_rad'][i]);tolerance=float(state['rotation_component_deadband_rad'])
+            result['rotation_'+axis]=choice(f'CURRENT stage={state["phase"]}. Classify the world-{axis.upper()} rotation-log component of R_target times inverse R_current. ERROR_RAD={error:.5f}; DEADBAND_RAD={tolerance:.5f}. Select its interval; positive is right-hand world rotation.',
+                dict(negative=f'ERROR_RAD < -{tolerance:.5f}: negative rotation',
+                     hold=f'-{tolerance:.5f} <= ERROR_RAD <= {tolerance:.5f}: hold',
+                     positive=f'ERROR_RAD > {tolerance:.5f}: positive rotation'))
     result['gripper']=choice('OPEN during APPROACH/CAPTURE_ALIGNMENT. CLOSE immediately commands native target0 during CLOSE; native motors determine actual closure. KEEP or CLOSE retain that command during LIFT_AND_HOLD. Aperture alone does not prove holding.',
         dict(open='Native opening1',close='Native opening0',keep='Keep previous command'))
     transitions=dict(continue_phase='Execute chosen bounded action in current stage',stop='Stop this attempt incomplete')
