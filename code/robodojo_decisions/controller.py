@@ -457,7 +457,16 @@ class DecisionClient:
                 "questions": payload["questions"],
                 "model_input_language_contract": ENGLISH_ONLY,
                 "request_schema": "full_question_audit_v2"}
+        meta['key_origin']='du' if self.key_file.name=='du-openai-direct.key' else 'explicit_key_file'
+        meta['transport']=os.environ.get('ROBODOJO_DECISION_TRANSPORT','urllib')
         self.output.mkdir(parents=True, exist_ok=True)
+        prepared=self.output.parent/'model_requests'
+        prepared.mkdir(exist_ok=True)
+        request_audit=prepared/f'{record_name}.json'
+        request_audit.write_text(json.dumps({**meta,
+            'status':'prepared_before_network',
+            'scope':'Exact question/text/image-hash input prepared for dispatch; this file alone does not prove provider receipt or response.'},ensure_ascii=False,indent=2))
+        meta['prepared_request_audit']=str(request_audit)
         started = time.monotonic()
         request = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode(),
             headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
