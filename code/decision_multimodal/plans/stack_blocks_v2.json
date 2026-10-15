@@ -1,0 +1,457 @@
+{
+  "planner_response": {
+    "status": "Proposal for empirical validation; no successful capture or stacking outcome is asserted.",
+    "order": {
+      "bottom": "purple",
+      "middle": "wood",
+      "top": "white",
+      "placements": [
+        "wood onto purple",
+        "white onto wood"
+      ],
+      "reason": "Wood is the first source because its metric geometry already has a two-camera conditional fit. Purple needs a measured support top before placement; white needs fresh grasp geometry before its later capture."
+    },
+    "setup": {
+      "episode_boundary": "Use fresh synchronized images and measured robot kinematics. Original ROIs and wood dimensions initialize identity and shape hypotheses only; refit current geometry before execution.",
+      "geometry_preparation": "Compute segmentation, calibrated camera transforms, conditional cuboid families, robot masks, grasp candidates, collision clearance and placement candidates outside the actor's physical stages. Missing geometry selects bounded view recovery, never a passive refinement stage.",
+      "uncertainty": "Preserve conditional intervals and competing fits. Treat the declared 2 mm sensitivity floor as a lower bound on relevant metric sensitivity, not calibrated confidence. Do not require uncertainty below that floor.",
+      "release_budget": "Declare accepted_drop_m and minimum clearance from the task's physical constraints before execution. If geometry cannot support a release within that budget, recover or stop."
+    },
+    "processing_contract": {
+      "calibration": "Verify camera-axis conventions against projected visible robot geometry. Update wrist extrinsics from measured kinematics and known camera mounts; reject inconsistent reprojections.",
+      "images": "Segment appearance and texture with temporal association; mask projected fingers and robot links. Search outside initial ROIs. Mark truncated or occluded boundaries as missing, never as object edges.",
+      "metric_fitting": "Jointly fit visible cuboid edges, silhouettes and matched texture across calibrated views. Triangulate actual corresponding features, never silhouette centroids. Retain plausible fits using image residuals, calibration sensitivity and the metric floor. A low silhouette residual alone does not establish usable geometry.",
+      "grasp_check": "For each candidate jaw direction, calculate source projected width interval [w_low,w_high], measured aperture interval [a_low,a_high], lateral centering error interval and finger engagement clearance. Require a_low-w_high-2*worst_lateral_error>0 before descent between the fingers. Derive allowable position and orientation errors from this remaining clearance.",
+      "support_check": "For every retained source/support fit, intersect their horizontal footprints. Report minimum intersection widths, minimum overlap-area fraction and minimum signed distance from the source's geometric-center projection to the intersection boundary. Require positive intersection widths and a center reserve exceeding predicted release drift. Derive lateral/yaw error allowances from these margins. Allow overhang; do not require full-footprint containment. These are geometric acceptance checks, not contact or physical stability proof.",
+      "held_measurements": "Track exposed wood grain, purple texture, white corners and visible edges using fixed-camera images and updated wrist views. Fit partial observations with pre-capture dimension intervals; do not require complete silhouettes. Estimate displacement and block-to-tool drift from independently observed features. If occlusion leaves these quantities unidentifiable, output null and enter bounded recovery; tool motion alone cannot establish source motion.",
+      "actor_fields": [
+        "stage, source_id, destination_id",
+        "position_error_m: numeric XYZ or null",
+        "orientation_error_rad: numeric symmetry-aware error or null",
+        "allowed_position_error_m, allowed_orientation_error_rad",
+        "measured_aperture_m, aperture_change_m",
+        "closing_attempts, stalled_attempts",
+        "visible_source_displacement_m, source_tool_drift_m",
+        "overlap_widths_m, center_reserve_m, release_gap_interval_m",
+        "missing_measurements, pass, failure_reason"
+      ]
+    },
+    "stages": [
+      {
+        "name": "Open and approach source",
+        "objective": "Bring open fingers above the measured source.",
+        "pass": "Position/orientation errors satisfy clearance-derived allowances; aperture margin and swept-volume clearance are positive."
+      },
+      {
+        "name": "Enter grasp",
+        "objective": "Move opposing fingers beside the source at the fitted grasp height.",
+        "pass": "Grasp errors satisfy aperture-derived allowances and visible engagement remains measurable."
+      },
+      {
+        "name": "Close candidate grasp",
+        "objective": "Reduce measured aperture around the source.",
+        "pass": "After aperture reduction, two consecutive attempts show no change beyond encoder sensitivity, and aperture is compatible with the fitted width plus declared measurement/compliance bounds. Advance only to capture testing.",
+        "bound": "At most five closing attempts; an incompatible aperture or missing measurement triggers recovery."
+      },
+      {
+        "name": "Active lift capture test",
+        "objective": "Lift enough to distinguish source motion from tracking uncertainty while preserving clearance.",
+        "pass": "Observed upward source displacement exceeds its displacement-error bound, a positive support gap is resolved, and source/tool relative drift stays within the measured tracking bound."
+      },
+      {
+        "name": "Transfer and align",
+        "objective": "Carry the captured source above the freshly measured destination.",
+        "pass": "Numeric errors satisfy overlap-derived allowances; robust overlap, center reserve and clearance remain positive."
+      },
+      {
+        "name": "Lower and open",
+        "objective": "Reach the lowest conservative release height and separate the fingers.",
+        "pass": "Worst-case bottom does not penetrate the fitted support; worst-case release gap is within accepted_drop_m; measured aperture clears the source. This establishes release readiness, not contact."
+      },
+      {
+        "name": "Retreat and verify",
+        "objective": "Separate the tool and expose the placed block.",
+        "pass": "Across three observations spanning retreat, tool separation exceeds measurement uncertainty, source/support drift stays within measured tracking bounds, and observed stacking geometry persists. Rebind white onto wood, or finish."
+      }
+    ],
+    "bounded_recovery": {
+      "view_recovery": "Move an unloaded wrist camera along a collision-checked path to reveal the missing face or edge with a distinct calibrated baseline. Permit two moves per placement. Progress requires reduced truncation, additional independent edges/features, or narrower task-relevant intervals. Otherwise stop.",
+      "capture_recovery": "After failed lift, return to the last visibly supported configuration only if its path remains measured and clear; reopen, refit and retry once. Otherwise stop. Never retry from an unmeasured held state."
+    }
+  },
+  "initial_perception_seed_rois": {
+    "format": "[xmin, ymin, xmax, ymax], pixels; initial perception seeds only",
+    "wood": {
+      "appearance": "Pale yellow wood grain",
+      "cam_high": [
+        453,
+        207,
+        482,
+        234
+      ],
+      "cam_left_wrist": null,
+      "cam_right_wrist": [
+        324,
+        286,
+        383,
+        361
+      ]
+    },
+    "purple": {
+      "appearance": "Purple textured block",
+      "cam_high": [
+        434,
+        281,
+        466,
+        310
+      ],
+      "cam_left_wrist": null,
+      "cam_right_wrist": null
+    },
+    "white": {
+      "appearance": "White block, partly obscured",
+      "cam_high": [
+        492,
+        251,
+        529,
+        284
+      ],
+      "cam_left_wrist": null,
+      "cam_right_wrist": [
+        438,
+        437,
+        527,
+        480
+      ]
+    },
+    "null_meaning": "No reliable initial seed; not evidence of absence."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "planner_response_sha256": "b58520ee77a39562df9c681f1822af0f4500546bf8d2116c2ba70cb1c849efd3",
+    "status": "Unvalidated fixed-case method, not a successful result"
+  },
+  "partial_observation_revision": {
+    "status": "Proposed implementation revision; no current metric pose, successful release, or stacking outcome is asserted.",
+    "scope": {
+      "order": [
+        "wood onto purple",
+        "white onto wood"
+      ],
+      "main_change": "Replace the full-current-cuboid requirement with a set-valued estimator that distinguishes fresh partial measurements, a corroborated stationary-support prior, and explicitly bounded attachment propagation.",
+      "current_case": "The attached views contain exposed purple regions around the wood and gripper, but their metric constraints must be computed using synchronized RGB, calibration, and measured robot poses. The reported approximately 74 mm wood rise is historical evidence, not a current attachment certificate.",
+      "allowed_inputs": [
+        "Current and earlier synchronized RGB from this episode",
+        "Public camera intrinsics and transforms",
+        "Measured robot states and robot meshes",
+        "RGB-derived object geometry and feature tracks from this episode"
+      ],
+      "excluded_inputs": [
+        "Object assets or privileged object poses",
+        "Contact, reward, success, or outcome signals",
+        "Experience files or previous-episode trajectories"
+      ]
+    },
+    "estimator_state": {
+      "representation": "Maintain a union of feasible joint hypotheses over object pose, dimension intervals, feature associations, and shared calibration uncertainty. Preserve disconnected position and symmetry-aware yaw alternatives.",
+      "object_geometry": "Retain earlier RGB-derived size and yaw intervals, including fitting residuals and model discrepancy. Do not treat nominal dimensions as exact or force rounded boundaries onto ideal sharp cuboid edges.",
+      "provenance_labels": [
+        "CURRENT_FULL",
+        "CURRENT_PARTIAL_WITH_STATIONARY_PRIOR",
+        "CURRENT_PARTIAL_DYNAMIC",
+        "ATTACHMENT_PROPAGATED",
+        "UNRESOLVED"
+      ],
+      "per_object_record": [
+        "identity",
+        "geometry_epoch",
+        "dimension_intervals_m",
+        "pose_hypothesis_set",
+        "pose_interval_summary",
+        "provenance",
+        "last_full_observation_timestamp",
+        "last_independent_visual_update_timestamp",
+        "fresh_constraint_ids",
+        "stationary_prior_valid",
+        "possible_interaction_since_epoch",
+        "unobservable_task_components",
+        "contradictions"
+      ],
+      "important_rule": "A narrow posterior supported partly by an earlier stationary prior remains prior-assisted. Never label it a current full observation."
+    },
+    "operational_thresholds": {
+      "interpretation": "These are proposed execution limits and residual gates, not measured confidence or claims about the current scene. Log their values before execution.",
+      "metric_sensitivity_floor_m": 0.002,
+      "metric_rule": "The 2 mm floor is a minimum perturbation used in sensitivity and clearance calculations. Larger calibration, segmentation, tracking, and shape errors must remain represented.",
+      "pixel_residual_gate": "3 pixels plus the projected calibration, feature-localization, and shape-error envelope",
+      "minimum_edge_segment_length_px": 12,
+      "minimum_partial_edge_samples": 6,
+      "minimum_independent_partial_constraints": 2,
+      "constraint_independence": "Samples from one straight edge count as one constraint family. Use nonparallel edges, a localized endpoint or texture feature plus an edge, or a second calibrated view with a useful baseline.",
+      "maximum_age_of_fresh_support_corroboration_s": 0.5,
+      "maximum_actions_without_new_support_corroboration": 1,
+      "maximum_attachment_extrapolation_s": 0.25,
+      "maximum_attachment_extrapolation_link6_path_m": 0.01,
+      "maximum_attachment_extrapolation_rotation_path_rad": 0.05,
+      "maximum_attachment_extrapolation_actions": 1,
+      "maximum_view_recovery_actions_per_placement": 2,
+      "maximum_capture_retries_per_placement": 1,
+      "maximum_closing_attempts": 5,
+      "release_budget": "accepted_drop_m and minimum_clearance_m remain required task parameters. Missing values prohibit release; do not invent them from the images.",
+      "timing": "Use actual simulator or robot timestamps and the known physical-step duration. Wall-clock inference latency alone does not measure simulated motion."
+    },
+    "partial_observation_update": {
+      "prediction": [
+        "Transform each retained object hypothesis into every current camera using synchronized measured robot kinematics.",
+        "Render depth intervals for projected robot meshes and estimated held-object geometry. Held-object geometry is reconstructed from RGB, not loaded from an object asset.",
+        "Retain object-shape, calibration, pose, and robot-state uncertainty when constructing projected envelopes."
+      ],
+      "occlusion_classification": {
+        "definitely_occluded": "An occluder covers the pixel for every retained relevant hypothesis and its farthest depth is nearer than the object's nearest depth.",
+        "definitely_visible": "No plausible nearer occluder covers the projected surface region.",
+        "ambiguous": "Visibility changes across retained hypotheses. Such pixels cannot provide negative evidence."
+      },
+      "fresh_constraints": [
+        "Associate visible purple or white boundaries with predicted material boundaries using appearance, temporal identity, edge direction, and occlusion ordering.",
+        "For an associated edge sample u and candidate object edge E, require distance(u, project(E)) to lie within the pixel residual gate.",
+        "Use finite edge endpoints only when they are actual visible object endpoints. Image truncation and intersections with gripper or wood masks are not object corners.",
+        "For a tracked material feature q, require project(T_object*q) to intersect its current localization region. Preserve uncertainty in q reconstructed from earlier views.",
+        "Triangulate only actual corresponding material points or the same identified physical edge across views. Never triangulate silhouette centroids.",
+        "Where an object boundary should be definitely visible, confidently classified background beyond the residual envelope can reject that hypothesis.",
+        "A predicted edge hidden behind wood or fingers contributes no edge measurement and no contradiction."
+      ],
+      "set_update": "Intersect predicted hypotheses with all accepted fresh measurement constraints. Use interval branch-and-bound or conservative outer bounds; retain association alternatives. A finite sample search alone cannot certify a worst-case bound.",
+      "contradiction_handling": "If no hypothesis survives, do not widen tolerances until the previous pose fits. Invalidate the affected prior or attachment assumption, attempt a fresh dynamic fit, and prohibit commands dependent on the contradicted estimate.",
+      "observability": "Report which task-relevant quantities are constrained by current pixels and which remain constrained only by history. Two visible edges do not automatically determine depth, support height, or yaw.",
+      "white_evidence": "Fresh white edges can constrain white geometry and help detect camera or association inconsistencies. They constrain purple only through an explicitly retained, independently justified geometric relation; apparent proximity does not establish a rigid relation."
+    },
+    "stationary_support_prior": {
+      "creation": "Create a stationary epoch from a valid RGB-derived support fit while the support is visibly resting and robot/source uncertainty envelopes are separated from it.",
+      "propagation": "Within this epoch, retain the last support pose set in world coordinates, intersected with fresh partial constraints. Propagate calibration uncertainty and declared stationary-model discrepancy. Do not reduce uncertainty merely because time passes.",
+      "corroboration": "Require fresh independently associated support features within the age and action limits. Their residuals must be compatible with the retained pose set, and the resulting task-relevant intervals must permit the proposed command.",
+      "missing_pixels": "Occlusion explains missing pixels but does not corroborate stationarity. Exhausting the corroboration budget selects bounded recovery or STOP.",
+      "possible_interaction_test": {
+        "geometry": "For each proposed command, construct conservative swept volumes of robot links, fingers, held source, and other tracked movable objects over every physical step.",
+        "guard": "Include pose and geometry intervals, tracking error, controller following error, stopping distance, and minimum_clearance_m.",
+        "condition": "Possible interaction begins if any swept uncertainty envelope can reach the support envelope, or if an opening command can release the source into a reachable support volume.",
+        "unknown": "An unknown clearance or unbounded swept volume counts as possible interaction."
+      },
+      "invalidation": "Invalidate stationarity before executing the first action that can cause interaction. Also invalidate it immediately after contradictory fresh motion evidence. Identity, dimensions, and the historical fit remain available, but the historical pose is no longer a current stationary constraint.",
+      "release_boundary": "A release command may use a valid pre-action geometry certificate if its complete release envelope satisfies the release budget. That certificate authorizes only that bounded command. Stationarity expires when the interaction-capable command begins and cannot justify subsequent verification.",
+      "after_invalidation": "Use fresh partial observations with retained dimensions and explicit motion bounds to estimate a dynamic pose set. Without a justified motion bound, the earlier pose may guide association but must not restrict the current pose set."
+    },
+    "geometry_calculations": {
+      "coordinate_convention": "Use one documented world frame with +Z upward. Reproject visible robot geometry to verify camera conventions before metric control.",
+      "pose_errors": "For every retained hypothesis, compute target-minus-current grasp or placement translation and the shortest symmetry-compatible rotation error. Export signed component intervals. Permit a directional command only when it is safe for every retained alternative.",
+      "grasp_margin": "m_grasp = a_low - w_high - 2*e_lateral_max. Require m_grasp > 0 before entering beside the source. Derive translational and angular allowances from this remaining margin and finger engagement geometry.",
+      "swept_clearance": "Compute a conservative lower bound on separation between the command's swept robot/source envelopes and all reconstructed obstacles. Unknown obstacle regions remain unknown; do not equate them with empty space.",
+      "overlap": "For each joint source/support hypothesis, project the relevant footprints into the horizontal plane and intersect them. Compute overlap widths in two declared support axes, intersection area divided by source footprint area, and signed distance from the source geometric-center projection to the intersection boundary.",
+      "robust_overlap": "Take the minimum of each acceptance quantity over all retained joint hypotheses. Preserve shared calibration correlations where possible. Overhang is allowed if widths remain positive and center reserve exceeds the declared drift envelope.",
+      "support_top": "Estimate the top-face height over the planned landing footprint, not merely at the support center. Include support tilt, dimension intervals, and shape discrepancy.",
+      "release_gap": "For each joint hypothesis compute source-bottom height minus support-top height over the landing footprint. Report the conservative interval [gap_low, gap_high]. A bounding relaxation is [bottom_low - top_high, bottom_high - top_low].",
+      "release_acceptance": "Require gap_low >= minimum_clearance_m and gap_high <= accepted_drop_m before opening, together with robust overlap and a clear finger-opening path.",
+      "lowering_command": "Find the largest downward displacement d whose entire swept path is clear and whose predicted final gap_low remains at least minimum_clearance_m. Cap it by the action budget. If no positive safe d exists, check release readiness or recover; do not continue lowering toward an unmeasured contact.",
+      "uncertainty_limited_release": "If support/source height uncertainty makes release acceptance infeasible at every height, acquire a useful view or STOP. Never solve this by reporting the prior as a fresh height observation."
+    },
+    "attachment_supported_short_extrapolation": {
+      "entry_requirements": [
+        "A prior active lift test independently observed source rise, a resolved support gap, and bounded source-to-tool drift.",
+        "A recent RGB estimate supplies an interval transform from tool to source.",
+        "Measured aperture remains compatible with that estimate.",
+        "A declared translational and angular slip-growth envelope is available."
+      ],
+      "prediction": "Propagate T_world_source(t) = T_world_tool(t) * T_tool_source(t0) * Delta_slip(t), using measured tool motion and the full interval transform.",
+      "uncertainty_growth": "Enlarge translation by v_slip_max*dt and rotation by omega_slip_max*dt, plus robot-state and mounting errors. The slip limits are explicit engineering assumptions; earlier constant drift does not establish a hard future slip bound.",
+      "bounds": "Expire at the first of 0.25 seconds, 10 mm cumulative LINK6 path, 0.05 rad cumulative rotation, or one physical action. Repeated predictions do not reset these budgets.",
+      "permitted_use": "A short, clearance-certified carry or view-recovery action while awaiting fresh independent source features.",
+      "prohibited_use": [
+        "Establishing capture solely from commanded tool motion",
+        "Completing final release alignment or authorizing opening using only propagated source pose",
+        "Establishing post-release support stationarity or stacking success"
+      ],
+      "contradictions": [
+        "Fresh source features lie outside the propagated envelope",
+        "Observed source-to-tool drift exceeds the declared bound",
+        "Measured gripper opening or aperture changes invalidate attachment compatibility",
+        "The held object can have interacted with another surface"
+      ],
+      "on_expiry_or_contradiction": "Stop dependent motion and reacquire the source through a safe bounded recovery action. If that recovery cannot be certified, issue STOP.",
+      "disabled_case": "If no defensible slip-growth bound exists, disable attachment extrapolation."
+    },
+    "actor_contract": {
+      "input_type": "Text-only structured numeric measurements, interval bounds, provenance, and prevalidated candidate commands. RGB processing and geometric optimization occur outside the actor.",
+      "common_fields": [
+        "placement_index, stage, source_id, destination_id",
+        "timestamp, observation_age_s, geometry_epoch",
+        "source_provenance, destination_provenance",
+        "stationary_prior_valid, possible_interaction",
+        "position_error_interval_m_xyz",
+        "orientation_error_interval_rad_xyz",
+        "allowed_position_error_m_xyz",
+        "allowed_orientation_error_rad_xyz",
+        "minimum_swept_clearance_m",
+        "fresh_constraint_ids",
+        "missing_measurements, contradictions",
+        "safe_command_candidates",
+        "pass, failure_reason"
+      ],
+      "stage_fields": {
+        "Open and approach source": [
+          "source_width_interval_m",
+          "measured_aperture_interval_m",
+          "grasp_margin_m",
+          "approach_clearance_m"
+        ],
+        "Enter grasp": [
+          "grasp_margin_m",
+          "finger_engagement_interval_m",
+          "visible_engagement_constraints"
+        ],
+        "Close candidate grasp": [
+          "measured_aperture_interval_m",
+          "aperture_change_interval_m",
+          "encoder_sensitivity_m",
+          "closing_attempts",
+          "stalled_attempts",
+          "width_compatibility"
+        ],
+        "Active lift capture test": [
+          "independently_observed_source_displacement_interval_m_xyz",
+          "source_support_gap_interval_m",
+          "source_tool_drift_interval_m_xyz",
+          "tracking_error_bound_m"
+        ],
+        "Transfer and align": [
+          "overlap_widths_lower_bound_m",
+          "overlap_area_fraction_lower_bound",
+          "center_reserve_lower_bound_m",
+          "predicted_release_drift_bound_m",
+          "support_top_interval_m",
+          "attachment_extrapolation_remaining_budget"
+        ],
+        "Lower and open": [
+          "release_gap_interval_m",
+          "accepted_drop_m",
+          "minimum_clearance_m",
+          "maximum_safe_lowering_m",
+          "finger_opening_clearance_m",
+          "pre_action_release_certificate",
+          "source_estimate_uses_attachment_only"
+        ],
+        "Retreat and verify": [
+          "measured_aperture_interval_m",
+          "tool_source_separation_lower_bound_m",
+          "source_motion_interval_m_xyz",
+          "support_motion_interval_m_xyz",
+          "post_release_geometry_constraints",
+          "independent_observation_count"
+        ]
+      },
+      "null_rule": "Unavailable or unidentifiable quantities are null, never zero. A command requiring a null quantity is excluded.",
+      "response_schema": {
+        "translation_m_xyz": "Three signed numeric components in the declared frame",
+        "rotation_rad_xyz": "Three signed components of a documented rotation-vector convention",
+        "gripper": "OPEN, CLOSE, or HOLD",
+        "decision": "CONTINUE, ADVANCE, or STOP",
+        "candidate_id": "Identifier of one currently validated command",
+        "reason_code": "A bounded machine-readable reason"
+      },
+      "execution_rules": [
+        "Every physical action requires one fresh actor response based on the latest synchronized observations and measured robot state.",
+        "Execute at most five physical integration steps per response; do not internally chain another motion or gripper phase.",
+        "Bound actual LINK6 trajectory arc length by 50 mm and accumulated rotation by 0.35 rad, including rotation-induced LINK6 motion.",
+        "Choose the step count before execution using controller speed bounds and physical-step duration. Unknown bounds prohibit execution.",
+        "The executor rejects stale, nonfinite, out-of-set, or over-budget commands.",
+        "ADVANCE requires a currently satisfied stage predicate and carries zero motion with gripper HOLD.",
+        "A command's predicted result never establishes advancement. Reobserve and request a fresh actor response.",
+        "STOP produces zero motion and gripper HOLD; it does not automatically open a potentially held object."
+      ]
+    },
+    "physical_stages": [
+      {
+        "name": "Open and approach source",
+        "execution": "Use fresh source partial or full geometry to open safely and move above the fitted grasp. Opening and translation are separate actions unless their combined sweep is certified.",
+        "advance": "Measured aperture, pose-error intervals, and swept-clearance bounds satisfy the original grasp checks."
+      },
+      {
+        "name": "Enter grasp",
+        "execution": "Descend or adjust opposing fingers beside the source using interval grasp clearance.",
+        "advance": "Fresh engagement evidence and all pose-error intervals satisfy the aperture-derived allowances."
+      },
+      {
+        "name": "Close candidate grasp",
+        "execution": "Issue one bounded close command per fresh actor response.",
+        "advance": "Two consecutive measured stalls beyond encoder sensitivity and compatible aperture permit only the active lift test.",
+        "failure": "Retain the five-attempt limit. Incompatible aperture or unresolved engagement selects recovery or STOP."
+      },
+      {
+        "name": "Active lift capture test",
+        "execution": "Lift in bounded actions until independent source tracking can resolve motion and a positive support gap.",
+        "advance": "Observed upward source displacement exceeds its error bound, source/support separation is resolved, and source-to-tool drift stays within the declared bound.",
+        "failure": "Tool motion alone never passes this stage."
+      },
+      {
+        "name": "Transfer and align",
+        "execution": "Carry wood toward purple using the corroborated stationary purple prior intersected with fresh exposed purple constraints. A missing full silhouette does not itself stop motion.",
+        "advance": "Fresh source geometry, interval placement errors, robust overlap, center reserve, and swept clearance meet their allowances.",
+        "recovery": "If a task-relevant interval is unresolved, move an unloaded wrist camera along a certified path to reveal a predicted purple edge or top-plane feature. Otherwise use a safe held-source view change only within its own clearance and attachment limits."
+      },
+      {
+        "name": "Lower and open",
+        "execution": "Lower by maximum_safe_lowering_m or less, then reobserve. Partial source visibility is acceptable when visible features and retained dimensions bound source bottom, pose, and drift sufficiently.",
+        "opening": "Issue a separate fresh OPEN response only after a current pre-action release certificate passes. An attachment-only source estimate cannot authorize opening.",
+        "interaction_boundary": "Invalidate the support's stationary epoch when the release or any earlier interaction-capable action begins.",
+        "advance": "Measured aperture clears the source and fresh post-opening observations are consistent with tool/source separation. This establishes progress to verification, not successful stacking.",
+        "failure": "If lowering removes necessary observability, recover within bounds or STOP while holding. Do not require a complete silhouette, and do not substitute tool pose for an unobserved source bottom."
+      },
+      {
+        "name": "Retreat and verify",
+        "execution": "Retreat along a certified separation path to expose source and support. Acquire fresh partial or full constraints after each bounded action.",
+        "advance": "Across at least three synchronized observations spanning retreat, tool separation exceeds measurement uncertainty, independently observed source and support motion remain within declared tracking bounds, and accepted stacking geometry persists.",
+        "qualification": "These checks support a visually consistent placement. They do not prove contact forces or physical stability."
+      }
+    ],
+    "partial_observation_recovery": {
+      "selection": "Identify the specific unresolved quantity, such as support height, hidden endpoint, source bottom, or yaw. Select a motion whose predicted visibility changes constrain that quantity.",
+      "preferred_motion": "Move the unloaded wrist camera with a distinct calibrated baseline while preserving the held arm's clearance.",
+      "view_baseline": "Predict projection changes across the retained hypotheses. Prefer a view that separates task-relevant alternatives by more than the pixel residual gate; a nominal baseline length alone is insufficient.",
+      "budget": "At most two recovery actions per placement, each obeying the normal physical action limits and requiring its own fresh actor response.",
+      "progress": "Require an added independent physical edge or material feature, improved visibility of a required region, or narrower task-relevant bounds.",
+      "stop": "Stop when recovery cannot be certified, fails to add useful constraints, or exhausts its budget. Recovery is a physical branch within the active manipulation stage, not a passive observation stage."
+    },
+    "second_placement_white_onto_wood": {
+      "wood_history": "Wood has moved. Its original table pose and its earlier tool-attached pose cannot become the second placement's stationary support prior.",
+      "new_support_epoch": [
+        "After release, estimate wood's current pose from fresh visible grain, edges, and corners using its retained dimension intervals.",
+        "Use a dynamic partial estimate while retreat exposes wood. Do not assume wood or purple remained fixed during placement.",
+        "Require three independent synchronized observations spanning tool retreat, resolved tool separation, and bounded observed wood motion.",
+        "Create a new stationary epoch at the newly estimated wood pose only after these conditions pass."
+      ],
+      "top_surface": "Compute the wood top-plane and horizontal support-footprint intervals from the new epoch. A full silhouette is unnecessary if fresh partial constraints and retained dimensions bound these quantities sufficiently.",
+      "white_source": "Refit white grasp geometry from fresh RGB. Its earlier stationary prior is usable only if its own interaction and corroboration conditions still hold.",
+      "during_white_lowering": "Use the new wood stationary prior with fresh exposed wood features. Invalidate that epoch before white, the gripper, or another swept envelope can interact with wood.",
+      "failure": "If wood's new pose or top surface remains unidentifiable, recover or STOP. Do not reuse its pre-grasp pose or infer it solely from the commanded release location."
+    },
+    "failure_and_history_preservation": {
+      "original_records": "Preserve all original failure records and their original causes, including full-fit failures and occluded-source stops. Do not retrospectively relabel them as successes.",
+      "new_records": "Append estimator provenance, feasible intervals, visible feature identifiers, occlusion classifications, prior expiry events, interaction certificates, actor responses, physical action budgets, and recovery decisions.",
+      "comparison": "Evaluate the revision in a separately identified run. A replay can test estimator behavior but cannot establish the outcome of unexecuted physical actions.",
+      "same_episode_history": "Earlier RGB-derived dimensions, associations, and validated fits from this episode are permitted state estimation history, not experience-file injection."
+    },
+    "current_execution_disposition": {
+      "decision": "Do not emit a physical command from these images alone.",
+      "next_implementation_step": "Construct the current purple partial-constraint set and wood bottom/pose intervals using the available calibration, robot state, and earlier RGB fits. Continue the existing transfer or lowering stage only if its numeric interval checks pass.",
+      "files_modified": []
+    }
+  },
+  "revision_provenance": {
+    "response_sha256": "dbc2408ded4c06d4254c2017e1e94d9158e479c4ee339e2364dae83f494fb5d3",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "experience_injection": false
+  },
+  "implementation_scope": "Approximate local sensitivity fit to fresh unoccluded edges, fixed RGB-derived dimensions, explicit stationary or dynamic provenance. This does not implement certified interval branch-and-bound. Partial fits require fresh independent edges, prior age<=12physical steps, interior full-rank solutions and<3mm restart spread. Stationary support plane is withdrawn before lowering. No attachment-only extrapolation authorizes release."
+}

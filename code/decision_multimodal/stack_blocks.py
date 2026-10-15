@@ -12,7 +12,7 @@ from rgb_cuboid import fit, project, ray, segment, vertices
 from robot_tool import Tool
 from robodojo_episode import save, transform
 
-PLAN = Path(__file__).with_name('plans')/'stack_blocks_v1.json'
+PLAN = Path(__file__).with_name('plans')/'stack_blocks_v2.json'
 PHASES = [('approach', 'Move the open fingers above the current source, with the tool pointing down.'),
     ('enter', 'Move the open opposing finger pads beside the current source at the computed grasp height.'),
     ('close', 'Close around the source and measure the aperture response; capture is not yet verified.'),
@@ -150,6 +150,17 @@ class Perception:
                         current, used = high_only, ['cam_high']
                 except (ValueError, QhullError, np.linalg.LinAlgError):
                     pass
+            if not current.get('usable') and prior_fit is not None and views and public['step']-prior_fit.get('step',-1000)<=12:
+                from partial_cuboid import fit_partial
+                try:
+                    partial=fit_partial(public,name,views,used,prior_fit,self.models,plane)
+                    partial['rejected_full_fit']=current
+                    if partial.get('usable'):
+                        current=partial
+                    else:
+                        current['partial_diagnostic']=partial
+                except (ValueError,QhullError,np.linalg.LinAlgError) as error:
+                    current['partial_diagnostic']=dict(usable=False,reason=str(error)[:200])
             if current.get('status') == 'fitted_visual_hypothesis' and current.get('usable'):
                 current['step'] = public['step']
                 current['camera_names'] = used
@@ -313,6 +324,11 @@ def run(ep):
         held_offset = None
         prediction = None
         for phase, objective in PHASES:
+            if phase=='lower':
+                # Potential interaction invalidates an undisturbed-table
+                # support hypothesis before the first lowering action.
+                geometry.moved.add(destination)
+                geometry.last_step=None
             entry_tool = tool_model.geometry(public)
             entry_point = entry_tool['world_center_m'].copy()
             entry_model = dict(models[source])

@@ -42,13 +42,16 @@ def intersect(camera, uv, height):
 
 
 class Scissors:
-    def __init__(self, public, seeds, table):
+    def __init__(self, public, seeds, table, mask_provider=None):
         self.table = table
+        self.mask_provider=mask_provider
         self.cameras = public['calibration']
         self.height0 = table['plane_z_m']
         masks = {n:mint(public['rgb'][n], roi=s['scissors_roi'])
                  for n,s in seeds.items() if isinstance(s, dict) and s.get('scissors_roi')}
-        if masks.get('cam_right_wrist') is None and masks.get('cam_high') is not None:
+        if mask_provider is not None:
+            masks=mask_provider(public)
+        if mask_provider is None and masks.get('cam_right_wrist') is None and masks.get('cam_high') is not None:
             yy,xx=np.nonzero(masks['cam_high'])
             coarse=intersect(self.cameras['cam_high'],[[xx.mean(),yy.mean()]],self.height0+.005)[0]
             predicted,_=project(self.cameras['cam_right_wrist'],coarse.reshape(1,3))
@@ -56,12 +59,13 @@ class Scissors:
         if any(m is None for m in masks.values()) or len(masks) < 2:
             raise ValueError('Initial named mint material is not visible in two views')
         high = boundary(masks['cam_high'])
-        right = boundary(masks['cam_right_wrist'])
+        secondary='cam_right_wrist' if masks.get('cam_right_wrist') is not None else 'cam_left_wrist'
+        right = boundary(masks[secondary])
         high = high[np.linspace(0, len(high)-1, min(240,len(high))).astype(int)]
         right = right[np.linspace(0, len(right)-1, min(300,len(right))).astype(int)]
         def residual(height):
             points = intersect(self.cameras['cam_high'], high, float(height))
-            uv,_ = project(self.cameras['cam_right_wrist'], points)
+            uv,_ = project(self.cameras[secondary], points)
             distances = np.linalg.norm(uv[:,None,:]-right[None,:,:], axis=2)
             return np.r_[distances.min(1), distances.min(0)]
         fit = least_squares(lambda h:residual(h[0]), [self.height0+.008],
@@ -135,7 +139,8 @@ class Scissors:
         """Current high-view XY/yaw under a declared preclosure support prior."""
         camera=public['calibration']['cam_high']
         uv,_=project(camera,self.center0.reshape(1,3))
-        mask=mint(public['rgb']['cam_high'],prediction=uv[0])
+        mask=(self.mask_provider(public).get('cam_high') if self.mask_provider is not None else
+              mint(public['rgb']['cam_high'],prediction=uv[0]))
         if mask is None:
             return dict(usable=False,reason='No current named high-view mint material')
         observed=boundary(mask)
@@ -180,14 +185,20 @@ class Scissors:
         if predicted is not None:
             initial[:3] = predicted
         observed = []
+        full_masks=self.mask_provider(public,initial[:3]) if self.mask_provider is not None else None
         for name,rgb in public['rgb'].items():
             uv,depth = project(public['calibration'][name], initial[:3].reshape(1,3))
             if depth[0] <= 0:
                 continue
-            mask = mint(rgb, prediction=uv[0])
+            mask = full_masks.get(name) if full_masks is not None else mint(rgb, prediction=uv[0])
             if mask is None:
                 continue
             points = boundary(mask)
+            if self.mask_provider is not None:
+                from cap_motion import tool_mask
+                occlusion=tool_mask(public,name)
+                xy=points.round().astype(int)
+                points=points[occlusion[xy[:,1],xy[:,0]]==0]
             if len(points) < 20 or mask[:5].any() or mask[-5:].any() or mask[:,:5].any() or mask[:,-5:].any():
                 continue
             points = points[np.linspace(0,len(points)-1,min(220,len(points))).astype(int)]
