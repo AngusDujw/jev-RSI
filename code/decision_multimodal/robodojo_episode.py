@@ -179,7 +179,7 @@ class Episode:
             os.environ['DECISION_MM_KEY_FILE'] = str(self.args.key_file.resolve())
             os.environ['DECISION_MM_PROXY'] = 'http://127.0.0.1:7897'
             self.actor = LegacyAPI({}, self.event, 'jev')
-        state=dict(state,execution_budget=self.public['execution_budget'])
+        state['execution_budget']=self.public['execution_budget']
         answer = self.actor.post('/systemone', dict(model='gpt-6-luna', state=state, questions=questions))
         self.last_decision_tick, self.action_used = self.tick, False
         return answer['answers']
