@@ -55,6 +55,7 @@ def run(ep):
             number=counts[identity]+1
             prefix=identity+f'_cycle{number:02d}'
             configuration=dict(artifact_prefix=prefix,identity=identity,arm=arm,cap=reference['cap'],
+                balanced_pair=getattr(ep,'balanced_button_pair',False),
                 target_description=description,required_cycles=required[identity],previous_cycles=counts[identity],
                 return_to_sequence=True,release_extra_gap_m=.020,skip_clear=counts[identity]>0,
                 refine_unpressed_baseline=reference.get('baseline_step') is None,

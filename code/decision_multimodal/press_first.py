@@ -14,14 +14,17 @@ from robodojo_episode import save,wait_command
 def questions(state):
     result={}
     reference=state.get('control_reference','public pad midpoint')
-    for i,axis in enumerate('xyz'):
+    for i,axis in enumerate('' if state['phase']=='close_tool' else 'xyz'):
         e=1000*state['position_error_m'][i];d=1000*state['position_tolerance_m']
         result[axis]=choice(f'Current button stage={state["phase"]}, active arm={state["active_arm"]}. Reference={reference}. World {axis.upper()} target minus current: ERROR_MM={e:.3f}, DEADBAND_MM={d:.3f}. Classify this scalar.',
             dict(negative=f'ERROR_MM < -{d:.3f}: decrease coordinate',hold=f'-{d:.3f} <= ERROR_MM <= {d:.3f}: hold',positive=f'ERROR_MM > {d:.3f}: increase coordinate'))
         e=state['orientation_error_rad'][i]
         result['rotation_'+axis]=choice(f'World {axis.upper()} rotation-log target minus current: ERROR_RAD={e:.5f}, DEADBAND_RAD=0.02000. Positive is right-hand world rotation.',
             dict(negative='ERROR_RAD < -0.02000',hold='-0.02000 <= ERROR_RAD <=0.02000',positive='ERROR_RAD >0.02000'))
-    result['gripper']=choice('The open gripper is a pressing tool. Keep both fingers OPEN throughout; only one distal finger presses. Select open to maintain native opening1 or keep to retain that opening.',dict(open='Maintain OPEN=1',keep='Keep previous open command'))
+    if state.get('tool_posture')=='balanced_closed_pair' and state['phase']!='clear_and_orient':
+        result['gripper']=choice('The paired fingertips are a balanced blunt pressing tool. During close_tool CLOSE while safely above the cap. During approach/press/release retain CLOSE; never close around a cap.',dict(close='Native CLOSE=0',keep='Retain the previous close command'))
+    else:
+        result['gripper']=choice('Keep the fingers OPEN during clear_and_orient or for the single-finger pressing tool.',dict(open='Maintain OPEN=1',keep='Keep previous open command'))
     transitions=dict(continue_phase='Execute selected bounded current-stage motion',stop='Stop unresolved while preserving this episode')
     if state['pass']:
         transitions['advance']='Current physical stage passed; advance after this short action'
@@ -36,6 +39,7 @@ def run(ep,configuration=None):
     identity=configuration.get('identity','red1')
     arm=configuration.get('arm','left')
     arm_index=('left','right').index(arm)
+    balanced=bool(configuration.get('balanced_pair'))
     importlib.reload(robot_tool)
     tools=robot_tool.Tool()
     plan=json.loads(Path(__file__).with_name('plans').joinpath('press_by_number_v1.json').read_text())
@@ -68,6 +72,10 @@ def run(ep,configuration=None):
     initial=tools.geometry(ep.public,arm)
     finger=int(np.argmax(initial['finger_tips_local_m'][:,1]))
     radius=initial['finger_tip_footprint_radius_m'][finger]
+    if balanced:
+        # Initial open footprint is not used as the closed footprint. Actual
+        # qualification follows measured closure at high clearance.
+        radius=0.
     margin=cap['radius_m']-radius-3*sigma
     if depth<=3*sigma or margin<=0:
         result=dict(completed_proxy_cycles=0,stop_reason='Pro cap-height/footprint inequalities failed',depth_m=depth,margin_m=margin)
@@ -96,20 +104,29 @@ def run(ep,configuration=None):
     count=0;stop=None;latched=False;visible=None;visible_press_evidence=False
     release_gap=clearance+configuration.get('release_extra_gap_m',0.)
     schedule=[('press',-depth),('release_and_retreat',release_gap)] if resume else [('clear_and_orient',clearance+.05),('approach',clearance),('press',-depth),('release_and_retreat',release_gap)]
+    if balanced and not resume:
+        schedule.insert(1,('close_tool',clearance+.05))
     if configuration.get('skip_clear') and not resume:
-        schedule=schedule[1:]
+        schedule=[row for row in schedule if row[0] not in ('clear_and_orient','close_tool')]
+    previous_aperture=initial['aperture_m'];stable_closure=0
     for phase,gap in schedule:
         stage_done=False
         for attempt in range(35):
             if ep.ended or ep.tick>=ep.metadata['max_episode_steps']:
                 stop='Native episode budget ended';break
             public=ep.public;tool=tools.geometry(public,arm)
-            tip_local=tool['finger_tips_local_m'][finger]
+            tip_local=tool['finger_tips_local_m'].mean(0) if balanced else tool['finger_tips_local_m'][finger]
             tip=tool['world_center_m']+tool['rotation'].apply(tip_local-tool['local_center_m'])
             target_tip=center+np.array([0.,0.,gap])
             target_mid=target_tip-desired.apply(tip_local-tool['local_center_m'])
             error=target_mid-tool['world_center_m']
             angular=(desired*tool['rotation'].inv()).as_rotvec()
+            if balanced and phase not in ('clear_and_orient','close_tool'):
+                tips=tool['rotation'].apply(tool['finger_tips_local_m']-tool['local_center_m'])+tool['world_center_m']
+                radius=max(float(np.linalg.norm(t[:2]-tip[:2])+r) for t,r in zip(tips,tool['finger_tip_footprint_radius_m']))
+                margin=cap['radius_m']-radius-3*sigma
+                if margin<=0 or tool['aperture_m']>.010:
+                    stop='Measured closed paired footprint does not fit cap';break
             if phase in ('press','release_and_retreat') and np.linalg.norm(tip[:2]-center[:2])<margin and np.linalg.norm(angular)<.10:
                 # Keep the already contained lateral point and admissible
                 # tilt; apply the stage's vertical residual directly.
@@ -117,6 +134,12 @@ def run(ep,configuration=None):
                 angular[:]=0
             tolerance=max(.003,3*sigma) if phase in ('press','release_and_retreat') else .006
             passed=bool(max(abs(error))<=tolerance and np.linalg.norm(angular)<=.05 and np.linalg.norm(tip[:2]-center[:2])<margin)
+            if phase=='close_tool':
+                error[:]=0;angular[:]=0
+                if tool['world_center_m'][2]-tool['downward_extent_m']<center[2]+.040:
+                    stop='Pair closure lacks40mm high-clearance workspace';break
+                stable_closure=stable_closure+1 if abs(tool['aperture_m']-previous_aperture)<.0002 else 0
+                passed=bool(stable_closure>=2 and tool['aperture_m']<.010)
             visible=None
             if phase in ('press','release_and_retreat') and baseline.get('usable'):
                 current=observer.measure(public,cap,identity)
@@ -136,10 +159,13 @@ def run(ep,configuration=None):
                     if phase=='release_and_retreat':
                         passed=passed and abs(travel)<=3*sigma
             state=dict(task=public['instruction'],phase=phase,active_arm=arm,target_identity=configuration.get('target_description','left red button under card1'),
+                tool_posture='balanced_closed_pair' if balanced else 'open_single_finger',
                 required_cycles=configuration.get('required_cycles',1),completed_proxy_cycles=configuration.get('previous_cycles',0)+count,position_error_m=error.round(5).tolist(),position_tolerance_m=tolerance,
                 orientation_error_rad=angular.round(5).tolist(),pass_=passed,
                 source='Current RGB circle/radius hypothesis and measured public distal finger geometry',
                 limits='Unpressed cap pose is retained as a stationary base hypothesis; native electrical state is unavailable')
+            if phase=='close_tool':
+                state.update(measured_aperture_m=tool['aperture_m'],stable_closure_observations=stable_closure)
             if phase in ('clear_and_orient','approach'):
                 state.update(contained_contact_margin_m=margin,current_tip_to_unpressed_cap_gap_m=float(tip[2]-center[2]),target_gap_m=gap)
             elif phase=='press':
@@ -161,10 +187,9 @@ def run(ep,configuration=None):
             if answer['transition']['choice']=='stop':
                 stop='Actor elected stop: '+phase;break
             signs=dict(negative=-1,hold=0,positive=1)
-            if any(signs[answer[a]['choice']]*error[i]<-1e-7 for i,a in enumerate('xyz')):
+            if any(a in answer and signs[answer[a]['choice']]*error[i]<-1e-7 for i,a in enumerate('xyz')):
                 stop='Actor sign opposes current formal residual: '+phase;break
-            targets=compile_targets(public,tool,answer,error,angular,'approach',arm=arm)
-            targets[arm]['gripper_opening']=1.;targets[arm]['gripper_closed']=False
+            targets=compile_targets(public,tool,answer,error,angular,'close' if phase=='close_tool' else 'approach',arm=arm)
             old_link=np.asarray(public['robot']['eef_positions'][arm_index]);new_link=np.asarray(targets[arm]['position'])
             new_rotation=Rotation.from_quat(np.asarray(targets[arm]['quaternion_wxyz'])[[1,2,3,0]])
             delta=new_link-old_link;rot=(new_rotation*tool['rotation'].inv()).as_rotvec()
@@ -186,6 +211,7 @@ def run(ep,configuration=None):
                 minimum_gap=min(minimum_gap,shape['world_center_m'][2]-shape['downward_extent_m']-table['plane_z_m'])
             if minimum_gap<.002:
                 stop='Public finger sweep loses table-envelope clearance';break
+            previous_aperture=tool['aperture_m']
             ep.execute(targets,steps=1 if answer['transition']['choice']=='advance' else 3 if phase=='clear_and_orient' else 2)
             if answer['transition']['choice']=='advance':
                 stage_done=True

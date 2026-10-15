@@ -5,14 +5,15 @@ import press_sequence
 from robodojo_episode import save
 
 
-def run(ep):
+def run(ep,balanced=False):
+    ep.balanced_button_pair=balanced
     if not press_setup.run(ep,continue_immediately=True):
         return
     save(ep.folder/'cold_sequence_protocol.json',dict(
         scope='Single development episode, not frozen validation',
         intervention='SAM visible-cap measurements from the first press; full27mm release target also for red1; no earlier long endpoint-stall attempts',
         visual_counts_are_native_counts=False,actor_images=0,experience_injection=False))
-    result=press_first.run(ep,dict(return_to_sequence=True,release_extra_gap_m=.020,
+    result=press_first.run(ep,dict(return_to_sequence=True,release_extra_gap_m=.020,balanced_pair=balanced,
         refine_unpressed_baseline=True,require_refined_baseline=True))
     if ep.ended:
         return
