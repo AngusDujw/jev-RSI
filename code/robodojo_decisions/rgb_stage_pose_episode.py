@@ -198,6 +198,9 @@ def load_authored(path,task,data_root):
 
 def run(tools, obs, model, output, max_decisions, deadline):
     import hybrid_rollout.robodojo.robodojo_server.gpt_only_client as native
+    if os.environ.get('ROBODOJO_RGB_STAGE_QUESTION_SCOPED_INPUT')=='1':
+        from stack_scoped_input import ScopedClient
+        model=ScopedClient(model,output)
     memory = output.parents[1]/'experience/model'
     frozen_memory=os.environ.get('ROBODOJO_RGB_STAGE_MODEL_MEMORY_ROOT')
     if frozen_memory:
