@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 from scipy.optimize import least_squares, minimize_scalar
+from scipy.spatial.transform import Rotation
 from rgb_cuboid import project, ray
 
 
@@ -76,13 +77,16 @@ class Scissors:
         self.closing_axis[2] = 0
         self.closing_axis /= np.linalg.norm(self.closing_axis)
         self.local_points = self.points0-self.center0
+        tip=intersect(self.cameras['cam_high'], [seeds['cam_high']['blade_tip']], self.height0+.002)[0]
+        self.verification_local=np.vstack([self.local_points,tip-self.center0])
+        self.baseline_verification=None
         neck_points = intersect(self.cameras['cam_high'], np.column_stack([a+xx,b+yy]), self.top_height)
         self.width = float(np.ptp(neck_points @ self.closing_axis))
-        self.estimate = np.r_[self.center0, 0.]
+        self.estimate = np.r_[self.center0, 0., 0., 0.]
         self.last_tick = None
         self.last_result = None
 
-    def update(self, public, predicted=None):
+    def update(self, public, predicted=None, verify=False):
         if public['step'] == self.last_tick:
             return self.last_result
         self.last_tick = public['step']
@@ -102,10 +106,8 @@ class Scissors:
                 continue
             points = points[np.linspace(0,len(points)-1,min(220,len(points))).astype(int)]
             observed.append((name, points))
-        def transform(p):
-            c,s = np.cos(p[3]),np.sin(p[3])
-            rotation = np.array([[c,-s,0],[s,c,0],[0,0,1]])
-            return self.local_points @ rotation.T+p[:3]
+        def transform(p, points=None):
+            return Rotation.from_rotvec(p[3:6]).apply(self.local_points if points is None else points)+p[:3]
         def residual(p):
             values = []
             for name,points in observed:
@@ -116,21 +118,62 @@ class Scissors:
                 values.extend(distances.min(1))
             return values
         if len(observed) >= 2:
-            result = least_squares(residual, initial, bounds=(initial-np.r_[.08,.08,.08,.35], initial+np.r_[.08,.08,.08,.35]),
+            extent=np.r_[.08,.08,.08,.30,.30,.35]
+            result = least_squares(residual, initial, bounds=(initial-extent, initial+extent),
                 loss='soft_l1', f_scale=2., max_nfev=40)
             estimate = result.x
             rms = float(np.sqrt(np.mean(np.asarray(residual(estimate))**2)))
             covariance = np.linalg.pinv(result.jac.T @ result.jac)*max(1.,rms)**2
             halfwidth = np.maximum(.003, 2*np.sqrt(np.maximum(0,np.diag(covariance)[:3])))
-            usable = bool(rms < 3.5 and max(halfwidth) <= .012)
+            verification_points=transform(estimate,self.verification_local)
+            if self.baseline_verification is None:
+                self.baseline_verification=verification_points.copy()
+            gains=verification_points[:,2]-self.baseline_verification[:,2]
+            rank=int(np.linalg.matrix_rank(result.jac))
+            usable = bool(rms < 4. and max(halfwidth) <= .006 and rank==6)
             if usable:
                 self.estimate = estimate
-            answer = dict(usable=usable, center_m=estimate[:3].tolist(), yaw_delta_rad=float(estimate[3]),
+            answer = dict(usable=usable, center_m=estimate[:3].tolist(), rotation_delta_world_rad=estimate[3:].tolist(),
                 silhouette_rms_px=rms, conditional_halfwidth_m=halfwidth.tolist(), camera_names=[n for n,_ in observed],
-                height_gain_m=float(estimate[2]-self.center0[2]))
+                height_gain_m=float(estimate[2]-self.center0[2]), minimum_material_height_gain_m=float(min(gains)),
+                maximum_material_height_gain_m=float(max(gains)), jacobian_rank=rank)
+            if verify and usable:
+                alternatives=[]
+                restart_gains=[]
+                rng=np.random.default_rng(public['step']+41016)
+                original=[points.copy() for _,points in observed]
+                for trial in range(10):
+                    if trial>=4:
+                        for i,(_,points) in enumerate(observed):
+                            points[:]=original[i]+rng.uniform(-2.,2.,points.shape)
+                    start=estimate.copy()
+                    if trial<4:
+                        start[3:]+=rng.uniform(-.12,.12,3)
+                    start=np.clip(start,initial-extent+1e-8,initial+extent-1e-8)
+                    alternate=least_squares(residual,start,bounds=(initial-extent,initial+extent),
+                        loss='soft_l1',f_scale=2.,max_nfev=25)
+                    alternate_rms=float(np.sqrt(np.mean(np.asarray(residual(alternate.x))**2)))
+                    if alternate_rms<=4.5:
+                        candidate_gain=transform(alternate.x,self.verification_local)[:,2]-self.baseline_verification[:,2]
+                        alternatives.append(candidate_gain)
+                        if trial<4:
+                            restart_gains.append(candidate_gain)
+                for i,(_,points) in enumerate(observed):
+                    points[:]=original[i]
+                if len(alternatives)>=8:
+                    alternatives=np.asarray(alternatives)
+                    interval=[float(alternatives.min()-.006),float(alternatives.max()+.006)]
+                    spread=float(np.max(np.ptp(alternatives,axis=0)))
+                    restart_spread=float(np.max(np.ptp(restart_gains,axis=0))) if len(restart_gains)>=3 else float('inf')
+                    answer.update(verified_pose_usable=bool(restart_spread<=.003),
+                        conditional_all_point_height_gain_interval_m=interval,
+                        perturbation_gain_spread_m=spread,unperturbed_restart_gain_spread_m=restart_spread if np.isfinite(restart_spread) else None,accepted_pose_refits=len(alternatives),
+                        verification_scope='Mint material template plus original visible blade-tip ray under a thin-metal plane hypothesis; ten pose restarts/2px perturbations, additive6mm template/current sensitivity allowance, not a calibrated confidence bound')
+                else:
+                    answer.update(verified_pose_usable=False,accepted_pose_refits=len(alternatives))
         else:
             answer = dict(usable=False, reason='Mint planar tracking requires two current views', camera_names=[n for n,_ in observed])
         answer.update(step=public['step'], source='Current mint material contours, camera K/T, initially RGB-derived planar material shape',
-            limits='Flat material and fixed shape/orientation hypotheses; partial occlusion and unmeasured calibration errors are not certified contact evidence.')
+            limits='RGB-derived planar rigid material template with unrestricted pose; partial occlusion and unmeasured calibration errors are not certified contact evidence. Local sensitivity is not a validated pose envelope.')
         self.last_result = answer
         return answer

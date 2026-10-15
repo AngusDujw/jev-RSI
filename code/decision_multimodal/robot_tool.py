@@ -53,5 +53,6 @@ class Tool:
         return dict(local_center_m=local, world_center_m=point,
             aperture_m=float(np.linalg.norm(centers[0]-centers[1])),
             distal_tip_from_center_m=float(max(v[:, 0].max() for v in vertices)-local[0]),
+            downward_extent_m=float(max(np.max(-rotation.apply(v-local)[:,2]) for v in vertices)),
             rotation=rotation,
             source='Public URDF/STL inward finger facets plus current robot prismatic encoders; not contact')

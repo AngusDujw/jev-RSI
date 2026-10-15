@@ -169,15 +169,17 @@ class Perception:
         return self.models
 
 
-def compile_targets(public, tool, answer, error, rotation_error, phase, arm='right'):
+def compile_targets(public, tool, answer, error, rotation_error, phase, arm='right', rotation_enabled=True, translation_axes='xyz'):
     index = ('left', 'right').index(arm)
     old_rotation = tool['rotation']
     translate, rotate = np.zeros(3), np.zeros(3)
     signs = dict(negative=-1, hold=0, positive=1)
     if phase not in ('close', 'release'):
         for i, axis in enumerate('xyz'):
-            translate[i] = signs[answer[axis]['choice']]*min(.030, .7*abs(error[i]))
-            rotate[i] = signs[answer['rotation_'+axis]['choice']]*min(.18, .7*abs(rotation_error[i]))
+            if axis in translation_axes:
+                translate[i] = signs[answer[axis]['choice']]*min(.030, .7*abs(error[i]))
+            if rotation_enabled:
+                rotate[i] = signs[answer['rotation_'+axis]['choice']]*min(.18, .7*abs(rotation_error[i]))
     old_link = np.asarray(public['robot']['eef_positions'][index])
     gain = 1.
     for _ in range(20):
