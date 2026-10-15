@@ -121,7 +121,8 @@
     "Three physical steps per far action, two per capture/close/lift and one on explicit stage advance; these remain inside perstage/native budgets.",
     "No initial left-view stage; at most three independently judged five-step actions for the single active recovery.",
     "Every native step, including stage-transition hold, is counted. Conditional straight-pose finger/table checks are not complete scene collision proofs.",
-    "The resting revision adds strictly positive lower table clearance, which contradicts the existing0.5mm nominal gap and2mm table allowance. This infeasible added requirement is rejected; the earlier explicit conditional2mm distal table interaction band remains in force. All candidate and final visual checks are retained."
+    "The resting revision adds strictly positive lower table clearance, which contradicts the existing0.5mm nominal gap and2mm table allowance. This infeasible added requirement is rejected; the earlier explicit conditional2mm distal table interaction band remains in force. All candidate and final visual checks are retained.",
+    "Measured public DLS feedback at45steps reached the pregrasp position but not the wrist deadband. Redistribute185nominal physical steps as70/40/15/60, preserving15recovery and the unmodified200-step native horizon."
   ],
   "resting_revision": {
     "decision": "Admit the resting-plane method conditionally for pregrasp processing. This is not evidence of contact, attachment, or task success.",
@@ -193,5 +194,11 @@
     "unsupported": "Force/contact confirmation, postclosure resting-plane inference, native outcomes, command-only success, and successful grasp.",
     "actor_boundary": "Provide text processing instructions and declared intervals only; no experience files, images, or privileged scene data."
   },
-  "resting_revision_sha256": "bbd9c25ce43393da1932ab3e688980448ea77e04ed5d28eba86a8cdf754d1495"
+  "resting_revision_sha256": "bbd9c25ce43393da1932ab3e688980448ea77e04ed5d28eba86a8cdf754d1495",
+  "compiled_stage_budgets": {
+    "APPROACH": 70,
+    "CAPTURE_ALIGNMENT": 40,
+    "CLOSE": 15,
+    "LIFT_AND_HOLD": 60
+  }
 }

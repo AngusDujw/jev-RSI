@@ -67,7 +67,8 @@ def run(ep):
     desired=Rotation.from_matrix(np.column_stack([[0.,0.,-1.],axis,np.cross([0.,0.,-1.],axis)]))
     current_tool=tools.geometry(ep.public)
     desired=min((desired,desired*Rotation.from_euler('x',np.pi)),key=lambda r:(r*current_tool['rotation'].inv()).magnitude())
-    stages=[('APPROACH',45),('CAPTURE_ALIGNMENT',50),('CLOSE',25),('LIFT_AND_HOLD',65)]
+    stages=[(name,int(plan.get('compiled_stage_budgets',{}).get(name,budget))) for name,budget in
+            [('APPROACH',45),('CAPTURE_ALIGNMENT',50),('CLOSE',25),('LIFT_AND_HOLD',65)]]
     stage_end=0;total=0;stop=None;predicted=None;recovery=False
     close_source=close_tcp=None;close_orientation=None
     aperture_last=current_tool['aperture_m'];stable_aperture=0
