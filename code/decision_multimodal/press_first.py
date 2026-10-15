@@ -68,7 +68,9 @@ def run(ep):
     import cap_motion
     importlib.reload(cap_motion)
     from sam_cap import CapObserver,load_public
-    observer=CapObserver(ep.folder)
+    if not hasattr(ep,'cap_observer'):
+        ep.cap_observer=CapObserver(ep.folder)
+    observer=ep.cap_observer
     source_steps=[int(path.stem.rsplit('-',1)[1]) for path in ep.folder.glob('first-press-control-*.json')]
     source_step=min(source_steps) if source_steps else ep.tick
     baseline=observer.measure(load_public(ep.folder,source_step),cap)
