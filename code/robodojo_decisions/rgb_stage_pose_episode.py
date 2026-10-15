@@ -417,6 +417,9 @@ def run(tools, obs, model, output, max_decisions, deadline):
                     +('Current public finger-extension alignment to the uncertain horizontal source-plane hypothesis is offered first; its pivot is held approximately, so top-minus-pad distance need not decrease. Once the measured public tool axis is within3deg of downward, offer the current bounded translation. If a required tool proposal fails current public/source-view gates, no program is invented. '
                       if family=='tool_first' else 'Offer only the independently checked current bounded translation; no competing orientation program. ')
                     +'This is algorithmic proposal routing, not a planner motion, current contact evidence or action permission. Luna independently chooses the complete program or STOP.')
+            if os.environ.get('ROBODOJO_RGB_STAGE_PROGRAM_EFFECTS')=='1':
+                from stack_program_effects import build as predict_program_effects
+                data['same_hypothesis_complete_program_effects']=predict_program_effects(obs,geometry,programs)
         options['STOP_current_evidence_insufficient']='Stop this episode for unsupported current identity, enclosure, corridor or action; do not retry this frame.'
         if os.environ.get('ROBODOJO_RGB_STAGE_OPEN_STOP_SCOPE')=='1':
             options['STOP_current_evidence_insufficient']=(
