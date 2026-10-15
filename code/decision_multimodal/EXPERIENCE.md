@@ -19,3 +19,10 @@ Full formal LIBERO results: [PHASE1_RESULTS.md](PHASE1_RESULTS.md).
 - Green-handle features can all disappear during closure. Recorded scissors tracks went12 to5 to0. Whole-object SAM masks include visible blades, but the new geometric fit has not passed; segmentation confidence alone is insufficient.
 - A nominal SDK camera can differ from the actual tiled RGB capture. Here SDK high-camera fy336.46 conflicts with the render projection fy288.13; actual render K matches the original primary K. The attempted SDK replacement failed same-image texture registration and was never used for control.
 - Planner thresholds need measurement support. A proposed0.5mm precision gate is not justified by a2mm working halfwidth. Record rejected proposal details rather than silently treating them as implemented.
+
+- A robot HOLD should retain a stored world reference when that is its contract; relatching a disturbed measured pose can change the task target. A numerical check does not establish loaded physical tracking.
+- A body-return waypoint may stall even after a successful manipulation. The lateral unloaded-hand corridor completed both sleeve operations in fold dev005; full task still failed at346steps.
+- Nearest silhouette vertices can select wrinkles instead of a garment hem corner. A strong convex-turn selector fixed the recorded13px seed ambiguity; this is an offline processing result, not a fold success.
+- A partial RGB template cannot explain newly revealed current arcs. Match only a predefined visible correspondence domain; do not discard pixels based on residuals to manufacture acceptance.
+- Better segmentation alone does not establish geometry. SAM improved the recorded held wood fit from4.619px to2.283px, while the purple support fit still failed.
+- A planner process must be isolated before inference. One attempted repository-reading/Chinese call was rejected; later calls disabled tools and used explicit English inference instructions. Rejected plans were never deployed.

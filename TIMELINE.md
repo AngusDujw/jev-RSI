@@ -135,6 +135,7 @@ graph LR
     T_2026W42_027["📊 decision-multimodal<br/>RoboDojo物理预算与输入/几何分离：…"]:::experiment
     T_2026W42_028["📊 decision-multimodal<br/>剪刀首次native108步成功但固定三次…"]:::experiment
     T_2026W42_029["📊 decision-multimodal<br/>剪刀固定v2独立layout0原生3/3（…"]:::experiment
+    T_2026W42_030["📊 decision-multimodal<br/>折衣双袖实体操作346步后受角点阻塞；按钮…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -232,6 +233,7 @@ graph LR
   T_2026W42_026 --> T_2026W42_027
   T_2026W42_027 --> T_2026W42_028
   T_2026W42_028 --> T_2026W42_029
+  T_2026W42_029 --> T_2026W42_030
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -356,6 +358,7 @@ graph LR
 | `T-2026W42-027` | 2026-10-16 | experiment | decision-multimodal | RoboDojo物理预算与输入/几何分离：剪刀200步时限、一次真实Z反向、逐轴标量后转模板偏差；按钮700步内已有实体按压但未达可见/候选门 | `EXP-2026W42-212` | - |
 | `T-2026W42-028` | 2026-10-16 | experiment | decision-multimodal | 剪刀首次native108步成功但固定三次2/3；按钮11可见周期native仍false。后续探测/遮挡回放拒绝，收敛到公开光学标定与居中双指实体控制，第三组未开。 | `EXP-2026W42-214` | - |
 | `T-2026W42-029` | 2026-10-16 | experiment | decision-multimodal | 剪刀固定v2独立layout0原生3/3（106/107/107步），第二组1/5；实际渲染矩阵支持原K/T，拒绝SDK替换解释，继续剩余四项。 | `EXP-2026W42-215` | - |
+| `T-2026W42-030` | 2026-10-16 | experiment | decision-multimodal | 折衣双袖实体操作346步后受角点阻塞；按钮固定腕揭示视觉跳变；第二组仍1/5 | `EXP-2026W42-216` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

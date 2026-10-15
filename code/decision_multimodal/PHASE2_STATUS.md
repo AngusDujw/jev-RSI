@@ -57,3 +57,26 @@ Partial cuboid fits, including full rotation and initial RGB-derived size
 memory, still failed recorded-image gates. They remain excluded from the changed
 camera-prefix native block experiment. Processing replays never establish an
 outcome for actions that were not executed.
+
+## Latest development: EXP216
+
+The frozen completion count remains1/5. Fold dev005 completed two sleeve
+transfers/releases and stopped at346steps on hem-corner ambiguity. Earlier
+parking failures160/190steps are preserved. A new strong-convex-corner version
+is in native testing; no fold success is claimed.
+
+Button dev008 ended at112steps with no complete cycle. Independent RGB
+rim-template replay measured5.519mm travel at both110/112 while the absolute
+multi-view fit jumped. Dev009 stopped at80steps because its partial reference
+could not explain newly revealed current arcs; adaptive deepening was not
+executed. Replays are processing evidence only.
+
+Bowl dev003 ended at26steps: a receiver fit accepted at25steps was rejected
+after the next physical observation. Source rim fits are good, but receiver
+view/arc processing remains unresolved. SAM improves held wood segmentation
+and its partial fit; the purple support fit still fails and is not deployed.
+
+Experience remains collection-only. An internal planning attempt that read
+repository files and produced Chinese commentary was rejected. Later calls
+use explicit English inference instructions, disabled tools and an isolated
+working directory; only validated English JSON plans are accepted.
