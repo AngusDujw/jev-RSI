@@ -16,6 +16,35 @@ from robot_path_preview import preview
 from camera_geometry import propagate_wrist_calibration, gripper_height_above_landmark
 
 
+def translation_targets(held_pose, step_mm=15):
+    """Bound the proposed increment without relaxing actual tracking limits."""
+    if step_mm not in (5, 10, 15):
+        raise ValueError('Translation increment must be5,10 or15mm')
+    targets = {}
+    for axis in range(3):
+        for sign in (-1, 1):
+            target = json.loads(json.dumps(held_pose))
+            target['right']['position'][axis] += step_mm*.001*sign
+            targets[f'world_{"xyz"[axis]}_{"plus" if sign > 0 else "minus"}_{step_mm}mm'] = target
+    return targets
+
+
+def action_questions(options, diagnostic=False):
+    asked = [choice('complete_pose_program',
+        'Under CURRENT_STAGE and its observation rule, use CURRENT RGB/robot state to choose ONE complete bounded program or STOP. This is the only action judgment for this frame.', options)]
+    if diagnostic:
+        asked.append(choice('current_program_evidence_assessment',
+            'Independently classify the dominant CURRENT evidence issue for the offered short-stage programs. This diagnostic neither approves a program nor overrides the separate complete_pose_program answer. Missing later-stage holding/contact is not itself a FAR OPEN contradiction; use the actual CURRENT stage rule.',
+            {'no_current_contradiction_identified': 'Current source, robot data and visible short-stage corridor show no specific contradiction; this is not execution permission.',
+             'current_identity_or_role_unsupported': 'The current source or intended receiver identity/role is not supported.',
+             'current_corridor_unsupported': 'The current whole-hand short corridor cannot be supported from the supplied current RGB.',
+             'visible_obstacle_in_short_corridor': 'A specific visible scene object obstructs an offered short program.',
+             'robot_camera_or_geometry_contradiction': 'Current robot/camera data or derived geometry contradicts the current RGB.',
+             'program_does_not_advance_current_stage': 'The offered programs do not advance the declared current stage objective.',
+             'current_stage_precision_insufficient': 'The uncertainty is too broad for the CURRENT stage requirement, not merely a future grasp requirement.'}))
+    return asked
+
+
 def actor_method_fields(plan):
     """Forward semantic roles, excluding explicitly historical example sensors.
 
@@ -229,11 +258,10 @@ def run(tools, obs, model, output, max_decisions, deadline):
                          'gripper_closed':closed if arm=='right' else
                          float(obs['current_eef'][arm]['gripper_opening_command'])<.5}
                     for arm in ['left','right']}
-        targets={}
+        translation_mm = int(os.environ.get('ROBODOJO_RGB_STAGE_TRANSLATION_MM', '15'))
+        targets=translation_targets(held(), translation_mm)
         for axis in range(3):
             for sign in [-1,1]:
-                t=held();t['right']['position'][axis]+=.015*sign
-                targets[f'world_{"xyz"[axis]}_{"plus" if sign>0 else "minus"}_15mm']=t
                 t=held();rv=np.zeros(3);rv[axis]=sign*.1
                 q=np.asarray(t['right']['quaternion_wxyz'])
                 new=(Rotation.from_rotvec(rv)*Rotation.from_quat(q[[1,2,3,0]])).as_quat()
@@ -281,6 +309,7 @@ def run(tools, obs, model, output, max_decisions, deadline):
               'experience_original_text':notes,'experience_raw_sha256':hashes,
               'experience_original_file_directory':str(memory),
               'contract':'RGB-only full-pose baseline: no processed object XYZ/errors. All programs are complete independent five-step commands, at most15mm or0.1rad. Select ONE or STOP, never assemble axes. WORLD +X robot-right, +Y away from bases, +Z up; rotations are right-hand rule about fixed WORLD axes, not wrist/image axes. Wrist cameras ride with the hand. Current public robot geometry does not prove scene clearance. Identify an accessible task object from CURRENT raw RGB; avoid prior failed routes. CLOSE only for current actual opposing fingers/material, OPEN only as supported by current task/object support. Observe same-source co-motion after a grasp. Stage EXIT conditions are not prerequisites before the first bounded evidence acquisition. Never claim source height/holding from robot displacement. If object/tool/corridor cannot be supported, STOP.'}
+        data['baseline_translation_increment_mm'] = translation_mm
         data.update(actor_method_fields(plan))
         options={name:f'Execute exactly complete_programs[{name}], five native steps then fresh RGB.' for name in programs}
         if os.environ.get('ROBODOJO_RGB_STAGE_STACK_TOP_GEOMETRY')=='1':
@@ -438,10 +467,13 @@ def run(tools, obs, model, output, max_decisions, deadline):
             action_input=compact(data,action=True)
         else:
             action_input=data
-        answer=model.query(obs,[choice('complete_pose_program','Under CURRENT_STAGE and its observation rule, use CURRENT RGB/robot state to choose ONE complete bounded program or STOP. This is the only action judgment for this frame.',options)],
+        answer=model.query(obs,action_questions(options,
+                           diagnostic=os.environ.get('ROBODOJO_RGB_STAGE_ACTION_EVIDENCE_DIAGNOSTIC')=='1'),
                            json.dumps(action_input,ensure_ascii=False),f'rgb_pose_action_{turn:03d}_step{step:03d}',extra_images=images)
         queries+=1;selected=answer['complete_pose_program']
         record={'step_id':step,'stage':stage,'luna_choice':selected,'memory_sha256':hashes};records.append(record)
+        if 'current_program_evidence_assessment' in answer:
+            record['current_program_evidence_assessment'] = answer['current_program_evidence_assessment']
         if selected.startswith('STOP'):
             status='rgb_pose_luna_stopped';break
         target=programs[selected]['target']
