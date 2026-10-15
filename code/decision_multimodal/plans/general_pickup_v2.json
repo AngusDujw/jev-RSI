@@ -1,0 +1,166 @@
+{
+  "planner_response": {
+    "processing_validity": {
+      "actor_interface": "Actor receives phase-scoped numeric inputs only; no images or experiences. Processor uses RGB and public geometry. Outputs are XYZ/rotation signs, OPEN/CLOSE/KEEP, CONTINUE/ADVANCE/STOP.",
+      "measurement_checks": "Require both registration correlations >=0.70, >=1000 samples/view, wrist-Z discrepancy <=1mm, pose rank=6 and RMS<=4px. Current observations pass. These are consistency checks, not calibrated error bounds.",
+      "pose_model": "Fit unconstrained six-DOF pose. The initial horizontal plane supplies metric registration only.",
+      "ambiguity": "Run deterministic unperturbed restarts separately. Retain admissible competing solutions and union their measurement intervals. Reject incompatible grasp/sweep alternatives or an infeasible union. The ten accepted perturbed refits do not establish uniqueness.",
+      "sensitivity": "Propagate the specified 2px perturbations, initial/current allowances, mint contour vertices and blade-tip source interval. Preserve correlations within each hypothesis. The 5.01mm tested gain range is measurement sensitivity; no 3mm rejection applies across perturbed fits.",
+      "conditional_gate": "Require all enumerated hypotheses to permit the proposed grasp and bounded sweep, and a nonempty lift range satisfying lower gain>=100mm and upper gain<=130mm. Interval width>30mm is infeasible. Acceptance remains conditional on the represented geometry, sampled uncertainty and tested restarts.",
+      "current": "Zero-lift gain interval=[-8.74,8.27]mm. Its 17.01mm width permits a completion window if uncertainty remains comparable. Under pure translation, 115mm would yield [106.26,123.27]mm; this illustration cannot replace fresh visual measurements. Unperturbed-mode and sweep checks remain pending."
+    },
+    "candidate_height": {
+      "pad_midpoint": "table+8.0mm",
+      "construction": "7.5mm distal extent plus 0.5mm nominal table gap. Mint top=table+4.5mm; neck width=30.9mm.",
+      "link6_target": "p_LINK6=p_pad-R*[150.07,0,0]mm. With local +X downward, LINK6 Z=table+158.07mm.",
+      "allowed_source_uncertainty": "Use the supplied \u00b12mm table allowance: distal clearance=[-1.5,2.5]mm. Permit represented table penetration up to 2mm during final descent/closure. Include orientation and positioning allowances in that bound; reject if exceeded. The 0.665mm discrepancy is not an additional certified error bound.",
+      "other_sources": "Blade-tip source is its original visible ray intersecting table+[-2,5]mm. Propagate the conditional center halfwidths [3.0,4.09,3.68]mm through grasp/sweep and gain calculations; do not substitute them for table uncertainty. Require nominal neck overlap, without claiming guaranteed bilateral contact."
+    },
+    "deterministic_processing": {
+      "budget": "Each action uses 1..5 steps at 0.04s/step. Listed stage action caps sum to 390 including recovery; enforce 120/stage and 500 overall.",
+      "compiler": "Use up to 5 steps/action; translation caps: alignment 3mm, descent 1mm, lift/return 2mm; rotation cap 0.03rad/action. Also enforce native LINK6 target increments<=50mm and <=0.35rad. Validate actor signs against phase errors; incompatible signs cause STOP, never sign reversal.",
+      "sweeps": "Before each action, check swept public meshes against represented RGB geometry and phase interaction allowances. Unknown scene geometry remains outside this conditional check.",
+      "visual_intervals": "Recompute from fresh observations. Missing fits, infeasible intervals, budget exhaustion or unsafe sweeps stop advancement."
+    },
+    "physical_stages": [
+      {
+        "stage": "align",
+        "caps": {
+          "actions": 50,
+          "steps_per_action": 5
+        },
+        "inputs": [
+          "XYZ/rotation target errors",
+          "sweep validity",
+          "budget"
+        ],
+        "current_pass": "Pending target construction and sweep checks.",
+        "pass": "At the validated above-neck waypoint; target errors<=1mm and <=0.03rad."
+      },
+      {
+        "stage": "descend",
+        "caps": {
+          "actions": 50,
+          "steps_per_action": 5
+        },
+        "inputs": [
+          "pad-height error",
+          "neck alignment error",
+          "table penetration bound",
+          "sweep validity"
+        ],
+        "current_pass": "Pending alignment.",
+        "pass": "Pad reaches table+8mm within 1mm; interaction bound remains satisfied."
+      },
+      {
+        "stage": "close",
+        "caps": {
+          "actions": 90,
+          "steps_per_action": 5
+        },
+        "inputs": [
+          "aperture target",
+          "closure count",
+          "neck alignment",
+          "sweep validity"
+        ],
+        "current_pass": "Initial opening=88.8mm; pending descent.",
+        "pass": "Decrement target 1mm per chunk toward 28.9mm, approximately 60 chunks; latch target. Closure alone proves no attachment."
+      },
+      {
+        "stage": "verify_attachment",
+        "caps": {
+          "actions": 30,
+          "steps_per_action": 5
+        },
+        "inputs": [
+          "15mm test-rise error",
+          "visual gain interval",
+          "object/gripper relative-pose intervals",
+          "latch state"
+        ],
+        "current_pass": "Pending closure.",
+        "pass": "KEEP; actual visual gain lower bound>0. Three fresh observations admit a common object-to-gripper transform within their sampled intervals."
+      },
+      {
+        "stage": "raise",
+        "caps": {
+          "actions": 100,
+          "steps_per_action": 5
+        },
+        "inputs": [
+          "gain interval",
+          "attachment consistency",
+          "remaining rise",
+          "sweep validity"
+        ],
+        "current_pass": "Pending attachment verification.",
+        "pass": "KEEP; visual lower gain>=100mm, upper gain<=130mm, cumulative gripper rise<=130mm."
+      },
+      {
+        "stage": "hold",
+        "caps": {
+          "actions": 30,
+          "steps_per_action": 5
+        },
+        "inputs": [
+          "fresh gain intervals",
+          "relative-pose intervals",
+          "latch state",
+          "elapsed hold time"
+        ],
+        "current_pass": "Pending raise.",
+        "pass": "KEEP stationary for >=1s; every sampled gain interval remains within [100,130]mm and admits stable attachment. Neither commands nor native outcome establish completion."
+      }
+    ],
+    "one_recovery": {
+      "caps": {
+        "actions": 40,
+        "steps_per_action": 5
+      },
+      "trigger": "Failed attachment verification before main lift.",
+      "procedure": "KEEP and reverse the validated test-rise path. OPEN only after visual placement overlaps the original table-rest interval; retreat along the checked approach and STOP unsuccessful. If supported placement cannot be established, STOP while keeping the latch."
+    }
+  },
+  "execution_parameters": {
+    "candidate_tip_table_gap_m": 0.0005,
+    "hover_clearance_m": 0.04,
+    "max_actions_per_stage": 120,
+    "capture_test_lift_m": 0.015,
+    "final_height_gain_m": 0.115,
+    "motion_tolerance_xyz_m": [
+      0.001,
+      0.001,
+      0.001
+    ],
+    "engage_tolerance_xyz_m": [
+      0.001,
+      0.001,
+      0.001
+    ],
+    "minimum_capture_gain_m": 0.0001,
+    "attachment_drift_limit_m": 0.012
+  },
+  "stage_objectives": {
+    "approach_open": "Align the open gripper above the visible solid mint neck; orient the public finger tool downward.",
+    "engage_material": "Descend to the calculated shallow candidate acquisition height; this is not proven contact.",
+    "close": "Close slowly around the neck; a measured stall or target aperture creates only a candidate grasp.",
+    "capture_lift_test": "Maintain the latched aperture and actively lift15mm; test fresh visible target following.",
+    "raise_10cm": "Keep the latched aperture and lift until the whole represented material gain interval lies within100..130mm.",
+    "hold_verify": "Hold still with the latched aperture for at least1second and verify stable visual height and attachment.",
+    "complete": "Maintain the latched grasp with zero motion."
+  },
+  "provenance": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "authentication": "local ChatGPT Pro",
+    "response_sha256": "a3199ae620b82d1cccfa5851d8ae6d673c5006cde57dccb5c3865f43e1b52c89",
+    "experience_injection": false
+  },
+  "compiler_notes": [
+    "Stage labels map approach_open->align, engage_material->descend, capture_lift_test->verify_attachment, raise_10cm->raise, hold_verify->hold.",
+    "Use the user-authorized120-action per-stage ceiling and500 overall. A3mm alignment increment cannot cover the initial measured displacement in the proposed50actions.",
+    "A stalled measured aperture across two actions may advance to the active test, as explicitly allowed in the preceding Pro execution plan; no capture is inferred.",
+    "Sampled uncertainty intervals and robot/table sweeps are conditional, not complete scene collision or contact certificates."
+  ]
+}

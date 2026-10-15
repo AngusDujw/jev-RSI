@@ -77,8 +77,9 @@ class Scissors:
         self.closing_axis[2] = 0
         self.closing_axis /= np.linalg.norm(self.closing_axis)
         self.local_points = self.points0-self.center0
-        tip=intersect(self.cameras['cam_high'], [seeds['cam_high']['blade_tip']], self.height0+.002)[0]
-        self.verification_local=np.vstack([self.local_points,tip-self.center0])
+        tips=np.vstack([intersect(self.cameras['cam_high'], [seeds['cam_high']['blade_tip']], self.height0+h)
+                        for h in (-.002,.005)])
+        self.verification_local=np.vstack([self.local_points,tips-self.center0])
         self.baseline_verification=None
         neck_points = intersect(self.cameras['cam_high'], np.column_stack([a+xx,b+yy]), self.top_height)
         self.width = float(np.ptp(neck_points @ self.closing_axis))
@@ -130,7 +131,8 @@ class Scissors:
                 self.baseline_verification=verification_points.copy()
             gains=verification_points[:,2]-self.baseline_verification[:,2]
             rank=int(np.linalg.matrix_rank(result.jac))
-            usable = bool(rms < 4. and max(halfwidth) <= .006 and rank==6)
+            positive=all(np.min(project(public['calibration'][n],transform(estimate))[1])>0 for n,_ in observed)
+            usable = bool(rms < 4. and max(halfwidth) <= .006 and rank==6 and positive)
             if usable:
                 self.estimate = estimate
             answer = dict(usable=usable, center_m=estimate[:3].tolist(), rotation_delta_world_rad=estimate[3:].tolist(),
@@ -142,10 +144,12 @@ class Scissors:
                 restart_gains=[]
                 rng=np.random.default_rng(public['step']+41016)
                 original=[points.copy() for _,points in observed]
-                for trial in range(10):
+                for trial in range(14):
                     if trial>=4:
                         for i,(_,points) in enumerate(observed):
-                            points[:]=original[i]+rng.uniform(-2.,2.,points.shape)
+                            amplitude=2. if trial<10 else max(2.,rms)
+                            perturb=rng.uniform(-amplitude,amplitude,points.shape if trial<10 else (1,2))
+                            points[:]=original[i]+perturb
                     start=estimate.copy()
                     if trial<4:
                         start[3:]+=rng.uniform(-.12,.12,3)
@@ -160,7 +164,7 @@ class Scissors:
                             restart_gains.append(candidate_gain)
                 for i,(_,points) in enumerate(observed):
                     points[:]=original[i]
-                if len(alternatives)>=8:
+                if len(alternatives)>=10:
                     alternatives=np.asarray(alternatives)
                     interval=[float(alternatives.min()-.006),float(alternatives.max()+.006)]
                     spread=float(np.max(np.ptp(alternatives,axis=0)))
