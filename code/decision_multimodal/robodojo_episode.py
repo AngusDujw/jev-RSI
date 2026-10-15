@@ -72,6 +72,9 @@ class Episode:
             port = socket_.getsockname()[1]
         cache = self.folder/'cache'
         cache.mkdir()
+        # The installed native server writes resolved_config before constructing
+        # its session, so its output directory must already exist.
+        (self.folder/'native').mkdir()
         env = dict(os.environ, PYTHONPATH=os.pathsep.join(map(str, paths)),
             TMPDIR=str(cache), XDG_CACHE_HOME=str(cache),
             TORCH_EXTENSIONS_DIR=str(cache/'torch_extensions'),

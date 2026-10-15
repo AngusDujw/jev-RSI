@@ -33,6 +33,7 @@ def main():
         '-c', 'features.skip_host_skill_discovery=true',
         '-c', 'features.plugins=false', '-c', 'features.remote_plugin=false',
         '-c', 'features.skill_search=false',
+        '-c', 'suppress_unstable_features_warning=true',
         '--sandbox', 'read-only', '--json',
         '-o', str(output/'response.txt')]
     for image in args.image:
@@ -54,9 +55,16 @@ def main():
     if done.returncode:
         raise RuntimeError('Local Pro planner failed; original stderr preserved')
     records = [json.loads(line) for line in (output/'events.jsonl').read_text().splitlines()]
-    if any(record.get('type') == 'item.completed' and
-           record.get('item', {}).get('type') != 'agent_message' for record in records):
-        raise ValueError('Unexpected tool activity in internal planning call')
+    for record in records:
+        if record.get('type') != 'item.completed':
+            continue
+        item = record.get('item', {})
+        if item.get('type') in ('agent_message', 'reasoning'):
+            continue
+        if item.get('type') == 'error' and item.get('message', '').startswith(
+                'Under-development features enabled: skip_host_skill_discovery.'):
+            continue  # CLI startup advisory, not a model tool call.
+        raise ValueError('Unexpected tool activity or error in internal planning call')
     text = (output/'response.txt').read_text()
     english(text)
     result = json.loads(text)
