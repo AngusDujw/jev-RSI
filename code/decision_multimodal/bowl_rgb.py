@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from scipy.optimize import least_squares
 from rgb_cuboid import project,ray
+from cap_motion import tool_mask
 
 
 def white_region(rgb,box,seed):
@@ -76,3 +77,51 @@ def fit(public,seeds,table_z,prior=None):
         interior_solution=interior,jacobian_rank=rank,
         source='Upper45percent of associated RGB white silhouette contours and public calibrated circle projection',
         limits='Horizontal circular rim and upper-silhouette arc identity are hypotheses. Not cavity depth, wall thickness, contact or object truth. Sensitivity is conditional, not a calibrated confidence interval.'),masks
+
+
+def refresh(public,prior,height):
+    """Fresh rim XYZ with a radius learned independently earlier this episode."""
+    center=np.asarray(prior['center_m']);radius=prior['radius_m'];views=[];masks={}
+    angles=np.linspace(0,2*np.pi,360,endpoint=False);unit=np.column_stack([np.cos(angles),np.sin(angles),np.zeros(len(angles))])
+    for name,camera in public['calibration'].items():
+        top=center+radius*unit;bottom=top-[0,0,height]
+        uv,depth=project(camera,np.concatenate([top,bottom]));middle,_=project(camera,center.reshape(1,3))
+        if min(depth)<=.02 or min(middle[0])<5 or middle[0,0]>635 or middle[0,1]>475:
+            continue
+        lo=uv.min(0)-8;hi=uv.max(0)+8
+        if min(lo)<0 or hi[0]>=640 or hi[1]>=480:
+            continue
+        mask=white_region(public['rgb'][name],[*lo,*hi],middle[0])
+        if mask is None:
+            continue
+        contours,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+        pixels=max(contours,key=cv2.contourArea).reshape(-1,2).astype(float)
+        vertical,_=project(camera,np.stack([center,center+[0,0,.01]]));up=vertical[1]-vertical[0];up/=np.linalg.norm(up)
+        pixels=pixels[pixels@up>=np.quantile(pixels@up,.55)]
+        hand=tool_mask(public,name);indices=pixels.astype(int);pixels=pixels[hand[indices[:,1],indices[:,0]]==0]
+        if len(pixels)>=12:
+            pixels=pixels[np.linspace(0,len(pixels)-1,min(90,len(pixels))).astype(int)]
+            views.append((name,pixels));masks[name]=mask
+    if not views:
+        return dict(usable=False,reason='No associated current exposed bowl rim'),masks
+    lower=center-.035;upper=center+.035
+    def residual(c,change=0.):
+        rows=[]
+        for name,pixels in views:
+            predicted,_=project(public['calibration'][name],c+(radius+change)*unit)
+            distance=np.linalg.norm(pixels[:,None]-predicted[None,:],axis=2)
+            rows.extend((pixels-predicted[distance.argmin(1)]).ravel())
+        return np.asarray(rows)
+    fit=least_squares(residual,center,bounds=(lower,upper),loss='soft_l1',f_scale=1.5,max_nfev=80)
+    rms=float(np.sqrt(np.mean(residual(fit.x)**2)));cov=np.linalg.pinv(fit.jac.T@fit.jac)*max(1.,rms)**2
+    width=np.maximum(.002,3*np.sqrt(np.maximum(0,np.diag(cov))));alternatives=[]
+    for delta in (-.002,.002):
+        other=least_squares(lambda c:residual(c,delta),fit.x,bounds=(lower,upper),loss='soft_l1',f_scale=1.5,max_nfev=80)
+        alternatives.append(abs(other.x-fit.x))
+    width+=np.max(alternatives,axis=0)
+    interior=bool(min(np.min(fit.x-lower),np.min(upper-fit.x))>.0005)
+    return dict(usable=bool(rms<2.5 and max(width)<.015 and interior),center_m=fit.x.tolist(),radius_m=radius,
+        rim_rms_px=rms,sensitivity_xyz_radius_m=[*width,.002],camera_names=[n for n,_ in views],step=public['step'],
+        radius_scope='Fixed radius from independent earlier same-episode calibrated two-view RGB',
+        source='CURRENT RGB exposed upper rim with public K/T; earlier radius only initializes metric scale',
+        limits='Upright rigid bowl and radius invariance hypotheses; no current object pose from robot prediction. Conditional local sensitivity, not calibrated confidence.'),masks
