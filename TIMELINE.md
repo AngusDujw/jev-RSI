@@ -210,6 +210,7 @@ graph LR
     T_2026W42_102["📊 robodojo-decision-stages<br/>445/452英文原生完整成功，冻结配置2…"]:::experiment
     T_2026W42_103["📊 robodojo-gpt6-dec<br/>EXP245阶段标签1/2对旧英文0/2，…"]:::experiment
     T_2026W42_104["📝 robodojo-decision-stages<br/>T-2026W42-103主题键误用了ro…"]:::note
+    T_2026W42_105["📝 robodojo-decision-stages<br/>按用户要求上线真实提示词复盘网页：461六…"]:::note
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -379,6 +380,7 @@ graph LR
   T_2026W42_100 --> T_2026W42_101
   T_2026W42_101 --> T_2026W42_102
   T_2026W42_102 --> T_2026W42_104
+  T_2026W42_104 --> T_2026W42_105
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -577,6 +579,7 @@ graph LR
 | `T-2026W42-102` | 2026-10-14 | experiment | robodojo-decision-stages | 445/452英文原生完整成功，冻结配置2/3仍不稳；经验阶段错配已修四路验证，OPEN准备policy遗漏待原生 | `EXP-2026W42-239`, `EXP-2026W42-243` | - |
 | `T-2026W42-103` | 2026-10-14 | experiment | robodojo-gpt6-dec | EXP245阶段标签1/2对旧英文0/2，累计10完整回合仍1/42未稳定；实际接触与闭后STOP仍未收敛 | `EXP-2026W42-245` | - |
 | `T-2026W42-104` | 2026-10-14 | note | robodojo-decision-stages | T-2026W42-103主题键误用了robodojo-gpt6-dec；其EXP245结果属于既有robodojo-decision-stages主线，不表示新议题或转向，后续继续原键 | `EXP-2026W42-245` | - |
+| `T-2026W42-105` | 2026-10-15 | note | robodojo-decision-stages | 按用户要求上线真实提示词复盘网页：461六阶段39调用、482七阶段角色/阶段/动作分开；缺失请求不重建，四任务浏览器与窄屏通过；不新增原生成功 | `EXP-2026W42-252` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
