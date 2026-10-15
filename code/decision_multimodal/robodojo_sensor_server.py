@@ -155,6 +155,7 @@ def _install_public_wrist_mount_sync():
     from hybrid_rollout.robodojo.robodojo_server import session as native_session
 
     original_get_obs = ObsManager.get_obs
+    original_render_for_capture=ObsManager.render_for_capture
     original_observe = native_session.RoboDojoSession._observe
 
     def transform(pose):
@@ -164,7 +165,7 @@ def _install_public_wrist_mount_sync():
         value[:3, 3] = pose[:3]
         return value
 
-    def synced_get_obs(self, env_idx_list=None):
+    def sync_mounts(self):
         task=os.environ.get('ROBODOJO_TASK')
         manual_mount=(task=='fold_clothes' or (task=='press_by_number' and
             os.environ.get('ROBODOJO_PRESS_GPU_FABRIC_AUDIT')!='1'))
@@ -203,7 +204,16 @@ def _install_public_wrist_mount_sync():
                                                  device=old_pos.device),
                         orientation=torch.as_tensor(quaternion_wxyz, dtype=torch.float32,
                                                     device=old_pos.device))
-        return original_get_obs(self, env_idx_list=env_idx_list)
+
+    def synced_get_obs(self,env_idx_list=None):
+        sync_mounts(self)
+        return original_get_obs(self,env_idx_list=env_idx_list)
+
+    def synced_render_for_capture(self):
+        # EvalEnv renders BEFORE get_obs. Updating only inside get_obs makes
+        # CPU wrist RGB lag one observation behind the public camera pose.
+        sync_mounts(self)
+        return original_render_for_capture(self)
 
     def reset_anchor_before_first_observation(self, record=False):
         if self.step_id == 0 and not getattr(self, "_codex_wrist_mount_reset", False):
@@ -241,6 +251,7 @@ def _install_public_wrist_mount_sync():
         return result
 
     ObsManager.get_obs = synced_get_obs
+    ObsManager.render_for_capture=synced_render_for_capture
     native_session.RoboDojoSession._observe = reset_anchor_before_first_observation
 
 
