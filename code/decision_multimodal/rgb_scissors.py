@@ -107,7 +107,11 @@ class Scissors:
         def residual(p):
             model,_=project(camera,points(p))
             distance=np.linalg.norm(observed[:,None,:]-model[None,:,:],axis=2)
-            return np.r_[distance.min(1),distance.min(0)]
+            # Signed coordinate residuals retain an informative Jacobian at
+            # exact contour agreement; scalar distances have a cusp there.
+            forward=observed-model[distance.argmin(1)]
+            backward=model-observed[distance.argmin(0)]
+            return np.r_[forward.ravel(),backward.ravel()]
         fit=least_squares(residual,self.resting_estimate,bounds=([-.015,-.015,-.15],[.015,.015,.15]),loss='soft_l1',f_scale=1.5)
         rms=float(np.sqrt(np.mean(np.asarray(residual(fit.x))**2)))
         cov=np.linalg.pinv(fit.jac.T@fit.jac)*max(1.,rms)**2
