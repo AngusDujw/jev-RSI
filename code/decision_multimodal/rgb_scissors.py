@@ -48,6 +48,11 @@ class Scissors:
         self.height0 = table['plane_z_m']
         masks = {n:mint(public['rgb'][n], roi=s['scissors_roi'])
                  for n,s in seeds.items() if isinstance(s, dict) and s.get('scissors_roi')}
+        if masks.get('cam_right_wrist') is None and masks.get('cam_high') is not None:
+            yy,xx=np.nonzero(masks['cam_high'])
+            coarse=intersect(self.cameras['cam_high'],[[xx.mean(),yy.mean()]],self.height0+.005)[0]
+            predicted,_=project(self.cameras['cam_right_wrist'],coarse.reshape(1,3))
+            masks['cam_right_wrist']=mint(public['rgb']['cam_right_wrist'],prediction=predicted[0])
         if any(m is None for m in masks.values()) or len(masks) < 2:
             raise ValueError('Initial named mint material is not visible in two views')
         high = boundary(masks['cam_high'])
@@ -86,6 +91,36 @@ class Scissors:
         self.estimate = np.r_[self.center0, 0., 0., 0.]
         self.last_tick = None
         self.last_result = None
+        self.resting_estimate=np.zeros(3)
+
+    def resting(self,public):
+        """Current high-view XY/yaw under a declared preclosure support prior."""
+        camera=public['calibration']['cam_high']
+        uv,_=project(camera,self.center0.reshape(1,3))
+        mask=mint(public['rgb']['cam_high'],prediction=uv[0])
+        if mask is None:
+            return dict(usable=False,reason='No current named high-view mint material')
+        observed=boundary(mask)
+        observed=observed[np.linspace(0,len(observed)-1,min(260,len(observed))).astype(int)]
+        def points(p):
+            return Rotation.from_euler('z',p[2]).apply(self.local_points)+self.center0+np.r_[p[:2],0.]
+        def residual(p):
+            model,_=project(camera,points(p))
+            distance=np.linalg.norm(observed[:,None,:]-model[None,:,:],axis=2)
+            return np.r_[distance.min(1),distance.min(0)]
+        fit=least_squares(residual,self.resting_estimate,bounds=([-.015,-.015,-.15],[.015,.015,.15]),loss='soft_l1',f_scale=1.5)
+        rms=float(np.sqrt(np.mean(np.asarray(residual(fit.x))**2)))
+        cov=np.linalg.pinv(fit.jac.T@fit.jac)*max(1.,rms)**2
+        halfwidth=np.maximum(.003,2*np.sqrt(np.maximum(0,np.diag(cov)[:2])))
+        stable=bool(np.max(abs(fit.x[:2]))<=.003)
+        usable=bool(rms<=3. and max(halfwidth)<=.00301 and stable)
+        if usable:
+            self.resting_estimate=fit.x
+        return dict(usable=usable,far_valid=usable,center_m=(self.center0+np.r_[fit.x[:2],0.]).tolist(),
+            rotation_delta_world_rad=[0.,0.,float(fit.x[2])],conditional_halfwidth_m=[float(halfwidth[0]),float(halfwidth[1]),.006],
+            high_contour_rms_px=rms,source_center_stable=stable,camera_names=['cam_high'],step=public['step'],
+            source='Current high RGB contour plus initial RGB metric template/table; declared stationary horizontal support before closure',
+            limits='Conditional preclosure XY/yaw estimate with6mm vertical working allowance; never holding, lift height, unrestricted pose or object truth')
 
     def update(self, public, predicted=None, verify=False):
         if public['step'] == self.last_tick:

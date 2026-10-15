@@ -120,6 +120,78 @@
   "compiler_notes": [
     "Three physical steps per far action, two per capture/close/lift and one on explicit stage advance; these remain inside perstage/native budgets.",
     "No initial left-view stage; at most three independently judged five-step actions for the single active recovery.",
-    "Every native step, including stage-transition hold, is counted. Conditional straight-pose finger/table checks are not complete scene collision proofs."
-  ]
+    "Every native step, including stage-transition hold, is counted. Conditional straight-pose finger/table checks are not complete scene collision proofs.",
+    "The resting revision adds strictly positive lower table clearance, which contradicts the existing0.5mm nominal gap and2mm table allowance. This infeasible added requirement is rejected; the earlier explicit conditional2mm distal table interaction band remains in force. All candidate and final visual checks are retained."
+  ],
+  "resting_revision": {
+    "decision": "Admit the resting-plane method conditionally for pregrasp processing. This is not evidence of contact, attachment, or task success.",
+    "current_stage": {
+      "name": "open_hand_far_approach",
+      "fit": "Fit XY translation and yaw of the initial metric mint template to current fixed-high-camera contours, preserving holes.",
+      "assumption": "The visibly resting source occupies a horizontal material plane until closure.",
+      "original_baseline_m": [
+        0.396,
+        -0.008,
+        0.769
+      ],
+      "center_displacement_guard_m": 0.003,
+      "working_XYZ_intervals_m": {
+        "X": [
+          0.393,
+          0.399
+        ],
+        "Y": [
+          -0.011,
+          -0.005
+        ],
+        "Z": [
+          0.763,
+          0.775
+        ]
+      },
+      "interval_semantics": "XY are conditional support envelopes from the stated center stability, not measured confidence intervals. Current high-view fit uncertainty must be bounded and contained before using them operationally. Z uses the original RGB-derived height plus/minus 3 mm initial sensitivity and 3 mm model bias; it excludes simulator truth.",
+      "far_guards": [
+        "Public finger/table clearance lower bound exceeds 25 mm.",
+        "Open fingers remain outside the source silhouette and above the source."
+      ]
+    },
+    "minimum_corrections": [
+      "Remove exact-plane and unrestricted sixDOF claims from the current two-view contour fit: RMS 6.63 px, vertical sensitivity 8.25 mm, and curved/thick sidewalls undermine that interpretation.",
+      "Use consistent right-view evidence as corroboration. Flag contradictions and block dependent advancement; never silently blend them.",
+      "Do not spend the recovery allowance repeatedly seeking the unreliable unloaded-left view."
+    ],
+    "progressive_handoff": [
+      {
+        "stage": "approach_and_align",
+        "closure_guards": [
+          "Fresh high-view contour agreement and target identity pass.",
+          "Aperture lower bound exceeds source-width upper bound.",
+          "Source exterior-edge alignment passes an explicit validated tolerance.",
+          "Finger/table clearance interval fits a declared shallow band with strictly positive lower clearance."
+        ],
+        "numeric_status": "Contour tolerance, edge tolerance, aperture measurements, and shallow-band limits were not supplied. Record them explicitly; closure remains unsupported until these guards are evaluated."
+      },
+      {
+        "stage": "conditional_closure",
+        "rule": "Permit only a candidate contact under the declared intervals. Immediately withdraw the resting-plane assumption upon closure."
+      },
+      {
+        "stage": "active_short_lift",
+        "rule": "Require current visible co-motion and an unrestricted rigid-pose height-gain interval from two current views or a genuinely validated alternative.",
+        "acceptance": {
+          "whole_mint_and_blade_gain_lower_mm": ">=100",
+          "whole_mint_and_blade_gain_upper_mm": "<=130",
+          "attachment": "must pass"
+        }
+      }
+    ],
+    "baseline_and_budget": {
+      "physical_step_horizon": 200,
+      "recovery_allowance_steps": 15,
+      "template_refinement": "Before closure only, within original support/identity intervals; record as estimation, never height gain. Preserve the original resting baseline."
+    },
+    "unsupported": "Force/contact confirmation, postclosure resting-plane inference, native outcomes, command-only success, and successful grasp.",
+    "actor_boundary": "Provide text processing instructions and declared intervals only; no experience files, images, or privileged scene data."
+  },
+  "resting_revision_sha256": "bbd9c25ce43393da1932ab3e688980448ea77e04ed5d28eba86a8cdf754d1495"
 }
