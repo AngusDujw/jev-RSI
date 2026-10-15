@@ -109,6 +109,7 @@ def run(ep,configuration=None):
     if configuration.get('skip_clear') and not resume:
         schedule=[row for row in schedule if row[0] not in ('clear_and_orient','close_tool')]
     previous_aperture=initial['aperture_m'];stable_closure=0
+    stalled_press=0;previous_travel=None
     for phase,gap in schedule:
         stage_done=False
         for attempt in range(35):
@@ -213,6 +214,21 @@ def run(ep,configuration=None):
                 stop='Public finger sweep loses table-envelope clearance';break
             previous_aperture=tool['aperture_m']
             ep.execute(targets,steps=1 if answer['transition']['choice']=='advance' else 3 if phase=='clear_and_orient' else 2)
+            if phase=='press' and answer['transition']['choice']!='advance':
+                after_tool=tools.geometry(ep.public,arm)
+                after_local=after_tool['finger_tips_local_m'].mean(0) if balanced else after_tool['finger_tips_local_m'][finger]
+                after_tip=after_tool['world_center_m']+after_tool['rotation'].apply(after_local-after_tool['local_center_m'])
+                movement=float(np.linalg.norm(after_tip-tip))
+                travel=visible.get('downward_displacement_m') if visible else None
+                cap_progress=travel is not None and previous_travel is not None and abs(travel-previous_travel)>=.0002
+                stalled_press=stalled_press+1 if np.linalg.norm(error)>.001 and movement<.00025 and not cap_progress else 0
+                previous_travel=travel
+                save(ep.folder/f'{control_prefix}-tracking-{ep.tick:06d}.json',dict(
+                    measured_tip_motion_m=movement,cap_progress=bool(cap_progress),consecutive_stalls=stalled_press,
+                    scope='Public robot/RGB motion only; no force or contact inference'))
+                if stalled_press>=2:
+                    stop='Two press actions lacked measured tool/cap progress; no stronger target or drive escalation'
+                    break
             if answer['transition']['choice']=='advance':
                 stage_done=True
                 if phase=='clear_and_orient' and configuration.get('refine_unpressed_baseline'):

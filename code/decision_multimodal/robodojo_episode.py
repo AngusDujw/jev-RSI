@@ -100,6 +100,7 @@ class Episode:
             ROBODOJO_MEASURED_GRIPPER_STATE='1', ROBODOJO_SYNC_PUBLIC_WRIST_MOUNTS='1',
             ROBODOJO_FOLD_CPU_USD_SYNC_AUDIT='1' if self.args.task == 'fold_clothes' else '0',
             ROBODOJO_PRESS_GPU_FABRIC_AUDIT='1' if self.args.task == 'press_by_number' else '0',
+            ROBODOJO_ROBOT_IK_REFINEMENT='1' if self.args.ik_solver=='bounded-refine' else '0',
             OMNI_KIT_ACCEPT_EULA='YES', ACCEPT_EULA='Y',
             CUDA_VISIBLE_DEVICES=GPU_UUIDS[self.args.gpu],
             OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2',
@@ -260,6 +261,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--key-file', type=Path, required=True)
     parser.add_argument('--controller', type=Path)
+    parser.add_argument('--ik-solver',choices=['native','bounded-refine'],default='native')
     args = parser.parse_args()
     episode = Episode(args)
     def terminate(signum, frame):

@@ -60,6 +60,9 @@ class SyncedLauncher(_AppLauncher):
 
         BaseEnv.__init__ = synchronized
         _install_sensor_calibration()
+        if os.environ.get('ROBODOJO_ROBOT_IK_REFINEMENT')=='1':
+            from bounded_robot_ik import install
+            install()
         if os.environ.get("ROBODOJO_SYNC_PUBLIC_WRIST_MOUNTS") == "1":
             _install_public_wrist_mount_sync()
         if os.environ.get("ROBODOJO_PRESS_GPU_FABRIC_AUDIT") == "1":
