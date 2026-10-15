@@ -56,7 +56,7 @@ def run(ep):
     desired = min((desired,alternate),key=lambda r:(r*initial_tool['rotation'].inv()).magnitude())
     initial_fit=perception.update(ep.public,verify=True)
     save(ep.folder/'precontact_geometry.json',initial_fit)
-    if not initial_fit.get('usable') or not initial_fit.get('verified_pose_usable'):
+    if not initial_fit.get('usable'):
         save(ep.folder/'program_result.json',dict(program_finished=False,stop_reason='Six-DOF RGB precontact pose/ambiguity diagnostics failed'))
         return
     initial_source = np.asarray(initial_fit['center_m'])
@@ -93,6 +93,10 @@ def run(ep):
             save(ep.folder/f'frame-{ep.tick:06d}'/'scissors_geometry.json',measured)
             if not measured.get('usable'):
                 stop='Current mint geometry unavailable: '+phase
+                break
+            interval=measured.get('conditional_all_point_height_gain_interval_m')
+            if phase=='engage_material' and (not measured.get('verified_pose_usable') or not interval or interval[1]-interval[0]>.030):
+                stop='Precontact six-DOF hypothesis union cannot support100..130mm completion window'
                 break
             point=np.asarray(measured['center_m'])
             u=max(measured['conditional_halfwidth_m'])
