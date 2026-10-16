@@ -33,6 +33,8 @@ GOALS = {
     'retreat': 'Withdraw the hand to reveal the manipulated object and verify the requested visible relation.',
     'verify': 'Complete the prescribed visual verification of the task relation or articulated control.',
     'clear_opening': 'Withdraw the empty hand clear of the opened drawer before manipulating the source.',
+    'recover_up': 'Withdraw the hand to its predefined recovery clearance while preserving the current grip until clear.',
+    'clear_receiver': 'Withdraw from the receiver through the predefined clearance waypoint.',
     'recover_open': 'Keep the control point still and open the fingers for the next permitted grasp attempt.'}
 FEEDBACK = {
     'target_arrival', 'position_arrived', 'orientation_arrived', 'contract_satisfied',
@@ -47,8 +49,6 @@ def mask_xyz(request):
     old = request['state']
     stage = old.get('stage', old.get('operation'))
     name = stage.split(':')[-1]
-    if name not in GOALS:
-        raise ValueError('Undeclared stage semantic goal: '+name)
     kept = {key: deepcopy(old[key]) for key in (
         'task', 'stage', 'operation', 'next_phase', 'next_stage', 'next_operation',
         'required_rotation_world_rad', 'rotation_tolerance_rad',
@@ -66,7 +66,9 @@ def mask_xyz(request):
             kept[key] = {k:v for k,v in old[key].items() if k in FEEDBACK and (v is None or isinstance(v,(bool,str)))}
     if isinstance(old.get('public_entity_slots'), dict):
         kept['public_entity_slots'] = {k:v for k,v in old['public_entity_slots'].items() if isinstance(v,str)}
-    kept['current_stage_semantic_goal'] = GOALS[name]
+    kept['current_stage_semantic_goal'] = GOALS.get(name,
+        'Complete the existing '+name.replace('_',' ')+' operation for the task entities at its prescribed waypoint.')
+    kept['semantic_goal_specific'] = name in GOALS
     # Gripper-only original contracts do not require a camera-derived XYZ target.
     if name in ('grasp', 'release', 'prepare', 'recover_open', 'settle_receiver'):
         contract = old.get('phase_contract', old.get('operation_contract', old.get('stage_contract','')))
