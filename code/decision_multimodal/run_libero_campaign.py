@@ -89,6 +89,10 @@ class Campaign:
         self.rows = []
         self.claimed = 0
         self.tasks = json.loads((args.baselines/'campaign.json').read_text())['tasks']
+        multimodal = args.profile == 'libero-rgb-full'
+        if multimodal:
+            self.tasks = [{**task, 'paired_init_indices': task['paired_init_indices'][:3]}
+                          for task in self.tasks]
         if args.tasks:
             self.tasks = [t for t in self.tasks if t['task_id'] in args.tasks]
             if {t['task_id'] for t in self.tasks} != set(args.tasks):
@@ -116,6 +120,14 @@ class Campaign:
             if args.profile in ('libero-clarity-v2', 'libero-clarity-v3'):
                 p = Path(__file__).with_name('libero_prompt_revision_v2.py')
                 specification['adapter_source_sha256'][p.name] = hashlib.sha256(p.read_bytes()).hexdigest()
+            if multimodal:
+                specification['phase'] = 'LIBERO_multimodal'
+                specification['actor_images'] = 2
+                for name in ('libero_multimodal.py', 'libero_prompt_revision_v2.py'):
+                    p = Path(__file__).with_name(name)
+                    specification['adapter_source_sha256'][name] = hashlib.sha256(p.read_bytes()).hexdigest()
+                specification['text_profiles'] = '1423:clarity-v3;1144/1202/1252/1296:clarity-v2;others:original'
+                specification['repetitions_per_task'] = 3
         spec_path = self.root/'campaign.json'
         if spec_path.exists():
             if json.loads(spec_path.read_text()) != specification:
@@ -123,7 +135,7 @@ class Campaign:
         else:
             write(spec_path, specification)
         # Round robin tasks before their second initial state; no selective reruns.
-        for index in range(5):
+        for index in range(3 if multimodal else 5):
             for task in self.tasks:
                 init = task['paired_init_indices'][index]
                 folder = self.root/f'task-{task["task_id"]}-init-{init}'
@@ -165,6 +177,8 @@ class Campaign:
             HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
             TOKENIZERS_PARALLELISM='false')
         env['DECISION_MM_LIBERO_PROFILE'] = self.args.profile
+        if self.args.profile == 'libero-rgb-full':
+            env['DECISION_MM_ASSET_ROOT'] = str(folder/'multimodal')
         # Existing frozen code records its historical ownership wording. This
         # outer manifest identifies the actual transport without editing it.
         write(folder/'manifest.json', dict(started_at=now(), task_id=task['task_id'],
@@ -178,6 +192,10 @@ class Campaign:
             manifest = json.loads(manifest_path.read_text())
             manifest['request_profile'] = self.args.profile
             manifest['comparison'] = 'Revised prompts/interface; original frozen policy, processing, thresholds, stages and paired initial states'
+            if self.args.profile == 'libero-rgb-full':
+                manifest['actor_images'] = 2
+                manifest['multimodal_asset_root'] = str(folder/'multimodal')
+                manifest['comparison'] = 'Latest task text profile plus named fresh camera RGB and public camera/robot context; original processing/control preserved'
             write(manifest_path, manifest)
         self.ledger(dict(event='episode_started', task=task['task_id'], init=init, gpu=gpu))
         started = time.monotonic()
@@ -269,7 +287,7 @@ def main():
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--controller-root', type=Path, default=Path('/root/yekangjie/project/robodojo-jev'))
     parser.add_argument('--libero-root', type=Path, default=Path('/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'))

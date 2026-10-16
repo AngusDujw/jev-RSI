@@ -102,6 +102,17 @@ def split_singletons(request):
 class RevisedAPI(LegacyAPI):
     profile = PROFILE
     revise = staticmethod(revise_request)
+    image_count = 0
+
+    def build_payload(self, sent):
+        return convert_request(sent) if sent['questions'] else None
+
+    def validate_payload(self, payload):
+        if payload is not None and (payload['model'] != MODEL or not isinstance(payload['input'], str)):
+            raise ValueError('Expected named text-only Decision payload')
+
+    def input_audit(self):
+        return {}
 
     def post(self, endpoint, original):
         if endpoint != '/systemone':
@@ -109,9 +120,8 @@ class RevisedAPI(LegacyAPI):
         revised = self.revise(original)
         sent, forced = split_singletons(revised)
         english(sent)
-        payload = convert_request(sent) if sent['questions'] else None
-        if payload is not None and (payload['model'] != MODEL or not isinstance(payload['input'], str)):
-            raise ValueError('Expected named text-only Decision payload')
+        payload = self.build_payload(sent)
+        self.validate_payload(payload)
         while True:
             directory = self.folder / f'{self.calls:04d}'
             self.calls += 1
@@ -127,10 +137,11 @@ class RevisedAPI(LegacyAPI):
         save('revised-legacy-request.json', revised)
         save('schema-constants.json', forced)
         save('dispatch.json', dict(profile=self.profile, key_origin='du', endpoint=ENDPOINT,
-            image_count=0, experience_injection=False, state_sha256=digest(revised['state']),
+            image_count=self.image_count, experience_injection=False, state_sha256=digest(revised['state']),
             requested_model=MODEL, provider_called=payload is not None,
             original_request_sha256=digest(original), schema_constant_questions=list(forced),
-            retry_policy='At most three HTTP attempts; only explicit 429/502/503/504 without a usable answer. No retries of received answers, refusals, timeouts or parsing errors. No simulation steps while retrying.'))
+            retry_policy='At most three HTTP attempts; only explicit 429/502/503/504 without a usable answer. No retries of received answers, refusals, timeouts or parsing errors. No simulation steps while retrying.',
+            **self.input_audit()))
         started = time.monotonic()
         try:
             if payload is None:
@@ -177,7 +188,7 @@ class RevisedAPI(LegacyAPI):
                 converted['probability_source'] += '; singleton distributions are schema constants, not model probabilities'
             save('legacy-response.json', converted)
             self.log(dict(kind='decision_api_response', key_origin='du', model=MODEL,
-                profile=self.profile, image_count=0, seconds=time.monotonic()-started,
+                profile=self.profile, image_count=self.image_count, seconds=time.monotonic()-started,
                 request_sha256=digest(payload), audit_directory=str(directory),
                 schema_constant_questions=list(forced), provider_called=payload is not None))
             return converted
