@@ -418,3 +418,8 @@
 - 【Agent】【2026-10-16 00:15】[note] 只读回顾当前实现/协议，优先检索本机Zotero只读元数据（普通只读被锁后immutable只读取题录），查到Show-Harness/Harness VLA/RoboHarness，并核对作者项目RoboDawn、Inspect Robots、VoxPoser与官方RoboDojo EEF说明；整理待决清单，不选择底座/模型、不写内部提示词、不更改正式研究目标或控制代码。
 - 【User】【2026-10-16 00:59】[intent] 用户将需求聚焦为两个codebase：结构化决策控制机器人（优先参考本项目LIBERO-Plus）与自我迭代；不预定每任务处理过程/输出，由规划框架驱动模型生成处理方法交推进器，自迭代主要优化两个模型提示词协作。
 - 【Agent】【2026-10-16 00:59】[note] 调研只读本机LIBERO-Plus supervisor/workflows/runner及Zotero ETM/ENPIRE题录摘要；核对jev-libero（含仿真碰撞/contact/反事实预演，不能原样用作无特权基线）、Code as Policies、RoboDawn、GEPA adapter源码、DSPy GEPA、TextGrad、Skill-RSI、OpenRSI、SICA、DGM。暂建议抽取本地执行底座+独立GEPAAdapter，CaP只作动态处理方法生成参考；未选定实施、未克隆安装或新增模型/仿真实验。
+- 【User】【2026-10-16 01:43】[intent] 用户澄清规划提示词各部分最终共同输入同一次规划请求；框架重点是哪些固定、哪些可在迭代中改变，要求先讨论建议。
+- 【Agent】【2026-10-16 01:43】[note] 讨论建议分三类：冻结模型职责/观测权限/工具与动作接口/输出外层协议；允许优化规划指导语与组织方式；任务事实、观测和当次生成方案属于运行时变量。外层评测/分集/优化器权限不自动写入规划提示词；本轮不修改内部提示词或控制代码。
+- 【User】【2026-10-16 01:50】[intent] 用户要求解释受限Python处理程序与声明式配置，GEPA和直接LLM改prompt的区别，以及数据少是否可用；仍属架构讨论，未确认GEPA或处理程序形式。
+- 【Agent】【2026-10-16 01:50】[note] 本轮只解释候选方案和少样本评测限制；不安装GEPA，不生成或改写内部模型提示词，不运行新机器人实验。
+- 【User】【2026-10-16 08:13】[decision] 已确定JSON描述阶段和输入输出接口、处理部分允许受限Python；不用GEPA，外层由LLM按约定可改范围改进提示词。回到规划器提示词讨论，具体提示词仍待确认。
