@@ -93,6 +93,7 @@ def install_stream(arguments):
 class MultimodalAPI(RevisedAPI):
     profile = 'libero-rgb-full'
     image_count = 2
+    condition = 'rgb_full'
 
     def __init__(self, cfg, log, role):
         # New large image/API artifacts stay outside the old recorder byte budget.
@@ -124,6 +125,7 @@ class MultimodalAPI(RevisedAPI):
         if payload is None:
             return None
         views, robot = CURRENT.capture(self.asset_root)
+        views = self.transform_views(views, robot)
         metadata = [dict((k,v) for k,v in view.items() if k != 'raw') for view in views]
         context = dict(camera_views=metadata, measured_robot=robot,
             units='Robot world positions are metres; robot quaternion is XYZW. Camera matrices map OpenCV camera coordinates to world.',
@@ -137,9 +139,12 @@ class MultimodalAPI(RevisedAPI):
         payload['input'] = [dict(role='user', content=content)]
         self.last_input_metadata = dict(camera_views=metadata, measured_robot=robot,
             original_structured_text_sha256=hashlib.sha256(content[0]['text'].encode()).hexdigest(),
-            image_condition='rgb_full', target_markers=False)
+            image_condition=self.condition, target_markers=self.condition == 'no_xyz_waypoint')
         english(payload)
         return payload
+
+    def transform_views(self, views, robot):
+        return views
 
     def validate_payload(self, payload):
         if payload is None:

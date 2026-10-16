@@ -89,7 +89,7 @@ class Campaign:
         self.rows = []
         self.claimed = 0
         self.tasks = json.loads((args.baselines/'campaign.json').read_text())['tasks']
-        multimodal = args.profile == 'libero-rgb-full'
+        multimodal = args.profile.startswith('libero-rgb-')
         if multimodal:
             self.tasks = [{**task, 'paired_init_indices': task['paired_init_indices'][:3]}
                           for task in self.tasks]
@@ -123,11 +123,13 @@ class Campaign:
             if multimodal:
                 specification['phase'] = 'LIBERO_multimodal'
                 specification['actor_images'] = 2
-                for name in ('libero_multimodal.py', 'libero_prompt_revision_v2.py'):
+                for name in ('libero_multimodal.py', 'libero_prompt_revision_v2.py', 'libero_visual_ablation.py'):
                     p = Path(__file__).with_name(name)
                     specification['adapter_source_sha256'][name] = hashlib.sha256(p.read_bytes()).hexdigest()
                 specification['text_profiles'] = '1423:clarity-v3;1144/1202/1252/1296:clarity-v2;others:original'
                 specification['repetitions_per_task'] = 3
+                specification['input_condition'] = args.profile
+                specification['retained_processing'] = 'Original stage gates, visual holding/arrival booleans, rotation feedback and controller-internal motor scaling'
         spec_path = self.root/'campaign.json'
         if spec_path.exists():
             if json.loads(spec_path.read_text()) != specification:
@@ -177,7 +179,7 @@ class Campaign:
             HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
             TOKENIZERS_PARALLELISM='false')
         env['DECISION_MM_LIBERO_PROFILE'] = self.args.profile
-        if self.args.profile == 'libero-rgb-full':
+        if self.args.profile.startswith('libero-rgb-'):
             env['DECISION_MM_ASSET_ROOT'] = str(folder/'multimodal')
         # Existing frozen code records its historical ownership wording. This
         # outer manifest identifies the actual transport without editing it.
@@ -192,10 +194,10 @@ class Campaign:
             manifest = json.loads(manifest_path.read_text())
             manifest['request_profile'] = self.args.profile
             manifest['comparison'] = 'Revised prompts/interface; original frozen policy, processing, thresholds, stages and paired initial states'
-            if self.args.profile == 'libero-rgb-full':
+            if self.args.profile.startswith('libero-rgb-'):
                 manifest['actor_images'] = 2
                 manifest['multimodal_asset_root'] = str(folder/'multimodal')
-                manifest['comparison'] = 'Latest task text profile plus named fresh camera RGB and public camera/robot context; original processing/control preserved'
+                manifest['comparison'] = self.args.profile+'; latest task profiles; original processing/control preserved, actor-input ablation only'
             write(manifest_path, manifest)
         self.ledger(dict(event='episode_started', task=task['task_id'], init=init, gpu=gpu))
         started = time.monotonic()
@@ -239,7 +241,8 @@ class Campaign:
     def worker(self, gpu):
         while not self.stop.is_set():
             # Reserve the original 600MiB cap per active slot plus 8GiB headroom.
-            reserve = 8*1024**3 + len(self.args.gpus)*self.args.jobs_per_gpu*600*1024**2
+            slot_mb = 1500 if self.args.profile.startswith('libero-rgb-') else 600
+            reserve = 8*1024**3 + len(self.args.gpus)*self.args.jobs_per_gpu*slot_mb*1024**2
             if shutil.disk_usage(self.root).free < reserve:
                 self.stop.set()
                 self.ledger(dict(event='storage_guard', free_bytes=shutil.disk_usage(self.root).free))
@@ -284,10 +287,10 @@ def main():
     parser.add_argument('--output-root', required=True, type=Path)
     parser.add_argument('--key-file', required=True, type=Path)
     parser.add_argument('--gpus', type=int, nargs='+', default=[4, 5, 6, 7])
-    parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3], default=1)
+    parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3, 4, 5, 6], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--controller-root', type=Path, default=Path('/root/yekangjie/project/robodojo-jev'))
     parser.add_argument('--libero-root', type=Path, default=Path('/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'))

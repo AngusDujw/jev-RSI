@@ -36,10 +36,12 @@ def main():
     elif profile == 'libero-clarity-v3':
         from libero_prompt_revision_v2 import RecoveryAPI
         api.API = RecoveryAPI
-    elif profile == 'libero-rgb-full':
+    elif profile in ('libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw'):
         from libero_multimodal import MultimodalAPI, install_stream
+        from libero_visual_ablation import WaypointAPI, VisualAblationAPI
         install_stream(args.arguments)
-        api.API = MultimodalAPI
+        api.API = {'libero-rgb-full': MultimodalAPI, 'libero-rgb-waypoint': WaypointAPI,
+                   'libero-rgb-raw': VisualAblationAPI}[profile]
     else:
         raise ValueError('Unknown declared LIBERO request profile')
     sys.path.insert(0, str(policy.parent))
