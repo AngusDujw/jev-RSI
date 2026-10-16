@@ -95,7 +95,7 @@ class Campaign:
                 raise ValueError('Requested task absent from the frozen baseline')
         if args.profile == 'libero-clarity-v1':
             actual = {t['task_id']: t['paired_init_indices'] for t in self.tasks}
-            if actual != REPAIR_INITS:
+            if len(self.tasks) != len(REPAIR_INITS) or len(actual) != len(self.tasks) or actual != REPAIR_INITS:
                 raise ValueError('Repair requires the predeclared five tasks and five paired states')
         for task in self.tasks:
             verify(args.baselines/f'task-{task["task_id"]}', task)
