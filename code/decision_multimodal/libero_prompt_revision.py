@@ -100,10 +100,13 @@ def split_singletons(request):
 
 
 class RevisedAPI(LegacyAPI):
+    profile = PROFILE
+    revise = staticmethod(revise_request)
+
     def post(self, endpoint, original):
         if endpoint != '/systemone':
             raise ValueError('Unexpected legacy endpoint')
-        revised = revise_request(original)
+        revised = self.revise(original)
         sent, forced = split_singletons(revised)
         english(sent)
         payload = convert_request(sent) if sent['questions'] else None
@@ -123,7 +126,7 @@ class RevisedAPI(LegacyAPI):
         save('legacy-request.json', original)
         save('revised-legacy-request.json', revised)
         save('schema-constants.json', forced)
-        save('dispatch.json', dict(profile=PROFILE, key_origin='du', endpoint=ENDPOINT,
+        save('dispatch.json', dict(profile=self.profile, key_origin='du', endpoint=ENDPOINT,
             image_count=0, experience_injection=False, state_sha256=digest(revised['state']),
             requested_model=MODEL, provider_called=payload is not None,
             original_request_sha256=digest(original), schema_constant_questions=list(forced),
@@ -168,13 +171,13 @@ class RevisedAPI(LegacyAPI):
                         time.sleep(2 ** (attempt+1))
                 converted = convert_response(raw, sent)
             converted['answers'].update(forced)
-            converted['request_profile'] = PROFILE
+            converted['request_profile'] = self.profile
             if forced:
                 converted['schema_constant_questions'] = list(forced)
                 converted['probability_source'] += '; singleton distributions are schema constants, not model probabilities'
             save('legacy-response.json', converted)
             self.log(dict(kind='decision_api_response', key_origin='du', model=MODEL,
-                profile=PROFILE, image_count=0, seconds=time.monotonic()-started,
+                profile=self.profile, image_count=0, seconds=time.monotonic()-started,
                 request_sha256=digest(payload), audit_directory=str(directory),
                 schema_constant_questions=list(forced), provider_called=payload is not None))
             return converted
