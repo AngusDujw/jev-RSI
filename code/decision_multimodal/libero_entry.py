@@ -33,6 +33,9 @@ def main():
     elif profile == 'libero-clarity-v2':
         from libero_prompt_revision_v2 import LocalAPI
         api.API = LocalAPI
+    elif profile == 'libero-clarity-v3':
+        from libero_prompt_revision_v2 import RecoveryAPI
+        api.API = RecoveryAPI
     else:
         raise ValueError('Unknown declared LIBERO request profile')
     sys.path.insert(0, str(policy.parent))

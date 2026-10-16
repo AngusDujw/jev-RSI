@@ -93,3 +93,34 @@ def revise_local(original):
 class LocalAPI(RevisedAPI):
     profile = 'libero-clarity-v2'
     revise = staticmethod(revise_local)
+
+
+def revise_recovery(original):
+    request = revise_local(original)
+    state = request['state']
+    status = state.get('measurement_status', {})
+    transition = request['questions'].get('transition')
+    if transition is None or not status:
+        return request
+    current_trial = any(status.get(name) is True for name in (
+        'visible_contact_candidate', 'support_stall_release_candidate',
+        'carry_support_transfer_candidate'))
+    if current_trial:
+        # Preserve the exact original task-specific exception and its bounds.
+        transition['instructions'] = original['questions']['transition']['instructions'] + (
+            ' The supplied current trial-candidate flag is true. Evaluate this original '
+            'bounded trial exception; do not reject it solely because target_arrival is '
+            'false or a later holding/placement check is pending. It is not confirmed success.')
+    elif state.get('stalls', 0) >= 3 and status.get('reobserve_available') is True:
+        transition['instructions'] += (
+            ' The measured consecutive stall count has reached the original recovery '
+            'threshold of three and reobserve_available=true. Choose reobserve now to '
+            'refresh permitted geometry instead of repeating this blocked phase command. '
+            'This does not relax any contact or placement criterion.')
+    english(request)
+    return request
+
+
+class RecoveryAPI(RevisedAPI):
+    profile = 'libero-clarity-v3'
+    revise = staticmethod(revise_recovery)

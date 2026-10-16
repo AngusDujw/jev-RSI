@@ -93,9 +93,10 @@ class Campaign:
             self.tasks = [t for t in self.tasks if t['task_id'] in args.tasks]
             if {t['task_id'] for t in self.tasks} != set(args.tasks):
                 raise ValueError('Requested task absent from the frozen baseline')
-        if args.profile in ('libero-clarity-v1', 'libero-clarity-v2'):
+        if args.profile in ('libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3'):
             actual = {t['task_id']: t['paired_init_indices'] for t in self.tasks}
-            if len(self.tasks) != len(REPAIR_INITS) or len(actual) != len(self.tasks) or actual != REPAIR_INITS:
+            expected = {1423: REPAIR_INITS[1423]} if args.profile == 'libero-clarity-v3' else REPAIR_INITS
+            if len(self.tasks) != len(expected) or len(actual) != len(self.tasks) or actual != expected:
                 raise ValueError('Repair requires the predeclared five tasks and five paired states')
         for task in self.tasks:
             verify(args.baselines/f'task-{task["task_id"]}', task)
@@ -112,7 +113,7 @@ class Campaign:
                 for p in (Path(__file__), Path(__file__).with_name('libero_entry.py'),
                           Path(__file__).with_name('legacy_decisions.py'),
                           Path(__file__).with_name('libero_prompt_revision.py'))}
-            if args.profile == 'libero-clarity-v2':
+            if args.profile in ('libero-clarity-v2', 'libero-clarity-v3'):
                 p = Path(__file__).with_name('libero_prompt_revision_v2.py')
                 specification['adapter_source_sha256'][p.name] = hashlib.sha256(p.read_bytes()).hexdigest()
         spec_path = self.root/'campaign.json'
@@ -268,7 +269,7 @@ def main():
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--controller-root', type=Path, default=Path('/root/yekangjie/project/robodojo-jev'))
     parser.add_argument('--libero-root', type=Path, default=Path('/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'))
