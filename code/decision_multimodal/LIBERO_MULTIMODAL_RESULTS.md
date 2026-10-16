@@ -158,3 +158,55 @@ one axis/one processing product at a time. Keep hidden-waypoint ambiguity,
 categorical identity, stage transitions and image interpretation as separate
 failure sources. Do not repeat the unchanged three-condition batch to seek a
 better sample, or describe the marker condition as raw-image autonomy.
+
+## Inspected failure video: Goal1144 / init7
+
+The user-requested evidence export uses the original normally failed episode,
+not a new rollout:45 received decisions,135 native steps, always `approach`,
+no API failure, ending `Stage/native budget: approach`.
+
+The actual English stage goal was:
+
+```text
+Reach the predefined approach or clearance waypoint for the source or control named by the task.
+```
+
+The actual world-X question was:
+
+```text
+For world X, which existing categorical direction brings the measured control reference toward the current stage goal? Use the current camera evidence, public calibration and measured robot state. Keep the control point still in gripper-only stages. Image up/right is not a fixed world direction. Use the original tolerance and output categories; no numeric residual is supplied.
+```
+
+This input places substantial inference work on the actor. It removes metric
+residuals, directional relations, absolute targets and action history together,
+and gives a generic stage description plus small projected markers and camera
+matrices. It does not provide an immediately usable per-axis image-motion guide.
+The white circle is the robot control reference, not a finger contact point.
+The yellow cross is the active waypoint, not necessarily an object-surface point.
+
+At the first decision, the withheld frontend errors were
+`(+116.10,+13.04,-69.43)mm`, but the actor selected `negative,negative,negative`,
+with XYZ confidence `.31,.19,.24`. The first executed command was
+`(-20.00,-6.52,-20.00)mm`, and measured X moved about`-9.22mm`.
+X was negative in43/45 responses; Y was negative in45/45.
+At the last decision, withheld X error was`+260.83mm`. From decision4/native
+step9 onward, the wrist target marker was out of frame in42/45 inputs, while
+the fixed-camera target remained in frame. The same categorical interface
+continued issuing low-confidence directions without a specific lost-marker
+recovery procedure. These are representation/execution-interface limitations,
+not evidence that the task graph itself was successfully followed.
+
+- [75-second complete decision review](../runs/2026-10-16-libero-video-evidence-1144-init7-v2/episode_with_actor_inputs.mp4)
+- [Raw RGB snapshot playback](../runs/2026-10-16-libero-video-evidence-1144-init7-v2/raw_episode.mp4)
+- [Actual first request text and response](../runs/2026-10-16-libero-video-evidence-1144-init7-v2/first_actual_prompt_and_response.txt)
+- [All45 actual inputs/outputs, image bytes externalized](../runs/2026-10-16-libero-video-evidence-1144-init7-v2/all_45_actual_inputs_outputs.jsonl)
+
+The review includes every saved decision observation, holds each for1.5s, omits
+API waiting time, and finishes with saved raw RGB after step135. It is a
+snapshot replay, not a continuous original screen recording. The two attached
+first-input PNGs preserve original bytes; video is H264. Pink XYZ numbers in
+the review are post hoc audit values and were not sent to the actor. Legacy
+`decisions.jsonl` stores pre-ablation observations; the export instead uses the
+actual serialized provider request so those legacy numbers cannot be mistaken
+for model-visible input. All90 input image blocks passed PNG/base64/SHA checks;
+both MP4s decoded without error. Renderer: `render_libero_episode.py`.
