@@ -139,6 +139,8 @@ graph LR
     T_2026W42_031["📊 decision-multimodal<br/>LIBERO修订v1四次完整成功但推盘退步…"]:::experiment
     T_2026W42_032["📊 decision-multimodal<br/>LIBERO局部模板v2为22/25原生、…"]:::experiment
     T_2026W42_033["📊 decision-multimodal<br/>1423保留原特殊试探说明后v3完整5/5…"]:::experiment
+    T_2026W42_034["📊 decision-multimodal<br/>LIBERO加两RGB原生21/30、完整…"]:::experiment
+    T_2026W42_035["📊 decision-multimodal<br/>LIBERO三条件有效90回合收口：全输入…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -240,6 +242,8 @@ graph LR
   T_2026W42_030 --> T_2026W42_031
   T_2026W42_031 --> T_2026W42_032
   T_2026W42_032 --> T_2026W42_033
+  T_2026W42_033 --> T_2026W42_034
+  T_2026W42_034 --> T_2026W42_035
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -368,6 +372,8 @@ graph LR
 | `T-2026W42-031` | 2026-10-16 | experiment | decision-multimodal | LIBERO修订v1四次完整成功但推盘退步；跨阶段提示未恢复稳定率，独立局部模板v2复测 | `EXP-2026W42-217` | - |
 | `T-2026W42-032` | 2026-10-16 | experiment | decision-multimodal | LIBERO局部模板v2为22/25原生、20/25完整；三任务各5/5，保留复合任务和受阻收尾失败 | `EXP-2026W42-218` | - |
 | `T-2026W42-033` | 2026-10-16 | experiment | decision-multimodal | 1423保留原特殊试探说明后v3完整5/5；四任务各固定版5/5，1202仍2/5，55新回合全保留 | `EXP-2026W42-219` | - |
+| `T-2026W42-034` | 2026-10-16 | experiment | decision-multimodal | LIBERO加两RGB原生21/30、完整20/30，低于历史配对27/30；XYZ消融首批各12 SSL中断且有效18/18预算失败，低并发复核并独立评价方向 | `EXP-2026W42-220`, `EXP-2026W42-221` | - |
+| `T-2026W42-035` | 2026-10-16 | experiment | decision-multimodal | LIBERO三条件有效90回合收口：全输入21原生/20完整，无XYZ标记与原图各0/30；图像影响选择但标尺34/74到35/74未解决，174原生尝试全部保留 | `EXP-2026W42-224` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

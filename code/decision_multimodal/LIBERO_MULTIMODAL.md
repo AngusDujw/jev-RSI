@@ -92,3 +92,35 @@ three foreground jobs per GPU. Masked variants are frozen separately after
 that batch ends. Never replace an in-flight frozen adapter. Later conditions
 can use disjoint GPU pairs with at most six jobs per GPU, based on observed
 memory use and disk headroom. No driver/CUDA changes or new environments.
+
+## Network interruptions and explicit replacements
+
+The first reduced-input campaigns each completed30 attempts, including12
+connection interruptions. A separate lower-concurrency30-attempt campaign per
+condition still had16/15 connection interruptions. All attempts remain saved;
+none is deleted or converted into a model capability failure.
+
+`--replace-transport-from` selects only explicit connection-interrupted episodes
+from the original completed campaign. It verifies the unchanged inference-source
+hashes and records each original outcome hash. Each new run executes a complete
+episode; a received decision is never resampled. Normal task failures remain
+in the effective paired result. The original and replacement assets are linked
+by provenance rather than copying or overwriting episode directories.
+
+## Read-only diagnostic probes
+
+`libero_visual_probe.py` deterministically selects the first received decision
+with a nonzero nominal XYZ error from every eligible saved episode. It compares
+identical marker observations with and without a public positive-world-axis
+ruler, and compares raw observations with a truthful no-image input. Original
+residuals are used only after the returned answer for evaluation.
+
+The ruler uses only measured EEF and public current K/T, with fixed0.05m positive
+axes. It never reads the goal to select ruler direction or appearance. Caption
+and questions are identical in the two marker probes. It adds visual calibration,
+not an action recommendation. Source episodes that never supplied a received
+nonzero-error observation remain explicitly excluded from this diagnostic.
+
+These probes execute zero robot actions and are not successful native episodes.
+Additional small controls classify marker image relations, use a single fixed
+view, and swap two colored-shape layouts to verify image-dependent responses.
