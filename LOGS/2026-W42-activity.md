@@ -429,3 +429,7 @@
 - 【User】【2026-10-16 10:02】[intent] 用户要求解释规划器职责中structured inputs/questions/output choices与字段定义的含义，以及一次性方案JSON怎样转换为推进器每步实际请求。
 - 【Agent】【2026-10-16 10:02】[note] 仅讨论内部协议示例：规划JSON声明处理入口、字段语义、问题和合法选项；通用运行器在每步新观测执行既定Python得到字段值，再将当前阶段、定义、问题及实际图像组装推进请求。示例非已实现API或真实测量，不冻结具体字段，不修改运行提示词/控制代码。
 - 【User】【2026-10-16 10:32】[decision] 推进器输出固定为XYZ、YPR各轴正/负/保持以及阶段推进情况，不由规划模型规划输出选项，本版本不提供信息不足输出；阶段推进具体枚举名称与JSON键名仍待接口定稿。讨论固定推进输入JSON外壳及由规划器生成任务相关内容的关系。
+- 【User】【2026-10-16 19:04】[intent] 用户要求制作可复用skill，将本机指定Codex/AgentDock会话完整历史单向迁移到server02并继续，先不实现回传。
+- 【User】【2026-10-16 19:20】[decision] 用户明确允许仅这条会话原生Codex历史写入server02 home盘；备份包、事件日志及附件仍放/data。
+- 【Agent】【2026-10-16 19:20】[op] 会话01a12b86，20261016迁移：新增agentsdock-session-to-server skill和标准库迁移脚本；已复制57180条原生记录并经server02 /codex/load验证thread_loaded=true、idle、无goal/交互；修复新聊天事件序号缓存，8份注册附件仍在传输。
+- 【Agent】【2026-10-16 19:25】[result] 会话01a12b86，20261016迁移验收：server02新聊天sess_a2cd862a8ddd40de原生loaded/idle，57180记录保留；8附件共1205968873字节校验及HEAD200，首尾分页可读、21056事件严格递增，重复import返回already_imported；无模型推理，无机器人动作。EXP-2026W42-267。
