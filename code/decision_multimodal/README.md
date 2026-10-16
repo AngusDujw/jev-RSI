@@ -3,7 +3,8 @@
 Follow-up LIBERO prompt/interface repairs and all version-specific results are
 recorded in [LIBERO_REPAIR.md](LIBERO_REPAIR.md). The original50-episode result
 remains unchanged. Latest paired variants have four tasks at5/5 joint; the
-drawer-plus-bowl task remains2/5. The actor is still text-only.
+drawer-plus-bowl task remains2/5. The subsequent user-authorized LIBERO
+multimodal comparison is documented in [LIBERO_MULTIMODAL.md](LIBERO_MULTIMODAL.md).
 
 ## Authorized experiment
 
@@ -17,6 +18,10 @@ drawer-plus-bowl task remains2/5. The actor is still text-only.
    generalization claim.
 3. Only after Phase2 passes, compare RGB addition and separate removals of
    processed evidence, three episodes per task per fixed condition.
+
+The later direct instruction to test multimodality on LIBERO supersedes the
+Phase2 prerequisite for this LIBERO comparison. It does not claim that all
+five RoboDojo tasks passed.
 
 Use only company-server-2 physical GPUs4–7. Preserve native evaluation rules.
 Use local ChatGPT Pro `gpt-6.1-sol/high` for planning and iteration, and the
