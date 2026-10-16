@@ -11,7 +11,7 @@ from cloth_rgb import garment,landmark,supported,deformation
 from stack_blocks import choice,compile_targets
 from robodojo_episode import save
 
-PLAN=Path(__file__).with_name('plans')/'fold_clothes_v2.json'
+PLAN=Path(__file__).with_name('plans')/'fold_clothes_v3.json'
 
 
 class Fold:
@@ -66,7 +66,8 @@ class Fold:
                 error=np.asarray(goals[arm])-tool['world_center_m'];errors[arm]=error
                 angular=(rotations[arm]*tool['rotation'].inv()).as_rotvec();angles[arm]=angular
                 tolerance=feedback.get('position_tolerance_m',.004 if phase=='insert' else .010)
-                passed=bool(max(abs(error))<=tolerance and np.linalg.norm(angular)<=.07)
+                axis_tolerances=np.asarray(feedback.get('position_tolerances_m',[tolerance]*3))
+                passed=bool(np.all(abs(error)<=axis_tolerances) and np.linalg.norm(angular)<=.07)
                 aperture=tool['aperture_m'];previous=self.last_aperture.get(arm,aperture)
                 if phase=='close':
                     self.closure_count[arm]=self.closure_count.get(arm,0)+1 if abs(aperture-previous)<.0005 else 0
@@ -76,6 +77,7 @@ class Fold:
                 self.last_aperture[arm]=aperture
                 state=dict(position_error_mm=(error*1000).round(3).tolist(),orientation_error_rad=angular.round(5).tolist(),
                     position_deadband_mm=tolerance*1000,rotation_deadband_rad=.025,measured_pad_gap_mm=aperture*1000,
+                    position_axis_deadbands_mm=(axis_tolerances*1000).tolist(),
                     grip_command=grip,robot_waypoint_ready=passed)
                 if phase=='lift_test':
                     evidence=deformation(public,getattr(self,'operation_baseline',self.baseline),bindings[arm]['edge_pixel'])
@@ -104,7 +106,7 @@ class Fold:
             questions={}
             for arm in arms:
                 for i,axis in enumerate('xyz'):
-                    e=float(errors[arm][i]*1000);r=float(angles[arm][i]);d=states[arm]['position_deadband_mm']
+                    e=float(errors[arm][i]*1000);r=float(angles[arm][i]);d=states[arm]['position_axis_deadbands_mm'][i]
                     questions[arm+'_'+axis]=choice(f'{arm} world {axis.upper()}: target-minus-current ERROR_MM={e:.3f}, DEADBAND_MM={d:.3f}. Positive increases that coordinate; world Z positive is up. Classify the scalar.',
                         dict(negative=f'ERROR_MM < -{d}',hold=f'abs(ERROR_MM)<={d}',positive=f'ERROR_MM > {d}'))
                     questions[arm+'_rotation_'+axis]=choice(f'{arm} world {axis.upper()} rotation-vector ERROR_RAD={r:.5f}. Positive is right-hand rotation. Classify with0.025rad deadband.',
@@ -163,7 +165,9 @@ class Fold:
             if phase=='insert':
                 insertion=-.001 if name=='hem_half' else .002
                 goals={a:np.asarray(s['source_m'])+[0,0,self.tools.geometry(ep.public,a)['distal_tip_from_center_m']+insertion] for a,s in bindings.items()}
-            ok,reason=self.phase(name,phase,bindings,goals,rotations,'close' if phase=='close' else 'preopen',deadline,cap=75 if phase=='approach' else 30)
+            fine_z=(lambda public:dict(position_tolerances_m=[.004,.004,.0005])) if name=='hem_half' and phase=='insert' else None
+            ok,reason=self.phase(name,phase,bindings,goals,rotations,'close' if phase=='close' else 'preopen',deadline,
+                cap=75 if phase=='approach' else 30,visual=fine_z)
             if not ok:
                 return False,reason
         offsets={}

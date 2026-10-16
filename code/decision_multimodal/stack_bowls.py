@@ -46,17 +46,21 @@ class Bowls(Fold):
             geometry=self.observe_objects(public,identity,arm);source=geometry['source'];receiver=geometry['receiver']
             if not source.get('usable'):
                 return dict(valid=False,reason='Current RGB source rim rejected: '+identity)
-            if geometry['receiver_age_steps']>20:
+            if target is not None and geometry['receiver_age_steps']>20:
                 return dict(valid=False,reason='Current receiver validation older than20physicalsteps')
             tool=self.tools.geometry(public,arm);center=np.asarray(source['center_m']);destination=np.asarray(receiver['center_m'])
-            state=dict(current_source=source,current_receiver=receiver,receiver_age_steps=geometry['receiver_age_steps'],
-                source_height_hypothesis_m=self.height,height_perturbation_m=.010)
+            state=dict(source_fit_rms_px=source['rim_rms_px'],
+                source_xyz_sensitivity_m=source['sensitivity_xyz_radius_m'][:3],
+                source_fit_step=source['step'],source_radius_prior_used=True)
             result=dict(valid=True,state=state)
             if target is not None:
                 desired=np.asarray(target(center,destination));error=desired-center
                 result['goals']={arm:tool['world_center_m']+error}
                 result['position_tolerance_m']=.005
-                state.update(current_source_error_m=error.tolist(),bottom_gap_hypothesis_m=float(center[2]-self.height-destination[2]))
+                state.update(current_source_error_m=error.tolist(),bottom_gap_hypothesis_m=float(center[2]-self.height-destination[2]),
+                    receiver_fit_age_steps=geometry['receiver_age_steps'],
+                    receiver_xyz_sensitivity_m=receiver['sensitivity_xyz_radius_m'][:3],
+                    source_height_hypothesis_m=self.height,height_perturbation_m=.010)
             if lift_reference is not None:
                 old_center,old_pad,old_step=lift_reference
                 rise=float(center[2]-old_center[2]);pad_rise=float(tool['world_center_m'][2]-old_pad[2])
