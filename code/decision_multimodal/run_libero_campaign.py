@@ -104,6 +104,39 @@ class Campaign:
                 raise ValueError('Repair requires the predeclared five tasks and five paired states')
         for task in self.tasks:
             verify(args.baselines/f'task-{task["task_id"]}', task)
+        replacement_cases = None
+        replacement_provenance = None
+        if args.replace_transport_from:
+            if not multimodal:
+                raise ValueError('Transport replacement is declared only for the RGB comparisons')
+            previous = args.replace_transport_from.resolve()
+            old_spec = json.loads((previous/'campaign.json').read_text())
+            old = json.loads((previous/'summary.json').read_text())
+            if (old_spec.get('request_profile') != args.profile or old.get('remaining') != 0
+                    or len(old['episodes']) != 30):
+                raise ValueError('Require a completed30-episode campaign with the identical input condition')
+            # The runner adds selection/provenance only; every inference adapter
+            # and frozen policy must still match the interrupted source campaign.
+            for name, expected in old_spec['adapter_source_sha256'].items():
+                if name != Path(__file__).name:
+                    p = Path(__file__).with_name(name)
+                    if hashlib.sha256(p.read_bytes()).hexdigest() != expected:
+                        raise ValueError('Replacement inference source differs: '+name)
+            replacement_cases = set()
+            provenance = []
+            for row in old['episodes']:
+                if row['category'] != 'transport_or_schema_failure':
+                    continue
+                case = previous/f'task-{row["task"]}-init-{row["init"]}'
+                failures = [json.loads(p.read_text()) for p in (case/'multimodal/decision-api').glob('*/failure.json')]
+                if not failures or any(f['error_type'] not in ('URLError', 'RemoteDisconnected', 'TimeoutError', 'ConnectionResetError') for f in failures):
+                    raise ValueError('Only explicit connection faults may receive a replacement episode')
+                replacement_cases.add((row['task'], row['init']))
+                provenance.append(dict(task=row['task'], init=row['init'], source=str(case),
+                    outcome_sha256=hashlib.sha256((case/'outcome.json').read_bytes()).hexdigest()))
+            if not replacement_cases:
+                raise ValueError('No eligible transport-interrupted episode')
+            replacement_provenance = provenance
         specification = dict(phase='1_frozen_text_only', actor_model='gpt-6-luna',
             key_origin='du', actor_images=0, experience_injection=False,
             allowed_physical_gpus=[4, 5, 6, 7],
@@ -130,6 +163,10 @@ class Campaign:
                 specification['repetitions_per_task'] = 3
                 specification['input_condition'] = args.profile
                 specification['retained_processing'] = 'Original stage gates, visual holding/arrival booleans, rotation feedback and controller-internal motor scaling'
+        if replacement_cases is not None:
+            specification['expected_episodes'] = len(replacement_cases)
+            specification['transport_replacements'] = replacement_provenance
+            specification['interpretation'] = 'New complete episodes for connection interruptions only; original failures preserved. Never resample a received decision or a normally failed episode.'
         spec_path = self.root/'campaign.json'
         if spec_path.exists():
             if json.loads(spec_path.read_text()) != specification:
@@ -140,6 +177,8 @@ class Campaign:
         for index in range(3 if multimodal else 5):
             for task in self.tasks:
                 init = task['paired_init_indices'][index]
+                if replacement_cases is not None and (task['task_id'], init) not in replacement_cases:
+                    continue
                 folder = self.root/f'task-{task["task_id"]}-init-{init}'
                 if (folder/'outcome.json').is_file():
                     self.rows.append(json.loads((folder/'outcome.json').read_text()))
@@ -292,6 +331,8 @@ def main():
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
     parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
+    parser.add_argument('--replace-transport-from', type=Path,
+                        help='Explicit new episodes for connection-interrupted cases only; preserve original outcomes')
     parser.add_argument('--controller-root', type=Path, default=Path('/root/yekangjie/project/robodojo-jev'))
     parser.add_argument('--libero-root', type=Path, default=Path('/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'))
     parser.add_argument('--vision-python', type=Path, default=Path('/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python'))
