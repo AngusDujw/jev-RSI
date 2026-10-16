@@ -137,9 +137,9 @@ def main():
             title = f'FINAL RAW OBSERVATION | native step {result["native_steps"]} | no new actor call'
         else:
             title = f'Goal {manifest["task_id"]} / init {manifest["init_index"]} | decision {int(item["id"])+1}/{len(items)} | native step {step}'
-        draw.text((18,12),title,font=f30,fill='white')
-        draw.text((18,54),'Unmodified saved RGB' if raw or final else
-            'EXACT actor-input images | white circle = robot reference | yellow cross = active waypoint',font=f24,fill='#facc15')
+        draw.text((18,8 if raw else 12),title,font=f24 if raw else f30,fill='white')
+        draw.text((18,38 if raw else 54),'Unmodified saved RGB' if raw or final else
+            'EXACT actor-input images | white circle = robot reference | yellow cross = active waypoint',font=f20 if raw else f24,fill='#facc15')
         for j,view in enumerate(item['dispatch']['camera_views']):
             draw.text((18+j*768,91 if not raw else 66),view['camera']+(' / fixed' if j==0 else ' / moving wrist'),font=f20,fill='white')
             if final:
