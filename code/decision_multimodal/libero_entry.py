@@ -24,7 +24,14 @@ def main():
         raise ValueError('Explicit frozen rollout source required')
     sys.path.insert(0, str(args.controller_root / 'controller/src'))
     import realman_jev.api as api
-    api.API = LegacyAPI
+    profile = os.environ.get('DECISION_MM_LIBERO_PROFILE', 'frozen')
+    if profile == 'frozen':
+        api.API = LegacyAPI
+    elif profile == 'libero-clarity-v1':
+        from libero_prompt_revision import RevisedAPI
+        api.API = RevisedAPI
+    else:
+        raise ValueError('Unknown declared LIBERO request profile')
     sys.path.insert(0, str(policy.parent))
     config = policy.parent / 'decision-api-config.json'
     if json.loads(config.read_text()) != {'jev': {'model': 'gpt-6-luna'}}:

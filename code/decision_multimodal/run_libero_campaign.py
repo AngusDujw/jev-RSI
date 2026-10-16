@@ -20,6 +20,8 @@ GPU_UUIDS = {
     6: 'GPU-eb04c8a8-bd86-966a-805d-64b75c088fcf',
     7: 'GPU-033adeec-53b6-d417-6fa6-115ae6aeb90d',
 }
+REPAIR_INITS = {1144: list(range(5, 10)), 1202: list(range(3, 8)),
+    1252: list(range(4, 9)), 1296: list(range(12, 17)), 1423: list(range(10, 15))}
 
 
 def now():
@@ -87,6 +89,14 @@ class Campaign:
         self.rows = []
         self.claimed = 0
         self.tasks = json.loads((args.baselines/'campaign.json').read_text())['tasks']
+        if args.tasks:
+            self.tasks = [t for t in self.tasks if t['task_id'] in args.tasks]
+            if {t['task_id'] for t in self.tasks} != set(args.tasks):
+                raise ValueError('Requested task absent from the frozen baseline')
+        if args.profile == 'libero-clarity-v1':
+            actual = {t['task_id']: t['paired_init_indices'] for t in self.tasks}
+            if actual != REPAIR_INITS:
+                raise ValueError('Repair requires the predeclared five tasks and five paired states')
         for task in self.tasks:
             verify(args.baselines/f'task-{task["task_id"]}', task)
         specification = dict(phase='1_frozen_text_only', actor_model='gpt-6-luna',
@@ -95,6 +105,13 @@ class Campaign:
             expected_episodes=sum(len(t['paired_init_indices']) for t in self.tasks),
             tasks=[{k: t[k] for k in ('task_id', 'source_commit', 'source_sha256',
                 'paired_init_indices', 'original_options', 'cpu_vision', 'baseline_status')} for t in self.tasks])
+        if args.profile != 'frozen':
+            specification['phase'] = '1b_prompt_interface_repair'
+            specification['request_profile'] = args.profile
+            specification['adapter_source_sha256'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                for p in (Path(__file__), Path(__file__).with_name('libero_entry.py'),
+                          Path(__file__).with_name('legacy_decisions.py'),
+                          Path(__file__).with_name('libero_prompt_revision.py'))}
         spec_path = self.root/'campaign.json'
         if spec_path.exists():
             if json.loads(spec_path.read_text()) != specification:
@@ -143,6 +160,7 @@ class Campaign:
             OMP_NUM_THREADS='2', MKL_NUM_THREADS='2', OPENBLAS_NUM_THREADS='2',
             HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
             TOKENIZERS_PARALLELISM='false')
+        env['DECISION_MM_LIBERO_PROFILE'] = self.args.profile
         # Existing frozen code records its historical ownership wording. This
         # outer manifest identifies the actual transport without editing it.
         write(folder/'manifest.json', dict(started_at=now(), task_id=task['task_id'],
@@ -151,6 +169,12 @@ class Campaign:
             experience_injection=False, frozen_baseline=task, command=command,
             evaluation='Read native success and program_finished only after final action',
             historical_ownership_labels='Unchanged frozen policy wording, not actual model identity'))
+        if self.args.profile != 'frozen':
+            manifest_path = folder/'manifest.json'
+            manifest = json.loads(manifest_path.read_text())
+            manifest['request_profile'] = self.args.profile
+            manifest['comparison'] = 'Revised prompts/interface; original frozen policy, processing, thresholds, stages and paired initial states'
+            write(manifest_path, manifest)
         self.ledger(dict(event='episode_started', task=task['task_id'], init=init, gpu=gpu))
         started = time.monotonic()
         termination = None
@@ -241,6 +265,8 @@ def main():
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1'], default='frozen')
+    parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--controller-root', type=Path, default=Path('/root/yekangjie/project/robodojo-jev'))
     parser.add_argument('--libero-root', type=Path, default=Path('/root/yekangjie/project/embodied-jev/.sim/LIBERO-plus'))
     parser.add_argument('--vision-python', type=Path, default=Path('/root/yekangjie/project/robodojo-jev/envs/robodojo-isaac51/bin/python'))
