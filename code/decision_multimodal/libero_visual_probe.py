@@ -155,10 +155,14 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     results = []
+    coverage = {}
     for family, root in [('waypoint', args.waypoint_root), ('raw', args.raw_root)]:
         selected = list(selected_cases(root))
-        if len(selected) != 30:
-            raise ValueError('Exactly one deterministic nonzero-error observation per30 episodes required')
+        episodes = sorted(p.name for p in root.glob('task-*-init-*'))
+        if len(episodes) != 30 or not selected:
+            raise ValueError('A complete30-episode source and eligible nonzero observations are required')
+        coverage[family] = dict(source_episodes=30, eligible_episodes=len(selected),
+            excluded_without_received_nonzero_observation=sorted(set(episodes)-{p.name for p,d,e in selected}))
         for case, source, expected in selected:
             payload = json.loads((source/'request.json').read_text())
             dispatch = json.loads((source/'dispatch.json').read_text())
@@ -211,7 +215,7 @@ def main():
                 save(folder/'probe-result.json', result)
                 results.append(result)
                 print(json.dumps(result), flush=True)
-    summary = dict(probes=len(results), native_episodes=0, results=results)
+    summary = dict(probes=len(results), native_episodes=0, coverage=coverage, results=results)
     save(args.output/'summary.json', summary)
     return 0
 
