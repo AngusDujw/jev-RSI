@@ -35,9 +35,11 @@ def reference(request):
     expected = {}
     for axis, row in state.get('translation_axes', {}).items():
         error = row.get('goal_minus_current_mm')
-        if error is None or axis not in 'xyz' or tol is None:
+        if error is None or axis not in 'xyz':
             continue
-        expected[axis] = ('hold' if abs(error) <= tol else
+        within = (abs(error) <= tol if tol is not None else
+                  row.get('relation', '').replace(' ', '_') == 'within_tolerance' or error == 0)
+        expected[axis] = ('hold' if within else
                           'positive' if error > 0 else 'negative')
     return expected
 
