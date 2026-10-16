@@ -66,3 +66,75 @@ python3 -B code/decision_multimodal/run_libero_campaign.py --baselines code/runs
 
 Run this single-line command from the company worktree, using its existing
 Python3. No shell detachment or service is needed.
+
+## Completed clarity v1 and separately frozen v2
+
+Clarity v1 completed25/25 with2557 real provider answers. Native and joint
+success were both4/25:1144=2/5,1202=1/5,1252=0/5,1296=0/5,1423=1/5.
+The same selected tasks previously had native6/25 and joint3/25. Thus v1 did
+not improve overall native performance. Preserve the plate regression from
+native5/5 to0/5, rather than selecting the successful bowl examples.
+
+Failures exposed cross-stage interference:132 closure ticks against a16-tick
+contract still produced continue_phase; a plate reveal retreat with large
+positive Y/Z errors produced all HOLD. The zero commands then inflated the
+blocked counter, without establishing failure to track nonzero motion.
+
+After all v1 episodes ended, v2 was frozen at6a48cce4. It uses the saved local
+Pro gpt-6.1-sol/high templates in preparation/pro-stage-local/plan.json:
+independent scalar-axis questions; current closure duration/aperture only for
+grasp; pending lift evidence only for lift; existing exact gates for compound
+drawer and plate operations. No returned choice is corrected by code. The
+same25 states and budgets run in `code/runs/2026-10-16-libero-clarity-v2/`;
+replace both profile and output suffix in the command above with v2. This is
+a new complete batch, not a retry of selected failed v1 episodes.
+
+### Completed v2 results
+
+| Goal | Original native / joint | Clarity v1 native / joint | Clarity v2 native / joint |
+|---|---|---|---|
+| 1144 | 0/5 / 0/5 | 2/5 / 2/5 | 5/5 / 5/5 |
+| 1202 | 1/5 / 0/5 | 1/5 / 1/5 | 2/5 / 2/5 |
+| 1252 | 0/5 / 0/5 | 0/5 / 0/5 | 5/5 / 5/5 |
+| 1296 | 5/5 / 3/5 | 0/5 / 0/5 | 5/5 / 5/5 |
+| 1423 | 0/5 / 0/5 | 1/5 / 1/5 | 5/5 / 3/5 |
+| Total | 6/25 / 3/25 | 4/25 / 4/25 | 22/25 / 20/25 |
+
+V2 used2955 real provider calls and one explicitly marked singleton answer.
+Every provider choice/confidence/distribution exactly matches its returned
+legacy value. All actual payloads pass English/text-only validation. V1/v2 had
+no HTTP error attempts or terminal API errors; transient503 handling is covered
+by local boundary checks, not claimed as an observed recovered503 in these runs.
+
+The remaining1202 failures exhausted original budgets at588/589/590 steps.
+Two1423 episodes met the native task but exhausted the program lower phase.
+At a current bounded-release candidate the v2 generic transition wording did
+not convey the original exception clearly enough. A separately declared v3
+preserves the original special-case question verbatim and states the original
+three-stall recovery rule explicitly. Only1423 initial states10–14 are rerun,
+atbad5af4e in `code/runs/2026-10-16-libero-clarity-v3/`; all v2 results remain.
+
+### Completed v3: bowl to plate
+
+All five independently reset paired episodes passed both native and program
+completion at246/303/249/300/249 steps, with82/101/83/100/83 actual Luna calls
+(449 total). Four actual current-trial questions retained the historical
+special-case instructions verbatim. No geometric gate or control budget was
+relaxed. No HTTP error or terminal API failure occurred.
+
+The latest separately frozen task variants are1144/1252/1296 v2 and1423 v3,
+each5/5 joint;1202 v2 remains2/5. These are per-task version results, not a
+new single25-episode batch. All55 development/validation episodes from v1,
+v2 and v3 remain available; do not pool selected successes or overwrite the
+original50-episode result.
+
+The remaining1202 failures require separate investigation of grasp recovery
+and path use within the original budget. Goal1202 was also an unstable Jev
+reference; these data do not establish that every remaining issue comes from
+the actor. These experiments test text-only structured decisions, not actor
+multimodal ability or unseen-layout generalization.
+
+Raw assets stay in the company worktree under the three run directories.
+The compact local `preparation/paired-audit.json` preserves per-version counts,
+exact raw-answer checks, actual request language/modality checks, schema
+constants, failure categories and mean grasp-decision counts.

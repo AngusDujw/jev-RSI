@@ -136,6 +136,9 @@ graph LR
     T_2026W42_028["📊 decision-multimodal<br/>剪刀首次native108步成功但固定三次…"]:::experiment
     T_2026W42_029["📊 decision-multimodal<br/>剪刀固定v2独立layout0原生3/3（…"]:::experiment
     T_2026W42_030["📊 decision-multimodal<br/>折衣双袖实体操作346步后受角点阻塞；按钮…"]:::experiment
+    T_2026W42_031["📊 decision-multimodal<br/>LIBERO修订v1四次完整成功但推盘退步…"]:::experiment
+    T_2026W42_032["📊 decision-multimodal<br/>LIBERO局部模板v2为22/25原生、…"]:::experiment
+    T_2026W42_033["📊 decision-multimodal<br/>1423保留原特殊试探说明后v3完整5/5…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -234,6 +237,9 @@ graph LR
   T_2026W42_027 --> T_2026W42_028
   T_2026W42_028 --> T_2026W42_029
   T_2026W42_029 --> T_2026W42_030
+  T_2026W42_030 --> T_2026W42_031
+  T_2026W42_031 --> T_2026W42_032
+  T_2026W42_032 --> T_2026W42_033
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -359,6 +365,9 @@ graph LR
 | `T-2026W42-028` | 2026-10-16 | experiment | decision-multimodal | 剪刀首次native108步成功但固定三次2/3；按钮11可见周期native仍false。后续探测/遮挡回放拒绝，收敛到公开光学标定与居中双指实体控制，第三组未开。 | `EXP-2026W42-214` | - |
 | `T-2026W42-029` | 2026-10-16 | experiment | decision-multimodal | 剪刀固定v2独立layout0原生3/3（106/107/107步），第二组1/5；实际渲染矩阵支持原K/T，拒绝SDK替换解释，继续剩余四项。 | `EXP-2026W42-215` | - |
 | `T-2026W42-030` | 2026-10-16 | experiment | decision-multimodal | 折衣双袖实体操作346步后受角点阻塞；按钮固定腕揭示视觉跳变；第二组仍1/5 | `EXP-2026W42-216` | - |
+| `T-2026W42-031` | 2026-10-16 | experiment | decision-multimodal | LIBERO修订v1四次完整成功但推盘退步；跨阶段提示未恢复稳定率，独立局部模板v2复测 | `EXP-2026W42-217` | - |
+| `T-2026W42-032` | 2026-10-16 | experiment | decision-multimodal | LIBERO局部模板v2为22/25原生、20/25完整；三任务各5/5，保留复合任务和受阻收尾失败 | `EXP-2026W42-218` | - |
+| `T-2026W42-033` | 2026-10-16 | experiment | decision-multimodal | 1423保留原特殊试探说明后v3完整5/5；四任务各固定版5/5，1202仍2/5，55新回合全保留 | `EXP-2026W42-219` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

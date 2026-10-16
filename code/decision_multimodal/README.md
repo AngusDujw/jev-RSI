@@ -1,5 +1,10 @@
 # Frozen Decision multimodal comparison
 
+Follow-up LIBERO prompt/interface repairs and all version-specific results are
+recorded in [LIBERO_REPAIR.md](LIBERO_REPAIR.md). The original50-episode result
+remains unchanged. Latest paired variants have four tasks at5/5 joint; the
+drawer-plus-bowl task remains2/5. The actor is still text-only.
+
 ## Authorized experiment
 
 1. Ten existing LIBERO-Plus Goal policies, five paired initial states each.
