@@ -1,6 +1,6 @@
 # Advancer baseline request draft
 
-Status: discussion draft, not connected to a runtime. No historical observations, previous decisions or execution-result records are included. The planner assigns the controlled arm for each stage. Stage-progress enum names, transition execution semantics and gripper command behavior below are proposals pending confirmation.
+Status: discussion draft, not connected to a runtime. No historical observations, previous decisions or execution-result records are included. The planner assigns the controlled arm for each stage. The user confirmed that advance produces no new robot action and final-stage advance ends the plan without certifying native RoboDojo success. Gripper command behavior remains a proposal pending confirmation.
 
 ## Fixed role prompt
 
@@ -43,14 +43,14 @@ keep: Preserve the current commanded gripper target.
 
 The current commanded gripper target is controller state, separate from measured aperture. If this keep convention is adopted, expose both as current state; no previous-step record is required. Measured opening or a close command alone does not establish that an object is held.
 
-Proposed stage option descriptions and execution semantics:
+Confirmed stage option descriptions and execution semantics:
 
 ```text
 continue: The current stage is not complete. Choose actions to advance it.
 advance: The current stage's completion condition is already satisfied. Set all motion channels to hold and the gripper to keep.
 ```
 
-The runtime, rather than the model, changes the current-stage pointer after validating the response. Final-stage termination semantics remain to be discussed.
+The runtime, rather than the model, changes the current-stage pointer after validating the response. For advance, do not dispatch a new robot action. At the final stage, advance ends the plan. Whether the task actually meets RoboDojo's native success criteria is evaluated separately; model-reported completion is not benchmark success and the native result is not a model input.
 
 ## Planner-provided versus fixed content
 
