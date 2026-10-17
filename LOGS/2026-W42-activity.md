@@ -466,3 +466,4 @@
 - 【Agent】【2026-10-18 00:16】[run] 会话01a12b86：company-server-2启动raw-v1-batch01四路（GPU2/6叠方块layout0/1，GPU5/7分拣layout0/1），启动45秒空间守卫；Sol/Luna接口已验证，原生导入依赖继续修复中。后续丰富文字输入增加Jev无图对照，API参考官方docs.typesafe.ai/api。
 - 【Agent】【2026-10-18 00:18】[op] 会话01a12b86：首四路共同遇Kit捆绑rtree缺libspatialindex；改为应用启动前加载项目wheel，不改系统库。后续显式启用已安装相机扩展修复isaacsim.sensors导入。原生动作仍0，逐次失败目录保留；未把基础设施检查记为任务进展。
 - 【Agent】【2026-10-18 00:19】[op] 新建实验块 EXP-2026W42-273：company-server-2补齐项目依赖与禁用未使用的原生cuRobo导入，继续新框架四卡试验  ↪ `EXP-2026W42-273`
+- 【Agent】【2026-10-18 00:21】[run] 会话01a12b86：r08原生环境创建通过，启动raw-v1-batch02并纳入现有GPU2回合，新增GPU5分拣layout0/GPU6叠方块layout1/GPU7分拣layout1；不重复启动GPU2。守卫继续监测空间，目前约146GiB可用。

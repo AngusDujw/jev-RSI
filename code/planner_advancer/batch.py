@@ -10,11 +10,20 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]/'code/runs/company2-20261018'
 
 
-def launch(name):
+def launch(name,adopt=None):
     folder=ROOT/name
     folder.mkdir(parents=True,exist_ok=False)
     runs=[]
     for gpu,task,layout in [(2,'stack_blocks',0),(5,'classify_objects',0),(6,'stack_blocks',1),(7,'classify_objects',1)]:
+        if gpu==2 and adopt:
+            run=(ROOT/adopt).resolve()
+            if not run.is_relative_to(ROOT.resolve()):
+                raise ValueError('Adopted run outside campaign')
+            pid=int((run/'worker.pid').read_text())
+            os.kill(pid,0)
+            runs.append(dict(task=task,layout=layout,gpu=gpu,pid=pid,directory=str(run.relative_to(ROOT.resolve()))))
+            (folder/'batch.json').write_text(json.dumps(dict(batch=name,framework='raw-three-rgb-v1',keep_image_task='stack_blocks',runs=runs,started=time.time()),indent=2)+'\n')
+            continue
         usage=subprocess.check_output(['nvidia-smi','--id='+str(gpu),'--query-gpu=memory.used','--format=csv,noheader,nounits'],text=True)
         if int(usage.strip())>256:
             raise RuntimeError(f'GPU {gpu} is occupied; refusing to launch')
@@ -61,5 +70,6 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('action',choices=['launch','status'])
     parser.add_argument('--name')
+    parser.add_argument('--adopt-stack0')
     args=parser.parse_args()
-    print(json.dumps(launch(args.name) if args.action=='launch' else status(),indent=2))
+    print(json.dumps(launch(args.name,args.adopt_stack0) if args.action=='launch' else status(),indent=2))
