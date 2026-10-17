@@ -16,6 +16,11 @@ The subsequent user-requested [in-frame axes version](LIBERO_INFRAME_AXES.md)
 removes point markers, actor tolerance fields and EEF coordinates. It is currently
 an archived-RGB input preview; no new model call or native result is claimed.
 
+The user then corrected the arrow origin to the gripper itself. The latest
+[gripper-attached version](LIBERO_GRIPPER_AXES.md) shows Y/Z in the external
+view and X/Y in the wrist view. Three actual archived motion snapshots verify
+that each fresh projection follows the gripper; this remains an input preview.
+
 ## Authorized experiment
 
 1. Ten existing LIBERO-Plus Goal policies, five paired initial states each.

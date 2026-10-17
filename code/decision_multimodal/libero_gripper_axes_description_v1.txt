@@ -1,0 +1,11 @@
+World-axis arrows at the gripper
+
+The arrows start at the current gripper control reference projected into each image. They indicate positive directions of the fixed world frame. Select negative to move in the opposite world direction. Arrow length is a display scale, not a commanded distance.
+
+agentview shows green +Y and blue +Z. It does not draw +X.
+robot0_eye_in_hand shows red +X and green +Y. It does not draw +Z.
+All XYZ action channels remain available. Use the other view and the movement description for an axis that is not drawn in one view.
+
+The arrows are updated for each fresh observation and stay attached to the current gripper reference. They remain world axes when the hand rotates. The wrist camera moves with the gripper: its arrow origin may remain near the same image pixel while the scene moves relative to it. Its arrows indicate world directions in the current view, not the future pixel displacement of the gripper in that moving view.
+
+No arrows are drawn for a gripper reference outside the image or behind the camera. Use the current task and scene to identify the source and destination.

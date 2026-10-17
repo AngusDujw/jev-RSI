@@ -36,11 +36,11 @@ def main():
     elif profile == 'libero-clarity-v3':
         from libero_prompt_revision_v2 import RecoveryAPI
         api.API = RecoveryAPI
-    elif profile == 'libero-rgb-inframe-axes-v1':
+    elif profile in ('libero-rgb-inframe-axes-v1','libero-rgb-gripper-axes-v1'):
         from libero_multimodal import install_stream
-        from libero_inframe_axes import InFrameAxesAPI
+        from libero_inframe_axes import InFrameAxesAPI, GripperAxesAPI
         install_stream(args.arguments)
-        api.API = InFrameAxesAPI
+        api.API = InFrameAxesAPI if profile=='libero-rgb-inframe-axes-v1' else GripperAxesAPI
     elif profile in ('libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1'):
         from libero_multimodal import install_stream
         from libero_motion_multimodal import MotionRGBAPI, MotionMarkerAPI, MotionAxesAPI
