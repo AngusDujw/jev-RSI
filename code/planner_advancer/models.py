@@ -43,11 +43,16 @@ def post_json(config,wire,folder,timeout=600):
     records=[]
     for attempt in range(4):
         started=time.time()
-        result=subprocess.run(['curl','--silent','--show-error','--fail-with-body','--connect-timeout','25',
+        if os.environ.get('ROBO_MODEL_PROXY_SOCKET'):
+            from unix_proxy import post
+            result=post(config,wire,os.environ['ROBO_MODEL_PROXY_SOCKET'],timeout)
+        else:
+            result=subprocess.run(['curl','--silent','--show-error','--fail-with-body','--connect-timeout','25',
                     '--max-time',str(timeout),'--config','-','--data-binary','@'+str(wire)],
                     input=config,text=True,capture_output=True)
         retry=result.returncode in {5,6,7,18,28,35,52,55,56,92} and not result.stdout.strip() and attempt<3
         records.append(dict(attempt=attempt+1,returncode=result.returncode,seconds=time.time()-started,
+                            transport='owned_unix_proxy' if os.environ.get('ROBO_MODEL_PROXY_SOCKET') else 'curl',
                             response_bytes=len(result.stdout.encode()),stderr=result.stderr[-500:],retry_same_request=retry))
         dump(Path(folder)/'transport_attempts.json',records)
         if result.returncode:
@@ -64,6 +69,17 @@ def legacy_input_contract(observation):
     if len(modes)!=1 or len(geometry)!=1:
         raise ValueError('Mixed observation protocols cannot form a paired condition')
     return dict(camera_intrinsics=modes.pop(),tool_geometry_details=geometry.pop(),execution_budget_details=False)
+
+
+def normalize_input_contract(protocol):
+    if not isinstance(protocol,dict):
+        raise ValueError('Invalid source input contract')
+    protocol=dict(protocol)
+    protocol.setdefault('perception_tools',False)
+    flags=('tool_geometry_details','execution_budget_details','perception_tools')
+    if set(protocol)!={'camera_intrinsics',*flags} or protocol['camera_intrinsics'] not in ('sdk','native') or any(type(protocol[k]) is not bool for k in flags):
+        raise ValueError('Invalid source input contract')
+    return protocol
 
 
 def call(kind, prompt, images, folder, schema=None):

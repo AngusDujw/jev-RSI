@@ -14,7 +14,7 @@ import shutil
 import numpy as np
 import cv2  # Pin the environment's compatible binary before Kit adjusts sys.path.
 import rtree  # Pin the project wheel, including its libspatialindex, before Kit.
-from models import call, dump, english, legacy_input_contract
+from models import call, dump, english, legacy_input_contract, normalize_input_contract
 from kinematics import solve_tcp
 
 AXES = ('x','y','z','yaw','pitch','roll')
@@ -45,6 +45,7 @@ def main():
     parser.add_argument('--layout-manifest',type=Path)
     parser.add_argument('--enable-processing',action='store_true')
     parser.add_argument('--processing-guidance',choices=['detailed','compact'],default='detailed')
+    parser.add_argument('--perception-tools',action='store_true')
     parser.add_argument('--prepared-from',type=Path)
     parser.add_argument('--resume-processing-from',type=Path)
     parser.add_argument('--decision-backend',choices=['luna','jev'],default='luna')
@@ -60,19 +61,18 @@ def main():
         raise ValueError('Prepared-plan and text-only comparisons require additional processing')
     args.output.mkdir(parents=True,exist_ok=False)
     protocol=dict(camera_intrinsics=args.camera_intrinsics,tool_geometry_details=args.tool_geometry_details,
-                  execution_budget_details=args.execution_budget_details)
+                  execution_budget_details=args.execution_budget_details,perception_tools=args.perception_tools)
     if args.prepared_from:
         source=args.prepared_from.resolve()
         campaign_root=Path(__file__).resolve().parents[1]/'runs/company2-20261018'
         if not source.is_relative_to(campaign_root.resolve()):
             raise ValueError('Paired plan source must belong to this campaign')
         prior=source/'input_contract.json'
-        protocol=json.loads(prior.read_text()) if prior.exists() else legacy_input_contract(json.loads((source/'observations/initial/observation.json').read_text()))
-        if set(protocol)!={'camera_intrinsics','tool_geometry_details','execution_budget_details'} or protocol['camera_intrinsics'] not in ('sdk','native') or any(type(protocol[k]) is not bool for k in ('tool_geometry_details','execution_budget_details')):
-            raise ValueError('Invalid source input contract')
+        protocol=normalize_input_contract(json.loads(prior.read_text()) if prior.exists() else legacy_input_contract(json.loads((source/'observations/initial/observation.json').read_text())))
         for key,value in protocol.items():
             setattr(args,key,value)
     dump(args.output/'input_contract.json',protocol)
+    os.environ['ROBO_PERCEPTION_TOOLS']='1' if args.perception_tools else '0'
     args.headless,args.enable_cameras = True,True
     app = AppLauncher(args).app
     session = env = None
@@ -242,6 +242,8 @@ def main():
                 native_steps_per_continue_decision=5,native_steps_per_advance_decision=0,
                 maximum_full_continue_decisions=int(env.step_lim)//5,total_decision_call_limit=args.decision_budget,
                 meaning='The native episode ends at this fixed control-step limit. Each continue decision, including hold or gripper-only decisions, uses up to five native steps. Stage advance uses no native steps. This is an execution budget, not a task-success signal.'))
+        if args.perception_tools:
+            plan_prompt+='\n\nOPTIONAL AVAILABLE RGB TOOLS\n'+(code/'contracts/optional_perception_tools.md').read_text()
         implementation=None
         if args.prepared_from:
             source=args.prepared_from.resolve()
