@@ -344,3 +344,5 @@
 - 【Agent】【2026-10-17 22:37】[result] 会话server2-worktrees-audit，轮次20261017-01：只读核查company-server-2 /root/yekangjie/project/jev_rsi/.worktrees，约115GiB；decision-multimodal约107GiB；281个run目录约474801文件；cache文件31,706,898,432字节可优先评估清理；941个.log约5.6MiB、1542个jsonl约163MiB，LOGS合计348文件约9MiB；cross-task有4个未跟踪脚本；未删除远端内容。
 - 【User】【2026-10-17 22:42】[intent] 授权清理company-server-2 ~/yekangjie/project/jev_rsi实验运行保存的大体积图像、数组和JSON等，必须保留实验基本结果及运行代码所需文件；避开活动运行。
 - 【Agent】【2026-10-17 22:50】[result] 会话server2-artifact-cleanup，轮次20261017-01：按用户授权清理company-server-2项目主目录及worktree中的206622个已结束运行观测/纹理缓存文件，释放145698762752字节约135.7GiB；563837个保留文件身份校验与关键结果SHA256通过。保留实验JSON/JSONL及运行资源，仅删49个纹理缓存索引JSON；磁盘剩24→159GiB、99%→92%。审计清单在远端LOGS/maintenance-20261017-artifact-cleanup，详情LOGS/2026-10-17-server2-artifact-cleanup.md。未启动实验或API。
+- 【User】【2026-10-17 23:38】[intent] 详细解析System1-Arena：工作内容、评测模型、整体框架及decision model实际输入；核对论文与公开实现。
+- 【Agent】【2026-10-17 23:40】[result] 会话system1-arena-reading，轮次20261017-02：只读核对S1-Arena源码28e16b16与结果；确认特权坐标/14动作、逐执行器五档argmax、纯文本OpenAI请求及29/20评测覆盖。补EXP203和Discussion；无模型调用、环境安装或控制实验。  ↪ `EXP-2026W42-203`
