@@ -36,6 +36,13 @@ def main():
     elif profile == 'libero-clarity-v3':
         from libero_prompt_revision_v2 import RecoveryAPI
         api.API = RecoveryAPI
+    elif profile in ('libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1'):
+        from libero_multimodal import install_stream
+        from libero_motion_multimodal import MotionRGBAPI, MotionMarkerAPI, MotionAxesAPI
+        install_stream(args.arguments)
+        api.API = {'libero-rgb-motion-full-v1': MotionRGBAPI,
+                   'libero-rgb-motion-marker-v1': MotionMarkerAPI,
+                   'libero-rgb-motion-axes-v1': MotionAxesAPI}[profile]
     elif profile in ('libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw'):
         from libero_multimodal import MultimodalAPI, install_stream
         from libero_visual_ablation import WaypointAPI, VisualAblationAPI

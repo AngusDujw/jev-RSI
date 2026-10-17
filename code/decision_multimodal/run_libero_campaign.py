@@ -163,6 +163,14 @@ class Campaign:
                 specification['repetitions_per_task'] = 3
                 specification['input_condition'] = args.profile
                 specification['retained_processing'] = 'Original stage gates, visual holding/arrival booleans, rotation feedback and controller-internal motor scaling'
+                if args.profile.startswith('libero-rgb-motion-'):
+                    for name in ('libero_motion_multimodal.py', 'libero_robot_actions_v1.txt'):
+                        p = Path(__file__).with_name(name)
+                        specification['adapter_source_sha256'][name] = hashlib.sha256(p.read_bytes()).hexdigest()
+                    specification['camera_matrices_sent'] = False
+                    specification['motion_description'] = 'Verified native world-axis / rotation-vector description; no new YPR controller'
+                    specification['question_changes'] = 'Short original Jev XYZ template, error and/or labeled RGB evidence; common non-XYZ questions unchanged'
+                    specification['image_layout'] = 'Same768x928 in all conditions: native768 RGB plus160px footer; axes compass is goal-independent'
         if replacement_cases is not None:
             specification['expected_episodes'] = len(replacement_cases)
             specification['transport_replacements'] = replacement_provenance
@@ -329,7 +337,7 @@ def main():
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3, 4, 5, 6], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--replace-transport-from', type=Path,
                         help='Explicit new episodes for connection-interrupted cases only; preserve original outcomes')
