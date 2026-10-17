@@ -261,3 +261,12 @@ Three class0 Luna controls continue at snapshot830/625/485 steps, all pick_toy_1
 
 
 Ongoing supervision after EXP298 introduces no new condition or experiment. Three classification0 current-input snapshots are about960/760/615 steps, all pick_toy_1 with zero advances and23/16/8 close commands respectively. Current high/left-wrist views do not establish retained suspended grasp; occlusion and unreviewed earlier frames prevent stronger negative claims. oversight-class0-20261018-0700 preserves actual payloads, raw RGB/SHA, counts and the latest status.json. Existing native episodes continue unchanged; no new Sol call, native episode, prompt/source change or model memory is introduced. Do not resume ended classification1 or stack1 episodes.
+
+
+## Classification0 matrix terminal and rate-stage transition audit (EXP299)
+
+This is a retrospective audit of existing EXP291/294 conditions, not a new experimental condition or native episode. Matrix Luna PID2077718 ended at1100 steps, complete=true/native_success=false/score0. All220 answers stayed in pick_toy_1: zero advances,30close,24open. Last saved wrist input is at1095 steps, before the final action; it does not clearly establish retained suspension. Never resume or resample this terminal.
+
+Existing rate-input Luna advances at decision125 with all axes hold/gripper keep and later reaches place_toy_1. Reviewed125 high/wrist images do not clearly establish suspended retention;150 high shows the hand near/above the blue basket, while the wrist shows its interior without an identifiable toy. Source/hand occlusion prevents certifying retention or loss. Thus phase advancement and robot movement are observed, but retained source transport and basket placement are not independently established. exp299-class0-audit retains actual payloads, raw RGB/SHA and counts. These are outer-only audits, not model history or experience.
+
+Two controls remain active at snapshot: named PID2307469 at920 pick_toy_1; rate PID2526822 at755 place_toy_1. Storage23.11GiB free, full successes zero. No new Sol request, prompt/source/processor/gate/physics change or native episode was introduced. Sol resource authorization remains unresolved.

@@ -667,3 +667,6 @@
 
 
 【Agent】【2026-10-18】[EXP298](LOGS/2026-W42.md#exp-2026w42-298)：class1三原图Luna已1100步完整失败score0、末white_pen_capture；221答1advance14close17open，approach43/capture177，不是完全不闭爪。220段持物/容纳字段全null只说明未测量；末1095步腕输入笔仍桌面，末close后无独立图像结论。原生终局保留不恢复，余三路class0 830/625/485步继续。CIRCLE-1按实际抓取尝试、证据覆盖和原生结果收敛，无新Sol/元信息条件/源改动，详见exp298-class1-terminal/audit.json。
+
+
+【Agent】【2026-10-18】[EXP299既有条件审计](LOGS/2026-W42.md#exp-2026w42-299)：矩阵class0 Luna1100步完整失败score0，220答0advance30close24open，终局不恢复。速率组125输出advance、当前place，复核125/150高腕图仍不足独立认证悬空保持/入篮，不能把阶段切换当成功，也不由遮挡断言抓取一定失败。剩具名920步/速率755步，23.11GiB；无新条件/Sol/源码改动。CIRCLE-1以实体证据和原生终局继续收敛，不按审计编号增加实验条件数。
