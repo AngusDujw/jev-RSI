@@ -93,10 +93,22 @@ def export_sample(runs,output):
             (output/filename).write_bytes(raw)
             images.append(dict(camera=view['camera'],src=filename,sha256=view['sha256']))
         shutil.copyfile(folder/'request.json',output/(label+'-actual-request.json'))
+        trajectory=[]
+        for decision in sorted(folder.parent.glob('[0-9]*')):
+            if not (decision/'legacy-response.json').exists():
+                continue
+            state=read(decision/'legacy-request.json')['state']
+            answers=read(decision/'legacy-response.json')['answers']
+            trajectory.append(dict(decision=decision.name,stage=state.get('stage'),
+                offline_original_residual_mm={k:v['goal_minus_current_mm'] for k,v in state.get('translation_axes',{}).items()
+                    if 'goal_minus_current_mm' in v},
+                actual_choices={k:answers[k]['choice'] for k in ('x','y','z','transition') if k in answers}))
         records.append(dict(condition=label,motion_description=content[0]['text'],
             state=json.loads(content[1]['text']),context=json.loads(content[2]['text']),
             questions=request['questions'],response=read(folder/'response.json'),
-            images=images,source=str(folder),download=label+'-actual-request.json'))
+            images=images,source=str(folder),download=label+'-actual-request.json',
+            trajectory_audit=trajectory,
+            trajectory_note='Outer audit only. The original residuals were not sent in the marker or axes condition. Not additional actor input.'))
     (output/'sample.json').write_text(json.dumps(dict(task=1144,init=5,decision='0000',records=records),indent=2)+'\n')
 
 

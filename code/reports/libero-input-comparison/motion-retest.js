@@ -18,7 +18,7 @@ function sample(){
  for(const b of document.querySelectorAll('[data-sample]'))b.onclick=()=>{condition=b.dataset.sample;sample();};
  $('sample-questions').innerHTML='<p class="part-label">本轮实际XYZ问题原文</p>'+r.questions.filter(q=>['x','y','z'].includes(q.name)).map(q=>'<p class="sample-prose">'+escape(q.instructions)+'</p>').join('');
  $('sample-images').innerHTML=r.images.map(v=>`<figure><a href="motion-sample/${escape(v.src)}" target="_blank" rel="noopener"><img src="motion-sample/${escape(v.src)}" alt="本轮真实输入 ${escape(v.camera)}"></a><figcaption>${escape(v.camera)} · 点击原尺寸查看</figcaption></figure>`).join('');
- $('sample-motion').textContent=r.motion_description;$('sample-state').textContent=JSON.stringify({state:r.state,context:r.context},null,2);$('sample-response').textContent=JSON.stringify(r.response,null,2);$('sample-download').href='motion-sample/'+r.download;$('sample-source').textContent='真实来源：'+r.source;
+ $('sample-trace').textContent=JSON.stringify(r.trajectory_audit||[],null,2);$('sample-motion').textContent=r.motion_description;$('sample-state').textContent=JSON.stringify({state:r.state,context:r.context},null,2);$('sample-response').textContent=JSON.stringify(r.response,null,2);$('sample-download').href='motion-sample/'+r.download;$('sample-source').textContent='真实来源：'+r.source;
 }
 async function loadSample(){try{const res=await fetch('motion-sample/sample.json',{cache:'no-store'});if(!res.ok)return;examples=(await res.json()).records;if(!examples.some(r=>r.condition===condition))condition=examples[0]?.condition;sample();}catch(e){$('sample-source').textContent='样例尚未同步：'+e.message;}}
 progress();loadSample();setInterval(progress,30000);
