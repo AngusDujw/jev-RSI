@@ -342,3 +342,5 @@
 - 【Agent】【2026-10-17 21:13】[result] 会话openai-decision-robotics，轮次20261017-01：完成专用Decisions API查新；核对System1-Arena预印本、SO-101实机原文和robojev仿真；补EXP202与Discussion，未改控制代码/目标/提示词，未发模型请求。Zotero锁定与浏览器无连接如实记录。  ↪ `EXP-2026W42-202`
 - 【User】【2026-10-17 22:34】[intent] 只读检查 company-server-2 的 ~/yekangjie/project/jev_rsi/.worktrees 用途、空间占用、日志数量及可清理候选，不执行删除。
 - 【Agent】【2026-10-17 22:37】[result] 会话server2-worktrees-audit，轮次20261017-01：只读核查company-server-2 /root/yekangjie/project/jev_rsi/.worktrees，约115GiB；decision-multimodal约107GiB；281个run目录约474801文件；cache文件31,706,898,432字节可优先评估清理；941个.log约5.6MiB、1542个jsonl约163MiB，LOGS合计348文件约9MiB；cross-task有4个未跟踪脚本；未删除远端内容。
+- 【User】【2026-10-17 22:42】[intent] 授权清理company-server-2 ~/yekangjie/project/jev_rsi实验运行保存的大体积图像、数组和JSON等，必须保留实验基本结果及运行代码所需文件；避开活动运行。
+- 【Agent】【2026-10-17 22:50】[result] 会话server2-artifact-cleanup，轮次20261017-01：按用户授权清理company-server-2项目主目录及worktree中的206622个已结束运行观测/纹理缓存文件，释放145698762752字节约135.7GiB；563837个保留文件身份校验与关键结果SHA256通过。保留实验JSON/JSONL及运行资源，仅删49个纹理缓存索引JSON；磁盘剩24→159GiB、99%→92%。审计清单在远端LOGS/maintenance-20261017-artifact-cleanup，详情LOGS/2026-10-17-server2-artifact-cleanup.md。未启动实验或API。
