@@ -173,7 +173,7 @@ class Campaign:
                 specification['text_profiles'] = '1423:clarity-v3;1144/1202/1252/1296:clarity-v2;others:original'
                 specification['repetitions_per_task'] = 3
                 specification['input_condition'] = args.profile
-                if args.profile=='libero-rgb-rotation-candidates-v1':
+                if args.profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2'):
                     for name in ('libero_rotation_multimodal.py','libero_rotation_images.py',
                                  'libero_rotation_setup.py','libero_hybrid_vision.py',
                                  'libero_inframe_axes.py','libero_motion_multimodal.py',
@@ -185,6 +185,11 @@ class Campaign:
                         fine_rotation_gate='max absolute camera/robot-derived residual below0.12rad; not sent to visual role',
                         numeric_rotation_in_visual=False,experience_injection=False,
                         own_pose_setup='Task1335 only: world rotation vector +/-[12,-12,25]degrees; recorded separately')
+                    if args.profile=='libero-rgb-rotation-dials-v2':
+                        p=Path(__file__).with_name('libero_rotation_dials.py')
+                        specification['adapter_source_sha256'][p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
+                        specification.update(orientation_input='Two current RGB plus algorithm-derived angular feedback dials',
+                            signed_angular_feedback_visualized=True,coarse_axis_outputs='Independent CCW/CW relations mapped to native world rotation-vector components')
                 specification['retained_processing'] = 'Original stage gates, visual holding/arrival booleans, rotation feedback and controller-internal motor scaling'
                 if args.profile.startswith('libero-rgb-hybrid-'):
                     for name in ('libero_hybrid_vision.py','libero_visual_relation_servo.py',
@@ -310,7 +315,7 @@ class Campaign:
             manifest['comparison'] = 'Revised prompts/interface; original frozen policy, processing, thresholds, stages and paired initial states'
             if self.args.profile.startswith('libero-rgb-'):
                 manifest['actor_images'] = 2
-                if self.args.profile=='libero-rgb-rotation-candidates-v1':
+                if self.args.profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2'):
                     manifest['actor_images']='3 in coarse rotation call; 0 in numerical motor call'
                 if self.args.profile.startswith('libero-rgb-hybrid-'):
                     manifest['actor_images']='1 in visual role; 0 in motor role'
@@ -408,7 +413,7 @@ def main():
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3, 4, 5, 6], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1', 'libero-rgb-gripper-pair-arrows-v1', 'libero-rgb-gripper-pair-raw-v1', 'libero-rgb-hybrid-coarse-x-v1', 'libero-rgb-hybrid-cabinet-x-v2', 'libero-rgb-rotation-candidates-v1'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1', 'libero-rgb-gripper-pair-arrows-v1', 'libero-rgb-gripper-pair-raw-v1', 'libero-rgb-hybrid-coarse-x-v1', 'libero-rgb-hybrid-cabinet-x-v2', 'libero-rgb-rotation-candidates-v1', 'libero-rgb-rotation-dials-v2'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--replace-transport-from', type=Path,
                         help='Explicit new episodes for connection-interrupted cases only; preserve original outcomes')
