@@ -11,7 +11,10 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]/'code/runs/company2-20261018'
 
 
-def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,layout_manifest=None,processing=False,prepared_from=None,backend='luna',omit_images=False):
+def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,layout_manifest=None,processing=False,prepared_from=None,backend='luna',omit_images=False,task_override=None):
+    allowed={entry['task'] for entry in json.loads((HERE/'campaign.json').read_text())['tasks']}
+    if task_override is not None and (task_override not in allowed or not gpus or adopt):
+        raise ValueError('Task override needs an official campaign task, explicit GPUs and no adoption')
     folder=ROOT/name
     folder.mkdir(parents=True,exist_ok=resume)
     existing=folder/'batch.json'
@@ -19,6 +22,8 @@ def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,la
     for gpu,task,layout in [(2,'stack_blocks',0),(5,'classify_objects',0),(6,'stack_blocks',1),(7,'classify_objects',1)]:
         if gpus and gpu not in gpus:
             continue
+        if task_override:
+            task=task_override
         layout+=layout_offset
         if any(r['gpu']==gpu for r in runs):
             continue
@@ -95,5 +100,6 @@ if __name__=='__main__':
     parser.add_argument('--prepared-from')
     parser.add_argument('--backend',choices=['luna','jev'],default='luna')
     parser.add_argument('--omit-images',action='store_true')
+    parser.add_argument('--task',choices=[entry['task'] for entry in json.loads((HERE/'campaign.json').read_text())['tasks']])
     args=parser.parse_args()
-    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu,args.gpus,args.layout_manifest,args.processing,args.prepared_from,args.backend,args.omit_images) if args.action=='launch' else status(),indent=2))
+    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu,args.gpus,args.layout_manifest,args.processing,args.prepared_from,args.backend,args.omit_images,args.task) if args.action=='launch' else status(),indent=2))

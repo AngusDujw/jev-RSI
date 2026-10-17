@@ -1,0 +1,13 @@
+--- a/processor
++++ b/processor
+@@ -198,7 +198,9 @@
+         for arm,t in tool.items():
+             ref=obs['cameras'][n].get('robot_tcp_projection_check',{}).get(arm)
+             if ref and t:
+-                uv=np.array(t['tcp_projections'][n]['pixel_xy']);checks[n+'/'+arm]=float(np.linalg.norm(uv-ref['pixel']))
++                pixel=t['tcp_projections'][n]['pixel_xy']
++                reference=ref.get('pixel')
++                checks[n+'/'+arm]=None if pixel is None or reference is None else float(np.linalg.norm(np.asarray(pixel)-np.asarray(reference)))
+     scene={'frame':'shared robot world; metres; +X right,+Y forward,+Z up',
+       'points':points,'pair_statistics':stats,'tabletop':plane,'tabletop_missing_reason':why,'warnings':warnings,
+       'robot_projection_selfcheck_residual_px':checks,
