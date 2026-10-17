@@ -8,6 +8,7 @@ import sys
 import traceback
 import time
 import types
+import hashlib
 
 import numpy as np
 import cv2  # Pin the environment's compatible binary before Kit adjusts sys.path.
@@ -40,6 +41,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--task',required=True)
     parser.add_argument('--layout',type=int,default=0)
+    parser.add_argument('--layout-manifest',type=Path)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
@@ -101,7 +103,18 @@ def main():
             env=eval_env.create_eval_env(cfg,app)
         finally:
             eval_env.WsModelClient=old
-        session=RoboDojoSession(env,args.output/'native',args.task)
+        identity=None
+        if args.layout_manifest:
+            panel=json.loads(args.layout_manifest.read_text())
+            case=next(c for c in panel['entries'] if c['task']==args.task and c['layout_id']==args.layout)
+            path=Path(case['path'])
+            if hashlib.sha256(path.read_bytes()).hexdigest()!=case['sha256']:
+                raise ValueError('Frozen layout hash mismatch')
+            env.seed_manager.seed_info[args.layout]={'scene_layout':str(path)}
+            identity=dict(layout_id=args.layout,layout_sha256=case['sha256'],runtime_task=args.task,
+                          eval_seed=case['eval_seed'],source_url=case['url'])
+            dump(args.output/'evaluation_case.json',identity)
+        session=RoboDojoSession(env,args.output/'native',args.task,evaluation_identity=identity)
         session.reset(args.layout,'planner_advancer','raw-three-rgb-v1')
         kin=session.kinematics
         offset=np.array([.15007,0.,0.])

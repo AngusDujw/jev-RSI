@@ -19,6 +19,11 @@ export HTTPS_PROXY=http://127.0.0.1:7897
 export HTTP_PROXY=http://127.0.0.1:7897
 export NO_PROXY=localhost,127.0.0.1
 cd "$NATIVE/robodojo"
+LAYOUT_ARGS=()
+if [[ -n "${ROBO_LAYOUT_MANIFEST:-}" ]]; then
+  LAYOUT_ARGS=(--layout-manifest "$ROBO_LAYOUT_MANIFEST")
+fi
 exec /root/miniconda3/envs/isaacsim5.1/bin/python -u "$PROJECT/code/planner_advancer/runtime.py" \
   --task "$TASK" --layout "$LAYOUT" --output "$RUN/episode" --headless --enable_cameras \
+  "${LAYOUT_ARGS[@]}" \
   --kit_args "--/renderer/activeGpu=$GPU --/renderer/multiGpu/enabled=false --/app/renderer/resolution/width=640 --/app/renderer/resolution/height=480"

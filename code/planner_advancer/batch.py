@@ -11,12 +11,14 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]/'code/runs/company2-20261018'
 
 
-def launch(name,adopt=None,resume=False,layout_offset=0,share=False):
+def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,layout_manifest=None):
     folder=ROOT/name
     folder.mkdir(parents=True,exist_ok=resume)
     existing=folder/'batch.json'
     runs=json.loads(existing.read_text())['runs'] if resume and existing.exists() else []
     for gpu,task,layout in [(2,'stack_blocks',0),(5,'classify_objects',0),(6,'stack_blocks',1),(7,'classify_objects',1)]:
+        if gpus and gpu not in gpus:
+            continue
         layout+=layout_offset
         if any(r['gpu']==gpu for r in runs):
             continue
@@ -35,7 +37,8 @@ def launch(name,adopt=None,resume=False,layout_offset=0,share=False):
         with (run/'worker.log').open('w') as stream:
             proc=subprocess.Popen(['bash',str(HERE/'launch_worker.sh'),str(gpu),task,str(layout),str(run)],
                 stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True,
-                env=dict(os.environ,ALLOW_CAMPAIGN_GPU_SHARE='1' if share else '0'))
+                env=dict(os.environ,ALLOW_CAMPAIGN_GPU_SHARE='1' if share else '0',
+                         ROBO_LAYOUT_MANIFEST=str(Path(layout_manifest).resolve()) if layout_manifest else ''))
         (run/'worker.pid').write_text(str(proc.pid)+'\n')
         runs.append(dict(task=task,layout=layout,gpu=gpu,pid=proc.pid,directory=str(run.relative_to(ROOT))))
         manifest=dict(batch=name,framework='raw-three-rgb-v1',keep_image_task='stack_blocks',runs=runs,started=time.time())
@@ -78,5 +81,7 @@ if __name__=='__main__':
     parser.add_argument('--resume',action='store_true')
     parser.add_argument('--layout-offset',type=int,default=0)
     parser.add_argument('--share-own-gpu',action='store_true')
+    parser.add_argument('--gpus',type=int,nargs='+',choices=[2,5,6,7])
+    parser.add_argument('--layout-manifest')
     args=parser.parse_args()
-    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu) if args.action=='launch' else status(),indent=2))
+    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu,args.gpus,args.layout_manifest) if args.action=='launch' else status(),indent=2))
