@@ -72,6 +72,7 @@ def collect(root, kind):
             stage=original['state'].get('stage',original['state'].get('phase'))
             phases[str(stage)]+=1
             answered=(folder/'legacy-response.json').is_file()
+            choices={}
             if answered:
                 answer=json.loads((folder/'legacy-response.json').read_text())
                 axes=original['state'].get('translation_axes',{})
@@ -83,16 +84,20 @@ def collect(root, kind):
                     if feedback.get('relation')=='within tolerance':
                         continue
                     # Diagnostic only. Contact/gripper-only motion is not evaluated.
-                    if stage in ('grasp','release'):
+                    if str(stage).split(':')[-1] in ('grasp','release'):
                         continue
                     choice=row.get('choice')
                     if choice not in ('negative','positive','hold'):
                         continue
                     directional['outside_original_deadband_axes']+=1
                     directional['correct_sign']+=int(choice==('positive' if error>0 else 'negative'))
+                choices={axis:answer.get('answers',{}).get(axis,{}).get('choice') for axis in 'xyz'}
             records.append(dict(decision=folder.name,stage=stage,answered=answered,
                 observation=dispatch['camera_views'][0]['native_observation_counter'],
-                nonimage_sha256=digest(normalized),images_sha256=view_hashes))
+                nonimage_sha256=digest(normalized),images_sha256=view_hashes,
+                actual_xyz_choices=choices,
+                diagnostic_only_not_sent_xyz_error_mm={axis:row.get('goal_minus_current_mm')
+                    for axis,row in original['state'].get('translation_axes',{}).items()}))
             calls+=1;responses+=int(answered);images+=2
         if records:
             inputs[(task,init)]=records[0]
