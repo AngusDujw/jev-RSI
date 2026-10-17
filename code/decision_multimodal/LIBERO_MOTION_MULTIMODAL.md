@@ -28,6 +28,12 @@ Executed robot feedback, phase contracts and other non-positional feedback are
 retained. This is a positional-feedback ablation, not removal of all processing:
 rotation residuals, stage booleans, candidate descriptions and internal motor
 scaling still exist. Deleted fields are not reintroduced in axis questions.
+The robot's own current `robot0_eef_pos` is explicitly retained in the sensor
+context; excluded world coordinates refer to processed scene/target evidence.
+In reduced conditions the actor estimates per-axis hold from the annotated
+images. Retained arrival booleans use their original stage thresholds, which
+need not equal the per-axis hold tolerance; they do not certify4mm visual
+precision. This identifiability limit is part of the test, not a new gate.
 
 Camera K/T is used only inside the frontend to project the original target and
 control-point markers, and to orient a goal-independent world-axis compass.
