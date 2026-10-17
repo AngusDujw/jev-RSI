@@ -1,0 +1,20 @@
+Robot actions in this LIBERO environment
+
+Control gripper0_grip_site, the native end-effector reference point reported by robot0_eef_pos and used by OSC_POSE. It is near the gripping region between the fingers, not the exact midpoint of the contacting surfaces.
+
+Use the fixed world frame. Stand behind the base, on the negative-X side, facing the tabletop along +X: +X is forward, +Y is left, and +Z is up. These are not image directions.
+
+- x positive / negative: move the reference point forward / backward along world X.
+- y positive / negative: move the reference point left / right along world Y.
+- z positive / negative: move the reference point up / down along world Z.
+- yaw positive / negative: rotate about world Z, corresponding to native rz. Positive is counterclockwise when viewed from above, looking down toward the table.
+- pitch positive / negative: rotate about world Y, corresponding to native ry. Starting with the finger-extension direction vertically downward, positive tilts that direction toward world -X (backward).
+- roll positive / negative: rotate about world X, corresponding to native rx. Starting with the finger-extension direction vertically downward, positive tilts that direction toward world +Y (left).
+
+These yaw/pitch/roll names are aliases for native world-axis increments [rz, ry, rx], not absolute Euler angles. Positive follows the right-hand rule; negative reverses it. Axes stay fixed when the tool turns. The downward-grasp tilt descriptions apply only from that starting orientation.
+
+Simultaneous rotations form one world rotation vector [rx, ry, rz]: its direction is the axis and its length is the angle in radians. They are not three sequential Euler rotations. Rotate about grip_site: pure rotation targets a fixed position; pure translation targets a fixed orientation. Actual motion can have tracking error.
+
+Select positive, negative, or hold for each requested channel. Hold means zero increment, not return to an earlier pose. The controller supplies magnitudes in metres/radians and converts them to normalized native actions. These are increments, not absolute coordinates or angles.
+
+agentview is the fixed external RGB camera; robot0_eye_in_hand is the moving wrist RGB camera. Image directions depend on the camera, and wrist images change with hand motion. Check the next measured robot state and fresh images to verify the executed effect.
