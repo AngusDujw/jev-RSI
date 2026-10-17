@@ -20,11 +20,15 @@ def audit(root):
             assert request['model']=='gpt-6-luna'
             parts=request['input'][0]['content']
             images=[p for p in parts if p['type']=='input_image']
-            if dispatch['profile']=='rotation_visual_candidates_v1':
-                assert len(images)==3 and len(request['questions'])==1
+            if dispatch['profile'] in ('rotation_visual_candidates_v1','rotation_visual_dials_v2'):
+                assert len(images)==3
                 state=json.loads(parts[0]['text'])
                 assert set(state)=={'task','stage','task_plan','goal','source'}
-                assert request['questions'][0]['name']=='rotation_action'
+                if dispatch['profile']=='rotation_visual_candidates_v1':
+                    assert len(request['questions'])==1 and request['questions'][0]['name']=='rotation_action'
+                else:
+                    assert {q['name'] for q in request['questions']}<=set(('rx','ry','rz'))
+                    assert dispatch['algorithm_derived_signed_angular_residual_visualized'] is True
                 counts['visual_requests']+=1
             else:
                 assert dispatch['profile']=='rotation_numerical_motor_v1' and not images
@@ -38,11 +42,16 @@ def audit(root):
         visual=[x for x in merges if x['visual_call']]
         correct=wrong=hold=0
         for x in visual:
-            choice=x['selected_visual_action']
-            if choice=='hold':hold+=1;continue
-            axis,direction=choice.split('_');error=x['diagnostic_only_error_rad'][('rx','ry','rz').index(axis)]
-            good=(error>0 and direction=='positive') or (error<0 and direction=='negative')
-            correct+=good;wrong+=not good
+            if 'selected_visual_actions' in x:
+                choices=x['selected_visual_actions'].items()
+            else:
+                choice=x['selected_visual_action']
+                if choice=='hold':hold+=1;continue
+                choices=[choice.split('_')]
+            for axis,direction in choices:
+                error=x['diagnostic_only_error_rad'][('rx','ry','rz').index(axis)]
+                good=(error>0 and direction=='positive') or (error<0 and direction=='negative')
+                correct+=good;wrong+=not good
         progress=[]
         for before,after in zip(merges,merges[1:]):
             if before['visual_call'] and before['stage']==after['stage']:
