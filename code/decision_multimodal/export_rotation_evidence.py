@@ -39,7 +39,7 @@ def video(episode,output):
     for p in episode.glob('*-agentview.png'):
         match=pattern.match(p.name)
         wrist=p.with_name(p.name.replace('-agentview.png','-robot0_eye_in_hand.png'))
-        if match and wrist.is_file():pairs.append((int(match[1]),match[2],p,wrist))
+        if match:pairs.append((int(match[1]),match[2],p,wrist if wrist.is_file() else None))
     pairs.sort(key=lambda row:row[0])
     assert len(pairs)>5
     branches={r['native_steps']:r for r in map(json.loads,(episode/'branches.jsonl').read_text().splitlines())}
@@ -59,11 +59,16 @@ def video(episode,output):
                     ' | edge '+str(row.get('selected_transition','initial')),fill='#75e3cd',font=font)
                 draw.text((15,59),'EXTERNAL RGB                                      WRIST RGB | snapshot replay, not real-time video',fill='#b8ccca',font=font)
                 frame.paste(Image.open(external).convert('RGB').resize((640,640)),(0,80))
-                frame.paste(Image.open(wrist).convert('RGB').resize((640,640)),(640,80))
+                if wrist is not None:
+                    frame.paste(Image.open(wrist).convert('RGB').resize((640,640)),(640,80))
+                else:
+                    draw.text((685,300),'No wrist snapshot recorded at this policy step.',fill='white',font=font)
+                    draw.text((685,335),'Actual wrist inputs for visual calls are archived separately.',fill='#b8ccca',font=font)
                 process.stdin.write(frame.tobytes())
         finally:process.stdin.close()
         if process.wait():raise RuntimeError('Video encoding failed; log preserved')
     return dict(file=path.name,frames=len(pairs),fps=8,
+        external_only_frames=sum(wrist is None for _,_,_,wrist in pairs),
         scope='All saved policy snapshots after setup/settling; not every physics frame or wall-clock playback',
         sha256=hashlib.sha256(path.read_bytes()).hexdigest())
 
