@@ -235,6 +235,7 @@ graph LR
     T_2026W42_127["📊 robodojo-planner-advancer-v1<br/>IK矩阵真实交付后Jev仍选false组合…"]:::experiment
     T_2026W42_128["📊 robodojo-planner-advancer-v1<br/>具名Jev135/0步仍多旋转拒绝；数值I…"]:::experiment
     T_2026W42_129["📊 robodojo-planner-advancer-v1<br/>公共速率信息预测与实际目标路径一致；Jev…"]:::experiment
+    T_2026W42_130["📊 robodojo-planner-advancer-v1<br/>紫块视觉离桌但lift必需输入null；独…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -426,6 +427,7 @@ graph LR
   T_2026W42_126 --> T_2026W42_127
   T_2026W42_127 --> T_2026W42_128
   T_2026W42_128 --> T_2026W42_129
+  T_2026W42_129 --> T_2026W42_130
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -649,6 +651,7 @@ graph LR
 | `T-2026W42-127` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | IK矩阵真实交付后Jev仍选false组合85步拒绝；Luna继续，约束信息存在不保证联合选择合规 | `EXP-2026W42-291` | - |
 | `T-2026W42-128` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 具名Jev135/0步仍多旋转拒绝；数值IK通过路径要求41.945>5rad/s且141.18mm误差，须区分可解与可跟踪 | `EXP-2026W42-292` | - |
 | `T-2026W42-129` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 公共速率信息预测与实际目标路径一致；Jev仍选超限组合，Luna限速内仍20.23mm误差，信息/执行必须分评 | `EXP-2026W42-294` | - |
+| `T-2026W42-130` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 紫块视觉离桌但lift必需输入null；独立修正5.07mm机器人参考后仍invalid，未启动相似新回合 | `EXP-2026W42-295` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

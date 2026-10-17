@@ -655,3 +655,6 @@
 【Agent @Codex】【2026-10-18】[EXP292–293终局补充](LOGS/2026-W42.md#exp-2026w42-292)：具名Jev在分拣135步、叠方块0步均多旋转拒绝不完整，表达未保证联合输出规则；前者另有141.18mm段末误差，其五点数值IK全过但关节路径要求41.945rad/s，高于公开5rad/s配置，不能把true或更长存活步数当控制可靠。未改物理/门，IMP-010只排未测的公共关节速率信息候选。旧class1文本Luna1100步完整失败score0、末capture，不能继续称全程首阶段。Luna新条件继续；CIRCLE-1按输出有效性/数值可解/物理跟踪/实体抓放/原生终局逐层核对。
 
 【Agent @Codex】【2026-10-18】[EXP294](LOGS/2026-W42.md#exp-2026w42-294)：新增可选named_rates，189原数值flag/诊断不变，实际英文Luna/Jev合同/计划/processor/case及初始完整信息核验一致。各6段预测与实际目标路径速率差值0，但Jev已选明确false的5.04312rad/s组合，Luna在速率true的2.74665rad/s路径仍20.2337mm跟踪误差；不能由输入有效声称物理控制可靠。原门/限位/物理不变，无Sol/历史/经验注入，继续原生终局。CIRCLE-1分开核查源身份、证据覆盖、联合选择约束、数值与物理跟踪及实体操作。
+
+
+【Agent】【2026-10-18】EXP295：继续监督五路既有Luna，原生完整成功仍0。stack1在370步高位/腕RGB支持紫块夹起，但lift阶段source invalid、goal/translation null，不能把该卡点等同于方向错误。独立副本纠正处理器145mm与原/现runtime150.07mm TCP参考差，三帧隔离运行通过；提升腕图RMS3.1012→2.2202px仍invalid，未恢复输入，因此未启动相似新回合、未改运行source。白笔815腕图仍桌面。见[EXP-2026W42-295](LOGS/2026-W42.md#exp-2026w42-295)与exp295-current-evidence、exp295-tcp-reference-validation。CIRCLE-1收敛继续按可见实体、阶段所需输入及原生终局分层，Sol配额未恢复前不增加准备或元信息条件。
