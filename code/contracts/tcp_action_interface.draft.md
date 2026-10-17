@@ -1,6 +1,6 @@
 # Shared TCP action description
 
-Status: TCP is confirmed. All six positive single-axis directions below were physically demonstrated in RoboDojo on 2026-10-17 (run04, 620 native controls). They are not yet connected to a planner/advancer runtime. Combined rotations, gripper ownership, step scheduling, arm-selection output and stage-progress enums remain separate discussion items. The stated combination order is an explicit proposal, not a claim that a combined motion was tested.
+Status: TCP is confirmed. All six positive single-axis directions below were physically demonstrated in RoboDojo on 2026-10-17 (run04, 620 native controls). The user confirmed on 2026-10-17 that each decision may rotate about at most one axis. They are not yet connected to a planner/advancer runtime. Gripper ownership, step scheduling, arm-selection output and stage-progress enums remain separate discussion items.
 
 Read the same marked English block into both model requests: after the planner/advancer role description, before the task or current-stage observations. Supply the current arm and step sizes alongside it. No separate wording-generation step is required.
 
@@ -18,14 +18,14 @@ Control the TCP, the center between the gripping faces. Both arms use the same w
 
 Positive rotations follow the right-hand rule; negative reverses them. Hold means zero increment on that channel. Rotation axes stay fixed in the world. Rotate about the TCP: rotation alone keeps its target position fixed; translation alone keeps tool orientation fixed.
 
-These are increments, not absolute Euler angles. Combine rotations in this order: pitch about X, roll about Y, yaw about Z. Step sizes are supplied in meters and radians; select directions only.
+These are increments, not absolute Euler angles. In each decision, at most one of yaw, pitch and roll may be positive or negative; the other two must be hold. All three may be hold. Step sizes are supplied in meters and radians; select directions only.
 
 Image directions depend on the camera, and wrist cameras move with their arms. Check subsequent measured state and images to verify actual motion.
 <!-- SHARED_ACTION_DESCRIPTION_END -->
 
 ## Exact implementation convention
 
-For signs s_x, s_y, s_z, s_yaw, s_pitch, s_roll in {-1, 0, +1}, translation increments have the specified world components. With the configured per-channel rotation increments, R_next = Rz(delta_yaw) @ Ry(delta_roll) @ Rx(delta_pitch) @ R_current. The flange target is an internal implementation detail and is omitted from the model-facing description as requested.
+For signs s_x, s_y, s_z, s_yaw, s_pitch, s_roll in {-1, 0, +1}, translation increments have the specified world components. Require count_nonzero([s_yaw, s_pitch, s_roll]) <= 1. With configured per-channel rotation increments, yaw alone uses R_next = Rz(delta_yaw) @ R_current; pitch alone uses R_next = Rx(delta_pitch) @ R_current; roll alone uses R_next = Ry(delta_roll) @ R_current. All hold uses R_next = R_current. A future runtime must reject an output with multiple nonzero rotation channels before robot execution, rather than silently selecting an axis. This change does not restrict simultaneous translation channels or decide whether translation and one rotation may execute together. The flange target is an internal implementation detail and is omitted from the model-facing description as requested.
 
 The demonstration uses only one nonzero channel at a time, +0.05 m for translations or +pi/6 rad for rotations. These totals are demonstrations, not a proposed single-decision step size. The native simulator follows a dense sequence of small joint commands, with fresh measured state and RGB recording.
 
