@@ -517,3 +517,4 @@
 - 【Agent】【2026-10-18 03:02】[op] 新建实验块 EXP-2026W42-282：v11准备受阻与stack1 IK终止；空实现紧凑处理指导的两任务对照  ↪ `EXP-2026W42-282`
 - 【Agent】【2026-10-18 03:05】[op] 会话01a12b86：v11 9轮blocked，stack1 450步IK拒绝不完整，末阶段lift目标已null。新增可选compact处理指导421词，对照默认1105词，固定动作/8问/schema逐字不变，语法/英文/接口/shell检查通过。v12空实现stack3/classify1 PID345465/346183在GPU6/7注册；旧两Luna继续，未重放结束回合。
 - 【Agent】【2026-10-18 03:06】[op] 会话01a12b86：核验v12 stack3/classify1实际英文请求为compact且无旧实现；新增stack0/classify0 PID372764/373340，不同布局、空实现，四路准备与两旧控制安全并行。EXP282/Discussion/README/Timeline回写，v11完成验证脚本删除并留SHA，固定部分未改。
+- 【Agent】【2026-10-18 03:08】[op] 会话01a12b86：v12四份实际英文context均核验compact且无旧实现；末次旧修复Luna320步、v10 175步继续，六路存活、81GiB空闲。d7c66d6b已SSH推送与bundle同步，既有15分钟监督已更新当前指针，无完整成功。
