@@ -100,48 +100,95 @@ def export_sample(runs,output):
     (output/'sample.json').write_text(json.dumps(dict(task=1144,init=5,decision='0000',records=records),indent=2)+'\n')
 
 
+def summarize_rows(rows,expected):
+    per_task={};categories=Counter();total_counts=Counter();total_axes=Counter()
+    for item in rows:
+        categories[item['category']]+=1
+        audit=item.get('audit',{})
+        total_counts.update(audit.get('counts',{}))
+        total_axes.update(audit.get('nominal_axis_agreement',{}))
+        task=per_task.setdefault(str(item['task']),dict(completed=0,native=0,joint=0,failures=[]))
+        task['completed']+=1;task['native']+=int(item['native'] is True)
+        task['joint']+=int(item['joint'] is True)
+        if not item['joint']:
+            task['failures'].append({k:item[k] for k in ('init','stage','error','category')})
+    return dict(completed=len(rows),expected=expected,
+        native=sum(r['native'] is True for r in rows),joint=sum(r['joint'] is True for r in rows),
+        categories=categories,per_task=per_task,episodes=rows,
+        input_audit_counts=total_counts,nominal_axis_agreement=total_axes)
+
+
+def collect_root(root,audit_inputs):
+    specification=read(root/'campaign.json')
+    if audit_inputs:
+        for name,expected in specification['adapter_source_sha256'].items():
+            # An explicit replacement may update queue eligibility only. All
+            # inference sources must still equal the original frozen manifest.
+            if name!='run_libero_campaign.py':
+                assert hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()==expected,name
+    rows=[]
+    for folder in sorted(root.glob('task-*-init-*')):
+        if not (folder/'outcome.json').exists():
+            continue
+        row=read(folder/'outcome.json');result=row.get('native_result') or {}
+        item=dict(task=row['task'],init=row['init'],category=row['category'],
+            native=row['native_success'],joint=row['joint_success'],
+            decisions=row['decision_answers'],steps=result.get('native_steps'),
+            stage=result.get('stage'),error=result.get('error'),source=str(folder))
+        if audit_inputs:
+            item['audit']=audit_case(folder)
+        rows.append(item)
+    return summarize_rows(rows,specification['expected_episodes'])
+
+
+def combine_transport_replacements(primary,root,replacement,audit_inputs):
+    original_spec=read(root/'campaign.json');new_spec=read(replacement/'campaign.json')
+    assert new_spec['request_profile']==original_spec['request_profile']
+    for name,expected in original_spec['adapter_source_sha256'].items():
+        if name!='run_libero_campaign.py':
+            assert new_spec['adapter_source_sha256'][name]==expected,name
+    authorized={}
+    for source in new_spec['transport_replacements']:
+        key=(source['task'],source['init']);assert key not in authorized
+        case=root/f'task-{key[0]}-init-{key[1]}'
+        assert Path(source['source']).resolve()==case.resolve()
+        assert hashlib.sha256((case/'outcome.json').read_bytes()).hexdigest()==source['outcome_sha256']
+        assert read(case/'outcome.json')['category']=='transport_or_schema_failure'
+        authorized[key]=source
+    added=collect_root(replacement,audit_inputs)
+    replacement_rows={(r['task'],r['init']):r for r in added['episodes']}
+    assert set(replacement_rows)<=set(authorized)
+    selected=[]
+    for row in primary['episodes']:
+        key=(row['task'],row['init'])
+        if key in replacement_rows:
+            assert row['category']=='transport_or_schema_failure'
+            row={**replacement_rows[key],'replaces_interrupted_source':row['source']}
+        selected.append(row)
+    primary['transport_replacements']=added
+    primary['effective']=summarize_rows(selected,primary['expected'])
+    primary['effective']['interpretation']='Original normal outcomes plus source-linked complete episodes for explicit gateway/connection interruptions only. Original attempts remain in the primary and replacement records.'
+    primary['attempted_total']=primary['completed']+added['completed']
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--runs-root',type=Path,default=Path('code/runs'))
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--audit-inputs',action='store_true')
     p.add_argument('--sample-output',type=Path)
+    p.add_argument('--include-transport-replacements',action='store_true',
+        help='Include only separately recorded source-linked *-v1-transport campaigns; retain originals')
     a=p.parse_args()
     summary={}
     for label in ('full','marker','axes'):
         root=a.runs_root/f'2026-10-17-libero-rgb-motion-{label}-v1'
         if not (root/'campaign.json').exists():
             continue
-        rows=[]
-        per_task={}
-        categories=Counter()
-        total_counts=Counter()
-        total_axes=Counter()
-        for folder in sorted(root.glob('task-*-init-*')):
-            if not (folder/'outcome.json').exists():
-                continue
-            row=read(folder/'outcome.json')
-            categories[row['category']]+=1
-            result=row.get('native_result') or {}
-            item=dict(task=row['task'],init=row['init'],category=row['category'],
-                native=row['native_success'],joint=row['joint_success'],
-                decisions=row['decision_answers'],steps=result.get('native_steps'),
-                stage=result.get('stage'),error=result.get('error'),source=str(folder))
-            if a.audit_inputs:
-                audit=audit_case(folder)
-                item['audit']=audit
-                total_counts.update(audit['counts'])
-                total_axes.update(audit['nominal_axis_agreement'])
-            rows.append(item)
-            task=per_task.setdefault(str(row['task']),dict(completed=0,native=0,joint=0,failures=[]))
-            task['completed']+=1;task['native']+=int(row['native_success'] is True)
-            task['joint']+=int(row['joint_success'] is True)
-            if not row['joint_success']:
-                task['failures'].append(dict(init=row['init'],stage=item['stage'],error=item['error'],category=item['category']))
-        summary[label]=dict(completed=len(rows),expected=30,
-            native=sum(r['native'] is True for r in rows),joint=sum(r['joint'] for r in rows),
-            categories=categories,per_task=per_task,episodes=rows,
-            input_audit_counts=total_counts,nominal_axis_agreement=total_axes)
+        summary[label]=collect_root(root,a.audit_inputs)
+        replacement=root.with_name(root.name+'-transport')
+        if a.include_transport_replacements and (replacement/'campaign.json').exists():
+            combine_transport_replacements(summary[label],root,replacement,a.audit_inputs)
     a.output.parent.mkdir(parents=True,exist_ok=True)
     a.output.write_text(json.dumps(dict(updated_at=datetime.now(timezone.utc).isoformat(),conditions=summary),indent=2)+'\n')
     if a.sample_output:
