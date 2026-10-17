@@ -54,6 +54,10 @@ def main():
             sent=api.revise(original)
             payload=api.payload_from_views(sent, views, dispatch['measured_robot'])
             api.validate_payload(payload)
+            assert not set(api.input_audit()).intersection({
+                'profile','key_origin','endpoint','image_count','experience_injection',
+                'state_sha256','requested_model','provider_called','original_request_sha256',
+                'schema_constant_questions','retry_policy'})
             if task==1144 and stage=='approach':
                 (api.asset_root/'prepared-request-NOT-SENT.json').write_text(json.dumps(payload,indent=2)+'\n')
                 texts=[p['text'] for p in payload['input'][0]['content'] if p['type']=='input_text']

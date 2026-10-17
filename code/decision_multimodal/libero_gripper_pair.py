@@ -14,6 +14,13 @@ class PairedArrowsAPI(InFrameAxesAPI):
     condition = 'matched_current_gripper_arrows'
     draw_arrows = True
 
+    def input_audit(self):
+        # The common dispatcher supplies this field itself. Keep it in the
+        # archived preview metadata, but never duplicate a dispatcher keyword.
+        audit = dict(self.last_input_metadata)
+        audit.pop('experience_injection', None)
+        return audit
+
     def transform_views(self, views, robot):
         if self.draw_arrows:
             folder = self.asset_root/'gripper-inputs'
