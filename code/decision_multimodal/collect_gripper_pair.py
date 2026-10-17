@@ -11,6 +11,7 @@ from pathlib import Path
 from PIL import Image
 from legacy_decisions import english
 from libero_gripper_pair import PairedArrowsAPI, PairedRawAPI
+from run_libero_campaign import connection_interruption
 
 
 def digest(value):
@@ -32,7 +33,7 @@ def collect(root, kind):
         if outcome is None:
             continue
         task,init=int(case.name.split('-')[1]),int(case.name.split('-')[3])
-        records=[]
+        records=[]; case_direction=Counter()
         for folder in sorted((case/'multimodal/decision-api').glob('*')):
             if not (folder/'request.json').is_file():
                 continue
@@ -94,6 +95,8 @@ def collect(root, kind):
                         continue
                     directional['outside_original_deadband_axes']+=1
                     directional['correct_sign']+=int(choice==('positive' if error>0 else 'negative'))
+                    case_direction['outside_original_deadband_axes']+=1
+                    case_direction['correct_sign']+=int(choice==('positive' if error>0 else 'negative'))
                 choices={axis:answer.get('answers',{}).get(axis,{}).get('choice') for axis in 'xyz'}
             records.append(dict(decision=folder.name,stage=stage,answered=answered,
                 observation=dispatch['camera_views'][0]['native_observation_counter'],
@@ -109,7 +112,7 @@ def collect(root, kind):
             program_finished=outcome['program_finished'],joint_success=outcome['joint_success'],
             category=outcome['category'],decisions=outcome['decision_answers'],
             stage=result.get('stage'),native_steps=result.get('native_steps'),
-            error=result.get('error'),request_records=records))
+            error=result.get('error'),nominal_direction_diagnostic=dict(case_direction),request_records=records))
     per_task={str(task):dict(n=sum(e['task']==task for e in episodes),
         native=sum(e['task']==task and e['native_success'] is True for e in episodes),
         joint=sum(e['task']==task and e['joint_success'] for e in episodes))
@@ -127,15 +130,50 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--arrows',type=Path,required=True)
     parser.add_argument('--raw',type=Path,required=True)
+    parser.add_argument('--arrows-replacement',type=Path)
+    parser.add_argument('--raw-replacement',type=Path)
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
-    groups={}; starts={}
+    groups={}; starts={}; replacements={}; effective={}
     for name in ('arrows','raw'):
         groups[name],starts[name]=collect(getattr(args,name),name)
+        episodes={(e['task'],e['init']):e for e in groups[name]['episodes']}
+        replacement=getattr(args,name+'_replacement')
+        if replacement:
+            replacements[name],_=collect(replacement,name)
+            spec=json.loads((replacement/'campaign.json').read_text())
+            provenance={(p['task'],p['init']):p for p in spec['transport_replacements']}
+            assert len(provenance)==replacements[name]['completed']
+            for row in replacements[name]['episodes']:
+                key=(row['task'],row['init']); origin=provenance[key]
+                case=getattr(args,name)/f'task-{key[0]}-init-{key[1]}'
+                assert episodes[key]['category']=='transport_or_schema_failure'
+                assert hashlib.sha256((case/'outcome.json').read_bytes()).hexdigest()==origin['outcome_sha256']
+                failures=list((case/'multimodal/decision-api').glob('*/failure.json'))
+                assert failures and all(connection_interruption(json.loads(p.read_text())) and
+                    not (p.parent/'response.json').exists() and not (p.parent/'legacy-response.json').exists()
+                    for p in failures)
+                row['replaces_source']=origin['source']
+                episodes[key]=row
+        rows=list(episodes.values())
+        per_task={str(t):dict(n=sum(e['task']==t for e in rows),
+            native=sum(e['task']==t and e['native_success'] is True for e in rows),
+            joint=sum(e['task']==t and e['joint_success'] for e in rows)) for t in sorted({e['task'] for e in rows})}
+        direction=Counter()
+        for row in rows:
+            direction.update(row['nominal_direction_diagnostic'])
+        effective[name]=dict(completed=len(rows),native_successes=sum(e['native_success'] is True for e in rows),
+            joint_successes=sum(e['joint_success'] for e in rows),
+            terminal_stages=dict(Counter(str(e['stage']) for e in rows)),
+            categories=dict(Counter(e['category'] for e in rows)),
+            nominal_direction_diagnostic=dict(direction),
+            actual_requests=sum(len(e['request_records']) for e in rows),
+            valid_responses=sum(sum(r['answered'] for r in e['request_records']) for e in rows),
+            per_task=per_task,episodes=rows)
     keys=sorted(set(starts['arrows'])&set(starts['raw']))
     paired=[dict(task=t,init=i,
         initial_nonimage_input_identical=starts['arrows'][(t,i)]['nonimage_sha256']==starts['raw'][(t,i)]['nonimage_sha256']) for t,i in keys]
-    result=dict(groups=groups,paired_initial_inputs=paired,
+    result=dict(groups=groups,replacements=replacements,effective=effective,paired_initial_inputs=paired,
         experience_injection=False,interpretation='Actual recorded attempts; normal failures retained. Native and joint completion are separate. Not pure RGB.')
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(result,indent=2)+'\n')
