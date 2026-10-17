@@ -237,6 +237,7 @@ graph LR
     T_2026W42_129["📊 robodojo-planner-advancer-v1<br/>公共速率信息预测与实际目标路径一致；Jev…"]:::experiment
     T_2026W42_130["📊 robodojo-planner-advancer-v1<br/>紫块视觉离桌但lift必需输入null；独…"]:::experiment
     T_2026W42_131["📊 robodojo-planner-advancer-v1<br/>lift31次源拟合及目标持续缺失，19次…"]:::experiment
+    T_2026W42_132["📊 robodojo-planner-advancer-v1<br/>stack1具名550步完整失败；lift…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -430,6 +431,7 @@ graph LR
   T_2026W42_128 --> T_2026W42_129
   T_2026W42_129 --> T_2026W42_130
   T_2026W42_130 --> T_2026W42_131
+  T_2026W42_131 --> T_2026W42_132
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -655,6 +657,7 @@ graph LR
 | `T-2026W42-129` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 公共速率信息预测与实际目标路径一致；Jev仍选超限组合，Luna限速内仍20.23mm误差，信息/执行必须分评 | `EXP-2026W42-294` | - |
 | `T-2026W42-130` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 紫块视觉离桌但lift必需输入null；独立修正5.07mm机器人参考后仍invalid，未启动相似新回合 | `EXP-2026W42-295` | - |
 | `T-2026W42-131` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | lift31次源拟合及目标持续缺失，19次上移仍0advance；RGB支持夹起，分类额外点尚非具名抓持关系 | `EXP-2026W42-296` | - |
+| `T-2026W42-132` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | stack1具名550步完整失败；lift43/46输入缺失，末段open后源物回桌面，不能只归数据空 | `EXP-2026W42-297` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

@@ -240,3 +240,12 @@ A frozen stack1 lift_purple audit covers31 executed decisions067–097, ending32
 Current classification0 decision109 supplies18 unclassified stereo P points and public robot/tool effects, without an explicit semantic toy-to-finger residual or retention measurement. Classification1 decision186 supplies three unclassified feature proposals; holding/containment evidence remains null and wrist RGB shows the white pen on the tabletop. RGB is still required to infer these task relations. This audit does not establish a unique cause or rank models. See exp296-coverage-audit.json, exp296-input-coverage and exp296-stack-lift-evidence. Audits remain outer-only and are not model history or experience.
 
 Latest five Luna snapshots are930/555/355/485/230 steps, all running with no new terminal or full success. No new model/native episode, source change or additional metadata condition was introduced. Sol quota restrictions remain active; storage is30.62GiB free, above the pruning threshold.
+
+
+## Stack1 named-IK native terminal (EXP297)
+
+processing-v6-stack1-ik-named-luna01 / PID2335753 ended at550 native steps: complete=true, native_success=false, score0. It produced113 answers with3 advances, and ended in lift_purple. Executed phases: approach16, engage47, secure1, lift46. This episode must not be resumed or resampled.
+
+The complete lift segment has43/46 invalid source fits and null goal/translation inputs,20 positive-Z choices,20 all-motion-hold choices and no advance. Purple is visible between fingers before decision108; that output opens the gripper while choosing negative Z/pitch. Subsequent wrist/high RGB supports loss of retention and purple back on the tabletop, with an empty hand above. Only decisions110–112 restore a valid fit, now for the tabletop source; this is not retained-source progress. Their positive about81mm scalar Z goals and negative-Z choices cannot alone characterize a usable recovery policy. The last saved input images precede step550, at545; no postterminal image is claimed. exp297-stack-terminal contains raw images, SHA index, actual payloads, outputs and complete audit.
+
+Four classification Luna controls continue at snapshot1060/690/490/350 steps, without a new full success. Storage remains28.63GiB free. No running source, prompt, gate, physics or processor was changed; no new Sol request or native episode was launched. Existing quota restrictions remain active. Terminal and RGB audits remain outer-only, not injected experience.

@@ -582,3 +582,6 @@
 - 【Agent】【2026-10-18 06:17】[op] 新建实验块 EXP-2026W42-296：冻结控制阶段输入持续缺失与当前实体证据审查  ↪ `EXP-2026W42-296`
 - 【Agent】【2026-10-18 06:18】[result] 叠方块lift阶段31次已执行决策全部源拟合invalid、目标/误差null，20次Z+、11次全保持、0advance；当前RGB紫块仍指间离桌，非仅观察停滞。class0 18泛化P点无显式源物残差，class1 3个F候选且持物/容纳证据null，白笔仍桌面。不改源或提示，不新调Sol。  ↪ `EXP-2026W42-296`
 - 【Agent】【2026-10-18 06:18】[note] 更正上一条手工计数：JSON统计为19次Z正向，另1次非全保持但Z保持；全轴保持11次，总31次。以exp296-coverage-audit.json为准。  ↪ `EXP-2026W42-296`
+- 【User】【2026-10-18 06:31】[intent] 继续company-server-2冻结实验；先最新状态，不恢复结束回合，不新调配额阻塞的Sol。
+- 【Agent】【2026-10-18 06:31】[op] 新建实验块 EXP-2026W42-297：具名stack1原生550步终局及完整提升段输入审查  ↪ `EXP-2026W42-297`
+- 【Agent】【2026-10-18 06:32】[result] stack1具名Luna PID2335753已550步完整失败successfalse/score0，113答3advance末lift。完整lift46段43次invalid/null，20次Z+20次全hold，0advance。decision108前腕图紫块仍指间，模型open后109离指、110及末图紫块桌面/手空。最后3次valid不是仍持物。保留终局不恢复，不把失败只归缺数据。  ↪ `EXP-2026W42-297`
