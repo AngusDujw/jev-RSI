@@ -77,6 +77,14 @@ def classify(directory, returncode, termination):
                 decision_answers=answers)
 
 
+def connection_interruption(failure):
+    if failure['error_type'] in ('URLError', 'RemoteDisconnected', 'TimeoutError', 'ConnectionResetError'):
+        return True
+    # This gateway interruption returned no provider response. Do not admit
+    # HTTP4xx, schema errors, or any answered decision as a replacement case.
+    return failure['error_type']=='HTTPError' and failure.get('error')=='HTTP Error 520: <none>'
+
+
 class Campaign:
     def __init__(self, args):
         self.args = args
@@ -128,8 +136,11 @@ class Campaign:
                 if row['category'] != 'transport_or_schema_failure':
                     continue
                 case = previous/f'task-{row["task"]}-init-{row["init"]}'
-                failures = [json.loads(p.read_text()) for p in (case/'multimodal/decision-api').glob('*/failure.json')]
-                if not failures or any(f['error_type'] not in ('URLError', 'RemoteDisconnected', 'TimeoutError', 'ConnectionResetError') for f in failures):
+                failure_paths = list((case/'multimodal/decision-api').glob('*/failure.json'))
+                failures = [json.loads(p.read_text()) for p in failure_paths]
+                if (not failures or any(not connection_interruption(f) for f in failures)
+                        or any((p.parent/'response.json').exists() or (p.parent/'legacy-response.json').exists()
+                               for p in failure_paths)):
                     raise ValueError('Only explicit connection faults may receive a replacement episode')
                 replacement_cases.add((row['task'], row['init']))
                 provenance.append(dict(task=row['task'], init=row['init'], source=str(case),
