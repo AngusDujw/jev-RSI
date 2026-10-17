@@ -337,3 +337,6 @@
 - 【Agent】【2026-10-17 10:39】[op] 会话daily-progress-sync，轮次20261017-01：已创建并启用AgentsDock每日12:00定时同步任务，首次2026-10-17 12:00；审阅代码与进度后通过现有SSH push地址提交推送，无变更跳过，排除缓存、工作树、密钥及大型产物，冲突不强推。CIRCLE-1两主题建议基于既有证据收敛，不改变研究决策。
 - 【User】【2026-10-17 12:00】[intent] 执行每日北京时间12:00项目进度同步：审阅代码、配置与进度文档后用SSH正常提交推送，排除缓存与大型产物，不启动实验。
 - 【Agent】【2026-10-17 12:00】[op] 会话daily-progress-sync，轮次20261017-02：审阅AGENTS.md唯一未提交变更§9.2，明确整体Agent维护全英文经验及完整模型请求，管理要求不注入内部提示词；本轮仅同步该协议增补与流水，无新实验。main与SSH远程main起点一致c2c857f0，暂存区为空，排除.cache/.playwright-cli/.worktrees/；CIRCLE-1两个主题建议据已有证据汇总边界后由用户收敛决策。
+- 【User】【2026-10-17 21:10】[intent] 调研是否已有使用OpenAI专用decision model控制机器人的工作；优先检索Zotero，区分Decisions API与通用LLM控制。
+- 【Agent】【2026-10-17 21:12】[op] 新建实验块 EXP-2026W42-202：--help  ↪ `EXP-2026W42-202`
+- 【Agent】【2026-10-17 21:13】[result] 会话openai-decision-robotics，轮次20261017-01：完成专用Decisions API查新；核对System1-Arena预印本、SO-101实机原文和robojev仿真；补EXP202与Discussion，未改控制代码/目标/提示词，未发模型请求。Zotero锁定与浏览器无连接如实记录。  ↪ `EXP-2026W42-202`
