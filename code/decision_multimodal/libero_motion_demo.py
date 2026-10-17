@@ -18,7 +18,7 @@ def main():
     cache = out / 'cache'
     cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
-                      MUJOCO_GL='egl', MUJOCO_EGL_DEVICE_ID='0',
+                      MUJOCO_GL='egl', MUJOCO_EGL_DEVICE_ID=os.environ.get('CUDA_VISIBLE_DEVICES', '4').split(',')[0],
                       TMPDIR=str(cache), XDG_CACHE_HOME=str(cache))
     sys.path.insert(0, args.libero_root)
     import numpy as np
