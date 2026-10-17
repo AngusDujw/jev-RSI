@@ -498,3 +498,4 @@
 - 【Agent】【2026-10-18 02:12】[op] 会话01a12b86：EXP278补全，真实du探针已恢复且为一次成功请求；同请求空传输重试、旧配对信息协议推断、旋转参考三轴正号及英文检查通过。v6 classify0返回明确blocked未误进推进器；v7原生预算与视觉关系参考独立准备启动，原4路EOF终局保留。
 - 【Agent】【2026-10-18 02:15】[op] 会话01a12b86：v5/v6 stack3分别27/26阶段交付且只读processor通过；启动v5同layout/SHA Jev无图配对PID3922334。v7分拣7轮后blocked0动作，实际输入协议native/工具几何/预算均启用；下一独立初始规划澄清处理实现验证不要求初始图证明所有未来接触，保持固定职责与接口。
 - 【Agent】【2026-10-18 02:16】[op] 会话01a12b86：新增v6 stack3 Jev无图配对PID3932252及v8 classify1初始准备PID3934907；GPU5非campaign进程准入拒绝，安全改GPU7。AST/英文/相同请求重试回归、shell、严格LOG lint通过，未创建测试脚本。EXP278与Discussion已回写，未计准备/探针为成功。
+- 【Agent】【2026-10-18 02:19】[op] 会话01a12b86：v5/v6 Luna125/110步已gray_close/gray_descend，最大TCP误差0.909/0.914mm；两Jev15/10步因多旋转不完整，拒绝重采样或修答。删除6个本campaign已完成独立测试脚本并留SHA，更新持续监督job。代码3e1c52d5已SSH推送并bundle同步隔离远端，原生回合继续。
