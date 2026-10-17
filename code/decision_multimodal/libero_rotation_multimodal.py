@@ -121,7 +121,7 @@ class RotationAPI(LegacyAPI):
                 orientation_card=str(card_path),orientation_card_sha256=hashlib.sha256(self.visual.card).hexdigest(),
                 numeric_orientation_residual_sent=False,numeric_robot_pose_sent=False,
                 target_source='Frozen RGB-D task geometry and measured own robot orientation',
-                candidate_ranking_sent=False,experience_injection=False)
+                candidate_ranking_sent=False)
             criteria={name:('Keep the current tool orientation' if name=='hold' else
                 'Apply the single world-axis rotation shown in panel '+name) for name,_ in options}
             request=dict(model='gpt-6-luna',state=dict(task=original['state']['task'],stage=stage,
