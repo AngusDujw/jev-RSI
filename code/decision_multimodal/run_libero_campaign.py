@@ -173,7 +173,7 @@ class Campaign:
                 specification['text_profiles'] = '1423:clarity-v3;1144/1202/1252/1296:clarity-v2;others:original'
                 specification['repetitions_per_task'] = 3
                 specification['input_condition'] = args.profile
-                if args.profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2'):
+                if args.profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2','libero-rgb-rotation-dials-v3'):
                     for name in ('libero_rotation_multimodal.py','libero_rotation_images.py',
                                  'libero_rotation_setup.py','libero_hybrid_vision.py',
                                  'libero_inframe_axes.py','libero_motion_multimodal.py',
@@ -185,7 +185,7 @@ class Campaign:
                         fine_rotation_gate='max absolute camera/robot-derived residual below0.12rad; not sent to visual role',
                         numeric_rotation_in_visual=False,experience_injection=False,
                         own_pose_setup='Task1335 only: world rotation vector +/-[12,-12,25]degrees; recorded separately')
-                    if args.profile=='libero-rgb-rotation-dials-v2':
+                    if args.profile in ('libero-rgb-rotation-dials-v2','libero-rgb-rotation-dials-v3'):
                         p=Path(__file__).with_name('libero_rotation_dials.py')
                         specification['adapter_source_sha256'][p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
                         specification.update(orientation_input='Two current RGB plus algorithm-derived angular feedback dials',
@@ -315,7 +315,7 @@ class Campaign:
             manifest['comparison'] = 'Revised prompts/interface; original frozen policy, processing, thresholds, stages and paired initial states'
             if self.args.profile.startswith('libero-rgb-'):
                 manifest['actor_images'] = 2
-                if self.args.profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2'):
+                if self.args.profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2','libero-rgb-rotation-dials-v3'):
                     manifest['actor_images']='3 in coarse rotation call; 0 in numerical motor call'
                 if self.args.profile.startswith('libero-rgb-hybrid-'):
                     manifest['actor_images']='1 in visual role; 0 in motor role'
@@ -365,7 +365,8 @@ class Campaign:
         while not self.stop.is_set():
             # Reserve the original 600MiB cap per active slot plus 8GiB headroom.
             slot_mb = 1500 if self.args.profile.startswith('libero-rgb-') else 600
-            reserve = 8*1024**3 + len(self.args.gpus)*self.args.jobs_per_gpu*slot_mb*1024**2
+            workers=sum(self.args.workers_per_gpu) if self.args.workers_per_gpu else len(self.args.gpus)*self.args.jobs_per_gpu
+            reserve = 8*1024**3 + workers*slot_mb*1024**2
             if shutil.disk_usage(self.root).free < reserve:
                 self.stop.set()
                 self.ledger(dict(event='storage_guard', free_bytes=shutil.disk_usage(self.root).free))
@@ -390,9 +391,11 @@ class Campaign:
     def run(self):
         signal.signal(signal.SIGTERM, self.interrupt)
         signal.signal(signal.SIGINT, self.interrupt)
-        slots = self.args.gpus*self.args.jobs_per_gpu
+        slots = ([gpu for gpu,count in zip(self.args.gpus,self.args.workers_per_gpu) for _ in range(count)]
+                 if self.args.workers_per_gpu else self.args.gpus*self.args.jobs_per_gpu)
         self.ledger(dict(event='foreground_invocation', gpus=self.args.gpus,
             jobs_per_gpu=self.args.jobs_per_gpu, max_new_episodes=self.args.max_new_episodes))
+        if self.args.workers_per_gpu:self.ledger(dict(event='explicit_worker_slots',physical_gpus=slots))
         with ThreadPoolExecutor(max_workers=len(slots)) as pool:
             futures = [pool.submit(self.worker, gpu) for gpu in slots]
             for future in futures:
@@ -411,9 +414,11 @@ def main():
     parser.add_argument('--key-file', required=True, type=Path)
     parser.add_argument('--gpus', type=int, nargs='+', default=[4, 5, 6, 7])
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3, 4, 5, 6], default=1)
+    parser.add_argument('--workers-per-gpu',type=int,nargs='+',choices=[1,2,3,4,5,6],
+                        help='Explicit safe worker counts in the same order as --gpus')
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1', 'libero-rgb-gripper-pair-arrows-v1', 'libero-rgb-gripper-pair-raw-v1', 'libero-rgb-hybrid-coarse-x-v1', 'libero-rgb-hybrid-cabinet-x-v2', 'libero-rgb-rotation-candidates-v1', 'libero-rgb-rotation-dials-v2'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1', 'libero-rgb-gripper-pair-arrows-v1', 'libero-rgb-gripper-pair-raw-v1', 'libero-rgb-hybrid-coarse-x-v1', 'libero-rgb-hybrid-cabinet-x-v2', 'libero-rgb-rotation-candidates-v1', 'libero-rgb-rotation-dials-v2', 'libero-rgb-rotation-dials-v3'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--replace-transport-from', type=Path,
                         help='Explicit new episodes for connection-interrupted cases only; preserve original outcomes')
@@ -426,6 +431,8 @@ def main():
         parser.error('Episode limit must be positive')
     if not args.gpus or len(set(args.gpus)) != len(args.gpus) or not set(args.gpus) <= set(GPU_UUIDS):
         parser.error('Only distinct physical GPUs4..7 are authorized')
+    if args.workers_per_gpu and len(args.workers_per_gpu)!=len(args.gpus):
+        parser.error('One explicit worker count is required for each physical GPU')
     args.baselines = args.baselines.resolve()
     args.key_file = args.key_file.resolve()
     if not args.key_file.is_file() or args.key_file.name != 'du-openai-direct.key':

@@ -64,6 +64,10 @@ class DialRotationAPI(RotationAPI):
         label={'turn':'Turn','verify':'Verify','grasp':'Grasp','test_lift':'Grasp',
             'lift':'Grasp','lower':'Place','release':'Release','retreat':'Release',
             'carry':'Position'}.get(name,'Align')
+        if self.task==1458:
+            if name in ('select','approach','align','descend','grasp','test_lift','lift','recover_open','recover_up'):
+                label='Grasp'
+            elif name in ('carry','carry_lateral','orient_receiver'):label='Align'
         plan=next((g for g in goals if g['name']==label),goals[0])
         local_plan=dict(name=plan['name'],goal=plan['goal'])
         raw=None;choices={}

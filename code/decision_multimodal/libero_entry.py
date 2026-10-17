@@ -36,13 +36,13 @@ def main():
     elif profile == 'libero-clarity-v3':
         from libero_prompt_revision_v2 import RecoveryAPI
         api.API = RecoveryAPI
-    elif profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2'):
+    elif profile in ('libero-rgb-rotation-candidates-v1','libero-rgb-rotation-dials-v2','libero-rgb-rotation-dials-v3'):
         from libero_multimodal import install_stream
         from libero_rotation_multimodal import RotationAPI
         from libero_rotation_setup import install
         install_stream(args.arguments)
         install(args.arguments)
-        if profile=='libero-rgb-rotation-dials-v2':
+        if profile in ('libero-rgb-rotation-dials-v2','libero-rgb-rotation-dials-v3'):
             from libero_rotation_dials import DialRotationAPI
             api.API=DialRotationAPI
         else:api.API=RotationAPI

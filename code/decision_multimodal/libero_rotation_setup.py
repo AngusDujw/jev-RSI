@@ -11,7 +11,15 @@ def install(arguments):
     from libero.libero.envs.env_wrapper import ControlEnv
     from scipy.spatial.transform import Rotation
     import numpy as np
+    import libero_multimodal as stream
     original=ControlEnv.set_init_state
+    original_step=ControlEnv.step
+
+    def budgeted_step(env,*args,**kwargs):
+        if stream.CURRENT.tick>=600:
+            raise RuntimeError('Combined native600-step budget exhausted, including own-robot setup')
+        return original_step(env,*args,**kwargs)
+    ControlEnv.step=budgeted_step
 
     def perturbed(env,*args,**kwargs):
         obs=original(env,*args,**kwargs)
