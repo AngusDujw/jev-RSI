@@ -1,0 +1,6 @@
+# Project-local overlay; do not install into the shared Isaac environment.
+# Native references: RoboDojo/scripts/requirements.txt and XPolicyLab/pyproject.toml.
+msgpack-numpy==0.4.8
+transforms3d==0.4.2
+shapely==2.2.0
+rtree==1.4.1

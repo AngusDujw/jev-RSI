@@ -62,5 +62,13 @@
     "development": "independent native success; plan completion alone does not qualify",
     "stability": "freeze prompts and implementation; at least 9 of 10 independent runs across layouts 0 through 4 with two repeats each; retain failures in denominator",
     "scope": "development gate, not official 50-episode benchmark equivalence"
+  },
+  "later_comparison": {
+    "trigger": "when substantial text-derived additional information is introduced",
+    "primary": "du gpt-6-luna with RGB and additional information",
+    "paired": "Jev with identical additional information and no images",
+    "not_a_replacement": true,
+    "credential": ".private/jev.key",
+    "reference": "https://docs.typesafe.ai/api"
   }
 }

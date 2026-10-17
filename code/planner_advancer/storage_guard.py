@@ -25,8 +25,11 @@ def prune(root):
             pid=run/'worker.pid'
             if pid.exists():
                 try:
-                    os.kill(int(pid.read_text()),0)
-                    continue
+                    value=int(pid.read_text())
+                    os.kill(value,0)
+                    stat=Path(f'/proc/{value}/stat')
+                    if not stat.exists() or stat.read_text().split()[2]!='Z':
+                        continue
                 except ProcessLookupError:
                     pass
             for path in run.rglob('*'):

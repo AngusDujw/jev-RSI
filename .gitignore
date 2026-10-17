@@ -11,6 +11,7 @@ venv/
 .env
 .env.local
 .private/
+.deps/
 
 # Jupyter
 .ipynb_checkpoints/

@@ -7,8 +7,11 @@ from pathlib import Path
 import sys
 import traceback
 import time
+import types
 
 import numpy as np
+import cv2  # Pin the environment's compatible binary before Kit adjusts sys.path.
+import rtree  # Pin the project wheel, including its libspatialindex, before Kit.
 from models import call, dump, english
 
 AXES = ('x','y','z','yaw','pitch','roll')
@@ -45,6 +48,9 @@ def main():
     app = AppLauncher(args).app
     session = env = None
     try:
+        from isaacsim.core.utils.extensions import enable_extension
+        enable_extension('isaacsim.sensors.camera')
+        enable_extension('isaacsim.replicator.behavior')
         import carb
         settings = carb.settings.get_settings()
         for k,v in [('/physics/updateToUsd',True),('/app/renderer/waitIdle',True),('/app/hydraEngine/waitIdle',True)]:
@@ -60,6 +66,14 @@ def main():
         utils.__path__=[str(Path(ROOT_DIR)/'utils')]
         from utils.load_file import load_yaml
         from utils.pipeline_utils import process_config, process_randomization
+        # Native RobotManager eagerly imports cuRobo even with need_planner=False.
+        # Fail closed if this disabled optional component is ever constructed.
+        disabled=types.ModuleType('env.planner_manager.curobo_planner')
+        class DisabledCuroboPlanner:
+            def __init__(self,*unused_args,**unused_kwargs):
+                raise RuntimeError('cuRobo is disabled; only measured-robot IK is allowed in this adapter')
+        disabled.CuroboPlanner=DisabledCuroboPlanner
+        sys.modules[disabled.__name__]=disabled
         from src.eval_client import eval_env
         from hybrid_rollout.robodojo.robodojo_server.server import NoPolicyConnection
         from hybrid_rollout.robodojo.robodojo_server.session import RoboDojoSession,CAMERAS
