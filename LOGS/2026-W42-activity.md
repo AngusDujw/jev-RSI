@@ -595,3 +595,5 @@
 - 【Agent】【2026-10-18 07:17】[result] class0矩阵Luna2077718已1100步完整失败score0、220答0advance30close24open，始终pick_toy_1，不恢复。速率组decision125选择advance后到place，150手在蓝篮附近；复核高/腕图未独立认证持续悬空持物或入篮，不能把阶段推进计成功。余具名/速率继续，源与提示/门未改，无新Sol。  ↪ `EXP-2026W42-299`
 - 【User】【2026-10-18 07:31】[intent] 继续两个既有class0条件至真实终局；Sol配额阻塞不新调、不重复或恢复结束回合，监督追加原EXP。
 - 【Agent】【2026-10-18 07:32】[result] 无新条件监督：具名1055步pick、速率850步place仍运行。速率171腕图蓝篮可见内部无可辨玩偶、指间未见明确保持，高图有遮挡，不认证放置或断言绝无持物。没有新终局/完整成功，22.29GiB未删图，Sol禁令保持。  ↪ `EXP-2026W42-299`
+- 【User】【2026-10-18 07:47】[intent] 继续两路至真实终局；纯监督/终局追加原EXP，不恢复、不新Sol、不增加条件。
+- 【Agent】【2026-10-18 07:47】[result] 具名class0 Luna2307469已1100 complete true/success false/score0，220答0advance20close17open全pick，不恢复。仅速率2526822约970步place继续，当前蓝篮腕图未认证入篮。20.68GiB未删图，现有storage_guard watch PID3007137在运行、阈值20GiB，不能清理活跃源。无新条件或源码改动。  ↪ `EXP-2026W42-299`

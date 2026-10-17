@@ -240,6 +240,7 @@ graph LR
     T_2026W42_132["📊 robodojo-planner-advancer-v1<br/>stack1具名550步完整失败；lift…"]:::experiment
     T_2026W42_133["📊 robodojo-planner-advancer-v1<br/>class1三原图1100完整失败；14c…"]:::experiment
     T_2026W42_134["📊 robodojo-planner-advancer-v1<br/>既有矩阵class0终局1100失败0ad…"]:::experiment
+    T_2026W42_135["📊 robodojo-planner-advancer-v1<br/>既有具名Luna1100步完整失败0adv…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -436,6 +437,7 @@ graph LR
   T_2026W42_131 --> T_2026W42_132
   T_2026W42_132 --> T_2026W42_133
   T_2026W42_133 --> T_2026W42_134
+  T_2026W42_134 --> T_2026W42_135
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -664,6 +666,7 @@ graph LR
 | `T-2026W42-132` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | stack1具名550步完整失败；lift43/46输入缺失，末段open后源物回桌面，不能只归数据空 | `EXP-2026W42-297` | - |
 | `T-2026W42-133` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | class1三原图1100完整失败；14close17open仍未过capture，持物字段全null非无接触证明 | `EXP-2026W42-298` | - |
 | `T-2026W42-134` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 既有矩阵class0终局1100失败0advance；速率已place但切换/搬运图尚不认证保持或入篮，无新条件 | `EXP-2026W42-299` | - |
+| `T-2026W42-135` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 既有具名Luna1100步完整失败0advance；只剩速率place控制，图像尚未认证放置 | `EXP-2026W42-299` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

@@ -273,3 +273,8 @@ Two controls remain active at snapshot: named PID2307469 at920 pick_toy_1; rate 
 
 
 Unchanged-run supervision after EXP299: named Luna PID2307469 is around1055 steps in pick_toy_1, rate Luna PID2526822 around850 in place_toy_1. Rate decision171 active-wrist RGB shows no identifiable toy in the visible basket interior or clearly retained between the finger image regions. High-view arm/source occlusion prevents stronger loss/absence claims; completed placement is not established. oversight-class0-20261018-0730 retains payloads, raw RGB/SHA and status. No new condition, native episode, Sol request, source/prompt change or model memory was introduced.22.29GiB remains free; no pruning. Existing episodes continue, and ended episodes remain sealed.
+
+
+Named classification0 Luna PID2307469 has now ended at1100 native steps with complete=true/native_success=false/score0. It returned220 answers, zero advances,20close and17open commands, all in pick_toy_1. Its last219 input image is preaction at1095 steps and does not establish retained suspension. Do not resume or resample this episode. This is the terminal of the existing EXP292 condition, not a new experiment. oversight-class0-20261018-0745/named_terminal preserves actual payload, raw RGB/SHA and terminal audit.
+
+Only rate-input Luna PID2526822 remains running, around970 steps in place_toy_1. Current195 wrist RGB does not show an identifiable toy in the basket interior; placement remains unestablished.20.68GiB is free and no images were pruned at this audit. Existing storage_guard watcher PID3007137 is active with the20GiB threshold and skips active runs. Sol authorization restrictions and all frozen model/action/physics protocols remain unchanged.

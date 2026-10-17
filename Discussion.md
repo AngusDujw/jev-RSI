@@ -670,3 +670,6 @@
 
 
 【Agent】【2026-10-18】[EXP299既有条件审计](LOGS/2026-W42.md#exp-2026w42-299)：矩阵class0 Luna1100步完整失败score0，220答0advance30close24open，终局不恢复。速率组125输出advance、当前place，复核125/150高腕图仍不足独立认证悬空保持/入篮，不能把阶段切换当成功，也不由遮挡断言抓取一定失败。剩具名920步/速率755步，23.11GiB；无新条件/Sol/源码改动。CIRCLE-1以实体证据和原生终局继续收敛，不按审计编号增加实验条件数。
+
+
+【Agent】【2026-10-18】[EXP299终局补充](LOGS/2026-W42.md#exp-2026w42-299)：既有具名class0 Luna1100步完整失败score0、220答0advance20close17open、全pick，封存不恢复。不是新条件，不由与矩阵/速率的独立轨迹做因果排名。余速率约970步place继续，当前RGB尚未认证入篮；oversight-class0-20261018-0745保存终局/图像SHA。20.68GiB且既有storage_guard watcher运行，Sol禁令与运行源不变，CIRCLE-1继续以实体放置和最终原生结果收敛。
