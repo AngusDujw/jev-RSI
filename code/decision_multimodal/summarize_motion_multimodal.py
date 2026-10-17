@@ -5,6 +5,8 @@ from collections import Counter
 import hashlib
 import json
 from pathlib import Path
+import shutil
+from datetime import datetime, timezone
 
 from legacy_decisions import english
 from libero_motion_multimodal import assert_no_camera_matrices, MOTION_FILE
@@ -74,11 +76,36 @@ def audit_case(case):
     return dict(counts=counts,nominal_axis_agreement=agreement)
 
 
+def export_sample(runs,output):
+    output.mkdir(parents=True,exist_ok=True)
+    records=[]
+    for label in ('full','marker','axes'):
+        folder=runs/f'2026-10-17-libero-rgb-motion-{label}-v1/task-1144-init-5/multimodal/decision-api/0000'
+        if not (folder/'response.json').exists():
+            continue
+        request=read(folder/'request.json');assert_no_camera_matrices(request)
+        content=request['input'][0]['content'];dispatch=read(folder/'dispatch.json')
+        images=[]
+        for part,view in zip([x for x in content if x['type']=='input_image'],dispatch['camera_views']):
+            raw=base64.b64decode(part['image_url'].split(',',1)[1])
+            assert hashlib.sha256(raw).hexdigest()==view['sha256']
+            filename=label+'-'+view['camera']+'.png'
+            (output/filename).write_bytes(raw)
+            images.append(dict(camera=view['camera'],src=filename,sha256=view['sha256']))
+        shutil.copyfile(folder/'request.json',output/(label+'-actual-request.json'))
+        records.append(dict(condition=label,motion_description=content[0]['text'],
+            state=json.loads(content[1]['text']),context=json.loads(content[2]['text']),
+            questions=request['questions'],response=read(folder/'response.json'),
+            images=images,source=str(folder),download=label+'-actual-request.json'))
+    (output/'sample.json').write_text(json.dumps(dict(task=1144,init=5,decision='0000',records=records),indent=2)+'\n')
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--runs-root',type=Path,default=Path('code/runs'))
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--audit-inputs',action='store_true')
+    p.add_argument('--sample-output',type=Path)
     a=p.parse_args()
     summary={}
     for label in ('full','marker','axes'):
@@ -116,7 +143,9 @@ def main():
             categories=categories,per_task=per_task,episodes=rows,
             input_audit_counts=total_counts,nominal_axis_agreement=total_axes)
     a.output.parent.mkdir(parents=True,exist_ok=True)
-    a.output.write_text(json.dumps(summary,indent=2)+'\n')
+    a.output.write_text(json.dumps(dict(updated_at=datetime.now(timezone.utc).isoformat(),conditions=summary),indent=2)+'\n')
+    if a.sample_output:
+        export_sample(a.runs_root,a.sample_output)
     print(json.dumps({k:{x:v[x] for x in ('completed','native','joint','categories','input_audit_counts','nominal_axis_agreement')}
                       for k,v in summary.items()}))
 
