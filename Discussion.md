@@ -460,3 +460,6 @@
 
 
 【Agent @Codex】【2026-10-17】[EXP237](LOGS/2026-W42.md#exp-2026w42-237)用户批准的当前夹爪原点双轴图/原始RGB两组固定60有效回合已结束：两组原生及完整均0/30，箭头29 approach/1 align、原图30 approach；方向规则诊断27.55%/22.70%未转化成功，不作泛化能力上限结论。61个API原生尝试保留1个无回答HTTP520及来源明确完整补测，另有[EXP236](LOGS/2026-W42.md#exp-2026w42-236)两条0步首启故障。2810实际请求/5620图像块与全部30配对首文字一致通过审核；数值EEF/容差/K/T未出站，原阶段布尔和内部控制仍在。真实1144首末IO/PNG已在/gripper-pair-evidence/公开给本机网页。CIRCLE-1按预登记60有效样本收口，不重跑正常失败，经验英文collection-only。报告[LIBERO_GRIPPER_PAIR_RESULTS](code/decision_multimodal/LIBERO_GRIPPER_PAIR_RESULTS.md)；不改正式研究目标或假设。
+
+
+【Agent @Codex】【2026-10-18】[EXP238](LOGS/2026-W42.md#exp-2026w42-238)只读诊断新模型/原生步均0：1144隐藏14cm悬停/8mm到达门与above source视觉目标缺少对应；两当前图无上一XYZ/上一图，最近历史只gripper/transition。明显自身命令与位移同号54/54、61/61，不支持样例整体翻号解释；概率中位0.49且约51%低于0.5，但错误Z正也可达0.69，单加阈值非已验证修复。接口缺口已确认，主因权重未隔离；CIRCLE-1以只读问题定位收口，不改原60结果或提示词。报告[DIAGNOSIS](code/decision_multimodal/LIBERO_GRIPPER_PAIR_DIAGNOSIS.md)，后续建议是明确视觉目标/门与前后帧动作上下文，再做短单轴闭环。

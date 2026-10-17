@@ -72,6 +72,8 @@ Actual task1144/init5 first/last request text, full requests, responses and exac
 
 ## Files changed for this comparison
 
+Follow-up analysis without new inference or simulation: [LIBERO_GRIPPER_PAIR_DIAGNOSIS.md](LIBERO_GRIPPER_PAIR_DIAGNOSIS.md). It identifies the hidden-waypoint/visual-goal mismatch, missing temporal action context, and measured execution evidence. The original completion results above are unchanged.
+
 Added: `libero_gripper_pair.py`, `libero_gripper_pair_description_v1.txt`, `audit_gripper_pair.py`, `collect_gripper_pair.py`, `LIBERO_GRIPPER_PAIR_PROTOCOL.md`, and this result report.
 
 Updated: `libero_entry.py`, `run_libero_campaign.py`, `README.md`, `EXPERIENCE.md`, and the repository EXP/activity/Discussion/Timeline records. Bulk runtime evidence stays outside Git under `code/runs/`.
