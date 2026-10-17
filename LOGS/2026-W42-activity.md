@@ -433,3 +433,7 @@
 - 【User】【2026-10-16 19:20】[decision] 用户明确允许仅这条会话原生Codex历史写入server02 home盘；备份包、事件日志及附件仍放/data。
 - 【Agent】【2026-10-16 19:20】[op] 会话01a12b86，20261016迁移：新增agentsdock-session-to-server skill和标准库迁移脚本；已复制57180条原生记录并经server02 /codex/load验证thread_loaded=true、idle、无goal/交互；修复新聊天事件序号缓存，8份注册附件仍在传输。
 - 【Agent】【2026-10-16 19:25】[result] 会话01a12b86，20261016迁移验收：server02新聊天sess_a2cd862a8ddd40de原生loaded/idle，57180记录保留；8附件共1205968873字节校验及HEAD200，首尾分页可读、21056事件严格递增，重复import返回already_imported；无模型推理，无机器人动作。EXP-2026W42-267。
+- 【User】【2026-10-17 11:59】[intent] 用户要求删除TCP法兰偏移提示，参考本机inspect-robots RealMan核对XYZ/YPR轴和正负，给出简洁完整动作说明，并录制同一姿态XYZ+5cm及YPR+30度六项仿真演示。
+- 【Agent】【2026-10-17 12:03】[run] 会话01a12b86，20261017-axis：RealMan文本/实现已核对（start-relative ZYX并反转pitch）；server02 GPU1启动6轴TCP原生演示。run01缺client_server导入路径，已补现有XPolicyLab路径并启动run02；不调用模型、不读旧经验、不连接真机。
+- 【Agent】【2026-10-17 12:15】[run] 会话01a12b86，20261017-axis：run03已完成X+50mm（实测50.000159mm，端点误差0.000770mm），随后第二次布局reset抛UnStableError；保留部分结果。run04改为一个连续诊断回合、各片前物理回到共同TCP；仅延长诊断录制步数，不改评分器、不计任务成绩，并启用零延迟渲染设置。
+- 【Agent】【2026-10-17 12:23】[result] 会话01a12b86，20261017-axis：run04六项原生动作全部验证，620控制步，最大端点0.000970mm/0.000373度，旋转TCP漂移0.030197mm；六段视频本地SHA256全部一致并已发布pub_49f97ba079b149b5b4db7f51e2cd918c。纯接口诊断不计任务成功。
