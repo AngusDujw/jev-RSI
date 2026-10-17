@@ -12,6 +12,10 @@ compass condition. See [the fixed contract](LIBERO_MOTION_MULTIMODAL.md) and
 [the results](LIBERO_MOTION_MM_RESULTS.md). These are separate versions and do
 not overwrite the earlier comparison.
 
+The subsequent user-requested [in-frame axes version](LIBERO_INFRAME_AXES.md)
+removes point markers, actor tolerance fields and EEF coordinates. It is currently
+an archived-RGB input preview; no new model call or native result is claimed.
+
 ## Authorized experiment
 
 1. Ten existing LIBERO-Plus Goal policies, five paired initial states each.
