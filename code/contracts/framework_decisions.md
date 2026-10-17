@@ -4,7 +4,7 @@ This is outer experiment management, not model input or an experience file.
 
 ## Confirmed on 2026-10-17
 
-- Discuss planning JSON and experience collection next, not experience retrieval or injection. No separate planner-environment discussion is needed: provide reference implementations and let the tool-enabled planner implement and test processing.
+- The final planning JSON contains stages and advancer-facing input definitions, not processing implementation, test records or code references. The planner prepares and tests the processing separately, including runtime input bindings. No separate planner-environment discussion is needed: provide reference implementations and let the tool-enabled planner implement and test processing.
 - Begin with one plan per episode, no previous-step advancer records, and no experience use. The planner assigns the controlled arm per stage.
 - Translation and one rotation may execute together. At most one YPR channel is non-hold; the inactive arm preserves its target.
 - Use fixed increments initially: 0.02 m per non-hold translation channel and 0.10 rad per non-hold rotation channel. These are selected from the caps in `code/scripts/libero_jev_recovery.py`, `run_recovery`, not a claim that its earlier scheduler was fixed. Do not transplant its error-dependent scaling, normalized action or repeated native-step blocks. Decision-level increments and native execution interpolation are separate.
@@ -13,3 +13,5 @@ This is outer experiment management, not model input or an experience file.
 - The outer agent may directly try changes outside the agreed fixed parts; changes to fixed parts need discussion. This does not authorize reusing retired RoboDojo methods or archived experience.
 - Start with the raw-image baseline; open processing is a subsequent version. Settle the JSON and collection design before launching native experiments.
 - Future comparisons: replanning-selected step sizes (IMP-007) and replanning-specific history (IMP-008).
+- Update: do not create experience files or distill candidate experience now. Preserve complete raw prompts, plans, code versions, observations, model inputs/outputs, execution records and independent native outcomes so experience can be distilled later. Experience remains unused.
+- User selected company-server-2 for future experiments. The remote project directory and asset mount must be confirmed before deployment or large writes; earlier server02/v4090 paths do not transfer automatically.
