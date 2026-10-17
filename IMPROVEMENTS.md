@@ -167,7 +167,19 @@ positive: Increase coordinate
 - Minimal comparison: Independent same-case/SHA episodes with the current matrix versus a named constraint representation; retain Luna and same-method Jev text pairing, with the existing image-evidence limitation reported separately.
 - Metrics: Returned rejected combinations, invalid rotations, native IK rejections, measured tracking, visible task manipulation, native outcomes and input/call costs.
 - Evidence reference: LOGS/2026-W42.md EXP291 and exp291-constraint-choice-audit.json.
-- Result: Offline lossless conversion of all 189 recorded checks passes, including the original rejected complete choice. Named JSON is 8257 bytes versus 3580 for the matrix fixture, so readability comes with added input cost. No task gain is established. This file is an outer improvement queue and is never supplied to either internal model.
+- Result: Offline lossless conversion of all 189 recorded checks passes, including the original rejected complete choice. Named JSON is 8257 bytes versus 3580 for the matrix fixture. Classification Jev ended incomplete at135 steps with multiple rotations after27 single-axis responses; stack1 Jev returned multiple rotations at0 steps. Named information alone does not enforce joint output validity. Luna conditions continue; no task gain is established. This file is an outer improvement queue and is never supplied to either internal model.
+
+## IMP-010: Distinguish numerical IK from joint-path tracking demands
+
+- Source: Agent, 2026-10-18; outer proposal from EXP292 measured-robot audit.
+- Status: Candidate; not implemented or adopted.
+- Problem: A path can pass all five TCP IK checks while demanding a large joint waypoint jump. One recorded path needs1.678rad in0.04s (41.945rad/s), above the public actuator configuration of5rad/s, and has141.18mm measured TCP endpoint error. This is not a claim that speed is the only source of errors.
+- Candidate input: For every same complete motion choice, report predicted joint waypoint increments and required peak joint rates with the public control interval and actuator limits. Keep this current-robot information separate from scene clearance, contact and holding. Do not rank or choose an action.
+- Fixed parts: Roles, eight questions, schema, increments, native horizon, existing IK gate, plan and task processor. No physics/limit changes, response repair, action projection, history or experience injection.
+- Minimal comparison: Independent frozen case/plan/processor episodes with and without the extra rate information, retaining Luna and same-method Jev text comparisons and modality-coverage limitations.
+- Metrics: Returned multiple rotations, numerical IK rejections, chosen over-rate paths, measured tracking, visible manipulation, native outcomes and call/input costs.
+- Evidence reference: exp292-joint-waypoint-speed-audit.json and LOGS/2026-W42.md EXP292. A future implementation must prove that the original189 numerical pass/fail results remain unchanged and that the new rate calculations match recorded robot paths.
+- Result: Untested. Queue text is never supplied to the planner or advancer.
 
 ## 条目模板
 
