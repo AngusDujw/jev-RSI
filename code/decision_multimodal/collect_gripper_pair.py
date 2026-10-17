@@ -26,7 +26,7 @@ def collect(root, kind):
         if name=='run_libero_campaign.py':
             continue
         assert hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()==sha, name
-    episodes=[]; inputs={}; calls=responses=images=0; phases=Counter(); directional=Counter()
+    episodes=[]; inputs={}; calls=responses=images=0; phases=Counter(); directional=Counter(); coverage=Counter()
     for case in sorted(root.glob('task-*')):
         outcome=json.loads((case/'outcome.json').read_text()) if (case/'outcome.json').is_file() else None
         if outcome is None:
@@ -65,6 +65,9 @@ def collect(root, kind):
                     expected=['Y','Z'] if view['camera']=='agentview' else ['X','Y']
                     assert view['overlay_audit']['shown_axes']==expected
                     assert view['overlay_audit']['uses_target_position'] is False
+                    coverage['views']+=1
+                    coverage['origin_in_frame']+=int(view['overlay_audit']['origin_visible'])
+                    coverage['arrows_drawn']+=sum('end_pixel' in a for a in view['overlay_audit']['axes'])
                 view_hashes.append(sha)
             assert len(image_parts)==2
             assert len({v['native_observation_counter'] for v in dispatch['camera_views']})==1
@@ -117,7 +120,7 @@ def collect(root, kind):
         actual_requests=calls,valid_responses=responses,actual_images=images,
         stages=dict(phases),terminal_stages=dict(Counter(str(e['stage']) for e in episodes)),
         categories=dict(Counter(e['category'] for e in episodes)),
-        nominal_direction_diagnostic=dict(directional),per_task=per_task,episodes=episodes),inputs
+        nominal_direction_diagnostic=dict(directional),overlay_coverage=dict(coverage),per_task=per_task,episodes=episodes),inputs
 
 
 def main():
