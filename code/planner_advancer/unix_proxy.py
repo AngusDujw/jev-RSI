@@ -30,6 +30,7 @@ def post(config, wire, socket_path, timeout):
     } or url.port not in (None, 443):
         raise ValueError('Unexpected model endpoint')
     raw, connection, chunks = None, None, []
+    http_status = None
     deadline = time.monotonic() + timeout
     try:
         raw = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
@@ -52,6 +53,7 @@ def post(config, wire, socket_path, timeout):
         target = url.path + ('?' + url.query if url.query else '')
         connection.request('POST', target, body=Path(wire).read_bytes(), headers=headers)
         result = connection.getresponse()
+        http_status = result.status
         while True:
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -66,9 +68,9 @@ def post(config, wire, socket_path, timeout):
     except (OSError, http.client.HTTPException) as exc:
         if isinstance(exc, http.client.IncompleteRead) and exc.partial:
             chunks.append(exc.partial)
-        code = 28 if isinstance(exc, TimeoutError) else 35 if isinstance(exc, ssl.SSLError) else 7
+        code = 22 if http_status is not None and http_status >= 400 else 28 if isinstance(exc, TimeoutError) else 35 if isinstance(exc, ssl.SSLError) else 7
         # Do not log headers, credentials or exception payloads.
-        error = 'Owned proxy transport failed: ' + type(exc).__name__
+        error = (f'HTTP {http_status}; body transport failed: ' if code == 22 else 'Owned proxy transport failed: ') + type(exc).__name__
     finally:
         if connection is not None:
             connection.close()

@@ -226,6 +226,8 @@ graph LR
     T_2026W42_118["📊 robodojo-planner-advancer-v1<br/>v13 class1 17/18程序检查仍…"]:::experiment
     T_2026W42_119["📊 robodojo-planner-advancer-v1<br/>已交付原生控制出现估计分支Z二周期；Jev…"]:::experiment
     T_2026W42_120["📝 robodojo-planner-advancer-v1<br/>更正T119及EXP285早期快照：cla…"]:::note
+    T_2026W42_121["📊 robodojo-planner-advancer<br/>白块搬运后释放落旁；v14分类交付，叠块规…"]:::experiment
+    T_2026W42_122["📝 robodojo-planner-advancer-v1<br/>T121主题键漏写v1，属同一主线并非新议…"]:::note
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -409,6 +411,7 @@ graph LR
   T_2026W42_117 --> T_2026W42_118
   T_2026W42_118 --> T_2026W42_119
   T_2026W42_119 --> T_2026W42_120
+  T_2026W42_120 --> T_2026W42_122
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -623,6 +626,8 @@ graph LR
 | `T-2026W42-118` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v13 class1 17/18程序检查仍物体覆盖不足而blocked0步；独立检验阶段所需精度指导，固定门不变 | `EXP-2026W42-284` | - |
 | `T-2026W42-119` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 已交付原生控制出现估计分支Z二周期；Jev15步诊断None崩溃，独立同计划null修复回归通过 | `EXP-2026W42-285` | - |
 | `T-2026W42-120` | 2026-10-18 | note | robodojo-planner-advancer-v1 | 更正T119及EXP285早期快照：class0 Jev原生终点20步而非15，Luna60步同诊断错误；新修复独立回合已启动 | `EXP-2026W42-285` | - |
+| `T-2026W42-121` | 2026-10-18 | experiment | robodojo-planner-advancer | 白块搬运后释放落旁；v14分类交付，叠块规划配额受限；冻结输入消融继续 | `EXP-2026W42-286` | - |
+| `T-2026W42-122` | 2026-10-18 | note | robodojo-planner-advancer-v1 | T121主题键漏写v1，属同一主线并非新议题；EXP286输入消融与配额状态继续按既有CIRCLE-1收敛 | `EXP-2026W42-286` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

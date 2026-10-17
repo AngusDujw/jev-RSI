@@ -50,6 +50,7 @@ def main():
     parser.add_argument('--resume-processing-from',type=Path)
     parser.add_argument('--decision-backend',choices=['luna','jev'],default='luna')
     parser.add_argument('--omit-images',action='store_true')
+    parser.add_argument('--omit-additional-images',action='store_true')
     parser.add_argument('--camera-intrinsics',choices=['native','sdk'],default='native')
     parser.add_argument('--tool-geometry-details',action='store_true')
     parser.add_argument('--execution-budget-details',action='store_true')
@@ -57,8 +58,10 @@ def main():
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
-    if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images) and not args.enable_processing:
+    if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images or args.omit_additional_images) and not args.enable_processing:
         raise ValueError('Prepared-plan and text-only comparisons require additional processing')
+    if args.omit_additional_images and (args.omit_images or args.decision_backend=='jev'):
+        raise ValueError('Generated-image ablation preserves original RGB')
     args.output.mkdir(parents=True,exist_ok=False)
     protocol=dict(camera_intrinsics=args.camera_intrinsics,tool_geometry_details=args.tool_geometry_details,
                   execution_budget_details=args.execution_budget_details,perception_tools=args.perception_tools)
@@ -313,7 +316,7 @@ def main():
                         if not image_file.is_relative_to(processed.resolve()) or not image_file.is_file() or image_file.suffix.lower()!='.png':
                             raise ValueError('Additional image is not a verified PNG output')
                         label='additional_'+name
-                        if args.decision_backend!='jev' and not args.omit_images:
+                        if args.decision_backend!='jev' and not args.omit_images and not args.omit_additional_images:
                             images[label]=image_file
                             additional[name]=dict(image_label=label,description=value.get('description',''))
                         else:
@@ -322,6 +325,8 @@ def main():
             context=dict(task=task,current_stage=stage,controlled_arm=stage['controlled_arm'],
                 current_robot_state=state,additional_information=additional,
                 execution_parameters=dict(translation_step_m=.02,rotation_step_rad=.10))
+            if args.omit_additional_images:
+                context['additional_image_policy']='Generated images are omitted. The current original three RGB images and additional text remain supplied.'
             if args.execution_budget_details:
                 context['execution_parameters'].update(native_control_step_limit=int(env.step_lim),
                     native_steps_used=int(session.step_id),native_steps_remaining=max(0,int(env.step_lim)-int(session.step_id)),
