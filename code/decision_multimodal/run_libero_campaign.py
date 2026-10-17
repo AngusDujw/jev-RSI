@@ -182,7 +182,8 @@ class Campaign:
                     specification['motion_description'] = 'Verified native world-axis / rotation-vector description; no new YPR controller'
                     specification['question_changes'] = 'Short original Jev XYZ template, error and/or labeled RGB evidence; common non-XYZ questions unchanged'
                     specification['image_layout'] = 'Same768x928 in all conditions: native768 RGB plus160px footer; axes compass is goal-independent'
-                if args.profile in ('libero-rgb-inframe-axes-v1','libero-rgb-gripper-axes-v1'):
+                if args.profile in ('libero-rgb-inframe-axes-v1','libero-rgb-gripper-axes-v1',
+                                    'libero-rgb-gripper-pair-arrows-v1','libero-rgb-gripper-pair-raw-v1'):
                     for name in ('libero_motion_multimodal.py', 'libero_robot_actions_v1.txt',
                                  'libero_inframe_axes.py', 'libero_robot_actions_inframe_v1.txt'):
                         p = Path(__file__).with_name(name)
@@ -198,6 +199,15 @@ class Campaign:
                         specification.update(axis_origin_uses_current_own_gripper_position=True,
                             drawn_axes={'agentview':['Y','Z'],'robot0_eye_in_hand':['X','Y']},
                             image_layout='Native768x768; two world axes start at the current own gripper projection in each fresh view; no footer or target point')
+                    if args.profile.startswith('libero-rgb-gripper-pair-'):
+                        for name in ('libero_gripper_pair.py','libero_gripper_pair_description_v1.txt'):
+                            p=Path(__file__).with_name(name)
+                            specification['adapter_source_sha256'][name]=hashlib.sha256(p.read_bytes()).hexdigest()
+                        arrows=args.profile=='libero-rgb-gripper-pair-arrows-v1'
+                        specification.update(arrows_drawn=arrows, matched_actor_text=True,
+                            axis_origin_uses_current_own_gripper_position=arrows,
+                            drawn_axes={'agentview':['Y','Z'],'robot0_eye_in_hand':['X','Y']} if arrows else {},
+                            image_layout='Native768x768; no footer, target point or separate control-point marker; optional gripper-anchored axes')
         if replacement_cases is not None:
             specification['expected_episodes'] = len(replacement_cases)
             specification['transport_replacements'] = replacement_provenance
@@ -364,7 +374,7 @@ def main():
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3, 4, 5, 6], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1', 'libero-rgb-gripper-pair-arrows-v1', 'libero-rgb-gripper-pair-raw-v1'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--replace-transport-from', type=Path,
                         help='Explicit new episodes for connection-interrupted cases only; preserve original outcomes')
