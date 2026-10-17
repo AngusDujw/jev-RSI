@@ -42,6 +42,7 @@ def audit(root):
         merges=[x for x in events if x.get('kind')=='rotation_role_merge']
         visual=[x for x in merges if x['visual_call']]
         correct=wrong=hold=0
+        coverage={a:dict(positive=0,negative=0) for a in ('rx','ry','rz')}
         for x in visual:
             if 'selected_visual_actions' in x:
                 choices=x['selected_visual_actions'].items()
@@ -50,6 +51,7 @@ def audit(root):
                 if choice=='hold':hold+=1;continue
                 choices=[choice.split('_')]
             for axis,direction in choices:
+                coverage[axis][direction]+=1
                 error=x['diagnostic_only_error_rad'][('rx','ry','rz').index(axis)]
                 good=(error>0 and direction=='positive') or (error<0 and direction=='negative')
                 correct+=good;wrong+=not good
@@ -65,6 +67,7 @@ def audit(root):
         policy_steps=result['native_result'].get('native_steps') if result and result.get('native_result') else None
         total_steps=policy_steps+10+(setup['setup_steps'] if setup else 0) if policy_steps is not None else None
         rows.append(dict(case=folder.name,**counts,visual_choices=len(visual),
+            visual_axis_direction_counts=coverage,
             residual_sign_consistent=correct,residual_sign_opposed=wrong,visual_hold=hold,
             same_stage_angular_progress_samples=len(progress),
             same_stage_positive_progress=sum(p>0 for p in progress),

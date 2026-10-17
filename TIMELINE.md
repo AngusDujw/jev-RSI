@@ -150,6 +150,7 @@ graph LR
     T_2026W42_042["📊 decision-multimodal<br/>1144粗视觉X+数值精调固定三例nati…"]:::experiment
     T_2026W42_043["📊 decision-multimodal<br/>1252同接口native/joint3/…"]:::experiment
     T_2026W42_044["📊 decision-multimodal<br/>垂直视觉旧评价4/6但rim/纹理点偏13…"]:::experiment
+    T_2026W42_045["📊 decision-multimodal<br/>旋转候选图joint0/3后改算法角度图，…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -262,6 +263,7 @@ graph LR
   T_2026W42_041 --> T_2026W42_042
   T_2026W42_042 --> T_2026W42_043
   T_2026W42_043 --> T_2026W42_044
+  T_2026W42_044 --> T_2026W42_045
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -401,6 +403,7 @@ graph LR
 | `T-2026W42-042` | 2026-10-18 | experiment | decision-multimodal | 1144粗视觉X+数值精调固定三例native/joint3/3，18/18视觉方向一致、各推进约80mm；单任务混合证据非纯RGB | `EXP-2026W42-241` | - |
 | `T-2026W42-043` | 2026-10-18 | experiment | decision-multimodal | 1252同接口native/joint3/3；可见容许色带Y居中6/6且自主HOLD，原判据未改；分报完整任务和视觉子测试 EXP-2026W42-243 | `EXP-2026W42-242` | - |
 | `T-2026W42-044` | 2026-10-18 | experiment | decision-multimodal | 垂直视觉旧评价4/6但rim/纹理点偏13px，v8/v9轮廓评价不稳；保留混合完整6/6与水平视觉6/6，不把工具中止算模型失败 | `EXP-2026W42-246` | - |
+| `T-2026W42-045` | 2026-10-18 | experiment | decision-multimodal | 旋转候选图joint0/3后改算法角度图，正式旋钮/酒瓶/盒子各3/3；总步<=600，明确是处理后图像反馈而非原始RGB姿态推理 | `EXP-2026W42-250` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
