@@ -44,6 +44,7 @@ def main():
     parser.add_argument('--layout',type=int,default=0)
     parser.add_argument('--layout-manifest',type=Path)
     parser.add_argument('--enable-processing',action='store_true')
+    parser.add_argument('--processing-guidance',choices=['detailed','compact'],default='detailed')
     parser.add_argument('--prepared-from',type=Path)
     parser.add_argument('--resume-processing-from',type=Path)
     parser.add_argument('--decision-backend',choices=['luna','jev'],default='luna')
@@ -268,7 +269,7 @@ def main():
                     raise ValueError('Partial processing reference belongs to a different case')
                 partial=source/'planner/implementation'
                 dump(args.output/'partial_preparation_source.json',dict(source=str(source),no_final_plan_reused=True))
-            plan,implementation=prepare(plan_prompt,images,args.output/'observations/initial',args.output/'planner',partial)
+            plan,implementation=prepare(plan_prompt,images,args.output/'observations/initial',args.output/'planner',partial,guidance=args.processing_guidance)
         else:
             plan=call('planner',plan_prompt,images,args.output/'planner')
         stages={s['id']:s for s in plan['stages']}

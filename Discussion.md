@@ -629,3 +629,5 @@
 【Agent @Codex】【2026-10-18】EXP280后续：v8 Luna35步后同样多旋转违规，不是Jev独有问题。v10 class1 PID67263新独立准备检验共同几何目标下保持/六种单轴旋转效果输入，processor不选动作，固定接口/问题/步长不变；v8保留不完整终局，不重采样。
 
 【Agent @Codex】【2026-10-18】[EXP281](LOGS/2026-W42.md#exp-2026w42-281)：v5/v6 stack3均550步native_success=false、score0，分别停在gray_close/gray_lower。v9 stack3 31轮blocked，stack0交付16阶段后10步因拟合粗初值越界崩溃；新副本单行clip初始化不改目标/接受门/计划，原崩溃复现且初始/5/10步修复检查通过，独立Luna已35步、Jev0步多旋转拒绝。v11只区分流程验证与未来成功保证，保留不确定度和实测要求。v10交付22阶段及7种旋转效果信息，Luna控制和Jev配对继续，尚无新框架完整成功。
+
+【Agent @Codex】【2026-10-18】[EXP282](LOGS/2026-W42.md#exp-2026w42-282)：v11 9轮仍顶面遮挡blocked；stack1在lift_purple的目标/误差null时继续上升，450步因IK终点1.8165mm/0.02994rad未过门而不完整结束。v12从空实现以421词可变指导对照1105词默认说明，固定动作/8问/schema逐字不变；前两份实际英文请求已核验compact且无旧实现引用，扩展stack0/3与classify0/1四路准备并行。不能把此组合变化当单变量因果试验；旧两Luna继续、新框架仍无完整成功，CIRCLE-1按实体操作和原生终局收敛。

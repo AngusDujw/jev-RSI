@@ -43,6 +43,9 @@ fi
 if [[ "${ROBO_ENABLE_PROCESSING:-0}" == 1 ]]; then
   PROCESSING_ARGS=(--enable-processing)
 fi
+if [[ -n "${ROBO_PROCESSING_GUIDANCE:-}" ]]; then
+  PROCESSING_ARGS+=(--processing-guidance "$ROBO_PROCESSING_GUIDANCE")
+fi
 if [[ -n "${ROBO_PREPARED_FROM:-}" ]]; then
   PROCESSING_ARGS+=(--prepared-from "$ROBO_PREPARED_FROM")
 fi

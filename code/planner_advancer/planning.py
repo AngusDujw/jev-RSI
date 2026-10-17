@@ -19,7 +19,9 @@ def blocked_diagnostic(plan):
     return bool(re.search(r'execution is blocked|not an executable manipulation plan|diagnostic stage|verified replacement sorting plan',json.dumps(plan),re.I))
 
 
-def prepare(prompt,images,inputs,folder,resume_implementation=None):
+def prepare(prompt,images,inputs,folder,resume_implementation=None,guidance='detailed'):
+    if guidance not in ('detailed','compact'):
+        raise ValueError('Unknown processing guidance variant')
     folder=Path(folder)
     folder.mkdir(parents=True,exist_ok=False)
     workspace=folder/'implementation'
@@ -48,6 +50,8 @@ Design each stage's evidence for the views expected during that operation. A mul
 Return only the final stage-plan JSON after verification. additional_inputs is a list of objects with name and description, plus units/frame/uncertainty/missing_data explanations where relevant. Each name binds to a key in the processor's output. Include no code, paths to implementations, dependencies or test records in the final JSON. Keep stages and completion conditions easy for the advancer to use. The fixed eight questions and motion choices remain unchanged.
 If implementation cannot be verified, report a separate JSON object with status="blocked" and reason. Do not disguise a blocker as a stage or a manipulation plan. A blocked report will end preparation without calling the advancer.
 '''
+    if guidance=='compact':
+        instructions=(Path(__file__).resolve().parents[1]/'contracts/planner_processing_compact.md').read_text()
     if resume_implementation:
         instructions+='\nAn implementation from an earlier independent preparation is present in /work. Inspect it, adapt or replace it for the current observations, and complete verification. It is reference code, not a validated method or a final plan for this preparation.\n'
     english(prompt+'\n\n'+instructions)
