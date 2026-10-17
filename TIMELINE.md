@@ -146,6 +146,10 @@ graph LR
     T_2026W42_038["📊 decision-multimodal<br/>运动说明/无K/T三组固定90有效回合结束…"]:::experiment
     T_2026W42_039["📊 decision-multimodal<br/>夹爪原点双轴/原始RGB固定60有效例均0…"]:::experiment
     T_2026W42_040["📊 decision-multimodal<br/>只读定位隐藏悬停目标/视觉合同不一致及无前…"]:::experiment
+    T_2026W42_041["📊 decision-multimodal<br/>纯图像关系与公开动作映射Y居中5/6，剩余…"]:::experiment
+    T_2026W42_042["📊 decision-multimodal<br/>1144粗视觉X+数值精调固定三例nati…"]:::experiment
+    T_2026W42_043["📊 decision-multimodal<br/>1252同接口native/joint3/…"]:::experiment
+    T_2026W42_044["📊 decision-multimodal<br/>垂直视觉旧评价4/6但rim/纹理点偏13…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -254,6 +258,10 @@ graph LR
   T_2026W42_037 --> T_2026W42_038
   T_2026W42_038 --> T_2026W42_039
   T_2026W42_039 --> T_2026W42_040
+  T_2026W42_040 --> T_2026W42_041
+  T_2026W42_041 --> T_2026W42_042
+  T_2026W42_042 --> T_2026W42_043
+  T_2026W42_043 --> T_2026W42_044
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -389,6 +397,10 @@ graph LR
 | `T-2026W42-038` | 2026-10-17 | experiment | decision-multimodal | 运动说明/无K/T三组固定90有效回合结束：full原生27完整26，marker1/0，axes0/0；93原始尝试全部保留，图例未建立稳定闭环 | `EXP-2026W42-231` | - |
 | `T-2026W42-039` | 2026-10-17 | experiment | decision-multimodal | 夹爪原点双轴/原始RGB固定60有效例均0/30成功，59停approach；2810实际请求审核通过，停止同版重采样 | `EXP-2026W42-237` | - |
 | `T-2026W42-040` | 2026-10-18 | experiment | decision-multimodal | 只读定位隐藏悬停目标/视觉合同不一致及无前帧XYZ历史；1144明显动作符号54/54、61/61正确映射，未新增原生或模型调用 | `EXP-2026W42-238` | - |
+| `T-2026W42-041` | 2026-10-18 | experiment | decision-multimodal | 纯图像关系与公开动作映射Y居中5/6，剩余例近中心未HOLD；改测粗视觉/精数值的完整任务分工，原子测试不计原生成功 | `EXP-2026W42-240` | - |
+| `T-2026W42-042` | 2026-10-18 | experiment | decision-multimodal | 1144粗视觉X+数值精调固定三例native/joint3/3，18/18视觉方向一致、各推进约80mm；单任务混合证据非纯RGB | `EXP-2026W42-241` | - |
+| `T-2026W42-043` | 2026-10-18 | experiment | decision-multimodal | 1252同接口native/joint3/3；可见容许色带Y居中6/6且自主HOLD，原判据未改；分报完整任务和视觉子测试 EXP-2026W42-243 | `EXP-2026W42-242` | - |
+| `T-2026W42-044` | 2026-10-18 | experiment | decision-multimodal | 垂直视觉旧评价4/6但rim/纹理点偏13px，v8/v9轮廓评价不稳；保留混合完整6/6与水平视觉6/6，不把工具中止算模型失败 | `EXP-2026W42-246` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
