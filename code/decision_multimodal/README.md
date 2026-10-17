@@ -45,6 +45,10 @@ Experience is collected in English but not injected into either runtime model.
 
 ## Files
 
+The current-gripper arrows versus unmodified RGB comparison is complete:
+[protocol](LIBERO_GRIPPER_PAIR_PROTOCOL.md), [results](LIBERO_GRIPPER_PAIR_RESULTS.md).
+Both conditions had0/30 native successes; all actual inputs and transport faults are retained.
+
 - `prepare_baselines.py`: reads the existing source-backed viewer metadata,
   verifies every Git source against its original SHA256, recovers original
   options and freezes the task-specific launcher command. No simulator/model.
