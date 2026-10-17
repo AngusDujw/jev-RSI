@@ -160,14 +160,14 @@ positive: Increase coordinate
 ## IMP-009: Make complete-action IK constraints easier to read
 
 - Source: Agent, 2026-10-18; outer experiment proposal linked to EXP290–291.
-- Status: Candidate; not implemented or adopted.
+- Status: Implemented as an opt-in experimental condition; not adopted. Native comparison pending (EXP292).
 - Hypothesis: Named complete-choice constraints may be easier for structured decision models to use than joining a translation-row list, a rotation-column list and a Boolean matrix.
 - Candidate input: An exhaustive set of rejected full motion signatures, or XYZ records with named rotation feasibility fields. Compute the same 189 numerical checks; do not rank actions or choose a command.
 - Fixed parts: Roles, eight questions, output fields, TCP increments, one-rotation rule, native horizons, IK gate, plan and task processor remain unchanged. No history, experience injection, response repair or projection onto a feasible action.
 - Minimal comparison: Independent same-case/SHA episodes with the current matrix versus a named constraint representation; retain Luna and same-method Jev text pairing, with the existing image-evidence limitation reported separately.
 - Metrics: Returned rejected combinations, invalid rotations, native IK rejections, measured tracking, visible task manipulation, native outcomes and input/call costs.
 - Evidence reference: LOGS/2026-W42.md EXP291 and exp291-constraint-choice-audit.json.
-- Result: Untested. This file is an outer improvement queue and is never supplied to either internal model.
+- Result: Offline lossless conversion of all 189 recorded checks passes, including the original rejected complete choice. Named JSON is 8257 bytes versus 3580 for the matrix fixture, so readability comes with added input cost. No task gain is established. This file is an outer improvement queue and is never supplied to either internal model.
 
 ## 条目模板
 

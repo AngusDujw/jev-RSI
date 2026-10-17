@@ -52,6 +52,7 @@ def main():
     parser.add_argument('--omit-images',action='store_true')
     parser.add_argument('--omit-additional-images',action='store_true')
     parser.add_argument('--ik-comparison-details',action='store_true',default=None)
+    parser.add_argument('--ik-comparison-format',choices=['matrix','named'],default=None)
     parser.add_argument('--camera-intrinsics',choices=['native','sdk'],default='native')
     parser.add_argument('--tool-geometry-details',action='store_true')
     parser.add_argument('--execution-budget-details',action='store_true')
@@ -59,15 +60,16 @@ def main():
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
-    if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images or args.omit_additional_images or args.ik_comparison_details) and not args.enable_processing:
+    if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images or args.omit_additional_images or args.ik_comparison_details or args.ik_comparison_format) and not args.enable_processing:
         raise ValueError('Prepared-plan and text-only comparisons require additional processing')
     if args.omit_additional_images and (args.omit_images or args.decision_backend=='jev'):
         raise ValueError('Generated-image ablation preserves original RGB')
     args.output.mkdir(parents=True,exist_ok=False)
     protocol=dict(camera_intrinsics=args.camera_intrinsics,tool_geometry_details=args.tool_geometry_details,
                   execution_budget_details=args.execution_budget_details,perception_tools=args.perception_tools,
-                  ik_comparison_details=bool(args.ik_comparison_details))
+                  ik_comparison_details=bool(args.ik_comparison_details),ik_comparison_format=args.ik_comparison_format or 'matrix')
     requested_ik_comparisons=args.ik_comparison_details
+    requested_ik_format=args.ik_comparison_format
     if args.prepared_from:
         source=args.prepared_from.resolve()
         campaign_root=Path(__file__).resolve().parents[1]/'runs/company2-20261018'
@@ -79,8 +81,14 @@ def main():
             dump(args.output/'input_contract_override.json',dict(field='ik_comparison_details',source_value=False,condition_value=True,
                  meaning='Independent current-robot input condition; original four protocol fields are inherited unchanged.'))
             protocol['ik_comparison_details']=True
+        if requested_ik_format is not None and requested_ik_format != protocol['ik_comparison_format']:
+            dump(args.output/'input_representation_override.json',dict(field='ik_comparison_format',
+                 source_value=protocol['ik_comparison_format'],condition_value=requested_ik_format,
+                 meaning='Independent lossless current-robot IK presentation condition. The plan, processor and numerical checks are unchanged.'))
+            protocol['ik_comparison_format']=requested_ik_format
         for key,value in protocol.items():
             setattr(args,key,value)
+    protocol=normalize_input_contract(protocol)
     dump(args.output/'input_contract.json',protocol)
     os.environ['ROBO_PERCEPTION_TOOLS']='1' if args.perception_tools else '0'
     args.headless,args.enable_cameras = True,True
@@ -350,6 +358,8 @@ def main():
                     value[:3,3]+=value[:3,:3]@offset
                     return value
                 comparisons,diagnostic=compare_motion_paths(current_robot_fk,state[arm]['arm_joints_rad'],limits)
+                from robot_motion_format import present_motion_checks
+                comparisons=present_motion_checks(comparisons,args.ik_comparison_format or 'matrix')
                 dump(args.output/'robot_motion_comparisons'/f'{index:03d}.json',dict(information=comparisons,audit=diagnostic))
                 context['robot_motion_comparisons']=comparisons
             if args.execution_budget_details:

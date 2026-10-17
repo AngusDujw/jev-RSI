@@ -67,6 +67,9 @@ fi
 if [[ "${ROBO_IK_COMPARISON_DETAILS:-0}" == 1 ]]; then
   PROCESSING_ARGS+=(--ik-comparison-details)
 fi
+if [[ -n "${ROBO_IK_COMPARISON_FORMAT:-}" ]]; then
+  PROCESSING_ARGS+=(--ik-comparison-format "$ROBO_IK_COMPARISON_FORMAT")
+fi
 if [[ "${ROBO_TOOL_GEOMETRY_DETAILS:-0}" == 1 ]]; then
   PROCESSING_ARGS+=(--tool-geometry-details)
 fi

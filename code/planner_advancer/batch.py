@@ -11,9 +11,11 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]/'code/runs/company2-20261018'
 
 
-def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,layout_manifest=None,processing=False,prepared_from=None,backend='luna',omit_images=False,task_override=None,omit_additional_images=False,ik_comparison_details=False):
-    if ik_comparison_details and not processing:
+def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,layout_manifest=None,processing=False,prepared_from=None,backend='luna',omit_images=False,task_override=None,omit_additional_images=False,ik_comparison_details=False,ik_comparison_format=None):
+    if (ik_comparison_details or ik_comparison_format) and not processing:
         raise ValueError('Robot IK input comparisons require additional processing')
+    if ik_comparison_format not in (None,'matrix','named'):
+        raise ValueError('Invalid robot IK input representation')
     if omit_additional_images and (not processing or omit_images or backend=='jev'):
         raise ValueError('Generated-image ablation requires RGB Luna with additional processing')
     allowed={entry['task'] for entry in json.loads((HERE/'campaign.json').read_text())['tasks']}
@@ -52,6 +54,7 @@ def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,la
                          ROBO_DECISION_BACKEND=backend,ROBO_OMIT_IMAGES='1' if omit_images else '0',
                          ROBO_OMIT_ADDITIONAL_IMAGES='1' if omit_additional_images else '0',
                          ROBO_IK_COMPARISON_DETAILS='1' if ik_comparison_details else '0',
+                         ROBO_IK_COMPARISON_FORMAT=ik_comparison_format or '',
                          ROBO_LAYOUT_MANIFEST=str(Path(layout_manifest).resolve()) if layout_manifest else ''))
         (run/'worker.pid').write_text(str(proc.pid)+'\n')
         runs.append(dict(task=task,layout=layout,gpu=gpu,pid=proc.pid,directory=str(run.relative_to(ROOT)),backend=backend,
@@ -108,6 +111,7 @@ if __name__=='__main__':
     parser.add_argument('--omit-images',action='store_true')
     parser.add_argument('--omit-additional-images',action='store_true')
     parser.add_argument('--ik-comparison-details',action='store_true')
+    parser.add_argument('--ik-comparison-format',choices=['matrix','named'])
     parser.add_argument('--task',choices=[entry['task'] for entry in json.loads((HERE/'campaign.json').read_text())['tasks']])
     args=parser.parse_args()
-    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu,args.gpus,args.layout_manifest,args.processing,args.prepared_from,args.backend,args.omit_images,args.task,args.omit_additional_images,args.ik_comparison_details) if args.action=='launch' else status(),indent=2))
+    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu,args.gpus,args.layout_manifest,args.processing,args.prepared_from,args.backend,args.omit_images,args.task,args.omit_additional_images,args.ik_comparison_details,args.ik_comparison_format) if args.action=='launch' else status(),indent=2))
