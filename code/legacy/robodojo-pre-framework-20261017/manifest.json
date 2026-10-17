@@ -1,0 +1,69 @@
+{
+  "status": "LEGACY_DO_NOT_USE",
+  "archived_at": "2026-10-17T00:43:27.275629+00:00",
+  "rule": "Do not read, retrieve, inject, replay or reuse unless the user explicitly requests these legacy attempts.",
+  "moves": [
+    {
+      "original": "/home/user/ykj/project/gpt6/jev-RSI/code/experience",
+      "archived": "/home/user/ykj/project/gpt6/jev-RSI/code/legacy/robodojo-pre-framework-20261017/experience",
+      "kind": "experience",
+      "sha256": {
+        "global.md": "c7fcb46fea28927f7b50d38146a3e0b5ce9d6d2118b96777b7bc5e78e12e4f7d",
+        "tasks/general_pickup.md": "a2661519e648ec96a6ca05e6c3a89419fbf5ef78d43bb44465cb3611f0125811",
+        "tasks/press_by_number.md": "701bdb4cb3095e83656dd71803b1a810270eefee57dae8bb1f17c3f4757db6d0",
+        "tasks/fold_clothes.md": "e2eda937101121539acfa35cf207ba6212aa9b8457fda4334e22c8193d24cde0",
+        "tasks/stack_blocks.md": "a22d9f203e57c4b059406e5629a8f87ec6271693e4bf422782b781b171ab5d1d",
+        "tasks/arrange_largest_number.md": "dc99137334fffbbb6f1f9768325bb0d7a61db67fcc30801ee28dad7e55de8313"
+      }
+    },
+    {
+      "original": "/home/user/ykj/project/gpt6/jev-RSI/code/config/campaign-top5-gpu0.json",
+      "archived": "/home/user/ykj/project/gpt6/jev-RSI/code/legacy/robodojo-pre-framework-20261017/campaign-configs/campaign-top5-gpu0.json",
+      "kind": "campaign_configuration",
+      "sha256": null
+    },
+    {
+      "original": "/home/user/ykj/project/gpt6/jev-RSI/code/config/campaign-top5-gpu0b.json",
+      "archived": "/home/user/ykj/project/gpt6/jev-RSI/code/legacy/robodojo-pre-framework-20261017/campaign-configs/campaign-top5-gpu0b.json",
+      "kind": "campaign_configuration",
+      "sha256": null
+    },
+    {
+      "original": "/home/user/ykj/project/gpt6/jev-RSI/code/config/campaign-top5-gpu1.json",
+      "archived": "/home/user/ykj/project/gpt6/jev-RSI/code/legacy/robodojo-pre-framework-20261017/campaign-configs/campaign-top5-gpu1.json",
+      "kind": "campaign_configuration",
+      "sha256": null
+    },
+    {
+      "original": "/home/user/ykj/project/gpt6/jev-RSI/code/config/campaign-top5-gpu1b.json",
+      "archived": "/home/user/ykj/project/gpt6/jev-RSI/code/legacy/robodojo-pre-framework-20261017/campaign-configs/campaign-top5-gpu1b.json",
+      "kind": "campaign_configuration",
+      "sha256": null
+    },
+    {
+      "original": "/home/user/ykj/project/gpt6/jev-RSI/code/config/staged-task-specs.json",
+      "archived": "/home/user/ykj/project/gpt6/jev-RSI/code/legacy/robodojo-pre-framework-20261017/campaign-configs/staged-task-specs.json",
+      "kind": "legacy_task_specification",
+      "sha256": null
+    },
+    {
+      "original": "/data/ykj_robodojo/RoboLaya/runs/jev-rsi-gpt-decision-20261011",
+      "archived": "/data/ykj_robodojo/legacy/robodojo-pre-framework-20261017/jev-rsi-gpt-decision-20261011",
+      "kind": "native_runs_plans_images_logs_experience_snapshots",
+      "sha256": null
+    },
+    {
+      "original": "/data/ykj_robodojo/RoboLaya/runs/vision-method-20261011",
+      "archived": "/data/ykj_robodojo/legacy/robodojo-pre-framework-20261017/vision-method-20261011",
+      "kind": "native_runs_plans_images_logs_experience_snapshots",
+      "sha256": null
+    }
+  ],
+  "not_moved": [
+    "LOGS, Discussion and TIMELINE historical records",
+    "shared runtime source",
+    "official RoboDojo code/assets and official-priority inventory",
+    "LIBERO attempts and other conversations",
+    "v4090 assets: not locally accessible; not physically moved"
+  ]
+}

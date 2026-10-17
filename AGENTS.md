@@ -1,5 +1,13 @@
 # Agent-Centric Research Protocol
 
+## Current RoboDojo framework discussion and retired attempts (2026-10-17)
+
+- The user confirmed TCP as the common robot control point. Remaining action-interface choices are discussion drafts, not deployed settings. The shared English draft and exact intended planner/advancer insertion points are in `code/contracts/tcp_action_interface.draft.md`.
+- Do not read, retrieve, inject, replay or reuse the previous RoboDojo attempts in `code/legacy/robodojo-pre-framework-20261017/` or `/data/ykj_robodojo/legacy/robodojo-pre-framework-20261017/` unless the user explicitly requests those old attempts. Do not follow historical links into them merely because a log mentions them.
+- This rule also covers the external legacy v4090 assets at `/home/v4090-1/DataStorage/gpt6-dec`; their physical relocation is pending, not completed. Retained old runtime source and old session summaries are not current framework defaults.
+- Collect new experience separately; do not supply experience to either model in the current framework. All new experience text and model-facing prompts must be English. Preserve archived historical content without rewriting it.
+- Requests addressed to the overall experimental agent change the outer experiment/framework. Do not paste them into the planner or advancer prompts. Requests explicitly addressed to the planner or advancer change that model's prompt/interface.
+
 > 本文件是协议的 **single source of truth**。`CLAUDE.md` 仅是指向本文件的引用。
 
 ---
