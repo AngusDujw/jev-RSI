@@ -18,7 +18,7 @@ Control the TCP, the center between the gripping faces. Both arms use the same w
 
 Positive rotations follow the right-hand rule; negative reverses them. Hold means zero increment on that channel. Rotation axes stay fixed in the world. Rotate about the TCP: rotation alone keeps its target position fixed; translation alone keeps tool orientation fixed.
 
-These are increments, not absolute Euler angles. In each decision, at most one of yaw, pitch and roll may be positive or negative; the other two must be hold. All three may be hold. Step sizes are supplied in meters and radians; select directions only.
+These are increments, not absolute Euler angles. In each decision, at most one of yaw, pitch and roll may be positive or negative; the other two must be hold. Step sizes are supplied in meters and radians; select directions only.
 
 Image directions depend on the camera, and wrist cameras move with their arms. Check subsequent measured state and images to verify actual motion.
 <!-- SHARED_ACTION_DESCRIPTION_END -->
