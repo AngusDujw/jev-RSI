@@ -58,6 +58,9 @@ fi
 if [[ "${ROBO_TOOL_GEOMETRY_DETAILS:-0}" == 1 ]]; then
   PROCESSING_ARGS+=(--tool-geometry-details)
 fi
+if [[ "${ROBO_EXECUTION_BUDGET_DETAILS:-0}" == 1 ]]; then
+  PROCESSING_ARGS+=(--execution-budget-details)
+fi
 exec /root/miniconda3/envs/isaacsim5.1/bin/python -u "$PROJECT/code/planner_advancer/runtime.py" \
   --task "$TASK" --layout "$LAYOUT" --output "$RUN/episode" --headless --enable_cameras \
   "${LAYOUT_ARGS[@]}" \

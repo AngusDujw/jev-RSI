@@ -217,6 +217,7 @@ graph LR
     T_2026W42_109["📊 robodojo-planner-advancer-v1<br/>新框架叠方块550步终局失败；可见夹起后对…"]:::experiment
     T_2026W42_110["📊 robodojo-planner-advancer-v1<br/>首个18阶段自编处理交付；Jev同计划无图…"]:::experiment
     T_2026W42_111["📊 robodojo-planner-advancer-v1<br/>通道解释后Luna/Jev激活旋转66/6…"]:::experiment
+    T_2026W42_112["📊 robodojo-planner-advancer-v1<br/>v5/v6交付任务相关灰块接近阶段并启动L…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -391,6 +392,7 @@ graph LR
   T_2026W42_108 --> T_2026W42_109
   T_2026W42_109 --> T_2026W42_110
   T_2026W42_110 --> T_2026W42_111
+  T_2026W42_111 --> T_2026W42_112
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -596,6 +598,7 @@ graph LR
 | `T-2026W42-109` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 新框架叠方块550步终局失败；可见夹起后对齐反复，规划器自编附加信息尚未交付，两个初始准备续试中 | `EXP-2026W42-275` | - |
 | `T-2026W42-110` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 首个18阶段自编处理交付；Jev同计划无图20步后多旋转拒绝，分拣诊断误交付止损，改进通道误差解释 | `EXP-2026W42-276` | - |
 | `T-2026W42-111` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 通道解释后Luna/Jev激活旋转66/66与25/25符合字段；正确方向仍跟踪失配，v5检验任务阶段与新增逐关节诊断 | `EXP-2026W42-277` | - |
+| `T-2026W42-112` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v5/v6交付任务相关灰块接近阶段并启动Luna/Jev配对；新分拣视觉参考仍blocked0动作，后续检验实现验证与未来观测的区分 | `EXP-2026W42-278` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

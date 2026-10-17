@@ -5,7 +5,7 @@ import subprocess
 import re
 import time
 import shutil
-from models import dump,english,image_content
+from models import dump,english,image_content,post_json
 from sandbox import execute
 
 TOOLS=[dict(type='function',name=name,description=description,strict=True,
@@ -38,6 +38,7 @@ The input observation JSON contains task, current_stage, robot_state, cameras an
 Before stages are defined, current_stage is a planning placeholder. For a test, copy the input JSON to /output and replace only current_stage with a proposed stage; preserve the supplied observations and image paths.
 Use /input/observation.json for testing. Run ./processor /input/observation.json /output/additional.json and inspect the numerical and visual results. You may inspect generated overlays with view_image. Correct errors before final delivery.
 A workflow is not ready merely because it runs or outputs placeholders. Verify that it produces information useful for the initial stage's decisions on the supplied observations. When uncertainty limits precision, provide usable coarse information for earlier stages instead of making every stage depend on final-contact precision.
+Verify the processing implementation on the available observations, including explicit unavailable-value behavior. This does not require every later stage's completion condition to be satisfied or every future contact to be measurable in the initial images. Later stages receive fresh observations. Design useful task-progress stages that can begin with the available evidence and obtain better observations through task-related motion when needed. For example, a named visible feature relative to a marked target region may support a coarse approach even when a precise three-dimensional grasp estimate is unavailable. Do not label a future condition as currently verified, and do not invent numerical measurements to bypass missing data.
 For numerical comparisons, make sign and tolerance interpretation explicit for each fixed question. Prefer one consistent goal-minus-current convention rather than redundant opposite-signed errors. Map rotation comparisons by channel name: yaw about world Z, pitch about world X, roll about world Y. Explain whether positive error is reduced by a positive channel increment, and distinguish an error within tolerance from an error needing correction. Test that these interpretations agree with the processor's numerical calculations; a generic XYZ rotation vector alone may be difficult to interpret. These fields describe geometry, not selected action choices.
 Keep stages tied to task progress. Add auxiliary posture or clearance stages only when current observations establish their purpose. Do not make manipulation depend on an arbitrary parking pose or unnecessary orientation constraint. Check chosen posture targets against public robot kinematics and geometry, and distinguish robot-only feasibility from scene clearance. Preserve task-appropriate freedom where a precise posture is not required.
 Return only the final stage-plan JSON after verification. additional_inputs is a list of objects with name and description, plus units/frame/uncertainty/missing_data explanations where relevant. Each name binds to a key in the processor's output. Include no code, paths to implementations, dependencies or test records in the final JSON. Keep stages and completion conditions easy for the advancer to use. The fixed eight questions and motion choices remain unchanged.
@@ -60,8 +61,7 @@ If implementation cannot be verified, report a separate JSON object with status=
         config='url = "https://ai2robcowork.site/openai/v1/responses"\nheader = "Authorization: Bearer '+key+'"\nheader = "Content-Type: application/json"\n'
         started=time.time()
         try:
-            result=subprocess.run(['curl','--silent','--show-error','--fail-with-body','--max-time','600','--connect-timeout','25',
-                                   '--config','-','--data-binary','@'+str(wire)],input=config,text=True,capture_output=True)
+            result=post_json(config,wire,step)
             (step/'response.json').write_text(result.stdout)
             if result.returncode:
                 raise RuntimeError('Planner transport: '+result.stdout[:300]+result.stderr[-200:])

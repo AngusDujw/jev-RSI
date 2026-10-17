@@ -38,6 +38,34 @@ def image_content(paths):
     return items
 
 
+def post_json(config,wire,folder,timeout=600):
+    """Retry empty transport failures only, never completed model decisions."""
+    records=[]
+    for attempt in range(4):
+        started=time.time()
+        result=subprocess.run(['curl','--silent','--show-error','--fail-with-body','--connect-timeout','25',
+                    '--max-time',str(timeout),'--config','-','--data-binary','@'+str(wire)],
+                    input=config,text=True,capture_output=True)
+        retry=result.returncode in {5,6,7,18,28,35,52,55,56,92} and not result.stdout.strip() and attempt<3
+        records.append(dict(attempt=attempt+1,returncode=result.returncode,seconds=time.time()-started,
+                            response_bytes=len(result.stdout.encode()),stderr=result.stderr[-500:],retry_same_request=retry))
+        dump(Path(folder)/'transport_attempts.json',records)
+        if result.returncode:
+            (Path(folder)/f'transport-failure-{attempt+1}.txt').write_text(result.stdout)
+        if not retry:
+            return result
+        time.sleep((1,3,7)[attempt])
+
+
+def legacy_input_contract(observation):
+    modes={'native' if str(c.get('calibration_source','')).startswith('Native CameraManager') else 'sdk'
+           for c in observation['cameras'].values()}
+    geometry={'public_tool_geometry' in observation['robot_state'][arm] for arm in ('left','right')}
+    if len(modes)!=1 or len(geometry)!=1:
+        raise ValueError('Mixed observation protocols cannot form a paired condition')
+    return dict(camera_intrinsics=modes.pop(),tool_geometry_details=geometry.pop(),execution_budget_details=False)
+
+
 def call(kind, prompt, images, folder, schema=None):
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=False)
@@ -64,9 +92,7 @@ def call(kind, prompt, images, folder, schema=None):
     config = 'url = "' + base + '/responses"\nheader = "Authorization: Bearer ' + key + '"\nheader = "Content-Type: application/json"\n'
     started = time.time()
     try:
-        result = subprocess.run(['curl','--silent','--show-error','--fail-with-body','--connect-timeout','25',
-                    '--max-time','600','--config','-', '--data-binary','@'+str(transport)],
-                    input=config, text=True, capture_output=True)
+        result = post_json(config,transport,folder)
         (folder / 'response.json').write_text(result.stdout)
         if result.returncode:
             raise RuntimeError('Model transport failed: ' + result.stderr[-300:] + ' HTTP body: '+result.stdout[:500])

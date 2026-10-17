@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
-from models import dump,english
+from models import dump,english,post_json
 
 
 def decide(state,questions,folder):
@@ -19,8 +19,7 @@ def decide(state,questions,folder):
     config='url = "https://api.typesafe.ai/v1/systemone"\nheader = "Authorization: Bearer '+key+'"\nheader = "Content-Type: application/json"\n'
     started=time.time()
     try:
-        result=subprocess.run(['curl','--silent','--show-error','--fail-with-body','--connect-timeout','25','--max-time','180',
-                               '--config','-','--data-binary','@'+str(wire)],input=config,text=True,capture_output=True)
+        result=post_json(config,wire,folder,timeout=180)
         (folder/'response.json').write_text(result.stdout)
         if result.returncode:
             raise RuntimeError('Jev transport failed: '+result.stdout[:400]+result.stderr[-200:])

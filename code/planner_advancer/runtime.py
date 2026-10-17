@@ -14,7 +14,7 @@ import shutil
 import numpy as np
 import cv2  # Pin the environment's compatible binary before Kit adjusts sys.path.
 import rtree  # Pin the project wheel, including its libspatialindex, before Kit.
-from models import call, dump, english
+from models import call, dump, english, legacy_input_contract
 from kinematics import solve_tcp
 
 AXES = ('x','y','z','yaw','pitch','roll')
@@ -50,6 +50,7 @@ def main():
     parser.add_argument('--omit-images',action='store_true')
     parser.add_argument('--camera-intrinsics',choices=['native','sdk'],default='native')
     parser.add_argument('--tool-geometry-details',action='store_true')
+    parser.add_argument('--execution-budget-details',action='store_true')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
@@ -57,6 +58,20 @@ def main():
     if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images) and not args.enable_processing:
         raise ValueError('Prepared-plan and text-only comparisons require additional processing')
     args.output.mkdir(parents=True,exist_ok=False)
+    protocol=dict(camera_intrinsics=args.camera_intrinsics,tool_geometry_details=args.tool_geometry_details,
+                  execution_budget_details=args.execution_budget_details)
+    if args.prepared_from:
+        source=args.prepared_from.resolve()
+        campaign_root=Path(__file__).resolve().parents[1]/'runs/company2-20261018'
+        if not source.is_relative_to(campaign_root.resolve()):
+            raise ValueError('Paired plan source must belong to this campaign')
+        prior=source/'input_contract.json'
+        protocol=json.loads(prior.read_text()) if prior.exists() else legacy_input_contract(json.loads((source/'observations/initial/observation.json').read_text()))
+        if set(protocol)!={'camera_intrinsics','tool_geometry_details','execution_budget_details'} or protocol['camera_intrinsics'] not in ('sdk','native') or any(type(protocol[k]) is not bool for k in ('tool_geometry_details','execution_budget_details')):
+            raise ValueError('Invalid source input contract')
+        for key,value in protocol.items():
+            setattr(args,key,value)
+    dump(args.output/'input_contract.json',protocol)
     args.headless,args.enable_cameras = True,True
     app = AppLauncher(args).app
     session = env = None
@@ -200,9 +215,14 @@ def main():
                         sdk_intrinsics_diagnostic=sdk_intrinsic.tolist(),
                         camera_to_world=matrix.tolist(),image_size=list(Image.open(images[label]).size),
                         convention='Camera X right, Y down, Z forward; world frame matches TCP positions; meters. Extrinsics updated from current measured camera mounting pose.')
-                dump(folder/'observation.json',dict(task=str(session.obs['instruction']),robot_state=state,
+                observation=dict(task=str(session.obs['instruction']),robot_state=state,
                     current_stage=stage or dict(id='planning_placeholder',goal='Design the stages for the supplied task.'),
-                    cameras=cameras,images={k:'/input/'+p.name for k,p in images.items()}))
+                    cameras=cameras,images={k:'/input/'+p.name for k,p in images.items()})
+                if args.execution_budget_details:
+                    observation['execution_budget']=dict(native_control_step_limit=int(env.step_lim),
+                        native_steps_used=int(session.step_id),native_steps_remaining=max(0,int(env.step_lim)-int(session.step_id)),
+                        native_steps_per_continue_decision=5,native_steps_per_advance_decision=0)
+                dump(folder/'observation.json',observation)
             return state,images
 
         state,images=observe('initial')
@@ -216,6 +236,11 @@ def main():
             '\n\nTASK\n'+str(task)+'\n\nCURRENT ROBOT STATE\n'+json.dumps(state)+\
             '\n\nCURRENT INPUT MODE\n'+mode+' No history or experience is supplied. Fixed increments are 0.02 meters per non-hold translation channel and 0.10 radians per non-hold rotation channel. Translation and one rotation may execute together. Advance dispatches no action.\n\nOUTPUT\n'+output_spec+\
             '\n\nREFERENCE IMPLEMENTATIONS\n'+(code/'contracts/planner_processing_references.md').read_text()
+        if args.execution_budget_details:
+            plan_prompt+='\n\nEXECUTION BUDGET\n'+json.dumps(dict(native_control_step_limit=int(env.step_lim),
+                native_steps_per_continue_decision=5,native_steps_per_advance_decision=0,
+                maximum_full_continue_decisions=int(env.step_lim)//5,total_decision_call_limit=args.decision_budget,
+                meaning='The native episode ends at this fixed control-step limit. Each continue decision, including hold or gripper-only decisions, uses up to five native steps. Stage advance uses no native steps. This is an execution budget, not a task-success signal.'))
         implementation=None
         if args.prepared_from:
             source=args.prepared_from.resolve()
@@ -294,6 +319,11 @@ def main():
             context=dict(task=task,current_stage=stage,controlled_arm=stage['controlled_arm'],
                 current_robot_state=state,additional_information=additional,
                 execution_parameters=dict(translation_step_m=.02,rotation_step_rad=.10))
+            if args.execution_budget_details:
+                context['execution_parameters'].update(native_control_step_limit=int(env.step_lim),
+                    native_steps_used=int(session.step_id),native_steps_remaining=max(0,int(env.step_lim)-int(session.step_id)),
+                    native_steps_per_continue_decision=5,native_steps_per_advance_decision=0,
+                    decision_calls_remaining=args.decision_budget-index)
             if args.decision_backend=='jev':
                 from jev_client import decide
                 context.update(advancer_instructions=role,action_definitions=shared,input_modality='Text only. No RGB images are supplied. Use the current robot state and additional information.')
