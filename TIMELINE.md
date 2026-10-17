@@ -229,6 +229,7 @@ graph LR
     T_2026W42_121["📊 robodojo-planner-advancer<br/>白块搬运后释放落旁；v14分类交付，叠块规…"]:::experiment
     T_2026W42_122["📝 robodojo-planner-advancer-v1<br/>T121主题键漏写v1，属同一主线并非新议…"]:::note
     T_2026W42_123["📊 robodojo-planner-advancer-v1<br/>冻结原图组可见白块搬起、文本组进入接近；原…"]:::experiment
+    T_2026W42_124["📊 robodojo-planner-advancer-v1<br/>原叠图Luna550步及class1 Je…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -414,6 +415,7 @@ graph LR
   T_2026W42_119 --> T_2026W42_120
   T_2026W42_120 --> T_2026W42_122
   T_2026W42_122 --> T_2026W42_123
+  T_2026W42_123 --> T_2026W42_124
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -631,6 +633,7 @@ graph LR
 | `T-2026W42-121` | 2026-10-18 | experiment | robodojo-planner-advancer | 白块搬运后释放落旁；v14分类交付，叠块规划配额受限；冻结输入消融继续 | `EXP-2026W42-286` | - |
 | `T-2026W42-122` | 2026-10-18 | note | robodojo-planner-advancer-v1 | T121主题键漏写v1，属同一主线并非新议题；EXP286输入消融与配额状态继续按既有CIRCLE-1收敛 | `EXP-2026W42-286` | - |
 | `T-2026W42-123` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 冻结原图组可见白块搬起、文本组进入接近；原计划支撑失效无恢复，分拣跟踪偏差另审 | `EXP-2026W42-287` | - |
+| `T-2026W42-124` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 原叠图Luna550步及class1 Jev1100步完整失败；文本advance未直接满足视觉证据条件 | `EXP-2026W42-288` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
