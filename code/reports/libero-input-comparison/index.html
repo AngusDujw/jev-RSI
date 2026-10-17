@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><link rel="icon" href="data:,">
+<title>一次决策，四种输入 · LIBERO实验对照</title>
+<meta name="description" content="同一任务、同一初态、第一次接近决策：对照原Jev和三组多模态实验的真实输入、图像、问题与回答。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="mast"><span>LIBERO / 实验记录</span><span>1144 · INIT 5 · DECISION 0000</span></div>
+  <div class="hero"><div><p class="eyebrow">ONE DECISION, FOUR INPUTS</p><h1>这一次，模型<br>到底收到了什么<span>？</span></h1></div><div class="brief"><p class="task-label">任务 / 把碗放到炉灶上</p><p>只看第一次「接近」决策。左边固定为原Jev，右边切换三种多模态测试，直接比较输入、问题和实际回答。</p><div class="verified"><span class="dot"></span>历史真实记录 · 起始位置与XYZ误差一致</div></div></div>
+</header>
+<main>
+  <section class="picker" aria-label="选择右侧对照条件"><div class="picker-title"><span>右侧看哪一组？</span><small>左侧始终保留原Jev</small></div><div id="conditions" class="conditions"></div></section>
+  <div class="stage-line"><span>当时阶段</span><b>approach / 接近</b><span class="stage-arrow">→</span><span>下一阶段 align / 对齐</span><span class="stage-note">这一次没有旋转问题，未要求输出YPR</span></div>
+  <section class="question-picker" aria-label="切换问题"><span>查看问题</span><div id="question-buttons" class="question-buttons"></div><label class="diff-switch"><input id="diff" type="checkbox" checked>标出措辞变化</label></section>
+  <section class="comparison" aria-label="原Jev与多模态并排对照">
+    <article class="pane baseline" id="left-pane"></article>
+    <article class="pane experiment" id="right-pane"></article>
+  </section>
+  <section class="field-section"><div class="section-heading"><span class="section-number">02</span><div><h2>除了问题，输入还改了什么？</h2><p>这里比较真正发送给模型的内容，不把程序内部仍持有的数据算作模型输入。</p></div></div><div id="field-comparison"></div></section>
+  <section class="raw-section"><div class="section-heading"><span class="section-number">03</span><div><h2>展开原文，逐项核对</h2><p>默认界面是便于阅读的摘录；这里保留完整字段、所有问题、相机说明和真实回答。</p></div></div>
+    <div class="raw-toolbar"><div id="raw-tabs" class="raw-tabs"></div><button id="copy" class="small-button">复制右侧内容</button><span id="copy-status" role="status"></span></div>
+    <div class="raw-grid"><div><div class="raw-caption"><b>原Jev</b><a id="left-download" download>下载原始请求 ↗</a></div><pre id="raw-left" tabindex="0"></pre></div><div><div class="raw-caption"><b id="raw-right-title"></b><a id="right-download" download>下载实际请求 ↗</a></div><pre id="raw-right" tabindex="0"></pre></div></div>
+    <p id="raw-note" class="fine"></p>
+  </section>
+  <footer><div><span class="section-number">来源与边界</span><p>四个面板均来自已经发生的真实首轮决策。原Jev请求来自已归档回合，另外三组来自保存的provider请求与回答。没有用最新代码重建历史提示词，也没有混入尚未测试的运动说明。</p><p>这是一例输入审查，不是成功率比较。部分旧消融回合在后续遇到SSL中断；本页展示的首轮回答均已实际收到。</p></div><details><summary>查看来源、哈希与核验结果</summary><pre id="provenance"></pre><a href="audit.json" download>下载核验摘要 ↗</a></details></footer>
+</main>
+<dialog id="image-dialog"><button id="close-image" aria-label="关闭大图">关闭 ×</button><img id="large-image" alt=""><p id="large-caption"></p></dialog>
+<script src="data.js"></script><script src="viewer.js"></script>
+</body>
+</html>
