@@ -87,11 +87,9 @@ def mask_xyz(request):
     for axis in 'xyz':
         if axis in result['questions']:
             result['questions'][axis]['instructions'] = (
-                f'For world {axis.upper()}, which existing categorical direction brings the measured '
-                'control reference toward the current stage goal? Use the current camera evidence, '
-                'public calibration and measured robot state. Keep the control point still in '
-                'gripper-only stages. Image up/right is not a fixed world direction. '
-                'Use the original tolerance and output categories; no numeric residual is supplied.')
+                f'Select {axis.upper()} direction toward current phase goal using the current '
+                'labeled RGB images. Hold within tolerance. During gripper-only phases '
+                'grasp/release always hold all XYZ.')
     if 'transition' in result['questions']:
         result['questions']['transition']['instructions'] = (
             'Decide the current stage edge from retained completion/holding feedback, output permissions '
