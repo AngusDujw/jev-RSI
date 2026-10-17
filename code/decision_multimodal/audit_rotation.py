@@ -22,6 +22,7 @@ def audit(root):
             images=[p for p in parts if p['type']=='input_image']
             if dispatch['profile'] in ('rotation_visual_candidates_v1','rotation_visual_dials_v2'):
                 assert len(images)==3
+                assert len({v['native_observation_counter'] for v in dispatch['camera_views']})==1
                 state=json.loads(parts[0]['text'])
                 assert set(state)=={'task','stage','task_plan','goal','source'}
                 if dispatch['profile']=='rotation_visual_candidates_v1':
@@ -61,13 +62,16 @@ def audit(root):
         result=json.loads(result_path.read_text()) if result_path.exists() else None
         setup_path=folder/'multimodal/rotation-setup.json'
         setup=json.loads(setup_path.read_text()) if setup_path.exists() else None
+        policy_steps=result['native_result'].get('native_steps') if result and result.get('native_result') else None
+        total_steps=policy_steps+10+(setup['setup_steps'] if setup else 0) if policy_steps is not None else None
         rows.append(dict(case=folder.name,**counts,visual_choices=len(visual),
             residual_sign_consistent=correct,residual_sign_opposed=wrong,visual_hold=hold,
             same_stage_angular_progress_samples=len(progress),
             same_stage_positive_progress=sum(p>0 for p in progress),
             same_stage_net_angular_progress_rad=sum(progress),
             same_stage_median_angular_progress_rad=statistics.median(progress) if progress else None,
-            setup=setup,result=result))
+            setup=setup,result=result,policy_steps=policy_steps,total_steps_including_setup_and_settle=total_steps,
+            within_native600_horizon=total_steps<=600 if total_steps is not None else None))
     return dict(campaign=str(root),episodes=rows,
         limitation='Angular diagnostics derive from permitted targets/robot state. Sign agreement is not optimality, native success or proof that camera RGB is necessary.')
 
