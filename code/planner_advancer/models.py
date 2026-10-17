@@ -81,7 +81,7 @@ def normalize_input_contract(protocol):
     flags=('tool_geometry_details','execution_budget_details','perception_tools','ik_comparison_details')
     if set(protocol)!={'camera_intrinsics','ik_comparison_format',*flags} or protocol['camera_intrinsics'] not in ('sdk','native') or any(type(protocol[k]) is not bool for k in flags):
         raise ValueError('Invalid source input contract')
-    if protocol['ik_comparison_format'] not in ('matrix','named') or (protocol['ik_comparison_format']=='named' and not protocol['ik_comparison_details']):
+    if protocol['ik_comparison_format'] not in ('matrix','named','named_rates') or (protocol['ik_comparison_format']!='matrix' and not protocol['ik_comparison_details']):
         raise ValueError('Invalid robot IK input representation contract')
     return protocol
 

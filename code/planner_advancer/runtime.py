@@ -52,7 +52,7 @@ def main():
     parser.add_argument('--omit-images',action='store_true')
     parser.add_argument('--omit-additional-images',action='store_true')
     parser.add_argument('--ik-comparison-details',action='store_true',default=None)
-    parser.add_argument('--ik-comparison-format',choices=['matrix','named'],default=None)
+    parser.add_argument('--ik-comparison-format',choices=['matrix','named','named_rates'],default=None)
     parser.add_argument('--camera-intrinsics',choices=['native','sdk'],default='native')
     parser.add_argument('--tool-geometry-details',action='store_true')
     parser.add_argument('--execution-budget-details',action='store_true')
@@ -84,7 +84,7 @@ def main():
         if requested_ik_format is not None and requested_ik_format != protocol['ik_comparison_format']:
             dump(args.output/'input_representation_override.json',dict(field='ik_comparison_format',
                  source_value=protocol['ik_comparison_format'],condition_value=requested_ik_format,
-                 meaning='Independent lossless current-robot IK presentation condition. The plan, processor and numerical checks are unchanged.'))
+                 meaning='Independent current-robot IK input condition. The plan, processor and original numerical checks are unchanged. named_rates adds public joint waypoint rate comparisons.'))
             protocol['ik_comparison_format']=requested_ik_format
         for key,value in protocol.items():
             setattr(args,key,value)
@@ -357,9 +357,16 @@ def main():
                     value=root@kin.fk[arm].matrix(q)
                     value[:3,3]+=value[:3,:3]@offset
                     return value
-                comparisons,diagnostic=compare_motion_paths(current_robot_fk,state[arm]['arm_joints_rad'],limits)
-                from robot_motion_format import present_motion_checks
-                comparisons=present_motion_checks(comparisons,args.ik_comparison_format or 'matrix')
+                if args.ik_comparison_format=='named_rates':
+                    from robot_motion_rates import compare_motion_paths_with_rates, present_motion_rate_checks
+                    comparisons,diagnostic=compare_motion_paths_with_rates(current_robot_fk,state[arm]['arm_joints_rad'],limits,
+                        control_dt_s=float(session.metadata['control_dt']),
+                        joint_velocity_limit_rad_s=float(key.cfg.actuators['arm'].velocity_limit_sim))
+                    comparisons=present_motion_rate_checks(comparisons,diagnostic)
+                else:
+                    comparisons,diagnostic=compare_motion_paths(current_robot_fk,state[arm]['arm_joints_rad'],limits)
+                    from robot_motion_format import present_motion_checks
+                    comparisons=present_motion_checks(comparisons,args.ik_comparison_format or 'matrix')
                 dump(args.output/'robot_motion_comparisons'/f'{index:03d}.json',dict(information=comparisons,audit=diagnostic))
                 context['robot_motion_comparisons']=comparisons
             if args.execution_budget_details:

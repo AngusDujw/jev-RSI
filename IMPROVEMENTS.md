@@ -172,14 +172,14 @@ positive: Increase coordinate
 ## IMP-010: Distinguish numerical IK from joint-path tracking demands
 
 - Source: Agent, 2026-10-18; outer proposal from EXP292 measured-robot audit.
-- Status: Candidate; not implemented or adopted.
+- Status: Implemented as the opt-in named_rates condition (EXP294); not adopted. Native comparison pending.
 - Problem: A path can pass all five TCP IK checks while demanding a large joint waypoint jump. One recorded path needs1.678rad in0.04s (41.945rad/s), above the public actuator configuration of5rad/s, and has141.18mm measured TCP endpoint error. This is not a claim that speed is the only source of errors.
 - Candidate input: For every same complete motion choice, report predicted joint waypoint increments and required peak joint rates with the public control interval and actuator limits. Keep this current-robot information separate from scene clearance, contact and holding. Do not rank or choose an action.
 - Fixed parts: Roles, eight questions, schema, increments, native horizon, existing IK gate, plan and task processor. No physics/limit changes, response repair, action projection, history or experience injection.
 - Minimal comparison: Independent frozen case/plan/processor episodes with and without the extra rate information, retaining Luna and same-method Jev text comparisons and modality-coverage limitations.
 - Metrics: Returned multiple rotations, numerical IK rejections, chosen over-rate paths, measured tracking, visible manipulation, native outcomes and call/input costs.
 - Evidence reference: exp292-joint-waypoint-speed-audit.json and LOGS/2026-W42.md EXP292. A future implementation must prove that the original189 numerical pass/fail results remain unchanged and that the new rate calculations match recorded robot paths.
-- Result: Untested. Queue text is never supplied to the planner or advancer.
+- Result: Offline comparison preserves all189 numerical flags and diagnostics. The original recorded path rate41.94496809561773rad/s is reproduced as41.94496809561935rad/s; its rate flag is false although numerical IK is true. Partial IK paths have null complete-path rate flags. Native benefits are unproven. Queue text is never supplied to the planner or advancer.
 
 ## 条目模板
 
