@@ -172,7 +172,7 @@ positive: Increase coordinate
 ## IMP-010: Distinguish numerical IK from joint-path tracking demands
 
 - Source: Agent, 2026-10-18; outer proposal from EXP292 measured-robot audit.
-- Status: Implemented as the opt-in named_rates condition (EXP294); not adopted. Independent native controls are running.
+- Status: Implemented as the opt-in named_rates condition (EXP294); not adopted. Luna remains running; Jev ended incomplete at170 native steps.
 - Problem: A path can pass all five TCP IK checks while demanding a large joint waypoint jump. One recorded path needs1.678rad in0.04s (41.945rad/s), above the public actuator configuration of5rad/s, and has141.18mm measured TCP endpoint error. This is not a claim that speed is the only source of errors.
 - Candidate input: For every same complete motion choice, report predicted joint waypoint increments and required peak joint rates with the public control interval and actuator limits. Keep this current-robot information separate from scene clearance, contact and holding. Do not rank or choose an action.
 - Fixed parts: Roles, eight questions, schema, increments, native horizon, existing IK gate, plan and task processor. No physics/limit changes, response repair, action projection, history or experience injection.
@@ -180,6 +180,7 @@ positive: Increase coordinate
 - Metrics: Returned multiple rotations, numerical IK rejections, chosen over-rate paths, measured tracking, visible manipulation, native outcomes and call/input costs.
 - Evidence reference: exp292-joint-waypoint-speed-audit.json and LOGS/2026-W42.md EXP292. A future implementation must prove that the original189 numerical pass/fail results remain unchanged and that the new rate calculations match recorded robot paths.
 - Result: Offline comparison preserves all189 numerical flags and diagnostics. The original recorded path rate41.94496809561773rad/s is reproduced as41.94496809561935rad/s; its rate flag is false although numerical IK is true. Partial IK paths have null complete-path rate flags. In the initial six executed choices per model, predicted rates exactly match the actual target paths. Jev still selected one provided rate-false choice, while Luna had20.23mm tracking error on a rate-true path. Native benefits are unproven. Queue text is never supplied to the planner or advancer.
+- Terminal update: Jev answer034 selected a complete choice whose numerical IK flag was explicitly false and whose full-path rate flag was null. The unchanged IK gate rejected it at170 steps; no response was repaired or resampled. Longer survival than a different episode is not task success or causal evidence of improvement.
 
 ## 条目模板
 
