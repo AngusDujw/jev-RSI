@@ -67,6 +67,8 @@ def status():
             except ProcessLookupError:
                 pass
             result=dict(run,alive=alive)
+            if (p/'oversight_stop.json').exists():
+                result['oversight_stop']=json.loads((p/'oversight_stop.json').read_text())
             for key,path in [('outcome',p/'episode/native/evaluation_outcome.json'),('summary',p/'episode/native/summary.json')]:
                 if path.exists():
                     result[key]=json.loads(path.read_text())

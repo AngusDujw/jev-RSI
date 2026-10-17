@@ -15,6 +15,10 @@ TOOLS=[dict(type='function',name=name,description=description,strict=True,
            ('view_image','path','Inspect an input or generated PNG image under /input, /work, or /output.')]]
 
 
+def blocked_diagnostic(plan):
+    return bool(re.search(r'execution is blocked|not an executable manipulation plan|diagnostic stage|verified replacement sorting plan',json.dumps(plan),re.I))
+
+
 def prepare(prompt,images,inputs,folder,resume_implementation=None):
     folder=Path(folder)
     folder.mkdir(parents=True,exist_ok=False)
@@ -34,10 +38,12 @@ The input observation JSON contains task, current_stage, robot_state, cameras an
 Before stages are defined, current_stage is a planning placeholder. For a test, copy the input JSON to /output and replace only current_stage with a proposed stage; preserve the supplied observations and image paths.
 Use /input/observation.json for testing. Run ./processor /input/observation.json /output/additional.json and inspect the numerical and visual results. You may inspect generated overlays with view_image. Correct errors before final delivery.
 A workflow is not ready merely because it runs or outputs placeholders. Verify that it produces information useful for the initial stage's decisions on the supplied observations. When uncertainty limits precision, provide usable coarse information for earlier stages instead of making every stage depend on final-contact precision.
+For numerical comparisons, make sign and tolerance interpretation explicit for each fixed question. Prefer one consistent goal-minus-current convention rather than redundant opposite-signed errors. Map rotation comparisons by channel name: yaw about world Z, pitch about world X, roll about world Y. Explain whether positive error is reduced by a positive channel increment, and distinguish an error within tolerance from an error needing correction. Test that these interpretations agree with the processor's numerical calculations; a generic XYZ rotation vector alone may be difficult to interpret. These fields describe geometry, not selected action choices.
 Return only the final stage-plan JSON after verification. additional_inputs is a list of objects with name and description, plus units/frame/uncertainty/missing_data explanations where relevant. Each name binds to a key in the processor's output. Include no code, paths to implementations, dependencies or test records in the final JSON. Keep stages and completion conditions easy for the advancer to use. The fixed eight questions and motion choices remain unchanged.
+If implementation cannot be verified, report a separate JSON object with status="blocked" and reason. Do not disguise a blocker as a stage or a manipulation plan. A blocked report will end preparation without calling the advancer.
 '''
     if resume_implementation:
-        instructions+='\nAn unfinished implementation is present in /work. Inspect it, adapt or replace it for the current observations, and complete verification. It is reference code, not a validated method or a final plan.\n'
+        instructions+='\nAn implementation from an earlier independent preparation is present in /work. Inspect it, adapt or replace it for the current observations, and complete verification. It is reference code, not a validated method or a final plan for this preparation.\n'
     english(prompt+'\n\n'+instructions)
     messages=[dict(role='user',content=[dict(type='input_text',text=prompt+'\n\n'+instructions)]+image_content(images))]
     dump(folder/'context.json',dict(prompt=prompt+'\n\n'+instructions,images={k:str(v) for k,v in images.items()}))
@@ -72,6 +78,13 @@ Return only the final stage-plan JSON after verification. additional_inputs is a
             english(text)
             try:
                 plan=json.loads(re.sub(r'^```(?:json)?\s*|\s*```$','',text.strip()))
+                assert isinstance(plan,dict), 'The final JSON must be an object.'
+                if plan.get('status')=='blocked':
+                    dump(folder/'blocked_report.json',plan)
+                    raise RuntimeError('Initial preparation blocked: '+str(plan.get('reason','No reason supplied.')))
+                if blocked_diagnostic(plan):
+                    messages.append(dict(role='user',content='Delivery rejected: this is an explicitly blocked diagnostic, not an executable task plan. Continue implementation and verification, or return a separate status="blocked" report with the reason. Do not send a permanently blocked stage to the advancer.'))
+                    continue
                 stages=plan['stages']
                 ids=[s['id'] for s in stages]
                 assert ids and len(ids)==len(set(ids)), 'Stage ids must be unique.'

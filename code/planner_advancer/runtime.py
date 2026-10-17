@@ -48,6 +48,7 @@ def main():
     parser.add_argument('--resume-processing-from',type=Path)
     parser.add_argument('--decision-backend',choices=['luna','jev'],default='luna')
     parser.add_argument('--omit-images',action='store_true')
+    parser.add_argument('--camera-intrinsics',choices=['native','sdk'],default='native')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
@@ -176,7 +177,8 @@ def main():
                     matrix=np.eye(4)
                     matrix[:3,:3]=R.from_quat(quaternion[[1,2,3,0]]).as_matrix()
                     matrix[:3,3]=position-origin
-                    intrinsic=np.asarray(camera.get_intrinsics_matrix())
+                    sdk_intrinsic=np.asarray(camera.get_intrinsics_matrix())
+                    intrinsic=np.asarray(manager.get_camera_intrinsics(cam_id,0)) if args.camera_intrinsics=='native' else sdk_intrinsic
                     if intrinsic.shape!=(3,3) or min(intrinsic[0,0],intrinsic[1,1])<10:
                         raise RuntimeError('Camera intrinsics are not usable pixel calibration')
                     projections={}
@@ -185,6 +187,8 @@ def main():
                         pixel=intrinsic@point[:3]
                         projections[arm]=dict(depth_m=float(point[2]),pixel=(pixel[:2]/pixel[2]).tolist() if abs(pixel[2])>1e-9 else None)
                     cameras[label]=dict(K=intrinsic.tolist(),robot_tcp_projection_check=projections,
+                        calibration_source=('Native CameraManager pinhole intrinsics from configured focal length, horizontal aperture and resolution; square pixels. Validate image consistency before precise use.' if args.camera_intrinsics=='native' else 'Camera SDK intrinsics; paired legacy observation protocol. Validate rendered-image consistency before precise use.'),
+                        sdk_intrinsics_diagnostic=sdk_intrinsic.tolist(),
                         camera_to_world=matrix.tolist(),image_size=list(Image.open(images[label]).size),
                         convention='Camera X right, Y down, Z forward; world frame matches TCP positions; meters. Extrinsics updated from current measured camera mounting pose.')
                 dump(folder/'observation.json',dict(task=str(session.obs['instruction']),robot_state=state,

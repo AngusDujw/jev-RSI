@@ -43,4 +43,5 @@ exec /root/miniconda3/envs/isaacsim5.1/bin/python -u "$PROJECT/code/planner_adva
   --task "$TASK" --layout "$LAYOUT" --output "$RUN/episode" --headless --enable_cameras \
   "${LAYOUT_ARGS[@]}" \
   "${PROCESSING_ARGS[@]}" \
+  --camera-intrinsics "${ROBO_CAMERA_INTRINSICS:-native}" \
   --kit_args "--/renderer/activeGpu=$GPU --/renderer/multiGpu/enabled=false --/app/renderer/resolution/width=640 --/app/renderer/resolution/height=480"
