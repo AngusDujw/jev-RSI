@@ -283,7 +283,7 @@ def main():
                 execution_parameters=dict(translation_step_m=.02,rotation_step_rad=.10))
             if args.decision_backend=='jev':
                 from jev_client import decide
-                context.update(action_definitions=shared,input_modality='Text only. No RGB images are supplied. Use the current robot state and additional information.')
+                context.update(advancer_instructions=role,action_definitions=shared,input_modality='Text only. No RGB images are supplied. Use the current robot state and additional information.')
                 decision=decide(context,QUESTIONS,args.output/'decisions'/f'{index:03d}')
             else:
                 prompt=role+'\n\n'+shared+'\n\n'+json.dumps(dict(**context,questions=QUESTIONS))
