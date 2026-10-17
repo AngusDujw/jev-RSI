@@ -49,6 +49,7 @@ def main():
     parser.add_argument('--decision-backend',choices=['luna','jev'],default='luna')
     parser.add_argument('--omit-images',action='store_true')
     parser.add_argument('--camera-intrinsics',choices=['native','sdk'],default='native')
+    parser.add_argument('--tool-geometry-details',action='store_true')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
@@ -159,6 +160,14 @@ def main():
                     arm_joints_rad=session.obs['states'][i:i+6].tolist(),
                     measured_gripper_native_state=float(session.obs['states'][i+6]),
                     commanded_gripper_target=grip[arm])
+                if args.tool_geometry_details:
+                    state[arm]['public_tool_geometry']=dict(
+                        description='The reported tool frame is parallel to X5 LINK6. Fingers extend from the palm along tool-local +X. The two prismatic jaws slide along tool-local +Y and -Y. Tool-local Z is the third transverse axis. These axes are carried into world coordinates by the reported rotation matrix.',
+                        finger_extension_axis_world_unit=t[:3,0].tolist(),
+                        jaw_sliding_axis_world_unit=t[:3,1].tolist(),
+                        transverse_axis_world_unit=t[:3,2].tolist(),
+                        finger_extension_dot_world_down=float(-t[2,0]),
+                        evidence='Public X5A.urdf joint7/joint8 origins and sliding axes; public link7/link8 STL geometry. No object geometry is used.')
             state['definitions']='Rotation matrix columns are tool-local X/Y/Z axes expressed in world coordinates. Gripper target 0 is closed and 1 is open. Measured gripper native state is reported separately; closure alone does not prove holding.'
             dump(folder/'robot_state.json',state)
             if args.enable_processing:
