@@ -76,7 +76,8 @@ def normalize_input_contract(protocol):
         raise ValueError('Invalid source input contract')
     protocol=dict(protocol)
     protocol.setdefault('perception_tools',False)
-    flags=('tool_geometry_details','execution_budget_details','perception_tools')
+    protocol.setdefault('ik_comparison_details',False)
+    flags=('tool_geometry_details','execution_budget_details','perception_tools','ik_comparison_details')
     if set(protocol)!={'camera_intrinsics',*flags} or protocol['camera_intrinsics'] not in ('sdk','native') or any(type(protocol[k]) is not bool for k in flags):
         raise ValueError('Invalid source input contract')
     return protocol

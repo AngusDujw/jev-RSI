@@ -51,6 +51,7 @@ def main():
     parser.add_argument('--decision-backend',choices=['luna','jev'],default='luna')
     parser.add_argument('--omit-images',action='store_true')
     parser.add_argument('--omit-additional-images',action='store_true')
+    parser.add_argument('--ik-comparison-details',action='store_true',default=None)
     parser.add_argument('--camera-intrinsics',choices=['native','sdk'],default='native')
     parser.add_argument('--tool-geometry-details',action='store_true')
     parser.add_argument('--execution-budget-details',action='store_true')
@@ -58,13 +59,15 @@ def main():
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
-    if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images or args.omit_additional_images) and not args.enable_processing:
+    if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images or args.omit_additional_images or args.ik_comparison_details) and not args.enable_processing:
         raise ValueError('Prepared-plan and text-only comparisons require additional processing')
     if args.omit_additional_images and (args.omit_images or args.decision_backend=='jev'):
         raise ValueError('Generated-image ablation preserves original RGB')
     args.output.mkdir(parents=True,exist_ok=False)
     protocol=dict(camera_intrinsics=args.camera_intrinsics,tool_geometry_details=args.tool_geometry_details,
-                  execution_budget_details=args.execution_budget_details,perception_tools=args.perception_tools)
+                  execution_budget_details=args.execution_budget_details,perception_tools=args.perception_tools,
+                  ik_comparison_details=bool(args.ik_comparison_details))
+    requested_ik_comparisons=args.ik_comparison_details
     if args.prepared_from:
         source=args.prepared_from.resolve()
         campaign_root=Path(__file__).resolve().parents[1]/'runs/company2-20261018'
@@ -72,6 +75,10 @@ def main():
             raise ValueError('Paired plan source must belong to this campaign')
         prior=source/'input_contract.json'
         protocol=normalize_input_contract(json.loads(prior.read_text()) if prior.exists() else legacy_input_contract(json.loads((source/'observations/initial/observation.json').read_text())))
+        if requested_ik_comparisons is True and not protocol['ik_comparison_details']:
+            dump(args.output/'input_contract_override.json',dict(field='ik_comparison_details',source_value=False,condition_value=True,
+                 meaning='Independent current-robot input condition; original four protocol fields are inherited unchanged.'))
+            protocol['ik_comparison_details']=True
         for key,value in protocol.items():
             setattr(args,key,value)
     dump(args.output/'input_contract.json',protocol)
@@ -236,6 +243,8 @@ def main():
         mode='Only current three RGB images and current robot state are enabled. No extra perception processing is enabled for this baseline. Set additional_inputs to empty arrays.'
         if args.enable_processing:
             mode='Additional observation processing is enabled. Implement and verify task-appropriate extra inputs through the supplied tools. Preserve the fixed advancer questions and choices.'
+        if args.ik_comparison_details:
+            mode+=' The runtime separately supplies robot_motion_comparisons in each advancer context: all 27 XYZ choices crossed with the seven permitted single-axis rotation choices, evaluated by robot-only five-waypoint numerical IK. It is common current-robot information, not a custom processor output, and is not declared under additional_inputs. It does not certify scene clearance or physical tracking.'
         plan_prompt=planner_role+'\n\nROBOT ACTIONS\n'+shared+'\n\nADVANCER QUESTIONS\n'+json.dumps(QUESTIONS)+\
             '\n\nTASK\n'+str(task)+'\n\nCURRENT ROBOT STATE\n'+json.dumps(state)+\
             '\n\nCURRENT INPUT MODE\n'+mode+' No history or experience is supplied. Fixed increments are 0.02 meters per non-hold translation channel and 0.10 radians per non-hold rotation channel. Translation and one rotation may execute together. Advance dispatches no action.\n\nOUTPUT\n'+output_spec+\
@@ -327,6 +336,20 @@ def main():
                 execution_parameters=dict(translation_step_m=.02,rotation_step_rad=.10))
             if args.omit_additional_images:
                 context['additional_image_policy']='Generated images are omitted. The current original three RGB images and additional text remain supplied.'
+            if args.ik_comparison_details:
+                from robot_motion_inputs import compare_motion_paths
+                arm=stage['controlled_arm']
+                robot=kin.robots[arm]
+                key=kin.manager.robot_key[kin.manager.robot_list.index(robot)]
+                limits=key.data.soft_joint_pos_limits[0,robot.arm_joint_indices].cpu().numpy()
+                root=kin.root(arm).copy()
+                def current_robot_fk(q):
+                    value=root@kin.fk[arm].matrix(q)
+                    value[:3,3]+=value[:3,:3]@offset
+                    return value
+                comparisons,diagnostic=compare_motion_paths(current_robot_fk,state[arm]['arm_joints_rad'],limits)
+                dump(args.output/'robot_motion_comparisons'/f'{index:03d}.json',dict(information=comparisons,audit=diagnostic))
+                context['robot_motion_comparisons']=comparisons
             if args.execution_budget_details:
                 context['execution_parameters'].update(native_control_step_limit=int(env.step_lim),
                     native_steps_used=int(session.step_id),native_steps_remaining=max(0,int(env.step_lim)-int(session.step_id)),

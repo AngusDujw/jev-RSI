@@ -64,6 +64,9 @@ fi
 if [[ "${ROBO_OMIT_ADDITIONAL_IMAGES:-0}" == 1 ]]; then
   PROCESSING_ARGS+=(--omit-additional-images)
 fi
+if [[ "${ROBO_IK_COMPARISON_DETAILS:-0}" == 1 ]]; then
+  PROCESSING_ARGS+=(--ik-comparison-details)
+fi
 if [[ "${ROBO_TOOL_GEOMETRY_DETAILS:-0}" == 1 ]]; then
   PROCESSING_ARGS+=(--tool-geometry-details)
 fi

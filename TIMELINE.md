@@ -231,6 +231,7 @@ graph LR
     T_2026W42_123["📊 robodojo-planner-advancer-v1<br/>冻结原图组可见白块搬起、文本组进入接近；原…"]:::experiment
     T_2026W42_124["📊 robodojo-planner-advancer-v1<br/>原叠图Luna550步及class1 Je…"]:::experiment
     T_2026W42_125["📊 robodojo-planner-advancer-v1<br/>原三图组220至285步手撤后白黄两块叠放…"]:::experiment
+    T_2026W42_126["📊 robodojo-planner-advancer-v1<br/>原图叠块550步score0.15仍失败；…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -418,6 +419,7 @@ graph LR
   T_2026W42_122 --> T_2026W42_123
   T_2026W42_123 --> T_2026W42_124
   T_2026W42_124 --> T_2026W42_125
+  T_2026W42_125 --> T_2026W42_126
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -637,6 +639,7 @@ graph LR
 | `T-2026W42-123` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 冻结原图组可见白块搬起、文本组进入接近；原计划支撑失效无恢复，分拣跟踪偏差另审 | `EXP-2026W42-287` | - |
 | `T-2026W42-124` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 原叠图Luna550步及class1 Jev1100步完整失败；文本advance未直接满足视觉证据条件 | `EXP-2026W42-288` | - |
 | `T-2026W42-125` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 原三图组220至285步手撤后白黄两块叠放持续视觉证据，数值关系仍null，完整任务未成 | `EXP-2026W42-288` | - |
+| `T-2026W42-126` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 原图叠块550步score0.15仍失败；495步IK拒绝可由公开机器人模型复现，独立测试组合信息输入 | `EXP-2026W42-290` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
