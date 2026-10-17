@@ -238,6 +238,7 @@ graph LR
     T_2026W42_130["📊 robodojo-planner-advancer-v1<br/>紫块视觉离桌但lift必需输入null；独…"]:::experiment
     T_2026W42_131["📊 robodojo-planner-advancer-v1<br/>lift31次源拟合及目标持续缺失，19次…"]:::experiment
     T_2026W42_132["📊 robodojo-planner-advancer-v1<br/>stack1具名550步完整失败；lift…"]:::experiment
+    T_2026W42_133["📊 robodojo-planner-advancer-v1<br/>class1三原图1100完整失败；14c…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -432,6 +433,7 @@ graph LR
   T_2026W42_129 --> T_2026W42_130
   T_2026W42_130 --> T_2026W42_131
   T_2026W42_131 --> T_2026W42_132
+  T_2026W42_132 --> T_2026W42_133
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -658,6 +660,7 @@ graph LR
 | `T-2026W42-130` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 紫块视觉离桌但lift必需输入null；独立修正5.07mm机器人参考后仍invalid，未启动相似新回合 | `EXP-2026W42-295` | - |
 | `T-2026W42-131` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | lift31次源拟合及目标持续缺失，19次上移仍0advance；RGB支持夹起，分类额外点尚非具名抓持关系 | `EXP-2026W42-296` | - |
 | `T-2026W42-132` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | stack1具名550步完整失败；lift43/46输入缺失，末段open后源物回桌面，不能只归数据空 | `EXP-2026W42-297` | - |
+| `T-2026W42-133` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | class1三原图1100完整失败；14close17open仍未过capture，持物字段全null非无接触证明 | `EXP-2026W42-298` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

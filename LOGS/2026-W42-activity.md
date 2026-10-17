@@ -585,3 +585,6 @@
 - 【User】【2026-10-18 06:31】[intent] 继续company-server-2冻结实验；先最新状态，不恢复结束回合，不新调配额阻塞的Sol。
 - 【Agent】【2026-10-18 06:31】[op] 新建实验块 EXP-2026W42-297：具名stack1原生550步终局及完整提升段输入审查  ↪ `EXP-2026W42-297`
 - 【Agent】【2026-10-18 06:32】[result] stack1具名Luna PID2335753已550步完整失败successfalse/score0，113答3advance末lift。完整lift46段43次invalid/null，20次Z+20次全hold，0advance。decision108前腕图紫块仍指间，模型open后109离指、110及末图紫块桌面/手空。最后3次valid不是仍持物。保留终局不恢复，不把失败只归缺数据。  ↪ `EXP-2026W42-297`
+- 【User】【2026-10-18 06:46】[intent] 继续EXP297后冻结实验，核实真实终局，不恢复结束回合，Sol配额阻塞不新请求。
+- 【Agent】【2026-10-18 06:46】[op] 新建实验块 EXP-2026W42-298：分拣class1三原图Luna1100步原生终局审查  ↪ `EXP-2026W42-298`
+- 【Agent】【2026-10-18 06:47】[result] class1三原图Luna PID1612081已1100步完整失败score0、末white_pen_capture；221答1advance14close17open，执行approach43/capture177。220执行段持物/容纳字段全null不是检测证明从未接触；末1095步腕输入白笔仍桌面，末答close不能由前图证明执行后结果。不恢复该回合，余三路class0继续。  ↪ `EXP-2026W42-298`

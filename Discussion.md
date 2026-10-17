@@ -664,3 +664,6 @@
 
 
 【Agent】【2026-10-18】[EXP297](LOGS/2026-W42.md#exp-2026w42-297)：stack1具名Luna现550步完整失败score0/末lift，不恢复。完整lift46段中43次invalid/null；decision108前紫块仍指间，模型open后109脱离、110/末图桌面，最后3次valid并非持续抓持，不能只归缺数据。113答3advance未完成叠放。CIRCLE-1收敛需把阶段测量缺失、输出保持源物约束和原生终局分层；未修改内部提示/运行源，Sol配额未解，现四路分类1060/690/490/350步继续。证据exp297-stack-terminal/audit.json和release-sequence-index.json不进模型/经验。
+
+
+【Agent】【2026-10-18】[EXP298](LOGS/2026-W42.md#exp-2026w42-298)：class1三原图Luna已1100步完整失败score0、末white_pen_capture；221答1advance14close17open，approach43/capture177，不是完全不闭爪。220段持物/容纳字段全null只说明未测量；末1095步腕输入笔仍桌面，末close后无独立图像结论。原生终局保留不恢复，余三路class0 830/625/485步继续。CIRCLE-1按实际抓取尝试、证据覆盖和原生结果收敛，无新Sol/元信息条件/源改动，详见exp298-class1-terminal/audit.json。
