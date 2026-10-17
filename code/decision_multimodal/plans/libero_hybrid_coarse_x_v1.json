@@ -1,0 +1,33 @@
+{
+  "visual_coarse": {
+    "goal": "Approach the patterned gray bowl for transfer to the stove.",
+    "required_inputs": {
+      "visual_call": [
+        "Current wrist RGB crop for above/center/below classification relative to its horizontal center line"
+      ],
+      "deterministic_mapping": "Fixed publicly verified orientation map converts the typed relation into the selected world-X direction.",
+      "separate_motor_call": [
+        "Mapped world-X direction",
+        "Camera-derived signed Y/Z residuals",
+        "Current phase and gripper feedback"
+      ],
+      "switch_feedback": [
+        "Camera-derived fine_readiness flag",
+        "Typed visual relation"
+      ]
+    },
+    "observable_exit_condition": "Switch to numerical_fine when fine_readiness is true or the visual relation is center."
+  },
+  "numerical_fine": {
+    "goal": "Continue the preserved sequence after approach: align, descend, grasp, lift, carry to the stove, lower, release, retreat.",
+    "required_inputs": {
+      "motor_call": [
+        "Signed XYZ residuals",
+        "Per-axis aligned booleans",
+        "Current phase, gripper, and holding feedback"
+      ],
+      "feedback_source": "Algorithms using permitted images and robot state only, never scene truth; image decisions remain separate calls."
+    },
+    "observable_exit_condition": "Existing phase feedback indicates sequence completion; native success remains unchanged."
+  }
+}

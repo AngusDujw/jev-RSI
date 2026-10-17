@@ -127,7 +127,7 @@ class Campaign:
             # and frozen policy must still match the interrupted source campaign.
             for name, expected in old_spec['adapter_source_sha256'].items():
                 if name != Path(__file__).name:
-                    p = Path(__file__).with_name(name)
+                    p = Path(__file__).parent/name
                     if hashlib.sha256(p.read_bytes()).hexdigest() != expected:
                         raise ValueError('Replacement inference source differs: '+name)
             replacement_cases = set()
@@ -174,6 +174,20 @@ class Campaign:
                 specification['repetitions_per_task'] = 3
                 specification['input_condition'] = args.profile
                 specification['retained_processing'] = 'Original stage gates, visual holding/arrival booleans, rotation feedback and controller-internal motor scaling'
+                if args.profile=='libero-rgb-hybrid-coarse-x-v1':
+                    for name in ('libero_hybrid_vision.py','libero_visual_relation_servo.py',
+                                 'libero_visual_servo.py','libero_motion_multimodal.py',
+                                 'libero_inframe_axes.py','libero_robot_actions_inframe_v1.txt'):
+                        p=Path(__file__).with_name(name)
+                        specification['adapter_source_sha256'][name]=hashlib.sha256(p.read_bytes()).hexdigest()
+                    specification.update(actor_images='1 in visual role; 0 in motor role',
+                        camera_matrices_sent=False,eef_coordinates_sent=False,numeric_tolerances_sent=False,
+                        input_condition='Visual coarse X only, numerical Y/Z; numerical XYZ fine; independent calls',
+                        fine_entry_gate='Camera-derived abs X error <=40mm or visual center; gate value not sent to vision',
+                        output_mapping='Visual above/center/below -> fixed verified world-X map',
+                        combined_api_budget=160)
+                    p=Path(__file__).with_name('plans')/'libero_hybrid_coarse_x_v1.json'
+                    specification['adapter_source_sha256']['plans/'+p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
                 if args.profile.startswith('libero-rgb-motion-'):
                     for name in ('libero_motion_multimodal.py', 'libero_robot_actions_v1.txt'):
                         p = Path(__file__).with_name(name)
@@ -280,6 +294,8 @@ class Campaign:
             manifest['comparison'] = 'Revised prompts/interface; original frozen policy, processing, thresholds, stages and paired initial states'
             if self.args.profile.startswith('libero-rgb-'):
                 manifest['actor_images'] = 2
+                if self.args.profile=='libero-rgb-hybrid-coarse-x-v1':
+                    manifest['actor_images']='1 in visual role; 0 in motor role'
                 manifest['multimodal_asset_root'] = str(folder/'multimodal')
                 manifest['comparison'] = self.args.profile+'; latest task profiles; original processing/control preserved, actor-input ablation only'
             write(manifest_path, manifest)
@@ -374,7 +390,7 @@ def main():
     parser.add_argument('--jobs-per-gpu', type=int, choices=[1, 2, 3, 4, 5, 6], default=1)
     parser.add_argument('--max-new-episodes', type=int,
                         help='Bound a first resource-measurement wave; resume leaves the frozen policy unchanged')
-    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1', 'libero-rgb-gripper-pair-arrows-v1', 'libero-rgb-gripper-pair-raw-v1'], default='frozen')
+    parser.add_argument('--profile', choices=['frozen', 'libero-clarity-v1', 'libero-clarity-v2', 'libero-clarity-v3', 'libero-rgb-full', 'libero-rgb-waypoint', 'libero-rgb-raw', 'libero-rgb-motion-full-v1', 'libero-rgb-motion-marker-v1', 'libero-rgb-motion-axes-v1', 'libero-rgb-inframe-axes-v1', 'libero-rgb-gripper-axes-v1', 'libero-rgb-gripper-pair-arrows-v1', 'libero-rgb-gripper-pair-raw-v1', 'libero-rgb-hybrid-coarse-x-v1'], default='frozen')
     parser.add_argument('--tasks', nargs='+', type=int)
     parser.add_argument('--replace-transport-from', type=Path,
                         help='Explicit new episodes for connection-interrupted cases only; preserve original outcomes')

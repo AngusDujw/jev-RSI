@@ -36,6 +36,11 @@ def main():
     elif profile == 'libero-clarity-v3':
         from libero_prompt_revision_v2 import RecoveryAPI
         api.API = RecoveryAPI
+    elif profile=='libero-rgb-hybrid-coarse-x-v1':
+        from libero_multimodal import install_stream
+        from libero_hybrid_vision import HybridAPI
+        install_stream(args.arguments)
+        api.API=HybridAPI
     elif profile in ('libero-rgb-gripper-pair-arrows-v1','libero-rgb-gripper-pair-raw-v1'):
         from libero_multimodal import install_stream
         from libero_gripper_pair import PairedArrowsAPI, PairedRawAPI, ARROWS_PROFILE
