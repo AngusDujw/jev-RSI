@@ -1,0 +1,11 @@
+--- a/processor
++++ b/processor
+@@ -98,7 +98,7 @@
+      rr=np.r_[boxres(q,cams[seedcam],det),boxres(q,cams[cam],d)]
+      if table_constraint:rr=np.r_[rr,(q[2]-(TABLE+S/2))/.001]
+      return rr
+-    rr=least_squares(pair_res,p0,bounds=([.10,-.42,.75,-.7854],[.58,.25,1.05,.7854]),max_nfev=150)
++    rr=least_squares(pair_res,np.clip(p0,[.101,-.419,.751,-.784],[.579,.249,1.049,.784]),bounds=([.10,-.42,.75,-.7854],[.58,.25,1.05,.7854]),max_nfev=150)
+     rms=float(np.sqrt(np.mean(rr.fun[:8]**2)))
+     i1=overlap(rr.x,cams[seedcam],det);i2=overlap(rr.x,cams[cam],d)
+     if rms<3 and min(i1,i2)>.70:choices.append((rms+(2-i1-i2)*3,d,rr.x))

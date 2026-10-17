@@ -220,6 +220,7 @@ graph LR
     T_2026W42_112["📊 robodojo-planner-advancer-v1<br/>v5/v6交付任务相关灰块接近阶段并启动L…"]:::experiment
     T_2026W42_113["📊 robodojo-planner-advancer-v1<br/>v6窄抓取区间被固定20mm步长跳过，v5…"]:::experiment
     T_2026W42_114["📊 robodojo-planner-advancer-v1<br/>v6灰块前后RGB支持离桌随手搬运，尚未完…"]:::experiment
+    T_2026W42_115["📊 robodojo-planner-advancer-v1<br/>v5/v6均原生550步失败；v9初值越界…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -397,6 +398,7 @@ graph LR
   T_2026W42_111 --> T_2026W42_112
   T_2026W42_112 --> T_2026W42_113
   T_2026W42_113 --> T_2026W42_114
+  T_2026W42_114 --> T_2026W42_115
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -605,6 +607,7 @@ graph LR
 | `T-2026W42-112` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v5/v6交付任务相关灰块接近阶段并启动Luna/Jev配对；新分拣视觉参考仍blocked0动作，后续检验实现验证与未来观测的区分 | `EXP-2026W42-278` | - |
 | `T-2026W42-113` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v6窄抓取区间被固定20mm步长跳过，v5闭爪图像可见而数值拟合缺失；v9验证量化可达完成区域与当前视觉证据 | `EXP-2026W42-279` | - |
 | `T-2026W42-114` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v6灰块前后RGB支持离桌随手搬运，尚未完成塔；新分拣与stack1交付后Luna继续、Jev0/30步多旋转拒绝 | `EXP-2026W42-280` | - |
+| `T-2026W42-115` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v5/v6均原生550步失败；v9初值越界在新副本复现修复并越过10步，v10交付共同旋转效果信息，尚无完整成功 | `EXP-2026W42-281` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
