@@ -1,0 +1,66 @@
+{
+  "source": "https://github.com/RoboProbe/RoboProbe/blob/main/results/l3_inspect_eef_official_2100/astra_task_layouts.json",
+  "retrieved": "2026-10-18",
+  "method": "GPT-6 Astra + L3 Inspect EEF",
+  "tasks": [
+    {
+      "task": "stack_blocks",
+      "successes": 43,
+      "episodes": 50
+    },
+    {
+      "task": "general_pickup",
+      "successes": 42,
+      "episodes": 50
+    },
+    {
+      "task": "fold_clothes",
+      "successes": 36,
+      "episodes": 50
+    },
+    {
+      "task": "press_by_number",
+      "successes": 35,
+      "episodes": 50
+    },
+    {
+      "task": "stack_bowls",
+      "successes": 31,
+      "episodes": 50
+    },
+    {
+      "task": "match_and_pick_from_conveyor",
+      "successes": 31,
+      "episodes": 50
+    },
+    {
+      "task": "push_T",
+      "successes": 30,
+      "episodes": 50
+    },
+    {
+      "task": "arrange_largest_number",
+      "successes": 30,
+      "episodes": 50
+    },
+    {
+      "task": "classify_objects",
+      "successes": 28,
+      "episodes": 50
+    },
+    {
+      "task": "align_blocks",
+      "successes": 25,
+      "episodes": 50
+    }
+  ],
+  "first_tasks": [
+    "stack_blocks",
+    "classify_objects"
+  ],
+  "success_gate": {
+    "development": "independent native success; plan completion alone does not qualify",
+    "stability": "freeze prompts and implementation; at least 9 of 10 independent runs across layouts 0 through 4 with two repeats each; retain failures in denominator",
+    "scope": "development gate, not official 50-episode benchmark equivalence"
+  }
+}
