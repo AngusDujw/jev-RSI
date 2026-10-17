@@ -24,7 +24,8 @@ def main():
     for folder in sorted(args.source.glob('task-*/multimodal/decision-api/*')):
         original = json.loads((folder/'legacy-request.json').read_text())
         task = int(folder.parents[2].name.split('-')[1])
-        stage = original['state'].get('stage', original['state'].get('phase'))
+        state = original['state']
+        stage = state.get('stage', state.get('phase', state.get('operation')))
         key = (task, stage)
         if key in seen:
             continue

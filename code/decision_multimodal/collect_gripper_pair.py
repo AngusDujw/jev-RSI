@@ -73,7 +73,8 @@ def collect(root, kind):
             assert len(image_parts)==2
             assert len({v['native_observation_counter'] for v in dispatch['camera_views']})==1
             original=json.loads((folder/'legacy-request.json').read_text())
-            stage=original['state'].get('stage',original['state'].get('phase'))
+            state=original['state']
+            stage=state.get('stage',state.get('phase',state.get('operation')))
             phases[str(stage)]+=1
             answered=(folder/'legacy-response.json').is_file()
             choices={}
@@ -85,7 +86,7 @@ def collect(root, kind):
                     row=answer.get('answers',{}).get(axis)
                     if error is None or row is None or abs(error)<1e-9:
                         continue
-                    if feedback.get('relation')=='within tolerance':
+                    if feedback.get('relation','').replace('_',' ')=='within tolerance':
                         continue
                     # Diagnostic only. Contact/gripper-only motion is not evaluated.
                     if str(stage).split(':')[-1] in ('grasp','release'):
