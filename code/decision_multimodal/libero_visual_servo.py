@@ -86,6 +86,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--reference',type=Path,required=True)
+    parser.add_argument('--plan',type=Path,required=True)
     parser.add_argument('--libero-root',required=True)
     parser.add_argument('--init',type=int,required=True)
     parser.add_argument('--axis',choices=['x','y'],required=True)
@@ -93,6 +94,7 @@ def main():
     parser.add_argument('--temporal',action='store_true')
     parser.add_argument('--budget',type=int,default=24)
     args=parser.parse_args()
+    task_plan=json.loads(args.plan.read_text());english(task_plan)
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',TMPDIR=str(cache),
@@ -117,6 +119,7 @@ def main():
             for name in ('libero_visual_servo.py','libero_inframe_axes.py','libero_multimodal.py',
                          'libero_prompt_revision.py','legacy_decisions.py')},
         physical_egl_gpu=os.environ.get('MUJOCO_EGL_DEVICE_ID'),native_python=sys.executable,
+        task_plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),task_plan=task_plan,
         reference_image=str(args.reference),reference_sha256=hashlib.sha256(args.reference.read_bytes()).hexdigest(),
         reference_crop_xyxy=[337,210,427,300],reference_use='historical bowl appearance for evaluation only; never sent to model',
         goal_band_pixels=16,minimum_initial_error_pixels=28,budget=args.budget,
@@ -174,6 +177,7 @@ def main():
             measured=locate();api.views=views_for_actor(api)
             original=dict(model='gpt-6-luna',state=dict(task='Center the patterned gray bowl in the wrist view',
                 stage='horizontal_image_centering' if args.axis=='y' else 'vertical_image_centering',
+                task_plan=task_plan,
                 previous_action=previous_action if args.temporal else None),
                 questions={args.axis:dict(type='choice',instructions='Choose the direction that centers the bowl on the stated image center line. Hold when visually centered.',
                     criteria=dict(negative='Negative world-axis increment',hold='Zero increment',positive='Positive world-axis increment'))})

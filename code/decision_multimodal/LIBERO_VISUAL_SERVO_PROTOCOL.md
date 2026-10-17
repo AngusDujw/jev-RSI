@@ -1,0 +1,15 @@
+# Visible-goal single-axis pilots
+
+Approved iteration follows EXP238. These are native visual-control diagnostics, not LIBERO task completions. The source is the patterned gray bowl in task1144. No experience files are loaded. Pro gpt-6.1-sol/high supplies the actual task-stage plan; Luna supplies every scored categorical direction.
+
+The scored goal is image centering: Y controls horizontal centering; X controls vertical centering. Both groups use the same English task plan, explicit verified image-motion relation, current two RGB images, and current-gripper arrows (external Y/Z, wrist X/Y). The temporal group additionally receives the prior pair and the categorical action actually executed between pairs. The first decision has no fabricated previous frame. No target/TCP point mark, numerical error/tolerance, EEF coordinate or camera matrix reaches the actor. Own robot state and public calibration are renderer/setup inputs only.
+
+The evaluation-only tracker matches a90x90 interior texture patch of the old actual bowl image, with scales0.92/1/1.08 and NCC>=0.65. That old image is never actor context. Evaluation uses the matched feature center, not simulation object state. Setup centers the source on the scored image axis, then offsets the own robot axis by ±0.03m. Setup must leave at least28px active-axis error. Setup failures are recorded independently. No reward/contact/native success is read by the actor.
+
+Each recommendation executes one native step with a fixed0.01m normalized-world-axis increment, no target-dependent scaling. Other channels are zero and the gripper is open. Budget24 decisions. The trial passes only when Luna chooses HOLD, the following fresh tracked feature is within16px of the image center, and error has improved by at least50% from the post-offset baseline. This numerical evaluator band is not actor input. Non-HOLD budget exhaustion is a failure. Invalid tracking terminates the episode rather than guessing a metric or accepting success.
+
+For each axis and condition, cases are init5/6/7 crossed with ±offset: six cases. The bounded first init5/+offset case is included in the six, never repeated after a normal model failure. Both current-only and temporal groups are tested. All six must pass to call that input condition reliable on this pilot. No claim of unseen-layout generalization follows. If a version fails, retain every outcome and change a specified input/control factor under a new version/root. Do not resample a received answer or normally failed episode.
+
+The initial Pro protocol review mixed outer experiment review with task planning and is retained as a non-deployed review artifact. Its experiment-scheduling stages are not robot stages. The separate task-only Pro request excludes those outer responsibilities. The outer agent owns this protocol and the acceptance rule; the internal task plan contains visible goals and observable task completion only.
+
+Resources: company-server-2 physical GPUs4–7, existing native Python environment. All artifacts remain under this worktree code/runs on its existing mount. No installation, CUDA or driver change.
