@@ -1,0 +1,183 @@
+{
+  "shared_control": {
+    "target_evidence": "Derive targets from permitted RGB-D processing and measured robot state, never true scene pose. Leave unavailable measurements unknown.",
+    "visual_rotation_call": {
+      "when": "Substantial orientation adjustment is required.",
+      "inputs": [
+        "Current external and wrist RGB",
+        "Robot-only diagrams showing the target orientation and candidate next orientations"
+      ],
+      "output": "Exactly one supplied candidate, typed as rotation_candidate and identified by candidate_id.",
+      "excluded_inputs": [
+        "Numeric orientation residuals",
+        "Camera matrices"
+      ]
+    },
+    "motor_call": "Handles numerical translation feedback, gripper control and stage transitions. Uses signed numerical orientation feedback only for small residuals.",
+    "switch_conditions": {
+      "to_visual_rotation": "The motor controller identifies a substantial orientation discrepancy and grounded target and candidate diagrams are available.",
+      "to_small_residual_control": "Measured robot state and the grounded target satisfy the controller's small-residual criterion.",
+      "to_next_stage": "The motor controller confirms the stage's observable exit condition.",
+      "insufficient_evidence": "Hold the current stage and obtain missing evidence rather than infer success."
+    }
+  },
+  "1383": {
+    "stages": [
+      {
+        "name": "Align",
+        "goal": "Align the gripper with the stove control.",
+        "inputs": [
+          "External and wrist RGB",
+          "RGB-D-derived control geometry",
+          "Measured robot state",
+          "Orientation diagrams when substantial adjustment is needed"
+        ],
+        "observable_exit_condition": "The motor controller confirms grasp alignment and approach clearance using grounded targets and measured state."
+      },
+      {
+        "name": "Grasp",
+        "goal": "Secure the stove control.",
+        "inputs": [
+          "Current RGB",
+          "Measured gripper state",
+          "Available contact evidence"
+        ],
+        "observable_exit_condition": "Gripper feedback and visual evidence support a secure grasp without visible slipping."
+      },
+      {
+        "name": "Turn",
+        "goal": "Turn the control to the requested setting.",
+        "inputs": [
+          "Requested setting, which must be established before turning",
+          "Current external and wrist RGB",
+          "RGB-D-grounded control target",
+          "Measured robot state",
+          "Target and candidate orientation diagrams"
+        ],
+        "observable_exit_condition": "The motor controller confirms the grounded turn target is reached, with visual evidence that the control moved with the grasp."
+      },
+      {
+        "name": "Release",
+        "goal": "Release the control without disturbing it.",
+        "inputs": [
+          "Current RGB",
+          "Measured robot and gripper state"
+        ],
+        "observable_exit_condition": "Gripper feedback confirms release and RGB shows separation from the control."
+      },
+      {
+        "name": "Verify",
+        "goal": "Visually verify the final control setting.",
+        "inputs": [
+          "Post-release external or wrist RGB",
+          "Requested setting",
+          "Visible control markings or other grounded setting evidence"
+        ],
+        "observable_exit_condition": "The released control visibly matches the requested setting; ambiguous evidence does not count as verification."
+      }
+    ]
+  },
+  "1458": {
+    "stages": [
+      {
+        "name": "Grasp",
+        "goal": "Align with and securely grasp the wine bottle.",
+        "inputs": [
+          "Current external and wrist RGB",
+          "RGB-D-derived bottle grasp geometry",
+          "Measured robot and gripper state",
+          "Orientation diagrams when substantial adjustment is needed"
+        ],
+        "observable_exit_condition": "Grasp alignment is confirmed, and gripper feedback plus RGB support secure bottle retention."
+      },
+      {
+        "name": "Align",
+        "goal": "Align the held bottle with the sloped rack.",
+        "inputs": [
+          "Current external and wrist RGB",
+          "RGB-D-derived rack slope, supports and available space",
+          "Measured robot state",
+          "Target and candidate orientation diagrams"
+        ],
+        "observable_exit_condition": "The motor controller confirms bottle-to-rack orientation and placement alignment, with visible clearance and continued grasp retention."
+      },
+      {
+        "name": "Place",
+        "goal": "Seat the bottle on the rack supports.",
+        "inputs": [
+          "Current RGB",
+          "Grounded rack support geometry",
+          "Numerical translation feedback",
+          "Measured robot and gripper state"
+        ],
+        "observable_exit_condition": "RGB and available contact evidence support that the bottle is seated on the rack while still grasped."
+      },
+      {
+        "name": "Release",
+        "goal": "Release the bottle and confirm stable support.",
+        "inputs": [
+          "Current and post-release RGB",
+          "Measured gripper state",
+          "Rack support evidence"
+        ],
+        "observable_exit_condition": "The gripper is released and separated, and the bottle remains supported without visible rolling or slipping."
+      }
+    ]
+  },
+  "1335": {
+    "stages": [
+      {
+        "name": "Align",
+        "goal": "Align the gripper with the rectangular cream-cheese box.",
+        "inputs": [
+          "Current external and wrist RGB",
+          "RGB-D-derived box faces and grasp geometry",
+          "Measured robot state",
+          "Target and candidate orientation diagrams when needed"
+        ],
+        "observable_exit_condition": "The motor controller confirms alignment with the selected box grasp and sufficient approach clearance."
+      },
+      {
+        "name": "Grasp",
+        "goal": "Secure the cream-cheese box.",
+        "inputs": [
+          "Current RGB",
+          "Measured gripper state",
+          "Available contact evidence"
+        ],
+        "observable_exit_condition": "Gripper feedback and RGB support secure box retention without visible slipping."
+      },
+      {
+        "name": "Position",
+        "goal": "Position the held box for entry into the bowl.",
+        "inputs": [
+          "Current external and wrist RGB",
+          "RGB-D-derived bowl opening and box geometry",
+          "Measured robot state",
+          "Target and candidate orientation diagrams when substantial adjustment is needed"
+        ],
+        "observable_exit_condition": "The motor controller confirms placement alignment, and grounded geometry supports clearance through the bowl opening."
+      },
+      {
+        "name": "Place",
+        "goal": "Place the box inside the bowl.",
+        "inputs": [
+          "Current RGB",
+          "Grounded bowl interior geometry",
+          "Numerical translation feedback",
+          "Measured robot and gripper state"
+        ],
+        "observable_exit_condition": "RGB and available contact evidence support that the box is inside and supported by the bowl before release."
+      },
+      {
+        "name": "Release",
+        "goal": "Release the box inside the bowl.",
+        "inputs": [
+          "Current and post-release RGB",
+          "Measured gripper state"
+        ],
+        "observable_exit_condition": "The gripper is released and separated, and the box remains visibly inside the bowl."
+      }
+    ]
+  }
+}

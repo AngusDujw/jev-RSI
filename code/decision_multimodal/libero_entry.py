@@ -36,6 +36,13 @@ def main():
     elif profile == 'libero-clarity-v3':
         from libero_prompt_revision_v2 import RecoveryAPI
         api.API = RecoveryAPI
+    elif profile=='libero-rgb-rotation-candidates-v1':
+        from libero_multimodal import install_stream
+        from libero_rotation_multimodal import RotationAPI
+        from libero_rotation_setup import install
+        install_stream(args.arguments)
+        install(args.arguments)
+        api.API=RotationAPI
     elif profile=='libero-rgb-hybrid-cabinet-x-v2':
         from libero_multimodal import install_stream
         from libero_hybrid_cabinet import CabinetHybridAPI
