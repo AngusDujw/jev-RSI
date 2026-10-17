@@ -294,6 +294,8 @@ def main():
             assert s['next_stage'] is None or s['next_stage'] in stages
         dump(args.output/'plan.json',plan)
         current=plan['initial_stage']
+        if args.ik_comparison_details:
+            (args.output/'robot_motion_comparisons').mkdir(exist_ok=False)
         for index in range(args.decision_budget):
             if session.terminated or session.truncated:
                 break
