@@ -225,6 +225,7 @@ graph LR
     T_2026W42_117["📊 robodojo-planner-advancer-v1<br/>v12受阻与空TLS分开；CPU分割/匹配…"]:::experiment
     T_2026W42_118["📊 robodojo-planner-advancer-v1<br/>v13 class1 17/18程序检查仍…"]:::experiment
     T_2026W42_119["📊 robodojo-planner-advancer-v1<br/>已交付原生控制出现估计分支Z二周期；Jev…"]:::experiment
+    T_2026W42_120["📝 robodojo-planner-advancer-v1<br/>更正T119及EXP285早期快照：cla…"]:::note
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -407,6 +408,7 @@ graph LR
   T_2026W42_116 --> T_2026W42_117
   T_2026W42_117 --> T_2026W42_118
   T_2026W42_118 --> T_2026W42_119
+  T_2026W42_119 --> T_2026W42_120
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -620,6 +622,7 @@ graph LR
 | `T-2026W42-117` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v12受阻与空TLS分开；CPU分割/匹配仅接口验证、无定位改善证据；自有Unix通道Sol/Luna探针有效 | `EXP-2026W42-283` | - |
 | `T-2026W42-118` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v13 class1 17/18程序检查仍物体覆盖不足而blocked0步；独立检验阶段所需精度指导，固定门不变 | `EXP-2026W42-284` | - |
 | `T-2026W42-119` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 已交付原生控制出现估计分支Z二周期；Jev15步诊断None崩溃，独立同计划null修复回归通过 | `EXP-2026W42-285` | - |
+| `T-2026W42-120` | 2026-10-18 | note | robodojo-planner-advancer-v1 | 更正T119及EXP285早期快照：class0 Jev原生终点20步而非15，Luna60步同诊断错误；新修复独立回合已启动 | `EXP-2026W42-285` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
