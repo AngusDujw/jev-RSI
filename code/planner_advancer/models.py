@@ -7,14 +7,25 @@ from pathlib import Path
 import re
 import subprocess
 import time
+import os
+import uuid
 
 
 def dump(path, value):
-    Path(path).write_text(json.dumps(value, indent=2, allow_nan=False) + '\n')
+    path=Path(path)
+    temporary=path.with_name('.'+path.name+'.'+uuid.uuid4().hex+'.partial')
+    data=json.dumps(value,indent=2,allow_nan=False)+'\n'
+    descriptor=os.open(temporary,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+    with os.fdopen(descriptor,'w') as stream:
+        stream.write(data)
+    os.replace(temporary,path)
 
 
 def english(value):
-    if re.search(r'[\u3400-\u9fff]', json.dumps(value, ensure_ascii=False)):
+    text=json.dumps(value,ensure_ascii=False,allow_nan=False)
+    for _ in range(4):
+        text=re.sub(r'\\u([0-9a-fA-F]{4})',lambda m:chr(int(m.group(1),16)),text)
+    if re.search(r'[\u3400-\u9fff]',text):
         raise ValueError('Non-English model input detected')
 
 

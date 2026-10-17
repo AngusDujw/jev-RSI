@@ -58,3 +58,11 @@ Check layout availability before using an offset: the installed official-group-0
 Source ranking: https://github.com/RoboProbe/RoboProbe/blob/main/results/l3_inspect_eef_official_2100/astra_task_layouts.json .
 
 Do not restore or modify the dirty primary remote checkout, its existing worktrees, system Python/Conda permissions, CUDA, drivers, or unrelated GPU jobs.
+
+## Planner-authored processing variant
+
+`--processing` enables tool-assisted initial planning. Sol designs, writes and tests an executable processor before returning the stage JSON. Code and verification stay outside that JSON. The processor receives fresh three RGB images, camera calibration and measured robot state, then supplies declared extra fields to the advancer. Its sandbox does not mount native scene layouts, secrets or simulator object state. Preparation allows 64 tool rounds; invalid stage interfaces are returned to the planner for correction.
+
+`--prepared-from` reuses a delivered plan and processor only for the same task/layout/SHA, enabling a paired `--backend jev --omit-images` condition alongside Luna. Jev requests contain text only. This adapter has not yet completed a campaign task call. `--resume-processing-from` refers to unfinished code in a new initial-planning trial; it does not resume a terminated simulation or enable in-episode replanning.
+
+EXP275: raw stack layout0 completed 550 native steps without success. RGB supports lifting the purple block; placement alignment did not finish. The first processing preparations failed from tool budget exhaustion and an invalid initial-stage identifier. Neither is evidence that the generated perception method improves control. All failures and raw artifacts remain available; no experience files are used.

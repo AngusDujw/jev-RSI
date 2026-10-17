@@ -11,7 +11,7 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]/'code/runs/company2-20261018'
 
 
-def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,layout_manifest=None):
+def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,layout_manifest=None,processing=False,prepared_from=None,backend='luna',omit_images=False):
     folder=ROOT/name
     folder.mkdir(parents=True,exist_ok=resume)
     existing=folder/'batch.json'
@@ -38,10 +38,16 @@ def launch(name,adopt=None,resume=False,layout_offset=0,share=False,gpus=None,la
             proc=subprocess.Popen(['bash',str(HERE/'launch_worker.sh'),str(gpu),task,str(layout),str(run)],
                 stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True,
                 env=dict(os.environ,ALLOW_CAMPAIGN_GPU_SHARE='1' if share else '0',
+                         ROBO_ENABLE_PROCESSING='1' if processing else '0',
+                         ROBO_PREPARED_FROM=str(Path(prepared_from).resolve()) if prepared_from else '',
+                         ROBO_DECISION_BACKEND=backend,ROBO_OMIT_IMAGES='1' if omit_images else '0',
                          ROBO_LAYOUT_MANIFEST=str(Path(layout_manifest).resolve()) if layout_manifest else ''))
         (run/'worker.pid').write_text(str(proc.pid)+'\n')
-        runs.append(dict(task=task,layout=layout,gpu=gpu,pid=proc.pid,directory=str(run.relative_to(ROOT))))
-        manifest=dict(batch=name,framework='raw-three-rgb-v1',keep_image_task='stack_blocks',runs=runs,started=time.time())
+        runs.append(dict(task=task,layout=layout,gpu=gpu,pid=proc.pid,directory=str(run.relative_to(ROOT)),backend=backend,
+                         input_modality='text_only' if backend=='jev' or omit_images else 'rgb_and_text'))
+        manifest=dict(batch=name,framework='planner-authored-processing-v2' if processing else 'raw-three-rgb-v1',
+                      keep_image_task='stack_blocks' if any(r['task']=='stack_blocks' for r in runs) else runs[0]['task'],
+                      runs=runs,started=time.time())
         (folder/'batch.json').write_text(json.dumps(manifest,indent=2)+'\n')
     return runs
 
@@ -83,5 +89,9 @@ if __name__=='__main__':
     parser.add_argument('--share-own-gpu',action='store_true')
     parser.add_argument('--gpus',type=int,nargs='+',choices=[2,5,6,7])
     parser.add_argument('--layout-manifest')
+    parser.add_argument('--processing',action='store_true')
+    parser.add_argument('--prepared-from')
+    parser.add_argument('--backend',choices=['luna','jev'],default='luna')
+    parser.add_argument('--omit-images',action='store_true')
     args=parser.parse_args()
-    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu,args.gpus,args.layout_manifest) if args.action=='launch' else status(),indent=2))
+    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu,args.gpus,args.layout_manifest,args.processing,args.prepared_from,args.backend,args.omit_images) if args.action=='launch' else status(),indent=2))

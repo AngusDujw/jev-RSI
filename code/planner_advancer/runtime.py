@@ -9,6 +9,7 @@ import traceback
 import time
 import types
 import hashlib
+import shutil
 
 import numpy as np
 import cv2  # Pin the environment's compatible binary before Kit adjusts sys.path.
@@ -42,10 +43,17 @@ def main():
     parser.add_argument('--task',required=True)
     parser.add_argument('--layout',type=int,default=0)
     parser.add_argument('--layout-manifest',type=Path)
+    parser.add_argument('--enable-processing',action='store_true')
+    parser.add_argument('--prepared-from',type=Path)
+    parser.add_argument('--resume-processing-from',type=Path)
+    parser.add_argument('--decision-backend',choices=['luna','jev'],default='luna')
+    parser.add_argument('--omit-images',action='store_true')
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
+    if (args.prepared_from or args.resume_processing_from or args.decision_backend=='jev' or args.omit_images) and not args.enable_processing:
+        raise ValueError('Prepared-plan and text-only comparisons require additional processing')
     args.output.mkdir(parents=True,exist_ok=False)
     args.headless,args.enable_cameras = True,True
     app = AppLauncher(args).app
@@ -135,7 +143,7 @@ def main():
             t[:3,3]+=t[:3,:3]@offset
             return t
 
-        def observe(label):
+        def observe(label,stage=None):
             folder=args.output/'observations'/label
             folder.mkdir(parents=True,exist_ok=False)
             images={}
@@ -152,33 +160,136 @@ def main():
                     commanded_gripper_target=grip[arm])
             state['definitions']='Rotation matrix columns are tool-local X/Y/Z axes expressed in world coordinates. Gripper target 0 is closed and 1 is open. Measured gripper native state is reported separately; closure alone does not prove holding.'
             dump(folder/'robot_state.json',state)
+            if args.enable_processing:
+                manager=env.camera_manager
+                names=list(manager.camera_names[0])
+                aliases=dict(cam_high=('cam_high','cam_head','head_camera','top_camera'),
+                             cam_left_wrist=('cam_left_wrist','left_camera'),cam_right_wrist=('cam_right_wrist','right_camera'))
+                cameras={}
+                native_base=kin.manager.get_link_pose(kin.robots['right'],kin.robots['right'].base_link,is_relative=False)[0]
+                origin=np.asarray(native_base[:3])-kin.root('right')[:3,3]
+                for label,options in aliases.items():
+                    cam_id=next(i for i,name in enumerate(names) if name in options)
+                    camera=manager.cameras[0][cam_id]
+                    position,quaternion=camera.get_world_pose(camera_axes='ros')
+                    position,quaternion=np.asarray(position),np.asarray(quaternion)
+                    matrix=np.eye(4)
+                    matrix[:3,:3]=R.from_quat(quaternion[[1,2,3,0]]).as_matrix()
+                    matrix[:3,3]=position-origin
+                    intrinsic=np.asarray(camera.get_intrinsics_matrix())
+                    if intrinsic.shape!=(3,3) or min(intrinsic[0,0],intrinsic[1,1])<10:
+                        raise RuntimeError('Camera intrinsics are not usable pixel calibration')
+                    projections={}
+                    for arm in ('left','right'):
+                        point=np.linalg.inv(matrix)@np.r_[pose(arm)[:3,3],1.]
+                        pixel=intrinsic@point[:3]
+                        projections[arm]=dict(depth_m=float(point[2]),pixel=(pixel[:2]/pixel[2]).tolist() if abs(pixel[2])>1e-9 else None)
+                    cameras[label]=dict(K=intrinsic.tolist(),robot_tcp_projection_check=projections,
+                        camera_to_world=matrix.tolist(),image_size=list(Image.open(images[label]).size),
+                        convention='Camera X right, Y down, Z forward; world frame matches TCP positions; meters. Extrinsics updated from current measured camera mounting pose.')
+                dump(folder/'observation.json',dict(task=str(session.obs['instruction']),robot_state=state,
+                    current_stage=stage or dict(id='planning_placeholder',goal='Design the stages for the supplied task.'),
+                    cameras=cameras,images={k:'/input/'+p.name for k,p in images.items()}))
             return state,images
 
         state,images=observe('initial')
         task=session.obs['instruction']
         english(task)
-        output_spec='''Return only a JSON object with schema_version="1", task, initial_stage, and stages. Each stage has id, goal, target_description, controlled_arm (left or right), completion_condition, next_stage (id or null), and additional_inputs (empty array in this baseline). Do not include processing code or tests. Conditions must be judged from current observations; no historical images are supplied. Final-stage advance ends the plan, not native benchmark evaluation.'''
+        output_spec='''Return only a JSON object with schema_version="1", task, initial_stage, and stages. Each stage has id, goal, target_description, controlled_arm (left or right), completion_condition, next_stage (id or null), and additional_inputs. Do not include processing code or tests. Conditions must be judged from current observations; no historical images are supplied. Final-stage advance ends the plan, not native benchmark evaluation.'''
+        mode='Only current three RGB images and current robot state are enabled. No extra perception processing is enabled for this baseline. Set additional_inputs to empty arrays.'
+        if args.enable_processing:
+            mode='Additional observation processing is enabled. Implement and verify task-appropriate extra inputs through the supplied tools. Preserve the fixed advancer questions and choices.'
         plan_prompt=planner_role+'\n\nROBOT ACTIONS\n'+shared+'\n\nADVANCER QUESTIONS\n'+json.dumps(QUESTIONS)+\
             '\n\nTASK\n'+str(task)+'\n\nCURRENT ROBOT STATE\n'+json.dumps(state)+\
-            '\n\nCURRENT BASELINE\nOnly current three RGB images and current robot state are enabled. No extra perception processing is enabled for this baseline. No history or experience is supplied. Fixed increments are 0.02 meters per non-hold translation channel and 0.10 radians per non-hold rotation channel. Translation and one rotation may execute together. Advance dispatches no action.\n\nOUTPUT\n'+output_spec+\
+            '\n\nCURRENT INPUT MODE\n'+mode+' No history or experience is supplied. Fixed increments are 0.02 meters per non-hold translation channel and 0.10 radians per non-hold rotation channel. Translation and one rotation may execute together. Advance dispatches no action.\n\nOUTPUT\n'+output_spec+\
             '\n\nREFERENCE IMPLEMENTATIONS\n'+(code/'contracts/planner_processing_references.md').read_text()
-        plan=call('planner',plan_prompt,images,args.output/'planner')
+        implementation=None
+        if args.prepared_from:
+            source=args.prepared_from.resolve()
+            campaign_root=Path(__file__).resolve().parents[1]/'runs/company2-20261018'
+            if not source.is_relative_to(campaign_root.resolve()):
+                raise ValueError('Prepared plan must belong to this campaign')
+            original=json.loads((source/'evaluation_case.json').read_text())
+            if not identity or any(original[k]!=identity[k] for k in ('runtime_task','layout_id','layout_sha256')):
+                raise ValueError('Paired condition differs from prepared plan native case')
+            plan=json.loads((source/'plan.json').read_text())
+            implementation=args.output/'planner/implementation'
+            shutil.copytree(source/'planner/implementation',implementation,symlinks=True)
+            dump(args.output/'paired_plan_source.json',dict(source=str(source),plan_sha256=hashlib.sha256((source/'plan.json').read_bytes()).hexdigest(),
+                 backend=args.decision_backend,images_omitted=args.omit_images or args.decision_backend=='jev'))
+        elif args.enable_processing:
+            from planning import prepare
+            partial=None
+            if args.resume_processing_from:
+                source=args.resume_processing_from.resolve()
+                campaign_root=Path(__file__).resolve().parents[1]/'runs/company2-20261018'
+                if not source.is_relative_to(campaign_root.resolve()):
+                    raise ValueError('Partial preparation must belong to this campaign')
+                original=json.loads((source/'evaluation_case.json').read_text())
+                if not identity or any(original[k]!=identity[k] for k in ('runtime_task','layout_id','layout_sha256')):
+                    raise ValueError('Partial processing reference belongs to a different case')
+                partial=source/'planner/implementation'
+                dump(args.output/'partial_preparation_source.json',dict(source=str(source),no_final_plan_reused=True))
+            plan,implementation=prepare(plan_prompt,images,args.output/'observations/initial',args.output/'planner',partial)
+        else:
+            plan=call('planner',plan_prompt,images,args.output/'planner')
         stages={s['id']:s for s in plan['stages']}
         assert len(stages)==len(plan['stages']) and plan['initial_stage'] in stages
         for s in stages.values():
-            assert s['controlled_arm'] in ('left','right') and not s['additional_inputs']
+            assert s['controlled_arm'] in ('left','right')
+            assert args.enable_processing or not s['additional_inputs']
             assert s['next_stage'] is None or s['next_stage'] in stages
         dump(args.output/'plan.json',plan)
         current=plan['initial_stage']
         for index in range(args.decision_budget):
             if session.terminated or session.truncated:
                 break
-            if index:
-                state,images=observe(f'decision-{index:03d}')
             stage=stages[current]
-            prompt=role+'\n\n'+shared+'\n\n'+json.dumps(dict(task=task,current_stage=stage,controlled_arm=stage['controlled_arm'],
-                current_robot_state=state,execution_parameters=dict(translation_step_m=.02,rotation_step_rad=.10),questions=QUESTIONS))
-            decision=call('decision',prompt,images,args.output/'decisions'/f'{index:03d}',SCHEMA)
+            if index:
+                state,images=observe(f'decision-{index:03d}',stage)
+            additional={}
+            if implementation:
+                from sandbox import execute
+                input_folder=args.output/'observations'/('initial' if not index else f'decision-{index:03d}')
+                value=json.loads((input_folder/'observation.json').read_text())
+                value['current_stage']=stage
+                dump(input_folder/'observation.json',value)
+                processed=args.output/'processing'/f'{index:03d}'
+                result=execute(implementation,input_folder,processed,'./processor /input/observation.json /output/additional.json',readonly=True)
+                dump(processed/'execution.json',result)
+                if result['returncode']:
+                    raise RuntimeError('Prepared processor failed on fresh observations')
+                if (processed/'additional.json').is_symlink():
+                    raise RuntimeError('Processor output must be a regular file')
+                values=json.loads((processed/'additional.json').read_text())
+                additional={entry['name']:values[entry['name']] for entry in stage['additional_inputs']}
+                for name,value in list(additional.items()):
+                    if isinstance(value,dict) and 'image_path' in value:
+                        guest=str(value['image_path'])
+                        if not guest.startswith('/output/'):
+                            raise ValueError('Additional image must be under /output')
+                        image_file=(processed/guest[len('/output/'):]).resolve()
+                        if not image_file.is_relative_to(processed.resolve()) or not image_file.is_file() or image_file.suffix.lower()!='.png':
+                            raise ValueError('Additional image is not a verified PNG output')
+                        label='additional_'+name
+                        if args.decision_backend!='jev' and not args.omit_images:
+                            images[label]=image_file
+                            additional[name]=dict(image_label=label,description=value.get('description',''))
+                        else:
+                            additional[name]=dict(image_omitted=True,description=value.get('description',''))
+                english(additional)
+            context=dict(task=task,current_stage=stage,controlled_arm=stage['controlled_arm'],
+                current_robot_state=state,additional_information=additional,
+                execution_parameters=dict(translation_step_m=.02,rotation_step_rad=.10))
+            if args.decision_backend=='jev':
+                from jev_client import decide
+                context.update(action_definitions=shared,input_modality='Text only. No RGB images are supplied. Use the current robot state and additional information.')
+                decision=decide(context,QUESTIONS,args.output/'decisions'/f'{index:03d}')
+            else:
+                prompt=role+'\n\n'+shared+'\n\n'+json.dumps(dict(**context,questions=QUESTIONS))
+                if args.omit_images:
+                    prompt+='\nThis is a text-only condition. No images are supplied; use the additional information and robot state.'
+                decision=call('decision',prompt,{} if args.omit_images else images,args.output/'decisions'/f'{index:03d}',SCHEMA)
             if set(decision)!=set(CHOICES) or any(decision[k] not in v for k,v in CHOICES.items()):
                 raise ValueError('Invalid categorical decision')
             if sum(decision[a]!='hold' for a in AXES[3:])>1:
