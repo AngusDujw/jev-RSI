@@ -113,6 +113,10 @@ def main():
     reference=cv2.cvtColor(reference,cv2.COLOR_RGB2GRAY)
     save(out/'manifest.json',dict(task=1144,init=args.init,axis=args.axis,offset_m=args.offset,
         temporal=args.temporal,model='gpt-6-luna',key_origin='du',experience_injection=False,
+        source_sha256={name:hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+            for name in ('libero_visual_servo.py','libero_inframe_axes.py','libero_multimodal.py',
+                         'libero_prompt_revision.py','legacy_decisions.py')},
+        physical_egl_gpu=os.environ.get('MUJOCO_EGL_DEVICE_ID'),native_python=sys.executable,
         reference_image=str(args.reference),reference_sha256=hashlib.sha256(args.reference.read_bytes()).hexdigest(),
         reference_crop_xyxy=[337,210,427,300],reference_use='historical bowl appearance for evaluation only; never sent to model',
         goal_band_pixels=16,minimum_initial_error_pixels=28,budget=args.budget,
