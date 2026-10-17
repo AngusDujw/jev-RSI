@@ -1,0 +1,41 @@
+{
+  "sequence": [
+    "approach",
+    "align",
+    "descend",
+    "grasp",
+    "lift",
+    "carry",
+    "lower",
+    "release",
+    "retreat"
+  ],
+  "decision_interface": "Image and motor decisions use separate calls. A fixed publicly verified orientation map converts the typed above/center/below image relation into the selected world-X direction.",
+  "visual_coarse": {
+    "goal": "Establish fine-positioning readiness during the initial approach to the patterned gray bowl.",
+    "required_inputs": {
+      "image_decision": [
+        "Current wrist RGB crop with its horizontal center line"
+      ],
+      "motor_decision": [
+        "Camera-derived signed Y/Z residuals",
+        "Current phase and gripper feedback"
+      ],
+      "switch_feedback": [
+        "Camera-derived fine_readiness flag",
+        "Typed above/center/below bowl classification"
+      ]
+    },
+    "observable_exit_condition": "Switch to numerical_fine when fine_readiness is true or the image classification is center."
+  },
+  "numerical_fine": {
+    "goal": "Complete fine positioning and move the patterned gray bowl onto the cabinet, preserving the remaining sequence.",
+    "required_inputs": [
+      "Signed XYZ residuals",
+      "Per-axis aligned booleans",
+      "Current phase, gripper and holding feedback"
+    ],
+    "observable_exit_condition": "Phase feedback indicates completion through retreat; task success is determined only by the unchanged native success signal."
+  },
+  "feedback_constraints": "Fine feedback is algorithm-derived from permitted images and robot state, never scene truth. Numerical tolerance, EEF coordinates and K/T are not model inputs."
+}
