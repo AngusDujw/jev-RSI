@@ -223,6 +223,7 @@ graph LR
     T_2026W42_115["📊 robodojo-planner-advancer-v1<br/>v5/v6均原生550步失败；v9初值越界…"]:::experiment
     T_2026W42_116["📊 robodojo-planner-advancer-v1<br/>v11仍遮挡受阻、stack1 450步I…"]:::experiment
     T_2026W42_117["📊 robodojo-planner-advancer-v1<br/>v12受阻与空TLS分开；CPU分割/匹配…"]:::experiment
+    T_2026W42_118["📊 robodojo-planner-advancer-v1<br/>v13 class1 17/18程序检查仍…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -403,6 +404,7 @@ graph LR
   T_2026W42_114 --> T_2026W42_115
   T_2026W42_115 --> T_2026W42_116
   T_2026W42_116 --> T_2026W42_117
+  T_2026W42_117 --> T_2026W42_118
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -614,6 +616,7 @@ graph LR
 | `T-2026W42-115` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v5/v6均原生550步失败；v9初值越界在新副本复现修复并越过10步，v10交付共同旋转效果信息，尚无完整成功 | `EXP-2026W42-281` | - |
 | `T-2026W42-116` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v11仍遮挡受阻、stack1 450步IK不完整；v12紧凑421词指导空实现四布局，固定接口字节不变且首两请求已核验 | `EXP-2026W42-282` | - |
 | `T-2026W42-117` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v12受阻与空TLS分开；CPU分割/匹配仅接口验证、无定位改善证据；自有Unix通道Sol/Luna探针有效 | `EXP-2026W42-283` | - |
+| `T-2026W42-118` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | v13 class1 17/18程序检查仍物体覆盖不足而blocked0步；独立检验阶段所需精度指导，固定门不变 | `EXP-2026W42-284` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

@@ -44,7 +44,7 @@ def main():
     parser.add_argument('--layout',type=int,default=0)
     parser.add_argument('--layout-manifest',type=Path)
     parser.add_argument('--enable-processing',action='store_true')
-    parser.add_argument('--processing-guidance',choices=['detailed','compact'],default='detailed')
+    parser.add_argument('--processing-guidance',choices=['detailed','compact','progressive'],default='detailed')
     parser.add_argument('--perception-tools',action='store_true')
     parser.add_argument('--prepared-from',type=Path)
     parser.add_argument('--resume-processing-from',type=Path)
