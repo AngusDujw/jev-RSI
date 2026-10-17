@@ -36,7 +36,7 @@ def call(kind, prompt, images, folder, schema=None):
     else:
         model, base, keyfile, provenance = 'gpt-6-luna', 'https://api.openai.com/v1', 'du-openai-direct.key', 'du'
     body = dict(model=model, input=[dict(role='user', content=[dict(type='input_text', text=prompt)] + image_content(images))],
-                reasoning=dict(effort='high'), max_output_tokens=8000 if kind == 'planner' else 1200,
+                reasoning=dict(effort='high'), max_output_tokens=32768 if kind == 'planner' else 4096,
                 store=False)
     if schema:
         body['text'] = dict(format=dict(type='json_schema', name='robot_decision', strict=True, schema=schema))

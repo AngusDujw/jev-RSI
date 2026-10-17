@@ -13,6 +13,7 @@ import numpy as np
 import cv2  # Pin the environment's compatible binary before Kit adjusts sys.path.
 import rtree  # Pin the project wheel, including its libspatialindex, before Kit.
 from models import call, dump, english
+from kinematics import solve_tcp
 
 AXES = ('x','y','z','yaw','pitch','roll')
 CHOICES = {a:['negative','hold','positive'] for a in AXES}
@@ -40,7 +41,7 @@ def main():
     parser.add_argument('--task',required=True)
     parser.add_argument('--layout',type=int,default=0)
     parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--decision-budget',type=int,default=90)
+    parser.add_argument('--decision-budget',type=int,default=240)
     AppLauncher.add_app_launcher_args(parser)
     args = parser.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
@@ -57,7 +58,6 @@ def main():
             settings.set_bool(k,v)
         settings.set_int('/app/updateOrder/checkForHydraRenderComplete',1000)
         from omegaconf import OmegaConf
-        from scipy.optimize import least_squares
         from scipy.spatial.transform import Rotation as R, Slerp
         from PIL import Image
         from env.global_configs import ENV_CONFIG_PATH, ROOT_DIR, BENCHMARK
@@ -105,6 +105,10 @@ def main():
         session.reset(args.layout,'planner_advancer','raw-three-rgb-v1')
         kin=session.kinematics
         offset=np.array([.15007,0.,0.])
+        dump(args.output/'robot_public_geometry.json',{arm:dict(root=kin.root(arm).tolist(),
+            joint_names=kin.robots[arm].arm_joints_name,urdf=str(kin.robots[arm].urdf_path),
+            limits=kin.manager.robot_key[kin.manager.robot_list.index(kin.robots[arm])].data.soft_joint_pos_limits[0,kin.robots[arm].arm_joint_indices].cpu().numpy().tolist())
+            for arm in ('left','right')})
         grip={a:float(session.obs['states'][i]) for a,i in [('left',6),('right',13)]}
         code=Path(__file__).resolve().parents[1]
         shared=block(code/'contracts/tcp_action_interface.draft.md','<!-- SHARED_ACTION_DESCRIPTION_START -->','<!-- SHARED_ACTION_DESCRIPTION_END -->')
@@ -193,18 +197,15 @@ def main():
             for f in np.linspace(.2,1.,5):
                 p=start[:3,3]+f*(target[:3,3]-start[:3,3])
                 rot=rotations(f).as_matrix()
-                def residual(q):
-                    t=pose(arm,q)
-                    return np.r_[(t[:3,3]-p)*10,R.from_matrix(rot@t[:3,:3].T).as_rotvec()]
-                fit=least_squares(residual,np.clip(seed,limits[:,0]+1e-6,limits[:,1]-1e-6),bounds=(limits[:,0],limits[:,1]),max_nfev=90)
-                t=pose(arm,fit.x)
-                if np.linalg.norm(t[:3,3]-p)>.003 or R.from_matrix(rot@t[:3,:3].T).magnitude()>.02:
+                joints,diagnostic=solve_tcp(lambda q:pose(arm,q),p,rot,seed,limits)
+                dump(args.output/'decisions'/f'{index:03d}'/f'ik-{f:.1f}.json',diagnostic)
+                if not diagnostic['passed']:
                     raise RuntimeError('Robot-only five-step IK path cannot track requested TCP action')
                 row=np.array(session.obs['states'],float)
-                row[j:j+6]=fit.x
+                row[j:j+6]=joints
                 row[6],row[13]=grip['left'],grip['right']
                 path.append(row)
-                seed=fit.x
+                seed=joints
             dump(args.output/'decisions'/f'{index:03d}'/'execution.json',dict(controlled_arm=arm,target_tcp=target.tolist(),planned_joint_path=np.array(path).tolist(),stage=current))
             session.chunk_step(np.array(path))
             measured=pose(arm)

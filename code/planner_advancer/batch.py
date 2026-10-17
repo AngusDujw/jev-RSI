@@ -10,11 +10,14 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]/'code/runs/company2-20261018'
 
 
-def launch(name,adopt=None):
+def launch(name,adopt=None,resume=False):
     folder=ROOT/name
-    folder.mkdir(parents=True,exist_ok=False)
-    runs=[]
+    folder.mkdir(parents=True,exist_ok=resume)
+    existing=folder/'batch.json'
+    runs=json.loads(existing.read_text())['runs'] if resume and existing.exists() else []
     for gpu,task,layout in [(2,'stack_blocks',0),(5,'classify_objects',0),(6,'stack_blocks',1),(7,'classify_objects',1)]:
+        if any(r['gpu']==gpu for r in runs):
+            continue
         if gpu==2 and adopt:
             run=(ROOT/adopt).resolve()
             if not run.is_relative_to(ROOT.resolve()):
@@ -71,5 +74,6 @@ if __name__=='__main__':
     parser.add_argument('action',choices=['launch','status'])
     parser.add_argument('--name')
     parser.add_argument('--adopt-stack0')
+    parser.add_argument('--resume',action='store_true')
     args=parser.parse_args()
-    print(json.dumps(launch(args.name,args.adopt_stack0) if args.action=='launch' else status(),indent=2))
+    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume) if args.action=='launch' else status(),indent=2))

@@ -213,6 +213,7 @@ graph LR
     T_2026W42_105["📝 robodojo-decision-stages<br/>按用户要求上线真实提示词复盘网页：461六…"]:::note
     T_2026W42_106["📊 robodojo-decision-stages<br/>488新增原生完整成功累计11回合仍1/4…"]:::experiment
     T_2026W42_107["📊 robodojo-tcp-interface<br/>六个TCP正向单轴原生视频完成：620控制…"]:::experiment
+    T_2026W42_108["📊 robodojo-planner-advancer-v1<br/>新框架四计划与决策链路打通，原生0步；机器…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -585,6 +586,7 @@ graph LR
 | `T-2026W42-105` | 2026-10-15 | note | robodojo-decision-stages | 按用户要求上线真实提示词复盘网页：461六阶段39调用、482七阶段角色/阶段/动作分开；缺失请求不重建，四任务浏览器与窄屏通过；不新增原生成功 | `EXP-2026W42-252` | - |
 | `T-2026W42-106` | 2026-10-15 | experiment | robodojo-decision-stages | 488新增原生完整成功累计11回合仍1/42、冻结标签2/4未稳；积木49040步后顶面遮挡不足，495当前pair方法仍5/0步STOP，转单目标程序族原生检验 | `EXP-2026W42-257` | - |
 | `T-2026W42-107` | 2026-10-17 | experiment | robodojo-tcp-interface | 六个TCP正向单轴原生视频完成：620控制步，最大端点误差0.000970mm/0.000373度；模型调用0，非任务成绩 | `EXP-2026W42-271` | - |
+| `T-2026W42-108` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 新框架四计划与决策链路打通，原生0步；机器人IK多初值诊断可达，修复局部停滞和Luna预算后四卡复验 | `EXP-2026W42-274` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
