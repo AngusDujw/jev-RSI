@@ -570,3 +570,7 @@
 - 【Agent】【2026-10-18 05:47】[op] 实现独立robot_motion_rates.py及named_rates可选条件；原IK构造器/格式器/控制门文件未改，新增公共关节路点速率比较，不改变动作/物理/计划/processor，待离线验证后独立启动。
 - 【Agent】【2026-10-18 05:50】[op] 新建实验块 EXP-2026W42-294：冻结class0具名输入增加公共关节路径速率比较  ↪ `EXP-2026W42-294`
 - 【Agent】【2026-10-18 05:50】[result] 速率输入离线189/189原flag和诊断一致，41.94496809561935对原路径41.94496809561773rad/s；partial数值路径速率完整性为null；合同/实际分支/launch/固定问题及原门检查通过。尚无原生收益，先推送再独立Luna。  ↪ `EXP-2026W42-294`
+- 【Agent】【2026-10-18 05:51】[run] b764f5b1已GitSSH推送/bundle同步；GPU5独立class0 named_rates Luna，prepared-from原具名Luna源，沿用原六字段仅format变化；新Sol零调用，实际配置/首请求待核验。  ↪ `EXP-2026W42-294`
+- 【Agent】【2026-10-18 05:51】[run] named_rates Luna PID2526822实际英文Luna high/du与三原图+两处理图，public dt=.04/limit5，初始原189 flags同源，plan/processor/case不变。GPU6准入共享启动Jev无图，layout-offset -1确保classify0，同源合同自动继承。  ↪ `EXP-2026W42-294`
+- 【Agent】【2026-10-18 05:55】[result] 速率Luna/Jev各6段输入预测与原执行目标路径速率差0；Jev仍选false5.04312rad/s，Luna true2.74665仍20.2337mm误差。输入有效不保证遵守或跟踪，不改门/物理，不提前终止；继续6路至原生结果。  ↪ `EXP-2026W42-294`
+- 【Agent】【2026-10-18 06:00】[result] 最后六路原生仍运行约775/385/220/310/75/160步；无新增完整成功/终局。速率信息计算与命令路径一致，但不能保证遵守或物理跟踪；不扩展同类元信息来计进展，继续已有实体操作/输入证据与终局审查。33.17GiB未删图。  ↪ `EXP-2026W42-294`
