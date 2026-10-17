@@ -23,7 +23,10 @@ both reduced conditions read RGB. Choice values/descriptions, latest stable
 stage contracts, gripper/transition/rotation/candidate questions are common.
 
 Reduced state removes `translation_axes`, named position errors, axis relations,
-distance/progress-to-goal, and numeric world/coordinate/centre/bounds fields.
+named distance/progress-to-goal fields, and world/coordinate/centre/bounds keys
+matched by the adapter's declared regular expression. This is not removal of
+every geometric number: for example `visible_tab_world_xy_m` in the knob task
+and `own_pad_to_visible_rod_gap_mm` in drawer evidence remain.
 Executed robot feedback, phase contracts and other non-positional feedback are
 retained. This is a positional-feedback ablation, not removal of all processing:
 rotation residuals, stage booleans, candidate descriptions and internal motor
@@ -34,6 +37,11 @@ In reduced conditions the actor estimates per-axis hold from the annotated
 images. Retained arrival booleans use their original stage thresholds, which
 need not equal the per-axis hold tolerance; they do not certify4mm visual
 precision. This identifiability limit is part of the test, not a new gate.
+For1098/1202/1383, the old2mm hold constant was written only in the original
+XYZ question; the shared short template says "within tolerance" without
+restating that number. This remaining interface ambiguity is common to all
+three conditions and must not be described as a validated visual2mm threshold.
+It does not explain a particular large-error sign mistake by itself.
 
 Camera K/T is used only inside the frontend to project the original target and
 control-point markers, and to orient a goal-independent world-axis compass.
@@ -68,3 +76,10 @@ paired cases. Do not rerun a normally failed answered episode. Transport/schema
 errors remain separate; any authorized connection replacement needs explicit
 source provenance and a new output root. Native and program completion are
 reported separately. Do not compare a first-decision agreement with task success.
+
+Final results and interpretation: [LIBERO_MOTION_MM_RESULTS.md](LIBERO_MOTION_MM_RESULTS.md).
+The read-only audit tool `summarize_motion_multimodal.py` checks actual requests,
+exact image bytes, English text, camera-matrix exclusion and source-linked
+connection replacements. The live review page is `/motion-retest.html` on the
+existing Tailscale service; original requests and complete case trajectories
+are presented separately from offline residual diagnostics.

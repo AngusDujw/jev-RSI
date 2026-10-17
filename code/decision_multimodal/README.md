@@ -6,6 +6,12 @@ remains unchanged. Latest paired variants have four tasks at5/5 joint; the
 drawer-plus-bowl task remains2/5. The subsequent user-authorized LIBERO
 multimodal comparison is documented in [LIBERO_MULTIMODAL.md](LIBERO_MULTIMODAL.md).
 
+The2026-10-17 retest adds the verified native motion description, short Jev-style
+XYZ questions, no outgoing camera K/T, target markers and a separate world-axis
+compass condition. See [the fixed contract](LIBERO_MOTION_MULTIMODAL.md) and
+[the results](LIBERO_MOTION_MM_RESULTS.md). These are separate versions and do
+not overwrite the earlier comparison.
+
 ## Authorized experiment
 
 1. Ten existing LIBERO-Plus Goal policies, five paired initial states each.

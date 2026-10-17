@@ -143,6 +143,7 @@ graph LR
     T_2026W42_035["📊 decision-multimodal<br/>LIBERO三条件有效90回合收口：全输入…"]:::experiment
     T_2026W42_036["📊 decision-multimodal<br/>LIBERO六轴同起点实测校准50mm/3…"]:::experiment
     T_2026W42_037["🔬 decision-multimodal<br/>同批90回合检验短Jev问题、英文运动说明…"]:::hypothesis
+    T_2026W42_038["📊 decision-multimodal<br/>运动说明/无K/T三组固定90有效回合结束…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -248,6 +249,7 @@ graph LR
   T_2026W42_034 --> T_2026W42_035
   T_2026W42_035 --> T_2026W42_036
   T_2026W42_036 --> T_2026W42_037
+  T_2026W42_037 --> T_2026W42_038
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -380,6 +382,7 @@ graph LR
 | `T-2026W42-035` | 2026-10-16 | experiment | decision-multimodal | LIBERO三条件有效90回合收口：全输入21原生/20完整，无XYZ标记与原图各0/30；图像影响选择但标尺34/74到35/74未解决，174原生尝试全部保留 | `EXP-2026W42-224` | - |
 | `T-2026W42-036` | 2026-10-17 | experiment | decision-multimodal | LIBERO六轴同起点实测校准50mm/30deg，世界轴和grip_site定义明确；0模型调用，待用户检查视频后复测 | `EXP-2026W42-227` | - |
 | `T-2026W42-037` | 2026-10-17 | hypothesis | decision-multimodal | 同批90回合检验短Jev问题、英文运动说明、无K/T下目标标记与世界轴图例是否帮助无XYZ推进 | `EXP-2026W42-231` | - |
+| `T-2026W42-038` | 2026-10-17 | experiment | decision-multimodal | 运动说明/无K/T三组固定90有效回合结束：full原生27完整26，marker1/0，axes0/0；93原始尝试全部保留，图例未建立稳定闭环 | `EXP-2026W42-231` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
