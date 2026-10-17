@@ -6,11 +6,7 @@ TASK=$2
 LAYOUT=$3
 RUN=$4
 NATIVE=/root/yekangjie/project/robodojo-jev
-GPU_USED=$(nvidia-smi --id="$GPU" --query-gpu=memory.used --format=csv,noheader,nounits)
-if (( GPU_USED > 256 )); then
-  echo "GPU $GPU is occupied ($GPU_USED MiB); refusing to launch." >&2
-  exit 3
-fi
+python3 "$PROJECT/code/planner_advancer/gpu_admission.py" "$GPU"
 mkdir -p "$RUN/cache/tmp" "$RUN/cache/xdg" "$RUN/cache/kit"
 export TMPDIR="$RUN/cache/tmp"
 export XDG_CACHE_HOME="$RUN/cache/xdg"

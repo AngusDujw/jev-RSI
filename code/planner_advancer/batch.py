@@ -5,17 +5,19 @@ import os
 from pathlib import Path
 import subprocess
 import time
+from gpu_admission import admit
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]/'code/runs/company2-20261018'
 
 
-def launch(name,adopt=None,resume=False):
+def launch(name,adopt=None,resume=False,layout_offset=0,share=False):
     folder=ROOT/name
     folder.mkdir(parents=True,exist_ok=resume)
     existing=folder/'batch.json'
     runs=json.loads(existing.read_text())['runs'] if resume and existing.exists() else []
     for gpu,task,layout in [(2,'stack_blocks',0),(5,'classify_objects',0),(6,'stack_blocks',1),(7,'classify_objects',1)]:
+        layout+=layout_offset
         if any(r['gpu']==gpu for r in runs):
             continue
         if gpu==2 and adopt:
@@ -27,14 +29,13 @@ def launch(name,adopt=None,resume=False):
             runs.append(dict(task=task,layout=layout,gpu=gpu,pid=pid,directory=str(run.relative_to(ROOT.resolve()))))
             (folder/'batch.json').write_text(json.dumps(dict(batch=name,framework='raw-three-rgb-v1',keep_image_task='stack_blocks',runs=runs,started=time.time()),indent=2)+'\n')
             continue
-        usage=subprocess.check_output(['nvidia-smi','--id='+str(gpu),'--query-gpu=memory.used','--format=csv,noheader,nounits'],text=True)
-        if int(usage.strip())>256:
-            raise RuntimeError(f'GPU {gpu} is occupied; refusing to launch')
+        admit(gpu,share)
         run=folder/f'{task}-l{layout}-gpu{gpu}'
         run.mkdir()
         with (run/'worker.log').open('w') as stream:
             proc=subprocess.Popen(['bash',str(HERE/'launch_worker.sh'),str(gpu),task,str(layout),str(run)],
-                stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
+                stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True,
+                env=dict(os.environ,ALLOW_CAMPAIGN_GPU_SHARE='1' if share else '0'))
         (run/'worker.pid').write_text(str(proc.pid)+'\n')
         runs.append(dict(task=task,layout=layout,gpu=gpu,pid=proc.pid,directory=str(run.relative_to(ROOT))))
         manifest=dict(batch=name,framework='raw-three-rgb-v1',keep_image_task='stack_blocks',runs=runs,started=time.time())
@@ -75,5 +76,7 @@ if __name__=='__main__':
     parser.add_argument('--name')
     parser.add_argument('--adopt-stack0')
     parser.add_argument('--resume',action='store_true')
+    parser.add_argument('--layout-offset',type=int,default=0)
+    parser.add_argument('--share-own-gpu',action='store_true')
     args=parser.parse_args()
-    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume) if args.action=='launch' else status(),indent=2))
+    print(json.dumps(launch(args.name,args.adopt_stack0,args.resume,args.layout_offset,args.share_own_gpu) if args.action=='launch' else status(),indent=2))
