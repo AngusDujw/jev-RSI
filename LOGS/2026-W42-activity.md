@@ -340,3 +340,5 @@
 - 【User】【2026-10-17 21:10】[intent] 调研是否已有使用OpenAI专用decision model控制机器人的工作；优先检索Zotero，区分Decisions API与通用LLM控制。
 - 【Agent】【2026-10-17 21:12】[op] 新建实验块 EXP-2026W42-202：--help  ↪ `EXP-2026W42-202`
 - 【Agent】【2026-10-17 21:13】[result] 会话openai-decision-robotics，轮次20261017-01：完成专用Decisions API查新；核对System1-Arena预印本、SO-101实机原文和robojev仿真；补EXP202与Discussion，未改控制代码/目标/提示词，未发模型请求。Zotero锁定与浏览器无连接如实记录。  ↪ `EXP-2026W42-202`
+- 【User】【2026-10-17 22:34】[intent] 只读检查 company-server-2 的 ~/yekangjie/project/jev_rsi/.worktrees 用途、空间占用、日志数量及可清理候选，不执行删除。
+- 【Agent】【2026-10-17 22:37】[result] 会话server2-worktrees-audit，轮次20261017-01：只读核查company-server-2 /root/yekangjie/project/jev_rsi/.worktrees，约115GiB；decision-multimodal约107GiB；281个run目录约474801文件；cache文件31,706,898,432字节可优先评估清理；941个.log约5.6MiB、1542个jsonl约163MiB，LOGS合计348文件约9MiB；cross-task有4个未跟踪脚本；未删除远端内容。
