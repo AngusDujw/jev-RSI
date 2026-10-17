@@ -337,7 +337,18 @@ def main():
             dump(args.output/'decisions'/f'{index:03d}'/'execution.json',dict(controlled_arm=arm,target_tcp=target.tolist(),planned_joint_path=np.array(path).tolist(),stage=current))
             session.chunk_step(np.array(path))
             measured=pose(arm)
-            dump(args.output/'decisions'/f'{index:03d}'/'tracking.json',dict(position_error_m=float(np.linalg.norm(measured[:3,3]-target[:3,3])),rotation_error_rad=float(R.from_matrix(target[:3,:3]@measured[:3,:3].T).magnitude()),native_steps=session.step_id))
+            measured_joints=np.asarray(session.obs['states'][j:j+6],float)
+            target_joints=np.asarray(path[-1][j:j+6],float)
+            joint_error=measured_joints-target_joints
+            try:
+                fk_check=kin.check()
+            except ValueError as error:
+                fk_check=dict(passed=False,error=str(error))
+            dump(args.output/'decisions'/f'{index:03d}'/'tracking.json',dict(position_error_m=float(np.linalg.norm(measured[:3,3]-target[:3,3])),rotation_error_rad=float(R.from_matrix(target[:3,:3]@measured[:3,:3].T).magnitude()),native_steps=session.step_id,
+                joint_names=robot.arm_joints_name,target_joints_rad=target_joints.tolist(),measured_joints_rad=measured_joints.tolist(),
+                joint_tracking_error_rad=joint_error.tolist(),max_joint_tracking_error_rad=float(np.max(np.abs(joint_error))),
+                max_planned_joint_waypoint_delta_rad=float(np.max(np.abs(np.diff(np.vstack([np.asarray(state[arm]['arm_joints_rad']),np.asarray(path)[:,j:j+6]]),axis=0)))),
+                public_robot_fk_check=fk_check))
             print('DECISION',index,'STAGE',current,'NATIVE_STEPS',session.step_id,flush=True)
         if not session.terminated and not session.truncated:
             session._write_summary('decision_budget' if current is not None else 'plan_ended')

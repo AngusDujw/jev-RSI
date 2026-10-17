@@ -74,3 +74,11 @@ A classification preparation returned an explicitly non-executable diagnostic st
 The first stack processing plan has 18 stages and estimated positions, tolerances and TCP comparisons. Initial silhouette fit agreement does not establish ground-truth pose accuracy. Luna remains in its parking stage; Jev initially moved toward the parking target but subsequent rotation decisions failed. No full success is established. V4 asks the planner to explain per-channel error signs and tolerances and test their mathematical interpretation. The fixed questions and action interface remain unchanged.
 
 New V3 trials export native `CameraManager.get_camera_intrinsics` and retain SDK intrinsics as diagnostics. The SDK vertical focal scale differed from the native manager and planner image fits. This source disagreement is not a certified recalibration; image consistency still needs validation. The existing V2 Luna/Jev pair uses the same SDK protocol through `ROBO_CAMERA_INTRINSICS=sdk`; avoid mixing camera protocols within a comparison.
+
+### EXP277: direction interpretation versus execution
+
+An early parking-stage audit found V4 Luna active rotation choices consistent with the supplied signs/tolerances in 66/66 cases, compared with 66/106 under V2. V4 Jev later ended at 185 native steps after a multi-rotation response; its final active-rotation consistency was 34/35. These are field-consistency checks on different trajectories, not task success or a causal estimate.
+
+Several correct-direction V4 controls still had approximately 30 mm / 0.18 rad tracking errors. Joint5 stayed near 1.57 rad despite larger targets; public USD limits are approximately +/-10 rad, so the physical cause is unresolved. Seven measured wrist-camera/robot-FK checks agreed within 0.000292 mm / 0.000001654 rad. Do not treat these execution failures as wrong model directions or change the native robot asset to hide them.
+
+New controls record target/measured joints, joint error, maximum planned joint waypoint increment, and a robot-only FK check. New launches preserve exact source copies and hashes in `framework_source/manifest.json`; credentials and experience files are excluded. V5 tests task-related stages without arbitrary parking or unnecessary orientation constraints. Fixed action questions, increments and single-plan semantics remain unchanged.

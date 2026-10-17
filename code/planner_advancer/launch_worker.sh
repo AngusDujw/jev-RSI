@@ -18,6 +18,22 @@ export PYTHONPATH="$PROJECT/.deps:$NATIVE/GPT-as-Policy:$NATIVE/robodojo:$NATIVE
 export HTTPS_PROXY=http://127.0.0.1:7897
 export HTTP_PROXY=http://127.0.0.1:7897
 export NO_PROXY=localhost,127.0.0.1
+python3 -c '
+import pathlib,sys,subprocess,hashlib,json,shutil
+project,run=map(pathlib.Path,sys.argv[1:])
+snapshot=run/"framework_source"
+snapshot.mkdir(exist_ok=False)
+records=[]
+sources=list((project/"code/planner_advancer").glob("*.py"))+list((project/"code/planner_advancer").glob("*.sh"))+list((project/"code/contracts").glob("*.md"))
+for source in sources:
+    relative=source.relative_to(project)
+    target=snapshot/relative
+    target.parent.mkdir(parents=True,exist_ok=True)
+    shutil.copyfile(source,target)
+    records.append(dict(path=str(relative),sha256=hashlib.sha256(target.read_bytes()).hexdigest()))
+revision=subprocess.check_output(["git","-C",str(project),"rev-parse","HEAD"],text=True).strip()
+(snapshot/"manifest.json").write_text(json.dumps(dict(commit=revision,files=records,note="Exact launch-time source copies; hashes capture any uncommitted changes. No credentials or experience files are copied."),indent=2))
+' "$PROJECT" "$RUN"
 cd "$NATIVE/robodojo"
 LAYOUT_ARGS=()
 PROCESSING_ARGS=()
