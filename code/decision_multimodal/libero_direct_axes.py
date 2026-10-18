@@ -92,6 +92,25 @@ def image_part(raw):
     return dict(type='input_image',detail='high',image_url='data:image/png;base64,'+base64.b64encode(raw).decode())
 
 
+def coordinate_questions(state,questions):
+    """Expose current coordinates explicitly, without selecting a target or subtracting errors."""
+    for i,a in enumerate(('x','y','z')):
+        samples={v['label']:v['visible_surface_world_mm'][i] for v in state['visible_surface_samples']}
+        questions[a]['instructions']=(f'Current stage goal: {state["stage"]["goal"]} '
+            f'This question controls only world {a.upper()}. Current gripper {a.upper()} coordinate '
+            f'is {state["own_gripper_world_mm"][i]} mm. CURRENT visible surface {a.upper()} coordinates '
+            f'by image dot label are {json.dumps(samples)} mm in the SAME frame. '
+            'First use RGB to select the physical grasp/support relationship appropriate to this stage; '
+            'dots are observed surfaces, not selected target points, and may lie on background. '
+            f'Should the gripper {a.upper()} coordinate increase, decrease, or remain unchanged to establish that relationship? '
+            'Positive INCREASES this coordinate, negative DECREASES it. Hold only if this coordinate is already appropriate. '
+            'Do not infer a direction from the sign of an absolute coordinate; compare positions in the common frame.')
+        questions[a]['criteria']={'positive':f'Increase gripper world {a.upper()} coordinate.',
+            'negative':f'Decrease gripper world {a.upper()} coordinate.',
+            'hold':f'Keep gripper world {a.upper()} coordinate unchanged.'}
+    return questions
+
+
 def demonstrations(root, output):
     from PIL import Image,ImageDraw
     parts=[]
@@ -140,6 +159,7 @@ def main():
     p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
     p.add_argument('--surface-context',action='store_true',help='Unselected visible RGB-D surface samples in the common world frame, not grasp targets')
     p.add_argument('--file-transport',action='store_true',help='Exact Decisions bodies are relayed through a local authorized caller over SSH files')
+    p.add_argument('--coordinate-questions',action='store_true',help='Per-axis current coordinate comparisons, not precomputed signed errors')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -158,7 +178,7 @@ def main():
     from libero_inframe_axes import overlay_gripper_axes
     plan=json.loads(args.plan.read_text());english(plan)
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
-        profile='surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')),
+        profile='coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2'))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
@@ -279,9 +299,13 @@ def main():
             questions['gripper']=dict(type='choice',instructions='Choose the gripper command for the current manipulation.',criteria={'open':'Open the fingers.','close':'Close or retain the grasp.','hold':'Retain the preceding gripper command.'})
             questions['scale']=dict(type='choice',instructions='Choose movement scale from visible clearance and required precision.',criteria={'coarse':'Free space: 20mm and 10degrees maximum per channel.','fine':'Near contact or alignment: 4mm and 2degrees maximum per channel.'})
             questions['transition']=dict(type='choice',instructions='Judge the observable exit condition for the CURRENT stage. Advance only when it is visibly satisfied. Advance executes no motion this turn.',criteria={'continue':'Continue current stage.','advance':'Current stage complete; enter next stage, or finish at the final stage.','restart':'Return to the first stage to recover.'})
+            if args.coordinate_questions:
+                if not args.surface_context:raise ValueError('Coordinate questions require current visible surface context')
+                questions=coordinate_questions(state,questions)
             answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
             choices={k:v['choice'] for k,v in answer['answers'].items()};before_p,before_R=own_pose()
-            previous=[dict(type='input_text',text='PREVIOUS observation, before the last executed command; compare with CURRENT.'),*api.current]
+            previous=[dict(type='input_text',text='PREVIOUS observation, before the last executed command; compare with CURRENT.'),
+                *[dict(x,type=x['type'],**({'text':x['text'].replace('CURRENT','PREVIOUS')} if x['type']=='input_text' else {})) for x in api.current]]
             if choices['transition']=='advance':
                 if stage==len(stages)-1:result['program_finished']=True;break
                 stage+=1;history.append(dict(choices=choices,execution='No physical action; stage advanced'));continue

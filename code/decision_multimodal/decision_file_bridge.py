@@ -14,6 +14,7 @@ import time
 import urllib.request
 
 ENDPOINT='https://api.openai.com/v1/decisions'
+CONTROL=None
 
 
 class FileClient:
@@ -36,17 +37,21 @@ class FileClient:
 
 def ssh(host,code,input=None):
     command='python3 -c '+shlex.quote(code)
-    done=subprocess.run(['ssh','--',host,command],input=input,text=True,capture_output=True)
+    opts=['-o','ControlMaster=auto','-o','ControlPersist=60','-o','ControlPath='+CONTROL] if CONTROL else []
+    done=subprocess.run(['ssh',*opts,'--',host,command],input=input,text=True,capture_output=True)
     if done.returncode:raise RuntimeError(done.stderr[-600:])
     return done.stdout
 
 
 def main():
+    global CONTROL
     p=argparse.ArgumentParser();p.add_argument('--host',required=True)
     p.add_argument('--remote-roots',nargs='+',required=True)
     p.add_argument('--key-file',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--seconds',type=int,default=1800)
+    p.add_argument('--control-path',help='Optional short project-relative SSH multiplex socket; no TCP listener')
     a=p.parse_args();assert a.key_file.name=='du-openai-direct.key'
+    CONTROL=a.control_path
     key=a.key_file.read_text().strip();assert key.startswith('sk-')
     a.output.mkdir(parents=True,exist_ok=False)
     client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
