@@ -346,3 +346,5 @@
 - 【Agent】【2026-10-17 22:50】[result] 会话server2-artifact-cleanup，轮次20261017-01：按用户授权清理company-server-2项目主目录及worktree中的206622个已结束运行观测/纹理缓存文件，释放145698762752字节约135.7GiB；563837个保留文件身份校验与关键结果SHA256通过。保留实验JSON/JSONL及运行资源，仅删49个纹理缓存索引JSON；磁盘剩24→159GiB、99%→92%。审计清单在远端LOGS/maintenance-20261017-artifact-cleanup，详情LOGS/2026-10-17-server2-artifact-cleanup.md。未启动实验或API。
 - 【User】【2026-10-17 23:38】[intent] 详细解析System1-Arena：工作内容、评测模型、整体框架及decision model实际输入；核对论文与公开实现。
 - 【Agent】【2026-10-17 23:40】[result] 会话system1-arena-reading，轮次20261017-02：只读核对S1-Arena源码28e16b16与结果；确认特权坐标/14动作、逐执行器五档argmax、纯文本OpenAI请求及29/20评测覆盖。补EXP203和Discussion；无模型调用、环境安装或控制实验。  ↪ `EXP-2026W42-203`
+- 【User】【2026-10-18 22:47】[intent] 要求查看System1-Arena Meta-World真实代码构造的完整System1输入，明确图像处理、状态和误差信息；输出完整而非压缩示例。
+- 【Agent】【2026-10-18 22:49】[result] 会话system1-arena-inputs，轮次20261018-01：用作者原始函数重建完整Meta-World push通用请求与OpenAI请求体，补来源/示意数值说明；14选项和state序列化一致性通过。确认无图像及显式任务误差输入，未发API/未跑仿真；记录EXP204。  ↪ `EXP-2026W42-204`

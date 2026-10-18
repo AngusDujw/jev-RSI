@@ -1,0 +1,31 @@
+{
+  "state": {
+    "task": "push-v3 (Meta-World): Push the puck to a goal.",
+    "scene": "A Sawyer robot arm with a two-finger gripper works over a table. Coordinates are in metres: x runs across the table (positive = to the robot's right), y points away from the robot's base, z is the height above the table top. The two fingers close toward each other along the y axis. A puck (a cylinder 0.04 m across and 0.04 m tall) lies on the table; the goal is a point on the table.",
+    "gripper": "fingertip centre at (+0.000, +0.500, +0.180); opening 1.00 (1.00 = fully open, about 0.30 = fully closed)",
+    "points": "- puck (centre of the puck): (+0.050, +0.650, +0.020)\n- goal: (+0.050, +0.800, +0.020)",
+    "progress": "decision 4; 32 of 500 simulation steps used; last action: z-5cm (reached)"
+  },
+  "questions": {
+    "action": {
+      "type": "choice",
+      "instructions": "Choose the robot's next motion primitive. A shift moves the fingertip centre by a fixed step along one axis under a proportional controller, for at most 80 simulation steps (1.0 s of simulated time); it ends early once the step is done or the gripper is blocked. Then the next decision is asked.",
+      "criteria": {
+        "x+5cm": "Shift the gripper 0.05 m along +x (to the robot's right).",
+        "x-5cm": "Shift the gripper 0.05 m along -x (to the robot's left).",
+        "y+5cm": "Shift the gripper 0.05 m along +y (away from the robot).",
+        "y-5cm": "Shift the gripper 0.05 m along -y (toward the robot).",
+        "z+5cm": "Shift the gripper 0.05 m along +z (up).",
+        "z-5cm": "Shift the gripper 0.05 m along -z (down).",
+        "x+1cm": "Shift the gripper 0.01 m along +x (to the robot's right).",
+        "x-1cm": "Shift the gripper 0.01 m along -x (to the robot's left).",
+        "y+1cm": "Shift the gripper 0.01 m along +y (away from the robot).",
+        "y-1cm": "Shift the gripper 0.01 m along -y (toward the robot).",
+        "z+1cm": "Shift the gripper 0.01 m along +z (up).",
+        "z-1cm": "Shift the gripper 0.01 m along -z (down).",
+        "close_gripper": "Close the fingers and keep them closed during the following moves; whatever is between the fingers is held.",
+        "open_gripper": "Open the fingers fully and keep them open during the following moves; anything held is released."
+      }
+    }
+  }
+}

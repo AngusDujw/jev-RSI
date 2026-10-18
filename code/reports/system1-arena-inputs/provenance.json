@@ -1,0 +1,35 @@
+{
+  "source_repository": "https://github.com/TianyuCodings/S1-Arena",
+  "source_commit": "28e16b16cdf68800a4cba148c3c6ea036f75bda3",
+  "source_license": "Apache-2.0",
+  "scenario": "Synthetic state, not an author-recorded episode.",
+  "generation": "Executed reviewed original options()/observe()/to_decisions() and original body assignment using standard-library AST extraction; only simulator readings were substituted.",
+  "assumptions": {
+    "task": "push-v3",
+    "control_dt": 0.0125,
+    "tcp": [
+      0.0,
+      0.5,
+      0.18
+    ],
+    "points": {
+      "puck": [
+        0.05,
+        0.65,
+        0.02
+      ],
+      "goal": [
+        0.05,
+        0.8,
+        0.02
+      ]
+    },
+    "opening": 1.0,
+    "decisions_completed": 3,
+    "simulation_steps": 32,
+    "horizon": 500,
+    "last_action": "z-5cm (reached)"
+  },
+  "model_calls": 0,
+  "simulation_runs": 0
+}
