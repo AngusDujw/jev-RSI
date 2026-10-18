@@ -278,3 +278,18 @@ Unchanged-run supervision after EXP299: named Luna PID2307469 is around1055 step
 Named classification0 Luna PID2307469 has now ended at1100 native steps with complete=true/native_success=false/score0. It returned220 answers, zero advances,20close and17open commands, all in pick_toy_1. Its last219 input image is preaction at1095 steps and does not establish retained suspension. Do not resume or resample this episode. This is the terminal of the existing EXP292 condition, not a new experiment. oversight-class0-20261018-0745/named_terminal preserves actual payload, raw RGB/SHA and terminal audit.
 
 Only rate-input Luna PID2526822 remains running, around970 steps in place_toy_1. Current195 wrist RGB does not show an identifiable toy in the basket interior; placement remains unestablished.20.68GiB is free and no images were pruned at this audit. Existing storage_guard watcher PID3007137 is active with the20GiB threshold and skips active runs. Sol authorization restrictions and all frozen model/action/physics protocols remain unchanged.
+
+
+## Existing control set fully terminated
+
+The existing rate-input Luna PID2526822 ended at1100 native steps, complete=true/native_success=false/score0. It produced221 answers, one advance,9close and34open commands;125 executed pick_toy_1 actions and95 place_toy_1 actions. Last input220 is at1095 steps: two toys remain on the tabletop in front of the white basket, another is by the stationary right hand, and no identifiable toy is visible inside the blue basket. These preaction views and the independent native terminal do not establish successful placement or exclude earlier transient retention. Never resume or resample this episode.
+
+| Existing classification0 Luna condition | Native steps | Native success | Score | Advance count | Final stage |
+| --- | ---: | --- | ---: | ---: | --- |
+| matrix |1100|false|0|0|pick_toy_1|
+| named |1100|false|0|0|pick_toy_1|
+| named_rates |1100|false|0|1|place_toy_1|
+
+These independently diverging trajectories are not a causal model ranking or a stability demonstration. Registered-worker audit now finds no live native worker in this campaign. Full task success remains zero. oversight-class0-20261018-0800 holds terminal payload/RGB/SHA, status and retention accounting, all outer-only and never model memory or experience.
+
+The existing storage guard pruned6151 image assets from ended classification tasks after crossing20GiB, releasing7178424765 bytes (about6.69GiB); text/native results remain. No additional manual pruning was performed; latest audited free space is26.08GiB. Sol6.1 high quota authorization remains unresolved and has been requested again now that all native controls have ended. Do not issue new Sol requests, probe429, change keys, replay ended episodes or produce repetitive no-change audits while awaiting the resource response. No running method, prompt, processor, gate or physics was modified.
