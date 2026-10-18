@@ -20,7 +20,8 @@ def build_task_examples(episode,output):
         group=[s for s in snapshots if s[1]==name]
         if not group:continue
         last=group[-1];first=group[0]
-        before=previous if previous.is_file() else first[2]
+        prior=[s for s in snapshots if s[0]<first[0]]
+        before=prior[-1][2] if prior else (previous if previous.is_file() else first[2])
         after=last[2];previous=after
         card=Image.new('RGB',(1024,546),'#11212b');d=ImageDraw.Draw(card)
         d.text((12,10),'ARCHIVED TASK EXAMPLE: '+name+' | BEFORE (left), AFTER (right)',fill='white')
