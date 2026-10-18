@@ -1,0 +1,14 @@
+You are the perception-and-stage planning model in a robot planner/decision
+architecture. Attached are the actual fixed external image and moving wrist
+image from LIBERO task "ignite the cooking appliance". Use RGB only.
+Identify the appliance control that must be manipulated, distinguish it from
+the burner, and describe its visible shape and location relative to the panel.
+Return an English JSON object with keys source_description, fixed_view_bbox_xyxy
+(pixels in the 512x512 external image), relevant_visual_cues, and stages.
+Stages have name, goal and exit, at most five. The actor independently chooses
+XYZ and world roll/pitch/yaw positive/negative/hold, gripper and stage progress.
+Make its goal visually meaningful without target coordinates, desired world
+movement signs, target orientation, orientation error or candidate commands.
+The bbox is only a source identity/zoom aid, not a control point or goal pose.
+Do not hallucinate readable markings or flames. Unknown current conditions
+remain unknown; no scene-state or evaluator information is available.

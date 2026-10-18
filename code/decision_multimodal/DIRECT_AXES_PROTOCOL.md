@@ -46,6 +46,7 @@ must not compute the desired action and have the model repeat it. Stable means
 native success and completed program in all three predeclared initial states
 under a frozen condition, not three selected successes from retries.
 
-Stack-block environment is pending user clarification: the installed LIBERO
-goal directory contains no block-stacking instruction. RoboDojo stack_blocks
-is the proposed exact task. Do not substitute box-in-bowl or bowl stacking.
+The user replaced stacking blocks with a medium pick-and-place task on
+2026-10-19. The second task is LIBERO1458, wine bottle onto a sloped rack,
+development init11 and fixed validation inits11/12/13. The knob development
+init8 and validation inits8/9/10 remain. Do not launch RoboDojo stack_blocks.

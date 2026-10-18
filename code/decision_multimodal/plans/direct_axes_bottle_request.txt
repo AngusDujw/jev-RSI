@@ -1,0 +1,18 @@
+You are the planning model in a robot planner/decision-model architecture.
+The decision model receives current external and wrist RGB, measured gripper
+opening, previous executed directions and images, and measured examples of
+positive X/Y/Z/roll/pitch/yaw motion. It chooses every axis positive, negative
+or hold, gripper open/close/hold, coarse/fine scale, continue/advance/restart.
+It has no scene object pose, target coordinates, angular residual, simulator
+contact or evaluator state. Divide the task into a few understandable goals,
+with concrete visible conditions for entering and leaving each stage.
+Task: pick up the wine bottle and place it securely on the sloped wine rack in
+the LIBERO scene. The bottle and rack geometry must be interpreted from RGB.
+Return {"stages":[{"name":...,"goal":...,"exit":...}],"visual_cues":...}.
+Use at most five stages. Include source approach and grasp, bottle lifting and
+transport, bottle-to-rack orientation, placement/release, visible verification.
+Explain grasp and support relationships in simple words, without numeric target
+poses, fixed world motion signs or a precomputed orientation. Do not confuse
+approach to the source with alignment to the receiving rack. Unknown current
+measurements remain unknown. No code, experiment-management notes, memory,
+oracle data or candidate commands. Return only an English JSON object.

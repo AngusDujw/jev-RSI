@@ -59,8 +59,15 @@ class DirectAPI(RevisedAPI):
         return p
     def validate_payload(self,p):
         english(p)
-        for word in ('required_rotation_world_rad','goal_minus_current','target_pose','reward','success'):
-            assert word not in json.dumps(p).lower(), word
+        forbidden={'required_rotation_world_rad','goal_minus_current','target_pose','reward','success','contact','object_pose'}
+        def audit(value):
+            if isinstance(value,dict):
+                assert not (set(value)&forbidden),set(value)&forbidden
+                for v in value.values():audit(v)
+            elif isinstance(value,list):
+                for v in value:audit(v)
+        # Check structured field names, not substrings in images or words like successive.
+        audit(self.sent_state)
     def input_audit(self):
         return dict(no_target_geometry=True,no_error_feedback=True,examples='Measured own-robot primitive effects',
                     native_tick=self.tick,action_signs_chosen_by_model=True)
@@ -114,6 +121,7 @@ def main():
     p.add_argument('--demos',type=Path,required=True);p.add_argument('--libero-root',required=True)
     p.add_argument('--gpu',type=int,choices=[4,5,6,7],default=4)
     p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
+    p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -131,6 +139,11 @@ def main():
     from robosuite.utils.camera_utils import get_camera_intrinsic_matrix,get_camera_extrinsic_matrix
     from libero_inframe_axes import overlay_gripper_axes
     plan=json.loads(args.plan.read_text());english(plan)
+    save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
+        profile='grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2',
+        source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
+        scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev')
     examples=out/'examples';examples.mkdir();api.demonstrations=demonstrations(args.demos,examples)
@@ -157,6 +170,15 @@ def main():
                 raw,_,audit=overlay_gripper_axes(raw,T,K,p0,camera)
                 (out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'),image_part(raw)])
+                if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
+                    # Fixed-camera articulated knob base is stationary; this crop is identity/visibility only.
+                    box=np.asarray(plan['fixed_view_bbox_xyxy'],float)*(args.size/512)
+                    margin=.10*args.size
+                    box=[max(0,int(box[0]-margin)),max(0,int(box[1]-margin)),
+                         min(args.size,int(box[2]+margin)),min(args.size,int(box[3]+margin))]
+                    crop=im.crop(box).resize((512,512));b=io.BytesIO();crop.save(b,format='PNG')
+                    (out/f'{tick:04d}-source-crop.png').write_bytes(b.getvalue())
+                    parts.extend([dict(type='input_text',text='CURRENT fixed-view source detail; same observation, zoom only. '+plan['source_description']),image_part(b.getvalue())])
             return parts
         for decision in range(args.decisions):
             if tick+4>600:break
@@ -165,6 +187,10 @@ def main():
             state=dict(task=instruction,stage=stages[stage],stage_order=stages,
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),last_actions=history[-4:],
                 next_stage=stages[min(stage+1,len(stages)-1)])
+            if args.grounded:
+                state['source_description']=plan.get('source_description','Identify the named object from current images.')
+                state['visual_cues']=plan.get('relevant_visual_cues',[])
+            api.sent_state=state
             questions={}
             for a,label in zip(('x','y','z','rx','ry','rz'),('X translation','Y translation','Z translation','roll about world X','pitch about world Y','yaw about world Z')):
                 questions[a]=dict(type='choice',instructions=f'Which {label} direction helps achieve the CURRENT stage goal from the actual images? Use motion examples for the physical effect. Hold if this channel needs no change.',
