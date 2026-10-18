@@ -68,7 +68,7 @@ class DirectAPI(RevisedAPI):
         return original
     def build_payload(self, sent):
         p=convert_request(sent)
-        p['input']=[dict(role='user',content=[dict(type='input_text',text=MOTION),
+        p['input']=[dict(role='user',content=[dict(type='input_text',text=getattr(self,'motion',MOTION)),
             *self.demonstrations,dict(type='input_text',text=p['input']),*self.previous,*self.current])]
         self.image_count=sum(x['type']=='input_image' for x in p['input'][0]['content'])
         return p
@@ -187,6 +187,10 @@ def main():
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev')
+    if args.adaptive_steps:
+        api.motion=MOTION.replace('Use fine scale near contact;\nuse coarse scale for clear free-space movement.',
+            'Unsigned step sizes adapt from direction history: repeated signs grow the magnitude, reversals shrink it. '
+            'Translation stays within 2-20mm per axis, rotation within 1-6degrees. Choose directions only.')
     if args.file_transport:
         from decision_file_bridge import FileClient
         api.client=FileClient(out/'bridge-jobs')
@@ -314,17 +318,21 @@ def main():
             if args.coordinate_questions:
                 if not args.surface_context:raise ValueError('Coordinate questions require current visible surface context')
                 questions=coordinate_questions(state,questions)
+            if args.adaptive_steps:
+                questions.pop('scale')
+                state['step_policy']='Direction-history adaptation only; no object-target residual controls magnitude. The last execution contains commanded and measured effects.'
             answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
             choices={k:v['choice'] for k,v in answer['answers'].items()};before_p,before_R=own_pose()
             previous=[dict(type='input_text',text='PREVIOUS observation, before the last executed command; compare with CURRENT.'),
                 *[dict(x,type=x['type'],**({'text':x['text'].replace('CURRENT','PREVIOUS')} if x['type']=='input_text' else {})) for x in api.current]]
             if choices['transition']=='advance':
                 if stage==len(stages)-1:result['program_finished']=True;break
-                stage+=1;history.append(dict(choices=choices,execution='No physical action; stage advanced'));continue
+                stage+=1;step_sizes=None;last_signs=None
+                history.append(dict(choices=choices,execution='No physical action; stage advanced'));continue
             if choices['transition']=='restart':stage=0
             if choices['gripper']!='hold':grip=1. if choices['gripper']=='close' else -1.
             signs=np.array([{'negative':-1,'hold':0,'positive':1}[choices[a]] for a in ('x','y','z','rx','ry','rz')])
-            step_m,step_r=(.020,np.deg2rad(10)) if choices['scale']=='coarse' else (.004,np.deg2rad(2))
+            step_m,step_r=(.020,np.deg2rad(10)) if choices.get('scale')=='coarse' else (.004,np.deg2rad(2))
             if args.adaptive_steps:
                 if step_sizes is None:step_sizes=np.r_[np.full(3,.006),np.full(3,np.deg2rad(3))]
                 if last_signs is not None:
