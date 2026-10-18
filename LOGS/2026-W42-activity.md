@@ -607,3 +607,6 @@
 - 【Agent】【2026-10-18 18:57】[result] 只读扫描远端49个有请求运行目录：31 Luna/18 Jev，3227/720请求；3221 Luna响应均Responses对象、720 Jev typed answers，6响应JSON失败。19 Luna有启动快照且均/responses。确认未用Jev替代Luna，但新框架误用了Responses JSON schema而非要求的Decisions，已补周志/README勘误和完整审计；无模型调用或重跑。
 - 【User】【2026-10-18 19:06】[decision] 写入项目AGENTS默认约定：decision model默认OpenAI Decisions并使用此前授权OpenAI API；规划器默认本机Pro。
 - 【Agent】【2026-10-18 19:06】[op] 在主项目AGENTS.md新增§9.3并同步当前实验worktree，明确Decisions端点不等于Responses JSON schema、Jev仅附加对照，默认规划器本机Pro；未改运行代码或发起实验。
+- 【User】【2026-10-18 19:25】[decision] 授权server02尽可能多并发，先本机Pro Luna/high原版GPT-as-Policy每任务3次，再OpenAI Decisions API每任务5次；仅stack_blocks/classify_objects；Decisions左右臂各XYZ/YPR/夹爪同时输出；OpenAI API除Decisions外需用途明确确认。
+- 【Agent】【2026-10-18 19:25】[op] 更新全局/home/ykj/.codex/AGENTS.md的OpenAI API用途授权。准备独立原版Luna/high副本、六个隔离Pro登录home与server02容器启动器；Pro实际READY返回已核验。因本机/home剩2.3GiB，以项目内SSHFS前台映射server02资产；未向远端传Pro凭据。双臂14问映射12项旋转/平移及夹爪/多旋转拒绝离线通过，临时测试脚本已删除。正式episode尚未开始。
+- 【Agent】【2026-10-18 19:27】[result] server02原版桥接预检已ready：原生stack_blocks 550步、dt0.04、三RGB、LINK6接口；未reset正式回合，已停止自有预检容器。即将六路并发Pro Luna/high，原版输入/连续双臂EEF动作保持，Decisions待六路结束后按用户确认14问双臂输入开展。

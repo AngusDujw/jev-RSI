@@ -1,0 +1,10 @@
+{
+  "question_count": 14,
+  "rotation_translation_cases": 12,
+  "hold": true,
+  "simultaneous_arms": true,
+  "gripper_independence": true,
+  "multiple_rotation_rejection": true,
+  "model_calls": 0,
+  "simulator_actions": 0
+}
