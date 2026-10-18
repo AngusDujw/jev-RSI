@@ -1,0 +1,39 @@
+{
+  "status": "preflight_blocked_no_episode_started",
+  "source_root": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/src/GPT-as-Policy",
+  "source_revision_from_existing_provenance": "8f3d362b077d8efb77e2a7274d5b2c20e2243846",
+  "task_scope_pending_confirmation": ["stack_blocks", "classify_objects"],
+  "luna": {
+    "model": "gpt-6-luna",
+    "reasoning_effort": "high",
+    "authentication": "local_ChatGPT_Pro_only",
+    "episodes_per_task": 3,
+    "policy": "official_gpt_only_agent",
+    "permitted_source_changes": ["model_and_reasoning_identity_configuration_and_matching_identity_labels"],
+    "preserve": ["RGB_inputs", "proprioception", "robot_geometry", "official_prompt", "persistent_episode_context", "official_tools", "continuous_EEF_output", "native_evaluation"],
+    "actual_model_availability": "not_yet_validated"
+  },
+  "decision_model": {
+    "model": "jev-latest",
+    "authentication": "previously_authorized_jev_API",
+    "episodes_per_task": 5,
+    "requested_input": "same_as_official_gpt_as_policy",
+    "requested_output": "categorical_XYZ_and_world_YPR_negative_hold_positive",
+    "status": "awaiting_user_resolution_of_text_only_API_vs_RGB_input",
+    "unresolved": ["image_input_capability", "gripper_output", "arm_selection", "categorical_step_mapping", "tool_and_episode_context_equivalence"],
+    "do_not_silently_remove_images": true
+  },
+  "gpu_preflight": {
+    "allowed_devices": [2, 5, 6, 7],
+    "observed_free_memory_MiB_approximately": 14000,
+    "occupant_project": "/home/wym/workspace/UFO",
+    "foreign_processes_observed": [4071610, 4071613, 4071615, 4071616],
+    "admission": "blocked_foreign_GPU_occupants",
+    "do_not_share_or_stop_foreign_processes": true
+  },
+  "interpretation": "Changing continuous EEF actions to categorical actions also changes the action interface; the comparison alone cannot isolate model ability.",
+  "native_episodes_started": 0,
+  "model_inference_calls": 0,
+  "old_episodes_resumed": 0,
+  "sol_requests": 0
+}

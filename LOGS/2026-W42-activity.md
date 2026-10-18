@@ -599,3 +599,5 @@
 - 【Agent】【2026-10-18 07:47】[result] 具名class0 Luna2307469已1100 complete true/success false/score0，220答0advance20close17open全pick，不恢复。仅速率2526822约970步place继续，当前蓝篮腕图未认证入篮。20.68GiB未删图，现有storage_guard watch PID3007137在运行、阈值20GiB，不能清理活跃源。无新条件或源码改动。  ↪ `EXP-2026W42-299`
 - 【User】【2026-10-18 08:01】[intent] 继续最后速率回合至真实终局；结束不恢复、Sol配额未授权不得新调，监督追加原EXP。
 - 【Agent】【2026-10-18 08:03】[result] 速率Luna2526822已1100步完整失败score0、221答1advance9close34open，pick125/place95，最后place。注册worker PID审计无存活原生进程；所有既有控制结束不恢复。既有storage_guard低于20GiB清理6151个classify图像资产7178424765字节，现26.08GiB，未手工额外删。已重询Sol恢复/备用授权，未答不请求/换key/填GPU。  ↪ `EXP-2026W42-299`
+- 【User】【2026-10-18 18:49】[intent] 新增GPT-as-Policy原版对照：Luna/high通过本机Pro每任务3次，之后原版输入配离散轴/YPR问题的decision API每任务5次；任务范围与图像接口待核实。
+- 【Agent】【2026-10-18 18:49】[result] 已定位本机官方GPT-as-Policy源码和既有Pro启动链路。company-server-2允许GPU2/5/6/7均有外项目UFO占用，按边界不共享；现有Jev仅文本，已询问原版RGB输入兼容方案。保存preflight manifest，无原生回合或模型请求，未修改原版代码。
