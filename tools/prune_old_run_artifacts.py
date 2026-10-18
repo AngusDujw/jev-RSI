@@ -69,10 +69,10 @@ def plan(args):
                 kept = []
                 for name in dirs:
                     child = here/name
-                    if name.lower() in EXCLUDED or child.is_symlink() or (child/".git").exists():
+                    if name.lower() in EXCLUDED or child.is_symlink():
                         continue
                     try:
-                        if child.stat().st_dev != device:
+                        if (child/".git").exists() or child.stat().st_dev != device:
                             continue
                     except OSError:
                         continue

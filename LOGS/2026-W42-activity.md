@@ -614,3 +614,4 @@
 - 【Agent】【2026-10-18 19:36】[result] 六路Pro线程均实际Luna/high。但原装任务资产仅layout0/1，layout2初始化拒绝；另场景加载每实例11-12GiB，四路时可用RAM2.7GiB且swap3.8GiB，停止两路未返首帧/无模型控制动作的layout1初始化，保留审计，不算有效测试或模型失败。暂保留layout0两路，后续限总并发2、实际布局按0/1/0独立重复。未恢复任何结束回合。
 - 【Agent】【2026-10-18 19:40】[result] 补充发现policy cwd在科研仓库内导致继承额外AGENTS并重复session_check；两路layout0已有首图但0动作，已结束并保留，不作为模型能力样本。全部旧启动已结束；新policy cwd移至本机原版benchmark项目下的server02挂载，无科研AGENTS祖先。正式trial使用独立trial编号与原装layout0/1重复，总并发2且两任务各一队列，先6 Luna再10 Decisions，避免原版之外的额外指令。
 - 【User】【2026-10-18 19:51】[intent] 清理范围收窄为仅server02和company-server-2；删除本项目截至2026-10-15的旧图像及大原始日志，本机不清理，保留当前对照实验与代码/环境/文本结论。
+- 【Agent】【2026-10-18 19:53】[result] 按用户最新范围仅清理server02/company-server-2，截至2026-10-15旧生成媒体与大原始日志：server02删除3680文件194977463字节，company2删除5220文件7019348632字节。保留代码/环境/权重/文本总结及新回合，本机未清理。两端code/runs/cleanup-through-20261015-20261018保存计划/逐文件删除账本/summary；server02重试仅删除13个旧容器生成文件，未改权限。
