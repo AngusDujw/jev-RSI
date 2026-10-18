@@ -1,0 +1,23 @@
+{
+  "scope": "Initial setup attempts, excluded from requested native policy trials; all preserved.",
+  "zero_model_control_actions": true,
+  "reasons": {
+    "layout2": "Not present in installed upstream task assets; reset rejected or cancelled before observation.",
+    "layout1": "Cancelled before first observation to relieve measured RAM pressure.",
+    "layout0": "Cancelled at zero control steps after discovering inherited research-repository AGENTS in policy context."
+  },
+  "corrected_working_root": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-policy-comparison-20261018",
+  "corrected_concurrency": 2,
+  "luna_layouts": [
+    0,
+    1,
+    0
+  ],
+  "decisions_layouts": [
+    0,
+    1,
+    0,
+    1,
+    0
+  ]
+}

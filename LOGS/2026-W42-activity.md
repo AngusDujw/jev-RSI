@@ -612,3 +612,4 @@
 - 【Agent】【2026-10-18 19:27】[result] server02原版桥接预检已ready：原生stack_blocks 550步、dt0.04、三RGB、LINK6接口；未reset正式回合，已停止自有预检容器。即将六路并发Pro Luna/high，原版输入/连续双臂EEF动作保持，Decisions待六路结束后按用户确认14问双臂输入开展。
 - 【Agent】【2026-10-18 19:29】[op] 新建实验块 EXP-2026W42-300：server02原版GPT-as-Policy Pro Luna/high与OpenAI Decisions双臂14问对照，先六路普通Luna  ↪ `EXP-2026W42-300`
 - 【Agent】【2026-10-18 19:36】[result] 六路Pro线程均实际Luna/high。但原装任务资产仅layout0/1，layout2初始化拒绝；另场景加载每实例11-12GiB，四路时可用RAM2.7GiB且swap3.8GiB，停止两路未返首帧/无模型控制动作的layout1初始化，保留审计，不算有效测试或模型失败。暂保留layout0两路，后续限总并发2、实际布局按0/1/0独立重复。未恢复任何结束回合。
+- 【Agent】【2026-10-18 19:40】[result] 补充发现policy cwd在科研仓库内导致继承额外AGENTS并重复session_check；两路layout0已有首图但0动作，已结束并保留，不作为模型能力样本。全部旧启动已结束；新policy cwd移至本机原版benchmark项目下的server02挂载，无科研AGENTS祖先。正式trial使用独立trial编号与原装layout0/1重复，总并发2且两任务各一队列，先6 Luna再10 Decisions，避免原版之外的额外指令。

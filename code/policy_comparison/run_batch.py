@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import shlex
 import shutil
+import signal
 import socket
 import subprocess
 import threading
@@ -15,7 +16,9 @@ from prepare import PROJECT, ROOT, PYTHON
 
 REMOTE = '/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-policy-comparison-20261018'
 LOCK = threading.Lock()
-STARTUP = threading.Semaphore(6)
+STARTUP = threading.Semaphore(2)
+STOP = threading.Event()
+ARTIFACT_ROOT = Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-policy-comparison-20261018')
 SSH = ['ssh', '-F', '/dev/null', '-S', '/home/ykj/.ssh/s2-policy-20261018.ctl',
        '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15']
 
@@ -25,9 +28,9 @@ def save(path, value):
         path.write_text(json.dumps(value, indent=2) + '\n')
 
 
-def run_one(task, layout, ordinal, mode):
-    name = f'{mode}-{task}-layout{layout}'
-    run = ROOT / 'remote_assets' / name
+def run_one(task, layout, ordinal, mode, trial):
+    name = f'{mode}-{task}-trial{trial}-layout{layout}'
+    run = ARTIFACT_ROOT / name
     if run.exists():
         raise FileExistsError('Never replay an existing trial: ' + str(run))
     run.mkdir()
@@ -82,6 +85,8 @@ if len(occupants)>=3: raise RuntimeError('Three own workers already occupy this 
                 # The official server accepts one owner only. Never consume that
                 # connection for a readiness probe: wait for its ready log event.
                 while time.monotonic() < deadline:
+                    if STOP.is_set():
+                        raise KeyboardInterrupt('User interrupted the campaign')
                     if sim.poll() is not None:
                         raise RuntimeError('Simulator startup failed: ' + str(sim.returncode))
                     log_text = (run / 'server.log').read_text(errors='replace')
@@ -104,6 +109,8 @@ if len(occupants)>=3: raise RuntimeError('Three own workers already occupy this 
             state.update(status='running', controller_pid=controller.pid)
             save(run / 'status.json', state)
             while controller.poll() is None:
+                if STOP.is_set():
+                    raise KeyboardInterrupt('User interrupted the campaign')
                 history = run / 'controller/history.json'
                 try:
                     records = json.loads(history.read_text())
@@ -149,25 +156,43 @@ if len(occupants)>=3: raise RuntimeError('Three own workers already occupy this 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', choices=['luna', 'decisions'], required=True)
-    parser.add_argument('--parallel', type=int, default=6)
+    parser.add_argument('--mode', choices=['luna', 'decisions', 'all'], required=True)
+    parser.add_argument('--parallel', type=int, default=2)
     args = parser.parse_args()
     import sys
     sys.path.insert(0, str(ROOT / 'official_runtime'))
-    if args.mode == 'decisions':
-        baseline = ROOT / 'luna_batch_results.json'
-        if not baseline.exists() or len(json.loads(baseline.read_text())) != 6:
-            raise RuntimeError('All six Luna attempts must finish first')
-    count = 3 if args.mode == 'luna' else 5
-    items = [(task, layout) for layout in range(count)
-             for task in ('stack_blocks', 'classify_objects')]
-    rows = []
-    with ThreadPoolExecutor(max_workers=min(args.parallel, 6)) as pool:
-        futures = [pool.submit(run_one, task, layout, i, args.mode)
-                   for i, (task, layout) in enumerate(items)]
-        for future in as_completed(futures):
-            rows.append(future.result())
-            save(ROOT / f'{args.mode}_batch_results.json', rows)
+    signal.signal(signal.SIGTERM, lambda *_: STOP.set())
+    signal.signal(signal.SIGINT, lambda *_: STOP.set())
+    if not ARTIFACT_ROOT.is_mount():
+        raise RuntimeError('Remote artifact mount is required; never fill the local disk')
+    for mode in (['luna','decisions'] if args.mode == 'all' else [args.mode]):
+        if STOP.is_set():
+            break
+        if mode == 'decisions':
+            baseline = ROOT / 'luna_native_trials.json'
+            if not baseline.exists() or len(json.loads(baseline.read_text())) != 6:
+                raise RuntimeError('All six Luna trials must finish first')
+            for row in json.loads(baseline.read_text()):
+                if not (ARTIFACT_ROOT / Path(row['remote']).name / 'controller/run.json').exists():
+                    raise RuntimeError('Baseline setup failed before observations; do not start Decisions')
+        layouts = [0,1,0] if mode == 'luna' else [0,1,0,1,0]
+        rows = []
+        def queue(task, gpu):
+            for trial, layout in enumerate(layouts,1):
+                if STOP.is_set():
+                    return
+                ordinal = (trial-1)*2+gpu
+                row = run_one(task,layout,ordinal,mode,trial)
+                rows.append(row)
+                save(ROOT / f'{mode}_native_trials.json',rows)
+                save(ARTIFACT_ROOT / f'{mode}_native_trials.json',rows)
+                if not (ARTIFACT_ROOT / Path(row['remote']).name / 'controller/run.json').exists():
+                    STOP.set()
+                    raise RuntimeError('Setup failed before first observation; stop further trials for diagnosis')
+        with ThreadPoolExecutor(max_workers=min(args.parallel,2)) as pool:
+            futures = [pool.submit(queue,task,gpu) for gpu,task in enumerate(('stack_blocks','classify_objects'))]
+            for future in as_completed(futures):
+                future.result()
 
 
 if __name__ == '__main__':
