@@ -122,6 +122,7 @@ def main():
     p.add_argument('--gpu',type=int,choices=[4,5,6,7],default=4)
     p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
     p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
+    p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -140,7 +141,7 @@ def main():
     from libero_inframe_axes import overlay_gripper_axes
     plan=json.loads(args.plan.read_text());english(plan)
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
-        profile='grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2',
+        profile='relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2'),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
@@ -190,11 +191,41 @@ def main():
             if args.grounded:
                 state['source_description']=plan.get('source_description','Identify the named object from current images.')
                 state['visual_cues']=plan.get('relevant_visual_cues',[])
+            if args.relation_prompts:
+                own_p,own_R=own_pose()
+                # Own hand geometry, never a target orientation or object pose.
+                gripper=native.robots[0].gripper
+                centres={side:np.mean([native.sim.data.geom_xpos[native.sim.model.geom_name2id(n)]
+                    for n in gripper.important_geoms[side]],axis=0)
+                    for side in ('left_fingerpad','right_fingerpad')}
+                closing=centres['right_fingerpad']-centres['left_fingerpad']
+                state['own_tool_geometry']=dict(
+                    closing_axis_world_unit=(closing/max(np.linalg.norm(closing),1e-10)).tolist(),
+                    grip_site_local_Z_world_unit=own_R[:,2].tolist(),
+                    meaning='Measured own-hand axes only. Compare actual finger faces with the object in RGB; these are not desired axes.')
             api.sent_state=state
             questions={}
             for a,label in zip(('x','y','z','rx','ry','rz'),('X translation','Y translation','Z translation','roll about world X','pitch about world Y','yaw about world Z')):
                 questions[a]=dict(type='choice',instructions=f'Which {label} direction helps achieve the CURRENT stage goal from the actual images? Use motion examples for the physical effect. Hold if this channel needs no change.',
                     criteria={'positive':'Positive direction on this channel.','negative':'Negative direction on this channel.','hold':'No increment on this channel.'})
+            if args.relation_prompts:
+                effects={'x':('move forward along world +X','move backward along world -X'),
+                    'y':('move left along world +Y','move right along world -Y'),
+                    'z':('move up along world +Z','move down along world -Z'),
+                    'rx':('right-hand rotation about fixed world +X','opposite rotation about fixed world X'),
+                    'ry':('right-hand rotation about fixed world +Y','opposite rotation about fixed world Y'),
+                    'rz':('counterclockwise viewed from above, about world Z','clockwise viewed from above, about world Z')}
+                for a,(positive,negative) in effects.items():
+                    questions[a]['instructions']=(f'Current goal: {stages[stage]["goal"]} '
+                        f'For {a} only, compare the physical fingers and the task object in CURRENT images. '
+                        f'Would {positive}, {negative}, or no change improve that relationship? '
+                        'For translation use both views and the current gripper axis arrows; wrist images move with the hand. '
+                        'For rotation compare finger approach/closing direction against the visible grasp or support geometry. '
+                        'Use the independent BEFORE/AFTER example to interpret the channel. '
+                        'Hold means this channel is already suitable, not that the whole task is done. '
+                        'Choose all channels from this same current scene, without treating a stage name as completed.')
+                    questions[a]['criteria']={'positive':positive+'.','negative':negative+'.',
+                        'hold':'Keep this channel unchanged; its current relationship is suitable.'}
             questions['gripper']=dict(type='choice',instructions='Choose the gripper command for the current manipulation.',criteria={'open':'Open the fingers.','close':'Close or retain the grasp.','hold':'Retain the preceding gripper command.'})
             questions['scale']=dict(type='choice',instructions='Choose movement scale from visible clearance and required precision.',criteria={'coarse':'Free space: 20mm and 10degrees maximum per channel.','fine':'Near contact or alignment: 4mm and 2degrees maximum per channel.'})
             questions['transition']=dict(type='choice',instructions='Judge the observable exit condition for the CURRENT stage. Advance only when it is visibly satisfied. Advance executes no motion this turn.',criteria={'continue':'Continue current stage.','advance':'Current stage complete; enter next stage, or finish at the final stage.','restart':'Return to the first stage to recover.'})
