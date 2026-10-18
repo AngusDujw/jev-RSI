@@ -1,0 +1,1605 @@
+{
+  "scope": "Actual retained requests/responses and launch snapshots; no inference calls. No prompts or credentials read into output.",
+  "root": "/root/yekangjie/project/jev_rsi/.worktrees/robodojo-planner-advancer-20261018/code/runs/company2-20261018",
+  "runs": 49,
+  "request_model_totals": {
+    "jev-latest": 720,
+    "gpt-6-luna": 3227
+  },
+  "episodes": [
+    {
+      "run": "processing-v10-class1-jev-pair01/classify_objects-l1-gpu7",
+      "requests": 2,
+      "request_models": {
+        "jev-latest": 2
+      },
+      "response_models": {
+        "jev-1.13.0": 2
+      },
+      "response_shapes": {
+        "typed_answers": 2
+      },
+      "reasoning_efforts": {
+        "None": 2
+      },
+      "image_counts": {
+        "0": 2
+      },
+      "first_request": "processing-v10-class1-jev-pair01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v10-class1-jev-pair01/classify_objects-l1-gpu7/episode/decisions/001/request.json",
+      "launch_source_path": "processing-v10-class1-jev-pair01/classify_objects-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 5
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v10-class1-joint-rotation-r01/classify_objects-l1-gpu7",
+      "requests": 69,
+      "request_models": {
+        "gpt-6-luna": 69
+      },
+      "response_models": {
+        "gpt-6-luna": 68
+      },
+      "response_shapes": {
+        "responses_object": 68
+      },
+      "reasoning_efforts": {
+        "high": 69
+      },
+      "image_counts": {
+        "5": 69
+      },
+      "first_request": "processing-v10-class1-joint-rotation-r01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v10-class1-joint-rotation-r01/classify_objects-l1-gpu7/episode/decisions/068/request.json",
+      "launch_source_path": "processing-v10-class1-joint-rotation-r01/classify_objects-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 330
+      },
+      "errors": [
+        {
+          "file": "processing-v10-class1-joint-rotation-r01/classify_objects-l1-gpu7/episode/decisions/068/request.json",
+          "error_type": "JSONDecodeError"
+        }
+      ]
+    },
+    {
+      "run": "processing-v12-compact-stack0-r01/stack_blocks-l0-gpu2",
+      "requests": 1,
+      "request_models": {
+        "gpt-6-luna": 1
+      },
+      "response_models": {},
+      "response_shapes": {},
+      "reasoning_efforts": {
+        "high": 1
+      },
+      "image_counts": {
+        "4": 1
+      },
+      "first_request": "processing-v12-compact-stack0-r01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v12-compact-stack0-r01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "launch_source_path": "processing-v12-compact-stack0-r01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 0
+      },
+      "errors": [
+        {
+          "file": "processing-v12-compact-stack0-r01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+          "error_type": "JSONDecodeError"
+        }
+      ]
+    },
+    {
+      "run": "processing-v13-class0-ik-input-jev01/classify_objects-l0-gpu2",
+      "requests": 18,
+      "request_models": {
+        "jev-latest": 18
+      },
+      "response_models": {
+        "jev-1.13.0": 18
+      },
+      "response_shapes": {
+        "typed_answers": 18
+      },
+      "reasoning_efforts": {
+        "None": 18
+      },
+      "image_counts": {
+        "0": 18
+      },
+      "first_request": "processing-v13-class0-ik-input-jev01/classify_objects-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-ik-input-jev01/classify_objects-l0-gpu2/episode/decisions/017/request.json",
+      "launch_source_path": "processing-v13-class0-ik-input-jev01/classify_objects-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "117c6e0fece7fc30573ccd27025c87fb34726f9322121b5fbf442e6a7e976317",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 85
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-ik-input-luna02/classify_objects-l0-gpu6",
+      "requests": 220,
+      "request_models": {
+        "gpt-6-luna": 220
+      },
+      "response_models": {
+        "gpt-6-luna": 220
+      },
+      "response_shapes": {
+        "responses_object": 220
+      },
+      "reasoning_efforts": {
+        "high": 220
+      },
+      "image_counts": {
+        "5": 220
+      },
+      "first_request": "processing-v13-class0-ik-input-luna02/classify_objects-l0-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-ik-input-luna02/classify_objects-l0-gpu6/episode/decisions/219/request.json",
+      "launch_source_path": "processing-v13-class0-ik-input-luna02/classify_objects-l0-gpu6/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "117c6e0fece7fc30573ccd27025c87fb34726f9322121b5fbf442e6a7e976317",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 1100
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-ik-named-jev01/classify_objects-l0-gpu5",
+      "requests": 28,
+      "request_models": {
+        "jev-latest": 28
+      },
+      "response_models": {
+        "jev-1.13.0": 28
+      },
+      "response_shapes": {
+        "typed_answers": 28
+      },
+      "reasoning_efforts": {
+        "None": 28
+      },
+      "image_counts": {
+        "0": 28
+      },
+      "first_request": "processing-v13-class0-ik-named-jev01/classify_objects-l0-gpu5/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-ik-named-jev01/classify_objects-l0-gpu5/episode/decisions/027/request.json",
+      "launch_source_path": "processing-v13-class0-ik-named-jev01/classify_objects-l0-gpu5/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "5548bc36e802896eda23e0081af4a1cfaa2152e65bcdd05b2968e29bad1b6021",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 135
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-ik-named-luna01/classify_objects-l0-gpu2",
+      "requests": 220,
+      "request_models": {
+        "gpt-6-luna": 220
+      },
+      "response_models": {
+        "gpt-6-luna": 220
+      },
+      "response_shapes": {
+        "responses_object": 220
+      },
+      "reasoning_efforts": {
+        "high": 220
+      },
+      "image_counts": {
+        "5": 220
+      },
+      "first_request": "processing-v13-class0-ik-named-luna01/classify_objects-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-ik-named-luna01/classify_objects-l0-gpu2/episode/decisions/219/request.json",
+      "launch_source_path": "processing-v13-class0-ik-named-luna01/classify_objects-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "5548bc36e802896eda23e0081af4a1cfaa2152e65bcdd05b2968e29bad1b6021",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 1100
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-ik-rates-jev01/classify_objects-l0-gpu6",
+      "requests": 35,
+      "request_models": {
+        "jev-latest": 35
+      },
+      "response_models": {
+        "jev-1.13.0": 35
+      },
+      "response_shapes": {
+        "typed_answers": 35
+      },
+      "reasoning_efforts": {
+        "None": 35
+      },
+      "image_counts": {
+        "0": 35
+      },
+      "first_request": "processing-v13-class0-ik-rates-jev01/classify_objects-l0-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-ik-rates-jev01/classify_objects-l0-gpu6/episode/decisions/034/request.json",
+      "launch_source_path": "processing-v13-class0-ik-rates-jev01/classify_objects-l0-gpu6/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "32f538267470297a95d3807ce9a4be83c2394f0bcf87349ad715211933e084cf",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 170
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-ik-rates-luna01/classify_objects-l0-gpu5",
+      "requests": 221,
+      "request_models": {
+        "gpt-6-luna": 221
+      },
+      "response_models": {
+        "gpt-6-luna": 221
+      },
+      "response_shapes": {
+        "responses_object": 221
+      },
+      "reasoning_efforts": {
+        "high": 221
+      },
+      "image_counts": {
+        "5": 221
+      },
+      "first_request": "processing-v13-class0-ik-rates-luna01/classify_objects-l0-gpu5/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-ik-rates-luna01/classify_objects-l0-gpu5/episode/decisions/220/request.json",
+      "launch_source_path": "processing-v13-class0-ik-rates-luna01/classify_objects-l0-gpu5/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "32f538267470297a95d3807ce9a4be83c2394f0bcf87349ad715211933e084cf",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 1100
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-jev-pair01/classify_objects-l0-gpu7",
+      "requests": 4,
+      "request_models": {
+        "jev-latest": 4
+      },
+      "response_models": {
+        "jev-1.13.0": 4
+      },
+      "response_shapes": {
+        "typed_answers": 4
+      },
+      "reasoning_efforts": {
+        "None": 4
+      },
+      "image_counts": {
+        "0": 4
+      },
+      "first_request": "processing-v13-class0-jev-pair01/classify_objects-l0-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-jev-pair01/classify_objects-l0-gpu7/episode/decisions/003/request.json",
+      "launch_source_path": "processing-v13-class0-jev-pair01/classify_objects-l0-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 20
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-projection-fix-jev01/classify_objects-l0-gpu7",
+      "requests": 202,
+      "request_models": {
+        "jev-latest": 202
+      },
+      "response_models": {
+        "jev-1.13.0": 202
+      },
+      "response_shapes": {
+        "typed_answers": 202
+      },
+      "reasoning_efforts": {
+        "None": 202
+      },
+      "image_counts": {
+        "0": 202
+      },
+      "first_request": "processing-v13-class0-projection-fix-jev01/classify_objects-l0-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-projection-fix-jev01/classify_objects-l0-gpu7/episode/decisions/201/request.json",
+      "launch_source_path": "processing-v13-class0-projection-fix-jev01/classify_objects-l0-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 1005
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-class0-projection-fix-luna01/classify_objects-l0-gpu6",
+      "requests": 101,
+      "request_models": {
+        "gpt-6-luna": 101
+      },
+      "response_models": {
+        "gpt-6-luna": 101
+      },
+      "response_shapes": {
+        "responses_object": 101
+      },
+      "reasoning_efforts": {
+        "high": 101
+      },
+      "image_counts": {
+        "5": 101
+      },
+      "first_request": "processing-v13-class0-projection-fix-luna01/classify_objects-l0-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v13-class0-projection-fix-luna01/classify_objects-l0-gpu6/episode/decisions/100/request.json",
+      "launch_source_path": "processing-v13-class0-projection-fix-luna01/classify_objects-l0-gpu6/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 495
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-stack0-jev-pair01/stack_blocks-l0-gpu2",
+      "requests": 110,
+      "request_models": {
+        "jev-latest": 110
+      },
+      "response_models": {
+        "jev-1.13.0": 110
+      },
+      "response_shapes": {
+        "typed_answers": 110
+      },
+      "reasoning_efforts": {
+        "None": 110
+      },
+      "image_counts": {
+        "0": 110
+      },
+      "first_request": "processing-v13-stack0-jev-pair01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v13-stack0-jev-pair01/stack_blocks-l0-gpu2/episode/decisions/109/request.json",
+      "launch_source_path": "processing-v13-stack0-jev-pair01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 550
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-stack0-luna-raw-rgb-pair01/stack_blocks-l0-gpu2",
+      "requests": 119,
+      "request_models": {
+        "gpt-6-luna": 119
+      },
+      "response_models": {
+        "gpt-6-luna": 119
+      },
+      "response_shapes": {
+        "responses_object": 119
+      },
+      "reasoning_efforts": {
+        "high": 119
+      },
+      "image_counts": {
+        "3": 119
+      },
+      "first_request": "processing-v13-stack0-luna-raw-rgb-pair01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v13-stack0-luna-raw-rgb-pair01/stack_blocks-l0-gpu2/episode/decisions/118/request.json",
+      "launch_source_path": "processing-v13-stack0-luna-raw-rgb-pair01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.15,
+        "native_control_steps": 550
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-stack0-luna-text-pair01/stack_blocks-l0-gpu2",
+      "requests": 111,
+      "request_models": {
+        "gpt-6-luna": 111
+      },
+      "response_models": {
+        "gpt-6-luna": 111
+      },
+      "response_shapes": {
+        "responses_object": 111
+      },
+      "reasoning_efforts": {
+        "high": 111
+      },
+      "image_counts": {
+        "0": 111
+      },
+      "first_request": "processing-v13-stack0-luna-text-pair01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v13-stack0-luna-text-pair01/stack_blocks-l0-gpu2/episode/decisions/110/request.json",
+      "launch_source_path": "processing-v13-stack0-luna-text-pair01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 550
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-tools-class0-r01/classify_objects-l0-gpu7",
+      "requests": 12,
+      "request_models": {
+        "gpt-6-luna": 12
+      },
+      "response_models": {
+        "gpt-6-luna": 12
+      },
+      "response_shapes": {
+        "responses_object": 12
+      },
+      "reasoning_efforts": {
+        "high": 12
+      },
+      "image_counts": {
+        "5": 12
+      },
+      "first_request": "processing-v13-tools-class0-r01/classify_objects-l0-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v13-tools-class0-r01/classify_objects-l0-gpu7/episode/decisions/011/request.json",
+      "launch_source_path": "processing-v13-tools-class0-r01/classify_objects-l0-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 60
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v13-tools-stack0-r01/stack_blocks-l0-gpu2",
+      "requests": 119,
+      "request_models": {
+        "gpt-6-luna": 119
+      },
+      "response_models": {
+        "gpt-6-luna": 119
+      },
+      "response_shapes": {
+        "responses_object": 119
+      },
+      "reasoning_efforts": {
+        "high": 119
+      },
+      "image_counts": {
+        "4": 119
+      },
+      "first_request": "processing-v13-tools-stack0-r01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v13-tools-stack0-r01/stack_blocks-l0-gpu2/episode/decisions/118/request.json",
+      "launch_source_path": "processing-v13-tools-stack0-r01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 550
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v14-class1-jev-pair01/classify_objects-l1-gpu7",
+      "requests": 220,
+      "request_models": {
+        "jev-latest": 220
+      },
+      "response_models": {
+        "jev-1.13.0": 220
+      },
+      "response_shapes": {
+        "typed_answers": 220
+      },
+      "reasoning_efforts": {
+        "None": 220
+      },
+      "image_counts": {
+        "0": 220
+      },
+      "first_request": "processing-v14-class1-jev-pair01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v14-class1-jev-pair01/classify_objects-l1-gpu7/episode/decisions/219/request.json",
+      "launch_source_path": "processing-v14-class1-jev-pair01/classify_objects-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 1100
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v14-class1-luna-raw-rgb-pair01/classify_objects-l1-gpu7",
+      "requests": 221,
+      "request_models": {
+        "gpt-6-luna": 221
+      },
+      "response_models": {
+        "gpt-6-luna": 221
+      },
+      "response_shapes": {
+        "responses_object": 221
+      },
+      "reasoning_efforts": {
+        "high": 221
+      },
+      "image_counts": {
+        "3": 221
+      },
+      "first_request": "processing-v14-class1-luna-raw-rgb-pair01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v14-class1-luna-raw-rgb-pair01/classify_objects-l1-gpu7/episode/decisions/220/request.json",
+      "launch_source_path": "processing-v14-class1-luna-raw-rgb-pair01/classify_objects-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 1100
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v14-class1-luna-text-pair01/classify_objects-l1-gpu6",
+      "requests": 221,
+      "request_models": {
+        "gpt-6-luna": 221
+      },
+      "response_models": {
+        "gpt-6-luna": 221
+      },
+      "response_shapes": {
+        "responses_object": 221
+      },
+      "reasoning_efforts": {
+        "high": 221
+      },
+      "image_counts": {
+        "0": 221
+      },
+      "first_request": "processing-v14-class1-luna-text-pair01/classify_objects-l1-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v14-class1-luna-text-pair01/classify_objects-l1-gpu6/episode/decisions/220/request.json",
+      "launch_source_path": "processing-v14-class1-luna-text-pair01/classify_objects-l1-gpu6/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 1100
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v14-class1-stage-evidence-r01/classify_objects-l1-gpu7",
+      "requests": 127,
+      "request_models": {
+        "gpt-6-luna": 127
+      },
+      "response_models": {
+        "gpt-6-luna": 127
+      },
+      "response_shapes": {
+        "responses_object": 127
+      },
+      "reasoning_efforts": {
+        "high": 127
+      },
+      "image_counts": {
+        "4": 127
+      },
+      "first_request": "processing-v14-class1-stage-evidence-r01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v14-class1-stage-evidence-r01/classify_objects-l1-gpu7/episode/decisions/126/request.json",
+      "launch_source_path": "processing-v14-class1-stage-evidence-r01/classify_objects-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 625
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v2-stack3-jev-pair01/stack_blocks-l3-gpu6",
+      "requests": 5,
+      "request_models": {
+        "jev-latest": 5
+      },
+      "response_models": {
+        "jev-1.13.0": 5
+      },
+      "response_shapes": {
+        "typed_answers": 5
+      },
+      "reasoning_efforts": {
+        "None": 5
+      },
+      "image_counts": {
+        "0": 5
+      },
+      "first_request": "processing-v2-stack3-jev-pair01/stack_blocks-l3-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v2-stack3-jev-pair01/stack_blocks-l3-gpu6/episode/decisions/004/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 20
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v3-class2-jev-pair01/classify_objects-l2-gpu5",
+      "requests": 35,
+      "request_models": {
+        "jev-latest": 35
+      },
+      "response_models": {
+        "jev-1.13.0": 35
+      },
+      "response_shapes": {
+        "typed_answers": 35
+      },
+      "reasoning_efforts": {
+        "None": 35
+      },
+      "image_counts": {
+        "0": 35
+      },
+      "first_request": "processing-v3-class2-jev-pair01/classify_objects-l2-gpu5/episode/decisions/000/request.json",
+      "last_request": "processing-v3-class2-jev-pair01/classify_objects-l2-gpu5/episode/decisions/034/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 170
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v3-stack0-jev-pair01/stack_blocks-l0-gpu2",
+      "requests": 6,
+      "request_models": {
+        "jev-latest": 6
+      },
+      "response_models": {
+        "jev-1.13.0": 6
+      },
+      "response_shapes": {
+        "typed_answers": 6
+      },
+      "reasoning_efforts": {
+        "None": 6
+      },
+      "image_counts": {
+        "0": 6
+      },
+      "first_request": "processing-v3-stack0-jev-pair01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v3-stack0-jev-pair01/stack_blocks-l0-gpu2/episode/decisions/005/request.json",
+      "launch_source_path": "processing-v3-stack0-jev-pair01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "f505d399515bc33687b42eda99c22e672081967e4bacc6e4f881a5b25e04eac9",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 25
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v3-stack0-native-k-r01/stack_blocks-l0-gpu2",
+      "requests": 39,
+      "request_models": {
+        "gpt-6-luna": 39
+      },
+      "response_models": {
+        "gpt-6-luna": 38
+      },
+      "response_shapes": {
+        "responses_object": 38
+      },
+      "reasoning_efforts": {
+        "high": 39
+      },
+      "image_counts": {
+        "4": 39
+      },
+      "first_request": "processing-v3-stack0-native-k-r01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v3-stack0-native-k-r01/stack_blocks-l0-gpu2/episode/decisions/038/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 190
+      },
+      "errors": [
+        {
+          "file": "processing-v3-stack0-native-k-r01/stack_blocks-l0-gpu2/episode/decisions/038/request.json",
+          "error_type": "JSONDecodeError"
+        }
+      ]
+    },
+    {
+      "run": "processing-v4-stack3-jev-pair01/stack_blocks-l3-gpu6",
+      "requests": 38,
+      "request_models": {
+        "jev-latest": 38
+      },
+      "response_models": {
+        "jev-1.13.0": 38
+      },
+      "response_shapes": {
+        "typed_answers": 38
+      },
+      "reasoning_efforts": {
+        "None": 38
+      },
+      "image_counts": {
+        "0": 38
+      },
+      "first_request": "processing-v4-stack3-jev-pair01/stack_blocks-l3-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v4-stack3-jev-pair01/stack_blocks-l3-gpu6/episode/decisions/037/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 185
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v5-stack3-jev-pair01/stack_blocks-l3-gpu2",
+      "requests": 4,
+      "request_models": {
+        "jev-latest": 4
+      },
+      "response_models": {
+        "jev-1.13.0": 4
+      },
+      "response_shapes": {
+        "typed_answers": 4
+      },
+      "reasoning_efforts": {
+        "None": 4
+      },
+      "image_counts": {
+        "0": 4
+      },
+      "first_request": "processing-v5-stack3-jev-pair01/stack_blocks-l3-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v5-stack3-jev-pair01/stack_blocks-l3-gpu2/episode/decisions/003/request.json",
+      "launch_source_path": "processing-v5-stack3-jev-pair01/stack_blocks-l3-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 15
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v6-fresh-layouts-batch07/stack_blocks-l1-gpu6",
+      "requests": 94,
+      "request_models": {
+        "gpt-6-luna": 94
+      },
+      "response_models": {
+        "gpt-6-luna": 94
+      },
+      "response_shapes": {
+        "responses_object": 94
+      },
+      "reasoning_efforts": {
+        "high": 94
+      },
+      "image_counts": {
+        "4": 94
+      },
+      "first_request": "processing-v6-fresh-layouts-batch07/stack_blocks-l1-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v6-fresh-layouts-batch07/stack_blocks-l1-gpu6/episode/decisions/093/request.json",
+      "launch_source_path": "processing-v6-fresh-layouts-batch07/stack_blocks-l1-gpu6/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "f505d399515bc33687b42eda99c22e672081967e4bacc6e4f881a5b25e04eac9",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 450
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v6-stack1-ik-named-jev01/stack_blocks-l1-gpu2",
+      "requests": 1,
+      "request_models": {
+        "jev-latest": 1
+      },
+      "response_models": {
+        "jev-1.13.0": 1
+      },
+      "response_shapes": {
+        "typed_answers": 1
+      },
+      "reasoning_efforts": {
+        "None": 1
+      },
+      "image_counts": {
+        "0": 1
+      },
+      "first_request": "processing-v6-stack1-ik-named-jev01/stack_blocks-l1-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v6-stack1-ik-named-jev01/stack_blocks-l1-gpu2/episode/decisions/000/request.json",
+      "launch_source_path": "processing-v6-stack1-ik-named-jev01/stack_blocks-l1-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "5548bc36e802896eda23e0081af4a1cfaa2152e65bcdd05b2968e29bad1b6021",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 0
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v6-stack1-ik-named-luna01/stack_blocks-l1-gpu7",
+      "requests": 113,
+      "request_models": {
+        "gpt-6-luna": 113
+      },
+      "response_models": {
+        "gpt-6-luna": 113
+      },
+      "response_shapes": {
+        "responses_object": 113
+      },
+      "reasoning_efforts": {
+        "high": 113
+      },
+      "image_counts": {
+        "4": 113
+      },
+      "first_request": "processing-v6-stack1-ik-named-luna01/stack_blocks-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v6-stack1-ik-named-luna01/stack_blocks-l1-gpu7/episode/decisions/112/request.json",
+      "launch_source_path": "processing-v6-stack1-ik-named-luna01/stack_blocks-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "5548bc36e802896eda23e0081af4a1cfaa2152e65bcdd05b2968e29bad1b6021",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 550
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v6-stack1-jev-pair01/stack_blocks-l1-gpu6",
+      "requests": 7,
+      "request_models": {
+        "jev-latest": 7
+      },
+      "response_models": {
+        "jev-1.13.0": 7
+      },
+      "response_shapes": {
+        "typed_answers": 7
+      },
+      "reasoning_efforts": {
+        "None": 7
+      },
+      "image_counts": {
+        "0": 7
+      },
+      "first_request": "processing-v6-stack1-jev-pair01/stack_blocks-l1-gpu6/episode/decisions/000/request.json",
+      "last_request": "processing-v6-stack1-jev-pair01/stack_blocks-l1-gpu6/episode/decisions/006/request.json",
+      "launch_source_path": "processing-v6-stack1-jev-pair01/stack_blocks-l1-gpu6/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 30
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v6-stack1-luna-raw-rgb-pair01/stack_blocks-l1-gpu2",
+      "requests": 105,
+      "request_models": {
+        "gpt-6-luna": 105
+      },
+      "response_models": {
+        "gpt-6-luna": 105
+      },
+      "response_shapes": {
+        "responses_object": 105
+      },
+      "reasoning_efforts": {
+        "high": 105
+      },
+      "image_counts": {
+        "3": 105
+      },
+      "first_request": "processing-v6-stack1-luna-raw-rgb-pair01/stack_blocks-l1-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v6-stack1-luna-raw-rgb-pair01/stack_blocks-l1-gpu2/episode/decisions/104/request.json",
+      "launch_source_path": "processing-v6-stack1-luna-raw-rgb-pair01/stack_blocks-l1-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "fa9560169a236417a3e194df9503f811855dc8c69b508a3116aacf2f623a3050",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 505
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v6-stack3-jev-pair01/stack_blocks-l3-gpu2",
+      "requests": 3,
+      "request_models": {
+        "jev-latest": 3
+      },
+      "response_models": {
+        "jev-1.13.0": 3
+      },
+      "response_shapes": {
+        "typed_answers": 3
+      },
+      "reasoning_efforts": {
+        "None": 3
+      },
+      "image_counts": {
+        "0": 3
+      },
+      "first_request": "processing-v6-stack3-jev-pair01/stack_blocks-l3-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v6-stack3-jev-pair01/stack_blocks-l3-gpu2/episode/decisions/002/request.json",
+      "launch_source_path": "processing-v6-stack3-jev-pair01/stack_blocks-l3-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 10
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v8-class1-jev-pair01/classify_objects-l1-gpu7",
+      "requests": 1,
+      "request_models": {
+        "jev-latest": 1
+      },
+      "response_models": {
+        "jev-1.13.0": 1
+      },
+      "response_shapes": {
+        "typed_answers": 1
+      },
+      "reasoning_efforts": {
+        "None": 1
+      },
+      "image_counts": {
+        "0": 1
+      },
+      "first_request": "processing-v8-class1-jev-pair01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v8-class1-jev-pair01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "launch_source_path": "processing-v8-class1-jev-pair01/classify_objects-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 0
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v8-class1-task-visual-r01/classify_objects-l1-gpu7",
+      "requests": 8,
+      "request_models": {
+        "gpt-6-luna": 8
+      },
+      "response_models": {
+        "gpt-6-luna": 8
+      },
+      "response_shapes": {
+        "responses_object": 8
+      },
+      "reasoning_efforts": {
+        "high": 8
+      },
+      "image_counts": {
+        "5": 8
+      },
+      "first_request": "processing-v8-class1-task-visual-r01/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "processing-v8-class1-task-visual-r01/classify_objects-l1-gpu7/episode/decisions/007/request.json",
+      "launch_source_path": "processing-v8-class1-task-visual-r01/classify_objects-l1-gpu7/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 35
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v9-stack0-initializer-fix-jev01/stack_blocks-l0-gpu2",
+      "requests": 1,
+      "request_models": {
+        "jev-latest": 1
+      },
+      "response_models": {
+        "jev-1.13.0": 1
+      },
+      "response_shapes": {
+        "typed_answers": 1
+      },
+      "reasoning_efforts": {
+        "None": 1
+      },
+      "image_counts": {
+        "0": 1
+      },
+      "first_request": "processing-v9-stack0-initializer-fix-jev01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v9-stack0-initializer-fix-jev01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "launch_source_path": "processing-v9-stack0-initializer-fix-jev01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 0
+      },
+      "errors": []
+    },
+    {
+      "run": "processing-v9-stack0-initializer-fix-luna01/stack_blocks-l0-gpu2",
+      "requests": 95,
+      "request_models": {
+        "gpt-6-luna": 95
+      },
+      "response_models": {
+        "gpt-6-luna": 94
+      },
+      "response_shapes": {
+        "responses_object": 94
+      },
+      "reasoning_efforts": {
+        "high": 95
+      },
+      "image_counts": {
+        "4": 95
+      },
+      "first_request": "processing-v9-stack0-initializer-fix-luna01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v9-stack0-initializer-fix-luna01/stack_blocks-l0-gpu2/episode/decisions/094/request.json",
+      "launch_source_path": "processing-v9-stack0-initializer-fix-luna01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 445
+      },
+      "errors": [
+        {
+          "file": "processing-v9-stack0-initializer-fix-luna01/stack_blocks-l0-gpu2/episode/decisions/094/request.json",
+          "error_type": "JSONDecodeError"
+        }
+      ]
+    },
+    {
+      "run": "processing-v9-stack0-quantized-evidence-r01/stack_blocks-l0-gpu2",
+      "requests": 2,
+      "request_models": {
+        "gpt-6-luna": 2
+      },
+      "response_models": {
+        "gpt-6-luna": 2
+      },
+      "response_shapes": {
+        "responses_object": 2
+      },
+      "reasoning_efforts": {
+        "high": 2
+      },
+      "image_counts": {
+        "4": 2
+      },
+      "first_request": "processing-v9-stack0-quantized-evidence-r01/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "processing-v9-stack0-quantized-evidence-r01/stack_blocks-l0-gpu2/episode/decisions/001/request.json",
+      "launch_source_path": "processing-v9-stack0-quantized-evidence-r01/stack_blocks-l0-gpu2/framework_source/code/planner_advancer/models.py",
+      "launch_source_sha256": "c82fad286d883cf48333c1cd3bfab058575a7c70a9226a599178ccabac614dd3",
+      "launch_source_responses_endpoint": true,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 10
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-batch02/classify_objects-l0-gpu5",
+      "requests": 1,
+      "request_models": {
+        "gpt-6-luna": 1
+      },
+      "response_models": {
+        "gpt-6-luna": 1
+      },
+      "response_shapes": {
+        "responses_object": 1
+      },
+      "reasoning_efforts": {
+        "high": 1
+      },
+      "image_counts": {
+        "3": 1
+      },
+      "first_request": "raw-v1-batch02/classify_objects-l0-gpu5/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch02/classify_objects-l0-gpu5/episode/decisions/000/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 0
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-batch02/classify_objects-l1-gpu7",
+      "requests": 1,
+      "request_models": {
+        "gpt-6-luna": 1
+      },
+      "response_models": {
+        "gpt-6-luna": 1
+      },
+      "response_shapes": {
+        "responses_object": 1
+      },
+      "reasoning_efforts": {
+        "high": 1
+      },
+      "image_counts": {
+        "3": 1
+      },
+      "first_request": "raw-v1-batch02/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch02/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 0
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-batch02/stack_blocks-l1-gpu6",
+      "requests": 1,
+      "request_models": {
+        "gpt-6-luna": 1
+      },
+      "response_models": {
+        "gpt-6-luna": 1
+      },
+      "response_shapes": {
+        "responses_object": 1
+      },
+      "reasoning_efforts": {
+        "high": 1
+      },
+      "image_counts": {
+        "3": 1
+      },
+      "first_request": "raw-v1-batch02/stack_blocks-l1-gpu6/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch02/stack_blocks-l1-gpu6/episode/decisions/000/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 0
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-batch03/classify_objects-l0-gpu5",
+      "requests": 221,
+      "request_models": {
+        "gpt-6-luna": 221
+      },
+      "response_models": {
+        "gpt-6-luna": 221
+      },
+      "response_shapes": {
+        "responses_object": 221
+      },
+      "reasoning_efforts": {
+        "high": 221
+      },
+      "image_counts": {
+        "3": 221
+      },
+      "first_request": "raw-v1-batch03/classify_objects-l0-gpu5/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch03/classify_objects-l0-gpu5/episode/decisions/220/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 1100
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-batch03/classify_objects-l1-gpu7",
+      "requests": 220,
+      "request_models": {
+        "gpt-6-luna": 220
+      },
+      "response_models": {
+        "gpt-6-luna": 219
+      },
+      "response_shapes": {
+        "responses_object": 219
+      },
+      "reasoning_efforts": {
+        "high": 220
+      },
+      "image_counts": {
+        "3": 220
+      },
+      "first_request": "raw-v1-batch03/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch03/classify_objects-l1-gpu7/episode/decisions/219/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 1095
+      },
+      "errors": [
+        {
+          "file": "raw-v1-batch03/classify_objects-l1-gpu7/episode/decisions/219/request.json",
+          "error_type": "JSONDecodeError"
+        }
+      ]
+    },
+    {
+      "run": "raw-v1-batch03/stack_blocks-l0-gpu2",
+      "requests": 114,
+      "request_models": {
+        "gpt-6-luna": 114
+      },
+      "response_models": {
+        "gpt-6-luna": 114
+      },
+      "response_shapes": {
+        "responses_object": 114
+      },
+      "reasoning_efforts": {
+        "high": 114
+      },
+      "image_counts": {
+        "3": 114
+      },
+      "first_request": "raw-v1-batch03/stack_blocks-l0-gpu2/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch03/stack_blocks-l0-gpu2/episode/decisions/113/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 550
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-batch03/stack_blocks-l1-gpu6",
+      "requests": 17,
+      "request_models": {
+        "gpt-6-luna": 17
+      },
+      "response_models": {
+        "gpt-6-luna": 17
+      },
+      "response_shapes": {
+        "responses_object": 17
+      },
+      "reasoning_efforts": {
+        "high": 17
+      },
+      "image_counts": {
+        "3": 17
+      },
+      "first_request": "raw-v1-batch03/stack_blocks-l1-gpu6/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch03/stack_blocks-l1-gpu6/episode/decisions/016/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 75
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-batch04/classify_objects-l2-gpu5",
+      "requests": 213,
+      "request_models": {
+        "gpt-6-luna": 213
+      },
+      "response_models": {
+        "gpt-6-luna": 212
+      },
+      "response_shapes": {
+        "responses_object": 212
+      },
+      "reasoning_efforts": {
+        "high": 213
+      },
+      "image_counts": {
+        "3": 213
+      },
+      "first_request": "raw-v1-batch04/classify_objects-l2-gpu5/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch04/classify_objects-l2-gpu5/episode/decisions/212/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 1050
+      },
+      "errors": [
+        {
+          "file": "raw-v1-batch04/classify_objects-l2-gpu5/episode/decisions/212/request.json",
+          "error_type": "JSONDecodeError"
+        }
+      ]
+    },
+    {
+      "run": "raw-v1-batch04/classify_objects-l3-gpu7",
+      "requests": 7,
+      "request_models": {
+        "gpt-6-luna": 7
+      },
+      "response_models": {
+        "gpt-6-luna": 7
+      },
+      "response_shapes": {
+        "responses_object": 7
+      },
+      "reasoning_efforts": {
+        "high": 7
+      },
+      "image_counts": {
+        "3": 7
+      },
+      "first_request": "raw-v1-batch04/classify_objects-l3-gpu7/episode/decisions/000/request.json",
+      "last_request": "raw-v1-batch04/classify_objects-l3-gpu7/episode/decisions/006/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 30
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-budget16k-batch05/classify_objects-l1-gpu7",
+      "requests": 100,
+      "request_models": {
+        "gpt-6-luna": 100
+      },
+      "response_models": {
+        "gpt-6-luna": 100
+      },
+      "response_shapes": {
+        "responses_object": 100
+      },
+      "reasoning_efforts": {
+        "high": 100
+      },
+      "image_counts": {
+        "3": 100
+      },
+      "first_request": "raw-v1-budget16k-batch05/classify_objects-l1-gpu7/episode/decisions/000/request.json",
+      "last_request": "raw-v1-budget16k-batch05/classify_objects-l1-gpu7/episode/decisions/099/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": false,
+        "native_success": null,
+        "native_score": null,
+        "native_control_steps": 495
+      },
+      "errors": []
+    },
+    {
+      "run": "raw-v1-budget16k-batch05/stack_blocks-l1-gpu6",
+      "requests": 114,
+      "request_models": {
+        "gpt-6-luna": 114
+      },
+      "response_models": {
+        "gpt-6-luna": 114
+      },
+      "response_shapes": {
+        "responses_object": 114
+      },
+      "reasoning_efforts": {
+        "high": 114
+      },
+      "image_counts": {
+        "3": 114
+      },
+      "first_request": "raw-v1-budget16k-batch05/stack_blocks-l1-gpu6/episode/decisions/000/request.json",
+      "last_request": "raw-v1-budget16k-batch05/stack_blocks-l1-gpu6/episode/decisions/113/request.json",
+      "launch_source_path": null,
+      "launch_source_sha256": null,
+      "launch_source_responses_endpoint": false,
+      "launch_source_decisions_endpoint": false,
+      "native": {
+        "complete": true,
+        "native_success": false,
+        "native_score": 0.0,
+        "native_control_steps": 550
+      },
+      "errors": []
+    }
+  ]
+}

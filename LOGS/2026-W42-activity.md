@@ -603,3 +603,5 @@
 - 【Agent】【2026-10-18 18:49】[result] 已定位本机官方GPT-as-Policy源码和既有Pro启动链路。company-server-2允许GPU2/5/6/7均有外项目UFO占用，按边界不共享；现有Jev仅文本，已询问原版RGB输入兼容方案。保存preflight manifest，无原生回合或模型请求，未修改原版代码。
 - 【User】【2026-10-18 18:53】[decision] 用户纠正decision model指支持图像的OpenAI Decisions而非Jev；只测stack_blocks/classify_objects，并要求实时显卡状态。
 - 【Agent】【2026-10-18 18:53】[result] 核对旧robodojo_decisions/controller.py endpoint为/v1/decisions，最近planner_advancer/models.py为/v1/responses JSON schema；纠正此前接口混称及Jev误解。18:53 company2八卡被UFO占用，允许2/5/6/7卡仅剩2206/2224/2221/2220MiB，未启动实验或请求模型。更新比较manifest。
+- 【User】【2026-10-18 18:57】[intent] 要求核查昨晚实际运行接口：OpenAI Decisions应一直运行，额外信息充分时Jev仅额外对照。
+- 【Agent】【2026-10-18 18:57】[result] 只读扫描远端49个有请求运行目录：31 Luna/18 Jev，3227/720请求；3221 Luna响应均Responses对象、720 Jev typed answers，6响应JSON失败。19 Luna有启动快照且均/responses。确认未用Jev替代Luna，但新框架误用了Responses JSON schema而非要求的Decisions，已补周志/README勘误和完整审计；无模型调用或重跑。

@@ -1,5 +1,7 @@
 # Planner–advancer RoboDojo campaign
 
+API identity correction (2026-10-18): the retained Luna runs in this implementation used `gpt-6-luna/high` through `/v1/responses` with JSON-schema output, not the user-requested OpenAI `/v1/decisions` API. Jev was an additional text-only parallel condition, not a replacement for Luna. These outcomes must not be reported as Decisions API results. The request/response and launch-source audit is in `code/runs/company2-20261018/api-identity-audit-20261018/results.json`: 31 Luna run directories with 3227 request records, including 3221 parsed Responses objects; 18 Jev directories with 720 requests and parsed answers. Six Luna responses failed JSON parsing and 15 early run directories lack launch-source snapshots. Preserve all original outcomes; do not silently relabel or rerun them. The older `code/robodojo_decisions` client uses a different API and does not establish this implementation's transport.
+
 New implementation for chat `01a12b86`, based on the contracts agreed on 2026-10-17/18. Retired task controllers and experience files are not used.
 
 ## Deployment
