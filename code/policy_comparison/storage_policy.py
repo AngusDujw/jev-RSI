@@ -64,6 +64,9 @@ def sweep():
             result = prune(path.parent, json.loads(path.read_text()))
             if result:
                 print(json.dumps(result), flush=True)
+        except subprocess.CalledProcessError as error:
+            if error.returncode != 73:
+                print(json.dumps(dict(run=path.parent.name, retention_error=str(error))), flush=True)
         except (OSError, ValueError, subprocess.SubprocessError) as error:
             print(json.dumps(dict(run=path.parent.name, retention_error=str(error))), flush=True)
 
