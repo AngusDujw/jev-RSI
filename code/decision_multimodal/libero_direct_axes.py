@@ -123,6 +123,7 @@ def main():
     p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
     p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
     p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
+    p.add_argument('--surface-context',action='store_true',help='Unselected visible RGB-D surface samples in the common world frame, not grasp targets')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -141,7 +142,7 @@ def main():
     from libero_inframe_axes import overlay_gripper_axes
     plan=json.loads(args.plan.read_text());english(plan)
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
-        profile='relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2'),
+        profile='surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
@@ -155,19 +156,40 @@ def main():
         instruction=suite.get_task(args.task).language;english(instruction)
         env=ControlEnv(bddl_file_name=suite.get_task_bddl_file_path(args.task),
             camera_names=['agentview','robot0_eye_in_hand'],camera_heights=args.size,camera_widths=args.size,
-            camera_depths=False,control_freq=20,horizon=600,controller='OSC_POSE',initialization_noise=None)
+            camera_depths=args.surface_context,control_freq=20,horizon=600,controller='OSC_POSE',initialization_noise=None)
         env.seed(0);env.reset();obs=env.set_init_state(np.asarray(suite.get_task_init_states(args.task)[args.init],float))
         for _ in range(10):obs,_,_,_=env.step(np.r_[np.zeros(6),grip]);tick+=1
         native=env.env;site=native.robots[0].eef_site_id
         def own_pose():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
         def capture():
-            parts=[];p0,_=own_pose()
+            from PIL import ImageDraw
+            parts=[];p0,_=own_pose();api.surface_samples=[]
             for camera in ('agentview','robot0_eye_in_hand'):
                 im=Image.fromarray(np.ascontiguousarray(obs[camera+'_image'][::-1]));b=io.BytesIO();im.save(b,format='PNG')
                 raw=b.getvalue();(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
+                if args.surface_context and camera=='agentview':
+                    from robosuite.utils.camera_utils import get_real_depth_map
+                    depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
+                    draw=ImageDraw.Draw(im)
+                    for region,key in (('A','fixed_view_bbox_xyxy'),('B','receiver_fixed_view_bbox_xyxy')):
+                        if key not in plan:continue
+                        box=np.asarray(plan[key],float)*(args.size/512)
+                        # Sample the *current visible surface* on a fixed pixel lattice.
+                        # These points are not a tracked object pose, centroid, grasp point or target.
+                        for j,y in enumerate(np.linspace(box[1]+4,box[3]-4,3)):
+                            for i,x in enumerate(np.linspace(box[0]+4,box[2]-4,3)):
+                                u,v=int(np.clip(x,0,args.size-1)),int(np.clip(y,0,args.size-1))
+                                z=float(depth[v,u]);point=T@np.r_[np.linalg.solve(K,np.array([u,v,1]))*z,1]
+                                if not np.isfinite(point).all() or z<=0:continue
+                                label=f'{region}{j*3+i}'
+                                api.surface_samples.append(dict(label=label,pixel_uv=[u,v],
+                                    visible_surface_world_mm=np.round(point[:3]*1000,1).tolist()))
+                                draw.ellipse((u-2,v-2,u+2,v+2),fill='#ffff00',outline='#000000')
+                                draw.text((u+3,v-10),label,fill='#ffff00',stroke_width=1,stroke_fill='#000000')
+                    b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
                 raw,_,audit=overlay_gripper_axes(raw,T,K,p0,camera)
                 (out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'),image_part(raw)])
@@ -203,6 +225,15 @@ def main():
                     closing_axis_world_unit=(closing/max(np.linalg.norm(closing),1e-10)).tolist(),
                     grip_site_local_Z_world_unit=own_R[:,2].tolist(),
                     meaning='Measured own-hand axes only. Compare actual finger faces with the object in RGB; these are not desired axes.')
+            if args.surface_context:
+                own_p,_=own_pose()
+                state['own_gripper_world_mm']=np.round(own_p*1000,1).tolist()
+                state['visible_surface_samples']=api.surface_samples
+                state['surface_sample_meaning']=('Labelled dots are current RGB-D visible surface points in the same fixed world frame as the gripper. '
+                    'Regions A/B are initial fixed-camera identity windows, NOT object tracking; after an object moves a dot may show background. '
+                    'Use CURRENT RGB to identify what each dot actually lies on. These are not recommended grasp points or desired poses. '
+                    'Depth/occlusion boundaries may mix surfaces. First choose a suitable physical grasp or support relationship from RGB, '
+                    'then use the matching surface coordinates and own axes to interpret directions. No desired orientation is computed.')
             api.sent_state=state
             questions={}
             for a,label in zip(('x','y','z','rx','ry','rz'),('X translation','Y translation','Z translation','roll about world X','pitch about world Y','yaw about world Z')):
