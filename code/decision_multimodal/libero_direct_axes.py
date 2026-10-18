@@ -160,6 +160,9 @@ def main():
     p.add_argument('--surface-context',action='store_true',help='Unselected visible RGB-D surface samples in the common world frame, not grasp targets')
     p.add_argument('--file-transport',action='store_true',help='Exact Decisions bodies are relayed through a local authorized caller over SSH files')
     p.add_argument('--coordinate-questions',action='store_true',help='Per-axis current coordinate comparisons, not precomputed signed errors')
+    p.add_argument('--task-demo',type=Path,help='Archived same-task real RGB and executed actions, without residual inputs')
+    p.add_argument('--adaptive-steps',action='store_true',help='Unsigned step adaptation using only categorical sign history')
+    p.add_argument('--positive-frame',action='store_true',help='Translate coordinate display by a fixed scene-independent constant')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -178,7 +181,7 @@ def main():
     from libero_inframe_axes import overlay_gripper_axes
     plan=json.loads(args.plan.read_text());english(plan)
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
-        profile='coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2'))),
+        profile='task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
@@ -188,7 +191,11 @@ def main():
         from decision_file_bridge import FileClient
         api.client=FileClient(out/'bridge-jobs')
     examples=out/'examples';examples.mkdir();api.demonstrations=demonstrations(args.demos,examples)
+    if args.task_demo:
+        from libero_task_demonstrations import build_task_examples
+        api.demonstrations+=build_task_examples(args.task_demo,out/'task-demo')
     api.previous=[]
+    step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,program_finished=False)
     try:
         with contextlib.redirect_stdout(io.StringIO()):suite=benchmark.get_benchmark_dict()['libero_goal'](0)
@@ -273,6 +280,11 @@ def main():
                     'Use CURRENT RGB to identify what each dot actually lies on. These are not recommended grasp points or desired poses. '
                     'Depth/occlusion boundaries may mix surfaces. First choose a suitable physical grasp or support relationship from RGB, '
                     'then use the matching surface coordinates and own axes to interpret directions. No desired orientation is computed.')
+                if args.positive_frame:
+                    offset=np.array([2000.,2000.,0.])
+                    state['own_gripper_world_mm']=np.round(own_p*1000+offset).tolist()
+                    state['visible_surface_samples']=[dict(v,visible_surface_world_mm=np.round(np.array(v['visible_surface_world_mm'])+offset).tolist()) for v in api.surface_samples]
+                    state['coordinate_frame_note']='All displayed point and hand coordinates use the SAME fixed translated frame: native world XYZ plus [2000,2000,0] mm. Axis directions are unchanged. This constant is independent of any scene object or current hand position.'
             api.sent_state=state
             questions={}
             for a,label in zip(('x','y','z','rx','ry','rz'),('X translation','Y translation','Z translation','roll about world X','pitch about world Y','yaw about world Z')):
@@ -313,7 +325,16 @@ def main():
             if choices['gripper']!='hold':grip=1. if choices['gripper']=='close' else -1.
             signs=np.array([{'negative':-1,'hold':0,'positive':1}[choices[a]] for a in ('x','y','z','rx','ry','rz')])
             step_m,step_r=(.020,np.deg2rad(10)) if choices['scale']=='coarse' else (.004,np.deg2rad(2))
-            dp=signs[:3]*step_m;dr=signs[3:]*step_r
+            if args.adaptive_steps:
+                if step_sizes is None:step_sizes=np.r_[np.full(3,.006),np.full(3,np.deg2rad(3))]
+                if last_signs is not None:
+                    for i in range(6):
+                        if signs[i] and signs[i]==last_signs[i]:step_sizes[i]*=1.25
+                        elif signs[i] and last_signs[i] and signs[i]!=last_signs[i]:step_sizes[i]*=.5
+                step_sizes=np.clip(step_sizes,np.r_[np.full(3,.002),np.full(3,np.deg2rad(1))],
+                    np.r_[np.full(3,.02),np.full(3,np.deg2rad(6))])
+                last_signs=signs.copy();dp=signs[:3]*step_sizes[:3];dr=signs[3:]*step_sizes[3:]
+            else:dp=signs[:3]*step_m;dr=signs[3:]*step_r
             dp*=min(1.,.03/max(np.linalg.norm(dp),1e-10));dr*=min(1.,.25/max(np.linalg.norm(dr),1e-10))
             target_p=before_p+dp;target_R=Rotation.from_rotvec(dr).as_matrix()@before_R
             for _ in range(4):
@@ -322,6 +343,7 @@ def main():
                 obs,_,_,_=env.step(action);tick+=1
             after_p,after_R=own_pose()
             row=dict(decision=decision,native_steps=tick,stage=stage,choices=choices,
+                commanded_translation_mm=(dp*1000).tolist(),commanded_rotation_world_deg=np.rad2deg(dr).tolist(),
                 measured_translation_mm=((after_p-before_p)*1000).tolist(),
                 measured_rotation_world_deg=np.rad2deg(Rotation.from_matrix(after_R@before_R.T).as_rotvec()).tolist())
             history.append(row)
