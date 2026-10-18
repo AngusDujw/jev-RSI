@@ -8,6 +8,8 @@ import json
 import os
 from pathlib import Path
 import shutil
+import shlex
+import subprocess
 import time
 
 ROOT = Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-policy-comparison-20261018')
@@ -34,17 +36,17 @@ def prune(run, state):
     if receipt.exists():
         return None
     counts = dict(deleted_files=0, deleted_bytes=0, local_state_bytes=0)
-    for directory, dirs, files in os.walk(run, followlinks=False):
-        dirs[:] = [d for d in dirs if not (Path(directory)/d).is_symlink()]
-        for name in files:
-            path = Path(directory)/name
-            if path.is_symlink():
-                continue
-            size = path.stat().st_size
-            if path.suffix.lower() in BINARY or (size >= 4*1024**2 and path.suffix in ('.jsonl', '.log')):
-                path.unlink()
-                counts['deleted_files'] += 1
-                counts['deleted_bytes'] += size
+    campaign = '/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-policy-comparison-20261018'
+    # Native simulator outputs belong to its container UID. Use that same UID
+    # with only this campaign mounted, without chmod or host Python changes.
+    command = shlex.join(['docker','run','--rm','--user','0:0','--network','none',
+        '--runtime','runc','--entrypoint','/isaac-sim/python.sh',
+        '-v',campaign+':'+campaign+':rw','nvcr.io/nvidia/isaac-sim:5.1.0',
+        campaign+'/prune_trial_media.py',run.name])
+    result = subprocess.run(['ssh','-F','/dev/null','-S',
+        '/home/ykj/.ssh/s2-policy-20261018.ctl','--','server02', command],
+        check=True,capture_output=True,text=True,timeout=120)
+    counts.update(json.loads(result.stdout))
     local = LOCAL/run.name
     if local.is_dir() and not local.is_symlink():
         counts['local_state_bytes'] = sum(p.stat().st_size for p in local.rglob('*') if p.is_file() and not p.is_symlink())
@@ -59,7 +61,7 @@ def sweep():
             result = prune(path.parent, json.loads(path.read_text()))
             if result:
                 print(json.dumps(result), flush=True)
-        except (OSError, ValueError) as error:
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
             print(json.dumps(dict(run=path.parent.name, retention_error=str(error))), flush=True)
 
 
