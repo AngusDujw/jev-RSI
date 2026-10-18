@@ -3,7 +3,7 @@
 > 本文件回答三个问题：**主线现在走到哪、怎么走到这里的、有没有在绕圈子。**
 > 唯一写入口是 `python3 tools/timeline.py add`（AGENTS.md § 12），图由脚本生成，节点表只增不改。
 
-- **当前主线一句话**：构建高层规划器—低层推进器框架：GPT-6 等大模型可随反馈多次规划，Jev、OpenAI decision model 等决策模型持续推进；先覆盖 RoboDojo 与 LIBERO-Plus 整套多任务 benchmark，并尽可能提高原生评测成绩。静态末端方向与步长理论作为局部方法和诊断保留，现有成绩仍按原实验口径报告。
+- **当前主线一句话**：优先验证真正OpenAI Decisions的通用抓取，稳定后反推本机Pro规划器输入，并扩展需要YPR的官方任务。
 
 ---
 
@@ -243,6 +243,10 @@ graph LR
     T_2026W42_135["📊 robodojo-planner-advancer-v1<br/>既有具名Luna1100步完整失败0adv…"]:::experiment
     T_2026W42_136["📊 robodojo-planner-advancer-v1<br/>既有速率Luna1100完整失败；注册原生…"]:::experiment
   end
+  subgraph wk_2026_W43["2026-W43"]
+    direction TB
+    T_2026W43_001["🔀 robodojo-planner-advancer-v1<br/>用户优先Decisions通用抓取；先推进…"]:::pivot
+  end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
   T_2026W39_003 --> T_2026W39_004
@@ -440,11 +444,13 @@ graph LR
   T_2026W42_133 --> T_2026W42_134
   T_2026W42_134 --> T_2026W42_135
   T_2026W42_135 --> T_2026W42_136
+  T_2026W42_136 --> T_2026W43_001
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
   T_2026W40_023 ==> T_2026W41_009
   T_2026W41_009 ==> T_2026W41_042
+  T_2026W41_042 ==> T_2026W43_001
 ```
 <!-- TIMELINE:GRAPH:END -->
 
@@ -670,6 +676,7 @@ graph LR
 | `T-2026W42-134` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 既有矩阵class0终局1100失败0advance；速率已place但切换/搬运图尚不认证保持或入篮，无新条件 | `EXP-2026W42-299` | - |
 | `T-2026W42-135` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 既有具名Luna1100步完整失败0advance；只剩速率place控制，图像尚未认证放置 | `EXP-2026W42-299` | - |
 | `T-2026W42-136` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 既有速率Luna1100完整失败；注册原生worker全结束，0完整成功，后续新规划受Sol资源授权阻塞 | `EXP-2026W42-299` | - |
+| `T-2026W43-001` | 2026-10-19 | pivot | robodojo-planner-advancer-v1 | 用户优先Decisions通用抓取；先推进器验证，再反推Pro规划器，稳定后扩YPR任务 | - | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

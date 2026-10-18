@@ -676,3 +676,6 @@
 
 
 【Agent】【2026-10-18】[EXP299最终终局](LOGS/2026-W42.md#exp-2026w42-299)：速率Luna1100步完整失败score0，221答1advance9close34open，pick125/place95。末图1095步仍玩偶桌面、蓝篮未见玩偶，不认证入篮；不排除早期短暂保持。注册原生worker现无存活，现有控制全部结束，成功仍0，矩阵/具名/速率均不恢复。守卫按既定规则清6151图像约6.69GiB，文本终局保留，26.08GiB空闲。Sol资源仍阻塞，已重询恢复/备用授权；CIRCLE-1下一次推进需有可执行的新规划资源，不能重跑旧条件或反复无变化审计充数。没有新增实验条件/源改动/经验注入。
+
+
+【Agent】【2026-10-19】Weekly Retro（2026-W42）：按周志记录字段汇总302个EXP块（含工程与审计记录，非302个独立有效实验）：Falsified=Y 70、N 41、部分157、Crashed34。Y组说明多轮方向/输入尝试没有完成原生任务；N组包括语言/接口/几何和工程验证，不能当任务成功；部分组仍混有观测覆盖、跟踪和模型选择问题；Crashed包含启动/传输/处理器/IK中断。关键支持证据：公开机器人FK与动作映射可验证，物体曾可见抬起；关键反证：增加IK/具名/速率数据未产生完整成功。新增接口审计发现昨晚Luna实际为Responses API，不能支持Decisions能力结论。用户关键拍板为单次初始规划、固定尺度/单轴YPR、不加历史经验，以及后续默认Decisions API、规划器本机Pro、双臂输出。CIRCLE-1现涉及libero-generic-vision、libero-goal-ten、robodojo-decision-stages、robodojo-task-coverage、robodojo-planner-advancer-v1；按本轮用户新方向收敛到真正Decisions通用抓取，冻结提示后独立布局原生终局验收，不继续扩类似元信息或用EXP编号计进展。未发现需改写idea/method数学定义的依据；现有数据不支持泛化稳定成功的主张。证据：[EXP299/接口审计](LOGS/2026-W42.md#exp-2026w42-299)与[EXP300](LOGS/2026-W42.md#exp-2026w42-300)。

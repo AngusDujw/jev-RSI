@@ -17,7 +17,7 @@ from hybrid_rollout.robodojo.settings import DEFAULT_CODEX_IMAGE_MAX_EDGE
 
 ENDPOINT = 'https://api.openai.com/v1/decisions'
 MODEL = 'gpt-6-luna'
-TCP_OFFSET = np.array([0., 0., .15007])
+TCP_OFFSET = np.array([.15007, 0., 0.])
 
 
 def questions():
@@ -29,7 +29,7 @@ def questions():
                 f'World {dict(yaw="Z",pitch="X",roll="Y")[axis]} rotation by 0.10 radians about the fingertip TCP')
             result.append(dict(type='choice', name=f'{arm}_{axis}', instructions=(
                 f'Select {arm} arm {axis} direction toward the original task goal. {meaning}. '
-                'TCP is LINK6 plus 0.15007 meters along its local positive Z. '
+                'TCP is the center between the gripping faces. '
                 'For this arm at most one of yaw, pitch and roll may be non-hold; translation may accompany it. '
                 'Both arms may move simultaneously. Use the original observations and same-episode context.'),
                 choices=[dict(value=v, description=d) for v,d in (
