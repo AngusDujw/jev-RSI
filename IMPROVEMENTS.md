@@ -31,6 +31,8 @@
 | IMP-006 | 规划器是否需要完整的推进器输入输出说明 | User，2026-10-17 | 待测试 | 第一版保留详细接口说明 |
 | IMP-007 | 重规划时确定动作步长 | User，2026-10-17 | 待讨论 | 第一版固定步长 |
 | IMP-008 | 重规划时如何利用历史 | User，2026-10-17 | 待讨论 | 与推进器历史输入分开测试 |
+| IMP-009 | Named complete-action IK constraints | Agent，2026-10-18 | 已测试，未采用 | Native conditions ended; no full task success (EXP292–293/297/299) |
+| IMP-010 | Public joint-path rate input | Agent，2026-10-18 | 已测试，未采用 | Luna 1100-step failure; Jev 170-step incomplete (EXP294/299) |
 
 ## 随手追加
 
@@ -160,19 +162,19 @@ positive: Increase coordinate
 ## IMP-009: Make complete-action IK constraints easier to read
 
 - Source: Agent, 2026-10-18; outer experiment proposal linked to EXP290–291.
-- Status: Implemented as an opt-in experimental condition; not adopted. Native comparison pending (EXP292).
+- Status: Implemented and tested as an opt-in experimental condition; not adopted. All native conditions ended (EXP292–293, final audits EXP297/299).
 - Hypothesis: Named complete-choice constraints may be easier for structured decision models to use than joining a translation-row list, a rotation-column list and a Boolean matrix.
 - Candidate input: An exhaustive set of rejected full motion signatures, or XYZ records with named rotation feasibility fields. Compute the same 189 numerical checks; do not rank actions or choose a command.
 - Fixed parts: Roles, eight questions, output fields, TCP increments, one-rotation rule, native horizons, IK gate, plan and task processor remain unchanged. No history, experience injection, response repair or projection onto a feasible action.
 - Minimal comparison: Independent same-case/SHA episodes with the current matrix versus a named constraint representation; retain Luna and same-method Jev text pairing, with the existing image-evidence limitation reported separately.
 - Metrics: Returned rejected combinations, invalid rotations, native IK rejections, measured tracking, visible task manipulation, native outcomes and input/call costs.
 - Evidence reference: LOGS/2026-W42.md EXP291 and exp291-constraint-choice-audit.json.
-- Result: Offline lossless conversion of all 189 recorded checks passes, including the original rejected complete choice. Named JSON is 8257 bytes versus 3580 for the matrix fixture. Classification Jev ended incomplete at135 steps with multiple rotations after27 single-axis responses; stack1 Jev returned multiple rotations at0 steps. Named information alone does not enforce joint output validity. Luna conditions continue; no task gain is established. This file is an outer improvement queue and is never supplied to either internal model.
+- Result: Offline lossless conversion of all 189 recorded checks passes, including the original rejected complete choice. Named JSON is 8257 bytes versus 3580 for the matrix fixture. Classification Jev ended incomplete at135 steps with multiple rotations after27 single-axis responses; stack1 Jev returned multiple rotations at0 steps. Named information alone does not enforce joint output validity. Classification0 named Luna completed1100 steps with native_success=false/score0 and no stage advance; stack1 named Luna completed550 steps with native_success=false/score0. No task gain is established. This file is an outer improvement queue and is never supplied to either internal model.
 
 ## IMP-010: Distinguish numerical IK from joint-path tracking demands
 
 - Source: Agent, 2026-10-18; outer proposal from EXP292 measured-robot audit.
-- Status: Implemented as the opt-in named_rates condition (EXP294); not adopted. Luna remains running; Jev ended incomplete at170 native steps.
+- Status: Implemented and tested as the opt-in named_rates condition (EXP294); not adopted. Luna completed1100 native steps with native_success=false/score0 (EXP299); Jev ended incomplete at170 native steps.
 - Problem: A path can pass all five TCP IK checks while demanding a large joint waypoint jump. One recorded path needs1.678rad in0.04s (41.945rad/s), above the public actuator configuration of5rad/s, and has141.18mm measured TCP endpoint error. This is not a claim that speed is the only source of errors.
 - Candidate input: For every same complete motion choice, report predicted joint waypoint increments and required peak joint rates with the public control interval and actuator limits. Keep this current-robot information separate from scene clearance, contact and holding. Do not rank or choose an action.
 - Fixed parts: Roles, eight questions, schema, increments, native horizon, existing IK gate, plan and task processor. No physics/limit changes, response repair, action projection, history or experience injection.
@@ -180,6 +182,7 @@ positive: Increase coordinate
 - Metrics: Returned multiple rotations, numerical IK rejections, chosen over-rate paths, measured tracking, visible manipulation, native outcomes and call/input costs.
 - Evidence reference: exp292-joint-waypoint-speed-audit.json and LOGS/2026-W42.md EXP292. A future implementation must prove that the original189 numerical pass/fail results remain unchanged and that the new rate calculations match recorded robot paths.
 - Result: Offline comparison preserves all189 numerical flags and diagnostics. The original recorded path rate41.94496809561773rad/s is reproduced as41.94496809561935rad/s; its rate flag is false although numerical IK is true. Partial IK paths have null complete-path rate flags. In the initial six executed choices per model, predicted rates exactly match the actual target paths. Jev still selected one provided rate-false choice, while Luna had20.23mm tracking error on a rate-true path. Native benefits are unproven. Queue text is never supplied to the planner or advancer.
+- Luna terminal update (EXP299):221 answers,1 advance,9 close and34 open commands;125 pick executions and95 place executions. Native complete=true/native_success=false/score0 at1100 steps. The stage transition does not certify grasping or placement.
 - Terminal update: Jev answer034 selected a complete choice whose numerical IK flag was explicitly false and whose full-path rate flag was null. The unchanged IK gate rejected it at170 steps; no response was repaired or resampled. Longer survival than a different episode is not task success or causal evidence of improvement.
 
 ## 条目模板

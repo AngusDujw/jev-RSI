@@ -618,3 +618,5 @@
 - 【User】【2026-10-18 20:06】[intent] 继续完成server02两任务原版Pro Luna/high各3次，再OpenAI Decisions各5次；不保留图像/视频等大日志，保留原生评分与紧凑文本。
 - 【Agent】【2026-10-18 20:07】[op] 实现本次对照低存储策略：后续server仅关闭额外逐步NPZ/视频记录，保留fresh RGB及原生动作/评分；原版policy所需本回合图像暂存至controller与simulator退出后清除，foreground retention companion PID绑定批处理4061941。验证record=False转发与活跃进程保护通过，临时fixture已删。
 - 【Agent】【2026-10-18 20:10】[result] EXP300正式trial1当前stack75/550步、classify103/1100步，仍运行无原生终局；实际run身份gpt_only/gpt-6-luna/high且本机ChatGPT登录，未用普通OpenAI API。两张4090各占约5.8GiB，RAM可用28GiB；保留总并发2以避开初始多容器内存压力。低存储guard已实际清除已结束setup本机runtime DB约24MiB，不碰活跃policy图像；容器UID输出由无GPU/runc清理容器限定同campaign处理，不改权限。
+- 【User】【2026-10-18 22:50】[intent] 要求详细说明昨晚实验尝试、实际代码变更及IMPROVEMENTS候选测试覆盖。
+- 【Agent】【2026-10-18 22:50】[op] 只读复核EXP268–299及实现，补正IMPROVEMENTS中IMP009/010运行中旧状态为实际已结束负结果并补索引；前八项正式消融仍未执行，不将处理指导迭代冒充这些消融。未改运行代码或内部提示。
