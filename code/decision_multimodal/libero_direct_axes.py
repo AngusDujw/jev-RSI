@@ -139,6 +139,7 @@ def main():
     p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
     p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
     p.add_argument('--surface-context',action='store_true',help='Unselected visible RGB-D surface samples in the common world frame, not grasp targets')
+    p.add_argument('--file-transport',action='store_true',help='Exact Decisions bodies are relayed through a local authorized caller over SSH files')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -163,6 +164,9 @@ def main():
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev')
+    if args.file_transport:
+        from decision_file_bridge import FileClient
+        api.client=FileClient(out/'bridge-jobs')
     examples=out/'examples';examples.mkdir();api.demonstrations=demonstrations(args.demos,examples)
     api.previous=[]
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,program_finished=False)
