@@ -10,6 +10,8 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import urllib.error
+import http.client
 from types import SimpleNamespace
 
 from legacy_decisions import english, convert_request
@@ -49,6 +51,19 @@ class Recorder:
 
 class DirectAPI(RevisedAPI):
     profile='genuine_rgb_direct_axes_v1'
+    def post(self,endpoint,original):
+        for attempt in range(3):
+            before=self.calls
+            try:return super().post(endpoint,original)
+            except (urllib.error.URLError,http.client.RemoteDisconnected) as error:
+                # HTTP errors (including refusals) are handled by the base policy.
+                # Never repeat an answer or a parse failure to seek a preferred action.
+                if isinstance(error,urllib.error.HTTPError):raise
+                allocated=[self.folder/f'{i:04d}' for i in range(before,self.calls)]
+                if any((d/'response.json').exists() for d in allocated) or attempt==2:raise
+                self.log(dict(kind='unanswered_transport_retry',attempt=attempt+1,
+                    error_type=type(error).__name__,no_physics_steps=True))
+                time.sleep(2*(attempt+1))
     def revise(self, original):
         return original
     def build_payload(self, sent):
