@@ -601,3 +601,5 @@
 - 【Agent】【2026-10-18 08:03】[result] 速率Luna2526822已1100步完整失败score0、221答1advance9close34open，pick125/place95，最后place。注册worker PID审计无存活原生进程；所有既有控制结束不恢复。既有storage_guard低于20GiB清理6151个classify图像资产7178424765字节，现26.08GiB，未手工额外删。已重询Sol恢复/备用授权，未答不请求/换key/填GPU。  ↪ `EXP-2026W42-299`
 - 【User】【2026-10-18 18:49】[intent] 新增GPT-as-Policy原版对照：Luna/high通过本机Pro每任务3次，之后原版输入配离散轴/YPR问题的decision API每任务5次；任务范围与图像接口待核实。
 - 【Agent】【2026-10-18 18:49】[result] 已定位本机官方GPT-as-Policy源码和既有Pro启动链路。company-server-2允许GPU2/5/6/7均有外项目UFO占用，按边界不共享；现有Jev仅文本，已询问原版RGB输入兼容方案。保存preflight manifest，无原生回合或模型请求，未修改原版代码。
+- 【User】【2026-10-18 18:53】[decision] 用户纠正decision model指支持图像的OpenAI Decisions而非Jev；只测stack_blocks/classify_objects，并要求实时显卡状态。
+- 【Agent】【2026-10-18 18:53】[result] 核对旧robodojo_decisions/controller.py endpoint为/v1/decisions，最近planner_advancer/models.py为/v1/responses JSON schema；纠正此前接口混称及Jev误解。18:53 company2八卡被UFO占用，允许2/5/6/7卡仅剩2206/2224/2221/2220MiB，未启动实验或请求模型。更新比较manifest。
