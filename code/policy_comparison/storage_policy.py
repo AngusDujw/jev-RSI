@@ -43,6 +43,9 @@ def prune(run, state):
         '--runtime','runc','--entrypoint','/isaac-sim/python.sh',
         '-v',campaign+':'+campaign+':rw','nvcr.io/nvidia/isaac-sim:5.1.0',
         campaign+'/prune_trial_media.py',run.name])
+    container = f"policy-20261018-{state['task']}-{int(state['port'])}"
+    command = ('if docker inspect '+shlex.quote(container)+
+        ' >/dev/null 2>&1; then exit 73; fi; exec '+command)
     result = subprocess.run(['ssh','-F','/dev/null','-S',
         '/home/ykj/.ssh/s2-policy-20261018.ctl','--','server02', command],
         check=True,capture_output=True,text=True,timeout=120)

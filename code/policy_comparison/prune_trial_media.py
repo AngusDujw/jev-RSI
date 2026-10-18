@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import sys
 
 CAMPAIGN = Path('/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-policy-comparison-20261018')
@@ -22,6 +23,12 @@ def prune(run):
                 path.unlink()
                 counts['deleted_files'] += 1
                 counts['deleted_bytes'] += size
+    for name in ('cache', 'tmp'):
+        path = run/name
+        if path.is_dir() and not path.is_symlink():
+            counts['deleted_bytes'] += sum(p.stat().st_size for p in path.rglob('*') if p.is_file() and not p.is_symlink())
+            counts['deleted_files'] += sum(1 for p in path.rglob('*') if p.is_file() and not p.is_symlink())
+            shutil.rmtree(path)
     return counts
 
 
