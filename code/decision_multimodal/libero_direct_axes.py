@@ -130,7 +130,7 @@ class DirectAPI(RevisedAPI):
             payload=rotation_payload(sent,self.current,self.rotation_effect_examples,self.stage_goal_reference+getattr(self,'accepted_posture_reference',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
-        if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification'):
+        if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification','visual_retention_check'):
             from libero_stage_decision import stage_payload
             payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]),self.previous,getattr(self,'phase_entry_views',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
@@ -920,6 +920,12 @@ def main():
                     if phase_request is not None:
                         phase_reply=api.post('/systemone',phase_request)
                         answer['answers']['transition']=phase_reply['answers']['transition']
+                from libero_stage_decision import build_retention_request
+                retention_request=build_retention_request(state,protocol)
+                if retention_request is not None:
+                    retention_reply=api.post('/systemone',retention_request)
+                    if retention_reply['answers']['transition']['choice']=='restart':
+                        answer['answers']['transition']=retention_reply['answers']['transition']
             else:
                 stage=replay_rows[decision]['stage']
                 answer=dict(answers={k:dict(choice=v) for k,v in replay_rows[decision]['choices'].items()})

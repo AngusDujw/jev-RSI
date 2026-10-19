@@ -8,6 +8,25 @@ STAGE_INPUT = ('Judge only the phase transition from the facts and rule printed 
     'A phase transition is not a task-success assertion.')
 
 
+def build_retention_request(state,protocol):
+    """Scoped visual recovery; no geometric lost/held flag is computed."""
+    rule=protocol.get('retention_question')
+    if not rule or state['stage'].get('stage_key') not in ('align_source_above_receiver','lower_to_place'):
+        return None
+    own=state.get('own_tool_geometry',{})
+    evidence=dict(source_feature_minus_measured_grip_site_world_mm=state.get('observed_surface_relative_mm'),
+        source_feature=state.get('actor_selected_surface'),
+        measured_own_pad_centre_separation_mm=own.get('pad_centre_separation_mm'),
+        last_executed_gripper_command=own.get('last_gripper_command'),
+        meaning='The selected feature is a current RGB-D visible skin point, not an object centre or holding flag. Estimates are coarse and may change with the visible part. A held bottle can extend below the fingers; zero feature offset is not required. The grip_site is measured between the fingers. Use current RGB to judge whether the bottle and fingers are separate. Unknown remains unknown.')
+    return dict(model='gpt-6-luna',state=dict(stage=state['stage'],
+        request_purpose='visual_retention_check',
+        formal_stage_input='Judge only whether the wine bottle is clearly lost from the fingers in the CURRENT synchronized views. The phase label is not evidence of attachment. No hidden contact or holding signal is supplied.\n'+json.dumps(evidence,separators=(',',':'))),
+        questions=dict(transition=dict(type='choice',instructions=rule,
+            criteria={'continue':'Attachment remains plausible or loss is not clearly established. This does not authorize opening or certify holding.',
+                      'restart':'The bottle is clearly separate from the fingers and requires a new grasp.'})))
+
+
 def build_stage_request(state,answers,protocol):
     key=state['stage'].get('stage_key')
     motion=state.get('source_motion_test')
@@ -70,6 +89,13 @@ def build_stage_request(state,answers,protocol):
 def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=()):
     payload=convert_request(original)
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
+    if original['state'].get('request_purpose')=='visual_retention_check':
+        content=payload['input'][0]['content'];caption=''
+        for part in current:
+            if part['type']=='input_text':caption=part['text']
+            elif part['type']=='input_image' and 'detail' not in caption.lower():
+                content.extend([dict(type='input_text',text=caption),part])
+        return payload
     if original['state'].get('request_purpose')=='visual_stage_classification':
         content=payload['input'][0]['content']
         content.append(dict(type='input_text',text=json.dumps(dict(

@@ -554,3 +554,5 @@
 【Agent @Codex】【2026-10-20】[EXP058](LOGS/2026-W43.md#exp-2026w43-058)：v43完整0/3，1198步及459/480/477API，init16有33次六轴hold却continue；修复CURRENT/NEXT阶段上下文和运输混入开爪后检查。单次重建事实题advance0.99仅接口证据，不计成功；v44独立三例待运行，旋钮原冻结3/3保留，CIRCLE-1按完整终局收敛。
 
 【Agent @Codex】【2026-10-20】[EXP059](LOGS/2026-W43.md#exp-2026w43-059)：纠正v44交接进展：init15 API0197在zpositive仍advance0.69，非规则通过；v45同事实加通用分类例子continue0.89，另四不同fixture正确，合计5/5但0新动作。原v44继续，v45独立三例对照；不把advance、视角或悬停算成功。
+
+【Agent @Codex】【2026-10-20】[EXP060](LOGS/2026-W43.md#exp-2026w43-060)：v44 init15实际514边降低边open，646瓶在桌上/手为空，原main仍continue。Pro16五RAW复审；原8图改阶段/夹爪说明hold0.92取代open0.69。独立3图恢复漏检，加已有相对量仅restart0.58/conf0.16，未启用；v46只测试明确夹持契约，所有夹爪选项保留。完整任务尚未新增成功，CIRCLE-1继续按冻结三例收敛。
