@@ -55,3 +55,5 @@
 - 【User】【2026-10-19 16:55】[intent] 继续server02固定6+10槽对照监督与故障修复；核对真实进程/服务/资源及原生步数日志，不恢复结束回合、不修答重采样，终局清媒体保文本，全部完成后关闭job。
 - 【User】【2026-10-19 17:00】[intent] 继续server02固定6+10槽对照监督与故障修复，核实真实PID/服务/资源/原生步数及日志，不恢复结束回合或修答重采样，终局保文本清媒体。
 - 【Agent】【2026-10-19 17:00】[result] EXP300分类f推进慢的直接证据：call0077返回observation_path不匹配、recoverable_tool_input/no_execution=true/retryable=true/rejected_calls7、334步，不是服务断线或动作已执行。随后模型自行call0078成功推进335步；外层未修答/补动作/重采样。叠块仍508步运行；两控制器容器及自有服务正常，RAM可用29GiB。
+- 【User】【2026-10-19 17:05】[intent] 继续server02固定6+10槽对照监督与故障修复；真实进程/原生终局核对，结束媒体清理，不恢复结束回合或修答重采样，全部完成后汇总关闭job。
+- 【Agent】【2026-10-19 17:05】[result] EXP300叠块f已550原生步完整终局complete=true/success=false/score0，111动作，controller_exit0，真实controller195572/自有24804容器已退出。媒体清理远端834799979字节、本机587086906字节及state127282296字节，文本重同步并核实远端原生终局一致。选槽5完整/成功0，仅分类trial2 layout1 f仍350步运行；监督与SSH正常，RAM可用43GiB，不填空闲GPU/不提前启动Decisions。
