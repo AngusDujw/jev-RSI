@@ -2,7 +2,7 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## Active v41/v42/v43 development, not stable completion
+## Active v43 development; Pro15 clearance review only
 
 - v30 final native/program0/2; v31 original and task-exit groups each0/3; v32 final0/3, all1198 physical steps. Actual grasp/lift is not task success.
 - v34 both groups finished native0/3 each. Original-direction874/1198/1198steps,391/538/534responses; paired-span1198steps,653/651/629responses. v36 and v37 also finished0/3 each at1198steps. No new complete success verified.
@@ -13,9 +13,9 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 - v36 actual PIDs780915/780916/780917 started and reached grasp approach. v37-mmrotation PIDs784389/784390/784391 uses identical plan/protocol/reference/XYZ assistance, switching only the R query from literal expressions to current multimodal three-axis judgment. Both pending; exact inputs and images retained.
 - v39 and v40 each finished native0/3. v39 steps1198/1198/742, responses364/467/293; its last program completed without native success. v40 all1198steps,438/467/386responses. Native v40 rotation request0163 actually included7 images and bank SHA4b5d362bac8c536f0f1feaa6079b7dea02a3ebe0eb0d31f15d34ebec6c34c3e7; not merely a configured bank.
 - Six distinct archived-snapshot probes are all preserved: original phase and image predicates weak; pairing or merely adding tracking numbers did not solve the phase query. A new formal short motion question over actual RGB-D feature motion returned advance0.91/conf0.86, zero new native actions.
-- v41 adds qualified same-feature motion to the short lift test. The actor sees measured feature/hand displacement and error, never an externally calculated phase or motor answer. Genuine multimodal R remains unchanged. Full native outcome pending.
-- v42 fixed source1b981864 restores the public top-support task: actor chooses load-bearing source/top-rack features and a useful posture, without mandatory demonstration/wood-axis alignment. True multimodal R calls receive current3RGB and historical3motion cards. Lift Z now uses the scoped numeric error primitive; the former mixed question held at6.1mm. Actual first placement referenceC2/B4 and6-image R0092 are recorded. Full native result pending.
-- v43 changes only free-posture R question/physical option descriptions: distinguish needed angular correction from XYZ approach. Same-image probe changes low-confidence+++ tohold/hold/hold withp0.88/0.84/0.84, zero native actions; three full episodes are required.
+- v41 finished native/program0/3, all1198steps,446/414/391responses. It adds qualified same-feature motion to the short lift test. The actor sees measured feature/hand displacement and error, never an externally calculated phase or motor answer. Genuine multimodal R remains unchanged. Full native outcome pending.
+- v42 fixed source1b981864 restores the public top-support task: actor chooses load-bearing source/top-rack features and a useful posture, without mandatory demonstration/wood-axis alignment. True multimodal R calls receive current3RGB and historical3motion cards. Lift Z now uses the scoped numeric error primitive; the former mixed question held at6.1mm. Actual first placement referenceC2/B4 and6-image R0092 are recorded. Final v42 result: two normal native/program failures1198steps (426/376responses), plus init14 typed reference refusal at994steps (342responses); no retry or fabricated unknown. No full success.
+- v43 changes only free-posture R question/physical option descriptions: distinguish needed angular correction from XYZ approach. Same-image probe changes low-confidence+++ tohold/hold/hold withp0.88/0.84/0.84, zero native actions; three full episodes started on fixed6b96d2a7, PIDs889103/889104/889105; first observed118steps each, full results pending.
 - Public task1458 resolves through ControlEnv view suffix handling to put_the_wine_bottle_on_the_rack_language_1.bddl. Public goal is On(wine_bottle_1, wine_rack_1_top_region), with no orientation predicate. Local Pro14 removed the extra demonstration-axis requirement forv42; v41 deliberately retains its old plan for comparison. Never feed initialization ranges or evaluator state to models.
 - Controlled v33 six historical held-rotation examples used0API and are not policy trials. Positive X/Y fixed-view evidence supports approximately28/27degree body change. Negative Y17.17mm own-position drift rejected the unchanged15mm bank guard; no bank injected.
 - Knob original frozen3/3 remains unchanged. Bottle goal requires a new frozen policy and three predeclared fresh native successes; old failures are never replaced.
@@ -208,3 +208,22 @@ All three starts in each condition executed their first close at178/202/238 step
 and entered posture; representative actual sideviews confirm lifting. These are
 grasp-stage observations, not native task completions. v32 actual first requests
 contain four images and select N0 on all three starts; complete results subsequently finished0/3.
+
+## Next concrete path hypothesis, not implemented
+
+The actual v42 first transport observation reports receiver minus source
+[-45,-205,+217]mm. Independent XYZ convergence to a source60-100mm above
+the selected receiving patch does not order vertical and lateral progress.
+Pro15 reviewed this with actual238-step three RGB and the controller contract;
+its original JSON is in DataStorage/iteration-v44-clearance-review.
+
+Consider a simple clearance-before-carry substage if native images/measured
+execution support the obstruction hypothesis: horizontal channels compare
+against the own stage-entry reference, while Z compares an observed lower
+source/finger extent with the highest observed receiving/approach structure.
+Then switch horizontal feedback to source-versus-receiver. All directions
+remain Decisions outputs. These are uncertain sensor estimates, not a true
+scene envelope or contact certificate. Preserve the current genuinely
+multimodal R policy; do not adopt Pro15's suggested external angular errors,
+unjudgeable full-sweep certification or a stationary observation-only phase.
+No v44 native trial exists yet.
