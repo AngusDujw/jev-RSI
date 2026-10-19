@@ -25,7 +25,7 @@ class FileClient:
         folder=self.root/f'{self.counter:04d}';self.counter+=1;folder.mkdir()
         payload=json.loads(request.data)
         (folder/'pending.json').write_text(json.dumps(dict(endpoint=ENDPOINT,payload=payload)))
-        deadline=time.monotonic()+timeout
+        deadline=time.monotonic()+max(timeout,600)
         while time.monotonic()<deadline:
             if (folder/'reply.json').exists():
                 result=json.loads((folder/'reply.json').read_text())
@@ -38,7 +38,8 @@ class FileClient:
 def ssh(host,code,input=None):
     command='python3 -c '+shlex.quote(code)
     opts=['-o','ControlMaster=auto','-o','ControlPersist=60','-o','ControlPath='+CONTROL] if CONTROL else []
-    done=subprocess.run(['ssh',*opts,'--',host,command],input=input,text=True,capture_output=True)
+    done=subprocess.run(['ssh','-o','ConnectTimeout=10','-o','ServerAliveInterval=10',
+        '-o','ServerAliveCountMax=2',*opts,'--',host,command],input=input,text=True,capture_output=True,timeout=35)
     if done.returncode:raise RuntimeError(done.stderr[-600:])
     return done.stdout
 
@@ -50,20 +51,28 @@ def main():
     p.add_argument('--key-file',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--seconds',type=int,default=1800)
     p.add_argument('--control-path',help='Optional short project-relative SSH multiplex socket; no TCP listener')
+    p.add_argument('--resume',action='store_true',help='Reuse persisted replies without calling the model again')
     a=p.parse_args();assert a.key_file.name=='du-openai-direct.key'
     CONTROL=a.control_path
     key=a.key_file.read_text().strip();assert key.startswith('sk-')
-    a.output.mkdir(parents=True,exist_ok=False)
+    a.output.mkdir(parents=True,exist_ok=a.resume)
     client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
     started=time.monotonic();calls=0;seen=set()
     while time.monotonic()-started<a.seconds:
         code=('import pathlib,json; roots='+repr(a.remote_roots)+'; print(json.dumps([str(p) for r in roots '
             'for p in pathlib.Path(r).glob("bridge-jobs/*/pending.json") if not (p.parent/"reply.json").exists()]))')
-        pending=json.loads(ssh(a.host,code))
+        heartbeat=dict(time=time.time(),calls=calls,status='polling')
+        (a.output/'heartbeat.json').write_text(json.dumps(heartbeat))
+        try:pending=json.loads(ssh(a.host,code))
+        except (RuntimeError,subprocess.TimeoutExpired,OSError) as error:
+            with (a.output/'transport-events.jsonl').open('a') as f:
+                f.write(json.dumps(dict(time=time.time(),operation='poll',error=str(error)[-500:]))+'\n')
+            time.sleep(2);continue
         for remote in pending:
             if remote in seen:continue
-            seen.add(remote);folder=a.output/f'{calls:04d}';calls+=1;folder.mkdir()
-            job=json.loads(ssh(a.host,'import pathlib; print(pathlib.Path('+repr(remote)+').read_text())'))
+            folder=a.output/hashlib.sha256(remote.encode()).hexdigest()[:20];folder.mkdir(exist_ok=True)
+            try:job=json.loads(ssh(a.host,'import pathlib; print(pathlib.Path('+repr(remote)+').read_text())'))
+            except (RuntimeError,subprocess.TimeoutExpired,OSError):continue
             assert job['endpoint']==ENDPOINT and job['payload']['model']=='gpt-6-luna'
             (folder/'request.json').write_text(json.dumps(job['payload']))
             (folder/'dispatch.json').write_text(json.dumps(dict(endpoint=ENDPOINT,key_origin='du',
@@ -71,20 +80,28 @@ def main():
                 request_sha256=hashlib.sha256(json.dumps(job['payload']).encode()).hexdigest())))
             request=urllib.request.Request(ENDPOINT,data=json.dumps(job['payload']).encode(),
                 headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
-            try:
-                with client.open(request,timeout=100) as response:reply=json.load(response)
-            except Exception as error:
-                reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
-            (folder/'reply.json').write_text(json.dumps(reply))
+            called=False
+            if (folder/'reply.json').exists():reply=json.loads((folder/'reply.json').read_text())
+            else:
+                called=True;calls+=1
+                try:
+                    with client.open(request,timeout=100) as response:reply=json.load(response)
+                except Exception as error:
+                    reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
+                temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
             target=str(Path(remote).parent/'reply.json')
             code=('import pathlib,sys,os; p=pathlib.Path('+repr(target)+'); '
                 't=p.with_suffix(".part"); t.write_text(sys.stdin.read()); os.replace(t,p)')
-            ssh(a.host,code,input=json.dumps(reply))
-            print(json.dumps(dict(call=calls,remote_job=remote,answered='answers' in reply)),flush=True)
+            try:ssh(a.host,code,input=json.dumps(reply))
+            except (RuntimeError,subprocess.TimeoutExpired,OSError):continue
+            seen.add(remote)
+            print(json.dumps(dict(call=calls,remote_job=remote,answered='answers' in reply,model_called=called)),flush=True)
         # Exit after all requested native loops have written their final result.
-        if calls:
+        if calls or a.resume:
             code='import pathlib; print(int(all((pathlib.Path(p)/"result.json").exists() for p in '+repr(a.remote_roots)+')))'
-            if ssh(a.host,code).strip()=='1':break
+            try:
+                if ssh(a.host,code).strip()=='1':break
+            except (RuntimeError,subprocess.TimeoutExpired,OSError):pass
         time.sleep(.5)
 
 

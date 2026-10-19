@@ -35,7 +35,9 @@ def audit(root):
             counts['physical_action_turns']+=1
             counts['all_six_axes_hold']+=all(row['choices'][a]=='hold' for a in axes)
             counts['gripper_close_turns']+=row['choices']['gripper']=='close'
-    return dict(directory=str(root),result=result,counts=dict(counts),axes=axes,
+    interrupted=(root/'control-stop.json').exists()
+    evaluated=bool(result and result.get('native_evaluated',not result.get('error') and not interrupted))
+    return dict(directory=str(root),result=result,native_evaluated=evaluated,development_interrupted=interrupted,counts=dict(counts),axes=axes,
         stage_action_turns=stages,visible_surface_sample_entries=world_samples,
         limitation='Choice counts are not correctness scores. Program completion does not imply native task completion. No scene pose or target error is used for this audit.')
 

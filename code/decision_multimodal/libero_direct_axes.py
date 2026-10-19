@@ -200,7 +200,7 @@ def main():
         api.demonstrations+=build_task_examples(args.task_demo,out/'task-demo')
     api.previous=[]
     step_sizes=None;last_signs=None
-    started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,program_finished=False)
+    started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
     try:
         with contextlib.redirect_stdout(io.StringIO()):suite=benchmark.get_benchmark_dict()['libero_goal'](0)
         instruction=suite.get_task(args.task).language;english(instruction)
@@ -254,6 +254,8 @@ def main():
                     parts.extend([dict(type='input_text',text='CURRENT fixed-view source detail; same observation, zoom only. '+plan['source_description']),image_part(b.getvalue())])
             return parts
         for decision in range(args.decisions):
+            import shutil
+            if shutil.disk_usage(out).free<8*1024**3:raise RuntimeError('Native artifact storage guard: below8GiB free')
             if tick+4>600:break
             if time.monotonic()-started>1800:raise TimeoutError('Native episode wall budget')
             api.current=capture();api.previous=previous;api.tick=tick
@@ -360,6 +362,7 @@ def main():
         capture()
         # Evaluator is read only here, after the final action; never sent to either model.
         result['success']=bool(env.check_success())
+        result['native_evaluated']=True
     except Exception as error:
         result['error']=dict(type=type(error).__name__,message=str(error).replace(api.credential,'[redacted]')[:600])
         raise
