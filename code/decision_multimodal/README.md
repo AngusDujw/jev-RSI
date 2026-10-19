@@ -1,5 +1,7 @@
 # Frozen Decision multimodal comparison
 
+Current user-directed two-task campaign runs on **v4090-t**: LIBERO-plus1383 stove knob and1458 wine bottle onto rack. Planner is local ChatGPT Pro gpt-6.1-sol/high; actor is du OpenAI Decisions only. Current fixed results, live iteration and next-step evidence are in [CURRENT_AXES_ITERATIONS.md](CURRENT_AXES_ITERATIONS.md). The historical experiments below retain their original hardware/scope and results.
+
 Follow-up LIBERO prompt/interface repairs and all version-specific results are
 recorded in [LIBERO_REPAIR.md](LIBERO_REPAIR.md). The original50-episode result
 remains unchanged. Latest paired variants have four tasks at5/5 joint; the

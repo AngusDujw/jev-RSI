@@ -2,7 +2,7 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## Active v45/v46 native comparisons; v44 native1/3, program0/3
+## Active v47 scene-relation campaign; v48 clearance proposal only
 
 - v30 final native/program0/2; v31 original and task-exit groups each0/3; v32 final0/3, all1198 physical steps. Actual grasp/lift is not task success.
 - v34 both groups finished native0/3 each. Original-direction874/1198/1198steps,391/538/534responses; paired-span1198steps,653/651/629responses. v36 and v37 also finished0/3 each at1198steps. No new complete success verified.
@@ -22,6 +22,9 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 - v45 fixed93daa636 tests generic handoff classification examples, native PIDs940280/940281/940282. Running rule-adherence snapshot47/47 versus v44 175/176; this is not task correctness.
 - v46 fixed1b2d1ea2 uses Pro16 actual502/646 review: explicit retained-grasp transport/seating goals and gripper questions; open/close/hold all remain available. PIDs958023/958024/958025 and bridge confirmed actual execution. Exact original8-image question changed premature open0.69 tohold0.92. Separate retention probes missed visible loss with only3RGB; existing RGB-D source-minus-hand/own gap helped but confidence remained weak, so native retention helper is DISABLED.
 - Next: native v45/v46 full outcomes and actual release. If already-placed states remain unrecognized, distinguish held, already on upper support with empty hand, clearly off-target, and uncertain; do not make every separate bottle trigger a regrasp. Native scores never enter model inputs. Fresh17/18/19 remain reserved for a frozen full method after a controlled positive.
+- v45 final native1/3 (init16), program0/3, all1198steps;409/485/480responses. v46 final native1/3 (init15), program0/3, all1198steps;488/464/486responses. Positive terminal sideviews show bottle on upper support and empty hand clear, but actor still carries an empty hand. All three v46 carry phases executed zero open and zero R commands; closure instructions did not prevent separation.
+- v47 fixed82a04cf8 is LIVE: PIDs989975/989976/989977. First real scene calls0095/0099/0102 use actual previous/current3RAW,18/18 image SHA matches,12 physical steps between timestamps, no CJK. Actor answersretained0.93/0.90/0.94. Model categories route inspection or recovery; no native outcome/externally computed class enters the model. XYZ/R/gripper remain actual Decisions choices. Full outcome pending.
+- Pro18 examines v46 actual382/418 RAW: bottle below upper support then separate, but slipping/collision/grasp causes remain unproven. C0/C1 changes are not rigid-object motion. Candidate v48 adds clearance before lateral transport using uncertain lower-visible-bottle/upper-visible-rack height statistics and preserves that margin later; this is PLANNING ONLY, no native v48 yet.
 - Public task1458 resolves through ControlEnv view suffix handling to put_the_wine_bottle_on_the_rack_language_1.bddl. Public goal is On(wine_bottle_1, wine_rack_1_top_region), with no orientation predicate. Local Pro14 removed the extra demonstration-axis requirement forv42; v41 deliberately retains its old plan for comparison. Never feed initialization ranges or evaluator state to models.
 - Controlled v33 six historical held-rotation examples used0API and are not policy trials. Positive X/Y fixed-view evidence supports approximately28/27degree body change. Negative Y17.17mm own-position drift rejected the unchanged15mm bank guard; no bank injected.
 - Knob original frozen3/3 remains unchanged. Bottle goal requires a new frozen policy and three predeclared fresh native successes; old failures are never replaced.
@@ -232,4 +235,12 @@ remain Decisions outputs. These are uncertain sensor estimates, not a true
 scene envelope or contact certificate. Preserve the current genuinely
 multimodal R policy; do not adopt Pro15's suggested external angular errors,
 unjudgeable full-sweep certification or a stationary observation-only phase.
-No v44 native trial exists yet.
+No native trial has used this Pro15 clearance proposal. The executed v44-stage-handoff is a different method; Pro18 planning review now gives a simpler candidate described below.
+
+## Next implementation after Pro18 (not implemented)
+
+- Keep the existing source acquisition and short lift. Insert a clearance substage before transport, retaining the stable carry stage_key but using an explicit own-entry-XY control mode. Actor XYZ signs and useful posture remain decisions.
+- Add current partial RGB-D visible-height quantiles for bottle and receiving-component masks; expose sample counts and uncertainty. They are statistics of visible surfaces, not complete bounds, confidence intervals or hidden object poses.
+- During clearance, XY errors refer to measured own stage-entry XY; Z refers to upper-visible receiving height minus lower-visible bottle height. During transport retain this same body-height reference so switching from a body point to a neck point cannot command away the margin. During seating use the selected receiving patch against the visible lower bottle extent.
+- Missing geometry stays unknown, never zero. If per-axis numeric feedback becomes unavailable, preserve actual actor choices and use the ordinary unsigned step fallback; do not let an optional None trigger a NumPy TypeError or manufacture an axis sign.
+- Keep explicit closure until release and genuinely multimodal independent R. Do not import Pro15 angular-error suggestions or assert a collision was proven. Run and inspect a real full episode before expanding.

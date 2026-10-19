@@ -560,3 +560,5 @@
 【Agent @Codex】【2026-10-20】[EXP061](LOGS/2026-W43.md#exp-2026w43-061)：v44完整native1/3而program0/3，1198步、457/488/480答。init16两终帧瓶在上层架/空手离开属真实native阳性，但carry无open、全程0R，模型仍运输空手，不声称受控释放完成。v45与v46继续；二类lost即restart会错误重抓已放好的瓶，恢复候选保持禁用，后续考虑简明held/placed/off-target/uncertain语义。CIRCLE-1以冻结三新初态完整结果收敛。
 
 【Agent @Codex】【2026-10-20】[EXP062](LOGS/2026-W43.md#exp-2026w43-062)：Pro17六RAW复审后，将二类lost恢复改为四种关系；原标注六图/闭爪先验2/3，去closed并补既有相对距离3/3，RAW六图3/3但placed仅0.56。v47仅模型类别路由检查/恢复，不输入native标志、不外算目标角或动作符号；三个保存例非在线成功。新三原生待启动，CIRCLE-1以冻结新三初态完整结果收敛。
+
+【Agent @Codex】【2026-10-20】[EXP063](LOGS/2026-W43.md#exp-2026w43-063)：v45/v46各完整native1/3但program0/3，均1198步；两阳性终帧瓶在上层架/空手clear。v46全部carry无open且0R，仍脱离，不能靠闭爪契约解决。v47首实际18RAW SHA匹配、前后隔12物理步，3retained仅过程证据；Pro18四RAW提出部分高度差+先净空运输，v48尚无原生。CIRCLE-1以冻结新三初态完整终局收敛。
