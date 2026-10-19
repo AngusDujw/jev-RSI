@@ -3,6 +3,7 @@
 No automatic episode replay or model-request retry. Agent-level recovery is
 handled by the user's separately authorized AgentsDock monitoring job.
 """
+import argparse
 import json
 import os
 from pathlib import Path
@@ -15,10 +16,13 @@ import run_batch as batch
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--generation',required=True)
+    args=parser.parse_args()
     if not batch.ARTIFACT_ROOT.is_mount():
         raise RuntimeError('Artifact mount must be active before launch')
     entry=Path(__file__).resolve().parent
-    output=batch.ROOT/'supervision-20261019b'
+    output=batch.ROOT/('supervision-'+args.generation)
     output.mkdir(exist_ok=False)
     child=None
     guard=None
@@ -28,7 +32,7 @@ def main():
     signal.signal(signal.SIGINT,stop)
     with (output/'batch.log').open('w') as log, (output/'retention.log').open('w') as retention:
         child=subprocess.Popen([sys.executable,'-u',str(entry/'recover_comparison.py'),
-            '--parallel','3','--recovery','completion-20261019b'],stdout=log,stderr=subprocess.STDOUT)
+            '--parallel','3','--recovery','completion-'+args.generation],stdout=log,stderr=subprocess.STDOUT)
         guard=subprocess.Popen([sys.executable,'-u',str(entry/'storage_policy.py'),
             '--batch-pid',str(child.pid)],stdout=retention,stderr=subprocess.STDOUT)
         (output/'owner.json').write_text(json.dumps(dict(supervisor_pid=os.getpid(),

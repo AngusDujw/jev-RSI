@@ -54,12 +54,15 @@ def run_one(task, layout, ordinal, mode, trial, recovery=None):
     save(run / 'status.json', state)
     try:
         if mode=='luna' and recovery:
+            preflight=ROOT/'pro_preflight'/name
             check=subprocess.run([str(PYTHON),'-u',str(Path(__file__).with_name('preflight_pro.py')),
-                '--output',str(run/'preflight')],env=env,capture_output=True,text=True,timeout=180)
+                '--output',str(preflight)],env=env,capture_output=True,text=True,timeout=180)
             (run/'preflight-host.log').write_text(check.stdout+check.stderr)
             if check.returncode:raise RuntimeError('Pro preflight failed: '+check.stderr[-1500:])
+            (run/'preflight-result.json').write_text((preflight/'result.json').read_text())
         with (run / 'server.log').open('w') as slog, (run / 'controller.log').open('w') as clog:
             with STARTUP:
+                if STOP.is_set():raise KeyboardInterrupt('Batch cancellation before simulator startup')
                 # Ports are reserved for this trial; do not reuse an external listener.
                 with socket.socket() as probe:
                     probe.bind(('127.0.0.1', port))
@@ -90,6 +93,7 @@ if len(containers)>=3 or mem['MemAvailable']<20*1024**2: raise RuntimeError('WAI
                     time.sleep(15)
                 subprocess.run(SSH + ['-O','forward','-L',f'127.0.0.1:{port}:127.0.0.1:{port}',
                     '--','server02'],check=True,capture_output=True)
+                if STOP.is_set():raise KeyboardInterrupt('Batch cancellation before simulator startup')
                 sim = subprocess.Popen(SSH + ['--', 'server02', shlex.join(command)],
                     stdin=subprocess.DEVNULL, stdout=slog, stderr=subprocess.STDOUT)
                 state['ssh_pid'] = sim.pid

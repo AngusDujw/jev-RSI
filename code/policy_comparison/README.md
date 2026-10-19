@@ -15,12 +15,15 @@ trial result; an explicitly audited infrastructure interruption is not a model
 quality result. A pre-existing fresh-name directory is never overwritten.
 
 `supervise_comparison.py` owns the finite batch and storage guard under the local
-user service `robodojo-comparison-20261019.service`, without automatic restart.
+user service `robodojo-comparison-20261019c.service`, without automatic restart.
 Its logs, owner PIDs and minute resource snapshots are in
-`code/runs/server02-policy-comparison-20261018/supervision-20261019b/`.
+`code/runs/server02-policy-comparison-20261018/supervision-20261019c/`.
 Transport services are `robodojo-comparison-ssh-20261019.service` and
 `robodojo-comparison-mount-20261019.service`; both use SSH keepalives. The
-authorized AgentsDock five-minute monitoring job independently checks live
+service explicitly carries over the parent's HTTP(S) proxy variables. Pro
+startup preflights use local disk (no inference), with small result receipts
+copied to the remote campaign, avoiding duplicate workspace copies over SFTP.
+The authorized AgentsDock five-minute monitoring job independently checks live
 processes, native progress, errors and resource pressure and handles faults.
 Do not infer health solely from `status.json` or automatically resample policy
 answers. Stop only campaign-owned processes when the user pauses/cancels.
