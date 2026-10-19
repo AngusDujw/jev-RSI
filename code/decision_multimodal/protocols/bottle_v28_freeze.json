@@ -27,7 +27,7 @@
     16
   ],
   "verification_no_replacements": true,
-  "verification_completed": false,
+  "verification_completed": true,
   "horizon": 1200,
   "budget_note": "Extended1200-step stability condition. Not a600-step success claim.",
   "actor": {
@@ -48,5 +48,33 @@
   "bridge_source_sha256": "a484e4bba419396a92d5cf842bb21fa35f9428bfeda23c5d700986ae5b157e39",
   "asset_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v28",
   "verification_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v28-verify",
-  "declaration_note": "Preserve every first attempt. No answered-request resampling or policy changes during verification. Current RGB-D assisted geometry and independent categorical actor choices remain explicit. Program finish plus native evaluator success required; inspect actual release evidence separately."
+  "declaration_note": "Preserve every first attempt. No answered-request resampling or policy changes during verification. Current RGB-D assisted geometry and independent categorical actor choices remain explicit. Program finish plus native evaluator success required; inspect actual release evidence separately.",
+  "verification_native_success": [
+    false,
+    false,
+    false
+  ],
+  "verification_program_finished": [
+    false,
+    false,
+    false
+  ],
+  "verification_steps": [
+    1198,
+    1198,
+    1198
+  ],
+  "verification_api_responses": [
+    330,
+    331,
+    323
+  ],
+  "stability_requirement_passed": false,
+  "development_followup_init13": {
+    "native_success": false,
+    "program_finished": false,
+    "native_steps": 1198,
+    "api_responses": 553
+  },
+  "verification_report": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v28-verify/verification-result.json"
 }

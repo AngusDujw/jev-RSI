@@ -7,7 +7,7 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 - Knob v20 development: native success and normal program completion **2/2**, initial states8/9, **646 physical steps each**,218 Decisions responses each.
 - These are explicitly **extended1200-budget results**, not600-step completions.
 - Original policy commit329d9c12 and protocol9c33a1e0 are frozen in a separate worktree for predeclared new initial states14/15/16; no failures will be replaced. All three finished with native success and normal program completion:658/646/694 physical steps,223/220/231 Decisions responses. This is3/3 in the declared extended1200 budget; none meets600 steps.
-- Bottle v21/v22 finished0/2 each. v23 finished native1/2 at1198 steps, but program0/2; the positive terminal frame still shows the bottle grasped above/on the upper rack. Release and stable post-release completion remain unproven. v24 finished native/program0/2. v25 finished native/program0/2; v26 finished0/2 evaluated episodes plus two external503/520 interruptions; v27 finished0/4. v28 development completed native/program1/2: init12 succeeded after actual release at1078 steps,499 responses; init13 failed1198 steps,553 responses. Frozen v28 new14/15/16 verification is running separately. v29 remains independent development; never combine its successes with v28 verification.
+- Bottle v21/v22 finished0/2 each. v23 finished native1/2 at1198 steps, but program0/2; the positive terminal frame still shows the bottle grasped above/on the upper rack. Release and stable post-release completion remain unproven. v24 finished native/program0/2. v25 finished native/program0/2; v26 finished0/2 evaluated episodes plus two external503/520 interruptions; v27 finished0/4. v28 development completed native/program1/2: init12 succeeded after actual release at1078 steps,499 responses; init13 failed1198 steps,553 responses. Frozen v28 new14/15/16 verification finished native/program0/3 at1198 steps each; all original code/plan/protocol hashes matched and no failures were replaced. The bottle stability requirement remains unmet. v29 remains independent development; never combine its successes with v28 verification.
 - The separate281e94c9 unsigned-step600 pilot finished0/2 (init8/9,598 steps). It does not replace the original frozen extended-budget3/3 condition.
 - [Frozen profile](protocols/knob_v20_freeze.json) and EXP-2026W43-028 identify the exact condition. Subsequent shape features, held-object demonstration banks and fin-centre diagnostics are not part of this winning v20 policy.
 
@@ -165,3 +165,28 @@ outside the actual categorical-axis schema. Missing/invalid original rotations n
 fail validation; all six schema-valid cases passed. Native performance is pending.
 Frozen v28 fresh states show a separate early grasp problem; v30 does not claim to
 fix that problem. Keep every frozen outcome and inspect the first tipping event.
+
+## v31/v32 grasp observations
+
+A displaced S text label was initially misread as a point on the bowl. Original
+pixel coordinates and registered depth disproved that interpretation; the point
+remained on the bottle. No depth-component split was promoted from that hypothesis.
+Zero-API replay190 reproduced all three raw RGB files exactly. An additional
+ACTUAL upper-green surface sample N0 is24.3mm higher than C0 in this observation;
+it is an upright-component proposal, never a hidden centre or a motor command.
+Raw-RGB candidate detail cards put a ring on each actual pixel, avoiding leader-label
+ambiguity. The actor retains all source choices and unlabelled/unknown.
+
+Static two-observation probes selected N0 but actual v31 retained an extra old
+source-detail image and initially selected C0. A single-image removal from the
+exact native request changed its choice to N0. The v32 runtime builder matches
+that tested payload structurally, keeping the current three full camera images
+plus the actual-pixel detail card. The extra old detail is replaced, not added.
+All v31/v32 results are development; no bottle stable-completion claim is made.
+
+
+The two v31 development conditions both subsequently chose N0 at step22.
+All three starts in each condition executed their first close at178/202/238 steps
+and entered posture; representative actual sideviews confirm lifting. These are
+grasp-stage observations, not native task completions. v32 actual first requests
+contain four images and select N0 on all three starts; complete results are pending.
