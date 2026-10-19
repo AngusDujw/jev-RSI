@@ -35,3 +35,7 @@ No claim of stable success follows from these observations. Complete native outc
 
 - Stateless requests need their relevant examples every time. Initial-only motion cards do not teach a later independent API call.
 - A phase example with the hand/object outside the frame cannot show the intended orientation. Retain an actual final object-support relationship during orientation and use complementary current cameras that cover the whole interaction.
+
+- Separate numeric positioning from visual posture/grasp judgments when a large multimodal context corrupts a simple interval decision. One archived Z=-448mm case chose UP in full context but DOWN in a minimal numeric request; task-level verification is still required.
+- Removing an ambiguous orientation label alone did not repair that Z decision. Avoid attributing a coupled failure to one plausible field without a direct check.
+- Missing receiver geometry must remain missing. A source-to-hand attachment offset is never a rack-placement error.

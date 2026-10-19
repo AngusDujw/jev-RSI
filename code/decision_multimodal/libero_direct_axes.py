@@ -1,4 +1,4 @@
-"""Native RGB direction policy: no scene targets, residuals or motion oracle."""
+"""Camera-assisted categorical Decisions control with audited observation origins."""
 import argparse
 import base64
 import contextlib
@@ -17,6 +17,7 @@ from types import SimpleNamespace
 
 from legacy_decisions import english, convert_request,convert_response,ENDPOINT
 from libero_prompt_revision import RevisedAPI
+from libero_numeric_axes import reference_difference
 
 MOTION = '''Control the centre between the gripper faces. World +X is forward,
 away from the robot base, +Y is left, +Z is up when standing behind the robot
@@ -80,7 +81,7 @@ class DirectAPI(RevisedAPI):
             for p in payload['input'][0]['content'] if p['type']=='input_image']
         save(folder/'request-summary.json',dict(model='gpt-6-luna',body_sha256=hashlib.sha256(raw).hexdigest(),
             image_sha256=images,question_options={k:list(v['criteria']) for k,v in original['questions'].items()},
-            stage=original['state']['stage'],native_tick=self.tick,protocol_sha256=getattr(self,'protocol_sha256',None)))
+            stage=original['state']['stage'],request_purpose=original['state'].get('request_purpose','multimodal_policy'),native_tick=self.tick,protocol_sha256=getattr(self,'protocol_sha256',None)))
         save(folder/'dispatch.json',dict(profile=self.profile,key_origin='du',endpoint=ENDPOINT,
             experience_injection=False,compact=True,image_count=len(images),**self.input_audit()))
         request=urllib.request.Request(ENDPOINT,data=raw,
@@ -219,6 +220,8 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--numeric-axis-call',action='store_true',help='Let Decisions classify selected numeric XYZ references in a separate text-only request before multimodal rotation/grip/stage decisions')
+    p.add_argument('--reference-only',action='store_true',help='Select visual features without the ambiguous intermediate orientation-relation label')
     p.add_argument('--overview-camera',choices=['sideview','frontview','birdview'],help='Additional public fixed RGB camera for whole-hand/object coverage; no scene-state input')
     p.add_argument('--goal-example',action='store_true',help='Include an actual archived final object-support relationship during orientation/operation and inspection')
     p.add_argument('--raised-fin-surfaces',action='store_true',help='Propose current highest visible black surfaces in the knob identity region, never a true pose or target angle')
@@ -265,7 +268,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -424,7 +427,7 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm'}:raise ValueError('Unsupported protocol field')
                 if any(not isinstance(v,(int,float)) or not 1<=v<=20 for v in protocol.get('axis_bands_mm',{}).values()):raise ValueError('Invalid positioning band')
                 archive=out/'protocols';archive.mkdir(exist_ok=True)
                 if not (archive/(digest+'.json')).exists():(archive/(digest+'.json')).write_bytes(raw_protocol)
@@ -589,6 +592,7 @@ def main():
                 if args.focused_questions:
                     attention_state={k:v for k,v in state.items() if k not in ('own_gripper_world_mm','coordinate_frame_note','visible_surface_samples')}
                     attention_state['visible_dot_labels']=[dict(label=v['label'],pixel_uv=v['pixel_uv']) for v in candidates.values()]
+                if args.reference_only:attention.pop('orientation_relation',None)
                 assessment=api.post('/systemone',dict(model='gpt-6-luna',state=attention_state,questions=attention))
                 selected=assessment['answers']['reference']['choice']
                 if args.track_selected and tracker is not None:tracker.select(selected)
@@ -631,6 +635,8 @@ def main():
                         if 'observed_surface_relative_mm' in state else '')
                     if 'observed_receiver_minus_source_mm' in state:
                         reference=f'Observed selected receiver minus held source on {a.upper()} = {state["observed_receiver_minus_source_mm"]["xyz".index(a)]} mm. '
+                    if key in ('align_source_above_receiver','lower_to_place') and 'observed_receiver_minus_source_mm' not in state:
+                        reference='No current receiver reference is identified. Source-to-hand attachment offset is NOT a source-to-rack error; judge the current rack/body relation from RGB.'
                     if key in ('close','release','inspect','turn'):reference=''
                     questions[a]['instructions']=(query+' '+reference+
                         'Judge the intended relationship from current fixed/wrist RGB; an observed surface is not a hidden object centre. '
@@ -646,7 +652,7 @@ def main():
                         'Any earlier actor orientation assessment is an unverified hypothesis, not a desired pose.')
             if args.numeric_xy:
                 moving_key=state['stage'].get('stage_key','')
-                difference=state.get('observed_receiver_minus_source_mm',state.get('observed_surface_relative_mm'))
+                difference=reference_difference(state)
                 if difference is not None and moving_key in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place') and not (args.visual_near_grasp and moving_key=='descend_to_source'):
                     band=protocol.get('axis_bands_mm',{}).get(moving_key,10)
                     for i,a in enumerate(('x','y')):
@@ -690,7 +696,24 @@ def main():
                     if not isinstance(template,str):raise ValueError('Protocol questions must be text, never commands')
                     questions[name]['instructions']=template.format_map(context)
             if replay_rows is None:
+                numeric_answers={}
+                if args.numeric_axis_call:
+                    from libero_numeric_axes import build_numeric_request
+                    numeric=build_numeric_request(state,protocol)
+                    if numeric is not None:
+                        saved=(api.current,api.previous,api.demonstrations,getattr(api,'motion',MOTION))
+                        try:
+                            api.current=[];api.previous=[];api.demonstrations=[]
+                            api.motion='Answer the independent numeric-axis questions from the supplied observed differences and stated intervals. Positive hand motion increases the controlled coordinate. This request does not decide object identity, orientation, grasp or stage completion.'
+                            numeric_reply=api.post('/systemone',numeric)
+                        finally:api.current,api.previous,api.demonstrations,api.motion=saved
+                        numeric_answers=numeric_reply['answers']
+                        state['numeric_axis_decisions']={a:v['choice'] for a,v in numeric_answers.items()}
+                        state['numeric_axis_decision_meaning']='These directions were chosen by YOU in the immediately preceding text-only Decisions call from this SAME observation. They are not clearance or contact certificates. This visual call decides the remaining axes, gripper and transition. Advance/restart executes no physical action.'
+                        for a in numeric_answers:questions.pop(a)
+                state['request_purpose']='multimodal_rotation_gripper_transition' if numeric_answers else 'multimodal_policy'
                 answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
+                answer['answers']={**numeric_answers,**answer['answers']}
             else:
                 stage=replay_rows[decision]['stage']
                 answer=dict(answers={k:dict(choice=v) for k,v in replay_rows[decision]['choices'].items()})
@@ -720,7 +743,7 @@ def main():
                 last_signs=signs.copy();dp=signs[:3]*step_sizes[:3];dr=signs[3:]*step_sizes[3:]
             else:dp=signs[:3]*step_m;dr=signs[3:]*step_r
             if args.relative_step_scale:
-                difference=state.get('observed_receiver_minus_source_mm',state.get('observed_surface_relative_mm'))
+                difference=reference_difference(state)
                 if difference is not None and state['stage'].get('stage_key') in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
                     # A magnitude cannot reverse, invent or suppress an actor sign.
                     magnitude=np.clip(.3*np.abs(np.asarray(difference))/1000,.002,.02)

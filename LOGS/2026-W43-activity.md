@@ -89,3 +89,4 @@
 - 【Agent】【2026-10-19 22:58】[op] 本机规划账号仅检查元数据确认auth_mode=chatgpt、token存在且无API key；为Pro入口增加调用前只读账号核对，避免未来配置变化时误走API。未读取输出任何密钥、未做普通API探测或新规划调用。
 - 【Agent】【2026-10-19 23:11】[result] 相机覆盖诊断回放31旧酒瓶动作、382物理步、0API，40公开相机80帧；sideview能同时看全持瓶/夹爪/木架。旧orient_receiver示例裁掉手/瓶大部分，release实际图才展示目标关系；准备v16增加当前sideview和相关阶段最终关系示例。第五Pro合法返回，沿用可执行动作阶段，仅采纳输入设计建议。
 - 【Agent】【2026-10-19 23:14】[result] v16新增sideview完整管线已22原生步0API回放通过，当前sideview raw/input均保存，三相机GIF1152x430两实际帧核验通过；第五Pro复审确认需要保留实际最终关系示例和补充侧视，后续几何仅可观测轴/面而非目标角差。准备按两任务分别运行侧视+目标关系图条件。
+- 【Agent】【2026-10-19 23:34】[result] 离线同源v15请求0165对照0原生动作：原Z=-448选UP(0.57、confidence0.35)；仅删orientation标签仍UP；简短纯文本XYZ选hold/hold/DOWN。初始fin RGB-D[-435,198,960]mm正常，不支持归咎初始深度大误差。v17准备分离数值Decisions和多模态姿态/抓放/阶段；同时修正无receiver时错误拿source-hand当放置误差的代码fallback。
