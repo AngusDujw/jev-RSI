@@ -169,6 +169,7 @@ graph LR
     T_2026W43_013["📊 decision-multimodal<br/>v22酒瓶高度/部位修复仍0/2，Pro8…"]:::experiment
     T_2026W43_014["📊 decision-multimodal<br/>v23瓶已真实抬升却Lift停滞至574步…"]:::experiment
     T_2026W43_015["📊 decision-multimodal<br/>v23酒瓶首次native1/2但持瓶未释…"]:::experiment
+    T_2026W43_016["📊 decision-multimodal<br/>真实float阶段10/13失效；v27动…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -297,6 +298,7 @@ graph LR
   T_2026W43_012 --> T_2026W43_013
   T_2026W43_013 --> T_2026W43_014
   T_2026W43_014 --> T_2026W43_015
+  T_2026W43_015 --> T_2026W43_016
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -452,6 +454,7 @@ graph LR
 | `T-2026W43-013` | 2026-10-20 | experiment | decision-multimodal | v22酒瓶高度/部位修复仍0/2，Pro8姿态建立与运输分离的新v23及独立旋钮600调幅已原生启动；原旋钮新冻结3/3扩展预算保留 | `EXP-2026W43-032` | - |
 | `T-2026W43-014` | 2026-10-20 | experiment | decision-multimodal | v23瓶已真实抬升却Lift停滞至574步；短视觉Lift同图仅一次advance低置信后v24两原生启动，原v23至622首次由actor选木面P0A并独立选旋转 | `EXP-2026W43-033` | - |
 | `T-2026W43-015` | 2026-10-20 | experiment | decision-multimodal | v23酒瓶首次native1/2但持瓶未释放/program0/2；原旋钮新冻结扩展3/3保持。v26由Decisions求值观测分量35/35校准后四开发原生启动，非原始RGB-only控制 | `EXP-2026W43-037` | - |
+| `T-2026W43-016` | 2026-10-20 | experiment | decision-multimodal | 真实float阶段10/13失效；v27动作布尔出口先40/40，但主视遮挡后源几何丢失。v28当前侧视RGB-D回放418步0API恢复485点并启动两原生，仍未稳定完成 | `EXP-2026W43-038`, `EXP-2026W43-039` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
