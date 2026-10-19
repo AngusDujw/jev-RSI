@@ -209,6 +209,7 @@ def main():
     p.add_argument('--record-evidence',action='store_true',help='Save actual images and deduplicated full model inputs even with compact transport')
     p.add_argument('--replay',type=Path,help='Replay archived executed commands without calling any model; diagnostic only')
     p.add_argument('--execution-steps',type=int,default=4,choices=range(4,21),help='Own-pose servo steps per categorical decision')
+    p.add_argument('--live-surfaces',action='store_true',help='Current RGB component surface samples instead of stale fixed source-window dots')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -255,6 +256,10 @@ def main():
         from libero_task_demonstrations import build_task_examples
         api.demonstrations+=build_task_examples(args.task_demo,out/'task-demo')
     api.previous=[]
+    tracker=None
+    if args.live_surfaces:
+        from libero_visual_surfaces import SurfaceTracker
+        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512)
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
     try:
@@ -270,7 +275,7 @@ def main():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
         def capture():
             from PIL import ImageDraw
-            parts=[];p0,_=own_pose();api.surface_samples=[]
+            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None
             for camera in ('agentview','robot0_eye_in_hand'):
                 im=Image.fromarray(np.ascontiguousarray(obs[camera+'_image'][::-1]));b=io.BytesIO();im.save(b,format='PNG')
                 raw=b.getvalue()
@@ -281,7 +286,14 @@ def main():
                     from robosuite.utils.camera_utils import get_real_depth_map
                     depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
                     draw=ImageDraw.Draw(im)
+                    if tracker is not None:
+                        api.source_component,current_samples=tracker.observe(np.asarray(im),depth,K,T)
+                        api.surface_samples.extend(current_samples)
+                        for sample in current_samples:
+                            u,v=sample['pixel_uv'];draw.ellipse((u-2,v-2,u+2,v+2),fill='#00ffff',outline='#000000')
+                            draw.text((u+3,v-8),sample['label'],fill='#00ffff',stroke_width=1,stroke_fill='#000000')
                     for region,key in (('A','fixed_view_bbox_xyxy'),('B','receiver_fixed_view_bbox_xyxy')):
+                        if tracker is not None and region=='A':continue
                         if key not in plan:continue
                         box=np.asarray(plan[key],float)*(args.size/512)
                         # Sample the *current visible surface* on a fixed pixel lattice.
@@ -301,8 +313,10 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'),image_part(raw)])
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
+                    if tracker is not None and api.source_component.get('status')!='candidate':continue
                     # Fixed-camera articulated knob base is stationary; this crop is identity/visibility only.
-                    box=np.asarray(plan['fixed_view_bbox_xyxy'],float)*(args.size/512)
+                    box=(np.asarray(api.source_component['bbox_xyxy'],float) if tracker is not None
+                         else np.asarray(plan['fixed_view_bbox_xyxy'],float)*(args.size/512))
                     margin=.10*args.size
                     box=[max(0,int(box[0]-margin)),max(0,int(box[1]-margin)),
                          min(args.size,int(box[2]+margin)),min(args.size,int(box[3]+margin))]
@@ -335,6 +349,9 @@ def main():
                     closing_axis_world_unit=(closing/max(np.linalg.norm(closing),1e-10)).tolist(),
                     grip_site_local_Z_world_unit=own_R[:,2].tolist(),
                     meaning='Measured own-hand axes only. Compare actual finger faces with the object in RGB; these are not desired axes.')
+                state['own_tool_geometry']['pad_centre_separation_mm']=float(np.linalg.norm(closing)*1000)
+                state['own_tool_geometry']['last_gripper_command']='close' if grip>0 else 'open'
+                state['own_tool_geometry']['reference_description']='Position is the measured robot grip_site between the fingers, not wrist housing or a visible object point. Pad-centre separation includes pad thickness and is not a contact sensor.'
             if args.surface_context:
                 own_p,_=own_pose()
                 state['own_gripper_world_mm']=np.round(own_p*1000,1).tolist()
@@ -344,6 +361,13 @@ def main():
                     'Use CURRENT RGB to identify what each dot actually lies on. These are not recommended grasp points or desired poses. '
                     'Depth/occlusion boundaries may mix surfaces. First choose a suitable physical grasp or support relationship from RGB, '
                     'then use the matching surface coordinates and own axes to interpret directions. No desired orientation is computed.')
+                if tracker is not None:
+                    state['source_component']=api.source_component
+                    state['surface_sample_meaning']=('C dots lie on a CURRENT colour component candidate, tracked from RGB only. '
+                        'Verify that this is the task object in current RGB; a surface is not an object centre or desired grasp. '
+                        'B dots are in a fixed receiver identity window and may lie on background/robot. '
+                        'No object pose, target pose, orientation error, or recommended action is calculated. '
+                        'Choose the grasp relationship yourself from both current images and compare coordinates only for matching physical features.')
                 if args.positive_frame:
                     offset=np.array([2000.,2000.,0.])
                     state['own_gripper_world_mm']=np.round(own_p*1000+offset).tolist()

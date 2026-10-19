@@ -35,6 +35,9 @@ def scheduler(path):
                 '--input-variant',case['variant'],'--grounded','--relation-prompts','--surface-context',
                 '--coordinate-questions','--adaptive-steps','--file-transport','--compact']
             if case['variant']!='task_native_frame':command+=['--positive-frame']
+            if case.get('record_evidence'):command+=['--record-evidence']
+            if case.get('live_surfaces'):command+=['--live-surfaces']
+            command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000
         status=dict(time=time.time(),active=[dict(name=n,pid=p.pid) for n,(p,_) in active.items()],
