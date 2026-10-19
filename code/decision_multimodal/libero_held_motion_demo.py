@@ -36,8 +36,10 @@ def main():
     p.add_argument('--axis',choices=('rx','ry','rz'),required=True)
     p.add_argument('--sign',type=int,choices=(-1,1),required=True)
     p.add_argument('--angle-deg',type=float,default=30.)
+    p.add_argument('--pre-lift-mm',type=float,default=0.,help='Offline example setup only: raise the closed own hand before the isolated rotation; not actor policy')
     args=p.parse_args()
     if not 0<args.angle_deg<=45:raise ValueError('Isolated demonstration angle must be in (0,45].')
+    if not 0<=args.pre_lift_mm<=100:raise ValueError('Example setup lift must be in [0,100] mm.')
     rows=[json.loads(x) for x in args.prefix_execution.read_text().splitlines()]
     if not 1<=args.prefix_actions<=len(rows):raise ValueError('Invalid archive prefix length')
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -59,6 +61,7 @@ def main():
     result=dict(kind='offline_held_motion_example',model_calls=0,native_evaluated=False,
         task=args.task,init=args.init,axis=args.axis,sign=args.sign,
         requested_rotation_deg=args.sign*args.angle_deg,
+        requested_setup_lift_mm=args.pre_lift_mm,
         prefix_execution=str(args.prefix_execution.resolve()),prefix_actions=args.prefix_actions,
         source_note='Only archived commands, current RGB and own measured robot state. This is not a policy trial or a current action candidate.')
     try:
@@ -92,7 +95,15 @@ def main():
             if command!='hold':grip=1. if command=='close' else -1.
             execute(np.asarray(row['commanded_translation_mm'])/1000,
                 np.deg2rad(row['commanded_rotation_world_deg']))
+        setup_start,_=pose()
+        if args.pre_lift_mm:
+            if grip<0:raise ValueError('Setup lift requires the archived prefix to end with the gripper closed')
+            remaining=args.pre_lift_mm
+            while remaining>1e-6:
+                lift=min(25.,remaining)
+                execute(np.array([0.,0.,lift/1000]),np.zeros(3));remaining-=lift
         before_p,before_R=pose();result['before_tick']=tick
+        result['measured_setup_translation_mm']=((before_p-setup_start)*1000).tolist()
         result['prefix_final_own_position_mm']=(before_p*1000).tolist()
 
         def capture(label):

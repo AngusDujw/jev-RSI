@@ -154,3 +154,4 @@
 - 【Agent】【2026-10-20 05:08】[result] v35审计发现旧stage_overrides冲突，只中止自有三个原生并保留outer-interruption；v36移除旧覆盖/过期正式出口，通过实际merge后的阶段目标核查。v34 init14最终native false/program true874步，不记成功。
 - 【Agent】【2026-10-20 05:10】[run] v36已三例46物理步/各14真原答；准备同计划协议的v37图像旋转对照，仅关闭literal表达式R题，不改源物/接收选择或XYZ处理。启动前GPU余44GiB、DataStorage余1.5TB。
 - 【Agent】【2026-10-20 05:12】[result] 确认v36/v37六原生和du桥继续；v36页11观测47确切请求HTTP200。旧v34 A完整0/3，874/1198/1198步；B仍姿态。英文经验追加DataStorage仅收集未注入。
+- 【Agent】【2026-10-20 05:13】[op] 新受控示例仅增加可选离线pre-lift-mm，默认0/限0–100mm并要求归档前缀闭爪；主策略不调用此参数。不改旧bank15mm门，后续仍检查实际RGB和实测漂移。
