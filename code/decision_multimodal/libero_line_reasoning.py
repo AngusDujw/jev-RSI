@@ -43,16 +43,17 @@ def build_line_stage_request(state,answers):
     lines=observed_lines(state)
     if lines is None:return None
     v,b,binding=lines
-    expression=' + '.join(f'({v[i]} * {b[i]})' for i in range(3))
     recovery=answers.get('transition',{}).get('choice')=='restart'
+    facts='; '.join(a+' decision='+str(answers.get(a,{}).get('choice','unknown'))
+        for a in ('x','y','z','rx','ry','rz'))
     return dict(model='gpt-6-luna',state=dict(stage=state['stage'],
         request_purpose='text_only_observed_line_transition',line_input=
-            'Compute the printed line-alignment expression yourself and apply only the stated transition rule. This is a coarse posture check, not support, contact, holding or native task success.',
+            'Judge the transition from your actual same-observation direction choices and the printed rule. No physical action executes with advance or restart. This is not support, holding or task success.',
         observed_bottle_line=v,actor_selected_observed_span=binding),questions=dict(transition=dict(type='choice',instructions=
-            f'Visual recovery requested={recovery}. If true, restart. Otherwise compute C=abs({expression}). '
-            'If C>=0.97 advance to transport; otherwise continue posture adjustment. Both inputs are measured unit-line representatives; parallel or opposite lines describe the same lengthwise relationship. No computed score is supplied.',
-            criteria={'continue':'No visual recovery, and your computed C is below 0.97.',
-                      'advance':'No visual recovery, and your computed C is at least 0.97.',
+            f'Visual recovery requested={recovery}. Current choices: {facts}. '
+            'If visual recovery is requested, restart. Otherwise continue if ANY listed choice is positive, negative or unknown. Advance to transport ONLY if ALL SIX listed choices are hold. Do not skip a correction that has not executed.',
+            criteria={'continue':'At least one listed choice is positive, negative or unknown; no visual recovery.',
+                      'advance':'All six listed choices are hold; no visual recovery.',
                       'restart':'Visual recovery was explicitly requested.'})))
 
 
