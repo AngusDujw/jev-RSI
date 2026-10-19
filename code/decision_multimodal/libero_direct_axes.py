@@ -763,7 +763,9 @@ def main():
                 difference=reference_difference(state)
                 if difference is not None and state['stage'].get('stage_key') in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
                     # A magnitude cannot reverse, invent or suppress an actor sign.
-                    magnitude=np.clip(.3*np.abs(np.asarray(difference))/1000,.002,.02)
+                    intervals=protocol.get('numeric_axis_intervals_mm',{}).get(state['stage'].get('stage_key'),{})
+                    centre=np.array([sum(intervals.get(a,[0.,0.]))/2 for a in ('x','y','z')])
+                    magnitude=np.clip(.5*np.abs(np.asarray(difference)-centre)/1000,.002,.02)
                     dp=signs[:3]*magnitude
             dp*=min(1.,.03/max(np.linalg.norm(dp),1e-10));dr*=min(1.,.25/max(np.linalg.norm(dr),1e-10))
             if replay_rows is not None:
