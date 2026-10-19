@@ -26,7 +26,9 @@ def scheduler(path):
             if out.exists():raise FileExistsError(out)
             log=(root/(case['name']+'.log')).open('w')
             env=dict(os.environ,OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',NUMBA_NUM_THREADS='1',
-                TMPDIR=str(root/'cache'),XDG_CACHE_HOME=str(root/'cache'),PYTHONDONTWRITEBYTECODE='1')
+                TMPDIR=str(root/'cache'),XDG_CACHE_HOME=str(root/'cache'),PYTHONDONTWRITEBYTECODE='1',
+                MAGICK_HOME=cfg['runtime_libs']+'/usr',
+                LD_LIBRARY_PATH=cfg['runtime_libs']+'/usr/lib/x86_64-linux-gnu'+(':'+os.environ['LD_LIBRARY_PATH'] if os.environ.get('LD_LIBRARY_PATH') else ''))
             command=[cfg['python'],'-B',str(Path(cfg['project'])/'code/decision_multimodal/libero_direct_axes.py'),
                 '--task',str(case['task']),'--init',str(case['init']),'--gpu','0','--output',case['output'],
                 '--plan',case['plan'],'--libero-root',cfg['libero_root'],'--example-bank',cfg['example_bank'],
