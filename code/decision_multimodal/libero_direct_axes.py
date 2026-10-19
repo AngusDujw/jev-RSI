@@ -65,6 +65,17 @@ class DirectAPI(RevisedAPI):
         payload=self.build_payload(original);self.validate_payload(payload)
         folder=self.folder/f'{self.calls:04d}';self.calls+=1;folder.mkdir()
         raw=json.dumps(payload,ensure_ascii=False).encode()
+        if getattr(self,'record_evidence',False):
+            # Archive the exact request without duplicating base64 images each turn.
+            evidence=self.folder.parent/'evidence';assets=evidence/'images';assets.mkdir(parents=True,exist_ok=True)
+            readable=json.loads(raw)
+            for part in readable['input'][0]['content']:
+                if part['type']=='input_image':
+                    data=base64.b64decode(part.pop('image_url').split(',',1)[1])
+                    name=hashlib.sha256(data).hexdigest()+'.png'
+                    if not (assets/name).exists():(assets/name).write_bytes(data)
+                    part['image_file']='images/'+name
+            save(evidence/f'{self.calls-1:04d}-request.json',readable)
         images=[hashlib.sha256(base64.b64decode(p['image_url'].split(',',1)[1])).hexdigest()
             for p in payload['input'][0]['content'] if p['type']=='input_image']
         save(folder/'request-summary.json',dict(model='gpt-6-luna',body_sha256=hashlib.sha256(raw).hexdigest(),
@@ -195,6 +206,9 @@ def main():
     p.add_argument('--adaptive-steps',action='store_true',help='Unsigned step adaptation using only categorical sign history')
     p.add_argument('--positive-frame',action='store_true',help='Translate coordinate display by a fixed scene-independent constant')
     p.add_argument('--compact',action='store_true',help='Keep only results, response choices and hashes; no rollout images or payload archives')
+    p.add_argument('--record-evidence',action='store_true',help='Save actual images and deduplicated full model inputs even with compact transport')
+    p.add_argument('--replay',type=Path,help='Replay archived executed commands without calling any model; diagnostic only')
+    p.add_argument('--execution-steps',type=int,default=4,choices=range(4,21),help='Own-pose servo steps per categorical decision')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -222,6 +236,8 @@ def main():
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
+    api.record_evidence=args.record_evidence
+    replay_rows=[json.loads(s) for s in args.replay.read_text().splitlines()] if args.replay else None
     if args.adaptive_steps:
         api.motion=MOTION.replace('Use fine scale near contact;\nuse coarse scale for clear free-space movement.',
             'Unsigned step sizes adapt from direction history: repeated signs grow the magnitude, reversals shrink it. '
@@ -258,7 +274,7 @@ def main():
             for camera in ('agentview','robot0_eye_in_hand'):
                 im=Image.fromarray(np.ascontiguousarray(obs[camera+'_image'][::-1]));b=io.BytesIO();im.save(b,format='PNG')
                 raw=b.getvalue()
-                if not args.compact:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
+                if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
                 if args.surface_context and camera=='agentview':
@@ -282,7 +298,7 @@ def main():
                                 draw.text((u+3,v-10),label,fill='#ffff00',stroke_width=1,stroke_fill='#000000')
                     b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
                 raw,_,audit=overlay_gripper_axes(raw,T,K,p0,camera)
-                if not args.compact:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
+                if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'),image_part(raw)])
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
                     # Fixed-camera articulated knob base is stationary; this crop is identity/visibility only.
@@ -291,13 +307,14 @@ def main():
                     box=[max(0,int(box[0]-margin)),max(0,int(box[1]-margin)),
                          min(args.size,int(box[2]+margin)),min(args.size,int(box[3]+margin))]
                     crop=im.crop(box).resize((512,512));b=io.BytesIO();crop.save(b,format='PNG')
-                    if not args.compact:(out/f'{tick:04d}-source-crop.png').write_bytes(b.getvalue())
+                    if not args.compact or args.record_evidence:(out/f'{tick:04d}-source-crop.png').write_bytes(b.getvalue())
                     parts.extend([dict(type='input_text',text='CURRENT fixed-view source detail; same observation, zoom only. '+plan['source_description']),image_part(b.getvalue())])
             return parts
         for decision in range(args.decisions):
             import shutil
             if shutil.disk_usage(out).free<8*1024**3:raise RuntimeError('Native artifact storage guard: below8GiB free')
-            if tick+4>600:break
+            if tick+args.execution_steps>600:break
+            if replay_rows is not None and decision>=len(replay_rows):break
             if time.monotonic()-started>args.wall_seconds:raise TimeoutError('Native episode wall budget')
             api.current=capture();api.previous=previous;api.tick=tick
             state=dict(task=instruction,stage=stages[stage],stage_order=stages,
@@ -364,7 +381,11 @@ def main():
             if args.adaptive_steps:
                 questions.pop('scale')
                 state['step_policy']='Direction-history adaptation only; no object-target residual controls magnitude. The last execution contains commanded and measured effects.'
-            answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
+            if replay_rows is None:
+                answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
+            else:
+                stage=replay_rows[decision]['stage']
+                answer=dict(answers={k:dict(choice=v) for k,v in replay_rows[decision]['choices'].items()})
             choices={k:v['choice'] for k,v in answer['answers'].items()};before_p,before_R=own_pose()
             previous=[dict(type='input_text',text='PREVIOUS observation, before the last executed command; compare with CURRENT.'),
                 *[dict(x,type=x['type'],**({'text':x['text'].replace('CURRENT','PREVIOUS')} if x['type']=='input_text' else {})) for x in api.current]]
@@ -387,13 +408,18 @@ def main():
                 last_signs=signs.copy();dp=signs[:3]*step_sizes[:3];dr=signs[3:]*step_sizes[3:]
             else:dp=signs[:3]*step_m;dr=signs[3:]*step_r
             dp*=min(1.,.03/max(np.linalg.norm(dp),1e-10));dr*=min(1.,.25/max(np.linalg.norm(dr),1e-10))
+            if replay_rows is not None:
+                dp=np.array(replay_rows[decision]['commanded_translation_mm'])/1000
+                dr=np.deg2rad(replay_rows[decision]['commanded_rotation_world_deg'])
             target_p=before_p+dp;target_R=Rotation.from_rotvec(dr).as_matrix()@before_R
-            for _ in range(4):
+            for _ in range(args.execution_steps):
                 pos,rot=own_pose();u_p=.7*(target_p-pos);u_r=.7*Rotation.from_matrix(target_R@rot.T).as_rotvec()
                 action=np.r_[np.clip(u_p/.05,-1,1),np.clip(u_r/.5,-1,1),grip]
                 obs,_,_,_=env.step(action);tick+=1
             after_p,after_R=own_pose()
             row=dict(decision=decision,native_steps=tick,stage=stage,choices=choices,
+                own_position_before_mm=(before_p*1000).tolist(),own_position_after_mm=(after_p*1000).tolist(),
+                own_rotation_before=before_R.tolist(),own_rotation_after=after_R.tolist(),
                 commanded_translation_mm=(dp*1000).tolist(),commanded_rotation_world_deg=np.rad2deg(dr).tolist(),
                 measured_translation_mm=((after_p-before_p)*1000).tolist(),
                 measured_rotation_world_deg=np.rad2deg(Rotation.from_matrix(after_R@before_R.T).as_rotvec()).tolist())
@@ -402,6 +428,7 @@ def main():
             print(json.dumps(row),flush=True)
         capture()
         # Evaluator is read only here, after the final action; never sent to either model.
+        result['diagnostic_replay']=args.replay is not None
         result['success']=bool(env.check_success())
         result['native_evaluated']=True
     except Exception as error:
