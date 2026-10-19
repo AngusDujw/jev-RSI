@@ -99,14 +99,24 @@ def call(body, key, folder):
     started = time.monotonic()
     try:
         response = subprocess.run(['curl','--silent','--show-error','--http1.1',
-            '--socks5-hostname','127.0.0.1:7897','--connect-timeout','20','--max-time','300',
+            '--socks5-hostname','127.0.0.1:7897','--connect-timeout','20','--max-time','900',
             '--config',f'/proc/self/fd/{read_fd}','--header','Content-Type: application/json',
-            '--data-binary','@-','--write-out','\n%{http_code}',ENDPOINT],
-            input=wire,capture_output=True,pass_fds=(read_fd,),timeout=310)
-        raw,_,status = response.stdout.rpartition(b'\n')
+            '--header','Expect:', '--data-binary','@-',
+            '--write-out','\n%{time_connect} %{time_appconnect} %{time_starttransfer} %{size_upload} %{speed_upload}\n%{http_code}',ENDPOINT],
+            input=wire,capture_output=True,pass_fds=(read_fd,),timeout=910)
+        payload,_,status = response.stdout.rpartition(b'\n')
+        raw,_,measurements = payload.rpartition(b'\n')
+        metrics = {}
+        try:
+            metrics = dict(zip(('connect_s','tls_s','first_byte_s','uploaded_bytes','upload_bytes_per_s'),
+                               map(float, measurements.split()), strict=True))
+        except (ValueError, TypeError):
+            metrics['measurement_parse_error'] = True
         (folder/'response.json').write_bytes(raw)
         (folder/'transport.json').write_text(json.dumps(dict(http_status=status.decode(),
-            returncode=response.returncode,elapsed_s=time.monotonic()-started,endpoint=ENDPOINT)))
+            returncode=response.returncode,elapsed_s=time.monotonic()-started,endpoint=ENDPOINT,
+            request_timeout_s=900,expect_continue_disabled=True,**metrics)))
+        (folder/'transport_error.txt').write_bytes(response.stderr)
         if response.returncode or not status.startswith(b'2'):
             raise RuntimeError('Decisions transport/HTTP failure; do not resample: '+status.decode())
         data = json.loads(raw)

@@ -133,3 +133,15 @@ require YPR adjustment, verify the official evidence, and iterate if it fails.
 Continue monitoring and repairing campaign faults. This future authorization
 does not change active comparison prompts, actions, history or scoring, and
 does not authorize replaying ended episodes or ordinary OpenAI API calls.
+
+Generation g has drained: classification trial 5 reached 1100 native steps,
+complete=true, success=false, score=0; its 1323 local PNGs remain preserved.
+The other nine slots ended in transport errors, not complete policy failures.
+See decisions-g-terminal-phase-audit.json. All workers and simulators exited.
+Future generation h reuses six Luna terminals and this Decisions terminal,
+and fills only the nine audited infrastructure slots under fresh names.
+After g exited, transport was changed to a single 900-second attempt, with
+Expect: 100-continue disabled and connection/upload timing plus curl stderr
+recorded. The serialized body is unchanged; no retry is added. Offline mocked
+success/failure checks passed without API calls. This does not prove TLS or
+network failures are fixed; inspect actual h responses and native terminals.
