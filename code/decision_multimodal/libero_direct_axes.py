@@ -132,7 +132,7 @@ class DirectAPI(RevisedAPI):
             return payload
         if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification'):
             from libero_stage_decision import stage_payload
-            payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]),self.previous)
+            payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]),self.previous,getattr(self,'phase_entry_views',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
         if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
@@ -140,8 +140,9 @@ class DirectAPI(RevisedAPI):
             self.image_count=0
             return numeric_payload(sent)
         p=convert_request(sent)
+        temporal=getattr(self,'phase_entry_views',self.previous) if sent['state'].get('stage',{}).get('stage_key')=='lift' else self.previous
         p['input']=[dict(role='user',content=[dict(type='input_text',text=getattr(self,'motion',MOTION)),
-            *self.demonstrations,dict(type='input_text',text=p['input']),*self.previous,*self.current])]
+            *self.demonstrations,dict(type='input_text',text=p['input']),*temporal,*self.current])]
         self.image_count=sum(x['type']=='input_image' for x in p['input'][0]['content'])
         return p
     def validate_payload(self,p):
@@ -543,6 +544,10 @@ def main():
                 if not (archive/(digest+'.json')).exists():(archive/(digest+'.json')).write_bytes(raw_protocol)
                 api.protocol_sha256=digest
             api.current=capture();api.previous=previous;api.tick=tick
+            entry_token=(stage_origin_tick,stage)
+            if getattr(api,'phase_entry_token',None)!=entry_token:
+                api.phase_entry_token=entry_token
+                api.phase_entry_views=[dict(part,**({'text':part['text'].replace('CURRENT','PHASE ENTRY')} if part['type']=='input_text' else {})) for part in api.current]
             state=dict(task=instruction,stage=stages[stage],stage_order=stages,
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),
                 last_actions=[{k:v for k,v in row.items() if not k.startswith(('own_position_','own_rotation_'))} for row in history[-4:]],

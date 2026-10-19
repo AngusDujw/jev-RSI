@@ -14,7 +14,7 @@ def build_stage_request(state,answers,protocol):
         facts='Measured own motion in this phase: '+str(state.get('stage_own_motion',{}))+'. Last executed gripper command: '+str(state.get('own_tool_geometry',{}).get('last_gripper_command','unknown'))+'. '
         if key=='orient_held_body':
             facts+='Your SAME-observation motion choices: '+str({k:v['choice'] for k,v in answers.items() if k in ('x','y','z','rx','ry','rz')})+'. Your selected receiving direction: '+str(state.get('actor_selected_rack_direction','unknown'))+'. '
-        return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_stage_classification',formal_stage_input='Judge the one phase-transition question from CURRENT images. Archived images are goal references, never current observations.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its visible exit is not met.','advance':'Enter the next phase; no robot action executes with this answer.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))
+        return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_stage_classification',formal_stage_input='Judge the phase transition from CURRENT images and any explicitly labelled PHASE ENTRY or PREVIOUS observations. Compare actual object motion across those observations when needed. ARCHIVED goal examples show a desired relationship, never the current scene or a measured change.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its visible exit is not met.','advance':'Enter the next phase; no robot action executes with this answer.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))
     rule=protocol.get('stage_decision_rules',{}).get(key)
     if rule is None:return None
     choices={k:v['choice'] for k,v in answers.items()}
@@ -45,7 +45,7 @@ def build_stage_request(state,answers,protocol):
                       'restart':'The phase premise is invalid and recovery is requested; return to coarse approach without physical motion.'})))
 
 
-def stage_payload(original,current=(),goal_reference=(),previous=()):
+def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=()):
     payload=convert_request(original)
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
     if original['state'].get('request_purpose')=='visual_stage_classification':
@@ -54,12 +54,15 @@ def stage_payload(original,current=(),goal_reference=(),previous=()):
         for part in (() if original['state']['stage'].get('stage_key')=='lift' else goal_reference):
             if part['type']=='input_image':
                 content.extend([dict(type='input_text',text='ARCHIVED goal appearance, BEFORE left and AFTER right; never a current observation.'),part])
-        if original['state']['stage'].get('stage_key')=='inspect':
+        key=original['state']['stage'].get('stage_key')
+        temporal=stage_entry if key=='lift' and stage_entry else previous if key in ('lift','inspect') else ()
+        if temporal:
             caption=''
-            for part in previous:
+            for part in temporal:
                 if part['type']=='input_text':caption=part['text']
                 elif part['type']=='input_image' and 'detail' not in caption.lower():
-                    content.extend([dict(type='input_text',text=caption+' Historical observation before the last executed command; not current evidence.'),part])
+                    description=' Phase-entry observation before the lift test; compare the bottle itself against CURRENT.' if key=='lift' and stage_entry else ' Historical observation before the last executed command; not current evidence.'
+                    content.extend([dict(type='input_text',text=caption+description),part])
         caption='';number=0
         for part in current:
             if part['type']=='input_text':caption=part['text']
