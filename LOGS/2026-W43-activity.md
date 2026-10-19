@@ -53,3 +53,5 @@
 - 【Agent】【2026-10-19 16:49】[op] Restarted23 infrastructure-interrupted cases into new retry2 outputs using verified reply integrity/ACK and SSH fresh-connection fallback; first2 native cases and12-worker local bridge are independent live tmux sessions; no model input changes.
 - 【Agent】【2026-10-19 16:51】[result] retry2 startup encountered2 SSH banner-exchange timeouts before API calls; fresh SSH subsequently authenticated and the saved actual model replies were delivered. Pilot currently7 valid answers,0 API errors/retry records; external network stability is not assumed.
 - 【Agent】【2026-10-19 16:54】[result] Verified retry2: pilot3/4 actual answers and18/26 physical steps, raised to23 active; expansion checkpoint9 answered episodes/18 responses,0 API errors/retries,0 invalid delivery reports,0 rollout PNG. Startup2 SSH banner timeouts recovered; no claim of continuous network stability or task success.
+- 【User】【2026-10-19 17:53】[prompt] 现在实验什么情况
+- 【Agent】【2026-10-19 17:53】[result] 17:53 retry2状态：本机83有效回答/0 API错误，SSH336异常，最近交付17:50:24。读取v4090原生状态在复用/独立连接均banner超时，当前active与终局未知；不能报告正常推进。未重启。
