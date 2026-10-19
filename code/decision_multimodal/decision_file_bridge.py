@@ -64,7 +64,7 @@ def _ssh(host,code,input=None):
         try:
             proc=subprocess.Popen(['ssh','-o','ConnectTimeout=10','-o','ServerAliveInterval=10',
                 '-o','ServerAliveCountMax=2',*opts,'--',host,command],text=True,
-                stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
+                stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
             try:out,err=proc.communicate(input=input,timeout=35)
             except BaseException:
                 # Killing only the outer ssh can leave a ProxyJump child alive.

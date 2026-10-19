@@ -84,3 +84,19 @@ evidence than labeling every failure an API-network problem.
 The short improvement is not a long-duration reliability guarantee.
 System SSH/reverse-tunnel limits were not inspected with elevated privileges;
 a read-only sudo -n request required authentication and was not pursued.
+
+
+## Follow-up: persistent variability and stdin integration
+
+A later real 2500-byte stdin test using the repaired helper took2.73 seconds
+on5880 and31.88 seconds onv4090. Both returned the correct byte count.
+The earlier4.34/4.39-second recovery was temporary; limiting sessions has not
+proven that the underlying v4090 path is stable.
+
+The Popen process-group refactor also requires stdin=PIPE explicitly (the
+previous subprocess.run(input=...) supplied it implicitly). This was corrected
+after the live cached-delivery progress check, and the actual stdin test above
+verifies it. The managed broker was replaced with the corrected helper while
+keeping persisted replies and the original native observations. Valid cached
+answers were observed being delivered with model_called=false.
+Do not interpret this transport correction as a change in robot model policy.
