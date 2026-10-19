@@ -104,3 +104,11 @@ An archived real v15 knob request (0165) stated feature-minus-hand Z=-448mm and 
 Two single-shot offline Decisions diagnostics were saved under z-input-ablation-20261019, with zero native actions. Removing the intermediate orientation label alone still returned UP. A small text-only request with the same [0,2,-448] differences returned hold/hold/DOWN. This is one-state input evidence, not a task success or a general causal proof.
 
 The prospective v17 condition therefore asks Decisions to classify valid numeric positioning axes in a separate text-only request, then supplies those actual Decisions answers to the current multimodal request for rotations, gripper and transition. Every executed sign remains a Decisions answer. Unknown references retain visual handling. The reference selector can omit the ambiguous orientation label. Separately, a correctness fix prevents missing rack-reference geometry from falling back to the source-to-hand attachment offset in placement questions or step magnitudes.
+
+## v18 canonical numeric request
+
+The v17 native integration revealed that its rewritten text-only helper still reversed Y/Z (-9/-147mm). A second exact-minimal source-minus-hand probe also missed Y. Small hand-relative variants achieved only 16/24 across calibration cases, so modality separation alone is not established as a fix.
+
+The v18 numeric builder converts the observed correspondence/allowed interval to CURRENT-minus-DESIRED position error and a symmetric tolerance, prints the literal error in each independent question, and sends one short instruction with no stage, images, past actions or extra wrapper. The SAME payload builder was tested through authorized Decisions on 18 independent cases (large positive/negative, zero and tolerance boundaries): 18/18 correct, zero native actions. This is a finite calibration result, not a task success.
+
+The visual call receives the prior actual numeric answers, retains current three-camera views, own geometry/motion, grasp/final relationship examples and independent rotation cards, and judges orientation/gripper/phase. Unknown geometry keeps an explicit visual hand-versus-object fallback. The controller does not calculate or replace action signs.

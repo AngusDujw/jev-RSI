@@ -109,6 +109,10 @@ class DirectAPI(RevisedAPI):
     def revise(self, original):
         return original
     def build_payload(self, sent):
+        if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
+            from libero_numeric_axes import numeric_payload
+            self.image_count=0
+            return numeric_payload(sent)
         p=convert_request(sent)
         p['input']=[dict(role='user',content=[dict(type='input_text',text=getattr(self,'motion',MOTION)),
             *self.demonstrations,dict(type='input_text',text=p['input']),*self.previous,*self.current])]
