@@ -91,3 +91,4 @@
 - 【Agent】【2026-10-19 23:14】[result] v16新增sideview完整管线已22原生步0API回放通过，当前sideview raw/input均保存，三相机GIF1152x430两实际帧核验通过；第五Pro复审确认需要保留实际最终关系示例和补充侧视，后续几何仅可观测轴/面而非目标角差。准备按两任务分别运行侧视+目标关系图条件。
 - 【Agent】【2026-10-19 23:34】[result] 离线同源v15请求0165对照0原生动作：原Z=-448选UP(0.57、confidence0.35)；仅删orientation标签仍UP；简短纯文本XYZ选hold/hold/DOWN。初始fin RGB-D[-435,198,960]mm正常，不支持归咎初始深度大误差。v17准备分离数值Decisions和多模态姿态/抓放/阶段；同时修正无receiver时错误拿source-hand当放置误差的代码fallback。
 - 【Agent】【2026-10-19 23:54】[result] v17上线原纯文本helper仍反选Y/Z，不能归因为多模态单一因素；手相对参考小校准16/24。重写为current-minus-desired、每题直接写误差且线上/校准共用payload函数，18/18含边界题正确，0原生动作。不把校准当任务成功；v18将沿用三相机/目标关系/旋转例图并单独验证全任务。
+- 【Agent】【2026-10-20 00:10】[op] Scoped stage Decisions exact runtime payload passed11/11 independent facts/rule cases, zero native actions. Preparing v19 six full native development cases; no source angular error or deterministic action override.

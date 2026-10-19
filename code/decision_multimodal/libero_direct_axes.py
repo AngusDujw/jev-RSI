@@ -109,6 +109,10 @@ class DirectAPI(RevisedAPI):
     def revise(self, original):
         return original
     def build_payload(self, sent):
+        if sent['state'].get('request_purpose')=='formal_stage_classification':
+            from libero_stage_decision import stage_payload
+            self.image_count=0
+            return stage_payload(sent)
         if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
             from libero_numeric_axes import numeric_payload
             self.image_count=0
@@ -224,6 +228,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--formal-stage-call',action='store_true',help='Ask a scoped text-only Decisions stage question after visual motor choices for phases with explicit rules')
     p.add_argument('--numeric-axis-call',action='store_true',help='Let Decisions classify selected numeric XYZ references in a separate text-only request before multimodal rotation/grip/stage decisions')
     p.add_argument('--reference-only',action='store_true',help='Select visual features without the ambiguous intermediate orientation-relation label')
     p.add_argument('--overview-camera',choices=['sideview','frontview','birdview'],help='Additional public fixed RGB camera for whole-hand/object coverage; no scene-state input')
@@ -272,7 +277,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,formal_stage_call=args.formal_stage_call,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -431,7 +436,7 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules'}:raise ValueError('Unsupported protocol field')
                 if any(not isinstance(v,(int,float)) or not 1<=v<=20 for v in protocol.get('axis_bands_mm',{}).values()):raise ValueError('Invalid positioning band')
                 archive=out/'protocols';archive.mkdir(exist_ok=True)
                 if not (archive/(digest+'.json')).exists():(archive/(digest+'.json')).write_bytes(raw_protocol)
@@ -718,6 +723,12 @@ def main():
                 state['request_purpose']='multimodal_rotation_gripper_transition' if numeric_answers else 'multimodal_policy'
                 answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
                 answer['answers']={**numeric_answers,**answer['answers']}
+                if args.formal_stage_call:
+                    from libero_stage_decision import build_stage_request
+                    phase_request=build_stage_request(state,answer['answers'],protocol)
+                    if phase_request is not None:
+                        phase_reply=api.post('/systemone',phase_request)
+                        answer['answers']['transition']=phase_reply['answers']['transition']
             else:
                 stage=replay_rows[decision]['stage']
                 answer=dict(answers={k:dict(choice=v) for k,v in replay_rows[decision]['choices'].items()})

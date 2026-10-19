@@ -1,0 +1,108 @@
+{
+  "revision": "v19-knob-scoped-stage-decisions",
+  "axis_bands_mm": {
+    "align_above_source": 10,
+    "descend_to_source": 3
+  },
+  "stage_overrides": {
+    "align_above_source": {
+      "goal": "Align over the raised narrow stove-knob fin, not the circular base or burner. Keep a suitable downward finger approach and use current RGB to select an upper-fin reference.",
+      "exit": "The intended source reference is identified, X/Y within +/-10mm and source-minus-hand Z at most -80mm with a plausible overhead posture. Unknown is not zero; no contact is required.",
+      "control_contract": {
+        "translation": "Coarse horizontal alignment to the actor-selected visual reference.",
+        "height": "Keep suitable overhead clearance; being above the source is not a reason to rise further.",
+        "exit": "Advance when the currently selected source-minus-hand X and Y are both within -10 to +10 mm inclusive. This is coarse horizontal alignment only. Fine grasp orientation and grasp height are judged in the next nearer-approach stage, not certified here.",
+        "orientation": "Judge rotation separately from XYZ position and distance. A far-away hand can already have suitable orientation. The earlier orientation assessment is an unverified hypothesis, not a veto of completed coarse X/Y alignment."
+      }
+    },
+    "close": {
+      "goal": "Attempt closure around the positioned grasp region; secure holding will be tested next.",
+      "exit": "A close command has actually been executed. Advance provisionally unless fresh RGB clearly shows a missed grasp; contact proof is not required before the attempt.",
+      "control_contract": {
+        "translation": "Keep the positioned hand still during closure.",
+        "gripper": "Attempt closure before evaluating attachment.",
+        "exit": "Closure has actually been attempted; lift or turn tests engagement."
+      }
+    },
+    "descend_to_source": {
+      "goal": "Bring the open finger faces alongside the upper part of the raised fin so they can pinch its sides below the top, not hover above it. Select a genuine upper-fin feature from current RGB.",
+      "exit": "The selected knob grasp-region reference is within +/-3mm on X/Y and 4 to 12mm on Z, matching the axis questions, with no clear current-RGB contradiction to a closure attempt. This is not proven contact or holding."
+    },
+    "turn": {
+      "goal": "Manipulate the raised fin toward the archived target stove appearance. Compare the stove spiral and exposed fin with the actual final-relationship example; the red-rimmed foreground plate is not the stove."
+    }
+  },
+  "question_templates": {
+    "align_above_source": {
+      "z": "Current source-reference minus hand Z={z_mm}mm. During coarse alignment/recovery establish at least 80mm overhead clearance: choose positive Z (UP) if the known value is greater than -80mm; hold if already -80mm or lower with a clear overhead posture. If the feature is hidden and the open hand crowds the source in current RGB, a distinct upward clearance move can expose it. Do not pretend unknown is a metric measurement. This is an explicit approach heuristic, not a clearance certificate.",
+      "transition": "numeric_axis_decisions contains YOUR preceding positional direction choices for this SAME observation, when the reference is known. Continue coarse alignment while X or Y requests a non-hold correction. When X/Y both hold, the intended part is identified and current source-minus-hand Z={z_mm}mm is -80mm or lower with plausible overhead clearance, ADVANCE to near approach. Do not demand contact or perfect final grasp posture here. With unknown reference, use current views to acquire a valid part/clearance; unknown is not zero.",
+      "rx": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Roll about fixed world X: with fingers nearly down, positive tilts them toward +Y and negative toward -Y. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "ry": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Pitch about fixed world Y: with fingers nearly down, positive tilts them toward -X and negative toward +X. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "rz": "Current goal: {stage_goal} Yaw about fixed world Z changes horizontal jaw heading; it cannot turn a downward finger approach into a sideways approach. Positive is counterclockwise viewed from above. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "x": "Current source-reference minus hand X={x_mm}mm, Z={z_mm}mm. During coarse alignment first retain at least 80mm overhead clearance: if known Z is greater than -80mm, hold this horizontal channel while raising. Otherwise choose positive when this axis difference is above +10mm, negative below -10mm and hold within +/-10mm. Unknown is not zero; use current RGB to verify the intended source part.",
+      "y": "Current source-reference minus hand Y={y_mm}mm, Z={z_mm}mm. During coarse alignment first retain at least 80mm overhead clearance: if known Z is greater than -80mm, hold this horizontal channel while raising. Otherwise choose positive when this axis difference is above +10mm, negative below -10mm and hold within +/-10mm. Unknown is not zero; use current RGB to verify the intended source part.",
+      "gripper": "This is an OPEN-HAND approach phase. Choose open or retain an already open command so the fingers can surround the intended part. The separate Close phase attempts pinching; do not close during a still-needed approach correction."
+    },
+    "descend_to_source": {
+      "z": "No valid numeric Z direction is available in this visual question. Compare the actual own PAD-L/PAD-R faces with the intended fin/upper neck in the CURRENT fixed sideview and wrist detail. If both finger faces are ABOVE that grasp region, choose negative world Z to move the HAND DOWN; if below it choose positive Z UP; hold when the faces flank its height. Do not move the object in your imagination or invent a zero metric error.",
+      "transition": "Use numeric_axis_decisions from YOUR preceding numeric request for this SAME observation. If any known positioning axis requests positive/negative correction, continue so it can execute, unless the reference is visibly wrong or recent own execution shows a repeated block requiring restart. If all known positioning axes hold and current multiview RGB gives no clear contradiction to pinching the intended fin/upper neck, ADVANCE to an uncertain close attempt. Do not demand proven contact or independently re-interpret the signed error convention. If metrics are unavailable because the hand hides the feature, current sideview/wrist may instead support a close attempt when the actual pads visibly flank the right region at its height. A visible large gap contradicts capture; otherwise recover for a clearer part view.",
+      "rx": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Roll about fixed world X: with fingers nearly down, positive tilts them toward +Y and negative toward -Y. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "ry": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Pitch about fixed world Y: with fingers nearly down, positive tilts them toward -X and negative toward +X. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "rz": "Current goal: {stage_goal} Yaw about fixed world Z changes horizontal jaw heading; it cannot turn a downward finger approach into a sideways approach. Positive is counterclockwise viewed from above. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "x": "No valid numeric X direction is available in this visual question. Use CURRENT fixed views, wrist detail and own world-axis arrows to judge the HAND relative to the intended fin/upper neck. Choose the X sign that brings the actual finger faces around that region. Hold if the recent alignment remains visually suitable; the unknown number is not a claimed zero.",
+      "y": "No valid numeric Y direction is available in this visual question. Use CURRENT fixed views, wrist detail and own world-axis arrows to judge the HAND relative to the intended fin/upper neck. Choose the Y sign that brings the actual finger faces around that region. Hold if the recent alignment remains visually suitable; the unknown number is not a claimed zero.",
+      "gripper": "This is an OPEN-HAND approach phase. Choose open or retain an already open command so the fingers can surround the intended part. The separate Close phase attempts pinching; do not close during a still-needed approach correction."
+    },
+    "close": {
+      "gripper": "This phase attempts pinching after YOUR alignment judgments. Choose CLOSE to perform or retain the attempt around the intended region. Choose OPEN for a definite visible miss requiring restart, not merely because hidden contact is unproven. Last executed command={gripper_command}; own pad-centre separation={pad_separation_mm}mm. Closure alone does not establish engagement; the next lift/turn tests it.",
+      "transition": "This Close stage has executed {stage_steps} physical steps. If zero, continue so a real closure attempt executes. After a close command actually executes, advance to the lift/turn test unless current RGB clearly shows a miss; a clear miss calls for restart, not endless re-closing. Last executed gripper command={gripper_command}. Contact proof is not required before the physical test."
+    },
+    "turn": {
+      "rz": "Compare the current black raised grip with its stationary base and the actual task demonstration BEFORE/AFTER. Which yaw about world Z helps operate the engaged knob? Positive is counterclockwise viewed from above, negative clockwise. Hold when the operated relationship is reached or yaw is not the useful shaft rotation, not merely because translation is aligned. No desired angle or angle error is supplied. The archived final operated-control example is supplied as a visual reference. Compare the fin relative to its base, not merely the hand relative to the camera.",
+      "gripper": "Retain close while attempting to turn the engaged knob. Open only for intentional recovery or the release stage.",
+      "transition": "Compare the CURRENT stove spiral and fin with the archived target appearance. If the spiral visibly matches the red target rings and the attempted fin operation is consistent with that image, advance to release/inspect; this is a visual match, not a hidden electrical measurement. If the fin remains hidden after a roughly quarter-turn own-hand attempt (current own Z rotation-vector change={stage_rotvec_z_deg} degrees), release/inspect to expose the result. Hand rotation alone does not prove the fin followed. Continue or recover for a visible mismatch; never rotate indefinitely solely to wait for an unobservable condition."
+    },
+    "release": {
+      "gripper": "Open the fingers to release the manipulated object or control. Last executed gripper command={gripper_command}. Retain open once opening has actually executed.",
+      "transition": "Release has executed {stage_steps} physical steps; the last actually executed gripper command is {gripper_command}. If this stage has zero physical steps, continue so the OPEN command can execute. After a real opening attempt has executed and the last command is open, ADVANCE to inspection. Do not require already-proven object support or activation before entering the stage that inspects it. An opening command alone is not task success."
+    },
+    "inspect": {
+      "x": "The gripper has been opened. Keep world X unchanged while retracting the empty hand unless current RGB clearly requires lateral clearance; do not move the manipulated object.",
+      "y": "The gripper has been opened. Keep world Y unchanged while retracting the empty hand unless current RGB clearly requires lateral clearance; do not move the manipulated object.",
+      "z": "Expose the result by moving the OPEN empty hand away from the manipulated object. Positive world Z is UP. Choose positive while the hand still hides or crowds the control/placed bottle; a roughly 50mm measured upward retreat in stage_own_motion is normally enough to inspect. Hold once the view is clear. If the object still follows the hand, it has not visibly been released; do not claim support.",
+      "transition": "After actually opening and exposing the stove, compare its spiral and fin with the archived target appearance. The foreground red-rimmed plate is unrelated. If the stove visibly remains at the initial grey-coil/unoperated appearance, restart; if a supported visual target match is observed, advance to end the inspection. If electrical state remains unknowable, distinguish that from the visible match; native task success is never supplied in this request."
+    }
+  },
+  "numeric_axis_intervals_mm": {
+    "descend_to_source": {
+      "x": [
+        -3,
+        3
+      ],
+      "y": [
+        -3,
+        3
+      ],
+      "z": [
+        4,
+        12
+      ]
+    },
+    "align_above_source": {
+      "x": [
+        -10,
+        10
+      ],
+      "y": [
+        -10,
+        10
+      ]
+    }
+  },
+  "stage_decision_rules": {
+    "align_above_source": "Advance ONLY if X and Y decisions are BOTH hold, the source reference is known, and the hand clearance is at least 80 mm. Otherwise continue coarse approach. Do not substitute an intended future alignment for these current facts.",
+    "descend_to_source": "If visual recovery is requested, restart. Otherwise continue if ANY listed X/Y/Z/rx/ry/rz decision is positive or negative. If ALL SIX are hold and the source reference is known, advance to an uncertain closure attempt; proven contact is not required. With unknown reference and all channels hold, follow the visual transition recommendation without treating unknown geometry as zero.",
+    "close": "If visual recovery is requested, restart. Otherwise continue when zero physical steps have executed in this phase or the last executed gripper command is not close. After a close command has actually executed in this phase, advance to its lift/turn test; contact proof is not required before the test.",
+    "release": "Continue when zero physical steps have executed in this phase or the last executed gripper command is not open. After an opening command has actually executed in this phase, advance to inspection. Do not demand proven support or activation before inspecting the result."
+  }
+}

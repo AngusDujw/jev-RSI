@@ -1,0 +1,40 @@
+"""Scoped stage decisions from prior model answers and own execution facts."""
+from legacy_decisions import convert_request
+
+
+STAGE_INPUT = ('Judge only the phase transition from the facts and rule printed '
+    'in the question. Advance and restart execute no physical action. '
+    'A phase transition is not a task-success assertion.')
+
+
+def build_stage_request(state,answers,protocol):
+    key=state['stage'].get('stage_key')
+    rule=protocol.get('stage_decision_rules',{}).get(key)
+    if rule is None:return None
+    choices={k:v['choice'] for k,v in answers.items()}
+    own=state.get('own_tool_geometry',{})
+    steps=state.get('stage_own_motion',{}).get('physical_steps','unknown')
+    source_known='actor_selected_surface' in state
+    if key=='align_above_source':
+        relative=state.get('observed_surface_relative_mm')
+        clearance=round(-relative[2],1) if relative is not None else 'unknown'
+        facts=f"X decision={choices.get('x')}; Y decision={choices.get('y')}; source reference known={source_known}; hand clearance above source={clearance} mm."
+    elif key=='descend_to_source':
+        facts='; '.join(a+' decision='+str(choices.get(a)) for a in ('x','y','z','rx','ry','rz'))
+        facts+=f"; source reference known={source_known}; visual recovery requested={choices.get('transition')=='restart'}."
+        if not source_known:facts+=' Visual transition recommendation='+str(choices.get('transition'))+'.'
+    elif key in ('close','release'):
+        facts=f"Physical steps actually executed in this phase={steps}; last executed gripper command={own.get('last_gripper_command','unknown')}; visual recovery requested={choices.get('transition')=='restart'}."
+    else:return None
+    return dict(model='gpt-6-luna',
+        state=dict(stage=state['stage'],request_purpose='formal_stage_classification',formal_stage_input=STAGE_INPUT),
+        questions=dict(transition=dict(type='choice',instructions=facts+' '+rule,
+            criteria={'continue':'The stated exit is not met; continue this phase.',
+                      'advance':'The stated exit is met; enter the next phase without physical motion.',
+                      'restart':'The phase premise is invalid and recovery is requested; return to coarse approach without physical motion.'})))
+
+
+def stage_payload(original):
+    payload=convert_request(original)
+    payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
+    return payload
