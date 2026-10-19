@@ -1,0 +1,59 @@
+"""Complete the originally requested comparison using fresh missing-slot trials."""
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import json
+from pathlib import Path
+import signal
+import sys
+
+import run_batch as batch
+
+
+def selected(mode,task,trial,layout):
+    stem=f'{mode}-{task}-trial{trial}-layout{layout}'
+    for run in sorted(batch.ARTIFACT_ROOT.glob(stem+'*')):
+        status=run/'status.json'
+        if not status.exists():continue
+        row=json.loads(status.read_text())
+        if (row.get('native') or {}).get('complete') is True:return row
+        # A started model-policy failure is retained as a failed trial. Previous
+        # interrupted infrastructure slots are replaced once, never resumed.
+        if mode=='decisions' and (run/'controller/run.json').exists() and row.get('status') in ('failed','controller_finished'):
+            return row
+        if '-completion-' in run.name and (run/'controller/run.json').exists() and row.get('status') in ('failed','controller_finished'):
+            return row
+    return None
+
+
+def main():
+    signal.signal(signal.SIGINT,lambda *_:batch.STOP.set())
+    signal.signal(signal.SIGTERM,lambda *_:batch.STOP.set())
+    if not batch.ARTIFACT_ROOT.is_mount():raise RuntimeError('Remote artifact mount required')
+    sys.path.insert(0,str(batch.ROOT/'official_runtime'))
+    report=dict(luna=[],decisions=[],original_attempts_preserved=True)
+    for mode,layouts in (('luna',[0,1,0]),('decisions',[0,1,0,1,0])):
+        if batch.STOP.is_set():break
+        def queue(task,gpu):
+            for trial,layout in enumerate(layouts,1):
+                if batch.STOP.is_set():return
+                row=selected(mode,task,trial,layout)
+                if row is None:
+                    suffix='completion-20261019a'
+                    if (batch.ARTIFACT_ROOT/f'{mode}-{task}-trial{trial}-layout{layout}-{suffix}').exists():
+                        raise RuntimeError('Completion attempt already exists; inspect rather than replay')
+                    row=batch.run_one(task,layout,(trial-1)*2+gpu,mode,trial,recovery=suffix)
+                with batch.LOCK:
+                    report[mode].append(row)
+                    (batch.ARTIFACT_ROOT/'comparison_completion_status.json').write_text(json.dumps(report,indent=2)+'\n')
+                if not (batch.ARTIFACT_ROOT/Path(row['remote']).name/'controller/run.json').exists():
+                    # Do not terminate another active episode after setup failure.
+                    raise RuntimeError('This slot failed before observations; other task continues')
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            failures=[]
+            for future in as_completed([pool.submit(queue,t,g) for g,t in enumerate(('stack_blocks','classify_objects'))]):
+                try:future.result()
+                except Exception as error:failures.append(str(error))
+            if failures:raise RuntimeError('; '.join(failures))
+    print(json.dumps(report),flush=True)
+
+
+if __name__=='__main__':main()

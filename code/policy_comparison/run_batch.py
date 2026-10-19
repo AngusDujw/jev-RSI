@@ -16,10 +16,10 @@ from prepare import PROJECT, ROOT, PYTHON
 
 REMOTE = '/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-policy-comparison-20261018'
 LOCK = threading.Lock()
-STARTUP = threading.Semaphore(2)
+STARTUP = threading.Semaphore(1)
 STOP = threading.Event()
 ARTIFACT_ROOT = Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-policy-comparison-20261018')
-SSH = ['ssh', '-F', '/dev/null', '-S', '/home/ykj/.ssh/s2-policy-20261018.ctl',
+SSH = ['ssh', '-F', '/dev/null', '-S', '/home/ykj/.ssh/s2-grasp-20261019.ctl',
        '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15']
 
 
@@ -28,14 +28,15 @@ def save(path, value):
         path.write_text(json.dumps(value, indent=2) + '\n')
 
 
-def run_one(task, layout, ordinal, mode, trial):
+def run_one(task, layout, ordinal, mode, trial, recovery=None):
     name = f'{mode}-{task}-trial{trial}-layout{layout}'
+    if recovery:name += '-'+recovery
     run = ARTIFACT_ROOT / name
     if run.exists():
         raise FileExistsError('Never replay an existing trial: ' + str(run))
     run.mkdir()
     gpu = ordinal % 2
-    port = 24300 + ordinal + (100 if mode == 'decisions' else 0)
+    port = 24300 + ordinal + (100 if mode == 'decisions' else 0) + (500 if recovery else 0)
     remote = REMOTE + '/' + name
     command = ['bash', REMOTE + '/launch_server.sh', str(gpu), task, remote, str(port)]
     env = os.environ.copy()
@@ -52,6 +53,11 @@ def run_one(task, layout, ordinal, mode, trial):
                  remote=remote, status='starting', native_episode_started=False)
     save(run / 'status.json', state)
     try:
+        if mode=='luna' and recovery:
+            check=subprocess.run([str(PYTHON),'-u',str(Path(__file__).with_name('preflight_pro.py')),
+                '--output',str(run/'preflight')],env=env,capture_output=True,text=True,timeout=180)
+            (run/'preflight-host.log').write_text(check.stdout+check.stderr)
+            if check.returncode:raise RuntimeError('Pro preflight failed: '+check.stderr[-1500:])
         with (run / 'server.log').open('w') as slog, (run / 'controller.log').open('w') as clog:
             with STARTUP:
                 # Ports are reserved for this trial; do not reuse an external listener.
@@ -64,17 +70,24 @@ def run_one(task, layout, ordinal, mode, trial):
                     raise RuntimeError('Less than 8GiB free before simulator start')
                 inventory_code = """import subprocess,sys
 gpu=sys.argv[1]
-containers=subprocess.check_output(['docker','ps','--filter','name=policy-20261018-','--format','{{.ID}}'],text=True).split()
+containers=subprocess.check_output(['docker','ps','--format','{{.Names}}'],text=True).split()
+containers=[x for x in containers if x.startswith(('policy-20261018-','grasp-20261019-'))]
 known=set()
 for container in containers:
     known.add(int(subprocess.check_output(['docker','inspect','--format','{{.State.Pid}}',container],text=True).strip()))
 raw=subprocess.check_output(['nvidia-smi','--id='+gpu,'--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True)
 occupants={int(x.strip()) for x in raw.splitlines() if x.strip().isdigit()}
 if occupants-known: raise RuntimeError('Foreign GPU occupant; refusing to share')
-if len(occupants)>=3: raise RuntimeError('Three own workers already occupy this GPU')
+mem={x.split(':')[0]:int(x.split()[1]) for x in open('/proc/meminfo')}
+if len(containers)>=3 or mem['MemAvailable']<20*1024**2: raise RuntimeError('WAIT_RESOURCE')
 """
-                subprocess.run(SSH + ['--','server02',shlex.join(['python3','-c',inventory_code,str(gpu)])],
-                               check=True,capture_output=True)
+                while True:
+                    check=subprocess.run(SSH+['--','server02',shlex.join(['python3','-c',inventory_code,str(gpu)])],capture_output=True,text=True)
+                    if check.returncode==0:break
+                    if 'WAIT_RESOURCE' not in check.stderr:raise RuntimeError(check.stderr[-1000:])
+                    state['status']='waiting_for_resources';save(run/'status.json',state)
+                    if STOP.is_set():raise KeyboardInterrupt('Batch cancellation')
+                    time.sleep(15)
                 subprocess.run(SSH + ['-O','forward','-L',f'127.0.0.1:{port}:127.0.0.1:{port}',
                     '--','server02'],check=True,capture_output=True)
                 sim = subprocess.Popen(SSH + ['--', 'server02', shlex.join(command)],
@@ -101,7 +114,8 @@ if len(occupants)>=3: raise RuntimeError('Three own workers already occupy this 
                     '--evaluation-method', 'gpt_only', '--codex', shutil.which('codex'),
                     '--sim-port', str(port), '--seed', str(layout), '--max-decisions', '0']
             else:
-                argv = [str(PYTHON), '-u', str(Path(__file__).with_name('decisions_policy.py')),
+                entry='decisions_comparison_completion.py' if recovery else 'decisions_policy.py'
+                argv = [str(PYTHON), '-u', str(Path(__file__).with_name(entry)),
                     '--output', str(run / 'controller'), '--task', task,
                     '--sim-port', str(port), '--seed', str(layout)]
             controller = subprocess.Popen(argv, cwd=ROOT / 'official_runtime', env=env,
