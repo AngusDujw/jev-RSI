@@ -1,0 +1,63 @@
+{
+  "revision": "v14-knob-matched-approach",
+  "axis_bands_mm": {
+    "align_above_source": 10,
+    "descend_to_source": 3
+  },
+  "stage_overrides": {
+    "align_above_source": {
+      "goal": "Align over the raised narrow stove-knob fin, not the circular base or burner. Keep a suitable downward finger approach and use current RGB to select an upper-fin reference.",
+      "exit": "Advance when the currently selected source-minus-hand X and Y are both within -10 to +10 mm inclusive. This is coarse horizontal alignment only. Fine grasp orientation and grasp height are judged in the next nearer-approach stage, not certified here.",
+      "control_contract": {
+        "translation": "Coarse horizontal alignment to the actor-selected visual reference.",
+        "height": "Keep suitable overhead clearance; being above the source is not a reason to rise further.",
+        "exit": "Advance when the currently selected source-minus-hand X and Y are both within -10 to +10 mm inclusive. This is coarse horizontal alignment only. Fine grasp orientation and grasp height are judged in the next nearer-approach stage, not certified here.",
+        "orientation": "Judge rotation separately from XYZ position and distance. A far-away hand can already have suitable orientation. The earlier orientation assessment is an unverified hypothesis, not a veto of completed coarse X/Y alignment."
+      }
+    },
+    "close": {
+      "goal": "Attempt closure around the positioned grasp region; secure holding will be tested next.",
+      "exit": "A close command has actually been executed. Advance provisionally unless fresh RGB clearly shows a missed grasp; contact proof is not required before the attempt.",
+      "control_contract": {
+        "translation": "Keep the positioned hand still during closure.",
+        "gripper": "Attempt closure before evaluating attachment.",
+        "exit": "Closure has actually been attempted; lift or turn tests engagement."
+      }
+    },
+    "descend_to_source": {
+      "goal": "Bring the open finger faces alongside the upper part of the raised fin so they can pinch its sides below the top, not hover above it. Select a genuine upper-fin feature from current RGB.",
+      "exit": "The selected knob grasp-region reference is within +/-3mm on X/Y and 4 to 12mm on Z, matching the axis questions, with no clear current-RGB contradiction to a closure attempt. This is not proven contact or holding."
+    }
+  },
+  "question_templates": {
+    "align_above_source": {
+      "z": "Is a world-Z clearance correction needed during horizontal alignment? Current source surface minus hand Z is {z_mm} mm. When the hand is already well above the source with visible clearance, hold Z; do not rise merely because this is an above-source stage. Positive is up, negative is down.",
+      "transition": "Current coarse source-minus-hand X={x_mm} mm, Y={y_mm} mm. Is coarse horizontal alignment complete? Advance when BOTH numbers lie within -10 to +10 mm inclusive. Do not require contact, grasp-height alignment, or perfect orientation here. Those belong to the next nearer-approach stage. A previous approach_mismatch label alone is not a reason to keep holding when X/Y are aligned. Continue if either current reference difference remains outside the band or is unknown.",
+      "rx": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Roll about fixed world X: with fingers nearly down, positive tilts them toward +Y and negative toward -Y. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "ry": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Pitch about fixed world Y: with fingers nearly down, positive tilts them toward -X and negative toward +X. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "rz": "Current goal: {stage_goal} Yaw about fixed world Z changes horizontal jaw heading; it cannot turn a downward finger approach into a sideways approach. Positive is counterclockwise viewed from above. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable."
+    },
+    "descend_to_source": {
+      "z": "Current selected knob grasp-region feature minus hand height Z={z_mm}mm. The positioning band is 4 to 12mm. Choose negative Z (DOWN) below 4mm; choose positive Z (UP) above 12mm; hold inside the band. This same height relationship is used by the stage exit. Current RGB must confirm the selected physical region and downward fingers; a surface coordinate does not prove contact.",
+      "transition": "Current source-reference minus hand X={x_mm}mm, Y={y_mm}mm, Z={z_mm}mm. Continue if X or Y is outside +/-3mm, or Z outside 4 to 12mm. When these SAME axis-positioning bands are reached, advance to ATTEMPT closure unless current RGB clearly contradicts the intended knob grasp. Do not require already-proven contact. Unknown values are not zero.",
+      "rx": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Roll about fixed world X: with fingers nearly down, positive tilts them toward +Y and negative toward -Y. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "ry": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Pitch about fixed world Y: with fingers nearly down, positive tilts them toward -X and negative toward +X. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "rz": "Current goal: {stage_goal} Yaw about fixed world Z changes horizontal jaw heading; it cannot turn a downward finger approach into a sideways approach. Positive is counterclockwise viewed from above. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "x": "Current RGB-selected source-reference minus hand X is {x_mm}mm. Choose positive when this number is above +3mm, negative below -3mm, and hold within -3 to +3mm. This is the same coarse reference band as the near-stage exit. Verify the reference is on the intended fin or upper neck from current RGB; a wrong body/base reference is not a valid alignment goal.",
+      "y": "Current RGB-selected source-reference minus hand Y is {y_mm}mm. Choose positive when this number is above +3mm, negative below -3mm, and hold within -3 to +3mm. This is the same coarse reference band as the near-stage exit. Verify the reference is on the intended fin or upper neck from current RGB; a wrong body/base reference is not a valid alignment goal."
+    },
+    "close": {
+      "gripper": "The goal is to ATTEMPT closure around the positioned region. Last executed gripper command={gripper_command}; current pad-centre separation={pad_separation_mm} mm. Choose close if closure has not been attempted; retain close if already closing/closed. Open only if visible recovery requires release. Closure is not proof of holding.",
+      "transition": "Last executed gripper command={gripper_command}. If it is open, continue this stage so closure can actually execute. After a close command has executed, advance provisionally to lift/turn unless fresh RGB clearly shows a missed grasp. Do not demand already-proven attachment before the test."
+    },
+    "turn": {
+      "rz": "Compare the current black raised grip with its stationary base and the actual task demonstration BEFORE/AFTER. Which yaw about world Z helps operate the engaged knob? Positive is counterclockwise viewed from above, negative clockwise. Hold when the operated relationship is reached or yaw is not the useful shaft rotation, not merely because translation is aligned. No desired angle or angle error is supplied.",
+      "gripper": "Retain close while attempting to turn the engaged knob. Open only for intentional recovery or the release stage.",
+      "transition": "Measured own rotation-vector Z change since entering Turn is {stage_rotvec_z_deg} degrees. Compare current visible knob change with the task demonstration. Hand rotation is NOT proof of knob rotation or activation. Once the visible operated relationship is reached, advance to release/inspect. If the hand hides the fin after an approximately quarter-turn engagement attempt (about 80 to 110 degrees of own Z change), also advance to release/inspect to expose the result, rather than rotate indefinitely while blind. This is an inspection attempt, never a success certificate."
+    },
+    "release": {
+      "gripper": "Open the fingers to release the manipulated object or control. Last executed gripper command={gripper_command}. Retain open once opening has actually executed.",
+      "transition": "If last executed gripper command={gripper_command} is still close, continue so opening can execute. After opening is observed or measured, advance to inspection. Opening alone is not task completion."
+    }
+  }
+}
