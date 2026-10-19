@@ -109,6 +109,11 @@ class DirectAPI(RevisedAPI):
     def revise(self, original):
         return original
     def build_payload(self, sent):
+        if sent['state'].get('request_purpose')=='multimodal_reference_selection':
+            from libero_reference_decision import reference_payload
+            payload=reference_payload(sent,self.current,self.stage_goal_reference)
+            self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
+            return payload
         if sent['state'].get('request_purpose')=='multimodal_rotation_axes':
             from libero_rotation_decision import rotation_payload
             payload=rotation_payload(sent,self.current,self.rotation_effect_examples,self.stage_goal_reference)
@@ -234,6 +239,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--scoped-reference-call',action='store_true',help='Current-image feature selection without motor demonstrations, history or world-position values')
     p.add_argument('--fin-central-samples',action='store_true',help='Additional actual visible upper-fin middle/quarter surface samples, not a hidden pivot')
     p.add_argument('--held-example-bank',type=Path,help='Immutable actual balanced held-object rotation examples for the separate rotation call')
     p.add_argument('--rotation-effect-hints',action='store_true',help='Observed-line local rotation effects only, no desired axis or error')
@@ -288,7 +294,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,fin_central_samples=args.fin_central_samples,held_example_bank=str(args.held_example_bank.resolve()) if args.held_example_bank else None,held_example_bank_sha256=hashlib.sha256(args.held_example_bank.read_bytes()).hexdigest() if args.held_example_bank else None,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,scoped_reference_call=args.scoped_reference_call,fin_central_samples=args.fin_central_samples,held_example_bank=str(args.held_example_bank.resolve()) if args.held_example_bank else None,held_example_bank_sha256=hashlib.sha256(args.held_example_bank.read_bytes()).hexdigest() if args.held_example_bank else None,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -619,11 +625,15 @@ def main():
                         attention['reference']['instructions']='Which labelled source dot is on a visible BOTTLE BODY region useful for fitting the whole bottle into the wooden cradle? The old neck grip point is not automatically a body-placement reference. Choose from CURRENT RGB; unknown if no body feature can be identified.'
                 if args.track_selected:
                     attention['reference']['instructions']+=(' S, when present, is a current RGB match of YOUR previous selection, measured again with current depth. Prefer S to keep the SAME physical grasp region while positioning; select a different C only when current RGB shows the old region is unsuitable. Do not switch from bottle neck to body merely because the dots moved. If S is absent its match was lost; select a genuinely visible suitable region or unknown, never infer current XYZ from history.')
+                if args.track_selected and placing:
+                    from libero_reference_decision import PLACEMENT_REFERENCE
+                    attention['reference']['instructions']=PLACEMENT_REFERENCE
                 attention_state=state
                 if args.focused_questions:
                     attention_state={k:v for k,v in state.items() if k not in ('own_gripper_world_mm','coordinate_frame_note','visible_surface_samples')}
                     attention_state['visible_dot_labels']=[dict(label=v['label'],pixel_uv=v['pixel_uv']) for v in candidates.values()]
                 if args.reference_only:attention.pop('orientation_relation',None)
+                if args.scoped_reference_call:attention_state=dict(state,request_purpose='multimodal_reference_selection')
                 assessment=api.post('/systemone',dict(model='gpt-6-luna',state=attention_state,questions=attention))
                 selected=assessment['answers']['reference']['choice']
                 if args.track_selected and tracker is not None:tracker.select(selected)
