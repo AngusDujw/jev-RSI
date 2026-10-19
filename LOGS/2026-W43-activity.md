@@ -113,3 +113,5 @@
 - 【Agent】【2026-10-20 02:00】[op] 新建实验块 EXP-2026W43-032：--help  ↪ `EXP-2026W43-032`
 - 【Agent】【2026-10-20 02:00】[op] v22 completed0/2 native/program at1198steps (326/301API); Pro8 complete. v23 two native cases executing with actual images/IO, plus isolated knob600 step pilot two cases. EXP032 fills the empty block accidentally created by new_exp.py --help; no historical experiment deleted.
 - 【Agent】【2026-10-20 02:03】[op] Continuation verified live native PIDs475419/475420/476828/476829, no restart. Saved DataStorage iteration-v23/active-agency-audit.json: all50 physical commands (15+15+10+10) match original du Decisions answers; 64/64/43/42 original replies audited. Partial snapshot only, no new completion claim.
+- 【Agent】【2026-10-20 02:10】[op] 新建实验块 EXP-2026W43-033：v23实际Lift停滞后的短视觉阶段接口及v24原生对照  ↪ `EXP-2026W43-033`
+- 【Agent】【2026-10-20 02:10】[op] v24 independent native12/13 launched from005390f2; exact step442 visual Lift calibration choseadvance0.55/conf0.33, zero native actions, no resampling. Original4 live episodes retained. Evidence and original request/response saved under DataStorage iteration-v24; EXP033 strict complete.
