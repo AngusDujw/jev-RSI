@@ -12,6 +12,9 @@ def compact_audit(root):
     """Audit split Decisions calls against immutable request and execution evidence."""
     result=json.loads((root/'result.json').read_text()) if (root/'result.json').exists() else None
     manifest=json.loads((root/'manifest.json').read_text())
+    # Snapshot executed rows before reading requests so a live episode cannot
+    # append an action whose later request was absent from the initial scan.
+    actions=[json.loads(s) for s in (root/'execution.jsonl').read_text().splitlines()] if (root/'execution.jsonl').exists() else []
     counts=Counter();purposes=Counter();answers_by_observation={}
     forbidden={'reward','success','contact','object_pose','target_pose','required_rotation_world_rad','goal_minus_current'}
 
@@ -68,7 +71,6 @@ def compact_audit(root):
             assert answer['choice'] in {c['value'] for c in questions[answer['name']]['choices']}
             chosen[answer['name']]=answer['choice']
         counts['responses']+=1
-    actions=[json.loads(s) for s in (root/'execution.jsonl').read_text().splitlines()] if (root/'execution.jsonl').exists() else []
     diagnostic=manifest.get('diagnostic_replay',False)
     for row in actions:
         if diagnostic:continue
