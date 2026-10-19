@@ -162,6 +162,7 @@ graph LR
     T_2026W43_006["📊 decision-multimodal<br/>v4090-t批次23完整评估0成功、33…"]:::experiment
     T_2026W43_007["📊 decision-multimodal<br/>无模型失败回放重现固定窗口身份丢失与观察阶…"]:::experiment
     T_2026W43_008["📊 decision-multimodal<br/>v7两任务598步零闭爪；旋钮跟错自身与酒…"]:::experiment
+    T_2026W43_009["📊 decision-multimodal<br/>v13-16完整13例仍false；独立文…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -283,6 +284,7 @@ graph LR
   T_2026W43_005 --> T_2026W43_006
   T_2026W43_006 --> T_2026W43_007
   T_2026W43_007 --> T_2026W43_008
+  T_2026W43_008 --> T_2026W43_009
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -431,6 +433,7 @@ graph LR
 | `T-2026W43-006` | 2026-10-19 | experiment | decision-multimodal | v4090-t批次23完整评估0成功、3386回答且无SSH异常；瓶停抓取/钮停观察抓取，传输稳定后暴露控制接口缺口 | `EXP-2026W43-014` | - |
 | `T-2026W43-007` | 2026-10-19 | experiment | decision-multimodal | 无模型失败回放重现固定窗口身份丢失与观察阶段远离；v2/v3各6例改当前感知和简单阶段，未有成功结论 | `EXP-2026W43-015` | - |
 | `T-2026W43-008` | 2026-10-19 | experiment | decision-multimodal | v7两任务598步零闭爪；旋钮跟错自身与酒瓶参照切换已具证，v9六例改当前点匹配/自身排除/近似朝下姿态 | `EXP-2026W43-017` | - |
+| `T-2026W43-009` | 2026-10-20 | experiment | decision-multimodal | v13-16完整13例仍false；独立文本也有符号错，同runtime题面18/18校准；v19模型阶段一致性11/11后六原生待评 | `EXP-2026W43-023` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
