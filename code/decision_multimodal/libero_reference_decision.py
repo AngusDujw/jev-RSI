@@ -29,11 +29,23 @@ def reference_payload(original,current,goal_reference,raw_cameras=None):
     content=[dict(type='input_text',text=REFERENCE_INPUT+' C labels and their pixel coordinates belong to current_source_observation_camera; verify that camera image, not a different view. A candidate from another current camera remains a visual hypothesis.'),dict(type='input_text',text=json.dumps(curated,separators=(',',':')))]
     if state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect'):
         content.extend(goal_reference)
-    content.extend(current)
+    card=None
     if raw_cameras and state['stage'].get('stage_key') in ('align_above_source','descend_to_source','close'):
         card=candidate_detail_card(state,raw_cameras)
-        if card is not None:
-            content.extend([dict(type='input_text',text='CURRENT candidate details, same synchronized observation. Each ring is at that candidate ACTUAL pixel in raw RGB. Overview text may be displaced by a leader line: classify the ring location here, not the overview text position. All candidates are unranked observations, not action candidates or grasp recommendations.'),card])
+    if card is None:content.extend(current)
+    else:
+        # Replace the displaced-label detail with actual-pixel details rather
+        # than asking the actor to reconcile two conflicting enlarged views.
+        skip_image=False
+        for part in current:
+            if part['type']=='input_text' and part['text'].startswith(('CURRENT fixed-view source detail','CURRENT detail from the last')):
+                skip_image=True;continue
+            if skip_image:
+                if part['type']!='input_image':raise ValueError('Source detail caption lacks its image')
+                skip_image=False;continue
+            content.append(part)
+        if skip_image:raise ValueError('Incomplete source detail pair')
+        content.extend([dict(type='input_text',text='CURRENT candidate details, same synchronized observation. Each ring is at that candidate ACTUAL pixel in raw RGB. Overview text may be displaced by a leader line: classify the ring location here, not the overview text position. All candidates are unranked observations, not action candidates or grasp recommendations.'),card])
     payload['input']=[dict(role='user',content=content)]
     return payload
 
