@@ -33,3 +33,5 @@
 - 【Agent】【2026-10-19 12:50】[op] 新建实验块 EXP-2026W43-008：--help  ↪ `EXP-2026W43-008`
 - 【Agent】【2026-10-19 12:50】[op] 新建实验块 EXP-2026W43-009：--help  ↪ `EXP-2026W43-009`
 - 【Agent】【2026-10-19 12:51】[op] Added compact image-free rollout recording, shared fixed example bank, concurrent authorized Decisions bridge and resource-gated v4090 scheduler; preserved mistakenly allocated EXP008/009 as migration checkpoints.
+- 【Agent】【2026-10-19 12:59】[op] Deployed committed Git bundles to a separate v4090 worktree; copied verified native dependencies/assets to DataStorage, isolated missing ImageMagick libraries, started native scheduler at cap2 and local 12-worker compact Decisions bridge in independent tmux sessions.
+- 【Agent】【2026-10-19 13:00】[op] Verified two real v4090 native cases each returned4 Decisions answers, executed22/26 native steps, saved0 rollout PNG; measured about1.2GiB RSS each and1057MiB combined extra GPU memory; raised campaign cap from2 to24 with existing memory/disk guards.
