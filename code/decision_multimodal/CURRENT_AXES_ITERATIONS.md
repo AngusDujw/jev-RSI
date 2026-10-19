@@ -2,11 +2,21 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
+## Latest verified results: 2026-10-20
+
+- Knob v20 development: native success and normal program completion **2/2**, initial states8/9, **646 physical steps each**,218 Decisions responses each.
+- These are explicitly **extended1200-budget results**, not600-step completions.
+- Original policy commit329d9c12 and protocol9c33a1e0 are frozen in a separate worktree for predeclared new initial states14/15/16; no failures will be replaced. Their terminal results are pending.
+- Bottle v21 remains under test; no complete bottle native success is asserted.
+- [Frozen profile](protocols/knob_v20_freeze.json) and EXP-2026W43-028 identify the exact condition. Subsequent shape features, held-object demonstration banks and fin-centre diagnostics are not part of this winning v20 policy.
+
+The complete successful-run audit matched all106 executed actions channel by channel with original API answers, checked792 current camera images, English-only requests, du Decisions dispatch and no experience injection. Two same-tick annotated images differed only within source-marker/label drawing regions; canonical exact model inputs are immutable evidence/images assets, not the mutable tick-named annotated PNGs.
+
 ## Accounts and control boundary
 
 - Planner: local ChatGPT Pro, `gpt-6.1-sol`, high reasoning, `pro_plan.py`. No du key, memory injection or repository instructions enter its request.
 - Actor: authorized du credential, `gpt-6-luna`, **only `/v1/decisions`**. Every motion axis retains positive, negative and hold options. The actor also decides gripper and stage changes.
-- Execution: track the actor-selected relative own-robot pose. No scene target determines a movement sign. All physical steps count against the native 600-step limit.
+- Execution: track the actor-selected relative own-robot pose. No scene target determines a movement sign. All physical steps count against the declared budget: default600, explicitly separate extended development/stability1200.
 - Models receive current RGB, measured own robot state, public camera calibration used by perception, and declared RGB-D surface candidates. No scene object state, contact flags, reward or native success is model input.
 - Experience is collected in English, not injected.
 
@@ -40,7 +50,7 @@ All native assets live under `/home/v4090-1/DataStorage/gpt6-dec/libero-decision
 
 [RoboDawn harness](https://github.com/Hugo-AGI/RoboDawn/blob/main/harness/README.md) motivates own-TCP semantics, observing executed effects, and actual RGB/state/command demonstrations. [Its demonstration loader](https://github.com/Hugo-AGI/RoboDawn/blob/main/harness/agent/demos.py) shows strategy examples rather than copying a current target pose. We retain our categorical Decisions interface and do not copy its privileged evaluator feedback or its gripper-opening grasp heuristic.
 
-The last frozen batch completed 23 native evaluations with zero successes. A new stage, a close command, accurate robot tracking or a visually selected feature is not task success. Freeze a promising profile before evaluating all three fixed initial states per task; preserve every failure.
+The original compact batch completed23 native evaluations with zero successes; v20 has since produced the development completions reported above. A new stage, a close command, accurate robot tracking or a visually selected feature is not task success. Freeze a promising profile before evaluating all three fixed initial states per task; preserve every failure.
 
 ## Continuing development
 
@@ -51,7 +61,7 @@ The last frozen batch completed 23 native evaluations with zero successes. A new
 - [Official Decisions documentation](https://developers.openai.com/api/docs/guides/decisions#ask-multiple-questions) requires separate requests when later decisions depend on earlier answers; visual reference selection therefore precedes the axis request.
 - A bounded RAM image cache reconstructs and verifies the original complete payload before API dispatch. No cached historical image replaces a requested current image. Bridge timing separates transfer from API waiting.
 
-Live review: http://100.75.107.115:18943/ . All recorded image assets stay in DataStorage. The current protocol source is `protocols/libero_feature_stages_v7.json`; actual revisions are retained under each native episode.
+Live review: http://100.75.107.115:18943/ . All recorded image assets stay in DataStorage. Historical v7 uses protocols/libero_feature_stages_v7.json; the successful knob profile uses protocols/libero_knob_stages_v20.json, and bottle v21 uses its separately labelled protocol. Actual revisions are retained under each native episode.
 
 Audit clarification: early manifests inherited the unqualified field `scene_target_or_error_inputs=false`, and early dispatches used `no_target_geometry`. Those names are inaccurate for assisted conditions: current RGB-D surface coordinates and actor-selected positional differences ARE supplied. Future manifests explicitly distinguish camera-derived geometry/relative feedback from privileged scene targets and computed orientation errors. Historical records are retained; exact request evidence is authoritative.
 

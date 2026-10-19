@@ -1,0 +1,46 @@
+{
+  "kind": "outer_experiment_freeze",
+  "policy_commit": "329d9c12827d26c59d49fa11b11b7b0016d8726c",
+  "source_sha256": "41a142354cdc22b05b4b2a2575758c88fbf3ec01e6726a16016f7391b4089ae3",
+  "protocol_sha256": "9c33a1e0e46cc61dd3fc5c04f86ae0d4aa35f3523797540d0b45a90667293145",
+  "plan_sha256": "c03d2672583b56319e5be105b9f974796d6c473ca5d9cc19a664a6c6a14a8c60",
+  "task": 1383,
+  "development_init_states": [
+    8,
+    9
+  ],
+  "development_native_success": [
+    true,
+    true
+  ],
+  "development_program_finished": [
+    true,
+    true
+  ],
+  "development_steps": [
+    646,
+    646
+  ],
+  "verification_initial_states": [
+    14,
+    15,
+    16
+  ],
+  "verification_no_replacements": true,
+  "horizon": 1200,
+  "budget_note": "Extended development/stability budget. The646-step results do not meet600-step budget.",
+  "actor": {
+    "model": "gpt-6-luna",
+    "endpoint": "https://api.openai.com/v1/decisions",
+    "key_origin": "du"
+  },
+  "planner": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "account": "local ChatGPT Pro"
+  },
+  "experience_injection": false,
+  "computed_orientation_error": false,
+  "asset_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v20",
+  "verification_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v20-verify"
+}
