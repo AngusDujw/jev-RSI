@@ -125,7 +125,7 @@ class DirectAPI(RevisedAPI):
         # Check structured field names, not substrings in images or words like successive.
         audit(self.sent_state)
     def input_audit(self):
-        return dict(no_target_geometry=True,no_error_feedback=True,examples='Measured own-robot primitive effects',
+        return dict(no_target_geometry=True,no_error_feedback=not getattr(self,'actor_attention',False),examples='Measured own-robot primitive effects',
                     native_tick=self.tick,action_signs_chosen_by_model=True)
 
 
@@ -210,6 +210,7 @@ def main():
     p.add_argument('--replay',type=Path,help='Replay archived executed commands without calling any model; diagnostic only')
     p.add_argument('--execution-steps',type=int,default=4,choices=range(4,21),help='Own-pose servo steps per categorical decision')
     p.add_argument('--live-surfaces',action='store_true',help='Current RGB component surface samples instead of stale fixed source-window dots')
+    p.add_argument('--actor-attention',action='store_true',help='Decision model chooses a visible reference and orientation relationship before deciding action axes')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -238,6 +239,7 @@ def main():
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
     api.record_evidence=args.record_evidence
+    api.actor_attention=args.actor_attention
     replay_rows=[json.loads(s) for s in args.replay.read_text().splitlines()] if args.replay else None
     if args.adaptive_steps:
         api.motion=MOTION.replace('Use fine scale near contact;\nuse coarse scale for clear free-space movement.',
@@ -332,7 +334,8 @@ def main():
             if time.monotonic()-started>args.wall_seconds:raise TimeoutError('Native episode wall budget')
             api.current=capture();api.previous=previous;api.tick=tick
             state=dict(task=instruction,stage=stages[stage],stage_order=stages,
-                gripper_joints=obs['robot0_gripper_qpos'].tolist(),last_actions=history[-4:],
+                gripper_joints=obs['robot0_gripper_qpos'].tolist(),
+                last_actions=[{k:v for k,v in row.items() if not k.startswith(('own_position_','own_rotation_'))} for row in history[-4:]],
                 next_stage=stages[min(stage+1,len(stages)-1)])
             if args.grounded:
                 state['source_description']=plan.get('source_description','Identify the named object from current images.')
@@ -402,6 +405,39 @@ def main():
             if args.coordinate_questions:
                 if not args.surface_context:raise ValueError('Coordinate questions require current visible surface context')
                 questions=coordinate_questions(state,questions)
+            if args.actor_attention and replay_rows is None:
+                candidates={s['label']:s for s in state['visible_surface_samples']}
+                attention=dict(reference=dict(type='choice',
+                    instructions='Use CURRENT RGB to choose a currently visible labelled surface feature relevant to the CURRENT stage. For grasping choose a graspable part of the actual source, not the robot/background. For rack placement choose the relevant rack support. This is your visual selection, not a movement recommendation. Unknown if no suitable visible labelled feature exists.',
+                    criteria={**{k:'Select current observed dot '+k+'.' for k in candidates},
+                        'unlabelled':'A useful object feature is visible but no current dot identifies it.',
+                        'unknown':'No suitable visible feature can be identified.'}),
+                    orientation_relation=dict(type='choice',
+                    instructions='From CURRENT object and finger geometry, which orientation relationship matters for the CURRENT stage? This identifies a visual relationship, not a rotation sign.',
+                    criteria=dict(aligned='The present tool orientation fits the stage relationship.',
+                        closing_mismatch='The finger closing direction does not fit the visible grasp or placement geometry.',
+                        approach_mismatch='The direction the fingers approach does not fit the visible geometry.',
+                        turn_required='The grasped control must now be rotated about its visible shaft.',
+                        unclear='The relevant orientation relationship is not visible clearly enough.')))
+                assessment=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=attention))
+                selected=assessment['answers']['reference']['choice']
+                state['actor_visual_assessment']={k:v['choice'] for k,v in assessment['answers'].items()}
+                if selected in candidates:
+                    observed=np.array(candidates[selected]['visible_surface_world_mm'])
+                    state['actor_selected_surface']=candidates[selected]
+                    state['observed_surface_relative_mm']=np.round(observed-np.array(state['own_gripper_world_mm']),1).tolist()
+                    state['relative_observation_meaning']='Observed surface minus own gripper, XYZ in millimetres. This feature was selected by YOU from CURRENT RGB. It is not a desired pose or a required displacement. Surface versus object centre and overhead/descent/placement relationships still require visual judgement; no orientation correction is computed.'
+                    for i,a in enumerate(('x','y','z')):
+                        questions[a]['instructions']=(f'Current stage: {state["stage"]["name"]}. Goal: {state["stage"]["goal"]}. '
+                            f'Your RGB-selected observed feature has {a.upper()} coordinate minus gripper coordinate = {state["observed_surface_relative_mm"][i]} mm. '
+                            f'Positive increases the gripper world {a.upper()} coordinate; negative decreases it; hold retains it. '
+                            'Choose the direction that achieves the stage relationship, using current RGB to judge clearance, object thickness and finger geometry. '
+                            'For above-source alignment retain vertical clearance rather than descending directly onto a visible surface. '
+                            'For descent move fingers alongside the object; the sampled visible skin is not its hidden centre. '
+                            'For close or release keep position unless a visible positioning correction is needed.')
+                questions['gripper']['instructions']=('Current stage goal: '+state['stage']['goal']+'. '
+                    'Choose open, close, or retain the last command. A Close stage asks you to attempt closure around the positioned object; '
+                    'do not require already-proven contact before selecting close. Closing alone does not prove grasp; the next observations test it.')
             if args.adaptive_steps:
                 questions.pop('scale')
                 state['step_policy']='Direction-history adaptation only; no object-target residual controls magnitude. The last execution contains commanded and measured effects.'
