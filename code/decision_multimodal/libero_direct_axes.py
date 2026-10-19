@@ -214,6 +214,7 @@ def main():
     p.add_argument('--focused-questions',action='store_true',help='Three readable source labels, stage-local examples and short legacy-style axis questions')
     p.add_argument('--relative-step-scale',action='store_true',help='Unsigned translation magnitude from actor-selected observed feature differences; never choose signs')
     p.add_argument('--numeric-xy',action='store_true',help='Explicit legacy-style coarse X/Y reference alignment; Z and rotations remain visual/stage judgements')
+    p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -241,9 +242,10 @@ def main():
         focused_questions=args.focused_questions,
         relative_step_scale=args.relative_step_scale,
         numeric_xy=args.numeric_xy,
+        reference_history=args.reference_history,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
-    stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
+    stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
     api.record_evidence=args.record_evidence
@@ -366,6 +368,9 @@ def main():
                 for index,part in enumerate(full_demonstrations):
                     if part['type']=='input_text' and 'phase '+phase+'.' in part['text']:
                         api.demonstrations+=full_demonstrations[index:index+2]
+            if args.reference_history:
+                state['recent_actor_visual_choices']=visual_history[-3:]
+                state['reference_continuity']='These are your earlier choices in THIS episode, not current geometry. Keep a consistent physical grasp/support part while the stage remains unchanged and fresh RGB confirms it. Current C labels are sampled pixels, not persistent material landmarks. Change the chosen part when current evidence warrants it; never reuse an old XYZ estimate.'
             if args.grounded:
                 state['source_description']=plan.get('source_description','Identify the named object from current images.')
                 state['visual_cues']=plan.get('relevant_visual_cues',[])
@@ -471,6 +476,7 @@ def main():
                 selected=assessment['answers']['reference']['choice']
                 state['actor_visual_assessment']={k:v['choice'] for k,v in assessment['answers'].items()}
                 state['actor_visual_assessment_confidence']={k:v['confidence'] for k,v in assessment['answers'].items()}
+                visual_history.append(dict(native_tick=tick,stage=stage,choices=state['actor_visual_assessment'],confidence=state['actor_visual_assessment_confidence']))
                 if selected in candidates:
                     observed=np.array(candidates[selected]['visible_surface_world_mm'])
                     state['actor_selected_surface']=candidates[selected]
@@ -572,7 +578,7 @@ def main():
             else:dp=signs[:3]*step_m;dr=signs[3:]*step_r
             if args.relative_step_scale:
                 difference=state.get('observed_receiver_minus_source_mm',state.get('observed_surface_relative_mm'))
-                if difference is not None and state['stage'].get('stage_key') not in ('close','turn','release','inspect'):
+                if difference is not None and state['stage'].get('stage_key') in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
                     # A magnitude cannot reverse, invent or suppress an actor sign.
                     magnitude=np.clip(.3*np.abs(np.asarray(difference))/1000,.002,.02)
                     dp=signs[:3]*magnitude
