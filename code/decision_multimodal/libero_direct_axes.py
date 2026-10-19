@@ -219,6 +219,8 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--raised-fin-surfaces',action='store_true',help='Propose current highest visible black surfaces in the knob identity region, never a true pose or target angle')
+    p.add_argument('--part-questions',action='store_true',help='Name the actual grasp/placement part explicitly in the visual-reference question')
     p.add_argument('--retain-rotation-examples',action='store_true',help='Include independent yaw/pitch/roll before-after cards in each relevant later request; the API has no implicit image memory')
     p.add_argument('--stage-motion',action='store_true',help='Measured own-hand displacement since entering the current stage, never object or desired motion')
     p.add_argument('--receiver-surfaces',action='store_true',help='Current receiver wood-component RGB-D candidates instead of a window lattice')
@@ -261,7 +263,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -292,7 +294,7 @@ def main():
     tracker=None
     if args.live_surfaces:
         from libero_visual_surfaces import SurfaceTracker
-        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383,track_selected=args.track_selected)
+        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383,track_selected=args.track_selected,raised_feature=args.raised_fin_surfaces and args.task==1383)
     receiver_tracker=None
     if args.receiver_surfaces and 'receiver_fixed_view_bbox_xyxy' in plan:
         from libero_visual_surfaces import SurfaceTracker
@@ -424,6 +426,15 @@ def main():
                 state['stage_own_motion']=dict(physical_steps=tick-stage_origin_tick,translation_world_mm=np.round((p_now-stage_origin_p)*1000,1).tolist(),
                     relative_world_rotvec_deg=np.round(np.rad2deg(Rotation.from_matrix(R_now@stage_origin_R.T).as_rotvec()),1).tolist(),
                     meaning='Measured own-hand motion since stage entry only, never object motion, target angle, contact or task completion.')
+            if args.stage_motion:
+                comparisons=[]
+                for row in [r for r in history if 'commanded_translation_mm' in r][-3:]:
+                    cmd=np.asarray(row['commanded_translation_mm']);actual=np.asarray(row['measured_translation_mm']);squared=float(cmd@cmd)
+                    comparisons.append(dict(commanded_translation_mm=cmd.tolist(),measured_translation_mm=actual.tolist(),
+                        commanded_length_mm=round(float(np.linalg.norm(cmd)),2),measured_length_mm=round(float(np.linalg.norm(actual)),2),
+                        projected_motion_gain=round(float(actual@cmd)/squared,3) if squared>1 else None))
+                state['recent_own_execution_comparison']=comparisons
+                state['execution_comparison_meaning']='Measured own motion versus own commands only. A low gain is poor execution progress, not a contact flag or a reason to assume a particular scene obstacle.'
             if args.focused_questions:
                 state.pop('stage_order');state.pop('next_stage');state['last_actions']=state['last_actions'][-1:]
                 phase=('approach' if 'Align above' in stages[stage]['name'] and 'rack' not in stages[stage]['name'] else
@@ -548,6 +559,14 @@ def main():
                     if placing:
                         attention['receiver']=dict(type='choice',instructions='Which B dot lies on a useful current rack support for this placement? Use current RGB to distinguish wood from background or robot.',
                             criteria={**{k:'Select receiver surface '+k+'.' for k in candidates if k.startswith('B')},'unknown':'No useful rack support dot is visible.','unlabelled':'A useful support is visible but not labelled.'})
+                if args.part_questions:
+                    if stage_key in ('align_above_source','descend_to_source'):
+                        attention['reference']['instructions']=(
+                            'Which labelled dot is on the RAISED THIN FIN above the round stove-knob base? Only that fin is intended for pinching. Reject dots on the circular base, burner, robot or table. If the fin is visible but not labelled choose unlabelled; if hidden choose unknown.'
+                            if args.task==1383 else
+                            'Which labelled dot is on the NARROW UPPER GREEN NECK immediately below the tan cork? This is the intended grasp region; reject dots on the wider bottle body, robot or background. If the neck is visible but not labelled choose unlabelled; if hidden choose unknown.')
+                    elif placing:
+                        attention['reference']['instructions']='Which labelled source dot is on a visible BOTTLE BODY region useful for fitting the whole bottle into the wooden cradle? The old neck grip point is not automatically a body-placement reference. Choose from CURRENT RGB; unknown if no body feature can be identified.'
                 if args.track_selected:
                     attention['reference']['instructions']+=(' S, when present, is a current RGB match of YOUR previous selection, measured again with current depth. Prefer S to keep the SAME physical grasp region while positioning; select a different C only when current RGB shows the old region is unsuitable. Do not switch from bottle neck to body merely because the dots moved. If S is absent its match was lost; select a genuinely visible suitable region or unknown, never infer current XYZ from history.')
                 attention_state=state

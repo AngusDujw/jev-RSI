@@ -28,3 +28,7 @@ No claim of stable success follows from these observations. Complete native outc
 - A receiver identity window is not a receiver mask. Fixed grid dots may land on walls, the robot or other furniture and produce metre-scale false references. Generate current surface candidates on a plausible RGB component and retain semantic verification.
 - A top-down image overlap can trigger closure while the source is still centimetres below the hand. Check a physical capture-height relationship separately; contact proof is not required, but absence of height overlap is real contrary evidence.
 - Placement needs the held object body to fit the receiver, not automatic retention of its lift posture. State the body-versus-support relationship separately from translation.
+
+- Name the required part in the visual-selection question itself: a knob fin is not its base, and an upper bottle neck is not its body. A generic source-feature question permits physically wrong but semantically related references.
+- Repeated tiny measured motion despite nonzero own commands needs recovery and fresh part identification, not more of the same correction. Own execution gain does not identify contact or an obstacle.
+- Release and inspection have a causal order: execute opening, expose the object, then inspect. Requiring the hidden outcome before entering inspection can create another endless gate.

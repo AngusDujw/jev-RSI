@@ -44,6 +44,8 @@ def scheduler(path):
             if case.get('reference_history'):command+=['--reference-history']
             if case.get('protocol_file'):command+=['--protocol-file',case['protocol_file']]
             if case.get('live_protocol'):command+=['--live-protocol']
+            if case.get('raised_fin_surfaces'):command+=['--raised-fin-surfaces']
+            if case.get('part_questions'):command+=['--part-questions']
             if case.get('retain_rotation_examples'):command+=['--retain-rotation-examples']
             if case.get('stage_motion'):command+=['--stage-motion']
             if case.get('receiver_surfaces'):command+=['--receiver-surfaces']
