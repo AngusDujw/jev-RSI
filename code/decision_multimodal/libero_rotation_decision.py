@@ -65,7 +65,10 @@ def build_rotation_request(state,explain_current_effect=False,bind_span=False,fr
     if free_posture:
         for name,(axis,effect) in effects.items():
             purpose=('improve a clear approach to the upper receiving support while retaining the bottle' if key=='align_source_above_receiver' else 'improve supported footprint, stability and finger clearance on the upper receiving support')
-            questions[name]['instructions']=f'For fixed world {axis} rotation, which positive, negative or hold choice would {purpose}? {effect} Negative reverses it. No particular bottle yaw, tilt, slat alignment or historical demonstration posture is required. Hold if the current posture is already useful; judge the current bottle extent and support, not merely a hand axis. All three choices form ONE world rotation vector.'
+            questions[name]['instructions']=f'Is a rotation about fixed world {axis} clearly needed to {purpose}? {effect} Negative reverses it. XYZ handles positional approach: being far from the rack or having a large position error does not make the bottle orientation wrong. Preserve the current posture unless this rotation has a clear visible clearance or support benefit. No particular bottle yaw, tilt, slat alignment or historical demonstration posture is required. Judge the current bottle extent and support, not merely a hand axis. All three choices form ONE world rotation vector.'
+            questions[name]['criteria']={'positive':f'A clear current angular-clearance or support-fit reason favours positive world-{axis} rotation.',
+                'negative':f'A clear current angular-clearance or support-fit reason favours negative world-{axis} rotation.',
+                'hold':f'No clear angular correction is needed about world {axis}; preserve this orientation channel while XYZ handles positioning.'}
             if explain_current_effect and current is not None:
                 derivative=[round(v,3) for v in derivatives[name]]
                 questions[name]['instructions']+=f' Current observed body line v={current}; a small positive increment changes this representative line along dv/dtheta={derivative} if the bottle follows the hand. This is a generic local rotation effect, not a desired axis, angle error or recommended motor sign.'
