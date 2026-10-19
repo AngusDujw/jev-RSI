@@ -67,3 +67,18 @@ Cap increased to 24 after this check. All 24 processes were then alive, queue
 empty; total GPU memory was 22160 MiB including pre-existing other-user usage,
 with 26349 MiB free and about 54 GiB available RAM. No completed new terminal
 evaluation was available at this checkpoint.
+
+
+## Infrastructure continuation, EXP-2026W43-010
+
+The original batch ended at 14:05 with 23 infrastructure interruptions and
+one evaluated normal failure. Continue only the 23 interrupted cases in a new
+campaign-retry1 folder; each case records retry_of. Keep the normal failure.
+Scheduling now rotates by the episode's last service time instead of fixed
+root order. Network errors with no received response and HTTP 429/502/503/504
+allow at most three attempts, each audited. A received answer or refusal is
+never resampled; no exactly-once server computation guarantee is claimed for
+a connection lost after sending. Persisted replies remain authoritative for
+delivery recovery. Native spool waiting is 1800 seconds. Startup still checks
+two actual native/Decisions streams before raising concurrency. New tmux
+control sockets are explicit project/DataStorage files, not default /tmp paths.

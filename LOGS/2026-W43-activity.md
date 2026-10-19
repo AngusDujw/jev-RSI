@@ -36,3 +36,6 @@
 - 【Agent】【2026-10-19 12:59】[op] Deployed committed Git bundles to a separate v4090 worktree; copied verified native dependencies/assets to DataStorage, isolated missing ImageMagick libraries, started native scheduler at cap2 and local 12-worker compact Decisions bridge in independent tmux sessions.
 - 【Agent】【2026-10-19 13:00】[op] Verified two real v4090 native cases each returned4 Decisions answers, executed22/26 native steps, saved0 rollout PNG; measured about1.2GiB RSS each and1057MiB combined extra GPU memory; raised campaign cap from2 to24 with existing memory/disk guards.
 - 【Agent】【2026-10-19 14:21】[result] 用户询问当前实验是否仍在运行；只读核实v4090 campaign已结束，active0 queued0，24份result，1份native_evaluated=true且success=false、23份网络/等待中断；1293份实际模型回答，本机bridge心跳已停止。
+- 【User】【2026-10-19 14:27】[intent] 继续在v4090运行同样的多模态控制实验；用户说明网络应已恢复，保持原模型、无特权信息、紧凑日志和高并发要求。
+- 【Agent】【2026-10-19 14:27】[op] 新建实验块 EXP-2026W43-010：网络恢复后继续v4090：只补跑23个基础设施中断回合，修复公平队列及未收到回答时的网络重试，不重采正常失败  ↪ `EXP-2026W43-010`
+- 【Agent】【2026-10-19 14:28】[op] Fixed per-episode bridge fairness, bounded unanswered network retries and native wait budget; preparing23 infrastructure continuations, leaving the completed normal failure unchanged.

@@ -49,8 +49,8 @@ def bridge(path):
         command=[sys.executable,'-B',str(Path(__file__).with_name('decision_file_bridge.py')),
             '--host',cfg['host'],'--remote-roots',*[c['output'] for c in cfg['cases']],
             '--key-file',str(Path.cwd()/'.private/du-openai-direct.key'),'--output',str(root/'bridge'),
-            '--resume','--compact','--workers','12','--seconds',str(max(1,int(deadline-time.monotonic()))),
-            '--control-path','code/runs/v4090-dm-20261019.sock']
+            '--resume','--compact','--workers',str(cfg.get('api_workers',12)),'--seconds',str(max(1,int(deadline-time.monotonic()))),
+            '--control-path',cfg.get('control_path','code/runs/v4090-dm-20261019.sock')]
         with (root/'bridge.log').open('a') as log:result=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT)
         if result.returncode==0:return
         time.sleep(2)

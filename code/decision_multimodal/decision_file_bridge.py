@@ -10,6 +10,7 @@ import subprocess
 import threading
 import time
 import urllib.request
+import urllib.error
 
 ENDPOINT='https://api.openai.com/v1/decisions'
 CONTROL=None
@@ -24,7 +25,7 @@ class FileClient:
         temporary=folder/'pending.part'
         temporary.write_text(json.dumps(dict(endpoint=ENDPOINT,payload=json.loads(request.data))))
         temporary.replace(folder/'pending.json')
-        deadline=time.monotonic()+max(timeout,600)
+        deadline=time.monotonic()+max(timeout,1800)
         try:
             while time.monotonic()<deadline:
                 if (folder/'reply.json').exists():
@@ -57,7 +58,7 @@ def main():
     a=p.parse_args();assert a.key_file.name=='du-openai-direct.key';assert 1<=a.workers<=24
     CONTROL=a.control_path;key=a.key_file.read_text().strip();assert key.startswith('sk-')
     a.output.mkdir(parents=True,exist_ok=a.resume)
-    lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic()
+    lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic();last_served={}
     def process(remote):
         nonlocal calls
         folder=a.output/hashlib.sha256(remote.encode()).hexdigest()[:20];folder.mkdir(exist_ok=True)
@@ -73,11 +74,21 @@ def main():
                 headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
             client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
             called=True
-            with lock:calls+=1
-            try:
-                with client.open(request,timeout=100) as response:reply=json.load(response)
-            except Exception as error:
-                reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
+            for attempt in range(3):
+                with lock:calls+=1
+                try:
+                    with client.open(request,timeout=100) as response:reply=json.load(response)
+                    break  # A received answer/refusal is never resampled.
+                except (OSError,urllib.error.URLError) as error:
+                    retryable=not isinstance(error,urllib.error.HTTPError) or error.code in (429,502,503,504)
+                    with (folder/'network-attempts.jsonl').open('a') as f:
+                        f.write(json.dumps(dict(attempt=attempt+1,time=time.time(),retryable=retryable,
+                            error=str(error).replace(key,'[redacted]')[:500],received_answer=False))+'\n')
+                    if not retryable or attempt==2:
+                        reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500]);break
+                    time.sleep(2**(attempt+1))
+                except Exception as error:
+                    reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500]);break
             temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
         target=str(Path(remote).parent/'reply.json')
         code=('import pathlib,sys,os; p=pathlib.Path('+repr(target)+'); '
@@ -98,8 +109,13 @@ def main():
                 'for p in pathlib.Path(r).glob("bridge-jobs/*/pending.json") if not (p.parent/"reply.json").exists()]))')
             try:pending=json.loads(ssh(a.host,code))
             except (RuntimeError,subprocess.TimeoutExpired,OSError):time.sleep(2);continue
+            # Old fixed-root order let fast early roots repeatedly occupy all workers.
+            # Round-robin by episode, including its previous request, prevents starvation.
+            pending.sort(key=lambda path:last_served.get(str(Path(path).parents[2]),0))
             for path in pending:
-                if path not in seen and path not in active and len(active)<a.workers:active[path]=pool.submit(process,path)
+                if path not in seen and path not in active and len(active)<a.workers:
+                    last_served[str(Path(path).parents[2])]=time.monotonic()
+                    active[path]=pool.submit(process,path)
             if not active and (calls or a.resume):
                 code='import pathlib; print(int(all((pathlib.Path(p)/"result.json").exists() for p in '+repr(a.remote_roots)+')))'
                 try:
