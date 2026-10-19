@@ -30,7 +30,7 @@ def watch(campaigns, site):
                     result=progress['result']
                     phase='running' if result is None else 'success' if result.get('success') else 'failed' if result.get('native_evaluated') else 'interrupted'
                     mode='Actor-selected surface XYZ + RGB orientation' if case.get('actor_attention') else 'RGB + current surface XYZ coordinates'
-                    rows.append('<tr><td>'+html.escape(campaign.name)+'</td><td><a href="'+name+'/review.html">'+html.escape(case['name'])+'</a></td><td>'+mode+'</td><td>'+phase+'</td><td>'+str(progress['stage'])+'</td><td>'+str(progress['physical_steps'])+'</td><td>'+str(progress['responses'])+'</td></tr>')
+                    rows.append('<tr><td>'+html.escape(campaign.name)+(' (extended 1200-step development)' if case.get('horizon',600)>600 else '')+'</td><td><a href="'+name+'/review.html">'+html.escape(case['name'])+'</a></td><td>'+mode+'</td><td>'+phase+'</td><td>'+str(progress['stage'])+'</td><td>'+str(progress['physical_steps'])+'</td><td>'+str(progress['responses'])+'</td></tr>')
             except (OSError,ValueError) as error:
                 print(json.dumps(dict(campaign=str(campaign),review_retry=type(error).__name__)),flush=True)
         stamp=time.strftime('%Y-%m-%d %H:%M:%S %z')

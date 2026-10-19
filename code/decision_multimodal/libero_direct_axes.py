@@ -198,7 +198,7 @@ def main():
     p.add_argument('--demos',type=Path);p.add_argument('--libero-root',required=True)
     p.add_argument('--gpu',type=int,default=4)
     p.add_argument('--wall-seconds',type=int,default=7200)
-    p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
+    p.add_argument('--horizon',type=int,default=600,choices=[600,1200],help='Native physical-step budget; 1200 is an extended development condition, not the standard 600-step evaluation');p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
     p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
     p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
     p.add_argument('--surface-context',action='store_true',help='Unselected visible RGB-D surface samples in the common world frame, not grasp targets')
@@ -250,7 +250,7 @@ def main():
         git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[2],text=True).strip(),
         profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        execution_steps=args.execution_steps,record_evidence=args.record_evidence,
+        execution_steps=args.execution_steps,horizon=args.horizon,record_evidence=args.record_evidence,
         live_surfaces=args.live_surfaces,actor_attention=args.actor_attention,diagnostic_replay=bool(args.replay),
         focused_questions=args.focused_questions,
         relative_step_scale=args.relative_step_scale,
@@ -298,7 +298,7 @@ def main():
         instruction=suite.get_task(args.task).language;english(instruction)
         env=ControlEnv(bddl_file_name=suite.get_task_bddl_file_path(args.task),
             camera_names=['agentview','robot0_eye_in_hand'],camera_heights=args.size,camera_widths=args.size,
-            camera_depths=args.surface_context,control_freq=20,horizon=600,controller='OSC_POSE',initialization_noise=None)
+            camera_depths=args.surface_context,control_freq=20,horizon=args.horizon,controller='OSC_POSE',initialization_noise=None)
         env.seed(0);env.reset();obs=env.set_init_state(np.asarray(suite.get_task_init_states(args.task)[args.init],float))
         for _ in range(10):obs,_,_,_=env.step(np.r_[np.zeros(6),grip]);tick+=1
         native=env.env;site=native.robots[0].eef_site_id
@@ -380,7 +380,7 @@ def main():
         for decision in range(args.decisions):
             import shutil
             if shutil.disk_usage(out).free<8*1024**3:raise RuntimeError('Native artifact storage guard: below8GiB free')
-            if tick+args.execution_steps>600:break
+            if tick+args.execution_steps>args.horizon:break
             if replay_rows is not None and decision>=len(replay_rows):break
             if time.monotonic()-started>args.wall_seconds:raise TimeoutError('Native episode wall budget')
             protocol={}

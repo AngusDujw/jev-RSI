@@ -17,7 +17,7 @@ def status(root):
             a=row['commanded_translation_mm'];b=row['measured_translation_mm']
             norm=sum(v*v for v in a)
             if norm>1:ratios.append(sum(v*w for v,w in zip(a,b))/norm)
-        rows.append(dict(name=case['name'],actions=len(actions),
+        rows.append(dict(name=case['name'],horizon=case.get('horizon',600),live_protocol=case.get('live_protocol',False),actions=len(actions),
             responses=len(list((out/'decision-api').glob('*/response.json'))),
             physical_steps=last['native_steps'] if last else 0,
             stage=last['stage'] if last else None,

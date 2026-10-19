@@ -49,6 +49,7 @@ def scheduler(path):
             if case.get('numeric_z'):command+=['--numeric-z']
             if case.get('track_selected'):command+=['--track-selected']
             if case.get('robot_self_mask'):command+=['--robot-self-mask']
+            command+=['--horizon',str(case.get('horizon',600))]
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000
