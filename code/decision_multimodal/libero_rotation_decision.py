@@ -76,9 +76,11 @@ def build_direction_request(state):
 
 def rotation_payload(original,current,examples,goal_reference):
     payload=convert_request(original)
-    content=[dict(type='input_text',text=ROTATION_INPUT),
+    selecting=original['state'].get('request_purpose')=='multimodal_receiving_direction'
+    header=('Select the physical receiving direction from CURRENT observed wood lines and the archived placement relationship. This question chooses a physical reference, not motor signs.' if selecting else ROTATION_INPUT)
+    content=[dict(type='input_text',text=header),
         dict(type='input_text',text=json.dumps(original['state'],separators=(',',':'))),
-        *examples,*goal_reference]
+        *([] if selecting else examples),*goal_reference]
     caption=''
     for part in current:
         if part['type']=='input_text':caption=part['text']
