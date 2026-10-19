@@ -15,6 +15,10 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--image', type=Path, action='append', default=[])
     args = parser.parse_args()
+    auth_path=Path(os.environ.get('CODEX_HOME',str(Path.home()/'.codex')))/'auth.json'
+    auth=json.loads(auth_path.read_text()) if auth_path.exists() else {}
+    if auth.get('auth_mode')!='chatgpt' or not auth.get('tokens') or auth.get('OPENAI_API_KEY'):
+        raise RuntimeError('A local ChatGPT login must be verified before Pro planning; API fallback is not authorized')
     prompt = args.prompt.read_text()
     english(prompt)
     for image in args.image:
@@ -55,7 +59,7 @@ def main():
         command += ['-i', str(image.resolve())]
     command += ['-']
     audit = dict(model='gpt-6.1-sol', reasoning_effort='high',
-        authentication='existing local ChatGPT Pro login; no API key',
+        authentication='verified auth_mode=chatgpt with login tokens and no API key; existing local Pro account',
         project_doc_max_bytes=0, host_skill_discovery=False, plugins=False,
         image_paths=[str(p.resolve()) for p in args.image], experience_injection=False,
         inference_instructions=instructions,tools_disabled=True,cwd=str(sandbox),

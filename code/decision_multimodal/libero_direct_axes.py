@@ -219,6 +219,8 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--overview-camera',choices=['sideview','frontview','birdview'],help='Additional public fixed RGB camera for whole-hand/object coverage; no scene-state input')
+    p.add_argument('--goal-example',action='store_true',help='Include an actual archived final object-support relationship during orientation/operation and inspection')
     p.add_argument('--raised-fin-surfaces',action='store_true',help='Propose current highest visible black surfaces in the knob identity region, never a true pose or target angle')
     p.add_argument('--part-questions',action='store_true',help='Name the actual grasp/placement part explicitly in the visual-reference question')
     p.add_argument('--retain-rotation-examples',action='store_true',help='Include independent yaw/pitch/roll before-after cards in each relevant later request; the API has no implicit image memory')
@@ -263,7 +265,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -278,6 +280,8 @@ def main():
         api.motion=MOTION.replace('Use fine scale near contact;\nuse coarse scale for clear free-space movement.',
             'Unsigned step sizes adapt from direction history: repeated signs grow the magnitude, reversals shrink it. '
             'Translation stays within 2-20mm per axis, rotation within 1-6degrees. Choose directions only.')
+    if args.overview_camera:
+        api.motion+=' The CURRENT '+args.overview_camera+' is an additional fixed camera showing the whole held object and support. Its own world-axis arrows use current public calibration; image directions differ from agentview and the moving wrist. The source-detail crop is only a zoom of agentview, not another camera.'
     if args.file_transport:
         from decision_file_bridge import FileClient
         api.client=FileClient(out/'bridge-jobs',compact=args.compact)
@@ -306,13 +310,22 @@ def main():
             if i+1>=len(full_demonstrations) or full_demonstrations[i+1]['type']!='input_image':raise ValueError('Rotation example lacks its actual before/after image')
             rotation_demonstrations+=full_demonstrations[i:i+2]
     if args.retain_rotation_examples and len(rotation_demonstrations)!=6:raise ValueError('Retained rotation examples require all three independent actual motion cards')
+    goal_demonstration=[]
+    if args.goal_example:
+        goal_phase='verify' if args.task==1383 else 'release'
+        for i,part in enumerate(full_demonstrations):
+            if part['type']=='input_text' and 'phase '+goal_phase+'.' in part.get('text',''):
+                goal_demonstration=[dict(type='input_text',text='ARCHIVED goal-relationship example from a DIFFERENT episode, BEFORE left and AFTER right. Use the actual final object/receiver or operated-control appearance as a visual task example. This is not the CURRENT scene, not a target coordinate, and not a rendered angle answer. Current geometry and all motion signs must be judged from CURRENT images.'),full_demonstrations[i+1]]
+                break
+        if not goal_demonstration:raise ValueError('Actual goal-relationship example missing')
+    cameras=['agentview','robot0_eye_in_hand']+([args.overview_camera] if args.overview_camera else [])
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
     try:
         with contextlib.redirect_stdout(io.StringIO()):suite=benchmark.get_benchmark_dict()['libero_goal'](0)
         instruction=suite.get_task(args.task).language;english(instruction)
         env=ControlEnv(bddl_file_name=suite.get_task_bddl_file_path(args.task),
-            camera_names=['agentview','robot0_eye_in_hand'],camera_heights=args.size,camera_widths=args.size,
+            camera_names=cameras,camera_heights=args.size,camera_widths=args.size,
             camera_depths=args.surface_context,control_freq=20,horizon=args.horizon,controller='OSC_POSE',initialization_noise=None)
         env.seed(0);env.reset();obs=env.set_init_state(np.asarray(suite.get_task_init_states(args.task)[args.init],float))
         for _ in range(10):obs,_,_,_=env.step(np.r_[np.zeros(6),grip]);tick+=1
@@ -322,7 +335,7 @@ def main():
         def capture():
             from PIL import ImageDraw
             parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None
-            for camera in ('agentview','robot0_eye_in_hand'):
+            for camera in cameras:
                 im=Image.fromarray(np.ascontiguousarray(obs[camera+'_image'][::-1]));b=io.BytesIO();im.save(b,format='PNG')
                 raw=b.getvalue()
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
@@ -443,12 +456,15 @@ def main():
                     'grasp' if stages[stage]['name']=='Close' or 'Descend' in stages[stage]['name'] else
                     'lift' if stages[stage]['name']=='Lift' else 'turn' if stages[stage]['name']=='Turn' else
                     'lower' if 'Lower' in stages[stage]['name'] else 'release')
+                if stages[stage].get('stage_key')=='inspect':phase='inspect'
                 api.demonstrations=full_demonstrations[:12] if decision<3 else []
                 if args.retain_rotation_examples and decision>=3 and phase in ('approach','contact','grasp','turn','orient_receiver','lower'):
                     api.demonstrations=rotation_demonstrations[:]
                 for index,part in enumerate(full_demonstrations):
                     if part['type']=='input_text' and 'phase '+phase+'.' in part['text']:
                         api.demonstrations+=full_demonstrations[index:index+2]
+                if args.goal_example and phase in ('turn','orient_receiver','lower','inspect'):
+                    api.demonstrations+=goal_demonstration
             if args.reference_history:
                 state['recent_actor_visual_choices']=visual_history[-3:]
                 state['reference_continuity']='These are your earlier choices in THIS episode, not current geometry. Keep a consistent physical grasp/support part while the stage remains unchanged and fresh RGB confirms it. Current C labels are sampled pixels, not persistent material landmarks. Change the chosen part when current evidence warrants it; never reuse an old XYZ estimate.'

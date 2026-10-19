@@ -17,10 +17,12 @@ def status(root):
             a=row['commanded_translation_mm'];b=row['measured_translation_mm']
             norm=sum(v*v for v in a)
             if norm>1:ratios.append(sum(v*w for v,w in zip(a,b))/norm)
+        summaries=sorted((out/'decision-api').glob('*/request-summary.json'))
+        request_stage=json.loads(summaries[-1].read_text()).get('stage',{}) if summaries else {}
         rows.append(dict(name=case['name'],horizon=case.get('horizon',600),live_protocol=case.get('live_protocol',False),actions=len(actions),
             responses=len(list((out/'decision-api').glob('*/response.json'))),
             physical_steps=last['native_steps'] if last else 0,
-            stage=last['stage'] if last else None,
+            stage=last['stage'] if last else None,current_stage_name=request_stage.get('name'),current_stage_key=request_stage.get('stage_key'),
             close_commands=sum(a['choices']['gripper']=='close' for a in actions),
             rotation_commands=sum(any(a['choices'][v]!='hold' for v in ('rx','ry','rz')) for a in actions),
             median_execution_ratio=round(sorted(ratios)[len(ratios)//2],3) if ratios else None,

@@ -135,7 +135,7 @@ def overlay_gripper_axes(raw,camera_to_world,intrinsics,gripper_world,camera):
     """Project current own grip_site; draw only the two user-selected world axes."""
     import numpy as np
     from PIL import Image, ImageDraw, ImageFont
-    shown={'agentview':('Y','Z'),'robot0_eye_in_hand':('X','Y')}[camera]
+    shown={'agentview':('Y','Z'),'robot0_eye_in_hand':('X','Y'),'sideview':('X','Z'),'frontview':('Y','Z'),'birdview':('X','Y')}[camera]
     picture=Image.open(io.BytesIO(raw)).convert('RGB')
     draw=ImageDraw.Draw(picture);mask=Image.new('L',picture.size);md=ImageDraw.Draw(mask)
     font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',22)

@@ -32,3 +32,6 @@ No claim of stable success follows from these observations. Complete native outc
 - Name the required part in the visual-selection question itself: a knob fin is not its base, and an upper bottle neck is not its body. A generic source-feature question permits physically wrong but semantically related references.
 - Repeated tiny measured motion despite nonzero own commands needs recovery and fresh part identification, not more of the same correction. Own execution gain does not identify contact or an obstacle.
 - Release and inspection have a causal order: execute opening, expose the object, then inspect. Requiring the hidden outcome before entering inspection can create another endless gate.
+
+- Stateless requests need their relevant examples every time. Initial-only motion cards do not teach a later independent API call.
+- A phase example with the hand/object outside the frame cannot show the intended orientation. Retain an actual final object-support relationship during orientation and use complementary current cameras that cover the whole interaction.
