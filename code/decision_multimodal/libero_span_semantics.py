@@ -50,16 +50,45 @@ def build_span_request(state, judgments=None):
     return dict(model='gpt-6-luna',state=context,questions=questions)
 
 
-def _crop(part,box):
-    from PIL import Image
+def _crop(part,box,preserve_aspect=False):
+    from PIL import Image,ImageOps
     image=Image.open(io.BytesIO(base64.b64decode(part['image_url'].split(',',1)[1]))).convert('RGB')
-    image=image.crop(box(image.size)).resize((512,512))
+    image=image.crop(box(image.size))
+    if preserve_aspect:image=ImageOps.pad(image,(512,512),color='#10222a')
+    else:image=image.resize((512,512))
     buffer=io.BytesIO();image.save(buffer,format='PNG')
     return dict(type='input_image',detail='high',image_url='data:image/png;base64,'+
         base64.b64encode(buffer.getvalue()).decode())
 
 
-def span_payload(original,current,goal):
+def observed_span_card(state,raw):
+    """Show each unranked observed line on its own CURRENT raw image panel."""
+    from PIL import Image,ImageDraw,ImageFont
+    image=Image.open(io.BytesIO(raw)).convert('RGB')
+    segments=state['observed_segments'];points=[p for r in segments.values() for p in r['pixel_endpoints_agentview']]
+    left=max(0,int(min(p[0] for p in points)-45));top=max(0,int(min(p[1] for p in points)-45))
+    right=min(image.width,int(max(p[0] for p in points)+45));bottom=min(image.height,int(max(p[1] for p in points)+45))
+    if right<=left or bottom<=top:raise ValueError('No visible current span region')
+    crop=image.crop((left,top,right,bottom));tile=384;header=28
+    scale=min(tile/crop.width,tile/crop.height);width=round(crop.width*scale);height=round(crop.height*scale)
+    pad_x=(tile-width)//2;pad_y=(tile-height)//2
+    canvas=Image.new('RGB',(tile*2,(tile+header)*((len(segments)+1)//2)),'#10222a')
+    font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',15)
+    def project(point):return ((point[0]-left)*width/crop.width+pad_x,(point[1]-top)*height/crop.height+pad_y)
+    selected=state.get('selected_receiving_surface') or {}
+    for index,(label,row) in enumerate(segments.items()):
+        panel=Image.new('RGB',(tile,tile),'#10222a');panel.paste(crop.resize((width,height)),(pad_x,pad_y))
+        draw=ImageDraw.Draw(panel);colour='#ff8cff' if row['colour']=='magenta' else '#ffaf48'
+        draw.line([project(p) for p in row['pixel_endpoints_agentview']],fill=colour,width=4)
+        if 'pixel_uv' in selected and selected.get('observation_camera','agentview')=='agentview':
+            x,y=project(selected['pixel_uv']);draw.ellipse((x-6,y-6,x+6,y+6),outline='#67baff',width=2)
+        x=(index%2)*tile;y=(index//2)*(tile+header)
+        canvas.paste(panel,(x,y+header));ImageDraw.Draw(canvas).text((x+7,y+5),label+' | CURRENT observed span only',font=font,fill='white')
+    buffer=io.BytesIO();canvas.save(buffer,format='PNG')
+    return dict(type='input_image',detail='high',image_url='data:image/png;base64,'+base64.b64encode(buffer.getvalue()).decode())
+
+
+def span_payload(original,current,goal,raw_cameras=None):
     """Crop actual images only; never render a future pose or angle residual."""
     archive=next((x for x in goal if x['type']=='input_image'),None)
     caption='';overview=None
@@ -77,6 +106,18 @@ def span_payload(original,current,goal):
             min(w,int(max(p[0] for p in points)+45)),
             min(h,int(max(p[1] for p in points)+45)))
     payload=convert_request(original)
+    if raw_cameras:
+        if 'agentview' not in raw_cameras:raise ValueError('Span details need the current raw fixed view')
+        # Task-specific crop of the actual archived receiver/bottle example;
+        # no CURRENT object coordinates or future orientation are generated.
+        example=_crop(archive,lambda size:(size[0]//2,34,min(size[0],size[0]//2+220),min(size[1],274)),preserve_aspect=True)
+        content=[dict(type='input_text',text='Compare the physical bottle-to-board relationship in Image1 with each separately displayed CURRENT observed line in Image2. Each named tile shows the SAME raw current rack, with ONLY that observed span highlighted. These are observation features, not robot action candidates, future poses or angular corrections.'),
+            dict(type='input_text',text=json.dumps(state,separators=(',',':'))),
+            dict(type='input_text',text='Image1: actual archived AFTER receiver-and-bottle detail from the right half of the goal card. This is historical, not the current scene.'),example,
+            dict(type='input_text',text='Image2: unranked CURRENT span tiles. Use the tile name to inspect the matching physical line. The blue ring, if present, marks YOUR currently selected receiving-surface pixel, not a tool target. Original endpoint numbers still refer to the uncropped agentview. No other span or displaced label is overlaid within a tile.'),
+            observed_span_card(state,raw_cameras['agentview'])]
+        payload['input']=[dict(role='user',content=content)]
+        return payload
     payload['input']=[dict(role='user',content=[
         dict(type='input_text',text='Compare physical bottle-to-board relationships. Image1 is an actual historical AFTER image from another episode. Image2 is CURRENT observed wood with unranked fitted segment labels. No future robot action or computed angular error is depicted.'),
         dict(type='input_text',text=json.dumps(state,separators=(',',':'))),

@@ -12,6 +12,14 @@ REFERENCE_INPUT = ('Select physical surface features for the CURRENT named phase
     'a useful body-placement point. Use unlabelled or unknown when appropriate.')
 
 
+def bind_receiver_choice(state,answers,candidates):
+    """Preserve the actor receiver choice independently of source visibility."""
+    state.pop('actor_selected_receiver_surface',None)
+    label=answers.get('receiver',{}).get('choice','unknown')
+    if isinstance(label,str) and label.startswith('B') and label in candidates:
+        state['actor_selected_receiver_surface']=candidates[label]
+
+
 def reference_payload(original,current,goal_reference,raw_cameras=None):
     state=original['state'];catalog=[]
     box=(state.get('source_component') or {}).get('bbox_xyxy')
@@ -30,7 +38,7 @@ def reference_payload(original,current,goal_reference,raw_cameras=None):
     if state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect'):
         content.extend(goal_reference)
     card=None
-    if raw_cameras and state['stage'].get('stage_key') in ('align_above_source','descend_to_source','close'):
+    if raw_cameras:
         card=candidate_detail_card(state,raw_cameras)
     if card is None:content.extend(current)
     else:

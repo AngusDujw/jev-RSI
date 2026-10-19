@@ -12,8 +12,9 @@ LINE_INPUT = ('Compute each printed expression yourself and classify its result 
     'using the threshold stated in that question. No result or preferred answer is supplied.')
 
 
-def observed_lines(state):
-    if state['stage'].get('stage_key')!='orient_held_body':return None
+def observed_lines(state,placement=False):
+    key=state['stage'].get('stage_key')
+    if key!='orient_held_body' and not (placement and key in ('align_source_above_receiver','lower_to_place')):return None
     binding=selected_span_binding(state)
     v=((state.get('source_component') or {}).get('visible_shape') or {}).get('visible_long_axis_world_unit')
     if binding is None or v is None:return None
@@ -22,8 +23,8 @@ def observed_lines(state):
     return v,b,binding
 
 
-def build_line_rotation_request(state):
-    lines=observed_lines(state)
+def build_line_rotation_request(state,placement=False):
+    lines=observed_lines(state,placement=placement)
     if lines is None:return None
     v,b,binding=lines;questions={}
     for name,(i,j) in {'rx':(1,2),'ry':(2,0),'rz':(0,1)}.items():

@@ -111,7 +111,8 @@ class DirectAPI(RevisedAPI):
     def build_payload(self, sent):
         if sent['state'].get('request_purpose') in ('multimodal_span_fit','multimodal_span_choice'):
             from libero_span_semantics import span_payload
-            payload=span_payload(sent,self.current,self.stage_goal_reference)
+            payload=span_payload(sent,self.current,self.stage_goal_reference,
+                getattr(self,'raw_camera_images',{}) if getattr(self,'span_detail_cards',False) else None)
             self.image_count=2
             return payload
         if sent['state'].get('request_purpose') in ('text_only_observed_line_rotation','text_only_observed_line_transition'):
@@ -258,6 +259,8 @@ def main():
     p.add_argument('--rotation-effect-hints',action='store_true',help='Observed-line local rotation effects only, no desired axis or error')
     p.add_argument('--bound-span-rotation',action='store_true',help='Bind the actor-selected observed wood span and current bottle-line pairs in rotation questions')
     p.add_argument('--literal-line-reasoning',action='store_true',help='Decisions itself evaluates printed physical-line expressions; no external product, angular error or sign')
+    p.add_argument('--literal-placement-rotation',action='store_true',help='Apply the same actor-evaluated observed-line expressions during transport/lowering as well as free-space orientation')
+    p.add_argument('--span-detail-cards',action='store_true',help='Separate unranked actual observed wood spans into raw-image detail tiles with one physical line per tile')
     p.add_argument('--sideview-source-fallback',action='store_true',help='Current sideview RGB-D candidate when the main source component is unavailable')
     p.add_argument('--paired-span-selection',action='store_true',help='Decisions first judges each physical wood span against an actual archived image, then selects its reference')
     p.add_argument('--span-intent-history',action='store_true',help='Supply the actor previous current-episode physical reference intention, never stale geometry')
@@ -317,12 +320,13 @@ def main():
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
-        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,grasp_pose_decided_by_actor=True,experience_injection=False))
+        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,span_detail_cards=args.span_detail_cards,literal_placement_rotation=args.literal_placement_rotation,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
     api.record_evidence=args.record_evidence
     api.candidate_detail_cards=args.candidate_detail_cards
+    api.span_detail_cards=args.span_detail_cards
     api.actor_attention=args.actor_attention
     replay_rows=[json.loads(s) for s in args.replay.read_text().splitlines()] if args.replay else None
     if args.adaptive_steps:
@@ -711,16 +715,17 @@ def main():
                 state['actor_visual_assessment']={k:v['choice'] for k,v in assessment['answers'].items()}
                 state['actor_visual_assessment_confidence']={k:v['confidence'] for k,v in assessment['answers'].items()}
                 visual_history.append(dict(native_tick=tick,stage=stage,choices=state['actor_visual_assessment'],confidence=state['actor_visual_assessment_confidence']))
+                if placing:
+                    from libero_reference_decision import bind_receiver_choice
+                    bind_receiver_choice(state,assessment['answers'],candidates)
                 if selected in candidates:
                     observed=np.array(candidates[selected]['visible_surface_world_mm'])
                     state['actor_selected_surface']=candidates[selected]
                     state['observed_surface_relative_mm']=np.round(observed-np.array(state['own_gripper_world_mm']),1).tolist()
                     state['relative_observation_meaning']='Observed surface minus own gripper, XYZ in millimetres. This feature was selected by YOU from CURRENT RGB. It is not a desired pose or a required displacement. Surface versus object centre and overhead/descent/placement relationships still require visual judgement; no orientation correction is computed.'
-                    if placing and 'receiver' in assessment['answers']:
-                        receiver=assessment['answers']['receiver']['choice']
-                        if receiver in candidates:
-                            state['actor_selected_receiver_surface']=candidates[receiver]
-                            state['observed_receiver_minus_source_mm']=np.round(np.array(candidates[receiver]['visible_surface_world_mm'])-observed,1).tolist()
+                    if 'actor_selected_receiver_surface' in state:
+                        receiver_sample=state['actor_selected_receiver_surface']
+                        state['observed_receiver_minus_source_mm']=np.round(np.array(receiver_sample['visible_surface_world_mm'])-observed,1).tolist()
                     for i,a in enumerate(('x','y','z')):
                         questions[a]['instructions']=(f'Current stage: {state["stage"]["name"]}. Goal: {state["stage"]["goal"]}. '
                             f'Your RGB-selected observed feature has {a.upper()} coordinate minus gripper coordinate = {state["observed_surface_relative_mm"][i]} mm. '
@@ -857,7 +862,7 @@ def main():
                     rotation_request=None
                     if args.literal_line_reasoning:
                         from libero_line_reasoning import build_line_rotation_request
-                        rotation_request=build_line_rotation_request(state)
+                        rotation_request=build_line_rotation_request(state,placement=args.literal_placement_rotation)
                     if rotation_request is None:rotation_request=build_rotation_request(state,args.rotation_effect_hints,args.bound_span_rotation)
                     if rotation_request is not None:
                         rotation_reply=api.post('/systemone',rotation_request)
