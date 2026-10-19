@@ -120,3 +120,16 @@ worker was stopped after identity verification; its replacement is
 `robodojo-comparison-retention-20261019g-preserve.service`, bound to batch599422.
 Controllers and native simulators were not restarted or modified. Local images
 remain in the execution directory; native media remain in the remote campaign.
+
+User priority reaffirmed (2026-10-19): finish the existing fixed Decisions
+comparison before starting generic grasp iterations. Then validate the actual
+OpenAI Decisions executor first, determine sufficient general observations and
+action questions, and only then adapt the local-Pro planner to supply that
+contract. Prefer multimodal inputs; stable performance without them is also
+acceptable. Avoid task-specific scripted hints. Evaluate stability across fresh
+independent cases, with visible sustained lifting and native outcomes separated.
+After stable generic grasp, select an officially high-success task likely to
+require YPR adjustment, verify the official evidence, and iterate if it fails.
+Continue monitoring and repairing campaign faults. This future authorization
+does not change active comparison prompts, actions, history or scoring, and
+does not authorize replaying ended episodes or ordinary OpenAI API calls.
