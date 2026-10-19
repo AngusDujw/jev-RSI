@@ -2,7 +2,7 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## Active v43 development; Pro15 clearance review only
+## Active v44 phase handoff; Pro15 clearance review only
 
 - v30 final native/program0/2; v31 original and task-exit groups each0/3; v32 final0/3, all1198 physical steps. Actual grasp/lift is not task success.
 - v34 both groups finished native0/3 each. Original-direction874/1198/1198steps,391/538/534responses; paired-span1198steps,653/651/629responses. v36 and v37 also finished0/3 each at1198steps. No new complete success verified.
@@ -16,6 +16,8 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 - v41 finished native/program0/3, all1198steps,446/414/391responses. It adds qualified same-feature motion to the short lift test. The actor sees measured feature/hand displacement and error, never an externally calculated phase or motor answer. Genuine multimodal R remains unchanged. Full native outcome pending.
 - v42 fixed source1b981864 restores the public top-support task: actor chooses load-bearing source/top-rack features and a useful posture, without mandatory demonstration/wood-axis alignment. True multimodal R calls receive current3RGB and historical3motion cards. Lift Z now uses the scoped numeric error primitive; the former mixed question held at6.1mm. Actual first placement referenceC2/B4 and6-image R0092 are recorded. Final v42 result: two normal native/program failures1198steps (426/376responses), plus init14 typed reference refusal at994steps (342responses); no retry or fabricated unknown. No full success.
 - v43 changes only free-posture R question/physical option descriptions: distinguish needed angular correction from XYZ approach. Same-image probe changes low-confidence+++ tohold/hold/hold withp0.88/0.84/0.84, zero native actions; three full episodes started on fixed6b96d2a7, PIDs889103/889104/889105; first observed118steps each, full results pending.
+- v43 final native/program0/3, all1198steps,459/480/477responses. In init16,33 executed decisions had all six motion axes hold but the phase stayed carry. Bottle remained held above the rack in inspected images; no release or collision is inferred from suspension.
+- v44 fixed source3e4ab6db explicitly preserves CURRENT/NEXT phase context and separates carry-to-lower, lower-to-opening, and after-opening inspection. Formal carry/lower questions use same-observation actor choices and known feature flags, retaining actor recovery/unknown branches. One reconstructed actual-facts probe advanced0.99/conf0.99 with zero new native actions, not a task success. New three native development episodes14/15/16 use PIDs922794/922795/922796; all input images and replies retained.
 - Public task1458 resolves through ControlEnv view suffix handling to put_the_wine_bottle_on_the_rack_language_1.bddl. Public goal is On(wine_bottle_1, wine_rack_1_top_region), with no orientation predicate. Local Pro14 removed the extra demonstration-axis requirement forv42; v41 deliberately retains its old plan for comparison. Never feed initialization ranges or evaluator state to models.
 - Controlled v33 six historical held-rotation examples used0API and are not policy trials. Positive X/Y fixed-view evidence supports approximately28/27degree body change. Negative Y17.17mm own-position drift rejected the unchanged15mm bank guard; no bank injected.
 - Knob original frozen3/3 remains unchanged. Bottle goal requires a new frozen policy and three predeclared fresh native successes; old failures are never replaced.

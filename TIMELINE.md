@@ -175,6 +175,7 @@ graph LR
     T_2026W43_019["📊 decision-multimodal<br/>v28冻结0/3否定稳定；S误读已纠正；N…"]:::experiment
     T_2026W43_020["📊 decision-multimodal<br/>受控双RGB确认持瓶随X/Y转；v28完整…"]:::experiment
     T_2026W43_021["📊 decision-multimodal<br/>v36-v40未稳定；原始阶段图像判断弱，…"]:::experiment
+    T_2026W43_022["📊 decision-multimodal<br/>v43完整0/3，33次六轴hold仍停运…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -309,6 +310,7 @@ graph LR
   T_2026W43_018 --> T_2026W43_019
   T_2026W43_019 --> T_2026W43_020
   T_2026W43_020 --> T_2026W43_021
+  T_2026W43_021 --> T_2026W43_022
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -470,6 +472,7 @@ graph LR
 | `T-2026W43-019` | 2026-10-20 | experiment | decision-multimodal | v28冻结0/3否定稳定；S误读已纠正；N0实点候选使同三初态两组进入持瓶姿态，v32实际四图首选N0，完整放置未定 | `EXP-2026W43-046` | - |
 | `T-2026W43-020` | 2026-10-20 | experiment | decision-multimodal | 受控双RGB确认持瓶随X/Y转；v28完整阳性违反旧all-six-hold阶段规则，转检验物理放置出口，六v34原生持续 | `EXP-2026W43-048` | - |
 | `T-2026W43-021` | 2026-10-20 | experiment | decision-multimodal | v36-v40未稳定；原始阶段图像判断弱，短数值接口更清晰；公开1458未要求演示姿态，Pro14恢复上层承托自主姿态并启动v42 | `EXP-2026W43-055` | - |
+| `T-2026W43-022` | 2026-10-20 | experiment | decision-multimodal | v43完整0/3，33次六轴hold仍停运输；阶段请求缺CURRENT/NEXT且混入未来开爪检查。v44修复交接，单题advance0.99非任务成绩，三原生执行。 | `EXP-2026W43-058` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
