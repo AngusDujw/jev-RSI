@@ -81,3 +81,4 @@
 - 【User】【2026-10-19 18:55】[intent] 继续server02固定6+10槽对照监督与故障修复，核实真实进程/服务/资源/原生步数日志，不恢复结束episode或修答重采样；所有槽完成后汇总关闭job。
 - 【User】【2026-10-19 19:02】[intent] 继续server02固定6+10槽对照监督与故障修复；六个Luna结束后运行真正Decisions API每任务5槽，核实真实进程/资源/原生终局，不恢复结束episode或修答重采样。
 - 【Agent】【2026-10-19 19:02】[result] EXP300六个Pro Luna high槽已全部原生完整结束：stack0/3、classify0/3、总0/6成功，末分类f1100步/228动作/controller_exit0，远端原生终局一致。末分类媒体已清理远端1281138472字节、本机1119739212字节及state224832752字节。原f协调器按阶段闸门自然进入Decisions，仅新10槽，当前首3槽setup，2个自有原生容器、首controller481636存活，尚无run.json或实际API响应，不以setup声称Decisions调用成功。RAM可用37GiB，无新条件/编号或运行源修改。
+- 【Agent】【2026-10-19 19:02】[result] EXP300阶段启动后已核实真正Decisions调用：stack trial2 layout1 f run.json端点https://api.openai.com/v1/decisions/provider openai-decisions/模型gpt-6-luna/14问/reasoning_effort null，实际response含model/answers/usage且已10响应、10动作至50原生步。另stack trial1 controller486073接入，classify trial1仍setup；不是Pro或Responses替代，仍最多3原生环境。
