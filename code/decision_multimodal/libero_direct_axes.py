@@ -219,6 +219,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--robot-self-mask',action='store_true',help='Reject possible own-robot RGB-D surfaces and anchor the stationary knob identity window')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -242,6 +243,7 @@ def main():
     if args.live_protocol and not args.protocol_file:raise ValueError('Live protocol requires a file')
     if args.protocol_file:protocol_hash=hashlib.sha256(args.protocol_file.read_bytes()).hexdigest()
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
+        git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[2],text=True).strip(),
         profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         execution_steps=args.execution_steps,record_evidence=args.record_evidence,
@@ -252,6 +254,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
+        robot_self_mask=args.robot_self_mask,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -282,7 +285,7 @@ def main():
     tracker=None
     if args.live_surfaces:
         from libero_visual_surfaces import SurfaceTracker
-        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions)
+        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383)
     full_demonstrations=api.demonstrations[:]
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
@@ -311,7 +314,11 @@ def main():
                     depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
                     draw=ImageDraw.Draw(im)
                     if tracker is not None:
-                        api.source_component,current_samples=tracker.observe(np.asarray(im),depth,K,T)
+                        reject_own=None
+                        if args.robot_self_mask:
+                            from libero_robot_mask import own_geometry_rejector
+                            reject_own=own_geometry_rejector(native)
+                        api.source_component,current_samples=tracker.observe(np.asarray(im),depth,K,T,reject_own=reject_own)
                         api.surface_samples.extend(current_samples)
                         for sample in current_samples:
                             u,v=sample['pixel_uv'];draw.ellipse((u-2,v-2,u+2,v+2),fill='#00ffff',outline='#000000')
@@ -355,6 +362,11 @@ def main():
                     caption=('CURRENT detail from the last image-space identity window. Source may be occluded; no current source geometry is implied. '
                         if crop_unknown else 'CURRENT fixed-view source detail; same observation, zoom only. ')
                     parts.extend([dict(type='input_text',text=caption+plan['source_description']),image_part(b.getvalue())])
+            if args.record_evidence:
+                with (out/'perception.jsonl').open('a') as file:
+                    file.write(json.dumps(dict(native_tick=tick,source_component=api.source_component,
+                        visible_surface_samples=api.surface_samples,frame='native_world_mm_before_optional_display_offset',
+                        robot_self_mask=args.robot_self_mask))+'\n')
             return parts
         for decision in range(args.decisions):
             import shutil
