@@ -73,3 +73,10 @@ the two infrastructure-interrupted missing slots under fresh names. It does not
 resume episodes, change the original policy, or restart automatically on failure.
 Logs and owner PIDs are in `supervision-20261019f/`; the same six-slot phase
 barrier applies before Decisions. Original runtime manifest hashes were verified.
+
+All six selected Pro Luna/high trials reached native limits (three per task):
+stack 0/3 and classification 0/3 successes. The last f classification ended at
+1100 steps with controller exit 0. The same f coordinator passed its phase
+barrier and began the fixed ten Decisions slots. Early setup is not evidence of
+an API response; verify run identity, actual responses and native controls.
+The six-slot terminal audit is `luna-six-slot-terminal-audit.json`.
