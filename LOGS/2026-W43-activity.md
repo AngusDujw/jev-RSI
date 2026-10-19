@@ -186,3 +186,5 @@
 - 【User】【2026-10-20 01:50】[intent] 继续server02固定6+10槽监督故障修复，核对h当前三路真实进程资源、原生终局和请求，不恢复结束episode或修答重采样，Decisions媒体继续保留。
 - 【User】【2026-10-20 01:55】[intent] 继续server02固定6+10槽监督故障修复，核对h原生终局、真实进程和资源，不恢复结束episode或修答重采样，Decisions图像继续保留。
 - 【Agent】【2026-10-20 01:55】[op] EXP300核实h class1完整1100失败和stack3完整550失败，远端终局一致、旧worker退出，保1323/663PNG；Decisions有效5槽0成功，后续队列三环境继续，追加既有EXP与外层审计。
+- 【User】【2026-10-20 02:00】[intent] 继续server02固定6+10槽监督故障修复，核对真实进程资源与原生/策略终局，不恢复结束episode或修答重采样，Decisions媒体继续保留。
+- 【Agent】【2026-10-20 02:00】[op] EXP300核实h stack4在115步HTTP200输出左yaw+/pitch+，原规则拒绝，属于policy_failure不补跑；远端原生不完整一致、worker退出，保144PNG，已结束6槽含5完整+1策略拒绝，三环境继续，追加既有EXP和外层审计。
