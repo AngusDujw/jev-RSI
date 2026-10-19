@@ -17,3 +17,7 @@ No claim of stable success follows from these observations. Complete native outc
 
 - Coarse overhead alignment and grasp-height alignment are different stages. Requiring fingers already alongside an object before entering descent can produce an all-hold loop. Use the same positioning band in the axis questions and the coarse-stage transition.
 - Keep the chosen physical reference part consistent within a stage. A fresh coordinate is still a moving goal if the actor keeps switching between neck and body. Preserve actor intent, never stale scene coordinates.
+
+- Black task parts and black robot parts can merge in colour tracking. Reject current RGB-D points inside public own-robot geometry; unknown is safer than chasing the hand. This does not establish scene clearance.
+- A named candidate at a silhouette quantile is not a persistent physical reference. Track the actor-selected image feature with current correspondence/depth checks, and expose loss instead of silently replacing the grasp region.
+- A suitable downward finger approach can coexist with a large translation offset. Judge tilt separately from distance; preserve actual task-image judgement for jaw heading and operated-object orientation.

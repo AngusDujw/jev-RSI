@@ -44,6 +44,7 @@ def scheduler(path):
             if case.get('reference_history'):command+=['--reference-history']
             if case.get('protocol_file'):command+=['--protocol-file',case['protocol_file']]
             if case.get('live_protocol'):command+=['--live-protocol']
+            if case.get('track_selected'):command+=['--track-selected']
             if case.get('robot_self_mask'):command+=['--robot-self-mask']
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)

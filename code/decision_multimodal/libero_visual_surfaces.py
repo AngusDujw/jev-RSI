@@ -9,15 +9,49 @@ from scipy import ndimage
 
 
 class SurfaceTracker:
-    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False):
+    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False):
         self.kind=kind
         self.box=np.asarray(initial_box,float)
         self.initial_box=self.box.copy()
         self.sparse=sparse
         self.anchor_stationary=anchor_stationary
+        self.track_selected=track_selected
+        self.selected_pixel=None
+        self.previous_gray=None
+        self.current_samples={}
+
+    def select(self,label):
+        sample=self.current_samples.get(label)
+        if sample is not None and self.track_selected:
+            self.selected_pixel=np.array(sample["pixel_uv"],np.float32).reshape(1,1,2)
+
+    def follow(self,gray,allowed,depth,K,T):
+        """A current RGB correspondence, never a propagated historical XYZ."""
+        import cv2
+        old=self.previous_gray;point=self.selected_pixel
+        self.previous_gray=gray.copy()
+        self.selected_pixel=None
+        if old is None or point is None:return None
+        params=dict(winSize=(21,21),maxLevel=3,criteria=(cv2.TERM_CRITERIA_EPS|cv2.TERM_CRITERIA_COUNT,30,.01))
+        new,ok,_=cv2.calcOpticalFlowPyrLK(old,gray,point,None,**params)
+        if new is None or not ok[0,0] or not np.isfinite(new).all():return None
+        back,valid,_=cv2.calcOpticalFlowPyrLK(gray,old,new,None,**params)
+        if back is None or not valid[0,0] or np.linalg.norm(back-point)>2:return None
+        u,v=np.rint(new[0,0]).astype(int)
+        if not (0<=v<gray.shape[0] and 0<=u<gray.shape[1]) or not allowed[v,u]:return None
+        z=float(depth[v,u])
+        xyz=T@np.r_[np.linalg.solve(K,[u,v,1])*z,1]
+        if z<=0 or not np.isfinite(xyz).all():return None
+        self.selected_pixel=new
+        return dict(label="S",pixel_uv=[int(u),int(v)],visible_surface_world_mm=np.round(xyz[:3]*1000,1).tolist(),
+            meaning="Current forward/backward-checked RGB match of your previously selected source feature, with current depth. Not a guaranteed material landmark or contact evidence.")
 
     def observe(self, rgb, depth, K, T, reject_own=None):
         h,w=rgb.shape[:2]
+        self.current_samples={}
+        if self.track_selected:
+            import cv2
+            gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY)
         r,g,b=np.asarray(rgb,float).transpose(2,0,1)
         if self.kind=='bottle':
             # Green glass is distinguishable from grey/black robot parts.
@@ -52,6 +86,7 @@ class SurfaceTracker:
             score=np.linalg.norm((box[:2]+box[2:])/2-old_c)-.008*len(xs)
             candidates.append((score,i,box))
         if not candidates:
+            if self.track_selected:self.follow(gray,np.zeros((h,w),bool),depth,K,T)
             return dict(status='unknown',reason='No isolated current matching RGB component; no stale geometry reused.',own_bound_excluded_pixels=excluded),[]
         _,i,box=min(candidates,key=lambda v:v[0]);self.box=box
         ys,xs=np.nonzero(labels==i)
@@ -70,6 +105,10 @@ class SurfaceTracker:
             if not np.isfinite(xyz).all() or z<=0:continue
             samples.append(dict(label='C'+str(len(samples)),pixel_uv=[u,v],
                 visible_surface_world_mm=np.round(xyz[:3]*1000,1).tolist()))
+        if self.track_selected:
+            followed=self.follow(gray,labels==i,depth,K,T)
+            if followed is not None:samples.append(followed)
+            self.current_samples={sample["label"]:sample for sample in samples}
         return dict(status='candidate',bbox_xyxy=box.astype(int).tolist(),pixels=int(len(xs)),own_bound_excluded_pixels=excluded,
             meaning='Current colour component only. Use RGB to verify identity. Samples are visible surfaces, not the centre, grasp point, desired pose or contact evidence.',
             uncertainty='Colour segmentation may miss or merge parts. Occlusion invalidates identity; depth edges may mix surfaces. No precision guarantee.'),samples

@@ -219,6 +219,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--track-selected',action='store_true',help='Track the actor-selected RGB feature with forward/backward optical flow and fresh depth')
     p.add_argument('--robot-self-mask',action='store_true',help='Reject possible own-robot RGB-D surfaces and anchor the stationary knob identity window')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
@@ -254,7 +255,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -285,7 +286,7 @@ def main():
     tracker=None
     if args.live_surfaces:
         from libero_visual_surfaces import SurfaceTracker
-        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383)
+        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383,track_selected=args.track_selected)
     full_demonstrations=api.demonstrations[:]
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
@@ -325,7 +326,7 @@ def main():
                             if args.focused_questions:
                                 from PIL import ImageFont
                                 x=min(args.size-32,api.source_component['bbox_xyxy'][2]+15)
-                                y=max(2,api.source_component['bbox_xyxy'][1]+int(sample['label'][1:])*25)
+                                y=max(2,api.source_component['bbox_xyxy'][1]+(3 if sample['label']=='S' else int(sample['label'][1:]))*25)
                                 draw.line((u,v,x,y+8),fill='#00ffff',width=1)
                                 draw.text((x,y),sample['label'],font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',16),fill='#00ffff',stroke_width=1,stroke_fill='#000000')
                             else:draw.text((u+3,v-8),sample['label'],fill='#00ffff',stroke_width=1,stroke_fill='#000000')
@@ -446,6 +447,7 @@ def main():
                     state['source_component']=api.source_component
                     state['surface_sample_meaning']=('C dots lie on a CURRENT colour component candidate, tracked from RGB only. '
                         'Verify that this is the task object in current RGB; a surface is not an object centre or desired grasp. '
+                        'S, when present, is your previous selection matched in CURRENT RGB and measured with current depth, not stale XYZ. '
                         'B dots are in a fixed receiver identity window and may lie on background/robot. '
                         'No object pose, target pose, orientation error, or recommended action is calculated. '
                         'Choose the grasp relationship yourself from both current images and compare coordinates only for matching physical features.')
@@ -486,7 +488,7 @@ def main():
                 questions=coordinate_questions(state,questions)
             if args.actor_attention and replay_rows is None:
                 candidates={s['label']:s for s in state['visible_surface_samples']}
-                source_candidates={k:v for k,v in candidates.items() if k.startswith('C')} if args.focused_questions else candidates
+                source_candidates={k:v for k,v in candidates.items() if k.startswith('C') or k=='S'} if args.focused_questions else candidates
                 attention=dict(reference=dict(type='choice',
                     instructions='Use CURRENT RGB to choose a currently visible labelled surface feature relevant to the CURRENT stage. For grasping choose a graspable part of the actual source, not the robot/background. For rack placement choose the relevant rack support. This is your visual selection, not a movement recommendation. Unknown if no suitable visible labelled feature exists.',
                     criteria={**{k:'Select current observed dot '+k+'.' for k in source_candidates},
@@ -506,12 +508,15 @@ def main():
                     if placing:
                         attention['receiver']=dict(type='choice',instructions='Which B dot lies on a useful current rack support for this placement? Use current RGB to distinguish wood from background or robot.',
                             criteria={**{k:'Select receiver surface '+k+'.' for k in candidates if k.startswith('B')},'unknown':'No useful rack support dot is visible.','unlabelled':'A useful support is visible but not labelled.'})
+                if args.track_selected:
+                    attention['reference']['instructions']+=(' S, when present, is a current RGB match of YOUR previous selection, measured again with current depth. Prefer S to keep the SAME physical grasp region while positioning; select a different C only when current RGB shows the old region is unsuitable. Do not switch from bottle neck to body merely because the dots moved. If S is absent its match was lost; select a genuinely visible suitable region or unknown, never infer current XYZ from history.')
                 attention_state=state
                 if args.focused_questions:
                     attention_state={k:v for k,v in state.items() if k not in ('own_gripper_world_mm','coordinate_frame_note','visible_surface_samples')}
                     attention_state['visible_dot_labels']=[dict(label=v['label'],pixel_uv=v['pixel_uv']) for v in candidates.values()]
                 assessment=api.post('/systemone',dict(model='gpt-6-luna',state=attention_state,questions=attention))
                 selected=assessment['answers']['reference']['choice']
+                if args.track_selected and tracker is not None:tracker.select(selected)
                 state['actor_visual_assessment']={k:v['choice'] for k,v in assessment['answers'].items()}
                 state['actor_visual_assessment_confidence']={k:v['confidence'] for k,v in assessment['answers'].items()}
                 visual_history.append(dict(native_tick=tick,stage=stage,choices=state['actor_visual_assessment'],confidence=state['actor_visual_assessment_confidence']))
