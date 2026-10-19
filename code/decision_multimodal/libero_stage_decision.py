@@ -31,6 +31,11 @@ def build_stage_request(state,answers,protocol):
         if not source_known:facts+=' Visual transition recommendation='+str(choices.get('transition'))+'.'
     elif key in ('close','release'):
         facts=f"Physical steps actually executed in this phase={steps}; last executed gripper command={own.get('last_gripper_command','unknown')}; visual recovery requested={choices.get('transition')=='restart'}."
+    elif key in ('align_source_above_receiver','lower_to_place'):
+        facts='; '.join(a+' decision='+str(choices.get(a)) for a in ('x','y','z','rx','ry','rz'))
+        facts+=f"; source reference known={source_known}; receiver reference known={'actor_selected_receiver_surface' in state}; visual recovery requested={choices.get('transition')=='restart'}."
+        if not source_known or 'actor_selected_receiver_surface' not in state:
+            facts+=' Visual transition recommendation='+str(choices.get('transition'))+'.'
     else:return None
     return dict(model='gpt-6-luna',
         state=dict(stage=state['stage'],request_purpose='formal_stage_classification',formal_stage_input=STAGE_INPUT),

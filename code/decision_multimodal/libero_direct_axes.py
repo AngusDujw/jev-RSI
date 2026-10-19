@@ -109,6 +109,10 @@ class DirectAPI(RevisedAPI):
     def revise(self, original):
         return original
     def build_payload(self, sent):
+        if sent['state'].get('request_purpose') in ('text_only_observed_line_rotation','text_only_observed_line_transition'):
+            from libero_line_reasoning import line_payload
+            self.image_count=0
+            return line_payload(sent)
         if sent['state'].get('request_purpose')=='multimodal_reference_selection':
             from libero_reference_decision import reference_payload
             payload=reference_payload(sent,self.current,self.stage_goal_reference)
@@ -244,6 +248,7 @@ def main():
     p.add_argument('--held-example-bank',type=Path,help='Immutable actual balanced held-object rotation examples for the separate rotation call')
     p.add_argument('--rotation-effect-hints',action='store_true',help='Observed-line local rotation effects only, no desired axis or error')
     p.add_argument('--bound-span-rotation',action='store_true',help='Bind the actor-selected observed wood span and current bottle-line pairs in rotation questions')
+    p.add_argument('--literal-line-reasoning',action='store_true',help='Decisions itself evaluates printed physical-line expressions; no external product, angular error or sign')
     p.add_argument('--separate-rotation-call',action='store_true',help='Independent rotation-only visual Decisions call with current shapes and actual examples')
     p.add_argument('--visible-shape-features',action='store_true',help='Current RGB-D bottle axis and observed wood planes; never desired orientation or error')
     p.add_argument('--formal-stage-call',action='store_true',help='Ask a scoped text-only Decisions stage question after visual motor choices for phases with explicit rules')
@@ -298,7 +303,7 @@ def main():
         robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,scoped_reference_call=args.scoped_reference_call,fin_central_samples=args.fin_central_samples,held_example_bank=str(args.held_example_bank.resolve()) if args.held_example_bank else None,held_example_bank_sha256=hashlib.sha256(args.held_example_bank.read_bytes()).hexdigest() if args.held_example_bank else None,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,bound_span_rotation=args.bound_span_rotation,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
-        actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
+        actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,
         grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
@@ -773,7 +778,11 @@ def main():
                         if direction_request is not None:
                             direction_reply=api.post('/systemone',direction_request)
                             state['actor_selected_rack_direction']=direction_reply['answers']['rack_direction']
-                    rotation_request=build_rotation_request(state,args.rotation_effect_hints,args.bound_span_rotation)
+                    rotation_request=None
+                    if args.literal_line_reasoning:
+                        from libero_line_reasoning import build_line_rotation_request
+                        rotation_request=build_line_rotation_request(state)
+                    if rotation_request is None:rotation_request=build_rotation_request(state,args.rotation_effect_hints,args.bound_span_rotation)
                     if rotation_request is not None:
                         rotation_reply=api.post('/systemone',rotation_request)
                         rotation_answers=rotation_reply['answers']
@@ -785,6 +794,10 @@ def main():
                 if args.formal_stage_call:
                     from libero_stage_decision import build_stage_request
                     phase_request=build_stage_request(state,answer['answers'],protocol)
+                    if args.literal_line_reasoning:
+                        from libero_line_reasoning import build_line_stage_request
+                        line_phase_request=build_line_stage_request(state,answer['answers'])
+                        if line_phase_request is not None:phase_request=line_phase_request
                     if phase_request is not None:
                         phase_reply=api.post('/systemone',phase_request)
                         answer['answers']['transition']=phase_reply['answers']['transition']

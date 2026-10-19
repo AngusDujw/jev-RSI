@@ -49,6 +49,7 @@ def scheduler(path):
             if case.get('held_example_bank'):command+=['--held-example-bank',case['held_example_bank']]
             if case.get('rotation_effect_hints'):command+=['--rotation-effect-hints']
             if case.get('bound_span_rotation'):command+=['--bound-span-rotation']
+            if case.get('literal_line_reasoning'):command+=['--literal-line-reasoning']
             if case.get('separate_rotation_call'):command+=['--separate-rotation-call']
             if case.get('visible_shape_features'):command+=['--visible-shape-features']
             if case.get('formal_stage_call'):command+=['--formal-stage-call']
