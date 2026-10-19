@@ -9,11 +9,12 @@ from scipy import ndimage
 
 
 class SurfaceTracker:
-    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False, shape_features=False, central_samples=False, prefer_largest=False):
+    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False, shape_features=False, central_samples=False, prefer_largest=False, upper_neck_sample=False):
         self.kind=kind
         self.shape_features=shape_features
         self.central_samples=central_samples
         self.prefer_largest=prefer_largest
+        self.upper_neck_sample=upper_neck_sample
         self.box=np.asarray(initial_box,float)
         self.initial_box=self.box.copy()
         self.sparse=sparse
@@ -161,6 +162,22 @@ class SurfaceTracker:
             samples.append(dict(label='C'+str(len(samples)),pixel_uv=[u,v],
                 visible_surface_world_mm=np.round(xyz[:3]*1000,1).tolist(),
                 **({'visible_part_note':central_notes[(u,v)]} if (u,v) in central_notes else {})))
+        if self.kind=='bottle' and self.upper_neck_sample and self.shape_features and (shape or {}).get('status')=='observed_partial_shape':
+            axis=(shape or {}).get('visible_long_axis_world_unit',[0,0,0])
+            # Propose an ACTUAL upper pixel only under an upright hypothesis.
+            if abs(axis[2])>=.9:
+                z=depth[ys,xs]
+                xyz=(T[:3,:3]@(np.linalg.solve(K,np.stack((xs,ys,np.ones(len(xs)))))*z)+T[:3,3,None]).T*1000
+                valid=np.isfinite(xyz).all(axis=1)&(z>0)
+                if valid.sum()>=40:
+                    lo,hi=np.quantile(xyz[valid,2],[.95,.995])
+                    ids=np.flatnonzero(valid&(xyz[:,2]>=lo)&(xyz[:,2]<=hi))
+                    if len(ids)>=6:
+                        cloud=xyz[ids];j=ids[np.argmin(np.linalg.norm(cloud-np.median(cloud,axis=0),axis=1))]
+                        samples.append(dict(label='N0',pixel_uv=[int(xs[j]),int(ys[j])],
+                            visible_surface_world_mm=np.round(xyz[j],1).tolist(),
+                            visible_part_note='An ACTUAL upper green surface pixel, within95-99.5 percentiles of current visible height under an upright-component hypothesis. Verify neck identity in RGB; not a hidden centre or a recommended grasp.',
+                            proposal_height_band_world_mm=np.round([lo,hi],1).tolist()))
         if self.track_selected:
             allowed=labels==i
             if self.raised_feature:

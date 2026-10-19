@@ -54,6 +54,8 @@ def scheduler(path):
             if case.get('paired_span_selection'):command+=['--paired-span-selection']
             if case.get('span_intent_history'):command+=['--span-intent-history']
             if case.get('posture_task_exit'):command+=['--posture-task-exit']
+            if case.get('upper_neck_sample'):command+=['--upper-neck-sample']
+            if case.get('candidate_detail_cards'):command+=['--candidate-detail-cards']
             if case.get('separate_rotation_call'):command+=['--separate-rotation-call']
             if case.get('visible_shape_features'):command+=['--visible-shape-features']
             if case.get('formal_stage_call'):command+=['--formal-stage-call']

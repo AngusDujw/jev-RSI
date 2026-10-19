@@ -120,7 +120,8 @@ class DirectAPI(RevisedAPI):
             return line_payload(sent)
         if sent['state'].get('request_purpose')=='multimodal_reference_selection':
             from libero_reference_decision import reference_payload
-            payload=reference_payload(sent,self.current,self.stage_goal_reference)
+            payload=reference_payload(sent,self.current,self.stage_goal_reference,
+                getattr(self,'raw_camera_images',{}) if getattr(self,'candidate_detail_cards',False) else None)
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
         if sent['state'].get('request_purpose') in ('multimodal_rotation_axes','multimodal_receiving_direction'):
@@ -240,6 +241,8 @@ def main():
     p.add_argument('--record-evidence',action='store_true',help='Save actual images and deduplicated full model inputs even with compact transport')
     p.add_argument('--replay',type=Path,help='Replay archived executed commands without calling any model; diagnostic only')
     p.add_argument('--record-final-sensors',action='store_true',help='Save final current metric depth/public calibration and measured own joints for perception diagnostics only')
+    p.add_argument('--upper-neck-sample',action='store_true',help='Offer an actual upper green surface pixel under an upright bottle hypothesis; actor verifies its part')
+    p.add_argument('--candidate-detail-cards',action='store_true',help='Show unranked current raw-RGB candidate crops with rings on actual pixels, not displaced overview labels')
     p.add_argument('--execution-steps',type=int,default=4,choices=range(4,21),help='Own-pose servo steps per categorical decision')
     p.add_argument('--live-surfaces',action='store_true',help='Current RGB component surface samples instead of stale fixed source-window dots')
     p.add_argument('--actor-attention',action='store_true',help='Decision model chooses a visible reference and orientation relationship before deciding action axes')
@@ -314,11 +317,12 @@ def main():
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
-        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,grasp_pose_decided_by_actor=True,experience_injection=False))
+        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
     api.record_evidence=args.record_evidence
+    api.candidate_detail_cards=args.candidate_detail_cards
     api.actor_attention=args.actor_attention
     replay_rows=[json.loads(s) for s in args.replay.read_text().splitlines()] if args.replay else None
     if args.adaptive_steps:
@@ -396,10 +400,13 @@ def main():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
         def capture(save_sensor_data=False):
             from PIL import ImageDraw
-            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None
+            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={}
+            if tracker is not None:tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
+            if side_source_tracker is not None:side_source_tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             for camera in cameras:
                 im=Image.fromarray(np.ascontiguousarray(obs[camera+'_image'][::-1]));b=io.BytesIO();im.save(b,format='PNG')
                 raw=b.getvalue()
+                api.raw_camera_images[camera]=raw
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
@@ -453,7 +460,7 @@ def main():
                             if args.focused_questions:
                                 from PIL import ImageFont
                                 x=min(args.size-32,api.source_component['bbox_xyxy'][2]+15)
-                                y=max(2,api.source_component['bbox_xyxy'][1]+(3 if sample['label']=='S' else int(sample['label'][1:]))*25)
+                                y=max(2,api.source_component['bbox_xyxy'][1]+(4 if sample['label']=='N0' else 3 if sample['label']=='S' else int(sample['label'][1:]))*25)
                                 draw.line((u,v,x,y+8),fill='#00ffff',width=1)
                                 draw.text((x,y),sample['label'],font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',16),fill='#00ffff',stroke_width=1,stroke_fill='#000000')
                             else:draw.text((u+3,v-8),sample['label'],fill='#00ffff',stroke_width=1,stroke_fill='#000000')
@@ -659,7 +666,7 @@ def main():
                 questions=coordinate_questions(state,questions)
             if args.actor_attention and replay_rows is None:
                 candidates={s['label']:s for s in state['visible_surface_samples']}
-                source_candidates={k:v for k,v in candidates.items() if k.startswith('C') or k=='S'} if args.focused_questions else candidates
+                source_candidates={k:v for k,v in candidates.items() if k.startswith(('C','N')) or k=='S'} if args.focused_questions else candidates
                 attention=dict(reference=dict(type='choice',
                     instructions='Use CURRENT RGB to choose a currently visible labelled surface feature relevant to the CURRENT stage. For grasping choose a graspable part of the actual source, not the robot/background. For rack placement choose the relevant rack support. This is your visual selection, not a movement recommendation. Unknown if no suitable visible labelled feature exists.',
                     criteria={**{k:'Select current observed dot '+k+'.' for k in source_candidates},
