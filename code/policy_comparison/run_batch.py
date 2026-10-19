@@ -31,7 +31,7 @@ def validate_store():
 
 
 def sync_text(run):
-    args=['rsync','-a','--exclude=cache/','--exclude=tmp/','--exclude=tmp-sshfs-before-repair/']
+    args=['rsync','-rlt','--exclude=/sim/','--exclude=cache/','--exclude=tmp/','--exclude=tmp-sshfs-before-repair/']
     args += ['--exclude=*'+suffix for suffix in ('.png','.jpg','.jpeg','.webp','.mp4','.mov','.npz','.npy')]
     # Keep temporary images local; copy reconstructible text without deletion.
     result=subprocess.run(args+['-e',shlex.join(SSH),str(run)+'/',
