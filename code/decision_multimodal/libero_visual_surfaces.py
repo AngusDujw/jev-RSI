@@ -9,10 +9,11 @@ from scipy import ndimage
 
 
 class SurfaceTracker:
-    def __init__(self, kind, initial_box):
+    def __init__(self, kind, initial_box, sparse=False):
         self.kind=kind
         self.box=np.asarray(initial_box,float)
         self.initial_box=self.box.copy()
+        self.sparse=sparse
 
     def observe(self, rgb, depth, K, T):
         h,w=rgb.shape[:2]
@@ -49,7 +50,7 @@ class SurfaceTracker:
         for f in (.15,.5,.85):
             y=float(np.quantile(ys,f));band=np.flatnonzero(abs(ys-y)<=max(2,(box[3]-box[1])*.08))
             if not len(band):continue
-            for fx in (.25,.5,.75):
+            for fx in ((.5,) if self.sparse else (.25,.5,.75)):
                 j=band[np.argmin(abs(xs[band]-np.quantile(xs[band],fx)))]
                 pixel=(int(xs[j]),int(ys[j]))
                 if pixel not in pixels:pixels.append(pixel)

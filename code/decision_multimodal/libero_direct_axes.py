@@ -211,6 +211,7 @@ def main():
     p.add_argument('--execution-steps',type=int,default=4,choices=range(4,21),help='Own-pose servo steps per categorical decision')
     p.add_argument('--live-surfaces',action='store_true',help='Current RGB component surface samples instead of stale fixed source-window dots')
     p.add_argument('--actor-attention',action='store_true',help='Decision model chooses a visible reference and orientation relationship before deciding action axes')
+    p.add_argument('--focused-questions',action='store_true',help='Three readable source labels, stage-local examples and short legacy-style axis questions')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -233,6 +234,9 @@ def main():
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
         profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        execution_steps=args.execution_steps,record_evidence=args.record_evidence,
+        live_surfaces=args.live_surfaces,actor_attention=args.actor_attention,diagnostic_replay=bool(args.replay),
+        focused_questions=args.focused_questions,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
@@ -261,7 +265,8 @@ def main():
     tracker=None
     if args.live_surfaces:
         from libero_visual_surfaces import SurfaceTracker
-        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512)
+        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions)
+    full_demonstrations=api.demonstrations[:]
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
     try:
@@ -293,7 +298,13 @@ def main():
                         api.surface_samples.extend(current_samples)
                         for sample in current_samples:
                             u,v=sample['pixel_uv'];draw.ellipse((u-2,v-2,u+2,v+2),fill='#00ffff',outline='#000000')
-                            draw.text((u+3,v-8),sample['label'],fill='#00ffff',stroke_width=1,stroke_fill='#000000')
+                            if args.focused_questions:
+                                from PIL import ImageFont
+                                x=min(args.size-32,api.source_component['bbox_xyxy'][2]+15)
+                                y=max(2,api.source_component['bbox_xyxy'][1]+int(sample['label'][1:])*25)
+                                draw.line((u,v,x,y+8),fill='#00ffff',width=1)
+                                draw.text((x,y),sample['label'],font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',16),fill='#00ffff',stroke_width=1,stroke_fill='#000000')
+                            else:draw.text((u+3,v-8),sample['label'],fill='#00ffff',stroke_width=1,stroke_fill='#000000')
                     for region,key in (('A','fixed_view_bbox_xyxy'),('B','receiver_fixed_view_bbox_xyxy')):
                         if tracker is not None and region=='A':continue
                         if key not in plan:continue
@@ -337,9 +348,22 @@ def main():
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),
                 last_actions=[{k:v for k,v in row.items() if not k.startswith(('own_position_','own_rotation_'))} for row in history[-4:]],
                 next_stage=stages[min(stage+1,len(stages)-1)])
+            if args.focused_questions:
+                state.pop('stage_order');state.pop('next_stage');state['last_actions']=state['last_actions'][-1:]
+                phase=('approach' if 'Align above' in stages[stage]['name'] and 'rack' not in stages[stage]['name'] else
+                    'orient_receiver' if 'rack' in stages[stage]['name'] and 'Align' in stages[stage]['name'] else
+                    'contact' if 'Descend' in stages[stage]['name'] and args.task==1383 else
+                    'grasp' if stages[stage]['name']=='Close' or 'Descend' in stages[stage]['name'] else
+                    'lift' if stages[stage]['name']=='Lift' else 'turn' if stages[stage]['name']=='Turn' else
+                    'lower' if 'Lower' in stages[stage]['name'] else 'release')
+                api.demonstrations=full_demonstrations[:12] if decision<3 else []
+                for index,part in enumerate(full_demonstrations):
+                    if part['type']=='input_text' and 'phase '+phase+'.' in part['text']:
+                        api.demonstrations+=full_demonstrations[index:index+2]
             if args.grounded:
                 state['source_description']=plan.get('source_description','Identify the named object from current images.')
                 state['visual_cues']=plan.get('relevant_visual_cues',[])
+                if args.focused_questions:state.pop('visual_cues')
             if args.relation_prompts:
                 own_p,own_R=own_pose()
                 # Own hand geometry, never a target orientation or object pose.
@@ -355,6 +379,11 @@ def main():
                 state['own_tool_geometry']['pad_centre_separation_mm']=float(np.linalg.norm(closing)*1000)
                 state['own_tool_geometry']['last_gripper_command']='close' if grip>0 else 'open'
                 state['own_tool_geometry']['reference_description']='Position is the measured robot grip_site between the fingers, not wrist housing or a visible object point. Pad-centre separation includes pad thickness and is not a contact sensor.'
+                if args.focused_questions:
+                    def axis_words(v):
+                        i=int(np.argmax(abs(v)));return ('+' if v[i]>=0 else '-')+'XYZ'[i] if abs(v[i])>.8 else 'oblique; use current RGB and unit vector'
+                    state['own_tool_geometry']['fingers_point_approximately']=axis_words(own_R[:,2])
+                    state['own_tool_geometry']['fingers_close_across_approximately']=axis_words(closing/max(np.linalg.norm(closing),1e-10))
             if args.surface_context:
                 own_p,_=own_pose()
                 state['own_gripper_world_mm']=np.round(own_p*1000,1).tolist()
@@ -371,6 +400,7 @@ def main():
                         'B dots are in a fixed receiver identity window and may lie on background/robot. '
                         'No object pose, target pose, orientation error, or recommended action is calculated. '
                         'Choose the grasp relationship yourself from both current images and compare coordinates only for matching physical features.')
+                    if args.focused_questions:state['surface_sample_meaning']+=' Labels identify current sampled pixels, not persistent material landmarks. Dot displacement alone is not evidence of object rotation.'
                 if args.positive_frame:
                     offset=np.array([2000.,2000.,0.])
                     state['own_gripper_world_mm']=np.round(own_p*1000+offset).tolist()
@@ -407,9 +437,10 @@ def main():
                 questions=coordinate_questions(state,questions)
             if args.actor_attention and replay_rows is None:
                 candidates={s['label']:s for s in state['visible_surface_samples']}
+                source_candidates={k:v for k,v in candidates.items() if k.startswith('C')} if args.focused_questions else candidates
                 attention=dict(reference=dict(type='choice',
                     instructions='Use CURRENT RGB to choose a currently visible labelled surface feature relevant to the CURRENT stage. For grasping choose a graspable part of the actual source, not the robot/background. For rack placement choose the relevant rack support. This is your visual selection, not a movement recommendation. Unknown if no suitable visible labelled feature exists.',
-                    criteria={**{k:'Select current observed dot '+k+'.' for k in candidates},
+                    criteria={**{k:'Select current observed dot '+k+'.' for k in source_candidates},
                         'unlabelled':'A useful object feature is visible but no current dot identifies it.',
                         'unknown':'No suitable visible feature can be identified.'}),
                     orientation_relation=dict(type='choice',
@@ -419,14 +450,27 @@ def main():
                         approach_mismatch='The direction the fingers approach does not fit the visible geometry.',
                         turn_required='The grasped control must now be rotated about its visible shaft.',
                         unclear='The relevant orientation relationship is not visible clearly enough.')))
+                stage_key=state['stage'].get('stage_key','')
+                placing=stage_key in ('align_source_above_receiver','lower_to_place','release','inspect') and args.task==1458
+                if args.focused_questions:
+                    attention['reference']['instructions']='Which labelled C surface dot lies on the source part useful for the current manipulation? Choose a visible reference, not a hidden centre. Read current RGB; labels identify observed surfaces only.'
+                    if placing:
+                        attention['receiver']=dict(type='choice',instructions='Which B dot lies on a useful current rack support for this placement? Use current RGB to distinguish wood from background or robot.',
+                            criteria={**{k:'Select receiver surface '+k+'.' for k in candidates if k.startswith('B')},'unknown':'No useful rack support dot is visible.','unlabelled':'A useful support is visible but not labelled.'})
                 assessment=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=attention))
                 selected=assessment['answers']['reference']['choice']
                 state['actor_visual_assessment']={k:v['choice'] for k,v in assessment['answers'].items()}
+                state['actor_visual_assessment_confidence']={k:v['confidence'] for k,v in assessment['answers'].items()}
                 if selected in candidates:
                     observed=np.array(candidates[selected]['visible_surface_world_mm'])
                     state['actor_selected_surface']=candidates[selected]
                     state['observed_surface_relative_mm']=np.round(observed-np.array(state['own_gripper_world_mm']),1).tolist()
                     state['relative_observation_meaning']='Observed surface minus own gripper, XYZ in millimetres. This feature was selected by YOU from CURRENT RGB. It is not a desired pose or a required displacement. Surface versus object centre and overhead/descent/placement relationships still require visual judgement; no orientation correction is computed.'
+                    if placing and 'receiver' in assessment['answers']:
+                        receiver=assessment['answers']['receiver']['choice']
+                        if receiver in candidates:
+                            state['actor_selected_receiver_surface']=candidates[receiver]
+                            state['observed_receiver_minus_source_mm']=np.round(np.array(candidates[receiver]['visible_surface_world_mm'])-observed,1).tolist()
                     for i,a in enumerate(('x','y','z')):
                         questions[a]['instructions']=(f'Current stage: {state["stage"]["name"]}. Goal: {state["stage"]["goal"]}. '
                             f'Your RGB-selected observed feature has {a.upper()} coordinate minus gripper coordinate = {state["observed_surface_relative_mm"][i]} mm. '
@@ -438,6 +482,34 @@ def main():
                 questions['gripper']['instructions']=('Current stage goal: '+state['stage']['goal']+'. '
                     'Choose open, close, or retain the last command. A Close stage asks you to attempt closure around the positioned object; '
                     'do not require already-proven contact before selecting close. Closing alone does not prove grasp; the next observations test it.')
+            if args.focused_questions:
+                for a in ('x','y','z'):
+                    key=state['stage'].get('stage_key','')
+                    template_key=('source_alignment_xy' if key=='align_above_source' and a!='z' else
+                        'source_alignment_z' if key=='align_above_source' else
+                        'source_descent' if key=='descend_to_source' else
+                        'placement_alignment_xy' if key=='align_source_above_receiver' and a!='z' else
+                        'placement_alignment_z' if key=='align_source_above_receiver' else
+                        'placement_lowering' if key=='lower_to_place' else
+                        'turn_translation' if key=='turn' else 'close' if key in ('close','release','inspect') else 'lift')
+                    query=plan.get('axis_question_templates',{}).get(template_key,'Which world-{axis} motion helps the current goal?').format(axis=a.upper())
+                    reference=(f'Observed selected surface minus hand on {a.upper()} = {state["observed_surface_relative_mm"]["xyz".index(a)]} mm. '
+                        if 'observed_surface_relative_mm' in state else '')
+                    if 'observed_receiver_minus_source_mm' in state:
+                        reference=f'Observed selected receiver minus held source on {a.upper()} = {state["observed_receiver_minus_source_mm"]["xyz".index(a)]} mm. '
+                    if key in ('close','release','inspect','turn'):reference=''
+                    questions[a]['instructions']=(query+' '+reference+
+                        'Judge the intended relationship from current fixed/wrist RGB; an observed surface is not a hidden object centre. '
+                        'Hold when this axis is already suitable.')
+                    questions[a]['criteria']={'positive':f'Move hand +{a.upper()}; increase hand {a.upper()}, decrease surface-minus-hand {a.upper()}.',
+                        'negative':f'Move hand -{a.upper()}; decrease hand {a.upper()}, increase surface-minus-hand {a.upper()}.',
+                        'hold':'Keep this axis unchanged.'}
+                for a in ('rx','ry','rz'):
+                    label={'rx':'roll about world X','ry':'pitch about world Y','rz':'yaw about world Z'}[a]
+                    questions[a]['instructions']=(f'{state["stage"]["name"]}: {state["stage"]["goal"]} '
+                        f'Which {label} sign improves the actual finger/object or held-object/receiver orientation? '
+                        'Compare current RGB, own-hand axes and actual before/after motion; hold if aligned. '
+                        'Any earlier actor orientation assessment is an unverified hypothesis, not a desired pose.')
             if args.adaptive_steps:
                 questions.pop('scale')
                 state['step_policy']='Direction-history adaptation only; no object-target residual controls magnitude. The last execution contains commanded and measured effects.'

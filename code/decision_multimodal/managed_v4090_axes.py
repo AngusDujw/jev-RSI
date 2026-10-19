@@ -38,6 +38,7 @@ def scheduler(path):
             if case.get('record_evidence'):command+=['--record-evidence']
             if case.get('live_surfaces'):command+=['--live-surfaces']
             if case.get('actor_attention'):command+=['--actor-attention']
+            if case.get('focused_questions'):command+=['--focused-questions']
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000
