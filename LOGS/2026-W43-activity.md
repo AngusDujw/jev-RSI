@@ -43,3 +43,5 @@
 - 【Agent】【2026-10-19 14:33】[result] Verified all23 native cases active, all23 received actual Decisions answers (27 total),0 network retry/error records and0 rollout PNG; fair queue covers rear episodes. No new terminal outcome yet.
 - 【User】【2026-10-19 15:06】[prompt] 还在正常测试吗
 - 【Agent】【2026-10-19 15:06】[result] 15:06只读检查v4090 retry1：23 active/0 queued/0 finished，最后物理动作8.997秒前；remote934有效回答、local938，0终止错误回答；累计21次网络失败尝试已触发重试，心跳0.57秒前，未重启或改模型。
+- 【User】【2026-10-19 16:09】[prompt] 现在还在跑吧
+- 【Agent】【2026-10-19 16:09】[result] 16:09只读核验retry1已全停：active0/finished23，远机1428回答；14等待超时、7 TLS EOF、2 JSON解析错误，全部native_evaluated=false；未重启。
