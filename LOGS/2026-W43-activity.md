@@ -164,3 +164,4 @@
 - 【User】【2026-10-20 00:15】[intent] 继续server02固定6+10槽监督故障修复，核对末路分类原生终局、真实进程与资源；不恢复结束episode或修答重采样，Decisions媒体继续保留。
 - 【User】【2026-10-20 00:21】[intent] 继续server02固定6+10槽监督故障修复，核对真实原生终局与缺槽，仅以独立新名补审计的基础设施中断槽，不恢复结束episode或重采样；Decisions媒体保留。
 - 【Agent】【2026-10-20 00:21】[op] EXP300核实g末class5完整1100失败score0且全worker/容器退出，保1323PNG，g仅1有效9infra；未来传输改900秒单次/禁Expect100并增耗时stderr记录，离线mock验证body不变、无重试、异常保留、零API及临时夹具清理。准备独立h仅补9infra缺槽，复用全部完整结果。
+- 【Agent】【2026-10-20 00:21】[run] h独立补槽服务robodojo-comparison-20261020h已启动，Restart=no，复用6Luna和1完整Decisions，仅补9个infra缺槽；媒体保留开关true，单次900秒无重试，最多3环境并按显存/系统内存准入；初始setup不当原生成功或网络修复验收。
