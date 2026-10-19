@@ -7,7 +7,7 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 - Knob v20 development: native success and normal program completion **2/2**, initial states8/9, **646 physical steps each**,218 Decisions responses each.
 - These are explicitly **extended1200-budget results**, not600-step completions.
 - Original policy commit329d9c12 and protocol9c33a1e0 are frozen in a separate worktree for predeclared new initial states14/15/16; no failures will be replaced. All three finished with native success and normal program completion:658/646/694 physical steps,223/220/231 Decisions responses. This is3/3 in the declared extended1200 budget; none meets600 steps.
-- Bottle v21/v22 finished0/2 each. v23 finished native1/2 at1198 steps, but program0/2; the positive terminal frame still shows the bottle grasped above/on the upper rack. Release and stable post-release completion remain unproven. v24-v26 are development runs, not frozen validation.
+- Bottle v21/v22 finished0/2 each. v23 finished native1/2 at1198 steps, but program0/2; the positive terminal frame still shows the bottle grasped above/on the upper rack. Release and stable post-release completion remain unproven. v24 finished native/program0/2. v25-v28 are development runs, not frozen validation.
 - The separate281e94c9 unsigned-step600 pilot finished0/2 (init8/9,598 steps). It does not replace the original frozen extended-budget3/3 condition.
 - [Frozen profile](protocols/knob_v20_freeze.json) and EXP-2026W43-028 identify the exact condition. Subsequent shape features, held-object demonstration banks and fin-centre diagnostics are not part of this winning v20 policy.
 
@@ -131,3 +131,9 @@ The local Pro ninth review inspected actual v23 frames and original rotation res
 ## v26 assisted line reasoning
 
 Visual Decisions still selects the source part and current physical wood span. A separate text-only Decisions call evaluates printed, unevaluated expressions over the observed bottle/selected-wood unit-line components. The backend computes no products, differences, angular residuals or motor signs. The actor itself returns three component categories; its coarse orientation transition is another explicit expression/classification call. The SAME runtime payload builder passed30/30 rotation and5/5 transition calibration questions, zero native actions. This is assisted multimodal reference selection plus categorical geometric reasoning, not raw-RGB-only rotation control, and calibration is not task success. Four development cases10/11/12/13 run under one fixed method; none can replace a failed future validation case.
+
+## v27-v28: native evidence changes the next step
+
+v26 synthetic line-transition calibration5/5 did not generalize: native arithmetic audit found10/13 correct phase answers, including three premature advances for scores near0.02–0.09 rather than0.97. v27 asks Decisions to classify its actual same-observation XYZ/R categories instead. The first40 native phase answers matched the rule, but the main camera subsequently lost the bottle behind the arm. Actual sideview still showed the held body; absent main geometry triggered the weaker visual R fallback.
+
+v28 optionally extracts CURRENT sideview RGB-D bottle candidates when the main component is unavailable, rejects measured own geometry, and labels camera/pixel provenance explicitly. A418-step zero-API replay recovered485 points and a visible body line at the occluded main-view state. The actor still verifies identity and chooses references/actions. This is perception-source recovery, not a target pose, contact signal or native success. Pro10 reference-wording/crop/binary diagnostics remained low-confidence and are not part of v28 native control.
