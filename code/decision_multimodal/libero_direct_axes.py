@@ -282,10 +282,14 @@ def main():
     p.add_argument('--visual-near-grasp',action='store_true',help='Near-grasp XY judges finger capture in RGB, not zero skin displacement')
     p.add_argument('--numeric-z',action='store_true',help='Short reference-height sign criteria during near approach; actor still selects the sign')
     p.add_argument('--track-selected',action='store_true',help='Track the actor-selected RGB feature with forward/backward optical flow and fresh depth')
+    p.add_argument('--source-motion-test',action='store_true',help='Expose qualified phase-entry/current RGB-D source-feature motion for the actor short lift test; no phase result is computed')
     p.add_argument('--robot-self-mask',action='store_true',help='Reject possible own-robot RGB-D surfaces and anchor the stationary knob identity window')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
-    args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
+    args=p.parse_args()
+    if args.source_motion_test and not (args.task==1458 and args.actor_attention and args.track_selected and args.stage_motion and args.surface_context and args.live_surfaces and args.formal_stage_call):
+        raise ValueError('Source-motion test requires bottle actor-selected live RGB-D tracking, measured stage motion and formal phase calls')
+    out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
         TMPDIR=str(cache),XDG_CACHE_HOME=str(cache),MUJOCO_GL='egl',MUJOCO_EGL_DEVICE_ID=str(args.gpu))
@@ -309,6 +313,7 @@ def main():
         git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[2],text=True).strip(),
         profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        source_motion_module_sha256=hashlib.sha256(Path(__file__).with_name('libero_source_motion.py').read_bytes()).hexdigest() if args.source_motion_test else None,
         execution_steps=args.execution_steps,horizon=args.horizon,record_evidence=args.record_evidence,
         live_surfaces=args.live_surfaces,actor_attention=args.actor_attention,diagnostic_replay=bool(args.replay),
         focused_questions=args.focused_questions,
@@ -321,7 +326,7 @@ def main():
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
-        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,span_detail_cards=args.span_detail_cards,literal_placement_rotation=args.literal_placement_rotation,grasp_pose_decided_by_actor=True,experience_injection=False))
+        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,span_detail_cards=args.span_detail_cards,literal_placement_rotation=args.literal_placement_rotation,source_motion_test=args.source_motion_test,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
@@ -547,6 +552,7 @@ def main():
             entry_token=(stage_origin_tick,stage)
             if getattr(api,'phase_entry_token',None)!=entry_token:
                 api.phase_entry_token=entry_token
+                api.phase_entry_lift_feature=None
                 api.phase_entry_views=[dict(part,**({'text':part['text'].replace('CURRENT','PHASE ENTRY')} if part['type']=='input_text' else {})) for part in api.current]
             state=dict(task=instruction,stage=stages[stage],stage_order=stages,
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),
@@ -745,6 +751,14 @@ def main():
                 questions['gripper']['instructions']=('Current stage goal: '+state['stage']['goal']+'. '
                     'Choose open, close, or retain the last command. A Close stage asks you to attempt closure around the positioned object; '
                     'do not require already-proven contact before selecting close. Closing alone does not prove grasp; the next observations test it.')
+            if args.source_motion_test and state['stage'].get('stage_key')=='lift':
+                from libero_source_motion import entry_feature,motion_observation
+                camera=(state.get('source_component') or {}).get('observation_camera','agentview')
+                if state.get('stage_own_motion',{}).get('physical_steps')==0 and api.phase_entry_lift_feature is None:
+                    raw_selected=next((s for s in api.surface_samples if s['label']==state.get('actor_selected_surface',{}).get('label')),None)
+                    api.phase_entry_lift_feature=entry_feature(raw_selected,camera,tick)
+                state['source_motion_test']=motion_observation(api.phase_entry_lift_feature,
+                    api.surface_samples,camera,tick,state.get('stage_own_motion',{}))
             if args.focused_questions:
                 for a in ('x','y','z'):
                     key=state['stage'].get('stage_key','')

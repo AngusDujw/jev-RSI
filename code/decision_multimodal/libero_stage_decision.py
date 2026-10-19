@@ -1,4 +1,5 @@
 """Scoped stage decisions from prior model answers and own execution facts."""
+import json
 from legacy_decisions import convert_request
 
 
@@ -9,6 +10,21 @@ STAGE_INPUT = ('Judge only the phase transition from the facts and rule printed 
 
 def build_stage_request(state,answers,protocol):
     key=state['stage'].get('stage_key')
+    motion=state.get('source_motion_test')
+    if key=='lift' and motion and motion.get('available'):
+        own=state.get('own_tool_geometry',{})
+        recovery=answers.get('transition',{}).get('choice')=='restart'
+        return dict(model='gpt-6-luna',state=dict(stage=state['stage'],
+            request_purpose='formal_stage_classification',
+            formal_stage_input='Classify one short source-motion test from current camera-derived measurements. The source feature was selected by the actor from RGB. This is not a holding, contact or task-success certificate.\n'+json.dumps(motion,separators=(',',':'))),
+            questions=dict(transition=dict(type='choice',instructions=
+                f"Actual physical steps in this phase={state.get('stage_own_motion',{}).get('physical_steps')}; last executed gripper command={own.get('last_gripper_command')}; visual recovery requested={recovery}. "
+                'First restart if visual recovery was requested. Otherwise advance if the last gripper command is close, the observed feature has risen at least20mm, and EACH feature-minus-hand motion component is within -10 to +10mm inclusive. '
+                'If not passed, restart when the hand has risen at least80mm. Also restart when hand rise is at least30mm AND either feature rise is at most5mm or at least one motion-error component has magnitude greater than20mm. Otherwise continue this brief test. '
+                'Use the printed measurements; do not require rack placement or exact point-to-point alignment.',
+                criteria={'advance':'The measured short source-motion test passes; enter combined reorientation and approach.',
+                    'restart':'The stated recovery or failed-test condition is met; reassess the grasp.',
+                    'continue':'Neither the pass nor failed-test condition is met; continue the short test.'})))
     visual_rule=protocol.get('visual_stage_rules',{}).get(key)
     if visual_rule is not None:
         facts='Measured own motion in this phase: '+str(state.get('stage_own_motion',{}))+'. Last executed gripper command: '+str(state.get('own_tool_geometry',{}).get('last_gripper_command','unknown'))+'. '

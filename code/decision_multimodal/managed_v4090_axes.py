@@ -74,6 +74,7 @@ def scheduler(path):
             if case.get('visual_near_grasp'):command+=['--visual-near-grasp']
             if case.get('numeric_z'):command+=['--numeric-z']
             if case.get('track_selected'):command+=['--track-selected']
+            if case.get('source_motion_test'):command+=['--source-motion-test']
             if case.get('robot_self_mask'):command+=['--robot-self-mask']
             command+=['--horizon',str(case.get('horizon',600))]
             command+=['--execution-steps',str(case.get('execution_steps',4))]
