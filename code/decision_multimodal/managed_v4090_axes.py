@@ -40,6 +40,7 @@ def scheduler(path):
             if case.get('actor_attention'):command+=['--actor-attention']
             if case.get('focused_questions'):command+=['--focused-questions']
             if case.get('relative_step_scale'):command+=['--relative-step-scale']
+            if case.get('numeric_xy'):command+=['--numeric-xy']
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000

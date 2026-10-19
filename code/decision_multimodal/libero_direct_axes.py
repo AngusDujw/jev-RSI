@@ -213,6 +213,7 @@ def main():
     p.add_argument('--actor-attention',action='store_true',help='Decision model chooses a visible reference and orientation relationship before deciding action axes')
     p.add_argument('--focused-questions',action='store_true',help='Three readable source labels, stage-local examples and short legacy-style axis questions')
     p.add_argument('--relative-step-scale',action='store_true',help='Unsigned translation magnitude from actor-selected observed feature differences; never choose signs')
+    p.add_argument('--numeric-xy',action='store_true',help='Explicit legacy-style coarse X/Y reference alignment; Z and rotations remain visual/stage judgements')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -239,6 +240,7 @@ def main():
         live_surfaces=args.live_surfaces,actor_attention=args.actor_attention,diagnostic_replay=bool(args.replay),
         focused_questions=args.focused_questions,
         relative_step_scale=args.relative_step_scale,
+        numeric_xy=args.numeric_xy,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
@@ -328,16 +330,18 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'),image_part(raw)])
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
-                    if tracker is not None and api.source_component.get('status')!='candidate':continue
+                    crop_unknown=tracker is not None and api.source_component.get('status')!='candidate'
                     # Fixed-camera articulated knob base is stationary; this crop is identity/visibility only.
-                    box=(np.asarray(api.source_component['bbox_xyxy'],float) if tracker is not None
+                    box=(tracker.box.copy() if crop_unknown else np.asarray(api.source_component['bbox_xyxy'],float) if tracker is not None
                          else np.asarray(plan['fixed_view_bbox_xyxy'],float)*(args.size/512))
                     margin=.10*args.size
                     box=[max(0,int(box[0]-margin)),max(0,int(box[1]-margin)),
                          min(args.size,int(box[2]+margin)),min(args.size,int(box[3]+margin))]
                     crop=im.crop(box).resize((512,512));b=io.BytesIO();crop.save(b,format='PNG')
                     if not args.compact or args.record_evidence:(out/f'{tick:04d}-source-crop.png').write_bytes(b.getvalue())
-                    parts.extend([dict(type='input_text',text='CURRENT fixed-view source detail; same observation, zoom only. '+plan['source_description']),image_part(b.getvalue())])
+                    caption=('CURRENT detail from the last image-space identity window. Source may be occluded; no current source geometry is implied. '
+                        if crop_unknown else 'CURRENT fixed-view source detail; same observation, zoom only. ')
+                    parts.extend([dict(type='input_text',text=caption+plan['source_description']),image_part(b.getvalue())])
             return parts
         for decision in range(args.decisions):
             import shutil
@@ -516,6 +520,21 @@ def main():
                         f'Which {label} sign improves the actual finger/object or held-object/receiver orientation? '
                         'Compare current RGB, own-hand axes and actual before/after motion; hold if aligned. '
                         'Any earlier actor orientation assessment is an unverified hypothesis, not a desired pose.')
+            if args.numeric_xy:
+                moving_key=state['stage'].get('stage_key','')
+                difference=state.get('observed_receiver_minus_source_mm',state.get('observed_surface_relative_mm'))
+                if difference is not None and moving_key in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
+                    for i,a in enumerate(('x','y')):
+                        questions[a]['instructions']=(f'On world {a.upper()}, the current coarse alignment error is {difference[i]} mm. '
+                            'Error means YOUR RGB-selected reference minus the controlled point: source surface minus hand during grasp alignment, '
+                            'receiver surface minus held source during placement. Which movement reduces this one-axis error? '
+                            'Positive error needs positive motion; negative error needs negative motion. Hold inside the +/-10mm coarse band. '
+                            'This aligns a visual reference only; it never certifies contact, a hidden centre, or a desired orientation.')
+                        questions[a]['criteria']={'positive':'Error above +10mm: increase the controlled coordinate.',
+                            'negative':'Error below -10mm: decrease the controlled coordinate.',
+                            'hold':'Error within -10mm to +10mm: hold this coordinate.'}
+                    state['coarse_alignment_band_mm']=10
+                    state['alignment_band_meaning']='Coarse visual-feature positioning band only, not a sensor accuracy claim or grasp/contact certificate.'
             if args.adaptive_steps:
                 questions.pop('scale')
                 state['step_policy']='Direction-history adaptation only; no object-target residual controls magnitude. The last execution contains commanded and measured effects.'
