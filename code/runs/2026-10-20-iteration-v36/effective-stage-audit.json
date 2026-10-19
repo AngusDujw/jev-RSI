@@ -1,0 +1,14 @@
+{
+  "stage_keys": [
+    "align_above_source",
+    "descend_to_source",
+    "close",
+    "lift",
+    "align_source_above_receiver",
+    "lower_to_place",
+    "release",
+    "inspect"
+  ],
+  "stale_postgrasp_overrides": false,
+  "checks_passed": true
+}

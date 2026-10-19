@@ -2,13 +2,14 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## Active v34/v35 development, not stable completion
+## Active v34/v36 development, not stable completion
 
 - v30 final native/program0/2; v31 original and task-exit groups each0/3; v32 final0/3, all1198 physical steps. Actual grasp/lift is not task success.
 - v34 six isolated episodes retain exact current RGB/requests/answers: original-direction group reached transport/lowering, paired-span task-exit group remains in posture. No new complete success verified.
 - v34 init14 step850 sideview directly shows the bottle lying on the table while the hand is raised. Continuing carry/lower is not evidence of holding; fresh visual phase classification must detect source loss.
 - Earlier v28 init12 complete success remains valid, but the final formal transition at1066 incorrectly advanced despite nonhold x/z/ry/rz and known source/receiver. That success does not validate the all-six-hold rule.
-- v35 adapts the actual Pro12 review: combine reorientation and approach, judge visible seating for release, then inspect current/previous views. Original grasp/lift and raw RGB-D motion guidance retained. Stable stage-key example mapping replaces fragile display-name matching; camera identities remain in visual stage requests. These are exploratory combined changes, not single-factor attribution.
+- v35 was interrupted before placement after the complete merge audit found stale stage_overrides. Partial evidence and interruption reasons are preserved; no task result claimed. v36 removes the stale overrides and obsolete placement formal rules.
+- v36 adapts the actual Pro12 review: combine reorientation and approach, judge visible seating for release, then inspect current/previous views. Original grasp/lift and raw RGB-D motion guidance retained. Stable stage-key example mapping replaces fragile display-name matching; camera identities remain in visual stage requests. These are exploratory combined changes, not single-factor attribution.
 - Controlled v33 six historical held-rotation examples used0API and are not policy trials. Positive X/Y fixed-view evidence supports approximately28/27degree body change. Negative Y17.17mm own-position drift rejected the unchanged15mm bank guard; no bank injected.
 - Knob original frozen3/3 remains unchanged. Bottle goal requires a new frozen policy and three predeclared fresh native successes; old failures are never replaced.
 
