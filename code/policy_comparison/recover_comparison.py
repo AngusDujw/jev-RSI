@@ -33,7 +33,7 @@ def main():
     args=parser.parse_args()
     signal.signal(signal.SIGINT,lambda *_:batch.STOP.set())
     signal.signal(signal.SIGTERM,lambda *_:batch.STOP.set())
-    if not batch.ARTIFACT_ROOT.is_mount():raise RuntimeError('Remote artifact mount required')
+    batch.validate_store()
     sys.path.insert(0,str(batch.ROOT/'official_runtime'))
     report=dict(luna=[],decisions=[],original_attempts_preserved=True)
     for mode,layouts in (('luna',[0,1,0]),('decisions',[0,1,0,1,0])):
@@ -49,6 +49,8 @@ def main():
                 with batch.LOCK:
                     report[mode].append(row)
                     (batch.ARTIFACT_ROOT/'comparison_completion_status.json').write_text(json.dumps(report,indent=2)+'\n')
+                if row.get('infrastructure_interrupted'):
+                    raise RuntimeError('Infrastructure interruption is not a completed trial slot')
                 if not (batch.ARTIFACT_ROOT/Path(row['remote']).name/'controller/run.json').exists():
                     # Do not terminate another active episode after setup failure.
                     raise RuntimeError('This slot failed before observations; other task continues')
@@ -63,6 +65,8 @@ def main():
                 try:future.result()
                 except Exception as error:failures.append(str(error))
             if failures:raise RuntimeError('; '.join(failures))
+        if len(report[mode]) != len(layouts)*2 or any(row.get('infrastructure_interrupted') for row in report[mode]):
+            raise RuntimeError('Phase barrier: all valid slots must finish before next model')
     print(json.dumps(report),flush=True)
 
 

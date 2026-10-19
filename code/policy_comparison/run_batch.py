@@ -18,9 +18,25 @@ REMOTE = '/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-policy-comparis
 LOCK = threading.Lock()
 STARTUP = threading.Semaphore(1)
 STOP = threading.Event()
-ARTIFACT_ROOT = Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-policy-comparison-20261018')
-SSH = ['ssh', '-F', '/dev/null', '-S', '/home/ykj/.ssh/s2-grasp-20261019.ctl',
+ARTIFACT_ROOT = Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-policy-execution-20261019')
+SSH = ['ssh', '-F', '/dev/null', '-S', '/home/ykj/.ssh/s2-comparison-20261019d.ctl',
        '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15']
+
+
+def validate_store():
+    if ARTIFACT_ROOT.is_symlink() or ARTIFACT_ROOT.is_mount() or not ARTIFACT_ROOT.is_dir():
+        raise RuntimeError('Expected the dedicated local execution directory')
+    if shutil.disk_usage(ARTIFACT_ROOT).free < 8*1024**3:
+        raise RuntimeError('Need 8GiB free for temporary same-episode inputs')
+
+
+def sync_text(run):
+    args=['rsync','-a','--exclude=cache/','--exclude=tmp/','--exclude=tmp-sshfs-before-repair/']
+    args += ['--exclude=*'+suffix for suffix in ('.png','.jpg','.jpeg','.webp','.mp4','.mov','.npz','.npy')]
+    # Keep temporary images local; copy reconstructible text without deletion.
+    result=subprocess.run(args+['-e',shlex.join(SSH),str(run)+'/',
+        'server02:'+REMOTE+'/'+run.name+'/'],capture_output=True,text=True,timeout=90)
+    if result.returncode:raise RuntimeError('Text sync failed: '+result.stderr[-600:])
 
 
 def save(path, value):
@@ -53,6 +69,7 @@ def run_one(task, layout, ordinal, mode, trial, recovery=None):
                  remote=remote, status='starting', native_episode_started=False)
     save(run / 'status.json', state)
     try:
+        validate_store()
         if mode=='luna' and recovery:
             preflight=ROOT/'pro_preflight'/name
             check=subprocess.run([str(PYTHON),'-u',str(Path(__file__).with_name('preflight_pro.py')),
@@ -151,6 +168,8 @@ if len(containers)>=3 or mem['MemAvailable']<20*1024**2: raise RuntimeError('WAI
                 sim.wait(timeout=30)
     except BaseException as exc:
         state.update(status='failed', error_type=type(exc).__name__, error=str(exc))
+        if not isinstance(exc, (ValueError,)):
+            state['infrastructure_interrupted']=True
     finally:
         if controller and controller.poll() is None:
             controller.terminate()
@@ -161,13 +180,32 @@ if len(containers)>=3 or mem['MemAvailable']<20*1024**2: raise RuntimeError('WAI
                 capture_output=True, timeout=45)
             sim.terminate()
             sim.wait(timeout=20)
-        # The FUSE-backed run directory is already the remote artifact directory.
         subprocess.run(SSH + ['-O','cancel','-L',f'127.0.0.1:{port}:127.0.0.1:{port}',
             '--','server02'],capture_output=True)
         native = run / 'sim/evaluation_outcome.json'
+        try:
+            result=subprocess.run(SSH+['--','server02',shlex.join(['cat',remote+'/sim/evaluation_outcome.json'])],capture_output=True,text=True,timeout=25)
+            if result.returncode==0:
+                value=json.loads(result.stdout)
+                native.parent.mkdir(exist_ok=True)
+                native.write_text(json.dumps(value,indent=2)+'\n')
+        except (ValueError,subprocess.SubprocessError) as error:
+            state['native_fetch_error']=str(error)
         if native.exists():
             state['native'] = json.loads(native.read_text())
+        if not (state.get('native') or {}).get('complete'):
+            failure=run/'controller/failure.json'
+            detail=json.loads(failure.read_text()) if failure.exists() else {}
+            if mode=='decisions' and detail.get('error_type')=='ValueError' and 'multiple rotations' in detail.get('error',''):
+                state['policy_failure']=True
+            else:
+                state['infrastructure_interrupted']=True
+                state['incomplete_requires_review']=True
         save(run / 'status.json', state)
+        try:sync_text(run)
+        except (RuntimeError,subprocess.SubprocessError) as error:
+            state['text_sync_error']=str(error)
+            save(run/'status.json',state)
     print(json.dumps(state), flush=True)
     return state
 
@@ -181,8 +219,7 @@ def main():
     sys.path.insert(0, str(ROOT / 'official_runtime'))
     signal.signal(signal.SIGTERM, lambda *_: STOP.set())
     signal.signal(signal.SIGINT, lambda *_: STOP.set())
-    if not ARTIFACT_ROOT.is_mount():
-        raise RuntimeError('Remote artifact mount is required; never fill the local disk')
+    validate_store()
     for mode in (['luna','decisions'] if args.mode == 'all' else [args.mode]):
         if STOP.is_set():
             break

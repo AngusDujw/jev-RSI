@@ -11,8 +11,10 @@ import shutil
 import shlex
 import subprocess
 import time
+import run_batch as batch
+from prune_trial_media import prune as prune_local
 
-ROOT = Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-policy-comparison-20261018')
+ROOT = batch.ARTIFACT_ROOT
 LOCAL = Path(__file__).resolve().parents[1] / 'runs/server02-policy-comparison-20261018/local_state'
 BINARY = {'.png', '.jpg', '.jpeg', '.webp', '.mp4', '.mov', '.npz', '.npy'}
 
@@ -46,15 +48,16 @@ def prune(run, state):
     container = f"policy-20261018-{state['task']}-{int(state['port'])}"
     command = ('if docker inspect '+shlex.quote(container)+
         ' >/dev/null 2>&1; then exit 73; fi; exec '+command)
-    result = subprocess.run(['ssh','-F','/dev/null','-S',
-        '/home/ykj/.ssh/s2-grasp-20261019.ctl','--','server02', command],
+    result = subprocess.run(batch.SSH+['--','server02', command],
         check=True,capture_output=True,text=True,timeout=120)
     counts.update(json.loads(result.stdout))
+    counts['local_media']=prune_local(run)
     local = LOCAL/run.name
     if local.is_dir() and not local.is_symlink():
         counts['local_state_bytes'] = sum(p.stat().st_size for p in local.rglob('*') if p.is_file() and not p.is_symlink())
         shutil.rmtree(local)
     receipt.write_text(json.dumps(dict(policy='Text results retained; binary media and large raw logs discarded after controller and simulator exit.', **counts), indent=2)+'\n')
+    batch.sync_text(run)
     return dict(run=run.name, **counts)
 
 
@@ -75,8 +78,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch-pid', type=int, required=True)
     args = parser.parse_args()
-    if not ROOT.is_mount():
-        raise RuntimeError('Expected this comparison remote artifact mount')
+    batch.validate_store()
     while alive(args.batch_pid):
         sweep()
         time.sleep(20)

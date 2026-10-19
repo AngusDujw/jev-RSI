@@ -34,7 +34,7 @@ def prune(run):
 
 if __name__ == '__main__':
     name = sys.argv[1]
-    if not re.fullmatch(r'(luna|decisions)-(stack_blocks|classify_objects)-(trial\d+-)?layout\d+(-completion-20261019a)?', name):
+    if not re.fullmatch(r'(luna|decisions)-(stack_blocks|classify_objects)-(trial\d+-)?layout\d+(-completion-20261019[a-z])?', name):
         raise ValueError('Not a comparison trial name')
     run = CAMPAIGN/name
     if run.is_symlink() or run.resolve().parent != CAMPAIGN:

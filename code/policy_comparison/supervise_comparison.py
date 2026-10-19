@@ -19,8 +19,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--generation',required=True)
     args=parser.parse_args()
-    if not batch.ARTIFACT_ROOT.is_mount():
-        raise RuntimeError('Artifact mount must be active before launch')
+    batch.validate_store()
     entry=Path(__file__).resolve().parent
     output=batch.ROOT/('supervision-'+args.generation)
     output.mkdir(exist_ok=False)
@@ -46,6 +45,10 @@ def main():
             except subprocess.SubprocessError as error:sample['error']=str(error)
             (output/'health.json').write_text(json.dumps(sample,indent=2)+'\n')
             print(json.dumps(sample),flush=True)
+            for run in batch.ARTIFACT_ROOT.glob('*-completion-'+args.generation):
+                try:batch.sync_text(run)
+                except (RuntimeError,subprocess.SubprocessError) as error:
+                    print(json.dumps(dict(text_sync_error=str(error),run=run.name)),flush=True)
             for _ in range(60):
                 if child.poll() is not None:break
                 time.sleep(1)
