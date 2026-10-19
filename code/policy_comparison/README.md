@@ -48,3 +48,6 @@ are unchanged. The 14:05 network loss ended generation c at native steps
 160/162/170 (all incomplete). Premature Decisions setup had zero API calls and
 zero policy steps; its orphan was stopped. All those attempts are preserved and
 excluded as infrastructure interruptions before fresh generation d.
+The host also rebooted at 14:17:38 (previous boot journal ends at 14:06:44).
+Transient services and local controllers from c did not survive; do not mistake
+their recorded PIDs for live processes or resume their ended native episodes.

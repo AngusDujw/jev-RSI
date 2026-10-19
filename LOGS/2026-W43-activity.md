@@ -29,3 +29,4 @@
 - 【Agent】【2026-10-19 14:31】[op] 确认14:05本机Network is unreachable令SSHFS掉线，c三路原生分别160/162/170步incomplete/server_close，不能算完成槽。调度缺少infra阶段阻断曾启动Decisions24900无控制器残留；远端无Decisions API响应/控制请求，已核实并停自有容器。改为本机执行目录/临时媒体，定期无删除文本rsync及远端原生终局拉取，取消SSHFS运行依赖；原版policy SHA全一致，修复infra阶段屏障且三worker故障注入验证通过，不恢复旧episode。
 - 【Agent】【2026-10-19 14:35】[op] 文本同步首次遇到旧native root所有文件chgrp错误；已修窄为rsync -rlt且排除sim，复制文本不改权限/owner/group，原生终局单独只读拉取。新SSH服务使用唯一d控制socket，避免旧断线socket导致multiplex退化；核实Master running后继续。
 - 【Agent】【2026-10-19 14:38】[run] d新独立补齐已启动supervisor40593/batch40594/retention40595，最多3并发，首原生容器24803启动，其余等待；新SSH Master36677经-O check核实。所有c中断/错误setup均已标infra并同步，重新选择恰有原3完整结果、3缺槽。新清理器对结束旧c正常回收媒体并保文本，不依赖SSHFS。
+- 【Agent】【2026-10-19 14:39】[result] 补充主机证据：uptime -s=2026-10-19 14:17:38，上一boot日志结束14:06:44，新boot14:17:43起；不是仅进程误报，旧本地控制/临时服务不可能仍存活。恢复自有服务后，provider监督job_c0e5ff6f9d8142f9仍enabled，旧v4090 job仍disabled。d三槽本机ChatGPT无APIkey/Luna high/SQLite初始化预检全通过，首原生启动；后续以原生观测确认，不以预检冒充完成。
