@@ -1,5 +1,6 @@
 """Durable concurrent SSH transport restricted to authorized du /v1/decisions."""
 import argparse
+from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import io
@@ -17,6 +18,53 @@ import urllib.error
 ENDPOINT='https://api.openai.com/v1/decisions'
 CONTROL=None
 SSH_SLOTS=threading.BoundedSemaphore(3)
+
+
+class ImageMemory:
+    """Bounded transient image URLs; no rollout image files on the local disk."""
+    def __init__(self,limit=64*1024**2):
+        self.limit=limit;self.bytes=0;self.values=OrderedDict();self.lock=threading.Lock()
+    def get(self,key):
+        with self.lock:
+            value=self.values.get(key)
+            if value is not None:self.values.move_to_end(key)
+            return value
+    def put(self,key,value):
+        assert hashlib.sha256(value.encode()).hexdigest()==key,'Image transport hash mismatch'
+        with self.lock:
+            if key in self.values:return
+            self.values[key]=value;self.bytes+=len(value)
+            while self.bytes>self.limit and self.values:
+                _,old=self.values.popitem(last=False);self.bytes-=len(old)
+
+
+def fetch_job(host,remote,memory):
+    """Transfer changed images only, then verify the full original payload hash."""
+    prelude='import pathlib,json,hashlib; job=json.loads(pathlib.Path('+repr(remote)+').read_text()); '
+    slim=ssh(host,prelude+
+        'digest=hashlib.sha256(json.dumps(job["payload"],sort_keys=True,separators=(",",":"),ensure_ascii=True).encode()).hexdigest(); '
+        '\nfor message in job["payload"]["input"]:\n for part in message["content"]:\n'
+        '  if part["type"]=="input_image":part["bridge_image_sha256"]=hashlib.sha256(part.pop("image_url").encode()).hexdigest()\n'
+        'print(json.dumps(dict(job=job,payload_digest=digest)))')
+    envelope=json.loads(slim);job=envelope['job']
+    parts=[part for m in job['payload']['input'] for part in m['content'] if part['type']=='input_image']
+    required={p['bridge_image_sha256'] for p in parts};pinned={k:memory.get(k) for k in required}
+    missing={k for k,v in pinned.items() if v is None};image_reply=''
+    if missing:
+        image_reply=ssh(host,prelude+'wanted=set('+repr(sorted(missing))+'); images={}; '
+            '\nfor message in job["payload"]["input"]:\n for part in message["content"]:\n'
+            '  if part["type"]=="input_image":\n'
+            '   value=part["image_url"]; key=hashlib.sha256(value.encode()).hexdigest()\n'
+            '   if key in wanted:images[key]=value\n'
+            'assert set(images)==wanted; print(json.dumps(images))')
+        images=json.loads(image_reply)
+        assert set(images)==missing,'Missing original request image'
+        for key,value in images.items():memory.put(key,value);pinned[key]=value
+    for part in parts:part['image_url']=pinned[part.pop('bridge_image_sha256')]
+    digest=hashlib.sha256(json.dumps(job['payload'],sort_keys=True,separators=(',',':'),ensure_ascii=True).encode()).hexdigest()
+    assert digest==envelope['payload_digest'],'Reconstructed request differs from native payload'
+    return job,dict(image_count=len(parts),unique_images=len(required),cached_images=len(required)-len(missing),
+        ssh_download_bytes=len(slim.encode())+len(image_reply.encode()),exact_payload_verified=True)
 
 
 class FileClient:
@@ -103,13 +151,15 @@ def main():
     a=p.parse_args();assert a.key_file.name=='du-openai-direct.key';assert 1<=a.workers<=24
     CONTROL=a.control_path;key=a.key_file.read_text().strip();assert key.startswith('sk-')
     a.output.mkdir(parents=True,exist_ok=a.resume)
-    lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic();last_served={}
+    lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic();last_served={};memory=ImageMemory()
     def process(remote):
         nonlocal calls
+        began=time.monotonic();timing=dict(started=time.time())
         folder=a.output/hashlib.sha256(remote.encode()).hexdigest()[:20];folder.mkdir(exist_ok=True)
         if (folder/'reply.json').exists():reply=json.loads((folder/'reply.json').read_text());called=False
         else:
-            job=json.loads(ssh(a.host,'import pathlib; print(pathlib.Path('+repr(remote)+').read_text())'))
+            job,transfer=fetch_job(a.host,remote,memory)
+            timing.update(transfer,download_seconds=time.monotonic()-began)
             assert job['endpoint']==ENDPOINT and job['payload']['model']=='gpt-6-luna'
             raw=json.dumps(job['payload']).encode()
             if not a.compact:(folder/'request.json').write_bytes(raw)
@@ -119,6 +169,7 @@ def main():
                 headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
             client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
             called=True
+            api_started=time.monotonic()
             for attempt in range(3):
                 with lock:calls+=1
                 try:
@@ -135,10 +186,13 @@ def main():
                 except Exception as error:
                     reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500]);break
             temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
+            timing['api_seconds']=time.monotonic()-api_started
         target=str(Path(remote).parent/'reply.json')
         body=json.dumps(reply);digest=hashlib.sha256(body.encode()).hexdigest()
-        ack=ssh(a.host,delivery_command(target,digest),input=body)
+        delivery_started=time.monotonic();ack=ssh(a.host,delivery_command(target,digest),input=body)
         if ack.strip()!=digest:raise RuntimeError('Missing verified reply-delivery acknowledgement')
+        timing.update(delivery_seconds=time.monotonic()-delivery_started,total_seconds=time.monotonic()-began,model_called=called)
+        (folder/'timing.json').write_text(json.dumps(timing,indent=2))
         print(json.dumps(dict(remote_job=remote,answered='answers' in reply,model_called=called)),flush=True)
     with ThreadPoolExecutor(max_workers=a.workers) as pool:
         while time.monotonic()-started<a.seconds:
