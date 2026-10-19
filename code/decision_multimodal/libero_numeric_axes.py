@@ -11,6 +11,8 @@ NUMERIC_INPUT = ('Answer each independent question from its printed position err
 
 def reference_difference(state):
     key=state['stage'].get('stage_key')
+    if key=='orient_held_body':
+        return state.get('stage_entry_own_minus_current_mm')
     if key in ('align_source_above_receiver','lower_to_place'):
         return state.get('observed_receiver_minus_source_mm')
     return state.get('observed_surface_relative_mm')

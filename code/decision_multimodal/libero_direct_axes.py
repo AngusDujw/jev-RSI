@@ -114,9 +114,9 @@ class DirectAPI(RevisedAPI):
             payload=reference_payload(sent,self.current,self.stage_goal_reference)
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
-        if sent['state'].get('request_purpose')=='multimodal_rotation_axes':
+        if sent['state'].get('request_purpose') in ('multimodal_rotation_axes','multimodal_receiving_direction'):
             from libero_rotation_decision import rotation_payload
-            payload=rotation_payload(sent,self.current,self.rotation_effect_examples,self.stage_goal_reference)
+            payload=rotation_payload(sent,self.current,self.rotation_effect_examples,self.stage_goal_reference+getattr(self,'accepted_posture_reference',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
         if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification'):
@@ -383,13 +383,14 @@ def main():
                 if args.surface_context and camera=='agentview':
                     from robosuite.utils.camera_utils import get_real_depth_map
                     depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
+                    observed_rgb=np.asarray(im).copy()
                     draw=ImageDraw.Draw(im)
                     reject_own=None
                     if args.robot_self_mask:
                         from libero_robot_mask import own_geometry_rejector
                         reject_own=own_geometry_rejector(native)
                     if tracker is not None:
-                        api.source_component,current_samples=tracker.observe(np.asarray(im),depth,K,T,reject_own=reject_own)
+                        api.source_component,current_samples=tracker.observe(observed_rgb,depth,K,T,reject_own=reject_own)
                         api.surface_samples.extend(current_samples)
                         for sample in current_samples:
                             u,v=sample['pixel_uv'];draw.ellipse((u-2,v-2,u+2,v+2),fill='#00ffff',outline='#000000')
@@ -404,11 +405,14 @@ def main():
                         if tracker is not None and region=='A':continue
                         if key not in plan:continue
                         if region=='B' and receiver_tracker is not None:
-                            api.receiver_component,receiver_samples=receiver_tracker.observe(np.asarray(im),depth,K,T,reject_own=reject_own)
+                            api.receiver_component,receiver_samples=receiver_tracker.observe(observed_rgb,depth,K,T,reject_own=reject_own)
                             for j,sample in enumerate(receiver_samples):
                                 sample['label']='B'+str(j);api.surface_samples.append(sample)
                                 u,v=sample['pixel_uv'];draw.ellipse((u-2,v-2,u+2,v+2),fill='#ffff00',outline='#000000')
                                 draw.text((u+3,v-10),sample['label'],fill='#ffff00',stroke_width=1,stroke_fill='#000000')
+                            if any(s.get('stage_key')=='orient_held_body' for s in stages):
+                                from libero_visible_shape import overlay_observed_wood_lines
+                                overlay_observed_wood_lines(im,(api.receiver_component or {}).get('visible_shape'),K,T)
                             continue
                         box=np.asarray(plan[key],float)*(args.size/512)
                         # Sample the *current visible surface* on a fixed pixel lattice.
@@ -430,7 +434,7 @@ def main():
                     b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
                 raw,_,audit=overlay_gripper_axes(raw,T,K,p0,camera)
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
-                parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'+(
+                parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'+(' P0A/P0B/P1A/P1B lines, when present, mark ALL fitted visible wood spans in agentview. These are physical observations, not ranked target axes or rotation corrections.' if any(s.get('stage_key')=='orient_held_body' for s in stages) else '')+(
                     ' Magenta PAD-L/PAD-R outlines are projections of measured own inner finger-pad faces, not target points or contact evidence. Projected edges may be occluded in the actual RGB.' if args.pad_outlines else '')),image_part(raw)])
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
                     crop_unknown=tracker is not None and api.source_component.get('status')!='candidate'
@@ -475,6 +479,7 @@ def main():
                 next_stage=stages[min(stage+1,len(stages)-1)])
             if args.stage_motion:
                 p_now,R_now=own_pose()
+                state['stage_entry_own_minus_current_mm']=np.round((stage_origin_p-p_now)*1000,1).tolist()
                 state['stage_own_motion']=dict(physical_steps=tick-stage_origin_tick,translation_world_mm=np.round((p_now-stage_origin_p)*1000,1).tolist(),
                     relative_world_rotvec_deg=np.round(np.rad2deg(Rotation.from_matrix(R_now@stage_origin_R.T).as_rotvec()),1).tolist(),
                     meaning='Measured own-hand motion since stage entry only, never object motion, target angle, contact or task completion.')
@@ -609,7 +614,7 @@ def main():
                         turn_required='The grasped control must now be rotated about its visible shaft.',
                         unclear='The relevant orientation relationship is not visible clearly enough.')))
                 stage_key=state['stage'].get('stage_key','')
-                placing=stage_key in ('align_source_above_receiver','lower_to_place','release','inspect') and args.task==1458
+                placing=stage_key in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect') and args.task==1458
                 if args.focused_questions:
                     attention['reference']['instructions']='Which labelled C surface dot lies on the source part useful for the current manipulation? Choose a visible reference, not a hidden centre. Read current RGB; labels identify observed surfaces only.'
                     if placing:
@@ -754,7 +759,14 @@ def main():
                         for a in numeric_answers:questions.pop(a)
                 rotation_answers={}
                 if args.separate_rotation_call and args.task==1458:
+                    state['accepted_posture_available']=bool(getattr(api,'accepted_posture_reference',[]))
                     from libero_rotation_decision import build_rotation_request
+                    if any(s.get('stage_key')=='orient_held_body' for s in stages) and state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place'):
+                        from libero_rotation_decision import build_direction_request
+                        direction_request=build_direction_request(state)
+                        if direction_request is not None:
+                            direction_reply=api.post('/systemone',direction_request)
+                            state['actor_selected_rack_direction']=direction_reply['answers']['rack_direction']
                     rotation_request=build_rotation_request(state,args.rotation_effect_hints)
                     if rotation_request is not None:
                         rotation_reply=api.post('/systemone',rotation_request)
@@ -778,10 +790,15 @@ def main():
                 *[dict(x,type=x['type'],**({'text':x['text'].replace('CURRENT','PREVIOUS')} if x['type']=='input_text' else {})) for x in api.current]]
             if choices['transition']=='advance':
                 if stage==len(stages)-1:result['program_finished']=True;break
+                if stages[stage].get('stage_key')=='orient_held_body':
+                    api.accepted_posture_reference=[dict(type='input_text',text='ACCEPTED posture observation from THIS episode, before transport. Preserve this bottle/hand posture during transport. This is historical, not the current scene or a computed angle error.')]
+                    for part in api.current:
+                        if part['type']=='input_image':api.accepted_posture_reference.append(part)
                 stage+=1;step_sizes=None;last_signs=None
                 stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
                 history.append(dict(choices=choices,execution='No physical action; stage advanced'));continue
             if choices['transition']=='restart':
+                api.accepted_posture_reference=[]
                 stage=0;stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
                 step_sizes=None;last_signs=None
                 history.append(dict(choices=choices,execution='No physical action; returned to first stage'));continue

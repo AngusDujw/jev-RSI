@@ -26,7 +26,7 @@ def reference_payload(original,current,goal_reference):
         current_receiver_component_status=(state.get('receiver_component') or {}).get('status'))
     payload=convert_request(original)
     content=[dict(type='input_text',text=REFERENCE_INPUT),dict(type='input_text',text=json.dumps(curated,separators=(',',':')))]
-    if state['stage'].get('stage_key') in ('align_source_above_receiver','lower_to_place','release','inspect'):
+    if state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect'):
         content.extend(goal_reference)
     content.extend(current)
     payload['input']=[dict(role='user',content=content)]

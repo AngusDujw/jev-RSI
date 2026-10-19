@@ -12,6 +12,8 @@ def build_stage_request(state,answers,protocol):
     visual_rule=protocol.get('visual_stage_rules',{}).get(key)
     if visual_rule is not None:
         facts='Measured own motion in this phase: '+str(state.get('stage_own_motion',{}))+'. Last executed gripper command: '+str(state.get('own_tool_geometry',{}).get('last_gripper_command','unknown'))+'. '
+        if key=='orient_held_body':
+            facts+='Your SAME-observation motion choices: '+str({k:v['choice'] for k,v in answers.items() if k in ('x','y','z','rx','ry','rz')})+'. Your selected receiving direction: '+str(state.get('actor_selected_rack_direction','unknown'))+'. '
         return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_stage_classification',formal_stage_input='Judge the one phase-transition question from CURRENT images. Archived images are goal references, never current observations.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its visible exit is not met.','advance':'Enter the next phase; no robot action executes with this answer.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))
     rule=protocol.get('stage_decision_rules',{}).get(key)
     if rule is None:return None
