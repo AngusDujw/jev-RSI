@@ -28,6 +28,12 @@ def build_stage_request(state,answers,protocol):
     visual_rule=protocol.get('visual_stage_rules',{}).get(key)
     if visual_rule is not None:
         facts='Measured own motion in this phase: '+str(state.get('stage_own_motion',{}))+'. Last executed gripper command: '+str(state.get('own_tool_geometry',{}).get('last_gripper_command','unknown'))+'. '
+        if state.get('free_placement_posture'):
+            facts+='CURRENT uncertain positioning evidence: '+json.dumps(dict(
+                receiver_minus_selected_source_world_mm=state.get('observed_receiver_minus_source_mm'),
+                source_feature=state.get('actor_visual_assessment',{}).get('reference'),
+                receiving_feature=state.get('actor_visual_assessment',{}).get('receiver'),
+                same_observation_direction_choices={k:v['choice'] for k,v in answers.items() if k in ('x','y','z','rx','ry','rz')}),separators=(',',':'))+'. These are camera-derived actor-selected skin features, not hidden centres, exact support or contact. Large support-relative separation must not be mistaken for placement merely because images overlap. '
         if key=='orient_held_body':
             facts+='Your SAME-observation motion choices: '+str({k:v['choice'] for k,v in answers.items() if k in ('x','y','z','rx','ry','rz')})+'. Your selected receiving direction: '+str(state.get('actor_selected_rack_direction','unknown'))+'. '
         return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_stage_classification',formal_stage_input='Judge the phase transition from CURRENT images and any explicitly labelled PHASE ENTRY or PREVIOUS observations. Compare actual object motion across those observations when needed. ARCHIVED goal examples show a desired relationship, never the current scene or a measured change.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its visible exit is not met.','advance':'Enter the next phase; no robot action executes with this answer.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))

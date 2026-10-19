@@ -1,0 +1,9 @@
+{
+  "task_id": 1458,
+  "language": "Could we place the wine bottle in the rack",
+  "public_goal": "On(wine_bottle_1, wine_rack_1_top_region)",
+  "resolved_bddl": "libero_goal/put_the_wine_bottle_on_the_rack_language_1.bddl",
+  "view_suffix_resolution": "ControlEnv strips the _view_..._initstate_... augmentation suffix before reading the public task file.",
+  "orientation_predicate_present": false,
+  "model_input_scope": "Only public goal semantics and real RGB were provided; no initialization coordinates, true object state, contacts, reward or evaluator result."
+}

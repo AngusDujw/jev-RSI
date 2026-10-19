@@ -34,7 +34,10 @@ def reference_payload(original,current,goal_reference,raw_cameras=None):
         current_source_component_status=(state.get('source_component') or {}).get('status'),
         current_receiver_component_status=(state.get('receiver_component') or {}).get('status'))
     payload=convert_request(original)
-    content=[dict(type='input_text',text=REFERENCE_INPUT+' C labels and their pixel coordinates belong to current_source_observation_camera; verify that camera image, not a different view. A candidate from another current camera remains a visual hypothesis.'),dict(type='input_text',text=json.dumps(curated,separators=(',',':')))]
+    header=REFERENCE_INPUT
+    if state.get('free_placement_posture') and state['stage'].get('stage_key') in ('align_source_above_receiver','lower_to_place','release','inspect'):
+        header='Select physical features from CURRENT images for placing the bottle on the uppermost rack support. Select a load-bearing source feature: a visible base-footprint point for upright placement, or a body-side patch for laid-down placement. Neither posture is prescribed. Reject lower-shelf/table receiving references. Sampled skin points are not hidden centres or complete support footprints.'
+    content=[dict(type='input_text',text=header+' C labels and their pixel coordinates belong to current_source_observation_camera; verify that camera image, not a different view. A candidate from another current camera remains a visual hypothesis.'),dict(type='input_text',text=json.dumps(curated,separators=(',',':')))]
     if state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect'):
         content.extend(goal_reference)
     card=None

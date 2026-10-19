@@ -283,12 +283,15 @@ def main():
     p.add_argument('--numeric-z',action='store_true',help='Short reference-height sign criteria during near approach; actor still selects the sign')
     p.add_argument('--track-selected',action='store_true',help='Track the actor-selected RGB feature with forward/backward optical flow and fresh depth')
     p.add_argument('--source-motion-test',action='store_true',help='Expose qualified phase-entry/current RGB-D source-feature motion for the actor short lift test; no phase result is computed')
+    p.add_argument('--free-placement-posture',action='store_true',help='Use the public top-support task without imposing a demonstration bottle orientation')
     p.add_argument('--robot-self-mask',action='store_true',help='Reject possible own-robot RGB-D surfaces and anchor the stationary knob identity window')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args()
     if args.source_motion_test and not (args.task==1458 and args.actor_attention and args.track_selected and args.stage_motion and args.surface_context and args.live_surfaces and args.formal_stage_call):
         raise ValueError('Source-motion test requires bottle actor-selected live RGB-D tracking, measured stage motion and formal phase calls')
+    if args.free_placement_posture and (args.task!=1458 or not args.separate_rotation_call or args.literal_line_reasoning or args.bound_span_rotation or args.goal_example):
+        raise ValueError('Free placement posture requires bottle multimodal rotation without imposed span alignment or a mandatory goal image')
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -314,6 +317,7 @@ def main():
         profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         source_motion_module_sha256=hashlib.sha256(Path(__file__).with_name('libero_source_motion.py').read_bytes()).hexdigest() if args.source_motion_test else None,
+        free_placement_posture=args.free_placement_posture,
         execution_steps=args.execution_steps,horizon=args.horizon,record_evidence=args.record_evidence,
         live_surfaces=args.live_surfaces,actor_attention=args.actor_attention,diagnostic_replay=bool(args.replay),
         focused_questions=args.focused_questions,
@@ -558,6 +562,9 @@ def main():
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),
                 last_actions=[{k:v for k,v in row.items() if not k.startswith(('own_position_','own_rotation_'))} for row in history[-4:]],
                 next_stage=stages[min(stage+1,len(stages)-1)])
+            if args.free_placement_posture:
+                state['free_placement_posture']=True
+                state['public_placement_goal']='The bottle belongs on the uppermost rack receiving support, released and remaining there. No particular bottle yaw, tilt or slat alignment is prescribed. Historical task images show one possible method, not an additional posture requirement.'
             if args.stage_motion:
                 p_now,R_now=own_pose()
                 state['stage_entry_own_minus_current_mm']=np.round((stage_origin_p-p_now)*1000,1).tolist()
@@ -594,6 +601,10 @@ def main():
                         api.demonstrations+=full_demonstrations[index:index+2]
                 if args.goal_example and phase in ('turn','orient_receiver','lower','inspect'):
                     api.demonstrations+=goal_demonstration
+                if args.free_placement_posture and phase in ('orient_receiver','lower','release','inspect'):
+                    # Dedicated R calls retain the balanced motion-effect bank.
+                    # Old placement cards must not silently impose their pose.
+                    api.demonstrations=[]
             if args.reference_history:
                 state['recent_actor_visual_choices']=visual_history[-3:]
                 state['reference_continuity']='These are your earlier choices in THIS episode, not current geometry. Keep a consistent physical grasp/support part while the stage remains unchanged and fresh RGB confirms it. Current C labels are sampled pixels, not persistent material landmarks. Change the chosen part when current evidence warrants it; never reuse an old XYZ estimate.'
@@ -717,6 +728,10 @@ def main():
                 if args.track_selected and placing:
                     from libero_reference_decision import PLACEMENT_REFERENCE
                     attention['reference']['instructions']=PLACEMENT_REFERENCE
+                if args.free_placement_posture and placing:
+                    attention['reference']['instructions']='Which current source dot is near the intended load-bearing bottle feature: the base footprint for upright placement, or a body-side support patch for a laid-down placement? Choose from CURRENT RGB and consider the whole visible bottle extent. A neck grip point or a silhouette centre is not automatically a support reference. Use unknown or unlabelled if needed.'
+                    if 'receiver' in attention:
+                        attention['receiver']['instructions']='Which observed B dot is on a useful receiving patch of the UPPERMOST rack support? Consider visible slats, gaps, edges and the whole bottle footprint. Reject the lower shelf, table and legs. No particular bottle orientation is required; choose unknown or unlabelled if needed.'
                 attention_state=state
                 if args.focused_questions:
                     attention_state={k:v for k,v in state.items() if k not in ('own_gripper_world_mm','coordinate_frame_note','visible_surface_samples')}
@@ -885,7 +900,7 @@ def main():
                     if args.literal_line_reasoning:
                         from libero_line_reasoning import build_line_rotation_request
                         rotation_request=build_line_rotation_request(state,placement=args.literal_placement_rotation)
-                    if rotation_request is None:rotation_request=build_rotation_request(state,args.rotation_effect_hints,args.bound_span_rotation)
+                    if rotation_request is None:rotation_request=build_rotation_request(state,args.rotation_effect_hints,args.bound_span_rotation,free_posture=args.free_placement_posture)
                     if rotation_request is not None:
                         rotation_reply=api.post('/systemone',rotation_request)
                         rotation_answers=rotation_reply['answers']

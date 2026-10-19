@@ -11,6 +11,9 @@ NUMERIC_INPUT = ('Answer each independent question from its printed position err
 
 def reference_difference(state):
     key=state['stage'].get('stage_key')
+    if key=='lift':
+        motion=state.get('source_motion_test') or {}
+        return motion.get('observed_feature_change_world_mm') if motion.get('available') else None
     if key=='orient_held_body':
         return state.get('stage_entry_own_minus_current_mm')
     if key in ('align_source_above_receiver','lower_to_place'):
@@ -32,9 +35,9 @@ def build_numeric_request(state,protocol):
             raise ValueError('Numeric interval bounds must be finite and ordered')
         value=observed['xyz'.index(axis)]
         if type(value) not in (int,float) or not math.isfinite(value):continue
-        # Reference-minus-controlled is converted to CURRENT-minus-DESIRED.
-        # This normalizes a measurement and interval; it never selects a sign.
-        error=round((lo+hi)/2-value,6);tolerance=(hi-lo)/2;errors[axis]=error
+        # Lift observes controlled feature displacement directly. Other stages
+        # observe reference-minus-controlled. Neither branch chooses a sign.
+        error=round(value-(lo+hi)/2 if key=='lift' else (lo+hi)/2-value,6);tolerance=(hi-lo)/2;errors[axis]=error
         questions[axis]=dict(type='choice',
             instructions=f'On world {axis.upper()}, position error (CURRENT minus DESIRED) is {error:g} mm and tolerance is {tolerance:g} mm. Which direction should the current hand position move?',
             criteria={'positive':f'Error below -{tolerance:g} mm: positive {axis.upper()} direction.',

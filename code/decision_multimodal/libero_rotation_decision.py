@@ -12,7 +12,7 @@ ROTATION_INPUT = ('Choose the HAND rotation signs from the CURRENT views, measur
     'Decide each channel independently; the selected components form one world rotation vector.')
 
 
-def build_rotation_request(state,explain_current_effect=False,bind_span=False):
+def build_rotation_request(state,explain_current_effect=False,bind_span=False,free_posture=False):
     key=state['stage'].get('stage_key')
     if key not in ('orient_held_body','align_source_above_receiver','lower_to_place'):return None
     effects={'rx':('X','Positive rotates +Y toward +Z and +Z toward -Y.'),
@@ -62,7 +62,15 @@ def build_rotation_request(state,explain_current_effect=False,bind_span=False):
                 'All three choices form ONE world rotation vector. Ignore position differences. No angular error or recommended component is supplied.')
             if key!='orient_held_body' and state.get('accepted_posture_available'):
                 questions[name]['instructions']+=' Preserve the accepted actual current-episode posture shown in the historical acceptance images; hold unless current observations show a real posture drift.'
-    return dict(model='gpt-6-luna',state=dict(
+    if free_posture:
+        for name,(axis,effect) in effects.items():
+            purpose=('improve a clear approach to the upper receiving support while retaining the bottle' if key=='align_source_above_receiver' else 'improve supported footprint, stability and finger clearance on the upper receiving support')
+            questions[name]['instructions']=f'For fixed world {axis} rotation, which positive, negative or hold choice would {purpose}? {effect} Negative reverses it. No particular bottle yaw, tilt, slat alignment or historical demonstration posture is required. Hold if the current posture is already useful; judge the current bottle extent and support, not merely a hand axis. All three choices form ONE world rotation vector.'
+            if explain_current_effect and current is not None:
+                derivative=[round(v,3) for v in derivatives[name]]
+                questions[name]['instructions']+=f' Current observed body line v={current}; a small positive increment changes this representative line along dv/dtheta={derivative} if the bottle follows the hand. This is a generic local rotation effect, not a desired axis, angle error or recommended motor sign.'
+        selected=None;binding=None
+    request=dict(model='gpt-6-luna',state=dict(
         stage={k:v for k,v in state['stage'].items() if k in ('name','goal')},
         request_purpose='multimodal_rotation_axes',
         own_tool_geometry=state.get('own_tool_geometry',{}),
@@ -72,6 +80,9 @@ def build_rotation_request(state,explain_current_effect=False,bind_span=False):
         actor_selected_observed_span=binding,
         observed_bottle_segment_agentview=(state.get('source_component') or {}).get('projected_visible_segment_agentview') if bind_span else None,
         recent_own_execution=state.get('recent_own_execution_comparison',[])),questions=questions)
+    if free_posture:
+        request['state'].update(free_placement_posture=True,observed_receiver_minus_source_mm=state.get('observed_receiver_minus_source_mm'))
+    return request
 
 
 def selected_span_binding(state):
@@ -132,6 +143,8 @@ def rotation_payload(original,current,examples,goal_reference):
     payload=convert_request(original)
     selecting=original['state'].get('request_purpose')=='multimodal_receiving_direction'
     header=('Select the physical receiving direction from CURRENT observed wood lines and the archived placement relationship. This question chooses a physical reference, not motor signs.' if selecting else ROTATION_INPUT)
+    if original['state'].get('free_placement_posture'):
+        header='Choose independent HAND world-rotation signs from CURRENT views, measured own state, uncertain visible geometry and actual historical motion examples. The task is stable placement on the uppermost rack support; no compulsory bottle orientation is specified. Choose a useful posture or hold it. No desired rotation, angular residual or motor recommendation is computed externally. The three channels form ONE world rotation vector; negative reverses each positive-axis effect.'
     content=[dict(type='input_text',text=header),
         dict(type='input_text',text=json.dumps(original['state'],separators=(',',':'))),
         *([] if selecting else examples),*goal_reference]
