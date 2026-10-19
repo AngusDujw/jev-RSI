@@ -35,7 +35,9 @@ def describe_visible_shape(points_mm,kind):
         uncertainty='Occlusion and colour/depth mixing can bias shape. Use current RGB to check which physical part these points describe.')
     if kind=='bottle':
         axis=upward_line(axes[0])
+        extent=np.quantile((points-centre)@axis,[.05,.95])
         result.update(visible_long_axis_world_unit=np.round(axis,3).tolist(),
+            fitted_visible_segment_world_mm=np.round(centre+extent[:,None]*axis,1).tolist(),
             visible_principal_spans_mm=np.round(spans,1).tolist(),
             elongation_ratio=round(float(values[0]/max(values[1],1e-9)),2))
         return result
@@ -75,19 +77,28 @@ def overlay_observed_wood_lines(image,shape,K,T):
     from PIL import ImageDraw,ImageFont
     draw=ImageDraw.Draw(image)
     font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',14)
-    world_to_camera=np.linalg.inv(T)
+    projections={}
     for plane in (shape or {}).get('observed_wood_planes',[]):
         centre=np.array(plane['visible_centroid_world_mm'])/1000
         for i,axis in enumerate(plane['in_plane_axes_world_unit']):
             half=np.array(axis)*plane['visible_in_plane_spans_mm'][i]/2000
-            points=[]
-            for point in (centre-half,centre+half):
-                camera=(world_to_camera@np.r_[point,1])[:3]
-                if camera[2]<=0:break
-                uv=K@camera;points.append(tuple(uv[:2]/uv[2]))
-            if len(points)!=2:continue
+            points=project_observed_segment(np.array([centre-half,centre+half])*1000,K,T)
+            if points is None:continue
+            points=[tuple(p) for p in points]
+            projections[plane['label']+('A','B')[i]]=points
             colour=('#ff8cff','#ffaf48')[i]
             draw.line(points,fill=colour,width=2)
             u,v=points[1]
             draw.text((max(0,min(image.width-42,u)),max(0,min(image.height-20,v))),
                 plane['label']+('A','B')[i],font=font,fill=colour,stroke_width=1,stroke_fill='black')
+    return projections
+
+
+def project_observed_segment(endpoints_mm,K,T):
+    world_to_camera=np.linalg.inv(T)
+    points=[]
+    for point in endpoints_mm:
+        camera=(world_to_camera@np.r_[np.array(point)/1000,1])[:3]
+        if camera[2]<=0:return None
+        uv=K@camera;points.append((uv[:2]/uv[2]).tolist())
+    return points

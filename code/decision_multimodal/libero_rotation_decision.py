@@ -12,7 +12,7 @@ ROTATION_INPUT = ('Choose the HAND rotation signs from the CURRENT views, measur
     'Decide each channel independently; the selected components form one world rotation vector.')
 
 
-def build_rotation_request(state,explain_current_effect=False):
+def build_rotation_request(state,explain_current_effect=False,bind_span=False):
     key=state['stage'].get('stage_key')
     if key not in ('orient_held_body','align_source_above_receiver','lower_to_place'):return None
     effects={'rx':('X','Positive rotates +Y toward +Z and +Z toward -Y.'),
@@ -43,6 +43,25 @@ def build_rotation_request(state,explain_current_effect=False):
     elif state.get('accepted_posture_available'):
         for question in questions.values():
             question['instructions']+=' The ACCEPTED posture images are your earlier accepted observation in THIS episode. Preserve that actual posture during transport/lowering rather than starting a new unrestricted rotation search. Select hold unless CURRENT evidence shows a real posture drift needing this component.'
+    binding=selected_span_binding(state) if bind_span else None
+    if binding is not None and current is not None:
+        pairs={'rx':('X',(1,2),'Y/Z','+Y toward +Z'),
+               'ry':('Y',(2,0),'Z/X','+Z toward +X'),
+               'rz':('Z',(0,1),'X/Y','+X toward +Y')}
+        for name,(axis,indices,pair,positive) in pairs.items():
+            v=[current[i] for i in indices]
+            b=[binding['observed_world_unit_line'][i] for i in indices]
+            questions[name]['instructions']=(
+                f'Your selected physical wood span is {binding["label"]}, highlighted in CURRENT agentview. '
+                f'Current visible BOTTLE unit line={current}; selected observed WOOD unit line={binding["observed_world_unit_line"]}. '
+                f'For world {axis} rotation, observed {pair} components are BOTTLE={v}, WOOD={b}. '
+                f'Positive rotates {positive}; negative reverses. Rotation about {axis} leaves the {axis} component unchanged and rotates only the {pair} pair. '
+                'Choose positive, negative or hold as your contribution to making the two physical lines parallel. '
+                'Either sign of a line represents the same physical direction. A tiny or collapsed projection cannot justify a large correction by itself; consult the full three-dimensional lines and actual RGB. '
+                'Hold if this component does not help the current lengthwise fit. Do not invent a twist objective about the bottle line. '
+                'All three choices form ONE world rotation vector. Ignore position differences. No angular error or recommended component is supplied.')
+            if key!='orient_held_body' and state.get('accepted_posture_available'):
+                questions[name]['instructions']+=' Preserve the accepted actual current-episode posture shown in the historical acceptance images; hold unless current observations show a real posture drift.'
     return dict(model='gpt-6-luna',state=dict(
         stage={k:v for k,v in state['stage'].items() if k in ('name','goal')},
         request_purpose='multimodal_rotation_axes',
@@ -50,7 +69,42 @@ def build_rotation_request(state,explain_current_effect=False):
         observed_bottle_shape=(state.get('source_component') or {}).get('visible_shape'),
         observed_wood_shape=(state.get('receiver_component') or {}).get('visible_shape'),
         actor_selected_rack_direction=selected,
+        actor_selected_observed_span=binding,
+        observed_bottle_segment_agentview=(state.get('source_component') or {}).get('projected_visible_segment_agentview') if bind_span else None,
         recent_own_execution=state.get('recent_own_execution_comparison',[])),questions=questions)
+
+
+def selected_span_binding(state):
+    """Copy exactly the actor-selected observation; no ranking or direction math."""
+    selected=(state.get('actor_selected_rack_direction') or {}).get('choice')
+    component=state.get('receiver_component') or {}
+    planes=(component.get('visible_shape') or {}).get('observed_wood_planes',[])
+    for plane in planes:
+        for i,axis in enumerate(plane['in_plane_axes_world_unit']):
+            label=plane['label']+('A','B')[i]
+            if label!=selected:continue
+            return dict(label=label,observed_world_unit_line=axis,
+                observed_visible_centre_world_mm=plane['visible_centroid_world_mm'],
+                visible_span_mm=plane['visible_in_plane_spans_mm'][i],
+                projected_segment_agentview=component.get('projected_span_lines_agentview',{}).get(label),
+                meaning='Exactly the CURRENT physical span selected by Decisions, not an externally selected target orientation. A fitted visible segment is not a full support certificate.')
+    return None
+
+
+def highlight_observed_segments(part,binding,bottle):
+    """Highlight only current observed physical segments, never a target error."""
+    import base64,io
+    from PIL import Image,ImageDraw,ImageFont
+    image=Image.open(io.BytesIO(base64.b64decode(part['image_url'].split(',',1)[1]))).convert('RGB')
+    draw=ImageDraw.Draw(image)
+    font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',14)
+    for points,label,colour in ((binding.get('projected_segment_agentview'),'SELECTED '+binding['label'],'#ff8cff'),(bottle,'BOTTLE visible fit','#00ffff')):
+        if not points:continue
+        draw.line([tuple(p) for p in points],fill=colour,width=4)
+        x,y=points[0]
+        draw.text((max(0,min(image.width-150,x)),max(0,min(image.height-20,y))),label,font=font,fill=colour,stroke_width=1,stroke_fill='black')
+    buf=io.BytesIO();image.save(buf,format='PNG')
+    return dict(part,image_url='data:image/png;base64,'+base64.b64encode(buf.getvalue()).decode())
 
 
 def build_direction_request(state):
@@ -85,6 +139,10 @@ def rotation_payload(original,current,examples,goal_reference):
     for part in current:
         if part['type']=='input_text':caption=part['text']
         elif part['type']=='input_image' and 'detail' not in caption.lower():
+            binding=original['state'].get('actor_selected_observed_span')
+            if binding is not None and caption.startswith('CURRENT agentview'):
+                part=highlight_observed_segments(part,binding,original['state'].get('observed_bottle_segment_agentview'))
+                caption+=' Thick SELECTED and BOTTLE lines highlight the actor-selected CURRENT wood span and a fit to the CURRENT visible bottle segment. These are physical observations, not an angular residual, action arrow or full object extent.'
             content.extend([dict(type='input_text',text=caption),part])
     payload['input']=[dict(role='user',content=content)]
     return payload

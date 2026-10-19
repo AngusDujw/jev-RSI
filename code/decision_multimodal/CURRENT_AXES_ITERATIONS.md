@@ -7,10 +7,11 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 - Knob v20 development: native success and normal program completion **2/2**, initial states8/9, **646 physical steps each**,218 Decisions responses each.
 - These are explicitly **extended1200-budget results**, not600-step completions.
 - Original policy commit329d9c12 and protocol9c33a1e0 are frozen in a separate worktree for predeclared new initial states14/15/16; no failures will be replaced. All three finished with native success and normal program completion:658/646/694 physical steps,223/220/231 Decisions responses. This is3/3 in the declared extended1200 budget; none meets600 steps.
-- Bottle v21 remains under test; no complete bottle native success is asserted.
+- Bottle v21 and v22 finished0/2 each at1198 physical steps. v23/v24 are still development runs; no complete bottle native success is asserted.
+- The separate281e94c9 unsigned-step600 pilot finished0/2 (init8/9,598 steps). It does not replace the original frozen extended-budget3/3 condition.
 - [Frozen profile](protocols/knob_v20_freeze.json) and EXP-2026W43-028 identify the exact condition. Subsequent shape features, held-object demonstration banks and fin-centre diagnostics are not part of this winning v20 policy.
 
-The complete successful-run audit matched all106 executed actions channel by channel with original API answers, checked792 current camera images, English-only requests, du Decisions dispatch and no experience injection. Two same-tick annotated images differed only within source-marker/label drawing regions; canonical exact model inputs are immutable evidence/images assets, not the mutable tick-named annotated PNGs.
+The development successful-run audit matched all106 executed actions channel by channel with original API answers, checked792 current camera images, English-only requests, du Decisions dispatch and no experience injection. Two same-tick annotated images differed only within source-marker/label drawing regions; canonical exact model inputs are immutable evidence/images assets, not the mutable tick-named annotated PNGs.
 
 ## Accounts and control boundary
 
@@ -122,3 +123,7 @@ The v17 native integration revealed that its rewritten text-only helper still re
 The v18 numeric builder converts the observed correspondence/allowed interval to CURRENT-minus-DESIRED position error and a symmetric tolerance, prints the literal error in each independent question, and sends one short instruction with no stage, images, past actions or extra wrapper. The SAME payload builder was tested through authorized Decisions on 18 independent cases (large positive/negative, zero and tolerance boundaries): 18/18 correct, zero native actions. This is a finite calibration result, not a task success.
 
 The visual call receives the prior actual numeric answers, retains current three-camera views, own geometry/motion, grasp/final relationship examples and independent rotation cards, and judges orientation/gripper/phase. Unknown geometry keeps an explicit visual hand-versus-object fallback. The controller does not calculate or replace action signs.
+
+## v25 preparation: bind the actor-selected physical span
+
+The local Pro ninth review inspected actual v23 frames and original rotation responses. P0A stayed selected, but component confidence was0.04–0.18 and the fitted line did not approach the selected span in the initial three executions. Offline alignment diagnostics are stored separately and NEVER enter either model. The prospective bound-span profile copies exactly the actor-selected current wood line into each rotation question, supplies observed Y/Z, Z/X or X/Y direction pairs, and highlights that physical span plus the fitted visible bottle segment on the current agentview. It provides no angular error, motor sign, optimal axis or future candidate rendering. The underlying three motor choices remain independent Decisions outputs. Partial fitted segments are not full object extents or support evidence.
