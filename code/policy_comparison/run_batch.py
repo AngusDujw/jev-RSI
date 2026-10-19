@@ -135,7 +135,7 @@ if len(containers)>=3 or mem['MemAvailable']<20*1024**2: raise RuntimeError('WAI
                     '--evaluation-method', 'gpt_only', '--codex', shutil.which('codex'),
                     '--sim-port', str(port), '--seed', str(layout), '--max-decisions', '0']
             else:
-                entry='decisions_comparison_completion.py' if recovery else 'decisions_policy.py'
+                entry='decisions_comparison_wire_completion.py' if recovery else 'decisions_policy.py'
                 argv = [str(PYTHON), '-u', str(Path(__file__).with_name(entry)),
                     '--output', str(run / 'controller'), '--task', task,
                     '--sim-port', str(port), '--seed', str(layout)]

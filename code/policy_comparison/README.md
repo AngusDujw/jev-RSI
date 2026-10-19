@@ -98,3 +98,16 @@ raise without sending a request. Size receipts survive HTTP failure. Do not
 hot-swap running sources or retry failed requests. After f has drained, select
 valid slots, adapt only future dispatch and use independent fresh names for
 audited infrastructure-interrupted missing slots; never rerun policy failures.
+
+Generation f has fully drained. All ten Decisions attempts ended with HTTP 413
+and incomplete native terminals; none count as complete task failures. The
+audit `decisions-f-terminal-phase-audit.json` preserves each terminal and media
+retention receipt and verifies that all old workers exited and six Luna results
+remain reusable. Only after this audit, future recovery dispatch was changed to
+`decisions_comparison_wire_completion.py`. Generation g uses fresh names for the
+ten infrastructure-interrupted missing slots under
+`robodojo-comparison-20261019g.service`, with logs in `supervision-20261019g/`.
+The original task policy, model, fourteen questions, action mapping and native
+scores are unchanged. The 24 MiB image-history window differs from f and Pro
+and must be disclosed; it is transport adaptation, not evidence of better
+policy quality. Do not resume f or repeat its failed HTTP requests.
