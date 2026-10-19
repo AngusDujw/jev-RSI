@@ -29,7 +29,16 @@ class FileClient:
         try:
             while time.monotonic()<deadline:
                 if (folder/'reply.json').exists():
-                    result=json.loads((folder/'reply.json').read_text())
+                    raw=(folder/'reply.json').read_bytes()
+                    try:result=json.loads(raw)
+                    except (ValueError,UnicodeError):
+                        # Keep the same observation pending; let the broker resend its
+                        # persisted answer, never call the model to replace a bad copy.
+                        (folder/'reply.json').replace(folder/'reply.invalid')
+                        with (folder/'delivery-errors.jsonl').open('a') as f:
+                            f.write(json.dumps(dict(time=time.time(),bytes=len(raw),
+                                sha256=hashlib.sha256(raw).hexdigest(),reason='Invalid delivered JSON'))+'\n')
+                        continue
                     if 'bridge_error' in result:raise RuntimeError(result['bridge_error'])
                     return io.BytesIO(json.dumps(result).encode())
                 time.sleep(.2)
@@ -40,11 +49,28 @@ class FileClient:
 
 def ssh(host,code,input=None):
     command='python3 -c '+shlex.quote(code)
-    opts=['-o','ControlMaster=auto','-o','ControlPersist=60','-o','ControlPath='+CONTROL] if CONTROL else []
-    done=subprocess.run(['ssh','-o','ConnectTimeout=10','-o','ServerAliveInterval=10',
-        '-o','ServerAliveCountMax=2',*opts,'--',host,command],input=input,text=True,capture_output=True,timeout=35)
-    if done.returncode:raise RuntimeError(done.stderr[-600:])
-    return done.stdout
+    for attempt in range(2):
+        opts=(['-o','ControlMaster=auto','-o','ControlPersist=60','-o','ControlPath='+CONTROL]
+            if CONTROL and attempt==0 else ['-o','ControlMaster=no','-o','ControlPath=none'])
+        try:
+            done=subprocess.run(['ssh','-o','ConnectTimeout=10','-o','ServerAliveInterval=10',
+                '-o','ServerAliveCountMax=2',*opts,'--',host,command],input=input,text=True,capture_output=True,timeout=35)
+            if done.returncode:raise RuntimeError(done.stderr[-600:])
+            return done.stdout
+        except (subprocess.TimeoutExpired,OSError,RuntimeError):
+            if attempt:raise
+            # All bridge commands are read/verified-file-write operations. Retry
+            # over a fresh connection rather than reusing a possibly stuck master.
+
+
+def delivery_command(target,expected_sha256):
+    """Validate complete bytes before publication; return a content-hash ACK."""
+    return ('import pathlib,sys,os,json,hashlib; p=pathlib.Path('+repr(target)+'); '
+        'raw=sys.stdin.buffer.read(); '
+        'assert hashlib.sha256(raw).hexdigest()=='+repr(expected_sha256)+',"Reply transfer hash mismatch"; '
+        'assert isinstance(json.loads(raw),dict),"Reply must be a JSON object"; '
+        't=p.with_suffix(".part"); t.write_bytes(raw); os.replace(t,p); '
+        'print(hashlib.sha256(raw).hexdigest())')
 
 
 def main():
@@ -91,9 +117,9 @@ def main():
                     reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500]);break
             temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
         target=str(Path(remote).parent/'reply.json')
-        code=('import pathlib,sys,os; p=pathlib.Path('+repr(target)+'); '
-            't=p.with_suffix(".part"); t.write_text(sys.stdin.read()); os.replace(t,p)')
-        ssh(a.host,code,input=json.dumps(reply))
+        body=json.dumps(reply);digest=hashlib.sha256(body.encode()).hexdigest()
+        ack=ssh(a.host,delivery_command(target,digest),input=body)
+        if ack.strip()!=digest:raise RuntimeError('Missing verified reply-delivery acknowledgement')
         print(json.dumps(dict(remote_job=remote,answered='answers' in reply,model_called=called)),flush=True)
     with ThreadPoolExecutor(max_workers=a.workers) as pool:
         while time.monotonic()-started<a.seconds:
@@ -113,7 +139,9 @@ def main():
             # Round-robin by episode, including its previous request, prevents starvation.
             pending.sort(key=lambda path:last_served.get(str(Path(path).parents[2]),0))
             for path in pending:
-                if path not in seen and path not in active and len(active)<a.workers:
+                # A quarantined corrupt delivery can reappear here even after ACK.
+                # process() reuses the saved answer; it does not resample the model.
+                if path not in active and len(active)<a.workers:
                     last_served[str(Path(path).parents[2])]=time.monotonic()
                     active[path]=pool.submit(process,path)
             if not active and (calls or a.resume):

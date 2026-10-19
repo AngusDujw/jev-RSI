@@ -45,3 +45,6 @@
 - 【Agent】【2026-10-19 15:06】[result] 15:06只读检查v4090 retry1：23 active/0 queued/0 finished，最后物理动作8.997秒前；remote934有效回答、local938，0终止错误回答；累计21次网络失败尝试已触发重试，心跳0.57秒前，未重启或改模型。
 - 【User】【2026-10-19 16:09】[prompt] 现在还在跑吧
 - 【Agent】【2026-10-19 16:09】[result] 16:09只读核验retry1已全停：active0/finished23，远机1428回答；14等待超时、7 TLS EOF、2 JSON解析错误，全部native_evaluated=false；未重启。
+- 【User】【2026-10-19 16:13】[intent] 用户要求调查TLS、等待超时和JSON异常的具体原因；检查原始回合堆栈、本机网络尝试、SSH传输事件和两端回答文件。
+- 【Agent】【2026-10-19 16:13】[op] 新建实验块 EXP-2026W43-011：定位续跑基础设施故障并修复回答传输完整性，不增加模型或仿真调用  ↪ `EXP-2026W43-011`
+- 【Agent】【2026-10-19 16:16】[op] Confirmed two remote replies are0 bytes while cached actual answers are1995/2003 bytes; identified56 API transport failures and306 SSH events. Implemented verified reply publication/ACK, corrupt-copy retransmission and fresh-connection fallback; local fault injection and real SSH fixture passed with0 API/physics; temporary fixtures removed.
