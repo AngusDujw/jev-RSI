@@ -304,7 +304,7 @@ def main():
             'Unsigned step sizes adapt from direction history: repeated signs grow the magnitude, reversals shrink it. '
             'Translation stays within 2-20mm per axis, rotation within 1-6degrees. Choose directions only.')
     if args.overview_camera:
-        api.motion+=' The CURRENT '+args.overview_camera+' is an additional fixed camera showing the whole held object and support. Its own world-axis arrows use current public calibration; image directions differ from agentview and the moving wrist. The source-detail crop is only a zoom of agentview, not another camera.'
+        api.motion=getattr(api,'motion',MOTION)+' The CURRENT '+args.overview_camera+' is an additional fixed camera showing the whole held object and support. Its own world-axis arrows use current public calibration; image directions differ from agentview and the moving wrist. The source-detail crop is only a zoom of agentview, not another camera.'
     if args.file_transport:
         from decision_file_bridge import FileClient
         api.client=FileClient(out/'bridge-jobs',compact=args.compact)
