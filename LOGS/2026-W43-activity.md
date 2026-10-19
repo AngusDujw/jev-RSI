@@ -120,3 +120,5 @@
 - 【Agent】【2026-10-20 02:24】[op] 新建实验块 EXP-2026W43-035：物理线段渲染审计首次CLI horizon无效零步失败  ↪ `EXP-2026W43-035`
 - 【Agent】【2026-10-20 02:24】[op] 新建实验块 EXP-2026W43-036：Pro9物理参照绑定与v25原生及真实回放输入诊断  ↪ `EXP-2026W43-036`
 - 【Agent】【2026-10-20 02:27】[op] EXP034-036 complete: knob6000/2 retained; zero-API renderer initial CLI634 failure recorded separately, corrected52-decisions replay634steps/0API passed. Pro9 and v25 native deployed; actual physical line highlight inspected. Bound-span and crop probes remain weak; exact requests/responses in DataStorage, no experience injection or answered-payload resampling.
+- 【Agent】【2026-10-20 02:34】[op] 新建实验块 EXP-2026W43-037：酒瓶首个native阳性仍持瓶，表达式由Decisions求值35题校准及v26闭环  ↪ `EXP-2026W43-037`
+- 【Agent】【2026-10-20 02:36】[op] v23 terminal native1/2, program0/2; actual positive frame bottle still grasped at upper rack. v26 actual-builder calibration35/35 (30R+5phase), no products/results/signs computed for model; four fixed native development cases10/11/12/13 deployed baa8f890. EXP037 complete; original frozen knob extended3/3 unchanged.
