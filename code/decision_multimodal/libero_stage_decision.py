@@ -45,7 +45,7 @@ def build_stage_request(state,answers,protocol):
                       'restart':'The phase premise is invalid and recovery is requested; return to coarse approach without physical motion.'})))
 
 
-def stage_payload(original,current=(),goal_reference=()):
+def stage_payload(original,current=(),goal_reference=(),previous=()):
     payload=convert_request(original)
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
     if original['state'].get('request_purpose')=='visual_stage_classification':
@@ -54,10 +54,16 @@ def stage_payload(original,current=(),goal_reference=()):
         for part in (() if original['state']['stage'].get('stage_key')=='lift' else goal_reference):
             if part['type']=='input_image':
                 content.extend([dict(type='input_text',text='ARCHIVED goal appearance, BEFORE left and AFTER right; never a current observation.'),part])
+        if original['state']['stage'].get('stage_key')=='inspect':
+            caption=''
+            for part in previous:
+                if part['type']=='input_text':caption=part['text']
+                elif part['type']=='input_image' and 'detail' not in caption.lower():
+                    content.extend([dict(type='input_text',text=caption+' Historical observation before the last executed command; not current evidence.'),part])
         caption='';number=0
         for part in current:
             if part['type']=='input_text':caption=part['text']
             elif part['type']=='input_image' and 'detail' not in caption.lower():
                 number+=1
-                content.extend([dict(type='input_text',text=f'CURRENT view {number}, same synchronized observation.'),part])
+                content.extend([dict(type='input_text',text=caption+f' Synchronized current view {number}.'),part])
     return payload

@@ -132,7 +132,7 @@ class DirectAPI(RevisedAPI):
             return payload
         if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification'):
             from libero_stage_decision import stage_payload
-            payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]))
+            payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]),self.previous)
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
         if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
@@ -477,7 +477,7 @@ def main():
                                 sample['label']='B'+str(j);api.surface_samples.append(sample)
                                 u,v=sample['pixel_uv'];draw.ellipse((u-2,v-2,u+2,v+2),fill='#ffff00',outline='#000000')
                                 draw.text((u+3,v-10),sample['label'],fill='#ffff00',stroke_width=1,stroke_fill='#000000')
-                            if any(s.get('stage_key')=='orient_held_body' for s in stages):
+                            if args.bound_span_rotation:
                                 from libero_visible_shape import overlay_observed_wood_lines
                                 projections=overlay_observed_wood_lines(im,(api.receiver_component or {}).get('visible_shape'),K,T)
                                 if args.bound_span_rotation and api.receiver_component is not None:api.receiver_component['projected_span_lines_agentview']=projections
@@ -565,13 +565,16 @@ def main():
                 state['execution_comparison_meaning']='Measured own motion versus own commands only. A low gain is poor execution progress, not a contact flag or a reason to assume a particular scene obstacle.'
             if args.focused_questions:
                 state.pop('stage_order');state.pop('next_stage');state['last_actions']=state['last_actions'][-1:]
-                phase=('approach' if 'Align above' in stages[stage]['name'] and 'rack' not in stages[stage]['name'] else
+                legacy_phase=('approach' if 'Align above' in stages[stage]['name'] and 'rack' not in stages[stage]['name'] else
                     'orient_receiver' if 'rack' in stages[stage]['name'] and 'Align' in stages[stage]['name'] else
                     'contact' if 'Descend' in stages[stage]['name'] and args.task==1383 else
                     'grasp' if stages[stage]['name']=='Close' or 'Descend' in stages[stage]['name'] else
                     'lift' if stages[stage]['name']=='Lift' else 'turn' if stages[stage]['name']=='Turn' else
                     'lower' if 'Lower' in stages[stage]['name'] else 'release')
-                if stages[stage].get('stage_key')=='inspect':phase='inspect'
+                phase={'align_above_source':'approach','descend_to_source':'contact' if args.task==1383 else 'grasp',
+                    'close':'grasp','lift':'lift','orient_held_body':'orient_receiver',
+                    'align_source_above_receiver':'orient_receiver','lower_to_place':'lower',
+                    'release':'release','inspect':'inspect','turn':'turn'}.get(stages[stage].get('stage_key'),legacy_phase)
                 api.demonstrations=full_demonstrations[:12] if decision<3 else []
                 if args.retain_rotation_examples and decision>=3 and phase in ('approach','contact','grasp','turn','orient_receiver','lower'):
                     api.demonstrations=rotation_demonstrations[:]
@@ -838,7 +841,7 @@ def main():
                 if args.separate_rotation_call and args.task==1458:
                     state['accepted_posture_available']=bool(getattr(api,'accepted_posture_reference',[]))
                     from libero_rotation_decision import build_rotation_request
-                    if any(s.get('stage_key')=='orient_held_body' for s in stages) and state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place'):
+                    if args.bound_span_rotation and state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place'):
                         from libero_rotation_decision import build_direction_request
                         direction_request=build_direction_request(state)
                         if direction_request is not None:

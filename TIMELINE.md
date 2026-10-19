@@ -173,6 +173,7 @@ graph LR
     T_2026W43_017["📊 decision-multimodal<br/>v25/v27完整0/2和0/4保留；未答…"]:::experiment
     T_2026W43_018["📊 decision-multimodal<br/>酒瓶v28首次完整释放+native成功1…"]:::experiment
     T_2026W43_019["📊 decision-multimodal<br/>v28冻结0/3否定稳定；S误读已纠正；N…"]:::experiment
+    T_2026W43_020["📊 decision-multimodal<br/>受控双RGB确认持瓶随X/Y转；v28完整…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -305,6 +306,7 @@ graph LR
   T_2026W43_016 --> T_2026W43_017
   T_2026W43_017 --> T_2026W43_018
   T_2026W43_018 --> T_2026W43_019
+  T_2026W43_019 --> T_2026W43_020
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -464,6 +466,7 @@ graph LR
 | `T-2026W43-017` | 2026-10-20 | experiment | decision-multimodal | v25/v27完整0/2和0/4保留；未答传输8次重试5/5夹具且原v28持续；独立v29逐条物理匹配两原生运行，未证完整放置 | `EXP-2026W43-040` | - |
 | `T-2026W43-018` | 2026-10-20 | experiment | decision-multimodal | 酒瓶v28首次完整释放+native成功1078步，但开发仅1/2；原7a冻结新14/15/16三例已执行，无替换，v29独立 | `EXP-2026W43-042` | - |
 | `T-2026W43-019` | 2026-10-20 | experiment | decision-multimodal | v28冻结0/3否定稳定；S误读已纠正；N0实点候选使同三初态两组进入持瓶姿态，v32实际四图首选N0，完整放置未定 | `EXP-2026W43-046` | - |
+| `T-2026W43-020` | 2026-10-20 | experiment | decision-multimodal | 受控双RGB确认持瓶随X/Y转；v28完整阳性违反旧all-six-hold阶段规则，转检验物理放置出口，六v34原生持续 | `EXP-2026W43-048` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

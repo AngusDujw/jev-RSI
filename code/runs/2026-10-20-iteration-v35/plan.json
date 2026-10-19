@@ -1,0 +1,165 @@
+{
+  "source_description": "Dark-green wine bottle, tan cork, narrow neck and larger body. Current position and upright/tipped posture must be read from current RGB.",
+  "fixed_view_bbox_xyxy": [
+    215,
+    182,
+    242,
+    266
+  ],
+  "receiver_description": "Inclined wooden slatted bottle rack behind and left of the bottle, beside the dark cabinet.",
+  "receiver_fixed_view_bbox_xyxy": [
+    32,
+    50,
+    196,
+    264
+  ],
+  "relevant_visual_cues": [
+    "The bottle has a rounded dark body, slender neck, and contrasting tan cork.",
+    "The wrist image shows the bottle beside the bowl and wooden rack.",
+    "The rack has pale wooden slats and darker wooden end supports.",
+    "Exact support contacts and clearances are unknown from these views."
+  ],
+  "stages": [
+    {
+      "name": "Align above bottle",
+      "goal": "Position the open hand above a graspable bottle section.",
+      "exit": "The actor-selected source surface is coarsely aligned with the finger gap in world X/Y (each reference difference within 10mm), and current RGB supports a suitable approach orientation. This is not contact proof.",
+      "perception_inputs": [
+        "Current bottle mask and visible orientation",
+        "Finger gap in fixed and wrist RGB",
+        "Nearby rack, bowl and cabinet boundaries"
+      ],
+      "stage_key": "align_above_source",
+      "control_contract": {
+        "translation": "Align horizontally for the selected grasp relationship. The selected source dot is a surface reference, not a grasp centre.",
+        "height": "Maintain suitable overhead clearance. Already being safely above is not a reason to rise further.",
+        "exit": "Horizontal alignment and approach orientation are suitable; continue to descent."
+      }
+    },
+    {
+      "name": "Descend around bottle",
+      "goal": "Bring the fingers alongside the selected section.",
+      "exit": "The hand appears positioned for a closure attempt. Proven contact is not required.",
+      "perception_inputs": [
+        "Current bottle-to-finger relationship",
+        "Wrist RGB",
+        "Measured own-hand motion"
+      ],
+      "stage_key": "descend_to_source",
+      "control_contract": {
+        "translation": "Approach the visually selected grasp region. Preserve horizontal alignment and account for finger geometry.",
+        "exit": "The hand appears positioned for a closure attempt. Proven contact is not required."
+      }
+    },
+    {
+      "name": "Close",
+      "goal": "Close the fingers around the bottle.",
+      "exit": "Closure was attempted. Continue if engagement looks plausible; retry alignment if clearly missed.",
+      "perception_inputs": [
+        "Before/after finger aperture",
+        "Bottle visibility",
+        "Measured gripper state if available"
+      ],
+      "stage_key": "close",
+      "control_contract": {
+        "translation": "Hold position unless a visible positioning problem requires returning to alignment.",
+        "gripper": "Attempt closure; then inspect the result.",
+        "exit": "Closure was attempted. Continue if engagement looks plausible; retry alignment if clearly missed."
+      }
+    },
+    {
+      "name": "Lift",
+      "goal": "Raise the bottle clear of nearby surfaces.",
+      "exit": "The source visibly follows the hand and clears its support.",
+      "perception_inputs": [
+        "Temporal bottle-to-hand relationship",
+        "Bottle-to-table clearance",
+        "Nearby obstacles"
+      ],
+      "stage_key": "lift",
+      "control_contract": {
+        "translation": "Establish visible clearance between the held source and its support.",
+        "exit": "The source visibly follows the hand and clears its support.",
+        "failure": "If the source does not follow, reassess the grasp."
+      }
+    },
+    {
+      "name": "Reorient and approach rack",
+      "goal": "Bring the held bottle into the intended lengthwise receiving relationship while approaching the rack.",
+      "exit": "The visible bottle has the intended relationship to the selected receiving bay, with an apparently clear approach in the fixed views.",
+      "perception_inputs": [
+        "Current rack supports and channel direction",
+        "Bottle body axis",
+        "Bottle-to-rack relationship in both cameras"
+      ],
+      "stage_key": "align_source_above_receiver",
+      "control_contract": {
+        "references": "Select separate held-source and receiver surface dots and a suitable placement relationship from RGB.",
+        "translation": "Align the held SOURCE relative to the RECEIVER horizontally. Do not substitute gripper-to-receiver alignment.",
+        "height": "Maintain clearance for the held object, not merely the gripper.",
+        "exit": "The visible bottle has the intended relationship to the selected receiving bay, with an apparently clear approach in the fixed views."
+      }
+    },
+    {
+      "name": "Align and seat on rack",
+      "goal": "Bring the held bottle into the intended visible support arrangement.",
+      "exit": "The bottle visibly occupies the intended support arrangement across available views, with sufficiently clear seating evidence to consider release. Apparent overlap alone is insufficient.",
+      "perception_inputs": [
+        "Bottle underside and rack supports",
+        "Wrist RGB",
+        "Measured own-hand motion"
+      ],
+      "stage_key": "lower_to_place",
+      "control_contract": {
+        "translation": "Bring the held source toward a visually suitable supported relationship with the receiver while preserving lateral alignment.",
+        "exit": "The bottle visibly occupies the intended support arrangement across available views, with sufficiently clear seating evidence to consider release. Apparent overlap alone is insufficient."
+      }
+    },
+    {
+      "name": "Release",
+      "goal": "Open the fingers without disturbing the bottle.",
+      "exit": "Opening is observed or reported; continue to inspection.",
+      "perception_inputs": [
+        "Finger aperture",
+        "Bottle-to-rack relationship across frames"
+      ],
+      "stage_key": "release",
+      "control_contract": {
+        "translation": "Hold position during opening unless visible safety constraints require replanning.",
+        "gripper": "Open.",
+        "exit": "Opening is observed or reported; continue to inspection."
+      }
+    },
+    {
+      "name": "Clear and inspect",
+      "goal": "Separate the hand from the resting bottle.",
+      "exit": "The fingers are visibly separated from the bottle, the hand is clear, and the bottle remains in the intended arrangement across successive observations.",
+      "perception_inputs": [
+        "Current hand, bottle and rack RGB",
+        "Short temporal stability"
+      ],
+      "stage_key": "inspect",
+      "control_contract": {
+        "translation": "No task-progress translation by default.",
+        "exit": "The fingers are visibly separated from the bottle, the hand is clear, and the bottle remains in the intended arrangement across successive observations."
+      }
+    }
+  ],
+  "planner_provenance": "Local Pro gpt-6.1-sol high: iteration-v2 physical stages plus iteration-v4/pro-planner-review contracts/questions. Final inspection retains the first Pro observable exit, not a free-text report.; Pro phase-interface review8 stage split, concrete physical references selected by Decisions, not Pro.; Outer adapter of Pro12 simple_stage_contract: combine orientation and approach, physical seating exit, temporal release inspection. Original source grasp/lift retained. Stage keys are adapter implementation, not new Pro output.",
+  "axis_question_templates": {
+    "source_alignment_xy": "Which world-{axis} motion improves horizontal grasp alignment?",
+    "source_alignment_z": "Is a world-Z clearance correction needed, or should Z hold?",
+    "source_descent": "Which world-{axis} motion brings the hand toward a suitable closure position?",
+    "close": "Should world-{axis} hold during closure?",
+    "lift": "Which world-{axis} motion gives the held source clearance?",
+    "placement_alignment_xy": "Which world-{axis} motion improves SOURCE-to-RECEIVER horizontal alignment?",
+    "placement_alignment_z": "Is a world-Z correction needed for held-source clearance, or should Z hold?",
+    "placement_lowering": "Which world-{axis} motion brings the SOURCE toward the selected support relationship?",
+    "turn_translation": "Should world-{axis} hold to preserve knob engagement?",
+    "rotation": "Which world rotation-vector {axis} choice improves the selected visible relationship?",
+    "turn_rotation": "Which world rotation-vector {axis} choice turns the engaged knob?",
+    "transition": "Stay in this stage, advance, or return for correction?",
+    "gripper": "Open, close, or hold?"
+  },
+  "coarse_alignment_scope": "Outer experimental adaptation: explicit XY feature-positioning semantics; source reference and orientation remain actor choices. A 10mm stopping band is a control heuristic, not measured sensor accuracy. Z and rotations have no algorithmic target error."
+}
