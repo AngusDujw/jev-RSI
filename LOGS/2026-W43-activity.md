@@ -166,3 +166,4 @@
 - 【Agent】【2026-10-20 07:01】[op] Pro16复审真实502/646图：降低首段514提前open导致掉瓶，泛化夹爪题/未来释放语义混淆。相同8图改阶段/夹爪说明后hold0.92；视觉恢复3图仍漏检，补相对量才restart0.58，暂不启用。v46仅明确阶段夹持契约，保留三夹爪选项和真实MM旋转。
 - 【User】【2026-10-20 07:06】[intent] 用旋钮和一个中等难度pick-and-place任务持续测试OpenAI Decisions多模态能力；模型决定动作，允许非特权辅助和运动示例，迭代至稳定，每轮保存至少一个图像/输入输出案例。
 - 【Agent】【2026-10-20 07:09】[result] v44完整native1/3、program0/3；init16终帧瓶在上层架且空手离开，但carry无open、0R，仍运输追赶空手，真实阳性保留不称稳定。v45/v46桥与六原生继续；弱恢复helper关闭，后续要区分already-placed与off-target。
+- 【Agent】【2026-10-20 07:21】[op] Pro17六图复审区分retained/已放上层架/off-target/uncertain。原六图+夹爪先验2/3；去掉closed先验并补两相对距离3/3，改RAW六图仍3/3但placed0.56不称稳定。实现可选关系问题，模型类别决定进入检查/恢复；XYZ/R/夹爪仍原API选择。v45完整native1/3、program0/3，v46继续。

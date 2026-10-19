@@ -1,5 +1,6 @@
 """Scoped stage decisions from prior model answers and own execution facts."""
 import json
+import math
 from legacy_decisions import convert_request
 
 
@@ -25,6 +26,27 @@ def build_retention_request(state,protocol):
         questions=dict(transition=dict(type='choice',instructions=rule,
             criteria={'continue':'Attachment remains plausible or loss is not clearly established. This does not authorize opening or certify holding.',
                       'restart':'The bottle is clearly separate from the fingers and requires a new grasp.'})))
+
+
+def build_scene_relation_request(state,protocol):
+    rule=protocol.get('scene_relation_question')
+    if not rule or state['stage'].get('stage_key') not in ('align_source_above_receiver','lower_to_place','release'):
+        return None
+    source_relative=state.get('observed_surface_relative_mm')
+    receiver_relative=state.get('observed_receiver_minus_source_mm')
+    def distance(value):
+        return round(math.sqrt(sum(float(v)**2 for v in value)),1) if isinstance(value,(list,tuple)) and len(value)==3 and all(isinstance(v,(int,float)) and math.isfinite(v) for v in value) else None
+    evidence=dict(source_feature_minus_measured_grip_site_world_mm=source_relative,
+        selected_upper_rack_feature_minus_source_feature_world_mm=receiver_relative,
+        source_feature_to_finger_midpoint_distance_mm=distance(source_relative),
+        source_feature_to_upper_rack_feature_distance_mm=distance(receiver_relative),
+        source_feature=state.get('actor_selected_surface'),
+        receiving_feature=state.get('actor_selected_receiver_surface'),
+        meaning='Coordinates and Euclidean distances are coarse current RGB-D estimates for actor-selected visible skin features, not object centres, exact support or contact. Distances are millimetres:100mm is10cm;1000mm is1m. A bottle can extend below the fingers while held. Use the actual object extent and support in RGB; near a rack feature does not alone prove support. Unknown measurements remain null.')
+    return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_scene_relation',
+        use_raw_rgb=bool(protocol.get('scene_relation_raw_rgb')),
+        formal_stage_input='Classify the CURRENT wine-bottle relationship using camera-identified current views and labelled previous observations. Previous images are historical. The phase label is not evidence that the bottle is still held or already placed. No hidden object pose, contact or outcome flag is supplied.\n'+json.dumps(evidence,separators=(',',':'))),
+        questions=dict(scene_relation=dict(type='choice',instructions=rule['question'],criteria=rule['choices'])))
 
 
 def build_stage_request(state,answers,protocol):
@@ -89,6 +111,15 @@ def build_stage_request(state,answers,protocol):
 def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=()):
     payload=convert_request(original)
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
+    if original['state'].get('request_purpose')=='visual_scene_relation':
+        content=payload['input'][0]['content']
+        for views in (previous,current):
+            caption=''
+            for part in views:
+                if part['type']=='input_text':caption=part['text']
+                elif part['type']=='input_image' and 'detail' not in caption.lower():
+                    content.extend([dict(type='input_text',text=caption),part])
+        return payload
     if original['state'].get('request_purpose')=='visual_retention_check':
         content=payload['input'][0]['content'];caption=''
         for part in current:

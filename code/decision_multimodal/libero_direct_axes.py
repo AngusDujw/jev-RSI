@@ -130,9 +130,12 @@ class DirectAPI(RevisedAPI):
             payload=rotation_payload(sent,self.current,self.rotation_effect_examples,self.stage_goal_reference+getattr(self,'accepted_posture_reference',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
-        if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification','visual_retention_check'):
+        if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification','visual_retention_check','visual_scene_relation'):
             from libero_stage_decision import stage_payload
-            payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]),self.previous,getattr(self,'phase_entry_views',[]))
+            use_raw=sent['state'].get('request_purpose')=='visual_scene_relation' and sent['state'].get('use_raw_rgb')
+            payload=stage_payload(sent,getattr(self,'current_raw',[]) if use_raw else self.current,
+                getattr(self,'stage_goal_reference',[]),getattr(self,'previous_raw',[]) if use_raw else self.previous,
+                getattr(self,'phase_entry_views',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
         if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
@@ -547,12 +550,21 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb'}:raise ValueError('Unsupported protocol field')
+                if protocol.get('scene_relation_question'):
+                    if args.task!=1458 or not args.actor_attention or not args.record_evidence:raise ValueError('Scene relation requires audited bottle policy')
+                    if set(protocol['scene_relation_question']['choices'])!={'retained','released_on_upper_support','separated_off_target','uncertain'}:raise ValueError('Invalid scene relationship categories')
+                    if not any(s.get('stage_key')=='inspect' for s in stages):raise ValueError('Scene relation requires inspection phase')
                 if any(not isinstance(v,(int,float)) or not 1<=v<=20 for v in protocol.get('axis_bands_mm',{}).values()):raise ValueError('Invalid positioning band')
                 archive=out/'protocols';archive.mkdir(exist_ok=True)
                 if not (archive/(digest+'.json')).exists():(archive/(digest+'.json')).write_bytes(raw_protocol)
                 api.protocol_sha256=digest
             api.current=capture();api.previous=previous;api.tick=tick
+            if protocol.get('scene_relation_raw_rgb'):
+                api.current_raw=[]
+                for camera in cameras:
+                    api.current_raw.extend([dict(type='input_text',text=f'CURRENT raw RGB from {camera}, observation {tick}. Synchronized current view.'),
+                        image_part(api.raw_camera_images[camera])])
             entry_token=(stage_origin_tick,stage)
             if getattr(api,'phase_entry_token',None)!=entry_token:
                 api.phase_entry_token=entry_token
@@ -926,13 +938,25 @@ def main():
                     retention_reply=api.post('/systemone',retention_request)
                     if retention_reply['answers']['transition']['choice']=='restart':
                         answer['answers']['transition']=retention_reply['answers']['transition']
+                from libero_stage_decision import build_scene_relation_request
+                relation_request=build_scene_relation_request(state,protocol)
+                if relation_request is not None:
+                    relation_reply=api.post('/systemone',relation_request)
+                    answer['answers']['scene_relation']=relation_reply['answers']['scene_relation']
             else:
                 stage=replay_rows[decision]['stage']
                 answer=dict(answers={k:dict(choice=v) for k,v in replay_rows[decision]['choices'].items()})
             choices={k:v['choice'] for k,v in answer['answers'].items()};before_p,before_R=own_pose()
+            if choices.get('scene_relation')=='released_on_upper_support' and stages[stage].get('stage_key')!='inspect':
+                stage=next(i for i,s in enumerate(stages) if s.get('stage_key')=='inspect')
+                stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
+                step_sizes=None;last_signs=None
+                history.append(dict(choices=choices,execution='No physical action; actor judged source separate on upper support, entering inspection.'))
+                # Preserve the preceding real observation, not a duplicate of this tick.
+                continue
             previous=[dict(type='input_text',text='PREVIOUS observation, before the last executed command; compare with CURRENT.'),
                 *[dict(x,type=x['type'],**({'text':x['text'].replace('CURRENT','PREVIOUS')} if x['type']=='input_text' else {})) for x in api.current]]
-            if choices['transition']=='advance':
+            if choices['transition']=='advance' and choices.get('scene_relation')!='separated_off_target':
                 if stage==len(stages)-1:result['program_finished']=True;break
                 if stages[stage].get('stage_key')=='orient_held_body':
                     api.accepted_posture_reference=[dict(type='input_text',text='ACCEPTED posture observation from THIS episode, before transport. Preserve this bottle/hand posture during transport. This is historical, not the current scene or a computed angle error.')]
@@ -941,7 +965,7 @@ def main():
                 stage+=1;step_sizes=None;last_signs=None
                 stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
                 history.append(dict(choices=choices,execution='No physical action; stage advanced'));continue
-            if choices['transition']=='restart':
+            if choices['transition']=='restart' or choices.get('scene_relation')=='separated_off_target':
                 api.accepted_posture_reference=[]
                 stage=0;stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
                 step_sizes=None;last_signs=None
@@ -970,6 +994,8 @@ def main():
                 dp=np.array(replay_rows[decision]['commanded_translation_mm'])/1000
                 dr=np.deg2rad(replay_rows[decision]['commanded_rotation_world_deg'])
             target_p=before_p+dp;target_R=Rotation.from_rotvec(dr).as_matrix()@before_R
+            if protocol.get('scene_relation_raw_rgb'):
+                api.previous_raw=[dict(part,**({'text':part['text'].replace('CURRENT','PREVIOUS').replace('Synchronized current view.','Historical view, not current evidence.')} if part['type']=='input_text' else {})) for part in api.current_raw]
             for _ in range(args.execution_steps):
                 pos,rot=own_pose();u_p=.7*(target_p-pos);u_r=.7*Rotation.from_matrix(target_R@rot.T).as_rotvec()
                 action=np.r_[np.clip(u_p/.05,-1,1),np.clip(u_r/.5,-1,1),grip]
