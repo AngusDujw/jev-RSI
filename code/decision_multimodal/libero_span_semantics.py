@@ -32,12 +32,18 @@ def build_span_request(state, judgments=None):
                     'unclear':'The relation cannot be judged from these views.'})
     else:
         context['your_same_observation_fit_judgments']=judgments
+        previous=state.get('previous_actor_span_selection')
+        continuity=''
+        if previous is not None:
+            context['your_previous_episode_reference_intent']=previous
+            continuity=(' Your preceding physical-reference intention in THIS episode is '+json.dumps(previous,separators=(',',':'))+
+                '. Keep a consistent physical receiving relationship unless CURRENT evidence contradicts it. Revalidate its CURRENT correspondence; plane labels can change. This history is not current geometry and does not authorize using an invisible span.')
         questions=dict(rack_direction=dict(type='choice',instructions=
             'Your preceding visual judgments are '+json.dumps(judgments,separators=(',',':'))+'. '
             'Which CURRENT span should be the body-placement reference? Select a span YOU judged '
             'matches on the illustrated receiving shelf. Use CURRENT rack pixels and the selected '
             'receiving surface label to distinguish shelf levels. Choose unknown if unsupported. '
-            'A changed label is not evidence of correctness.',criteria={
+            'A changed label is not evidence of correctness.'+continuity,criteria={
                 **{label:'Your preceding judgment for '+label+' is '+str(judgments.get(label,'unclear'))+
                     '. Choose only if it matches and belongs to the receiving shelf.' for label in catalog},
                 'unknown':'No listed direction reliably expresses the receiving relationship.'}))

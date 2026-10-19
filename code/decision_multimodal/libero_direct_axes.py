@@ -256,6 +256,8 @@ def main():
     p.add_argument('--literal-line-reasoning',action='store_true',help='Decisions itself evaluates printed physical-line expressions; no external product, angular error or sign')
     p.add_argument('--sideview-source-fallback',action='store_true',help='Current sideview RGB-D candidate when the main source component is unavailable')
     p.add_argument('--paired-span-selection',action='store_true',help='Decisions first judges each physical wood span against an actual archived image, then selects its reference')
+    p.add_argument('--span-intent-history',action='store_true',help='Supply the actor previous current-episode physical reference intention, never stale geometry')
+    p.add_argument('--posture-task-exit',action='store_true',help='Actor exits free-space posture from current visual support and rotation holds, not exact return to an arbitrary entry point')
     p.add_argument('--separate-rotation-call',action='store_true',help='Independent rotation-only visual Decisions call with current shapes and actual examples')
     p.add_argument('--visible-shape-features',action='store_true',help='Current RGB-D bottle axis and observed wood planes; never desired orientation or error')
     p.add_argument('--formal-stage-call',action='store_true',help='Ask a scoped text-only Decisions stage question after visual motor choices for phases with explicit rules')
@@ -311,7 +313,7 @@ def main():
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
-        paired_span_selection=args.paired_span_selection,grasp_pose_decided_by_actor=True,experience_injection=False))
+        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
@@ -807,6 +809,12 @@ def main():
                         state['numeric_axis_decision_meaning']='These directions were chosen by YOU in the immediately preceding text-only Decisions call from this SAME observation. They are not clearance or contact certificates. This visual call decides the remaining axes, gripper and transition. Advance/restart executes no physical action.'
                         for a in numeric_answers:questions.pop(a)
                 rotation_answers={}
+                if args.posture_task_exit and state['stage'].get('stage_key')=='orient_held_body':
+                    questions['posture_evidence']=dict(type='choice',instructions=
+                        'From the CURRENT synchronized views, is the bottle still visibly at the gripper, is the actor-selected physical wood relationship judgeable, and is clearance suitable for handing off to transport? Judge visible plausibility, not proven contact. Ignore exact return to the phase-entry hand point. Supported does not imply rotation alignment; the separate rotation answers decide that.',
+                        criteria={'supported':'Held bottle/reference remain judgeable and there is no obvious clearance problem for transport.',
+                            'unsupported':'The source is visibly lost or clearance is unsuitable.',
+                            'unclear':'Current observations do not support these judgments.'})
                 if args.separate_rotation_call and args.task==1458:
                     state['accepted_posture_available']=bool(getattr(api,'accepted_posture_reference',[]))
                     from libero_rotation_decision import build_rotation_request
@@ -814,6 +822,7 @@ def main():
                         from libero_rotation_decision import build_direction_request
                         direction_request=build_direction_request(state)
                         if direction_request is not None:
+                            if args.span_intent_history:state['previous_actor_span_selection']=getattr(api,'span_intent',None)
                             if args.paired_span_selection:
                                 from libero_span_semantics import build_span_request
                                 fit_request=build_span_request(state)
@@ -823,6 +832,13 @@ def main():
                                     direction_request=build_span_request(state,judgments)
                             direction_reply=api.post('/systemone',direction_request)
                             state['actor_selected_rack_direction']=direction_reply['answers']['rack_direction']
+                            if args.span_intent_history and state['actor_selected_rack_direction']['choice']!='unknown':
+                                from libero_rotation_decision import selected_span_binding
+                                old_binding=selected_span_binding(state) or {}
+                                api.span_intent=dict(native_tick=tick,stage=state['stage']['name'],
+                                    choice=state['actor_selected_rack_direction']['choice'],
+                                    previous_segment_pixels_agentview=old_binding.get('projected_segment_agentview'),
+                                    meaning='Your own previous intention in this episode, not current geometry. Match the physical relationship again in CURRENT RGB.')
                     rotation_request=None
                     if args.literal_line_reasoning:
                         from libero_line_reasoning import build_line_rotation_request
@@ -841,7 +857,7 @@ def main():
                     phase_request=build_stage_request(state,answer['answers'],protocol)
                     if args.literal_line_reasoning:
                         from libero_line_reasoning import build_line_stage_request
-                        line_phase_request=build_line_stage_request(state,answer['answers'])
+                        line_phase_request=build_line_stage_request(state,answer['answers'],task_exit=args.posture_task_exit)
                         if line_phase_request is not None:phase_request=line_phase_request
                     if phase_request is not None:
                         phase_reply=api.post('/systemone',phase_request)

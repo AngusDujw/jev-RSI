@@ -39,8 +39,25 @@ def build_line_rotation_request(state):
         meaning='Coefficients are CURRENT observed lines. The actor selected the wood span visually. Expressions are generic world-rotation effects; no product, difference, angular error or sign is evaluated externally. Displayed line representatives define a consistent branch; no twist about the bottle is requested.'),questions=questions)
 
 
-def build_line_stage_request(state,answers):
+def build_line_stage_request(state,answers,task_exit=False):
     lines=observed_lines(state)
+    if task_exit and state['stage'].get('stage_key')=='orient_held_body':
+        for axis in ('rx','ry','rz'):
+            if answers.get(axis,{}).get('choice') not in ('positive','negative','hold'):
+                raise ValueError('Posture phase requires complete original categorical rotation answers')
+        recovery=answers.get('transition',{}).get('choice')=='restart'
+        evidence=answers.get('posture_evidence',{}).get('choice','unclear')
+        facts='; '.join(a+' decision='+str(answers.get(a,{}).get('choice','unknown')) for a in ('rx','ry','rz'))
+        return dict(model='gpt-6-luna',state=dict(stage=state['stage'],
+            request_purpose='text_only_observed_line_transition',line_input=
+                'Judge the free-space posture exit from your actual visual evidence and rotation choices. The phase-entry hand point is a secondary preference; transport starts from the actual current position.'),
+            questions=dict(transition=dict(type='choice',instructions=
+                f'Visual recovery requested={recovery}; current observed source/reference lines available={lines is not None}; your visual posture evidence={evidence}; {facts}. '
+                'Restart if visual recovery is requested. Otherwise continue if the current source/reference lines are unavailable, visual evidence is not supported, or ANY rotation choice is positive, negative or unknown. '
+                'Advance to transport ONLY when the current lines are available, visual evidence is supported, and ALL THREE rotation choices are hold. XYZ choices need not be hold; exact return to an arbitrary entry hand point is not the posture task. No pending correction is executed by advance.',
+                criteria={'continue':'A rotation, observation or clearance requirement remains unmet.',
+                    'advance':'All three rotation choices hold, current reference available, and visual evidence supported.',
+                    'restart':'Visual recovery was explicitly requested.'})))
     if lines is None:return None
     v,b,binding=lines
     recovery=answers.get('transition',{}).get('choice')=='restart'
