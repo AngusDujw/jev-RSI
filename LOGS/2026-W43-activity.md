@@ -116,3 +116,7 @@
 - 【Agent】【2026-10-20 02:10】[op] 新建实验块 EXP-2026W43-033：v23实际Lift停滞后的短视觉阶段接口及v24原生对照  ↪ `EXP-2026W43-033`
 - 【Agent】【2026-10-20 02:10】[op] v24 independent native12/13 launched from005390f2; exact step442 visual Lift calibration choseadvance0.55/conf0.33, zero native actions, no resampling. Original4 live episodes retained. Evidence and original request/response saved under DataStorage iteration-v24; EXP033 strict complete.
 - 【Agent】【2026-10-20 02:17】[op] Pro9 gpt-6.1-sol high completed: bind selected physical span explicitly in independent rotation questions. New bound-span code passes exact actor-label/pair-order/current-only-overlay/unknown/fit-projection/English inline checks. Separate knob600 pilot terminal0/2 at598steps (187/198API); original extended frozen3/3 unchanged.
+- 【Agent】【2026-10-20 02:24】[op] 新建实验块 EXP-2026W43-034：旋钮独立unsigned调幅600步两原生终局  ↪ `EXP-2026W43-034`
+- 【Agent】【2026-10-20 02:24】[op] 新建实验块 EXP-2026W43-035：物理线段渲染审计首次CLI horizon无效零步失败  ↪ `EXP-2026W43-035`
+- 【Agent】【2026-10-20 02:24】[op] 新建实验块 EXP-2026W43-036：Pro9物理参照绑定与v25原生及真实回放输入诊断  ↪ `EXP-2026W43-036`
+- 【Agent】【2026-10-20 02:27】[op] EXP034-036 complete: knob6000/2 retained; zero-API renderer initial CLI634 failure recorded separately, corrected52-decisions replay634steps/0API passed. Pro9 and v25 native deployed; actual physical line highlight inspected. Bound-span and crop probes remain weak; exact requests/responses in DataStorage, no experience injection or answered-payload resampling.
