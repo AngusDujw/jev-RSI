@@ -184,6 +184,7 @@ def main():
     p.add_argument('--output',type=Path,required=True);p.add_argument('--plan',type=Path,required=True)
     p.add_argument('--demos',type=Path);p.add_argument('--libero-root',required=True)
     p.add_argument('--gpu',type=int,default=4)
+    p.add_argument('--wall-seconds',type=int,default=7200)
     p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
     p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
     p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
@@ -297,7 +298,7 @@ def main():
             import shutil
             if shutil.disk_usage(out).free<8*1024**3:raise RuntimeError('Native artifact storage guard: below8GiB free')
             if tick+4>600:break
-            if time.monotonic()-started>1800:raise TimeoutError('Native episode wall budget')
+            if time.monotonic()-started>args.wall_seconds:raise TimeoutError('Native episode wall budget')
             api.current=capture();api.previous=previous;api.tick=tick
             state=dict(task=instruction,stage=stages[stage],stage_order=stages,
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),last_actions=history[-4:],
