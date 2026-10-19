@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'policy_comparison'))
 from decisions_policy import ENDPOINT, MODEL, TCP_OFFSET, action, call, load_key, questions
 from hybrid_rollout.robodojo.robodojo_server.gpt_only_client import GPTOnlyTools
 from hybrid_rollout.robodojo.io import write_json
+from joint_rotation import questions_with_joint_rotation, expand_rotation_choices
 
 CAMERAS = ('cam_high','cam_left_wrist','cam_right_wrist')
 
@@ -68,12 +69,14 @@ def main():
     parser.add_argument('--task',default='general_pickup')
     parser.add_argument('--sim-port',type=int,required=True)
     parser.add_argument('--seed',type=int,required=True)
+    parser.add_argument('--rotation-format',choices=('axes','joint'),default='axes')
     args=parser.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     prompt=Path(__file__).with_name('advancer_v1.md').read_text()
     if not prompt.isascii():raise ValueError('Model prompt must be English ASCII')
     (args.output/'PROMPT.md').write_text(prompt)
     q=questions()
+    if args.rotation_format=='joint':q=questions_with_joint_rotation(q)
     for question in q:
         question['instructions']=question['instructions'].replace('Use the original observations and same-episode context.','Use only the current images and measured robot state.')
     write_json(args.output/'questions.json',q)
@@ -85,7 +88,8 @@ def main():
         packet=rollout.start(**start)
         rollout.run.update(teacher_model=MODEL,teacher_model_provider='openai-decisions',
             teacher_reasoning_effort=None,decision_endpoint=ENDPOINT,
-            condition='generic-current-rgb-v1',decision_question_count=14,
+            condition='generic-current-rgb-joint-v2' if args.rotation_format=='joint' else 'generic-current-rgb-v1',
+            decision_question_count=len(q),rotation_format=args.rotation_format,
             history_supplied=False,images_persisted=False,
             tcp_reference_link6_local_m=TCP_OFFSET.tolist())
         write_json(args.output/'run.json',rollout.run)
@@ -96,6 +100,7 @@ def main():
             content=[dict(type='input_text',text=prompt+'\n\nCURRENT OBSERVATION\n'+json.dumps(state))]+image_items(rollout.obs)
             answers=call(dict(model=MODEL,input=[dict(role='user',content=content)],questions=q),key,
                          args.output/'decisions'/f'{index:03d}')
+            if args.rotation_format=='joint':answers=expand_rotation_choices(answers)
             response=action(answers,packet,gripper)
             response['reason']='Execute the joint categorical choices selected from current RGB and measured robot state.'
             arguments=dict(rollout.next_call());arguments.pop('tool');arguments['response']=response

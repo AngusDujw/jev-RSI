@@ -8,14 +8,17 @@ import signal
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 
 PROJECT=Path(__file__).resolve().parents[2]
 CAMPAIGN='/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-decision-grasp-20261019'
 ROOT=Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-decision-grasp-20261019')
 RUNTIME=PROJECT/'code/runs/server02-policy-comparison-20261018/official_runtime'
 PYTHON=Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/.venv/bin/python')
-SSH=['ssh','-F','/dev/null','-S','/home/ykj/.ssh/s2-policy-20261018.ctl','--','server02']
+SSH=['ssh','-F','/dev/null','-S','/home/ykj/.ssh/s2-grasp-20261019.ctl','--','server02']
 STOP=False
+LOCK=threading.Lock()
 
 
 def save(path,value):path.write_text(json.dumps(value,indent=2)+'\n')
@@ -42,14 +45,15 @@ print('admitted')
     return remote(['python3','-c',code,str(gpu)],timeout=30)
 
 
-def one(layout,gpu):
-    name=f'rgb-v1-general_pickup-layout{layout}'
+def one(layout,gpu,rotation_format):
+    version='rgb-joint-v2' if rotation_format=='joint' else 'rgb-v1'
+    name=f'{version}-general_pickup-layout{layout}'
     run=ROOT/name
     if run.exists():raise FileExistsError('Never resume or overwrite '+name)
     admission(gpu)
     run.mkdir()
-    port=24500+layout
-    state=dict(condition='generic-current-rgb-v1',task='general_pickup',layout=layout,
+    port=(24600 if rotation_format=='joint' else 24500)+layout
+    state=dict(condition='generic-current-'+version,task='general_pickup',layout=layout,
         gpu=gpu,port=port,status='starting',endpoint='https://api.openai.com/v1/decisions')
     save(run/'status.json',state)
     sim=controller=None
@@ -72,7 +76,8 @@ def one(layout,gpu):
             env.update(PYTHONPATH=str(RUNTIME),TMPDIR=str(run/'tmp'))
             (run/'tmp').mkdir()
             controller=subprocess.Popen([str(PYTHON),'-u',str(Path(__file__).with_name('controller.py')),
-                '--output',str(run/'controller'),'--sim-port',str(port),'--seed',str(layout)],
+                '--output',str(run/'controller'),'--sim-port',str(port),'--seed',str(layout),
+                '--rotation-format',rotation_format],
                 env=env,stdout=controller_log,stderr=subprocess.STDOUT)
             state.update(status='running',controller_pid=controller.pid);save(run/'status.json',state)
             while controller.poll() is None:
@@ -108,6 +113,8 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--layouts',type=int,nargs='+',default=[0,1,2])
     parser.add_argument('--gpu',type=int,choices=(0,1),default=0)
+    parser.add_argument('--rotation-format',choices=('axes','joint'),default='joint')
+    parser.add_argument('--parallel',type=int,choices=(1,2),default=1)
     args=parser.parse_args()
     def stop(*_):
         global STOP
@@ -115,10 +122,20 @@ def main():
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
     if not ROOT.is_mount():raise RuntimeError('Expected remote artifact mount')
     rows=[]
-    for layout in args.layouts:
-        if STOP:break
-        row=one(layout,args.gpu);rows.append(row);save(ROOT/'pilot-v1.json',rows)
-        if row.get('controller_exit')!=0:break
+    if len(set(args.layouts))!=len(args.layouts):raise ValueError('Duplicate layout within one condition')
+    def queue(gpu,layouts):
+        global STOP
+        for layout in layouts:
+            if STOP:return
+            row=one(layout,gpu,args.rotation_format)
+            with LOCK:
+                rows.append(row);save(ROOT/f'pilot-{args.rotation_format}.json',rows)
+            if row.get('controller_exit')!=0:
+                STOP=True
+                return
+    with ThreadPoolExecutor(max_workers=args.parallel) as pool:
+        futures=[pool.submit(queue,(args.gpu+i)%2,args.layouts[i::args.parallel]) for i in range(args.parallel)]
+        for future in as_completed(futures):future.result()
 
 
 if __name__=='__main__':main()
