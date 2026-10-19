@@ -30,6 +30,13 @@ def alive(pid):
 
 
 def prune(run, state):
+    # User-selected campaign retention is checked on every sweep, independently
+    # of the controller. It never changes observations or model requests.
+    policy = batch.ROOT / 'media_retention.json'
+    if policy.exists():
+        config = json.loads(policy.read_text())
+        if state.get('mode') == 'decisions' and config.get('preserve_decisions_media') is True:
+            return None
     if alive(state.get('controller_pid')) or alive(state.get('ssh_pid')):
         return None
     if state.get('status') not in ('failed', 'controller_finished'):

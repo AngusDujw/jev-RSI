@@ -111,3 +111,12 @@ The original task policy, model, fourteen questions, action mapping and native
 scores are unchanged. The 24 MiB image-history window differs from f and Pro
 and must be disclosed; it is transport adaptation, not evidence of better
 policy quality. Do not resume f or repeat its failed HTTP requests.
+
+User retention override (2026-10-19): Decisions media are now preserved for
+visual review, including after terminal. `media_retention.json` in the campaign
+record directory sets `preserve_decisions_media=true`; storage_policy checks it
+on every sweep. Already deleted images cannot be recovered. The old g retention
+worker was stopped after identity verification; its replacement is
+`robodojo-comparison-retention-20261019g-preserve.service`, bound to batch599422.
+Controllers and native simulators were not restarted or modified. Local images
+remain in the execution directory; native media remain in the remote campaign.
