@@ -12,7 +12,7 @@ ROTATION_INPUT = ('Choose the HAND rotation signs from the CURRENT views, measur
     'Decide each channel independently; the selected components form one world rotation vector.')
 
 
-def build_rotation_request(state):
+def build_rotation_request(state,explain_current_effect=False):
     key=state['stage'].get('stage_key')
     if key not in ('align_source_above_receiver','lower_to_place'):return None
     effects={'rx':('X','Positive rotates +Y toward +Z and +Z toward -Y.'),
@@ -25,6 +25,14 @@ def build_rotation_request(state):
             criteria={'positive':f'Positive rotation about world {axis}.',
                       'negative':f'Negative rotation about world {axis}.',
                       'hold':f'No increment about world {axis}.'})
+    shape=(state.get('source_component') or {}).get('visible_shape') or {}
+    current=shape.get('visible_long_axis_world_unit')
+    if explain_current_effect and current is not None:
+        x,y,z=current
+        derivatives={'rx':[0.,-z,y],'ry':[z,0.,-x],'rz':[-y,x,0.]}
+        for name,derivative in derivatives.items():
+            derivative=[round(v,3) for v in derivative]
+            questions[name]['instructions']+=f' CURRENT observed body line v={current}. If the bottle follows the hand rigidly, a small positive increment on this channel changes this representative line in direction dv/dtheta={derivative}; negative reverses that change. This is a local physical effect, NOT a desired axis or angle error. Use CURRENT RGB and the goal example to judge whether that effect helps; v and -v are the same line.'
     return dict(model='gpt-6-luna',state=dict(
         stage={k:v for k,v in state['stage'].items() if k in ('name','goal')},
         request_purpose='multimodal_rotation_axes',

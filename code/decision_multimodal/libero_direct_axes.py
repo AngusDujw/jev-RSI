@@ -234,6 +234,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--rotation-effect-hints',action='store_true',help='Observed-line local rotation effects only, no desired axis or error')
     p.add_argument('--separate-rotation-call',action='store_true',help='Independent rotation-only visual Decisions call with current shapes and actual examples')
     p.add_argument('--visible-shape-features',action='store_true',help='Current RGB-D bottle axis and observed wood planes; never desired orientation or error')
     p.add_argument('--formal-stage-call',action='store_true',help='Ask a scoped text-only Decisions stage question after visual motor choices for phases with explicit rules')
@@ -285,7 +286,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -734,7 +735,7 @@ def main():
                 rotation_answers={}
                 if args.separate_rotation_call and args.task==1458:
                     from libero_rotation_decision import build_rotation_request
-                    rotation_request=build_rotation_request(state)
+                    rotation_request=build_rotation_request(state,args.rotation_effect_hints)
                     if rotation_request is not None:
                         rotation_reply=api.post('/systemone',rotation_request)
                         rotation_answers=rotation_reply['answers']
