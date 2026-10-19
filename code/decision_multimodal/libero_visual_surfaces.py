@@ -9,9 +9,10 @@ from scipy import ndimage
 
 
 class SurfaceTracker:
-    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False, shape_features=False):
+    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False, shape_features=False, central_samples=False):
         self.kind=kind
         self.shape_features=shape_features
+        self.central_samples=central_samples
         self.box=np.asarray(initial_box,float)
         self.initial_box=self.box.copy()
         self.sparse=sparse
@@ -133,12 +134,31 @@ class SurfaceTracker:
                 j=band[np.argmin(abs(xs[band]-np.quantile(xs[band],fx)))]
                 pixel=(int(xs[j]),int(ys[j]))
                 if pixel not in pixels:pixels.append(pixel)
+        central_notes={}
+        if self.raised_feature and self.central_samples and len(xs)>=18:
+            z=depth[ys,xs]
+            xyz=(T[:3,:3]@(np.linalg.solve(K,np.stack((xs,ys,np.ones(len(xs)))))*z)+T[:3,3,None]).T*1000
+            valid=np.isfinite(xyz).all(axis=1)&(z>0)
+            cloud=xyz[valid];py=ys[valid];px=xs[valid]
+            if len(cloud)>=18:
+                middle=np.median(cloud,axis=0)
+                _,_,axes=np.linalg.svd(cloud-middle,full_matrices=False)
+                along=(cloud-middle)@axes[0]
+                for fraction,note in ((.5,'Middle of the CURRENT visible upper-fin surface extent, not a known shaft pivot.'),
+                                      (.25,'Inner-quarter point of the CURRENT visible upper-fin surface.'),
+                                      (.75,'Other inner-quarter point of the CURRENT visible upper-fin surface.')):
+                    target=middle+axes[0]*np.quantile(along,fraction)
+                    j=int(np.argmin(np.linalg.norm(cloud-target,axis=1)))
+                    pixel=(int(px[j]),int(py[j]))
+                    if pixel not in pixels:pixels.append(pixel)
+                    central_notes.setdefault(pixel,note)
         samples=[]
         for u,v in pixels:
             z=float(depth[v,u]);xyz=T@np.r_[np.linalg.solve(K,[u,v,1])*z,1]
             if not np.isfinite(xyz).all() or z<=0:continue
             samples.append(dict(label='C'+str(len(samples)),pixel_uv=[u,v],
-                visible_surface_world_mm=np.round(xyz[:3]*1000,1).tolist()))
+                visible_surface_world_mm=np.round(xyz[:3]*1000,1).tolist(),
+                **({'visible_part_note':central_notes[(u,v)]} if (u,v) in central_notes else {})))
         if self.track_selected:
             allowed=labels==i
             if self.raised_feature:

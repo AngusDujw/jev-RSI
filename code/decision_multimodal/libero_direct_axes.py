@@ -234,6 +234,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--fin-central-samples',action='store_true',help='Additional actual visible upper-fin middle/quarter surface samples, not a hidden pivot')
     p.add_argument('--held-example-bank',type=Path,help='Immutable actual balanced held-object rotation examples for the separate rotation call')
     p.add_argument('--rotation-effect-hints',action='store_true',help='Observed-line local rotation effects only, no desired axis or error')
     p.add_argument('--separate-rotation-call',action='store_true',help='Independent rotation-only visual Decisions call with current shapes and actual examples')
@@ -287,7 +288,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,held_example_bank=str(args.held_example_bank.resolve()) if args.held_example_bank else None,held_example_bank_sha256=hashlib.sha256(args.held_example_bank.read_bytes()).hexdigest() if args.held_example_bank else None,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,fin_central_samples=args.fin_central_samples,held_example_bank=str(args.held_example_bank.resolve()) if args.held_example_bank else None,held_example_bank_sha256=hashlib.sha256(args.held_example_bank.read_bytes()).hexdigest() if args.held_example_bank else None,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -320,11 +321,11 @@ def main():
     tracker=None
     if args.live_surfaces:
         from libero_visual_surfaces import SurfaceTracker
-        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383,track_selected=args.track_selected,raised_feature=args.raised_fin_surfaces and args.task==1383,shape_features=args.visible_shape_features)
+        tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383,track_selected=args.track_selected,raised_feature=args.raised_fin_surfaces and args.task==1383,shape_features=args.visible_shape_features,central_samples=args.fin_central_samples)
     receiver_tracker=None
     if args.receiver_surfaces and 'receiver_fixed_view_bbox_xyxy' in plan:
         from libero_visual_surfaces import SurfaceTracker
-        receiver_tracker=SurfaceTracker('rack',np.asarray(plan['receiver_fixed_view_bbox_xyxy'])*args.size/512,anchor_stationary=True,shape_features=args.visible_shape_features)
+        receiver_tracker=SurfaceTracker('rack',np.asarray(plan['receiver_fixed_view_bbox_xyxy'])*args.size/512,anchor_stationary=True,shape_features=args.visible_shape_features,central_samples=args.fin_central_samples)
     full_demonstrations=api.demonstrations[:]
     rotation_demonstrations=[]
     for i,part in enumerate(full_demonstrations):
