@@ -63,3 +63,5 @@
 - 【Agent】【2026-10-19 18:49】[op] 新建实验块 EXP-2026W43-014：通过v4090-t直连同一服务器重启23中断回合，保留API12/SSH3与紧凑日志，验证真实回答和动作  ↪ `EXP-2026W43-014`
 - 【Agent】【2026-10-19 18:50】[op] Verified v4090-t is same host via matching trusted host key; metadata0.546s and2500-byte stdin0.629s. Gracefully stopped all9 old native processes and old bridge, wrote cutover markers, started separate t1 native/bridge sessions. Pilot already6 actual API replies, old panes dead; native expansion gate pending measured-action check.
 - 【Agent】【2026-10-19 18:51】[result] v4090-t restart verification:23 active/0 queued/0 finished,23/23 first answers,79 remote valid replies/80 locally persisted,0 API retry/errors and0 SSH transport events,0 rollout PNG. Old native PIDs and old bridge confirmed stopped; model inputs unchanged.
+- 【User】【2026-10-19 19:10】[prompt] 现在还在正常跑吗
+- 【Agent】【2026-10-19 19:10】[result] 19:10 v4090-t：23 active/0 finished，最后动作6.57秒前，1509远机有效回答；SSH异常0、API终止错误0，15传输失败尝试进入重试，无回合退出。未重启或改模型，尚无终局。
