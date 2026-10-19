@@ -21,7 +21,7 @@ def describe_visible_shape(points_mm,kind):
     points=np.asarray(points_mm,float)
     points=points[np.isfinite(points).all(axis=1)]
     if len(points)<40:return dict(status='unknown',reason='Too few current depth samples.')
-    points=points[::max(1,len(points)//2500)]
+    points=points[::max(1,int(np.ceil(len(points)/2500)))]
     centre,values,axes,spans=principal_shape(points)
     result=dict(status='observed_partial_shape',sample_count=len(points),
         meaning='Current visible colour-filtered surfaces only. All axes are UNORIENTED: v and -v describe the same line. Not a full object pose, desired axis, rotation error, grasp or support certificate.',
@@ -56,7 +56,9 @@ def describe_visible_shape(points_mm,kind):
             visible_in_plane_spans_mm=np.round(spans[:2],1).tolist(),
             current_inliers=best_count,
             plane_fit_rms_mm=round(float(np.sqrt(np.mean(((cloud-centre)@normal)**2))),2)))
-        remaining=remaining[~best]
+        # Remove the full refined plane, not just the original three-point fit.
+        # Otherwise leftover pixels from one slat plane masquerade as a second plane.
+        remaining=remaining[np.abs((remaining-centre)@normal)>4.0]
     result['observed_wood_planes']=planes
     result['plane_meaning']='P labels describe fitted visible wood surfaces, not the correct receiver. Select the actual cradle from CURRENT RGB; a plane can be a leg, edge or partial slat.'
     return result

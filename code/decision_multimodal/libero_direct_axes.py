@@ -109,6 +109,11 @@ class DirectAPI(RevisedAPI):
     def revise(self, original):
         return original
     def build_payload(self, sent):
+        if sent['state'].get('request_purpose')=='multimodal_rotation_axes':
+            from libero_rotation_decision import rotation_payload
+            payload=rotation_payload(sent,self.current,self.rotation_effect_examples,self.stage_goal_reference)
+            self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
+            return payload
         if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification'):
             from libero_stage_decision import stage_payload
             payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]))
@@ -229,6 +234,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--separate-rotation-call',action='store_true',help='Independent rotation-only visual Decisions call with current shapes and actual examples')
     p.add_argument('--visible-shape-features',action='store_true',help='Current RGB-D bottle axis and observed wood planes; never desired orientation or error')
     p.add_argument('--formal-stage-call',action='store_true',help='Ask a scoped text-only Decisions stage question after visual motor choices for phases with explicit rules')
     p.add_argument('--numeric-axis-call',action='store_true',help='Let Decisions classify selected numeric XYZ references in a separate text-only request before multimodal rotation/grip/stage decisions')
@@ -279,7 +285,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -333,6 +339,7 @@ def main():
                 break
         if not goal_demonstration:raise ValueError('Actual goal-relationship example missing')
     api.stage_goal_reference=goal_demonstration
+    api.rotation_effect_examples=rotation_demonstrations
     cameras=['agentview','robot0_eye_in_hand']+([args.overview_camera] if args.overview_camera else [])
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
@@ -459,6 +466,7 @@ def main():
                 for row in [r for r in history if 'commanded_translation_mm' in r][-3:]:
                     cmd=np.asarray(row['commanded_translation_mm']);actual=np.asarray(row['measured_translation_mm']);squared=float(cmd@cmd)
                     comparisons.append(dict(commanded_translation_mm=cmd.tolist(),measured_translation_mm=actual.tolist(),
+                        commanded_rotation_world_deg=row['commanded_rotation_world_deg'],measured_rotation_world_deg=row['measured_rotation_world_deg'],
                         commanded_length_mm=round(float(np.linalg.norm(cmd)),2),measured_length_mm=round(float(np.linalg.norm(actual)),2),
                         projected_motion_gain=round(float(actual@cmd)/squared,3) if squared>1 else None))
                 state['recent_own_execution_comparison']=comparisons
@@ -723,9 +731,18 @@ def main():
                         state['numeric_axis_decisions']={a:v['choice'] for a,v in numeric_answers.items()}
                         state['numeric_axis_decision_meaning']='These directions were chosen by YOU in the immediately preceding text-only Decisions call from this SAME observation. They are not clearance or contact certificates. This visual call decides the remaining axes, gripper and transition. Advance/restart executes no physical action.'
                         for a in numeric_answers:questions.pop(a)
+                rotation_answers={}
+                if args.separate_rotation_call and args.task==1458:
+                    from libero_rotation_decision import build_rotation_request
+                    rotation_request=build_rotation_request(state)
+                    if rotation_request is not None:
+                        rotation_reply=api.post('/systemone',rotation_request)
+                        rotation_answers=rotation_reply['answers']
+                        state['rotation_axis_decisions']={a:v['choice'] for a,v in rotation_answers.items()}
+                        for a in rotation_answers:questions.pop(a)
                 state['request_purpose']='multimodal_rotation_gripper_transition' if numeric_answers else 'multimodal_policy'
                 answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
-                answer['answers']={**numeric_answers,**answer['answers']}
+                answer['answers']={**numeric_answers,**rotation_answers,**answer['answers']}
                 if args.formal_stage_call:
                     from libero_stage_decision import build_stage_request
                     phase_request=build_stage_request(state,answer['answers'],protocol)
