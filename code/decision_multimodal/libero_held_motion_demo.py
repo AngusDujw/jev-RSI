@@ -12,6 +12,19 @@ from pathlib import Path
 import sys
 
 
+def compose_example(directory,axis,sign,angle):
+    from PIL import Image,ImageDraw,ImageFont
+    font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',22)
+    small=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',18)
+    card=Image.new('RGB',(2048,580),'#10222a');draw=ImageDraw.Draw(card)
+    draw.text((12,8),f'ARCHIVED HELD-OBJECT EXAMPLE: {sign*angle:+g} degrees about world {axis[-1].upper()} | BEFORE left pair, AFTER right pair',fill='white',font=font)
+    draw.text((12,36),'Each pair: fixed agentview then fixed sideview. Actual recorded motion, not the CURRENT scene or a next-action candidate.',fill='white',font=small)
+    for index,(time,camera) in enumerate((t,c) for t in ('before','after') for c in ('agentview','sideview')):
+        card.paste(Image.open(directory/(time+'-'+camera+'-detail.png')).convert('RGB'),(index*512,68))
+    card.save(directory/'example.png')
+    return card
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument('--libero-root',required=True)
@@ -110,11 +123,7 @@ def main():
         result.update(after_tick=tick,measured_translation_mm=((after_p-before_p)*1000).tolist(),
             measured_rotation_world_deg=np.rad2deg(Rotation.from_matrix(after_R@before_R.T).as_rotvec()).tolist(),
             object_following='Not certified. Inspect the actual BEFORE/AFTER RGB; no contact or hidden object state is queried.')
-        card=Image.new('RGB',(2048,550),'#10222a');draw=ImageDraw.Draw(card)
-        draw.text((12,10),f'ARCHIVED HELD-OBJECT EXAMPLE: {args.sign*args.angle_deg:+g} degrees about world {args.axis[-1].upper()} | BEFORE left pair, AFTER right pair',fill='white')
-        draw.text((12,28),'Each pair: fixed agentview then fixed sideview. Own-hand-centred crops. Actual recorded motion, not the CURRENT scene or a next-action candidate.',fill='white')
-        for index,im in enumerate([*before,*after]):card.paste(im,(index*512,38))
-        card.save(out/'example.png')
+        compose_example(out,args.axis,args.sign,args.angle_deg)
         result['example_image']='example.png'
     finally:
         (out/'execution.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
