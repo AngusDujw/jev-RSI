@@ -51,3 +51,14 @@ excluded as infrastructure interruptions before fresh generation d.
 The host also rebooted at 14:17:38 (previous boot journal ends at 14:06:44).
 Transient services and local controllers from c did not survive; do not mistake
 their recorded PIDs for live processes or resume their ended native episodes.
+
+Generation d's stack trial 3 received a Pro `serverOverloaded` error before any
+model response, tool call or native action. `retry_empty_slot.py` permits exactly
+one fresh generation-e replacement after that empty attempt's cleanup, under
+`robodojo-comparison-empty-slot-20261019e.service`. It refuses any prior model
+answer or started episode. The two generation-d classification slots continue;
+never launch another all-slot batch while those controllers are alive. The d
+parent retains its infrastructure failure and will stop at its phase barrier.
+Once d and e have drained, inspect the six selected Luna slots; if all are valid,
+start a new coordinator generation for the ten Decisions slots, reusing the six
+finished results. Do not replay any Luna slot or bypass this audit.
