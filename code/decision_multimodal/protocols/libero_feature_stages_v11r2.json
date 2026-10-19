@@ -1,0 +1,85 @@
+{
+  "revision": "v11r2-height-before-close-and-active-lift-test",
+  "axis_bands_mm": {
+    "align_above_source": 10,
+    "descend_to_source": 3,
+    "align_source_above_receiver": 10,
+    "lower_to_place": 3
+  },
+  "stage_overrides": {
+    "align_above_source": {
+      "goal": "Actively establish coarse alignment over a consistent grasp region. Bottle: prefer the exposed upper neck below the top, with downward fingers straddling the neck and wrist housing remaining above the bottle top; avoid a deep overhead body grasp. Knob: target opposing sides of the raised narrow fin, not the circular base or burner. Keep source samples anchored to that region. Maintain the same RGB-selected region S when its current visual match is available. The grasp example uses downward fingers.",
+      "exit": "Advance when the currently selected source-minus-hand X and Y are both within -10 to +10 mm inclusive. This is coarse horizontal alignment only. Fine grasp orientation and grasp height are judged in the next nearer-approach stage, not certified here.",
+      "control_contract": {
+        "translation": "Coarse horizontal alignment to the actor-selected visual reference.",
+        "height": "Keep suitable overhead clearance; being above the source is not a reason to rise further.",
+        "exit": "Advance when the currently selected source-minus-hand X and Y are both within -10 to +10 mm inclusive. This is coarse horizontal alignment only. Fine grasp orientation and grasp height are judged in the next nearer-approach stage, not certified here.",
+        "orientation": "Judge rotation separately from XYZ position and distance. A far-away hand can already have suitable orientation. The earlier orientation assessment is an unverified hypothesis, not a veto of completed coarse X/Y alignment."
+      }
+    },
+    "close": {
+      "goal": "Attempt closure around the positioned grasp region; secure holding will be tested next.",
+      "exit": "A close command has actually been executed. Advance provisionally unless fresh RGB clearly shows a missed grasp; contact proof is not required before the attempt.",
+      "control_contract": {
+        "translation": "Keep the positioned hand still during closure.",
+        "gripper": "Attempt closure before evaluating attachment.",
+        "exit": "Closure has actually been attempted; lift or turn tests engagement."
+      }
+    },
+    "descend_to_source": {
+      "goal": "Bring the finger faces alongside the SAME chosen grasp region. Bottle: shallow upper neck below the cork, avoiding wrist-housing collision. Knob: the raised narrow fin between the jaws. Use the nearer view to refine jaw posture and height. Both provided grasp demonstrations use a top-down finger approach. Keep an already downward approach while moving alongside the fin or upper bottle neck; distance to the object does not imply a tilt error.",
+      "exit": "The intended neck/fin is plausibly bracketed by the inner fingers at their physical height. A known selected-feature height difference outside +/-12mm means not yet at capture height; do not mistake top-down overlap for vertical alignment. Exact lateral skin coincidence and proven contact are not required."
+    },
+    "lift": {
+      "goal": "Test that the bottle follows the closing hand, and establish enough clearance to start transporting it to the rack. Further vertical rise is not needed once this is visibly achieved.",
+      "exit": "Current and previous RGB show the bottle following the hand off the table, with useful transport clearance. A matched visible-feature motion may support this judgment, but hand motion alone is insufficient."
+    }
+  },
+  "question_templates": {
+    "align_above_source": {
+      "z": "Is a world-Z clearance correction needed during horizontal alignment? Current source surface minus hand Z is {z_mm} mm. When the hand is already well above the source with visible clearance, hold Z; do not rise merely because this is an above-source stage. Positive is up, negative is down.",
+      "transition": "Current coarse source-minus-hand X={x_mm} mm, Y={y_mm} mm. Is coarse horizontal alignment complete? Advance when BOTH numbers lie within -10 to +10 mm inclusive. Do not require contact, grasp-height alignment, or perfect orientation here. Those belong to the next nearer-approach stage. A previous approach_mismatch label alone is not a reason to keep holding when X/Y are aligned. Continue if either current reference difference remains outside the band or is unknown.",
+      "rx": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Roll about fixed world X: with fingers nearly down, positive tilts them toward +Y and negative toward -Y. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "ry": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Pitch about fixed world Y: with fingers nearly down, positive tilts them toward -X and negative toward +X. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "rz": "Current goal: {stage_goal} Yaw about fixed world Z changes horizontal jaw heading; it cannot turn a downward finger approach into a sideways approach. Positive is counterclockwise viewed from above. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable."
+    },
+    "descend_to_source": {
+      "z": "The current selected grasp-feature height minus hand-control height is {z_mm} mm. During this near-grasp stage, bring the finger faces to that selected region. If this value is below -8mm, the region is BELOW the hand: choose negative Z to move DOWN. If above +8mm, it is ABOVE the hand: choose positive Z to move UP. Hold within -8 to +8mm while checking current RGB finger geometry. Hold instead of descending if the visible posture clearly needs correction; decide its rotation from RGB, not from this height value. This is a camera-derived visual reference, never a contact certificate.",
+      "transition": "Current selected feature minus hand height Z={z_mm}mm. If this is known and outside -12 to +12mm, CONTINUE near approach: the region is not yet at finger-face height. A top-down image overlap does not establish height alignment. When height is within that band, use current RGB and own PAD outlines to judge whether the intended neck/fin is between the inner fingers; ADVANCE to try closure when supported. X={x_mm}mm and Y={y_mm}mm are visible-skin reference differences, not mandatory hidden-centre errors. Proven contact is not required. If height is unknown, only clear current side-view evidence can support height alignment; do not treat unknown as zero.",
+      "rx": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Roll about fixed world X: with fingers nearly down, positive tilts them toward +Y and negative toward -Y. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "ry": "Measured own_tool_geometry.grip_site_local_Z_world_unit is the direction the fingers point, not a desired object angle. Both grasp examples use top-down fingers. If its Z component is below -0.95 and current RGB does not reveal an actual tilt mismatch, HOLD this tilt channel. Pure XYZ offset never requires a tilt. If the approach is sideways, use the demonstrated motion effect and current own vector to restore a downward approach. Current goal: {stage_goal} Pitch about fixed world Y: with fingers nearly down, positive tilts them toward -X and negative toward +X. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "rz": "Current goal: {stage_goal} Yaw about fixed world Z changes horizontal jaw heading; it cannot turn a downward finger approach into a sideways approach. Positive is counterclockwise viewed from above. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "x": "On world X, would positive, negative or hold place the intended narrow neck/fin more securely BETWEEN the actual finger faces? Use current fixed/wrist RGB, measured own axes and magenta PAD outlines. Visible skin minus hand: X={x_mm}mm, Y={y_mm}mm. These numbers identify a surface, not the grasp centre. Do not force its error to zero when the actual region is already bracketed. Hold when this axis is suitable for a closure attempt; the other axes and jaw heading are separate.",
+      "y": "On world Y, would positive, negative or hold place the intended narrow neck/fin more securely BETWEEN the actual finger faces? Use current fixed/wrist RGB, measured own axes and magenta PAD outlines. Visible skin minus hand: X={x_mm}mm, Y={y_mm}mm. These numbers identify a surface, not the grasp centre. Do not force its error to zero when the actual region is already bracketed. Hold when this axis is suitable for a closure attempt; the other axes and jaw heading are separate."
+    },
+    "close": {
+      "gripper": "The goal is to ATTEMPT closure around the positioned region. Last executed gripper command={gripper_command}; current pad-centre separation={pad_separation_mm} mm. Choose close if closure has not been attempted; retain close if already closing/closed. Open only if visible recovery requires release. Closure is not proof of holding.",
+      "transition": "Last executed gripper command={gripper_command}. If it is open, continue this stage so closure can actually execute. After a close command has executed, advance provisionally to lift/turn unless fresh RGB clearly shows a missed grasp. Do not demand already-proven attachment before the test."
+    },
+    "lift": {
+      "gripper": "Retain the close command while testing whether the bottle follows the hand. Open only for an intentional visible recovery.",
+      "transition": "If no upward lift test has executed after closure, CONTINUE so it can execute; closure alone is not evidence. After the test, compare actual source motion in CURRENT/PREVIOUS RGB and the matched S motion fields with measured hand motion in last_actions. If the bottle follows and is visibly off its table support with transport clearance, ADVANCE to rack transport now. If the bottle clearly stays behind or drops, RESTART. Continue only for an incomplete physical lift or unresolved actual source motion, not to demand contact certification.",
+      "z": "The purpose of this stage is an ACTIVE lift test after closure. Look at last_actions: if closure has executed but no upward test has yet executed in Lift, choose POSITIVE Z to test whether the bottle follows; do not require an already-proven grasp before this test. After an upward test, keep positive only while actual source table clearance is insufficient. Hold once the bottle itself follows off the table with transport clearance, and let transition advance. If the source stays behind, transition should restart rather than hold indefinitely."
+    },
+    "turn": {
+      "rz": "Compare the current black raised grip with its stationary base and the actual task demonstration BEFORE/AFTER. Which yaw about world Z helps operate the engaged knob? Positive is counterclockwise viewed from above, negative clockwise. Hold when the operated relationship is reached or yaw is not the useful shaft rotation, not merely because translation is aligned. No desired angle or angle error is supplied.",
+      "gripper": "Retain close while attempting to turn the engaged knob. Open only for intentional recovery or the release stage.",
+      "transition": "Does the visible knob-to-base relationship now resemble the operated state in the task demonstration, or show a clear on cue? Hand rotation alone is not knob rotation. Continue if the knob remains unchanged or has not reached that visible relationship. Advance to release/inspect when the visible operated relationship is established. Activation remains unknown without visible evidence."
+    },
+    "align_source_above_receiver": {
+      "z": "Is a world-Z clearance correction needed for the HELD BOTTLE above the rack? Current selected rack support minus selected bottle surface Z={receiver_z_mm} mm. Use actual bottle thickness and current RGB, not gripper height alone. Positive moves the held object up, negative down; hold when transport clearance is suitable.",
+      "transition": "Current selected receiver-minus-held-source X={receiver_x_mm} mm, Y={receiver_y_mm} mm. Advance to lowering when these horizontal reference differences are each within 10 mm, the bottle orientation visibly fits the rack channel, and useful clearance exists. Do not require the bottle already touching the rack; placement comes next. A gripper-to-rack overlap is insufficient.",
+      "rx": "Current goal: {stage_goal} Roll about fixed world X: with fingers nearly down, positive tilts them toward +Y and negative toward -Y. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "ry": "Current goal: {stage_goal} Pitch about fixed world Y: with fingers nearly down, positive tilts them toward -X and negative toward +X. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable.",
+      "rz": "Current goal: {stage_goal} Yaw about fixed world Z changes horizontal jaw heading; it cannot turn a downward finger approach into a sideways approach. Positive is counterclockwise viewed from above. From current RGB and measured own-hand axes, choose positive, negative, or hold to fit the physical grasp/support geometry. Ignore pure XYZ position error when judging rotation. Hold when the posture is suitable."
+    },
+    "lower_to_place": {
+      "z": "Which world-Z motion brings the HELD BOTTLE into a suitable supported relationship with the rack? Selected rack support minus bottle surface Z={receiver_z_mm} mm. Positive is up, negative down. Account for visible body thickness: these are observed skin features, not centres or a contact certificate. Hold when a release attempt is visually reasonable.",
+      "transition": "Advance to release when the bottle appears seated in the rack support channel or available views support a reasonable release attempt. Continue if an obvious unsupported gap remains. Do not demand a hidden contact flag."
+    },
+    "release": {
+      "gripper": "Open the fingers to release the manipulated object or control. Last executed gripper command={gripper_command}. Retain open once opening has actually executed.",
+      "transition": "If last executed gripper command={gripper_command} is still close, continue so opening can execute. After opening is observed or measured, advance to inspection. Opening alone is not task completion."
+    }
+  }
+}
