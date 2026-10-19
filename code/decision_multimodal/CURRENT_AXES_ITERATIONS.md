@@ -137,3 +137,15 @@ Visual Decisions still selects the source part and current physical wood span. A
 v26 synthetic line-transition calibration5/5 did not generalize: native arithmetic audit found10/13 correct phase answers, including three premature advances for scores near0.02–0.09 rather than0.97. v27 asks Decisions to classify its actual same-observation XYZ/R categories instead. The first40 native phase answers matched the rule, but the main camera subsequently lost the bottle behind the arm. Actual sideview still showed the held body; absent main geometry triggered the weaker visual R fallback.
 
 v28 optionally extracts CURRENT sideview RGB-D bottle candidates when the main component is unavailable, rejects measured own geometry, and labels camera/pixel provenance explicitly. A418-step zero-API replay recovered485 points and a visible body line at the occluded main-view state. The actor still verifies identity and chooses references/actions. This is perception-source recovery, not a target pose, contact signal or native success. Pro10 reference-wording/crop/binary diagnostics remained low-confidence and are not part of v28 native control.
+
+## v29 physical-reference semantics
+
+libero_span_semantics.py splits reference selection into two actual Decisions calls.
+The actor first judges each unranked CURRENT physical wood span against an actual
+archived AFTER image, then chooses its reference from its own judgments and the
+CURRENT selected receiving-surface label. Images are cropped/resized actual
+observations, never future poses, angular residuals or motor candidates. The
+backend neither selects a preferred span nor sorts/filters the actor answers.
+Observed line coefficients feed the existing actor-evaluated rotation expressions
+after this selection. This remains RGB-D-assisted geometric control, not pure RGB
+rotation. Two new development episodes use init12/13; no frozen bottle result yet.

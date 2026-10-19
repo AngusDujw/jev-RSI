@@ -128,3 +128,7 @@
 - 【Agent】【2026-10-20 03:16】[op] EXP038/039: native v26 float phase10/13 despite calibration5/5; v27 actual component gate40/40 snapshot. Compact audit223 frozen requests/432 executed channels and133 live requests/200 channels verified. v28 sideview fallback real418-step0API replay recovered485 current points; two native cases started. Pro10 semantic probes stayed weak/not promoted. Policy HEAD bundle recreated in frozen worktree after raw-SHA bundle advertisement failed; source commits unchanged.
 - 【Agent】【2026-10-20 03:35】[op] 实现独立v29 paired-span prototype：Decisions逐条判断当前实体木条与真实归档关系，再由Decisions选参照；外层不排名、不决定旋转符号。待真实请求渲染/模型及原生验证。
 - 【Agent】【2026-10-20 03:36】[op] 新建实验块 EXP-2026W43-040：外部503/520中断保留与同原生回合未答网络重试修复  ↪ `EXP-2026W43-040`
+- 【User】【2026-10-20 03:38】[intent] 用户当前要求：旋钮+中等pick/place持续迭代到稳定，Decisions自己决定逐轴正负/保持，可给非特权辅助及真实示例，每轮保留运行图像/确切IO。
+- 【Agent】【2026-10-20 03:38】[run] d966ffa4已Git SSH推送并bundle同步v4090-t；隔离v29两原生init12/13启动，实际862帧新builder双调用判A different/B matches、选P0B p0.60/conf0.50；原v28继续不替换。
+- 【Agent】【2026-10-20 03:38】[op] 新建实验块 EXP-2026W43-041：实体木条逐条视觉匹配后由Decisions选择参照的独立v29原生开发  ↪ `EXP-2026W43-041`
+- 【Agent】【2026-10-20 03:39】[result] EXP040/041完整记录并lint清零：保留旧完整失败及503/520外部中断；v29独立两回合运行、每轮确切图像/IO保存在DataStorage。
