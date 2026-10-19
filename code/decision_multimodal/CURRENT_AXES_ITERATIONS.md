@@ -149,3 +149,19 @@ backend neither selects a preferred span nor sorts/filters the actor answers.
 Observed line coefficients feed the existing actor-evaluated rotation expressions
 after this selection. This remains RGB-D-assisted geometric control, not pure RGB
 rotation. Two new development episodes use init12/13; no frozen bottle result yet.
+
+## v30 posture contract and episode intention
+
+Pro11 reviewed actual synchronized RGB and identified exact return to an arbitrary
+stage-entry hand point as a secondary preference, not the posture task. Independent
+v30 keeps current visual reference selection and introduces an explicit actor
+visual-support judgment; the actor advances only with supported visual evidence,
+current reference availability and all three original rotation choices at hold.
+XYZ choices need not hold. The selector sees its own previous episode reference
+intention and historical pixel endpoints, never reused old geometry for execution.
+This is an exploratory bundle, not a single-factor attribution or a frozen result.
+The original seven synthetic phase cases scored6/7; the failed unknown rotation is
+outside the actual categorical-axis schema. Missing/invalid original rotations now
+fail validation; all six schema-valid cases passed. Native performance is pending.
+Frozen v28 fresh states show a separate early grasp problem; v30 does not claim to
+fix that problem. Keep every frozen outcome and inspect the first tipping event.
