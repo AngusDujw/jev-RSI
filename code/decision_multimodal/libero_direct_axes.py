@@ -249,6 +249,7 @@ def main():
     p.add_argument('--rotation-effect-hints',action='store_true',help='Observed-line local rotation effects only, no desired axis or error')
     p.add_argument('--bound-span-rotation',action='store_true',help='Bind the actor-selected observed wood span and current bottle-line pairs in rotation questions')
     p.add_argument('--literal-line-reasoning',action='store_true',help='Decisions itself evaluates printed physical-line expressions; no external product, angular error or sign')
+    p.add_argument('--sideview-source-fallback',action='store_true',help='Current sideview RGB-D candidate when the main source component is unavailable')
     p.add_argument('--separate-rotation-call',action='store_true',help='Independent rotation-only visual Decisions call with current shapes and actual examples')
     p.add_argument('--visible-shape-features',action='store_true',help='Current RGB-D bottle axis and observed wood planes; never desired orientation or error')
     p.add_argument('--formal-stage-call',action='store_true',help='Ask a scoped text-only Decisions stage question after visual motor choices for phases with explicit rules')
@@ -303,7 +304,7 @@ def main():
         robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,scoped_reference_call=args.scoped_reference_call,fin_central_samples=args.fin_central_samples,held_example_bank=str(args.held_example_bank.resolve()) if args.held_example_bank else None,held_example_bank_sha256=hashlib.sha256(args.held_example_bank.read_bytes()).hexdigest() if args.held_example_bank else None,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,bound_span_rotation=args.bound_span_rotation,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
-        actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,
+        actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
         grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
@@ -338,6 +339,13 @@ def main():
     if args.receiver_surfaces and 'receiver_fixed_view_bbox_xyxy' in plan:
         from libero_visual_surfaces import SurfaceTracker
         receiver_tracker=SurfaceTracker('rack',np.asarray(plan['receiver_fixed_view_bbox_xyxy'])*args.size/512,anchor_stationary=True,shape_features=args.visible_shape_features,central_samples=args.fin_central_samples)
+    side_source_tracker=None
+    if args.sideview_source_fallback:
+        if args.task!=1458 or args.overview_camera!='sideview' or not args.surface_context:
+            raise ValueError('Sideview source fallback requires bottle RGB-D and the existing sideview camera')
+        from libero_visual_surfaces import SurfaceTracker
+        side_source_tracker=SurfaceTracker('bottle',[0,0,args.size,args.size],sparse=True,
+            shape_features=True,prefer_largest=True)
     full_demonstrations=api.demonstrations[:]
     rotation_demonstrations=[]
     for i,part in enumerate(full_demonstrations):
@@ -386,6 +394,28 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
+                if side_source_tracker is not None and camera=='sideview' and (api.source_component or {}).get('status')!='candidate':
+                    from robosuite.utils.camera_utils import get_real_depth_map
+                    from libero_robot_mask import own_geometry_rejector
+                    side_source_tracker.box=np.array([0,0,args.size,args.size],float)
+                    depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
+                    candidate,samples=side_source_tracker.observe(np.asarray(im).copy(),depth,K,T,
+                        reject_own=own_geometry_rejector(native) if args.robot_self_mask else None)
+                    if candidate.get('status')=='candidate':
+                        candidate['observation_camera']='sideview'
+                        candidate['camera_selection_reason']='Main-view source was unavailable. Largest isolated current green component after own-robot rejection; verify bottle identity in the sideview.'
+                        api.source_component=candidate
+                        draw=ImageDraw.Draw(im)
+                        from PIL import ImageFont
+                        font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',16)
+                        for j,sample in enumerate(samples):
+                            sample['observation_camera']='sideview';api.surface_samples.append(sample)
+                            u,v=sample['pixel_uv'];x=min(args.size-32,candidate['bbox_xyxy'][2]+15)
+                            y=max(2,candidate['bbox_xyxy'][1]+j*25)
+                            draw.ellipse((u-2,v-2,u+2,v+2),fill='#00ffff',outline='black')
+                            draw.line((u,v,x,y+8),fill='#00ffff',width=1)
+                            draw.text((x,y),sample['label'],font=font,fill='#00ffff',stroke_width=1,stroke_fill='black')
+                        b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
                 if args.surface_context and camera=='agentview':
                     from robosuite.utils.camera_utils import get_real_depth_map
                     depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
@@ -447,6 +477,8 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'+(' P0A/P0B/P1A/P1B lines, when present, mark ALL fitted visible wood spans in agentview. These are physical observations, not ranked target axes or rotation corrections.' if any(s.get('stage_key')=='orient_held_body' for s in stages) else '')+(
                     ' Magenta PAD-L/PAD-R outlines are projections of measured own inner finger-pad faces, not target points or contact evidence. Projected edges may be occluded in the actual RGB.' if args.pad_outlines else '')),image_part(raw)])
+                if camera=='sideview' and (api.source_component or {}).get('observation_camera')=='sideview':
+                    parts[-2]['text']+=' Cyan C labels in THIS sideview are current green bottle-candidate surfaces. Their pixel coordinates refer to this sideview. They are not agentview pixels, target coordinates, grasp centres or contact evidence.'
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
                     crop_unknown=tracker is not None and api.source_component.get('status')!='candidate'
                     # Fixed-camera articulated knob base is stationary; this crop is identity/visibility only.

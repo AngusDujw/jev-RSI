@@ -9,10 +9,11 @@ from scipy import ndimage
 
 
 class SurfaceTracker:
-    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False, shape_features=False, central_samples=False):
+    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False, shape_features=False, central_samples=False, prefer_largest=False):
         self.kind=kind
         self.shape_features=shape_features
         self.central_samples=central_samples
+        self.prefer_largest=prefer_largest
         self.box=np.asarray(initial_box,float)
         self.initial_box=self.box.copy()
         self.sparse=sparse
@@ -101,6 +102,7 @@ class SurfaceTracker:
             if self.kind=='knob' and (len(xs)>1600 or width>70 or height>70):continue
             if self.anchor_stationary and (box[0]<=max(0,x0-margin) or box[1]<=max(0,y0-margin) or box[2]>=min(w,x1+margin) or box[3]>=min(h,y1+margin)):continue
             score=np.linalg.norm((box[:2]+box[2:])/2-old_c)-.008*len(xs)
+            if self.prefer_largest:score=-len(xs)
             if self.raised_feature:
                 z=depth[ys,xs];points=T[:3,:3]@(np.linalg.solve(K,np.stack((xs,ys,np.ones(len(xs)))))*z)+T[:3,3,None]
                 valid=np.isfinite(points).all(axis=0)&(z>0)
