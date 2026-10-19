@@ -109,10 +109,11 @@ class DirectAPI(RevisedAPI):
     def revise(self, original):
         return original
     def build_payload(self, sent):
-        if sent['state'].get('request_purpose')=='formal_stage_classification':
+        if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification'):
             from libero_stage_decision import stage_payload
-            self.image_count=0
-            return stage_payload(sent)
+            payload=stage_payload(sent,self.current,getattr(self,'stage_goal_reference',[]))
+            self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
+            return payload
         if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
             from libero_numeric_axes import numeric_payload
             self.image_count=0
@@ -330,6 +331,7 @@ def main():
                 goal_demonstration=[dict(type='input_text',text='ARCHIVED goal-relationship example from a DIFFERENT episode, BEFORE left and AFTER right. Use the actual final object/receiver or operated-control appearance as a visual task example. This is not the CURRENT scene, not a target coordinate, and not a rendered angle answer. Current geometry and all motion signs must be judged from CURRENT images.'),full_demonstrations[i+1]]
                 break
         if not goal_demonstration:raise ValueError('Actual goal-relationship example missing')
+    api.stage_goal_reference=goal_demonstration
     cameras=['agentview','robot0_eye_in_hand']+([args.overview_camera] if args.overview_camera else [])
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
@@ -436,7 +438,7 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules'}:raise ValueError('Unsupported protocol field')
                 if any(not isinstance(v,(int,float)) or not 1<=v<=20 for v in protocol.get('axis_bands_mm',{}).values()):raise ValueError('Invalid positioning band')
                 archive=out/'protocols';archive.mkdir(exist_ok=True)
                 if not (archive/(digest+'.json')).exists():(archive/(digest+'.json')).write_bytes(raw_protocol)

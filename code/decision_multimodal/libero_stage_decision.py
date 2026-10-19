@@ -9,6 +9,10 @@ STAGE_INPUT = ('Judge only the phase transition from the facts and rule printed 
 
 def build_stage_request(state,answers,protocol):
     key=state['stage'].get('stage_key')
+    visual_rule=protocol.get('visual_stage_rules',{}).get(key)
+    if visual_rule is not None:
+        facts='Measured own motion in this phase: '+str(state.get('stage_own_motion',{}))+'. Last executed gripper command: '+str(state.get('own_tool_geometry',{}).get('last_gripper_command','unknown'))+'. '
+        return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_stage_classification',formal_stage_input='Judge the one phase-transition question from CURRENT images. Archived images are goal references, never current observations.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its visible exit is not met.','advance':'Enter the next phase; no robot action executes with this answer.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))
     rule=protocol.get('stage_decision_rules',{}).get(key)
     if rule is None:return None
     choices={k:v['choice'] for k,v in answers.items()}
@@ -34,7 +38,18 @@ def build_stage_request(state,answers,protocol):
                       'restart':'The phase premise is invalid and recovery is requested; return to coarse approach without physical motion.'})))
 
 
-def stage_payload(original):
+def stage_payload(original,current=(),goal_reference=()):
     payload=convert_request(original)
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
+    if original['state'].get('request_purpose')=='visual_stage_classification':
+        content=payload['input'][0]['content']
+        for part in goal_reference:
+            if part['type']=='input_image':
+                content.extend([dict(type='input_text',text='ARCHIVED goal appearance, BEFORE left and AFTER right; never a current observation.'),part])
+        caption='';number=0
+        for part in current:
+            if part['type']=='input_text':caption=part['text']
+            elif part['type']=='input_image' and 'detail' not in caption.lower():
+                number+=1
+                content.extend([dict(type='input_text',text=f'CURRENT view {number}, same synchronized observation.'),part])
     return payload
