@@ -62,3 +62,14 @@ parent retains its infrastructure failure and will stop at its phase barrier.
 Once d and e have drained, inspect the six selected Luna slots; if all are valid,
 start a new coordinator generation for the ten Decisions slots, reusing the six
 finished results. Do not replay any Luna slot or bypass this audit.
+
+Generation d has drained: classification trial 3 reached 1100 native steps,
+complete=true, success=false, score=0. Generation e stack stopped at 215 steps
+and d classification trial 2 at 566 steps with Pro serverOverloaded; those
+incomplete attempts remain preserved. After cleanup and about forty minutes,
+`robodojo-comparison-20261019f.service` runs the existing finite supervisor with
+`--generation 20261019f`. It reuses four complete Luna results and allocates only
+the two infrastructure-interrupted missing slots under fresh names. It does not
+resume episodes, change the original policy, or restart automatically on failure.
+Logs and owner PIDs are in `supervision-20261019f/`; the same six-slot phase
+barrier applies before Decisions. Original runtime manifest hashes were verified.

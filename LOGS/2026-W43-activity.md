@@ -35,3 +35,13 @@
 - 【Agent】【2026-10-19 15:32】[result] EXP300叠块e已215步/43动作不完整结束：最终Pro serverOverloaded/willRetry=false，native complete=false/valid_for_success_rate=false/success=null/score=null/reason=controller_error，不当550完整失败；此前90步路径误解记录独立保留，不把最后错误误称原生任务失败。controller58209/自有容器已退出。保留原sync code24告警（结束时大rpc日志被清理），已在清理后重同步并读远端status核对native一致。清理回执远端268文件631340385字节、本机354文件228639108字节，另65548912字节state；不立即循环重开，继续两分类，缺叠块槽保持未完成，Decisions阶段不放行。
 - 【User】【2026-10-19 15:36】[intent] 继续server02固定6路Pro Luna high后10路Decisions对照监督与故障修复；核实真实进程/资源/原生终局，不恢复旧回合、不重复启动，结束清理媒体。
 - 【Agent】【2026-10-19 15:36】[result] EXP300分类layout1 d在566/1100步、114个策略动作后因Pro serverOverloaded/willRetry=false中断，native complete=false/valid_for_success_rate=false，不计完整失败。真实controller44615/自有24803容器已退出，既有清理器回收远端1092931240字节、本机587269650字节及state129242864字节，文本重同步并核实远端native一致。剩分类layout0 controller51380/24805容器继续585步；SSH/systemd正常，GPU0/1显存476/6783MiB、RAM可用43GiB。未恢复/重采样/立即循环补槽，Decisions仍阻断。
+- 【User】【2026-10-19 15:40】[intent] 继续server02既有6+10槽监督；本轮核实剩余分类controller51380及自有24805容器正常推进至655步、日志2秒内更新，SSH/systemd与内存显存正常，无新故障或终局，不新增实验/条件。
+- 【User】【2026-10-19 15:45】[intent] 继续server02固定6+10槽对照监督和故障修复，核对真实服务/进程/资源/步数，不恢复结束回合，不重复启动；全部结束后汇总并关闭监督job。
+- 【User】【2026-10-19 15:50】[intent] 继续server02固定6+10槽对照监督与故障修复；核实真实进程/原生步数/日志及资源，不恢复结束episode，不重复启动，全部终局后汇总关闭job。
+- 【User】【2026-10-19 15:55】[intent] 继续server02固定6+10槽对照监督与故障修复，检查真实进程/服务/资源/原生步数，不恢复或重复启动；终局保文本清媒体，全部完成后汇总关闭job。
+- 【User】【2026-10-19 16:00】[intent] 继续server02固定6+10槽对照监督与故障修复；核对真实进程/服务/资源/步数及日志更新时间，不恢复结束回合或重复启动，终局保文本清理媒体，全部完成后关闭job。
+- 【User】【2026-10-19 16:10】[intent] 继续server02固定6+10槽对照监督与故障修复；核实实际进程、资源、原生步数及日志，不恢复结束episode/修答/重采样，所有槽结束后汇总关闭监督job。
+- 【User】【2026-10-19 16:11】[intent] 继续server02固定6+10槽监督与故障修复；核对真实进程/服务/资源/步数，保留原协议及API授权边界，不恢复结束回合，全部结束后关闭job。
+- 【User】【2026-10-19 16:16】[intent] 继续server02固定6+10槽监督与故障修复；可用独立新名称补基础设施未完成槽，禁止恢复结束回合或修答重采样；全部完成后汇总关闭job。
+- 【Agent】【2026-10-19 16:16】[result] EXP300分类trial3 layout0 d已1100步complete=true/success=false/score0/controller_exit0；真实控制器及容器退出，d父批次因另外两缺槽按阶段闸门退出。选槽核实4完整结果成功0，还缺分类trial2及叠块trial3。终局媒体按既有规则清理、远端原生终局一致，原policy全部manifest SHA核验未变。容量中断后已间隔约40分钟，启动有限f独立协调器仅补2缺槽、复用4完整结果；旧失败不恢复/修答/重采样，不改模型或提示，不额外探测API。若f再次容量失败不自动重启循环。
+- 【Agent】【2026-10-19 16:16】[op] 在既有EXP300追加分类d完整终局及f有限补槽监督，README记录实际新服务与复用4/补2，不改运行代码。f supervisor191938/batch191946/retention191947真实存活；两槽starting，尚不称原生推进。严格周志检查通过。
