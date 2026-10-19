@@ -6,7 +6,7 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
 - Knob v20 development: native success and normal program completion **2/2**, initial states8/9, **646 physical steps each**,218 Decisions responses each.
 - These are explicitly **extended1200-budget results**, not600-step completions.
-- Original policy commit329d9c12 and protocol9c33a1e0 are frozen in a separate worktree for predeclared new initial states14/15/16; no failures will be replaced. Their terminal results are pending.
+- Original policy commit329d9c12 and protocol9c33a1e0 are frozen in a separate worktree for predeclared new initial states14/15/16; no failures will be replaced. All three finished with native success and normal program completion:658/646/694 physical steps,223/220/231 Decisions responses. This is3/3 in the declared extended1200 budget; none meets600 steps.
 - Bottle v21 remains under test; no complete bottle native success is asserted.
 - [Frozen profile](protocols/knob_v20_freeze.json) and EXP-2026W43-028 identify the exact condition. Subsequent shape features, held-object demonstration banks and fin-centre diagnostics are not part of this winning v20 policy.
 

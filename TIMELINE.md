@@ -165,6 +165,7 @@ graph LR
     T_2026W43_009["📊 decision-multimodal<br/>v13-16完整13例仍false；独立文…"]:::experiment
     T_2026W43_010["📊 decision-multimodal<br/>观测瓶身轴符合实际水平化；单加轴面仍+++…"]:::experiment
     T_2026W43_011["📊 decision-multimodal<br/>首次旋钮v20原生及程序2/2成功646步…"]:::experiment
+    T_2026W43_012["📊 decision-multimodal<br/>旋钮原329冻结新三例native/pro…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -289,6 +290,7 @@ graph LR
   T_2026W43_008 --> T_2026W43_009
   T_2026W43_009 --> T_2026W43_010
   T_2026W43_010 --> T_2026W43_011
+  T_2026W43_011 --> T_2026W43_012
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -440,6 +442,7 @@ graph LR
 | `T-2026W43-009` | 2026-10-20 | experiment | decision-multimodal | v13-16完整13例仍false；独立文本也有符号错，同runtime题面18/18校准；v19模型阶段一致性11/11后六原生待评 | `EXP-2026W43-023` | - |
 | `T-2026W43-010` | 2026-10-20 | experiment | decision-multimodal | 观测瓶身轴符合实际水平化；单加轴面仍+++，局部动作效果仅改变低置信回答，v21两原生待验证；v17六例false | `EXP-2026W43-026` | - |
 | `T-2026W43-011` | 2026-10-20 | experiment | decision-multimodal | 首次旋钮v20原生及程序2/2成功646步；冻结329d9c12/9c33a1e0后新14/15/16三例待验证；酒瓶未完成，非600步成功 | `EXP-2026W43-028` | - |
+| `T-2026W43-012` | 2026-10-20 | experiment | decision-multimodal | 旋钮原329冻结新三例native/program3/3，658/646/694步；仍非600。酒瓶v21 0/2，v22修高度和neck/body接口继续 | `EXP-2026W43-030` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

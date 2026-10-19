@@ -42,5 +42,27 @@
   "experience_injection": false,
   "computed_orientation_error": false,
   "asset_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v20",
-  "verification_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v20-verify"
+  "verification_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v20-verify",
+  "verification_native_success": [
+    true,
+    true,
+    true
+  ],
+  "verification_program_finished": [
+    true,
+    true,
+    true
+  ],
+  "verification_steps": [
+    658,
+    646,
+    694
+  ],
+  "verification_api_responses": [
+    223,
+    220,
+    231
+  ],
+  "verification_completed": true,
+  "standard600_passed": false
 }
