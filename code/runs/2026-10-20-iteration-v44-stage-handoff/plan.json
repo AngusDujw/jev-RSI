@@ -1,0 +1,161 @@
+{
+  "source_description": "The wine bottle with a narrow neck and wider body. For placement select its intended load-bearing base or body-side patch according to the useful posture chosen from current RGB.",
+  "fixed_view_bbox_xyxy": [
+    215,
+    182,
+    242,
+    266
+  ],
+  "receiver_description": "The uppermost receiving support of the wooden wine rack, not the lower shelf or table.",
+  "receiver_fixed_view_bbox_xyxy": [
+    32,
+    50,
+    196,
+    264
+  ],
+  "relevant_visual_cues": [
+    "Visible bottle base/body support feature",
+    "Uppermost rack receiving patch, slat gaps and edges",
+    "Bottle retention and finger separation",
+    "Empty hand clear while bottle remains on the top support"
+  ],
+  "stages": [
+    {
+      "name": "Align above bottle",
+      "goal": "Position the open hand above a graspable bottle section.",
+      "exit": "The actor-selected source surface is coarsely aligned with the finger gap in world X/Y (each reference difference within 10mm), and current RGB supports a suitable approach orientation. This is not contact proof.",
+      "perception_inputs": [
+        "Current bottle mask and visible orientation",
+        "Finger gap in fixed and wrist RGB",
+        "Nearby rack, bowl and cabinet boundaries"
+      ],
+      "stage_key": "align_above_source",
+      "control_contract": {
+        "translation": "Align horizontally for the selected grasp relationship. The selected source dot is a surface reference, not a grasp centre.",
+        "height": "Maintain suitable overhead clearance. Already being safely above is not a reason to rise further.",
+        "exit": "Horizontal alignment and approach orientation are suitable; continue to descent."
+      }
+    },
+    {
+      "name": "Descend around bottle",
+      "goal": "Bring the fingers alongside the selected section.",
+      "exit": "The hand appears positioned for a closure attempt. Proven contact is not required.",
+      "perception_inputs": [
+        "Current bottle-to-finger relationship",
+        "Wrist RGB",
+        "Measured own-hand motion"
+      ],
+      "stage_key": "descend_to_source",
+      "control_contract": {
+        "translation": "Approach the visually selected grasp region. Preserve horizontal alignment and account for finger geometry.",
+        "exit": "The hand appears positioned for a closure attempt. Proven contact is not required."
+      }
+    },
+    {
+      "name": "Close",
+      "goal": "Close the fingers around the bottle.",
+      "exit": "Closure was attempted. Continue if engagement looks plausible; retry alignment if clearly missed.",
+      "perception_inputs": [
+        "Before/after finger aperture",
+        "Bottle visibility",
+        "Measured gripper state if available"
+      ],
+      "stage_key": "close",
+      "control_contract": {
+        "translation": "Hold position unless a visible positioning problem requires returning to alignment.",
+        "gripper": "Attempt closure; then inspect the result.",
+        "exit": "Closure was attempted. Continue if engagement looks plausible; retry alignment if clearly missed."
+      }
+    },
+    {
+      "name": "Lift",
+      "goal": "Briefly test whether your selected visible bottle feature rises with the closed hand before beginning combined reorientation and approach.",
+      "exit": "The camera-derived selected feature rises at least20mm and its motion agrees with measured own translation within10mm per axis, with a valid same-origin RGB match. This is a provisional motion test, not a contact or holding certificate.",
+      "perception_inputs": [
+        "Temporal bottle-to-hand relationship",
+        "Bottle-to-table clearance",
+        "Nearby obstacles"
+      ],
+      "stage_key": "lift",
+      "control_contract": {
+        "translation": "Briefly test visible bottle following and table separation; rack-approach clearance is a later task.",
+        "exit": "The camera-derived selected feature rises at least20mm and its motion agrees with measured own translation within10mm per axis, with a valid same-origin RGB match. This is a provisional motion test, not a contact or holding certificate.",
+        "failure": "If the source does not follow, reassess the grasp."
+      }
+    },
+    {
+      "name": "Transport and choose useful posture",
+      "goal": "Which independent world-axis translations and rotations improve a clear approach to the top region while retaining the bottle?",
+      "exit": "The selected support relationship and current useful posture are ready to BEGIN lowering. The bottle need not already be seated or released.",
+      "perception_inputs": [
+        "Visible bottle extent, selected support feature, top receiving patch, obstacle clearances and current hand-to-bottle relationship."
+      ],
+      "stage_key": "align_source_above_receiver",
+      "control_contract": {
+        "references": "Actor-selected load-bearing bottle feature and uppermost rack support patch; no compulsory posture.",
+        "translation": "Which independent world-axis translations and rotations improve a clear approach to the top region while retaining the bottle?",
+        "exit": "The selected support relationship and current useful posture are ready to BEGIN lowering. The bottle need not already be seated or released."
+      }
+    },
+    {
+      "name": "Seat on the top support",
+      "goal": "Can the bottle be brought onto the top support without crossing an edge, entering a gap, colliding or requiring the fingers to carry it indefinitely?",
+      "exit": "The selected support relationship is ready for an uncertain opening attempt. Load transfer and stability will be inspected AFTER opening.",
+      "perception_inputs": [
+        "Updated source-to-support offsets, estimated footprint overlap, support gaps and edges, finger clearance, and bottle motion across views."
+      ],
+      "stage_key": "lower_to_place",
+      "control_contract": {
+        "references": "Actor-selected load-bearing bottle feature and uppermost rack support patch; no compulsory posture.",
+        "translation": "Can the bottle be brought onto the top support without crossing an edge, entering a gap, colliding or requiring the fingers to carry it indefinitely?",
+        "exit": "The selected support relationship is ready for an uncertain opening attempt. Load transfer and stability will be inspected AFTER opening."
+      }
+    },
+    {
+      "name": "Release",
+      "goal": "Attempt opening at the selected top-support placement; observe actual disengagement and support in the next inspection phase.",
+      "exit": "An opening attempt actually executed; advance provisionally to clearance and support inspection.",
+      "perception_inputs": [
+        "Finger aperture",
+        "Bottle-to-rack relationship across frames"
+      ],
+      "stage_key": "release",
+      "control_contract": {
+        "gripper": "Attempt release.",
+        "translation": "Avoid disturbing the intended placement.",
+        "exit": "An opening attempt actually executed; advance provisionally to clearance and support inspection."
+      }
+    },
+    {
+      "name": "Clear the hand and inspect",
+      "goal": "Is the empty hand clear? Does the bottle remain on the upper receiving support, rather than on the table, lower shelf or in the fingers? Is continued sliding or rolling visible?",
+      "exit": "This is AFTER the opening attempt. Compare the actual PREVIOUS and CURRENT fixed views. Advance when the bottle remains on the UPPERMOST rack support while the empty open hand is visibly clear. Do not require a hidden contact flag or the concealed underside. Continue when the hand still blocks inspection; once it is clear, hold its position while checking the bottle. Restart for visible falling, the bottle following the hand, or placement on the table or lower shelf. No particular bottle orientation is required; an open command alone does not prove release.",
+      "perception_inputs": [
+        "A collision-free retreat view, visible empty fingers, and successive external views showing the bottle and both rack levels."
+      ],
+      "stage_key": "inspect",
+      "control_contract": {
+        "references": "Actor-selected load-bearing bottle feature and uppermost rack support patch; no compulsory posture.",
+        "translation": "Is the empty hand clear? Does the bottle remain on the upper receiving support, rather than on the table, lower shelf or in the fingers? Is continued sliding or rolling visible?",
+        "exit": "This is AFTER the opening attempt. Compare the actual PREVIOUS and CURRENT fixed views. Advance when the bottle remains on the UPPERMOST rack support while the empty open hand is visibly clear. Do not require a hidden contact flag or the concealed underside. Continue when the hand still blocks inspection; once it is clear, hold its position while checking the bottle. Restart for visible falling, the bottle following the hand, or placement on the table or lower shelf. No particular bottle orientation is required; an open command alone does not prove release."
+      }
+    }
+  ],
+  "planner_provenance": "Local Pro gpt-6.1-sol high: iteration-v2 physical stages plus iteration-v4/pro-planner-review contracts/questions. Final inspection retains the first Pro observable exit, not a free-text report.; Pro phase-interface review8 stage split, concrete physical references selected by Decisions, not Pro.; Outer adapter of Pro12 simple_stage_contract: combine orientation and approach, physical seating exit, temporal release inspection. Original source grasp/lift retained. Stage keys are adapter implementation, not new Pro output.; Pro13 actual phase-entry/current three-RGB lift review; lift contract and paired observations adapted, no concrete action recommendation.; Outer nominal short motion-test thresholds20mm/10mm with same-origin RGB-D evidence, not numbers prescribed by Pro13. Physical task and final native evaluator unchanged.; Pro14 public-task review: top rack support, no compulsory demonstration orientation. Adapter retains the measured short Lift test and separates execute-release from subsequent visible support inspection.; Outer v44 interface repair of Pro14 phase handoffs: carry hands off to lowering, lowering to an opening attempt, and inspection occurs after opening. Current/next phase context is explicit. No new Pro output or task-success criterion is claimed.",
+  "axis_question_templates": {
+    "source_alignment_xy": "Which world-{axis} motion improves horizontal grasp alignment?",
+    "source_alignment_z": "Is a world-Z clearance correction needed, or should Z hold?",
+    "source_descent": "Which world-{axis} motion brings the hand toward a suitable closure position?",
+    "close": "Should world-{axis} hold during closure?",
+    "lift": "Which world-{axis} motion gives the held source clearance?",
+    "placement_alignment_xy": "Which world-{axis} motion improves SOURCE-to-RECEIVER horizontal alignment?",
+    "placement_alignment_z": "Is a world-Z correction needed for held-source clearance, or should Z hold?",
+    "placement_lowering": "Which world-{axis} motion brings the SOURCE toward the selected support relationship?",
+    "turn_translation": "Should world-{axis} hold to preserve knob engagement?",
+    "rotation": "Which world rotation-vector {axis} choice improves the selected visible relationship?",
+    "turn_rotation": "Which world rotation-vector {axis} choice turns the engaged knob?",
+    "transition": "Stay in this stage, advance, or return for correction?",
+    "gripper": "Open, close, or hold?"
+  },
+  "coarse_alignment_scope": "Outer experimental adaptation: explicit XY feature-positioning semantics; source reference and orientation remain actor choices. A 10mm stopping band is a control heuristic, not measured sensor accuracy. Z and rotations have no algorithmic target error."
+}

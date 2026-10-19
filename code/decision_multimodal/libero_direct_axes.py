@@ -562,6 +562,7 @@ def main():
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),
                 last_actions=[{k:v for k,v in row.items() if not k.startswith(('own_position_','own_rotation_'))} for row in history[-4:]],
                 next_stage=stages[min(stage+1,len(stages)-1)])
+            state['next_phase']={k:v for k,v in stages[stage+1].items() if k in ('name','stage_key','goal')} if stage+1<len(stages) else None
             if args.free_placement_posture:
                 state['free_placement_posture']=True
                 state['public_placement_goal']='The bottle belongs on the uppermost rack receiving support, released and remaining there. No particular bottle yaw, tilt or slat alignment is prescribed. Historical task images show one possible method, not an additional posture requirement.'

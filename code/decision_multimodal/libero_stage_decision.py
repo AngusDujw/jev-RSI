@@ -36,7 +36,7 @@ def build_stage_request(state,answers,protocol):
                 same_observation_direction_choices={k:v['choice'] for k,v in answers.items() if k in ('x','y','z','rx','ry','rz')}),separators=(',',':'))+'. These are camera-derived actor-selected skin features, not hidden centres, exact support or contact. Large support-relative separation must not be mistaken for placement merely because images overlap. '
         if key=='orient_held_body':
             facts+='Your SAME-observation motion choices: '+str({k:v['choice'] for k,v in answers.items() if k in ('x','y','z','rx','ry','rz')})+'. Your selected receiving direction: '+str(state.get('actor_selected_rack_direction','unknown'))+'. '
-        return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_stage_classification',formal_stage_input='Judge the phase transition from CURRENT images and any explicitly labelled PHASE ENTRY or PREVIOUS observations. Compare actual object motion across those observations when needed. ARCHIVED goal examples show a desired relationship, never the current scene or a measured change.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its visible exit is not met.','advance':'Enter the next phase; no robot action executes with this answer.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))
+        return dict(model='gpt-6-luna',state=dict(stage=state['stage'],next_phase=state.get('next_phase'),request_purpose='visual_stage_classification',formal_stage_input='Judge the CURRENT phase exit, not completion of later phases. Advance enters NEXT PHASE without physical motion. Use CURRENT images and explicitly labelled PHASE ENTRY/PREVIOUS observations when supplied. ARCHIVED examples are historical, not current evidence.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its own exit is not met.','advance':'This phase is ready to hand off to NEXT PHASE; later actions need not have happened yet.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))
     rule=protocol.get('stage_decision_rules',{}).get(key)
     if rule is None:return None
     choices={k:v['choice'] for k,v in answers.items()}
@@ -72,6 +72,9 @@ def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
     if original['state'].get('request_purpose')=='visual_stage_classification':
         content=payload['input'][0]['content']
+        content.append(dict(type='input_text',text=json.dumps(dict(
+            CURRENT_PHASE={k:v for k,v in original['state']['stage'].items() if k in ('name','stage_key','goal','exit')},
+            NEXT_PHASE=original['state'].get('next_phase')),separators=(',',':'))))
         # Lift is judged against the current table/hand, not the future rack goal.
         for part in (() if original['state']['stage'].get('stage_key')=='lift' else goal_reference):
             if part['type']=='input_image':
