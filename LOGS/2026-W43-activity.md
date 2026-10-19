@@ -152,3 +152,4 @@
 - 【Agent】【2026-10-20 05:05】[op] v35采纳Pro12后抓持三段契约：合并姿态/接近、物理座入出口、前后RGB释放检查；修stage_key示例匹配和相机名丢失；AST和真实payload结构断言通过，无临时测试脚本。v34 step850侧视瓶已落桌，未当运输成功。
 - 【Agent】【2026-10-20 05:06】[op] 新建实验块 EXP-2026W43-049：--help  ↪ `EXP-2026W43-049`
 - 【Agent】【2026-10-20 05:08】[result] v35审计发现旧stage_overrides冲突，只中止自有三个原生并保留outer-interruption；v36移除旧覆盖/过期正式出口，通过实际merge后的阶段目标核查。v34 init14最终native false/program true874步，不记成功。
+- 【Agent】【2026-10-20 05:10】[run] v36已三例46物理步/各14真原答；准备同计划协议的v37图像旋转对照，仅关闭literal表达式R题，不改源物/接收选择或XYZ处理。启动前GPU余44GiB、DataStorage余1.5TB。
