@@ -167,3 +167,4 @@
 - 【Agent】【2026-10-20 00:21】[run] h独立补槽服务robodojo-comparison-20261020h已启动，Restart=no，复用6Luna和1完整Decisions，仅补9个infra缺槽；媒体保留开关true，单次900秒无重试，最多3环境并按显存/系统内存准入；初始setup不当原生成功或网络修复验收。
 - 【User】【2026-10-20 00:25】[intent] 继续server02固定6+10槽监督故障修复，核对h独立补槽真实进程、资源、原生步数与请求；不恢复结束episode或修答重采样，Decisions图像继续保留。
 - 【User】【2026-10-20 00:30】[intent] 继续server02固定6+10槽监督故障修复，核对h补槽真实进程资源、原生步数与新传输记录，不恢复结束episode或修答重采样，Decisions图像保留。
+- 【User】【2026-10-20 00:35】[intent] 继续server02固定6+10槽监督故障修复，核对h三路真实进程资源、原生步数和最新传输记录，不恢复结束episode或修答重采样，Decisions图像保留。
