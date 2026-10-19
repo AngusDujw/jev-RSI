@@ -219,6 +219,7 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--retain-rotation-examples',action='store_true',help='Include independent yaw/pitch/roll before-after cards in each relevant later request; the API has no implicit image memory')
     p.add_argument('--stage-motion',action='store_true',help='Measured own-hand displacement since entering the current stage, never object or desired motion')
     p.add_argument('--receiver-surfaces',action='store_true',help='Current receiver wood-component RGB-D candidates instead of a window lattice')
     p.add_argument('--pad-outlines',action='store_true',help='Project public own inner pad facets on each current RGB image')
@@ -260,7 +261,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -297,6 +298,12 @@ def main():
         from libero_visual_surfaces import SurfaceTracker
         receiver_tracker=SurfaceTracker('rack',np.asarray(plan['receiver_fixed_view_bbox_xyxy'])*args.size/512,anchor_stationary=True)
     full_demonstrations=api.demonstrations[:]
+    rotation_demonstrations=[]
+    for i,part in enumerate(full_demonstrations):
+        if part['type']=='input_text' and any(part['text'].startswith('Actual independently reset +'+axis+' demonstration.') for axis in ('yaw','pitch','roll')):
+            if i+1>=len(full_demonstrations) or full_demonstrations[i+1]['type']!='input_image':raise ValueError('Rotation example lacks its actual before/after image')
+            rotation_demonstrations+=full_demonstrations[i:i+2]
+    if args.retain_rotation_examples and len(rotation_demonstrations)!=6:raise ValueError('Retained rotation examples require all three independent actual motion cards')
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
     try:
@@ -426,6 +433,8 @@ def main():
                     'lift' if stages[stage]['name']=='Lift' else 'turn' if stages[stage]['name']=='Turn' else
                     'lower' if 'Lower' in stages[stage]['name'] else 'release')
                 api.demonstrations=full_demonstrations[:12] if decision<3 else []
+                if args.retain_rotation_examples and decision>=3 and phase in ('approach','contact','grasp','turn','orient_receiver','lower'):
+                    api.demonstrations=rotation_demonstrations[:]
                 for index,part in enumerate(full_demonstrations):
                     if part['type']=='input_text' and 'phase '+phase+'.' in part['text']:
                         api.demonstrations+=full_demonstrations[index:index+2]
