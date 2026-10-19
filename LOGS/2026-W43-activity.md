@@ -24,3 +24,4 @@
 - 【Agent】【2026-10-19 12:53】[op] EXP300追加传输中断审计和3并发/systemd监督修复，无新实验编号；新增监督入口及README。通过语法与调度故障注入检查，不修改运行中原版policy源或模型提示词。
 - 【Agent】【2026-10-19 12:57】[op] 启动期补正：b预检最终通过，不能将未继承代理直接断言为延迟原因；配置切换与原生启动重叠，已核对三个controller/run.json均不存在并停止自有残留，保为基础设施中断。加入取消前启动检查，将无推理Pro预检放本机磁盘并保存远端小回执；c服务显式继承原HTTP(S)代理，三槽预检均已通过，首个原生容器开始启动。
 - 【Agent】【2026-10-19 13:03】[result] 13:02实测c三个原生服务24803/24805/24804均ready，自有三个容器存活；GPU0/1显存3683/11379MiB，系统可用RAM17GiB，暂不再加第四路。两分类实际Luna英文回复及robodojo_start已发生，进程auth_mode=chatgpt/plan=pro/无APIkey；stack控制接入中，不以ready冒充原生动作/成功。三路仍未有新终局。
+- 【Agent】【2026-10-19 13:08】[op] EXP300既有回合传输修复：实际/proc证据显示classify trial2三个Codex sandbox卡在SSHFS TMPDIR/codex-bwrap锁，holder1914527持FLOCK，其余等待，原生0动作。将三路自有run/tmp保留改名tmp-sshfs-before-repair，并以原路径软链到本机campaign/local_tmp，不改提示/源码/回合/RPC请求；改名后原阻塞进程自行退出，未发送信号，模型正常继续工具流程。cat上下文完成/图像工具完成已出现，原生控制推进仍待核实。
