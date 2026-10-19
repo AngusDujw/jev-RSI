@@ -68,6 +68,9 @@ class SurfaceTracker:
             # Green glass is distinguishable from grey/black robot parts.
             mask=(g>r*1.12+1)&(g>b*1.10+1)&(g<100)&(r<85)
             margin=85
+        elif self.kind=='rack':
+            mask=(r>g*1.12)&(r<g*1.8)&(g>b*1.1)&(r>45)&(r<210)
+            margin=8
         elif self.kind=='knob':
             mask=np.max(rgb,axis=2)<65
             margin=18
@@ -91,7 +94,7 @@ class SurfaceTracker:
             if len(xs)<18:continue
             box=np.array([xs.min(),ys.min(),xs.max()+1,ys.max()+1],float)
             width,height=box[2:]-box[:2]
-            if len(xs)>4500 or max(width,height)>150:continue
+            if len(xs)>(25000 if self.kind=='rack' else 4500) or max(width,height)>(300 if self.kind=='rack' else 150):continue
             if self.kind=='knob' and (len(xs)>1600 or width>70 or height>70):continue
             if self.anchor_stationary and (box[0]<=max(0,x0-margin) or box[1]<=max(0,y0-margin) or box[2]>=min(w,x1+margin) or box[3]>=min(h,y1+margin)):continue
             score=np.linalg.norm((box[:2]+box[2:])/2-old_c)-.008*len(xs)

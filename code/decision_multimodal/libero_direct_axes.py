@@ -219,6 +219,8 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--stage-motion',action='store_true',help='Measured own-hand displacement since entering the current stage, never object or desired motion')
+    p.add_argument('--receiver-surfaces',action='store_true',help='Current receiver wood-component RGB-D candidates instead of a window lattice')
     p.add_argument('--pad-outlines',action='store_true',help='Project public own inner pad facets on each current RGB image')
     p.add_argument('--visual-near-grasp',action='store_true',help='Near-grasp XY judges finger capture in RGB, not zero skin displacement')
     p.add_argument('--numeric-z',action='store_true',help='Short reference-height sign criteria during near approach; actor still selects the sign')
@@ -258,7 +260,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -290,6 +292,10 @@ def main():
     if args.live_surfaces:
         from libero_visual_surfaces import SurfaceTracker
         tracker=SurfaceTracker('knob' if args.task==1383 else 'bottle',np.asarray(plan['fixed_view_bbox_xyxy'])*args.size/512,sparse=args.focused_questions,anchor_stationary=args.robot_self_mask and args.task==1383,track_selected=args.track_selected)
+    receiver_tracker=None
+    if args.receiver_surfaces and 'receiver_fixed_view_bbox_xyxy' in plan:
+        from libero_visual_surfaces import SurfaceTracker
+        receiver_tracker=SurfaceTracker('rack',np.asarray(plan['receiver_fixed_view_bbox_xyxy'])*args.size/512,anchor_stationary=True)
     full_demonstrations=api.demonstrations[:]
     step_sizes=None;last_signs=None
     started=time.monotonic();result=dict(task=args.task,init=args.init,success=False,native_evaluated=False,program_finished=False)
@@ -306,7 +312,7 @@ def main():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
         def capture():
             from PIL import ImageDraw
-            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None
+            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None
             for camera in ('agentview','robot0_eye_in_hand'):
                 im=Image.fromarray(np.ascontiguousarray(obs[camera+'_image'][::-1]));b=io.BytesIO();im.save(b,format='PNG')
                 raw=b.getvalue()
@@ -317,11 +323,11 @@ def main():
                     from robosuite.utils.camera_utils import get_real_depth_map
                     depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
                     draw=ImageDraw.Draw(im)
+                    reject_own=None
+                    if args.robot_self_mask:
+                        from libero_robot_mask import own_geometry_rejector
+                        reject_own=own_geometry_rejector(native)
                     if tracker is not None:
-                        reject_own=None
-                        if args.robot_self_mask:
-                            from libero_robot_mask import own_geometry_rejector
-                            reject_own=own_geometry_rejector(native)
                         api.source_component,current_samples=tracker.observe(np.asarray(im),depth,K,T,reject_own=reject_own)
                         api.surface_samples.extend(current_samples)
                         for sample in current_samples:
@@ -336,6 +342,13 @@ def main():
                     for region,key in (('A','fixed_view_bbox_xyxy'),('B','receiver_fixed_view_bbox_xyxy')):
                         if tracker is not None and region=='A':continue
                         if key not in plan:continue
+                        if region=='B' and receiver_tracker is not None:
+                            api.receiver_component,receiver_samples=receiver_tracker.observe(np.asarray(im),depth,K,T,reject_own=reject_own)
+                            for j,sample in enumerate(receiver_samples):
+                                sample['label']='B'+str(j);api.surface_samples.append(sample)
+                                u,v=sample['pixel_uv'];draw.ellipse((u-2,v-2,u+2,v+2),fill='#ffff00',outline='#000000')
+                                draw.text((u+3,v-10),sample['label'],fill='#ffff00',stroke_width=1,stroke_fill='#000000')
+                            continue
                         box=np.asarray(plan[key],float)*(args.size/512)
                         # Sample the *current visible surface* on a fixed pixel lattice.
                         # These points are not a tracked object pose, centroid, grasp point or target.
@@ -374,9 +387,10 @@ def main():
             if args.record_evidence:
                 with (out/'perception.jsonl').open('a') as file:
                     file.write(json.dumps(dict(native_tick=tick,source_component=api.source_component,
-                        visible_surface_samples=api.surface_samples,frame='native_world_mm_before_optional_display_offset',
+                        visible_surface_samples=api.surface_samples,receiver_component=api.receiver_component,frame='native_world_mm_before_optional_display_offset',
                         robot_self_mask=args.robot_self_mask))+'\n')
             return parts
+        stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
         for decision in range(args.decisions):
             import shutil
             if shutil.disk_usage(out).free<8*1024**3:raise RuntimeError('Native artifact storage guard: below8GiB free')
@@ -398,6 +412,11 @@ def main():
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),
                 last_actions=[{k:v for k,v in row.items() if not k.startswith(('own_position_','own_rotation_'))} for row in history[-4:]],
                 next_stage=stages[min(stage+1,len(stages)-1)])
+            if args.stage_motion:
+                p_now,R_now=own_pose()
+                state['stage_own_motion']=dict(physical_steps=tick-stage_origin_tick,translation_world_mm=np.round((p_now-stage_origin_p)*1000,1).tolist(),
+                    relative_world_rotvec_deg=np.round(np.rad2deg(Rotation.from_matrix(R_now@stage_origin_R.T).as_rotvec()),1).tolist(),
+                    meaning='Measured own-hand motion since stage entry only, never object motion, target angle, contact or task completion.')
             if args.focused_questions:
                 state.pop('stage_order');state.pop('next_stage');state['last_actions']=state['last_actions'][-1:]
                 phase=('approach' if 'Align above' in stages[stage]['name'] and 'rack' not in stages[stage]['name'] else
@@ -446,6 +465,9 @@ def main():
                 own_p,_=own_pose()
                 state['own_gripper_world_mm']=np.round(own_p*1000,1).tolist()
                 state['visible_surface_samples']=api.surface_samples
+                if receiver_tracker is not None:
+                    state['receiver_component']=api.receiver_component
+                    state['receiver_candidate_meaning']='B dots are current brown RGB-component surfaces in the initial rack identity region, after own-robot rejection. Verify actual rack wood and choose the slatted cradle rather than an upright/edge. A colour match is not a semantic guarantee or a target pose.'
                 state['surface_sample_meaning']=('Labelled dots are current RGB-D visible surface points in the same fixed world frame as the gripper. '
                     'Regions A/B are initial fixed-camera identity windows, NOT object tracking; after an object moves a dot may show background. '
                     'Use CURRENT RGB to identify what each dot actually lies on. These are not recommended grasp points or desired poses. '
@@ -491,7 +513,7 @@ def main():
                         'hold':'Keep this channel unchanged; its current relationship is suitable.'}
             questions['gripper']=dict(type='choice',instructions='Choose the gripper command for the current manipulation.',criteria={'open':'Open the fingers.','close':'Close or retain the grasp.','hold':'Retain the preceding gripper command.'})
             questions['scale']=dict(type='choice',instructions='Choose movement scale from visible clearance and required precision.',criteria={'coarse':'Free space: 20mm and 10degrees maximum per channel.','fine':'Near contact or alignment: 4mm and 2degrees maximum per channel.'})
-            questions['transition']=dict(type='choice',instructions='Judge the observable exit condition for the CURRENT stage. Advance only when it is visibly satisfied. Advance executes no motion this turn.',criteria={'continue':'Continue current stage.','advance':'Current stage complete; enter next stage, or finish at the final stage.','restart':'Return to the first stage to recover.'})
+            questions['transition']=dict(type='choice',instructions='Judge the observable exit condition for the CURRENT stage. Advance only when it is visibly satisfied. Advance executes no motion this turn.',criteria={'continue':'Continue current stage.','advance':'Current stage complete; enter next stage, or finish at the final stage.','restart':'Return to the first stage to recover; execute no physical motion this turn.'})
             if args.coordinate_questions:
                 if not args.surface_context:raise ValueError('Coordinate questions require current visible surface context')
                 questions=coordinate_questions(state,questions)
@@ -603,6 +625,10 @@ def main():
                 for k in ('own_gripper_world_mm','visible_surface_samples','coordinate_frame_note'):state.pop(k,None)
                 for k in ('actor_selected_surface','actor_selected_receiver_surface'):
                     if k in state:state[k]={q:v for q,v in state[k].items() if q!='visible_surface_world_mm'}
+            if args.numeric_z and state['stage'].get('stage_key')=='descend_to_source' and 'observed_surface_relative_mm' in state:
+                height=state['observed_surface_relative_mm'][2]
+                questions['z']['instructions']=(f'Current selected visible-feature height minus hand height is {height} mm. Which Z direction brings the fingers alongside that grasp region? Negative means the region is below the hand. Positive means it is above. Hold within +/-8mm. Visible collision or an already supported capture relationship can justify hold. A large horizontal or vertical distance is not a rotation error.')
+                questions['z']['criteria']={'negative':'Move DOWN along world -Z.','positive':'Move UP along world +Z.','hold':'Keep the current physical height.'}
             if protocol:
                 relative=state.get('observed_surface_relative_mm',['unknown']*3)
                 placement=state.get('observed_receiver_minus_source_mm',['unknown']*3)
@@ -611,16 +637,14 @@ def main():
                     receiver_x_mm=placement[0],receiver_y_mm=placement[1],receiver_z_mm=placement[2],
                     orientation=state.get('actor_visual_assessment',{}).get('orientation_relation','unknown'),
                     gripper_command='close' if grip>0 else 'open',
-                    pad_separation_mm=state.get('own_tool_geometry',{}).get('pad_centre_separation_mm','unknown'))
+                    pad_separation_mm=state.get('own_tool_geometry',{}).get('pad_centre_separation_mm','unknown'),
+                    stage_steps=state.get('stage_own_motion',{}).get('physical_steps','unknown'),
+                    stage_rotvec_z_deg=state.get('stage_own_motion',{}).get('relative_world_rotvec_deg',['unknown']*3)[2])
                 templates=protocol.get('question_templates',{}).get(state['stage'].get('stage_key',''),{})
                 if set(templates)-set(questions):raise ValueError('Protocol cannot add or remove formal output channels')
                 for name,template in templates.items():
                     if not isinstance(template,str):raise ValueError('Protocol questions must be text, never commands')
                     questions[name]['instructions']=template.format_map(context)
-            if args.numeric_z and state['stage'].get('stage_key')=='descend_to_source' and 'observed_surface_relative_mm' in state:
-                height=state['observed_surface_relative_mm'][2]
-                questions['z']['instructions']=(f'Current selected visible-feature height minus hand height is {height} mm. Which Z direction brings the fingers alongside that grasp region? Negative means the region is below the hand. Positive means it is above. Hold within +/-8mm. Visible collision or an already supported capture relationship can justify hold. A large horizontal or vertical distance is not a rotation error.')
-                questions['z']['criteria']={'negative':'Height difference below -8mm: move DOWN along world -Z.','positive':'Height difference above +8mm: move UP along world +Z.','hold':'Height within +/-8mm, or current RGB supports keeping this height.'}
             if replay_rows is None:
                 answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
             else:
@@ -632,8 +656,12 @@ def main():
             if choices['transition']=='advance':
                 if stage==len(stages)-1:result['program_finished']=True;break
                 stage+=1;step_sizes=None;last_signs=None
+                stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
                 history.append(dict(choices=choices,execution='No physical action; stage advanced'));continue
-            if choices['transition']=='restart':stage=0
+            if choices['transition']=='restart':
+                stage=0;stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
+                step_sizes=None;last_signs=None
+                history.append(dict(choices=choices,execution='No physical action; returned to first stage'));continue
             if choices['gripper']!='hold':grip=1. if choices['gripper']=='close' else -1.
             signs=np.array([{'negative':-1,'hold':0,'positive':1}[choices[a]] for a in ('x','y','z','rx','ry','rz')])
             step_m,step_r=(.020,np.deg2rad(10)) if choices.get('scale')=='coarse' else (.004,np.deg2rad(2))

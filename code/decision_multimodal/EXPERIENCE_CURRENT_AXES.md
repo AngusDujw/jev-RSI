@@ -24,3 +24,7 @@ No claim of stable success follows from these observations. Complete native outc
 
 - Matching a visible skin point exactly is not equivalent to centring a narrow part between the fingers. Near-grasp conditions should refer to actual capture geometry; own pad projections can explain that geometry without revealing an object pose.
 - After a visible lift, vague requests for more clearance can continue indefinitely. Give the actor observed source motion, distinguish it from measured hand motion, and define the next transport transition explicitly. Neither motion alone certifies a secure grasp.
+
+- A receiver identity window is not a receiver mask. Fixed grid dots may land on walls, the robot or other furniture and produce metre-scale false references. Generate current surface candidates on a plausible RGB component and retain semantic verification.
+- A top-down image overlap can trigger closure while the source is still centimetres below the hand. Check a physical capture-height relationship separately; contact proof is not required, but absence of height overlap is real contrary evidence.
+- Placement needs the held object body to fit the receiver, not automatic retention of its lift posture. State the body-versus-support relationship separately from translation.
