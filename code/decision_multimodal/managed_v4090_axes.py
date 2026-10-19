@@ -44,6 +44,7 @@ def scheduler(path):
             if case.get('reference_history'):command+=['--reference-history']
             if case.get('protocol_file'):command+=['--protocol-file',case['protocol_file']]
             if case.get('live_protocol'):command+=['--live-protocol']
+            if case.get('visible_shape_features'):command+=['--visible-shape-features']
             if case.get('formal_stage_call'):command+=['--formal-stage-call']
             if case.get('numeric_axis_call'):command+=['--numeric-axis-call']
             if case.get('reference_only'):command+=['--reference-only']

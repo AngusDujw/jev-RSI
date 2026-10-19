@@ -9,8 +9,9 @@ from scipy import ndimage
 
 
 class SurfaceTracker:
-    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False):
+    def __init__(self, kind, initial_box, sparse=False, anchor_stationary=False, track_selected=False, raised_feature=False, shape_features=False):
         self.kind=kind
+        self.shape_features=shape_features
         self.box=np.asarray(initial_box,float)
         self.initial_box=self.box.copy()
         self.sparse=sparse
@@ -111,6 +112,13 @@ class SurfaceTracker:
         _,i,box=min(candidates,key=lambda v:v[0]);self.box=box
         ys,xs=np.nonzero(labels==i)
         component_pixels=len(xs)
+        shape=None
+        if self.shape_features:
+            from libero_visible_shape import describe_visible_shape
+            z=depth[ys,xs]
+            points=T[:3,:3]@(np.linalg.solve(K,np.stack((xs,ys,np.ones(len(xs)))))*z)+T[:3,3,None]
+            valid=np.isfinite(points).all(axis=0)&(z>0)
+            shape=describe_visible_shape(points[:,valid].T*1000,self.kind)
         if self.raised_feature:
             z=depth[ys,xs];points=T[:3,:3]@(np.linalg.solve(K,np.stack((xs,ys,np.ones(len(xs)))))*z)+T[:3,3,None]
             valid=np.isfinite(points).all(axis=0)&(z>0)
@@ -138,6 +146,6 @@ class SurfaceTracker:
             followed=self.follow(gray,allowed,depth,K,T)
             if followed is not None:samples.append(followed)
             self.current_samples={sample["label"]:sample for sample in samples}
-        return dict(status='candidate',bbox_xyxy=box.astype(int).tolist(),pixels=int(component_pixels),upper_visible_feature_pixels=int(len(xs)) if self.raised_feature else None,own_bound_excluded_pixels=excluded,
+        return dict(status='candidate',visible_shape=shape,bbox_xyxy=box.astype(int).tolist(),pixels=int(component_pixels),upper_visible_feature_pixels=int(len(xs)) if self.raised_feature else None,own_bound_excluded_pixels=excluded,
             meaning=('Current higher visible black surface proposal inside the knob identity window. Verify raised fin versus base/robot from RGB; only current RGB-D is used, never a true object pose or grasp target.' if self.raised_feature else 'Current colour component only. Use RGB to verify identity. Samples are visible surfaces, not the centre, grasp point, desired pose or contact evidence.'),
             uncertainty='Colour segmentation may miss or merge parts. Occlusion invalidates identity; depth edges may mix surfaces. No precision guarantee.'),samples
