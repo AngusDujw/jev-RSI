@@ -45,7 +45,8 @@ def stage_payload(original,current=(),goal_reference=()):
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
     if original['state'].get('request_purpose')=='visual_stage_classification':
         content=payload['input'][0]['content']
-        for part in goal_reference:
+        # Lift is judged against the current table/hand, not the future rack goal.
+        for part in (() if original['state']['stage'].get('stage_key')=='lift' else goal_reference):
             if part['type']=='input_image':
                 content.extend([dict(type='input_text',text='ARCHIVED goal appearance, BEFORE left and AFTER right; never a current observation.'),part])
         caption='';number=0
