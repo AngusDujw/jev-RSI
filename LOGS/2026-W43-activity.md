@@ -39,3 +39,5 @@
 - 【User】【2026-10-19 14:27】[intent] 继续在v4090运行同样的多模态控制实验；用户说明网络应已恢复，保持原模型、无特权信息、紧凑日志和高并发要求。
 - 【Agent】【2026-10-19 14:27】[op] 新建实验块 EXP-2026W43-010：网络恢复后继续v4090：只补跑23个基础设施中断回合，修复公平队列及未收到回答时的网络重试，不重采正常失败  ↪ `EXP-2026W43-010`
 - 【Agent】【2026-10-19 14:28】[op] Fixed per-episode bridge fairness, bounded unanswered network retries and native wait budget; preparing23 infrastructure continuations, leaving the completed normal failure unchanged.
+- 【Agent】【2026-10-19 14:31】[op] Started native and local bridge in explicit non-/tmp tmux sockets; both seed cases returned2 real Decisions answers and executed14/18 native steps, then raised native cap to23. Model inputs unchanged; actual API recovery confirmed for the two cases.
+- 【Agent】【2026-10-19 14:33】[result] Verified all23 native cases active, all23 received actual Decisions answers (27 total),0 network retry/error records and0 rollout PNG; fair queue covers rear episodes. No new terminal outcome yet.
