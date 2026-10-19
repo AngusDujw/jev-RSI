@@ -48,3 +48,8 @@
 - 【User】【2026-10-19 16:13】[intent] 用户要求调查TLS、等待超时和JSON异常的具体原因；检查原始回合堆栈、本机网络尝试、SSH传输事件和两端回答文件。
 - 【Agent】【2026-10-19 16:13】[op] 新建实验块 EXP-2026W43-011：定位续跑基础设施故障并修复回答传输完整性，不增加模型或仿真调用  ↪ `EXP-2026W43-011`
 - 【Agent】【2026-10-19 16:16】[op] Confirmed two remote replies are0 bytes while cached actual answers are1995/2003 bytes; identified56 API transport failures and306 SSH events. Implemented verified reply publication/ACK, corrupt-copy retransmission and fresh-connection fallback; local fault injection and real SSH fixture passed with0 API/physics; temporary fixtures removed.
+- 【User】【2026-10-19 16:48】[prompt] 现在重启一下实验看看，应该不会断网吧
+- 【Agent】【2026-10-19 16:48】[op] 新建实验块 EXP-2026W43-012：用户授权应用回答完整性和SSH回退修复后重启23个基础设施中断回合，保持原模型输入与紧凑日志  ↪ `EXP-2026W43-012`
+- 【Agent】【2026-10-19 16:49】[op] Restarted23 infrastructure-interrupted cases into new retry2 outputs using verified reply integrity/ACK and SSH fresh-connection fallback; first2 native cases and12-worker local bridge are independent live tmux sessions; no model input changes.
+- 【Agent】【2026-10-19 16:51】[result] retry2 startup encountered2 SSH banner-exchange timeouts before API calls; fresh SSH subsequently authenticated and the saved actual model replies were delivered. Pilot currently7 valid answers,0 API errors/retry records; external network stability is not assumed.
+- 【Agent】【2026-10-19 16:54】[result] Verified retry2: pilot3/4 actual answers and18/26 physical steps, raised to23 active; expansion checkpoint9 answered episodes/18 responses,0 API errors/retries,0 invalid delivery reports,0 rollout PNG. Startup2 SSH banner timeouts recovered; no claim of continuous network stability or task success.
