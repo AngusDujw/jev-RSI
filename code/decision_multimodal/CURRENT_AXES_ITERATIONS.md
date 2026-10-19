@@ -52,3 +52,5 @@ The last frozen batch completed 23 native evaluations with zero successes. A new
 - A bounded RAM image cache reconstructs and verifies the original complete payload before API dispatch. No cached historical image replaces a requested current image. Bridge timing separates transfer from API waiting.
 
 Live review: http://100.75.107.115:18943/ . All recorded image assets stay in DataStorage. The current protocol source is `protocols/libero_feature_stages_v7.json`; actual revisions are retained under each native episode.
+
+Audit clarification: early manifests inherited the unqualified field `scene_target_or_error_inputs=false`, and early dispatches used `no_target_geometry`. Those names are inaccurate for assisted conditions: current RGB-D surface coordinates and actor-selected positional differences ARE supplied. Future manifests explicitly distinguish camera-derived geometry/relative feedback from privileged scene targets and computed orientation errors. Historical records are retained; exact request evidence is authoritative.

@@ -125,7 +125,9 @@ class DirectAPI(RevisedAPI):
         # Check structured field names, not substrings in images or words like successive.
         audit(self.sent_state)
     def input_audit(self):
-        return dict(no_target_geometry=True,no_error_feedback=not getattr(self,'actor_attention',False),examples='Measured own-robot primitive effects',
+        return dict(computed_robot_goal_pose_supplied=False,computed_orientation_error_supplied=False,
+                    relative_position_feedback_enabled=getattr(self,'actor_attention',False),
+                    examples='Measured own-robot primitive effects',
                     native_tick=self.tick,action_signs_chosen_by_model=True)
 
 
@@ -251,7 +253,9 @@ def main():
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
-        scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
+        privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
+        actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
+        grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
