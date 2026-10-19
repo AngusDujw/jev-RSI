@@ -41,3 +41,14 @@ All native assets live under `/home/v4090-1/DataStorage/gpt6-dec/libero-decision
 [RoboDawn harness](https://github.com/Hugo-AGI/RoboDawn/blob/main/harness/README.md) motivates own-TCP semantics, observing executed effects, and actual RGB/state/command demonstrations. [Its demonstration loader](https://github.com/Hugo-AGI/RoboDawn/blob/main/harness/agent/demos.py) shows strategy examples rather than copying a current target pose. We retain our categorical Decisions interface and do not copy its privileged evaluator feedback or its gripper-opening grasp heuristic.
 
 The last frozen batch completed 23 native evaluations with zero successes. A new stage, a close command, accurate robot tracking or a visually selected feature is not task success. Freeze a promising profile before evaluating all three fixed initial states per task; preserve every failure.
+
+## Continuing development
+
+- v5 tests explicit numeric X/Y alignment semantics after the actor selects a feature from RGB. Z, rotation, gripper and stage decisions remain model judgements. This is assisted positioning, not a claim of raw-RGB-only XYZ control.
+- v6 keeps recent actor visual choices within the episode and restricts reference-distance step scaling to positioning phases. An attachment offset is not a lift distance.
+- v7 adds a per-stage question protocol with immutable revision snapshots. Development may reload the protocol in one persistent native episode; a frozen evaluation rejects any protocol-file change. The protocol can change English goals, exits, question text and positive stopping-band magnitudes, never add output channels, set current coordinates, or override model answers.
+- The 10mm overhead and 3mm descent reference bands are controller heuristics, not sensor-accuracy or contact guarantees.
+- [Official Decisions documentation](https://developers.openai.com/api/docs/guides/decisions#ask-multiple-questions) requires separate requests when later decisions depend on earlier answers; visual reference selection therefore precedes the axis request.
+- A bounded RAM image cache reconstructs and verifies the original complete payload before API dispatch. No cached historical image replaces a requested current image. Bridge timing separates transfer from API waiting.
+
+Live review: http://100.75.107.115:18943/ . All recorded image assets stay in DataStorage. The current protocol source is `protocols/libero_feature_stages_v7.json`; actual revisions are retained under each native episode.

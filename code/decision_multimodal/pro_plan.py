@@ -62,6 +62,9 @@ def main():
         command=command)
     (output/'dispatch.json').write_text(json.dumps(audit, indent=2)+'\n')
     env = os.environ.copy()
+    temporary=output/'temp';temporary.mkdir()
+    cache=output/'cache';cache.mkdir()
+    env.update(TMPDIR=str(temporary),XDG_CACHE_HOME=str(cache))
     for key in ('OPENAI_API_KEY', 'OPENAI_BASE_URL', 'CODEX_API_KEY'):
         env.pop(key, None)
     print(json.dumps(dict(event='planner_started', output=str(output), model='gpt-6.1-sol', effort='high')), flush=True)

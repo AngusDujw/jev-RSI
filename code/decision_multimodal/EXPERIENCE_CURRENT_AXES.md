@@ -14,3 +14,6 @@ Collection only. This file is not loaded into either model.
 - Visible knob rotation and appliance activation are different observations. An absent visual indicator must remain unknown.
 
 No claim of stable success follows from these observations. Complete native outcomes and fixed-policy replications are still required.
+
+- Coarse overhead alignment and grasp-height alignment are different stages. Requiring fingers already alongside an object before entering descent can produce an all-hold loop. Use the same positioning band in the axis questions and the coarse-stage transition.
+- Keep the chosen physical reference part consistent within a stage. A fresh coordinate is still a moving goal if the actor keeps switching between neck and body. Preserve actor intent, never stale scene coordinates.
