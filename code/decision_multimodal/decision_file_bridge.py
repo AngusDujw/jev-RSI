@@ -20,6 +20,40 @@ CONTROL=None
 SSH_SLOTS=threading.BoundedSemaphore(3)
 
 
+def infer_unanswered(client,request,folder,key,max_attempts=8,sleep=time.sleep,on_attempt=None):
+    """Retry unavailable transport only; preserve every received provider result."""
+    if not 1<=max_attempts<=12:raise ValueError('Invalid API attempt budget')
+    for attempt in range(max_attempts):
+        if on_attempt is not None:on_attempt()
+        try:
+            with client.open(request,timeout=100) as response:return json.load(response)
+        except (OSError,urllib.error.URLError) as error:
+            code=error.code if isinstance(error,urllib.error.HTTPError) else None
+            provider=None;body=b''
+            if isinstance(error,urllib.error.HTTPError):
+                try:body=error.read(1024*1024)
+                except OSError:pass
+                try:provider=json.loads(body)
+                except (ValueError,UnicodeError):pass
+            received=isinstance(provider,dict) and ('answers' in provider or 'refusal' in provider)
+            retryable=not received and (code is None or code in (429,500,502,503,504,520))
+            body_file=None
+            if body:
+                body_file=f'http-{time.time_ns()}-attempt-{attempt+1:02d}.txt'
+                (folder/body_file).write_text(body.decode('utf-8',errors='replace').replace(key,'[redacted]'))
+            with (folder/'network-attempts.jsonl').open('a') as f:
+                f.write(json.dumps(dict(attempt=attempt+1,time=time.time(),retryable=retryable,
+                    http_status=code,error=str(error).replace(key,'[redacted]')[:500],
+                    received_answer=received,error_body_file=body_file))+'\n')
+            if received:return provider
+            if not retryable or attempt==max_attempts-1:
+                return dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
+            sleep(min(30,2**(attempt+1)))
+        except Exception as error:
+            # Parsing/schema failures are not unanswered transport attempts.
+            return dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
+
+
 class ImageMemory:
     """Bounded transient image URLs; no rollout image files on the local disk."""
     def __init__(self,limit=64*1024**2):
@@ -147,9 +181,12 @@ def main():
     p.add_argument('--key-file',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--seconds',type=int,default=14400);p.add_argument('--workers',type=int,default=1)
     p.add_argument('--compact',action='store_true');p.add_argument('--control-path')
+    p.add_argument('--api-attempts',type=int,default=8)
     p.add_argument('--resume',action='store_true')
     a=p.parse_args();assert a.key_file.name=='du-openai-direct.key';assert 1<=a.workers<=24
+    assert 1<=a.api_attempts<=12
     CONTROL=a.control_path;key=a.key_file.read_text().strip();assert key.startswith('sk-')
+    bridge_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     a.output.mkdir(parents=True,exist_ok=a.resume)
     lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic();last_served={};memory=ImageMemory()
     def process(remote):
@@ -164,27 +201,17 @@ def main():
             raw=json.dumps(job['payload']).encode()
             if not a.compact:(folder/'request.json').write_bytes(raw)
             (folder/'dispatch.json').write_text(json.dumps(dict(endpoint=ENDPOINT,key_origin='du',
-                remote_job=remote,compact=a.compact,request_sha256=hashlib.sha256(raw).hexdigest())))
+                remote_job=remote,compact=a.compact,request_sha256=hashlib.sha256(raw).hexdigest(),
+                api_attempt_budget=a.api_attempts,bridge_source_sha256=bridge_sha256)))
             request=urllib.request.Request(ENDPOINT,data=raw,
                 headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
             client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
             called=True
             api_started=time.monotonic()
-            for attempt in range(3):
+            def count_attempt():
+                nonlocal calls
                 with lock:calls+=1
-                try:
-                    with client.open(request,timeout=100) as response:reply=json.load(response)
-                    break  # A received answer/refusal is never resampled.
-                except (OSError,urllib.error.URLError) as error:
-                    retryable=not isinstance(error,urllib.error.HTTPError) or error.code in (429,502,503,504)
-                    with (folder/'network-attempts.jsonl').open('a') as f:
-                        f.write(json.dumps(dict(attempt=attempt+1,time=time.time(),retryable=retryable,
-                            error=str(error).replace(key,'[redacted]')[:500],received_answer=False))+'\n')
-                    if not retryable or attempt==2:
-                        reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500]);break
-                    time.sleep(2**(attempt+1))
-                except Exception as error:
-                    reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500]);break
+            reply=infer_unanswered(client,request,folder,key,a.api_attempts,on_attempt=count_attempt)
             temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
             timing['api_seconds']=time.monotonic()-api_started
         target=str(Path(remote).parent/'reply.json')
