@@ -1,0 +1,52 @@
+{
+  "kind": "outer_experiment_freeze",
+  "policy_commit": "7a5086f1c99b2e9dbe3f1c07e2cb0d8df37eec94",
+  "source_sha256": "06c1a1c65fd92ed044c72dfa8fd68cd227af2ec8a901283c5df7e901811fd66f",
+  "protocol_sha256": "49ab72346024c9e010a8c3248eb8b07e44e999372a0e00d5d30ff25f3c8c4ce9",
+  "plan_sha256": "a4810805e7daefbb51c4efe48fcab8a8d7a14addad9b859c03d20957c503e463",
+  "task": 1458,
+  "development_completed_init_states": [
+    12
+  ],
+  "development_native_success": [
+    true
+  ],
+  "development_program_finished": [
+    true
+  ],
+  "development_steps": [
+    1078
+  ],
+  "development_api_responses": [
+    499
+  ],
+  "other_development_init13": "Still running at declaration. Not a replacement for any verification episode.",
+  "verification_initial_states": [
+    14,
+    15,
+    16
+  ],
+  "verification_no_replacements": true,
+  "verification_completed": false,
+  "horizon": 1200,
+  "budget_note": "Extended1200-step stability condition. Not a600-step success claim.",
+  "actor": {
+    "model": "gpt-6-luna",
+    "endpoint": "https://api.openai.com/v1/decisions",
+    "key_origin": "du"
+  },
+  "planner": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "account": "local ChatGPT Pro"
+  },
+  "experience_injection": false,
+  "computed_orientation_error": false,
+  "literal_actor_line_expressions": true,
+  "sideview_source_fallback": true,
+  "paired_span_selection": false,
+  "bridge_source_sha256": "a484e4bba419396a92d5cf842bb21fa35f9428bfeda23c5d700986ae5b157e39",
+  "asset_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v28",
+  "verification_root": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v28-verify",
+  "declaration_note": "Preserve every first attempt. No answered-request resampling or policy changes during verification. Current RGB-D assisted geometry and independent categorical actor choices remain explicit. Program finish plus native evaluator success required; inspect actual release evidence separately."
+}
