@@ -17,3 +17,4 @@
 - 【Agent】【2026-10-19 12:35】[op] 定位原stack trial3 stderr为SQLite state runtime初始化失败；新回合先验证本机ChatGPT/SQLite WAL/Codex初始化，无API key或推理探针。新增逐槽补齐调度，启动失败不再取消另一任务。Decisions保留原14分轴对照，以最多126近期图兼容API128图限制、保留全部文本历史并记录差异，不能冒充完整Codex工具轨迹。
 - 【Agent】【2026-10-19 12:37】[decision] 按用户本轮“这个跑完先”优先级，外层停止较新通用抓取批次1827656及其自有控制，保留实际原始答/步数/不完整终局，不归因模型失败、不恢复结束回合；释放两卡供原Pro/Decisions对照补齐。这不是用户取消整个研究目标。
 - 【Agent】【2026-10-19 12:39】[result] 对照补齐两槽preflight已通过ChatGPT无APIkey、Luna/high、SQLite WAL、initialize/thread-start，元数据检查无推理调用；故障隔离模拟验证另一任务能继续完成三个槽且STOP不置位，临时fixture已删。已按新完成命名更新终局媒体/缓存清理工具，前台guard绑定补齐进程1859602。
+- 【Agent】【2026-10-19 12:41】[result] 对照补齐实际端到端核验：分类新槽controller1865622已得到Luna模型英文回复并调用robodojo_start；worker.json为gpt-6-luna/high/Codex0.162.1。进程实际CODEX_HOME认证auth_mode=chatgpt、JWT套餐pro、认证与进程均无APIkey。两台原生policy容器24803/24804存活，未冒充预检即推理成功。
