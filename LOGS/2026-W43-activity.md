@@ -116,3 +116,4 @@
 - 【User】【2026-10-19 20:49】[decision] 用户明确授权保留decision model测试图像等供查看效果，覆盖此前本campaign Decisions终局媒体清理要求；不改变模型输入或实验条件。
 - 【Agent】【2026-10-19 20:49】[op] 核实自有retention599423身份后仅停止清理器，未停控制器/仿真；增加每轮读取media_retention.json的Decisions保留开关，设为true，验证跳过清理无删除操作，启动独立保留策略清理服务绑定既有batch599422；旧已删媒体不可恢复。
 - 【User】【2026-10-19 20:51】[intent] 继续server02固定6+10槽对照监督故障修复；核对真实进程/资源/原生推进，不恢复结束episode或修答重采样；媒体沿用刚明确授权的Decisions查看保留设置。
+- 【User】【2026-10-19 20:55】[intent] 继续server02固定6+10槽监督，核对进程资源、原生推进和慢请求；保留最近明确授权的Decisions图像查看设置，不恢复结束episode或修答重采样。
