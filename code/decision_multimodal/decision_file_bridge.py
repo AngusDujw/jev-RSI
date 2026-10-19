@@ -4,7 +4,9 @@ from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
+import signal
 import shlex
 import subprocess
 import threading
@@ -14,6 +16,7 @@ import urllib.error
 
 ENDPOINT='https://api.openai.com/v1/decisions'
 CONTROL=None
+SSH_SLOTS=threading.BoundedSemaphore(3)
 
 
 class FileClient:
@@ -48,19 +51,35 @@ class FileClient:
 
 
 def ssh(host,code,input=None):
+    # Model inference does not hold an SSH slot. Cap file/control sessions
+    # independently to avoid flooding the reverse tunnel with reconnects.
+    with SSH_SLOTS:return _ssh(host,code,input)
+
+
+def _ssh(host,code,input=None):
     command='python3 -c '+shlex.quote(code)
     for attempt in range(2):
         opts=(['-o','ControlMaster=auto','-o','ControlPersist=60','-o','ControlPath='+CONTROL]
             if CONTROL and attempt==0 else ['-o','ControlMaster=no','-o','ControlPath=none'])
         try:
-            done=subprocess.run(['ssh','-o','ConnectTimeout=10','-o','ServerAliveInterval=10',
-                '-o','ServerAliveCountMax=2',*opts,'--',host,command],input=input,text=True,capture_output=True,timeout=35)
-            if done.returncode:raise RuntimeError(done.stderr[-600:])
-            return done.stdout
+            proc=subprocess.Popen(['ssh','-o','ConnectTimeout=10','-o','ServerAliveInterval=10',
+                '-o','ServerAliveCountMax=2',*opts,'--',host,command],text=True,
+                stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
+            try:out,err=proc.communicate(input=input,timeout=35)
+            except BaseException:
+                # Killing only the outer ssh can leave a ProxyJump child alive.
+                # This process group was created solely for this bridge operation.
+                try:os.killpg(proc.pid,signal.SIGKILL)
+                except ProcessLookupError:pass
+                proc.communicate()
+                raise
+            if proc.returncode:raise RuntimeError(err[-600:])
+            return out
         except (subprocess.TimeoutExpired,OSError,RuntimeError):
             if attempt:raise
             # All bridge commands are read/verified-file-write operations. Retry
             # over a fresh connection rather than reusing a possibly stuck master.
+            time.sleep(1)
 
 
 def delivery_command(target,expected_sha256):
