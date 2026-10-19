@@ -169,3 +169,4 @@
 - 【Agent】【2026-10-20 07:21】[op] Pro17六图复审区分retained/已放上层架/off-target/uncertain。原六图+夹爪先验2/3；去掉closed先验并补两相对距离3/3，改RAW六图仍3/3但placed0.56不称稳定。实现可选关系问题，模型类别决定进入检查/恢复；XYZ/R/夹爪仍原API选择。v45完整native1/3、program0/3，v46继续。
 - 【Agent】【2026-10-20 07:33】[result] v45/v46完整native各1/3、program各0/3；终帧真实上层架阳性保留。v47首实际场景调用18RAW全部SHA匹配、前后12步，模型retained0.93/0.90/0.94，继续运行。Pro18清晰分离可见问题与未证原因，v48仅规划。
 - 【Agent】【2026-10-20 07:35】[result] v47 init14真实API0177/406选择separated_off_target0.55，下一执行418为source阶段0，模型触发恢复而非手动。已发布Pro17原提示词/六输入图/原JSON/实际adapter到planner-scene-relation，HTTP200；仍不计完整成功。
+- 【Agent】【2026-10-20 07:45】[op] 实现v48 Pro18净空先行：部分可见高度统计/own-entry XY/运输维持体下沿高度/所选支撑座入，unknown不置零、unsigned步长保留API方向。AST5与算子检查通过；known/unknown两题advance0.99/continue0.97不计任务成绩，准备独立三原生。

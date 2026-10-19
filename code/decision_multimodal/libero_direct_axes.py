@@ -779,6 +779,9 @@ def main():
                 questions['gripper']['instructions']=('Current stage goal: '+state['stage']['goal']+'. '
                     'Choose open, close, or retain the last command. A Close stage asks you to attempt closure around the positioned object; '
                     'do not require already-proven contact before selecting close. Closing alone does not prove grasp; the next observations test it.')
+            if state['stage'].get('control_contract',{}).get('height_reference'):
+                from libero_numeric_axes import visible_height_observation
+                state['extent_height_observation']=visible_height_observation(state)
             if args.source_motion_test and state['stage'].get('stage_key')=='lift':
                 from libero_source_motion import entry_feature,motion_observation
                 camera=(state.get('source_component') or {}).get('observation_camera','agentview')
@@ -987,7 +990,8 @@ def main():
                 difference=reference_difference(state)
                 if difference is not None and state['stage'].get('stage_key') in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
                     # A magnitude cannot reverse, invent or suppress an actor sign.
-                    magnitude=np.clip(.3*np.abs(np.asarray(difference))/1000,.002,.02)
+                    magnitude=np.array([np.clip(.3*abs(v)/1000,.002,.02) if isinstance(v,(int,float)) and np.isfinite(v)
+                        else abs(dp[i]) if signs[i] else .002 for i,v in enumerate(difference)])
                     dp=signs[:3]*magnitude
             dp*=min(1.,.03/max(np.linalg.norm(dp),1e-10));dr*=min(1.,.25/max(np.linalg.norm(dr),1e-10))
             if replay_rows is not None:

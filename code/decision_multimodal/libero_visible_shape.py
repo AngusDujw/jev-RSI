@@ -31,6 +31,8 @@ def describe_visible_shape(points_mm,kind):
     points=points[::max(1,int(np.ceil(len(points)/2500)))]
     centre,values,axes,spans=principal_shape(points)
     result=dict(status='observed_partial_shape',sample_count=len(points),
+        visible_world_z_quantiles_mm=np.round(np.quantile(points[:,2],[.05,.95]),1).tolist(),
+        height_note='5th/95th quantiles of CURRENT partial colour-filtered surface heights, not complete object bounds or a confidence interval.',
         meaning='Current visible colour-filtered surfaces only. All axes are UNORIENTED: v and -v describe the same line. Not a full object pose, desired axis, rotation error, grasp or support certificate.',
         uncertainty='Occlusion and colour/depth mixing can bias shape. Use current RGB to check which physical part these points describe.')
     if kind=='bottle':

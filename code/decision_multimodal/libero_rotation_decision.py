@@ -85,6 +85,8 @@ def build_rotation_request(state,explain_current_effect=False,bind_span=False,fr
         recent_own_execution=state.get('recent_own_execution_comparison',[])),questions=questions)
     if free_posture:
         request['state'].update(free_placement_posture=True,observed_receiver_minus_source_mm=state.get('observed_receiver_minus_source_mm'))
+        if state.get('extent_height_observation') is not None:
+            request['state']['partial_visible_height_observation']=state['extent_height_observation']
     return request
 
 

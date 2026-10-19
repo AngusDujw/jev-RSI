@@ -78,7 +78,7 @@ def build_stage_request(state,answers,protocol):
         if key=='orient_held_body':
             facts+='Your SAME-observation motion choices: '+str({k:v['choice'] for k,v in answers.items() if k in ('x','y','z','rx','ry','rz')})+'. Your selected receiving direction: '+str(state.get('actor_selected_rack_direction','unknown'))+'. '
         return dict(model='gpt-6-luna',state=dict(stage=state['stage'],next_phase=state.get('next_phase'),request_purpose='visual_stage_classification',formal_stage_input='Judge the CURRENT phase exit, not completion of later phases. Advance enters NEXT PHASE without physical motion. Use CURRENT images and explicitly labelled PHASE ENTRY/PREVIOUS observations when supplied. ARCHIVED examples are historical, not current evidence.'),questions=dict(transition=dict(type='choice',instructions=facts+visual_rule,criteria={'continue':'Continue this phase; its own exit is not met.','advance':'This phase is ready to hand off to NEXT PHASE; later actions need not have happened yet.','restart':'The visible attempt failed or needs a new grasp; return to approach.'})))
-    rule=protocol.get('stage_decision_rules',{}).get(key)
+    rule=state['stage'].get('control_contract',{}).get('stage_decision_rule') or protocol.get('stage_decision_rules',{}).get(key)
     if rule is None:return None
     choices={k:v['choice'] for k,v in answers.items()}
     own=state.get('own_tool_geometry',{})
@@ -96,9 +96,14 @@ def build_stage_request(state,answers,protocol):
         facts=f"Physical steps actually executed in this phase={steps}; last executed gripper command={own.get('last_gripper_command','unknown')}; visual recovery requested={choices.get('transition')=='restart'}."
     elif key in ('align_source_above_receiver','lower_to_place'):
         facts='; '.join(a+' decision='+str(choices.get(a)) for a in ('x','y','z','rx','ry','rz'))
-        facts+=f"; source reference known={source_known}; receiver reference known={'actor_selected_receiver_surface' in state}; visual recovery requested={choices.get('transition')=='restart'}."
-        if not source_known or 'actor_selected_receiver_surface' not in state:
+        anchored=state['stage'].get('control_contract',{}).get('translation_mode')=='own_entry_xy_clearance'
+        if not anchored:facts+=f"; source reference known={source_known}; receiver reference known={'actor_selected_receiver_surface' in state}"
+        facts+=f"; visual recovery requested={choices.get('transition')=='restart'}."
+        if not anchored and (not source_known or 'actor_selected_receiver_surface' not in state):
             facts+=' Visual transition recommendation='+str(choices.get('transition'))+'.'
+        if state['stage'].get('control_contract',{}).get('height_reference'):
+            height=state.get('extent_height_observation') or {}
+            facts+=' Current partial-height estimate available='+str(height.get('available',False))+'; receiver height minus lower-visible bottle height='+str(height.get('receiver_height_minus_visible_source_lower_mm'))+' mm; translation mode='+str(state['stage']['control_contract'].get('translation_mode'))+'. This is uncertain sensor geometry, not contact or complete clearance.'
     else:return None
     return dict(model='gpt-6-luna',
         state=dict(stage=state['stage'],request_purpose='formal_stage_classification',formal_stage_input=STAGE_INPUT),
