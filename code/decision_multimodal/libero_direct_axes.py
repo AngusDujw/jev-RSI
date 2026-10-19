@@ -212,6 +212,7 @@ def main():
     p.add_argument('--live-surfaces',action='store_true',help='Current RGB component surface samples instead of stale fixed source-window dots')
     p.add_argument('--actor-attention',action='store_true',help='Decision model chooses a visible reference and orientation relationship before deciding action axes')
     p.add_argument('--focused-questions',action='store_true',help='Three readable source labels, stage-local examples and short legacy-style axis questions')
+    p.add_argument('--relative-step-scale',action='store_true',help='Unsigned translation magnitude from actor-selected observed feature differences; never choose signs')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -237,6 +238,7 @@ def main():
         execution_steps=args.execution_steps,record_evidence=args.record_evidence,
         live_surfaces=args.live_surfaces,actor_attention=args.actor_attention,diagnostic_replay=bool(args.replay),
         focused_questions=args.focused_questions,
+        relative_step_scale=args.relative_step_scale,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
@@ -457,7 +459,11 @@ def main():
                     if placing:
                         attention['receiver']=dict(type='choice',instructions='Which B dot lies on a useful current rack support for this placement? Use current RGB to distinguish wood from background or robot.',
                             criteria={**{k:'Select receiver surface '+k+'.' for k in candidates if k.startswith('B')},'unknown':'No useful rack support dot is visible.','unlabelled':'A useful support is visible but not labelled.'})
-                assessment=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=attention))
+                attention_state=state
+                if args.focused_questions:
+                    attention_state={k:v for k,v in state.items() if k not in ('own_gripper_world_mm','coordinate_frame_note','visible_surface_samples')}
+                    attention_state['visible_dot_labels']=[dict(label=v['label'],pixel_uv=v['pixel_uv']) for v in candidates.values()]
+                assessment=api.post('/systemone',dict(model='gpt-6-luna',state=attention_state,questions=attention))
                 selected=assessment['answers']['reference']['choice']
                 state['actor_visual_assessment']={k:v['choice'] for k,v in assessment['answers'].items()}
                 state['actor_visual_assessment_confidence']={k:v['confidence'] for k,v in assessment['answers'].items()}
@@ -513,6 +519,12 @@ def main():
             if args.adaptive_steps:
                 questions.pop('scale')
                 state['step_policy']='Direction-history adaptation only; no object-target residual controls magnitude. The last execution contains commanded and measured effects.'
+            if args.relative_step_scale:
+                state['step_policy']='Only unsigned translation magnitude uses the absolute observed difference for YOUR selected feature, clipped to 2-20mm. Every sign and hold is still your decision; no orientation error is computed.'
+            if args.focused_questions:
+                for k in ('own_gripper_world_mm','visible_surface_samples','coordinate_frame_note'):state.pop(k,None)
+                for k in ('actor_selected_surface','actor_selected_receiver_surface'):
+                    if k in state:state[k]={q:v for q,v in state[k].items() if q!='visible_surface_world_mm'}
             if replay_rows is None:
                 answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
             else:
@@ -539,6 +551,12 @@ def main():
                     np.r_[np.full(3,.02),np.full(3,np.deg2rad(6))])
                 last_signs=signs.copy();dp=signs[:3]*step_sizes[:3];dr=signs[3:]*step_sizes[3:]
             else:dp=signs[:3]*step_m;dr=signs[3:]*step_r
+            if args.relative_step_scale:
+                difference=state.get('observed_receiver_minus_source_mm',state.get('observed_surface_relative_mm'))
+                if difference is not None and state['stage'].get('stage_key') not in ('close','turn','release','inspect'):
+                    # A magnitude cannot reverse, invent or suppress an actor sign.
+                    magnitude=np.clip(.3*np.abs(np.asarray(difference))/1000,.002,.02)
+                    dp=signs[:3]*magnitude
             dp*=min(1.,.03/max(np.linalg.norm(dp),1e-10));dr*=min(1.,.25/max(np.linalg.norm(dr),1e-10))
             if replay_rows is not None:
                 dp=np.array(replay_rows[decision]['commanded_translation_mm'])/1000
