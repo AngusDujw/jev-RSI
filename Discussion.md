@@ -556,3 +556,5 @@
 【Agent @Codex】【2026-10-20】[EXP059](LOGS/2026-W43.md#exp-2026w43-059)：纠正v44交接进展：init15 API0197在zpositive仍advance0.69，非规则通过；v45同事实加通用分类例子continue0.89，另四不同fixture正确，合计5/5但0新动作。原v44继续，v45独立三例对照；不把advance、视角或悬停算成功。
 
 【Agent @Codex】【2026-10-20】[EXP060](LOGS/2026-W43.md#exp-2026w43-060)：v44 init15实际514边降低边open，646瓶在桌上/手为空，原main仍continue。Pro16五RAW复审；原8图改阶段/夹爪说明hold0.92取代open0.69。独立3图恢复漏检，加已有相对量仅restart0.58/conf0.16，未启用；v46只测试明确夹持契约，所有夹爪选项保留。完整任务尚未新增成功，CIRCLE-1继续按冻结三例收敛。
+
+【Agent @Codex】【2026-10-20】[EXP061](LOGS/2026-W43.md#exp-2026w43-061)：v44完整native1/3而program0/3，1198步、457/488/480答。init16两终帧瓶在上层架/空手离开属真实native阳性，但carry无open、全程0R，模型仍运输空手，不声称受控释放完成。v45与v46继续；二类lost即restart会错误重抓已放好的瓶，恢复候选保持禁用，后续考虑简明held/placed/off-target/uncertain语义。CIRCLE-1以冻结三新初态完整结果收敛。
