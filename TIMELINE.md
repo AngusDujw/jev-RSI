@@ -159,6 +159,7 @@ graph LR
     T_2026W43_003["📊 decision-multimodal<br/>定位两端回答1995/2003→0字节完整…"]:::experiment
     T_2026W43_004["📊 decision-multimodal<br/>同跳板5880正常/v4090端口超时；清…"]:::experiment
     T_2026W43_005["📊 decision-multimodal<br/>v4090-t同主机直连0.5秒；重启23…"]:::experiment
+    T_2026W43_006["📊 decision-multimodal<br/>v4090-t批次23完整评估0成功、33…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -277,6 +278,7 @@ graph LR
   T_2026W43_002 --> T_2026W43_003
   T_2026W43_003 --> T_2026W43_004
   T_2026W43_004 --> T_2026W43_005
+  T_2026W43_005 --> T_2026W43_006
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -422,6 +424,7 @@ graph LR
 | `T-2026W43-003` | 2026-10-19 | experiment | decision-multimodal | 定位两端回答1995/2003→0字节完整性缺陷；SHA/JSON/ACK修复通过故障注入及真实SSH，长期断网恢复待验证 | `EXP-2026W43-011` | - |
 | `T-2026W43-004` | 2026-10-19 | experiment | decision-multimodal | 同跳板5880正常/v4090端口超时；清理本会话连接并分离API12/SSH3后短时恢复至配对4.34/4.39秒，长期稳定待评 | `EXP-2026W43-013` | - |
 | `T-2026W43-005` | 2026-10-19 | experiment | decision-multimodal | v4090-t同主机直连0.5秒；重启23/23获首答、79有效回答、0 API/SSH异常，实际终局待评 | `EXP-2026W43-014` | - |
+| `T-2026W43-006` | 2026-10-19 | experiment | decision-multimodal | v4090-t批次23完整评估0成功、3386回答且无SSH异常；瓶停抓取/钮停观察抓取，传输稳定后暴露控制接口缺口 | `EXP-2026W43-014` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
