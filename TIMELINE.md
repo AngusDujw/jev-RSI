@@ -246,6 +246,7 @@ graph LR
   subgraph wk_2026_W43["2026-W43"]
     direction TB
     T_2026W43_001["🔀 robodojo-planner-advancer-v1<br/>用户优先Decisions通用抓取；先推进…"]:::pivot
+    T_2026W43_002["📊 robodojo-decision-stages<br/>server02固定6+10对照收口：Pr…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -445,6 +446,7 @@ graph LR
   T_2026W42_134 --> T_2026W42_135
   T_2026W42_135 --> T_2026W42_136
   T_2026W42_136 --> T_2026W43_001
+  T_2026W42_106 --> T_2026W43_002
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -677,6 +679,7 @@ graph LR
 | `T-2026W42-135` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 既有具名Luna1100步完整失败0advance；只剩速率place控制，图像尚未认证放置 | `EXP-2026W42-299` | - |
 | `T-2026W42-136` | 2026-10-18 | experiment | robodojo-planner-advancer-v1 | 既有速率Luna1100完整失败；注册原生worker全结束，0完整成功，后续新规划受Sol资源授权阻塞 | `EXP-2026W42-299` | - |
 | `T-2026W43-001` | 2026-10-19 | pivot | robodojo-planner-advancer-v1 | 用户优先Decisions通用抓取；先推进器验证，再反推Pro规划器，稳定后扩YPR任务 | - | - |
+| `T-2026W43-002` | 2026-10-20 | experiment | robodojo-decision-stages | server02固定6+10对照收口：Pro Luna0/6，Decisions槽级0/10含1策略拒绝，完整0/9；非纯模型归因，监督job关闭 | `EXP-2026W42-300` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

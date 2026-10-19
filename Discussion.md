@@ -679,3 +679,6 @@
 
 
 【Agent】【2026-10-19】Weekly Retro（2026-W42）：按周志记录字段汇总302个EXP块（含工程与审计记录，非302个独立有效实验）：Falsified=Y 70、N 41、部分157、Crashed34。Y组说明多轮方向/输入尝试没有完成原生任务；N组包括语言/接口/几何和工程验证，不能当任务成功；部分组仍混有观测覆盖、跟踪和模型选择问题；Crashed包含启动/传输/处理器/IK中断。关键支持证据：公开机器人FK与动作映射可验证，物体曾可见抬起；关键反证：增加IK/具名/速率数据未产生完整成功。新增接口审计发现昨晚Luna实际为Responses API，不能支持Decisions能力结论。用户关键拍板为单次初始规划、固定尺度/单轴YPR、不加历史经验，以及后续默认Decisions API、规划器本机Pro、双臂输出。CIRCLE-1现涉及libero-generic-vision、libero-goal-ten、robodojo-decision-stages、robodojo-task-coverage、robodojo-planner-advancer-v1；按本轮用户新方向收敛到真正Decisions通用抓取，冻结提示后独立布局原生终局验收，不继续扩类似元信息或用EXP编号计进展。未发现需改写idea/method数学定义的依据；现有数据不支持泛化稳定成功的主张。证据：[EXP299/接口审计](LOGS/2026-W42.md#exp-2026w42-299)与[EXP300](LOGS/2026-W42.md#exp-2026w42-300)。
+
+
+【Agent @Codex】【2026-10-20 05:00】[EXP300最终对照](LOGS/2026-W42.md#exp-2026w42-300)：固定6+10槽结束，Pro普通Luna high任务成功0/6；真正Decisions槽级0/10（9完整原生失败+1多旋转策略拒绝，完整原生0/9）。明确标记基础设施中断Luna11/Decisions25另列，不入能力分母。历史图像窗口及动作接口不同，不能据此归因某个模型更差。全部控制退出、对照job禁用、Decisions媒体保留；通用抓取稳定仍未证明，下一步按用户授权先验证推进器充分输入/合法联合输出，再反推Pro规划器合同，禁止任务专用脚本提示或恢复旧回合。

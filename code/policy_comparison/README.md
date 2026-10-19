@@ -145,3 +145,19 @@ Expect: 100-continue disabled and connection/upload timing plus curl stderr
 recorded. The serialized body is unchanged; no retry is added. Offline mocked
 success/failure checks passed without API calls. This does not prove TLS or
 network failures are fixed; inspect actual h responses and native terminals.
+
+
+Final comparison (2026-10-20): all six Pro Luna-high slots and ten actual
+Decisions slots have ended. Luna: stack 0/3, classify 0/3. Decisions:
+stack 0/5 slots (four complete failures and one unchanged multi-rotation
+policy rejection at step 115), classify 0/5 complete failures. Thus Decisions
+slot success is 0/10; native-complete-only success is 0/9. Do not resume or
+replace the policy rejection. Explicitly marked infrastructure-interrupted
+attempts in the execution directory: Luna 11, Decisions 25; excluded from
+capability denominators and retained separately. The 24 MiB historical-image
+window and categorical output interface prevent a pure model-only causal claim.
+See comparison-final-audit.json in the campaign record directory. Generation j
+exited with batch=0 and retention=0; all its workers and remote containers exited.
+The comparison monitoring job is disabled. Decisions media remain preserved
+under the later explicit user retention instruction. Generic grasp stability
+remains a separate authorized follow-up; no old episode may be resumed.
