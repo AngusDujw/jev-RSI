@@ -80,7 +80,7 @@ class DirectAPI(RevisedAPI):
             for p in payload['input'][0]['content'] if p['type']=='input_image']
         save(folder/'request-summary.json',dict(model='gpt-6-luna',body_sha256=hashlib.sha256(raw).hexdigest(),
             image_sha256=images,question_options={k:list(v['criteria']) for k,v in original['questions'].items()},
-            stage=original['state']['stage'],native_tick=self.tick))
+            stage=original['state']['stage'],native_tick=self.tick,protocol_sha256=getattr(self,'protocol_sha256',None)))
         save(folder/'dispatch.json',dict(profile=self.profile,key_origin='du',endpoint=ENDPOINT,
             experience_injection=False,compact=True,image_count=len(images),**self.input_audit()))
         request=urllib.request.Request(ENDPOINT,data=raw,
@@ -215,6 +215,8 @@ def main():
     p.add_argument('--relative-step-scale',action='store_true',help='Unsigned translation magnitude from actor-selected observed feature differences; never choose signs')
     p.add_argument('--numeric-xy',action='store_true',help='Explicit legacy-style coarse X/Y reference alignment; Z and rotations remain visual/stage judgements')
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
+    p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
+    p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
@@ -234,6 +236,9 @@ def main():
     from robosuite.utils.camera_utils import get_camera_intrinsic_matrix,get_camera_extrinsic_matrix
     from libero_inframe_axes import overlay_gripper_axes
     plan=json.loads(args.plan.read_text());english(plan)
+    protocol_hash=None
+    if args.live_protocol and not args.protocol_file:raise ValueError('Live protocol requires a file')
+    if args.protocol_file:protocol_hash=hashlib.sha256(args.protocol_file.read_bytes()).hexdigest()
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
         profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
@@ -243,6 +248,8 @@ def main():
         relative_step_scale=args.relative_step_scale,
         numeric_xy=args.numeric_xy,
         reference_history=args.reference_history,
+        protocol_file=str(args.protocol_file) if args.protocol_file else None,
+        initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
@@ -351,6 +358,16 @@ def main():
             if tick+args.execution_steps>600:break
             if replay_rows is not None and decision>=len(replay_rows):break
             if time.monotonic()-started>args.wall_seconds:raise TimeoutError('Native episode wall budget')
+            protocol={}
+            if args.protocol_file:
+                raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
+                if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
+                protocol=json.loads(raw_protocol);english(protocol)
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm'}:raise ValueError('Unsupported protocol field')
+                if any(not isinstance(v,(int,float)) or not 1<=v<=20 for v in protocol.get('axis_bands_mm',{}).values()):raise ValueError('Invalid positioning band')
+                archive=out/'protocols';archive.mkdir(exist_ok=True)
+                if not (archive/(digest+'.json')).exists():(archive/(digest+'.json')).write_bytes(raw_protocol)
+                api.protocol_sha256=digest
             api.current=capture();api.previous=previous;api.tick=tick
             state=dict(task=instruction,stage=stages[stage],stage_order=stages,
                 gripper_joints=obs['robot0_gripper_qpos'].tolist(),
@@ -371,6 +388,11 @@ def main():
             if args.reference_history:
                 state['recent_actor_visual_choices']=visual_history[-3:]
                 state['reference_continuity']='These are your earlier choices in THIS episode, not current geometry. Keep a consistent physical grasp/support part while the stage remains unchanged and fresh RGB confirms it. Current C labels are sampled pixels, not persistent material landmarks. Change the chosen part when current evidence warrants it; never reuse an old XYZ estimate.'
+            if protocol:
+                key=state['stage'].get('stage_key','')
+                override=protocol.get('stage_overrides',{}).get(key,{})
+                if set(override)-{'goal','exit','control_contract'}:raise ValueError('Protocol can override stage semantics only')
+                state['stage']={**state['stage'],**override}
             if args.grounded:
                 state['source_description']=plan.get('source_description','Identify the named object from current images.')
                 state['visual_cues']=plan.get('relevant_visual_cues',[])
@@ -530,16 +552,17 @@ def main():
                 moving_key=state['stage'].get('stage_key','')
                 difference=state.get('observed_receiver_minus_source_mm',state.get('observed_surface_relative_mm'))
                 if difference is not None and moving_key in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
+                    band=protocol.get('axis_bands_mm',{}).get(moving_key,10)
                     for i,a in enumerate(('x','y')):
                         questions[a]['instructions']=(f'On world {a.upper()}, the current coarse alignment error is {difference[i]} mm. '
                             'Error means YOUR RGB-selected reference minus the controlled point: source surface minus hand during grasp alignment, '
                             'receiver surface minus held source during placement. Which movement reduces this one-axis error? '
-                            'Positive error needs positive motion; negative error needs negative motion. Hold inside the +/-10mm coarse band. '
+                            f'Positive error needs positive motion; negative error needs negative motion. Hold inside the +/-{band}mm reference-positioning band. '
                             'This aligns a visual reference only; it never certifies contact, a hidden centre, or a desired orientation.')
-                        questions[a]['criteria']={'positive':'Error above +10mm: increase the controlled coordinate.',
-                            'negative':'Error below -10mm: decrease the controlled coordinate.',
-                            'hold':'Error within -10mm to +10mm: hold this coordinate.'}
-                    state['coarse_alignment_band_mm']=10
+                        questions[a]['criteria']={'positive':f'Error above +{band}mm: increase the controlled coordinate.',
+                            'negative':f'Error below -{band}mm: decrease the controlled coordinate.',
+                            'hold':f'Error within -{band}mm to +{band}mm: hold this coordinate.'}
+                    state['coarse_alignment_band_mm']=band
                     state['alignment_band_meaning']='Coarse visual-feature positioning band only, not a sensor accuracy claim or grasp/contact certificate.'
             if args.adaptive_steps:
                 questions.pop('scale')
@@ -550,6 +573,20 @@ def main():
                 for k in ('own_gripper_world_mm','visible_surface_samples','coordinate_frame_note'):state.pop(k,None)
                 for k in ('actor_selected_surface','actor_selected_receiver_surface'):
                     if k in state:state[k]={q:v for q,v in state[k].items() if q!='visible_surface_world_mm'}
+            if protocol:
+                relative=state.get('observed_surface_relative_mm',['unknown']*3)
+                placement=state.get('observed_receiver_minus_source_mm',['unknown']*3)
+                context=dict(stage_name=state['stage']['name'],stage_goal=state['stage']['goal'],stage_exit=state['stage']['exit'],
+                    x_mm=relative[0],y_mm=relative[1],z_mm=relative[2],
+                    receiver_x_mm=placement[0],receiver_y_mm=placement[1],receiver_z_mm=placement[2],
+                    orientation=state.get('actor_visual_assessment',{}).get('orientation_relation','unknown'),
+                    gripper_command='close' if grip>0 else 'open',
+                    pad_separation_mm=state.get('own_tool_geometry',{}).get('pad_centre_separation_mm','unknown'))
+                templates=protocol.get('question_templates',{}).get(state['stage'].get('stage_key',''),{})
+                if set(templates)-set(questions):raise ValueError('Protocol cannot add or remove formal output channels')
+                for name,template in templates.items():
+                    if not isinstance(template,str):raise ValueError('Protocol questions must be text, never commands')
+                    questions[name]['instructions']=template.format_map(context)
             if replay_rows is None:
                 answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
             else:

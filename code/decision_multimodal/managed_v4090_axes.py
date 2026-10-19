@@ -42,6 +42,8 @@ def scheduler(path):
             if case.get('relative_step_scale'):command+=['--relative-step-scale']
             if case.get('numeric_xy'):command+=['--numeric-xy']
             if case.get('reference_history'):command+=['--reference-history']
+            if case.get('protocol_file'):command+=['--protocol-file',case['protocol_file']]
+            if case.get('live_protocol'):command+=['--live-protocol']
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000
