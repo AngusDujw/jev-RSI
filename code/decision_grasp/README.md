@@ -14,6 +14,14 @@ LINK6-local [0.15007, 0, 0] meters; world yaw/Z, pitch/X, roll/Y; per component
 rejected without repair, projection or resampling. Native IK and scoring remain
 the original GPT-as-Policy adapter. Official general_pickup horizon is 200.
 
+V1 ended incomplete at10 steps: its third actual Decisions answer selected two
+right-arm rotations. Three requests were HTTP200, with fresh three-RGB input.
+No response was repaired. On2026-10-19 the user approved V2: each arm's three
+rotation questions become one seven-choice rotation question. Ten API questions
+are decoded into the original fourteen directions; all49 legal dual-arm rotation
+combinations map bijectively. The V1 prompt and observations otherwise stay fixed.
+V2 fresh development episodes run at most two in parallel, one per GPU.
+
 Pilot/development layouts: official eval group0 IDs0–4. Do not resume any ended
 episode. A changed prompt/input is a named new condition. Retain all outcomes.
 Before claiming stability freeze the prompt/input/action/execution condition,
