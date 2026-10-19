@@ -1,5 +1,6 @@
 """Complete the originally requested comparison using fresh missing-slot trials."""
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import argparse
 import json
 from pathlib import Path
 import signal
@@ -14,6 +15,7 @@ def selected(mode,task,trial,layout):
         status=run/'status.json'
         if not status.exists():continue
         row=json.loads(status.read_text())
+        if row.get('infrastructure_interrupted'):continue
         if (row.get('native') or {}).get('complete') is True:return row
         # A started model-policy failure is retained as a failed trial. Previous
         # interrupted infrastructure slots are replaced once, never resumed.
@@ -25,6 +27,10 @@ def selected(mode,task,trial,layout):
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--recovery',default='completion-20261019b')
+    parser.add_argument('--parallel',type=int,choices=(1,2,3),default=3)
+    args=parser.parse_args()
     signal.signal(signal.SIGINT,lambda *_:batch.STOP.set())
     signal.signal(signal.SIGTERM,lambda *_:batch.STOP.set())
     if not batch.ARTIFACT_ROOT.is_mount():raise RuntimeError('Remote artifact mount required')
@@ -32,12 +38,11 @@ def main():
     report=dict(luna=[],decisions=[],original_attempts_preserved=True)
     for mode,layouts in (('luna',[0,1,0]),('decisions',[0,1,0,1,0])):
         if batch.STOP.is_set():break
-        def queue(task,gpu):
-            for trial,layout in enumerate(layouts,1):
+        def slot(task,gpu,trial,layout):
                 if batch.STOP.is_set():return
                 row=selected(mode,task,trial,layout)
                 if row is None:
-                    suffix='completion-20261019a'
+                    suffix=args.recovery
                     if (batch.ARTIFACT_ROOT/f'{mode}-{task}-trial{trial}-layout{layout}-{suffix}').exists():
                         raise RuntimeError('Completion attempt already exists; inspect rather than replay')
                     row=batch.run_one(task,layout,(trial-1)*2+gpu,mode,trial,recovery=suffix)
@@ -47,9 +52,14 @@ def main():
                 if not (batch.ARTIFACT_ROOT/Path(row['remote']).name/'controller/run.json').exists():
                     # Do not terminate another active episode after setup failure.
                     raise RuntimeError('This slot failed before observations; other task continues')
-        with ThreadPoolExecutor(max_workers=2) as pool:
+        # A shared queue avoids serializing all repeats of one task. Heavy native
+        # startup remains serialized by run_batch.STARTUP; admission caps RAM/GPU.
+        with ThreadPoolExecutor(max_workers=args.parallel) as pool:
             failures=[]
-            for future in as_completed([pool.submit(queue,t,g) for g,t in enumerate(('stack_blocks','classify_objects'))]):
+            futures=[pool.submit(slot,task,gpu,trial,layout)
+                for trial,layout in enumerate(layouts,1)
+                for gpu,task in enumerate(('stack_blocks','classify_objects'))]
+            for future in as_completed(futures):
                 try:future.result()
                 except Exception as error:failures.append(str(error))
             if failures:raise RuntimeError('; '.join(failures))

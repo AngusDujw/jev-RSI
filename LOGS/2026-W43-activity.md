@@ -18,3 +18,7 @@
 - 【Agent】【2026-10-19 12:37】[decision] 按用户本轮“这个跑完先”优先级，外层停止较新通用抓取批次1827656及其自有控制，保留实际原始答/步数/不完整终局，不归因模型失败、不恢复结束回合；释放两卡供原Pro/Decisions对照补齐。这不是用户取消整个研究目标。
 - 【Agent】【2026-10-19 12:39】[result] 对照补齐两槽preflight已通过ChatGPT无APIkey、Luna/high、SQLite WAL、initialize/thread-start，元数据检查无推理调用；故障隔离模拟验证另一任务能继续完成三个槽且STOP不置位，临时fixture已删。已按新完成命名更新终局媒体/缓存清理工具，前台guard绑定补齐进程1859602。
 - 【Agent】【2026-10-19 12:41】[result] 对照补齐实际端到端核验：分类新槽controller1865622已得到Luna模型英文回复并调用robodojo_start；worker.json为gpt-6-luna/high/Codex0.162.1。进程实际CODEX_HOME认证auth_mode=chatgpt、JWT套餐pro、认证与进程均无APIkey。两台原生policy容器24803/24804存活，未冒充预检即推理成功。
+- 【User】【2026-10-19 12:51】[intent] 核对GPU显存利用，尽可能快完成原对照，要求持续监督并及时解决问题。
+- 【Agent】【2026-10-19 12:51】[result] 实测server02两4090各6.5GiB/24GiB、GPU10-12%、系统RAM可用29GiB。新a补测控制/SSHFS消失、master不响应，两个原生容器仍存活且0已记录动作；核实后停自有残留，保原status审计并标基础设施中断，不记模型失败。新增五分钟provider监督，SSH/SSHFS改为用户systemd可观察服务；共享最多3槽队列补未完成独立槽，不改模型协议。
+- 【Agent】【2026-10-19 12:52】[run] 三路共享槽调度通过故障隔离与Luna先于Decisions阶段闸门验证：正常16槽、模拟故障6槽都结束/最大并发3/不跨任务取消；临时数据已自动删除。用户systemd批次robodojo-comparison-20261019启动，原生启动仍串行但运行可3并发，监督任务每5分钟，服务每分钟采资源，无自动回合重放。
+- 【Agent】【2026-10-19 12:53】[op] EXP300追加传输中断审计和3并发/systemd监督修复，无新实验编号；新增监督入口及README。通过语法与调度故障注入检查，不修改运行中原版policy源或模型提示词。
