@@ -12,9 +12,10 @@ import sys
 import time
 import urllib.error
 import http.client
+import urllib.request
 from types import SimpleNamespace
 
-from legacy_decisions import english, convert_request
+from legacy_decisions import english, convert_request,convert_response,ENDPOINT
 from libero_prompt_revision import RevisedAPI
 
 MOTION = '''Control the centre between the gripper faces. World +X is forward,
@@ -51,10 +52,39 @@ class Recorder:
 
 class DirectAPI(RevisedAPI):
     profile='genuine_rgb_direct_axes_v1'
+    def __init__(self,cfg,log,role):
+        if os.environ.get('DECISION_MM_FILE_ONLY')=='1':
+            if role!='jev':raise ValueError('Unexpected actor role')
+            self.cfg=dict(model='gpt-6-luna',key_origin='du',authentication='local authorized Decisions caller')
+            self.credential='';self.log=log;self.folder=Path(log.__self__.folder)/'decision-api'
+            self.folder.mkdir(exist_ok=True);self.calls=0;self.client=None
+        else:super().__init__(cfg,log,role)
+
+    def compact_post(self,endpoint,original):
+        if endpoint!='/systemone':raise ValueError('Unexpected actor endpoint')
+        payload=self.build_payload(original);self.validate_payload(payload)
+        folder=self.folder/f'{self.calls:04d}';self.calls+=1;folder.mkdir()
+        raw=json.dumps(payload,ensure_ascii=False).encode()
+        images=[hashlib.sha256(base64.b64decode(p['image_url'].split(',',1)[1])).hexdigest()
+            for p in payload['input'][0]['content'] if p['type']=='input_image']
+        save(folder/'request-summary.json',dict(model='gpt-6-luna',body_sha256=hashlib.sha256(raw).hexdigest(),
+            image_sha256=images,question_options={k:list(v['criteria']) for k,v in original['questions'].items()},
+            stage=original['state']['stage'],native_tick=self.tick))
+        save(folder/'dispatch.json',dict(profile=self.profile,key_origin='du',endpoint=ENDPOINT,
+            experience_injection=False,compact=True,image_count=len(images),**self.input_audit()))
+        request=urllib.request.Request(ENDPOINT,data=raw,
+            headers={'Authorization':'Bearer '+self.credential,'Content-Type':'application/json'},method='POST')
+        try:
+            with self.client.open(request,timeout=120) as response:reply=json.load(response)
+            save(folder/'response.json',reply)
+            return convert_response(reply,original)
+        except Exception as error:
+            save(folder/'failure.json',dict(error_type=type(error).__name__,error=str(error)[:500]));raise
+
     def post(self,endpoint,original):
         for attempt in range(3):
             before=self.calls
-            try:return super().post(endpoint,original)
+            try:return self.compact_post(endpoint,original) if getattr(self,'compact',False) else super().post(endpoint,original)
             except (urllib.error.URLError,http.client.RemoteDisconnected) as error:
                 # HTTP errors (including refusals) are handled by the base policy.
                 # Never repeat an answer or a parse failure to seek a preferred action.
@@ -152,8 +182,8 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument('--task',type=int,required=True);p.add_argument('--init',type=int,required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--plan',type=Path,required=True)
-    p.add_argument('--demos',type=Path,required=True);p.add_argument('--libero-root',required=True)
-    p.add_argument('--gpu',type=int,choices=[4,5,6,7],default=4)
+    p.add_argument('--demos',type=Path);p.add_argument('--libero-root',required=True)
+    p.add_argument('--gpu',type=int,default=4)
     p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
     p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
     p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
@@ -163,6 +193,9 @@ def main():
     p.add_argument('--task-demo',type=Path,help='Archived same-task real RGB and executed actions, without residual inputs')
     p.add_argument('--adaptive-steps',action='store_true',help='Unsigned step adaptation using only categorical sign history')
     p.add_argument('--positive-frame',action='store_true',help='Translate coordinate display by a fixed scene-independent constant')
+    p.add_argument('--compact',action='store_true',help='Keep only results, response choices and hashes; no rollout images or payload archives')
+    p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
+    p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args();out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',
@@ -170,7 +203,7 @@ def main():
     # One lightweight renderer per GPU, with at least 1.4GiB free before allocation.
     query=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True)
     free={int(r.split(',')[0]):int(r.split(',')[1]) for r in query.strip().splitlines()}
-    if free[args.gpu]<1400: raise RuntimeError('Insufficient free GPU memory for isolated renderer')
+    if args.gpu not in free or free[args.gpu]<1400: raise RuntimeError('Insufficient free GPU memory for isolated renderer')
     sys.path.insert(0,args.libero_root)
     import numpy as np
     from scipy.spatial.transform import Rotation
@@ -181,21 +214,27 @@ def main():
     from libero_inframe_axes import overlay_gripper_axes
     plan=json.loads(args.plan.read_text());english(plan)
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
-        profile='task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
+        profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         scene_target_or_error_inputs=False,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];env=None
-    recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev')
+    if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
+    recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
     if args.adaptive_steps:
         api.motion=MOTION.replace('Use fine scale near contact;\nuse coarse scale for clear free-space movement.',
             'Unsigned step sizes adapt from direction history: repeated signs grow the magnitude, reversals shrink it. '
             'Translation stays within 2-20mm per axis, rotation within 1-6degrees. Choose directions only.')
     if args.file_transport:
         from decision_file_bridge import FileClient
-        api.client=FileClient(out/'bridge-jobs')
-    examples=out/'examples';examples.mkdir();api.demonstrations=demonstrations(args.demos,examples)
-    if args.task_demo:
+        api.client=FileClient(out/'bridge-jobs',compact=args.compact)
+    if args.example_bank:
+        from libero_example_bank import load_bank
+        api.demonstrations=load_bank(args.example_bank,args.task,args.input_variant)
+    else:
+        assert args.demos is not None, 'Provide --example-bank or --demos'
+        examples=out/'examples';examples.mkdir();api.demonstrations=demonstrations(args.demos,examples)
+    if args.task_demo and not args.example_bank:
         from libero_task_demonstrations import build_task_examples
         api.demonstrations+=build_task_examples(args.task_demo,out/'task-demo')
     api.previous=[]
@@ -217,7 +256,8 @@ def main():
             parts=[];p0,_=own_pose();api.surface_samples=[]
             for camera in ('agentview','robot0_eye_in_hand'):
                 im=Image.fromarray(np.ascontiguousarray(obs[camera+'_image'][::-1]));b=io.BytesIO();im.save(b,format='PNG')
-                raw=b.getvalue();(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
+                raw=b.getvalue()
+                if not args.compact:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
                 if args.surface_context and camera=='agentview':
@@ -241,7 +281,7 @@ def main():
                                 draw.text((u+3,v-10),label,fill='#ffff00',stroke_width=1,stroke_fill='#000000')
                     b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
                 raw,_,audit=overlay_gripper_axes(raw,T,K,p0,camera)
-                (out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
+                if not args.compact:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'),image_part(raw)])
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
                     # Fixed-camera articulated knob base is stationary; this crop is identity/visibility only.
@@ -250,7 +290,7 @@ def main():
                     box=[max(0,int(box[0]-margin)),max(0,int(box[1]-margin)),
                          min(args.size,int(box[2]+margin)),min(args.size,int(box[3]+margin))]
                     crop=im.crop(box).resize((512,512));b=io.BytesIO();crop.save(b,format='PNG')
-                    (out/f'{tick:04d}-source-crop.png').write_bytes(b.getvalue())
+                    if not args.compact:(out/f'{tick:04d}-source-crop.png').write_bytes(b.getvalue())
                     parts.extend([dict(type='input_text',text='CURRENT fixed-view source detail; same observation, zoom only. '+plan['source_description']),image_part(b.getvalue())])
             return parts
         for decision in range(args.decisions):
@@ -364,7 +404,7 @@ def main():
         result['success']=bool(env.check_success())
         result['native_evaluated']=True
     except Exception as error:
-        result['error']=dict(type=type(error).__name__,message=str(error).replace(api.credential,'[redacted]')[:600])
+        result['error']=dict(type=type(error).__name__,message=(str(error).replace(api.credential,'[redacted]') if api.credential else str(error))[:600])
         raise
     finally:
         result.update(native_steps=tick,seconds=time.monotonic()-started,api_responses=len(list((out/'decision-api').glob('*/response.json'))))

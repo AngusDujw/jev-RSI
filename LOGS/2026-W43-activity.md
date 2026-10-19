@@ -26,3 +26,10 @@
 - 【Agent】【2026-10-19 01:31】[op] 新建实验块 EXP-2026W43-006：v6真实同任务图像/执行示例、固定平移显示坐标及仅历史方向调步；不计算当前抓取目标或角度误差  ↪ `EXP-2026W43-006`
 - 【User】【2026-10-19 12:21】[prompt] 昨晚一点这个没有跑吗
 - 【Agent】【2026-10-19 12:21】[result] Verified actual file timestamps: first native Decision response01:00:44, latest01:34:23; v5/v6 later ended on missing local bridge replies. No native experiment processes survived to12:10. This was not overnight continuous execution; fixing tool-lifetime dependence with tmux and persisted reply delivery.
+- 【Agent】【2026-10-19 12:24】[op] Added chat-independent tmux launcher for two native windows and a local supervised API worker; worker resumes persisted replies, SSH delivery retries do not resample received answers. Added600s file wait, explicit native_evaluated status and8GiB runtime disk guard.
+- 【Agent】【2026-10-19 12:24】[op] 新建实验块 EXP-2026W43-007：恢复凌晨被中断的v6：tmux独立仿真/本机转发，持久化API回答与传输恢复，不改变模型方向条件  ↪ `EXP-2026W43-007`
+- 【User】【2026-10-19 12:29】[decision] Move all current native experiments from company-server-2 to v4090, minimize disk logs/images, maximize safe concurrent memory use. Stop only this chat owned company-server-2 sessions and matching bridge.
+- 【Agent】【2026-10-19 12:31】[op] Confirmed both owned company-server-2 native panes dead and local matching bridge dead after Ctrl-C; removed only the owned tmux sessions. v4090 has one49GiB GPU with~39GiB free; root6GiB free, authorized DataStorage1.7TiB free. All environment/assets/runs will use DataStorage.
+- 【Agent】【2026-10-19 12:50】[op] 新建实验块 EXP-2026W43-008：--help  ↪ `EXP-2026W43-008`
+- 【Agent】【2026-10-19 12:50】[op] 新建实验块 EXP-2026W43-009：--help  ↪ `EXP-2026W43-009`
+- 【Agent】【2026-10-19 12:51】[op] Added compact image-free rollout recording, shared fixed example bank, concurrent authorized Decisions bridge and resource-gated v4090 scheduler; preserved mistakenly allocated EXP008/009 as migration checkpoints.

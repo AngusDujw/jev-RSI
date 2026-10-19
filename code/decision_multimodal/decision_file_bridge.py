@@ -1,15 +1,13 @@
-"""SSH file transport for Decisions when a remote proxy path is unavailable.
-
-Only /v1/decisions is callable. Credentials stay local and never enter a job.
-The remote native loop still owns observations, decisions and physical actions.
-"""
+"""Durable concurrent SSH transport restricted to authorized du /v1/decisions."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import io
 import json
 from pathlib import Path
 import shlex
 import subprocess
+import threading
 import time
 import urllib.request
 
@@ -18,21 +16,25 @@ CONTROL=None
 
 
 class FileClient:
-    def __init__(self,root):
-        self.root=Path(root);self.root.mkdir();self.counter=0
+    def __init__(self,root,compact=False):
+        self.root=Path(root);self.root.mkdir();self.counter=0;self.compact=compact
     def open(self,request,timeout=120):
         assert request.full_url==ENDPOINT
         folder=self.root/f'{self.counter:04d}';self.counter+=1;folder.mkdir()
-        payload=json.loads(request.data)
-        (folder/'pending.json').write_text(json.dumps(dict(endpoint=ENDPOINT,payload=payload)))
+        temporary=folder/'pending.part'
+        temporary.write_text(json.dumps(dict(endpoint=ENDPOINT,payload=json.loads(request.data))))
+        temporary.replace(folder/'pending.json')
         deadline=time.monotonic()+max(timeout,600)
-        while time.monotonic()<deadline:
-            if (folder/'reply.json').exists():
-                result=json.loads((folder/'reply.json').read_text())
-                if 'bridge_error' in result:raise RuntimeError(result['bridge_error'])
-                return io.BytesIO(json.dumps(result).encode())
-            time.sleep(.2)
-        raise TimeoutError('Local Decisions bridge did not return before the physical loop timeout')
+        try:
+            while time.monotonic()<deadline:
+                if (folder/'reply.json').exists():
+                    result=json.loads((folder/'reply.json').read_text())
+                    if 'bridge_error' in result:raise RuntimeError(result['bridge_error'])
+                    return io.BytesIO(json.dumps(result).encode())
+                time.sleep(.2)
+            raise TimeoutError('Local Decisions bridge exceeded the physical loop timeout')
+        finally:
+            if self.compact:(folder/'pending.json').unlink(missing_ok=True)
 
 
 def ssh(host,code,input=None):
@@ -49,60 +51,61 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--host',required=True)
     p.add_argument('--remote-roots',nargs='+',required=True)
     p.add_argument('--key-file',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
-    p.add_argument('--seconds',type=int,default=1800)
-    p.add_argument('--control-path',help='Optional short project-relative SSH multiplex socket; no TCP listener')
-    p.add_argument('--resume',action='store_true',help='Reuse persisted replies without calling the model again')
-    a=p.parse_args();assert a.key_file.name=='du-openai-direct.key'
-    CONTROL=a.control_path
-    key=a.key_file.read_text().strip();assert key.startswith('sk-')
+    p.add_argument('--seconds',type=int,default=14400);p.add_argument('--workers',type=int,default=1)
+    p.add_argument('--compact',action='store_true');p.add_argument('--control-path')
+    p.add_argument('--resume',action='store_true')
+    a=p.parse_args();assert a.key_file.name=='du-openai-direct.key';assert 1<=a.workers<=24
+    CONTROL=a.control_path;key=a.key_file.read_text().strip();assert key.startswith('sk-')
     a.output.mkdir(parents=True,exist_ok=a.resume)
-    client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
-    started=time.monotonic();calls=0;seen=set()
-    while time.monotonic()-started<a.seconds:
-        code=('import pathlib,json; roots='+repr(a.remote_roots)+'; print(json.dumps([str(p) for r in roots '
-            'for p in pathlib.Path(r).glob("bridge-jobs/*/pending.json") if not (p.parent/"reply.json").exists()]))')
-        heartbeat=dict(time=time.time(),calls=calls,status='polling')
-        (a.output/'heartbeat.json').write_text(json.dumps(heartbeat))
-        try:pending=json.loads(ssh(a.host,code))
-        except (RuntimeError,subprocess.TimeoutExpired,OSError) as error:
-            with (a.output/'transport-events.jsonl').open('a') as f:
-                f.write(json.dumps(dict(time=time.time(),operation='poll',error=str(error)[-500:]))+'\n')
-            time.sleep(2);continue
-        for remote in pending:
-            if remote in seen:continue
-            folder=a.output/hashlib.sha256(remote.encode()).hexdigest()[:20];folder.mkdir(exist_ok=True)
-            try:job=json.loads(ssh(a.host,'import pathlib; print(pathlib.Path('+repr(remote)+').read_text())'))
-            except (RuntimeError,subprocess.TimeoutExpired,OSError):continue
+    lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic()
+    def process(remote):
+        nonlocal calls
+        folder=a.output/hashlib.sha256(remote.encode()).hexdigest()[:20];folder.mkdir(exist_ok=True)
+        if (folder/'reply.json').exists():reply=json.loads((folder/'reply.json').read_text());called=False
+        else:
+            job=json.loads(ssh(a.host,'import pathlib; print(pathlib.Path('+repr(remote)+').read_text())'))
             assert job['endpoint']==ENDPOINT and job['payload']['model']=='gpt-6-luna'
-            (folder/'request.json').write_text(json.dumps(job['payload']))
+            raw=json.dumps(job['payload']).encode()
+            if not a.compact:(folder/'request.json').write_bytes(raw)
             (folder/'dispatch.json').write_text(json.dumps(dict(endpoint=ENDPOINT,key_origin='du',
-                key_file=str(a.key_file),remote_job=remote,transport='local authorized proxy via SSH file spool',
-                request_sha256=hashlib.sha256(json.dumps(job['payload']).encode()).hexdigest())))
-            request=urllib.request.Request(ENDPOINT,data=json.dumps(job['payload']).encode(),
+                remote_job=remote,compact=a.compact,request_sha256=hashlib.sha256(raw).hexdigest())))
+            request=urllib.request.Request(ENDPOINT,data=raw,
                 headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
-            called=False
-            if (folder/'reply.json').exists():reply=json.loads((folder/'reply.json').read_text())
-            else:
-                called=True;calls+=1
-                try:
-                    with client.open(request,timeout=100) as response:reply=json.load(response)
-                except Exception as error:
-                    reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
-                temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
-            target=str(Path(remote).parent/'reply.json')
-            code=('import pathlib,sys,os; p=pathlib.Path('+repr(target)+'); '
-                't=p.with_suffix(".part"); t.write_text(sys.stdin.read()); os.replace(t,p)')
-            try:ssh(a.host,code,input=json.dumps(reply))
-            except (RuntimeError,subprocess.TimeoutExpired,OSError):continue
-            seen.add(remote)
-            print(json.dumps(dict(call=calls,remote_job=remote,answered='answers' in reply,model_called=called)),flush=True)
-        # Exit after all requested native loops have written their final result.
-        if calls or a.resume:
-            code='import pathlib; print(int(all((pathlib.Path(p)/"result.json").exists() for p in '+repr(a.remote_roots)+')))'
+            client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
+            called=True
+            with lock:calls+=1
             try:
-                if ssh(a.host,code).strip()=='1':break
-            except (RuntimeError,subprocess.TimeoutExpired,OSError):pass
-        time.sleep(.5)
+                with client.open(request,timeout=100) as response:reply=json.load(response)
+            except Exception as error:
+                reply=dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
+            temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
+        target=str(Path(remote).parent/'reply.json')
+        code=('import pathlib,sys,os; p=pathlib.Path('+repr(target)+'); '
+            't=p.with_suffix(".part"); t.write_text(sys.stdin.read()); os.replace(t,p)')
+        ssh(a.host,code,input=json.dumps(reply))
+        print(json.dumps(dict(remote_job=remote,answered='answers' in reply,model_called=called)),flush=True)
+    with ThreadPoolExecutor(max_workers=a.workers) as pool:
+        while time.monotonic()-started<a.seconds:
+            for path,future in list(active.items()):
+                if not future.done():continue
+                try:future.result();seen.add(path)
+                except Exception as error:
+                    with (a.output/'transport-events.jsonl').open('a') as f:
+                        f.write(json.dumps(dict(time=time.time(),operation='transfer',error=str(error).replace(key,'[redacted]')[-500:]))+'\n')
+                del active[path]
+            (a.output/'heartbeat.json').write_text(json.dumps(dict(time=time.time(),calls=calls,inflight=len(active),workers=a.workers)))
+            code=('import pathlib,json; roots='+repr(a.remote_roots)+'; print(json.dumps([str(p) for r in roots '
+                'for p in pathlib.Path(r).glob("bridge-jobs/*/pending.json") if not (p.parent/"reply.json").exists()]))')
+            try:pending=json.loads(ssh(a.host,code))
+            except (RuntimeError,subprocess.TimeoutExpired,OSError):time.sleep(2);continue
+            for path in pending:
+                if path not in seen and path not in active and len(active)<a.workers:active[path]=pool.submit(process,path)
+            if not active and (calls or a.resume):
+                code='import pathlib; print(int(all((pathlib.Path(p)/"result.json").exists() for p in '+repr(a.remote_roots)+')))'
+                try:
+                    if ssh(a.host,code).strip()=='1':break
+                except (RuntimeError,subprocess.TimeoutExpired,OSError):pass
+            time.sleep(.5)
 
 
 if __name__=='__main__':main()
