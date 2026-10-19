@@ -80,3 +80,21 @@ stack 0/3 and classification 0/3 successes. The last f classification ended at
 barrier and began the fixed ten Decisions slots. Early setup is not evidence of
 an API response; verify run identity, actual responses and native controls.
 The six-slot terminal audit is `luna-six-slot-terminal-audit.json`.
+
+HTTP 413 follow-up: the original 126-image bound does not bound wire size.
+Observed successful requests with 96/99/102 images were reconstructed by exact
+SHA-matched official PNG data URLs at 28,323,001 / 29,265,489 / 30,205,207 bytes.
+Two stack slots stopped at 190/200 native steps and classification trial 1 at
+185 with HTTP 413, without a decision answer for the failed request. The exact
+service byte limit is unverified. Preserve these incomplete episodes.
+
+`decisions_wire_budget.py` and `decisions_comparison_wire_completion.py` are
+offline-validated future-slot candidates, NOT wired into generation f. They
+cap the exact original JSON serialization at 24 MiB and 126 images, removing
+only oldest complete camera triplets while keeping all text, latest three
+images and original image pixels. This changes the available historical image
+window and must be disclosed in the comparison. Oversized text/latest images
+raise without sending a request. Size receipts survive HTTP failure. Do not
+hot-swap running sources or retry failed requests. After f has drained, select
+valid slots, adapt only future dispatch and use independent fresh names for
+audited infrastructure-interrupted missing slots; never rerun policy failures.
