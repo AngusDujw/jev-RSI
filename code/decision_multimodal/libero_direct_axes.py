@@ -239,6 +239,7 @@ def main():
     p.add_argument('--compact',action='store_true',help='Keep only results, response choices and hashes; no rollout images or payload archives')
     p.add_argument('--record-evidence',action='store_true',help='Save actual images and deduplicated full model inputs even with compact transport')
     p.add_argument('--replay',type=Path,help='Replay archived executed commands without calling any model; diagnostic only')
+    p.add_argument('--record-final-sensors',action='store_true',help='Save final current metric depth/public calibration and measured own joints for perception diagnostics only')
     p.add_argument('--execution-steps',type=int,default=4,choices=range(4,21),help='Own-pose servo steps per categorical decision')
     p.add_argument('--live-surfaces',action='store_true',help='Current RGB component surface samples instead of stale fixed source-window dots')
     p.add_argument('--actor-attention',action='store_true',help='Decision model chooses a visible reference and orientation relationship before deciding action axes')
@@ -313,7 +314,7 @@ def main():
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
-        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,grasp_pose_decided_by_actor=True,experience_injection=False))
+        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
@@ -393,7 +394,7 @@ def main():
         native=env.env;site=native.robots[0].eef_site_id
         def own_pose():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
-        def capture():
+        def capture(save_sensor_data=False):
             from PIL import ImageDraw
             parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None
             for camera in cameras:
@@ -402,6 +403,13 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
+                if save_sensor_data:
+                    from robosuite.utils.camera_utils import get_real_depth_map
+                    metric=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
+                    np.save(out/f'{tick:04d}-{camera}-metric-depth.npy',metric.astype(np.float32))
+                    save(out/f'{tick:04d}-{camera}-public-calibration.json',dict(
+                        camera=camera,native_tick=tick,intrinsics=K.tolist(),camera_to_world=T.tolist(),
+                        meaning='Current registered sensor depth and public camera calibration only; no object pose or scene-state query.'))
                 if side_source_tracker is not None and camera=='sideview' and (api.source_component or {}).get('status')!='candidate':
                     from robosuite.utils.camera_utils import get_real_depth_map
                     from libero_robot_mask import own_geometry_rejector
@@ -920,7 +928,17 @@ def main():
             history.append(row)
             with (out/'execution.jsonl').open('a') as f:f.write(json.dumps(row)+'\n')
             print(json.dumps(row),flush=True)
-        capture()
+        capture(save_sensor_data=args.record_final_sensors)
+        if args.record_final_sensors:
+            robot=native.robots[0];joints=[]
+            for name in robot.robot_model.joints:
+                index=native.sim.model.joint_name2id(name)
+                address=int(native.sim.model.jnt_qposadr[index])
+                joints.append(dict(name=name,position_rad=float(native.sim.data.qpos[address]),
+                    limited=bool(native.sim.model.jnt_limited[index]),
+                    public_range_rad=native.sim.model.jnt_range[index].tolist()))
+            save(out/f'{tick:04d}-own-robot-joints.json',dict(native_tick=tick,joints=joints,
+                meaning='Measured robot-owned joints and public limits only, not scene objects.'))
         # Evaluator is read only here, after the final action; never sent to either model.
         result['diagnostic_replay']=args.replay is not None
         result['success']=bool(env.check_success())
