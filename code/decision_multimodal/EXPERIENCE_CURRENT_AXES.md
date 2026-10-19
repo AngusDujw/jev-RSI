@@ -21,3 +21,6 @@ No claim of stable success follows from these observations. Complete native outc
 - Black task parts and black robot parts can merge in colour tracking. Reject current RGB-D points inside public own-robot geometry; unknown is safer than chasing the hand. This does not establish scene clearance.
 - A named candidate at a silhouette quantile is not a persistent physical reference. Track the actor-selected image feature with current correspondence/depth checks, and expose loss instead of silently replacing the grasp region.
 - A suitable downward finger approach can coexist with a large translation offset. Judge tilt separately from distance; preserve actual task-image judgement for jaw heading and operated-object orientation.
+
+- Matching a visible skin point exactly is not equivalent to centring a narrow part between the fingers. Near-grasp conditions should refer to actual capture geometry; own pad projections can explain that geometry without revealing an object pose.
+- After a visible lift, vague requests for more clearance can continue indefinitely. Give the actor observed source motion, distinguish it from measured hand motion, and define the next transport transition explicitly. Neither motion alone certifies a secure grasp.

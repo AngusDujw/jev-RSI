@@ -219,6 +219,9 @@ def main():
     p.add_argument('--reference-history',action='store_true',help='Retain actor visual choices within the episode, never stale scene coordinates or cross-run experience')
     p.add_argument('--protocol-file',type=Path,help='English stage/question overrides; no action commands or coordinate targets')
     p.add_argument('--live-protocol',action='store_true',help='Development only: reload and archive protocol revisions in one persistent native episode')
+    p.add_argument('--pad-outlines',action='store_true',help='Project public own inner pad facets on each current RGB image')
+    p.add_argument('--visual-near-grasp',action='store_true',help='Near-grasp XY judges finger capture in RGB, not zero skin displacement')
+    p.add_argument('--numeric-z',action='store_true',help='Short reference-height sign criteria during near approach; actor still selects the sign')
     p.add_argument('--track-selected',action='store_true',help='Track the actor-selected RGB feature with forward/backward optical flow and fresh depth')
     p.add_argument('--robot-self-mask',action='store_true',help='Reject possible own-robot RGB-D surfaces and anchor the stationary knob identity window')
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
@@ -255,7 +258,7 @@ def main():
         reference_history=args.reference_history,
         protocol_file=str(args.protocol_file) if args.protocol_file else None,
         initial_protocol_sha256=protocol_hash,live_protocol=args.live_protocol,
-        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,
+        robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,
@@ -347,9 +350,14 @@ def main():
                                 draw.ellipse((u-2,v-2,u+2,v+2),fill='#ffff00',outline='#000000')
                                 draw.text((u+3,v-10),label,fill='#ffff00',stroke_width=1,stroke_fill='#000000')
                     b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
+                if args.pad_outlines:
+                    from libero_pad_overlay import overlay_pad_faces
+                    overlay_pad_faces(im,native,K,T)
+                    b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
                 raw,_,audit=overlay_gripper_axes(raw,T,K,p0,camera)
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
-                parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'),image_part(raw)])
+                parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'+(
+                    ' Magenta PAD-L/PAD-R outlines are projections of measured own inner finger-pad faces, not target points or contact evidence. Projected edges may be occluded in the actual RGB.' if args.pad_outlines else '')),image_part(raw)])
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
                     crop_unknown=tracker is not None and api.source_component.get('status')!='candidate'
                     # Fixed-camera articulated knob base is stationary; this crop is identity/visibility only.
@@ -449,9 +457,10 @@ def main():
                         'Verify that this is the task object in current RGB; a surface is not an object centre or desired grasp. '
                         'S, when present, is your previous selection matched in CURRENT RGB and measured with current depth, not stale XYZ. '
                         'B dots are in a fixed receiver identity window and may lie on background/robot. '
+                        'S motion fields, when present, compare CURRENT matched visible feature measurements across this episode; they do not establish holding or contact. '
                         'No object pose, target pose, orientation error, or recommended action is calculated. '
                         'Choose the grasp relationship yourself from both current images and compare coordinates only for matching physical features.')
-                    if args.focused_questions:state['surface_sample_meaning']+=' Labels identify current sampled pixels, not persistent material landmarks. Dot displacement alone is not evidence of object rotation.'
+                    if args.focused_questions:state['surface_sample_meaning']+=' C labels identify current sampled pixels, not persistent material landmarks. Dot displacement alone is not evidence of object rotation.'
                 if args.positive_frame:
                     offset=np.array([2000.,2000.,0.])
                     state['own_gripper_world_mm']=np.round(own_p*1000+offset).tolist()
@@ -572,7 +581,7 @@ def main():
             if args.numeric_xy:
                 moving_key=state['stage'].get('stage_key','')
                 difference=state.get('observed_receiver_minus_source_mm',state.get('observed_surface_relative_mm'))
-                if difference is not None and moving_key in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
+                if difference is not None and moving_key in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place') and not (args.visual_near_grasp and moving_key=='descend_to_source'):
                     band=protocol.get('axis_bands_mm',{}).get(moving_key,10)
                     for i,a in enumerate(('x','y')):
                         questions[a]['instructions']=(f'On world {a.upper()}, the current coarse alignment error is {difference[i]} mm. '
@@ -608,6 +617,10 @@ def main():
                 for name,template in templates.items():
                     if not isinstance(template,str):raise ValueError('Protocol questions must be text, never commands')
                     questions[name]['instructions']=template.format_map(context)
+            if args.numeric_z and state['stage'].get('stage_key')=='descend_to_source' and 'observed_surface_relative_mm' in state:
+                height=state['observed_surface_relative_mm'][2]
+                questions['z']['instructions']=(f'Current selected visible-feature height minus hand height is {height} mm. Which Z direction brings the fingers alongside that grasp region? Negative means the region is below the hand. Positive means it is above. Hold within +/-8mm. Visible collision or an already supported capture relationship can justify hold. A large horizontal or vertical distance is not a rotation error.')
+                questions['z']['criteria']={'negative':'Height difference below -8mm: move DOWN along world -Z.','positive':'Height difference above +8mm: move UP along world +Z.','hold':'Height within +/-8mm, or current RGB supports keeping this height.'}
             if replay_rows is None:
                 answer=api.post('/systemone',dict(model='gpt-6-luna',state=state,questions=questions))
             else:

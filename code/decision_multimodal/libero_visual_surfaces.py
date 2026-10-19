@@ -17,6 +17,8 @@ class SurfaceTracker:
         self.anchor_stationary=anchor_stationary
         self.track_selected=track_selected
         self.selected_pixel=None
+        self.selected_world=None
+        self.reference_origin=None
         self.previous_gray=None
         self.current_samples={}
 
@@ -24,13 +26,18 @@ class SurfaceTracker:
         sample=self.current_samples.get(label)
         if sample is not None and self.track_selected:
             self.selected_pixel=np.array(sample["pixel_uv"],np.float32).reshape(1,1,2)
+            self.selected_world=np.array(sample["visible_surface_world_mm"],float)
+            if label!="S":self.reference_origin=self.selected_world.copy()
 
     def follow(self,gray,allowed,depth,K,T):
         """A current RGB correspondence, never a propagated historical XYZ."""
         import cv2
         old=self.previous_gray;point=self.selected_pixel
+        previous_world=self.selected_world;origin=self.reference_origin
         self.previous_gray=gray.copy()
         self.selected_pixel=None
+        self.selected_world=None
+        self.reference_origin=None
         if old is None or point is None:return None
         params=dict(winSize=(21,21),maxLevel=3,criteria=(cv2.TERM_CRITERIA_EPS|cv2.TERM_CRITERIA_COUNT,30,.01))
         new,ok,_=cv2.calcOpticalFlowPyrLK(old,gray,point,None,**params)
@@ -43,7 +50,11 @@ class SurfaceTracker:
         xyz=T@np.r_[np.linalg.solve(K,[u,v,1])*z,1]
         if z<=0 or not np.isfinite(xyz).all():return None
         self.selected_pixel=new
-        return dict(label="S",pixel_uv=[int(u),int(v)],visible_surface_world_mm=np.round(xyz[:3]*1000,1).tolist(),
+        self.selected_world=xyz[:3]*1000
+        self.reference_origin=origin
+        return dict(matched_feature_change_world_mm=np.round(self.selected_world-previous_world,1).tolist() if previous_world is not None else None,
+            matched_feature_change_since_selection_mm=np.round(self.selected_world-origin,1).tolist() if origin is not None else None,
+            label="S",pixel_uv=[int(u),int(v)],visible_surface_world_mm=np.round(xyz[:3]*1000,1).tolist(),
             meaning="Current forward/backward-checked RGB match of your previously selected source feature, with current depth. Not a guaranteed material landmark or contact evidence.")
 
     def observe(self, rgb, depth, K, T, reject_own=None):
