@@ -126,3 +126,5 @@
 - 【Agent】【2026-10-20 02:49】[op] 新建实验块 EXP-2026W43-038：真实v26浮点阶段失败与分拆请求完整性审计，v27实际动作布尔出口  ↪ `EXP-2026W43-038`
 - 【Agent】【2026-10-20 03:11】[op] 新建实验块 EXP-2026W43-039：主视角遮挡后的侧视RGB-D物体候选回退与Pro10参照语义诊断  ↪ `EXP-2026W43-039`
 - 【Agent】【2026-10-20 03:16】[op] EXP038/039: native v26 float phase10/13 despite calibration5/5; v27 actual component gate40/40 snapshot. Compact audit223 frozen requests/432 executed channels and133 live requests/200 channels verified. v28 sideview fallback real418-step0API replay recovered485 current points; two native cases started. Pro10 semantic probes stayed weak/not promoted. Policy HEAD bundle recreated in frozen worktree after raw-SHA bundle advertisement failed; source commits unchanged.
+- 【Agent】【2026-10-20 03:35】[op] 实现独立v29 paired-span prototype：Decisions逐条判断当前实体木条与真实归档关系，再由Decisions选参照；外层不排名、不决定旋转符号。待真实请求渲染/模型及原生验证。
+- 【Agent】【2026-10-20 03:36】[op] 新建实验块 EXP-2026W43-040：外部503/520中断保留与同原生回合未答网络重试修复  ↪ `EXP-2026W43-040`

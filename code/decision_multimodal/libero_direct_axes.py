@@ -109,6 +109,11 @@ class DirectAPI(RevisedAPI):
     def revise(self, original):
         return original
     def build_payload(self, sent):
+        if sent['state'].get('request_purpose') in ('multimodal_span_fit','multimodal_span_choice'):
+            from libero_span_semantics import span_payload
+            payload=span_payload(sent,self.current,self.stage_goal_reference)
+            self.image_count=2
+            return payload
         if sent['state'].get('request_purpose') in ('text_only_observed_line_rotation','text_only_observed_line_transition'):
             from libero_line_reasoning import line_payload
             self.image_count=0
@@ -250,6 +255,7 @@ def main():
     p.add_argument('--bound-span-rotation',action='store_true',help='Bind the actor-selected observed wood span and current bottle-line pairs in rotation questions')
     p.add_argument('--literal-line-reasoning',action='store_true',help='Decisions itself evaluates printed physical-line expressions; no external product, angular error or sign')
     p.add_argument('--sideview-source-fallback',action='store_true',help='Current sideview RGB-D candidate when the main source component is unavailable')
+    p.add_argument('--paired-span-selection',action='store_true',help='Decisions first judges each physical wood span against an actual archived image, then selects its reference')
     p.add_argument('--separate-rotation-call',action='store_true',help='Independent rotation-only visual Decisions call with current shapes and actual examples')
     p.add_argument('--visible-shape-features',action='store_true',help='Current RGB-D bottle axis and observed wood planes; never desired orientation or error')
     p.add_argument('--formal-stage-call',action='store_true',help='Ask a scoped text-only Decisions stage question after visual motor choices for phases with explicit rules')
@@ -305,7 +311,7 @@ def main():
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
-        grasp_pose_decided_by_actor=True,experience_injection=False))
+        paired_span_selection=args.paired_span_selection,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
@@ -808,6 +814,13 @@ def main():
                         from libero_rotation_decision import build_direction_request
                         direction_request=build_direction_request(state)
                         if direction_request is not None:
+                            if args.paired_span_selection:
+                                from libero_span_semantics import build_span_request
+                                fit_request=build_span_request(state)
+                                if fit_request is not None:
+                                    fit_reply=api.post('/systemone',fit_request)
+                                    judgments={name.removeprefix('fits_'):row['choice'] for name,row in fit_reply['answers'].items()}
+                                    direction_request=build_span_request(state,judgments)
                             direction_reply=api.post('/systemone',direction_request)
                             state['actor_selected_rack_direction']=direction_reply['answers']['rack_direction']
                     rotation_request=None
