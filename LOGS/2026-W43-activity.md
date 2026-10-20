@@ -21,3 +21,5 @@
 - 【Agent】【2026-10-20 16:55】[result] 会话roboicl-inspect-20261020第2轮：纠正上一轮过度概括。论文2609.34261v1 §4.5/C.2明确存在GPT+Jev附加实验：GPT预测20步，每段最多执行5步，Jev以本体状态/跟踪反馈/计划说明且无RGB决定是否批准额外5步复用，不生成动作。核对官方远程refs、主线/发布分支及全部历史，当前发布策略未找到Jev gate源码，不能声称已核实其实际请求schema/置信阈值。当前dialogue_policy.py:970仅返回execute_horizon前缀。未启动实验或调用模型。
 - 【User】【2026-10-20 17:11】[intent] 再次核查RoboDojo、LIBERO等仿真benchmark中已有的Jev或OpenAI Decisions API决策baseline，要求确认公开源码及可运行入口；不启动实验或模型调用。
 - 【Agent】【2026-10-20 17:16】[result] 会话baseline-recheck，轮次20261020-01：核对3个LIBERO官方Jev闭环源码候选；确认RoboICL与ESB论文Jev集成不能按当前release直接复现，目标benchmark的外部OpenAI Decisions API现成基线未查到。补EXP-W43-003与Discussion；未安装/运行仿真/调用模型/添加baseline。  ↪ `EXP-2026W43-003`
+- 【User】【2026-10-20 17:18】[prompt] 看一下baseline里的jev libero具体是怎么用jev的
+- 【Agent】【2026-10-20 17:19】[result] 会话jev-libero-inspect-20261020第1轮：只读核对baseline/jev-libero源码及top_drawer原始API记录。该系统读取仿真特权状态，对27原子输入做可恢复MuJoCo前视，按配置合同筛选，再由Jev串行选择intent/strategy/motor；必要时代码执行两步搜索，仅执行首动作。模型不看RGB，候选含预测原生success，概率置信度仅记录不参与调幅。抽屉记录20动作/155环境步/30API（5意图+5策略+20动作），4次单选项。未启动仿真或调用API，未修改baseline源码。
