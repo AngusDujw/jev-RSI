@@ -1,0 +1,52 @@
+[
+  {
+    "type": "choice",
+    "name": "capture",
+    "instructions": "Does the CURRENT visual evidence support the bottle remaining captured by the fingers, clearly free from them, or unresolved? Judge the actual fingers/neck and temporal relationship, independently of the supporting-surface answer. Finger proximity alone is insufficient. A skin point115mm below the hand can still be captured. Choose unknown when separation/capture is not visually resolved.",
+    "choices": [
+      {
+        "value": "captured",
+        "description": "Visible finger/neck configuration or observed following supports capture, even if the body extends below the hand or overlaps a shelf."
+      },
+      {
+        "value": "clearly_free",
+        "description": "Visible bottle/hand separation establishes that the bottle is free from the fingers."
+      },
+      {
+        "value": "unknown",
+        "description": "Capture or separation is not resolved in the available views."
+      }
+    ]
+  },
+  {
+    "type": "choice",
+    "name": "support",
+    "instructions": "Which external surface visibly appears to support the CURRENT bottle, independently of whether it is captured? Distinguish the uppermost slatted shelf, lower slatted shelf, dark pedestal beneath them, and tabletop. Image overlap or proximity to one rack feature is not support; unknown remains unknown.",
+    "choices": [
+      {
+        "value": "uppermost_shelf",
+        "description": "The actual uppermost slatted shelf visibly supports the bottle."
+      },
+      {
+        "value": "lower_shelf",
+        "description": "The lower slatted shelf visibly supports the bottle."
+      },
+      {
+        "value": "dark_pedestal",
+        "description": "The dark rack pedestal beneath the shelves visibly supports the bottle."
+      },
+      {
+        "value": "tabletop",
+        "description": "The bottle visibly rests on the table surface outside the shelves."
+      },
+      {
+        "value": "no_visible_support",
+        "description": "The bottle appears suspended, with no visible external supporting surface established."
+      },
+      {
+        "value": "unknown",
+        "description": "Occlusion or ambiguous depth prevents identifying a supporting surface."
+      }
+    ]
+  }
+]

@@ -47,6 +47,7 @@ def scheduler(path):
             if case.get('scoped_reference_call'):command+=['--scoped-reference-call']
             if case.get('fin_central_samples'):command+=['--fin-central-samples']
             if case.get('held_example_bank'):command+=['--held-example-bank',case['held_example_bank']]
+            if case.get('scene_example_bank'):command+=['--scene-example-bank',case['scene_example_bank']]
             if case.get('rotation_effect_hints'):command+=['--rotation-effect-hints']
             if case.get('bound_span_rotation'):command+=['--bound-span-rotation']
             if case.get('literal_line_reasoning'):command+=['--literal-line-reasoning']
@@ -78,6 +79,7 @@ def scheduler(path):
             if case.get('free_placement_posture'):command+=['--free-placement-posture']
             if case.get('robot_self_mask'):command+=['--robot-self-mask']
             command+=['--horizon',str(case.get('horizon',600))]
+            if case.get('wall_seconds'):command+=['--wall-seconds',str(case['wall_seconds'])]
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000
@@ -91,12 +93,14 @@ def bridge(path):
     cfg=json.loads(path.read_text());root=path.parent;deadline=time.monotonic()+28800
     while time.monotonic()<deadline:
         cfg=json.loads(path.read_text())
+        if cfg.get('api_http2') and cfg.get('api_http_pool'):raise ValueError('Choose one local HTTP mode')
         command=[sys.executable,'-B',str(Path(__file__).with_name('decision_file_bridge.py')),
             '--host',cfg['host'],'--remote-roots',*[c['output'] for c in cfg['cases']],
             '--key-file',str(Path.cwd()/'.private/du-openai-direct.key'),'--output',str(root/'bridge'),
             '--resume','--compact','--workers',str(cfg.get('api_workers',12)),'--seconds',str(max(1,int(deadline-time.monotonic()))),
             '--control-path',cfg.get('control_path','code/runs/v4090-dm-20261019.sock')]
         if cfg.get('api_http2'):command+=['--http2']
+        elif cfg.get('api_http_pool'):command+=['--http-pool']
         with (root/'bridge.log').open('a') as log:result=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT)
         if result.returncode==0:return
         time.sleep(2)

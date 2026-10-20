@@ -71,11 +71,15 @@ def build_scene_relation_request(state,protocol):
         source_feature=state.get('actor_selected_surface'),
         receiving_feature=state.get('actor_selected_receiver_surface'),
         meaning='Coordinates and Euclidean distances are coarse current RGB-D estimates for actor-selected visible skin features, not object centres, exact support or contact. Distances are millimetres:100mm is10cm;1000mm is1m. A bottle can extend below the fingers while held. Use the actual object extent and support in RGB; near a rack feature does not alone prove support. Unknown measurements remain null.')
-    return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_scene_relation',
+    request=dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_scene_relation',
         use_raw_rgb=bool(protocol.get('scene_relation_raw_rgb')),
         use_hand_details=bool(protocol.get('scene_relation_hand_details')),
         formal_stage_input='Classify the CURRENT wine-bottle relationship using camera-identified current views and labelled previous observations. Previous images are historical. The phase label is not evidence that the bottle is still held or already placed. No hidden object pose, contact or outcome flag is supplied.\n'+json.dumps(evidence,separators=(',',':'))),
         questions=dict(scene_relation=dict(type='choice',instructions=rule['question'],criteria=rule['choices'])))
+    if protocol.get('scene_evidence_questions'):
+        from libero_scene_evidence import build_evidence_request
+        return build_evidence_request(request)
+    return request
 
 
 def build_position_progress_request(state,answers,protocol,numeric_errors):
@@ -169,11 +173,12 @@ def build_stage_request(state,answers,protocol,numeric_errors=None):
                       'restart':'The phase premise is invalid and recovery is requested; return to coarse approach without physical motion.'})))
 
 
-def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=(),hand_details=()):
+def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=(),hand_details=(),scene_examples=()):
     payload=convert_request(original)
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
-    if original['state'].get('request_purpose')=='visual_scene_relation':
+    if original['state'].get('request_purpose') in ('visual_scene_relation','visual_scene_evidence'):
         content=payload['input'][0]['content']
+        content.extend(scene_examples)
         for views in (previous,current):
             caption=''
             for part in views:

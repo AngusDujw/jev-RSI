@@ -183,17 +183,19 @@ def main():
     p.add_argument('--compact',action='store_true');p.add_argument('--control-path')
     p.add_argument('--api-attempts',type=int,default=8)
     p.add_argument('--http2',action='store_true',help='Reuse an authorized-endpoint-only HTTPX pool; payloads/retry rules are unchanged')
+    p.add_argument('--http-pool',action='store_true',help='Reuse independent per-worker HTTP/1.1 connections without HTTP/2 multiplexing')
     p.add_argument('--resume',action='store_true')
     a=p.parse_args();assert a.key_file.name=='du-openai-direct.key';assert 1<=a.workers<=24
+    if a.http2 and a.http_pool:p.error('Choose one pooled HTTP mode')
     assert 1<=a.api_attempts<=12
     CONTROL=a.control_path;key=a.key_file.read_text().strip();assert key.startswith('sk-')
     bridge_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     a.output.mkdir(parents=True,exist_ok=a.resume)
     lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic();last_served={};memory=ImageMemory()
     pooled=None
-    if a.http2:
+    if a.http2 or a.http_pool:
         from decision_http_transport import PooledDecisionsHTTP
-        pooled=PooledDecisionsHTTP()
+        pooled=PooledDecisionsHTTP(http2=a.http2)
     draining=threading.Event()
     signal.signal(signal.SIGUSR1,lambda *_:draining.set())
     def process(remote):
@@ -210,7 +212,7 @@ def main():
             (folder/'dispatch.json').write_text(json.dumps(dict(endpoint=ENDPOINT,key_origin='du',
                 remote_job=remote,compact=a.compact,request_sha256=hashlib.sha256(raw).hexdigest(),
                 api_attempt_budget=a.api_attempts,bridge_source_sha256=bridge_sha256,
-                http_transport='httpx_pooled_http2' if a.http2 else 'urllib_new_connection')))
+                http_transport=pooled.strategy if pooled else 'urllib_new_connection')))
             request=urllib.request.Request(ENDPOINT,data=raw,
                 headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
             client=pooled or urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))

@@ -63,7 +63,7 @@ class DirectAPI(RevisedAPI):
 
     def compact_post(self,endpoint,original):
         if endpoint!='/systemone':raise ValueError('Unexpected actor endpoint')
-        payload=self.build_payload(original);self.validate_payload(payload)
+        payload=self.build_payload(original);self.validate_payload(payload,original['state'])
         folder=self.folder/f'{self.calls:04d}';self.calls+=1;folder.mkdir()
         raw=json.dumps(payload,ensure_ascii=False).encode()
         if getattr(self,'record_evidence',False):
@@ -82,14 +82,29 @@ class DirectAPI(RevisedAPI):
         save(folder/'request-summary.json',dict(model='gpt-6-luna',body_sha256=hashlib.sha256(raw).hexdigest(),
             image_sha256=images,question_options={k:list(v['criteria']) for k,v in original['questions'].items()},
             stage=original['state']['stage'],request_purpose=original['state'].get('request_purpose','multimodal_policy'),native_tick=self.tick,protocol_sha256=getattr(self,'protocol_sha256',None)))
-        save(folder/'dispatch.json',dict(profile=self.profile,key_origin='du',endpoint=ENDPOINT,
-            experience_injection=False,compact=True,image_count=len(images),**self.input_audit()))
+        dispatch=dict(profile=self.profile,key_origin='du',endpoint=ENDPOINT,
+            experience_injection=False,compact=True,image_count=len(images),
+            same_observation_reply_reused=False,**self.input_audit())
+        save(folder/'dispatch.json',dispatch)
+        scoped_cache=bool(getattr(self,'same_observation_scene_cache',False)) and original['state'].get('request_purpose') in ('visual_scene_evidence','formal_scene_relation')
+        body_sha=hashlib.sha256(raw).hexdigest()
+        if scoped_cache:
+            if getattr(self,'scene_cache_tick',None)!=self.tick:
+                self.scene_cache_tick=self.tick;self.scene_reply_cache={}
+            cached=self.scene_reply_cache.get(body_sha)
+            if cached is not None:
+                reply=json.loads(cached['reply'])
+                dispatch.update(same_observation_reply_reused=True,reply_origin_native_request=cached['origin'])
+                save(folder/'dispatch.json',dispatch);save(folder/'response.json',reply)
+                return convert_response(reply,original)
         request=urllib.request.Request(ENDPOINT,data=raw,
             headers={'Authorization':'Bearer '+self.credential,'Content-Type':'application/json'},method='POST')
         try:
             with self.client.open(request,timeout=120) as response:reply=json.load(response)
             save(folder/'response.json',reply)
-            return convert_response(reply,original)
+            converted=convert_response(reply,original)
+            if scoped_cache:self.scene_reply_cache[body_sha]=dict(reply=json.dumps(reply),origin=folder.name)
+            return converted
         except Exception as error:
             save(folder/'failure.json',dict(error_type=type(error).__name__,error=str(error)[:500]));raise
 
@@ -130,12 +145,12 @@ class DirectAPI(RevisedAPI):
             payload=rotation_payload(sent,self.current,self.rotation_effect_examples,self.stage_goal_reference+getattr(self,'accepted_posture_reference',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
-        if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification','visual_retention_check','visual_scene_relation'):
+        if sent['state'].get('request_purpose') in ('formal_stage_classification','visual_stage_classification','visual_retention_check','visual_scene_relation','visual_scene_evidence','formal_scene_relation'):
             from libero_stage_decision import stage_payload
-            use_raw=sent['state'].get('request_purpose')=='visual_scene_relation' and sent['state'].get('use_raw_rgb')
+            use_raw=sent['state'].get('request_purpose') in ('visual_scene_relation','visual_scene_evidence') and sent['state'].get('use_raw_rgb')
             payload=stage_payload(sent,getattr(self,'current_raw',[]) if use_raw else self.current,
                 getattr(self,'stage_goal_reference',[]),getattr(self,'previous_raw',[]) if use_raw else self.previous,
-                getattr(self,'phase_entry_views',[]),getattr(self,'scene_hand_details',[]))
+                getattr(self,'phase_entry_views',[]),getattr(self,'scene_hand_details',[]),getattr(self,'scene_examples',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
         if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
@@ -148,7 +163,7 @@ class DirectAPI(RevisedAPI):
             *self.demonstrations,dict(type='input_text',text=p['input']),*temporal,*self.current])]
         self.image_count=sum(x['type']=='input_image' for x in p['input'][0]['content'])
         return p
-    def validate_payload(self,p):
+    def validate_payload(self,p,state=None):
         english(p)
         forbidden={'required_rotation_world_rad','goal_minus_current','target_pose','reward','success','contact','object_pose'}
         def audit(value):
@@ -159,10 +174,12 @@ class DirectAPI(RevisedAPI):
                 for v in value:audit(v)
         # Check structured field names, not substrings in images or words like successive.
         audit(self.sent_state)
+        if state is not None:audit(state)
     def input_audit(self):
         return dict(computed_robot_goal_pose_supplied=False,computed_orientation_error_supplied=False,
                     relative_position_feedback_enabled=getattr(self,'actor_attention',False),
-                    examples='Measured own-robot primitive effects',
+                    examples='Measured own-robot primitive effects; explicitly scoped archived RGB scene examples when enabled',
+                    archived_scene_examples_available=sum(p['type']=='input_image' for p in getattr(self,'scene_examples',[])),
                     native_tick=self.tick,action_signs_chosen_by_model=True)
 
 
@@ -260,6 +277,7 @@ def main():
     p.add_argument('--scoped-reference-call',action='store_true',help='Current-image feature selection without motor demonstrations, history or world-position values')
     p.add_argument('--fin-central-samples',action='store_true',help='Additional actual visible upper-fin middle/quarter surface samples, not a hidden pivot')
     p.add_argument('--held-example-bank',type=Path,help='Immutable actual balanced held-object rotation examples for the separate rotation call')
+    p.add_argument('--scene-example-bank',type=Path,help='Three immutable RGB-reviewed scene relationship examples; never a current state label')
     p.add_argument('--rotation-effect-hints',action='store_true',help='Observed-line local rotation effects only, no desired axis or error')
     p.add_argument('--bound-span-rotation',action='store_true',help='Bind the actor-selected observed wood span and current bottle-line pairs in rotation questions')
     p.add_argument('--literal-line-reasoning',action='store_true',help='Decisions itself evaluates printed physical-line expressions; no external product, angular error or sign')
@@ -315,13 +333,23 @@ def main():
     protocol_hash=None
     if args.live_protocol and not args.protocol_file:raise ValueError('Live protocol requires a file')
     if args.protocol_file:protocol_hash=hashlib.sha256(args.protocol_file.read_bytes()).hexdigest()
+    scene_parts=[];scene_bank_audit=None;scene_schema_sha=None
+    if args.scene_example_bank:
+        if args.task!=1458 or not args.record_evidence or not args.protocol_file or not json.loads(args.protocol_file.read_text()).get('scene_evidence_questions'):
+            raise ValueError('Scene examples require audited bottle evidence questions')
+        from libero_scene_evidence import load_scene_examples,SCHEMA_SHA256
+        scene_parts,scene_bank_audit=load_scene_examples(args.scene_example_bank)
+        scene_schema_sha=SCHEMA_SHA256
     save(out/'manifest.json',dict(task=args.task,init=args.init,gpu=args.gpu,
         git_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[2],text=True).strip(),
         profile=('compact_bank_'+args.input_variant) if args.example_bank else 'task_demo_axes_v6' if args.task_demo else ('coordinate_rgb_axes_v5' if args.coordinate_questions else ('surface_rgb_axes_v4' if args.surface_context else ('relation_rgb_axes_v3' if args.relation_prompts else ('grounded_rgb_axes_v2' if args.grounded else 'genuine_rgb_direct_axes_v1r2')))),
         source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        scene_example_bank=scene_bank_audit,
+        same_observation_scene_cache=bool(args.scene_example_bank),
+        scene_question_schema_sha256=scene_schema_sha,
         source_motion_module_sha256=hashlib.sha256(Path(__file__).with_name('libero_source_motion.py').read_bytes()).hexdigest() if args.source_motion_test else None,
         free_placement_posture=args.free_placement_posture,
-        execution_steps=args.execution_steps,horizon=args.horizon,record_evidence=args.record_evidence,
+        execution_steps=args.execution_steps,horizon=args.horizon,wall_seconds=args.wall_seconds,record_evidence=args.record_evidence,
         live_surfaces=args.live_surfaces,actor_attention=args.actor_attention,diagnostic_replay=bool(args.replay),
         focused_questions=args.focused_questions,
         relative_step_scale=args.relative_step_scale,
@@ -341,6 +369,8 @@ def main():
     api.candidate_detail_cards=args.candidate_detail_cards
     api.span_detail_cards=args.span_detail_cards
     api.actor_attention=args.actor_attention
+    api.scene_examples=scene_parts
+    api.same_observation_scene_cache=bool(args.scene_example_bank)
     replay_rows=[json.loads(s) for s in args.replay.read_text().splitlines()] if args.replay else None
     if args.adaptive_steps:
         api.motion=MOTION.replace('Use fine scale near contact;\nuse coarse scale for clear free-space movement.',
@@ -556,7 +586,8 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','scene_relation_hand_details','scene_relation_inspect','unsigned_error_scale','position_progress_gate'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','scene_relation_hand_details','scene_relation_inspect','scene_evidence_questions','unsigned_error_scale','position_progress_gate'}:raise ValueError('Unsupported protocol field')
+                if protocol.get('scene_evidence_questions') and (not protocol.get('scene_relation_question') or not args.scene_example_bank):raise ValueError('Scene evidence questions require the audited example bank and relation schema')
                 if protocol.get('scene_relation_hand_details') and not protocol.get('scene_relation_raw_rgb'):raise ValueError('Hand details require raw scene frames')
                 if protocol.get('scene_relation_inspect') and (not protocol.get('scene_relation_question') or not any(s.get('control_contract',{}).get('translation_mode')=='height_preserving_transport' for s in stages)):raise ValueError('Inspection routing requires scene decisions and the placement contract')
                 if protocol.get('unsigned_error_scale') and not (args.numeric_axis_call and args.relative_step_scale):raise ValueError('Error magnitude scaling requires scoped numeric questions and relative scaling')
@@ -957,6 +988,10 @@ def main():
                 relation_request=build_scene_relation_request(state,protocol)
                 if relation_request is not None:
                     relation_reply=api.post('/systemone',relation_request)
+                    if relation_request['state']['request_purpose']=='visual_scene_evidence':
+                        from libero_scene_evidence import build_mapping_request
+                        answer['answers'].update(relation_reply['answers'])
+                        relation_reply=api.post('/systemone',build_mapping_request(state['stage'],relation_reply['answers']))
                     answer['answers']['scene_relation']=relation_reply['answers']['scene_relation']
             else:
                 stage=replay_rows[decision]['stage']
@@ -1058,6 +1093,8 @@ def main():
         raise
     finally:
         result.update(native_steps=tick,seconds=time.monotonic()-started,api_responses=len(list((out/'decision-api').glob('*/response.json'))))
+        result['same_observation_reply_reuses']=sum(bool(json.loads(p.read_text()).get('same_observation_reply_reused')) for p in (out/'decision-api').glob('*/dispatch.json'))
+        result['api_unique_answered_requests']=result['api_responses']-result['same_observation_reply_reuses']
         save(out/'result.json',result)
         if env is not None:env.close()
         print(json.dumps(result),flush=True)
