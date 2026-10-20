@@ -41,3 +41,15 @@ than assumed effective from a plausible prompt.
 The separate original Pro comparison remains active. New pilot admission requires
 8GiB free GPU memory,20GiB available host RAM and fewer than three total registered
 policy/grasp simulator containers; no sharing with foreign GPU occupants.
+
+
+2026-10-20 audit: the original joint-v2 layouts 0/1 ended incomplete at native
+90/92 steps with server_close after interruption; do not resume either. The
+fixed Pro comparison is now complete. Fresh development runs use a dedicated
+local execution directory (server02-decision-grasp-20261020), the current owned
+comparison SSH master, and a mandatory unique --run-tag. Native terminal JSON
+is fetched from the remote campaign after the simulator exits. Optional
+--save-images in the controller preserves current camera evidence for external
+review, without adding image history or changing model inputs. The runner
+enables this option. The generic prompt and joint-rotation condition stay fixed.
+No planner has been introduced and no stable grasp performance is established.

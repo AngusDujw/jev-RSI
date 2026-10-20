@@ -25,6 +25,9 @@ class MemoryRGBTools(GPTOnlyTools):
     def _observation(self, directory, *, result=None):
         directory.mkdir(parents=True)
         self.obs = self._rpc('teacher_observation')
+        if getattr(self,'persist_images',False):
+            for camera in CAMERAS:
+                Image.fromarray(self.obs[camera]).save(directory/(camera+'.png'))
         self.observation_path = directory/'observation.json'
         packet = dict(task=self.task, instruction=self.meta['instruction'], step_id=self.tick,
             current_eef=self.current_eef(), rollout_finished=self.phase=='done',
@@ -70,6 +73,7 @@ def main():
     parser.add_argument('--sim-port',type=int,required=True)
     parser.add_argument('--seed',type=int,required=True)
     parser.add_argument('--rotation-format',choices=('axes','joint'),default='axes')
+    parser.add_argument('--save-images',action='store_true')
     args=parser.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     prompt=Path(__file__).with_name('advancer_v1.md').read_text()
@@ -83,6 +87,7 @@ def main():
     key=load_key()
     rollout=MemoryRGBTools(args.output,args.task,sim_port=args.sim_port,seed=args.seed,
         max_decisions=0,prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest())
+    rollout.persist_images=args.save_images
     try:
         start=dict(rollout.next_call());start.pop('tool')
         packet=rollout.start(**start)
@@ -90,7 +95,7 @@ def main():
             teacher_reasoning_effort=None,decision_endpoint=ENDPOINT,
             condition='generic-current-rgb-joint-v2' if args.rotation_format=='joint' else 'generic-current-rgb-v1',
             decision_question_count=len(q),rotation_format=args.rotation_format,
-            history_supplied=False,images_persisted=False,
+            history_supplied=False,images_persisted=args.save_images,
             tcp_reference_link6_local_m=TCP_OFFSET.tolist())
         write_json(args.output/'run.json',rollout.run)
         gripper={a:packet['current_eef'][a]['gripper_opening_command']<.5 for a in ('left','right')}

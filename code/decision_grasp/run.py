@@ -13,15 +13,17 @@ import threading
 
 PROJECT=Path(__file__).resolve().parents[2]
 CAMPAIGN='/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-decision-grasp-20261019'
-ROOT=Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-decision-grasp-20261019')
+ROOT=Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/runs/server02-decision-grasp-20261020')
 RUNTIME=PROJECT/'code/runs/server02-policy-comparison-20261018/official_runtime'
 PYTHON=Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/.venv/bin/python')
-SSH=['ssh','-F','/dev/null','-S','/home/ykj/.ssh/s2-grasp-20261019.ctl','--','server02']
+SSH=['ssh','-F','/dev/null','-S','/home/ykj/.ssh/s2-comparison-20261019d.ctl','--','server02']
 STOP=False
 LOCK=threading.Lock()
 
 
-def save(path,value):path.write_text(json.dumps(value,indent=2)+'\n')
+def save(path,value):
+    path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_text(json.dumps(value,indent=2)+'\n')
 
 
 def remote(argv,**kwargs):
@@ -45,9 +47,9 @@ print('admitted')
     return remote(['python3','-c',code,str(gpu)],timeout=30)
 
 
-def one(layout,gpu,rotation_format):
+def one(layout,gpu,rotation_format,run_tag):
     version='rgb-joint-v2' if rotation_format=='joint' else 'rgb-v1'
-    name=f'{version}-general_pickup-layout{layout}'
+    name=f'{version}-general_pickup-layout{layout}-{run_tag}'
     run=ROOT/name
     if run.exists():raise FileExistsError('Never resume or overwrite '+name)
     admission(gpu)
@@ -77,7 +79,7 @@ def one(layout,gpu,rotation_format):
             (run/'tmp').mkdir()
             controller=subprocess.Popen([str(PYTHON),'-u',str(Path(__file__).with_name('controller.py')),
                 '--output',str(run/'controller'),'--sim-port',str(port),'--seed',str(layout),
-                '--rotation-format',rotation_format],
+                '--rotation-format',rotation_format,'--save-images'],
                 env=env,stdout=controller_log,stderr=subprocess.STDOUT)
             state.update(status='running',controller_pid=controller.pid);save(run/'status.json',state)
             while controller.poll() is None:
@@ -103,6 +105,12 @@ def one(layout,gpu,rotation_format):
             sim.wait(timeout=30)
         subprocess.run(SSH[:-2]+['-O','cancel','-L',f'127.0.0.1:{port}:127.0.0.1:{port}','--','server02'],capture_output=True)
         for label,filename in (('native','sim/evaluation_outcome.json'),('failure','controller/failure.json')):
+            if label=='native':
+                try:
+                    outcome=remote(['cat',CAMPAIGN+'/'+name+'/'+filename],timeout=30)
+                    save(run/filename,json.loads(outcome.stdout))
+                except (subprocess.SubprocessError,ValueError,OSError) as error:
+                    state['native_fetch_error']=str(error)
             if (run/filename).exists():state[label]=json.loads((run/filename).read_text())
         save(run/'status.json',state)
     print(json.dumps(state),flush=True)
@@ -115,19 +123,25 @@ def main():
     parser.add_argument('--gpu',type=int,choices=(0,1),default=0)
     parser.add_argument('--rotation-format',choices=('axes','joint'),default='joint')
     parser.add_argument('--parallel',type=int,choices=(1,2),default=1)
+    parser.add_argument('--run-tag',required=True)
     args=parser.parse_args()
     def stop(*_):
         global STOP
         STOP=True
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
-    if not ROOT.is_mount():raise RuntimeError('Expected remote artifact mount')
+    if not args.run_tag or any(c not in 'abcdefghijklmnopqrstuvwxyz0123456789-' for c in args.run_tag):
+        raise ValueError('Use a unique lowercase run tag')
+    ROOT.mkdir(parents=True,exist_ok=True)
+    if ROOT.is_symlink() or ROOT.is_mount():raise RuntimeError('Expected dedicated local artifact directory')
+    import shutil
+    if shutil.disk_usage(ROOT).free<8*1024**3:raise RuntimeError('Need 8GiB local disk free')
     rows=[]
     if len(set(args.layouts))!=len(args.layouts):raise ValueError('Duplicate layout within one condition')
     def queue(gpu,layouts):
         global STOP
         for layout in layouts:
             if STOP:return
-            row=one(layout,gpu,args.rotation_format)
+            row=one(layout,gpu,args.rotation_format,args.run_tag)
             with LOCK:
                 rows.append(row);save(ROOT/f'pilot-{args.rotation_format}.json',rows)
             if row.get('controller_exit')!=0:
