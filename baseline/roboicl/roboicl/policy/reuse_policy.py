@@ -106,7 +106,13 @@ class Model(DialogueModel):
                     "executed_commands": [plain(row["executed_action"]) for row in records],
                     "proposed_suffix_commands": plain(self.reuse_suffix[:5]),
                 }
-                choice, audit = jev_vote(state)
+                self._log("reuse_attempts.jsonl", {"proposal_start": pending["start"], "step": self.step})
+                try:
+                    choice, audit = jev_vote(state)
+                except Exception as error:
+                    self._log("reuse_errors.jsonl", {"proposal_start": pending["start"], "step": self.step,
+                        "error_type": type(error).__name__, "error": str(error)[:600]})
+                    raise
                 self._log("reuse_votes.jsonl", {"proposal_start": pending["start"], "step": self.step, "choice": choice, **audit})
                 if choice == "reuse":
                     result = deepcopy(self.reuse_suffix[:5])

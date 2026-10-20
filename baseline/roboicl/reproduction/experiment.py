@@ -56,6 +56,8 @@ def summarize_case(folder):
         row.update(robot_steps=robot_steps,
                    gpt_completed=len(exchanges), gpt_attempts=len(lines(trace/"requests.jsonl")),
                    jev_calls=len(lines(trace/"reuse_votes.jsonl")),
+                   jev_attempts=len(lines(trace/"reuse_attempts.jsonl")),
+                   jev_errors=len(lines(trace/"reuse_errors.jsonl")),
                    jev_approvals=sum(item.get("choice") == "reuse" for item in lines(trace/"reuse_votes.jsonl")),
                    executed_intervals=intervals,
                    accepted_tool_intervals=[item["executed_steps"] for item in receipts],
