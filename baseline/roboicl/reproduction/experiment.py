@@ -51,6 +51,11 @@ def summarize_case(folder):
         robot_steps = max((item.get("step", 0) for item in observations), default=0)
         call_starts = [item["step"] for item in exchanges]
         intervals = [end-start for start, end in zip(call_starts, call_starts[1:]+[robot_steps])]
+        reused_steps = []
+        for dispatch in lines(trace/"reuse_dispatch.jsonl"):
+            start = dispatch["step"]
+            following_call = next((step for step in call_starts if step >= start), robot_steps)
+            reused_steps.append(max(0, min(len(dispatch["actions"]), following_call-start, robot_steps-start)))
         if any(step < 0 for step in intervals):
             raise ValueError("Nonmonotone GPT-call/robot-step ledger")
         row.update(robot_steps=robot_steps,
@@ -58,6 +63,7 @@ def summarize_case(folder):
                    jev_calls=len(lines(trace/"reuse_votes.jsonl")),
                    jev_attempts=len(lines(trace/"reuse_attempts.jsonl")),
                    jev_errors=len(lines(trace/"reuse_errors.jsonl")),
+                   jev_reused_steps=sum(reused_steps), jev_executed_extra_intervals=reused_steps,
                    jev_approvals=sum(item.get("choice") == "reuse" for item in lines(trace/"reuse_votes.jsonl")),
                    executed_intervals=intervals,
                    accepted_tool_intervals=[item["executed_steps"] for item in receipts],
