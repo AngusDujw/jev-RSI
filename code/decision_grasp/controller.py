@@ -18,6 +18,7 @@ from hybrid_rollout.robodojo.robodojo_server.gpt_only_client import GPTOnlyTools
 from hybrid_rollout.robodojo.io import write_json
 from joint_rotation import questions_with_joint_rotation, expand_rotation_choices
 from camera_overlay import annotate
+from rotation_effects import rotation_effects
 
 CAMERAS = ('cam_high','cam_left_wrist','cam_right_wrist')
 
@@ -81,9 +82,12 @@ def main():
     parser.add_argument('--save-images',action='store_true')
     parser.add_argument('--geometry-overlay',action='store_true')
     parser.add_argument('--alignment-guidance',action='store_true')
+    parser.add_argument('--rotation-effects',action='store_true')
     args=parser.parse_args()
     if args.alignment_guidance and (not args.geometry_overlay or args.rotation_format!='joint'):
         parser.error('Alignment guidance requires geometry overlay and joint rotation')
+    if args.rotation_effects and not args.alignment_guidance:
+        parser.error('Rotation effects require alignment guidance')
     args.output.mkdir(parents=True,exist_ok=False)
     prompt=Path(__file__).with_name('advancer_alignment_v2.md' if args.alignment_guidance else 'advancer_v1.md').read_text()
     if args.geometry_overlay:
@@ -94,6 +98,12 @@ def main():
             'They may be hidden by real geometry or absent when outside the image. '
             'Camera K and camera-to-world transforms use X-right/Y-down/Z-forward camera coordinates. '
             'Do not treat a projected TCP overlap as an enclosed grasp. No target annotations are supplied.')
+    if args.rotation_effects:
+        prompt += ('\n\nThe rotation_effects_world table enumerates predicted finger-extension and jaw-sliding axes '
+            'after each available rotation choice, computed only from the current measured tool frame. '
+            'Compare these candidate directions with the visible approach you intend. In world coordinates '
+            'a negative Z component points downward. These are commanded kinematic effects, not reached poses, '
+            'collision checks, target estimates or evidence of a grasp. No option is selected for you.')
     if not prompt.isascii():raise ValueError('Model prompt must be English ASCII')
     (args.output/'PROMPT.md').write_text(prompt)
     q=questions()
@@ -110,12 +120,14 @@ def main():
         packet=rollout.start(**start)
         rollout.run.update(teacher_model=MODEL,teacher_model_provider='openai-decisions',
             teacher_reasoning_effort=None,decision_endpoint=ENDPOINT,
-            condition=('generic-current-rgb-alignment-v4' if args.alignment_guidance else
+            condition=('generic-current-rgb-effects-v5' if args.rotation_effects else
+                'generic-current-rgb-alignment-v4' if args.alignment_guidance else
                 'generic-current-rgb-calibrated-v3' if args.geometry_overlay else
                 'generic-current-rgb-joint-v2' if args.rotation_format=='joint' else 'generic-current-rgb-v1'),
             decision_question_count=len(q),rotation_format=args.rotation_format,
             history_supplied=False,images_persisted=args.save_images,
             camera_overlay=args.geometry_overlay,alignment_guidance=args.alignment_guidance,
+            rotation_effects_supplied=args.rotation_effects,
             tcp_reference_link6_local_m=TCP_OFFSET.tolist())
         write_json(args.output/'run.json',rollout.run)
         gripper={a:packet['current_eef'][a]['gripper_opening_command']<.5 for a in ('left','right')}
@@ -123,6 +135,8 @@ def main():
             state=permitted_state(rollout,packet)
             if args.geometry_overlay:
                 state['camera_calibration']=rollout.obs['camera_calibration']
+            if args.rotation_effects:
+                state['rotation_effects_world']=rotation_effects(state['robot'])
             index=len(rollout.history)
             content=[dict(type='input_text',text=prompt+'\n\nCURRENT OBSERVATION\n'+json.dumps(state))]+image_items(
                 rollout.obs,state['robot'] if args.geometry_overlay else None,

@@ -87,3 +87,20 @@ This hypothesis follows v3's240 all-hold arm-rotation selections; selecting a
 rotation or closing alone will not count as improvement. Development0/1/2
 precedes the unchanged frozen held-out gate. If infrastructure interrupts again,
 perform offline transport diagnosis before another episode; do not API-probe.
+
+
+Alignment-v4 ended with three complete200-step native failures (0/3), all120
+requests HTTP200, no close selections, and103/240 arm rotations non-hold.
+All ended workers are gone. No same-condition repeats are scheduled.
+
+The independent --rotation-effects flag requires alignment guidance and selects
+rgb-effects-v5. It adds only rotation_effects_world and an English table legend
+to the current input. For each arm and each of the seven unchanged choices,
+R_candidate = R_world_increment @ R_measured; columns0/1 are the predicted
+finger-extension/jaw-sliding directions. These are robot-only commanded effects,
+not reached poses, target/obstacle estimates or collision/contact evidence.
+All choices are enumerated without ranking or selecting. V4 prompt, cameras,
+questions, action scale, physics and scoring otherwise stay fixed. Offline245
+paired options matched the executor axes and invariant TCP within1e-12m.
+No improved task performance is established. The original hold-out and planner
+stability gates remain unchanged.
