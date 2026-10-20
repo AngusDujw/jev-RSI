@@ -129,6 +129,10 @@ graph LR
     T_2026W42_021["📊 libero-goal-ten<br/>公开历史实体匹配纠正Goal1202抓蓝盒…"]:::experiment
     T_2026W42_022["📊 libero-goal-ten<br/>Goal1296公开近盘沿桌面滑动固定五未…"]:::experiment
   end
+  subgraph wk_2026_W43["2026-W43"]
+    direction TB
+    T_2026W43_001["⛔ roboicl-action-reuse<br/>纯GPT20次终止、11成功；Jev配置仅…"]:::blocker
+  end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
   T_2026W39_003 --> T_2026W39_004
@@ -335,6 +339,7 @@ graph LR
 | `T-2026W42-020` | 2026-10-14 | experiment | libero-goal-ten | 离线RGB-D证明Goal1202旧固定ROI低估可见地板：充分开柜60.23→132.79mm，同floorZ；需修正此前空间不足解释 | `EXP-2026W42-176` | - |
 | `T-2026W42-021` | 2026-10-14 | experiment | libero-goal-ten | 公开历史实体匹配纠正Goal1202抓蓝盒，原碗下降受阻；1296平面移腕未推盘，后方翻转腕姿入口受阻 | `EXP-2026W42-180` | - |
 | `T-2026W42-022` | 2026-10-14 | experiment | libero-goal-ten | Goal1296公开近盘沿桌面滑动固定五未见初态5/5，115.4Jev/533.4步，稳定项9/10 | `EXP-2026W42-199` | - |
+| `T-2026W43-001` | 2026-10-21 | blocker | roboicl-action-reuse | 纯GPT20次终止、11成功；Jev配置仅root可读，等待最小复制授权后继续60次对照 | `EXP-2026W43-008` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
