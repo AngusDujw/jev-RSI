@@ -28,8 +28,10 @@ def check_english(value):
     elif isinstance(value, list):
         for item in value:
             check_english(item)
-    elif isinstance(value, str) and not value.startswith("data:image/") and CJK.search(value):
-        raise ValueError("Non-English CJK text in the final model request")
+    elif isinstance(value, str) and not value.startswith("data:image/"):
+        escaped = re.findall(r"\\u([0-9a-fA-F]{4})", value)
+        if CJK.search(value) or any(0x3400 <= int(code, 16) <= 0x9fff for code in escaped):
+            raise ValueError("Non-English CJK text in the final model request")
 
 
 def audit(value):
