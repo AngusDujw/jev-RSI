@@ -146,6 +146,8 @@ def main():
                       "endpoint": args.endpoint, "single_file_probe": bool(args.asset)}), flush=True)
     stop = threading.Event()
     progress = threading.Lock()
+    request_lock = threading.Lock()
+    next_request_at = [0.0]
     counts = {"objects": 0, "bytes": 0, "last_print": 0.0}
 
     def fetch(item):
@@ -182,6 +184,11 @@ def main():
             for attempt in range(3):
                 try:
                     request = urllib.request.Request(url+f"?download=true&roboicl_attempt={attempt}", headers={"User-Agent": "roboicl-reproduction/1.0"})
+                    # Allow parallel large transfers without bursting the
+                    # mirror's resolver endpoint with tiny-file requests.
+                    with request_lock:
+                        time.sleep(max(0.0, next_request_at[0]-time.monotonic()))
+                        next_request_at[0] = time.monotonic()+0.25
                     received = 0
                     value = hashlib.sha256()
                     with urllib.request.urlopen(request, timeout=40) as reply, part.open("wb") as stream:

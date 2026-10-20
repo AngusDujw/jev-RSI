@@ -26,6 +26,8 @@ Use the local signed-in ChatGPT Pro account for GPT transport, never an OpenAI P
 
 Run on company-server-2-ykj under `/home/ykj/project/jev-rsi-roboicl`. Use at most four idle GPUs; measure one simulator's peak usage before choosing workers per GPU. Keep RGB in memory for policy input and do not persist frames, videos, image-bearing request payloads, or HDF5 trajectories. Save lightweight textual action/receipt/request audits with image content replaced by hashes, outcome, steps, calls, latency, usage and provenance.
 
+Asset transport uses revision-pinned resolve URLs with SHA256 verification because the server's direct Hugging Face route and mirror LFS batch URLs failed. Existing readable assets may seed identical objects by content, with independent copies. The installation retains the complete non-layout asset tree and only the twenty selected layout JSON files; no physical USD/material/object dependency is pruned. `setup/install_selected_assets.py` uses the released launcher's existing `explicit-files` manifest scope and verifies every selected source file before materializing the original robot templates. Unrelated evaluation layouts are excluded to avoid thousands of unnecessary transfers.
+
 ## Reproduction limits
 
 The paper reports Jev results only for Align Blocks and General Pickup on development layouts 0–4. Applying the gate to the other selected tasks and using layouts 0–3 is a user-requested extension. The original gate prompt, threshold and full implementation are not published. A local Pro transport also differs from the release's API provider; any differences in model identity, prompt transport or usage counters must remain explicit. No success or speedup is claimed before actual execution.
