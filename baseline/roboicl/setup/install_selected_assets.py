@@ -25,7 +25,11 @@ def main():
     if git(cache, "rev-parse", "HEAD", text=True).strip() != lock["revision"]:
         raise ValueError("Asset revision differs from the official lock")
     entries = locked_asset_entries(cache, args.task)
-    subprocess.run(["git", "-C", str(cache), "lfs", "checkout"], check=True)
+    checkout_log = cache.parent/"selected-assets-checkout.log"
+    print(json.dumps({"checkout_log": str(checkout_log)}), flush=True)
+    with checkout_log.open("w") as stream:
+        subprocess.run(["git", "-C", str(cache), "lfs", "checkout"], check=True,
+                       stdout=stream, stderr=subprocess.STDOUT)
     for entry in entries:
         path = cache/entry["path"]
         if not path.is_file() or path.stat().st_size != entry["size"] or digest(path) != entry["sha256"]:
