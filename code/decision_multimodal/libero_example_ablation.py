@@ -19,7 +19,8 @@ def filter_examples(payload, omit):
             text = part.get('text', '') if part.get('type') == 'input_text' else ''
             family = ('motion' if text.startswith('Actual independently reset +') else
                       'task' if text.startswith(('Another recorded episode illustrates the physical relationship for phase ',
-                                                'ARCHIVED goal-relationship example from a DIFFERENT episode,')) else None)
+                                                'ARCHIVED goal-relationship example from a DIFFERENT episode,',
+                                                'ARCHIVED goal appearance, BEFORE left and AFTER right;')) else None)
             if family == omit:
                 if index + 1 >= len(original) or original[index + 1].get('type') != 'input_image':
                     raise ValueError('Archived example caption lacks its paired image')

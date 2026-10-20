@@ -190,3 +190,5 @@
 - 【User】【2026-10-20 14:49】[prompt] 所以目前还一次都没有跑完是吗；后续测一下分别删除这两个示例看看效果
 - 【Agent】【2026-10-20 14:49】[op] 实现v20末端payload示例消融wrapper，分别去motion或task的caption+image，不改变另一类示例调度、当前图、状态或问题；源哈希固定41a14235。真实turn0178夹具两条件分别删3/2对、保留10/11图，问题不变、过滤幂等，AST通过；0API/0原生测试。
 - 【Agent】【2026-10-20 14:52】[run] v54完整终局native/program0/3，均1198步、348/349/348答。按用户要求启动v55删motion/v56删task+goal各14/15/16六并发；07e939f3 wrapper精准过滤，不改冻结原文或XYZ/控制器；首输入分别5图task-only和10图motion-only已实审。
+- 【User】【2026-10-20 15:54】[prompt] 实验情况怎么样
+- 【Agent】【2026-10-20 15:55】[result] v55只删通用示例完整native/program3/3，706/646/694步、234/220/231答，685请求逐SHA均无motion图。发现v56阶段题换caption导致目标图漏删，每例约18–20次，不能称干净no-task。补识别ARCHIVED goal appearance，阶段/主请求fixture通过；保留原组，准备v57修正后三配对。
