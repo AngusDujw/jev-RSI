@@ -169,11 +169,14 @@ def main():
                     "execute_horizon": horizon, "predict_horizon": 20, "pro_auth": "ChatGPT", "model": "gpt-6-astra", "effort": "xhigh",
                     "code_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
             save(folder/"case.json", case)
+            kit_root = ROOT/".runtime"/f"kit-gpu{gpu}-slot{slot}"
+            kit_root.mkdir(parents=True, exist_ok=True)
             env = dict(os.environ, ROBOICL_REUSE_MODE="jev" if condition == "jev" else "pure", ROBOICL_NO_MEDIA="1",
                        ROBOICL_PREDICT_HORIZON="20", ROBOICL_EXECUTE_HORIZON=str(horizon),
                        ROBOICL_GPU_SLOTS=str(args.slots_per_gpu), ASTRA_API_KEY="local-chatgpt-placeholder",
                        TMPDIR=str(ROOT/".runtime/tmp"), XDG_CACHE_HOME=str(ROOT/".runtime/cache"),
-                       TORCH_EXTENSIONS_DIR=str(ROOT/".runtime/torch-extensions"))
+                       TORCH_EXTENSIONS_DIR=str(ROOT/".runtime/torch-extensions"),
+                       CUDA_CACHE_PATH=str(ROOT/".runtime/cuda-cache"), ROBOICL_KIT_PORTABLE_ROOT=str(kit_root))
             command = [args.policy_python, "-B", "-m", "roboicl.run", task, "--shots", "0", "--seed", "0", "--layout", str(layout),
                        "--gpu", str(gpu), "--gpu-slot", str(slot), "--sim-python", args.sim_python, "--policy-python", args.policy_python,
                        "--profile", str(profile_path), "--results-root", str(folder)]

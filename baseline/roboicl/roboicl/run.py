@@ -513,6 +513,13 @@ def main():
         "--reasoning-effort",
         effort,
     ]
+    kit_args = "--enable isaacsim.replicator.behavior --enable isaacsim.sensors.camera"
+    portable_root = os.environ.get("ROBOICL_KIT_PORTABLE_ROOT")
+    if portable_root:
+        portable_root = str(absolute_path(portable_root))
+        if any(character.isspace() for character in portable_root):
+            raise ValueError("IsaacLab's Kit argument parser requires a portable root without whitespace")
+        kit_args += " --portable-root " + portable_root
     client = [
         str(sim_python),
         "-u",
@@ -535,7 +542,7 @@ def main():
         "--enable_cameras",
         "--headless",
         "--kit_args",
-        "--enable isaacsim.replicator.behavior --enable isaacsim.sensors.camera",
+        kit_args,
     ]
     if args.capture_only:
         client.append("--capture-only")
