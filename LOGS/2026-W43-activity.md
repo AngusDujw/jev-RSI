@@ -42,3 +42,13 @@
 - 【Agent】【2026-10-21 01:32】[op] 补Jev门控尝试/错误审计及汇总，异常专项检查确认失败会保留记录且不放行额外动作；官方13项测试通过。远端GitHub TLS中断后，使用本机已推送commit的Git bundle前台传输并快进部署，不改远端历史。
 - 【Agent】【2026-10-21 01:35】[op] 已核验资产选择保留全部7295个非布局源文件及20个选定布局，共7315文件，没有物理依赖裁剪。进一步核对原生reset：目录seed0、初始sim seed0、reset seed=layout ID分别记录，未改变原生随机化。均值/最大步数按此前告知的GPT调用间隔解释继续准备。
 - 【Agent】【2026-10-21 01:38】[op] 更新EXP004的真实准备状态、源码SHA、Jev执行契约差异、资源范围、种子与专项检查；正式机器人回合仍0。
+- 【Agent】【2026-10-21 01:41】[op] 只读核查Isaac Sim 5.1源码后，为每个GPU slot配置项目内Kit portable-root，避免默认portable缓存写入共享root环境；CUDA缓存也定向项目内。不更改共享环境权限或驱动，13项官方单测继续通过。
+- 【Agent】【2026-10-21 01:46】[op] 所需4059个唯一LFS对象全部完成大小/SHA256验证，共28,444,332,741字节；正在展开7315个选定源文件并做安装后校验。另将LFS未选布局的checkout诊断重定向至项目日志，避免大段无关输出。准备临时显存/无API相机预检脚本，测试后删除。
+- 【Agent】【2026-10-21 01:50】[op] 全部7315个选定文件安装后校验通过，展开41,186,473,353字节；资源集仅含完整非布局物理资源和20布局。启动GPU1 general_pickup layout0 无模型相机/显存预检，数字采样和日志保存在远端项目.runtime/preflight；临时监测脚本完成测试后删除。
+- 【Agent】【2026-10-21 01:54】[op] GPU1无API预检已进入Isaac Sim首次官方扩展解析/下载阶段；所用Kit portable-root为项目内slot目录，未调用GPT/Jev，也未记录图像。
+- 【Agent】【2026-10-21 01:59】[op] 新建实验块 EXP-2026W43-005：--help  ↪ `EXP-2026W43-005`
+- 【Agent】【2026-10-21 02:04】[op] 首轮GPU1预检483.16秒后在import RoboDojo runtime因utils.load_file命名空间冲突失败；实测GPU1峰值3225MiB但尚无任务环境，故不能用于并发预算。保留EXP005 Crashed及全部日志；修复Kit后的utils路径解析并做专项检查，GPT/Jev调用0。
+- 【Agent】【2026-10-21 02:08】[op] GPU1 general_pickup无API预检v2通过：30条480x640x3非黑观测，峰值8939MiB、131.78秒、持久化影像0，修复utils导入后成功。开始fold_clothes相同无API预检，确认最大显存后拟选四张空闲卡各2路。
+- 【Agent】【2026-10-21 02:08】[op] 新建实验块 EXP-2026W43-006：RoboICL无API相机与显存复验：冻结源与完整物理资源  ↪ `EXP-2026W43-006`
+- 【Agent】【2026-10-21 02:14】[op] fold_clothes无API预检v1通过，GPU1峰值9201MiB，78.37秒。按原生render_sync入口补add_zero_delay_kit_args，以保证八路负载下RGB/物理同步，所有条件共用；启动同步版fold复验。新增按观测真实统计Jev额外执行步数，终局截断3步及中断2步专项通过；正式规划器CLI显式固定Astra/xhigh。
+- 【Agent】【2026-10-21 02:19】[op] 同步版fold_clothes预检通过：30条有效观测，zero-delay设置实际激活，GPU1峰值9190MiB/74.33秒；本机Pro经SSH桥真实ready调用返回Astra/xhigh/completed（4.39秒）。两端临时测试脚本均删除。复核GPU0/1/2/3空闲，启动纯GPT五任务各layout0–3共20正式回合，四卡各2路共8并行；本机桥与SSH转发均为可观察前台会话。
