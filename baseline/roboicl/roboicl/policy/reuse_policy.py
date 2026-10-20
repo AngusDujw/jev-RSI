@@ -55,6 +55,18 @@ def jev_vote(state):
 
 
 class Model(DialogueModel):
+    def __init__(self, cfg):
+        super().__init__(cfg)
+        if os.environ.get("ROBOICL_REUSE_MODE", "pure") == "jev":
+            if self.dialogue_config.execute_horizon != 5 or self.dialogue_config.predict_horizon != 20:
+                raise ValueError("The reconstructed paper gate requires 20-predict / 5+5-execute")
+            contract = "execute at most 5."
+            if self.prompt.count(contract) != 1:
+                raise ValueError("Released execution contract changed; review the reuse prompt")
+            self.prompt = self.prompt.replace(contract, "execute at most 10.", 1)
+            self._log("reuse_contract.jsonl", {"initial_dispatch": 5, "maximum_execution": 10,
+                "prompt_change": "Execution upper bound changed from five to ten; all other released text retained."})
+
     def reset(self):
         super().reset()
         self.reuse_suffix = []
