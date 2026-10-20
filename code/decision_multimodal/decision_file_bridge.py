@@ -182,6 +182,7 @@ def main():
     p.add_argument('--seconds',type=int,default=14400);p.add_argument('--workers',type=int,default=1)
     p.add_argument('--compact',action='store_true');p.add_argument('--control-path')
     p.add_argument('--api-attempts',type=int,default=8)
+    p.add_argument('--http2',action='store_true',help='Reuse an authorized-endpoint-only HTTPX pool; payloads/retry rules are unchanged')
     p.add_argument('--resume',action='store_true')
     a=p.parse_args();assert a.key_file.name=='du-openai-direct.key';assert 1<=a.workers<=24
     assert 1<=a.api_attempts<=12
@@ -189,6 +190,12 @@ def main():
     bridge_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     a.output.mkdir(parents=True,exist_ok=a.resume)
     lock=threading.Lock();calls=0;seen=set();active={};started=time.monotonic();last_served={};memory=ImageMemory()
+    pooled=None
+    if a.http2:
+        from decision_http_transport import PooledDecisionsHTTP
+        pooled=PooledDecisionsHTTP()
+    draining=threading.Event()
+    signal.signal(signal.SIGUSR1,lambda *_:draining.set())
     def process(remote):
         nonlocal calls
         began=time.monotonic();timing=dict(started=time.time())
@@ -202,10 +209,11 @@ def main():
             if not a.compact:(folder/'request.json').write_bytes(raw)
             (folder/'dispatch.json').write_text(json.dumps(dict(endpoint=ENDPOINT,key_origin='du',
                 remote_job=remote,compact=a.compact,request_sha256=hashlib.sha256(raw).hexdigest(),
-                api_attempt_budget=a.api_attempts,bridge_source_sha256=bridge_sha256)))
+                api_attempt_budget=a.api_attempts,bridge_source_sha256=bridge_sha256,
+                http_transport='httpx_pooled_http2' if a.http2 else 'urllib_new_connection')))
             request=urllib.request.Request(ENDPOINT,data=raw,
                 headers={'Authorization':'Bearer '+key,'Content-Type':'application/json'},method='POST')
-            client=urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
+            client=pooled or urllib.request.build_opener(urllib.request.ProxyHandler({'https':'http://127.0.0.1:7897'}))
             called=True
             api_started=time.monotonic()
             def count_attempt():
@@ -214,6 +222,7 @@ def main():
             reply=infer_unanswered(client,request,folder,key,a.api_attempts,on_attempt=count_attempt)
             temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
             timing['api_seconds']=time.monotonic()-api_started
+            if pooled:timing['http_version']=pooled.http_version
         target=str(Path(remote).parent/'reply.json')
         body=json.dumps(reply);digest=hashlib.sha256(body.encode()).hexdigest()
         delivery_started=time.monotonic();ack=ssh(a.host,delivery_command(target,digest),input=body)
@@ -222,7 +231,7 @@ def main():
         (folder/'timing.json').write_text(json.dumps(timing,indent=2))
         print(json.dumps(dict(remote_job=remote,answered='answers' in reply,model_called=called)),flush=True)
     with ThreadPoolExecutor(max_workers=a.workers) as pool:
-        while time.monotonic()-started<a.seconds:
+        while time.monotonic()-started<a.seconds and not draining.is_set():
             for path,future in list(active.items()):
                 if not future.done():continue
                 try:future.result();seen.add(path)
@@ -250,6 +259,10 @@ def main():
                     if ssh(a.host,code).strip()=='1':break
                 except (RuntimeError,subprocess.TimeoutExpired,OSError):pass
             time.sleep(.5)
+    if pooled:pooled.close()
+    if draining.is_set():
+        print(json.dumps(dict(event='bridge_drained',inflight_replies_preserved=True)),flush=True)
+        raise SystemExit(75)  # Managed wrapper reloads scheduling/transport settings.
 
 
 if __name__=='__main__':main()

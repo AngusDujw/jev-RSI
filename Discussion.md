@@ -576,3 +576,5 @@
 【Agent @Codex】【2026-10-20】[EXP069](LOGS/2026-W43.md#exp-2026w43-069)：v51首实际2case的12RAW/4detail逐像素审计一致，但retained0.48/0.93不能称稳定高置信。v50 init15/406仍误placed0.44（rack-point距离259.7mm）。旧v48/1102瓶落桌而检查continue；相同真实状态换既有四类场景题off-target0.87，0动作。v52仅把该题扩展到inspect，由模型类别进入重抓或返回放置，不改原符号/夹爪或外部判接触。CIRCLE-1按完整原生和冻结新三例收敛。
 
 【Agent @Codex】【2026-10-20】运行补充[EXP069](LOGS/2026-W43.md#exp-2026w43-069)：v50 init14真正0214/478在deviation0.91时advance1.0，490进入运输，未把净空交接计成功。v52三原生PID不变，首次34/46/34步已验证；API桥有序排空全部在途回答后仅替换本机wrapper为单worker，未改模型输入、未重启原生。v49 init15完整false1198，其他组仍待全终局。下一步先完成v50/v51/v52，不再只扩张预检。
+
+【Agent @Codex】【2026-10-20】[EXP070/071](LOGS/2026-W43.md#exp-2026w43-071)：v51实际274已有手部detail仍误placed0.52；Pro20五RAW提出capture/support独立视觉题加3历史例图，新两已知反例captured0.87/0.95、无可见支撑0.88/0.87，0新动作、不单独归因例图。可选HTTP2原字节传输8Mock/AST3通过、两真请求HTTP/2为15.172/2.768s，不宣称修复；准备仅迁移API桥保留native PID。v50 init16/682实际Y typed refusal原答保留、未原生评估，不能补hold或重采。CIRCLE-1按完整任务及冻结新三例收敛。
