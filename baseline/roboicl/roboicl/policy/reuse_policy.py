@@ -12,7 +12,7 @@ import time
 import urllib.request
 
 from .astra_policy import STATE_KEYS, plain
-from .action_feedback import tracking_receipt
+from .action_feedback import TrackingGuard, tracking_receipt
 from .dialogue_policy import Model as DialogueModel
 
 
@@ -35,6 +35,9 @@ def jev_vote(state):
         "reuse": {"type": "choice", "instructions":
             "Decide whether to reuse the next five actions of the existing GPT proposal. "
             "Use only the plan note, robot proprioception, issued commands and tracking receipts. "
+            "Arm joints are radians; EE poses use environment-origin positions in meters "
+            "and world-aligned quaternions [w,x,y,z]. Gripper values are previous normalized "
+            "commands (0 closed, 1 open), not measured aperture or grasp success. "
             "Tracking does not establish grasp success or task progress. "
             "Choose replan when feedback contradicts the plan, execution was interrupted, "
             "or a fresh observation and plan are needed. Do not generate or modify actions.",
@@ -72,6 +75,22 @@ class Model(DialogueModel):
         self.reuse_suffix = []
         self.reuse_checked = False
 
+    def execution_context(self):
+        pending = self.pending or {}
+        return {"call_id": pending.get("call_id"), "kind": pending.get("kind", "act"),
+                "start": pending.get("start", self.step)}
+
+    def _prefix_allows_reuse(self, records):
+        if len(records) != 5 or any(row.get("controller_event") for row in records):
+            return False
+        if os.environ.get("ASTRA_TRACKING_GUARD", "1") == "1":
+            guard = TrackingGuard()
+            for row in records:
+                receipt = tracking_receipt(row["executed_action"], self.archive[row["resulting_step"]]["state"])
+                if guard.observe(receipt):
+                    return False
+        return True
+
     def _log(self, name, value):
         # The in-memory action dialogue retains its images; only disk logs are scrubbed.
         super()._log(name, image_free(value))
@@ -95,9 +114,12 @@ class Model(DialogueModel):
             self.reuse_checked = True
             executed = self.step - pending["start"]
             if (executed == pending["returned"] == 5
-                    and "controller_rejection" not in pending
-                    and not self.archive[self.step].get("controller_event")):
+                    and "controller_rejection" not in pending):
                 records = [row for row in self.ledger if pending["start"] < row["resulting_step"] <= self.step]
+                if not self._prefix_allows_reuse(records):
+                    self._log("reuse_guard_rejections.jsonl", {"proposal_start": pending["start"],
+                        "step": self.step, "reason": "Incomplete prefix or released tracking guard requires replanning."})
+                    return super().get_action()
                 state = {
                     "plan_note": pending["execution_note"],
                     "proposal_start_step": pending["start"], "current_step": self.step,

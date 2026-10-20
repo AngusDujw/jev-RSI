@@ -78,12 +78,23 @@ def eval_one_episode(env, model_client) -> None:
         )
     policy_call(env, model_client, "update_obs", obs=observation)
 
+    tracking = None
+    tracking_context = None
     while not env.is_episode_end():
         if config.max_turns is not None and turns >= config.max_turns:
             raise PolicyServiceError("Harness action dialogue reached max_turns")
         actions = policy_call(env, model_client, "get_action")
         turns += 1
-        tracking = TrackingGuard() if os.environ.get("ASTRA_TRACKING_GUARD", "1") == "1" else None
+        tracking_enabled = os.environ.get("ASTRA_TRACKING_GUARD", "1") == "1"
+        if tracking_enabled and os.environ.get("ROBOICL_REUSE_MODE") == "jev":
+            # A 5+5 continuation is still one proposal. Do not reset the
+            # released consecutive-error counter at its internal boundary.
+            context = policy_call(env, model_client, "execution_context")
+            if tracking is None or context != tracking_context:
+                tracking = TrackingGuard()
+            tracking_context = context
+        else:
+            tracking = TrackingGuard() if tracking_enabled else None
         for action_index, action in enumerate(actions):
             if env.is_episode_end():
                 break
