@@ -36,6 +36,7 @@ def main():
     parser.add_argument("--endpoint", default="https://hf-mirror.com")
     parser.add_argument("--workers", type=int, default=16, choices=range(1, 33))
     parser.add_argument("--asset", help="Optional single-file transfer probe; does not install a complete tree")
+    parser.add_argument("--seed-assets", type=Path, help="Read-only existing Assets tree; copy only frozen SHA256 matches")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     lock = json.loads((root/"configs/data.lock.json").read_text())["assets"]
@@ -87,6 +88,15 @@ def main():
             part = target.with_suffix(".roboicl-part")
             if part.is_symlink():
                 raise ValueError("Refuse a symlinked transfer scratch file")
+            seed = args.seed_assets / Path(path).relative_to("Assets") if args.seed_assets else None
+            if seed is not None and seed.is_file() and seed.stat().st_size == size and digest(seed) == oid:
+                # Copy, never hardlink: final materialization must not alter
+                # an existing installation through a shared inode.
+                shutil.copyfile(seed, part)
+                if digest(part) != oid:
+                    raise RuntimeError("Seed asset changed during copying: " + path)
+                part.replace(target)
+        if not target.exists():
             url = args.endpoint.rstrip("/")+"/datasets/"+lock["repo_id"]+"/resolve/"+revision+"/"+urllib.parse.quote(path)
             for attempt in range(3):
                 try:
