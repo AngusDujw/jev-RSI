@@ -17,3 +17,5 @@
 - 【Agent】【2026-10-20 16:03】[op] 会话progress-report-20261020，轮次02：五条件表/22组台账/12逐例状态与两个新增GIF通过浏览器检查，本地file直开正常、390px无横向溢出、控制台零错误；107项来源SHA和EXP编号/链接通过，更新离线包。保存并通过SSH commit/push本轮网页源码及W43记录，未更改实验控制/提示词或新增模型调用。  ↪ `EXP-2026W43-002`
 - 【User】【2026-10-20 16:43】[prompt] 看一下roboicl是怎么实现的gpt+jev，这里的jev是怎么用的
 - 【Agent】【2026-10-20 16:43】[result] 会话roboicl-inspect-20261020第1轮：只读核查baseline/RoboICL实际入口policy_server→dialogue_policy；未发现Jev/typesafe调用。GPT直接输出[T,14]双臂连续动作，校验/累计到末端位姿后由RoboDojo IK执行；示范与执行回执通过上下文实现ICL。与本项目libero_jev_supervisor的离散方向/夹爪/阶段选择区分。未调用模型、未启动实验、未修改策略代码。
+- 【User】【2026-10-20 16:53】[prompt] 我是说roboicl这个baseline里也有用gpt+jev的，看看代码具体是怎么做的
+- 【Agent】【2026-10-20 16:55】[result] 会话roboicl-inspect-20261020第2轮：纠正上一轮过度概括。论文2609.34261v1 §4.5/C.2明确存在GPT+Jev附加实验：GPT预测20步，每段最多执行5步，Jev以本体状态/跟踪反馈/计划说明且无RGB决定是否批准额外5步复用，不生成动作。核对官方远程refs、主线/发布分支及全部历史，当前发布策略未找到Jev gate源码，不能声称已核实其实际请求schema/置信阈值。当前dialogue_policy.py:970仅返回execute_horizon前缀。未启动实验或调用模型。
