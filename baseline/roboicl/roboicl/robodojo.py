@@ -10,7 +10,7 @@ import sys
 import traceback
 import types
 
-from roboicl.paths import ROBODOJO, configure_imports
+from roboicl.paths import ROBODOJO, configure_imports, configure_utility_namespace
 
 configure_imports("sim")
 
@@ -71,6 +71,7 @@ def main() -> int:
 
     app_launcher = AppLauncher(args)
     simulation_app = app_launcher.app
+    configure_utility_namespace("sim")
     env = None
     stage = "import RoboDojo runtime"
     try:

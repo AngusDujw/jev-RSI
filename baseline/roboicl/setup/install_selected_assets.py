@@ -28,7 +28,7 @@ def main():
     checkout_log = cache.parent/"selected-assets-checkout.log"
     print(json.dumps({"checkout_log": str(checkout_log)}), flush=True)
     with checkout_log.open("w") as stream:
-        subprocess.run(["git", "-C", str(cache), "lfs", "checkout"], check=True,
+        subprocess.run(["git", "-C", str(cache), "lfs", "checkout", "Assets/**"], check=True,
                        stdout=stream, stderr=subprocess.STDOUT)
     for entry in entries:
         path = cache/entry["path"]

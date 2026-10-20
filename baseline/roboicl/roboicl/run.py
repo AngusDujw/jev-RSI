@@ -520,6 +520,12 @@ def main():
         if any(character.isspace() for character in portable_root):
             raise ValueError("IsaacLab's Kit argument parser requires a portable root without whitespace")
         kit_args += " --portable-root " + portable_root
+    extension_path = os.environ.get("ROBOICL_KIT_EXTENSION_PATH")
+    if extension_path:
+        extension_path = str(absolute_path(extension_path))
+        if any(character.isspace() for character in extension_path):
+            raise ValueError("Kit extension search path must not contain whitespace")
+        kit_args += " --ext-folder " + extension_path
     client = [
         str(sim_python),
         "-u",

@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import sys
+import types
+from importlib.machinery import ModuleSpec
 
 
 CODE = Path(__file__).resolve().parents[1]
@@ -41,3 +43,29 @@ def python_paths(context: str = "policy") -> list[str]:
 def configure_imports(context: str = "policy") -> None:
     paths = python_paths(context)
     sys.path[:] = paths + [path for path in sys.path if path not in paths]
+
+
+def configure_utility_namespace(context: str = "sim") -> None:
+    """Restore process-owned bare utils imports after Kit changes import paths.
+
+    Both released repositories use namespace directories named utils. A
+    concrete package loaded by Kit can otherwise shadow those directories.
+    Preserve already initialized SDK attributes and add the owned search paths.
+    """
+    configure_imports(context)
+    owners = [ROBODOJO, XPOLICYLAB] if context == "sim" else [XPOLICYLAB, ROBODOJO]
+    roots = [str(owner/"utils") for owner in owners]
+    namespace = sys.modules.get("utils")
+    if namespace is None:
+        namespace = types.ModuleType("utils")
+        namespace.__package__ = "utils"
+        namespace.__spec__ = ModuleSpec("utils", loader=None, is_package=True)
+        sys.modules["utils"] = namespace
+    namespace.__path__ = roots + [path for path in getattr(namespace, "__path__", []) if path not in roots]
+    if namespace.__spec__ is not None:
+        namespace.__spec__.submodule_search_locations = namespace.__path__
+    for source in (owners[0]/"utils").glob("*.py"):
+        name = "utils."+source.stem
+        cached = sys.modules.get(name)
+        if cached is not None and Path(getattr(cached, "__file__", "")).resolve() != source.resolve():
+            del sys.modules[name]
