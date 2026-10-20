@@ -164,7 +164,8 @@ def main():
                 raise RuntimeError(f"Insufficient current free GPU memory on {gpu}; no experiment started")
             horizon = intervals[task][condition] if intervals and condition in ("mean", "maximum") else 5
             folder.mkdir(parents=True)
-            case = {"condition": condition, "task": task, "layout": layout, "sim_seed": 0, "gpu": gpu, "slot": slot,
+            case = {"condition": condition, "task": task, "layout": layout,
+                    "layout_directory_seed": 0, "sim_initial_seed": 0, "reset_seed": layout, "gpu": gpu, "slot": slot,
                     "execute_horizon": horizon, "predict_horizon": 20, "pro_auth": "ChatGPT", "model": "gpt-6-astra", "effort": "xhigh",
                     "code_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
             save(folder/"case.json", case)
