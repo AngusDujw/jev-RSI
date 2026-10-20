@@ -2,7 +2,7 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## Active v49/v50 controls; v48 complete0/3; v51 same-frame detail input
+## Active v49/v50/v51; v52 scene-based inspection recovery
 
 - v30 final native/program0/2; v31 original and task-exit groups each0/3; v32 final0/3, all1198 physical steps. Actual grasp/lift is not task success.
 - v34 both groups finished native0/3 each. Original-direction874/1198/1198steps,391/538/534responses; paired-span1198steps,653/651/629responses. v36 and v37 also finished0/3 each at1198steps. No new complete success verified.
@@ -32,6 +32,9 @@ Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 - v50 fixedf2a3d508 is running paired14/15/16. Samev49 plan/processing/controller; carry/seat phase question receives max absolute XYZ error divided by tolerance, plus actor R choices. Actualv48 bad-state ratio9.535 now produces continue0.98 in the distinct offline schema; four builder fixtures passed, zero native actions. No external advance Boolean.
 - Pro19 reviewed actual held514, dropped1102 and a different-episode released-on-upper-support frame. It supports same-frame unmarked hand enlargements alongside full context; its proposed text/inspect changes are NOT adopted inv51.
 - v51 is an isolated image input change onv50: current hand crops centred only through measured own TCP projection in agentview/sideview, preserving raw pixels/aspect and omitting unknown/off-frame anchors. Original six-frame scene question at held514 had retained0.37/placed0.42; adding one raw sideview crop gives retained0.80/conf0.73. One static input comparison, not task evidence or answer resampling. Runtime uses measured projection, unlike the manually read offline crop centre. Native development14/15/16 follows; fresh17/18/19 untouched.
+- v51 three actual native PIDs1091508/1091509/1091510 are running. First actual scene14/16: twelve raw-frame SHA matches and four current-hand crop pixel matches, no synthetic fill/markers. Model retained0.48/0.93; confidence0.31/0.91. This proves the intended input reached the API, not stable classification or task completion.
+- v50 init15/406 still falsely chooses placed0.44 vs retained0.41 although selected rack-to-source distance259.7mm. Normalized progress does not solve the separate visual relation error.
+- v52 implements an opt-in scope/routing change only: same existing raw/detail scene question also judges Inspect. Off-target routes existing regrasp; retained inInspect returns to existing placement5 without a physical action, then new API choices decide motion. Other model text/plan/geometry remainv51. The archived1102 dropped-bottle state with six raw1090/1102 images gives off-target0.87/conf0.83 under this distinct question, zero native actions. Pro19 semantic recovery recommendation only; its new scene wording is not adopted.
 - Public task1458 resolves through ControlEnv view suffix handling to put_the_wine_bottle_on_the_rack_language_1.bddl. Public goal is On(wine_bottle_1, wine_rack_1_top_region), with no orientation predicate. Local Pro14 removed the extra demonstration-axis requirement forv42; v41 deliberately retains its old plan for comparison. Never feed initialization ranges or evaluator state to models.
 - Controlled v33 six historical held-rotation examples used0API and are not policy trials. Positive X/Y fixed-view evidence supports approximately28/27degree body change. Negative Y17.17mm own-position drift rejected the unchanged15mm bank guard; no bank injected.
 - Knob original frozen3/3 remains unchanged. Bottle goal requires a new frozen policy and three predeclared fresh native successes; old failures are never replaced.

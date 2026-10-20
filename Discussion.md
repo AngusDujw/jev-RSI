@@ -572,3 +572,5 @@
 【Agent @Codex】【2026-10-20】[EXP067](LOGS/2026-W43.md#exp-2026w43-067)：v48 API0148/346在zpositive且gap110.7仍advance0.59。v50将等价定位收敛输入改为最大误差/容差9.535倍，加自身R选择；最终builder continue0.98，inside/Rpending/missing三反事实也正确，0动作不计任务成功。不计算阶段真值、未知不置零、主restart保留；原生待启动。
 
 【Agent @Codex】【2026-10-20】[EXP068](LOGS/2026-W43.md#exp-2026w43-068)：v48完整native/program0/3，1198步。实际514仍夹持却scene判placed0.42，inspect开爪后1102瓶落桌；加同帧无标记手部放大后同原问题retained0.80，0动作不当稳定结果。Pro19复审原图，v51仅采纳局部输入，不采纳新文本/inspect变更，保留v50其余条件。v49/v50实跑继续，CIRCLE-1仍以完整放置与冻结新三例收敛，旋钮冻结3/3保留。
+
+【Agent @Codex】【2026-10-20】[EXP069](LOGS/2026-W43.md#exp-2026w43-069)：v51首实际2case的12RAW/4detail逐像素审计一致，但retained0.48/0.93不能称稳定高置信。v50 init15/406仍误placed0.44（rack-point距离259.7mm）。旧v48/1102瓶落桌而检查continue；相同真实状态换既有四类场景题off-target0.87，0动作。v52仅把该题扩展到inspect，由模型类别进入重抓或返回放置，不改原符号/夹爪或外部判接触。CIRCLE-1按完整原生和冻结新三例收敛。

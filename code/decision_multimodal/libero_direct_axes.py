@@ -556,8 +556,9 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','scene_relation_hand_details','unsigned_error_scale','position_progress_gate'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','scene_relation_hand_details','scene_relation_inspect','unsigned_error_scale','position_progress_gate'}:raise ValueError('Unsupported protocol field')
                 if protocol.get('scene_relation_hand_details') and not protocol.get('scene_relation_raw_rgb'):raise ValueError('Hand details require raw scene frames')
+                if protocol.get('scene_relation_inspect') and (not protocol.get('scene_relation_question') or not any(s.get('control_contract',{}).get('translation_mode')=='height_preserving_transport' for s in stages)):raise ValueError('Inspection routing requires scene decisions and the placement contract')
                 if protocol.get('unsigned_error_scale') and not (args.numeric_axis_call and args.relative_step_scale):raise ValueError('Error magnitude scaling requires scoped numeric questions and relative scaling')
                 if protocol.get('position_progress_gate') and not (args.numeric_axis_call and args.formal_stage_call):raise ValueError('Position progress gate requires numeric and phase model calls')
                 if protocol.get('scene_relation_question'):
@@ -961,6 +962,14 @@ def main():
                 stage=replay_rows[decision]['stage']
                 answer=dict(answers={k:dict(choice=v) for k,v in replay_rows[decision]['choices'].items()})
             choices={k:v['choice'] for k,v in answer['answers'].items()};before_p,before_R=own_pose()
+            if protocol.get('scene_relation_inspect') and stages[stage].get('stage_key')=='inspect' and choices.get('scene_relation')=='retained':
+                # The actor reported retention. Re-enter placement before fresh motion.
+                stage=next(i for i,s in enumerate(stages) if s.get('stage_key')=='align_source_above_receiver' and s.get('control_contract',{}).get('translation_mode')=='height_preserving_transport')
+                stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick
+                step_sizes=None;last_signs=None
+                history.append(dict(choices=choices,execution='No physical action; actor judged source still captured, returning to placement.'))
+                api.log(dict(kind='model_scene_route',native_tick=tick,choice='retained',next_stage=stage,no_physics_steps=True))
+                continue
             if choices.get('scene_relation')=='released_on_upper_support' and stages[stage].get('stage_key')!='inspect':
                 stage=next(i for i,s in enumerate(stages) if s.get('stage_key')=='inspect')
                 stage_origin_p,stage_origin_R=own_pose();stage_origin_tick=tick

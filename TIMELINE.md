@@ -179,6 +179,7 @@ graph LR
     T_2026W43_023["📊 decision-multimodal<br/>v44新native1/3但program…"]:::experiment
     T_2026W43_024["📊 decision-multimodal<br/>v45/v46各native1/3但pro…"]:::experiment
     T_2026W43_025["📊 decision-multimodal<br/>v47完整native1/3/progra…"]:::experiment
+    T_2026W43_026["📊 decision-multimodal<br/>v48完整0/3；实际悬持被误判已放，真实…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -317,6 +318,7 @@ graph LR
   T_2026W43_022 --> T_2026W43_023
   T_2026W43_023 --> T_2026W43_024
   T_2026W43_024 --> T_2026W43_025
+  T_2026W43_025 --> T_2026W43_026
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -482,6 +484,7 @@ graph LR
 | `T-2026W43-023` | 2026-10-20 | experiment | decision-multimodal | v44新native1/3但program0/3；终帧瓶在上层架/空手已离开，carry无open及0R，模型仍追赶误差。v45分类例子与v46夹持契约六原生继续，弱恢复禁用。 | `EXP-2026W43-061` | - |
 | `T-2026W43-024` | 2026-10-20 | experiment | decision-multimodal | v45/v46各native1/3但program0/3；闭爪仍脱离。v47真实RAW时序分类开始触发恢复，Pro18提出body-height净空先行，尚无v48原生。 | `EXP-2026W43-063` | - |
 | `T-2026W43-025` | 2026-10-20 | experiment | decision-multimodal | v47完整native1/3/program0/3，阳性仍夹持接触，retained判断正确。v48真实三净空动作H/H/+Z，Z命令20实测18.3mm，XY漂移<0.5mm；完整结果待运行。 | `EXP-2026W43-065` | - |
+| `T-2026W43-026` | 2026-10-20 | experiment | decision-multimodal | v48完整0/3；实际悬持被误判已放，真实手部局部输入可改变场景判断；v51首12RAW/4detail匹配但概率不稳定，v52检查恢复仅接口证据 | `EXP-2026W43-069` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

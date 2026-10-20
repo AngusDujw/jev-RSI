@@ -56,7 +56,9 @@ def build_retention_request(state,protocol):
 
 def build_scene_relation_request(state,protocol):
     rule=protocol.get('scene_relation_question')
-    if not rule or state['stage'].get('stage_key') not in ('align_source_above_receiver','lower_to_place','release'):
+    scope=('align_source_above_receiver','lower_to_place','release')
+    if protocol.get('scene_relation_inspect'):scope+=('inspect',)
+    if not rule or state['stage'].get('stage_key') not in scope:
         return None
     source_relative=state.get('observed_surface_relative_mm')
     receiver_relative=state.get('observed_receiver_minus_source_mm')
