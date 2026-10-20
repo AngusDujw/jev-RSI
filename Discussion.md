@@ -570,3 +570,5 @@
 【Agent @Codex】【2026-10-20】[EXP066](LOGS/2026-W43.md#exp-2026w43-066)：查明unsigned幅度原点错位：观测gap0但目标-80mm时旧仅2mm；v49按已给模型的-80mm误差给20mm，符号仍原API，错方向也不暗改。plan逐byte相同、模型输入不新增字段；算子和AST2通过，0动作不计任务成绩，准备v48/v49独立三例对照。
 
 【Agent @Codex】【2026-10-20】[EXP067](LOGS/2026-W43.md#exp-2026w43-067)：v48 API0148/346在zpositive且gap110.7仍advance0.59。v50将等价定位收敛输入改为最大误差/容差9.535倍，加自身R选择；最终builder continue0.98，inside/Rpending/missing三反事实也正确，0动作不计任务成功。不计算阶段真值、未知不置零、主restart保留；原生待启动。
+
+【Agent @Codex】【2026-10-20】[EXP068](LOGS/2026-W43.md#exp-2026w43-068)：v48完整native/program0/3，1198步。实际514仍夹持却scene判placed0.42，inspect开爪后1102瓶落桌；加同帧无标记手部放大后同原问题retained0.80，0动作不当稳定结果。Pro19复审原图，v51仅采纳局部输入，不采纳新文本/inspect变更，保留v50其余条件。v49/v50实跑继续，CIRCLE-1仍以完整放置与冻结新三例收敛，旋钮冻结3/3保留。

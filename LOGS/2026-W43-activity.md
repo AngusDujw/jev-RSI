@@ -174,3 +174,5 @@
 - 【Agent】【2026-10-20 08:01】[op] 发布Pro18原提示词/四RAW/原始输出/实际九阶段plan与首净空执行审计到planner-clearance-first，HTTP200。v48仍在运行；修正当前状态中旧planning-only/LIVE措辞，保留v47终帧held证据。
 - 【Agent】【2026-10-20 08:06】[op] 实现v49 unsigned error尺度对照：同v48逐byte plan与全部模型问题，仅幅度引用已发送current-minus-desired error，修复非零height目标在gap0仅2mm的问题。符号/夹爪/阶段无覆写，unknown走原fallback，AST2/算子检查通过。
 - 【Agent】【2026-10-20 08:16】[op] v48首组实际提前交接错误已定位：0148/346 zpositive仍advance0.59，height gap110.7未净空。实现v50以已给模型的定位误差/容差最大比值9.535替代六字符串条件，模型再判断；builder4fixture正确、0动作不计成功，主restart保留。
+- 【Agent】【2026-10-20 08:32】[op] Pro19本机Pro high复审v48实际514/1102与另一上架终帧，确认514仍夹持不能判placed，1102掉桌。实现可选scene同帧无标记手部放大，裁剪仅用当前自身TCP公开投影；边界/非有限/腕图排除检查通过，原始6图加1detail静态单次验证进行中，0新动作。
+- 【Agent】【2026-10-20 08:32】[op] 新建实验块 EXP-2026W43-068：--help  ↪ `EXP-2026W43-068`

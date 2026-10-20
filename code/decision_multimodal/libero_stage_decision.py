@@ -9,6 +9,32 @@ STAGE_INPUT = ('Judge only the phase transition from the facts and rule printed 
     'A phase transition is not a task-success assertion.')
 
 
+def hand_detail_parts(raw,camera,tick,anchor):
+    """Unmarked same-frame crop around a projected measured OWN reference."""
+    import base64
+    import io
+    from PIL import Image
+    if camera not in ('agentview','sideview') or anchor is None:return []
+    picture=Image.open(io.BytesIO(raw)).convert('RGB')
+    if len(anchor)!=2 or not all(math.isfinite(float(v)) for v in anchor):return []
+    u,v=map(float,anchor)
+    if not (0<=u<picture.width and 0<=v<picture.height):return []
+    radius=round(min(picture.size)*.1875)
+    box=(max(0,round(u)-radius),max(0,round(v)-radius),
+         min(picture.width,round(u)+radius),min(picture.height,round(v)+radius))
+    crop=picture.crop(box)
+    # Preserve pixel aspect ratio; a clipped border is not synthesized content.
+    scale=512/max(crop.size)
+    crop=crop.resize(tuple(max(1,round(n*scale)) for n in crop.size),Image.Resampling.LANCZOS)
+    stream=io.BytesIO();crop.save(stream,format='PNG')
+    caption=(f'CURRENT hand detail from {camera}, observation {tick}, original pixel box {list(box)}. '
+        'Unmarked enlargement from the SAME raw frame, centred using measured own finger midpoint and public camera projection; not a new camera or object detector. '
+        'Inspect the actual fingers, neck and any visible gap. The full raw frame supplies body/support context. '
+        'Cropped-out or occluded parts remain unknown; the crop location does not prove capture, release or support.')
+    return [dict(type='input_text',text=caption),dict(type='input_image',detail='high',
+        image_url='data:image/png;base64,'+base64.b64encode(stream.getvalue()).decode())]
+
+
 def build_retention_request(state,protocol):
     """Scoped visual recovery; no geometric lost/held flag is computed."""
     rule=protocol.get('retention_question')
@@ -45,6 +71,7 @@ def build_scene_relation_request(state,protocol):
         meaning='Coordinates and Euclidean distances are coarse current RGB-D estimates for actor-selected visible skin features, not object centres, exact support or contact. Distances are millimetres:100mm is10cm;1000mm is1m. A bottle can extend below the fingers while held. Use the actual object extent and support in RGB; near a rack feature does not alone prove support. Unknown measurements remain null.')
     return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='visual_scene_relation',
         use_raw_rgb=bool(protocol.get('scene_relation_raw_rgb')),
+        use_hand_details=bool(protocol.get('scene_relation_hand_details')),
         formal_stage_input='Classify the CURRENT wine-bottle relationship using camera-identified current views and labelled previous observations. Previous images are historical. The phase label is not evidence that the bottle is still held or already placed. No hidden object pose, contact or outcome flag is supplied.\n'+json.dumps(evidence,separators=(',',':'))),
         questions=dict(scene_relation=dict(type='choice',instructions=rule['question'],criteria=rule['choices'])))
 
@@ -140,7 +167,7 @@ def build_stage_request(state,answers,protocol,numeric_errors=None):
                       'restart':'The phase premise is invalid and recovery is requested; return to coarse approach without physical motion.'})))
 
 
-def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=()):
+def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=(),hand_details=()):
     payload=convert_request(original)
     payload['input']=[dict(role='user',content=[dict(type='input_text',text=original['state']['formal_stage_input'])])]
     if original['state'].get('request_purpose')=='visual_scene_relation':
@@ -151,6 +178,7 @@ def stage_payload(original,current=(),goal_reference=(),previous=(),stage_entry=
                 if part['type']=='input_text':caption=part['text']
                 elif part['type']=='input_image' and 'detail' not in caption.lower():
                     content.extend([dict(type='input_text',text=caption),part])
+        if original['state'].get('use_hand_details'):content.extend(hand_details)
         return payload
     if original['state'].get('request_purpose')=='visual_retention_check':
         content=payload['input'][0]['content'];caption=''

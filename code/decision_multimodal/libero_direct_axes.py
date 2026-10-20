@@ -135,7 +135,7 @@ class DirectAPI(RevisedAPI):
             use_raw=sent['state'].get('request_purpose')=='visual_scene_relation' and sent['state'].get('use_raw_rgb')
             payload=stage_payload(sent,getattr(self,'current_raw',[]) if use_raw else self.current,
                 getattr(self,'stage_goal_reference',[]),getattr(self,'previous_raw',[]) if use_raw else self.previous,
-                getattr(self,'phase_entry_views',[]))
+                getattr(self,'phase_entry_views',[]),getattr(self,'scene_hand_details',[]))
             self.image_count=sum(x['type']=='input_image' for x in payload['input'][0]['content'])
             return payload
         if sent['state'].get('request_purpose')=='text_only_numeric_axis_classification':
@@ -417,7 +417,7 @@ def main():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
         def capture(save_sensor_data=False):
             from PIL import ImageDraw
-            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={}
+            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={};api.scene_hand_details=[]
             if tracker is not None:tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             if side_source_tracker is not None:side_source_tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             for camera in cameras:
@@ -427,6 +427,12 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
+                if protocol.get('scene_relation_hand_details'):
+                    from libero_stage_decision import hand_detail_parts
+                    pc=(np.linalg.inv(T)@np.r_[p0,1.])[:3]
+                    projected=K@pc
+                    anchor=(projected[:2]/projected[2]).tolist() if pc[2]>0 else None
+                    api.scene_hand_details.extend(hand_detail_parts(raw,camera,tick,anchor))
                 if save_sensor_data:
                     from robosuite.utils.camera_utils import get_real_depth_map
                     metric=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
@@ -550,7 +556,8 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','unsigned_error_scale','position_progress_gate'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','scene_relation_hand_details','unsigned_error_scale','position_progress_gate'}:raise ValueError('Unsupported protocol field')
+                if protocol.get('scene_relation_hand_details') and not protocol.get('scene_relation_raw_rgb'):raise ValueError('Hand details require raw scene frames')
                 if protocol.get('unsigned_error_scale') and not (args.numeric_axis_call and args.relative_step_scale):raise ValueError('Error magnitude scaling requires scoped numeric questions and relative scaling')
                 if protocol.get('position_progress_gate') and not (args.numeric_axis_call and args.formal_stage_call):raise ValueError('Position progress gate requires numeric and phase model calls')
                 if protocol.get('scene_relation_question'):
