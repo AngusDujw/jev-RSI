@@ -69,6 +69,8 @@ def main() -> int:
     global_configs.OBJECTS_PATH = str(assets / "Object/RoboDojo")
     global_configs.ROBOTS_PATH = str(assets / "Robots")
 
+    from env.camera_manager.capture.render_sync import add_zero_delay_kit_args
+    add_zero_delay_kit_args(args)
     app_launcher = AppLauncher(args)
     simulation_app = app_launcher.app
     env = None

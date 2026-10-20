@@ -184,6 +184,7 @@ def main():
                        TORCH_EXTENSIONS_DIR=str(ROOT/".runtime/torch-extensions"),
                        CUDA_CACHE_PATH=str(ROOT/".runtime/cuda-cache"), ROBOICL_KIT_PORTABLE_ROOT=str(kit_root))
             command = [args.policy_python, "-B", "-m", "roboicl.run", task, "--shots", "0", "--seed", "0", "--layout", str(layout),
+                       "--model", "gpt-6-astra", "--reasoning-effort", "xhigh",
                        "--gpu", str(gpu), "--gpu-slot", str(slot), "--sim-python", args.sim_python, "--policy-python", args.policy_python,
                        "--profile", str(profile_path), "--results-root", str(folder)]
             started = time.monotonic()
