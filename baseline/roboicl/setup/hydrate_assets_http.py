@@ -37,6 +37,7 @@ def main():
     parser.add_argument("--workers", type=int, default=16, choices=range(1, 33))
     parser.add_argument("--asset", help="Optional single-file transfer probe; does not install a complete tree")
     parser.add_argument("--seed-assets", type=Path, help="Read-only existing Assets tree; copy only frozen SHA256 matches")
+    parser.add_argument("--seed-only", action="store_true", help="Verify/copy available assets without any network requests")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     lock = json.loads((root/"configs/data.lock.json").read_text())["assets"]
@@ -97,6 +98,8 @@ def main():
                     raise RuntimeError("Seed asset changed during copying: " + path)
                 part.replace(target)
         if not target.exists():
+            if args.seed_only:
+                return
             url = args.endpoint.rstrip("/")+"/datasets/"+lock["repo_id"]+"/resolve/"+revision+"/"+urllib.parse.quote(path)
             for attempt in range(3):
                 try:
@@ -139,7 +142,10 @@ def main():
                 for pending in futures:
                     pending.cancel()
                 raise
-    print("LFS objects verified. Run unchanged setup/fetch_assets.py to finalize.", flush=True)
+    print(json.dumps({"verified_objects": counts["objects"], "total_objects": len(objects),
+                      "verified_bytes": counts["bytes"], "complete": counts["objects"] == len(objects)}), flush=True)
+    if not args.seed_only:
+        print("LFS objects verified. Run unchanged setup/fetch_assets.py to finalize.", flush=True)
 
 
 if __name__ == "__main__":
