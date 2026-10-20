@@ -17,6 +17,7 @@ from decisions_policy import ENDPOINT, MODEL, TCP_OFFSET, action, call, load_key
 from hybrid_rollout.robodojo.robodojo_server.gpt_only_client import GPTOnlyTools
 from hybrid_rollout.robodojo.io import write_json
 from joint_rotation import questions_with_joint_rotation, expand_rotation_choices
+from camera_overlay import annotate
 
 CAMERAS = ('cam_high','cam_left_wrist','cam_right_wrist')
 
@@ -55,11 +56,15 @@ def permitted_state(rollout, packet):
         camera_order=list(CAMERAS), frame='environment_origin_world')
 
 
-def image_items(obs):
+def image_items(obs, robot=None, output=None):
     result=[]
     for name in CAMERAS:
         buffer=io.BytesIO()
-        Image.fromarray(obs[name]).save(buffer,format='PNG')
+        image = (annotate(obs[name], obs['camera_calibration'][name], robot)
+                 if robot is not None else Image.fromarray(obs[name]))
+        image.save(buffer,format='PNG')
+        if output is not None:
+            (output/('model_'+name+'.png')).write_bytes(buffer.getvalue())
         result += [dict(type='input_text',text='Current camera: '+name),
             dict(type='input_image',image_url='data:image/png;base64,'+
                 base64.b64encode(buffer.getvalue()).decode(),detail='high')]
@@ -74,9 +79,18 @@ def main():
     parser.add_argument('--seed',type=int,required=True)
     parser.add_argument('--rotation-format',choices=('axes','joint'),default='axes')
     parser.add_argument('--save-images',action='store_true')
+    parser.add_argument('--geometry-overlay',action='store_true')
     args=parser.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     prompt=Path(__file__).with_name('advancer_v1.md').read_text()
+    if args.geometry_overlay:
+        prompt += ('\n\nImage overlays show measured robot TCP projections: cyan=left, orange=right. '
+            'The cross is a geometric projection, not a visible object, contact point or evidence of holding. '
+            'Red/green/blue segments show the projection of a +0.02 m world X/Y/Z displacement '
+            'from that TCP. Use these segments to relate image motion to the world action axes. '
+            'They may be hidden by real geometry or absent when outside the image. '
+            'Camera K and camera-to-world transforms use X-right/Y-down/Z-forward camera coordinates. '
+            'Do not treat a projected TCP overlap as an enclosed grasp. No target annotations are supplied.')
     if not prompt.isascii():raise ValueError('Model prompt must be English ASCII')
     (args.output/'PROMPT.md').write_text(prompt)
     q=questions()
@@ -93,16 +107,22 @@ def main():
         packet=rollout.start(**start)
         rollout.run.update(teacher_model=MODEL,teacher_model_provider='openai-decisions',
             teacher_reasoning_effort=None,decision_endpoint=ENDPOINT,
-            condition='generic-current-rgb-joint-v2' if args.rotation_format=='joint' else 'generic-current-rgb-v1',
+            condition=('generic-current-rgb-calibrated-v3' if args.geometry_overlay else
+                'generic-current-rgb-joint-v2' if args.rotation_format=='joint' else 'generic-current-rgb-v1'),
             decision_question_count=len(q),rotation_format=args.rotation_format,
             history_supplied=False,images_persisted=args.save_images,
+            camera_overlay=args.geometry_overlay,
             tcp_reference_link6_local_m=TCP_OFFSET.tolist())
         write_json(args.output/'run.json',rollout.run)
         gripper={a:packet['current_eef'][a]['gripper_opening_command']<.5 for a in ('left','right')}
         while not packet['rollout_finished']:
             state=permitted_state(rollout,packet)
+            if args.geometry_overlay:
+                state['camera_calibration']=rollout.obs['camera_calibration']
             index=len(rollout.history)
-            content=[dict(type='input_text',text=prompt+'\n\nCURRENT OBSERVATION\n'+json.dumps(state))]+image_items(rollout.obs)
+            content=[dict(type='input_text',text=prompt+'\n\nCURRENT OBSERVATION\n'+json.dumps(state))]+image_items(
+                rollout.obs,state['robot'] if args.geometry_overlay else None,
+                rollout.observation_path.parent if args.geometry_overlay and args.save_images else None)
             answers=call(dict(model=MODEL,input=[dict(role='user',content=content)],questions=q),key,
                          args.output/'decisions'/f'{index:03d}')
             if args.rotation_format=='joint':answers=expand_rotation_choices(answers)

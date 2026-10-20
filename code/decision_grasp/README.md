@@ -53,3 +53,17 @@ is fetched from the remote campaign after the simulator exits. Optional
 review, without adding image history or changing model inputs. The runner
 enables this option. The generic prompt and joint-rotation condition stay fixed.
 No planner has been introduced and no stable grasp performance is established.
+
+
+The fresh 20261020a joint-v2 development batch ended at 200 steps in all three
+layouts, with 0/3 native successes. No service or rotation-format failure
+explains these complete outcomes. Do not resume them. A new optional
+--geometry-overlay condition (rgb-calibrated-v3) provides current camera K/T
+and projects only measured robot TCPs and +20mm world-axis segments into RGB.
+The server wrapper reads camera/robot mounting geometry and environment origin,
+never scene object poses/contact/reward/success for model input. Raw and actual
+annotated model images are retained. These geometric markers can be occluded
+and are not target annotations or grasp evidence. This is a visual-geometry
+input package, not an isolated proof that annotations improve policy quality.
+Prompt/task/action/physics/scoring remain otherwise unchanged. Validate actual
+rendered projection agreement before claiming precise visual alignment.

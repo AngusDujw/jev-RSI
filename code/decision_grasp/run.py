@@ -47,8 +47,9 @@ print('admitted')
     return remote(['python3','-c',code,str(gpu)],timeout=30)
 
 
-def one(layout,gpu,rotation_format,run_tag):
+def one(layout,gpu,rotation_format,run_tag,geometry_overlay=False):
     version='rgb-joint-v2' if rotation_format=='joint' else 'rgb-v1'
+    if geometry_overlay:version='rgb-calibrated-v3'
     name=f'{version}-general_pickup-layout{layout}-{run_tag}'
     run=ROOT/name
     if run.exists():raise FileExistsError('Never resume or overwrite '+name)
@@ -63,7 +64,8 @@ def one(layout,gpu,rotation_format,run_tag):
         subprocess.run(SSH[:-2]+['-O','forward','-L',f'127.0.0.1:{port}:127.0.0.1:{port}','--','server02'],check=True,capture_output=True)
         with (run/'server.log').open('w') as server_log, (run/'controller.log').open('w') as controller_log:
             sim=subprocess.Popen(SSH+[shlex.join(['bash',CAMPAIGN+'/launch_server.sh',str(gpu),
-                'general_pickup',CAMPAIGN+'/'+name,str(port)])],stdout=server_log,stderr=subprocess.STDOUT)
+                'general_pickup',CAMPAIGN+'/'+name,str(port),
+                'server_entry_geometry.py' if geometry_overlay else 'server_entry_lowstorage.py'])],stdout=server_log,stderr=subprocess.STDOUT)
             state['ssh_pid']=sim.pid;save(run/'status.json',state)
             deadline=time.monotonic()+600
             while True:
@@ -77,9 +79,11 @@ def one(layout,gpu,rotation_format,run_tag):
                 if key.startswith(('OPENAI_','CODEX_API_')):env.pop(key)
             env.update(PYTHONPATH=str(RUNTIME),TMPDIR=str(run/'tmp'))
             (run/'tmp').mkdir()
-            controller=subprocess.Popen([str(PYTHON),'-u',str(Path(__file__).with_name('controller.py')),
+            controller_command=[str(PYTHON),'-u',str(Path(__file__).with_name('controller.py')),
                 '--output',str(run/'controller'),'--sim-port',str(port),'--seed',str(layout),
-                '--rotation-format',rotation_format,'--save-images'],
+                '--rotation-format',rotation_format,'--save-images']
+            if geometry_overlay:controller_command.append('--geometry-overlay')
+            controller=subprocess.Popen(controller_command,
                 env=env,stdout=controller_log,stderr=subprocess.STDOUT)
             state.update(status='running',controller_pid=controller.pid);save(run/'status.json',state)
             while controller.poll() is None:
@@ -124,6 +128,7 @@ def main():
     parser.add_argument('--rotation-format',choices=('axes','joint'),default='joint')
     parser.add_argument('--parallel',type=int,choices=(1,2),default=1)
     parser.add_argument('--run-tag',required=True)
+    parser.add_argument('--geometry-overlay',action='store_true')
     args=parser.parse_args()
     def stop(*_):
         global STOP
@@ -141,7 +146,7 @@ def main():
         global STOP
         for layout in layouts:
             if STOP:return
-            row=one(layout,gpu,args.rotation_format,args.run_tag)
+            row=one(layout,gpu,args.rotation_format,args.run_tag,args.geometry_overlay)
             with LOCK:
                 rows.append(row);save(ROOT/f'pilot-{args.rotation_format}.json',rows)
             if row.get('controller_exit')!=0:

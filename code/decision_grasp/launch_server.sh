@@ -4,6 +4,8 @@ GPU=$1
 TASK=$2
 RUN=$3
 PORT=$4
+ENTRY=${5:-server_entry_lowstorage.py}
+[[ "$ENTRY" =~ ^server_entry_(lowstorage|geometry)\.py$ ]]
 CAMPAIGN=/home/user/ykj/project/gpt6/jev-RSI/code/runs/server02-decision-grasp-20261019
 NATIVE=/home/user/ykj/project/RoboLaya
 [[ "$GPU" =~ ^[01]$ && "$TASK" =~ ^(general_pickup)$ ]]
@@ -34,8 +36,8 @@ exec docker run --rm --name "grasp-20261019-${TASK}-${PORT}" \
     export PYTHONPATH="$2/robodojo/third_party/curobo:$PYTHONPATH"
     export LD_LIBRARY_PATH="$2/.conda/lib:$LD_LIBRARY_PATH"
     export LD_PRELOAD=/isaac-sim/kit/libcarb.so
-    campaign=$1; native=$2; shift 2
-    exec "$native/.conda/bin/python" -u "$campaign/server_entry_lowstorage.py" "$@"
-  ' launch "$CAMPAIGN" "$NATIVE" --task "$TASK" --eval-seed 0 \
+    campaign=$1; native=$2; entry=$3; shift 3
+    exec "$native/.conda/bin/python" -u "$campaign/$entry" "$@"
+  ' launch "$CAMPAIGN" "$NATIVE" "$ENTRY" --task "$TASK" --eval-seed 0 \
   --output "$RUN/sim" --port "$PORT" --headless --enable_cameras --device cuda:0 \
   --kit_args="--/exts/omni.kit.registry.nucleus/cachePath=$CAMPAIGN/shared-extension-cache --/renderer/activeGpu=0 --/renderer/multiGpu/enabled=false --/app/updateOrder/checkForHydraRenderComplete=1000 --/app/renderer/waitIdle=true --/app/hydraEngine/waitIdle=true"
