@@ -568,3 +568,5 @@
 【Agent @Codex】【2026-10-20】[EXP065](LOGS/2026-W43.md#exp-2026w43-065)：v47完整native1/3/program0/3，430/460/511答。init16终帧仍夹瓶接触架面，retained0.85正确，不能称释放成功。v48实际净空输入gap约276mm、模型H/H/+Z，首3动作命令Z20mm，实测18.293–18.330mm且XY漂移<0.5mm；仅过程，完整结果待运行。CIRCLE-1按冻结新17/18/19完整原生收敛。
 
 【Agent @Codex】【2026-10-20】[EXP066](LOGS/2026-W43.md#exp-2026w43-066)：查明unsigned幅度原点错位：观测gap0但目标-80mm时旧仅2mm；v49按已给模型的-80mm误差给20mm，符号仍原API，错方向也不暗改。plan逐byte相同、模型输入不新增字段；算子和AST2通过，0动作不计任务成绩，准备v48/v49独立三例对照。
+
+【Agent @Codex】【2026-10-20】[EXP067](LOGS/2026-W43.md#exp-2026w43-067)：v48 API0148/346在zpositive且gap110.7仍advance0.59。v50将等价定位收敛输入改为最大误差/容差9.535倍，加自身R选择；最终builder continue0.98，inside/Rpending/missing三反事实也正确，0动作不计任务成功。不计算阶段真值、未知不置零、主restart保留；原生待启动。

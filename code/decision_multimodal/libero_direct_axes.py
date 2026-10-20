@@ -550,8 +550,9 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','unsigned_error_scale'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','unsigned_error_scale','position_progress_gate'}:raise ValueError('Unsupported protocol field')
                 if protocol.get('unsigned_error_scale') and not (args.numeric_axis_call and args.relative_step_scale):raise ValueError('Error magnitude scaling requires scoped numeric questions and relative scaling')
+                if protocol.get('position_progress_gate') and not (args.numeric_axis_call and args.formal_stage_call):raise ValueError('Position progress gate requires numeric and phase model calls')
                 if protocol.get('scene_relation_question'):
                     if args.task!=1458 or not args.actor_attention or not args.record_evidence:raise ValueError('Scene relation requires audited bottle policy')
                     if set(protocol['scene_relation_question']['choices'])!={'retained','released_on_upper_support','separated_off_target','uncertain'}:raise ValueError('Invalid scene relationship categories')
@@ -930,7 +931,7 @@ def main():
                 answer['answers']={**numeric_answers,**rotation_answers,**answer['answers']}
                 if args.formal_stage_call:
                     from libero_stage_decision import build_stage_request
-                    phase_request=build_stage_request(state,answer['answers'],protocol)
+                    phase_request=build_stage_request(state,answer['answers'],protocol,numeric_errors=numeric_scale_errors)
                     if args.literal_line_reasoning:
                         from libero_line_reasoning import build_line_stage_request
                         line_phase_request=build_line_stage_request(state,answer['answers'],task_exit=args.posture_task_exit)

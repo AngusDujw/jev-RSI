@@ -49,8 +49,35 @@ def build_scene_relation_request(state,protocol):
         questions=dict(scene_relation=dict(type='choice',instructions=rule['question'],criteria=rule['choices'])))
 
 
-def build_stage_request(state,answers,protocol):
+def build_position_progress_request(state,answers,protocol,numeric_errors):
+    if answers.get('transition',{}).get('choice')=='restart':return None
+    intervals=protocol.get('numeric_axis_intervals_mm',{}).get(state['stage'].get('stage_key'),{})
+    ratios=[]
+    for axis in ('x','y','z'):
+        error=(numeric_errors or {}).get(axis);bounds=intervals.get(axis)
+        if type(error) not in (int,float) or not math.isfinite(error) or not isinstance(bounds,list) or len(bounds)!=2 or bounds[1]<=bounds[0]:
+            ratios=[];break
+        ratios.append(abs(error)/((bounds[1]-bounds[0])/2))
+    if not ratios:
+        instructions='At least one current XYZ positioning measurement is unavailable. Do not treat missing values as zero. No visual recovery was requested. Continue this stage to get a usable current estimate, or restart only for a requested visual recovery.'
+        criteria={'continue':'Remain in this stage; positioning is not yet judgeable.','restart':'Visual recovery was requested.'}
+    else:
+        value=round(max(ratios),6)
+        rx,ry,rz=(answers.get(a,{}).get('choice','unknown') for a in ('rx','ry','rz'))
+        instructions=(f'Current normalized positioning deviation={value:g}. This means the worst XYZ position error is {value:g} times its tolerance. '
+            f'Actor rotation choices: RX={rx}, RY={ry}, RZ={rz}. No visual recovery was requested. '
+            'Continue when deviation is greater than1 OR a rotation choice is not hold. Advance only when deviation is from0 through1 inclusive AND all rotation choices are hold.')
+        criteria={'continue':'Positioning deviation is above1 or a rotation correction remains.',
+                  'advance':'Positioning deviation is within0..1 and all rotation choices hold.'}
+    return dict(model='gpt-6-luna',state=dict(stage=state['stage'],request_purpose='formal_stage_classification',
+        formal_stage_input='Classify the stage question from its printed current positioning deviation and the actor preceding rotation choices. The deviation uses current measured-robot and camera-derived positional errors, not a task-success or contact flag.'),
+        questions=dict(transition=dict(type='choice',instructions=instructions,criteria=criteria)))
+
+
+def build_stage_request(state,answers,protocol,numeric_errors=None):
     key=state['stage'].get('stage_key')
+    if protocol.get('position_progress_gate') and key in ('align_source_above_receiver','lower_to_place'):
+        return build_position_progress_request(state,answers,protocol,numeric_errors)
     motion=state.get('source_motion_test')
     if key=='lift' and motion and motion.get('available'):
         own=state.get('own_tool_geometry',{})

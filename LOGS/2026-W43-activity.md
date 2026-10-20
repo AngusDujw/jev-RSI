@@ -173,3 +173,4 @@
 - 【Agent】【2026-10-20 08:00】[result] v47完整native1/3/program0/3；init16实际仍夹瓶接触架面，retained0.85正确，不误报已释放。v48三个PID已真实执行净空：gap约276mm、H/H/+Z、Z命令20实测18.3mm、XY<0.5mm，first-clearance-audit已保存；继续全流程验证。
 - 【Agent】【2026-10-20 08:01】[op] 发布Pro18原提示词/四RAW/原始输出/实际九阶段plan与首净空执行审计到planner-clearance-first，HTTP200。v48仍在运行；修正当前状态中旧planning-only/LIVE措辞，保留v47终帧held证据。
 - 【Agent】【2026-10-20 08:06】[op] 实现v49 unsigned error尺度对照：同v48逐byte plan与全部模型问题，仅幅度引用已发送current-minus-desired error，修复非零height目标在gap0仅2mm的问题。符号/夹爪/阶段无覆写，unknown走原fallback，AST2/算子检查通过。
+- 【Agent】【2026-10-20 08:16】[op] v48首组实际提前交接错误已定位：0148/346 zpositive仍advance0.59，height gap110.7未净空。实现v50以已给模型的定位误差/容差最大比值9.535替代六字符串条件，模型再判断；builder4fixture正确、0动作不计成功，主restart保留。
