@@ -5,6 +5,7 @@ Expected SHA256 and sizes come from the checked-out Git blobs, not the mirror's
 metadata API. The unchanged fetch_assets.py performs final checkout/fsck/setup.
 """
 import argparse
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
@@ -16,6 +17,7 @@ import threading
 import time
 import urllib.parse
 import urllib.request
+import urllib.error
 
 
 def digest(path):
@@ -38,6 +40,7 @@ def main():
     parser.add_argument("--asset", help="Optional single-file transfer probe; does not install a complete tree")
     parser.add_argument("--seed-assets", type=Path, help="Read-only existing Assets tree; copy only frozen SHA256 matches")
     parser.add_argument("--seed-only", action="store_true", help="Verify/copy available assets without any network requests")
+    parser.add_argument("--inventory", action="store_true", help="Report missing cached objects without downloading")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     lock = json.loads((root/"configs/data.lock.json").read_text())["assets"]
@@ -68,6 +71,16 @@ def main():
         objects.setdefault(oid, (path, size))
     if args.asset and not objects:
         raise ValueError("The requested asset is not a locked LFS file")
+    if args.inventory:
+        missing, missing_bytes = Counter(), Counter()
+        for oid, (path, size) in objects.items():
+            target = cache/".git/lfs/objects"/oid[:2]/oid[2:4]/oid
+            if not target.is_file() or target.stat().st_size != size:
+                group = path.split("/")[1]
+                missing[group] += 1
+                missing_bytes[group] += size
+        print(json.dumps({"missing_objects": dict(missing), "missing_bytes": dict(missing_bytes)}), flush=True)
+        return
     if not args.asset and shutil.disk_usage(cache).free < sum(size for _, size in objects.values()) + file_bytes + 2**30:
         raise RuntimeError("Insufficient project-disk space for LFS objects plus checkout")
     print(json.dumps({"revision": revision, "unique_objects": len(objects), "checkout_bytes": file_bytes,
@@ -126,11 +139,11 @@ def main():
                         raise ValueError("Asset response fails frozen SHA256/size")
                     part.replace(target)
                     break
-                except Exception:
+                except Exception as error:
                     if attempt == 2:
                         stop.set()
                         raise
-                    time.sleep(1+attempt)
+                    time.sleep(30 if isinstance(error, urllib.error.HTTPError) and error.code in (429, 503) else 1+attempt)
         with progress:
             counts["objects"] += 1
             counts["bytes"] += size
