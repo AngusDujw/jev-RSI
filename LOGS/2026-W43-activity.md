@@ -19,3 +19,5 @@
 - 【Agent】【2026-10-20 16:43】[result] 会话roboicl-inspect-20261020第1轮：只读核查baseline/RoboICL实际入口policy_server→dialogue_policy；未发现Jev/typesafe调用。GPT直接输出[T,14]双臂连续动作，校验/累计到末端位姿后由RoboDojo IK执行；示范与执行回执通过上下文实现ICL。与本项目libero_jev_supervisor的离散方向/夹爪/阶段选择区分。未调用模型、未启动实验、未修改策略代码。
 - 【User】【2026-10-20 16:53】[prompt] 我是说roboicl这个baseline里也有用gpt+jev的，看看代码具体是怎么做的
 - 【Agent】【2026-10-20 16:55】[result] 会话roboicl-inspect-20261020第2轮：纠正上一轮过度概括。论文2609.34261v1 §4.5/C.2明确存在GPT+Jev附加实验：GPT预测20步，每段最多执行5步，Jev以本体状态/跟踪反馈/计划说明且无RGB决定是否批准额外5步复用，不生成动作。核对官方远程refs、主线/发布分支及全部历史，当前发布策略未找到Jev gate源码，不能声称已核实其实际请求schema/置信阈值。当前dialogue_policy.py:970仅返回execute_horizon前缀。未启动实验或调用模型。
+- 【User】【2026-10-20 17:11】[intent] 再次核查RoboDojo、LIBERO等仿真benchmark中已有的Jev或OpenAI Decisions API决策baseline，要求确认公开源码及可运行入口；不启动实验或模型调用。
+- 【Agent】【2026-10-20 17:16】[result] 会话baseline-recheck，轮次20261020-01：核对3个LIBERO官方Jev闭环源码候选；确认RoboICL与ESB论文Jev集成不能按当前release直接复现，目标benchmark的外部OpenAI Decisions API现成基线未查到。补EXP-W43-003与Discussion；未安装/运行仿真/调用模型/添加baseline。  ↪ `EXP-2026W43-003`

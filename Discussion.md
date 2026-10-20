@@ -261,6 +261,8 @@
 
 【Agent @Codex】【2026-10-17】System1-Arena源码审计见[EXP-2026W42-203](LOGS/2026-W42.md#exp-2026w42-203)：30个模型只有29个非agentic、20个agentic结果；Meta-World采用仿真特权坐标和14个定量动作，MuJoCo每执行器五档score由argmax执行，OpenAI输入为state的JSON文本，无相机图像。固定时延回放与真实在线异步执行有边界；总体16.87%不得用作机械臂专项成功率。其与本项目比较时应先匹配观测权限、动作幅度及外部控制器，本文未证明本项目新增贡献；不改研究目标、提示词或既有实验状态。
 
+【Agent @Codex】【2026-10-20】仿真决策baseline再核查见[EXP-2026W43-003](LOGS/2026-W43.md#exp-2026w43-003)：确认3个公开LIBERO官方Jev接入候选（Dimweaker/jev-libero、FBddcz/embodied-jev、shijianjian/RoboJEV），但本轮未端到端运行。分别依赖物理预演/真值、RGB-D规划及显式误差、真值与脚本航点；不得把RoboJEV本地微调45/50误作官方Jev小样本3/10。RoboICL门控有论文但公开实现未找到，EmbodiedSkill-Bench明确未发布Jev独立集成；OpenAI Decisions API在RoboDojo/LIBERO外部现成基线本轮未核实，不等于不存在。未新增实验基线或改研究目标；既有CIRCLE-1以冻结已有证据收敛。
+
 ## Resolution（关闭议题时必填）
 
 
