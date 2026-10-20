@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import zipfile
+from email.parser import Parser
 
 
 def output(command):
@@ -34,6 +36,19 @@ def main():
     base = json.loads(output([args.base_python, "-c", script]))
     overlays = [f"{name}=={version}" for name, version in pins.items()
                 if (base["versions"][name] or "").split("+")[0] != version]
+    # A changed package may require an exact binary companion even when that
+    # companion is not itself a top-level harness pin (e.g. pydantic-core).
+    for spec in list(overlays):
+        name, version = spec.split("==")
+        matches = list(args.wheels.glob(name.replace("-", "_") + "-" + version + "-*.whl"))
+        for wheel in matches[:1]:
+            with zipfile.ZipFile(wheel) as archive:
+                metadata = next(n for n in archive.namelist() if n.endswith(".dist-info/METADATA"))
+                fields = Parser().parsestr(archive.read(metadata).decode())
+                for requirement in fields.get_all("Requires-Dist", []):
+                    exact = re.fullmatch(r"([\w.-]+)\s*==\s*([\w.+-]+)", requirement)
+                    if exact and exact[0] not in overlays:
+                        overlays.append(exact[1]+"=="+exact[2])
     target = root/".venv-sim"
     if not target.exists():
         subprocess.run(["uv", "venv", "--python", args.base_python, str(target)], check=True)
