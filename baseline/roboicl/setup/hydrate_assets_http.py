@@ -90,7 +90,13 @@ def main():
             if part.is_symlink():
                 raise ValueError("Refuse a symlinked transfer scratch file")
             seed = args.seed_assets / Path(path).relative_to("Assets") if args.seed_assets else None
-            if seed is not None and seed.is_file() and seed.stat().st_size == size and digest(seed) == oid:
+            try:
+                seed_matches = seed is not None and seed.is_file() and seed.stat().st_size == size and digest(seed) == oid
+            except OSError:
+                # An unreadable optional seed is a cache miss, never a reason
+                # to change another installation's permissions.
+                seed_matches = False
+            if seed_matches:
                 # Copy, never hardlink: final materialization must not alter
                 # an existing installation through a shared inode.
                 shutil.copyfile(seed, part)
