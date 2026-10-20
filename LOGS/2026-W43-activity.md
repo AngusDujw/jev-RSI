@@ -25,3 +25,5 @@
 - 【Agent】【2026-10-20 17:19】[result] 会话jev-libero-inspect-20261020第1轮：只读核对baseline/jev-libero源码及top_drawer原始API记录。该系统读取仿真特权状态，对27原子输入做可恢复MuJoCo前视，按配置合同筛选，再由Jev串行选择intent/strategy/motor；必要时代码执行两步搜索，仅执行首动作。模型不看RGB，候选含预测原生success，概率置信度仅记录不参与调幅。抽屉记录20动作/155环境步/30API（5意图+5策略+20动作），4次单选项。未启动仿真或调用API，未修改baseline源码。
 - 【User】【2026-10-20 17:51】[prompt] 但是这个很局限吧，本项目在多少个libero下有结果
 - 【Agent】【2026-10-20 17:51】[result] 会话jev-libero-inspect-20261020第2轮：核对baseline/jev-libero/docs/results.md，3个不同任务共6回合：微波炉2/3、顶抽屉1/1、soup修正前失败/修正后原生通过但仍夹持未释放，全部init0，不能合并配置算稳定率。区分本仓库历史十Goal：10项有双终局示例、9项固定五未见初态5/5、1202未稳定；多模态分支另有1383旋钮3初态结果，条件独立。只读，不启动实验或模型。
+- 【User】【2026-10-20 21:08】[intent] 用户要求读取AgentsDock未读邮件并按既有授权处理；邮件为3d_harness协作会话请求只读同步物体定位定义、RGB-D反投影方法及精度证据。
+- 【Agent】【2026-10-20 21:08】[note] 会话goal-ten，20261020-mail：只读检查定位源码并向3d_harness会话回传可见点云q05/q95中心定义、RGB框/SAM与深度标定反投影区别、英文prompt及真实记录路径；明确没有独立定位MAE/RMSE，不能用控制容差/共运动残差代替定位精度。区分历史十任务零运行时GPT与当前可选Pro视觉代码，以及另一个特权baseline。发送回执accepted=handoff_0a4e40f2425ad22948a5f1fc83cd6f61；未启动实验、未调用模型、未连接服务器。
