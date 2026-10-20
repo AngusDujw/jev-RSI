@@ -29,7 +29,7 @@ def scheduler(path):
                 TMPDIR=str(root/'cache'),XDG_CACHE_HOME=str(root/'cache'),PYTHONDONTWRITEBYTECODE='1',
                 MAGICK_HOME=cfg['runtime_libs']+'/usr',
                 LD_LIBRARY_PATH=cfg['runtime_libs']+'/usr/lib/x86_64-linux-gnu'+(':'+os.environ['LD_LIBRARY_PATH'] if os.environ.get('LD_LIBRARY_PATH') else ''))
-            command=[cfg['python'],'-B',str(Path(cfg['project'])/'code/decision_multimodal/libero_direct_axes.py'),
+            command=[cfg['python'],'-B',str(Path(cfg['project'])/case.get('entrypoint','code/decision_multimodal/libero_direct_axes.py')),
                 '--task',str(case['task']),'--init',str(case['init']),'--gpu','0','--output',case['output'],
                 '--plan',case['plan'],'--libero-root',cfg['libero_root'],'--example-bank',cfg['example_bank'],
                 '--input-variant',case['variant'],'--grounded','--relation-prompts','--surface-context',
@@ -80,6 +80,8 @@ def scheduler(path):
             if case.get('robot_self_mask'):command+=['--robot-self-mask']
             command+=['--horizon',str(case.get('horizon',600))]
             if case.get('wall_seconds'):command+=['--wall-seconds',str(case['wall_seconds'])]
+            if case.get('omit_example_kind'):
+                command+=['--omit-example-kind',case['omit_example_kind'],'--frozen-source',case['frozen_source']]
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000
