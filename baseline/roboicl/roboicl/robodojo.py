@@ -135,6 +135,10 @@ def main() -> int:
         )
         stage = "create RoboDojo environment"
         env = create_eval_env(env_cfg, simulation_app)
+        if os.environ.get("ROBOICL_NO_MEDIA") == "1":
+            # EvalEnv is a task-specific class constructed inside the upstream factory.
+            # Disable only persistence; camera observations and native scoring stay active.
+            env._stream_vision = lambda *args, **kwargs: None
 
         # Upstream currently enumerates matching files and may renumber gaps.
         # Replace that lookup with the exact public layout ID selected by the CLI.

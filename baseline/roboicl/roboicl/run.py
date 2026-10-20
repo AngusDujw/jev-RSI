@@ -18,7 +18,9 @@ from pathlib import Path
 
 
 CODE = Path(__file__).absolute().parents[1]
-GPU_SLOTS = 2
+GPU_SLOTS = int(os.environ.get("ROBOICL_GPU_SLOTS", "2"))
+if not 1 <= GPU_SLOTS <= 4:
+    raise ValueError("ROBOICL_GPU_SLOTS must be between one and four")
 if str(CODE) not in sys.path:
     sys.path.insert(0, str(CODE))
 
@@ -300,6 +302,11 @@ def check(task, shots, seed, layout, variant, action_horizon=None, *,
     config["reference_instruction_aliases"] = aliases
     if action_horizon is not None:
         config.update(predict_horizon=action_horizon, execute_horizon=action_horizon)
+    # Reproduction-only separation of prediction and dispatch horizons.
+    if os.environ.get("ROBOICL_PREDICT_HORIZON"):
+        config["predict_horizon"] = int(os.environ["ROBOICL_PREDICT_HORIZON"])
+    if os.environ.get("ROBOICL_EXECUTE_HORIZON"):
+        config["execute_horizon"] = int(os.environ["ROBOICL_EXECUTE_HORIZON"])
     horizon = config["predict_horizon"]
     if not 1 <= horizon <= 64:
         raise ValueError("action horizon must be 1..64")

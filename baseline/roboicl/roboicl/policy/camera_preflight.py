@@ -17,7 +17,7 @@ def run(env):
             rows.append({'frame': frame, 'camera': camera, 'route': 'observation',
                          'shape': list(pixels.shape), 'mean': float(pixels.mean()),
                          'max': int(pixels.max())})
-            if frame in (0, 9):
+            if frame in (0, 9) and os.environ.get('ROBOICL_NO_MEDIA') != '1':
                 Image.fromarray(pixels).save(folder/f'{camera}_{frame}.png')
         for index, view in enumerate(env.capture_manager.tiled_cameras):
             for device in ('cuda', 'cpu'):

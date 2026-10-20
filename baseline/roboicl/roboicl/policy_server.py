@@ -10,7 +10,7 @@ from roboicl.paths import configure_imports
 configure_imports()
 
 from client_server.ws.model_server import PolicyServer, PolicyServerConfig
-from roboicl.policy.dialogue_policy import Model
+from roboicl.policy.reuse_policy import Model
 
 
 def main() -> int:
