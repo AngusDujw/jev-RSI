@@ -52,3 +52,7 @@
 - 【Agent】【2026-10-21 02:08】[op] 新建实验块 EXP-2026W43-006：RoboICL无API相机与显存复验：冻结源与完整物理资源  ↪ `EXP-2026W43-006`
 - 【Agent】【2026-10-21 02:14】[op] fold_clothes无API预检v1通过，GPU1峰值9201MiB，78.37秒。按原生render_sync入口补add_zero_delay_kit_args，以保证八路负载下RGB/物理同步，所有条件共用；启动同步版fold复验。新增按观测真实统计Jev额外执行步数，终局截断3步及中断2步专项通过；正式规划器CLI显式固定Astra/xhigh。
 - 【Agent】【2026-10-21 02:19】[op] 同步版fold_clothes预检通过：30条有效观测，zero-delay设置实际激活，GPU1峰值9190MiB/74.33秒；本机Pro经SSH桥真实ready调用返回Astra/xhigh/completed（4.39秒）。两端临时测试脚本均删除。复核GPU0/1/2/3空闲，启动纯GPT五任务各layout0–3共20正式回合，四卡各2路共8并行；本机桥与SSH转发均为可观察前台会话。
+- 【Agent】【2026-10-21 02:47】[result] 纯GPT正式首批已有3个原生终局：general_pickup layout0/1均成功（60步12GPT、53步11GPT）；press_by_number layout0原生失败（155步31GPT、无policy_error）。layout1按键出现39次IK连续性拒绝，保持原版控制/预算，不按进程返回码或少调用数替代成功。
+- 【Agent】【2026-10-21 03:06】[op] 本地完善尚未运行Jev分支：单次5+5复用沿用同一提案的追踪误差计数，前缀已触发原守卫则不能继续；新提案正常重置。补明夹爪值是上一归一化命令而非实测开度。13项原测试+4项守卫边界测试通过，临时测试脚本已删除。当前远端纯GPT批次仍记录冻结920d06f3。
+- 【Agent】【2026-10-21 03:18】[op] 新建实验块 EXP-2026W43-007：RoboICL纯GPT按键layout1在非法物理状态后中断  ↪ `EXP-2026W43-007`
+- 【Agent】【2026-10-21 03:22】[result] press_by_number layout1确认在PhysX非法变换后因Invalid joints in tracking receipt中断，无原生_result.json。保留EXP007 Crashed：3044.29秒、最后有效观测72步、GPT尝试/完成均138、IK拒绝133日志条。原生评分缺失与原生0分分开，主试验保留四次尝试，不用重试覆盖。
