@@ -27,3 +27,9 @@
 - 【Agent】【2026-10-20 17:51】[result] 会话jev-libero-inspect-20261020第2轮：核对baseline/jev-libero/docs/results.md，3个不同任务共6回合：微波炉2/3、顶抽屉1/1、soup修正前失败/修正后原生通过但仍夹持未释放，全部init0，不能合并配置算稳定率。区分本仓库历史十Goal：10项有双终局示例、9项固定五未见初态5/5、1202未稳定；多模态分支另有1383旋钮3初态结果，条件独立。只读，不启动实验或模型。
 - 【User】【2026-10-20 21:08】[intent] 用户要求读取AgentsDock未读邮件并按既有授权处理；邮件为3d_harness协作会话请求只读同步物体定位定义、RGB-D反投影方法及精度证据。
 - 【Agent】【2026-10-20 21:08】[note] 会话goal-ten，20261020-mail：只读检查定位源码并向3d_harness会话回传可见点云q05/q95中心定义、RGB框/SAM与深度标定反投影区别、英文prompt及真实记录路径；明确没有独立定位MAE/RMSE，不能用控制容差/共运动残差代替定位精度。区分历史十任务零运行时GPT与当前可选Pro视觉代码，以及另一个特权baseline。发送回执accepted=handoff_0a4e40f2425ad22948a5f1fc83cd6f61；未启动实验、未调用模型、未连接服务器。
+- 【User】【2026-10-21 00:31】[prompt] 在baseline加入三星RoboICL官方代码，补论文Jev减少GPT调用的方法；company-server-2-ykj的project下，最多四张空闲GPU并尽量显存并行，GPT经本机Pro；RoboDojo GPT成功率前五任务各四次，再以观测平均和最大步数做固定间隔对照；不保存图像。
+- 【Agent】【2026-10-21 00:36】[op] 将RoboICL官方07d6e1c源码与许可证纳入baseline/roboicl，新增固定上游获取脚本和复现边界/80回合对照协议；尚未启动物理或GPT/Jev调用。
+- 【Agent】【2026-10-21 00:53】[op] 补RoboICL单次5动作后Jev批准额外5动作的复用门控，保留原GPT20动作/IK/跟踪反馈；新增本机Pro原生Responses桥和四条件前台批次/调用间隔汇总。19项离线测试及3次已完成Pro非物理预检通过，另定位并移除Pro不支持的缓存元数据。临时测试脚本已删除。
+- 【Agent】【2026-10-21 00:53】[op] 新建实验块 EXP-2026W43-004：RoboICL官方代码、Jev复用重建与本机Pro传输预检  ↪ `EXP-2026W43-004`
+- 【Agent】【2026-10-21 01:11】[op] 在指定服务器建立独立policy uv及只读模拟器uv覆盖环境，官方依赖固定版本核验通过、原13项测试通过。直连HF/LFS失败后改固定revision的HTTPS下载并逐文件SHA256校验；添加旧Assets只读校验复制以缩短下载。Jev配置权限仍待用户答复，未发Jev请求，未启动GPU回合。
+- 【Agent】【2026-10-21 01:11】[op] 将RoboICL依赖与Pro预检证据回写EXP004及Discussion；当前正式仿真0、Jev调用0，未把基础设施验证当作策略效果。
