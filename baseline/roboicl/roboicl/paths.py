@@ -67,5 +67,7 @@ def configure_utility_namespace(context: str = "sim") -> None:
     for source in (owners[0]/"utils").glob("*.py"):
         name = "utils."+source.stem
         cached = sys.modules.get(name)
-        if cached is not None and Path(getattr(cached, "__file__", "")).resolve() != source.resolve():
+        if cached is not None and Path(getattr(cached, "__file__", "") or "").resolve() != source.resolve():
             del sys.modules[name]
+            if getattr(namespace, source.stem, None) is cached:
+                delattr(namespace, source.stem)

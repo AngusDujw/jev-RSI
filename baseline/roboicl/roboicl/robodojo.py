@@ -71,10 +71,11 @@ def main() -> int:
 
     app_launcher = AppLauncher(args)
     simulation_app = app_launcher.app
-    configure_utility_namespace("sim")
     env = None
-    stage = "import RoboDojo runtime"
+    stage = "restore runtime import namespace"
     try:
+        configure_utility_namespace("sim")
+        stage = "import RoboDojo runtime"
         from omegaconf import OmegaConf
         eval_env_module = importlib.import_module("src.eval_client.eval_env")
         if args.capture_only:
