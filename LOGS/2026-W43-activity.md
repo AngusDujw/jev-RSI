@@ -180,3 +180,5 @@
 - 【Agent】【2026-10-20 08:39】[result] v51三原生已真实34/22/34步与10/6/10原答，回放HTTP200；Pro19原提示词/三图/原JSON和静态原6图+crop请求/原答已公开。当前三条件逐动作审计293动作2344通道与原API完全一致，du仅Decisions、无经验注入；v50首20净空正式题真实continue，尚未完整任务。英文经验仅收集追加4条。
 - 【Agent】【2026-10-20 08:48】[note] 通信分层核查：最近25次传输中位0.1–0.2s、API中位约2–3s，SSH正常；但network-attempts真实记录v49/v50/v51分别9/26/5次SSL EOF、100s读超时或reset，均received_answer=false后自动重试。此前attempts文件glob不是实际文件名，已改查network-attempts，不将中位数解释为无异常。不重采已收到答案，不重启原生。
 - 【Agent】【2026-10-20 08:56】[op] v51真实首两scene：12RAW SHA及4张当前公开投影裁剪逐像素一致，retained0.48/0.93非都高置信。v50/406又误placed0.44。实现独立v52仅扩展scene题到inspect，模型off-target恢复/retained回放置5，0动作切换；旧1102六RAW新scope题off-target0.87，0新动作。AST/opt-in/plan一致检查通过。
+- 【Agent】【2026-10-20 09:02】[run] v52源码4f49cf53已Git SSH推送并bundle部署到独立工作树；桥与三原生实际启动，已有首4+原答，旧v49/v50/v51不重启。v49 init15终局native false/program false1198步376API/3105.130s，其他两例未结束；当前瓶子仍未稳定，不用局部分类代替任务成功。
+- 【Agent】【2026-10-20 09:17】[result] v52桥已完成有序排空：所有在途回复保存/投递后旧child2319895退出，替换仅本机wrapper，新2338519实际--workers1已验证；三native PID1129304/5/6不变，真实34/46/34步。v50 init14真实0214/478 deviation0.91 advance1.0，490进入运输，RAW已审；非完整成功。发布first-runtime audit与inspect probe到原站。
