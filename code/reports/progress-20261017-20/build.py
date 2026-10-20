@@ -36,6 +36,13 @@ for name in ['index.html', 'style.css', 'app.js', 'data.json']:
 data_js = OUT / 'data.js'
 data_js.write_text('window.REPORT_DATA=' + (HERE / 'data.json').read_text() + ';\n')
 record(data_js, 'data.json [same values, local-file-compatible JavaScript assignment]')
+copy(HERE / 'example-ablation-evidence.json', 'sources/example-ablation-evidence.json')
+example_js = OUT / 'example-data.js'
+example_js.write_text('window.ABLATION_EVIDENCE=' + (HERE / 'example-ablation-evidence.json').read_text() + ';\n')
+record(example_js, 'sources/example-ablation-evidence.json [same values, local-file-compatible assignment]')
+ablation = DM / 'code/runs/2026-10-20-iteration-v55-v56-example-ablation'
+for name in ['filter-fixture.json', 'stage-goal-filter-fixture.json']:
+    copy(ablation / name, f'sources/example-{name}')
 for base, label in [(DM, 'multimodal'), (ROBO, 'robodojo')]:
     for week in ['2026-W42', '2026-W43']:
         copy(base / f'LOGS/{week}.md', f'sources/{label}-{week}.md')
@@ -61,7 +68,9 @@ for task in ['stack_blocks', 'classify_objects']:
              f'assets/{name}')
 for route, label in [
     ('iteration-v20-verify-knob-v20-frozen-init14', 'knob-frozen'),
-    ('iteration-v28-bottle-sideview-source-fixed-init12', 'bottle-development')]:
+    ('iteration-v28-bottle-sideview-source-fixed-init12', 'bottle-development'),
+    ('iteration-v54-knob-no-examples-knob-no-examples-init14', 'knob-no-examples'),
+    ('iteration-v55-v56-knob-example-ablation-knob-no-motion-examples-init14', 'knob-task-only')]:
     # Read only an existing evidence service. Preserve the exact downloaded GIF;
     # do not trigger inference, simulation, or any control endpoint.
     url = f'http://100.75.107.115:18943/{route}/rollout.gif'

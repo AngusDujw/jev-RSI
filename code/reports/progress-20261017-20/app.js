@@ -2,7 +2,7 @@
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ledger = document.querySelector('#ledger');
 let rows = [], day = 'all';
-const statusClass = s => ({'完成':'success','失败':'failure','中断':'warning','待定':'pending'}[s] || '');
+const statusClass = s => ({'完成':'success','失败':'failure','中断':'warning','待定':'pending','受污染':'warning'}[s] || '');
 function render() {
   const query = document.querySelector('#search').value.trim().toLowerCase();
   const filtered = rows.filter(r => (day === 'all' || r.day === day) && JSON.stringify(r).toLowerCase().includes(query));
@@ -25,3 +25,11 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-img]');if(
 document.querySelector('#close-lightbox').addEventListener('click',()=>box.close());
 box.addEventListener('click',e=>{if(e.target===box)box.close();});
 document.querySelector('#print').addEventListener('click',()=>{document.querySelectorAll('details.experiment').forEach(el=>el.open=true);window.print();});
+if (window.ABLATION_EVIDENCE) {
+  const records=window.ABLATION_EVIDENCE.records;
+  document.querySelector('#ablation-cases').innerHTML=records.map(r=>{
+    const x=r.result;
+    const result=x.native_evaluated?`原生 ${x.success?'成功':'失败'} / 程序 ${x.program_finished?'结束':'未结束'} · ${x.native_steps} 步 · ${x.api_responses} 回答`:'运行中，未获得完整终局';
+    return `<p><b>${esc(r.version)} / init${r.init}</b> · ${result}${r.version==='v56'?' · 输入污染，不用于干净消融结论':''} · <a href="${esc(r.source)}" target="_blank" rel="noreferrer">原始复审页 ↗</a></p>`;
+  }).join('');
+}

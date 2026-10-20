@@ -1,0 +1,169 @@
+{
+  "captured_at": "2026-10-20 16:00 +08:00",
+  "records": [
+    {
+      "version": "v54",
+      "init": 14,
+      "source": "http://100.75.107.115:18943/iteration-v54-knob-no-examples-knob-no-examples-init14/review.html",
+      "result": {
+        "task": 1383,
+        "init": 14,
+        "success": false,
+        "native_evaluated": true,
+        "program_finished": false,
+        "diagnostic_replay": false,
+        "native_steps": 1198,
+        "seconds": 5041.125685080886,
+        "api_responses": 348
+      }
+    },
+    {
+      "version": "v54",
+      "init": 15,
+      "source": "http://100.75.107.115:18943/iteration-v54-knob-no-examples-knob-no-examples-init15/review.html",
+      "result": {
+        "task": 1383,
+        "init": 15,
+        "success": false,
+        "native_evaluated": true,
+        "program_finished": false,
+        "diagnostic_replay": false,
+        "native_steps": 1198,
+        "seconds": 5240.318800297566,
+        "api_responses": 349
+      }
+    },
+    {
+      "version": "v54",
+      "init": 16,
+      "source": "http://100.75.107.115:18943/iteration-v54-knob-no-examples-knob-no-examples-init16/review.html",
+      "result": {
+        "task": 1383,
+        "init": 16,
+        "success": false,
+        "native_evaluated": true,
+        "program_finished": false,
+        "diagnostic_replay": false,
+        "native_steps": 1198,
+        "seconds": 5013.649782660417,
+        "api_responses": 348
+      }
+    },
+    {
+      "version": "v55",
+      "init": 14,
+      "source": "http://100.75.107.115:18943/iteration-v55-v56-knob-example-ablation-knob-no-motion-examples-init14/review.html",
+      "result": {
+        "task": 1383,
+        "init": 14,
+        "success": true,
+        "native_evaluated": true,
+        "program_finished": true,
+        "diagnostic_replay": false,
+        "native_steps": 706,
+        "seconds": 3231.0133373476565,
+        "api_responses": 234
+      }
+    },
+    {
+      "version": "v55",
+      "init": 15,
+      "source": "http://100.75.107.115:18943/iteration-v55-v56-knob-example-ablation-knob-no-motion-examples-init15/review.html",
+      "result": {
+        "task": 1383,
+        "init": 15,
+        "success": true,
+        "native_evaluated": true,
+        "program_finished": true,
+        "diagnostic_replay": false,
+        "native_steps": 646,
+        "seconds": 2530.7009723661467,
+        "api_responses": 220
+      }
+    },
+    {
+      "version": "v55",
+      "init": 16,
+      "source": "http://100.75.107.115:18943/iteration-v55-v56-knob-example-ablation-knob-no-motion-examples-init16/review.html",
+      "result": {
+        "task": 1383,
+        "init": 16,
+        "success": true,
+        "native_evaluated": true,
+        "program_finished": true,
+        "diagnostic_replay": false,
+        "native_steps": 694,
+        "seconds": 3260.6972531890497,
+        "api_responses": 231
+      }
+    },
+    {
+      "version": "v56",
+      "init": 14,
+      "source": "http://100.75.107.115:18943/iteration-v55-v56-knob-example-ablation-knob-no-task-examples-init14/review.html",
+      "result": {
+        "task": 1383,
+        "init": 14,
+        "success": true,
+        "native_evaluated": true,
+        "program_finished": true,
+        "diagnostic_replay": false,
+        "native_steps": 718,
+        "seconds": 3854.6159832775593,
+        "api_responses": 238
+      }
+    },
+    {
+      "version": "v56",
+      "init": 15,
+      "source": "http://100.75.107.115:18943/iteration-v55-v56-knob-example-ablation-knob-no-task-examples-init15/review.html",
+      "result": {
+        "task": 1383,
+        "init": 15,
+        "success": true,
+        "native_evaluated": true,
+        "program_finished": true,
+        "diagnostic_replay": false,
+        "native_steps": 730,
+        "seconds": 3945.770836601034,
+        "api_responses": 241
+      }
+    },
+    {
+      "version": "v56",
+      "init": 16,
+      "source": "http://100.75.107.115:18943/iteration-v55-v56-knob-example-ablation-knob-no-task-examples-init16/review.html",
+      "result": {
+        "status": "running"
+      }
+    },
+    {
+      "version": "v57",
+      "init": 14,
+      "source": "http://100.75.107.115:18943/iteration-v57-knob-no-task-stage-fixed-knob-no-task-fixed-init14/review.html",
+      "result": {
+        "status": "running"
+      }
+    },
+    {
+      "version": "v57",
+      "init": 15,
+      "source": "http://100.75.107.115:18943/iteration-v57-knob-no-task-stage-fixed-knob-no-task-fixed-init15/review.html",
+      "result": {
+        "status": "running"
+      }
+    },
+    {
+      "version": "v57",
+      "init": 16,
+      "source": "http://100.75.107.115:18943/iteration-v57-knob-no-task-stage-fixed-knob-no-task-fixed-init16/review.html",
+      "result": {
+        "status": "running"
+      }
+    }
+  ],
+  "audit_note": {
+    "source": ".worktrees/decision-multimodal-20261016/LOGS/2026-W43-activity.md, 2026-10-20 15:55 result",
+    "text": "v55 685 actual requests audited without motion images; v56 stage queries retained goal-appearance images about18–20 times per episode. v57 is the corrected condition; retain v56 results but exclude them from clean task-example ablation conclusions."
+  }
+}
