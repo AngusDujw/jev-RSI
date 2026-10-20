@@ -104,7 +104,8 @@ def frozen_intervals(root):
             raise ValueError(f"No execution intervals for {task}")
         mean = statistics.mean(intervals)
         report[task] = {"mean": max(1, min(20, int(Decimal(str(mean)).quantize(Decimal("1"), rounding=ROUND_HALF_UP)))),
-                        "maximum": max(intervals), "raw_mean": mean, "samples": intervals,
+                        "maximum": max(1, min(20, max(intervals))), "raw_maximum": max(intervals),
+                        "raw_mean": mean, "samples": intervals,
                         "source_cases": [row["folder"] for row in cases]}
     save(path, report)
     return report
