@@ -9,6 +9,17 @@ NUMERIC_INPUT = ('Answer each independent question from its printed position err
     'Select the direction that brings the error inside the stated tolerance.')
 
 
+def unsigned_step_magnitudes(errors,fallback):
+    """Use error magnitudes without inventing or suppressing an actor sign."""
+    result=[]
+    for i,axis in enumerate(('x','y','z')):
+        value=errors.get(axis)
+        magnitude=.3*abs(value)/1000 if type(value) in (int,float) and math.isfinite(value) else float(fallback[i])
+        if not math.isfinite(magnitude):raise ValueError('Nonfinite unsigned step fallback')
+        result.append(min(.02,max(.002,magnitude)))
+    return result
+
+
 def visible_height_observation(state):
     """Partial RGB-D height statistics, never a collision/clearance flag."""
     mode=state['stage'].get('control_contract',{}).get('height_reference')

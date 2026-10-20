@@ -550,7 +550,8 @@ def main():
                 raw_protocol=args.protocol_file.read_bytes();digest=hashlib.sha256(raw_protocol).hexdigest()
                 if not args.live_protocol and digest!=protocol_hash:raise ValueError('Frozen protocol changed during evaluation')
                 protocol=json.loads(raw_protocol);english(protocol)
-                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb'}:raise ValueError('Unsupported protocol field')
+                if set(protocol)-{'revision','stage_overrides','question_templates','axis_bands_mm','numeric_axis_intervals_mm','stage_decision_rules','visual_stage_rules','scene_relation_question','scene_relation_raw_rgb','unsigned_error_scale'}:raise ValueError('Unsupported protocol field')
+                if protocol.get('unsigned_error_scale') and not (args.numeric_axis_call and args.relative_step_scale):raise ValueError('Error magnitude scaling requires scoped numeric questions and relative scaling')
                 if protocol.get('scene_relation_question'):
                     if args.task!=1458 or not args.actor_attention or not args.record_evidence:raise ValueError('Scene relation requires audited bottle policy')
                     if set(protocol['scene_relation_question']['choices'])!={'retained','released_on_upper_support','separated_off_target','uncertain'}:raise ValueError('Invalid scene relationship categories')
@@ -865,12 +866,14 @@ def main():
                 for name,template in templates.items():
                     if not isinstance(template,str):raise ValueError('Protocol questions must be text, never commands')
                     questions[name]['instructions']=template.format_map(context)
+            numeric_scale_errors={}
             if replay_rows is None:
                 numeric_answers={}
                 if args.numeric_axis_call:
                     from libero_numeric_axes import build_numeric_request
                     numeric=build_numeric_request(state,protocol)
                     if numeric is not None:
+                        numeric_scale_errors=dict(numeric['state']['current_minus_desired_error_mm'])
                         saved=(api.current,api.previous,api.demonstrations,getattr(api,'motion',MOTION))
                         try:
                             api.current=[];api.previous=[];api.demonstrations=[]
@@ -990,8 +993,12 @@ def main():
                 difference=reference_difference(state)
                 if difference is not None and state['stage'].get('stage_key') in ('align_above_source','descend_to_source','align_source_above_receiver','lower_to_place'):
                     # A magnitude cannot reverse, invent or suppress an actor sign.
-                    magnitude=np.array([np.clip(.3*abs(v)/1000,.002,.02) if isinstance(v,(int,float)) and np.isfinite(v)
-                        else abs(dp[i]) if signs[i] else .002 for i,v in enumerate(difference)])
+                    if protocol.get('unsigned_error_scale'):
+                        from libero_numeric_axes import unsigned_step_magnitudes
+                        magnitude=np.array(unsigned_step_magnitudes(numeric_scale_errors,np.abs(dp).tolist()))
+                    else:
+                        magnitude=np.array([np.clip(.3*abs(v)/1000,.002,.02) if isinstance(v,(int,float)) and np.isfinite(v)
+                            else abs(dp[i]) if signs[i] else .002 for i,v in enumerate(difference)])
                     dp=signs[:3]*magnitude
             dp*=min(1.,.03/max(np.linalg.norm(dp),1e-10));dr*=min(1.,.25/max(np.linalg.norm(dr),1e-10))
             if replay_rows is not None:

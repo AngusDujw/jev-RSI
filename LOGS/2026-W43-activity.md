@@ -172,3 +172,4 @@
 - 【Agent】【2026-10-20 07:45】[op] 实现v48 Pro18净空先行：部分可见高度统计/own-entry XY/运输维持体下沿高度/所选支撑座入，unknown不置零、unsigned步长保留API方向。AST5与算子检查通过；known/unknown两题advance0.99/continue0.97不计任务成绩，准备独立三原生。
 - 【Agent】【2026-10-20 08:00】[result] v47完整native1/3/program0/3；init16实际仍夹瓶接触架面，retained0.85正确，不误报已释放。v48三个PID已真实执行净空：gap约276mm、H/H/+Z、Z命令20实测18.3mm、XY<0.5mm，first-clearance-audit已保存；继续全流程验证。
 - 【Agent】【2026-10-20 08:01】[op] 发布Pro18原提示词/四RAW/原始输出/实际九阶段plan与首净空执行审计到planner-clearance-first，HTTP200。v48仍在运行；修正当前状态中旧planning-only/LIVE措辞，保留v47终帧held证据。
+- 【Agent】【2026-10-20 08:06】[op] 实现v49 unsigned error尺度对照：同v48逐byte plan与全部模型问题，仅幅度引用已发送current-minus-desired error，修复非零height目标在gap0仅2mm的问题。符号/夹爪/阶段无覆写，unknown走原fallback，AST2/算子检查通过。
