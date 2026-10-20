@@ -23,3 +23,5 @@
 - 【Agent】【2026-10-20 17:16】[result] 会话baseline-recheck，轮次20261020-01：核对3个LIBERO官方Jev闭环源码候选；确认RoboICL与ESB论文Jev集成不能按当前release直接复现，目标benchmark的外部OpenAI Decisions API现成基线未查到。补EXP-W43-003与Discussion；未安装/运行仿真/调用模型/添加baseline。  ↪ `EXP-2026W43-003`
 - 【User】【2026-10-20 17:18】[prompt] 看一下baseline里的jev libero具体是怎么用jev的
 - 【Agent】【2026-10-20 17:19】[result] 会话jev-libero-inspect-20261020第1轮：只读核对baseline/jev-libero源码及top_drawer原始API记录。该系统读取仿真特权状态，对27原子输入做可恢复MuJoCo前视，按配置合同筛选，再由Jev串行选择intent/strategy/motor；必要时代码执行两步搜索，仅执行首动作。模型不看RGB，候选含预测原生success，概率置信度仅记录不参与调幅。抽屉记录20动作/155环境步/30API（5意图+5策略+20动作），4次单选项。未启动仿真或调用API，未修改baseline源码。
+- 【User】【2026-10-20 17:51】[prompt] 但是这个很局限吧，本项目在多少个libero下有结果
+- 【Agent】【2026-10-20 17:51】[result] 会话jev-libero-inspect-20261020第2轮：核对baseline/jev-libero/docs/results.md，3个不同任务共6回合：微波炉2/3、顶抽屉1/1、soup修正前失败/修正后原生通过但仍夹持未释放，全部init0，不能合并配置算稳定率。区分本仓库历史十Goal：10项有双终局示例、9项固定五未见初态5/5、1202未稳定；多模态分支另有1383旋钮3初态结果，条件独立。只读，不启动实验或模型。
