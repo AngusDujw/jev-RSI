@@ -564,3 +564,5 @@
 【Agent @Codex】【2026-10-20】[EXP063](LOGS/2026-W43.md#exp-2026w43-063)：v45/v46各完整native1/3但program0/3，均1198步；两阳性终帧瓶在上层架/空手clear。v46全部carry无open且0R，仍脱离，不能靠闭爪契约解决。v47首实际18RAW SHA匹配、前后隔12物理步，3retained仅过程证据；Pro18四RAW提出部分高度差+先净空运输，v48尚无原生。CIRCLE-1以冻结新三初态完整终局收敛。
 
 【Agent @Codex】【2026-10-20】[EXP064](LOGS/2026-W43.md#exp-2026w43-064)：Pro18四RAW后实现v48先净空、后保持瓶身高度运输，采用当前可见颜色面5/95高度统计并声明非完整界/非CI。算子unknown/符号/锚定检查及AST5通过，模型known/unknown交接fixture2/2仅接口，0动作。所有方向与R仍API决定，原生待运行；CIRCLE-1按完整终局与冻结三新初态收敛。
+
+【Agent @Codex】【2026-10-20】[EXP065](LOGS/2026-W43.md#exp-2026w43-065)：v47完整native1/3/program0/3，430/460/511答。init16终帧仍夹瓶接触架面，retained0.85正确，不能称释放成功。v48实际净空输入gap约276mm、模型H/H/+Z，首3动作命令Z20mm，实测18.293–18.330mm且XY漂移<0.5mm；仅过程，完整结果待运行。CIRCLE-1按冻结新17/18/19完整原生收敛。
