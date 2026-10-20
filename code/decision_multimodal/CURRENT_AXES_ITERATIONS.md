@@ -2,7 +2,10 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## v53 complete0/3; v54 knob demonstration ablation running
+## v54 knob no-examples complete0/3; v55/v56 single-family ablations running
+
+- v54 final: all native_evaluated=true, success=false, program_finished=false,1198steps; responses348/349/348. All endTurn, six-axis hold53/45/53times. Earlier running entries below are historical.
+- v55 removes only generic motion examples; v56 removes only task-phase/final-goal examples. Both retain original v20 scheduling/text/XYZ/controller and current observations. Wrapper07e939f3 filters final payload of immutable329d9c12; paired14/15/16 each, six native processes started. First actual inputs5images/task-only versus10images/motion-only; no native outcome yet. See EXP077 and protocols/knob_v55_v56_example_ablation.json.
 
 - Latest closure: v51 complete native/program0/3 at1198steps. v52 all three interrupted before native evaluation; init15 ended at598steps/258responses bywall timeout. v53 all complete native/program0/3,1198steps,660/654/651response records; all three executed zero commanded R. Earlier live/prepared entries below are historical observations.
 - User-authorized v54 removes ALL archived motion/task/goal examples from exact frozen knob329d9c12 with emptybank and retain/goal switchesoff. Same original plan/protocol text, current/previous RGB, numericXYZ, ownstate and controller; paired init14/15/16,1200steps, no replacements. Original axis-specific verbal guidance and now-dangling example references remain deliberately unchanged. See protocols/knob_v54_no_examples.json and EXP076; native result pending.

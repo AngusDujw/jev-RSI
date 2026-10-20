@@ -1,0 +1,29 @@
+{
+  "kind": "paired_example_family_ablation",
+  "task": 1383,
+  "base_policy_commit": "329d9c12827d26c59d49fa11b11b7b0016d8726c",
+  "wrapper_commit": "07e939f3",
+  "protocol_sha256": "9c33a1e0e46cc61dd3fc5c04f86ae0d4aa35f3523797540d0b45a90667293145",
+  "initial_states": [
+    14,
+    15,
+    16
+  ],
+  "horizon": 1200,
+  "conditions": {
+    "v55": "Remove generic XYZ and rotation primitive caption/image pairs only; retain task-phase and final-goal examples.",
+    "v56": "Remove task-phase and final-goal caption/image pairs only; retain generic XYZ and rotation primitive examples."
+  },
+  "mechanism": "Filter final payload after frozen original example selection, preserving retained blocks, current/previous observations, state and questions exactly.",
+  "unchanged": [
+    "Original task-specific axis guidance and all original prompt wording, including references to omitted examples",
+    "RGB-D XYZ feedback and own robot state",
+    "Original plan, phase logic, adaptive step magnitudes and controller"
+  ],
+  "model": "gpt-6-luna",
+  "endpoint": "https://api.openai.com/v1/decisions",
+  "key_origin": "du",
+  "experience_injection": false,
+  "assets": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v55-v56-knob-example-ablation",
+  "results": "Pending native evaluation; cases cannot be replaced to improve the score."
+}
