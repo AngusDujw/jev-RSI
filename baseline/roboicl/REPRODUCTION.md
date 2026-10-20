@@ -20,6 +20,8 @@ First complete pure and Jev conditions (40 episodes). Then derive each task's me
 
 An interval is the robot-step difference from one completed GPT request to the next, with the last interval ending at episode termination. Zero-step correction requests therefore remain in the interval denominator; local safety-hold steps also remain in the physical-step count. Accepted tool-result intervals are reported separately. No extra calls or failed trials are silently removed.
 
+The mean/max schedules are fitted on the same four Jev layouts and are development-set ablations. Report per-episode total robot steps as well as per-GPT intervals. Infrastructure interruptions remain explicit; their partial steps are not silently averaged into a complete-episode performance claim.
+
 Use the local signed-in ChatGPT Pro account for GPT transport, never an OpenAI Platform API key. Target the paper's GPT-6 Astra/xhigh when the local Pro account supports it; record an incompatibility rather than silently changing model. Jev uses a separately authorized Jev provider and never substitutes for GPT.
 
 Run on company-server-2-ykj under `/home/ykj/project/jev-rsi-roboicl`. Use at most four idle GPUs; measure one simulator's peak usage before choosing workers per GPU. Keep RGB in memory for policy input and do not persist frames, videos, image-bearing request payloads, or HDF5 trajectories. Save lightweight textual action/receipt/request audits with image content replaced by hashes, outcome, steps, calls, latency, usage and provenance.

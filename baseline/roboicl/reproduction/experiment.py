@@ -82,7 +82,9 @@ def summarize(root):
             if selected:
                 print(json.dumps({"condition": condition, "task": task, "finished": len(selected),
                     "success": sum(row["success"] for row in selected), "scored": sum(row["scored"] for row in selected),
-                    "mean_robot_steps": statistics.mean(row.get("robot_steps", 0) for row in selected),
+                    "mean_robot_steps_all_attempts": statistics.mean(row.get("robot_steps", 0) for row in selected),
+                    "mean_robot_steps_scored": statistics.mean(row.get("robot_steps", 0) for row in selected if row["scored"] and not row.get("policy_error"))
+                        if any(row["scored"] and not row.get("policy_error") for row in selected) else None,
                     "gpt_completed": sum(row.get("gpt_completed", 0) for row in selected)}), flush=True)
     return rows
 
