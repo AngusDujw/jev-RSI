@@ -58,6 +58,7 @@ def summarize_case(folder):
             reused_steps.append(max(0, min(len(dispatch["actions"]), following_call-start, robot_steps-start)))
         if any(step < 0 for step in intervals):
             raise ValueError("Nonmonotone GPT-call/robot-step ledger")
+        tail_censored = not row["scored"] or bool(row.get("policy_error"))
         row.update(robot_steps=robot_steps,
                    gpt_completed=len(exchanges), gpt_attempts=len(lines(trace/"requests.jsonl")),
                    jev_calls=len(lines(trace/"reuse_votes.jsonl")),
@@ -66,6 +67,8 @@ def summarize_case(folder):
                    jev_reused_steps=sum(reused_steps), jev_executed_extra_intervals=reused_steps,
                    jev_approvals=sum(item.get("choice") == "reuse" for item in lines(trace/"reuse_votes.jsonl")),
                    executed_intervals=intervals,
+                   interval_tail_censored=tail_censored,
+                   calibration_intervals=intervals[:-1] if tail_censored else intervals,
                    accepted_tool_intervals=[item["executed_steps"] for item in receipts],
                    nonterminal_full_intervals=[item["executed_steps"] for item in receipts
                        if item["executed_steps"] == item["dispatched_steps"] and not item.get("controller_events")
@@ -105,15 +108,18 @@ def frozen_intervals(root):
     report = {}
     for task in TASKS:
         cases = [row for row in rows if row["condition"] == "jev" and row["task"] == task]
-        if len(cases) != 4 or not all(row["scored"] and not row.get("policy_error") for row in cases):
-            raise ValueError(f"Need four completed Jev episodes before freezing intervals: {task}")
-        intervals = [step for row in cases for step in row["executed_intervals"]]
+        if len(cases) != 4 or {row["layout"] for row in cases} != set(range(4)):
+            raise ValueError(f"Need four terminated Jev attempts before freezing intervals: {task}")
+        intervals = [step for row in cases for step in row.get("calibration_intervals", [])]
         if not intervals:
             raise ValueError(f"No execution intervals for {task}")
         mean = statistics.mean(intervals)
         report[task] = {"mean": max(1, min(20, int(Decimal(str(mean)).quantize(Decimal("1"), rounding=ROUND_HALF_UP)))),
                         "maximum": max(1, min(20, max(intervals))), "raw_maximum": max(intervals),
                         "raw_mean": mean, "samples": intervals,
+                        "scored_attempts": sum(row["scored"] and not row.get("policy_error") for row in cases),
+                        "usable_attempts": sum(bool(row.get("calibration_intervals")) for row in cases),
+                        "censored_tails": sum(row.get("interval_tail_censored", True) for row in cases),
                         "source_cases": [row["folder"] for row in cases]}
     save(path, report)
     return report
