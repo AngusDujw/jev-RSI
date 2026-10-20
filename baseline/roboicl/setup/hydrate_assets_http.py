@@ -9,6 +9,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -41,6 +42,7 @@ def main():
     parser.add_argument("--seed-assets", type=Path, help="Read-only existing Assets tree; copy only frozen SHA256 matches")
     parser.add_argument("--seed-only", action="store_true", help="Verify/copy available assets without any network requests")
     parser.add_argument("--inventory", action="store_true", help="Report missing cached objects without downloading")
+    parser.add_argument("--seed-by-digest", action="store_true", help="Read-only scan of seed tree for matching objects under different paths; no network")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     lock = json.loads((root/"configs/data.lock.json").read_text())["assets"]
@@ -71,6 +73,46 @@ def main():
         objects.setdefault(oid, (path, size))
     if args.asset and not objects:
         raise ValueError("The requested asset is not a locked LFS file")
+    if args.seed_by_digest:
+        if args.seed_assets is None:
+            parser.error("--seed-by-digest requires --seed-assets")
+        needed = {}
+        for oid, (_, size) in objects.items():
+            target = cache/".git/lfs/objects"/oid[:2]/oid[2:4]/oid
+            if not target.is_file() or target.stat().st_size != size:
+                needed.setdefault(size, set()).add(oid)
+        copied = copied_bytes = unreadable = 0
+        last_print = time.monotonic()
+        for directory, _, names in os.walk(args.seed_assets, followlinks=False):
+            for name in names:
+                source = Path(directory)/name
+                try:
+                    if source.is_symlink() or source.stat().st_size not in needed:
+                        continue
+                    oid = digest(source)
+                    size = source.stat().st_size
+                    if oid not in needed.get(size, set()):
+                        continue
+                    target = cache/".git/lfs/objects"/oid[:2]/oid[2:4]/oid
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    part = target.with_suffix(".seed-part")
+                    if part.is_symlink():
+                        raise ValueError("Refuse symlinked seed scratch")
+                    shutil.copyfile(source, part)
+                    if part.stat().st_size != size or digest(part) != oid:
+                        raise ValueError("Seed changed during copying")
+                    part.replace(target)
+                    needed[size].remove(oid)
+                    copied += 1
+                    copied_bytes += size
+                except OSError:
+                    unreadable += 1
+                if time.monotonic()-last_print > 10:
+                    print(json.dumps({"seed_objects_copied": copied, "seed_bytes_copied": copied_bytes}), flush=True)
+                    last_print = time.monotonic()
+        print(json.dumps({"seed_objects_copied": copied, "seed_bytes_copied": copied_bytes,
+                          "unreadable_seed_files": unreadable, "network_requests": 0}), flush=True)
+        return
     if args.inventory:
         missing, missing_bytes = Counter(), Counter()
         for oid, (path, size) in objects.items():
