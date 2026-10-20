@@ -18,6 +18,7 @@ RUNTIME=PROJECT/'code/runs/server02-policy-comparison-20261018/official_runtime'
 PYTHON=Path('/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/.venv/bin/python')
 SSH=['ssh','-F','/dev/null','-S','/home/ykj/.ssh/s2-comparison-20261019d.ctl','--','server02']
 STOP=False
+DISPATCH_STOP=False
 LOCK=threading.Lock()
 
 
@@ -153,14 +154,16 @@ def main():
     rows=[]
     if len(set(args.layouts))!=len(args.layouts):raise ValueError('Duplicate layout within one condition')
     def queue(gpu,layouts):
-        global STOP
+        global DISPATCH_STOP
         for layout in layouts:
-            if STOP:return
+            if STOP or DISPATCH_STOP:return
             row=one(layout,gpu,args.rotation_format,args.run_tag,args.geometry_overlay,args.alignment_guidance,args.rotation_effects)
             with LOCK:
                 rows.append(row);save(ROOT/f'pilot-{args.rotation_format}.json',rows)
             if row.get('controller_exit')!=0:
-                STOP=True
+                # Stop queued episodes without cancelling a healthy in-flight peer.
+                # STOP is reserved for explicit SIGTERM/SIGINT from the user.
+                DISPATCH_STOP=True
                 return
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:
         futures=[pool.submit(queue,(args.gpu+i)%2,args.layouts[i::args.parallel]) for i in range(args.parallel)]

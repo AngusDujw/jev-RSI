@@ -104,3 +104,18 @@ questions, action scale, physics and scoring otherwise stay fixed. Offline245
 paired options matched the executor axes and invariant TCP within1e-12m.
 No improved task performance is established. The original hold-out and planner
 stability gates remain unchanged.
+
+
+2026-10-20 v5 infrastructure override: layout1 stopped at190 with curl35,
+TLS incomplete, zero uploaded bytes and an empty response. The old coordinator
+then cancelled healthy layout0 at175; its last request has no transport receipt,
+so delivery is unknown and it must never be replayed. The recorded "User
+interruption" label is a coordinator peer-stop misclassification, not a user
+pause. Both outcomes are incomplete; layout2 never started. All workers exited.
+The scheduler now separates explicit user STOP from DISPATCH_STOP: failure
+blocks queued episodes while a healthy active peer may finish. User signals
+still cancel active work. Offline concurrent fixtures verified this distinction.
+No new episode or API probe is authorized by this repair. TLS upstream cause
+remains unresolved from available logs, and local free disk fell below the
+unchanged8GiB admission gate. Preserve media/failures; resolve infrastructure
+offline before any fresh missing-slot dispatch.
