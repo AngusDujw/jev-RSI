@@ -2,7 +2,10 @@
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## v49 complete0/3; v50 interrupted; v51/v52 live; v53 prepared
+## v53 complete0/3; v54 knob demonstration ablation running
+
+- Latest closure: v51 complete native/program0/3 at1198steps. v52 all three interrupted before native evaluation; init15 ended at598steps/258responses bywall timeout. v53 all complete native/program0/3,1198steps,660/654/651response records; all three executed zero commanded R. Earlier live/prepared entries below are historical observations.
+- User-authorized v54 removes ALL archived motion/task/goal examples from exact frozen knob329d9c12 with emptybank and retain/goal switchesoff. Same original plan/protocol text, current/previous RGB, numericXYZ, ownstate and controller; paired init14/15/16,1200steps, no replacements. Original axis-specific verbal guidance and now-dangling example references remain deliberately unchanged. See protocols/knob_v54_no_examples.json and EXP076; native result pending.
 
 - v30 final native/program0/2; v31 original and task-exit groups each0/3; v32 final0/3, all1198 physical steps. Actual grasp/lift is not task success.
 - v34 both groups finished native0/3 each. Original-direction874/1198/1198steps,391/538/534responses; paired-span1198steps,653/651/629responses. v36 and v37 also finished0/3 each at1198steps. No new complete success verified.

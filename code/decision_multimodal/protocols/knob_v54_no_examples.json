@@ -1,0 +1,40 @@
+{
+  "kind": "paired_demonstration_ablation",
+  "task": 1383,
+  "policy_commit": "329d9c12827d26c59d49fa11b11b7b0016d8726c",
+  "baseline": "knob_v20_freeze.json",
+  "protocol_sha256": "9c33a1e0e46cc61dd3fc5c04f86ae0d4aa35f3523797540d0b45a90667293145",
+  "initial_states": [
+    14,
+    15,
+    16
+  ],
+  "horizon": 1200,
+  "example_bank": {
+    "tasks": {
+      "1383": []
+    }
+  },
+  "retain_rotation_examples": false,
+  "goal_example": false,
+  "unchanged": [
+    "Original plan and protocol text, including axis-specific guidance and references to now-absent examples",
+    "Current and previous in-episode RGB, source crop, projected own axes and pad outlines",
+    "RGB-D source selection and numeric XYZ decisions",
+    "Own robot state, phase motion and action feedback",
+    "Controller, adaptive unsigned increments, twelve-step execution"
+  ],
+  "removed": [
+    "All archived primitive motion images and captions",
+    "All archived task-phase images and executed-action captions",
+    "Archived final goal-relationship images and captions"
+  ],
+  "actor": {
+    "endpoint": "https://api.openai.com/v1/decisions",
+    "model": "gpt-6-luna",
+    "key_origin": "du"
+  },
+  "experience_injection": false,
+  "assets": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v54-knob-no-examples",
+  "interpretation": "Tests necessity of demonstrations under original task-specific verbal guidance; does not test independent discovery of manipulation axis. Pending native results."
+}

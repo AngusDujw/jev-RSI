@@ -181,6 +181,7 @@ graph LR
     T_2026W43_025["📊 decision-multimodal<br/>v47完整native1/3/progra…"]:::experiment
     T_2026W43_026["📊 decision-multimodal<br/>v48完整0/3；实际悬持被误判已放，真实…"]:::experiment
     T_2026W43_027["📊 decision-multimodal<br/>v49完整0/3、v50三未评估中断；cr…"]:::experiment
+    T_2026W43_028["📊 decision-multimodal<br/>v53完整0/3且三例0R；用户授权v54…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -321,6 +322,7 @@ graph LR
   T_2026W43_024 --> T_2026W43_025
   T_2026W43_025 --> T_2026W43_026
   T_2026W43_026 --> T_2026W43_027
+  T_2026W43_027 --> T_2026W43_028
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -488,6 +490,7 @@ graph LR
 | `T-2026W43-025` | 2026-10-20 | experiment | decision-multimodal | v47完整native1/3/program0/3，阳性仍夹持接触，retained判断正确。v48真实三净空动作H/H/+Z，Z命令20实测18.3mm，XY漂移<0.5mm；完整结果待运行。 | `EXP-2026W43-065` | - |
 | `T-2026W43-026` | 2026-10-20 | experiment | decision-multimodal | v48完整0/3；实际悬持被误判已放，真实手部局部输入可改变场景判断；v51首12RAW/4detail匹配但概率不稳定，v52检查恢复仅接口证据 | `EXP-2026W43-069` | - |
 | `T-2026W43-027` | 2026-10-20 | experiment | decision-multimodal | v49完整0/3、v50三未评估中断；crop仍误placed，Pro20分解+真实例图两反例正确、18组合映射全对；共享H2可靠性被真实网络错误驳斥，准备独立v53原生 | `EXP-2026W43-072` | - |
+| `T-2026W43-028` | 2026-10-20 | experiment | decision-multimodal | v53完整0/3且三例0R；用户授权v54旋钮无历史示例配对消融，冻结源码/协议/XYZ不变，3原生已启动 | `EXP-2026W43-075` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

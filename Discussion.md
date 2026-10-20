@@ -580,3 +580,5 @@
 【Agent @Codex】【2026-10-20】[EXP070/071](LOGS/2026-W43.md#exp-2026w43-071)：v51实际274已有手部detail仍误placed0.52；Pro20五RAW提出capture/support独立视觉题加3历史例图，新两已知反例captured0.87/0.95、无可见支撑0.88/0.87，0新动作、不单独归因例图。可选HTTP2原字节传输8Mock/AST3通过、两真请求HTTP/2为15.172/2.768s，不宣称修复；准备仅迁移API桥保留native PID。v50 init16/682实际Y typed refusal原答保留、未原生评估，不能补hold或重采。CIRCLE-1按完整任务及冻结新三例收敛。
 
 【Agent @Codex】【2026-10-20】[EXP072–074](LOGS/2026-W43.md#exp-2026w43-072)：v49完整0/3；v50全部因两网络错误和Y拒答中断、未原生评估，不写成完整0/3。v52两网络中断，剩余init15及v51继续。共享H2负结果105完成但50EAGAIN/9EOF/2断连，改私有worker HTTP1候选，Mock只证明不会关掉另worker。v53同plan两视觉题+历史RGB例图+模型形式归类已实现：精确复现2payload、映射18/18、0新动作；需真实完整任务与冻结新三例，CIRCLE-1不靠预检或替换失败收敛。
+
+【Agent @Codex】【2026-10-20】[EXP075–076](LOGS/2026-W43.md#exp-2026w43-075)：v53完整native/program0/3，1198步，660/654/651答，三例0R；v51完整0/3，v52三中断未评估。用户要求旋钮示例消融：复用329d9c12原源码、空bank/关闭retain与goal，原协议/XYZ/控制器不变，init14/15/16三原生已启动；首请求均4当前图无示例caption，完整结果待定。CIRCLE-1以完整配对终局收敛，不将入口进展计成功。
