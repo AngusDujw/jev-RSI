@@ -248,6 +248,7 @@ graph LR
     T_2026W43_001["🔀 robodojo-planner-advancer-v1<br/>用户优先Decisions通用抓取；先推进…"]:::pivot
     T_2026W43_002["📊 robodojo-decision-stages<br/>server02固定6+10对照收口：Pr…"]:::experiment
     T_2026W43_003["📊 robodojo-decision-stages<br/>通用当前RGB七选一三布局完整0/3；动作…"]:::experiment
+    T_2026W43_004["📊 robodojo-decision-stages<br/>标定v3三布局完整0/3、240旋转全ho…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -449,6 +450,7 @@ graph LR
   T_2026W42_136 --> T_2026W43_001
   T_2026W42_106 --> T_2026W43_002
   T_2026W43_002 --> T_2026W43_003
+  T_2026W43_003 --> T_2026W43_004
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -683,6 +685,7 @@ graph LR
 | `T-2026W43-001` | 2026-10-19 | pivot | robodojo-planner-advancer-v1 | 用户优先Decisions通用抓取；先推进器验证，再反推Pro规划器，稳定后扩YPR任务 | - | - |
 | `T-2026W43-002` | 2026-10-20 | experiment | robodojo-decision-stages | server02固定6+10对照收口：Pro Luna0/6，Decisions槽级0/10含1策略拒绝，完整0/9；非纯模型归因，监督job关闭 | `EXP-2026W42-300` | - |
 | `T-2026W43-003` | 2026-10-20 | experiment | robodojo-decision-stages | 通用当前RGB七选一三布局完整0/3；动作合法但未稳定抓取，独立检验相机标定与机器人轴投影输入 | `EXP-2026W43-004` | - |
+| `T-2026W43-004` | 2026-10-20 | experiment | robodojo-decision-stages | 标定v3三布局完整0/3、240旋转全hold；另保2次基础设施中断，新检验通用姿态对齐提示 | `EXP-2026W43-004` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

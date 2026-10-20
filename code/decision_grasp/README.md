@@ -67,3 +67,23 @@ and are not target annotations or grasp evidence. This is a visual-geometry
 input package, not an isolated proof that annotations improve policy quality.
 Prompt/task/action/physics/scoring remain otherwise unchanged. Validate actual
 rendered projection agreement before claiming precise visual alignment.
+
+
+2026-10-20 terminal override: calibrated-v3 layouts0/1 and the independent
+layout2 b3 replacement all completed200 steps with native failure (0/3).
+The earlier layout2 b155-step HTTP503 and b2 145-step TLS failures remain
+separate infrastructure interruptions. No ended episode/request is resumed.
+Raw and actual annotated input PNGs are retained for external review; this
+supersedes the initial no-PNG policy above. The fixed comparison is complete.
+
+New independent --alignment-guidance requires --geometry-overlay and joint
+rotation and selects rgb-alignment-v4 / advancer_alignment_v2.md. Only the
+English prompt changes: relate measured finger/jaw axes to visible support and
+grasp-region clearance, choose orientation corrections before entering when
+needed, and close only after visible enclosure. No object-specific path, target
+coordinates, hidden evidence or deterministic action override is introduced.
+The three images, K/T, action questions/scales and native scoring stay fixed.
+This hypothesis follows v3's240 all-hold arm-rotation selections; selecting a
+rotation or closing alone will not count as improvement. Development0/1/2
+precedes the unchanged frozen held-out gate. If infrastructure interrupts again,
+perform offline transport diagnosis before another episode; do not API-probe.

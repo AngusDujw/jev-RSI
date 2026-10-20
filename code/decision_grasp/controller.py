@@ -80,9 +80,12 @@ def main():
     parser.add_argument('--rotation-format',choices=('axes','joint'),default='axes')
     parser.add_argument('--save-images',action='store_true')
     parser.add_argument('--geometry-overlay',action='store_true')
+    parser.add_argument('--alignment-guidance',action='store_true')
     args=parser.parse_args()
+    if args.alignment_guidance and (not args.geometry_overlay or args.rotation_format!='joint'):
+        parser.error('Alignment guidance requires geometry overlay and joint rotation')
     args.output.mkdir(parents=True,exist_ok=False)
-    prompt=Path(__file__).with_name('advancer_v1.md').read_text()
+    prompt=Path(__file__).with_name('advancer_alignment_v2.md' if args.alignment_guidance else 'advancer_v1.md').read_text()
     if args.geometry_overlay:
         prompt += ('\n\nImage overlays show measured robot TCP projections: cyan=left, orange=right. '
             'The cross is a geometric projection, not a visible object, contact point or evidence of holding. '
@@ -107,11 +110,12 @@ def main():
         packet=rollout.start(**start)
         rollout.run.update(teacher_model=MODEL,teacher_model_provider='openai-decisions',
             teacher_reasoning_effort=None,decision_endpoint=ENDPOINT,
-            condition=('generic-current-rgb-calibrated-v3' if args.geometry_overlay else
+            condition=('generic-current-rgb-alignment-v4' if args.alignment_guidance else
+                'generic-current-rgb-calibrated-v3' if args.geometry_overlay else
                 'generic-current-rgb-joint-v2' if args.rotation_format=='joint' else 'generic-current-rgb-v1'),
             decision_question_count=len(q),rotation_format=args.rotation_format,
             history_supplied=False,images_persisted=args.save_images,
-            camera_overlay=args.geometry_overlay,
+            camera_overlay=args.geometry_overlay,alignment_guidance=args.alignment_guidance,
             tcp_reference_link6_local_m=TCP_OFFSET.tolist())
         write_json(args.output/'run.json',rollout.run)
         gripper={a:packet['current_eef'][a]['gripper_opening_command']<.5 for a in ('left','right')}

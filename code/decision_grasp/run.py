@@ -47,9 +47,10 @@ print('admitted')
     return remote(['python3','-c',code,str(gpu)],timeout=30)
 
 
-def one(layout,gpu,rotation_format,run_tag,geometry_overlay=False):
+def one(layout,gpu,rotation_format,run_tag,geometry_overlay=False,alignment_guidance=False):
     version='rgb-joint-v2' if rotation_format=='joint' else 'rgb-v1'
     if geometry_overlay:version='rgb-calibrated-v3'
+    if alignment_guidance:version='rgb-alignment-v4'
     name=f'{version}-general_pickup-layout{layout}-{run_tag}'
     run=ROOT/name
     if run.exists():raise FileExistsError('Never resume or overwrite '+name)
@@ -83,6 +84,7 @@ def one(layout,gpu,rotation_format,run_tag,geometry_overlay=False):
                 '--output',str(run/'controller'),'--sim-port',str(port),'--seed',str(layout),
                 '--rotation-format',rotation_format,'--save-images']
             if geometry_overlay:controller_command.append('--geometry-overlay')
+            if alignment_guidance:controller_command.append('--alignment-guidance')
             controller=subprocess.Popen(controller_command,
                 env=env,stdout=controller_log,stderr=subprocess.STDOUT)
             state.update(status='running',controller_pid=controller.pid);save(run/'status.json',state)
@@ -129,7 +131,10 @@ def main():
     parser.add_argument('--parallel',type=int,choices=(1,2),default=1)
     parser.add_argument('--run-tag',required=True)
     parser.add_argument('--geometry-overlay',action='store_true')
+    parser.add_argument('--alignment-guidance',action='store_true')
     args=parser.parse_args()
+    if args.alignment_guidance and (not args.geometry_overlay or args.rotation_format!='joint'):
+        parser.error('Alignment guidance requires geometry overlay and joint rotation')
     def stop(*_):
         global STOP
         STOP=True
@@ -146,7 +151,7 @@ def main():
         global STOP
         for layout in layouts:
             if STOP:return
-            row=one(layout,gpu,args.rotation_format,args.run_tag,args.geometry_overlay)
+            row=one(layout,gpu,args.rotation_format,args.run_tag,args.geometry_overlay,args.alignment_guidance)
             with LOCK:
                 rows.append(row);save(ROOT/f'pilot-{args.rotation_format}.json',rows)
             if row.get('controller_exit')!=0:
