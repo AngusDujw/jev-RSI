@@ -33,6 +33,34 @@ def git(cache, *arguments, **kwargs):
     return subprocess.check_output(["git", "-C", str(cache), *arguments], **kwargs)
 
 
+def locked_asset_entries(cache, tasks=()):
+    tree = git(cache, "ls-tree", "-r", "-z", "HEAD", "--", "Assets")
+    rows = []
+    layouts = {f"Assets/Eval_Layout/RoboDojo/arx_x5/0/{task}_{layout}.json"
+               for task in tasks for layout in range(4)}
+    for record in tree.split(b"\0"):
+        if record:
+            header, raw_path = record.split(b"\t", 1)
+            path = raw_path.decode()
+            if tasks and path.startswith("Assets/Eval_Layout/") and path not in layouts:
+                continue
+            rows.append((header.split()[2].decode(), path))
+    if layouts - {path for _, path in rows}:
+        raise ValueError("Requested task/layout is absent from the frozen Git tree")
+    blobs = git(cache, "cat-file", "--batch", input=("\n".join(row[0] for row in rows)+"\n").encode())
+    at = 0
+    entries = []
+    for _, path in rows:
+        end = blobs.index(b"\n", at)
+        size = int(blobs[at:end].split()[2])
+        blob = blobs[end+1:end+1+size]
+        at = end+size+2
+        match = re.fullmatch(rb"version https://git-lfs.github.com/spec/v1\noid sha256:([a-f0-9]{64})\nsize ([0-9]+)\n", blob)
+        entries.append({"path": path, "sha256": match[1].decode() if match else hashlib.sha256(blob).hexdigest(),
+                        "size": int(match[2]) if match else size, "lfs": bool(match)})
+    return entries
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache", type=Path, required=True)
@@ -43,6 +71,7 @@ def main():
     parser.add_argument("--seed-only", action="store_true", help="Verify/copy available assets without any network requests")
     parser.add_argument("--inventory", action="store_true", help="Report missing cached objects without downloading")
     parser.add_argument("--seed-by-digest", action="store_true", help="Read-only scan of seed tree for matching objects under different paths; no network")
+    parser.add_argument("--task", action="append", default=[], help="Keep the complete non-layout tree plus this task's seed-0 layouts 0..3")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     lock = json.loads((root/"configs/data.lock.json").read_text())["assets"]
@@ -50,25 +79,13 @@ def main():
     revision = git(cache, "rev-parse", "HEAD", text=True).strip()
     if revision != lock["revision"]:
         raise ValueError("Asset Git revision differs from the official lock")
-    tree = git(cache, "ls-tree", "-r", "-z", "HEAD", "--", "Assets")
-    rows = []
-    for record in tree.split(b"\0"):
-        if record:
-            header, path = record.split(b"\t", 1)
-            rows.append((header.split()[2].decode(), path.decode()))
-    blobs = git(cache, "cat-file", "--batch", input=("\n".join(row[0] for row in rows)+"\n").encode())
-    at = 0
     objects = {}
     file_bytes = 0
-    for _, path in rows:
-        end = blobs.index(b"\n", at)
-        size = int(blobs[at:end].split()[2])
-        blob = blobs[end+1:end+1+size]
-        at = end+size+2
-        match = re.fullmatch(rb"version https://git-lfs.github.com/spec/v1\noid sha256:([a-f0-9]{64})\nsize ([0-9]+)\n", blob)
-        if not match or (args.asset and path != args.asset):
+    for entry in locked_asset_entries(cache, args.task):
+        path = entry["path"]
+        if not entry["lfs"] or (args.asset and path != args.asset):
             continue
-        oid, size = match[1].decode(), int(match[2])
+        oid, size = entry["sha256"], entry["size"]
         file_bytes += size
         objects.setdefault(oid, (path, size))
     if args.asset and not objects:
@@ -206,7 +223,7 @@ def main():
     print(json.dumps({"verified_objects": counts["objects"], "total_objects": len(objects),
                       "verified_bytes": counts["bytes"], "complete": counts["objects"] == len(objects)}), flush=True)
     if not args.seed_only:
-        print("LFS objects verified. Run unchanged setup/fetch_assets.py to finalize.", flush=True)
+        print("LFS objects verified. Finalize the complete tree with fetch_assets.py or a selected-layout tree with install_selected_assets.py.", flush=True)
 
 
 if __name__ == "__main__":
