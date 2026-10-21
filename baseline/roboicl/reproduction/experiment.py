@@ -152,6 +152,8 @@ def main():
     parser.add_argument("--policy-python", required=True)
     parser.add_argument("--gpus", type=int, nargs="+", default=[0, 1, 2, 3])
     parser.add_argument("--slots-per-gpu", type=int, default=1, choices=(1, 2, 3, 4))
+    parser.add_argument("--worker-slots", type=int, choices=range(4), nargs="+",
+                        help="Use only these slots while retaining the configured global slot/port capacity")
     parser.add_argument("--conditions", nargs="+", choices=("pure", "jev", "mean", "maximum"), default=["pure", "jev"])
     task_filter = parser.add_mutually_exclusive_group()
     task_filter.add_argument("--task", choices=TASKS)
@@ -167,6 +169,9 @@ def main():
     selected_tasks = args.tasks or ([args.task] if args.task else list(TASKS))
     if len(set(selected_tasks)) != len(selected_tasks):
         parser.error("Task filters must be unique")
+    selected_slots = args.worker_slots if args.worker_slots is not None else list(range(args.slots_per_gpu))
+    if len(set(selected_slots)) != len(selected_slots) or any(slot >= args.slots_per_gpu for slot in selected_slots):
+        parser.error("Worker slots must be unique and below --slots-per-gpu")
     if args.skip_existing and any(c in ("pure", "jev") for c in args.conditions):
         parser.error("--skip-existing is only allowed for parallel fixed-control pools")
     root = args.output.resolve()
@@ -232,8 +237,8 @@ def main():
             save(folder/"finished.json", {"returncode": result.returncode, "wall_seconds": time.monotonic()-started})
             print(json.dumps({"event": "end", "condition": condition, "task": task, "layout": layout, **summarize_case(folder)}), flush=True)
 
-    with ThreadPoolExecutor(max_workers=len(args.gpus)*args.slots_per_gpu) as executor:
-        futures = [executor.submit(worker, gpu, slot) for gpu in args.gpus for slot in range(args.slots_per_gpu)]
+    with ThreadPoolExecutor(max_workers=len(args.gpus)*len(selected_slots)) as executor:
+        futures = [executor.submit(worker, gpu, slot) for gpu in args.gpus for slot in selected_slots]
         for future in futures:
             future.result()
     summarize(root)
