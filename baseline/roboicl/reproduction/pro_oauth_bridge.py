@@ -3,6 +3,8 @@
 Never accepts or reads a Platform API key. Image bytes remain in memory only.
 The native Responses tool-call grammar is preserved rather than flattened into
 a coding-agent prompt. This transport is a reproduction-specific deviation.
+An optional Jev route uses a separate user-authorized credential and forwards
+the unchanged image-free gate request to the official Jev endpoint.
 """
 import argparse
 import hashlib
@@ -99,6 +101,34 @@ def native_request(payload, auth_file, timeout=900):
     raise RuntimeError("Native Pro stream ended without a completed response")
 
 
+def native_jev_request(payload, config_file):
+    """Relay the unchanged, image-free gate request through the workstation."""
+    check_english(payload)
+    config_file = Path(config_file)
+    config = json.loads(config_file.read_text())
+    config = config.get("jev", config)
+    if payload.get("model") != config["model"] or payload.get("assets"):
+        raise ValueError("Unexpected Jev model or image assets")
+    if config["base_url"].rstrip("/") != "https://api.typesafe.ai/v1":
+        raise ValueError("Only the official Jev endpoint is configured")
+    key_file = Path(config["key_file"])
+    if not key_file.is_absolute():
+        key_file = config_file.parent / key_file
+    key = key_file.read_text().strip()
+    request = urllib.request.Request(config["base_url"].rstrip("/") + "/systemone",
+        data=json.dumps(payload).encode(), headers={"Authorization": "Bearer " + key,
+        "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(request, timeout=config.get("timeout_s", 60)) as reply:
+            result = json.load(reply)
+    except urllib.error.HTTPError as error:
+        detail = error.read(2048).decode(errors="replace").replace(key, "[redacted]")
+        raise RuntimeError(f"Jev HTTP {error.code}: " + str(audit(detail))[:1200]) from None
+    if result.get("model") != config["model"]:
+        raise ValueError("Unexpected model in Jev response")
+    return result
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *_):
         pass
@@ -115,7 +145,8 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200, {"ok": True, "model": MODEL, "effort": "xhigh", "auth": "ChatGPT", "images_persisted": False})
 
     def do_POST(self):
-        if self.path != "/responses":
+        is_jev = self.path == "/systemone" and self.server.jev_config is not None
+        if self.path != "/responses" and not is_jev:
             self.reply(404, {"error": "Unsupported path"})
             return
         started = time.monotonic()
@@ -126,21 +157,26 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError("Invalid request size")
             payload = json.loads(self.rfile.read(count))
             record = {"started": time.time(), "request": audit(payload),
-                      "transport_omits": ["prompt_cache_options", "prompt_cache_breakpoint"]}
-            with self.server.limit:
-                result = native_request(payload, self.server.auth_file)
+                      "transport_omits": [] if is_jev else ["prompt_cache_options", "prompt_cache_breakpoint"]}
+            if is_jev:
+                with self.server.jev_limit:
+                    result = native_jev_request(payload, self.server.jev_config)
+            else:
+                with self.server.limit:
+                    result = native_request(payload, self.server.auth_file)
             record.update(response=audit(result), elapsed_s=time.monotonic()-started)
-            if payload.get("stream"):
+            if payload.get("stream") and not is_jev:
                 data = ("data: " + json.dumps({"type": "response.completed", "response": result}) + "\n\n").encode()
                 self.reply(200, data, "text/event-stream")
             else:
                 self.reply(200, result)
         except Exception as error:
             record.update(error_type=type(error).__name__, error=str(error)[:600], elapsed_s=time.monotonic()-started)
-            self.reply(502, {"error": {"message": record["error"], "type": "pro_transport_error"}})
+            self.reply(502, {"error": {"message": record["error"],
+                "type": "jev_transport_error" if is_jev else "pro_transport_error"}})
         finally:
             with self.server.audit_lock:
-                with (self.server.output / "requests.jsonl").open("a") as stream:
+                with (self.server.output / ("jev-requests.jsonl" if is_jev else "requests.jsonl")).open("a") as stream:
                     stream.write(json.dumps(record) + "\n")
 
 
@@ -151,6 +187,7 @@ def main():
     parser.add_argument("--concurrency", type=int, default=8)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--probe", action="store_true")
+    parser.add_argument("--jev-config", type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     if args.probe:
@@ -164,8 +201,10 @@ def main():
         return
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     server.auth_file = args.auth_file
+    server.jev_config = args.jev_config
     server.output = args.output
     server.limit = threading.BoundedSemaphore(args.concurrency)
+    server.jev_limit = threading.BoundedSemaphore(args.concurrency)
     server.audit_lock = threading.Lock()
     print(json.dumps({"listen": f"127.0.0.1:{args.port}", "model": MODEL, "auth": "ChatGPT"}), flush=True)
     try:
