@@ -30,6 +30,16 @@ def lines(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()] if path.exists() else []
 
 
+def claim_case_folder(folder, skip_existing=False):
+    try:
+        folder.mkdir(parents=True)
+    except FileExistsError:
+        if skip_existing:
+            return False
+        raise RuntimeError(f"Unfinished case preserved; inspect before a new attempt: {folder}") from None
+    return True
+
+
 def summarize_case(folder):
     results = sorted(folder.glob("*/result.json"))
     status_files = sorted(folder.glob("*/status.json"))
@@ -149,12 +159,16 @@ def main():
     parser.add_argument("--layout", type=int, choices=range(4))
     parser.add_argument("--minimum-free-mib", type=int, default=9000)
     parser.add_argument("--summary-only", action="store_true")
+    parser.add_argument("--skip-existing", action="store_true",
+                        help="Parallel fixed-control pools only: leave already claimed cases untouched")
     args = parser.parse_args()
     if len(set(args.gpus)) != len(args.gpus) or len(args.gpus) > 4:
         parser.error("Use at most four unique GPUs")
     selected_tasks = args.tasks or ([args.task] if args.task else list(TASKS))
     if len(set(selected_tasks)) != len(selected_tasks):
         parser.error("Task filters must be unique")
+    if args.skip_existing and any(c in ("pure", "jev") for c in args.conditions):
+        parser.error("--skip-existing is only allowed for parallel fixed-control pools")
     root = args.output.resolve()
     root.mkdir(parents=True, exist_ok=True)
     if args.summary_only:
@@ -185,12 +199,15 @@ def main():
             if (folder/"finished.json").exists():
                 continue
             if folder.exists():
+                if args.skip_existing:
+                    continue
                 raise RuntimeError(f"Unfinished case preserved; inspect before a new attempt: {folder}")
             memory = subprocess.check_output(["nvidia-smi", "--id="+str(gpu), "--query-gpu=memory.free", "--format=csv,noheader,nounits"], text=True)
             if int(memory.strip()) < args.minimum_free_mib:
                 raise RuntimeError(f"Insufficient current free GPU memory on {gpu}; no experiment started")
             horizon = intervals[task][condition] if intervals and condition in ("mean", "maximum") else 5
-            folder.mkdir(parents=True)
+            if not claim_case_folder(folder, args.skip_existing):
+                continue
             case = {"condition": condition, "task": task, "layout": layout,
                     "layout_directory_seed": 0, "sim_initial_seed": 0, "reset_seed": layout, "gpu": gpu, "slot": slot,
                     "execute_horizon": horizon, "predict_horizon": 20, "pro_auth": "ChatGPT", "model": "gpt-6-astra", "effort": "xhigh",
