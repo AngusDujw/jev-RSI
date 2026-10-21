@@ -8,6 +8,7 @@ the unchanged image-free gate request to the official Jev endpoint.
 """
 import argparse
 import hashlib
+import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
@@ -101,7 +102,7 @@ def native_request(payload, auth_file, timeout=900):
     raise RuntimeError("Native Pro stream ended without a completed response")
 
 
-def native_jev_request(payload, config_file):
+def native_jev_request(payload, config_file, attempt_records=None):
     """Relay the unchanged, image-free gate request through the workstation."""
     check_english(payload)
     config_file = Path(config_file)
@@ -118,15 +119,37 @@ def native_jev_request(payload, config_file):
     request = urllib.request.Request(config["base_url"].rstrip("/") + "/systemone",
         data=json.dumps(payload).encode(), headers={"Authorization": "Bearer " + key,
         "Content-Type": "application/json"})
-    try:
-        with urllib.request.urlopen(request, timeout=config.get("timeout_s", 60)) as reply:
-            result = json.load(reply)
-    except urllib.error.HTTPError as error:
-        detail = error.read(2048).decode(errors="replace").replace(key, "[redacted]")
-        raise RuntimeError(f"Jev HTTP {error.code}: " + str(audit(detail))[:1200]) from None
-    if result.get("model") != config["model"]:
-        raise ValueError("Unexpected model in Jev response")
-    return result
+    attempts = config.get("max_attempts", 3)
+    if type(attempts) is not int or not 1 <= attempts <= 3:
+        raise ValueError("Jev transport allows one to three attempts")
+    attempt_records = [] if attempt_records is None else attempt_records
+    timeout = min(config.get("attempt_timeout_s", 60), 60)
+    for attempt in range(1, attempts + 1):
+        started = time.monotonic()
+        record = {"attempt": attempt}
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as reply:
+                result = json.load(reply)
+            record.update(model=result.get("model"), usage=result.get("usage"))
+            if result.get("model") != config["model"]:
+                raise ValueError("Unexpected model in Jev response")
+            return result
+        except urllib.error.HTTPError as error:
+            detail = error.read(2048).decode(errors="replace").replace(key, "[redacted]")
+            message = f"Jev HTTP {error.code}: " + str(audit(detail))[:1200]
+            record.update(http_status=error.code, error_type=type(error).__name__,
+                          error=message, usage_unknown=True)
+            if error.code not in (408, 429, 500, 502, 503, 504) or attempt == attempts:
+                raise RuntimeError(message) from None
+        except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.IncompleteRead) as error:
+            message = str(error).replace(key, "[redacted]")[:600]
+            record.update(error_type=type(error).__name__, error=message, usage_unknown=True)
+            if attempt == attempts:
+                raise RuntimeError("Jev transport attempts exhausted: " + message) from None
+        finally:
+            record["elapsed_s"] = time.monotonic() - started
+            attempt_records.append(record)
+        time.sleep(min(2 ** (attempt - 1), 2))
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -159,8 +182,9 @@ class Handler(BaseHTTPRequestHandler):
             record = {"started": time.time(), "request": audit(payload),
                       "transport_omits": [] if is_jev else ["prompt_cache_options", "prompt_cache_breakpoint"]}
             if is_jev:
+                record["upstream_attempts"] = []
                 with self.server.jev_limit:
-                    result = native_jev_request(payload, self.server.jev_config)
+                    result = native_jev_request(payload, self.server.jev_config, record["upstream_attempts"])
             else:
                 with self.server.limit:
                     result = native_request(payload, self.server.auth_file)
