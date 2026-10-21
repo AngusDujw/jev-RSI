@@ -111,3 +111,18 @@
 - 【Agent】【2026-10-21 14:35】[run] 补充调度（各case最多一次、原参数不变）：mean/stack_bowls/1 GPU1 slot1；mean/stack_bowls/0 GPU3 slot0
 - 【Agent】【2026-10-21 14:36】[op] 新建实验块 EXP-2026W43-018：RoboICL原定四条件80次尝试全部终止，独立补充继续  ↪ `EXP-2026W43-018`
 - 【Agent】【2026-10-21 14:40】[result] 原80次统一审计完成：44原生评分、36基础设施中断，2300完成GPT/2400尝试；纯GPT原summary一直1228尝试，纠正此前周志将其误写成1225，完成数不变。EXP018与报告更新，原固定参数内容不变，补充继续。
+- 【Agent】【2026-10-21 14:41】[run] 补充调度（各case最多一次、原参数不变）：mean/press_by_number/2 GPU2 slot0
+- 【Agent】【2026-10-21 14:44】[run] 补充调度（各case最多一次、原参数不变）：mean/press_by_number/1 GPU1 slot0
+- 【Agent】【2026-10-21 14:46】[run] 补充调度（各case最多一次、原参数不变）：mean/press_by_number/0 GPU2 slot1
+- 【Agent】【2026-10-21 14:55】[run] 补充调度（各case最多一次、原参数不变）：mean/fold_clothes/2 GPU3 slot0
+- 【Agent】【2026-10-21 14:59】[run] 补充调度（各case最多一次、原参数不变）：mean/fold_clothes/1 GPU1 slot1
+- 【Agent】【2026-10-21 14:59】[run] 补充调度（各case最多一次、原参数不变）：mean/fold_clothes/0 GPU2 slot0
+- 【Agent】【2026-10-21 15:04】[run] 补充调度（各case最多一次、原参数不变）：mean/match_and_pick_from_conveyor/2 GPU0 slot0；mean/match_and_pick_from_conveyor/1 GPU0 slot1；mean/match_and_pick_from_conveyor/0 GPU1 slot0；mean/general_pickup/2 GPU2 slot0；mean/general_pickup/3 GPU2 slot1；maximum/stack_bowls/2 GPU3 slot0
+- 【Agent】【2026-10-21 15:07】[run] SSH跳板/会话同时超时：原Pro/Jev转发均返回255 Timeout server localhost not responding，远端8个仿真仍存活。暂停追加调度核对；6次误判空槽的启动被9000MiB显存前置检查拦截，0新增物理case/0模型请求。恢复同端口两条独立转发，后续以所有远端活跃case占槽，不再把SSH退出当远端结束；单一调度执行器串行持久状态。
+- 【Agent】【2026-10-21 15:12】[result] 第二波SSH中断令当时8个补充（2 Jev、6均值）均未评分退出，原生结果不改、各例一次补充上限不再追加。旧远端监听自然关闭后同端口独立转发恢复（新会话3693/17712），HTTP健康检查两端200。剩余19个已登记补充未启动，先核实真实Pro/Jev可用性；6个显存前检拒绝的启动无case无模型调用，仍待唯一物理尝试。
+- 【Agent】【2026-10-21 15:15】[run] 恢复后单一调度器按远端活跃case占槽启动：mean/match_and_pick_from_conveyor/2 GPU0 slot0；mean/match_and_pick_from_conveyor/1 GPU0 slot1；mean/match_and_pick_from_conveyor/0 GPU1 slot0；mean/general_pickup/2 GPU1 slot1；mean/general_pickup/3 GPU2 slot0；maximum/stack_bowls/2 GPU2 slot1；maximum/stack_bowls/1 GPU3 slot0；maximum/stack_bowls/0 GPU3 slot1
+- 【Agent】【2026-10-21 15:23】[run] 恢复后单一调度器按远端活跃case占槽启动：maximum/press_by_number/2 GPU2 slot0
+- 【Agent】【2026-10-21 15:24】[run] 恢复后单一调度器按远端活跃case占槽启动：maximum/press_by_number/1 GPU1 slot1
+- 【Agent】【2026-10-21 15:27】[op] 新建实验块 EXP-2026W43-019：补充阶段8例SSH中断与6次显存前检拒绝  ↪ `EXP-2026W43-019`
+- 【Agent】【2026-10-21 15:27】[op] 新建实验块 EXP-2026W43-020：第二轮可用性补充9案例预登记，按首次原生终局取值  ↪ `EXP-2026W43-020`
+- 【Agent】【2026-10-21 15:30】[op] 第二轮9案例已预登记，明确调整首轮一次补充之外的安排以完成每格四个原生终局：只覆盖8服务缺失和1纯GPT物理缺失；不重跑原生失败、不改冻结步长。总物理上限124，原80与首35/二9单列，按首次原生结果而非最佳结果建立次级面板。调度按预设预算估计耗时优先长回合，源输入不变。
