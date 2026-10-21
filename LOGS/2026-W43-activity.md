@@ -126,3 +126,27 @@
 - 【Agent】【2026-10-21 15:27】[op] 新建实验块 EXP-2026W43-019：补充阶段8例SSH中断与6次显存前检拒绝  ↪ `EXP-2026W43-019`
 - 【Agent】【2026-10-21 15:27】[op] 新建实验块 EXP-2026W43-020：第二轮可用性补充9案例预登记，按首次原生终局取值  ↪ `EXP-2026W43-020`
 - 【Agent】【2026-10-21 15:30】[op] 第二轮9案例已预登记，明确调整首轮一次补充之外的安排以完成每格四个原生终局：只覆盖8服务缺失和1纯GPT物理缺失；不重跑原生失败、不改冻结步长。总物理上限124，原80与首35/二9单列，按首次原生结果而非最佳结果建立次级面板。调度按预设预算估计耗时优先长回合，源输入不变。
+- 【Agent】【2026-10-21 15:34】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/pure/press_by_number/1 GPU3 slot1
+- 【Agent】【2026-10-21 15:36】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/jev/stack_bowls/2 GPU2 slot1
+- 【Agent】【2026-10-21 15:37】[op] 第二轮纯GPT补充按计划已启动；监控原先全局过滤pure导致其未显示，已仅过滤原始根的pure。该纯读取过滤修正不改物理任务、请求或参数；恢复前从COORDINATOR-V3落盘恢复完整工具会话，禁止并发调度状态。
+- 【Agent】【2026-10-21 15:37】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/mean/stack_bowls/2 GPU1 slot0
+- 【Agent】【2026-10-21 15:40】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/mean/press_by_number/1 GPU2 slot0
+- 【Agent】【2026-10-21 15:42】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/mean/press_by_number/0 GPU0 slot1
+- 【Agent】【2026-10-21 15:44】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/jev/press_by_number/2 GPU1 slot1
+- 【Agent】【2026-10-21 15:57】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/press_by_number/0 GPU0 slot0
+- 【Agent】【2026-10-21 16:00】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/match_and_pick_from_conveyor/2 GPU1 slot1
+- 【Agent】【2026-10-21 16:01】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/match_and_pick_from_conveyor/1 GPU2 slot1
+- 【Agent】【2026-10-21 16:02】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/match_and_pick_from_conveyor/0 GPU0 slot1
+- 【Agent】【2026-10-21 16:12】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/mean/fold_clothes/2 GPU2 slot0
+- 【Agent】【2026-10-21 16:23】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/mean/fold_clothes/1 GPU3 slot0
+- 【Agent】【2026-10-21 16:24】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-2/mean/fold_clothes/0 GPU0 slot1
+- 【Agent】【2026-10-21 16:28】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/fold_clothes/2 GPU2 slot1
+- 【Agent】【2026-10-21 16:32】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/fold_clothes/1 GPU1 slot1
+- 【Agent】【2026-10-21 16:39】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/fold_clothes/0 GPU1 slot1
+- 【Agent】【2026-10-21 16:49】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/general_pickup/2 GPU2 slot0
+- 【Agent】【2026-10-21 16:49】[op] 核对最大叠衣1为HTTP502连接错误；旧Pro桥最近100条有14次失败，包含SSE无completed提前结束。新增仅传输层Pro有界重试（最多3次、15/45秒回退、逐次未知用量审计）和新补充专用本机7914端点白名单。现有7911桥及进行中物理回合不重启、不换提示词/模型/控制；新代码仅供后续缺失原生结果补充使用。
+- 【Agent】【2026-10-21 16:51】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair/maximum/general_pickup/3 GPU0 slot0
+- 【Agent】【2026-10-21 16:54】[op] 新建实验块 EXP-2026W43-021：最大步长叠衣layout1 Pro连接错误未评分  ↪ `EXP-2026W43-021`
+- 【Agent】【2026-10-21 16:54】[op] 新建实验块 EXP-2026W43-022：Pro传输有界恢复与未评分布局独立补充  ↪ `EXP-2026W43-022`
+- 【Agent】【2026-10-21 16:59】[run] 新7914 Pro桥本机及SSH端真实ready函数调用均成功；远端原124个case全部分配并确认元数据版本80主批次+35首补+9二补，之后才快进到bc12130e（仅传输与runner端点白名单）。预登记第三补充1例最大叠衣1，125物理总上限，独立repair-3根及原冻结参数，使用7914有界恢复；旧7911进行中回合不切换。
+- 【Agent】【2026-10-21 16:59】[run] 恢复后单一调度器按远端活跃case占槽启动：reuse-top5-20261021-transport-repair-3/maximum/fold_clothes/1 GPU1 slot0
