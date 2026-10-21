@@ -20,6 +20,7 @@ import urllib.request
 
 MODEL = "gpt-6-astra"
 ENDPOINT = "https://chatgpt.com/backend-api/codex/responses"
+JEV_RETRY_DELAYS_S = (15, 45)
 CJK = re.compile(r"[\u3400-\u9fff]")
 
 
@@ -149,7 +150,8 @@ def native_jev_request(payload, config_file, attempt_records=None):
         finally:
             record["elapsed_s"] = time.monotonic() - started
             attempt_records.append(record)
-        time.sleep(min(2 ** (attempt - 1), 2))
+        record["retry_delay_s"] = JEV_RETRY_DELAYS_S[attempt - 1]
+        time.sleep(record["retry_delay_s"])
 
 
 class Handler(BaseHTTPRequestHandler):
