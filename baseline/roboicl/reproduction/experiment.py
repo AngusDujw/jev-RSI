@@ -1,5 +1,6 @@
 """Foreground, resumable RoboICL paired experiment; lightweight artifacts only."""
 import argparse
+import fcntl
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal, ROUND_HALF_UP
 import hashlib
@@ -10,6 +11,7 @@ import queue
 import statistics
 import subprocess
 import sys
+import threading
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +21,7 @@ TASKS = ("general_pickup", "fold_clothes", "press_by_number", "match_and_pick_fr
 def save(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    staging = path.with_suffix(path.suffix + ".writing")
+    staging = path.with_name(f".{path.name}.{os.getpid()}.{threading.get_ident()}.writing")
     staging.write_text(json.dumps(value, indent=2) + "\n")
     staging.replace(path)
 
@@ -100,13 +102,21 @@ def summarize(root):
     return rows
 
 
-def frozen_intervals(root):
+def frozen_intervals(root, tasks=TASKS):
+    """Freeze each requested task once, after its four Jev attempts terminate."""
+    with (root/"frozen_intervals.lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        return _freeze_intervals(root, tasks)
+
+
+def _freeze_intervals(root, tasks):
     path = root/"frozen_intervals.json"
-    if path.exists():
-        return json.loads(path.read_text())
+    report = json.loads(path.read_text()) if path.exists() else {}
+    missing = [task for task in tasks if task not in report]
+    if not missing:
+        return report
     rows = summarize(root)
-    report = {}
-    for task in TASKS:
+    for task in missing:
         cases = [row for row in rows if row["condition"] == "jev" and row["task"] == task]
         if len(cases) != 4 or {row["layout"] for row in cases} != set(range(4)):
             raise ValueError(f"Need four terminated Jev attempts before freezing intervals: {task}")
@@ -133,13 +143,18 @@ def main():
     parser.add_argument("--gpus", type=int, nargs="+", default=[0, 1, 2, 3])
     parser.add_argument("--slots-per-gpu", type=int, default=1, choices=(1, 2, 3, 4))
     parser.add_argument("--conditions", nargs="+", choices=("pure", "jev", "mean", "maximum"), default=["pure", "jev"])
-    parser.add_argument("--task", choices=TASKS)
+    task_filter = parser.add_mutually_exclusive_group()
+    task_filter.add_argument("--task", choices=TASKS)
+    task_filter.add_argument("--tasks", choices=TASKS, nargs="+")
     parser.add_argument("--layout", type=int, choices=range(4))
     parser.add_argument("--minimum-free-mib", type=int, default=9000)
     parser.add_argument("--summary-only", action="store_true")
     args = parser.parse_args()
     if len(set(args.gpus)) != len(args.gpus) or len(args.gpus) > 4:
         parser.error("Use at most four unique GPUs")
+    selected_tasks = args.tasks or ([args.task] if args.task else list(TASKS))
+    if len(set(selected_tasks)) != len(selected_tasks):
+        parser.error("Task filters must be unique")
     root = args.output.resolve()
     root.mkdir(parents=True, exist_ok=True)
     if args.summary_only:
@@ -147,7 +162,7 @@ def main():
         return
     if "jev" in args.conditions and not Path(os.environ.get("ROBOICL_JEV_CONFIG", "missing")).is_file():
         parser.error("A readable authorized Jev config is required")
-    intervals = frozen_intervals(root) if any(c in args.conditions for c in ("mean", "maximum")) else None
+    intervals = frozen_intervals(root, selected_tasks) if any(c in args.conditions for c in ("mean", "maximum")) else None
     profile = json.loads((ROOT/"configs/protocols/zero_shot_b25.json").read_text())
     profile.update(id="roboicl-pro-reuse-20261021", model="gpt-6-astra", endpoint="http://127.0.0.1:7911/responses")
     profile_path = root/"profile.json"
@@ -156,7 +171,7 @@ def main():
     save(profile_path, profile)
     jobs = queue.Queue()
     for layout in ([args.layout] if args.layout is not None else range(4)):
-        for task in ([args.task] if args.task else TASKS):
+        for task in selected_tasks:
             for condition in args.conditions:
                 jobs.put((task, layout, condition))
 
