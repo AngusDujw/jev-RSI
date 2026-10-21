@@ -133,6 +133,7 @@ graph LR
     direction TB
     T_2026W43_001["⛔ roboicl-action-reuse<br/>纯GPT20次终止、11成功；Jev配置仅…"]:::blocker
     T_2026W43_002["📝 roboicl-action-reuse<br/>用户提供新的Jev凭据，原配置权限阻塞解除…"]:::note
+    T_2026W43_003["📊 roboicl-action-reuse<br/>RoboICL原Jev20次10成功/3原…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -225,6 +226,7 @@ graph LR
   T_2026W42_020 --> T_2026W42_021
   T_2026W42_021 --> T_2026W42_022
   T_2026W43_001 --> T_2026W43_002
+  T_2026W43_002 --> T_2026W43_003
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -343,6 +345,7 @@ graph LR
 | `T-2026W42-022` | 2026-10-14 | experiment | libero-goal-ten | Goal1296公开近盘沿桌面滑动固定五未见初态5/5，115.4Jev/533.4步，稳定项9/10 | `EXP-2026W42-199` | - |
 | `T-2026W43-001` | 2026-10-21 | blocker | roboicl-action-reuse | 纯GPT20次终止、11成功；Jev配置仅root可读，等待最小复制授权后继续60次对照 | `EXP-2026W43-008` | - |
 | `T-2026W43-002` | 2026-10-21 | note | roboicl-action-reuse | 用户提供新的Jev凭据，原配置权限阻塞解除；本机Jev及Pro真实预检通过，远端证书路径以进程环境修复中 | `EXP-2026W43-008` | - |
+| `T-2026W43-003` | 2026-10-21 | experiment | roboicl-action-reuse | RoboICL原Jev20次10成功/3原生失败/7服务未评分；共同评分13布局GPT544→370但动作2653→3162，固定对照与独立补充待完成 | `EXP-2026W43-009` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
