@@ -183,7 +183,10 @@ def main():
         parser.error("A readable authorized Jev config is required")
     intervals = frozen_intervals(root, selected_tasks) if any(c in args.conditions for c in ("mean", "maximum")) else None
     profile = json.loads((ROOT/"configs/protocols/zero_shot_b25.json").read_text())
-    profile.update(id="roboicl-pro-reuse-20261021", model="gpt-6-astra", endpoint="http://127.0.0.1:7911/responses")
+    pro_endpoint = os.environ.get("ROBOICL_PRO_ENDPOINT", "http://127.0.0.1:7911/responses")
+    if pro_endpoint not in ("http://127.0.0.1:7911/responses", "http://127.0.0.1:7914/responses"):
+        raise ValueError("Only the authorized local ChatGPT Pro bridges are allowed")
+    profile.update(id="roboicl-pro-reuse-20261021", model="gpt-6-astra", endpoint=pro_endpoint)
     profile_path = root/"profile.json"
     if profile_path.exists() and json.loads(profile_path.read_text()) != profile:
         raise ValueError("Existing profile differs; use a new output root")

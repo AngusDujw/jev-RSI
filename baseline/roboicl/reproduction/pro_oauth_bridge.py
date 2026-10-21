@@ -21,6 +21,7 @@ import urllib.request
 MODEL = "gpt-6-astra"
 ENDPOINT = "https://chatgpt.com/backend-api/codex/responses"
 JEV_RETRY_DELAYS_S = (15, 45)
+PRO_RETRY_DELAYS_S = (15, 45)
 CJK = re.compile(r"[\u3400-\u9fff]")
 
 
@@ -64,7 +65,14 @@ def pro_payload(value):
     return value
 
 
-def native_request(payload, auth_file, timeout=900):
+class ProTransportError(RuntimeError):
+    def __init__(self, message, *, retryable=False, http_status=None):
+        super().__init__(message)
+        self.retryable = retryable
+        self.http_status = http_status
+
+
+def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None):
     check_english(payload)
     if payload.get("model") != MODEL or payload.get("reasoning", {}).get("effort") != "xhigh":
         raise ValueError("Only the pinned Astra/xhigh request is authorized")
@@ -81,10 +89,13 @@ def native_request(payload, auth_file, timeout=900):
         "originator": "codex_cli_rs", "User-Agent": "codex_cli_rs",
     })
     try:
+        if attempt_record is not None:
+            attempt_record["request_sent"] = True
         response = urllib.request.urlopen(request, timeout=timeout)
     except urllib.error.HTTPError as error:
         raw = error.read(4096).decode(errors="replace")
-        raise RuntimeError(f"Native Pro HTTP {error.code}: " + str(audit(raw))[:1500]) from None
+        raise ProTransportError(f"Native Pro HTTP {error.code}: " + str(audit(raw))[:1500],
+            retryable=error.code in (408, 429, 500, 502, 503, 504), http_status=error.code) from None
     with response:
         for line in response:
             if not line.startswith(b"data:"):
@@ -94,13 +105,57 @@ def native_request(payload, auth_file, timeout=900):
                 break
             event = json.loads(text)
             if event.get("type") in ("response.failed", "response.incomplete", "error"):
-                raise RuntimeError("Native Pro response failed: " + json.dumps(audit(event))[:1200])
+                details = event.get("response", {}).get("error") or event.get("error") or {}
+                code = details.get("code") if isinstance(details, dict) else None
+                raise ProTransportError("Native Pro response failed: " + json.dumps(audit(event))[:1200],
+                    retryable=code in {"server_error", "internal_error", "rate_limit_exceeded",
+                        "rate_limit_error", "overloaded_error", "model_capacity",
+                        "model_capacity_exceeded", "model_overloaded", "service_unavailable"})
             if event.get("type") == "response.completed":
                 result = event["response"]
+                if attempt_record is not None:
+                    attempt_record.update(model=result.get("model"), usage=result.get("usage"))
                 if not result.get("model", "").startswith(MODEL):
                     raise RuntimeError("Wrong model in native Pro response")
                 return result
-    raise RuntimeError("Native Pro stream ended without a completed response")
+    raise ProTransportError("Native Pro stream ended without a completed response", retryable=True)
+
+
+def native_request(payload, auth_file, timeout=900, attempt_records=None):
+    """Retry transport failures only; return the first completed pinned response.
+
+    Every retry has the identical model-visible payload. A failed inference may
+    have consumed quota; its unknown usage is retained rather than treated as zero.
+    Socket timeouts do not provide an absolute whole-call deadline.
+    """
+    attempt_records = [] if attempt_records is None else attempt_records
+    for attempt in range(1, 4):
+        record = {"attempt": attempt, "started": time.time(), "request_sent": False}
+        started = time.monotonic()
+        retryable = False
+        try:
+            result = _native_pro_once(payload, auth_file, timeout, record)
+            record.update(model=result.get("model"), usage=result.get("usage"))
+            return result
+        except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.IncompleteRead) as error:
+            retryable = True
+            record.update(error_type=type(error).__name__, error=str(error)[:600],
+                          usage_unknown=record["request_sent"])
+            if attempt == 3:
+                raise ProTransportError("Native Pro transport attempts exhausted: " + str(error)[:600]) from None
+        except Exception as error:
+            retryable = isinstance(error, ProTransportError) and error.retryable
+            record.update(error_type=type(error).__name__, error=str(error)[:600],
+                          http_status=getattr(error, "http_status", None),
+                          usage_unknown=record["request_sent"])
+            if not retryable or attempt == 3:
+                raise
+        finally:
+            record["elapsed_s"] = time.monotonic() - started
+            attempt_records.append(record)
+        if retryable:
+            record["retry_delay_s"] = PRO_RETRY_DELAYS_S[attempt - 1]
+            time.sleep(record["retry_delay_s"])
 
 
 def native_jev_request(payload, config_file, attempt_records=None):
@@ -188,8 +243,10 @@ class Handler(BaseHTTPRequestHandler):
                 with self.server.jev_limit:
                     result = native_jev_request(payload, self.server.jev_config, record["upstream_attempts"])
             else:
+                record["upstream_attempts"] = []
                 with self.server.limit:
-                    result = native_request(payload, self.server.auth_file)
+                    result = native_request(payload, self.server.auth_file,
+                                            attempt_records=record["upstream_attempts"])
             record.update(response=audit(result), elapsed_s=time.monotonic()-started)
             if payload.get("stream") and not is_jev:
                 data = ("data: " + json.dumps({"type": "response.completed", "response": result}) + "\n\n").encode()
@@ -217,11 +274,14 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     if args.probe:
+        attempts = []
         response = native_request({"model": MODEL, "reasoning": {"effort": "xhigh"},
             "instructions": "Return the ready tool call. Do not use any other tools.",
             "input": [{"role": "user", "content": "Test the signed-in ChatGPT transport."}],
             "tools": [{"type": "function", "name": "ready", "parameters": {"type": "object", "properties": {}, "additionalProperties": False}}],
-            "tool_choice": {"type": "function", "name": "ready"}, "parallel_tool_calls": False}, args.auth_file)
+            "tool_choice": {"type": "function", "name": "ready"}, "parallel_tool_calls": False}, args.auth_file,
+            attempt_records=attempts)
+        (args.output/"probe-attempts.json").write_text(json.dumps(attempts, indent=2))
         (args.output/"probe.json").write_text(json.dumps(audit(response), indent=2))
         print(json.dumps({"model": response.get("model"), "status": response.get("status"), "output_types": [x.get("type") for x in response.get("output", [])]}))
         return
