@@ -20,6 +20,10 @@ CONTROL=None
 SSH_SLOTS=threading.BoundedSemaphore(3)
 
 
+class UnansweredTransportDeferred(RuntimeError):
+    """Keep the original native observation pending until transport recovers."""
+
+
 def infer_unanswered(client,request,folder,key,max_attempts=8,sleep=time.sleep,on_attempt=None):
     """Retry unavailable transport only; preserve every received provider result."""
     if not 1<=max_attempts<=12:raise ValueError('Invalid API attempt budget')
@@ -47,7 +51,8 @@ def infer_unanswered(client,request,folder,key,max_attempts=8,sleep=time.sleep,o
                     received_answer=received,error_body_file=body_file))+'\n')
             if received:return provider
             if not retryable or attempt==max_attempts-1:
-                return dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500])
+                return dict(bridge_error=type(error).__name__+': '+str(error).replace(key,'[redacted]')[:500],
+                            retryable_unanswered=retryable, http_status=code)
             sleep(min(30,2**(attempt+1)))
         except Exception as error:
             # Parsing/schema failures are not unanswered transport attempts.
@@ -102,15 +107,17 @@ def fetch_job(host,remote,memory):
 
 
 class FileClient:
-    def __init__(self,root,compact=False):
+    def __init__(self,root,compact=False,wait_seconds=28800):
+        if not 1<=wait_seconds<=86400:raise ValueError('Invalid native bridge wait budget')
         self.root=Path(root);self.root.mkdir();self.counter=0;self.compact=compact
+        self.wait_seconds=wait_seconds
     def open(self,request,timeout=120):
         assert request.full_url==ENDPOINT
         folder=self.root/f'{self.counter:04d}';self.counter+=1;folder.mkdir()
         temporary=folder/'pending.part'
         temporary.write_text(json.dumps(dict(endpoint=ENDPOINT,payload=json.loads(request.data))))
         temporary.replace(folder/'pending.json')
-        deadline=time.monotonic()+max(timeout,1800)
+        deadline=time.monotonic()+max(timeout,self.wait_seconds)
         try:
             while time.monotonic()<deadline:
                 if (folder/'reply.json').exists():
@@ -222,6 +229,15 @@ def main():
                 nonlocal calls
                 with lock:calls+=1
             reply=infer_unanswered(client,request,folder,key,a.api_attempts,on_attempt=count_attempt)
+            if reply.get('retryable_unanswered'):
+                # No provider decision exists. Never publish a transport failure
+                # as an actor reply or remove the native pending observation.
+                # The outer scheduler will retry this same hash-verified body;
+                # every answered/refused response still uses the durable cache.
+                (folder/'unanswered-network-wait.json').write_text(json.dumps(dict(
+                    time=time.time(),remote_job=remote,request_sha256=hashlib.sha256(raw).hexdigest(),
+                    error=reply['bridge_error'],physical_steps_while_waiting=0)))
+                raise UnansweredTransportDeferred(reply['bridge_error'])
             temporary=folder/'reply.part';temporary.write_text(json.dumps(reply));temporary.replace(folder/'reply.json')
             timing['api_seconds']=time.monotonic()-api_started
             if pooled:timing['http_version']=pooled.http_version
@@ -239,7 +255,9 @@ def main():
                 try:future.result();seen.add(path)
                 except Exception as error:
                     with (a.output/'transport-events.jsonl').open('a') as f:
-                        f.write(json.dumps(dict(time=time.time(),operation='transfer',error=str(error).replace(key,'[redacted]')[-500:]))+'\n')
+                        f.write(json.dumps(dict(time=time.time(),operation=(
+                            'api_unanswered_deferred' if isinstance(error,UnansweredTransportDeferred) else 'transfer'),
+                            error=str(error).replace(key,'[redacted]')[-500:]))+'\n')
                 del active[path]
             (a.output/'heartbeat.json').write_text(json.dumps(dict(time=time.time(),calls=calls,inflight=len(active),workers=a.workers)))
             code=('import pathlib,json; roots='+repr(a.remote_roots)+'; print(json.dumps([str(p) for r in roots '

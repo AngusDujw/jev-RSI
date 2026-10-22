@@ -1,0 +1,18 @@
+{
+  "version": "v59-r2",
+  "task": 1458,
+  "inits": [
+    14,
+    15,
+    16
+  ],
+  "physical_budget": 3000,
+  "model_input_snapshot_sha256": "492c1f95806da88cd5ba98a3ac9cd567ad9a2a56a569b4dea9145d4a83069227",
+  "model_input_change_from_v59": false,
+  "transport_change": "Retryable unanswered network batches remain pending and are requeued with the exact payload hash; no network-error reply is delivered to the native loop. Native FileClient waits up to28800seconds. Received/refused/malformed/auth replies retain their original non-resampling behavior.",
+  "validation": "8 mocked recovery/delivery/refusal/auth/schema/native-wait/AST checks passed; zero real API calls and zero actions in these checks.",
+  "restart_reason": "All previous simulations have already exited after11network failures and1typed refusal. Preserve original records. New cases restart from their initial states because no resumable simulator checkpoint exists. These are explicit infrastructure retries, not claimed additional completed trials.",
+  "planner": "local ChatGPT Pro gpt-6.1-sol high",
+  "actor": "du OpenAI /v1/decisions gpt-6-luna",
+  "unused_candidates": "Pro23/25/26/27 did not produce useful signed rotations in static probes; they are not injected into this native restart."
+}
