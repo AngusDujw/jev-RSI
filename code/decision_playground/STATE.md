@@ -7,17 +7,23 @@ Updated:2026-10-23. Read AGENTS.md, EXP-2026W43-007 and real processes first.
 SSH company-server-2-ykj (JcbotIns), user ykj.
 Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-o zero-API interface check ended at8steps; native829592/runner838053 exited.
-Full5-step hold feedback agrees; partial3-step YZ- returned exactly last dispatched
-waypoint/steps target. Full goal residual11.638mm vs dispatched-target error1.928mm.
-No-dispatch branch not reached natively (offline only); temporary script deleted.
-New p campaign code/runs/playground-feedback-policy-20261023p is native-only initializing.
-GPU5/layout1/RPC25405; inspect manifest and real PID. No policy worker yet.
-Only feedback schema/explanation changed, r005 text/image content unchanged/not promoted.
-One first <=3-call segment and at most one second segment after actual RGB/IK/state
-review; any guard refusal immediate review. Only this attempt retains task/batch history.
+All owned native/policy processes exited; no curl/API in flight (verify real PIDs).
+o interface check: native829592/runner838053 ended at8steps,0API; temporary script deleted.
+Full5-step feedback agrees; partial3-step returned exactly the last actual target.
+Full residual11.638mm vs sent-target error1.928mm. Zero dispatch offline-covered only.
+p campaign code/runs/playground-feedback-policy-20261023p, GPU5/layout1/RPC25405:
+native856266 / worker878945 ended after sequence1 stop, episodecf312b09-c1e4-48b9-9b15-f76382dfa3e0.
+Six HTTP200/29native steps over two reviewed segments, r005 + new feedback.
+Initial bilateral Z- did not track; model pitch- then rightY-19.438mm/.579mm error.
+Then open/close/Z-; final4/5 dispatched, actualZ -27.203mm vs last target -16mm,
+sent-target error11.344mm vs full-goal7.420mm. Final IK refusal correctly stopped.
+No verified capture/lift/retention; candidate not promoted, not a full task failure.
+Final partial feedback was never fed into a subsequent model call: no claim that
+p validated model response to unequal full/prefix feedback or causal improvement.
+Keep p representative image history and its three copied Lesson references.
+Only current-task temporary audit copies may be cleaned by exact manifest.
 
-Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n ended; never restore/replay.
+Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n/o/p ended; never restore/replay.
 Source96e47233 SSH-pushed and bundle deployed; r005 template previously ed1122d5.
 feedback-selected-vs-dispatched-v1 offline+o real full/partial interface validated; policy benefit not yet tested.
 n campaign code/runs/playground-lesson-transfer-20261022n:
@@ -40,7 +46,7 @@ Owned local SSH ControlPath:
 Remote127.0.0.1:17897 -> local127.0.0.1:7897; remote original7897 untouched.
 Upper/lower HTTP(S)/ALL proxy variables are process-scoped.
 Only du /v1/decisions; no ordinary API, caz/z, or extra API probes.
-Actual calls c30+e18+i3+n8=59HTTP200; b failed initial request preserved separately.
+Actual calls c30+e18+i3+n8+p6=65HTTP200; b failed initial request preserved separately.
 
 ## Execution correction
 
@@ -106,14 +112,20 @@ The layout1 full goal residual11.633mm includes the discarded suffix; delivered
 prefix error was~1.935mm, so do not misclassify all residual as execution error.
 Independent actual Playground.handle in-memory integration prefix0..5 passed,
 including refusal/no-dispatch null and final target selection; no API/native.
-o interface check passed as above. Next review fresh p step0 RGB/actual source,
-start worker once, then audit actual payload/feedback and bounded policy response.
-Do not add hints or promote r005 from a rotation or tracking choice.
+o interface passed and p bounded policy check ended as above. Next read-only
+p closure/descent audit: accepted IK targets vs measured trajectory, raw retained
+head/wrist at20/25/29 and visible finger/object relation. Do not label contact or
+capture without evidence. Check robot TCP/finger geometry from public interfaces
+if the visible relation remains ambiguous; no K/T or object truth, no physics edits.
+No automatic new episode/API until this first-failure audit yields a specific
+single condition. Do not repeat r005, heap hints, resume p, or replay any request.
+Outer-only English review: lessons/reorientation_tracking_r005_review.md;
+model projection r005 remains unchanged/unpromoted.
 Keep original guard/drive/limit/collision parameters and fixed action budget.
 
 ## Boundaries / candidates
 
-Old server02 and new b through n ended; do not resume them.
+Old server02 and new b through p ended; do not resume them.
 r001 feedback probe, r003 failed-motion summary and r004 action-image examples
 have no verified grasp benefit; not promoted. r002 tracked one rotation/descent,
 not stability. Controlled f retains one body-response history,0API.

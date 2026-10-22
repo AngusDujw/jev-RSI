@@ -373,3 +373,5 @@
 - 【Agent】【2026-10-23 00:08】[run] 新独立o GPU4 native829592，零API一次性runner838053已启动；计划hold5再右Y-/Z-至多5步，逐RPC比最后下发目标/steps/waypoints，首拒绝停止/自动close及删除临时脚本。源fff90340未改。
 - 【Agent】【2026-10-23 00:11】[result] o真实接口通过：hold完整5步两反馈一致；YZ部分3步完整残差11.638mm、已发目标误差1.928mm，返回action与steps/waypoints逐项一致。共8步0API后close/PID退出/临时脚本删除，zero-dispatch未触发不称原生覆盖。
 - 【Agent】【2026-10-23 00:12】[run] o通过后新p native856266 GPU5/layout1，只有新反馈说明/实际已发目标字段变化，r005三图/文本不变；当前native-only，先初图核验再启动有限策略。
+- 【Agent】【2026-10-23 00:14】[run] p初始head/wrist已审查：原图清晰、双爪张开无持物，step0/新UUID；仅启动worker878945，原生856266/GPU5，r005不变+新反馈，最多3请求即审核/guard更早停。
+- 【Agent】【2026-10-23 00:21】[result] p两段6HTTP200/29步收口：局部恢复后open/close/Z-过冲，4子步后guard，完整7.420mm vs已发11.344mm。已审核sequence1 stop，r005不升级；英文outer review记全三尝试/两条件限制，下一只读首失效轨迹。
