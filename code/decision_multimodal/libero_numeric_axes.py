@@ -71,13 +71,14 @@ def build_numeric_request(state,protocol):
     intervals=protocol.get('numeric_axis_intervals_mm',{}).get(key,{})
     observed=reference_difference(state)
     if observed is None or not intervals:return None
-    errors={};questions={}
+    errors={};questions={};tolerances={}
     for axis,bounds in intervals.items():
         if axis not in ('x','y','z') or not isinstance(bounds,list) or len(bounds)!=2:
             raise ValueError('Numeric interval must name an XYZ axis and two bounds')
         lo,hi=bounds
         if not all(type(v) in (int,float) and math.isfinite(v) for v in bounds) or lo>=hi:
             raise ValueError('Numeric interval bounds must be finite and ordered')
+        tolerances[axis]=(hi-lo)/2
         value=observed['xyz'.index(axis)]
         if axis in ('x','y') and state['stage'].get('control_contract',{}).get('height_reference')=='visible_extents' and state['stage'].get('control_contract',{}).get('translation_mode')!='own_entry_xy_clearance':
             height=state.get('extent_height_observation') or {};gap=height.get('receiver_height_minus_visible_source_lower_mm')
@@ -97,6 +98,7 @@ def build_numeric_request(state,protocol):
         state=dict(stage={k:v for k,v in state['stage'].items() if k in ('name','stage_key')},
             request_purpose='text_only_numeric_axis_classification',
             current_minus_desired_error_mm=errors,
+            current_position_tolerances_mm=tolerances,
             numeric_input=NUMERIC_INPUT),
         questions=questions)
 

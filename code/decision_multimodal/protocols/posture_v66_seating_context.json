@@ -1,0 +1,112 @@
+{
+  "version": "v66",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "planner": "Local Pro33 gpt-6.1-sol high; one short English lesson and three current946RGB images actually loaded",
+  "actor": "du /v1/decisions gpt-6-luna",
+  "method": "Pro33 provisional current-visible body XY reference across carry and seating; shared current XY context before actor Z descent choice, concise ordered rules; camera-owner tracking repair. Actor still chooses labels, all axis signs, grip and phase. Same Pro31 orientation and Pro32 receiver method. Bounded first seating RGB-D export for outer diagnosis only.",
+  "validation": {
+    "cpu_checks": [
+      "selected source tracks in owning camera",
+      "unknown does not create a tracking point",
+      "visual Z gets same-observation numeric lateral choices without mutation",
+      "default method unchanged",
+      "other stages unchanged",
+      "changed code parses and model contracts are English"
+    ],
+    "first_verbose_form": [
+      {
+        "case": "numeric-aligned-descent",
+        "choice": "hold",
+        "confidence": 0.09
+      },
+      {
+        "case": "numeric-aligned-height",
+        "choice": "hold",
+        "confidence": 0.97
+      },
+      {
+        "case": "numeric-inclusive-boundaries",
+        "choice": "hold",
+        "confidence": 0.19
+      },
+      {
+        "case": "numeric-misaligned-lateral",
+        "choice": "positive",
+        "confidence": 0.31
+      },
+      {
+        "case": "numeric-missing-lateral",
+        "choice": "positive",
+        "confidence": 0.19
+      },
+      {
+        "case": "numeric-missing-lateral-clearance",
+        "choice": "positive",
+        "confidence": 0.77
+      }
+    ],
+    "first_form_correct": 2,
+    "first_form_total": 6,
+    "revised_ordered_form": [
+      {
+        "case": "missing",
+        "expected": "hold",
+        "actual": "hold",
+        "confidence": 0.97,
+        "pass": true
+      },
+      {
+        "case": "outside",
+        "expected": "hold",
+        "actual": "hold",
+        "confidence": 0.85,
+        "pass": true
+      },
+      {
+        "case": "aligned",
+        "expected": "negative",
+        "actual": "negative",
+        "confidence": 0.82,
+        "pass": true
+      },
+      {
+        "case": "restore",
+        "expected": "positive",
+        "actual": "positive",
+        "confidence": 0.99,
+        "pass": true
+      },
+      {
+        "case": "height",
+        "expected": "hold",
+        "actual": "hold",
+        "confidence": 0.76,
+        "pass": true
+      },
+      {
+        "case": "boundary",
+        "expected": "negative",
+        "actual": "negative",
+        "confidence": 0.85,
+        "pass": true
+      }
+    ],
+    "api_calls_total": 12,
+    "new_native_actions": 0,
+    "experience_sha256": "61bdf0f410146fdd82157fce95a1adb085b86abe471b5545e448e8f7b350ea20",
+    "strategy_sha256": "ec03af48191eec0639cb835241938e1e01056a6df12d35f7dabed8dc20f985a8",
+    "direct_source_sha256": "19aa1d60e5d35d96e041686e30eebad56243b4b5f5b6d1c2be59a66eab298e67",
+    "task_success_verified": false
+  },
+  "runtime_status": "freeze and pilot pending"
+}

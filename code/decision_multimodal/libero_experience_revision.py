@@ -20,6 +20,9 @@ def revise_questions(sent, contract):
     if (purpose == 'multimodal_reference_selection' and stage == 'align_source_above_receiver'
             and contract.get('transport_reference_instructions') and 'reference' in revised['questions']):
         revised['questions']['reference']['instructions'] = contract['transport_reference_instructions']
+    if (purpose == 'multimodal_reference_selection' and stage == 'lower_to_place'
+            and contract.get('lower_reference_instructions') and 'reference' in revised['questions']):
+        revised['questions']['reference']['instructions'] = contract['lower_reference_instructions']
     if purpose == 'multimodal_reference_selection' and 'receiver' in revised['questions']:
         revised['questions']['receiver']['instructions'] = contract['receiver_instructions']
     if purpose in ('multimodal_policy', 'multimodal_rotation_gripper_transition'):
@@ -36,9 +39,10 @@ def revise_questions(sent, contract):
 def revise_reference_header(payload, sent, contract):
     """Keep a provisional transport question consistent with its image header."""
     state = sent['state']
-    header = contract.get('transport_reference_header')
+    key = state.get('stage', {}).get('stage_key')
+    header = contract.get('lower_reference_header') if key == 'lower_to_place' else contract.get('transport_reference_header')
     if (not header or state.get('request_purpose') != 'multimodal_reference_selection'
-            or state.get('stage', {}).get('stage_key') != 'align_source_above_receiver'):
+            or key not in ('align_source_above_receiver', 'lower_to_place')):
         return payload
     revised = deepcopy(payload)
     matches = 0
@@ -75,6 +79,10 @@ def main():
         english(strategy)
         if not isinstance(strategy.get('receiving_multiview_details', False), bool):
             raise ValueError('Receiving-detail experiment switch must be boolean')
+        if not isinstance(strategy.get('lowering_xy_gate_enabled', False), bool):
+            raise ValueError('Lowering lateral-context switch must be boolean')
+        if strategy.get('lowering_xy_gate_enabled') and not isinstance(strategy.get('lowering_condition'), str):
+            raise ValueError('Planner lowering condition is required')
         if strategy.get('readiness_scope', 'all_carry') not in ('all_carry', 'lower_to_place_only'):
             raise ValueError('Unknown planner readiness scope')
         if ('receiving_reference_header' in strategy
@@ -117,6 +125,8 @@ def main():
         from libero_posture_strategy import revise_direction, revise_rotation, revise_phase, separate_readiness
         revised = revise_rotation(revise_direction(sent, strategy), strategy)
         revised = revise_phase(revised, getattr(self, 'actor_posture_readiness', None), self.tick, strategy)
+        from libero_lowering_context import revise_lowering
+        revised = revise_lowering(revised, strategy)
         answer = original_post(self, endpoint, revised)
         if sent['state'].get('request_purpose') == 'multimodal_rotation_axes':
             answer, self.actor_posture_readiness = separate_readiness(answer, self.tick)

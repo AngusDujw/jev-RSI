@@ -20,6 +20,19 @@ def bind_receiver_choice(state,answers,candidates):
         state['actor_selected_receiver_surface']=candidates[label]
 
 
+def track_source_choice(label, candidates, component, main_tracker, side_tracker):
+    """Track exactly the actor-selected pixel in its actual measurement camera."""
+    sample = candidates.get(label)
+    if sample is None:
+        return None
+    camera = sample.get('observation_camera', (component or {}).get('observation_camera', 'agentview'))
+    tracker = side_tracker if camera == 'sideview' else main_tracker if camera == 'agentview' else None
+    if tracker is not None:
+        tracker.select(label)
+        return camera
+    return None
+
+
 LABEL_CAMERA_RULE = (
     ' Each point in current_label_catalog has its own observation_camera. '
     'Locate that label and pixel in THAT CURRENT camera image. '

@@ -616,3 +616,5 @@
 【Agent @Codex】【2026-10-23】[EXP096](LOGS/2026-W43.md#exp-2026w43-096)：旧v60完整0/2各2998步，另1真实拒答中断。v63实际position0.83/allRhold/not_ready时actor advance0.97，490首XY运输实测[18.977,-18.736,-0.452]mm；后transport偏差14.8仍continue，未绕过原规则。v64三例初期实际多次选P0B。仅局部运输/视觉参考进展，完整任务待当前冻结回合验证。
 
 【Agent @Codex】【2026-10-23】[EXP097–098](LOGS/2026-W43.md#exp-2026w43-098)：旧v61首例1042 typed reference refusal，中断未评。v63运输缺测实际receiver unlabelled而非source；单修B点相机仍unlabelled。实际高图被手臂遮挡而侧图有木板无B候选。Pro32建议两视角新鲜接收点，v65未排序额外侧RGB-D点/同帧图、逐点相机及一句上层面身份题；17项CPU/接口检查通过，原生收益待验。
+
+【Agent @Codex】【2026-10-23】[EXP099–100](LOGS/2026-W43.md#exp-2026w43-099)：真实下放缺XY仍下降，侧特征误路由到主tracker。Pro33给carry/seating同角色XY锚和横向条件；冗长实现实际2/6，有序短规则6/6，保留旧答，0新原生动作，v66待验证。v65已44真实请求含B9-B17/5图/逐点相机，actor选B9，开放3独立例，不宣称任务成功。CIRCLE-1以冻结完整原生放置释放/终局收敛。

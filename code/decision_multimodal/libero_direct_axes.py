@@ -409,7 +409,7 @@ def main():
             raise ValueError('Sideview source fallback requires bottle RGB-D and the existing sideview camera')
         from libero_visual_surfaces import SurfaceTracker
         side_source_tracker=SurfaceTracker('bottle',[0,0,args.size,args.size],sparse=True,
-            shape_features=True,prefer_largest=True)
+            shape_features=True,prefer_largest=True,track_selected=args.track_selected)
     full_demonstrations=api.demonstrations[:]
     rotation_demonstrations=[]
     for i,part in enumerate(full_demonstrations):
@@ -618,7 +618,9 @@ def main():
                 archive=out/'protocols';archive.mkdir(exist_ok=True)
                 if not (archive/(digest+'.json')).exists():(archive/(digest+'.json')).write_bytes(raw_protocol)
                 api.protocol_sha256=digest
-            api.current=capture();api.previous=previous;api.tick=tick
+            save_seating_sensors=(args.record_evidence and stages[stage].get('stage_key')=='lower_to_place'
+                                   and tick-stage_origin_tick<=36)
+            api.current=capture(save_sensor_data=save_seating_sensors);api.previous=previous;api.tick=tick
             if protocol.get('scene_relation_raw_rgb'):
                 api.current_raw=[]
                 for camera in cameras:
@@ -814,7 +816,10 @@ def main():
                 if args.scoped_reference_call:attention_state=dict(state,request_purpose='multimodal_reference_selection')
                 assessment=api.post('/systemone',dict(model='gpt-6-luna',state=attention_state,questions=attention))
                 selected=assessment['answers']['reference']['choice']
-                if args.track_selected and tracker is not None:tracker.select(selected)
+                if args.track_selected:
+                    from libero_reference_decision import track_source_choice
+                    tracking_camera=track_source_choice(selected,candidates,state.get('source_component'),tracker,side_source_tracker)
+                    api.log(dict(kind='source_tracking_selection',native_tick=tick,label=selected,observation_camera=tracking_camera))
                 state['actor_visual_assessment']={k:v['choice'] for k,v in assessment['answers'].items()}
                 state['actor_visual_assessment_confidence']={k:v['confidence'] for k,v in assessment['answers'].items()}
                 visual_history.append(dict(native_tick=tick,stage=stage,choices=state['actor_visual_assessment'],confidence=state['actor_visual_assessment_confidence']))
