@@ -168,8 +168,8 @@ def decode(answers, robot_state, command_state=None):
     Pass explicit native gripper commands via command_state or its robot_state
     key; audited native prev_control ee_joint_state is the fallback. keep
     without either command raises ValueError. Action poses are raw LINK6 flange
-    targets, not TCP targets; quaternions are wxyz. The RPC adapter, not this
-    function, converts raw targets to the native IK delta frame.
+    targets, not TCP targets; quaternions are wxyz. The RPC adapter uses the
+    native world-pose branch without applying the relative-mode delta frame.
     """
     selected = validate_answers(answers)
     action, audit = {}, {}
@@ -232,3 +232,23 @@ def motion_feedback(audit, after_raw_state):
             target_position_error_m=math.sqrt(sum((after[i]-target[i])**2 for i in range(3))),
             target_orientation_error_rad=math.acos(max(-1., min(1., cosine))))
     return feedback
+
+
+def delivered_motion_feedback(audit, last_dispatched_action, after_raw_state):
+    """Compare the last actually dispatched Cartesian target with measurement.
+
+    Keep the selected full goal distinct from a partial waypoint prefix. Only
+    previously dispatched robot poses enter this projection, never solver,
+    guard, contact or task-outcome diagnostics. No dispatched target is null,
+    not a fabricated zero-error hold.
+    """
+    if last_dispatched_action is None:
+        return None
+    targets = permitted_state(last_dispatched_action)["robot"]
+    delivered = {}
+    for arm in ARMS:
+        delivered[arm] = dict(
+            tcp_before_world_m=audit[arm]["tcp_before_world_m"],
+            tcp_target_world_m=targets[arm]["tcp_position_world_m"],
+            rotation_target_world_from_local=targets[arm]["tool_rotation_world_from_local"])
+    return motion_feedback(delivered, after_raw_state)

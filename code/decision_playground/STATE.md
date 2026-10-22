@@ -7,17 +7,21 @@ Updated:2026-10-22. Read AGENTS.md, EXP-2026W43-007 and real processes first.
 SSH company-server-2-ykj (JcbotIns), user ykj.
 Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-Current deployed native/worker source: f6b366f9, SSH-pushed/bundle deployed.
-All old server02 and b/c/d/e/f/g/h/i/j/k/l/m processes ended; never restore/replay.
-New n campaign code/runs/playground-lesson-transfer-20261022n:
-GPU4/layout0 native720103 RPC25404; GPU5/layout1 native720372 RPC25405.
-Native-only startup, no worker/API yet. Check real readiness before policy start.
-Condition unchanged tcp-slerp-waypoints-v1 + outer runtime diagnostics; contact reporting OFF.
-New model-readable r005 candidate: allowed RGB/commanded Cartesian actions/measured effects only.
-Knowledge/current.json and immutable r005.json plus knowledge-provenance.json in n.
-Both use recent image history; only GPU4 retains representative full history for this task/batch.
-Bounded transfer check: at most3 actual requests per layout, any guard refusal reviews immediately.
-Do not promote this candidate from a rotation choice or local tracking alone.
+All owned native/policy processes currently exited; no curl/request in flight.
+Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n ended; never restore/replay.
+Last deployed source f6b366f9; documentation/r005 ed1122d5 deployed.
+New offline feedback correction pending commit/deploy; check latest Git before next start.
+n campaign code/runs/playground-lesson-transfer-20261022n:
+GPU4/layout0 native720103/worker748068, episode42ba1791-c20a-4011-a0d8-eaeced448b48,
+6HTTP200/30native steps. GPU5/layout1 native720372/worker748070,
+episoded0d436f8-b2d4-4e98-9ed6-21e86582e284,2HTTP200/6steps.
+Both explicitly stopped with command sequence1 after two reviewed segments, all4 PIDs absent.
+r005 NOT promoted. Layout0 selected pitch- after Y- mismatch then Z- tracked19.502mm
+with.503mm error, but ended with two holds/no enclosure or retention.
+Layout1 Y-/Z- partial prefix then another ineffective Z-/refusal, no reorientation/recovery.
+No native terminal scores: these are development interruptions, not0/2 full failures.
+Only GPU4 representative full history and r005 three source lesson images retained;
+other n review media removed after review/stop with hash manifests; text/requests retained.
 
 ## Transport
 
@@ -27,7 +31,7 @@ Owned local SSH ControlPath:
 Remote127.0.0.1:17897 -> local127.0.0.1:7897; remote original7897 untouched.
 Upper/lower HTTP(S)/ALL proxy variables are process-scoped.
 Only du /v1/decisions; no ordinary API, caz/z, or extra API probes.
-Actual calls c30+e18+i3=51HTTP200; b failed initial request preserved separately.
+Actual calls c30+e18+i3+n8=59HTTP200; b failed initial request preserved separately.
 
 ## Execution correction
 
@@ -81,16 +85,25 @@ This is one controlled recovery, not policy-selected or a grasp. See m/reorienta
 
 ## Next bounded work
 
-Review n initial head/wrist/state at step0, then start actual du workers once only.
-No hidden IK/contact/runtime fields in the r005 projection or actual model requests.
-Review first <=3 requests per layout. Distinguish recognition of nontracking, actual
-tracking recovery, useful visible approach, enclosure and retention. Failure/unknown
-request is never retried. No new same-condition resets to fill cards. No source hot edits.
+Offline clarify feedback-selected-vs-dispatched-v1 before more policy calls.
+Existing execution_feedback remains full selected goal vs measurement. New
+last_dispatched_target_feedback compares the actually sent Cartesian waypoint
+with the same measured robot state (null if none sent). No IK/guard/contact
+reason or internal dynamics enters model input. Adapter returns its last sent
+Cartesian action, worker projects only command-vs-measurement fields.
+210 rotation/translation/prefix fixtures plus no-dispatch/null and known measured
+error checks passed; no API/native calls or temporary test script.
+The layout1 full goal residual11.633mm includes the discarded suffix; delivered
+prefix error was~1.935mm, so do not misclassify all residual as execution error.
+Independent actual Playground.handle in-memory integration prefix0..5 passed,
+including refusal/no-dispatch null and final target selection; no API/native.
+Next commit/SSH-push/bundle-deploy, then at most one bounded new native check if needed
+before deciding another policy condition. Do not blindly repeat r005 or add hints.
 Keep original guard/drive/limit/collision parameters and fixed action budget.
 
 ## Boundaries / candidates
 
-Old server02 and new b/c/d/e/f/g/h/i ended; do not resume them.
+Old server02 and new b through n ended; do not resume them.
 r001 feedback probe, r003 failed-motion summary and r004 action-image examples
 have no verified grasp benefit; not promoted. r002 tracked one rotation/descent,
 not stability. Controlled f retains one body-response history,0API.

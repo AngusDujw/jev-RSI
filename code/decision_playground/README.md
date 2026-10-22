@@ -119,3 +119,15 @@ configuration and before controlled probes, records its original/current value,
 and restores the original at close. This is an observation-pipeline change;
 physical limits/drives/collision/sleep properties stay audited. Require real
 callbacks before using pair evidence; the v1 zero-callback run stays inconclusive.
+
+Feedback condition `feedback-selected-vs-dispatched-v1` preserves the full
+selected goal comparison in `execution_feedback` and adds
+`last_dispatched_target_feedback` for the last Cartesian waypoint actually
+sent, compared against the same measured robot pose. A partial prefix may
+leave a full-goal residual despite tracking its dispatched waypoint. No
+dispatch yields null, never a fabricated successful hold. Only command targets
+and measured robot state enter this model-readable projection; guard/IK reasons
+remain outer-only. This requires matching new native/worker sources in a fresh
+attempt. It changes feedback interpretation, not action selection, execution
+budget or physics. The r005 two-layout check remains under its original feedback
+condition and is not relabeled or promoted.

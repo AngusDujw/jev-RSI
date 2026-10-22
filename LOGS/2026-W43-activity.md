@@ -365,3 +365,6 @@
 - 【Agent】【2026-10-22 23:41】[result] l136回调/141header证实受阻期右base_link-link2自接触，持续非零冲量，返程消失；轨迹与j逐位一致/物理保护属性不变。IK检查开启但忽略这对link，未改碰撞配置。下一只测一个通用小旋转能否恢复同平移，0API，不升Skill。
 - 【Agent】【2026-10-22 23:51】[result] m零API姿态候选15步结束：pitch-后同Y-跟踪19.439mm/误差.577mm，未抓取；整理r005允许RGB/Cartesian正反例，准备两个新开发布局短段，接触及IK仅外层。
 - 【Agent】【2026-10-22 23:53】[run] 启动新n native720103/720372，GPU4/5两个开发布局；r005原图正反例隔离IK/contact，尚零API，先审查初始图像再启动各3请求。
+- 【Agent】【2026-10-22 23:58】[result] n首段4HTTP200：layout0 Y-不跟踪后pitch-跟踪但hold无入抓；layout1 Y-/Z-只执行3步后guard截断，1.935mm为prefix误差，11.633mm含弃后缀。两路RGB/IK/输入审查后sequence0各放行一个<=3请求段，无Skill升级。
+- 【Agent】【2026-10-23 00:01】[op] n已审核stop，两路PID退出；离线补last_dispatched_target_feedback，仅已下发Cartesian目标对实测，不传guard/IK。210组合前缀/旋转及null/实测偏差/输入不变验证通过，无API/native/临时测试脚本。
+- 【Agent】【2026-10-23 00:03】[op] 独立原handle内存集成prefix0至5通过：None/部分最后实际目标/完整终点与计步审核正确，纯Cartesian反馈不含IK；纠正旧decode world模式docstring。准备SSH提交推送与bundle部署，n已停不恢复。

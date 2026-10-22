@@ -399,6 +399,7 @@ class Playground:
                 self.finalize("native_terminal", "native_evaluator")
                 break
         return {**self.observe(), "executed_steps": executed, "requested_steps": steps,
+                "last_dispatched_action": waypoints[executed - 1] if executed else None,
                 "controller_event": refusal, "review_required": refusal is not None}
 
     def serve(self):
