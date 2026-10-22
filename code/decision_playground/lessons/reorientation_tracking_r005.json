@@ -1,0 +1,28 @@
+{
+  "revision": "r005",
+  "guidance": "The supplied development examples compare requested motion with measured robot motion. They are separate historical observations, not the current scene or an action sequence to replay. Select actions from the current images and measured state. This candidate concerns execution tracking only; it does not establish object enclosure or retention.",
+  "skills": [
+    {
+      "id": "reorientation-after-nontracking",
+      "status": "candidate",
+      "applicability": "A requested translation has a persistent measured mismatch. Reassess from the measured pose rather than the intended pose.",
+      "procedure": "Consider whether a small reorientation appropriate to the current view and approach could improve tracking. Select the axis and sign yourself. Check its measured effect before relying on further translation. Do not repeat an unchanged translation merely because it was commanded.",
+      "evidence": "In one controlled example, a negative world-Y translation of 20 mm had 11.962 mm endpoint error; holding the same endpoint longer left 13.328 mm error. In a separate fresh example, a negative world-X rotation of 0.10 rad about the TCP tracked within 0.090 mm and 0.00293 rad. A subsequent negative world-Y translation of 20 mm achieved 19.439 mm along Y with 0.577 mm endpoint error.",
+      "limitations": "These are controlled robot-motion observations, not actions selected by a policy. Only one reorientation and one initial robot configuration were tested. A different current orientation may need a different action or no rotation. No grasp or object retention is demonstrated. The recorded direction is not a universal approach direction."
+    }
+  ],
+  "visual_lessons": [
+    {
+      "image_path": "negative_head.png",
+      "description": "HISTORICAL NEGATIVE EXAMPLE, separate episode. After a right-arm negative world-Y 20 mm request followed by holding the already-commanded endpoint, measured endpoint error remained 13.328 mm. This image is not the current scene."
+    },
+    {
+      "image_path": "rotation_head.png",
+      "description": "HISTORICAL CONTROLLED EXAMPLE, frame 1 of 2. From a fresh initial robot pose, right-arm pitch_negative rotated by 0.10 rad about world X at the TCP. Position error was 0.090 mm and orientation error 0.00293 rad. This is a historical action, not a prescribed next action."
+    },
+    {
+      "image_path": "translation_head.png",
+      "description": "HISTORICAL CONTROLLED EXAMPLE, frame 2 of 2, same episode as frame 1. Right-arm negative world-Y 20 mm translation then achieved 19.439 mm along Y with 0.577 mm endpoint error. This demonstrates local robot tracking, not a grasp or retained object."
+    }
+  ]
+}

@@ -361,3 +361,7 @@
 - 【Agent】【2026-10-22 23:25】[run] 79896688已SSH推送/bundle部署，新独立k GPU4仅接触观测条件启动；runner先核meta启用/保护属性/订阅再按20步探查，零API，不改碰撞/驱动/资产。j20步已结束不恢复。
 - 【Agent】【2026-10-22 23:32】[result] k20步执行与j逐位一致但接触回调0，明确记观测不可用。离线定位IsaacLab默认disableContactProcessing=True；新v2只补标准ContactSensor同款报告gate、审计并恢复，旧k不恢复，不把0回调当无碰撞。
 - 【Agent】【2026-10-22 23:34】[op] 接触报告v2离线验证通过：捕获/开启/读回报告gate，关闭条件恢复，不改物理属性；准备l实际核回调，旧k0回调仍不作无碰撞结论。
+- 【Agent】【2026-10-22 23:36】[run] f6b366f9已SSH推送/bundle部署，新独立l GPU4报告v2启动；一次性runner核report gate/订阅/保护属性后最多20步，零API，旧k保零回调无结论。
+- 【Agent】【2026-10-22 23:41】[result] l136回调/141header证实受阻期右base_link-link2自接触，持续非零冲量，返程消失；轨迹与j逐位一致/物理保护属性不变。IK检查开启但忽略这对link，未改碰撞配置。下一只测一个通用小旋转能否恢复同平移，0API，不升Skill。
+- 【Agent】【2026-10-22 23:51】[result] m零API姿态候选15步结束：pitch-后同Y-跟踪19.439mm/误差.577mm，未抓取；整理r005允许RGB/Cartesian正反例，准备两个新开发布局短段，接触及IK仅外层。
+- 【Agent】【2026-10-22 23:53】[run] 启动新n native720103/720372，GPU4/5两个开发布局；r005原图正反例隔离IK/contact，尚零API，先审查初始图像再启动各3请求。

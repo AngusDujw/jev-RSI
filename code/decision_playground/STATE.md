@@ -7,13 +7,17 @@ Updated:2026-10-22. Read AGENTS.md, EXP-2026W43-007 and real processes first.
 SSH company-server-2-ykj (JcbotIns), user ykj.
 Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-Native/worker code905403e6 committed, SSH-pushed and Git-bundle deployed.
-No active owned native or policy worker after development review stops.
-Latest i campaign: code/runs/playground-waypoints-policy-20261022i.
-Native264069 / worker298786 verified exited, GPU4/RPC25404.
-Ended episode8a593e50-7990-4391-b85b-1106c3362c1f, r000,3HTTP200/13native steps,
-last command sequence0 stop. Never restore this episode or replay its requests.
-Next: bounded zero-API runtime execution diagnosis, not more prompt variants.
+Current deployed native/worker source: f6b366f9, SSH-pushed/bundle deployed.
+All old server02 and b/c/d/e/f/g/h/i/j/k/l/m processes ended; never restore/replay.
+New n campaign code/runs/playground-lesson-transfer-20261022n:
+GPU4/layout0 native720103 RPC25404; GPU5/layout1 native720372 RPC25405.
+Native-only startup, no worker/API yet. Check real readiness before policy start.
+Condition unchanged tcp-slerp-waypoints-v1 + outer runtime diagnostics; contact reporting OFF.
+New model-readable r005 candidate: allowed RGB/commanded Cartesian actions/measured effects only.
+Knowledge/current.json and immutable r005.json plus knowledge-provenance.json in n.
+Both use recent image history; only GPU4 retains representative full history for this task/batch.
+Bounded transfer check: at most3 actual requests per layout, any guard refusal reviews immediately.
+Do not promote this candidate from a rotation choice or local tracking alone.
 
 ## Transport
 
@@ -62,19 +66,27 @@ First clear execution plateau is joint2 around-.2304rad: Y- final target-.292484
 actual-.230417; later Z- target-.325129, actual-.230495. This differs from prior
 controlled e joint3 plateau near-.036rad. Successful i target FK matches requested
 Cartesian pose within.000311mm; USD/URDF authored joint2 limits both about+-10rad.
-Runtime limit/drive/self-collision cause is NOT yet proven. A hold from displaced
-measured pose tracking does not solve the preceding missed motion.
+Subsequent j runtime evidence: actual limits/targets match configuration; .4s extra
+endpoint dwell leaves q2 plateau, return clears it. Estimated torque is not measured motor torque.
+k reporting v1 had0callbacks, so unavailable. l reporting v2 had136callbacks/141headers:
+131 base_link-link2 headers, sustained impulses during q2 plateau; reverse clears them.
+Other10 startup finger headers have zero impulse. Protected physical attributes unchanged;
+j/l endpoint measurements bit-identical. Real contact association, not exclusive causality proof.
+Public cuRobo self-collision checks enabled but base_link-link2 pair ignored; no configuration changed.
+
+m bounded zero-API test: pitch_negative -.10rad then Y-20mm then return,15native steps.
+Rotation tracked .090mm/.002923rad; Y- achieved19.439mm, endpoint error.577mm.
+No controlled report headers for the prior pair, callback pipeline healthy. Native646869 exited.
+This is one controlled recovery, not policy-selected or a grasp. See m/reorientation-audit.json.
 
 ## Next bounded work
 
-Read existing baseline robot interfaces for runtime joint limits/velocities,
-actual drive targets and effort limits. ImplicitActuator estimated torque is
-not PhysX measured torque. Contact pairs/impulses, if needed, remain outer-only.
-Use a new independently named zero-API diagnostic with a predeclared small
-robot-motion plan and ownership/resource checks. Do not hot-edit a live source,
-disable collisions, alter drives/limits/assets, or relax guard to force motion.
-No more blind Z- continuation, repeated image examples or identical failed cards.
-Resolve this execution question before another policy short segment.
+Review n initial head/wrist/state at step0, then start actual du workers once only.
+No hidden IK/contact/runtime fields in the r005 projection or actual model requests.
+Review first <=3 requests per layout. Distinguish recognition of nontracking, actual
+tracking recovery, useful visible approach, enclosure and retention. Failure/unknown
+request is never retried. No new same-condition resets to fill cards. No source hot edits.
+Keep original guard/drive/limit/collision parameters and fixed action budget.
 
 ## Boundaries / candidates
 
