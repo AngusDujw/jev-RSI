@@ -41,3 +41,5 @@ The source implements the boundary in orchestrator/frozen_source.py and docs/PRO
 
 - Pro34 now has actual native input-chain evidence: the actor selected sideC4 and then current checkedC6, with side-camera body-height geometry. This is not a whole-task success.
 - Two tempting diagnoses were not established: actual13of13rotation questions already contained generic physical effects, and one same-camera motion interval did not prove failed bottle following. Pro35 therefore tests clearer formal axis questions rather than claiming a missing-data or grasp repair.
+
+- Pro36 terminal clarification alone did not change the fixed candidate to advance, so it was not promoted. Pro37 instead factors the same visual inspection into three model-produced categories and a second Decisions call; candidate/held-negative yielded advance/continue respectively. The host only copies actual model choices. This is a tested input representation on two observations, not native completion or proof that every visual factor is accurate.

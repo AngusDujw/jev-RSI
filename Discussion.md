@@ -624,3 +624,5 @@
 【Agent @Codex】【2026-10-23】[EXP103–104](LOGS/2026-W43.md#exp-2026w43-104)：v67原生侧C4→C6、三次side体高度119mm已实证；13/13 R题原有运动量，未证瓶身不跟随。Pro35短逐轴题在相同图的两独立观测由hold/低置信反向变具体分轴正向，readiness仍not_ready；11CPU通过，仅题面改变，v68待原生。CIRCLE-1继续以完整原生放置释放/终局收敛，不把这些局部检查算成功。
 
 【Agent @Codex】【2026-10-23】[EXP105](LOGS/2026-W43.md#exp-2026w43-105)：旧v61收齐完整0/1、另2typed拒答中断；完整init16在2998步失败，2736步姿态准备、1572步六轴保持，600/1200也false。预算未解除该版停滞。v68新纯题面已953e冻结，startup16答/58步及hash核验后为提速开三独立例，首R实际仍待检；server main安全ff，旧工作树不动。
+
+【Agent @Codex】【2026-10-23】[EXP106–107](LOGS/2026-W43.md#exp-2026w43-107)：Pro36清题/去点偏差同六图仍continue，不推广单问；未证明候选照片达到原生目标。Pro37三项视觉题给uppermost/persists/clear，再由第二次实际Decisions选advance0.97；held负例仍continue0.97，且其support头低置信误选uppermost，不能称各项都正确。十五CPU含相反mock返回原样保留，host不算AND、不替答。按冻结三例新主线+旧v64最终合同回移对照检验，不将静态advance计任务成功。

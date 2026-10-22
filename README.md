@@ -127,3 +127,11 @@ CIRCLE-3  lr-schedule：未决节点已跨 3 个周——长期悬而未决
 ## License
 
 模板本身按需自选；衍生的科研仓库内容版权归各使用者所有。
+
+## Final inspection input contract (2026-10-23 candidate)
+
+The legacy argument name --rotation-strategy-file also carries the optional inspection_factor_contract. The raw Pro37 output and the timestamp-header normalization are archived separately. The contract freezes observer_header, three observer_questions, final_header, final_question_template, and final_choice_descriptions. Images and camera/tick captions come from each actual observation; historical tick numbers are never reused as current metadata.
+
+At final inspect only, Decisions first classifies support_location, persistence, and hand_separation from the existing earlier/current RGB views. A second, text-only Decisions request receives those exact three same-observation categories and chooses advance/continue/restart. The host neither generates the visual labels nor computes the terminal AND rule. XYZ, world-rotation-vector components, grip, earlier stages and native evaluation are unchanged. Native results remain outside model inputs.
+
+Implementation: code/decision_multimodal/libero_inspection_contract.py and libero_experience_revision.py. Current prototype: code/decision_multimodal/protocols/posture_v69_factor_inspection.json. The earlier single-question Pro36 candidate remained continue in all fixed-observation probes and is not a successful native method. The new short Lesson is collected as a candidate; the active frozen runtime Lessons are unchanged. Full independent native validation is still required.

@@ -77,6 +77,8 @@ def main():
             raise ValueError('Posture strategy task or frozen hash differs')
         strategy = json.loads(args.rotation_strategy_file.read_text())
         english(strategy)
+        from libero_inspection_contract import validate_inspection_contract
+        validate_inspection_contract(strategy)
         if not isinstance(strategy.get('axis_local_pair_context', False), bool):
             raise ValueError('Axis-local physical input switch must be boolean')
         from libero_posture_strategy import validate_axis_template
@@ -131,6 +133,14 @@ def main():
         revised = revise_phase(revised, getattr(self, 'actor_posture_readiness', None), self.tick, strategy)
         from libero_lowering_context import revise_lowering
         revised = revise_lowering(revised, strategy)
+        from libero_inspection_contract import revise_inspection, factor_observer, factor_transition
+        observer = factor_observer(revised, strategy)
+        if observer is not None:
+            observed = original_post(self, endpoint, observer)
+            self.log(dict(kind='inspection_visual_factors', native_tick=self.tick, answers=observed['answers']))
+            revised = factor_transition(revised, observed, strategy)
+        else:
+            revised = revise_inspection(revised, strategy)
         answer = original_post(self, endpoint, revised)
         if sent['state'].get('request_purpose') == 'multimodal_rotation_axes':
             answer, self.actor_posture_readiness = separate_readiness(answer, self.tick)

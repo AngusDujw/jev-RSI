@@ -1,0 +1,103 @@
+{
+  "version": "v69",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "planner": "Local Pro37 gpt-6.1-sol high; one short English lesson and actual2242/2254RGB loaded; generic camera/tick header normalization recorded",
+  "actor": "du /v1/decisions gpt-6-luna for both visual factors and formal transition",
+  "method": "Pro37 final inspection: three short visual questions on the unchanged earlier/current views; copy actual same-observation support/persistence/hand-separation choices into a second text-only Decisions transition question. Host performs no AND rule or answer substitution. Terminal advance finishes the program. All v68 perception, XYZ/R/gripper/earlier phase conditions and old three Lessons remain unchanged.",
+  "validation": {
+    "cpu_checks": [
+      "three explicit visual questions without mutating original phase",
+      "default observer absent",
+      "factorization only on explicitly terminal visual inspect",
+      "actual model categories copied verbatim into final question",
+      "host does not select or return a transition answer",
+      "transition categories and ordering preserved",
+      "phase objective and exit unchanged",
+      "missing, refused and invalid visual answers fail closed",
+      "visual phase receives observations; final categorical combination is text only",
+      "arbitrary alignment-point offsets absent from visual assessment",
+      "English contract has no stale historical ticks",
+      "changed modules parse",
+      "real wrapper performs visual then text-only model call without recursion",
+      "wrapper passes through actual terminal answer even when visual factors appear positive",
+      "same-observation factor provenance recorded without a host policy override"
+    ],
+    "count": 15,
+    "actual_probes": [
+      {
+        "case": "released-candidate",
+        "visual_answers": [
+          {
+            "name": "support_location",
+            "choice": "uppermost_support",
+            "confidence": 0.77
+          },
+          {
+            "name": "persistence",
+            "choice": "persists",
+            "confidence": 0.82
+          },
+          {
+            "name": "hand_separation",
+            "choice": "clear",
+            "confidence": 0.94
+          }
+        ],
+        "final_answers": [
+          {
+            "name": "transition",
+            "choice": "advance",
+            "confidence": 0.97
+          }
+        ],
+        "native_actions": 0,
+        "host_transition_rule_computed": false
+      },
+      {
+        "case": "held-negative",
+        "visual_answers": [
+          {
+            "name": "support_location",
+            "choice": "uppermost_support",
+            "confidence": 0.1
+          },
+          {
+            "name": "persistence",
+            "choice": "not_established",
+            "confidence": 0.48
+          },
+          {
+            "name": "hand_separation",
+            "choice": "not_clear",
+            "confidence": 0.7
+          }
+        ],
+        "final_answers": [
+          {
+            "name": "transition",
+            "choice": "continue",
+            "confidence": 0.97
+          }
+        ],
+        "native_actions": 0,
+        "host_transition_rule_computed": false
+      }
+    ],
+    "new_api_calls": 4,
+    "native_actions": 0,
+    "native_efficacy_verified": false,
+    "strategy_sha256": "fb11fd155ec8cfb01a5ea7bcb54ff195d882993b1d50cc89cc30466133254b8a"
+  },
+  "runtime_status": "frozen, native deployment pending",
+  "control": "A separate backport to exact v64 is planned to isolate the terminal method from later perception/R revisions."
+}
