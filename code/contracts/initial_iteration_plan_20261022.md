@@ -2,7 +2,116 @@
 
 日期：2026-10-22。用途：用户审阅的完整设计文件；不是模型输入、不是经验库、不是已实现配置。
 
-**当前执行状态：暂停。本文不启动实验、不启用监督 job、不调用模型、不恢复旧 episode。**
+**当前授权：2026-10-22 用户已恢复新 Playground 开发，目标服务器为 `company-server-2-ykj`。§0A 是本文件最高优先级覆盖；正文未同步处仅作历史设计，不能据此恢复旧 episode 或旧失败请求。本文是合同，真实运行状态以现场 PID / 容器 / 请求账本为准。**
+
+## 0A. 2026-10-22 最新用户授权覆盖与可执行 Playground 合同
+
+本节覆盖旧版“暂停、整批执行完才能改、禁止 reset、推进器无历史/无经验、相机 K/T、server02 GPU0/1 至多3环境”的开发限制。**旧完整失败、未知交付请求及已终止 episode 仍不恢复或重发。** 新授权不意味着传输已修复，也不解除账号、隐藏状态与外人进程边界。
+
+| 旧版条目 | 本轮有效约定 |
+|---|---|
+| 暂停、不启动 | 已授权开展新的 Playground 开发；启动先现场检查资源/实现/代理，不额外调用模型接口探测 |
+| 一个条件必须完整200步/全批退出才修改 | 开发按短执行段审查，必要时提早结束尝试并 reset；完整200步是原生上限，不是开发必须跑满的要求 |
+| 任何运行中修改均禁止 | 一个执行段及在途请求不可变；该 worker 到达静止审查点后可以采用新版本继续。其他 worker 保持其独立快照，不热改共享已加载源 |
+| 不 reset、不重试完整失败 | 新 Playground 可以有目的地 reset 开始新尝试；每次生成独立 attempt/reset 记录。旧封存实验保持原样，不重新命名成新成功 |
+| 推进器仅当前图、经验后置 | 可以提供精选英文 Skill、图像 Lesson、当前尝试的前后图和动作反馈；逐请求记录实际内容/版本，不把这种条件称 raw 无历史基线 |
+| 公开 K/T、相机投影等允许 | **新模型输入禁止 K、T、内外参、投影矩阵及其文字/JSON/图中标签；初始新条件停用 camera calibration / geometry-overlay。** 不以预计算投影或改字段名绕过；保留三张原始 RGB 与允许的机器人实测状态。历史v3–v5事实不删除 |
+| server02、GPU0/1、总环境3、默认串行 | 目标改为 `company-server-2-ykj`，八卡均可用，但必须先读实际 GPU/RAM/磁盘及他人占用。按实际余量逐级增加并行，不假定八卡空闲或用显存占满本身当目标 |
+| 全部媒体长期留存 | **新批次每任务保留一个代表性尝试的图像历史包**；其他新尝试媒体只供当前控制/审查临时使用。旧明确保留的媒体不在此次清理范围 |
+| 冻结后才允许任何知识使用 | Playground 中可修订知识、按版本给后续请求使用；held-out 仍严格冻结并隔离，不边测边学 |
+
+### 0A.1 同会话开发循环与职责
+
+外层开发 Agent 连续保留本任务的上下文、证据索引与候选解释，不能每次执行后以全新无历史 Agent 替代总结。可由子 Agent 分配独立 worker/证据审查；不同 worker 使用独立 attempt、命名空间、文件快照和 GPU 资源预约。所有写入知识的贡献必须有来源，协调者合并冲突，不让两个 Agent 同时写同一 Skill 版本。
+
+初始建议每段最多 3 次推进请求（每次仍按当前接口执行5个原生步），或在明显遮挡、空转、方向/跟踪不一致、闭爪、抬升、掉落等事件到达审查点。该段长度是工程起点，可记录后调整；不改变20mm/.10rad动作定义。外层在静止点检查：输入是否真实、回答是否合法、运动是否跟踪、目标关系是否改善、是否需要新增证据。通过则继续；可诊断失败则修订一个主要变量；无法在当前状态恢复则记录并 reset。外层只决定开发生命周期和修改归属，**不替推进器选择机器人动作，不修答，不合成隐藏动作路线。**
+
+每个审查点记录 `batch_id/task/attempt_id/segment_id/parent_attempt_id/reset_reason`、实际原生步数、原始模型回答、版本与版本变化原因。先写事实、竞争解释、待测单项改动与验收证据，再进入下一段；未知原因允许原样保留。不要求每次都产出新 Skill。
+
+### 0A.2 reset、终局与版本隔离
+
+- reset 只在无在途请求、无未决执行且原生 worker 处于静止点执行；先保存本尝试账本，再复位为新 attempt。预算是否原生重置按真实接口核对并逐次记录，不能把多次尝试拼成一个200步回合。
+- reset 不撤销已交付请求，不意味着重发失败/未知请求。网络/API失败先停止该任务后续派发并诊断，不能用无限 reset 绕过基础设施故障。
+- 原生终止后封存该 attempt；如需再试使用新 attempt，不能继续向终止 episode 发动作。提前停止记 `development_interrupted`，不是完整 native failure；基础设施失败、用户停止与策略失败分开。
+- 提示/知识/处理实现每次按不可变 revision 固定；新 revision 只绑定静止点之后新请求。原始回答、旧 revision 和反例不覆盖。跨 revision 的前缀可用于诊断，不能作为同一冻结条件的成功率样本。
+- Playground 报探索尝试数、reset数、终止类别、完整原生成功、局部证据和成本，不用筛选出来的最好一次计算泛化成功率。held-out 保持旧两块各10布局且各至少9/10门槛；每场新上下文/状态，禁reset、跨场学习和途中修改知识。
+
+### 0A.3 可给推进器的图像 Lesson 与 Skill
+
+Skill保存可复用的阶段目的、前提、需要的可见证据、失败迹象、恢复边界和经过验证的条件，不保存目标物体专用坐标/方向序列。可以附关键时刻“之前—动作—之后”图片，说明该动作在**那个示例**发生了什么，不把示例方向当当前动作答案。模型根据当前图像自行选择。图像只能来自允许 RGB；文字、标签、文件名和元数据不得泄露布局答案、隐藏物体位姿、contact、reward、success 或相机参数。
+
+图像经验初始最多2条、每条最多3个关键帧，当前观测始终在请求里单独标记且不被经验图替代。一个代表性尝试的完整历史可以长期保留，但一次模型请求只筛选与当前阶段/可见条件相关的少量帧。失败示例与不确定性同样有用，不能只有成功拼图。未验证条目标明 hypothesis；局部成功只支持 candidate，验证范围与全部尝试分母保留。外层可看 native 结果，但模型版总结不得把它改写成隐藏接触/任务成功证据。
+
+下面为新增的**英文请求块合同**（不是真实观测或预选动作；具体键名须与运行器实现一致）。图片通过真实图像块提供，字符串只是引用映射：
+
+```json
+{
+  "knowledge_revision": "immutable-revision-id",
+  "selected_skills": [
+    {
+      "id": "candidate-skill-id",
+      "status": "hypothesis",
+      "purpose": "An observable relation to establish.",
+      "applicability": "Visible conditions required for this example to apply.",
+      "completion_evidence": "Visible evidence required before progressing.",
+      "failure_evidence": "Visible evidence contradicting the intended relation.",
+      "limitations": "Untested conditions and uncertainty."
+    }
+  ],
+  "visual_lessons": [
+    {
+      "id": "visual-lesson-id",
+      "status": "hypothesis",
+      "source_role": "development_example",
+      "frames": [
+        {"image_ref": "example-before", "role": "before", "description": "What is visible before the recorded action."},
+        {"image_ref": "example-after", "role": "after", "description": "What visibly changed after the recorded action."}
+      ],
+      "recorded_action": "The original categorical choices in that example.",
+      "observed_effect": "What the images and permitted measured robot state show.",
+      "interpretation": "A hypothesis, separated from the observed effect.",
+      "transfer_limits": "Differences requiring judgment in the current scene."
+    }
+  ],
+  "current_attempt_history": {
+    "previous_image_refs": [],
+    "previous_raw_choices": null,
+    "measured_robot_change": null,
+    "visibility_limits": "Unknown fields remain unknown."
+  },
+  "current_image_refs": ["current-high", "current-left-wrist", "current-right-wrist"]
+}
+```
+
+与该块配套的英文推进器追加说明：
+
+```text
+The current images describe the robot state now. Other images are explicitly
+marked as earlier observations or development examples. Do not treat an example
+image as the current scene. A recorded action describes what happened in its
+source example; it does not prescribe your next action. Compare the visible
+conditions and stated limitations before applying a lesson. Hypotheses are not
+verified facts. Use current RGB, permitted measured robot state, selected skill
+contracts, and the supplied observation history to answer the fixed questions.
+Choose the robot actions yourself. Do not infer contact, attachment, or task
+success from a gripper command or from an example's label. No camera calibration
+parameters are provided or required. If evidence is insufficient, do not invent
+measurements or assume a completed manipulation.
+```
+
+规划器得到的 Skill 是阶段组织、可观测完成/失败与输入需求；推进器得到的可以是上述图文证据和操作解释；外层开发管理规则不直接拼给任何内部模型。一次性初始规划仍为当前合同；开发协调者可在静止点修改候选规划提示/合同并新建计划 revision，但不把这视作已授权无限实时调用Pro重规划。需要更改8问/10问、动作步长或决策所有权时单独记架构条件，不隐含在 Skill 内。
+
+### 0A.4 代表性媒体与可追溯性
+
+新批次每任务设一个 `retained_attempt_id`，保留该尝试的当前原图/实际模型图、关键动作前后历史以及模型引用的图像 Lesson（内容寻址去重），不为每个reset额外长期留一包。可在批次关闭前用证据更充分的尝试替换候选，清楚记录选取标准，不能只因成功才保留。文本账本、原始回答、传输回执、动作/测量、失败/reset原因、版本diff和图像内容哈希对所有尝试保留。
+
+临时媒体只有在没有在途请求、对应审查结束、没有任何活动/已保留 Skill 引用后才能清理，且限新campaign自有清单中已验证的普通文件。不得递归删除用户目录、旧明确保留媒体、未知文件、软链接目标或他人资产。若当前知识仍引用另一尝试的图片，须先退役该条目或将它合并到本任务唯一保留包并标明真实来源；不能删图后仍声称可复现图像证据。清理结果留删除清单/哈希/原因；原始图片不保存时不得声称可以重建全部原始请求字节。
+
+### 0A.5 八卡调度与停派发
+
+先枚举目标服务器真实项目路径、原生容器/服务、八张GPU空闲显存、系统可用RAM、授权挂载盘剩余空间及其他进程归属。每worker启动必须满足至少8GiB显存余量与20GiB可用RAM门槛，并按已测单环境峰值预约显存/RAM及留安全余量；多worker预约相加，不能8次看到同一20GiB可用RAM就都准入。初始每卡至多一个worker，确认实测峰值与审核吞吐后才能同卡增加；无资源的卡跳过，不驱逐他人任务。大文件仅写用户指定远端资产所在挂载盘，现场若路径不同先核对。
+
+并行优先分配不同合法 development 布局/候选验证，避免把完全相同条件无限填卡。为每worker设置短队列和静止审查点；审核积压则停止新段派发，让worker静止等待，不能为占满显存而无人审查地持续执行。网络故障触发 DISPATCH_STOP，用户暂停触发全体 STOP；不得恢复未知交付请求。正式held-out冻结后才可独立并行，不能从先完成的场景更新后完成场景输入。
 
 ## 0. 怎样读这份文件
 
@@ -98,7 +207,7 @@ EmbodiedEvo把经验落成可执行控制程序和使用边界。我们不让内
 
 ### 4.1 所有内部模型的共同边界
 
-允许：当前 RGB、当前机器人实测关节/姿态、当前夹爪命令、经核实可获取的实际开度、公开机器人几何、公开相机K和当前实测安装T、由这些信息计算的估计。
+允许：当前 RGB、当前机器人实测关节/姿态、当前夹爪命令、经核实可获取的实际开度、公开机器人几何及允许观测的估计；可附§0A定义的精选图像经验与当前尝试历史。禁止给模型相机K/T及其他内外参或投影矩阵。
 
 禁止：仿真物体真位姿、隐藏几何、接触/碰撞报告、附着标志、奖励、分数、success、含这些内容的摘要，以及暗藏场景答案的文件名/布局ID/目录。任务自然语言和当前图像中的物体身份是允许的信息，私有配置表不是。
 
@@ -164,12 +273,11 @@ EmbodiedEvo把经验落成可执行控制程序和使用边界。我们不让内
     "maximum_nonhold_rotation_channels": 1
   },
   "camera_order": ["cam_high", "cam_left_wrist", "cam_right_wrist"],
-  "camera_calibration": null,
   "additional_inputs": {}
 }
 ```
 
-机器人坐标/矩阵缺失或过期时，实际运行应在发模型前中止该动作请求；可空的感知信息则明确无效，不伪造零误差。时间戳、ID用于当前状态配对，不携带历史解释。三图是后续独立 `input_image` 块，不是仅提供本机路径。K/T只在相应命名条件启用，不能默默进入raw基线。
+机器人坐标/矩阵缺失或过期时，实际运行应在发模型前中止该动作请求；可空的感知信息则明确无效，不伪造零误差。时间戳、ID用于当前状态配对，不携带历史解释。三图是后续独立 `input_image` 块，不是仅提供本机路径。新条件不含相机K/T/投影矩阵或基于它们绘制的几何投影；旧条件仅作封存历史。图像历史与Lesson块按§0A独立绑定。
 
 初始不输入剩余native预算来诱导策略；外层运行器负责硬预算。以后如测试预算信息，作为单独条件记录。当前阶段指针是控制状态，不是“上一动作已成功”的证据。
 
@@ -537,7 +645,7 @@ API外壳仍为当前已使用的 `model`、`input`、`questions` 三部分；mo
 6. **预注册变化与判据**：写清保留什么、只改什么、预期在哪个环节发生何种变化，失败时如何解释。
 7. **验证后回写**：保留旧版、失败和反例，记录支持范围。没有新事实则不新建EXP或新Skill。
 
-初始外层Agent可以在回合中做只读标记，但prompt/Skill/代码不在运行中改变；实质修订等本批全部退出后进行。不会照搬EmbodiedEvo的reset和回合内代码改写权限。
+**已覆盖：**开发采用§0A同会话短段审查，可在静止点修订不可变revision并reset新尝试；不等整批结束。执行段及在途请求仍不可变，其他worker仍用各自快照。
 
 ### 8.3 Lesson 英文模板（设计模板，不是经验事实）
 
@@ -844,7 +952,7 @@ server02已有远端资产：
 - [Skill模板](https://github.com/Einsia/EmbodiedEvo/blob/main/tasks/RoboDojo/Workspace/skills/example.md)：参数、前置条件、边界、执行证据；我们将其转换为阶段/证据合同，不生成机器人动作代码。
 - [Lesson模板](https://github.com/Einsia/EmbodiedEvo/blob/main/tasks/RoboDojo/Workspace/lessons/example.md)：现象/替代做法/证据/状态，开发验证不等于迁移。
 - [文件变更记录](https://github.com/Einsia/EmbodiedEvo/blob/main/orchestrator/files.py)：保存修改和哈希，不负责证明经验正确。
-- [评估协议](https://github.com/Einsia/EmbodiedEvo/blob/main/docs/PROTOCOL.md)：冻结知识、测试隔离、保留失败。我们不照搬其开发reset权限。
+- [评估协议](https://github.com/Einsia/EmbodiedEvo/blob/main/docs/PROTOCOL.md)：冻结知识、测试隔离、保留失败。本轮已按§0A采用开发reset权限，held-out仍禁reset。
 - [论文v1](https://arxiv.org/html/2610.18867v1)：使用前提、分阶段过程、持物验证和失败迁移反例；选例不能证明一条规则单独产生收益。
 
 ### 16.2 本次建议的核心与尚未采用项
@@ -858,3 +966,5 @@ server02已有远端资产：
 **CIRCLE-1收敛方式**：不以条件数、EXP编号、rotation/close频次衡量进展；下一个有效结论必须能回答某个可观察环节是否改善、为什么仍未成功、或为何现有信息不足。没有支持证据时保留失败并停止添加同义提示。
 
 本文件交付的是可审阅的设计基线；下一步仍是暂停状态下的D0证据审查。后续恢复原生实验必须以用户新的恢复指令为准。
+
+> 版本说明：本文件§1–16保留初稿讨论脉络；与§0A冲突的暂停、无经验/历史、K/T、整批冻结、服务器/卡数及禁止reset语句均失效。任何实现验收、启动清单和模型请求必须先应用§0A，不可机械复制旧段落。

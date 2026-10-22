@@ -322,3 +322,5 @@
 - 【User】【2026-10-22 14:02】[intent] 要求参考EmbodiedEvo有效总结经验形成Skill并修改对应模块；交付一份完整初始迭代文件，汇总既有拍板、规划器/推进器输入输出与提示词、经验规则、拟补充改进及测试；实验保持暂停，不读取旧experience。
 - 【Agent】【2026-10-22 14:13】[op] 交付code/contracts/initial_iteration_plan_20261022.md完整初始方案：区分历史拍板/新增建议/后置候选；列Pro规划与真正Decisions推进输入输出、英文提示、计划Schema/示例、固定8问与现有10问差异、处理交付、英文Skill/Lesson证据/升级/注入规则、有限开发与双held-out、暂停/故障边界。标出夹爪字段命名需追源；CIRCLE-1以首失效环节及两次无改善停止加提示收敛。JSON/Schema正负样例/八问与advance/英文块/strict文档lint验证通过，未建测试脚本、未改运行代码、未读旧experience、零模型或原生运行。
 - 【User】【2026-10-22 20:05】[intent] 询问EmbodiedEvo每次尝试是否新开子Agent总结，还是同一会话携带上下文持续执行；只读核对launch_agent/session_runner/agent_recovery，确认Playground同会话执行与总结、reset不换Agent；每个Test新会话仅承接冻结Skill/Lesson。未恢复实验。
+- 【User】【2026-10-22 20:16】[decision] 用户授权转company-server-2-ykj八卡Playground迭代：不输入K/T等相机参数；推进器可接收图像经验与额外信息；同会话中看反馈即改进、可提前停止/reset，不要求每轮完整结束才改；每批每任务保留一次代表性图像历史，其余不长期保留；允许子Agent分工。恢复授权仅适用新Playground，不重发旧未知请求，不动外人/驱动/Conda权限。
+- 【Agent】【2026-10-22 20:23】[op] 新建实验块 EXP-2026W43-007：company-server-2-ykj八卡原生Decisions Playground：无相机参数、同会话短段审查与可重置、图像经验和文本账本  ↪ `EXP-2026W43-007`
