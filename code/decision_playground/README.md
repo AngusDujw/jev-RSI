@@ -17,8 +17,10 @@ requested or exposed. The configured tool-local [0.15007,0,0] center is a contro
 reference, not a simulator-provided contact point or a measured grasp location.
 
 `contract.py` selects ten categorical fields across two arms, losslessly encoding
-one rotation per arm. Fixed increments are 0.020m and 0.10rad. The server explicitly
-converts raw measured link-frame quaternion targets to the native command frame.
+one rotation per arm. Fixed increments are 0.020m and 0.10rad. Raw link-frame world
+quaternion targets go directly to native world-mode IK; relative-mode robot
+delta rotations must not be applied. The initial X5 delta was identity, so the
+initial adapter's redundant multiplication had no numerical effect.
 State gripper values are previous normalized commands, not measured apertures.
 
 `worker.py` keeps the latest two completed interactions in memory, including

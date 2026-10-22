@@ -175,20 +175,11 @@ class Playground:
             raise ValueError("Native action dictionary required")
         self.env.validate_action_dict(action)
         import copy
-        import numpy as np
-        import transforms3d as t3d
 
-        # RPC targets use the same raw-link quaternion as state.*_ee_pose.
-        # Native solve_ik removes delta_matrix; compensate exactly once here.
+        # take_action calls solve_ik in its default world mode, which consumes
+        # raw-link world quaternions directly. delta_matrix belongs only to
+        # the native relative-mode branch; applying it here would be incorrect.
         native_action = copy.deepcopy(action)
-        for robot in self.env.robot_manager.robot_list:
-            if robot.type != "target":
-                continue
-            key = f"{robot.arm_name.split('_')[0]}_ee_pose"
-            if key in native_action:
-                pose = np.asarray(native_action[key], dtype=float)
-                rotation = t3d.quaternions.quat2mat(pose[3:]) @ robot.delta_matrix
-                native_action[key] = pose[:3].tolist() + t3d.quaternions.mat2quat(rotation).tolist()
         executed = 0
         for _ in range(steps):
             if self.env.is_episode_end():
