@@ -37,7 +37,8 @@ def main():
             continue
         result, manifest = read(ep/'result.json'), read(run/'manifest.json')
         scale = manifest['translation_step_multiplier']
-        branches = [json.loads(line) for line in (ep/'branches.jsonl').read_text().splitlines() if line]
+        branch_file = ep/'branches.jsonl'
+        branches = [json.loads(line) for line in branch_file.read_text().splitlines() if line] if branch_file.exists() else []
         counts, motions, command_axes = Counter(), [], []
         gripper = -1
         models = set()
@@ -73,7 +74,8 @@ def main():
         rows.append(dict(scale=scale, success=result['success'], program_finished=result['program_finished'],
                          native_steps=result['native_steps'], initial_open_steps_excluded=10,
                          steps_including_initial_open=result['native_steps']+10,
-                         jev_calls=result['jev_calls'], executed_decisions=len(branches),
+                         jev_calls=result['jev_calls'], received_responses=len(list(ep.glob('decision-*/response.json'))),
+                         executed_decisions=len(branches),
                          models=sorted(models), error=result.get('error'), stage=result.get('stage'),
                          stage_native_steps=dict(counts), maximum_command_axis_mm=max(command_axes, default=0),
                          actual_nonzero_block_median_mm=statistics.median(motions) if motions else None,
@@ -83,7 +85,7 @@ def main():
                          seconds=read(run/'launcher-result.json')['seconds'],
                          run=str(run), audit='all executed commands match real responses; XYZ scaled exactly; no forbidden input keys'))
     rows.sort(key=lambda row: row['scale'])
-    baseline = next((row for row in rows if row['scale'] == 1), None)
+    baseline = next((row for row in rows if row['scale'] == 1 and row['success'] and row['program_finished']), None)
     for row in rows:
         row['completed_step_reduction_percent'] = (round(100*(baseline['native_steps']-row['native_steps'])/baseline['native_steps'], 2)
             if baseline and baseline['success'] and baseline['program_finished'] and row['success'] and row['program_finished'] else None)
