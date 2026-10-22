@@ -2,6 +2,7 @@
 from copy import deepcopy
 import json
 import math
+from string import Formatter
 
 
 def _vector(value):
@@ -9,6 +10,28 @@ def _vector(value):
             or not all(type(x) in (float, int) and math.isfinite(x) for x in value)):
         return None
     return value
+
+
+def axis_local_fields(state, name):
+    """Copy observed pairs and the positive-axis effect; never compare to a goal."""
+    v=_vector((state.get('observed_bottle_shape') or {}).get('visible_long_axis_world_unit'))
+    w=_vector((state.get('actor_selected_observed_span') or {}).get('observed_world_unit_line'))
+    indices={'rx':(1,2),'ry':(2,0),'rz':(0,1)}[name]
+    # For the cyclic YZ / ZX / XY pair, a right-hand increment is (-second, first).
+    pair=[v[i] for i in indices] if v is not None else None
+    return dict(body_line_world=json.dumps(v),
+        pair={'rx':'Y/Z','ry':'Z/X','rz':'X/Y'}[name],
+        body_pair=json.dumps(pair),wood_pair=json.dumps([w[i] for i in indices] if w is not None else None),
+        positive_pair_change=json.dumps([-pair[1],pair[0]] if pair is not None else None))
+
+
+def validate_axis_template(strategy):
+    allowed={'axis','reference_label','reference_direction_world'}
+    if strategy.get('axis_local_pair_context'):
+        allowed.update({'body_line_world','pair','body_pair','wood_pair','positive_pair_change'})
+    for _,field,spec,conversion in Formatter().parse(strategy['axis_question_template']):
+        if field is not None and (field not in allowed or spec or conversion):
+            raise ValueError('Unsupported axis-question template field or formatting')
 
 
 def observed_relations(state):
@@ -139,6 +162,10 @@ def revise_rotation(sent, strategy):
         template = (strategy['axis_question_template'].replace('{axis}', axis)
                     .replace('{reference_label}', binding.get('label', 'unknown'))
                     .replace('{reference_direction_world}', json.dumps(binding.get('observed_world_unit_line'))))
+        if strategy.get('axis_local_pair_context'):
+            for key,value in axis_local_fields(revised['state'],name).items():
+                template=template.replace('{'+key+'}',value)
+            suffix=''
         question['instructions'] = (template
                                     + ' ' + effect + ' Negative reverses.' + suffix)
         question['criteria'] = dict(strategy['choice_descriptions'])

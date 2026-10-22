@@ -77,6 +77,10 @@ def main():
             raise ValueError('Posture strategy task or frozen hash differs')
         strategy = json.loads(args.rotation_strategy_file.read_text())
         english(strategy)
+        if not isinstance(strategy.get('axis_local_pair_context', False), bool):
+            raise ValueError('Axis-local physical input switch must be boolean')
+        from libero_posture_strategy import validate_axis_template
+        validate_axis_template(strategy)
         if not isinstance(strategy.get('receiving_multiview_details', False), bool):
             raise ValueError('Receiving-detail experiment switch must be boolean')
         if not isinstance(strategy.get('lowering_xy_gate_enabled', False), bool):

@@ -108,5 +108,5 @@
     "direct_source_sha256": "19aa1d60e5d35d96e041686e30eebad56243b4b5f5b6d1c2be59a66eab298e67",
     "task_success_verified": false
   },
-  "runtime_status": "freeze and pilot pending"
+  "runtime_status": "three independent native cases running; first actual202 tracking/source manifest verified; lower-stage wire remains pending"
 }

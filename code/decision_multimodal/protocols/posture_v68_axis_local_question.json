@@ -1,0 +1,139 @@
+{
+  "version": "v68",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "planner": "Local Pro35 gpt-6.1-sol high; one short English lesson and two historical358RGB images actually loaded",
+  "actor": "du /v1/decisions gpt-6-luna",
+  "method": "Pro35 compact axis-local rotation question with full observed bottle/actor-selected wood lines, their affected component pairs, and a generic positive-axis tangent independent of the wood target. Explicit useful-sign tie handling; no angular residual, target-based score, external sign or action candidate. Preserve v67 current camera-selected geometry, actual images/examples, readiness question and all XYZ/gripper/phase conditions.",
+  "validation": {
+    "cpu_checks": [
+      "three cyclic world-axis tangents correct",
+      "physical effect independent of selected wood direction",
+      "unoriented source reversal also reverses tangent",
+      "unavailable measurements remain null",
+      "raw request unchanged and categorical readiness schema retained",
+      "all template fields rendered without stale duplicate suffix",
+      "readiness question unchanged",
+      "old rendering unchanged when flag absent",
+      "modified modules parse and actual text is English",
+      "new template validates and disabled-mode unresolved fields fail closed",
+      "actual frozen v67 template remains valid"
+    ],
+    "count": 11,
+    "new_api_calls": 2,
+    "native_efficacy_verified": false,
+    "strategy_sha256": "9cdc6e0de15e8062bdf66fc4a45b20397c22cf0753cda96792ef9876c5ba2db8",
+    "changed_input_probes": [
+      {
+        "frame": "0177",
+        "original": [
+          {
+            "name": "rx",
+            "choice": "hold",
+            "confidence": 0.04
+          },
+          {
+            "name": "ry",
+            "choice": "hold",
+            "confidence": 0.04
+          },
+          {
+            "name": "rz",
+            "choice": "positive",
+            "confidence": 0.09
+          },
+          {
+            "name": "posture_readiness",
+            "choice": "not_ready",
+            "confidence": 0.73
+          }
+        ],
+        "new": [
+          {
+            "name": "rx",
+            "choice": "positive",
+            "confidence": 0.2
+          },
+          {
+            "name": "ry",
+            "choice": "positive",
+            "confidence": 0.11
+          },
+          {
+            "name": "rz",
+            "choice": "positive",
+            "confidence": 0.28
+          },
+          {
+            "name": "posture_readiness",
+            "choice": "not_ready",
+            "confidence": 0.69
+          }
+        ],
+        "images_identical": true,
+        "readiness_question_unchanged": true,
+        "native_actions": 0
+      },
+      {
+        "frame": "0185",
+        "original": [
+          {
+            "name": "rx",
+            "choice": "hold",
+            "confidence": 0.1
+          },
+          {
+            "name": "ry",
+            "choice": "negative",
+            "confidence": 0.04
+          },
+          {
+            "name": "rz",
+            "choice": "hold",
+            "confidence": 0.13
+          },
+          {
+            "name": "posture_readiness",
+            "choice": "not_ready",
+            "confidence": 0.86
+          }
+        ],
+        "new": [
+          {
+            "name": "rx",
+            "choice": "positive",
+            "confidence": 0.19
+          },
+          {
+            "name": "ry",
+            "choice": "positive",
+            "confidence": 0.4
+          },
+          {
+            "name": "rz",
+            "choice": "positive",
+            "confidence": 0.27
+          },
+          {
+            "name": "posture_readiness",
+            "choice": "not_ready",
+            "confidence": 0.66
+          }
+        ],
+        "images_identical": true,
+        "readiness_question_unchanged": true,
+        "native_actions": 0
+      }
+    ]
+  },
+  "runtime_status": "freeze then native pilot; two changed-input probes are not policy successes"
+}
