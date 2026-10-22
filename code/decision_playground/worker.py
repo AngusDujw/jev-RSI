@@ -153,10 +153,18 @@ def main():
                 recent.append(dict(text=text, images=observation['images']))
                 append(args.output/'interactions.jsonl', dict(count=count,
                     episode_id=before['episode_id'], revision=revision, **text,
-                    decoded_action=native_action, audit=audit, step_after=snapshot['step']))
+                    decoded_action=native_action, audit=audit, step_after=snapshot['step'],
+                    executed_steps=snapshot.get('executed_steps'),
+                    requested_steps=snapshot.get('requested_steps'),
+                    controller_event=snapshot.get('controller_event'),
+                    review_required=snapshot.get('review_required', False)))
                 if args.retain_history and before['episode_id'] == retained_episode:
                     persist_images(args.output/'retained'/before['episode_id']/f'{before["step"]:04d}', observation['images'])
                 count += 1
+                if snapshot.get('review_required', False):
+                    # A delivered pre-dispatch refusal ends this short segment.
+                    # Only explicit outer review may authorize another action.
+                    break
             # Review does not advance physics. Persistent process/context stays alive.
             if args.retain_history and snapshot['episode_id'] == retained_episode:
                 persist_images(args.output/'retained'/retained_episode/f'{snapshot["step"]:04d}', snapshot['observation']['images'])
@@ -165,6 +173,10 @@ def main():
                 count=count, episode_id=snapshot['episode_id'], step=snapshot['step'],
                 ended=snapshot['ended'], native_success=snapshot.get('native_success'),
                 revision=revision, images=refs,
+                controller_event=snapshot.get('controller_event'),
+                executed_steps=snapshot.get('executed_steps'),
+                requested_steps=snapshot.get('requested_steps'),
+                review_required=snapshot.get('review_required', False),
                 measured_robot=permitted_state(snapshot['observation']['state'])))
             save(args.output/'status.json', dict(status='awaiting_review', count=count,
                 step=snapshot['step'], segment=segment, episode_id=snapshot['episode_id'], revision=revision))

@@ -11,6 +11,7 @@ import importlib
 import io
 import inspect
 import json
+import math
 import os
 from pathlib import Path
 import signal
@@ -49,6 +50,29 @@ def plain(value):
     return value
 
 
+def load_guard_config():
+    """Use the same shared harness defaults as roboicl.run, without model I/O."""
+    from roboicl.paths import CODE
+
+    shared = Path(CODE) / "configs/shared_harness.json"
+    config = json.loads(shared.read_text())
+    required = ("ik_continuity_guard", "max_joint_increment_rad")
+    if not isinstance(config, dict) or any(key not in config for key in required):
+        raise ValueError("Shared harness must explicitly configure the IK execution guard")
+    path = Path(os.environ.get("ASTRA_HARNESS_CONFIG") or shared)
+    if path != shared:
+        config.update(json.loads(path.read_text()))
+    enabled = config["ik_continuity_guard"]
+    limit = config["max_joint_increment_rad"]
+    if type(enabled) is not bool:
+        raise ValueError("ik_continuity_guard must be boolean")
+    if (isinstance(limit, bool) or not isinstance(limit, (int, float))
+            or not math.isfinite(limit) or limit <= 0):
+        raise ValueError("max_joint_increment_rad must be finite and positive")
+    return {"enabled": enabled, "max_joint_increment_rad": limit,
+            "source": str(path), "shared_source": str(shared)}
+
+
 class Playground:
     def __init__(self, env):
         self.env = env
@@ -64,6 +88,7 @@ class Playground:
         self.development_step_limit = expanded_limit(self.official_step_limit, self.step_multiplier)
         self.ik_request_id = None
         self.ik_call_index = 0
+        self.guard_config = load_guard_config()
         self.install_ik_observer()
         self.begin()
 
@@ -141,11 +166,26 @@ class Playground:
 
         manager.solve_ik = observed
 
+    def install_ik_guard(self):
+        from src.eval_client.ik_continuity import IKContinuityError, IKContinuityGuard
+
+        self.ik_error_type = IKContinuityError
+        self.env.ik_continuity_guard = None
+        if self.guard_config["enabled"]:
+            if getattr(self.env, "num_envs", 1) != 1:
+                raise ValueError("IK continuity guard requires one environment per session")
+            self.env.ik_continuity_guard = IKContinuityGuard(
+                self.guard_config["max_joint_increment_rad"],
+                log_path=self.output / "ik_continuity.jsonl")
+        self.log("server.jsonl", {"event": "ik_guard_configuration",
+                                  "episode_id": self.episode_id, **self.guard_config})
+
     def begin(self):
         self.attempt += 1
         self.episode_id = str(uuid.uuid4())
         self.started = time.time()
         self.finalized = False
+        self.install_ik_guard()
         self.env.step_lim = self.development_step_limit
         self.env.run_reward()
         if hasattr(self.env, "get_score"):
@@ -255,6 +295,7 @@ class Playground:
         # the native relative-mode branch; applying it here would be incorrect.
         native_action = copy.deepcopy(action)
         executed = 0
+        refusal = None
         for _ in range(steps):
             if self.env.is_episode_end():
                 break
@@ -262,6 +303,13 @@ class Playground:
             self.ik_request_id = request_id
             try:
                 self.env.take_action(native_action)
+            except self.ik_error_type as error:
+                if int(self.env.take_action_cnt[0]) != before:
+                    raise RuntimeError("Pre-dispatch IK refusal unexpectedly consumed a native step") from error
+                refusal = {**plain(error.event), "request_id": request_id,
+                           "episode_id": self.episode_id, "native_step": before,
+                           "completed_substeps": executed, "discarded_substeps": steps - executed}
+                self.log("ik_refusals.jsonl", refusal)
             finally:
                 # Read-only proprioception after dispatch, including failures.
                 for robot in self.env.robot_manager.robot_list:
@@ -271,6 +319,10 @@ class Playground:
                                              "native_step_before": before,
                                              **self.robot_measurement(robot, 0)})
                 self.ik_request_id = None
+            if refusal is not None:
+                # A refusal is a delivered controller result, not transport
+                # failure. Preserve accepted prefix and never retry the suffix.
+                break
             after = int(self.env.take_action_cnt[0])
             if after != before + 1:
                 raise RuntimeError("Native step counter did not advance exactly once")
@@ -281,7 +333,8 @@ class Playground:
             if self.status()["ended"]:
                 self.finalize("native_terminal", "native_evaluator")
                 break
-        return {**self.observe(), "executed_steps": executed}
+        return {**self.observe(), "executed_steps": executed, "requested_steps": steps,
+                "controller_event": refusal, "review_required": refusal is not None}
 
     def serve(self):
         port = int(os.environ["PLAYGROUND_RPC_PORT"])

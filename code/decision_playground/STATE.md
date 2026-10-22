@@ -7,13 +7,13 @@ Updated: 2026-10-22. Read AGENTS.md and EXP-2026W43-007 before acting.
 - SSH host: company-server-2-ykj (JcbotIns), user ykj.
 - Remote repo: /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 - Baseline assets and interpreters: /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-- Active campaign: code/runs/playground-ik-z-diagnostic-20261022e.
-- Native PID: 3894916, GPU0, loopback RPC25300, loaded native adapter69cfc899.
-- Policy PID: 4031664, code7d091653, du Decisions only, no ordinary API.
-- Model episode: 984becb0-bdac-452f-b32a-b7fddea6c6a7.
-- Latest reviewed status: r002, six Decisions calls /30 native steps, segment1 awaiting_review.
-- Last command sequence: 0 (continue). Inspect live files/PIDs before issuing another command.
-- Development budget:1000, original200; success predicates unchanged.
+- No active native or policy process after explicit review stop.
+- Ended e: playground-ik-z-diagnostic-20261022e, native3894916 / worker4031664 verified exited.
+- Model episode984becb0-bdac-452f-b32a-b7fddea6c6a7 ended incomplete at90/1000,18 Decisions HTTP200, r004.
+- Last command sequence5, op stop; never resume this episode or replay requests.
+- Critical finding: native adapter bypassed baseline rollout installation of default IK continuity guard.
+- At step89 raw IK Success included ±2pi-equivalent joint targets, causing unintended motion.
+- Restore and verify original guard before starting another policy episode. No source changes in running processes.
 
 ## Transport
 
@@ -42,34 +42,32 @@ probe another OpenAI API. A failed tunnel must not cause duplicate workers.
 - e was explicitly reset once, successfully, before starting the active model
   episode. Controlled35-step episode and image provenance remain separate.
 
-## Current candidate check
+## Latest evidence and next bounded action
 
-r002 adds explicit measured motion differences in recent interactions plus
-one unvalidated reorientation-after-nontracking lesson and two historical raw
-frames. No K/T, target truth, contact, reward or success evidence enters the model.
+r003 retained the measured failed-motion summary after recent history lost it.
+Its six calls at30–60 still rotated/held without useful approach; not promoted.
+Controlled f made zero API calls: X+/Y+/Z+ each20mm tracked with target errors
+0.0755/0.0814/0.0811mm. It ended at15 steps and retains one raw image history.
+r004 selected three historical raw head images with English measured captions,
+removed currently inapplicable earlier candidate text, and made six calls60–90.
+First segment only closed/opened/held; next two Z- actions tracked about19.998mm.
+The third Z- exposed four IK Fail calls followed by a ±2pi raw target jump.
+TCP displacement[-80.316,-2.324,26.397]mm and error92.783mm are adapter execution
+contamination, not evidence that the chosen Cartesian direction was wrong.
+No grasp, stable hold or operational stability has been demonstrated.
 
-Real policy first segment selected right Y-, then Z- plus pitch-, then hold.
-The combined rotation/descent tracked to about0.070mm error, but images showed
-no enclosure or grasp. The second segment selected Z-/close with zero motion (all five right-arm IK calls returned Fail),
-then two holds. A close command is not a grasp. Six requests all HTTP200.
-Do not declare the controller stable or the candidate a validated Skill.
+Baseline shared_harness enables IKContinuityGuard with0.15rad increment cap.
+Its rollout installation was bypassed by the Playground entry point. Restore
+that original execution contract, preserve raw observer and refusal accounting,
+and validate offline plus one bounded zero-API native check before policy calls.
+Do not replay e actions or revive its ended episode. Do not repeat r004 examples
+to fill GPUs. All candidates remain unpromoted. c30+e18=48 HTTP200 calls total,
+plus b preserved failed initial request; controlled diagnostics are not policy.
 
-## Next bounded action
-
-Inspect current head/wrist images at30 steps. The latest Z-/close at steps15-20
-was five IK Fail results, unlike the earlier accepted-but-untracked motion.
-Translation feasibility and visible target alignment must be distinguished.
-The two-entry history can also discard a failed motion after two holds; assess
-what evidence is actually retained before adding another semantic instruction. Distinguish actual target alignment from improved motion tracking.
-Use the recorded image/action effects to identify the first remaining failure;
-do not simply append synonymous prompting or replay a fixed object route.
-Keep each policy segment at3 calls and review before continuing/resetting.
-Knowledge changes happen at barriers with immutable revisions and explicit
-positive/negative evidence. Candidate procedures stay English and conditional.
-
-Only one representative image history per task/batch is retained; other review
-images are temporary. Preserve text and image references used by active lessons.
-No old experience bank, no /tmp, no foreign processes or driver/Conda changes.
-All eight cards are authorized, but expand only after a meaningful candidate
-and adequate review capacity; do not fill idle cards with the same known failure.
-Freeze independent held-out validation before claiming stability.
+Keep3-call segments and review actual head/wrist, IK and measurements before
+continuation. Knowledge revisions are immutable and English; no K/T, target
+truth/contact/reward/success model input, no old experience bank or /tmp.
+Eight GPUs authorized, but parallelism requires distinct questions/review capacity.
+Retain one representative task history, other audit frames temporary.
+Freeze held-out layouts5–14 and15–24, each>=9/10 before stability; Pro planner
+and YPR task remain downstream. Respect pause/cancel and close owned controls.

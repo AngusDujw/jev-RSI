@@ -71,3 +71,13 @@ position-target error, and SO(3) orientation error. This is a measurement-only
 comparison; it neither changes actions nor infers collision, retention, or task
 outcome. The reorientation-after-nontracking candidate records one controlled
 tracking recovery and requires independent policy checks before promotion.
+
+The Playground installs the existing baseline IKContinuityGuard from the shared
+harness configuration (default enabled, maximum increment0.15rad). It preserves
+raw solver diagnostics and lets the native guard normalize legal periodic joint
+equivalents before dispatch. IK Fail or a discontinuous branch rejects the whole
+dual-arm/gripper substep before its counter advances. The adapter returns the
+accepted prefix length, discards the suffix without retry, and forces an immediate
+outer review; guard diagnostics are never added to the model payload. A reset
+starts fresh guard state. Earlier c/e runs lacked this installation and remain
+diagnostic development evidence, not validated policy performance.
