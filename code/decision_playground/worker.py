@@ -24,6 +24,8 @@ def rpc(port, op, **arguments):
         connection.sendall(json.dumps(message).encode()+b'\n')
         with connection.makefile('rb') as stream:
             value = json.loads(stream.readline())
+    if value.get('request_id') != message['request_id']:
+        raise RuntimeError('Mismatched native RPC response identity; do not replay')
     if not value.get('ok'):
         raise RuntimeError('Native RPC rejected: '+json.dumps(value))
     result = value['result']
@@ -129,7 +131,13 @@ def main():
                     step=snapshot['step'], episode_id=snapshot['episode_id'], revision=revision))
                 answers = request(dict(model=MODEL, input=[dict(role='user', content=content)],
                     questions=questions()), call_dir, args.key_file)
+                if STOP:
+                    save(call_dir/'not_executed.json', dict(reason='stop_received_during_request',
+                        answers=answers))
+                    break
                 native_action, audit = decode(answers, observation['state'])
+                if STOP:
+                    break
                 before = snapshot
                 snapshot = rpc(args.sim_port, 'step', episode_id=before['episode_id'],
                     expected_step=before['step'], action=native_action, steps=5)
@@ -144,6 +152,8 @@ def main():
                     persist_images(args.output/'retained'/before['episode_id']/f'{before["step"]:04d}', observation['images'])
                 count += 1
             # Review does not advance physics. Persistent process/context stays alive.
+            if args.retain_history and snapshot['episode_id'] == retained_episode:
+                persist_images(args.output/'retained'/retained_episode/f'{snapshot["step"]:04d}', snapshot['observation']['images'])
             refs = persist_images(args.output/'review_current', snapshot['observation']['images'])
             save(args.output/'review.json', dict(status='awaiting_review', segment=segment,
                 count=count, episode_id=snapshot['episode_id'], step=snapshot['step'],
@@ -178,9 +188,13 @@ def main():
         save(args.output/'status.json', dict(status='failed', count=count, error_type=type(error).__name__))
         raise
     finally:
+        if snapshot is not None:
+            try:
+                rpc(args.sim_port, 'close', reason='explicit_stop' if STOP else 'worker_error')
+            except Exception as error:
+                save(args.output/'close_error.json', dict(error_type=type(error).__name__, error=str(error)))
         if STOP:
             save(args.output/'status.json', dict(status='stopped', count=count))
-            rpc(args.sim_port, 'close', reason='explicit_user_or_review_stop')
             for path in (args.output/'review_current').glob('*.png'):
                 path.unlink()
 

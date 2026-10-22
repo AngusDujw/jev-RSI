@@ -251,6 +251,7 @@ graph LR
     T_2026W43_004["📊 robodojo-decision-stages<br/>标定v3三布局完整0/3、240旋转全ho…"]:::experiment
     T_2026W43_005["📊 robodojo-decision-stages<br/>v4通用姿态提示完整0/3，旋转103/2…"]:::experiment
     T_2026W43_006["⛔ robodojo-decision-stages<br/>v5两路基础设施不完整：190步TLS失败…"]:::blocker
+    T_2026W43_007["🔀 robodojo-decision-stages<br/>用户授权company-server-2-…"]:::pivot
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -455,12 +456,14 @@ graph LR
   T_2026W43_003 --> T_2026W43_004
   T_2026W43_004 --> T_2026W43_005
   T_2026W43_005 --> T_2026W43_006
+  T_2026W43_006 --> T_2026W43_007
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
   T_2026W40_023 ==> T_2026W41_009
   T_2026W41_009 ==> T_2026W41_042
   T_2026W41_042 ==> T_2026W43_001
+  T_2026W43_001 ==> T_2026W43_007
 ```
 <!-- TIMELINE:GRAPH:END -->
 
@@ -692,6 +695,7 @@ graph LR
 | `T-2026W43-004` | 2026-10-20 | experiment | robodojo-decision-stages | 标定v3三布局完整0/3、240旋转全hold；另保2次基础设施中断，新检验通用姿态对齐提示 | `EXP-2026W43-004` | - |
 | `T-2026W43-005` | 2026-10-20 | experiment | robodojo-decision-stages | v4通用姿态提示完整0/3，旋转103/240但close0；独立检验实测机器人旋转候选后果表 | `EXP-2026W43-005` | - |
 | `T-2026W43-006` | 2026-10-20 | blocker | robodojo-decision-stages | v5两路基础设施不完整：190步TLS失败并连带取消175步同行；离线修复调度，TLS及低于8GiB本机磁盘门待解，禁止补开/探测 | `EXP-2026W43-006` | - |
+| `T-2026W43-007` | 2026-10-22 | pivot | robodojo-decision-stages | 用户授权company-server-2-ykj八卡Playground持续开发：无K/T、图像经验、短段审查与显式reset，开发预算暂5倍，冻结评估另列 | `EXP-2026W43-007` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
