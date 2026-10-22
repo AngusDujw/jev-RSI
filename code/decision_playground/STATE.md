@@ -7,7 +7,27 @@ Updated:2026-10-23. Read AGENTS.md, EXP-2026W43-007 and real processes first.
 SSH company-server-2-ykj (JcbotIns), user ykj.
 Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-All owned native/policy processes exited; no curl/API in flight (verify real PIDs).
+All owned native/policy processes exited; no curl/API in flight.
+q campaign code/runs/playground-gripper-goal-20261023q, source79779389:
+native1082229 / runner1091778 exited; episode8b600a1b-2634-48d1-a9ac-9eb53f333fc6.
+The probe validator failed before dispatch at0native steps/0API. Raw quaternion
+norm .9999999521412198 normalized during decode, changing components by3.38464e-8;
+an exact raw-vs-command list comparison was invalid. No steps/waypoints ledger
+exists, close confirmed step0, and the temporary script was deleted.
+This is the probe checker error, not a task/robot failure. Keep q raw initial
+images/text/failure. Do not restore q or claim selected-gripper-v1 real validation.
+Offline corrected reference uses the first decoded canonical initial-hold action,
+then requires all phase arm goals to match that same canonical reference.
+1212 hold/close/keep cases across101 poses/4 quaternion scales passed; deliberate
+1mm target changes still rejected, no native/API/test script created.
+Local reviewable plan/audit: code/runs/company2-playground-20261022-deploy/q-audit/
+corrected-probe-plan.json and validator-correction-offline-validation.json.
+USER ANSWER REQUIRED before any independent q2: the current user explicitly
+limited this to one probe/no automatic extra episode. An async question asks
+whether one corrected q2 with the same15-step/zero-API conditions is allowed.
+Until explicit answer: zero environments, no API, no new episode or repeated ask.
+Automatic supervision should be disabled while that decision is pending.
+
 o interface check: native829592/runner838053 ended at8steps,0API; temporary script deleted.
 Full5-step feedback agrees; partial3-step returned exactly the last actual target.
 Full residual11.638mm vs sent-target error1.928mm. Zero dispatch offline-covered only.
@@ -23,9 +43,9 @@ p validated model response to unequal full/prefix feedback or causal improvement
 Keep p representative image history and its three copied Lesson references.
 Only current-task temporary audit copies may be cleaned by exact manifest.
 
-Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n/o/p ended; never restore/replay.
-Previous source96e47233 deployed; selected-gripper-command-v1 is now offline patched,
-check latest commit/deployment before any new native start. r005 template previously ed1122d5.
+Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q ended; never restore/replay.
+Source79779389 deployed; selected-gripper-command-v1 offline validated,
+q is its one real native interface check (no API). r005 template previously ed1122d5.
 feedback-selected-vs-dispatched-v1 offline+o real full/partial interface validated; policy benefit not yet tested.
 n campaign code/runs/playground-lesson-transfer-20261022n:
 GPU4/layout0 native720103/worker748068, episode42ba1791-c20a-4011-a0d8-eaeced448b48,
@@ -127,10 +147,11 @@ positive dispatched prefix commits selection, zero prefix does not, reset rebuil
 Model state explicitly uses runner_retained_goal, measured opening stays null.
 Actual worker-loop fake integration close/keep/refusal/reset + pure prefix0..5,
 drift/invalid-count/immutability fixtures and independent review PASS. No new API/native.
-Next single minimal condition: new independent zero-API fixed-arm close/keep probe,
-predeclared <=15native steps; compare final-goal ledger and sent actions against
-raw low-level observations. First guard/refusal stops. No automatic policy API
-or new hint/Skill until that interface check and first-failure evidence reviewed.
+q real probe ended before dispatch because its fixed-pose validator compared raw
+and normalized quaternion components exactly. The corrected canonical-reference
+validator is offline-passed, but a new q2 needs the explicit pending user exception.
+No automatic native/policy starts. The selected-gripper command repair remains
+real-unvalidated, not a grasp improvement.
 Do not restore p or replay requests. This repair is not proven to cause/fix p's
 arm overshoot and is not a grasp benefit. All r001-r005 remain unpromoted.
 Outer-only English audit lessons/p_closure_descent_audit.md; model r005 unchanged.
@@ -138,7 +159,7 @@ Keep original guard/drive/limit/collision parameters and fixed action budget.
 
 ## Boundaries / candidates
 
-Old server02 and new b through p ended; do not resume them.
+Old server02 and new b through q ended; do not resume them.
 r001 feedback probe, r003 failed-motion summary and r004 action-image examples
 have no verified grasp benefit; not promoted. r002 tracked one rotation/descent,
 not stability. Controlled f retains one body-response history,0API.

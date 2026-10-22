@@ -80,3 +80,13 @@ and normalized low-level observations. Do not resume p or infer a grasp benefit.
 - Baseline third_party/RoboDojo/src/eval_client/eval_env.py:453.
 - Public data/Assets/Robots/x5/X5A.urdf:252,281 and robot_config.yml:10.
 - Local selected-gripper-goal-offline-validation.json.
+
+## q probe validation status
+
+The single real probe stopped at step0 before dispatch because its checker
+compared a raw measurement quaternion with decode's normalized quaternion by
+exact component equality. No motion or API call occurred. This is a checker
+error, not a negative grasp result or evidence against the command repair.
+A canonical first-decoded-hold reference passed1212 offline phase cases and
+still rejects an intentional1mm target change. A new real probe remains
+unauthorized pending the user's explicit exception to the one-probe limit.
