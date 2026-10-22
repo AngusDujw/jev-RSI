@@ -358,3 +358,6 @@
 - 【Agent】【2026-10-22 23:12】[run] f82b6101已SSH推送/bundle部署，新独立j GPU4原生启动并启用只读runtime诊断；一次性预声明runner等ready后按20步上限探查，零API，不恢复旧i或改物理。
 - 【Agent】【2026-10-22 23:18】[result] j20步零API完成退出：runtime限位±10rad、PhysX target正确/veltarget0；额外.4s仍q2=-.23042且误差13.328mm，反向返回误差.617mm。排除裁剪/普通滞后，接触原因仍待报告证实；准备新独立纯接触观测，不改物理参数。
 - 【Agent】【2026-10-22 23:23】[op] 新增仅session-layer接触报告观察模块及startup开关；避开会修改sleep的官方sensor helper，保护属性前后审计，默认关闭/无模型输入。离线USD/callback/main集成PASS，准备新k实际接触观察。
+- 【Agent】【2026-10-22 23:25】[run] 79896688已SSH推送/bundle部署，新独立k GPU4仅接触观测条件启动；runner先核meta启用/保护属性/订阅再按20步探查，零API，不改碰撞/驱动/资产。j20步已结束不恢复。
+- 【Agent】【2026-10-22 23:32】[result] k20步执行与j逐位一致但接触回调0，明确记观测不可用。离线定位IsaacLab默认disableContactProcessing=True；新v2只补标准ContactSensor同款报告gate、审计并恢复，旧k不恢复，不把0回调当无碰撞。
+- 【Agent】【2026-10-22 23:34】[op] 接触报告v2离线验证通过：捕获/开启/读回报告gate，关闭条件恢复，不改物理属性；准备l实际核回调，旧k0回调仍不作无碰撞结论。

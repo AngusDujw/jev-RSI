@@ -111,3 +111,11 @@ sleep, collisions and drives remain unchanged; metadata audits protected values,
 enabled prims, subscription and failures. Inspect that audit before a probe.
 This is a distinct observation condition, not policy input or a no-contact oracle.
 Callbacks/metadata stay outer-only and are released at close.
+
+The first pure-report startup check produced no callbacks because SimulationContext
+defaults `/physics/disableContactProcessing` to true. Reporting condition v2
+explicitly enables the same reporting gate used by ContactSensor, after simulation
+configuration and before controlled probes, records its original/current value,
+and restores the original at close. This is an observation-pipeline change;
+physical limits/drives/collision/sleep properties stay audited. Require real
+callbacks before using pair evidence; the v1 zero-callback run stays inconclusive.

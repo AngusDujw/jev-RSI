@@ -1,7 +1,8 @@
 """Opt-in startup-only contact reporting for outer controlled diagnostics.
 
 Only reporting API/threshold opinions are authored in the runtime session
-layer. No shared USD file is saved and no collision/drive/sleep setting changes.
+layer, with a process-local reporting gate enabled after SimulationContext.
+No shared USD file is saved and no collision/drive/sleep setting changes.
 Import this module freely; enable() requires an already initialized Kit runtime.
 """
 from __future__ import annotations
@@ -25,8 +26,13 @@ class ContactDiagnostics:
         self.config_module = None
         self.original_config = None
         self.wrapped_config = None
-        self.meta = {"condition": "session-layer-contact-reports-v1",
+        self.processing_settings = None
+        self.processing_captured = False
+        self.processing_original = None
+        self.meta = {"condition": "session-layer-contact-reports-v2",
                      "scope": "outer_only", "subscription_active": False,
+                     "processing_enabled": False, "processing_original_value": None,
+                     "processing_value_after": None, "processing_audits": [],
                      "enabled_prims": [], "spawned_roots": [],
                      "failures": [], "failure_count": 0, "callbacks": 0,
                      "owned_report_headers": 0,
@@ -55,6 +61,41 @@ class ContactDiagnostics:
         self.context = callback
         return self
 
+    def arm_processing(self):
+        """Enable the process-local contact reporting gate after SimContext.
+
+        IsaacLab sets this gate True while constructing SimulationContext. Arm
+        after that initialization (at spawn and again after factory), preserving
+        the first observed original value for conditional close restoration.
+        """
+        if self.closed:
+            return False
+        try:
+            import carb.settings
+            settings = carb.settings.get_settings()
+            name = "/physics/disableContactProcessing"
+            before = settings.get(name)
+            if type(before) is not bool:
+                raise RuntimeError("Contact processing gate has no explicit boolean value")
+            if not self.processing_captured:
+                self.processing_settings = settings
+                self.processing_original = before
+                self.processing_captured = True
+                self.meta["processing_original_value"] = before
+            settings.set_bool(name, False)
+            after = settings.get(name)
+            self.meta["processing_value_after"] = after
+            self.meta["processing_enabled"] = after is False
+            self.meta["processing_audits"].append({"before": before, "after": after})
+            if after is not False:
+                raise RuntimeError("Contact processing gate failed read-back verification")
+            self._persist_meta()
+            return True
+        except Exception as error:
+            self.meta["processing_enabled"] = False
+            self._failure("arm_processing", error)
+            return False
+
     @staticmethod
     def _protected(prim):
         return {a.GetName(): str(a.Get()) for a in prim.GetAttributes()
@@ -63,6 +104,7 @@ class ContactDiagnostics:
     def _enable_prim_tree(self, root):
         from pxr import PhysxSchema, Usd, UsdPhysics
 
+        self.arm_processing()
         stage = root.GetStage()
         root_path = str(root.GetPath())
         if root_path not in self.roots:
@@ -189,6 +231,21 @@ class ContactDiagnostics:
             except Exception as error:
                 self._failure("unsubscribe", error)
             self.subscription = None
+        if self.processing_captured:
+            try:
+                name = "/physics/disableContactProcessing"
+                current = self.processing_settings.get(name)
+                if current is False:
+                    self.processing_settings.set_bool(name, self.processing_original)
+                    restored = self.processing_settings.get(name)
+                    self.meta["processing_restore_value"] = restored
+                    if restored is not self.processing_original:
+                        raise RuntimeError("Contact processing gate restoration failed verification")
+                else:
+                    self.meta["processing_restore_skipped_external_change"] = True
+                    self.meta["processing_restore_value"] = current
+            except Exception as error:
+                self._failure("restore_processing", error)
         self.meta["subscription_active"] = False
         self.meta["closed"] = True
         self._persist_meta()

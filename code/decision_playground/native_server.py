@@ -135,6 +135,7 @@ class Playground:
         self.ik_call_index = 0
         self.contact_reporter = getattr(env, "_playground_contact_reporter", None)
         if self.contact_reporter is not None:
+            self.contact_reporter.arm_processing()
             self.contact_reporter.set_context(lambda: self.ik_context("contact_report"))
         self.guard_config = load_guard_config()
         self.install_ik_observer()
@@ -471,6 +472,10 @@ def main():
                     from contact_diagnostics import enable
                     contact_reporter = enable(Path(os.environ["PLAYGROUND_OUTPUT"]))
                 env = original_factory(*args, **kwargs)
+                if contact_reporter is not None:
+                    # SimulationContext disables reporting by default. This is
+                    # the same reporting gate enabled by its ContactSensor.
+                    contact_reporter.arm_processing()
                 env._playground_contact_reporter = contact_reporter
                 # Persistence disabled; raw RGB remains available in memory.
                 env._stream_vision = lambda *a, **kw: None
