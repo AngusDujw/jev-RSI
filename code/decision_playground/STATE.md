@@ -1,16 +1,25 @@
 # Playground continuation state
 
-Updated:2026-10-22. Read AGENTS.md, EXP-2026W43-007 and real processes first.
+Updated:2026-10-23. Read AGENTS.md, EXP-2026W43-007 and real processes first.
 
 ## Ownership / phase
 
 SSH company-server-2-ykj (JcbotIns), user ykj.
 Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-All owned native/policy processes currently exited; no curl/request in flight.
+o zero-API interface check ended at8steps; native829592/runner838053 exited.
+Full5-step hold feedback agrees; partial3-step YZ- returned exactly last dispatched
+waypoint/steps target. Full goal residual11.638mm vs dispatched-target error1.928mm.
+No-dispatch branch not reached natively (offline only); temporary script deleted.
+New p campaign code/runs/playground-feedback-policy-20261023p is native-only initializing.
+GPU5/layout1/RPC25405; inspect manifest and real PID. No policy worker yet.
+Only feedback schema/explanation changed, r005 text/image content unchanged/not promoted.
+One first <=3-call segment and at most one second segment after actual RGB/IK/state
+review; any guard refusal immediate review. Only this attempt retains task/batch history.
+
 Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n ended; never restore/replay.
 Source96e47233 SSH-pushed and bundle deployed; r005 template previously ed1122d5.
-feedback-selected-vs-dispatched-v1 independently offline validated, not yet native/model tested.
+feedback-selected-vs-dispatched-v1 offline+o real full/partial interface validated; policy benefit not yet tested.
 n campaign code/runs/playground-lesson-transfer-20261022n:
 GPU4/layout0 native720103/worker748068, episode42ba1791-c20a-4011-a0d8-eaeced448b48,
 6HTTP200/30native steps. GPU5/layout1 native720372/worker748070,
@@ -97,8 +106,9 @@ The layout1 full goal residual11.633mm includes the discarded suffix; delivered
 prefix error was~1.935mm, so do not misclassify all residual as execution error.
 Independent actual Playground.handle in-memory integration prefix0..5 passed,
 including refusal/no-dispatch null and final target selection; no API/native.
-Next at most one new independent zero-API native interface check if needed
-before deciding another policy condition. Do not blindly repeat r005 or add hints.
+o interface check passed as above. Next review fresh p step0 RGB/actual source,
+start worker once, then audit actual payload/feedback and bounded policy response.
+Do not add hints or promote r005 from a rotation or tracking choice.
 Keep original guard/drive/limit/collision parameters and fixed action budget.
 
 ## Boundaries / candidates
