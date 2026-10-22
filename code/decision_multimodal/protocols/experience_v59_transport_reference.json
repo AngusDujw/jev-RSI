@@ -1,0 +1,33 @@
+{
+  "version": "v59",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "horizon_physical": 3000,
+  "source_revision": "Pro24 transport-only provisional visible-body reference question and header",
+  "experience_snapshot_sha256": "492c1f95806da88cd5ba98a3ac9cd567ad9a2a56a569b4dea9145d4a83069227",
+  "lessons_same_as_v58": true,
+  "unchanged": [
+    "XYZ sign mechanism",
+    "geometry",
+    "R questions and images",
+    "gripper",
+    "phase tests",
+    "demonstrations",
+    "source candidates",
+    "native controller"
+  ],
+  "static_result": "Previously unlabelled source; changed-input same-image probe C0 confidence0.18, receiverB0 confidence0.24, zero actions. Not task success.",
+  "planner": "local ChatGPT Pro gpt-6.1-sol high",
+  "actor": "du OpenAI Decisions gpt-6-luna",
+  "validation": "12 scope fixtures and header/image preservation, old contract byte-equivalent payload behavior",
+  "native_status": "pending deployment"
+}

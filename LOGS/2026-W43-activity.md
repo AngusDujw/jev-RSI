@@ -200,3 +200,6 @@
 - 【Agent】【2026-10-22 20:26】[result] v58首次启动9进程在预算hook过早导入LIBERO时退出，0真实API/0物理步，非任务失败；修复hook显式设置libero-root/EGL，与原main相同。不改任务/动作或旧记录，保留首次日志并用v58-r1单独目录。现有scene-bank要求全例record_evidence，故9例保留全证据。
 - 【Agent】【2026-10-22 20:28】[run] v58-r1先单槽已实际收到4回复并执行，manifest3000；随后开放九槽，三组同预算配对不热改snapshot，reserved17/18/19保留。补EXP080启动导入错误和EXP081实际运行，新增3000协议与CURRENT/Discussion；strict周志零问题。
 - 【Agent】【2026-10-22 20:29】[op] v58-r1九原生持续在运行，Skill-only与Skill+Lessons manifest已区分experience false/true且预算3000。将Pro22原提示/原输出/真实经验来源修正sidecar及fixture审计归档到DataStorage。仅重启本任务review watcher使3000预算显示正确，未动原生或模型进程。
+- 【User】【2026-10-22 20:34】[prompt] 参考https://arxiv.org/pdf/2610.18867v1这个文章对应的项目的经验积累和改进方式来改进本项目，要求不变，继续做迭代更新直到完成目标
+- 【Agent】【2026-10-22 20:39】[result] v58-r1约286步时实际请求审计：baseline无经验；skill-only0条Lessons；skill+Lessons各真实13–16请求含3条总104词英文经验，技能在7–8请求改receiver或缺数值XY问题，适用阶段外未注入。九原生保持运行，无终局；audit保存在DataStorage/iteration-v58-r1-experience-3000/actual-experience-input-audit.json。
+- 【Agent】【2026-10-22 20:56】[op] Pro23静态支持/净空前置分类后，原六图R复审仍三轴hold，0新动作；未推广该候选。核对v58-r1 step634原图及原答：receiver B已选而source unlabelled，运输阶段过早要求承托点。Pro24基于同帧两图给运输临时瓶身参考最小契约，新增可选运输reference/header接口，v1缺字段时保持原输入不变。

@@ -16,6 +16,9 @@ def revise_questions(sent, contract):
     if stage not in ('align_source_above_receiver', 'lower_to_place'):
         return revised
     purpose = state.get('request_purpose')
+    if (purpose == 'multimodal_reference_selection' and stage == 'align_source_above_receiver'
+            and contract.get('transport_reference_instructions') and 'reference' in revised['questions']):
+        revised['questions']['reference']['instructions'] = contract['transport_reference_instructions']
     if purpose == 'multimodal_reference_selection' and 'receiver' in revised['questions']:
         revised['questions']['receiver']['instructions'] = contract['receiver_instructions']
     if purpose in ('multimodal_policy', 'multimodal_rotation_gripper_transition'):
@@ -26,6 +29,26 @@ def revise_questions(sent, contract):
             if axis in revised['questions'] and axis not in numeric:
                 revised['questions'][axis]['instructions'] = contract['visual_' + axis + '_instructions']
                 revised['questions'][axis]['criteria'] = dict(contract['visual_choice_descriptions'])
+    return revised
+
+
+def revise_reference_header(payload, sent, contract):
+    """Keep a provisional transport question consistent with its image header."""
+    state = sent['state']
+    header = contract.get('transport_reference_header')
+    if (not header or state.get('request_purpose') != 'multimodal_reference_selection'
+            or state.get('stage', {}).get('stage_key') != 'align_source_above_receiver'):
+        return payload
+    revised = deepcopy(payload)
+    matches = 0
+    for message in revised['input']:
+        for part in message['content']:
+            if (part['type'] == 'input_text'
+                    and part['text'].startswith('Select physical features from CURRENT images')):
+                part['text'] = header
+                matches += 1
+    if matches != 1:
+        raise ValueError('Transport reference header contract no longer matches the actor payload')
     return revised
 
 
@@ -59,7 +82,7 @@ def main():
     def build(self, sent):
         validate(args.experience_snapshot, args.experience_sha256)
         revised = skill(sent, contract)
-        payload = original_build(self, revised)
+        payload = revise_reference_header(original_build(self, revised), revised, contract)
         state = sent['state']
         stage = state.get('stage', {}).get('stage_key', '')
         lessons = []

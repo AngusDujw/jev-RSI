@@ -1,5 +1,6 @@
 """Foreground local ChatGPT Pro planning with isolated, English task context."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,12 +15,18 @@ def main():
     parser.add_argument('--prompt', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--image', type=Path, action='append', default=[])
+    parser.add_argument('--experience-file', type=Path)
     args = parser.parse_args()
     auth_path=Path(os.environ.get('CODEX_HOME',str(Path.home()/'.codex')))/'auth.json'
     auth=json.loads(auth_path.read_text()) if auth_path.exists() else {}
     if auth.get('auth_mode')!='chatgpt' or not auth.get('tokens') or auth.get('OPENAI_API_KEY'):
         raise RuntimeError('A local ChatGPT login must be verified before Pro planning; API fallback is not authorized')
     prompt = args.prompt.read_text()
+    memory = None
+    if args.experience_file:
+        memory = args.experience_file.read_text()
+        english(memory)
+        prompt += '\nHistorical supplied experience, not current measurements:\n' + memory
     english(prompt)
     for image in args.image:
         english(str(image))
@@ -61,7 +68,9 @@ def main():
     audit = dict(model='gpt-6.1-sol', reasoning_effort='high',
         authentication='verified auth_mode=chatgpt with login tokens and no API key; existing local Pro account',
         project_doc_max_bytes=0, host_skill_discovery=False, plugins=False,
-        image_paths=[str(p.resolve()) for p in args.image], experience_injection=False,
+        image_paths=[str(p.resolve()) for p in args.image], experience_injection=memory is not None,
+        experience_source=str(args.experience_file.resolve()) if args.experience_file else None,
+        experience_sha256=hashlib.sha256(memory.encode()).hexdigest() if memory is not None else None,
         inference_instructions=instructions,tools_disabled=True,cwd=str(sandbox),
         command=command)
     (output/'dispatch.json').write_text(json.dumps(audit, indent=2)+'\n')

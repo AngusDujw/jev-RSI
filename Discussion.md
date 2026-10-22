@@ -590,3 +590,5 @@
 【Agent @Codex】【2026-10-22】[EXP079](LOGS/2026-W43.md#exp-2026w43-079)：用户指定EmbodiedEvo经验机制与官方5倍预算，官方配置600对应3000；不改研究主指标或method公式。Skills+Lessons冻结/短检索已实现，Pro22基于四图和短finding给receiver初选/缺XY问题改进；数值/R/夹爪/阶段不变，原生待运行。v57修正单删任务示例3/3且812请求无任务图。CIRCLE-1收敛为同预算原方案/skill-only/skill+Lessons三组完整终局，不把离线fixture计成功。
 
 【Agent @Codex】【2026-10-22】[EXP080–081](LOGS/2026-W43.md#exp-2026w43-081)：原v58九例预算hook导入次序错误，0API/0步，原记录保留；521439df修正r1首baseline已实收4答并动作，3000manifest，开放9槽。三组同3000预算，分别原方案/Skill/Skill+Lessons；原native真值只在外层检查点，模型不接收。历史v54 Turn保持耗约540–636步，v53两例运输保持耗168/216步；不能靠延时本身解决输入/阶段问题。CIRCLE-1以三组完整终局、600/1200检查点和3000终局对照收敛。
+
+【Agent @Codex】【2026-10-22】[EXP082](LOGS/2026-W43.md#exp-2026w43-082)：v58-r1九回合仍运输约718–730步，尚无终局。step634原答receiver有B、source unlabelled，源问题在运输阶段要求最终承托点。Pro24最小问题/header修改静态C0/conf0.18，0动作；仅输入解堵候选，不计成功。Pro23支持/净空额外分类后R仍全hold，不推广。v59保持原Lessons、几何、全部动作/阶段路径，冻结三开发例；CIRCLE-1按真实XY恢复与完整终局收敛。
