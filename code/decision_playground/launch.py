@@ -34,6 +34,7 @@ def main():
     parser.add_argument('--port-base', type=int, default=25300)
     parser.add_argument('--native-only', action='store_true')
     parser.add_argument('--key-file', type=Path)
+    parser.add_argument('--native-step-multiplier', type=int, choices=(1, 5), default=5)
     args = parser.parse_args()
     if len(set(args.gpus)) != len(args.gpus) or any(g not in range(8) for g in args.gpus):
         raise ValueError('Use unique allocated GPUs 0..7')
@@ -71,6 +72,7 @@ def main():
             OMNI_KIT_ALLOW_ROOT='1', ROBOICL_NO_MEDIA='1',
             ROBODOJO_RUN_ID='playground-'+args.campaign.name+'-'+str(gpu),
             PLAYGROUND_RPC_PORT=str(args.port_base+index), PLAYGROUND_OUTPUT=str(native))
+        env['PLAYGROUND_STEP_MULTIPLIER'] = str(args.native_step_multiplier)
         command = [str(sim_python), '-B', '-u', str(code/'native_server.py'),
             '--task', 'general_pickup', '--seed', '0', '--layout', str(layout),
             '--data-root', str(args.roboicl/'data'), '--results-root', str(native),
@@ -84,6 +86,8 @@ def main():
             process = subprocess.Popen(command, env=env, stdin=subprocess.DEVNULL,
                 stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         record = dict(task='general_pickup', layout=layout, gpu=gpu, port=args.port_base+index,
+            official_step_limit=200, development_step_limit=200*args.native_step_multiplier,
+            step_multiplier=args.native_step_multiplier,
             native_pid=process.pid, case=str(case), visual_history=visual,
             retain_history=index == 0, command=command)
         records.append(record)

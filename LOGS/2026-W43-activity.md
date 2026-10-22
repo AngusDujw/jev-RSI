@@ -324,3 +324,5 @@
 - 【User】【2026-10-22 20:05】[intent] 询问EmbodiedEvo每次尝试是否新开子Agent总结，还是同一会话携带上下文持续执行；只读核对launch_agent/session_runner/agent_recovery，确认Playground同会话执行与总结、reset不换Agent；每个Test新会话仅承接冻结Skill/Lesson。未恢复实验。
 - 【User】【2026-10-22 20:16】[decision] 用户授权转company-server-2-ykj八卡Playground迭代：不输入K/T等相机参数；推进器可接收图像经验与额外信息；同会话中看反馈即改进、可提前停止/reset，不要求每轮完整结束才改；每批每任务保留一次代表性图像历史，其余不长期保留；允许子Agent分工。恢复授权仅适用新Playground，不重发旧未知请求，不动外人/驱动/Conda权限。
 - 【Agent】【2026-10-22 20:23】[op] 新建实验块 EXP-2026W43-007：company-server-2-ykj八卡原生Decisions Playground：无相机参数、同会话短段审查与可重置、图像经验和文本账本  ↪ `EXP-2026W43-007`
+- 【User】【2026-10-22 20:29】[decision] 用户允许暂时将RoboDojo官方原生步数上限扩大5倍；新Playground general_pickup从200到1000，记录原/新上限及非官方预算可比性，保持短段审核/reset和原生成功判据；旧结束回合不恢复。
+- 【Agent】【2026-10-22 20:29】[op] 将新Playground原生预算做为显式1x/5x配置：默认启动5x，general_pickup200→1000，reset沿用本attempt预算，status保原上限/倍率/官方预算可比性；只改自有适配器不改vendor。纯函数倍率正负/非法参数和语法检查通过；零API调用。远端原partial clone惰性抓取失败，改用同挂载盘Git bundle独立checkout，不覆盖旧baseline。

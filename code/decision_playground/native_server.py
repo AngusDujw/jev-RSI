@@ -19,6 +19,12 @@ import types
 import uuid
 
 
+def expanded_limit(official, multiplier):
+    if type(official) is not int or official <= 0 or type(multiplier) is not int or multiplier not in (1, 5):
+        raise ValueError('Playground supports a positive official limit and explicit 1x or 5x budget')
+    return official * multiplier
+
+
 class OfflineClient:
     def __init__(self, *args, **kwargs):
         pass
@@ -51,6 +57,9 @@ class Playground:
         self.stopping = False
         self.finalized = False
         self.layout = int(env.env_seeds[0])
+        self.official_step_limit = int(env.step_lim)
+        self.step_multiplier = int(os.environ.get('PLAYGROUND_STEP_MULTIPLIER', '1'))
+        self.development_step_limit = expanded_limit(self.official_step_limit, self.step_multiplier)
         self.begin()
 
     def log(self, name, record):
@@ -63,14 +72,15 @@ class Playground:
         self.episode_id = str(uuid.uuid4())
         self.started = time.time()
         self.finalized = False
+        self.env.step_lim = self.development_step_limit
         self.env.run_reward()
         if hasattr(self.env, "get_score"):
             self.env.get_score()
         manager = self.env.reward_manager
         if not (manager.check_list[0] or manager.final_check_list[0]):
             raise RuntimeError("Native success predicates must be registered")
-        if int(self.env.step_lim) != 200:
-            raise RuntimeError("This initial Playground requires native general_pickup 200 steps")
+        if self.official_step_limit != 200:
+            raise RuntimeError("This initial Playground expects official general_pickup limit 200")
         self.env.is_episode_end()
         self.log("attempts.jsonl", {"event": "begin", **self.status()})
 
@@ -79,6 +89,9 @@ class Playground:
         return {"episode_id": self.episode_id, "attempt": self.attempt,
                 "layout": self.layout, "step": int(self.env.take_action_cnt[0]),
                 "limit": int(self.env.step_lim), "ended": ended,
+                "official_step_limit": self.official_step_limit,
+                "step_multiplier": self.step_multiplier,
+                "official_budget_comparable": self.step_multiplier == 1,
                 "success": bool(self.env.success[0]) if ended else None}
 
     def finalize(self, classification, reason):

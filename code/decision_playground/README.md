@@ -8,7 +8,11 @@ Only the authorized du credential and `https://api.openai.com/v1/decisions` are 
 Playground reset starts a new attempt UUID and preserves the previous attempt's
 classification. Native terminal success is separate from development stops. The
 original evaluator's unconditional final score-writing path is bypassed; native
-task predicates and the 200-step limit remain unchanged. No camera calibration is
+task predicates remain unchanged. User authorization later on 2026-10-22 expands
+the development action limit to 5x: general_pickup 200 -> 1000 steps. Both limits,
+the multiplier, and official-budget comparability are recorded in every status.
+The launcher defaults to `--native-step-multiplier 5`; use 1 for a separately
+declared official-budget condition. No upstream task source is edited. No camera calibration is
 requested or exposed. The configured tool-local [0.15007,0,0] center is a control
 reference, not a simulator-provided contact point or a measured grasp location.
 
