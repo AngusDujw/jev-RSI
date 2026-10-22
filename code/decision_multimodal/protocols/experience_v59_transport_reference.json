@@ -29,5 +29,12 @@
   "planner": "local ChatGPT Pro gpt-6.1-sol high",
   "actor": "du OpenAI Decisions gpt-6-luna",
   "validation": "12 scope fixtures and header/image preservation, old contract byte-equivalent payload behavior",
-  "native_status": "pending deployment"
+  "native_status": "running on v4090-t, three development cases, first actual22steps verified then opened3slots",
+  "native_source_commit": "3741f43c",
+  "native_pids": [
+    612701,
+    614306,
+    614307
+  ],
+  "campaign": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v59-transport-reference/campaign.json"
 }
