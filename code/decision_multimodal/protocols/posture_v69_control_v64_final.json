@@ -1,0 +1,31 @@
+{
+  "version": "v69-control-v64",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "baseline_commit": "7ef70284",
+  "method": "Exact v64 control baseline7ef70284 with only Pro37 final-inspection factorization backported. All prior source/receiver processing, R questions/geometry, XYZ/grip/control code, images and v2 frozen Lessons/Skill unchanged. Three semantic visual questions followed by actual text-only Decisions terminal selection; host copies categories and never computes a transition.",
+  "validation": {
+    "baseline_commit": "7ef70284",
+    "source_sha256_unchanged": "dea79eb2deb03d18466ccce4e36bc97fbd381f11157afe4879c0931077f127ed",
+    "experience_sha256_unchanged": "492c1f95806da88cd5ba98a3ac9cd567ad9a2a56a569b4dea9145d4a83069227",
+    "new_strategy_sha256": "ed0008f6caae16fde71c30585971bc3438b444c690585cb7432b30bee9de51d8",
+    "same_inspection_helper_as_mainline": true,
+    "only_existing_code_changed": [
+      "code/decision_multimodal/libero_experience_revision.py"
+    ],
+    "wrapper_real_two_call_routing_mock_passed": true,
+    "actual_terminal_answer_preserved": true,
+    "new_api_calls": 0,
+    "native_efficacy_verified": false
+  },
+  "runtime_status": "frozen control, native deployment pending"
+}

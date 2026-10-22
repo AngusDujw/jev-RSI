@@ -72,6 +72,8 @@ def main():
             raise ValueError('Posture strategy task or frozen hash differs')
         strategy = json.loads(args.rotation_strategy_file.read_text())
         english(strategy)
+        from libero_inspection_contract import validate_inspection_contract
+        validate_inspection_contract(strategy)
         if not isinstance(strategy.get('receiving_multiview_details', False), bool):
             raise ValueError('Receiving-detail experiment switch must be boolean')
         if strategy.get('readiness_scope', 'all_carry') not in ('all_carry', 'lower_to_place_only'):
@@ -116,6 +118,12 @@ def main():
         from libero_posture_strategy import revise_direction, revise_rotation, revise_phase, separate_readiness
         revised = revise_rotation(revise_direction(sent, strategy), strategy)
         revised = revise_phase(revised, getattr(self, 'actor_posture_readiness', None), self.tick, strategy)
+        from libero_inspection_contract import factor_observer, factor_transition
+        observer = factor_observer(revised, strategy)
+        if observer is not None:
+            observed = original_post(self, endpoint, observer)
+            self.log(dict(kind='inspection_visual_factors', native_tick=self.tick, answers=observed['answers']))
+            revised = factor_transition(revised, observed, strategy)
         answer = original_post(self, endpoint, revised)
         if sent['state'].get('request_purpose') == 'multimodal_rotation_axes':
             answer, self.actor_posture_readiness = separate_readiness(answer, self.tick)
