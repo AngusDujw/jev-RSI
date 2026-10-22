@@ -338,3 +338,4 @@
 - 【Agent】【2026-10-22 21:21】[run] 透明IK诊断版69cfc899已SSH推送并bundle部署；新独立playground-ik-diagnostic-20261022d native3857444仅GPU0。预声明9个局部保持/XYZ±/pitch-/下降加pitch-探查，每个从显式reset同官方起点、5原生步，全部受控执行诊断而非模型成绩，零API。既有监督job已按用户续跑授权更新为company2 Playground并恢复300秒监督，不恢复旧server02回合。  ↪ `EXP-2026W43-007`
 - 【Agent】【2026-10-22 21:42】[op] e35受控诊断确认IK目标FK正确但初始下降执行受阻；加长保持无改善、重定向后下降跟踪恢复。USD/URDF限位一致，根因不能武断称碰撞。新增只读运动差值execution_feedback及英文r002重定向候选/历史关键帧，几何fixture通过；e一次reset成功到新0步回合，准备真实模型短段，仍不称Skill或抓取成功。  ↪ `EXP-2026W43-007`
 - 【Agent】【2026-10-22 21:50】[result] r002实际六请求全HTTP200，首段模型选Z-/pitch-并实际下降19.999mm/误差.070mm，但未入抓；次段Z-/close无运动后保持，到30步await_review。保持单卡候选，不升Skill/扩卡。新增STATE.md供持续监督读取，区分已结束c/d和当前e/原生诊断/模型成绩。  ↪ `EXP-2026W43-007`
+- 【Agent】【2026-10-22 21:52】[result] 二段IK复核发现Z-/close对应5次IKFail（与此前Success但跟踪受阻机制不同）；后hold为Success，模型仍未入抓。当前e真PID3894916/4031664存活于30步审查；监督job更新最新STATE并60秒检查，用户暂停立即停止。  ↪ `EXP-2026W43-007`

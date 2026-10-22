@@ -50,14 +50,17 @@ frames. No K/T, target truth, contact, reward or success evidence enters the mod
 
 Real policy first segment selected right Y-, then Z- plus pitch-, then hold.
 The combined rotation/descent tracked to about0.070mm error, but images showed
-no enclosure or grasp. The second segment selected Z-/close with zero motion,
+no enclosure or grasp. The second segment selected Z-/close with zero motion (all five right-arm IK calls returned Fail),
 then two holds. A close command is not a grasp. Six requests all HTTP200.
 Do not declare the controller stable or the candidate a validated Skill.
 
 ## Next bounded action
 
-Inspect current head/wrist images at30 steps and IK trace for the latest failed
-translation. Distinguish actual target alignment from improved motion tracking.
+Inspect current head/wrist images at30 steps. The latest Z-/close at steps15-20
+was five IK Fail results, unlike the earlier accepted-but-untracked motion.
+Translation feasibility and visible target alignment must be distinguished.
+The two-entry history can also discard a failed motion after two holds; assess
+what evidence is actually retained before adding another semantic instruction. Distinguish actual target alignment from improved motion tracking.
 Use the recorded image/action effects to identify the first remaining failure;
 do not simply append synonymous prompting or replay a fixed object route.
 Keep each policy segment at3 calls and review before continuing/resetting.
