@@ -31,7 +31,7 @@ def articulation_snapshot(manager, robot, env_idx):
         "joint_names": [articulation.joint_names[index] for index in indices],
         "angular_units": "radian",
         "torque_warning": "Implicit drive torque is not directly exposed. Estimated PD and projected joint reactions are not measured motor torque or proof of contact.",
-        "contact_pair_evidence": "Unavailable in this diagnostic: original X5 condition has no enabled contact-report sensors; absence of a readout is not zero contact.",
+        "contact_pair_evidence": "This articulation snapshot does not read contact pairs. Only a separately validated outer contact-report stream supplies pair evidence; missing data is not zero contact.",
         "data": {}, "physx": {}, "errors": {},
     }
     for field in ("joint_pos", "joint_vel", "joint_pos_target", "joint_vel_target",

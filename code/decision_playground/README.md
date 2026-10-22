@@ -101,3 +101,13 @@ feedforward forces are explicitly distinguished from actual motor torque.
 Original X5 contact reporting is not enabled; missing contact evidence means
 unavailable, never zero contact. No diagnostic field is added to observe/model
 input. All drives, limits, collisions and success predicates remain unchanged.
+
+A new zero-API diagnostic may explicitly add `--contact-reports` alongside
+`--runtime-diagnostics`. Startup wraps only the owned X5 spawn, adds reporting
+API/zero threshold in the runtime USD session layer, and subscribes to copied
+actor/collider/contact impulse reports. It does not use activate_contact_sensors
+(which also changes sleep threshold in this installation). Shared asset files,
+sleep, collisions and drives remain unchanged; metadata audits protected values,
+enabled prims, subscription and failures. Inspect that audit before a probe.
+This is a distinct observation condition, not policy input or a no-contact oracle.
+Callbacks/metadata stay outer-only and are released at close.

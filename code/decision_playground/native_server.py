@@ -133,6 +133,9 @@ class Playground:
         self.development_step_limit = expanded_limit(self.official_step_limit, self.step_multiplier)
         self.ik_request_id = None
         self.ik_call_index = 0
+        self.contact_reporter = getattr(env, "_playground_contact_reporter", None)
+        if self.contact_reporter is not None:
+            self.contact_reporter.set_context(lambda: self.ik_context("contact_report"))
         self.guard_config = load_guard_config()
         self.install_ik_observer()
         self.begin()
@@ -448,11 +451,14 @@ class Playground:
                                 stream.flush()
         finally:
             self.finalize("native_terminal" if self.status()["ended"] else "incomplete", "server_exit")
+            if self.contact_reporter is not None:
+                self.contact_reporter.close()
 
 
 def main():
     from roboicl import robodojo
 
+    contact_reporter = None
     original_import = importlib.import_module
     def intercept(name, package=None):
         module = original_import(name, package)
@@ -460,7 +466,12 @@ def main():
             module.WsModelClient = OfflineClient
             original_factory = module.create_eval_env
             def factory(*args, **kwargs):
+                nonlocal contact_reporter
+                if os.environ.get("PLAYGROUND_CONTACT_REPORTS") == "1":
+                    from contact_diagnostics import enable
+                    contact_reporter = enable(Path(os.environ["PLAYGROUND_OUTPUT"]))
                 env = original_factory(*args, **kwargs)
+                env._playground_contact_reporter = contact_reporter
                 # Persistence disabled; raw RGB remains available in memory.
                 env._stream_vision = lambda *a, **kw: None
                 env.run_eval = types.MethodType(lambda instance: Playground(instance).serve(), env)
@@ -472,6 +483,8 @@ def main():
         return robodojo.main()
     finally:
         importlib.import_module = original_import
+        if contact_reporter is not None:
+            contact_reporter.close()
 
 
 if __name__ == "__main__":

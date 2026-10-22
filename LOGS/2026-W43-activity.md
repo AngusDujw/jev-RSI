@@ -355,3 +355,6 @@
 - 【Agent】【2026-10-22 23:01】[op] 已将执行保护修复、h正向证据和i joint2平台负证据追加EXP007/Discussion并更新STATE与监督job；策略回合全部退出，下一阶段仅新独立运行时执行诊断，不恢复旧episode。
 - 【User】【2026-10-22 23:04】[intent] 继续已授权company2 Playground：先零API读取运行时关节/驱动状态，定位joint2平台；旧回合不恢复，不改物理参数，不扩提示或填卡。
 - 【Agent】【2026-10-22 23:09】[op] 新增可选外层runtime诊断：仅读运行时限位/驱动目标/速度/反作用，立即复制getter缓存，估计扭矩与实测区分；无接触报告记unavailable，不进模型。预声明新j Y-5步/固定已交付目标dwell10步/返回初姿5步，拒绝即停，无API/参数改动。
+- 【Agent】【2026-10-22 23:12】[run] f82b6101已SSH推送/bundle部署，新独立j GPU4原生启动并启用只读runtime诊断；一次性预声明runner等ready后按20步上限探查，零API，不恢复旧i或改物理。
+- 【Agent】【2026-10-22 23:18】[result] j20步零API完成退出：runtime限位±10rad、PhysX target正确/veltarget0；额外.4s仍q2=-.23042且误差13.328mm，反向返回误差.617mm。排除裁剪/普通滞后，接触原因仍待报告证实；准备新独立纯接触观测，不改物理参数。
+- 【Agent】【2026-10-22 23:23】[op] 新增仅session-layer接触报告观察模块及startup开关；避开会修改sleep的官方sensor helper，保护属性前后审计，默认关闭/无模型输入。离线USD/callback/main集成PASS，准备新k实际接触观察。

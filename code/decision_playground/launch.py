@@ -39,12 +39,16 @@ def main():
     parser.add_argument('--native-step-multiplier', type=int, choices=(1, 5), default=5)
     parser.add_argument('--runtime-diagnostics', action='store_true',
                         help='Outer-only read-only articulation evidence; never added to model input')
+    parser.add_argument('--contact-reports', action='store_true',
+                        help='New diagnostic condition: session-layer contact reporting only')
     parser.add_argument('--extend', action='store_true', help='Explicitly add unused GPUs to this owned campaign')
     args = parser.parse_args()
     # RoboDojo changes cwd to its results directory during startup. Keep both
     # child output paths and manifest references independent of that change.
     args.campaign = args.campaign.expanduser().resolve()
     args.roboicl = args.roboicl.expanduser().resolve()
+    if args.contact_reports and not args.runtime_diagnostics:
+        parser.error('Contact reports require explicit outer runtime diagnostics')
     if len(set(args.gpus)) != len(args.gpus) or any(g not in range(8) for g in args.gpus):
         raise ValueError('Use unique allocated GPUs 0..7')
     if not args.native_only:
@@ -94,6 +98,7 @@ def main():
             PLAYGROUND_RPC_PORT=str(args.port_base+gpu), PLAYGROUND_OUTPUT=str(native))
         env['PLAYGROUND_STEP_MULTIPLIER'] = str(args.native_step_multiplier)
         env['PLAYGROUND_RUNTIME_DIAGNOSTICS'] = '1' if args.runtime_diagnostics else '0'
+        env['PLAYGROUND_CONTACT_REPORTS'] = '1' if args.contact_reports else '0'
         command = [str(sim_python), '-B', '-u', str(code/'native_server.py'),
             '--task', 'general_pickup', '--seed', '0', '--layout', str(layout),
             '--data-root', str(args.roboicl/'data'), '--results-root', str(native),
@@ -108,6 +113,7 @@ def main():
                 stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         record = dict(task='general_pickup', layout=layout, gpu=gpu, port=args.port_base+gpu,
             runtime_diagnostics=args.runtime_diagnostics,
+            contact_reports=args.contact_reports,
             official_step_limit=200, development_step_limit=200*args.native_step_multiplier,
             step_multiplier=args.native_step_multiplier,
             native_pid=process.pid, case=str(case), visual_history=visual,
