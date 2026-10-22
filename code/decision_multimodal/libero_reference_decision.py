@@ -28,9 +28,27 @@ def track_source_choice(label, candidates, component, main_tracker, side_tracker
     camera = sample.get('observation_camera', (component or {}).get('observation_camera', 'agentview'))
     tracker = side_tracker if camera == 'sideview' else main_tracker if camera == 'agentview' else None
     if tracker is not None:
-        tracker.select(label)
+        tracker.select(sample.get('tracking_label', label))
         return camera
     return None
+
+
+def bind_source_choice(state, sample, components):
+    """Use only the current partial component selected by the actor's point."""
+    camera=sample.get('observation_camera',(state.get('source_component') or {}).get('observation_camera','agentview'))
+    state['source_component']=components[camera]
+    return camera
+
+
+def source_observation_catalog(components, samples, size):
+    result={}
+    for camera in ('agentview','sideview'):
+        component=components.get(camera,{})
+        box=component.get('bbox_xyxy')
+        result[camera]=dict(status=component.get('status','unavailable'),bbox_xyxy=box,
+            candidate_labels=[s['label'] for s in samples if s.get('observation_camera','agentview')==camera and s['label'].startswith(('C','N','S'))],
+            touches_image_boundary=bool(box and (box[0]<=0 or box[1]<=0 or box[2]>=size or box[3]>=size)))
+    return result
 
 
 LABEL_CAMERA_RULE = (
@@ -42,12 +60,12 @@ LABEL_CAMERA_RULE = (
 
 def reference_payload(original,current,goal_reference,raw_cameras=None):
     state=original['state'];catalog=[]
-    box=(state.get('source_component') or {}).get('bbox_xyxy')
     for sample in state.get('visible_surface_samples',[]):
         row={k:sample[k] for k in ('label','pixel_uv','observation_camera','visible_part_note','meaning') if k in sample}
         source_label = sample['label'].startswith(('C','N','S'))
         component = (state.get('source_component') if source_label else state.get('receiver_component')) or {}
         row['observation_camera'] = sample.get('observation_camera', component.get('observation_camera','agentview'))
+        box=sample.get('source_bbox_xyxy',component.get('bbox_xyxy'))
         if sample['label'].startswith('C') and box and box[3]>box[1]:
             row['fraction_from_top_of_current_visible_source_component']=round((sample['pixel_uv'][1]-box[1])/(box[3]-box[1]),3)
         catalog.append(row)
@@ -57,6 +75,8 @@ def reference_payload(original,current,goal_reference,raw_cameras=None):
         current_receiver_observation_cameras=sorted({s['observation_camera'] for s in catalog if s['label'].startswith('B')}),
         current_source_component_status=(state.get('source_component') or {}).get('status'),
         current_receiver_component_status=(state.get('receiver_component') or {}).get('status'))
+    if state.get('source_observation_sets'):
+        curated['current_source_observation_sets']=state['source_observation_sets']
     payload=convert_request(original)
     header=REFERENCE_INPUT
     if state.get('free_placement_posture') and state['stage'].get('stage_key') in ('align_source_above_receiver','lower_to_place','release','inspect'):

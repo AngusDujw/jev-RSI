@@ -57,6 +57,7 @@ def scheduler(path):
             if case.get('bound_span_rotation'):command+=['--bound-span-rotation']
             if case.get('literal_line_reasoning'):command+=['--literal-line-reasoning']
             if case.get('sideview_source_fallback'):command+=['--sideview-source-fallback']
+            if case.get('multiview_source_samples'):command+=['--multiview-source-samples']
             if case.get('paired_span_selection'):command+=['--paired-span-selection']
             if case.get('span_intent_history'):command+=['--span-intent-history']
             if case.get('posture_task_exit'):command+=['--posture-task-exit']

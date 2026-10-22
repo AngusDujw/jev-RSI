@@ -284,6 +284,7 @@ def main():
     p.add_argument('--literal-placement-rotation',action='store_true',help='Apply the same actor-evaluated observed-line expressions during transport/lowering as well as free-space orientation')
     p.add_argument('--span-detail-cards',action='store_true',help='Separate unranked actual observed wood spans into raw-image detail tiles with one physical line per tile')
     p.add_argument('--sideview-source-fallback',action='store_true',help='Current sideview RGB-D candidate when the main source component is unavailable')
+    p.add_argument('--multiview-source-samples',action='store_true',help='Offer both current camera source sets during bottle placement; bind geometry to actor-selected camera')
     p.add_argument('--paired-span-selection',action='store_true',help='Decisions first judges each physical wood span against an actual archived image, then selects its reference')
     p.add_argument('--span-intent-history',action='store_true',help='Supply the actor previous current-episode physical reference intention, never stale geometry')
     p.add_argument('--posture-task-exit',action='store_true',help='Actor exits free-space posture from current visual support and rotation holds, not exact return to an arbitrary entry point')
@@ -310,6 +311,9 @@ def main():
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args()
+    if args.multiview_source_samples and not (args.task==1458 and args.sideview_source_fallback
+            and args.actor_attention and args.candidate_detail_cards and args.track_selected):
+        raise ValueError('Multiview source samples require bottle current sideview RGB-D, actor selection and camera-owned tracking')
     if args.sideview_receiver_samples and not (args.task==1458 and args.overview_camera=='sideview'
             and args.receiver_surfaces and args.bound_span_rotation and args.surface_context and args.candidate_detail_cards):
         raise ValueError('Sideview receiver samples require bottle sideview RGB-D, observed wood spans and actual candidate detail images')
@@ -364,7 +368,7 @@ def main():
         robot_self_mask=args.robot_self_mask,track_selected=args.track_selected,pad_outlines=args.pad_outlines,numeric_z=args.numeric_z,visual_near_grasp=args.visual_near_grasp,receiver_surfaces=args.receiver_surfaces,stage_motion=args.stage_motion,retain_rotation_examples=args.retain_rotation_examples,part_questions=args.part_questions,raised_fin_surfaces=args.raised_fin_surfaces,overview_camera=args.overview_camera,goal_example=args.goal_example,numeric_axis_call=args.numeric_axis_call,reference_only=args.reference_only,scoped_reference_call=args.scoped_reference_call,fin_central_samples=args.fin_central_samples,held_example_bank=str(args.held_example_bank.resolve()) if args.held_example_bank else None,held_example_bank_sha256=hashlib.sha256(args.held_example_bank.read_bytes()).hexdigest() if args.held_example_bank else None,formal_stage_call=args.formal_stage_call,visible_shape_features=args.visible_shape_features,separate_rotation_call=args.separate_rotation_call,rotation_effect_hints=args.rotation_effect_hints,bound_span_rotation=args.bound_span_rotation,
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
-        actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
+        actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,multiview_source_samples=args.multiview_source_samples,
         paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,span_detail_cards=args.span_detail_cards,literal_placement_rotation=args.literal_placement_rotation,source_motion_test=args.source_motion_test,sideview_receiver_samples=args.sideview_receiver_samples,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
@@ -452,6 +456,8 @@ def main():
         def capture(save_sensor_data=False):
             from PIL import ImageDraw
             parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={};api.scene_hand_details=[];api.current_camera_calibration={};api.receiver_aux_window=None
+            api.source_components_by_camera={}
+            dual_source=(args.multiview_source_samples and stages[stage].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect'))
             if tracker is not None:tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             if side_source_tracker is not None:side_source_tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             for camera in cameras:
@@ -475,21 +481,27 @@ def main():
                     save(out/f'{tick:04d}-{camera}-public-calibration.json',dict(
                         camera=camera,native_tick=tick,intrinsics=K.tolist(),camera_to_world=T.tolist(),
                         meaning='Current registered sensor depth and public camera calibration only; no object pose or scene-state query.'))
-                if side_source_tracker is not None and camera=='sideview' and (api.source_component or {}).get('status')!='candidate':
+                if side_source_tracker is not None and camera=='sideview' and (dual_source or (api.source_component or {}).get('status')!='candidate'):
                     from robosuite.utils.camera_utils import get_real_depth_map
                     from libero_robot_mask import own_geometry_rejector
                     side_source_tracker.box=np.array([0,0,args.size,args.size],float)
                     depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
                     candidate,samples=side_source_tracker.observe(np.asarray(im).copy(),depth,K,T,
                         reject_own=own_geometry_rejector(native) if args.robot_self_mask else None)
+                    api.source_components_by_camera['sideview']=candidate
                     if candidate.get('status')=='candidate':
                         candidate['observation_camera']='sideview'
-                        candidate['camera_selection_reason']='Main-view source was unavailable. Largest isolated current green component after own-robot rejection; verify bottle identity in the sideview.'
-                        api.source_component=candidate
+                        candidate['camera_selection_reason']=('Unranked current sideview source observation alongside any main-view set; the actor chooses the camera and feature.' if dual_source else 'Main-view source was unavailable. Largest isolated current green component after own-robot rejection; verify bottle identity in the sideview.')
+                        if not dual_source or (api.source_component or {}).get('status')!='candidate':api.source_component=candidate
                         draw=ImageDraw.Draw(im)
                         from PIL import ImageFont
                         font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',16)
                         for j,sample in enumerate(samples):
+                            if dual_source:
+                                sample['tracking_label']=sample['label']
+                                sample['label']={'C0':'C3','C1':'C4','C2':'C5','S':'C6','N0':'N1'}[sample['label']]
+                                sample['source_bbox_xyxy']=candidate['bbox_xyxy']
+                                if sample['tracking_label']=='S':sample['visible_part_note']='Current checked RGB correspondence and current depth of the earlier actor-selected sideview feature; not pose or contact.'
                             sample['observation_camera']='sideview';api.surface_samples.append(sample)
                             u,v=sample['pixel_uv'];x=min(args.size-32,candidate['bbox_xyxy'][2]+15)
                             y=max(2,candidate['bbox_xyxy'][1]+j*25)
@@ -521,6 +533,11 @@ def main():
                         reject_own=own_geometry_rejector(native)
                     if tracker is not None:
                         api.source_component,current_samples=tracker.observe(observed_rgb,depth,K,T,reject_own=reject_own)
+                        api.source_components_by_camera['agentview']=api.source_component
+                        if dual_source:
+                            for sample in current_samples:
+                                sample['observation_camera']='agentview'
+                                sample['source_bbox_xyxy']=api.source_component.get('bbox_xyxy')
                         if args.bound_span_rotation:
                             from libero_visible_shape import project_observed_segment
                             segment=((api.source_component or {}).get('visible_shape') or {}).get('fitted_visible_segment_world_mm')
@@ -571,7 +588,7 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-input.png').write_bytes(raw)
                 parts.extend([dict(type='input_text',text=f'CURRENT {camera}, observation {tick}. World axes at the current gripper.'+(' P0A/P0B/P1A/P1B lines, when present, mark ALL fitted visible wood spans in agentview. These are physical observations, not ranked target axes or rotation corrections.' if any(s.get('stage_key')=='orient_held_body' for s in stages) else '')+(
                     ' Magenta PAD-L/PAD-R outlines are projections of measured own inner finger-pad faces, not target points or contact evidence. Projected edges may be occluded in the actual RGB.' if args.pad_outlines else '')),image_part(raw)])
-                if camera=='sideview' and (api.source_component or {}).get('observation_camera')=='sideview':
+                if camera=='sideview' and (dual_source or (api.source_component or {}).get('observation_camera')=='sideview'):
                     parts[-2]['text']+=' Cyan C labels in THIS sideview are current green bottle-candidate surfaces. Their pixel coordinates refer to this sideview. They are not agentview pixels, target coordinates, grasp centres or contact evidence.'
                 if args.grounded and camera=='agentview' and 'fixed_view_bbox_xyxy' in plan:
                     crop_unknown=tracker is not None and api.source_component.get('status')!='candidate'
@@ -727,6 +744,9 @@ def main():
                     'then use the matching surface coordinates and own axes to interpret directions. No desired orientation is computed.')
                 if tracker is not None:
                     state['source_component']=api.source_component
+                    if args.multiview_source_samples and state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect'):
+                        from libero_reference_decision import source_observation_catalog
+                        state['source_observation_sets']=source_observation_catalog(api.source_components_by_camera,api.surface_samples,args.size)
                     state['surface_sample_meaning']=('C dots lie on a CURRENT colour component candidate, tracked from RGB only. '
                         'Verify that this is the task object in current RGB; a surface is not an object centre or desired grasp. '
                         'S, when present, is your previous selection matched in CURRENT RGB and measured with current depth, not stale XYZ. '
@@ -827,6 +847,11 @@ def main():
                     from libero_reference_decision import bind_receiver_choice
                     bind_receiver_choice(state,assessment['answers'],candidates)
                 if selected in candidates:
+                    if args.multiview_source_samples and placing:
+                        from libero_reference_decision import bind_source_choice
+                        camera=bind_source_choice(state,candidates[selected],api.source_components_by_camera)
+                        api.log(dict(kind='source_geometry_binding',native_tick=tick,label=selected,observation_camera=camera,
+                            meaning='Current actor-selected camera component only; no fused pose or contact inference.'))
                     observed=np.array(candidates[selected]['visible_surface_world_mm'])
                     state['actor_selected_surface']=candidates[selected]
                     state['observed_surface_relative_mm']=np.round(observed-np.array(state['own_gripper_world_mm']),1).tolist()

@@ -1,0 +1,38 @@
+{
+  "version": "v67",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "planner": "Local Pro34 gpt-6.1-sol high; one short lesson and historical730twoRGB actually loaded",
+  "actor": "du /v1/decisions gpt-6-luna",
+  "method": "Pro34 offer both current unranked source-camera sets during placement. Unique side labelsC3-C6 carry own-camera pixels; actor-selected point binds its current partial component and measured height. Preserve Pro33 descent context and all motion/phase decisions. No camera ranking, fused pose, target angle or motor signs computed.",
+  "validation": {
+    "cpu_checks": [
+      "per-camera component boundary coverage",
+      "unranked side labels remain separate",
+      "missing observation set explicit",
+      "selected point binds exact current side component",
+      "body percentile comes from selected camera, not skin or other camera",
+      "side aliases route to original current tracker key",
+      "tracked side alias preserves S material correspondence",
+      "unknown selection cannot fabricate tracker",
+      "three actual-pixel candidate cards retain both camera labels",
+      "changed modules parse"
+    ],
+    "count": 10,
+    "new_api_calls": 0,
+    "native_efficacy_verified": false,
+    "experience_sha256": "a3f632aea9f4ccb830c575f0b21edae3b7b9f7fc5b0ca37403fbd37d6fadeaf5",
+    "direct_source_sha256": "4dafc7542b64de52bfef16dc3f5118bf93cf3901af94172ef811622c2065f72b",
+    "strategy_sha256": "ec03af48191eec0639cb835241938e1e01056a6df12d35f7dabed8dc20f985a8"
+  },
+  "runtime_status": "frozen pilot pending"
+}
