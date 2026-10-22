@@ -329,3 +329,5 @@
 - 【Agent】【2026-10-22 20:35】[op] 新server company-server-2-ykj原生smoke已ready：原200、开发1000、success=null，未调用模型。首次observe发现RGB键color与预期rgb差异，在0控制步关闭并保留；修复自有wrapper兼容键，不改native。worker内存测试发现STOP局部变量作用域并修复，复测请求中停止不派发动作且关闭native通过；新增安全worker启动和显式扩卡。
 - 【Agent】【2026-10-22 20:40】[result] company-server-2-ykj新b原生三RGB/动作链路通过：ready原上限200/开发1000，保持动作执行1原生步，双臂位置变化约2.60e-5m/姿态2.67e-4rad；显式reset得到新UUID、0步/1000上限，原诊断保为development_reset。首a RGB键错误0步已确认close。真实Decisions尚未请求；先首个策略短段再扩八卡。  ↪ `EXP-2026W43-007`
 - 【Agent】【2026-10-22 20:44】[result] 5倍开发预算已在company-server-2-ykj真实验证：general_pickup200→1000、保持1原生步和显式reset通过。首真实Decisions0000连接443超时curl28/HTTP000/上传0，零策略动作，不重发；native3555191/worker3587730已退出，原生账本step0/incomplete。远端7897已监听不覆盖，未扩其余七卡、未作额外API探测，保代表输入图与文本。  ↪ `EXP-2026W43-007`
+- 【User】【2026-10-22 20:53】[decision] 用户授权将本机7897代理反向转发至company-server-2-ykj其他空闲端口，不占用服务器7897；先验证网络，不重发旧失败请求。
+- 【Agent】【2026-10-22 20:55】[op] 按用户授权建立company-server-2-ykj回环17897→本机7897的专用SSH反向转发，现有远端7897未动。前次后台SSH未存活，无残留转发；改前台受管exec会话39039，masterPID3527717。远端17897/7897同时监听；仅经新代理HEAD GitHub返回HTTP200，TLS0.533s/总0.857s。未调用任何OpenAI API、未重发旧请求、未启动原生环境。  ↪ `EXP-2026W43-007`
