@@ -191,6 +191,20 @@ def revise_phase(sent, readiness, tick, strategy):
         raise ValueError('Phase requires this same observation actor posture judgment')
     revised = deepcopy(sent)
     value = readiness['answer']['choice']
+    if (strategy.get('readiness_scope', 'all_carry') == 'lower_to_place_only'
+            and state['stage']['stage_key'] == 'align_source_above_receiver'):
+        addition = (
+            f'CURRENT phase: {state["stage"].get("name", "clearance or transport")}. '
+            f'Your SAME-observation posture_readiness answer is {value}. '
+            'In this phase that orientation judgment is informative only, not an additional exit requirement. '
+            'Apply the original restart, positioning and actor-rotation conditions printed below unchanged. '
+            'A not_ready or unclear orientation answer alone does not keep this phase active. '
+            'Later lowering/seating retains its additional orientation-readiness requirement. ')
+        revised['state']['actor_posture_readiness'] = dict(choice=value,
+            meaning='Same-observation orientation judgment; informative, not an extra exit condition in this phase.')
+        revised['state']['formal_stage_input'] = addition + state.get('formal_stage_input', '')
+        revised['questions']['transition']['instructions'] = addition + revised['questions']['transition']['instructions']
+        return revised
     addition = (f'Current method posture preparation: {strategy["posture_preparation_goal"]} '
         f'Your SAME-observation posture_readiness answer is {value}. '
         'First apply any restart condition in the original rule. Otherwise continue when posture_readiness is not_ready or unclear. '

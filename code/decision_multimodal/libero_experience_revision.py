@@ -74,6 +74,8 @@ def main():
         english(strategy)
         if not isinstance(strategy.get('receiving_multiview_details', False), bool):
             raise ValueError('Receiving-detail experiment switch must be boolean')
+        if strategy.get('readiness_scope', 'all_carry') not in ('all_carry', 'lower_to_place_only'):
+            raise ValueError('Unknown planner readiness scope')
         if (set(strategy['choice_descriptions']) != {'positive', 'negative', 'hold'}
                 or set(strategy['readiness_choices']) != {'ready', 'not_ready', 'unclear'}):
             raise ValueError('Posture strategy cannot change categorical options')

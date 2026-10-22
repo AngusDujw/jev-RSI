@@ -216,3 +216,5 @@
 - 【Agent】【2026-10-22 23:12】[run] 部署6b961f1e v61独立工作树，首原生PID793027、3worker桥已启动。现有planning目录使首次准备FileExistsError并阻止写入；校验已有同名文件一致后继续，首次无campaign的tmux未启动原生，重新启动一次。候选v60经验已镜像DataStorage；旧v60不动。
 - 【Agent】【2026-10-22 23:15】[note] v61首桥roots误指runs父目录，0API且原生仅10settling步等待；已停止自有空闲桥，改managed桥按三个case精确roots继续同一待答，无原生重启。DataStorage候选新增allhold非ready与预算不修复放置两短英文Lessons，不注入在跑回合。
 - 【Agent】【2026-10-22 23:26】[op] v61实际当前参考→R传递及实测RY2.798度验证后开3槽；低置信P0A/P0B相同。新v62仅追加同刻两视角全部观测木条放大图，公开K/T仅内部投影/外层审计，0外部目标/角误差/符号；6CPU通过，待原生。
+- 【Agent】【2026-10-22 23:30】[run] eec1a630已Git SSH推送并通过增量bundle部署v62独立树，首原生PID814465和managed3worker桥运行，当前106步接近；v61三例514/286/286仍真实R转动，旧v60继续。候选经验简化为转动后比较新瓶图、不要把手动当瓶动，不注入冻结回合。
+- 【Agent】【2026-10-22 23:42】[op] Pro30实际读取2短英文经验与真实622同刻双RAW，建议最终姿态门仅用于下放。受控v63只采用scope/reason，保持v62的R/5图selector/位置/Rhold条件；5CPU+5实际Decisions阶段fixture全过0动作。v62已验证真实双投影、5图和原K/T不进文字后开3槽。
