@@ -327,3 +327,4 @@
 - 【User】【2026-10-22 20:29】[decision] 用户允许暂时将RoboDojo官方原生步数上限扩大5倍；新Playground general_pickup从200到1000，记录原/新上限及非官方预算可比性，保持短段审核/reset和原生成功判据；旧结束回合不恢复。
 - 【Agent】【2026-10-22 20:29】[op] 将新Playground原生预算做为显式1x/5x配置：默认启动5x，general_pickup200→1000，reset沿用本attempt预算，status保原上限/倍率/官方预算可比性；只改自有适配器不改vendor。纯函数倍率正负/非法参数和语法检查通过；零API调用。远端原partial clone惰性抓取失败，改用同挂载盘Git bundle独立checkout，不覆盖旧baseline。
 - 【Agent】【2026-10-22 20:35】[op] 新server company-server-2-ykj原生smoke已ready：原200、开发1000、success=null，未调用模型。首次observe发现RGB键color与预期rgb差异，在0控制步关闭并保留；修复自有wrapper兼容键，不改native。worker内存测试发现STOP局部变量作用域并修复，复测请求中停止不派发动作且关闭native通过；新增安全worker启动和显式扩卡。
+- 【Agent】【2026-10-22 20:40】[result] company-server-2-ykj新b原生三RGB/动作链路通过：ready原上限200/开发1000，保持动作执行1原生步，双臂位置变化约2.60e-5m/姿态2.67e-4rad；显式reset得到新UUID、0步/1000上限，原诊断保为development_reset。首a RGB键错误0步已确认close。真实Decisions尚未请求；先首个策略短段再扩八卡。  ↪ `EXP-2026W43-007`

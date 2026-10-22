@@ -116,6 +116,8 @@ def main():
                     current_robot=state, knowledge_revision=revision,
                     applicable_guidance=data.get('guidance', ''), skills=data.get('skills', []),
                     recent_interactions=[item['text'] for item in recent])
+                if not json.dumps(model_state, ensure_ascii=False).isascii():
+                    raise ValueError('Model state must contain English ASCII text before serialization')
                 serialized = json.dumps(model_state)
                 for forbidden in ('camera_calibration', 'intrinsics', 'extrinsics',
                                   'camera_to_world', 'reward', 'native_success'):
@@ -128,6 +130,8 @@ def main():
                         content += images_content(item['images'], 'HISTORICAL '+item['text']['observation_id'])
                 content += images_content(observation['images'], 'CURRENT')
                 call_dir = args.output/'requests'/f'{count:04d}'
+                if args.retain_history and snapshot['episode_id'] == retained_episode:
+                    persist_images(args.output/'retained'/retained_episode/f'{snapshot["step"]:04d}', observation['images'])
                 save(args.output/'status.json', dict(status='requesting', count=count,
                     step=snapshot['step'], episode_id=snapshot['episode_id'], revision=revision))
                 answers = request(dict(model=MODEL, input=[dict(role='user', content=content)],
