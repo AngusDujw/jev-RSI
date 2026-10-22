@@ -204,3 +204,5 @@
 - 【Agent】【2026-10-22 20:39】[result] v58-r1约286步时实际请求审计：baseline无经验；skill-only0条Lessons；skill+Lessons各真实13–16请求含3条总104词英文经验，技能在7–8请求改receiver或缺数值XY问题，适用阶段外未注入。九原生保持运行，无终局；audit保存在DataStorage/iteration-v58-r1-experience-3000/actual-experience-input-audit.json。
 - 【Agent】【2026-10-22 20:56】[op] Pro23静态支持/净空前置分类后，原六图R复审仍三轴hold，0新动作；未推广该候选。核对v58-r1 step634原图及原答：receiver B已选而source unlabelled，运输阶段过早要求承托点。Pro24基于同帧两图给运输临时瓶身参考最小契约，新增可选运输reference/header接口，v1缺字段时保持原输入不变。
 - 【Agent】【2026-10-22 20:59】[run] 会话decision-multimodal轮次20261022-03：3741f43c已Git SSH推送并增量bundle同步v4090-t；v59独立工作树、v2manifest492c1f95、原Lessons不变。首PID612701真实4答并执行22步后开放3槽；v58-r1原九例继续850–874步。Pro23/24图像、原提示、回复、经验与验证均镜像到DataStorage，不重启原生旧回合。
+- 【Agent】【2026-10-22 21:09】[result] v58-r1 baseline16在958步API0514 Y typed refusal，中断且native未评估，保留不重采；其余8旧/3新继续。经验组init16开爪后898实图瓶在桌上，期间手上移，尚不能隔离姿态/几何/分类；短英文经验只记录。额外历史release图静态R仍三hold，不推广。
+- 【Agent】【2026-10-22 21:14】[result] Pro25中性R问题/同六图静态仍三hold，0动作，不推广。v59实际0181/394证实净空准备与运输共用stage_key，因此新源问题实际命中两阶段；按真实范围修正协议说明并保留原冻结回合，不能将净空C0选择称运输XY恢复。

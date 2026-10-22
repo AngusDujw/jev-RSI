@@ -12,7 +12,7 @@
     19
   ],
   "horizon_physical": 3000,
-  "source_revision": "Pro24 transport-only provisional visible-body reference question and header",
+  "source_revision": "Pro24 provisional visible-body reference question/header in the shared-key non-contact clearance preparation and transport phases",
   "experience_snapshot_sha256": "492c1f95806da88cd5ba98a3ac9cd567ad9a2a56a569b4dea9145d4a83069227",
   "lessons_same_as_v58": true,
   "unchanged": [
@@ -36,5 +36,6 @@
     614306,
     614307
   ],
-  "campaign": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v59-transport-reference/campaign.json"
+  "campaign": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v59-transport-reference/campaign.json",
+  "actual_scope_audit": "The legacy align_source_above_receiver stage_key is shared by own_entry_xy_clearance and height_preserving_transport. The new source question/header therefore applies to BOTH clearance preparation and transport, verified in real request0181/tick394. Do not call this a transport-only substage ablation. Numeric own-entry XY in clearance, Z-height geometry, later seating, R/gripper/phase rules are unchanged."
 }
