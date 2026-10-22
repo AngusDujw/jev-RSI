@@ -24,7 +24,8 @@ Keep p representative image history and its three copied Lesson references.
 Only current-task temporary audit copies may be cleaned by exact manifest.
 
 Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n/o/p ended; never restore/replay.
-Source96e47233 SSH-pushed and bundle deployed; r005 template previously ed1122d5.
+Previous source96e47233 deployed; selected-gripper-command-v1 is now offline patched,
+check latest commit/deployment before any new native start. r005 template previously ed1122d5.
 feedback-selected-vs-dispatched-v1 offline+o real full/partial interface validated; policy benefit not yet tested.
 n campaign code/runs/playground-lesson-transfer-20261022n:
 GPU4/layout0 native720103/worker748068, episode42ba1791-c20a-4011-a0d8-eaeced448b48,
@@ -112,15 +113,27 @@ The layout1 full goal residual11.633mm includes the discarded suffix; delivered
 prefix error was~1.935mm, so do not misclassify all residual as execution error.
 Independent actual Playground.handle in-memory integration prefix0..5 passed,
 including refusal/no-dispatch null and final target selection; no API/native.
-o interface passed and p bounded policy check ended as above. Next read-only
-p closure/descent audit: accepted IK targets vs measured trajectory, raw retained
-head/wrist at20/25/29 and visible finger/object relation. Do not label contact or
-capture without evidence. Check robot TCP/finger geometry from public interfaces
-if the visible relation remains ambiguous; no K/T or object truth, no physics edits.
-No automatic new episode/API until this first-failure audit yields a specific
-single condition. Do not repeat r005, heap hints, resume p, or replay any request.
-Outer-only English review: lessons/reorientation_tracking_r005_review.md;
-model projection r005 remains unchanged/unpromoted.
+p read-only closure/descent audit complete: close steps21..25 position-stable
+(~.067mm); descent mismatch starts26 (1.390mm), q2 measured reaches~-.2306rad
+while targets progress -.242945/-.270536/-.300144/-.332052. Errors grow to13.328mm
+at28,11.344mm at29. Runtime targets match IK; accepted increments<=.101469rad,
+no2pi jump or physical contact cause established. Original head/wrist20/25/29 reviewed.
+Public localX finger extension/localY opening agree; TCP150.070mm is7.500mm behind
+mesh maximum157.570mm, not a validated contact centre. No geometry/physics edit.
+Confirmed separate keep semantics issue: p close sent0, normalized rate-limited
+prev_control returned.045038, old keep sent.045038 instead of retained selected0.
+New selected-gripper-command-v1: explicit per-episode final-goal ledger in worker;
+positive dispatched prefix commits selection, zero prefix does not, reset rebuilds.
+Model state explicitly uses runner_retained_goal, measured opening stays null.
+Actual worker-loop fake integration close/keep/refusal/reset + pure prefix0..5,
+drift/invalid-count/immutability fixtures and independent review PASS. No new API/native.
+Next single minimal condition: new independent zero-API fixed-arm close/keep probe,
+predeclared <=15native steps; compare final-goal ledger and sent actions against
+raw low-level observations. First guard/refusal stops. No automatic policy API
+or new hint/Skill until that interface check and first-failure evidence reviewed.
+Do not restore p or replay requests. This repair is not proven to cause/fix p's
+arm overshoot and is not a grasp benefit. All r001-r005 remain unpromoted.
+Outer-only English audit lessons/p_closure_descent_audit.md; model r005 unchanged.
 Keep original guard/drive/limit/collision parameters and fixed action budget.
 
 ## Boundaries / candidates

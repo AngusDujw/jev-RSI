@@ -301,7 +301,7 @@ class Playground:
         return {**self.status(), "instruction": obs["instruction"],
                 "state": state, "command_frame_measured_pose": command_pose,
                 "images_png_base64": images,
-                "gripper_state_semantics": "Normalized previous command, not measured aperture."}
+                "gripper_state_semantics": "Normalized last rate-limited low-level target; not necessarily the selected final command or measured aperture."}
 
     def check_expected(self, request):
         if request.get("episode_id") != self.episode_id:

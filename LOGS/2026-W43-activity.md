@@ -375,3 +375,6 @@
 - 【Agent】【2026-10-23 00:12】[run] o通过后新p native856266 GPU5/layout1，只有新反馈说明/实际已发目标字段变化，r005三图/文本不变；当前native-only，先初图核验再启动有限策略。
 - 【Agent】【2026-10-23 00:14】[run] p初始head/wrist已审查：原图清晰、双爪张开无持物，step0/新UUID；仅启动worker878945，原生856266/GPU5，r005不变+新反馈，最多3请求即审核/guard更早停。
 - 【Agent】【2026-10-23 00:21】[result] p两段6HTTP200/29步收口：局部恢复后open/close/Z-过冲，4子步后guard，完整7.420mm vs已发11.344mm。已审核sequence1 stop，r005不升级；英文outer review记全三尝试/两条件限制，下一只读首失效轨迹。
+- 【User】【2026-10-23 00:25】[intent] 继续p只读闭爪/下降审计，核实全部旧PID退出；本轮不启动API/native、不恢复episode。逐步比已接收IK目标/实测，并独立核公开机器人TCP与指轴，不先归因碰撞。
+- 【Agent】【2026-10-23 00:37】[op] p只读轨迹定位下降26首失配与q2平台；公开TCP/指轴无反向错误。独立确认低层prev_control替代最终close导致keep语义偏差，离线ledger修复与真实worker fake循环/独立审查PASS，0API/native，测试夹具删。
+- 【Agent】【2026-10-23 00:39】[result] p末端/夹爪契约审计及selected-goal ledger修复已过独立检查，CIRCLE-1显式报告并限定下一单次零API验收；当前零环境/零新API、65HTTP200不变，代表原图保留，仅自有临时审核副本按hash清理。

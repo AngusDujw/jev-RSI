@@ -60,3 +60,10 @@ Keep the candidate unpromoted until independent useful task progress is verified
 Sources: remote n/all-request-audit.json, n/second-review-decision.json,
 o/interface-audit.json, p/all-input-audit.json, p/second-review-decision.json,
 and their original interaction / waypoint / native-step ledgers.
+
+## Later execution audit
+
+p closure/descent review identified a separate keep-command mismatch: selected
+close0 was replaced by inverse-normalized low-level target0.045038 on keep.
+See p_closure_descent_audit.md. The new final-goal ledger is offline-validated
+only. Do not attribute p arm overshoot to it or retroactively change p outcomes.

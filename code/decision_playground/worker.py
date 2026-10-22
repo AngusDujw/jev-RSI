@@ -11,7 +11,8 @@ import socket
 import time
 import uuid
 
-from contract import decode, delivered_motion_feedback, motion_feedback, permitted_state, questions
+from contract import (committed_gripper_commands, decode, delivered_motion_feedback,
+                      initial_gripper_commands, motion_feedback, permitted_state, questions)
 from transport import MODEL, request, save
 
 STOP = False
@@ -104,6 +105,11 @@ def main():
     try:
         snapshot = rpc(args.sim_port, 'observe')
         retained_episode = snapshot['episode_id']
+        if snapshot['step'] != 0 or snapshot['ended']:
+            raise ValueError('Initialize selected gripper goals only in a fresh episode')
+        command_state = initial_gripper_commands(snapshot['observation']['state'])
+        append(args.output/'gripper_commands.jsonl', dict(episode_id=snapshot['episode_id'],
+            step=0, origin='initial_native_control_target', commands=command_state))
         while not STOP:
             data, lesson_images = knowledge(args.knowledge)
             revision = data['revision']
@@ -111,7 +117,7 @@ def main():
                 if STOP or snapshot['ended']:
                     break
                 observation = snapshot['observation']
-                state = permitted_state(observation['state'])
+                state = permitted_state(observation['state'], command_state=command_state)
                 model_state = dict(instruction=observation['instruction'],
                     current_robot=state, knowledge_revision=revision,
                     applicable_guidance=data.get('guidance', ''), skills=data.get('skills', []),
@@ -140,18 +146,26 @@ def main():
                     save(call_dir/'not_executed.json', dict(reason='stop_received_during_request',
                         answers=answers))
                     break
-                native_action, audit = decode(answers, observation['state'])
+                native_action, audit = decode(answers, observation['state'], command_state=command_state)
                 if STOP:
                     break
                 before = snapshot
                 snapshot = rpc(args.sim_port, 'step', episode_id=before['episode_id'],
                     expected_step=before['step'], action=native_action, steps=5)
+                if snapshot['step'] - before['step'] != snapshot['executed_steps']:
+                    raise ValueError('Dispatch count does not match native step change; do not replay')
+                command_state = committed_gripper_commands(
+                    command_state, native_action, snapshot['executed_steps'])
+                append(args.output/'gripper_commands.jsonl', dict(episode_id=snapshot['episode_id'],
+                    step=snapshot['step'], origin='selected_action_after_dispatch',
+                    executed_steps=snapshot['executed_steps'], commands=command_state))
                 text = dict(observation_id=before['observation_id'], step=before['step'],
                     robot_before=state, selected_action=answers,
                     execution_feedback=motion_feedback(audit, snapshot['observation']['state']),
                     last_dispatched_target_feedback=delivered_motion_feedback(
                         audit, snapshot['last_dispatched_action'], snapshot['observation']['state']),
-                    measured_robot_after=permitted_state(snapshot['observation']['state']))
+                    measured_robot_after=permitted_state(
+                        snapshot['observation']['state'], command_state=command_state))
                 recent.append(dict(text=text, images=observation['images']))
                 append(args.output/'interactions.jsonl', dict(count=count,
                     episode_id=before['episode_id'], revision=revision, **text,
@@ -193,6 +207,12 @@ def main():
                         elif command['op'] == 'reset':
                             snapshot = rpc(args.sim_port, 'reset', reason=command['reason'],
                                 episode_id=snapshot['episode_id'], expected_step=snapshot['step'])
+                            if snapshot['step'] != 0 or snapshot['ended']:
+                                raise ValueError('Reset did not produce a fresh episode')
+                            command_state = initial_gripper_commands(snapshot['observation']['state'])
+                            append(args.output/'gripper_commands.jsonl', dict(
+                                episode_id=snapshot['episode_id'], step=0,
+                                origin='reset_native_control_target', commands=command_state))
                             recent.clear()
                         elif command['op'] != 'continue':
                             raise ValueError('Unknown review command')

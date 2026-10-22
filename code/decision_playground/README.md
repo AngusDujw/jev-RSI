@@ -131,3 +131,16 @@ remain outer-only. This requires matching new native/worker sources in a fresh
 attempt. It changes feedback interpretation, not action selection, execution
 budget or physics. The r005 two-layout check remains under its original feedback
 condition and is not relabeled or promoted.
+
+Command condition `selected-gripper-command-v1` fixes keep semantics. Native
+`ee_joint_state` is the inverse-normalized last rate-limited control target, not
+necessarily the selected final command. The worker maintains a per-episode final
+goal ledger and passes it explicitly to decode/permitted_state. At least one
+actually dispatched substep commits selected goals; zero dispatch leaves them
+unchanged. Fresh startup/reset initializes from the audited initial native target.
+RPC uncertainty or inconsistent counts stop without replay. gripper_commands.jsonl
+records provenance; model state labels runner_retained_goal, with measured opening
+still null. Zero-API probes that use keep after an earlier command must likewise
+retain explicit command_state, not feed low-level observations back as final goals.
+No drive, collision, limit, step budget or action-choice change is made. The repair
+is offline-validated only and does not relabel historical p or prove grasp benefit.

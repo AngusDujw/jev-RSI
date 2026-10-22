@@ -113,8 +113,9 @@ def _command(state, arm, command_state=None):
     if not isinstance(explicit, Mapping):
         raise ValueError("command_state must be a mapping")
     value = explicit.get(arm, explicit.get(f"{arm}_ee_joint_state"))
-    # Native adapter audit: ee_joint_state is prev_control normalized command,
-    # not a measured aperture. Explicit runner command state takes precedence.
+    # Native ee_joint_state inversely normalizes the last rate-limited low-level
+    # target, not necessarily the selected final command or measured aperture.
+    # Explicit runner command state takes precedence.
     if value is None:
         value = state.get(f"{arm}_ee_joint_state")
     if isinstance(value, Mapping):
@@ -129,15 +130,41 @@ def _command(state, arm, command_state=None):
     return value
 
 
+def initial_gripper_commands(raw_state):
+    """Bootstrap a fresh episode from its audited initial native control target."""
+    result = {arm: _command(raw_state, arm) for arm in ARMS}
+    if any(value is None for value in result.values()):
+        raise ValueError("Fresh episode requires explicit initial gripper targets")
+    return result
+
+
+def committed_gripper_commands(previous, selected_action, executed_steps):
+    """Commit selected final commands only after at least one actual substep.
+
+    A zero-dispatch refusal keeps the previous goals. Low-level rate limiting
+    does not replace these high-level goals. Return a new mapping, not an alias.
+    """
+    if type(executed_steps) is not int or not 0 <= executed_steps <= 5:
+        raise ValueError("Expected an actual substep count in [0,5]")
+    result = {arm: _command({}, arm, previous) for arm in ARMS}
+    if any(value is None for value in result.values()):
+        raise ValueError("Previous selected gripper goals are required")
+    if executed_steps:
+        result = {arm: _command(selected_action, arm) for arm in ARMS}
+        if any(value is None for value in result.values()):
+            raise ValueError("Dispatched action requires explicit gripper goals")
+    return result
+
+
 def permitted_state(raw_state, command_state=None):
     """Allowlist robot measurements and explicit commands; discard all other keys.
 
     Input: native {left/right_ee_pose: [x,y,z,qw,qx,qy,qz],
     left/right_ee_joint_state: [...], left/right_arm_joint_state: [...]}.
-    Native ee_joint_state is an adapter-audited prev_control command, not a
-    measured aperture. Optional command_state={left:0,right:1} takes precedence
-    over its nested counterpart and native prev_control. No camera parameters
-    or native outcome flags pass.
+    Native ee_joint_state is a normalized low-level prev_control target, not a
+    measured aperture or necessarily the selected final goal. Pass the runner's
+    command_state={left:0,right:1} for last accepted selected goals. No camera
+    parameters or native outcome flags pass.
     """
     result = {}
     for arm in ARMS:
@@ -157,6 +184,9 @@ def permitted_state(raw_state, command_state=None):
         command = _command(raw_state, arm, command_state)
         if command is not None:
             entry["gripper_command_native"] = command
+            entry["gripper_command_source"] = (
+                "runner_retained_goal" if command_state is not None or "command_state" in raw_state
+                else "normalized_low_level_control_target")
         entry["gripper_opening_measured"] = None
         result[arm] = entry
     return dict(frame="environment_origin_world", robot=result)
@@ -165,9 +195,10 @@ def permitted_state(raw_state, command_state=None):
 def decode(answers, robot_state, command_state=None):
     """Return (native_action, audit) without mutating inputs or clipping actions.
 
-    Pass explicit native gripper commands via command_state or its robot_state
-    key; audited native prev_control ee_joint_state is the fallback. keep
-    without either command raises ValueError. Action poses are raw LINK6 flange
+    Pass retained final gripper goals via command_state or its robot_state key
+    for keep. The raw ee_joint_state fallback is only a low-level target and
+    cannot preserve a previously selected final goal by itself. A missing goal
+    raises ValueError. Action poses are raw LINK6 flange
     targets, not TCP targets; quaternions are wxyz. The RPC adapter uses the
     native world-pose branch without applying the relative-mode delta frame.
     """
