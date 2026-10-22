@@ -21,6 +21,51 @@ import time
 import types
 import uuid
 
+EXECUTION_CONDITION = "tcp-slerp-waypoints-v1"
+
+
+def tcp_waypoints(start_poses, final_action, steps):
+    """Predeclare a fixed TCP-linear / shortest-arc rotation path.
+
+    The model-selected final pose and gripper are unchanged. This is a new
+    execution condition, not a retry or online change to a rejected action.
+    Each waypoint consumes at most one native action, with original IK guard.
+    """
+    import copy
+    from contract import TCP_OFFSET, _apply, _matrix, _quaternion, _vector
+
+    if type(steps) is not int or not 1 <= steps <= 5:
+        raise ValueError("Waypoint count must be in [1,5]")
+    paths = [copy.deepcopy(final_action) for _ in range(steps)]
+    for key, initial in start_poses.items():
+        begin = _vector(initial, 7)
+        end = _vector(final_action[key], 7)
+        q0, q1 = _quaternion(begin[3:]), _quaternion(end[3:])
+        cosine = sum(a * b for a, b in zip(q0, q1))
+        if cosine < 0:
+            q1 = [-value for value in q1]
+            cosine = -cosine
+        cosine = min(1., max(-1., cosine))
+        offset0, offset1 = (_apply(_matrix(q), TCP_OFFSET) for q in (q0, q1))
+        tcp0 = [begin[i] + offset0[i] for i in range(3)]
+        tcp1 = [end[i] + offset1[i] for i in range(3)]
+        angle = math.acos(cosine)
+        for index, waypoint in enumerate(paths):
+            alpha = (index + 1) / steps
+            if cosine > .9995:
+                q = _quaternion([(1-alpha)*a + alpha*b for a, b in zip(q0, q1)])
+            else:
+                q = [math.sin((1-alpha)*angle)/math.sin(angle)*a
+                     + math.sin(alpha*angle)/math.sin(angle)*b for a, b in zip(q0, q1)]
+                q = _quaternion(q)
+            offset = _apply(_matrix(q), TCP_OFFSET)
+            tcp = [(1-alpha)*a + alpha*b for a, b in zip(tcp0, tcp1)]
+            waypoint[key] = [tcp[i]-offset[i] for i in range(3)] + q
+            if index == steps-1:
+                # Avoid position roundoff at the exact original endpoint.
+                waypoint[key][:3] = end[:3]
+    return paths
+
 
 def expanded_limit(official, multiplier):
     if type(official) is not int or official <= 0 or type(multiplier) is not int or multiplier not in (1, 5):
@@ -206,6 +251,7 @@ class Playground:
                 "official_step_limit": self.official_step_limit,
                 "step_multiplier": self.step_multiplier,
                 "official_budget_comparable": self.step_multiplier == 1,
+                "execution_condition": EXECUTION_CONDITION,
                 "success": bool(self.env.success[0]) if ended else None}
 
     def finalize(self, classification, reason):
@@ -288,15 +334,22 @@ class Playground:
         if not isinstance(action, dict):
             raise ValueError("Native action dictionary required")
         self.env.validate_action_dict(action)
-        import copy
-
         # take_action calls solve_ik in its default world mode, which consumes
         # raw-link world quaternions directly. delta_matrix belongs only to
         # the native relative-mode branch; applying it here would be incorrect.
-        native_action = copy.deepcopy(action)
+        initial_poses = {}
+        for robot in self.env.robot_manager.robot_list:
+            if robot.type == "target":
+                key = f"{robot.arm_name.split('_')[0]}_ee_pose"
+                initial_poses[key] = plain(self.env.robot_manager.get_real_endpose(
+                    robot, env_idx_list=[0], is_relative=True)[0])
+        waypoints = tcp_waypoints(initial_poses, action, steps)
+        self.log("waypoints.jsonl", {"request_id": request_id, **self.status(),
+                                    "initial_raw_link_poses": initial_poses,
+                                    "selected_final_action": action, "waypoints": waypoints})
         executed = 0
         refusal = None
-        for _ in range(steps):
+        for waypoint_index, native_action in enumerate(waypoints):
             if self.env.is_episode_end():
                 break
             before = int(self.env.take_action_cnt[0])
@@ -308,6 +361,7 @@ class Playground:
                     raise RuntimeError("Pre-dispatch IK refusal unexpectedly consumed a native step") from error
                 refusal = {**plain(error.event), "request_id": request_id,
                            "episode_id": self.episode_id, "native_step": before,
+                           "waypoint_index": waypoint_index,
                            "completed_substeps": executed, "discarded_substeps": steps - executed}
                 self.log("ik_refusals.jsonl", refusal)
             finally:
@@ -329,6 +383,7 @@ class Playground:
             executed += 1
             self.env.is_episode_end()
             self.log("steps.jsonl", {"request_id": request_id, **self.status(),
+                                    "waypoint_index": waypoint_index, "waypoint_count": steps,
                                     "action": action, "native_action": native_action})
             if self.status()["ended"]:
                 self.finalize("native_terminal", "native_evaluator")

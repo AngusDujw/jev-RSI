@@ -7,7 +7,10 @@ Updated: 2026-10-22. Read AGENTS.md and EXP-2026W43-007 before acting.
 - SSH host: company-server-2-ykj (JcbotIns), user ykj.
 - Remote repo: /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 - Baseline assets and interpreters: /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-- No active native or policy process after explicit review stop.
+- No active native/worker. g native172178 verified exited after bounded zero-API smoke.
+- g hold5 tracked; next X+20mm required0.283rad joint increment and guard rejected it before dispatch.
+- g stopped at5 steps; Y+/Z+ were not executed. This is an execution-contract result, not task failure.
+- Next: offline/native test a predeclared five-waypoint trajectory to the same final TCP goal, preserving the original guard and5-step budget.
 - Ended e: playground-ik-z-diagnostic-20261022e, native3894916 / worker4031664 verified exited.
 - Model episode984becb0-bdac-452f-b32a-b7fddea6c6a7 ended incomplete at90/1000,18 Decisions HTTP200, r004.
 - Last command sequence5, op stop; never resume this episode or replay requests.

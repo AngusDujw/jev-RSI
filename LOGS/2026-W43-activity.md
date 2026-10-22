@@ -345,3 +345,5 @@
 - 【Agent】【2026-10-22 22:16】[op] f GPU1原生4163259独立受控XYZ+各5步完成，实测19.925/20.004/19.998mm，误差.076/.081/.081mm，保0/5/10/15三视角一条历史，0API，进程退出。实际看过f原始head0/5/10与e60图后，r004选择三帧动作效果示例，撤下不适用的旋转候选及静态失败摘要；原提示/动作接口不变。首段12图请求HTTP200，但仅close/open/keep无平移；75步图像先审核后，放行最后一个同条件短段，最多两段无改善即不再重复。  ↪ `EXP-2026W43-007`
 - 【Agent】【2026-10-22 22:25】[op] E r004到90步发现原launcher默认IK连续性保护被Playground入口绕过：±2π目标造成大幅误动；在审核点sequence5主动stop，保全部原始证据，不归模型失败。
 - 【Agent】【2026-10-22 22:31】[op] 恢复baseline shared_harness默认IKContinuityGuard；保透明raw observer，拒绝保已执行前缀并立即进入outer review，事件不进模型输入；离线验证后部署新独立原生检查。
+- 【Agent】【2026-10-22 22:39】[result] g零API检查hold5成功；X+20mm的.283rad关节增量被原护栏拒绝，零新增步，Y/Z未执行，原生退出。相对路径chdir嵌套修launcher绝对化；下一项验证同最终TCP目标的5子步轨迹，不放宽guard、不重试。
+- 【Agent】【2026-10-22 22:41】[op] tcp-slerp-waypoints-v1离线1512几何路径及拒绝prefix验证通过；预声明5个子目标、同最终TCP/夹爪/预算，原guard不变，不retry。提交部署后先新h零API验证。

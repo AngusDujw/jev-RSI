@@ -81,3 +81,13 @@ accepted prefix length, discards the suffix without retry, and forces an immedia
 outer review; guard diagnostics are never added to the model payload. A reset
 starts fresh guard state. Earlier c/e runs lacked this installation and remain
 diagnostic development evidence, not validated policy performance.
+
+Execution condition `tcp-slerp-waypoints-v1` predeclares up to five waypoints
+from the measured starting robot poses to the same selected final TCP targets.
+TCP translation is linear and orientation follows the shortest quaternion arc;
+the raw LINK6 poses are reconstructed using the fixed robot-local TCP offset.
+The gripper command stays unchanged. Each waypoint receives exactly one native
+action and the original IK guard; a refusal drops the unexecuted suffix and
+requires review. There is no additional solve, physics budget or model retry.
+This differs from earlier repeated absolute-target dispatch and must be recorded
+as a distinct development execution condition, not pooled with old policy results.

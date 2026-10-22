@@ -39,6 +39,10 @@ def main():
     parser.add_argument('--native-step-multiplier', type=int, choices=(1, 5), default=5)
     parser.add_argument('--extend', action='store_true', help='Explicitly add unused GPUs to this owned campaign')
     args = parser.parse_args()
+    # RoboDojo changes cwd to its results directory during startup. Keep both
+    # child output paths and manifest references independent of that change.
+    args.campaign = args.campaign.expanduser().resolve()
+    args.roboicl = args.roboicl.expanduser().resolve()
     if len(set(args.gpus)) != len(args.gpus) or any(g not in range(8) for g in args.gpus):
         raise ValueError('Use unique allocated GPUs 0..7')
     if not args.native_only:
