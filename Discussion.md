@@ -626,3 +626,4 @@
 【Agent @Codex】【2026-10-23】[EXP105](LOGS/2026-W43.md#exp-2026w43-105)：旧v61收齐完整0/1、另2typed拒答中断；完整init16在2998步失败，2736步姿态准备、1572步六轴保持，600/1200也false。预算未解除该版停滞。v68新纯题面已953e冻结，startup16答/58步及hash核验后为提速开三独立例，首R实际仍待检；server main安全ff，旧工作树不动。
 
 【Agent @Codex】【2026-10-23】[EXP106–107](LOGS/2026-W43.md#exp-2026w43-107)：Pro36清题/去点偏差同六图仍continue，不推广单问；未证明候选照片达到原生目标。Pro37三项视觉题给uppermost/persists/clear，再由第二次实际Decisions选advance0.97；held负例仍continue0.97，且其support头低置信误选uppermost，不能称各项都正确。十五CPU含相反mock返回原样保留，host不算AND、不替答。按冻结三例新主线+旧v64最终合同回移对照检验，不将静态advance计任务成功。
+【Agent @Codex】【2026-10-23】[EXP109–110](LOGS/2026-W43.md#exp-2026w43-109)：收齐v63与v64各native2/3、program0/3，均2998步；v63阳性仍stage5，不能统一归因最终inspect。v62完整0/2另1reference拒答中断。v69新主线与精确旧v64终局回移各三独立例已实际运行，原生成功不进模型；网站分别显示native与program。CIRCLE-1以冻结完整终局、正常结束和预留初态收敛，不把静态advance或已有2/3称稳定完成。

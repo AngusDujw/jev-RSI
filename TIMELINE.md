@@ -190,6 +190,7 @@ graph LR
     T_2026W43_034["📊 decision-multimodal<br/>v59-r2完整0/3，各2998步；v6…"]:::experiment
     T_2026W43_035["📊 decision-multimodal<br/>Pro30下放限定附加ready门后，v6…"]:::experiment
     T_2026W43_036["📊 decision-multimodal<br/>2026-10-23 v67原生286侧C…"]:::experiment
+    T_2026W43_037["📊 decision-multimodal<br/>v63/v64各完整native2/3但p…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -339,6 +340,7 @@ graph LR
   T_2026W43_033 --> T_2026W43_034
   T_2026W43_034 --> T_2026W43_035
   T_2026W43_035 --> T_2026W43_036
+  T_2026W43_036 --> T_2026W43_037
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -515,6 +517,7 @@ graph LR
 | `T-2026W43-034` | 2026-10-22 | experiment | decision-multimodal | v59-r2完整0/3，各2998步；v60真实RX/RY后仍not_ready且全轴保持。仅修目标scope静态仍保持，v61冻结actor自选当前物理木条方向并启动原生，收益待测。 | `EXP-2026W43-091` | - |
 | `T-2026W43-035` | 2026-10-23 | experiment | decision-multimodal | Pro30下放限定附加ready门后，v63实际position0.83/allRhold/not_ready由actor advance0.97并于490实测XY运输；v64三例初期参考较一致，完整任务仍待验。 | `EXP-2026W43-096` | - |
 | `T-2026W43-036` | 2026-10-23 | experiment | decision-multimodal | 2026-10-23 v67原生286侧C4后298/310当前C6，R高度几何同side相机119mm；仅输入链路证据，完整任务未成功 | `EXP-2026W43-103` | - |
+| `T-2026W43-037` | 2026-10-23 | experiment | decision-multimodal | v63/v64各完整native2/3但program0/3，2998步；新Pro37终局主线与旧v64回移各三独立例已跑，未达稳定完成 | `EXP-2026W43-109` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
