@@ -198,3 +198,4 @@
 - 【User】【2026-10-22 20:20】[prompt] 可以先把最大步数设置为官方要求的的5倍，且观察一下是否有的是因为最大步数限制导致的没有完成，以及为什么容易达到最大步数限制，但主要还是正常改进
 - 【Agent】【2026-10-22 20:22】[op] 官方LIBERO-plus eval/default.yaml本机及raw均600，按用户拍板允许3000；决策轮显式600防180轮先截断。外层预算检查点不传模型，假环境验证不改变返回值/控制分支。准备同预算原v53/skill-only/skill+Lessons各3开发例，原任务/模型权限不变。
 - 【Agent】【2026-10-22 20:26】[result] v58首次启动9进程在预算hook过早导入LIBERO时退出，0真实API/0物理步，非任务失败；修复hook显式设置libero-root/EGL，与原main相同。不改任务/动作或旧记录，保留首次日志并用v58-r1单独目录。现有scene-bank要求全例record_evidence，故9例保留全证据。
+- 【Agent】【2026-10-22 20:28】[run] v58-r1先单槽已实际收到4回复并执行，manifest3000；随后开放九槽，三组同预算配对不热改snapshot，reserved17/18/19保留。补EXP080启动导入错误和EXP081实际运行，新增3000协议与CURRENT/Discussion；strict周志零问题。

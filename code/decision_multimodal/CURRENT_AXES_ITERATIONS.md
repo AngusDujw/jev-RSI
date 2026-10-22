@@ -1,6 +1,6 @@
 # Current adaptation: frozen Skills/Lessons and 3000-step diagnostic budget
 
-- User2026-10-22: reference EmbodiedEvo2610.18867v1; preserve Decisions motor/phase control and nonprivileged observations. New harness mechanics and Pro22 question-contract skill implemented; native launch pending. Official default max_steps600 verified; new maximum3000 is extended development, not standard score.
+- User2026-10-22: reference EmbodiedEvo2610.18867v1 and use official600x5=3000physical steps. r1 source521439df launched baseline/skill-only/skill+Lessons each14/15/16 with frozen snapshot ae34e686 and Pro22 contract. First real baseline requests/actions verified, nine slots enabled. First v58 launch0API/0steps failed new import hook and is retained separately. Results pending;3000 is extended development, not standard score.
 - Corrected v57 no-task/goal examples completed native/program3/3 at862/778/910steps,274/253/285responses;812request summaries contain no task/goal bank hashes. v56 also ended3/3 but retains its contaminated label. No new clean bottle success.
 
 # Current two-task multimodal iterations

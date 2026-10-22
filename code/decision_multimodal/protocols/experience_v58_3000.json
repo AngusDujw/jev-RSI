@@ -1,0 +1,40 @@
+{
+  "kind": "paired_development_experience_comparison",
+  "native_code_commit": "521439df",
+  "tasks": [
+    1458
+  ],
+  "knob_status": "1383 remains completed under frozen v20/v55/v57; do not rerun solved controls to fill the new budget.",
+  "official_budget": {
+    "steps": 600,
+    "multiplier": 5,
+    "max_physical_steps": 3000,
+    "source": "https://raw.githubusercontent.com/sylvestf/LIBERO-plus/main/libero/configs/eval/default.yaml",
+    "settling_counted": true,
+    "note": "With10settling and12step chunks, final allowed executed count is2998; no partial chunk is invented."
+  },
+  "initial_states": [
+    14,
+    15,
+    16
+  ],
+  "reserved_initial_states": [
+    17,
+    18,
+    19
+  ],
+  "conditions": [
+    "baseline",
+    "skill_only",
+    "skill_and_lessons"
+  ],
+  "question_skill_plan": "Local ChatGPT Pro gpt-6.1-sol/high Pro22; no API planner fallback.",
+  "experience_snapshot_sha256": "ae34e68643e1f56996bc0e1715e0a892cc10da23c375c74e9037eb889108a658",
+  "snapshot_path": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/experience/embodiedevo-v1-frozen",
+  "actor": "du https://api.openai.com/v1/decisions gpt-6-luna",
+  "task_goals_and_action_categories_changed": false,
+  "native_evaluator_feedback_to_models": false,
+  "assets": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v58-r1-experience-3000",
+  "initial_launch_failure": "iteration-v58-experience-3000 retained: missing native import path before simulation, zero model calls/actions.",
+  "results": "Pending; first baseline physical actions verified, nine-way queue enabled."
+}

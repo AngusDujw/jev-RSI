@@ -184,6 +184,7 @@ graph LR
     T_2026W43_028["📊 decision-multimodal<br/>v53完整0/3且三例0R；用户授权v54…"]:::experiment
     T_2026W43_029["📊 decision-multimodal<br/>旋钮双删示例v54完整0/3均1198步，…"]:::experiment
     T_2026W43_030["📊 decision-multimodal<br/>v55只删通用示例完整3/3，685请求无…"]:::experiment
+    T_2026W43_031["📊 decision-multimodal<br/>用户官方5倍预算3000：r1原方案/Sk…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -327,6 +328,7 @@ graph LR
   T_2026W43_027 --> T_2026W43_028
   T_2026W43_028 --> T_2026W43_029
   T_2026W43_029 --> T_2026W43_030
+  T_2026W43_030 --> T_2026W43_031
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -497,6 +499,7 @@ graph LR
 | `T-2026W43-028` | 2026-10-20 | experiment | decision-multimodal | v53完整0/3且三例0R；用户授权v54旋钮无历史示例配对消融，冻结源码/协议/XYZ不变，3原生已启动 | `EXP-2026W43-075` | - |
 | `T-2026W43-029` | 2026-10-20 | experiment | decision-multimodal | 旋钮双删示例v54完整0/3均1198步，持续hold/反转；用户要求单删家族v55/v56六配对原生已启动 | `EXP-2026W43-077` | - |
 | `T-2026W43-030` | 2026-10-20 | experiment | decision-multimodal | v55只删通用示例完整3/3，685请求无motion哈希；v56阶段目标图残留不算干净消融，修正v57三配对启动 | `EXP-2026W43-078` | - |
+| `T-2026W43-031` | 2026-10-22 | experiment | decision-multimodal | 用户官方5倍预算3000：r1原方案/Skill/Skill+Lessons各三开发例启动；首真实回复和动作已验证，旧导入错误0API保留 | `EXP-2026W43-081` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
