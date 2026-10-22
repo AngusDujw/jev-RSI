@@ -16,5 +16,14 @@
   "actor": "du /v1/decisions gpt-6-luna",
   "method": "Controlled Pro30 readiness-scope adoption: only additional phase readiness is restricted to lower_to_place; original carry positioning and allRhold rules remain, actor still decides phase. Exact v62 R questions/goal/images, five-image reference selection, numeric XYZ, gripper and frozen Lessons retained. Full Pro30 replacement was not blindly injected into R; only explicit readiness_scope/scope_reason adopted, normalization saved. No missing-geometry advance or motor override.",
   "validation": "Five CPU invariants plus five actual phase Decisions fixtures passed, zero physical actions.",
-  "status": "Frozen candidate, first native pilot then3cases"
+  "status": "Frozen candidate, first native pilot then3cases",
+  "runtime_status": "running",
+  "native_source_commit": "31bbbfa9",
+  "native_pids": [
+    843075,
+    871136,
+    871137
+  ],
+  "runtime_observation_date": "2026-10-23",
+  "observed_partial_evidence": "Actual actor advance at478 with position0.83/allRhold/not_ready; first transport at490 measured18.977/-18.736mmXY. Complete outcome pending."
 }

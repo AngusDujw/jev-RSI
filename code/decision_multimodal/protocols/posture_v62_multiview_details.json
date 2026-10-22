@@ -17,5 +17,13 @@
   "input_treatment_origin": "Outer experiment agent adds observed wood multiview zooms; not falsely attributed to a new Pro plan.",
   "method": "Only physical-reference observation representation differs from v61: append two CURRENT wood-region zooms with all unranked observed spans projected into both agentview and sideview using same-tick public camera calibration. No actor K/T text, no external target choice, no angular correction. Pro29 goal/questions, R six-image input, XYZ/gripper/phase/controller/three Lessons unchanged. Public calibration cached in capture for this rendering, and saved only to outer audit. Native development14/15/16; reserve17/18/19 untouched.",
   "validation": "Six CPU image/freshness/no-mutation/missing-input/English/AST checks, 0API and0actions",
-  "status": "Frozen, first native interface pilot then open3slots"
+  "status": "Frozen, first native interface pilot then open3slots",
+  "runtime_status": "running",
+  "native_source_commit": "eec1a630",
+  "native_pids": [
+    814465,
+    833591,
+    833592
+  ],
+  "runtime_observation_date": "2026-10-23"
 }

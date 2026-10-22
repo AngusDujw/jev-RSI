@@ -18,5 +18,12 @@
   "actor": "du /v1/decisions gpt-6-luna",
   "method": "Independent frozen Pro29 support-direction candidate. Actor identifies a CURRENT physical wood span, copied unchanged to scoped posture questions. No externally selected target plane, desired orientation, angular residual or recommended sign. R state goal equals posture goal. Existing source v2, XYZ, gripper, phase positioning, three Lessons, controller and limits unchanged; old v60 remains immutable. Development14/15/16; reserve17/18/19 untouched.",
   "validation": "Nine CPU invariants passed, no actions/API. Initial inline validation typo failed before execution and was corrected. Current wire requests and native execution remain to verify.",
-  "status": "frozen candidate, launch pilot then open three slots after actual interface verification"
+  "status": "frozen candidate, launch pilot then open three slots after actual interface verification",
+  "runtime_status": "running",
+  "native_source_commit": "6b961f1e",
+  "native_pids": [
+    807015,
+    807016
+  ],
+  "runtime_observation_date": "2026-10-23"
 }

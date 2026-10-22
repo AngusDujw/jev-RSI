@@ -222,3 +222,4 @@
 - 【Agent】【2026-10-22 23:51】[run] 7ef70284已SSH推送并增量bundle部署v64独立树，managed3case+3worker桥已启动。v63独立首例仍在运行；候选5条Lessons镜像DataStorage，冻结活动v2经验不变。
 - 【Agent】【2026-10-23 00:00】[run] v63真实阶段请求已核验informative-only readiness与原position/Rhold规则，actor原答不覆写；为利用空闲API/GPU容量，真实交接尚待观察时即开剩余两独立例，改变先等交接的排程而不改输入。GPU读数5347/49140MiB、0%瞬时使用，负载约2/16CPU，当前主要等待API。v64三例初期均实际选择P0B；仍待完整任务。
 - 【Agent】【2026-10-23 00:05】[result] v63真实478同刻position0.83/三Rhold/not_ready，actor advance0.97；490运输XY命令20/-20mm实测18.977/-18.736mm。v60最终完整0/2各2998，另1拒答中断。v64三例初期实际多次P0B；完整放置仍待验。
+- 【Agent】【2026-10-23 00:12】[op] 更新v60–v64实验协议的实际运行状态/原生源SHA/PID；v60为完整0/2加1中断，其余真实原生继续，v63首运输与v64初期物理参考均标局部证据。未改任何运行输入。
