@@ -1,0 +1,22 @@
+{
+  "version": "v65",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "planner": "Local Pro32 gpt-6.1-sol high; one concise English lesson actually loaded",
+  "actor": "du /v1/decisions gpt-6-luna",
+  "method": "Pro32 current-main-plus-side receiver observation method. Correct every point camera and preserve the legend after header rewriting. Add up to9fresh unranked sideview wood-colour/depth samples within the projection of ALL current observed wood rectangles, with own-robot rejection and a same-frame receiver zoom only in point-reference requests. Preserve original main candidates; actor chooses label and all actions. V3 frozen harness changes only the receiver identity question to exact Pro32 wording; old three Lessons unchanged. R strategy remains exact Pro31/v64 with lower-only readiness. No target plane, support point, angular correction or motor sign selected externally.",
+  "experience_sha256": "70a51d3ef22f5f5deee00bd342463a3abc91d154b3f514550916b9a5bf4c4add",
+  "direct_source_sha256": "fd967f3d6696f01a541a6ee8898366223814a04272f70ca2912fd069328f2ce1",
+  "strategy_sha256": "0491ac082492cdf14962efca3e5fdcb465d6e5ad1da4797a307a27a39d1023a9",
+  "validation": "Six camera/catalog checks plus11projection/fresh-depth/unranked/unknown/zoom/binding checks. Metadata-only changed-input historical query remained receiver unlabelled; no native benefit claimed.",
+  "runtime_status": "frozen, first native pilot then3independent cases after actual second-view points/zoom/binding verification"
+}

@@ -299,6 +299,7 @@ def main():
     p.add_argument('--retain-rotation-examples',action='store_true',help='Include independent yaw/pitch/roll before-after cards in each relevant later request; the API has no implicit image memory')
     p.add_argument('--stage-motion',action='store_true',help='Measured own-hand displacement since entering the current stage, never object or desired motion')
     p.add_argument('--receiver-surfaces',action='store_true',help='Current receiver wood-component RGB-D candidates instead of a window lattice')
+    p.add_argument('--sideview-receiver-samples',action='store_true',help='Supplement unranked receiving points with fresh sideview RGB-D and a same-frame region zoom')
     p.add_argument('--pad-outlines',action='store_true',help='Project public own inner pad facets on each current RGB image')
     p.add_argument('--visual-near-grasp',action='store_true',help='Near-grasp XY judges finger capture in RGB, not zero skin displacement')
     p.add_argument('--numeric-z',action='store_true',help='Short reference-height sign criteria during near approach; actor still selects the sign')
@@ -309,6 +310,9 @@ def main():
     p.add_argument('--example-bank',type=Path,help='Shared fixed functional demonstration assets')
     p.add_argument('--input-variant',choices=['all_examples','task_only','motion_only','task_native_frame'],default='all_examples')
     args=p.parse_args()
+    if args.sideview_receiver_samples and not (args.task==1458 and args.overview_camera=='sideview'
+            and args.receiver_surfaces and args.bound_span_rotation and args.surface_context and args.candidate_detail_cards):
+        raise ValueError('Sideview receiver samples require bottle sideview RGB-D, observed wood spans and actual candidate detail images')
     if args.source_motion_test and not (args.task==1458 and args.actor_attention and args.track_selected and args.stage_motion and args.surface_context and args.live_surfaces and args.formal_stage_call):
         raise ValueError('Source-motion test requires bottle actor-selected live RGB-D tracking, measured stage motion and formal phase calls')
     if args.free_placement_posture and (args.task!=1458 or not args.separate_rotation_call or args.literal_line_reasoning or args.goal_example):
@@ -361,7 +365,7 @@ def main():
         plan=plan,plan_sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest(),
         privileged_scene_targets_or_errors=False,camera_derived_surface_geometry=args.surface_context,
         actor_selected_relative_feedback=args.actor_attention,computed_orientation_error=False,literal_line_reasoning=args.literal_line_reasoning,sideview_source_fallback=args.sideview_source_fallback,
-        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,span_detail_cards=args.span_detail_cards,literal_placement_rotation=args.literal_placement_rotation,source_motion_test=args.source_motion_test,grasp_pose_decided_by_actor=True,experience_injection=False))
+        paired_span_selection=args.paired_span_selection,span_intent_history=args.span_intent_history,posture_task_exit=args.posture_task_exit,record_final_sensors=args.record_final_sensors,upper_neck_sample=args.upper_neck_sample,candidate_detail_cards=args.candidate_detail_cards,span_detail_cards=args.span_detail_cards,literal_placement_rotation=args.literal_placement_rotation,source_motion_test=args.source_motion_test,sideview_receiver_samples=args.sideview_receiver_samples,grasp_pose_decided_by_actor=True,experience_injection=False))
     stages=plan['stages'];stage=0;grip=-1.;tick=0;previous=[];history=[];visual_history=[];env=None
     if args.file_transport:os.environ['DECISION_MM_FILE_ONLY']='1'
     recorder=Recorder(out);api=DirectAPI({},recorder.log,'jev');api.compact=args.compact
@@ -447,7 +451,7 @@ def main():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
         def capture(save_sensor_data=False):
             from PIL import ImageDraw
-            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={};api.scene_hand_details=[];api.current_camera_calibration={}
+            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={};api.scene_hand_details=[];api.current_camera_calibration={};api.receiver_aux_window=None
             if tracker is not None:tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             if side_source_tracker is not None:side_source_tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             for camera in cameras:
@@ -493,6 +497,19 @@ def main():
                             draw.line((u,v,x,y+8),fill='#00ffff',width=1)
                             draw.text((x,y),sample['label'],font=font,fill='#00ffff',stroke_width=1,stroke_fill='black')
                         b=io.BytesIO();im.save(b,format='PNG');raw=b.getvalue()
+                if (args.sideview_receiver_samples and camera=='sideview'
+                        and stages[stage].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect')):
+                    from libero_receiver_views import projected_window, sample_visible_wood
+                    from robosuite.utils.camera_utils import get_real_depth_map
+                    from libero_robot_mask import own_geometry_rejector
+                    shape=(api.receiver_component or {}).get('visible_shape')
+                    box=projected_window(shape,K,T,args.size,args.size)
+                    depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
+                    samples=sample_visible_wood(np.asarray(obs[camera+'_image'][::-1]),depth,K,T,box,
+                        api.surface_samples,own_geometry_rejector(native) if args.robot_self_mask else None)
+                    if samples:
+                        api.surface_samples.extend(samples)
+                        api.receiver_aux_window=dict(observation_camera=camera,native_tick=tick,bbox_xyxy=box)
                 if args.surface_context and camera=='agentview':
                     from robosuite.utils.camera_utils import get_real_depth_map
                     depth=np.asarray(get_real_depth_map(native.sim,obs[camera+'_depth'])).squeeze()[::-1]
@@ -698,6 +715,8 @@ def main():
                 state['visible_surface_samples']=api.surface_samples
                 if receiver_tracker is not None:
                     state['receiver_component']=api.receiver_component
+                    if api.receiver_aux_window is not None:
+                        state['receiver_aux_window']=api.receiver_aux_window
                     state['receiver_candidate_meaning']='B dots are current brown RGB-component surfaces in the initial rack identity region, after own-robot rejection. Verify actual rack wood and choose the slatted cradle rather than an upright/edge. A colour match is not a semantic guarantee or a target pose.'
                 state['surface_sample_meaning']=('Labelled dots are current RGB-D visible surface points in the same fixed world frame as the gripper. '
                     'Regions A/B are initial fixed-camera identity windows, NOT object tracking; after an object moves a dot may show background. '

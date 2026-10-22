@@ -20,24 +20,35 @@ def bind_receiver_choice(state,answers,candidates):
         state['actor_selected_receiver_surface']=candidates[label]
 
 
+LABEL_CAMERA_RULE = (
+    ' Each point in current_label_catalog has its own observation_camera. '
+    'Locate that label and pixel in THAT CURRENT camera image. '
+    'Source and receiving points can belong to DIFFERENT cameras; never read a '
+    'receiving-point pixel in the source camera merely because the source camera is named.')
+
+
 def reference_payload(original,current,goal_reference,raw_cameras=None):
     state=original['state'];catalog=[]
     box=(state.get('source_component') or {}).get('bbox_xyxy')
     for sample in state.get('visible_surface_samples',[]):
         row={k:sample[k] for k in ('label','pixel_uv','observation_camera','visible_part_note','meaning') if k in sample}
+        source_label = sample['label'].startswith(('C','N','S'))
+        component = (state.get('source_component') if source_label else state.get('receiver_component')) or {}
+        row['observation_camera'] = sample.get('observation_camera', component.get('observation_camera','agentview'))
         if sample['label'].startswith('C') and box and box[3]>box[1]:
             row['fraction_from_top_of_current_visible_source_component']=round((sample['pixel_uv'][1]-box[1])/(box[3]-box[1]),3)
         catalog.append(row)
     curated=dict(task=state['task'],stage={k:v for k,v in state['stage'].items() if k in ('name','goal')},
         current_label_catalog=catalog,
         current_source_observation_camera=(state.get('source_component') or {}).get('observation_camera','agentview'),
+        current_receiver_observation_cameras=sorted({s['observation_camera'] for s in catalog if s['label'].startswith('B')}),
         current_source_component_status=(state.get('source_component') or {}).get('status'),
         current_receiver_component_status=(state.get('receiver_component') or {}).get('status'))
     payload=convert_request(original)
     header=REFERENCE_INPUT
     if state.get('free_placement_posture') and state['stage'].get('stage_key') in ('align_source_above_receiver','lower_to_place','release','inspect'):
         header='Select physical features from CURRENT images for placing the bottle on the uppermost rack support. Select a load-bearing source feature: a visible base-footprint point for upright placement, or a body-side patch for laid-down placement. Neither posture is prescribed. Reject lower-shelf/table receiving references. Sampled skin points are not hidden centres or complete support footprints.'
-    content=[dict(type='input_text',text=header+' C labels and their pixel coordinates belong to current_source_observation_camera; verify that camera image, not a different view. A candidate from another current camera remains a visual hypothesis.'),dict(type='input_text',text=json.dumps(curated,separators=(',',':')))]
+    content=[dict(type='input_text',text=header+LABEL_CAMERA_RULE),dict(type='input_text',text=json.dumps(curated,separators=(',',':')))]
     if state['stage'].get('stage_key') in ('orient_held_body','align_source_above_receiver','lower_to_place','release','inspect'):
         content.extend(goal_reference)
     card=None
@@ -57,6 +68,9 @@ def reference_payload(original,current,goal_reference,raw_cameras=None):
             content.append(part)
         if skip_image:raise ValueError('Incomplete source detail pair')
         content.extend([dict(type='input_text',text='CURRENT candidate details, same synchronized observation. Each ring is at that candidate ACTUAL pixel in raw RGB. Overview text may be displaced by a leader line: classify the ring location here, not the overview text position. All candidates are unranked observations, not action candidates or grasp recommendations.'),card])
+    if raw_cameras and state.get('receiver_aux_window'):
+        from libero_receiver_views import receiver_zoom
+        content.extend(receiver_zoom(state, raw_cameras))
     payload['input']=[dict(role='user',content=content)]
     return payload
 

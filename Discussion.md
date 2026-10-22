@@ -614,3 +614,5 @@
 【Agent @Codex】【2026-10-22】[EXP094–095](LOGS/2026-W43.md#exp-2026w43-095)：旧v60 init15在2170收到真实reference refusal，native未评，不计完整失败。相同5图改为直接沿单木条问题后选可见平行P0B，Pro31原样版本仍仅p0.48/conf0.35，不能当稳定证据。v64仅改selector的header/question，其余v63保持；候选5短Lessons通过freeze/context检查，未注入活动回合。
 
 【Agent @Codex】【2026-10-23】[EXP096](LOGS/2026-W43.md#exp-2026w43-096)：旧v60完整0/2各2998步，另1真实拒答中断。v63实际position0.83/allRhold/not_ready时actor advance0.97，490首XY运输实测[18.977,-18.736,-0.452]mm；后transport偏差14.8仍continue，未绕过原规则。v64三例初期实际多次选P0B。仅局部运输/视觉参考进展，完整任务待当前冻结回合验证。
+
+【Agent @Codex】【2026-10-23】[EXP097–098](LOGS/2026-W43.md#exp-2026w43-098)：旧v61首例1042 typed reference refusal，中断未评。v63运输缺测实际receiver unlabelled而非source；单修B点相机仍unlabelled。实际高图被手臂遮挡而侧图有木板无B候选。Pro32建议两视角新鲜接收点，v65未排序额外侧RGB-D点/同帧图、逐点相机及一句上层面身份题；17项CPU/接口检查通过，原生收益待验。

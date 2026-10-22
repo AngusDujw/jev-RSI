@@ -46,7 +46,8 @@ def revise_reference_header(payload, sent, contract):
         for part in message['content']:
             if (part['type'] == 'input_text'
                     and part['text'].startswith('Select physical features from CURRENT images')):
-                part['text'] = header
+                from libero_reference_decision import LABEL_CAMERA_RULE
+                part['text'] = header + LABEL_CAMERA_RULE
                 matches += 1
     if matches != 1:
         raise ValueError('Transport reference header contract no longer matches the actor payload')
