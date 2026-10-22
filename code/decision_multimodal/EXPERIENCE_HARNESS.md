@@ -31,3 +31,11 @@ A v58 intermediate audit found selected receiver points but repeated unlabelled 
 ## Unanswered transport outages
 
 A retryable unanswered network batch must never become a native actor reply. The file bridge records its original body hash and requeues the same pending observation after a batch, without publishing reply.json. The native simulation remains blocked and does not step. Its FileClient wait budget is8hours, matching the configured campaign wall budget. Every actual provider answer/refusal is durably reused; authentication, schema and malformed-response errors remain explicit terminal errors. This operational recovery state is never a model input. Existing already-exited simulations cannot be resumed without a checkpoint; infrastructure retries are separately named and old results retained.
+
+## Optional v60 posture-preparation contract
+
+Pro28 defines a current orientation-preparation goal for later body-side support, allowing a gap above the wood. The actor sees its existing current RGB and actual held-bottle primitive examples. Observation processing reports all current fitted wood planes and measured segment-endpoint distances d=n dot (p-c), normalizing observed n only. No receiving plane, target orientation, angle correction or motor sign is chosen by this processing. Partial fitted segments are not physical bottle endpoints.
+
+One R request returns rx/ry/rz plus posture_readiness. The original four-answer provider reply stays on disk; a copy exposes only the three R choices to the unchanged motor consumer. A separate actor phase question reads the same-observation orientation category before applying the existing positioning rule. Not-ready/unclear means continue; original restart paths remain. Missing positioning feedback never gains a new advance option. Hash-pinned strategy input is checked before every request. The disabled path preserves the existing interface. The run manifest contains the actual planner contract for review.
+
+The earlier safe-frame static negativeRX was low confidence and unverified physically; do not call it useful motion or successful manipulation. The late seating frame remained all-hold. Full native outcomes and measured object/robot changes decide whether this candidate is retained.

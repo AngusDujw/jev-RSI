@@ -44,6 +44,15 @@ def build(root):
 <h1>Actual robot episode evidence</h1><p>Historical demonstrations and previous views are labelled in their exact input order. No re-created model answers. The evaluator below is a report to the user and is never model input. GIF: one actual observation per decision, accelerated playback, not constant physics-time sampling.</p>'''
     page+='<pre>'+html.escape(json.dumps(result,indent=2))+'</pre><a href="rollout.gif">Actual observed rollout GIF</a><br><img style="max-width:100%" src="rollout.gif">'
     page+='<p><a href="manifest.json">Run configuration and source hashes</a> · <a href="execution.jsonl">Actual commands and measured motion</a> · <a href="perception.jsonl">Current sensor-feature audit</a> · <a href="protocols/">Protocol revisions actually used</a></p><h2>Exact request and original response</h2><label for="turn">Select API call </label><select id="turn"></select><div id="view"></div><script>const rows='+data+''';const select=document.getElementById('turn'),view=document.getElementById('view');rows.forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent='API call '+i+' | physical step '+r.observation.native_tick;select.append(o)});function pre(x){const p=document.createElement('pre');p.textContent=typeof x==='string'?x:JSON.stringify(x,null,2);view.append(p)}function show(){view.replaceChildren();const r=rows[+select.value];if(!r)return;pre({observation:r.observation});for(const p of r.request.input[0].content){if(p.type==='input_text')pre(p.text);else{const im=document.createElement('img');im.src='evidence/'+p.image_file;im.alt='Actual image supplied in this model request';im.loading='lazy';view.append(im)}}pre({questions:r.request.questions});pre({original_response:r.response})}select.onchange=show;show();</script></html>'''
+    strategy = manifest.get('planner_posture_strategy')
+    if strategy:
+        section = ('<h2>Planner posture preparation</h2><p>The planner specifies an observable preparation goal. '
+            'The actor chooses each rotation sign and reports posture readiness; a separate actor phase decision uses that same-observation judgment. '
+            '<a href="planner-posture-strategy.json">Complete frozen question contract</a>.</p><pre>'
+            + html.escape(json.dumps(dict(goal=strategy['posture_preparation_goal'],
+                readiness_question=strategy['current_phase_readiness_question']), indent=2)) + '</pre>')
+        page = page.replace('<h2>Exact request and original response</h2>',
+                            section + '<h2>Exact request and original response</h2>')
     (root/'review.html').write_text(page)
     print(json.dumps(dict(review=str(root/'review.html'),actual_observations=len(frames),exact_requests=len(records))))
 

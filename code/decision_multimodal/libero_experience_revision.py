@@ -7,6 +7,7 @@ import runpy
 import sys
 
 from experience_harness import context, digest, validate
+from legacy_decisions import english
 
 
 def revise_questions(sent, contract):
@@ -59,10 +60,29 @@ def main():
     parser.add_argument('--frozen-source', type=Path, required=True)
     parser.add_argument('--frozen-source-sha256', required=True)
     parser.add_argument('--experience-mode', choices=['skill_only', 'skill_and_lessons'], required=True)
+    parser.add_argument('--rotation-strategy-file', type=Path)
+    parser.add_argument('--rotation-strategy-sha256')
     args, remaining = parser.parse_known_args()
     task_parser = argparse.ArgumentParser(add_help=False)
     task_parser.add_argument('--task', type=int, required=True)
     task_args, _ = task_parser.parse_known_args(remaining)
+    strategy = None
+    if args.rotation_strategy_file:
+        if task_args.task != 1458 or digest(args.rotation_strategy_file) != args.rotation_strategy_sha256:
+            raise ValueError('Posture strategy task or frozen hash differs')
+        strategy = json.loads(args.rotation_strategy_file.read_text())
+        english(strategy)
+        if (set(strategy['choice_descriptions']) != {'positive', 'negative', 'hold'}
+                or set(strategy['readiness_choices']) != {'ready', 'not_ready', 'unclear'}):
+            raise ValueError('Posture strategy cannot change categorical options')
+        if (not all(isinstance(strategy.get(key), str) and strategy[key] for key in (
+                'posture_preparation_goal', 'current_phase_readiness_question', 'axis_question_template'))
+                or '{axis}' not in strategy['axis_question_template']
+                or not isinstance(strategy.get('common_instructions'), list)
+                or not all(isinstance(line, str) for line in strategy['common_instructions'])):
+            raise ValueError('Incomplete planner posture contract')
+    elif args.rotation_strategy_sha256:
+        raise ValueError('Missing frozen posture strategy file')
     validate(args.experience_snapshot, args.experience_sha256)
     source = args.frozen_source.resolve()
     if digest(source) != args.frozen_source_sha256:
@@ -78,11 +98,29 @@ def main():
     install(remaining)
     cls = namespace['DirectAPI']
     original_build, original_audit = cls.build_payload, cls.input_audit
+    original_post = cls.post
+
+    def post(self, endpoint, sent):
+        if strategy is None:
+            return original_post(self, endpoint, sent)
+        if digest(args.rotation_strategy_file) != args.rotation_strategy_sha256:
+            raise ValueError('Frozen posture strategy changed')
+        from libero_posture_strategy import revise_rotation, revise_phase, separate_readiness
+        revised = revise_rotation(sent, strategy)
+        revised = revise_phase(revised, getattr(self, 'actor_posture_readiness', None), self.tick, strategy)
+        answer = original_post(self, endpoint, revised)
+        if sent['state'].get('request_purpose') == 'multimodal_rotation_axes':
+            answer, self.actor_posture_readiness = separate_readiness(answer, self.tick)
+            self.log(dict(kind='actor_posture_readiness', **self.actor_posture_readiness))
+        return answer
 
     def build(self, sent):
         validate(args.experience_snapshot, args.experience_sha256)
         revised = skill(sent, contract)
         payload = revise_reference_header(original_build(self, revised), revised, contract)
+        if strategy is not None:
+            from libero_posture_strategy import revise_rotation_payload
+            payload = revise_rotation_payload(payload, revised, strategy)
         state = sent['state']
         stage = state.get('stage', {}).get('stage_key', '')
         lessons = []
@@ -101,9 +139,11 @@ def main():
         result = original_audit(self)
         result.update(experience_snapshot_sha256=args.experience_sha256,
                       experience_mode=args.experience_mode, frozen_source_sha256=args.frozen_source_sha256)
+        if strategy is not None:
+            result['rotation_strategy_sha256'] = args.rotation_strategy_sha256
         return result
 
-    cls.build_payload, cls.input_audit = build, audit
+    cls.build_payload, cls.input_audit, cls.post = build, audit, post
     original_save = cls.compact_post.__globals__['save']
 
     def save(path, value):
@@ -111,6 +151,11 @@ def main():
             value = dict(value, experience_injection=args.experience_mode == 'skill_and_lessons',
                          experience_snapshot_sha256=args.experience_sha256,
                          question_skill_applied=True, experience_mode=args.experience_mode)
+            if strategy is not None:
+                value['rotation_strategy_sha256'] = args.rotation_strategy_sha256
+                if path.name == 'manifest.json':
+                    value['planner_posture_strategy'] = strategy
+                    original_save(path.parent / 'planner-posture-strategy.json', strategy)
         return original_save(path, value)
 
     cls.compact_post.__globals__['save'] = save

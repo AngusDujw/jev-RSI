@@ -1,0 +1,25 @@
+{
+  "version": "v60",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "physical_budget": 3000,
+  "strategy_sha256": "e3756f5e2f4e62302ca31f54773053c10fde648d8e8fbefe02540adf381b47f9",
+  "planner": "local ChatGPT Pro gpt-6.1-sol high",
+  "actor": "du /v1/decisions gpt-6-luna",
+  "method": "Pro28 defines posture preparation for later body-side support. Three independent world-R signs plus an actor posture-readiness category share one request. Only R signs go to the existing motor consumer; the original four-answer response is preserved. A separate formal actor phase question receives the same-observation readiness as an additional condition.",
+  "observation_processing": "CURRENT RGB-D visible fitted segment endpoints and all observed wood planes. Signed measured endpoint-to-plane distances, no target plane selection, desired angle, angular residual or motor recommendation. Existing actual six-image rotation context retained.",
+  "unchanged": "v59 source-reference questions, three frozen Lessons, geometry extraction, XYZ direction path, gripper decisions, source recovery, native controller and limits. Network deferral repair retained.",
+  "normalization": "Removed unsupported free-text State which reason applies clause from the original Pro hold description; original output retained.",
+  "static_evidence": "Safe478 RXnegative probability0.41/confidence0.11, RXpositive0.37; RY/RZhold and posture not_ready0.99. Late seating862 allRhold. Zero physical actions, no direction-correctness or task-success claim.",
+  "validation": "13 CPU/wire/original-image/reply/geometry/HTML checks; five real categorical phase fixtures correct. Missing positional feedback does not acquire advance; stale readiness rejected.",
+  "status": "ready for independent native pilot, not task complete"
+}

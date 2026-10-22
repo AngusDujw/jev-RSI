@@ -96,6 +96,9 @@ def scheduler(path):
                           '--frozen-source-sha256',case['frozen_source_sha256']]
             elif case.get('budget_audit'):
                 command+=['--frozen-source',case['frozen_source']]
+            if case.get('rotation_strategy_file'):
+                command+=['--rotation-strategy-file',case['rotation_strategy_file'],
+                          '--rotation-strategy-sha256',case['rotation_strategy_sha256']]
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000

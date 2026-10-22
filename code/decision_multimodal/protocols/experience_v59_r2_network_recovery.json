@@ -14,5 +14,13 @@
   "restart_reason": "All previous simulations have already exited after11network failures and1typed refusal. Preserve original records. New cases restart from their initial states because no resumable simulator checkpoint exists. These are explicit infrastructure retries, not claimed additional completed trials.",
   "planner": "local ChatGPT Pro gpt-6.1-sol high",
   "actor": "du OpenAI /v1/decisions gpt-6-luna",
-  "unused_candidates": "Pro23/25/26/27 did not produce useful signed rotations in static probes; they are not injected into this native restart."
+  "unused_candidates": "Pro23/25/26/27 did not produce useful signed rotations in static probes; they are not injected into this native restart.",
+  "native_status": "running, first actual70steps verified then3slots",
+  "native_source_commit": "25dbcd0a",
+  "native_pids": [
+    679401,
+    681666,
+    681667
+  ],
+  "native_file_client_source_sha256": "851c388026cc7b10759ae00cad9aca25a725d8ba7206e423a5905bbc39b968ba"
 }
