@@ -204,3 +204,31 @@ def decode(answers, robot_state, command_state=None):
             rotation_before_world_from_local=old_r, rotation_target_world_from_local=new_r,
             rotation_choice=rotation, gripper_command_native=gripper)
     return action, audit
+
+
+def motion_feedback(audit, after_raw_state):
+    """Compare decoded TCP targets with measured post-execution robot poses.
+
+    These are geometric motion discrepancies, not diagnoses of collision,
+    contact, object retention, or native task success. Translation vectors and
+    position errors refer to the same fingertip TCP used by decode().
+    """
+    measured = permitted_state(after_raw_state)["robot"]
+    feedback = {}
+    for arm in ARMS:
+        before = _vector(audit[arm]["tcp_before_world_m"], 3)
+        target = _vector(audit[arm]["tcp_target_world_m"], 3)
+        after = measured[arm]["tcp_position_world_m"]
+        target_rotation = [_vector(row, 3) for row in audit[arm]["rotation_target_world_from_local"]]
+        if len(target_rotation) != 3:
+            raise ValueError("Expected a 3 by 3 target rotation matrix")
+        after_rotation = measured[arm]["tool_rotation_world_from_local"]
+        # trace(R_target.T @ R_after) is the Frobenius inner product.
+        cosine = (sum(target_rotation[i][j]*after_rotation[i][j]
+                      for i in range(3) for j in range(3))-1.)/2.
+        feedback[arm] = dict(
+            requested_translation_world_m=[target[i]-before[i] for i in range(3)],
+            achieved_translation_world_m=[after[i]-before[i] for i in range(3)],
+            target_position_error_m=math.sqrt(sum((after[i]-target[i])**2 for i in range(3))),
+            target_orientation_error_rad=math.acos(max(-1., min(1., cosine))))
+    return feedback

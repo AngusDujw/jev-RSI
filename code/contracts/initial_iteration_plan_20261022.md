@@ -2,6 +2,9 @@
 
 > 最新预算覆盖（2026-10-22）：用户明确允许暂时将RoboDojo开发步数设为原官方上限的5倍。当前general_pickup由200增至1000步；成功判据不变。每个attempt记录official_step_limit=200、development_step_limit=1000、multiplier=5，短段审查和reset不必等满。下文历史200步结果/初始设计仍保留；本覆盖仅适用于新Playground开发，扩展预算成绩不得混报为官方200步稳定验证。
 
+> 实现补充（2026-10-22，EXP007）：推进器最近交互新增 execution_feedback，只由已发目标与实测机器人位姿计算 requested/achieved world translation、position-target error、orientation-target error，不选动作、不推contact/持物/任务成功。外层单独保IK原始状态/目标关节诊断；不将其当隐藏物体状态输入。反馈探查r001首检未改善，明确未升Skill；新受控证据支持姿态改变后恢复下降跟踪，已形成独立英文候选，仍需实际模型与独立布局验证，不因手动诊断成功就认证推进器能力。
+
+
 日期：2026-10-22。用途：用户审阅的完整设计文件；不是模型输入、不是经验库、不是已实现配置。
 
 **当前授权：2026-10-22 用户已恢复新 Playground 开发，目标服务器为 `company-server-2-ykj`。§0A 是本文件最高优先级覆盖；正文未同步处仅作历史设计，不能据此恢复旧 episode 或旧失败请求。本文是合同，真实运行状态以现场 PID / 容器 / 请求账本为准。**

@@ -11,7 +11,7 @@ import socket
 import time
 import uuid
 
-from contract import decode, permitted_state, questions
+from contract import decode, motion_feedback, permitted_state, questions
 from transport import MODEL, request, save
 
 STOP = False
@@ -148,6 +148,7 @@ def main():
                     expected_step=before['step'], action=native_action, steps=5)
                 text = dict(observation_id=before['observation_id'], step=before['step'],
                     robot_before=state, selected_action=answers,
+                    execution_feedback=motion_feedback(audit, snapshot['observation']['state']),
                     measured_robot_after=permitted_state(snapshot['observation']['state']))
                 recent.append(dict(text=text, images=observation['images']))
                 append(args.output/'interactions.jsonl', dict(count=count,

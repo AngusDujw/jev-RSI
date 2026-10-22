@@ -64,3 +64,10 @@ or model inputs. A consumed native step does not establish successful IK or moti
 candidate and its unsuccessful first check. It is not a promoted Skill. Knowledge
 revisions are explicit and immutable in each campaign; avoid expanding a candidate
 that has not improved the intended measurable behavior.
+
+Recent interactions also carry `execution_feedback`, computed from the decoded
+TCP target and measured post-action state: requested/achieved world translation,
+position-target error, and SO(3) orientation error. This is a measurement-only
+comparison; it neither changes actions nor infers collision, retention, or task
+outcome. The reorientation-after-nontracking candidate records one controlled
+tracking recovery and requires independent policy checks before promotion.
