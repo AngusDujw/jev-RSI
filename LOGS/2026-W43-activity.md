@@ -347,3 +347,9 @@
 - 【Agent】【2026-10-22 22:31】[op] 恢复baseline shared_harness默认IKContinuityGuard；保透明raw observer，拒绝保已执行前缀并立即进入outer review，事件不进模型输入；离线验证后部署新独立原生检查。
 - 【Agent】【2026-10-22 22:39】[result] g零API检查hold5成功；X+20mm的.283rad关节增量被原护栏拒绝，零新增步，Y/Z未执行，原生退出。相对路径chdir嵌套修launcher绝对化；下一项验证同最终TCP目标的5子步轨迹，不放宽guard、不重试。
 - 【Agent】【2026-10-22 22:41】[op] tcp-slerp-waypoints-v1离线1512几何路径及拒绝prefix验证通过；预声明5个子目标、同最终TCP/夹爪/预算，原guard不变，不retry。提交部署后先新h零API验证。
+- 【Agent】【2026-10-22 22:44】[op] 905403e6已SSH推送/bundle部署。h首次GPU0准入发现外人占用，在创建campaign前拒绝；未动外人，改空闲GPU4/layout0新native242081/RPC25404，零API一次性预声明runner等ready后查guard配置并hold/XYZ+，拒绝即停。
+- 【Agent】【2026-10-22 22:46】[result] h20步全部通过：XYZ约19.5mm，终点误差.47–.54mm，原guard零拒绝，已close退出。新独立i GPU4/layout0原生初始化；先空r000、近期图像、原提示/十问，准备3请求实测，新条件不混旧结果。
+- 【Agent】【2026-10-22 22:51】[run] i初始head/右腕已看，三RGB清晰，0步UUID8a593e50；仅一个worker298786经17897代理启动，du/v1/decisions，r000空知识/近期图像，最多3请求即审核或遇guard立即审核，无额外API探测。
+- 【Agent】【2026-10-22 22:55】[result] i首3请求HTTP200到13步审核：Y-伴Z-11.5mm漂移；末Z-第4waypoint IKFail，原guard零派发/保前3步/弃2后缀即时审核。实际图未抓取，IK审计定位joint2约-.2304平台；先只读核执行受阻，不盲继续/升Skill。
+- 【Agent】【2026-10-22 22:57】[result] i执行跟踪审计排除FK假解及文件joint2限位差，碰撞仍未证明。13步审核点seq0 development stop，保代表历史/三请求/审计；不恢复。下一轮新独立零API运行时限位/速度/驱动状态诊断，不盲开更多模型回合。
+- 【Agent】【2026-10-22 23:01】[op] 已将执行保护修复、h正向证据和i joint2平台负证据追加EXP007/Discussion并更新STATE与监督job；策略回合全部退出，下一阶段仅新独立运行时执行诊断，不恢复旧episode。

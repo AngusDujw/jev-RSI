@@ -1,76 +1,93 @@
 # Playground continuation state
 
-Updated: 2026-10-22. Read AGENTS.md and EXP-2026W43-007 before acting.
+Updated:2026-10-22. Read AGENTS.md, EXP-2026W43-007 and real processes first.
 
-## Active ownership
+## Ownership / phase
 
-- SSH host: company-server-2-ykj (JcbotIns), user ykj.
-- Remote repo: /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
-- Baseline assets and interpreters: /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-- No active native/worker. g native172178 verified exited after bounded zero-API smoke.
-- g hold5 tracked; next X+20mm required0.283rad joint increment and guard rejected it before dispatch.
-- g stopped at5 steps; Y+/Z+ were not executed. This is an execution-contract result, not task failure.
-- Next: offline/native test a predeclared five-waypoint trajectory to the same final TCP goal, preserving the original guard and5-step budget.
-- Ended e: playground-ik-z-diagnostic-20261022e, native3894916 / worker4031664 verified exited.
-- Model episode984becb0-bdac-452f-b32a-b7fddea6c6a7 ended incomplete at90/1000,18 Decisions HTTP200, r004.
-- Last command sequence5, op stop; never resume this episode or replay requests.
-- Critical finding: native adapter bypassed baseline rollout installation of default IK continuity guard.
-- At step89 raw IK Success included ±2pi-equivalent joint targets, causing unintended motion.
-- Restore and verify original guard before starting another policy episode. No source changes in running processes.
+SSH company-server-2-ykj (JcbotIns), user ykj.
+Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
+Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
+Native/worker code905403e6 committed, SSH-pushed and Git-bundle deployed.
+No active owned native or policy worker after development review stops.
+Latest i campaign: code/runs/playground-waypoints-policy-20261022i.
+Native264069 / worker298786 verified exited, GPU4/RPC25404.
+Ended episode8a593e50-7990-4391-b85b-1106c3362c1f, r000,3HTTP200/13native steps,
+last command sequence0 stop. Never restore this episode or replay its requests.
+Next: bounded zero-API runtime execution diagnosis, not more prompt variants.
 
 ## Transport
 
-Dedicated local SSH control socket:
+Owned local SSH ControlPath:
 /home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI/code/runs/c2-proxy-20261022.ctl
 
-Remote127.0.0.1:17897 forwards to local127.0.0.1:7897. Remote7897 is untouched.
-Policy processes inherit both HTTPS_PROXY and https_proxy=http://127.0.0.1:17897.
-Verify actual tunnel/process ownership; never replay failed/unknown requests or
-probe another OpenAI API. A failed tunnel must not cause duplicate workers.
+Remote127.0.0.1:17897 -> local127.0.0.1:7897; remote original7897 untouched.
+Upper/lower HTTP(S)/ALL proxy variables are process-scoped.
+Only du /v1/decisions; no ordinary API, caz/z, or extra API probes.
+Actual calls c30+e18+i3=51HTTP200; b failed initial request preserved separately.
 
-## Evidence and stopped campaigns
+## Execution correction
 
-- Original server02 campaigns stay ended.
-- New b first call timed out at zero upload and zero model actions; ended.
-- New c eight-card development:30 Decisions requests all HTTP200; GPU0 ended
-  at45 steps, others15, explicitly stopped after review, not native task failures.
-  r001 feedback-probing candidate did not improve its checked segment. Do not promote.
-- Controlled d:hold/X+/X-/Y+ tracked; a later reset raised UnStableError and
-  exited. Preserve reset-failure-audit.json. Never resume or replay it.
-- Controlled e first episode: initial Z-20mm had IK Success but only about1.2mm
-  TCP descent even after25 native steps. Solver target FK was correct; USD/URDF
-  joint3 limits matched. Actual joint3 stalled. A subsequent pitch-0.1rad and
-  new Z-20mm tracked, residual about0.074mm. This was zero-API outer diagnosis,
-  not model performance, and its exact physical obstruction remains unresolved.
-- e was explicitly reset once, successfully, before starting the active model
-  episode. Controlled35-step episode and image provenance remain separate.
+Playground bypassed baseline rollout installation of default IKContinuityGuard.
+At e step89 raw targets near +2pi/+2pi/-2pi caused unintended motion; this is
+adapter execution contamination, not a model-direction failure. Preserve
+e/execution-contamination-audit.json and original targets/media.
+Commit2d71f385 restores the original shared_harness guard, enabled/.15rad.
+Observer remains one-call/transparent. Refusal dispatches neither arm nor gripper,
+consumes no step, preserves accepted prefix and discards suffix without retry.
+Worker immediately reviews; controller_event stays outer-only.
 
-## Latest evidence and next bounded action
+Condition tcp-slerp-waypoints-v1 (905403e6) predeclares five TCP-linear/shortest-arc
+rotation subtargets from initial measurement to the same model final pose/gripper.
+Each gets one native action and original guard. Same5-step budget, no extra
+solve/retry/resampling. Full plan is in waypoints.jsonl. Distinct development
+execution condition; do not pool with old repeated-target policy results.
+launch.py resolves paths before native cwd changes. Offline guard fixtures and
+1512 geometry paths passed; temporary scripts deleted. Local audits:
+code/runs/company2-playground-20261022-deploy/*offline-validation.json.
 
-r003 retained the measured failed-motion summary after recent history lost it.
-Its six calls at30–60 still rotated/held without useful approach; not promoted.
-Controlled f made zero API calls: X+/Y+/Z+ each20mm tracked with target errors
-0.0755/0.0814/0.0811mm. It ended at15 steps and retains one raw image history.
-r004 selected three historical raw head images with English measured captions,
-removed currently inapplicable earlier candidate text, and made six calls60–90.
-First segment only closed/opened/held; next two Z- actions tracked about19.998mm.
-The third Z- exposed four IK Fail calls followed by a ±2pi raw target jump.
-TCP displacement[-80.316,-2.324,26.397]mm and error92.783mm are adapter execution
-contamination, not evidence that the chosen Cartesian direction was wrong.
-No grasp, stable hold or operational stability has been demonstrated.
+## Real checks
 
-Baseline shared_harness enables IKContinuityGuard with0.15rad increment cap.
-Its rollout installation was bypassed by the Playground entry point. Restore
-that original execution contract, preserve raw observer and refusal accounting,
-and validate offline plus one bounded zero-API native check before policy calls.
-Do not replay e actions or revive its ended episode. Do not repeat r004 examples
-to fill GPUs. All candidates remain unpromoted. c30+e18=48 HTTP200 calls total,
-plus b preserved failed initial request; controlled diagnostics are not policy.
+g native172178 ended,0API: hold5 tracked; X+20mm needed.283rad joint increment,
+guard rejected before dispatch. Ended at5; Y/Z not executed.
+h native242081 ended,0API: hold/X+/Y+/Z+ each5 accepted,20steps.
+XYZ achieved19.495/19.474/19.532mm, errors.506/.535/.475mm.
+i actual calls selected rightY-/open, hold, rightZ-/open.
+Y- achieved[-.193,-16.653,-11.482]mm, target error11.962mm; no2pi jump.
+Z- executed3 waypoints then fourth IKFail, discarded2 suffix and reviewed at13.
+Head/right-wrist reviewed at0 and13: target on table, no enclosure/stable grasp.
+All three actual requests English, ten questions,3/6/9 images; no IK event in input.
+See i/first-segment-input-audit.json and execution-tracking-audit.json.
 
-Keep3-call segments and review actual head/wrist, IK and measurements before
-continuation. Knowledge revisions are immutable and English; no K/T, target
-truth/contact/reward/success model input, no old experience bank or /tmp.
-Eight GPUs authorized, but parallelism requires distinct questions/review capacity.
-Retain one representative task history, other audit frames temporary.
-Freeze held-out layouts5–14 and15–24, each>=9/10 before stability; Pro planner
-and YPR task remain downstream. Respect pause/cancel and close owned controls.
+First clear execution plateau is joint2 around-.2304rad: Y- final target-.292484,
+actual-.230417; later Z- target-.325129, actual-.230495. This differs from prior
+controlled e joint3 plateau near-.036rad. Successful i target FK matches requested
+Cartesian pose within.000311mm; USD/URDF authored joint2 limits both about+-10rad.
+Runtime limit/drive/self-collision cause is NOT yet proven. A hold from displaced
+measured pose tracking does not solve the preceding missed motion.
+
+## Next bounded work
+
+Read existing baseline robot interfaces for runtime joint limits/velocities,
+actual drive targets and effort limits. ImplicitActuator estimated torque is
+not PhysX measured torque. Contact pairs/impulses, if needed, remain outer-only.
+Use a new independently named zero-API diagnostic with a predeclared small
+robot-motion plan and ownership/resource checks. Do not hot-edit a live source,
+disable collisions, alter drives/limits/assets, or relax guard to force motion.
+No more blind Z- continuation, repeated image examples or identical failed cards.
+Resolve this execution question before another policy short segment.
+
+## Boundaries / candidates
+
+Old server02 and new b/c/d/e/f/g/h/i ended; do not resume them.
+r001 feedback probe, r003 failed-motion summary and r004 action-image examples
+have no verified grasp benefit; not promoted. r002 tracked one rotation/descent,
+not stability. Controlled f retains one body-response history,0API.
+Keep all negative text/provenance. No old experience bank or /tmp.
+Model text/experience English; no K/T/calibration/projections/target truth/
+contact/reward/success model input. Feedback only selected target vs robot state.
+One representative image history per task/batch; other audits temporary.
+Eight GPUs authorized, but foreign occupants recently on0/1/3: recheck, do not touch.
+Require>=8GiB GPU/20GiB RAM per environment plus headroom,8GiB disk.
+1000-step development budget=official200x5, original success predicates unchanged.
+Freeze held-out5–14 and15–24, each>=9/10 before stability; local Pro planner/YPR later.
+Pause/cancel immediately stops owned controls and disables supervision job.
