@@ -234,3 +234,4 @@
 - 【Agent】【2026-10-23 02:47】[op] Pro36清题/去点偏差三种固定图输入仍continue，单问版本不推广。Pro37分三视觉题→另一次Decisions形式组合，候选advance0.97/held负例continue0.97；外层仅复制真实类别，十五CPU含保留相反mock返回通过，原生收益待验。
 - 【User】【2026-10-23 03:14】[intent] 继续按EmbodiedEvo项目的经验积累和改进方式迭代，旋钮与酒瓶原目标和权限不变。
 - 【Agent】【2026-10-23 03:14】[result] 收齐v63/v64均native2/3而program0/3，均2998步；v62完整0/2另1拒答中断。新v69与精确v64终局回移各三独立原生仍在运行。修复网站Outcome混淆，分别显示原生与程序终止，5个会计边界检查通过。  ↪ `EXP-2026W43-109`
+- 【Agent】【2026-10-23 03:19】[op] bc756034已Git SSH推送并bundle部署远机main，旧原生独立工作树不动；仅重启review-v60为review-v69网页watcher，native PID未动。209终局展示单独标native/program，HTTP验证11条native阳性未结束标签及新control链接；新两组600余/700余API答且6例406–502物理步仍活跃。  ↪ `EXP-2026W43-109`
