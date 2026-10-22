@@ -368,3 +368,4 @@
 - 【Agent】【2026-10-22 23:58】[result] n首段4HTTP200：layout0 Y-不跟踪后pitch-跟踪但hold无入抓；layout1 Y-/Z-只执行3步后guard截断，1.935mm为prefix误差，11.633mm含弃后缀。两路RGB/IK/输入审查后sequence0各放行一个<=3请求段，无Skill升级。
 - 【Agent】【2026-10-23 00:01】[op] n已审核stop，两路PID退出；离线补last_dispatched_target_feedback，仅已下发Cartesian目标对实测，不传guard/IK。210组合前缀/旋转及null/实测偏差/输入不变验证通过，无API/native/临时测试脚本。
 - 【Agent】【2026-10-23 00:03】[op] 独立原handle内存集成prefix0至5通过：None/部分最后实际目标/完整终点与计步审核正确，纯Cartesian反馈不含IK；纠正旧decode world模式docstring。准备SSH提交推送与bundle部署，n已停不恢复。
+- 【Agent】【2026-10-23 00:04】[result] 96e47233新反馈源已SSH推送/bundle部署；n全部退出/8HTTP200审计完成，累计59。只保代表历史及Lesson引用图，临时n审核图哈希清理。下一先单次零API新反馈真实接口核验，不恢复n或盲发模型。

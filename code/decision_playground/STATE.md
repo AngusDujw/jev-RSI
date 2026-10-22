@@ -9,8 +9,8 @@ Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20
 Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
 All owned native/policy processes currently exited; no curl/request in flight.
 Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n ended; never restore/replay.
-Last deployed source f6b366f9; documentation/r005 ed1122d5 deployed.
-New offline feedback correction pending commit/deploy; check latest Git before next start.
+Source96e47233 SSH-pushed and bundle deployed; r005 template previously ed1122d5.
+feedback-selected-vs-dispatched-v1 independently offline validated, not yet native/model tested.
 n campaign code/runs/playground-lesson-transfer-20261022n:
 GPU4/layout0 native720103/worker748068, episode42ba1791-c20a-4011-a0d8-eaeced448b48,
 6HTTP200/30native steps. GPU5/layout1 native720372/worker748070,
@@ -97,7 +97,7 @@ The layout1 full goal residual11.633mm includes the discarded suffix; delivered
 prefix error was~1.935mm, so do not misclassify all residual as execution error.
 Independent actual Playground.handle in-memory integration prefix0..5 passed,
 including refusal/no-dispatch null and final target selection; no API/native.
-Next commit/SSH-push/bundle-deploy, then at most one bounded new native check if needed
+Next at most one new independent zero-API native interface check if needed
 before deciding another policy condition. Do not blindly repeat r005 or add hints.
 Keep original guard/drive/limit/collision parameters and fixed action budget.
 
