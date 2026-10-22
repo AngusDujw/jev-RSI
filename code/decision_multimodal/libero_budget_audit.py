@@ -1,6 +1,7 @@
 """Outer-only native budget checkpoints; never enter a model request."""
 import argparse
 import json
+import os
 from pathlib import Path
 import runpy
 import sys
@@ -9,7 +10,12 @@ import sys
 def install(remaining):
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--libero-root', type=Path, required=True)
+    parser.add_argument('--gpu', default='0')
     args, _ = parser.parse_known_args(remaining)
+    sys.path.insert(0, str(args.libero_root))
+    os.environ.update(MUJOCO_GL='egl', MUJOCO_EGL_DEVICE_ID=str(args.gpu),
+                      LIBERO_CONFIG_PATH=str(args.libero_root / '.libero-config'))
     from libero.libero.envs.env_wrapper import ControlEnv
     original = ControlEnv.step
     counts = {}
