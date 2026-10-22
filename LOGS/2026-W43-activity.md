@@ -317,3 +317,5 @@
 - 【Agent】【2026-10-20 15:36】[stop] 已禁用自有监督job_c0e5ff6f9d8142f9；核实e服务inactive/MainPID0、无在途curl、server02零容器。当前无须杀进程，保留全部记录/图像及失败请求，不恢复任何旧episode。  ↪ `EXP-2026W43-006`
 - 【User】【2026-10-21 21:25】[intent] 实验保持暂停；阅读arXiv2610.18867v1及官方EmbodiedEvo项目，核对每次尝试后的实际修改对象，并反省现有通用抓取迭代。
 - 【Agent】【2026-10-21 21:25】[note] 文献/源码只读审查：EmbodiedEvo官方playground.md要求按反馈修改下一阶段solution.py，并将有证据的参数化闭环程序/前置条件存skills、失败诊断与恢复存lessons；test.md冻结两者仅允许回合内适配。v1附录D/F示例为对齐守卫、下降闭爪抬升、视觉持物验证与搬运步长约束；其象抓取反例说明技能会负迁移。当前controller.py仅当前观测十问，v3/v4/v5主要增加几何输入/提示/候选效果表，尚无已验证抓取过程。应先离线定位首个失效阶段再考虑单项控制过程修正，不能把旋转增多当成功。官方PROTOCOL说明未附历史运行档案，不能重建全部逐次diff。未改控制代码、未启动实验、未调用模型API、未读本地experience。  ↪ `EXP-2026W43-006`
+- 【User】【2026-10-22 13:54】[intent] 询问EmbodiedEvo如何规定每次更新内容，以及如何由执行经验形成Skill/Lesson；实验继续暂停。
+- 【Agent】【2026-10-22 13:54】[note] 核对官方skills/example.md与lessons/example.md及orchestrator/files.py：Skill为闭环Python程序及伴随说明，需参数/坐标单位/前置条件/停止条件/执行证据/已知失败；Lesson结构Signature/Instead/Evidence/Status，verified仅指开发场景复现。capture_writable_changes按哈希归档四个可写目录变更，不判断经验正确性；经验抽取/修订由同一Agent按固定指令自主完成，冻结隔离由框架执行。CIRCLE-1继续以首个失败阶段证据审查收敛，未恢复运行。
