@@ -72,7 +72,8 @@ def build_rotation_request(state,explain_current_effect=False,bind_span=False,fr
             if explain_current_effect and current is not None:
                 derivative=[round(v,3) for v in derivatives[name]]
                 questions[name]['instructions']+=f' Current observed body line v={current}; a small positive increment changes this representative line along dv/dtheta={derivative} if the bottle follows the hand. This is a generic local rotation effect, not a desired axis, angle error or recommended motor sign.'
-        selected=None;binding=None
+        if not bind_span:
+            selected=None;binding=None
     request=dict(model='gpt-6-luna',state=dict(
         stage={k:v for k,v in state['stage'].items() if k in ('name','goal')},
         request_purpose='multimodal_rotation_axes',

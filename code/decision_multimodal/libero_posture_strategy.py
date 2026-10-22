@@ -1,5 +1,6 @@
 """Planner-defined posture preparation; observed relations never choose signs."""
 from copy import deepcopy
+import json
 import math
 
 
@@ -38,12 +39,31 @@ def observed_relations(state):
         meaning='Unranked CURRENT partial RGB-D fits only. E0/E1 are fitted visible-segment endpoints, not complete physical bottle ends or contact points. Signed distances follow each observed normal. No target plane, desired angle, orientation error or motor sign is computed. Identify the actual upper receiver from CURRENT RGB.')
 
 
+def revise_direction(sent, strategy):
+    if (sent['state'].get('request_purpose') != 'multimodal_receiving_direction'
+            or not strategy.get('receiving_reference_question')):
+        return sent
+    revised = deepcopy(sent)
+    revised['state']['stage'] = dict(name='Identify the receiving support direction',
+                                    goal=strategy['posture_preparation_goal'])
+    revised['state']['meaning'] = (
+        'Unranked CURRENT visible wood directions, not motor candidates. '
+        'Select the actual upper-rack slat-length support direction from current images. '
+        'A longer fitted span is not necessarily the intended physical direction.')
+    revised['questions']['rack_direction']['instructions'] = strategy['receiving_reference_question']
+    return revised
+
+
 def revise_rotation(sent, strategy):
     if sent['state'].get('request_purpose') != 'multimodal_rotation_axes':
         return sent
     if not sent['state'].get('free_placement_posture'):
         raise ValueError('Posture strategy requires the bottle free-posture input path')
     revised = deepcopy(sent)
+    # The orientation subquery has its own planner goal. Keeping the parent
+    # height/translation goal here gives the actor two different stage scopes.
+    revised['state']['stage'] = dict(name='Prepare held-bottle posture',
+                                    goal=strategy['posture_preparation_goal'])
     effects = {'rx': ('X', 'Positive rotates +Y toward +Z and +Z toward -Y.'),
                'ry': ('Y', 'Positive rotates +Z toward +X and +X toward -Z.'),
                'rz': ('Z', 'Positive rotates +X toward +Y and +Y toward -X.')}
@@ -54,7 +74,11 @@ def revise_rotation(sent, strategy):
         old = question['instructions']
         marker = ' Current observed body line v='
         suffix = old[old.index(marker):] if marker in old else ''
-        question['instructions'] = (strategy['axis_question_template'].replace('{axis}', axis)
+        binding = revised['state'].get('actor_selected_observed_span') or {}
+        template = (strategy['axis_question_template'].replace('{axis}', axis)
+                    .replace('{reference_label}', binding.get('label', 'unknown'))
+                    .replace('{reference_direction_world}', json.dumps(binding.get('observed_world_unit_line'))))
+        question['instructions'] = (template
                                     + ' ' + effect + ' Negative reverses.' + suffix)
         question['criteria'] = dict(strategy['choice_descriptions'])
     revised['questions']['posture_readiness'] = dict(type='choice',
@@ -64,6 +88,14 @@ def revise_rotation(sent, strategy):
 
 
 def revise_rotation_payload(payload, sent, strategy):
+    if (sent['state'].get('request_purpose') == 'multimodal_receiving_direction'
+            and strategy.get('receiving_reference_question')):
+        result = deepcopy(payload)
+        result['input'][0]['content'][0]['text'] = (
+            'Identify the CURRENT upper-rack physical support direction. '
+            'All labelled spans are observed features, not proposed motions. '
+            + strategy['posture_preparation_goal'])
+        return result
     if sent['state'].get('request_purpose') != 'multimodal_rotation_axes':
         return payload
     result = deepcopy(payload)
@@ -71,6 +103,8 @@ def revise_rotation_payload(payload, sent, strategy):
     if content[0]['type'] != 'input_text' or content[1]['type'] != 'input_text':
         raise ValueError('Rotation header/state contract changed')
     import json
+    if json.loads(content[1]['text']).get('stage', {}).get('goal') != strategy['posture_preparation_goal']:
+        raise ValueError('Rotation state must carry the planner posture goal, not its parent phase goal')
     content[0]['text'] = strategy['posture_preparation_goal'] + ' ' + ' '.join(strategy['common_instructions'])
     content.insert(2, dict(type='input_text', text=json.dumps(
         observed_relations(sent['state']), separators=(',', ':'))))

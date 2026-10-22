@@ -311,8 +311,8 @@ def main():
     args=p.parse_args()
     if args.source_motion_test and not (args.task==1458 and args.actor_attention and args.track_selected and args.stage_motion and args.surface_context and args.live_surfaces and args.formal_stage_call):
         raise ValueError('Source-motion test requires bottle actor-selected live RGB-D tracking, measured stage motion and formal phase calls')
-    if args.free_placement_posture and (args.task!=1458 or not args.separate_rotation_call or args.literal_line_reasoning or args.bound_span_rotation or args.goal_example):
-        raise ValueError('Free placement posture requires bottle multimodal rotation without imposed span alignment or a mandatory goal image')
+    if args.free_placement_posture and (args.task!=1458 or not args.separate_rotation_call or args.literal_line_reasoning or args.goal_example):
+        raise ValueError('Free placement posture requires bottle multimodal rotation without a mandatory target angle or goal image')
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=False)
     cache=out/'cache';cache.mkdir()
     os.environ.update(LIBERO_CONFIG_PATH=args.libero_root+'/.libero-config',

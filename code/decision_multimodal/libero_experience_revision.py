@@ -105,8 +105,8 @@ def main():
             return original_post(self, endpoint, sent)
         if digest(args.rotation_strategy_file) != args.rotation_strategy_sha256:
             raise ValueError('Frozen posture strategy changed')
-        from libero_posture_strategy import revise_rotation, revise_phase, separate_readiness
-        revised = revise_rotation(sent, strategy)
+        from libero_posture_strategy import revise_direction, revise_rotation, revise_phase, separate_readiness
+        revised = revise_rotation(revise_direction(sent, strategy), strategy)
         revised = revise_phase(revised, getattr(self, 'actor_posture_readiness', None), self.tick, strategy)
         answer = original_post(self, endpoint, revised)
         if sent['state'].get('request_purpose') == 'multimodal_rotation_axes':

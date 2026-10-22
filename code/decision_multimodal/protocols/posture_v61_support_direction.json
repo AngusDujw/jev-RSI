@@ -1,0 +1,22 @@
+{
+  "version": "v61",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "physical_budget": 3000,
+  "strategy_sha256": "c8416b8a4cb07ca767f2e9356e27bc0cb4b32820c0e5aa291f35ca3060748771",
+  "direct_source_sha256": "db32043a57d2e39c7c2fac1cd6aa5d523227632448082991ce68a13a00f4999f",
+  "planner": "local ChatGPT Pro gpt-6.1-sol high",
+  "actor": "du /v1/decisions gpt-6-luna",
+  "method": "Independent frozen Pro29 support-direction candidate. Actor identifies a CURRENT physical wood span, copied unchanged to scoped posture questions. No externally selected target plane, desired orientation, angular residual or recommended sign. R state goal equals posture goal. Existing source v2, XYZ, gripper, phase positioning, three Lessons, controller and limits unchanged; old v60 remains immutable. Development14/15/16; reserve17/18/19 untouched.",
+  "validation": "Nine CPU invariants passed, no actions/API. Initial inline validation typo failed before execution and was corrected. Current wire requests and native execution remain to verify.",
+  "status": "frozen candidate, launch pilot then open three slots after actual interface verification"
+}

@@ -21,5 +21,11 @@
   "normalization": "Removed unsupported free-text State which reason applies clause from the original Pro hold description; original output retained.",
   "static_evidence": "Safe478 RXnegative probability0.41/confidence0.11, RXpositive0.37; RY/RZhold and posture not_ready0.99. Late seating862 allRhold. Zero physical actions, no direction-correctness or task-success claim.",
   "validation": "13 CPU/wire/original-image/reply/geometry/HTML checks; five real categorical phase fixtures correct. Missing positional feedback does not acquire advance; stale readiness rejected.",
-  "status": "ready for independent native pilot, not task complete"
+  "status": "running, actual four-answer R request and physical turn verified before opening3slots",
+  "native_source_commit": "c93ee1bd",
+  "native_pids": [
+    713386,
+    722934,
+    722935
+  ]
 }
