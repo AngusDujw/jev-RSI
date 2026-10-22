@@ -27,3 +27,12 @@ The source implements the boundary in orchestrator/frozen_source.py and docs/PRO
 - Native evaluator outputs stay in outer result accounting. Actor and planner see only permitted observations, own execution and historical qualified findings.
 - All experience and model inputs are English. Frozen copies are content-hashed and verified before each request, without recursively changing permissions.
 - Keep original task-specific guidance and demonstration conditions explicit. The old uncorrected task-example ablation is retained as contaminated, not silently replaced.
+
+## Development update: 2026-10-23
+
+- Frozen Skills remain input/question programs, not action generators. Pro29–31 actually received separately curated English lessons with recorded file hashes.
+- One concise finding changed the phase contract: final seating-orientation readiness had blocked an already position-converged clearance phase. Pro30 narrowed that extra condition to lowering; an independent native episode then made an actor-selected handoff and real transport at490steps. This is partial progress, not task completion.
+- Another finding changed a visual-feature question: directly comparing a line with one narrow wooden strip was clearer than mixing physical-feature identity with future support intent. Pro31 supplied the new header/question; full native benefit remains under test.
+- Public-camera projections enlarge all current observed wood spans in two views. No target angle, angular correction, externally selected reference or motor sign is supplied.
+- Long budget alone was insufficient: v59-r2 completed0/3 at2998steps; v60 completed0/2 plus one explicit provider refusal. Interrupted cases are kept outside complete-outcome denominators.
+- Five short candidate Lessons pass the bounded retrieval schema but are not automatically injected into active frozen episodes. The current user target remains stable knob plus bottle performance, not the paper's benchmark score.

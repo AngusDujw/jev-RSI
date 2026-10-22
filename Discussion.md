@@ -612,3 +612,5 @@
 【Agent @Codex】【2026-10-22】[EXP093](LOGS/2026-W43.md#exp-2026w43-093)：真实622已position0.73/allRhold但not_ready附加门继续抬升。Pro30建议只在下放加该门，受控v63仅采scope/reason，原R/selector/位置条件不变。五CPU+五真实阶段fixture5/5，0动作；v62实际5图投影已验证并开三槽，收益待原生终局。
 
 【Agent @Codex】【2026-10-22】[EXP094–095](LOGS/2026-W43.md#exp-2026w43-095)：旧v60 init15在2170收到真实reference refusal，native未评，不计完整失败。相同5图改为直接沿单木条问题后选可见平行P0B，Pro31原样版本仍仅p0.48/conf0.35，不能当稳定证据。v64仅改selector的header/question，其余v63保持；候选5短Lessons通过freeze/context检查，未注入活动回合。
+
+【Agent @Codex】【2026-10-23】[EXP096](LOGS/2026-W43.md#exp-2026w43-096)：旧v60完整0/2各2998步，另1真实拒答中断。v63实际position0.83/allRhold/not_ready时actor advance0.97，490首XY运输实测[18.977,-18.736,-0.452]mm；后transport偏差14.8仍continue，未绕过原规则。v64三例初期实际多次选P0B。仅局部运输/视觉参考进展，完整任务待当前冻结回合验证。

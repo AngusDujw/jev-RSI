@@ -219,3 +219,6 @@
 - 【Agent】【2026-10-22 23:30】[run] eec1a630已Git SSH推送并通过增量bundle部署v62独立树，首原生PID814465和managed3worker桥运行，当前106步接近；v61三例514/286/286仍真实R转动，旧v60继续。候选经验简化为转动后比较新瓶图、不要把手动当瓶动，不注入冻结回合。
 - 【Agent】【2026-10-22 23:42】[op] Pro30实际读取2短英文经验与真实622同刻双RAW，建议最终姿态门仅用于下放。受控v63只采用scope/reason，保持v62的R/5图selector/位置/Rhold条件；5CPU+5实际Decisions阶段fixture全过0动作。v62已验证真实双投影、5图和原K/T不进文字后开3槽。
 - 【Agent】【2026-10-22 23:49】[op] v60 init15在2170收到实际reference type=refusal，native未评，保留未重采。Pro31依据单帧改问一条可见的沿木条关系，原样Decisions选P0B0.48/conf0.35；v64仅改header/question，数字目录和五图不删。5候选Lessons统一短英文有效schema并通过freeze/context验证，不改活动SHA。
+- 【Agent】【2026-10-22 23:51】[run] 7ef70284已SSH推送并增量bundle部署v64独立树，managed3case+3worker桥已启动。v63独立首例仍在运行；候选5条Lessons镜像DataStorage，冻结活动v2经验不变。
+- 【Agent】【2026-10-23 00:00】[run] v63真实阶段请求已核验informative-only readiness与原position/Rhold规则，actor原答不覆写；为利用空闲API/GPU容量，真实交接尚待观察时即开剩余两独立例，改变先等交接的排程而不改输入。GPU读数5347/49140MiB、0%瞬时使用，负载约2/16CPU，当前主要等待API。v64三例初期均实际选择P0B；仍待完整任务。
+- 【Agent】【2026-10-23 00:05】[result] v63真实478同刻position0.83/三Rhold/not_ready，actor advance0.97；490运输XY命令20/-20mm实测18.977/-18.736mm。v60最终完整0/2各2998，另1拒答中断。v64三例初期实际多次P0B；完整放置仍待验。
