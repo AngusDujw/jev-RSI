@@ -37,6 +37,8 @@ def main():
     parser.add_argument('--native-only', action='store_true')
     parser.add_argument('--key-file', type=Path)
     parser.add_argument('--native-step-multiplier', type=int, choices=(1, 5), default=5)
+    parser.add_argument('--runtime-diagnostics', action='store_true',
+                        help='Outer-only read-only articulation evidence; never added to model input')
     parser.add_argument('--extend', action='store_true', help='Explicitly add unused GPUs to this owned campaign')
     args = parser.parse_args()
     # RoboDojo changes cwd to its results directory during startup. Keep both
@@ -91,6 +93,7 @@ def main():
             ROBODOJO_RUN_ID='playground-'+args.campaign.name+'-'+str(gpu),
             PLAYGROUND_RPC_PORT=str(args.port_base+gpu), PLAYGROUND_OUTPUT=str(native))
         env['PLAYGROUND_STEP_MULTIPLIER'] = str(args.native_step_multiplier)
+        env['PLAYGROUND_RUNTIME_DIAGNOSTICS'] = '1' if args.runtime_diagnostics else '0'
         command = [str(sim_python), '-B', '-u', str(code/'native_server.py'),
             '--task', 'general_pickup', '--seed', '0', '--layout', str(layout),
             '--data-root', str(args.roboicl/'data'), '--results-root', str(native),
@@ -104,6 +107,7 @@ def main():
             process = subprocess.Popen(command, env=env, stdin=subprocess.DEVNULL,
                 stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         record = dict(task='general_pickup', layout=layout, gpu=gpu, port=args.port_base+gpu,
+            runtime_diagnostics=args.runtime_diagnostics,
             official_step_limit=200, development_step_limit=200*args.native_step_multiplier,
             step_multiplier=args.native_step_multiplier,
             native_pid=process.pid, case=str(case), visual_history=visual,

@@ -162,6 +162,12 @@ class Playground:
                 result[name] = plain(getter(robot, **arguments)[env_idx])
             except Exception as error:
                 result[name + "_error"] = f"{type(error).__name__}: {error}"
+        if os.environ.get("PLAYGROUND_RUNTIME_DIAGNOSTICS") == "1":
+            try:
+                from runtime_diagnostics import articulation_snapshot
+                result["runtime_articulation"] = articulation_snapshot(manager, robot, env_idx)
+            except Exception as error:
+                result["runtime_articulation_error"] = f"{type(error).__name__}: {error}"
         return result
 
     def ik_context(self, event):

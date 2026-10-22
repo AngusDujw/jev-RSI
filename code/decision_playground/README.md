@@ -91,3 +91,13 @@ action and the original IK guard; a refusal drops the unexecuted suffix and
 requires review. There is no additional solve, physics budget or model retry.
 This differs from earlier repeated absolute-target dispatch and must be recorded
 as a distinct development execution condition, not pooled with old policy results.
+
+Optional `launch.py --runtime-diagnostics` adds outer-only read-only articulation
+snapshots to ik.jsonl. These include robot joint positions/velocities, target
+buffers, runtime limits and PhysX drive settings/reactions. Every getter buffer
+is copied immediately; missing/nonfinite readouts are marked unavailable and
+do not change the solver/dispatch. ImplicitActuator torque estimates and
+feedforward forces are explicitly distinguished from actual motor torque.
+Original X5 contact reporting is not enabled; missing contact evidence means
+unavailable, never zero contact. No diagnostic field is added to observe/model
+input. All drives, limits, collisions and success predicates remain unchanged.
