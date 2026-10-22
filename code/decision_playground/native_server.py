@@ -109,7 +109,8 @@ class Playground:
         obs = self.env.get_obs()
         images = {}
         for camera in ("cam_head", "cam_left_wrist", "cam_right_wrist"):
-            raw = np.asarray(obs["vision"][camera]["rgb"])
+            stream = obs["vision"][camera]
+            raw = np.asarray(stream['color'] if 'color' in stream else stream['rgb'])
             if raw.ndim != 3 or raw.shape[2] < 3 or not raw.size:
                 raise ValueError(f"Invalid RGB stream: {camera}")
             raw = raw[:, :, :3]

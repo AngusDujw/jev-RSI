@@ -14,13 +14,15 @@ def resources(gpus):
     ram = {x.split(':')[0]: int(x.split()[1]) for x in Path('/proc/meminfo').read_text().splitlines()}
     if ram['MemAvailable'] < (len(gpus)*20+20)*1024**2:
         raise RuntimeError('Need 20GiB RAM per initial simulator plus 20GiB headroom')
-    raw = subprocess.check_output(['nvidia-smi', '--query-gpu=index,memory.free',
+    raw = subprocess.check_output(['nvidia-smi', '--query-gpu=index,uuid,memory.free',
         '--format=csv,noheader,nounits'], text=True)
-    free = {int(x.split(',')[0]): int(x.split(',')[1]) for x in raw.splitlines()}
+    rows = [x.split(',') for x in raw.splitlines()]
+    free = {int(row[0]): int(row[2]) for row in rows}
+    selected_uuids = {row[1].strip() for row in rows if int(row[0]) in gpus}
     occupied = subprocess.check_output(['nvidia-smi', '--query-compute-apps=gpu_uuid,pid',
         '--format=csv,noheader,nounits'], text=True).strip()
-    if occupied:
-        raise RuntimeError('Initial native launch requires no preexisting GPU occupants; inspect ownership first')
+    if any(row.split(',')[0].strip() in selected_uuids for row in occupied.splitlines()):
+        raise RuntimeError('Requested new GPU has a preexisting occupant; inspect ownership first')
     if any(free[gpu] < 8192 for gpu in gpus):
         raise RuntimeError('Need 8GiB GPU admission headroom')
     return dict(gpu_free_mib=free, ram_available_kib=ram['MemAvailable'])
@@ -35,20 +37,32 @@ def main():
     parser.add_argument('--native-only', action='store_true')
     parser.add_argument('--key-file', type=Path)
     parser.add_argument('--native-step-multiplier', type=int, choices=(1, 5), default=5)
+    parser.add_argument('--extend', action='store_true', help='Explicitly add unused GPUs to this owned campaign')
     args = parser.parse_args()
     if len(set(args.gpus)) != len(args.gpus) or any(g not in range(8) for g in args.gpus):
         raise ValueError('Use unique allocated GPUs 0..7')
-    if args.campaign.exists():
+    if not args.native_only:
+        parser.error('First launch native-only, review readiness, then explicitly start workers')
+    if args.campaign.exists() and not args.extend:
         raise FileExistsError('Use a new campaign, never silently resume or overwrite')
     if shutil.disk_usage(args.campaign.parent).free < 8*1024**3:
         raise RuntimeError('Need 8GiB free campaign disk')
     admission = resources(args.gpus)
-    args.campaign.mkdir(parents=True)
-    (args.campaign/'tmp').mkdir()
-    knowledge = args.campaign/'knowledge'
-    knowledge.mkdir()
-    save(knowledge/'current.json', dict(revision='r000', guidance='', visual_lessons=[], skills=[]))
-    records = []
+    if args.extend:
+        manifest = json.loads((args.campaign/'manifest.json').read_text())
+        records = manifest['cases']
+        if set(args.gpus) & {case['gpu'] for case in records}:
+            raise ValueError('Never start a second native process for an existing campaign GPU')
+        if any(case['step_multiplier'] != args.native_step_multiplier for case in records):
+            raise ValueError('Do not mix action budgets inside a batch')
+    else:
+        args.campaign.mkdir(parents=True)
+        (args.campaign/'tmp').mkdir()
+        knowledge = args.campaign/'knowledge'
+        knowledge.mkdir()
+        save(knowledge/'current.json', dict(revision='r000', guidance='', visual_lessons=[], skills=[]))
+        records = []
+        manifest = dict(created_at=time.time(), server='company-server-2-ykj', native_only=True)
     sim_python = args.roboicl/'.venv-sim/bin/python'
     policy_python = args.roboicl/'.venv-policy/bin/python'
     code = Path(__file__).resolve().parent
@@ -57,8 +71,8 @@ def main():
         if key.startswith(('ASTRA_', 'OPENAI_', 'CODEX_API_')):
             base_env.pop(key)
     for index, gpu in enumerate(args.gpus):
-        layout = index % 4
-        visual = index < 4
+        layout = gpu % 4
+        visual = gpu < 4
         case = args.campaign/f'general_pickup-layout{layout}-gpu{gpu}'
         case.mkdir()
         (case/'tmp').mkdir()
@@ -71,12 +85,12 @@ def main():
             TORCH_EXTENSIONS_DIR=str(args.campaign/'torch-extensions'),
             OMNI_KIT_ALLOW_ROOT='1', ROBOICL_NO_MEDIA='1',
             ROBODOJO_RUN_ID='playground-'+args.campaign.name+'-'+str(gpu),
-            PLAYGROUND_RPC_PORT=str(args.port_base+index), PLAYGROUND_OUTPUT=str(native))
+            PLAYGROUND_RPC_PORT=str(args.port_base+gpu), PLAYGROUND_OUTPUT=str(native))
         env['PLAYGROUND_STEP_MULTIPLIER'] = str(args.native_step_multiplier)
         command = [str(sim_python), '-B', '-u', str(code/'native_server.py'),
             '--task', 'general_pickup', '--seed', '0', '--layout', str(layout),
             '--data-root', str(args.roboicl/'data'), '--results-root', str(native),
-            '--port', str(args.port_base+index+100), '--host', '127.0.0.1',
+            '--port', str(args.port_base+gpu+100), '--host', '127.0.0.1',
             '--enable_cameras', '--headless', '--kit_args',
             '--enable isaacsim.replicator.behavior --enable isaacsim.sensors.camera --portable-root '+str(case/'kit')]
         icd = '/etc/vulkan/icd.d/nvidia_icd.json'
@@ -85,17 +99,15 @@ def main():
         with (case/'native.log').open('wb') as log:
             process = subprocess.Popen(command, env=env, stdin=subprocess.DEVNULL,
                 stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
-        record = dict(task='general_pickup', layout=layout, gpu=gpu, port=args.port_base+index,
+        record = dict(task='general_pickup', layout=layout, gpu=gpu, port=args.port_base+gpu,
             official_step_limit=200, development_step_limit=200*args.native_step_multiplier,
             step_multiplier=args.native_step_multiplier,
             native_pid=process.pid, case=str(case), visual_history=visual,
-            retain_history=index == 0, command=command)
+            retain_history=gpu == 0, command=command)
         records.append(record)
-        save(args.campaign/'manifest.json', dict(created_at=time.time(), admission=admission,
-            cases=records, server='company-server-2-ykj', native_only=args.native_only))
+        manifest.update(admission=admission, cases=records, updated_at=time.time())
+        save(args.campaign/'manifest.json', manifest)
         time.sleep(2)
-    if not args.native_only:
-        raise RuntimeError('Review native readiness and zero-motion smoke before explicitly starting policy workers')
 
 
 if __name__ == '__main__':

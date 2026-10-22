@@ -79,6 +79,7 @@ def knowledge(path):
 
 
 def main():
+    global STOP
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--sim-port', type=int, required=True)
