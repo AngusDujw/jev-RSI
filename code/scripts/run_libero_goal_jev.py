@@ -44,7 +44,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
                    rim_height_mode='top_overlap', rim_tilt_deg=0, rim_axis='short',
                    rim_inset_mm=0,
                    drawer_preorient=False, drawer_clear_to_source=False,
-                   empty_hand_fast=False):
+                   empty_hand_fast=False, translation_step_multiplier=1.0):
     cmd = [SIM_PYTHON, '-B', str(source/'libero_jev_rollout.py'),
            '--suite', 'libero_goal', '--task-id', str(task_id),
            '--init-index', str(init_index), '--camera-size', '768',
@@ -67,7 +67,8 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             if lift_recheck_mm:
                 cmd += ['--lift-recheck-mm', str(lift_recheck_mm)]
     elif mode == 'supervisor':
-        cmd += ['--jev-supervisor', '--schema', 'focused']
+        cmd += ['--jev-supervisor', '--schema', 'focused',
+                '--translation-step-multiplier', str(translation_step_multiplier)]
         if task_id == 1423:
             cmd += ['--placement-height-mode', 'occlusion_guarded_bottom']
             cmd += ['--grasp-profile', grasp_profile,
@@ -117,6 +118,7 @@ def main():
                    help='Allow EGL and the vision worker on one GPU; report this resource choice')
     p.add_argument('--cpu-vision', action='store_true',
                    help='Run only local DINO/SAM perception on CPU when CUDA model loading is unavailable')
+    p.add_argument('--translation-step-multiplier',type=float,choices=[1.0,1.5,2.0],default=1.0)
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
     p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
@@ -154,6 +156,8 @@ def main():
             'drawer' if a.task_id in DRAWER_TASKS else
             'knob' if a.task_id in KNOB_TASKS else
             'recovery' if a.task_id in RECOVERY_TASKS else 'supervisor')
+    if a.translation_step_multiplier != 1.0 and mode != 'supervisor':
+        p.error('Translation step multiplier currently requires a supervisor task')
     if a.grasp_profile != 'edge' and a.task_id != 1423:
         p.error('Local grasp profile is currently evaluated only for Goal 1423')
     if a.approach_mode != 'top' and a.task_id != 1423:
@@ -194,7 +198,7 @@ def main():
                          a.side_pad_overlap_mm,a.rim_height_mode,a.rim_tilt_deg,a.rim_axis,
                          a.rim_inset_mm,
                          a.drawer_preorient,a.drawer_clear_to_source,
-                         a.empty_hand_fast)
+                         a.empty_hand_fast,a.translation_step_multiplier)
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -284,6 +288,7 @@ def main():
                     drawer_contact_mode=a.drawer_contact_mode,
                     plate_stage_turn_deg=a.plate_stage_turn_deg,
                     cpu_vision=a.cpu_vision,
+                    translation_step_multiplier=a.translation_step_multiplier,
                     policy_source_sha256=hashes, git_commit=commit,
                     permissions='public task, rendered RGB-D and calibration, own robot only',
                     runtime_gpt6_calls=0, runtime_deepseek_calls=0,
