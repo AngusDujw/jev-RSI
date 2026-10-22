@@ -250,7 +250,7 @@ def main():
     p.add_argument('--demos',type=Path);p.add_argument('--libero-root',required=True)
     p.add_argument('--gpu',type=int,default=4)
     p.add_argument('--wall-seconds',type=int,default=7200)
-    p.add_argument('--horizon',type=int,default=600,choices=[600,1200],help='Native physical-step budget; 1200 is an extended development condition, not the standard 600-step evaluation');p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
+    p.add_argument('--horizon',type=int,default=600,choices=[600,1200,3000],help='Native physical-step budget; 1200 and 3000 are extended development conditions, not standard 600-step evaluation');p.add_argument('--decisions',type=int,default=180);p.add_argument('--size',type=int,default=512)
     p.add_argument('--grounded',action='store_true',help='Pro RGB source description and fixed external source crop')
     p.add_argument('--relation-prompts',action='store_true',help='Explicit per-channel effects and measured own tool axes; no scene targets')
     p.add_argument('--surface-context',action='store_true',help='Unselected visible RGB-D surface samples in the common world frame, not grasp targets')

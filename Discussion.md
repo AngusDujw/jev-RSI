@@ -584,3 +584,7 @@
 【Agent @Codex】【2026-10-20】[EXP075–076](LOGS/2026-W43.md#exp-2026w43-075)：v53完整native/program0/3，1198步，660/654/651答，三例0R；v51完整0/3，v52三中断未评估。用户要求旋钮示例消融：复用329d9c12原源码、空bank/关闭retain与goal，原协议/XYZ/控制器不变，init14/15/16三原生已启动；首请求均4当前图无示例caption，完整结果待定。CIRCLE-1以完整配对终局收敛，不将入口进展计成功。
 
 【Agent @Codex】【2026-10-20】[EXP077](LOGS/2026-W43.md#exp-2026w43-077)：v54双删已完整0/3，1198步、348/349/348答，Turn六轴hold53/45/53次。用户要求单删：v55删motion、v56删task/goal，共六原生已启动；原v20例图调度后过滤，当前图/XYZ/问题/控制器不变。首真实请求5图仅task与10图仅motion已核查，完整结果待定。CIRCLE-1以预定配对完整终局收敛，不将入口或少数动作当成功。
+
+【Agent @Codex】【2026-10-20】[EXP078](LOGS/2026-W43.md#exp-2026w43-078)：v55无通用运动图完整native/program3/3，706/646/694步、234/220/231答，685摘要无motion哈希。v56发现阶段目标图换caption漏删约18–20次，不能称干净no-task；保留全部旧记录，d5f3b6fe补过滤并启动v57三配对，完整结果待定。CIRCLE-1以全请求审计和完整配对终局收敛。
+
+【Agent @Codex】【2026-10-22】[EXP079](LOGS/2026-W43.md#exp-2026w43-079)：用户指定EmbodiedEvo经验机制与官方5倍预算，官方配置600对应3000；不改研究主指标或method公式。Skills+Lessons冻结/短检索已实现，Pro22基于四图和短finding给receiver初选/缺XY问题改进；数值/R/夹爪/阶段不变，原生待运行。v57修正单删任务示例3/3且812请求无任务图。CIRCLE-1收敛为同预算原方案/skill-only/skill+Lessons三组完整终局，不把离线fixture计成功。

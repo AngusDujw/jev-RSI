@@ -192,3 +192,8 @@
 - 【Agent】【2026-10-20 14:52】[run] v54完整终局native/program0/3，均1198步、348/349/348答。按用户要求启动v55删motion/v56删task+goal各14/15/16六并发；07e939f3 wrapper精准过滤，不改冻结原文或XYZ/控制器；首输入分别5图task-only和10图motion-only已实审。
 - 【User】【2026-10-20 15:54】[prompt] 实验情况怎么样
 - 【Agent】【2026-10-20 15:55】[result] v55只删通用示例完整native/program3/3，706/646/694步、234/220/231答，685请求逐SHA均无motion图。发现v56阶段题换caption导致目标图漏删，每例约18–20次，不能称干净no-task。补识别ARCHIVED goal appearance，阶段/主请求fixture通过；保留原组，准备v57修正后三配对。
+- 【Agent】【2026-10-20 15:58】[run] v57修正单删task/goal的阶段题残留后，独立工作树d5f3b6fe启动init14/15/16三原生及本机du Decisions桥；v56原进程及回答不改。补EXP078/v55成功数值/无motion哈希和v56有效性偏差。
+- 【User】【2026-10-22 20:15】[prompt] 参考https://arxiv.org/pdf/2610.18867v1这个文章对应的项目的经验积累和改进方式来改进本项目，要求不变
+- 【Agent】【2026-10-22 20:16】[op] 按用户指定读取EmbodiedEvo v1及官方项目470278c4的Playground/Test模板与冻结实现；独立实现Skills/Lessons哈希冻结、阶段检索和问题技能wrapper，不复制无总许可证源码、不传native/contact。Pro22经本机Pro6.1-sol high实际读取四图和短经验，产生receiver/缺XY问题改进；两处自由文本要求做形式接口适配。数值路径/旋转夹爪阶段不变fixture通过。
+- 【User】【2026-10-22 20:20】[prompt] 可以先把最大步数设置为官方要求的的5倍，且观察一下是否有的是因为最大步数限制导致的没有完成，以及为什么容易达到最大步数限制，但主要还是正常改进
+- 【Agent】【2026-10-22 20:22】[op] 官方LIBERO-plus eval/default.yaml本机及raw均600，按用户拍板允许3000；决策轮显式600防180轮先截断。外层预算检查点不传模型，假环境验证不改变返回值/控制分支。准备同预算原v53/skill-only/skill+Lessons各3开发例，原任务/模型权限不变。

@@ -1,8 +1,17 @@
+# Current adaptation: frozen Skills/Lessons and 3000-step diagnostic budget
+
+- User2026-10-22: reference EmbodiedEvo2610.18867v1; preserve Decisions motor/phase control and nonprivileged observations. New harness mechanics and Pro22 question-contract skill implemented; native launch pending. Official default max_steps600 verified; new maximum3000 is extended development, not standard score.
+- Corrected v57 no-task/goal examples completed native/program3/3 at862/778/910steps,274/253/285responses;812request summaries contain no task/goal bank hashes. v56 also ended3/3 but retains its contaminated label. No new clean bottle success.
+
 # Current two-task multimodal iterations
 
 Tasks: LIBERO-plus 1383 (stove knob) and 1458 (wine bottle onto wooden rack).
 
-## v54 knob no-examples complete0/3; v55/v56 single-family ablations running
+## v55 no-motion complete3/3; v56 contains leaked stage-goal image; corrected v57 running
+
+- v55 complete native/program3/3,706/646/694steps,234/220/231responses;685request summaries contain no generic-motion bank hashes. Task examples remain; Turn uses16/10/15positiveZ actions, no RX/RY.
+- IMPORTANT correction: v56 removes task examples from main calls but phase-only requests rename goal caption to ARCHIVED goal appearance. That goal image leaked into18–20phase requests/case in the audited snapshot. Do not call v56 a clean task-example ablation. Original replies/processes are preserved, no hotpatch.
+- v57 immutable wrapperd5f3b6fe adds the missing stage-caption filter; same frozen329d9c12source/protocol/current RGB/XYZ/controller, init14/15/16. Three native cases started, complete outcomes pending. Scope remains example removal, including original now-dangling verbal references.
 
 - v54 final: all native_evaluated=true, success=false, program_finished=false,1198steps; responses348/349/348. All endTurn, six-axis hold53/45/53times. Earlier running entries below are historical.
 - v55 removes only generic motion examples; v56 removes only task-phase/final-goal examples. Both retain original v20 scheduling/text/XYZ/controller and current observations. Wrapper07e939f3 filters final payload of immutable329d9c12; paired14/15/16 each, six native processes started. First actual inputs5images/task-only versus10images/motion-only; no native outcome yet. See EXP077 and protocols/knob_v55_v56_example_ablation.json.

@@ -35,7 +35,7 @@ def watch(campaigns, site):
                     mode='Actor-selected surface XYZ + RGB orientation' if case.get('actor_attention') else 'RGB + current surface XYZ coordinates'
                     if case.get('overview_camera'):mode+=' + fixed '+case['overview_camera']
                     if case.get('retain_rotation_examples'):mode+=' + retained rotation examples'
-                    rows.append('<tr><td>'+html.escape(campaign.name)+(' (extended 1200-step development)' if case.get('horizon',600)>600 else '')+'</td><td><a href="'+name+'/review.html">'+html.escape(case['name'])+'</a></td><td>'+mode+'</td><td>'+phase+'</td><td>'+str(progress['stage'])+'</td><td>'+str(progress['physical_steps'])+'</td><td>'+str(progress['responses'])+'</td></tr>')
+                    rows.append('<tr><td>'+html.escape(campaign.name)+(f" (extended {case['horizon']}-step development)" if case.get('horizon',600)>600 else '')+'</td><td><a href="'+name+'/review.html">'+html.escape(case['name'])+'</a></td><td>'+mode+'</td><td>'+phase+'</td><td>'+str(progress['stage'])+'</td><td>'+str(progress['physical_steps'])+'</td><td>'+str(progress['responses'])+'</td></tr>')
             except (OSError,ValueError) as error:
                 print(json.dumps(dict(campaign=str(campaign),review_retry=type(error).__name__)),flush=True)
         stamp=time.strftime('%Y-%m-%d %H:%M:%S %z')

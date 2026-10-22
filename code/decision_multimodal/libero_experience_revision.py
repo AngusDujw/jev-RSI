@@ -1,0 +1,99 @@
+"""Run the existing actor with a pinned, bounded question-input skill snapshot."""
+import argparse
+from copy import deepcopy
+import json
+from pathlib import Path
+import runpy
+import sys
+
+from experience_harness import context, digest, validate
+
+
+def revise_questions(sent, contract):
+    revised = deepcopy(sent)
+    state = revised['state']
+    stage = state.get('stage', {}).get('stage_key')
+    if stage not in ('align_source_above_receiver', 'lower_to_place'):
+        return revised
+    purpose = state.get('request_purpose')
+    if purpose == 'multimodal_reference_selection' and 'receiver' in revised['questions']:
+        revised['questions']['receiver']['instructions'] = contract['receiver_instructions']
+    if purpose in ('multimodal_policy', 'multimodal_rotation_gripper_transition'):
+        # Numeric axes are already decided in the preceding scoped request and
+        # removed from these questions. Do not edit that numeric path or answer.
+        numeric = state.get('numeric_axis_decisions', {})
+        for axis in ('x', 'y'):
+            if axis in revised['questions'] and axis not in numeric:
+                revised['questions'][axis]['instructions'] = contract['visual_' + axis + '_instructions']
+                revised['questions'][axis]['criteria'] = dict(contract['visual_choice_descriptions'])
+    return revised
+
+
+def main():
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--experience-snapshot', type=Path, required=True)
+    parser.add_argument('--experience-sha256', required=True)
+    parser.add_argument('--frozen-source', type=Path, required=True)
+    parser.add_argument('--frozen-source-sha256', required=True)
+    parser.add_argument('--experience-mode', choices=['skill_only', 'skill_and_lessons'], required=True)
+    args, remaining = parser.parse_known_args()
+    task_parser = argparse.ArgumentParser(add_help=False)
+    task_parser.add_argument('--task', type=int, required=True)
+    task_args, _ = task_parser.parse_known_args(remaining)
+    validate(args.experience_snapshot, args.experience_sha256)
+    source = args.frozen_source.resolve()
+    if digest(source) != args.frozen_source_sha256:
+        raise ValueError('Native actor source changed')
+    contract_path = args.experience_snapshot / 'harness/skills/question_contract.json'
+    contract = json.loads(contract_path.read_text())
+    skill = runpy.run_path(str(args.experience_snapshot / 'harness/skills/question_skill.py'))['revise_questions']
+    if set(contract['visual_choice_descriptions']) != {'positive', 'negative', 'hold'}:
+        raise ValueError('Question skill cannot change the motor categories')
+    sys.path.insert(0, str(source.parent))
+    namespace = runpy.run_path(str(source), run_name='pinned_actor_with_experience')
+    from libero_budget_audit import install
+    install(remaining)
+    cls = namespace['DirectAPI']
+    original_build, original_audit = cls.build_payload, cls.input_audit
+
+    def build(self, sent):
+        validate(args.experience_snapshot, args.experience_sha256)
+        revised = skill(sent, contract)
+        payload = original_build(self, revised)
+        state = sent['state']
+        stage = state.get('stage', {}).get('stage_key', '')
+        lessons = []
+        if args.experience_mode == 'skill_and_lessons' and state.get('request_purpose') in (
+                'multimodal_reference_selection', 'multimodal_policy', 'multimodal_rotation_gripper_transition'):
+            lessons = context(args.experience_snapshot, task_args.task, stage)
+        if lessons:
+            payload['input'][0]['content'].insert(0, dict(type='input_text', text=(
+                'Historical task lessons, not current measurements:\n' + '\n'.join(lessons))))
+        self.log(dict(kind='experience_read', snapshot_sha256=args.experience_sha256,
+                      mode=args.experience_mode, stage=stage, native_tick=self.tick,
+                      lesson_count=len(lessons), question_skill_changed=revised['questions'] != sent['questions']))
+        return payload
+
+    def audit(self):
+        result = original_audit(self)
+        result.update(experience_snapshot_sha256=args.experience_sha256,
+                      experience_mode=args.experience_mode, frozen_source_sha256=args.frozen_source_sha256)
+        return result
+
+    cls.build_payload, cls.input_audit = build, audit
+    original_save = cls.compact_post.__globals__['save']
+
+    def save(path, value):
+        if path.name in ('manifest.json', 'dispatch.json'):
+            value = dict(value, experience_injection=args.experience_mode == 'skill_and_lessons',
+                         experience_snapshot_sha256=args.experience_sha256,
+                         question_skill_applied=True, experience_mode=args.experience_mode)
+        return original_save(path, value)
+
+    cls.compact_post.__globals__['save'] = save
+    sys.argv = [str(source), *remaining]
+    namespace['main']()
+
+
+if __name__ == '__main__':
+    main()

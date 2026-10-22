@@ -17,6 +17,11 @@ def scheduler(path):
         for name,(proc,log) in list(active.items()):
             if proc.poll() is not None:
                 log.close();done.append(dict(name=name,returncode=proc.returncode));del active[name]
+                case=next(c for c in cfg['cases'] if c['name']==name)
+                if case.get('experience_snapshot') and (Path(case['output'])/'execution.jsonl').exists():
+                    from experience_harness import public_trace_facts
+                    facts=public_trace_facts(case['output'])
+                    (Path(case['output'])/'public-experience-facts.json').write_text(json.dumps(facts,indent=2)+'\n')
         limit=json.loads((root/'concurrency.json').read_text())['limit']
         free=int(subprocess.check_output(['nvidia-smi','--id=0','--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
         available=int(next(x.split()[1] for x in Path('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:')))/1024
@@ -79,9 +84,18 @@ def scheduler(path):
             if case.get('free_placement_posture'):command+=['--free-placement-posture']
             if case.get('robot_self_mask'):command+=['--robot-self-mask']
             command+=['--horizon',str(case.get('horizon',600))]
+            if case.get('decisions'):command+=['--decisions',str(case['decisions'])]
             if case.get('wall_seconds'):command+=['--wall-seconds',str(case['wall_seconds'])]
             if case.get('omit_example_kind'):
                 command+=['--omit-example-kind',case['omit_example_kind'],'--frozen-source',case['frozen_source']]
+            if case.get('experience_snapshot'):
+                command+=['--experience-snapshot',case['experience_snapshot'],
+                          '--experience-sha256',case['experience_sha256'],
+                          '--experience-mode',case['experience_mode'],
+                          '--frozen-source',case['frozen_source'],
+                          '--frozen-source-sha256',case['frozen_source_sha256']]
+            elif case.get('budget_audit'):
+                command+=['--frozen-source',case['frozen_source']]
             command+=['--execution-steps',str(case.get('execution_steps',4))]
             proc=subprocess.Popen(command,cwd=cfg['project'],env=env,stdout=log,stderr=subprocess.STDOUT)
             active[case['name']]=(proc,log);free-=1500;available-=2000

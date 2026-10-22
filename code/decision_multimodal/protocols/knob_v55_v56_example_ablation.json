@@ -25,5 +25,62 @@
   "key_origin": "du",
   "experience_injection": false,
   "assets": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v55-v56-knob-example-ablation",
-  "results": "Pending native evaluation; cases cannot be replaced to improve the score."
+  "results": "Pending native evaluation; cases cannot be replaced to improve the score.",
+  "v55_results": {
+    "native_success": [
+      true,
+      true,
+      true
+    ],
+    "program_finished": [
+      true,
+      true,
+      true
+    ],
+    "steps": [
+      706,
+      646,
+      694
+    ],
+    "responses": [
+      234,
+      220,
+      231
+    ],
+    "omitted_motion_image_hash_hits": 0
+  },
+  "v56_validity": "Invalid as clean task-example omission: renamed phase-only goal captions retained the archived final-goal image. Preserve results under this actual condition.",
+  "corrected_v57": {
+    "wrapper_commit": "d5f3b6fe",
+    "initial_states": [
+      14,
+      15,
+      16
+    ],
+    "stage_goal_caption_removed": true,
+    "assets": "/home/v4090-1/DataStorage/gpt6-dec/libero-decision-20261019/iteration-v57-knob-no-task-stage-fixed",
+    "result": {
+      "native_success": [
+        true,
+        true,
+        true
+      ],
+      "program_finished": [
+        true,
+        true,
+        true
+      ],
+      "steps": [
+        862,
+        778,
+        910
+      ],
+      "responses": [
+        274,
+        253,
+        285
+      ],
+      "task_goal_image_hash_hits": 0
+    }
+  }
 }
