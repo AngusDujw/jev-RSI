@@ -54,6 +54,67 @@ def revise_direction(sent, strategy):
     return revised
 
 
+def receiving_detail_parts(api, sent):
+    """Enlarge all CURRENT observed wood spans in two views; never rank them."""
+    import base64
+    import hashlib
+    import io
+    import numpy as np
+    from PIL import Image
+    from libero_visible_shape import overlay_observed_wood_lines
+    shape = dict(observed_wood_planes=[])
+    for label, row in sent['state']['observed_wood_directions'].items():
+        # Each A/B row is an actual unranked physical span from this request.
+        # Recreate one two-axis plane only when both rows exist.
+        if not label.endswith('A'):
+            continue
+        other = sent['state']['observed_wood_directions'].get(label[:-1]+'B')
+        if other is None:
+            continue
+        shape['observed_wood_planes'].append(dict(label=label[:-1],
+            visible_centroid_world_mm=row['observed_centre_world_mm'],
+            in_plane_axes_world_unit=[row['unit_world_line'], other['unit_world_line']],
+            visible_in_plane_spans_mm=[row['visible_span_mm'], other['visible_span_mm']]))
+    parts = []
+    for camera in ('agentview', 'sideview'):
+        calibration = getattr(api, 'current_camera_calibration', {}).get(camera)
+        raw = getattr(api, 'raw_camera_images', {}).get(camera)
+        if calibration is None or raw is None:
+            continue
+        if calibration['native_tick'] != api.tick:
+            raise ValueError('Receiving detail requires same-observation calibration')
+        image = Image.open(io.BytesIO(raw)).convert('RGB')
+        projected = overlay_observed_wood_lines(image, shape,
+            np.asarray(calibration['intrinsics']), np.asarray(calibration['camera_to_world']))
+        points = [point for segment in projected.values() for point in segment]
+        if not points or not all(math.isfinite(x) for point in points for x in point):
+            continue
+        bounds = (max(0, int(min(p[0] for p in points))-20),
+                  max(0, int(min(p[1] for p in points))-20),
+                  min(image.width, int(max(p[0] for p in points))+21),
+                  min(image.height, int(max(p[1] for p in points))+21))
+        if bounds[2]-bounds[0] < 8 or bounds[3]-bounds[1] < 8:
+            continue
+        crop = image.crop(bounds)
+        scale = 640 / max(crop.size)
+        crop = crop.resize(tuple(max(1, round(v*scale)) for v in crop.size), Image.Resampling.LANCZOS)
+        output = io.BytesIO()
+        crop.save(output, format='PNG')
+        if hasattr(api, 'log'):
+            api.log(dict(kind='receiving_detail_view', native_tick=api.tick,
+                camera=camera, model_input=False, calibration=calibration,
+                source_rgb_sha256=hashlib.sha256(raw).hexdigest(),
+                crop_bounds_xyxy=bounds, projected_observed_spans=projected))
+        parts.extend([dict(type='input_text', text=(
+            f'CURRENT {camera} wood-region zoom, observation {api.tick}. '
+            'ALL current fitted wood spans have the SAME labels as the physical-reference catalog. '
+            'Use the actual visible slats to distinguish their longitudinal direction from panel width. '
+            'These are projected observed segments, not selected target axes or action arrows. '
+            'A projection does not establish visibility, contact, or support.')),
+            dict(type='input_image', image_url='data:image/png;base64,'+base64.b64encode(output.getvalue()).decode())])
+    return parts
+
+
 def revise_rotation(sent, strategy):
     if sent['state'].get('request_purpose') != 'multimodal_rotation_axes':
         return sent

@@ -1,0 +1,21 @@
+{
+  "version": "v62",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "strategy_sha256": "1dccda3ffa40889feb21414cf26e8b0f51f4ca16babee3710e31b5b0da9f1065",
+  "direct_source_sha256": "dea79eb2deb03d18466ccce4e36bc97fbd381f11157afe4879c0931077f127ed",
+  "planner": "Original local Pro29 gpt-6.1-sol high semantic contract retained",
+  "input_treatment_origin": "Outer experiment agent adds observed wood multiview zooms; not falsely attributed to a new Pro plan.",
+  "method": "Only physical-reference observation representation differs from v61: append two CURRENT wood-region zooms with all unranked observed spans projected into both agentview and sideview using same-tick public camera calibration. No actor K/T text, no external target choice, no angular correction. Pro29 goal/questions, R six-image input, XYZ/gripper/phase/controller/three Lessons unchanged. Public calibration cached in capture for this rendering, and saved only to outer audit. Native development14/15/16; reserve17/18/19 untouched.",
+  "validation": "Six CPU image/freshness/no-mutation/missing-input/English/AST checks, 0API and0actions",
+  "status": "Frozen, first native interface pilot then open3slots"
+}

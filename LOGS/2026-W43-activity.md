@@ -215,3 +215,4 @@
 - 【Agent】【2026-10-22 23:11】[op] v59-r2完整0/3各2998步；v61修R结构化scope并传actor自选当前物理木条参考，Pro29实际读三短英文经验。9CPU不变量通过，0API/0动作；待新冻结原生，不改v60。
 - 【Agent】【2026-10-22 23:12】[run] 部署6b961f1e v61独立工作树，首原生PID793027、3worker桥已启动。现有planning目录使首次准备FileExistsError并阻止写入；校验已有同名文件一致后继续，首次无campaign的tmux未启动原生，重新启动一次。候选v60经验已镜像DataStorage；旧v60不动。
 - 【Agent】【2026-10-22 23:15】[note] v61首桥roots误指runs父目录，0API且原生仅10settling步等待；已停止自有空闲桥，改managed桥按三个case精确roots继续同一待答，无原生重启。DataStorage候选新增allhold非ready与预算不修复放置两短英文Lessons，不注入在跑回合。
+- 【Agent】【2026-10-22 23:26】[op] v61实际当前参考→R传递及实测RY2.798度验证后开3槽；低置信P0A/P0B相同。新v62仅追加同刻两视角全部观测木条放大图，公开K/T仅内部投影/外层审计，0外部目标/角误差/符号；6CPU通过，待原生。

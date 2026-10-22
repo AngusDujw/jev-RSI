@@ -447,7 +447,7 @@ def main():
             return native.sim.data.site_xpos[site].copy(),native.sim.data.site_xmat[site].reshape(3,3).copy()
         def capture(save_sensor_data=False):
             from PIL import ImageDraw
-            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={};api.scene_hand_details=[]
+            parts=[];p0,_=own_pose();api.surface_samples=[];api.source_component=None;api.receiver_component=None;api.raw_camera_images={};api.scene_hand_details=[];api.current_camera_calibration={}
             if tracker is not None:tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             if side_source_tracker is not None:side_source_tracker.upper_neck_sample=args.upper_neck_sample and stages[stage].get('stage_key') in ('align_above_source','descend_to_source','close')
             for camera in cameras:
@@ -457,6 +457,7 @@ def main():
                 if not args.compact or args.record_evidence:(out/f'{tick:04d}-{camera}-raw.png').write_bytes(raw)
                 K=get_camera_intrinsic_matrix(native.sim,camera,args.size,args.size)
                 T=get_camera_extrinsic_matrix(native.sim,camera)
+                api.current_camera_calibration[camera]=dict(native_tick=tick,intrinsics=K.tolist(),camera_to_world=T.tolist())
                 if protocol.get('scene_relation_hand_details'):
                     from libero_stage_decision import hand_detail_parts
                     pc=(np.linalg.inv(T)@np.r_[p0,1.])[:3]

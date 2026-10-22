@@ -72,6 +72,8 @@ def main():
             raise ValueError('Posture strategy task or frozen hash differs')
         strategy = json.loads(args.rotation_strategy_file.read_text())
         english(strategy)
+        if not isinstance(strategy.get('receiving_multiview_details', False), bool):
+            raise ValueError('Receiving-detail experiment switch must be boolean')
         if (set(strategy['choice_descriptions']) != {'positive', 'negative', 'hold'}
                 or set(strategy['readiness_choices']) != {'ready', 'not_ready', 'unclear'}):
             raise ValueError('Posture strategy cannot change categorical options')
@@ -121,6 +123,11 @@ def main():
         if strategy is not None:
             from libero_posture_strategy import revise_rotation_payload
             payload = revise_rotation_payload(payload, revised, strategy)
+            if (strategy.get('receiving_multiview_details')
+                    and revised['state'].get('request_purpose') == 'multimodal_receiving_direction'):
+                from libero_posture_strategy import receiving_detail_parts
+                payload['input'][0]['content'].extend(receiving_detail_parts(self, revised))
+                self.image_count = sum(part['type']=='input_image' for part in payload['input'][0]['content'])
         state = sent['state']
         stage = state.get('stage', {}).get('stage_key', '')
         lessons = []
