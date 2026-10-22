@@ -213,3 +213,5 @@
 - 【Agent】【2026-10-22 22:30】[result] v60首真实RY3度实测2.794；首RX/RY各3度实测2.787/2.765，not_ready由阶段actor继续。实际R/4答接口验证后开3槽PID713386/722934/722935，旧r2三例不改。当前相机关系有改善且首步曾变差，短英文候选经验仅收集，不称完整成功或纯视觉贡献。
 - 【User】【2026-10-22 23:11】[intent] 继续按EmbodiedEvo的Skills/Lessons冻结迭代，保持旋钮及酒瓶Decisions多模态稳定完成目标与3000步上限。
 - 【Agent】【2026-10-22 23:11】[op] v59-r2完整0/3各2998步；v61修R结构化scope并传actor自选当前物理木条参考，Pro29实际读三短英文经验。9CPU不变量通过，0API/0动作；待新冻结原生，不改v60。
+- 【Agent】【2026-10-22 23:12】[run] 部署6b961f1e v61独立工作树，首原生PID793027、3worker桥已启动。现有planning目录使首次准备FileExistsError并阻止写入；校验已有同名文件一致后继续，首次无campaign的tmux未启动原生，重新启动一次。候选v60经验已镜像DataStorage；旧v60不动。
+- 【Agent】【2026-10-22 23:15】[note] v61首桥roots误指runs父目录，0API且原生仅10settling步等待；已停止自有空闲桥，改managed桥按三个case精确roots继续同一待答，无原生重启。DataStorage候选新增allhold非ready与预算不修复放置两短英文Lessons，不注入在跑回合。

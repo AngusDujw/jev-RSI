@@ -187,6 +187,7 @@ graph LR
     T_2026W43_031["📊 decision-multimodal<br/>用户官方5倍预算3000：r1原方案/Sk…"]:::experiment
     T_2026W43_032["🔬 decision-multimodal<br/>2026-10-22 step634接收点…"]:::hypothesis
     T_2026W43_033["📊 decision-multimodal<br/>2026-10-22 v59源参考语义修订…"]:::experiment
+    T_2026W43_034["📊 decision-multimodal<br/>v59-r2完整0/3，各2998步；v6…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -333,6 +334,7 @@ graph LR
   T_2026W43_030 --> T_2026W43_031
   T_2026W43_031 --> T_2026W43_032
   T_2026W43_032 --> T_2026W43_033
+  T_2026W43_033 --> T_2026W43_034
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -506,6 +508,7 @@ graph LR
 | `T-2026W43-031` | 2026-10-22 | experiment | decision-multimodal | 用户官方5倍预算3000：r1原方案/Skill/Skill+Lessons各三开发例启动；首真实回复和动作已验证，旧导入错误0API保留 | `EXP-2026W43-081` | - |
 | `T-2026W43-032` | 2026-10-22 | hypothesis | decision-multimodal | 2026-10-22 step634接收点已选但源unlabelled：运输先用临时可见瓶身参考，最终承托条件留后续；Pro24静态C0低置信，v59需完整原生检验 | `EXP-2026W43-082` | - |
 | `T-2026W43-033` | 2026-10-22 | experiment | decision-multimodal | 2026-10-22 v59源参考语义修订首18/18真实运输源已选、数字XY14/18；相机点差缩小且真实移动，两例到降低，完整放置待定；Pro26语义/倾斜探针仍全Rhold不推广 | `EXP-2026W43-086` | - |
+| `T-2026W43-034` | 2026-10-22 | experiment | decision-multimodal | v59-r2完整0/3，各2998步；v60真实RX/RY后仍not_ready且全轴保持。仅修目标scope静态仍保持，v61冻结actor自选当前物理木条方向并启动原生，收益待测。 | `EXP-2026W43-091` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
