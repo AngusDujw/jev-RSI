@@ -53,3 +53,14 @@ after it observes stop. For immediate cancellation of an in-flight curl, termina
 only that worker's owned process group and classify delivery unknown; never resend.
 Native servers may be closed by RPC `close` or their owned process signal. Do not
 restart an ended attempt as though it were a continuation.
+
+The native adapter writes outer-only `ik.jsonl` diagnostics: original solver status,
+target joints, and before/after robot measurements, keyed by attempt, request and
+native step. The wrapper calls the original solver exactly once and preserves its
+return or exception. It does not change IK tolerances, scoring, action selection,
+or model inputs. A consumed native step does not establish successful IK or motion.
+
+`lessons/feedback_probe_candidate.md` records the first image-backed development
+candidate and its unsuccessful first check. It is not a promoted Skill. Knowledge
+revisions are explicit and immutable in each campaign; avoid expanding a candidate
+that has not improved the intended measurable behavior.

@@ -331,3 +331,7 @@
 - 【Agent】【2026-10-22 20:44】[result] 5倍开发预算已在company-server-2-ykj真实验证：general_pickup200→1000、保持1原生步和显式reset通过。首真实Decisions0000连接443超时curl28/HTTP000/上传0，零策略动作，不重发；native3555191/worker3587730已退出，原生账本step0/incomplete。远端7897已监听不覆盖，未扩其余七卡、未作额外API探测，保代表输入图与文本。  ↪ `EXP-2026W43-007`
 - 【User】【2026-10-22 20:53】[decision] 用户授权将本机7897代理反向转发至company-server-2-ykj其他空闲端口，不占用服务器7897；先验证网络，不重发旧失败请求。
 - 【Agent】【2026-10-22 20:55】[op] 按用户授权建立company-server-2-ykj回环17897→本机7897的专用SSH反向转发，现有远端7897未动。前次后台SSH未存活，无残留转发；改前台受管exec会话39039，masterPID3527717。远端17897/7897同时监听；仅经新代理HEAD GitHub返回HTTP200，TLS0.533s/总0.857s。未调用任何OpenAI API、未重发旧请求、未启动原生环境。  ↪ `EXP-2026W43-007`
+- 【User】【2026-10-22 20:58】[decision] 用户确认经17897专用代理正常继续推进；启动新独立Playground，不恢复旧episode或重发失败请求，保持5倍预算与短段反馈。  ↪ `EXP-2026W43-007`
+- 【Agent】【2026-10-22 20:58】[run] 真实资源核实company-server-2-ykj八卡各约24GiB空闲、RAM约840GiB、盘349GiB，旧native/worker零；17897隧道存活。新独立playground-20261022c先GPU0/layout0，nativePID3708913，5倍1000步；保持当前代码9364fc00，待ready才通过进程代理启动Decisions。旧LIBERO与覆盖主题CIRCLE-1本轮不重开，收敛到真实短段证据。  ↪ `EXP-2026W43-007`
+- 【Agent】【2026-10-22 21:14】[result] 新17897代理下八路Playground首批真实请求30/30HTTP200：GPU0至45步/9决策，其余各15步/3决策。两组皆无持物证据，部分下降命令无运动/反向偏差；r001候选英文图像经验3决策未改善，不升Skill。全部显式审查stop，真实ps确认八native/worker全退出；记开发中止不算完整失败。下一步只加透明IK状态/目标关节诊断，源结果/容差/调用次数不改，不堆提示。  ↪ `EXP-2026W43-007`
+- 【Agent】【2026-10-22 21:16】[op] 八路停止后，仅自有native适配器新增透明IK观测：原solver单次调用、返回/异常不变、测量与状态仅ik.jsonl外层诊断，不进模型、不改动作/容差/评分。子Agent临时fake验证Success/Fail/异常身份与无重试通过、测试脚本已删；新增英文候选Lesson记录首次无改善，未promote。  ↪ `EXP-2026W43-007`

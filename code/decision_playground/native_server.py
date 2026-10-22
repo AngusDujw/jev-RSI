@@ -9,11 +9,13 @@ from __future__ import annotations
 import base64
 import importlib
 import io
+import inspect
 import json
 import os
 from pathlib import Path
 import signal
 import socket
+import sys
 import time
 import types
 import uuid
@@ -60,12 +62,84 @@ class Playground:
         self.official_step_limit = int(env.step_lim)
         self.step_multiplier = int(os.environ.get('PLAYGROUND_STEP_MULTIPLIER', '1'))
         self.development_step_limit = expanded_limit(self.official_step_limit, self.step_multiplier)
+        self.ik_request_id = None
+        self.ik_call_index = 0
+        self.install_ik_observer()
         self.begin()
 
     def log(self, name, record):
         with (self.output / name).open("a", encoding="utf-8") as stream:
             stream.write(json.dumps(plain(record), allow_nan=False) + "\n")
             stream.flush()
+
+    def diagnostic_log(self, record):
+        """Diagnostics never change a solver result or cause another solve."""
+        try:
+            self.log("ik.jsonl", record)
+        except Exception as error:
+            print(f"IK diagnostic persistence failed: {type(error).__name__}: {error}",
+                  file=sys.stderr, flush=True)
+
+    def robot_measurement(self, robot, env_idx):
+        manager = self.env.robot_manager
+        result = {"pose_frame": "environment_origin_world_raw_link_wxyz"}
+        for name, getter in (("measured_joints", manager.get_joint),
+                             ("measured_raw_link_pose", manager.get_real_endpose)):
+            try:
+                arguments = {"env_idx_list": [env_idx]}
+                if name == "measured_raw_link_pose":
+                    arguments["is_relative"] = True
+                result[name] = plain(getter(robot, **arguments)[env_idx])
+            except Exception as error:
+                result[name + "_error"] = f"{type(error).__name__}: {error}"
+        return result
+
+    def ik_context(self, event):
+        return {"event": event, "episode_id": getattr(self, "episode_id", None),
+                "attempt": self.attempt, "request_id": self.ik_request_id,
+                "native_step": int(self.env.take_action_cnt[0])}
+
+    def install_ik_observer(self):
+        """Wrap the existing bound solver transparently, with one call only.
+
+        No IK status is added to model observations. The original return object
+        and exception are passed through unchanged; no target/tolerance edits.
+        """
+        manager = self.env.robot_manager
+        original = manager.solve_ik
+        signature = inspect.signature(original)
+
+        def observed(*args, **kwargs):
+            self.ik_call_index += 1
+            record = {**self.ik_context("solve_ik"), "call_index": self.ik_call_index}
+            try:
+                bound = signature.bind(*args, **kwargs)
+                bound.apply_defaults()
+                values = bound.arguments
+                robot, env_idx = values["robot"], values["env_idx"]
+                record.update(arm=robot.arm_name, env_idx=env_idx,
+                              target_pose=plain(values["target_pose"]),
+                              transform_mode=values.get("trans"),
+                              before=self.robot_measurement(robot, env_idx))
+            except Exception as error:
+                record["capture_error"] = f"{type(error).__name__}: {error}"
+            try:
+                result = original(*args, **kwargs)
+            except BaseException as error:
+                record.update(outcome="exception", exception_type=type(error).__name__,
+                              exception=str(error))
+                self.diagnostic_log(record)
+                raise
+            try:
+                record.update(outcome="returned", status=result.get("status"),
+                              target_joints=plain(result.get("joint_value")),
+                              joint_names=plain(result.get("joint_names")))
+            except Exception as error:
+                record["result_capture_error"] = f"{type(error).__name__}: {error}"
+            self.diagnostic_log(record)
+            return result
+
+        manager.solve_ik = observed
 
     def begin(self):
         self.attempt += 1
@@ -185,7 +259,18 @@ class Playground:
             if self.env.is_episode_end():
                 break
             before = int(self.env.take_action_cnt[0])
-            self.env.take_action(native_action)
+            self.ik_request_id = request_id
+            try:
+                self.env.take_action(native_action)
+            finally:
+                # Read-only proprioception after dispatch, including failures.
+                for robot in self.env.robot_manager.robot_list:
+                    if robot.type == "target":
+                        self.diagnostic_log({**self.ik_context("after_native_action"),
+                                             "arm": robot.arm_name,
+                                             "native_step_before": before,
+                                             **self.robot_measurement(robot, 0)})
+                self.ik_request_id = None
             after = int(self.env.take_action_cnt[0])
             if after != before + 1:
                 raise RuntimeError("Native step counter did not advance exactly once")
