@@ -76,6 +76,10 @@ def main():
             raise ValueError('Receiving-detail experiment switch must be boolean')
         if strategy.get('readiness_scope', 'all_carry') not in ('all_carry', 'lower_to_place_only'):
             raise ValueError('Unknown planner readiness scope')
+        if ('receiving_reference_header' in strategy
+                and (not isinstance(strategy['receiving_reference_header'], str)
+                     or not strategy['receiving_reference_header'].strip())):
+            raise ValueError('Physical-reference header must be nonempty text')
         if (set(strategy['choice_descriptions']) != {'positive', 'negative', 'hold'}
                 or set(strategy['readiness_choices']) != {'ready', 'not_ready', 'unclear'}):
             raise ValueError('Posture strategy cannot change categorical options')

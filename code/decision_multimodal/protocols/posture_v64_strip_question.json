@@ -1,0 +1,20 @@
+{
+  "version": "v64",
+  "task": 1458,
+  "development_inits": [
+    14,
+    15,
+    16
+  ],
+  "reserved_inits": [
+    17,
+    18,
+    19
+  ],
+  "strategy_sha256": "0491ac082492cdf14962efca3e5fdcb465d6e5ad1da4797a307a27a39d1023a9",
+  "planner": "Local Pro31 gpt-6.1-sol high, one concise English lesson actually loaded",
+  "actor": "du /v1/decisions gpt-6-luna",
+  "method": "Only Pro31 physical-reference header/question change from v63: ask which observed line follows one narrow wooden strip instead of crossing multiple strips. Same five actual images, unranked numeric catalog, full R/XYZ/gripper/phase rules, two-camera zooms, lower-only additional readiness and three frozen Lessons retained. Actor chooses physical label and every motor sign; no target-angle correction or external label answer. Exact Pro31 original and changed-input static diagnostic retained; not a native success claim.",
+  "validation": "Four CPU invariants; one actual Pro31 wording query selected visible-strip-parallel span on unchanged historical five-image observation, p0.48/conf0.35. No physical actions.",
+  "status": "Frozen, three independent development cases; existing native rendering and phase interfaces already separately validated."
+}

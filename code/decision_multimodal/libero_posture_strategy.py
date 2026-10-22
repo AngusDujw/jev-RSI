@@ -152,7 +152,7 @@ def revise_rotation_payload(payload, sent, strategy):
     if (sent['state'].get('request_purpose') == 'multimodal_receiving_direction'
             and strategy.get('receiving_reference_question')):
         result = deepcopy(payload)
-        result['input'][0]['content'][0]['text'] = (
+        result['input'][0]['content'][0]['text'] = strategy.get('receiving_reference_header') or (
             'Identify the CURRENT upper-rack physical support direction. '
             'All labelled spans are observed features, not proposed motions. '
             + strategy['posture_preparation_goal'])

@@ -218,3 +218,4 @@
 - 【Agent】【2026-10-22 23:26】[op] v61实际当前参考→R传递及实测RY2.798度验证后开3槽；低置信P0A/P0B相同。新v62仅追加同刻两视角全部观测木条放大图，公开K/T仅内部投影/外层审计，0外部目标/角误差/符号；6CPU通过，待原生。
 - 【Agent】【2026-10-22 23:30】[run] eec1a630已Git SSH推送并通过增量bundle部署v62独立树，首原生PID814465和managed3worker桥运行，当前106步接近；v61三例514/286/286仍真实R转动，旧v60继续。候选经验简化为转动后比较新瓶图、不要把手动当瓶动，不注入冻结回合。
 - 【Agent】【2026-10-22 23:42】[op] Pro30实际读取2短英文经验与真实622同刻双RAW，建议最终姿态门仅用于下放。受控v63只采用scope/reason，保持v62的R/5图selector/位置/Rhold条件；5CPU+5实际Decisions阶段fixture全过0动作。v62已验证真实双投影、5图和原K/T不进文字后开3槽。
+- 【Agent】【2026-10-22 23:49】[op] v60 init15在2170收到实际reference type=refusal，native未评，保留未重采。Pro31依据单帧改问一条可见的沿木条关系，原样Decisions选P0B0.48/conf0.35；v64仅改header/question，数字目录和五图不删。5候选Lessons统一短英文有效schema并通过freeze/context验证，不改活动SHA。
