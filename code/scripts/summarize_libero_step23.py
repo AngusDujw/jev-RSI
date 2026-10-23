@@ -59,7 +59,7 @@ def audit(run):
             if branch['translation_clipped_axes'][index]:
                 clipped[axis] += block
             key = (stage, axis)
-            direction = signs[answers[axis]['choice']]
+            direction = signs[answers[axis]['choice']] if abs(branch['delta'][index]) > 1e-12 else 0
             if direction and previous.get(key, direction) != direction:
                 reversals[stage+':'+axis] += 1
             if direction:
