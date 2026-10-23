@@ -260,6 +260,7 @@ graph LR
     T_2026W43_013["📊 gpt-as-policy-luna-media<br/>同步修复后Luna重测550步/111动作…"]:::experiment
     T_2026W43_014["📊 gpt-as-policy-luna-media<br/>提示v1改变为先调姿态但10目标指长轴仍水…"]:::experiment
     T_2026W43_015["📊 gpt-as-policy-luna-media<br/>v3首次可见抓起黄块并连续搬运334–37…"]:::experiment
+    T_2026W43_016["📊 gpt-as-policy-luna-media<br/>Luna提示v4完整550步仍失败：可持物…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -472,6 +473,7 @@ graph LR
   T_2026W43_012 --> T_2026W43_013
   T_2026W43_013 --> T_2026W43_014
   T_2026W43_014 --> T_2026W43_015
+  T_2026W43_015 --> T_2026W43_016
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -719,6 +721,7 @@ graph LR
 | `T-2026W43-013` | 2026-10-23 | experiment | gpt-as-policy-luna-media | 同步修复后Luna重测550步/111动作仍失败；两臂16次闭合无确认持物，画面正常，约32分钟，已交付原生与慢放 | `EXP-2026W43-013` | - |
 | `T-2026W43-014` | 2026-10-23 | experiment | gpt-as-policy-luna-media | 提示v1改变为先调姿态但10目标指长轴仍水平，46步诊断中止；按R(q)e_x证据仅补旋转坐标语义的v2已启动 | `EXP-2026W43-014` | - |
 | `T-2026W43-015` | 2026-10-23 | experiment | gpt-as-policy-luna-media | v3首次可见抓起黄块并连续搬运334–377步，两视图支持；380释放后落白块旁，放置对齐仍失败，原生终局未出 | `EXP-2026W43-016` | - |
+| `T-2026W43-016` | 2026-10-23 | experiment | gpt-as-policy-luna-media | Luna提示v4完整550步仍失败：可持物搬运但多次放置偏离；v6仅补块体入座/公开机器人几何早读继续检验 | `EXP-2026W43-017`, `EXP-2026W43-019` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
