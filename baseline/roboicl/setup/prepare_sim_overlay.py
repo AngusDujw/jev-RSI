@@ -47,7 +47,8 @@ def main():
                 fields = Parser().parsestr(archive.read(metadata).decode())
                 for requirement in fields.get_all("Requires-Dist", []):
                     exact = re.fullmatch(r"([\w.-]+)\s*==\s*([\w.+-]+)", requirement)
-                    if exact and exact[0] not in overlays:
+                    if (exact and exact[0] not in overlays
+                            and (base['versions'].get(exact[1]) or '').split('+')[0] != exact[2]):
                         overlays.append(exact[1]+"=="+exact[2])
     target = root/".venv-sim"
     if not target.exists():
