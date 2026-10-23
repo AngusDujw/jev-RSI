@@ -69,3 +69,9 @@
 当前本机Pro桥和SSH反向转发持续前台；原协调器13906的SSH连接曾因跳板超时退出255，重连确认原进程与新协调器18656仍运行，已新增前台只读观察原进程直至summary，不重启任何物理回合。原资源监测及新批监测持续记录。一次Pro上游SSL EOF/RemoteDisconnected造成两路停顿时，实际CUDA复测32.0通过；短暂停止新协调器准入，两个原子回合继续原重试，恢复新成功响应后SIGCONT同一协调器。暂停/恢复证据在startup-resume/admission-suspended-pro.json与admission-resumed-pro.json。后续间歇同类传输错误均沿用原重试，失败推理消耗未知，不按0处理；客户端目前无CUDA102，不能误归因GPU许可。
 
 原始日志已中途同步本机code/runs/2026-10-23-roboicl-speed-5880-restricted-resume/{remote-results,startup-remote-results}，这是未完成前缀备份，最终还需重新同步/校验。全部7个新回合目标尚未完成，后续继续同一批次至原生终局或明确基础设施中断，不自动重跑结果。
+
+## 04:27后：三个未评分与最后回合
+
+未加速1/1布局0在662步/725响应、加速1/1布局0在642步/712响应结束，均无原生评分；默认1/1布局1已初始化但首请求失败、0步/0响应。具体server.log为URLError/ConnectionResetError及PolicyServiceError。本机原Pro桥前台会话exit143(SIGTERM，来源未知)，7915无监听，原隧道仍在并报告connect_to失败；与之前17个上游失败HTTP区别记录，不归因CUDA。本轮无CUDA102，桥恢复后实测CUDA32.0及原隧道health200通过。EXP045–047与完整[续跑报告](2026-10-23-roboicl-restricted-resume-results.md)记录原始文件、动作尺度和未评分边界。
+
+三个初始化后的中断均保留infrastructure-abort.json，不自动重跑；最后fast_h1/layout1通过同一协调器恢复并已产生模型响应和动作。7个新尝试仍有1个运行中。离线审计器现能处理首请求失败的零动作回合，并将三条harness前端口绑定失败单列，不混入物理尝试；本机修改d6a947e8已推送，仅为离线审计，不改变远端控制。末次桥恢复继续使用同一账号、端口7915、Astra/xhigh、2并发，当前前台会话与日志续写，账号/模型未更换。
