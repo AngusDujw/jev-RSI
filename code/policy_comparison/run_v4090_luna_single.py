@@ -211,7 +211,7 @@ def main():
         + ' && mkdir ' + shlex.quote(REMOTE_SOURCE)], check=True)
     # Native scoring uses the unchanged original runtime, never the policy's
     # public-feedback filter. Only the local actor copy is sanitized.
-    subprocess.run(['rsync', '-rl', str(SOURCE), str(LOCAL / 'server_entry.py'), str(CODE / 'v4090_luna_entry.py'),
+    subprocess.run(['rsync', '-rlz', str(SOURCE), str(LOCAL / 'server_entry.py'), str(CODE / 'v4090_luna_entry.py'),
                     str(CODE / 'v4090_luna_single_server.py'), 'v4090-t:' + REMOTE_SOURCE + '/'], check=True)
     remote_command = shlex.join(['python3', REMOTE_SOURCE + '/v4090_luna_single_server.py',
                                 REMOTE, REMOTE_SOURCE + '/official_runtime', str(PORT)])
@@ -261,9 +261,9 @@ def main():
             if sim is not None and sim.poll() is None:
                 sim.terminate(); sim.wait(timeout=30)
             # Preserve both raw controller images and videos; never run the old pruner.
-            subprocess.run(['rsync', '-rl', '--exclude=private_pro_home/', '--exclude=codex_state/',
+            subprocess.run(['rsync', '-rlz', '--exclude=private_pro_home/', '--exclude=codex_state/',
                 '--exclude=tmp/', str(LOCAL) + '/', 'v4090-t:' + REMOTE + '/local-controller-archive/'], check=False)
-            subprocess.run(['rsync', '-rl', 'v4090-t:' + REMOTE + '/sim/', str(LOCAL / 'native-results') + '/'], check=False)
+            subprocess.run(['rsync', '-rlz', 'v4090-t:' + REMOTE + '/sim/', str(LOCAL / 'native-results') + '/'], check=False)
     print(json.dumps(dict(event='single_attempt_finished', local=str(LOCAL), remote=REMOTE)), flush=True)
 
 
