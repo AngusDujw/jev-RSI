@@ -241,3 +241,5 @@
 - 【Agent】【2026-10-23 20:51】[note] 完成前补充归因边界：旧成功回合许可状态未被逐时记录，比较只描述n=1匹配布局步数，不假定许可状态已受控。现有5项测试与严格周志lint均通过，当前一次性Jobs disabled且run_count1。
 - 【User】【2026-10-23 21:12】[decision] gpu能用就继续实验就行；明确允许Restricted状态下，只要实际CUDA和相机可用即补齐剩余5回合，不重启或绕过许可。
 - 【Agent】【2026-10-23 21:12】[run] 依据用户新授权，5880同boot实际CUDA矩阵乘法/同步通过；独立capture-only预检已前台启动，未启动正式新回合。保存仅补齐剩余5回合的方案。
+- 【Agent】【2026-10-23 21:15】[run] Restricted下相机capture-only106.016秒完成，capture_complete_no_api且30/30有效RGB；本机Pro桥7915/concurrency2及反向隧道前台启动，剩余5case协调器已启动，独立输出目录restricted-resume，原阈值及控制不变。
+- 【Agent】【2026-10-23 21:15】[op] 写入EXP043真实CUDA/相机预检完整证据；当前正式5回合仍在运行，不将启动算作完成。
