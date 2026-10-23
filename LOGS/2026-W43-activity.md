@@ -398,3 +398,5 @@
 - 【Agent】【2026-10-23 13:38】[run] 唯一Luna/high GPT-as-Policy回合已RPC ready并实际执行15/550步；worker确认gpt-6-luna/openai/high、本机ChatGPT Pro；3RGB已审阅、已保存，模型可读结果递归检查无禁用评分/contact/物体真位姿key及中文。当前前台exec21540/controller1109758/SSH1109423，不重启不加回合。
 - 【User】【2026-10-23 14:25】[intent] 用户要求核实API为何失效及昨晚是否成功；只读对照company-server-2既有请求，不额外API调用/重发。
 - 【Agent】【2026-10-23 14:26】[result] 只读核实p最后成功00:17:52 HTTP200/gpt-6-luna十答，r2 11:02:22明确token_invalidated；同du文件路径/mtime与ctime未变。仅定位服务端凭据作废，撤销主体和原因未知，无新API调用，追加原EXP007及STATE。
+- 【User】【2026-10-23 14:26】[intent] 要求查看唯一Luna/high GPT-as-Policy叠方块视频，审计550步消耗与失败原因，区分接口/反馈问题和模型能力。
+- 【Agent】【2026-10-23 14:26】[result] 原生回合550步110动作success=false；16次闭合起始，400步重抓/检查、100步接近、50步yaw；9次无效工具请求不消耗原生步。审计揭示CPU非Fabric渲染未同步：末端最大位移249.882mm/转角86.239deg而3RGB手与背景几乎固定。启动器漏接旧同步适配，纠正先前三RGB正常说法；不归因为模型能力、不追加回合。原生22.04s视频与111组原始观测慢放已成功发布。

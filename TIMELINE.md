@@ -255,6 +255,7 @@ graph LR
     T_2026W43_008["📊 robodojo-decision-stages<br/>Playground发现绕过原IK连续性保…"]:::experiment
     T_2026W43_009["📊 robodojo-decision-stages<br/>运行时限位/驱动目标正确，接触报告证实jo…"]:::experiment
     T_2026W43_010["📊 robodojo-decision-stages<br/>p只读审计发现keep复用低层限幅目标而非…"]:::experiment
+    T_2026W43_011["📊 gpt-as-policy-luna-media<br/>单次Luna550步失败审计发现实测249…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -705,6 +706,7 @@ graph LR
 | `T-2026W43-008` | 2026-10-22 | experiment | robodojo-decision-stages | Playground发现绕过原IK连续性保护，±2π等价目标导致执行污染；停止e，先修执行契约而非继续提示 | `EXP-2026W43-007` | - |
 | `T-2026W43-009` | 2026-10-22 | experiment | robodojo-decision-stages | 运行时限位/驱动目标正确，接触报告证实joint2平台伴右base_link-link2自接触，IK配置忽略该pair；先验证通用姿态恢复而非堆提示 | `EXP-2026W43-007` | - |
 | `T-2026W43-010` | 2026-10-23 | experiment | robodojo-decision-stages | p只读审计发现keep复用低层限幅目标而非最后selected close；离线显式ledger修复通过，未证明下降过冲因果或抓取收益，下一仅零API保持契约验收 | `EXP-2026W43-007` | - |
+| `T-2026W43-011` | 2026-10-23 | experiment | gpt-as-policy-luna-media | 单次Luna550步失败审计发现实测249.9mm/86.2deg与近静止RGB不符；CPU非Fabric入口漏同步，不能归因模型能力，已交付原生及输入慢放 | `EXP-2026W43-010` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
