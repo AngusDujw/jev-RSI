@@ -196,3 +196,6 @@
 - 【Agent】【2026-10-23 13:41】[result] 源码审计：RoboICL提示词明确world平移/rotvec增量、逐目标累积、25Hz、逐步范数上限、IK关节0.15rad连续性拒绝及缩小增量重规划；shared_harness平移0.03m/旋转0.15rad，classify_objects覆盖平移0.034m，stack_blocks无覆盖。TRAIN存在时指导从示范学习action scale，此前zero-shot无示范。Inspect Agent系统提示small deliberate motions，工具声明逐维边界及自动插值/拆步，max_speed_frac=0.1主要是执行参数。当前RealMan/AlphaBot接口为eef_abs_pose，非每次模型调用输出一个底层步增量；此前类比需纠正。本轮未改策略。
 - 【User】【2026-10-23 14:11】[intent] 查询项目是否记录此前运行RoboICL的实验。
 - 【Agent】【2026-10-23 14:11】[result] 确认2026-10-21已有完整RoboICL五任务四布局四条件实验：本机Pro gpt-6-astra/xhigh，company-server-2-ykj；125次物理尝试、79原生评分、46未评分，FINAL_STATUS complete。纯GPT11/19，Jev15/20，固定平均14/20，固定最大14/20；任务为抓取/叠衣/按键/传送带/叠碗，不含本次拟测叠方块与分拣。证据baseline/roboicl/RESULTS_20261021.md及code/runs/2026-10-21-roboicl-pro-evaluation/FINAL_STATUS.json。只读核查，无新实验。
+- 【Agent】【2026-10-23 14:24】[op] 新建实验块 EXP-2026W43-033：核对RoboICL项目是否仍在、一步配置入口，以及历史输出到最大步长的频率；仅离线审计，不启动新实验。  ↪ `EXP-2026W43-033`
+- 【User】【2026-10-23 14:25】[intent] 确认RoboICL远端项目仍在，是否可将预测/执行从5步改成1步和调整最大步长，并统计历史输出达到上限的频率。
+- 【Agent】【2026-10-23 14:25】[result] 完成EXP033离线幅度审计：79原生回合61220有效双臂预测行，上限30mm/0.15rad，均无>=90%上限；纯GPT19回合5208已提交执行步，非零平移中位8mm、P90为13.34mm、最大21.47mm，1终局步缺回执明确排除。另50非法输出拒绝单列。远端项目/环境入口/四阶段日志仍在；纯GPT可action-horizon=1，须清除20/5环境覆盖；最大步长是上限而非倍率。新增统计脚本/JSON/报告，未改策略未启动模型仿真。  ↪ `EXP-2026W43-033`
