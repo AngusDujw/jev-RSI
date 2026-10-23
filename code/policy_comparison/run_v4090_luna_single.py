@@ -160,6 +160,16 @@ def prepare(policy_hints=None):
     policy = runtime / 'hybrid_rollout/robodojo/skill/run.py'
     text = policy.read_text().replace('visible_packet = packet\n', 'from ..io import public_only\n    packet = public_only(packet)\n    visible_packet = packet\n')
     policy.write_text(text)
+    workspace = runtime / 'hybrid_rollout/robodojo/skill/workspace.py'
+    text = workspace.read_text()
+    anchor = "'plots, and comparisons in scratch/. Both are yours to edit.\\n\\n'"
+    if text.count(anchor) != 1:
+        raise RuntimeError('Cannot apply the policy workspace file-path contract')
+    text = text.replace(anchor,
+        "'plots, and comparisons in scratch/. Both are yours to edit. "
+        "Use this workspace scratch directory for every helper file; never write "
+        "to /tmp or any shared temporary directory.\\n\\n'")
+    workspace.write_text(text)
     skill = runtime / 'hybrid_rollout/robodojo/robodojo-gpt-only-rollout/SKILL.md'
     text = skill.read_text().replace('when it becomes true, read the native outcome, which may also be failure.',
         'when it becomes true, stop. The host reports the native outcome separately; it is not policy input.')

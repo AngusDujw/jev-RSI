@@ -468,3 +468,6 @@
 - 【Agent】【2026-10-24 02:16】[result] EXP023 archive-only实测完成：v9-r2 summary/outcome/video均已取回，双向rsync返回0，远端核对private_pro_home/codex_state/tmp/native-results四目录均排除。Discussion已补完整任务漏项与五条基础设施中断。
 - 【Agent】【2026-10-24 02:17】[op] 新建实验块 EXP-2026W43-024：--help  ↪ `EXP-2026W43-024`
 - 【Agent】【2026-10-24 02:17】[run] EXP024 v9-r4独立新回合前台43407已启动，提示/模型/物理固定；EXP023归档恢复队列前台17144串行，native原始大资产仍留DataStorage。new_exp误把--help当标题的空块已补为实际EXP024，未删除历史。
+- 【Agent】【2026-10-24 02:23】[result] EXP024 r4已开始实际动作并保存初始两臂EEF回位目标；三原生当前健康。五条归档恢复前台17144均返回0，v7视觉三层382–427双视图11帧回放已解码验证并发布；不是native成功。
+- 【Agent】【2026-10-24 02:23】[note] 更正上一流水对EXP024 r4的记录：动作已执行，但刚核对NOTES.md仍是初始化模板，尚未确认r4另存初始EEF目标；step0公开原始观测保留可读取。此前v9-r3已保存与r4不同，不能混写。
+- 【Agent】【2026-10-24 02:25】[op] 审计发现r4内部policy自行把一张辅助裁剪写到/tmp，违反用户既有路径规则；外层未读取/删除/tmp。已向三条活动模型的自有NOTES追加英文scratch路径约束，并为未来prepare生成的actor AGENTS加入同一约束。仅文件位置、无机器人动作；记录干预receipt，不再称严格无干预复验。
