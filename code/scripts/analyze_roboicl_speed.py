@@ -34,8 +34,15 @@ def audit(folder):
     harness = json.loads(harness_paths[0].read_text())
     assert harness['action_space'] == 'ee_delta'
     trace_paths = list(folder.rglob('decisions.jsonl'))
-    assert len(trace_paths) == 1, folder
-    trace = trace_paths[0].parent
+    if not trace_paths and aborted.exists():
+        # A transport failure on the first request produces no decision file.
+        request_paths = list(folder.rglob('requests.jsonl'))
+        assert len(request_paths) == 1, folder
+        trace = request_paths[0].parent
+        assert not lines(trace/'exchanges.jsonl'), folder
+    else:
+        assert len(trace_paths) == 1, folder
+        trace = trace_paths[0].parent
     decisions = lines(trace/'decisions.jsonl')
     receipts = lines(trace/'tool_results.jsonl')
     observations = lines(trace/'observations.jsonl')
@@ -101,10 +108,26 @@ def main():
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    cases = [audit(p.parent) for p in sorted(args.root.glob('*/*/case.json'))
-             if (p.parent/'finished.json').exists() or (p.parent/'infrastructure-abort.json').exists()]
+    cases = []
+    startup_failures = []
+    for path in sorted(args.root.glob('*/*/case.json')):
+        folder = path.parent
+        if not ((folder/'finished.json').exists() or (folder/'infrastructure-abort.json').exists()):
+            continue
+        if not list(folder.glob('*/harness.json')):
+            case = json.loads(path.read_text())
+            final = json.loads((folder/'finished.json').read_text())
+            assert not final['native_results'] and final['returncode'] != 0, folder
+            startup_failures.append({'condition': case['condition'], 'layout': case['layout'],
+                'returncode': final['returncode'], 'formal_physical_attempt': False,
+                'reason': 'Launcher failed before creating a harness or starting the simulator.',
+                'artifact_folder': str(folder)})
+            continue
+        cases.append(audit(folder))
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps({'cases': cases, 'scope': 'Terminated physical attempts, with infrastructure-aborted cases explicitly unscored; valid delta proposals and committed executed prefixes are separate. Units are meters and radians.'}, indent=2)+'\n')
+    args.output.write_text(json.dumps({'cases': cases,
+        'startup_failures_before_harness': startup_failures,
+        'scope': 'Terminated physical attempts, with infrastructure-aborted cases explicitly unscored; pre-harness launcher failures are separate. Valid delta proposals and committed executed prefixes are separate. Units are meters and radians.'}, indent=2)+'\n')
     print(json.dumps([{k: row[k] for k in ('condition', 'layout', 'native_success', 'native_control_steps', 'gpt_completed', 'native_steps_without_committed_receipt')} for row in cases]))
 
 
