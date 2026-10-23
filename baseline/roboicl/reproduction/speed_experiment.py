@@ -40,6 +40,7 @@ def main():
     ap.add_argument('--policy-python', required=True)
     ap.add_argument('--parallel', type=int, choices=(1, 2, 3), default=2)
     ap.add_argument('--minimum-free-mib', type=int, required=True)
+    ap.add_argument('--minimum-available-ram-mib', type=int, default=7000)
     ap.add_argument('--endpoint', default='http://127.0.0.1:7915/responses')
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--capture-only', action='store_true')
@@ -116,10 +117,14 @@ def main():
                 while True:
                     free = int(subprocess.check_output(['nvidia-smi', '--id=0',
                         '--query-gpu=memory.free', '--format=csv,noheader,nounits'], text=True).strip())
-                    if args.dry_run or free >= args.minimum_free_mib:
+                    available = next(int(line.split()[1])//1024 for line in
+                                     Path('/proc/meminfo').read_text().splitlines()
+                                     if line.startswith('MemAvailable:'))
+                    if args.dry_run or (free >= args.minimum_free_mib
+                                       and available >= args.minimum_available_ram_mib):
                         break
                     print(json.dumps({'event': 'waiting_for_memory', 'slot': slot,
-                                      'free_mib': free}), flush=True)
+                                      'free_mib': free, 'available_ram_mib': available}), flush=True)
                     time.sleep(30)
                 print(json.dumps({'event': 'start', 'condition': condition, 'layout': layout, 'slot': slot}), flush=True)
                 started = time.monotonic()
