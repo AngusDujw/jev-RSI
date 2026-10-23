@@ -389,3 +389,4 @@
 - 【Agent】【2026-10-23 10:50】[op] r启动前核实旧ControlPath不存在且远端17897无监听；直接重建自有SSH master840769及127.0.0.1:17897→本机7897，监听已核实，原7897/共享代理不动，无API探测。
 - 【Agent】【2026-10-23 10:54】[result] r首请求因转发连接拒绝curl7/HTTP000/上传0，0答/0native，native551426/worker603522已退出，不重发。短命SSH master840769已退；改自有user unit robodojo-c2-proxy-20261023，MainPID847131 active/NRestarts0，远端17897监听与纯loopback TCP核验通过，无HTTP/API探测。
 - 【Agent】【2026-10-23 10:56】[run] r2新独立原生补基础设施0步槽，r请求不重发；自有SSH改user service持续管理并核loopback监听，r2科学条件/r005/提示不变，首段原图审后才启worker，故障不无限补开。
+- 【Agent】【2026-10-23 11:04】[result] q2固定最终目标close/keep真实15步通过；r2首请求HTTP401 token_invalidated，SSH监听持续正常，0答0步/PID退出；不重发或换凭据，等待有效du认证，监督禁用并在部署后关闭自有转发。

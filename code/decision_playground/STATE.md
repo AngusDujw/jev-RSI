@@ -20,7 +20,15 @@ robodojo-c2-proxy-20261023.service,MainPID847131,Restart=on-failure bounded3/60s
 RuntimeMaxSec12h. Same ControlPath/17897->7897; original7897/shared proxy untouched.
 Service active, remote listener and loopback TCP accepted; no HTTP/API probe.
 New independent r2 campaign code/runs/playground-selected-gripper-policy-20261023r2
-initializing GPU5/layout1/RPC25405; read manifest for native PID, no worker yet.
+GPU5/layout1/RPC25405 native635678/worker693615 both exited after first request.
+Episode40178547-9680-4eec-947a-1572307ef858,0answers/0native steps.
+request0000 received HTTP401/error code token_invalidated, curl0, TLS.338227s,
+upload3322196bytes. Persistent SSH service remained active/NRestarts0 and
+remote17897 LISTEN; this failure is authentication rejection, not tunnel refusal.
+Never resend it. No further episode/API call until authorized du credential is valid.
+No change to another credential/provider. HTTP200 total remains65.
+Supervision stays disabled while credential-blocked; owned proxy unit will stop
+after documentation deployment. User authorization for engineering repairs persists.
 Only selected-gripper-command-v1 final-goal ledger/command-source changes from p;
 r005 text/images, prompt,10 questions, action/physics unchanged. First<=3 requests
 or guard review, one second segment unless separately justified useful progress.
@@ -44,7 +52,7 @@ corrected-probe-plan.json and validator-correction-offline-validation.json.
 User explicitly clarified that owned engineering checks/code may be fixed and
 continued autonomously; do not block on another confirmation for checker repairs.
 The previous q2 waiting condition is superseded by that authorization.
-Proceed with one corrected independent q2; never restore q or replay requests.
+Corrected independent q2 completed above; never restore q or replay requests.
 All API/input/physics/foreign-process boundaries remain unchanged.
 
 o interface check: native829592/runner838053 ended at8steps,0API; temporary script deleted.
@@ -64,7 +72,7 @@ Only current-task temporary audit copies may be cleaned by exact manifest.
 
 Old server02 and b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q ended; never restore/replay.
 Source79779389 deployed; selected-gripper-command-v1 offline validated,
-q is its one real native interface check (no API). r005 template previously ed1122d5.
+q2 is its passed real native interface check (no API).  r005 template previously ed1122d5.
 feedback-selected-vs-dispatched-v1 offline+o real full/partial interface validated; policy benefit not yet tested.
 n campaign code/runs/playground-lesson-transfer-20261022n:
 GPU4/layout0 native720103/worker748068, episode42ba1791-c20a-4011-a0d8-eaeced448b48,
