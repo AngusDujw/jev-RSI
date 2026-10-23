@@ -204,6 +204,7 @@ def main():
                    help='Print exact launch command without a reservation or filesystem write')
     p.add_argument('--preflight-only', action='store_true',
                    help='Check selected GPU and EGL rendering without reserving an attempt')
+    p.add_argument('--translation-step-multiplier',type=float,choices=[1.0,1.5,2.0,3.0],default=1.0)
     a = p.parse_args()
     if a.dry_run and a.preflight_only:
         p.error('Choose either --dry-run or --preflight-only')
@@ -300,6 +301,10 @@ def main():
                          a.plate_first_preserve_downward,
                          a.plate_second_planar_contact,
                          a.plate_second_rear_insert,a.plate_second_orient_clearance,a.plate_rear_compact,a.plate_second_rim_slide)
+    if a.translation_step_multiplier != 1.0 and mode not in ('supervisor','knob'):
+        p.error('Step multiplier requires supervisor or knob mode')
+    if mode in ('supervisor','knob'):
+        cmd += ['--translation-step-multiplier',str(a.translation_step_multiplier)]
     if a.dry_run:
         print(json.dumps(dict(mode=mode,cmd=cmd),indent=2))
         return
@@ -412,6 +417,7 @@ def main():
                     permissions='public task, rendered RGB-D and calibration, own robot only',
                     runtime_gpt6_calls=0, runtime_deepseek_calls=0,
                     outcome='evaluate only after final robot action')
+    manifest['translation_step_multiplier']=a.translation_step_multiplier
     (out/'manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
     env = dict(os.environ, MUJOCO_EGL_DEVICE_ID=str(a.egl_device_id),
                CUDA_VISIBLE_DEVICES=','.join(map(str, visible_devices)),

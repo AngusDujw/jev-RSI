@@ -304,6 +304,7 @@ def main():
     p.add_argument('--approach-mode',choices=['top','side','angled'],default='top')
     p.add_argument('--entry-side',choices=['robot_side','receiver_side'],default='robot_side')
     p.add_argument('--camera-size',type=int,choices=[384,768],default=384)
+    p.add_argument('--translation-step-multiplier',type=float,choices=[1.0,1.5,2.0,3.0],default=1.0)
     p.add_argument('--suite', choices=['libero_spatial','libero_object','libero_goal','libero_10'], default='libero_spatial')
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--init-index', type=int, default=0)
@@ -389,7 +390,10 @@ def main():
     out = Path(a.output).resolve()
     existing_root = os.environ.get('JEV_RSI_EXISTING_ROOT',
         '/root/yekangjie/project/robodojo-jev')
+    if a.translation_step_multiplier != 1.0 and (not (a.jev_supervisor or a.knob_supervisor) or a.recovery_supervisor):
+        p.error('Step multiplier requires ordinary or knob supervisor')
     cfg = dict(existing_root=existing_root,
+               translation_step_multiplier=a.translation_step_multiplier,
                api_config=os.environ.get('JEV_RSI_API_CONFIG',
                    existing_root+'/controller/config/api.company.local.json'),
                wall_limit_seconds=a.wall_limit_seconds, output_limit_mb=600 if a.recovery_supervisor or a.push_supervisor else 400, max_jev_decisions=a.max_jev_decisions,
