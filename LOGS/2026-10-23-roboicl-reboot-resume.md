@@ -16,13 +16,15 @@
 
 已部署运行源7f681b43；服务器使用实际续跑入口完成7个配置dry-run，全部returncode0。新增default_h5上限0.03m/0.15rad且completion_efficiency_guidance为空，模型Astra/xhigh、原IK保护保持。输出在远端.runtime/speed-reboot-dryrun-v1及同名日志，不调用模型或仿真控制。
 
-重启暂未执行成功：`sudo -n /usr/sbin/reboot`返回需要密码；`systemctl reboot --no-ask-password`返回Interactive authentication required。已向用户请求该服务器sudo凭据或手动重启通知，未尝试猜密码，也未改系统权限。重启前boot_id为7f2cd1e9-e23f-4614-85ef-b3b8c4abd6a2。
+首次无密码重启未成功：sudo返回需要密码，systemctl返回Interactive authentication required。用户随后提供认证信息，已通过交互sudo成功提交reboot，远端主动断开连接；未保存认证信息、未改系统权限。重启前boot_id为7f2cd1e9-e23f-4614-85ef-b3b8c4abd6a2。
 
-下一步：获得系统认证后完成重启，核对新boot_id及许可证；从确认服务器恢复时起等待5分钟，使用AgentsDock Jobs一次性续跑。当前未创建或启用定时任务，以免重启前误启动。许可证未恢复时不启动仿真，先报告状态。定时任务应保留现有成功、不自动重跑新原生结果，使用本机Pro桥与前台SSH隧道/执行，不使用nohup等脱管方式。执行后更新本文件和完整EXP记录。
+2026-10-23 18:30:34北京时间确认SSH恢复，uptime35.09秒，新boot_id为3c15ba44-3dc1-4a09-870b-e289bd7908ae，已与旧值比较确认重启。许可证显示Unlicensed (Unrestricted)，并非永久修复；既有项目Torch2.7.0+cu128实际CUDA分配、同步及回读通过。官方说明未获得许可证的vGPU可能随时间限速并最终禁用CUDA，见[NVIDIA许可FAQ](https://docs.nvidia.com/vgpu/faq/latest/nls.html)，本次不修改许可或驱动配置。
+
+已创建并启用AgentsDock Jobs一次性任务：job_42b38a995c6c47e9，标题“5880重启后续跑叠碗及未加速5步对照”，max_runs=1，首次运行2026-10-23 18:35:34 Asia/Shanghai（10:35:34 UTC），即确认恢复5分钟后。仅执行既定预检及7回合，不重复重启或覆盖原结果。当前正式实验尚未启动；任务触发后应先记录状态，再完成相机预检和正式续跑。定时任务使用本机Pro桥与前台SSH隧道/执行，不使用nohup等脱管方式。执行后更新本文件和完整EXP记录。
 
 ## 定时续跑任务应执行的范围
 
-读取本计划及AGENTS.md，使用5880-jump服务器；确认重启boot_id已改变且恢复至少5分钟、GRID/vGPU License Status为Licensed。不得修改驱动/CUDA或使用API key替代本机Pro。
+读取本计划及AGENTS.md，使用5880-jump服务器；确认新boot_id及uptime至少300秒，核对GRID/vGPU状态。Licensed或Unlicensed (Unrestricted)且实际CUDA、Isaac相机均通过时，可执行用户已授权测试；若变为受限、出现CUDA102或实际预检不通过，则记录具体阻断，不绕过许可保护。不得修改驱动/CUDA或使用API key替代本机Pro。
 
 本机项目下启动已有pro_oauth_bridge.py，port7915、concurrency2、输出code/runs/2026-10-23-roboicl-speed-5880-reboot/bridge；再前台SSH反向转发127.0.0.1:7915，前台执行远端bash reproduction/resume_bowl_speed_20261023.sh。七回合已明确授权，无需再确认启动，正式输出目录存在时先读取状态，禁止覆盖或自动重跑。保留495次旧模型响应与3个旧尝试，不混为新批次成功率。若许可证或认证仍阻断，记录原因，不替换模型/账号或擅改配置。
 
