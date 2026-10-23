@@ -390,3 +390,5 @@
 - 【Agent】【2026-10-23 10:54】[result] r首请求因转发连接拒绝curl7/HTTP000/上传0，0答/0native，native551426/worker603522已退出，不重发。短命SSH master840769已退；改自有user unit robodojo-c2-proxy-20261023，MainPID847131 active/NRestarts0，远端17897监听与纯loopback TCP核验通过，无HTTP/API探测。
 - 【Agent】【2026-10-23 10:56】[run] r2新独立原生补基础设施0步槽，r请求不重发；自有SSH改user service持续管理并核loopback监听，r2科学条件/r005/提示不变，首段原图审后才启worker，故障不无限补开。
 - 【Agent】【2026-10-23 11:04】[result] q2固定最终目标close/keep真实15步通过；r2首请求HTTP401 token_invalidated，SSH监听持续正常，0答0步/PID退出；不重发或换凭据，等待有效du认证，监督禁用并在部署后关闭自有转发。
+- 【User】【2026-10-23 13:28】[decision] 授权在v4090-t用本机Pro普通gpt-6-luna/high按GPT-as-Policy只跑stack_blocks/layout0一次，保留图像、动作和视频；不使用company-server-2或Decisions API，不自动重跑。
+- 【Agent】【2026-10-23 13:28】[op] 新增v4090单次前台运行器与原生启动适配：复用现有RoboDojo环境和原GPT-only策略，启用全部媒体保留；本机策略副本过滤native outcome/contact/reward字段，远端原生评分源码不变。Pro账号/SQLite/app-server线程初始化已通过，0推理/0原生步，不做API探测。
