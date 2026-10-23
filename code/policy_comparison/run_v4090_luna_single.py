@@ -76,17 +76,20 @@ def main():
     if args.recover_empty_startup:
         prior = LOCAL
         camera_prior = prior.with_name(prior.name + '-camera-extension')
-        if camera_prior.exists():
-            prior = camera_prior
+        candidates = [p for p in prior.parent.glob(prior.name + '*')
+                      if p.is_dir() and not p.is_symlink() and (p / 'attempt-started.json').exists()]
+        if candidates:
+            prior = max(candidates, key=lambda p: len(p.name))
         log = prior / 'server.log'
         if (prior / 'controller').exists() or not log.exists() or '"event": "ready"' in log.read_text():
             raise RuntimeError('Cannot replace a started policy episode')
-        if not any(x in log.read_text() for x in ("No module named 'isaacsim.sensors'", "No module named 'isaacsim.replicator'")):
+        if not any(x in log.read_text() for x in ("No module named 'isaacsim.sensors'", "No module named 'isaacsim.replicator'", '.resolved_config.json.')):
             raise RuntimeError('Empty-startup recovery requires the recorded camera import failure')
-        suffix = '-installed-extension-paths' if prior == camera_prior else '-camera-extension'
+        suffix = ('-sim-directory' if '.resolved_config.json.' in log.read_text() else
+                  '-installed-extension-paths' if prior == camera_prior else '-camera-extension')
         LOCAL = prior.with_name(prior.name + suffix)
-        REMOTE += ('-camera-extension' if prior == camera_prior else '') + suffix
-        REMOTE_SOURCE += ('-camera-extension' if prior == camera_prior else '') + suffix
+        REMOTE = REMOTE_BASE + '/' + LOCAL.name
+        REMOTE_SOURCE = REMOTE_BASE + '/source-' + LOCAL.name
     if args.prepared:
         runtime, home = LOCAL / 'runtime', LOCAL / 'private_pro_home'
         if (LOCAL / 'attempt-started.json').exists():

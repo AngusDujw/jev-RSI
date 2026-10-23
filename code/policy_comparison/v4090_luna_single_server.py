@@ -17,6 +17,7 @@ def main():
     if run.exists():
         raise FileExistsError('Never restart or overwrite a native attempt')
     run.mkdir(parents=True)
+    (run / 'sim').mkdir()
     driver = Path('/home/v4090-1/ykj/project/jev-RSI-gpt6-dec/code/robodojo_decisions/run_episode.py')
     namespace = runpy.run_path(str(driver))
     python = namespace['executable']()
