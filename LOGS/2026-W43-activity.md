@@ -192,3 +192,5 @@
 - 【Agent】【2026-10-23 13:23】[result] 只读核对原版GPT-only direct_response_schema为双臂绝对EEF target+steps(1..5)，执行端apply_eef_target；拟改为单步delta与固定5步delta序列两组，保留原版非输出提示词。RoboICL现有world平移/左乘rotvec组合可参考。company-server-2-ykj于2026-10-23 13:21+08实查8张4090，GPU2/5/6/7各空闲24075–24076MiB，其余空闲17203–18063MiB。后续本机Pro转发，不调用API、不启动正式实验，本轮未改策略代码。
 - 【User】【2026-10-23 13:32】[intent] 核对RoboICL的5步动作究竟是增量还是绝对位姿。
 - 【Agent】【2026-10-23 13:32】[result] 源码确认：dialogue_policy.py:268–271声明world平移米/旋转向量弧度增量；astra_policy.py:64,78–91以最新实测位姿为首步起点，后续逐步累加到上一请求目标，再转换绝对EEF目标交给仿真；夹爪为0..1绝对开度。experiment.py:216–221此前纯GPT条件预测20步执行5步，不是仅预测5步。本轮只读核对策略。
+- 【User】【2026-10-23 13:41】[intent] 确认RoboICL多步规划与Inspect Robots中指导模型每步动作大小的提示词，区分模型输出与执行端限幅。
+- 【Agent】【2026-10-23 13:41】[result] 源码审计：RoboICL提示词明确world平移/rotvec增量、逐目标累积、25Hz、逐步范数上限、IK关节0.15rad连续性拒绝及缩小增量重规划；shared_harness平移0.03m/旋转0.15rad，classify_objects覆盖平移0.034m，stack_blocks无覆盖。TRAIN存在时指导从示范学习action scale，此前zero-shot无示范。Inspect Agent系统提示small deliberate motions，工具声明逐维边界及自动插值/拆步，max_speed_frac=0.1主要是执行参数。当前RealMan/AlphaBot接口为eef_abs_pose，非每次模型调用输出一个底层步增量；此前类比需纠正。本轮未改策略。
