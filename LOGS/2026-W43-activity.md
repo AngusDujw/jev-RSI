@@ -395,3 +395,4 @@
 - 【Agent】【2026-10-23 13:31】[result] 单次Luna v4090首次环境启动在注册任务前缺isaacsim.sensors相机扩展：0RPC ready、0策略线程、0模型调用、0物理动作；前台已收尾，原日志保留。只修进程内相机扩展启用，新增严格空启动检查后的独立目录，不替换真实已开始回合。
 - 【Agent】【2026-10-23 13:33】[result] 第二次空启动相机扩展已过，但RoboDojo急切导入未使用的FluidObject需要isaacsim.replicator namespace；仍无RPC ready/controller/模型/动作。仅暴露已安装扩展的Python路径，进程内修改，不动安装环境/驱动。保留两空启动，实际策略回合仍0。
 - 【Agent】【2026-10-23 13:34】[result] 命名空间修复后原生环境已创建；原官方server在Session创建前写resolved_config，旧Docker脚本会预建sim目录而新适配漏建。仍0RPC ready/0控制器/0模型/0native reset，补预建自身sim目录；完整保留三次环境空启动，不计作物理实验。
+- 【Agent】【2026-10-23 13:38】[run] 唯一Luna/high GPT-as-Policy回合已RPC ready并实际执行15/550步；worker确认gpt-6-luna/openai/high、本机ChatGPT Pro；3RGB已审阅、已保存，模型可读结果递归检查无禁用评分/contact/物体真位姿key及中文。当前前台exec21540/controller1109758/SSH1109423，不重启不加回合。
