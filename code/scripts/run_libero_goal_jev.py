@@ -79,7 +79,7 @@ def launch_command(source, task_id, init_index, episode, mode, grasp_profile,
             if side_pad_overlap_mm:
                 cmd += ['--side-pad-overlap-mm', str(side_pad_overlap_mm)]
     elif mode == 'knob':
-        cmd += ['--knob-supervisor']
+        cmd += ['--knob-supervisor', '--translation-step-multiplier', str(translation_step_multiplier)]
     elif mode == 'push':
         cmd += ['--push-supervisor', '--goal-plate-push']
         if plate_stage_turn_deg:
@@ -120,7 +120,7 @@ def main():
                    help='Allow EGL and the vision worker on one GPU; report this resource choice')
     p.add_argument('--cpu-vision', action='store_true',
                    help='Run only local DINO/SAM perception on CPU when CUDA model loading is unavailable')
-    p.add_argument('--translation-step-multiplier',type=float,choices=[1.0,1.5,2.0],default=1.0)
+    p.add_argument('--translation-step-multiplier',type=float,choices=[1.0,1.5,2.0,3.0],default=1.0)
     p.add_argument('--grasp-profile', choices=['edge','center_if_width_fits'], default='edge')
     p.add_argument('--approach-mode', choices=['top','angled','side'], default='top')
     p.add_argument('--entry-side', choices=['robot_side','receiver_side'], default='robot_side')
@@ -159,8 +159,8 @@ def main():
             'drawer' if a.task_id in DRAWER_TASKS else
             'knob' if a.task_id in KNOB_TASKS else
             'recovery' if a.task_id in RECOVERY_TASKS else 'supervisor')
-    if a.translation_step_multiplier != 1.0 and mode != 'supervisor':
-        p.error('Translation step multiplier currently requires a supervisor task')
+    if a.translation_step_multiplier != 1.0 and mode not in ('supervisor','knob'):
+        p.error('Translation step multiplier currently requires a supervisor or knob task')
     if a.grasp_profile != 'edge' and a.task_id != 1423:
         p.error('Local grasp profile is currently evaluated only for Goal 1423')
     if a.approach_mode != 'top' and a.task_id != 1423:

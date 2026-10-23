@@ -277,8 +277,8 @@ def main():
     p.add_argument('--approach-mode',choices=['top','side','angled'],default='top')
     p.add_argument('--entry-side',choices=['robot_side','receiver_side'],default='robot_side')
     p.add_argument('--camera-size',type=int,choices=[384,768],default=384)
-    p.add_argument('--translation-step-multiplier',type=float,choices=[1.0,1.5,2.0],default=1.0,
-                   help='Scale supervisor XYZ commands only; preserve decision cadence, rotation and gripper timing')
+    p.add_argument('--translation-step-multiplier',type=float,choices=[1.0,1.5,2.0,3.0],default=1.0,
+                   help='Scale supervisor/knob XYZ commands only; preserve decision cadence, rotation and gripper timing')
     p.add_argument('--suite', choices=['libero_spatial','libero_object','libero_goal','libero_10'], default='libero_spatial')
     p.add_argument('--seed', type=int, default=0)
     p.add_argument('--init-index', type=int, default=0)
@@ -336,8 +336,8 @@ def main():
     out = Path(a.output).resolve()
     existing_root = os.environ.get('JEV_RSI_EXISTING_ROOT',
         '/root/yekangjie/project/robodojo-jev')
-    if a.translation_step_multiplier != 1.0 and (not a.jev_supervisor or a.recovery_supervisor):
-        p.error('Translation step multiplier currently requires the ordinary Jev supervisor')
+    if a.translation_step_multiplier != 1.0 and (not (a.jev_supervisor or a.knob_supervisor) or a.recovery_supervisor):
+        p.error('Translation step multiplier currently requires the ordinary Jev or knob supervisor')
     cfg = dict(existing_root=existing_root,
                translation_step_multiplier=a.translation_step_multiplier,
                api_config=os.environ.get('JEV_RSI_API_CONFIG',

@@ -249,6 +249,14 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
         except Exception as e:holding=dict(valid=False,reason=str(e),observed_tick=ticks)
         dump(rec.folder/f'holding-{ticks:04d}.json',holding)
     try:
+        controller=env.robots[0].controller
+        input_low=np.asarray(controller.input_min).ravel()[:3]
+        input_high=np.asarray(controller.input_max).ravel()[:3]
+        dump(rec.folder/'translation-controller-limits.json',dict(
+            controller=type(controller).__name__,input_low=input_low,input_high=input_high,
+            output_low=np.asarray(controller.output_min).ravel()[:3],
+            output_high=np.asarray(controller.output_max).ravel()[:3],
+            source='own robot controller configuration; diagnostic only'))
         sem,src,dst=locate('initial');initial_source_extent=src['high']-src['low'];hover=max(src['high'][2],dst['high'][2])+.14
         if side:
             if rec.cfg.get('entry_side')=='receiver_side':
@@ -449,6 +457,8 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             base_delta=np.asarray(d['signs'])*np.minimum(.02,.5*abs(error))
             step_multiplier=rec.cfg.get('translation_step_multiplier',1.0)
             delta=base_delta*step_multiplier
+            normalized_xyz=delta/.05
+            clipped_xyz=np.clip(normalized_xyz,input_low,input_high)
             # Gripper phase targets equal current TCP -> zero amplitude irrespective of signs.
             before=position.copy()
             for _ in range(3):
@@ -461,7 +471,10 @@ def run_supervisor(env,obs,rec,task,depth_fn,k_fn,t_fn):
             # an 8.74 mm carry-axis block from the recovery waypoint logic.
             stalls=stalls+1 if (np.linalg.norm(after-before)<.0008 and
                                 np.max(abs(error))>arrival_tolerance) else 0
-            event=dict(stage=stage,decision_id=d['decision_id'],delta=delta,base_delta=base_delta,translation_step_multiplier=step_multiplier,before=before,after=after,native_steps=ticks,
+            event=dict(stage=stage,decision_id=d['decision_id'],delta=delta,base_delta=base_delta,translation_step_multiplier=step_multiplier,
+                       normalized_xyz=normalized_xyz,controller_clipped_xyz=clipped_xyz,
+                       translation_clipped_axes=(abs(normalized_xyz-clipped_xyz)>1e-12),block_native_ticks=3,
+                       before=before,after=after,native_steps=ticks,
                        selected_gripper=selected,executed_gripper=gripper,rotation_signs=d['rotation_signs'],rotation_error_rad=rotation_error,selected_transition=d['transition'],progress_m=last_progress)
             rec.branch(event);history.append(dict(gripper=selected,transition=d['transition'],progress_mm=round(last_progress*1000,2),actual_displacement_mm=np.round((after-before)*1000,2).tolist()));save(stage)
             if d['transition']=='reobserve':
