@@ -75,14 +75,18 @@ def main():
     args = parser.parse_args()
     if args.recover_empty_startup:
         prior = LOCAL
+        camera_prior = prior.with_name(prior.name + '-camera-extension')
+        if camera_prior.exists():
+            prior = camera_prior
         log = prior / 'server.log'
         if (prior / 'controller').exists() or not log.exists() or '"event": "ready"' in log.read_text():
             raise RuntimeError('Cannot replace a started policy episode')
-        if "No module named 'isaacsim.sensors'" not in log.read_text():
+        if not any(x in log.read_text() for x in ("No module named 'isaacsim.sensors'", "No module named 'isaacsim.replicator'")):
             raise RuntimeError('Empty-startup recovery requires the recorded camera import failure')
-        LOCAL = prior.with_name(prior.name + '-camera-extension')
-        REMOTE += '-camera-extension'
-        REMOTE_SOURCE += '-camera-extension'
+        suffix = '-installed-extension-paths' if prior == camera_prior else '-camera-extension'
+        LOCAL = prior.with_name(prior.name + suffix)
+        REMOTE += ('-camera-extension' if prior == camera_prior else '') + suffix
+        REMOTE_SOURCE += ('-camera-extension' if prior == camera_prior else '') + suffix
     if args.prepared:
         runtime, home = LOCAL / 'runtime', LOCAL / 'private_pro_home'
         if (LOCAL / 'attempt-started.json').exists():
