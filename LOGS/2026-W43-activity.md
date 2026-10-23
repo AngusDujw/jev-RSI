@@ -411,3 +411,5 @@
 - 【Agent】【2026-10-23 15:46】[result] 修复后单次Luna已实际执行22/550步；worker确认gpt-6-luna/openai/high/Pro。首批高位和右腕PNG人工审阅显示手臂及视角真实变化；旧/新policy runtime全部文件哈希相同，首批模型结果无评分/contact/物体真位姿key及中文。仅启动层同步修复，任务结果仍待定。
 - 【User】【2026-10-23 18:07】[intent] 要求查看修复视觉反馈后的单次Luna/high GPT-as-Policy实验结果。
 - 【Agent】【2026-10-23 18:07】[result] EXP013结束：550控制步/111动作、1919.702秒、native success=false/score0/truncated。原生551帧22.04秒视频及4倍慢放完整解码并发布；关键帧确认两臂/腕相机正常运动，无旧冻结复现。右12次/左4次open→close，未确认持物或堆叠；0–342步右手尝试，342–427左臂转场85步，427–550左手尝试/结束。只汇总既有回合，不追加策略实验。
+- 【User】【2026-10-23 19:48】[intent] 要求查看Luna空抓期间是否保存思考/解释等记录；只审阅已有公开消息、动作理由与工具轨迹，不启动实验。
+- 【Agent】【2026-10-23 19:48】[result] 已从既有agent_events/history/NOTES导出18条公开说明、111个动作reason/target/执行步数及笔记为review/public-policy-records.json，已成功发布；无完整内部推理文本，不将公开reason称隐藏思考。记录显示反复识别抓取失败后再视觉微调/闭合，452步一度猜持物、457步纠正；未启动新实验。
