@@ -13,14 +13,19 @@ although the low-level observation after close was.045040808459398916.
 Max fixed-final-goal TCP residual.077189mm, no refusal. Temporary script deleted.
 Raw final head/wrist reviewed; no grasp claim. This runner is not a policy worker;
 zero-dispatch still only offline-covered. Independent ledger audit agreed.
-New r campaign code/runs/playground-selected-gripper-policy-20261023r initializing,
-GPU5/layout1/RPC25405; inspect manifest for real native PID; no worker yet.
-Only selected-gripper-command-v1 ledger/command-source correction changes from p;
-r005 text/three images, prompt,10 questions, actions/physics unchanged.
-One initial <=3-call segment, review on any guard refusal, then at most one second
-segment unless separately justified useful progress. One representative history.
-User explicitly authorizes autonomous owned checker/adapter repair and continuation;
-previous waiting condition superseded, never restore old q/p or replay requests.
+r failed before upload: native551426/worker603522 exited,0replies/0steps;
+curl7/HTTP000/upload0 because remote17897 listener vanished. Never replay request0000.
+Old detached master840769 exited. Owned local user service now supervises SSH:
+robodojo-c2-proxy-20261023.service,MainPID847131,Restart=on-failure bounded3/60s,
+RuntimeMaxSec12h. Same ControlPath/17897->7897; original7897/shared proxy untouched.
+Service active, remote listener and loopback TCP accepted; no HTTP/API probe.
+New independent r2 campaign code/runs/playground-selected-gripper-policy-20261023r2
+initializing GPU5/layout1/RPC25405; read manifest for native PID, no worker yet.
+Only selected-gripper-command-v1 final-goal ledger/command-source changes from p;
+r005 text/images, prompt,10 questions, action/physics unchanged. First<=3 requests
+or guard review, one second segment unless separately justified useful progress.
+No automatic unlimited replacement after transport error. User authorizes owned
+engineering repair directly; no renewed confirmation for checker/SSH fixes.
 
 q campaign code/runs/playground-gripper-goal-20261023q, source79779389:
 native1082229 / runner1091778 exited; episode8b600a1b-2634-48d1-a9ac-9eb53f333fc6.

@@ -143,4 +143,4 @@ records provenance; model state labels runner_retained_goal, with measured openi
 still null. Zero-API probes that use keep after an earlier command must likewise
 retain explicit command_state, not feed low-level observations back as final goals.
 No drive, collision, limit, step budget or action-choice change is made. The repair
-is offline-validated only and does not relabel historical p or prove grasp benefit.
+is offline-validated and q2 native-runner-validated; this does not relabel historical p or prove policy/grasp benefit.
