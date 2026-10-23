@@ -1,0 +1,96 @@
+{
+  "scope": "79 first-native scored outcomes; max_episode_control_steps from pinned task source; not GPT request count or per-action displacement",
+  "task_limits": {
+    "fold_clothes": 500,
+    "general_pickup": 200,
+    "match_and_pick_from_conveyor": 700,
+    "press_by_number": 700,
+    "stack_bowls": 800
+  },
+  "condition_totals": {
+    "jev": 20,
+    "maximum": 20,
+    "mean": 20,
+    "pure": 19
+  },
+  "at_limit_counts": {
+    "pure": 3,
+    "maximum": 3,
+    "mean": 3
+  },
+  "total_at_limit": 9,
+  "hits": [
+    {
+      "condition": "pure",
+      "task": "fold_clothes",
+      "layout": 3,
+      "robot_steps": 500,
+      "success": false,
+      "folder": "results/reuse-top5-20261021/pure/fold_clothes/layout-3"
+    },
+    {
+      "condition": "pure",
+      "task": "match_and_pick_from_conveyor",
+      "layout": 2,
+      "robot_steps": 700,
+      "success": false,
+      "folder": "results/reuse-top5-20261021/pure/match_and_pick_from_conveyor/layout-2"
+    },
+    {
+      "condition": "pure",
+      "task": "stack_bowls",
+      "layout": 1,
+      "robot_steps": 800,
+      "success": false,
+      "folder": "results/reuse-top5-20261021/pure/stack_bowls/layout-1"
+    },
+    {
+      "condition": "maximum",
+      "task": "fold_clothes",
+      "layout": 0,
+      "robot_steps": 500,
+      "success": false,
+      "folder": "results/reuse-top5-20261021-transport-repair/maximum/fold_clothes/layout-0"
+    },
+    {
+      "condition": "maximum",
+      "task": "press_by_number",
+      "layout": 0,
+      "robot_steps": 700,
+      "success": false,
+      "folder": "results/reuse-top5-20261021-transport-repair/maximum/press_by_number/layout-0"
+    },
+    {
+      "condition": "maximum",
+      "task": "stack_bowls",
+      "layout": 1,
+      "robot_steps": 800,
+      "success": false,
+      "folder": "results/reuse-top5-20261021-transport-repair/maximum/stack_bowls/layout-1"
+    },
+    {
+      "condition": "mean",
+      "task": "fold_clothes",
+      "layout": 0,
+      "robot_steps": 500,
+      "success": false,
+      "folder": "results/reuse-top5-20261021-transport-repair-2/mean/fold_clothes/layout-0"
+    },
+    {
+      "condition": "mean",
+      "task": "fold_clothes",
+      "layout": 1,
+      "robot_steps": 500,
+      "success": false,
+      "folder": "results/reuse-top5-20261021-transport-repair-2/mean/fold_clothes/layout-1"
+    },
+    {
+      "condition": "mean",
+      "task": "stack_bowls",
+      "layout": 2,
+      "robot_steps": 800,
+      "success": false,
+      "folder": "results/reuse-top5-20261021-transport-repair-2/mean/stack_bowls/layout-2"
+    }
+  ]
+}

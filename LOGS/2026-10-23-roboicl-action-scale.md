@@ -54,3 +54,23 @@
 - 脚本：code/scripts/analyze_roboicl_action_scale.py（标准库；远端只读）。
 - 完整统计与每回合限幅/执行覆盖审计：code/runs/2026-10-21-roboicl-pro-evaluation/action-scale-audit-20261023.json。
 - 来源：code/runs/2026-10-21-roboicl-pro-evaluation/first-native-panel.json，以及服务器各回合harness.json、decisions.jsonl、tool_results.jsonl和action_rejections.jsonl。
+
+## 回合总控制步数上限（另一个指标）
+
+用户随后询问最大步数，按原生episode控制步预算另行核对，与上文单步位移/旋转幅度分开。任务源码的step_lim依次为：general_pickup=200、fold_clothes=500、press_by_number=700、match_and_pick_from_conveyor=700、stack_bowls=800。EvalEnv.is_episode_end在take_action_cnt >= step_lim时进行终局检查。
+
+79个首原生评分回合里9个达到回合上限（11.39%），9个均未成功。纯GPT为3/19，Jev为0/20，固定平均为3/20，固定最大为3/20；固定最大指两次GPT规划之间执行10步，不是把整个回合上限改成10步。未达到上限不等于成功，部分失败会提前结束。46次无原生评分的尝试未纳入本统计。
+
+| 条件 | 任务 | 布局 | 原生步数/上限 |
+|---|---|---:|---:|
+| pure | fold_clothes | 3 | 500/500 |
+| pure | match_and_pick_from_conveyor | 2 | 700/700 |
+| pure | stack_bowls | 1 | 800/800 |
+| maximum | fold_clothes | 0 | 500/500 |
+| maximum | press_by_number | 0 | 700/700 |
+| maximum | stack_bowls | 1 | 800/800 |
+| mean | fold_clothes | 0 | 500/500 |
+| mean | fold_clothes | 1 | 500/500 |
+| mean | stack_bowls | 2 | 800/800 |
+
+逐回合来源与统计保存于code/runs/2026-10-21-roboicl-pro-evaluation/episode-step-limit-audit-20261023.json。此统计是历史日志复核，不改变任何运行预算，也未新增实验。
