@@ -51,3 +51,9 @@
 旧fast_h5/layout0成功169步不重跑；与新default_h5/layout0成功191步比较少22步=11.52%，响应多2次=5%。布局1没有未加速5/5对照，不能比较该布局的加速幅度。
 
 下一步仅在用户明确选择允许Restricted状态继续、或许可状态恢复满足准入后，补齐上述5个未启动回合。使用现有speed_experiment.py的显式--case与独立新输出目录，不能再次运行含全部7个case的脚本覆盖已完成目录，也不自动重跑800步失败。当前一次性Jobs已触发1次并停用，不会再次自动执行；后续不再重启服务器。
+
+## 用户新授权：以实际GPU可用为准继续
+
+用户明确表示“gpu能用就继续实验就行”，因此解除上一轮仅因Restricted标签暂停新准入的限制。仍不绕过许可、不更改驱动；先重新验证真实CUDA和相机，实际失败则停止。当前同一boot_id，Torch2.7.0+cu128矩阵乘法/同步/回读512.0通过，GPU空闲21717MiB、RAM可用22790MiB。相机capture-only在独立.runtime/preflight-bowl-restricted-resume-v1运行，无模型调用。
+
+通过后仅补default_h5:1、default_h1:0、fast_h1:0、default_h1:1、fast_h1:1到独立results/speed-stack-bowls-20261023-restricted-resume，不重跑既有评分结果。所有模型/提示/步长/800步预算/2并发与双7500MiB准入不变，使用本机Pro gpt-6-astra/xhigh。
