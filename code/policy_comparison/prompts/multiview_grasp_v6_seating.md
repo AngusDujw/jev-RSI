@@ -8,6 +8,12 @@ pad length and both inner faces, not only its lowest corner with a projected
 tip line. Use a closed lift to resolve uncertain capture instead of repeatedly
 opening and closing on nearly unchanged images.
 
+In a view that exposes the finger length, a block lying entirely beyond the
+line joining the fingertips is still outside the jaws. Bringing just its corner
+to that line does not seat its body. The opposing side faces must overlap the
+inner pad length toward the finger roots, not remain past the tips. Check this
+in both views; do not turn this image relationship into a fixed world direction.
+
 Static public robot files are available at
 `/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/public_robot_reference/x5/`:
 `X5A.urdf` and `meshes/link7.STL`, `meshes/link8.STL`. These describe only the
