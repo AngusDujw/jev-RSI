@@ -159,12 +159,12 @@ def prepare(policy_hints=None):
         evaluation_method='gpt_only', native_step_limit=550, attempts=1,
         preserve_images=True, preserve_video=True, api_fallback=False,
         evaluator_feedback_to_policy=False, remote=REMOTE, files=files,
-        policy_hints=hints_metadata))
+        policy_hints=hints_metadata, rpc_port=PORT))
     return runtime, home
 
 
 def main():
-    global LOCAL, REMOTE, REMOTE_SOURCE
+    global LOCAL, REMOTE, REMOTE_SOURCE, PORT
     parser = argparse.ArgumentParser()
     parser.add_argument('--prepared', action='store_true')
     parser.add_argument('--prepare-only', action='store_true')
@@ -173,7 +173,11 @@ def main():
     parser.add_argument('--sensor-check', action='store_true')
     parser.add_argument('--sync-report', type=Path)
     parser.add_argument('--policy-hints', type=Path)
+    parser.add_argument('--rpc-port', type=int, default=25423)
     args = parser.parse_args()
+    if not 1024 <= args.rpc_port <= 65535:
+        raise ValueError('RPC port must be an unprivileged TCP port')
+    PORT = args.rpc_port
     if args.policy_hints is not None and (args.sensor_check or args.prepared):
         raise ValueError('Hints require a fresh policy episode, not commissioning or a prepared runtime')
     if args.run_name:
