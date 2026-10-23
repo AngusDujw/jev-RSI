@@ -67,10 +67,22 @@ def prepare():
 
 
 def main():
+    global LOCAL, REMOTE, REMOTE_SOURCE
     parser = argparse.ArgumentParser()
     parser.add_argument('--prepared', action='store_true')
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--recover-empty-startup', action='store_true')
     args = parser.parse_args()
+    if args.recover_empty_startup:
+        prior = LOCAL
+        log = prior / 'server.log'
+        if (prior / 'controller').exists() or not log.exists() or '"event": "ready"' in log.read_text():
+            raise RuntimeError('Cannot replace a started policy episode')
+        if "No module named 'isaacsim.sensors'" not in log.read_text():
+            raise RuntimeError('Empty-startup recovery requires the recorded camera import failure')
+        LOCAL = prior.with_name(prior.name + '-camera-extension')
+        REMOTE += '-camera-extension'
+        REMOTE_SOURCE += '-camera-extension'
     if args.prepared:
         runtime, home = LOCAL / 'runtime', LOCAL / 'private_pro_home'
         if (LOCAL / 'attempt-started.json').exists():
@@ -93,7 +105,7 @@ def main():
         + ' && mkdir ' + shlex.quote(REMOTE_SOURCE)], check=True)
     # Native scoring uses the unchanged original runtime, never the policy's
     # public-feedback filter. Only the local actor copy is sanitized.
-    subprocess.run(['rsync', '-rl', str(SOURCE), str(LOCAL / 'server_entry.py'),
+    subprocess.run(['rsync', '-rl', str(SOURCE), str(LOCAL / 'server_entry.py'), str(CODE / 'v4090_luna_entry.py'),
                     str(CODE / 'v4090_luna_single_server.py'), 'v4090-t:' + REMOTE_SOURCE + '/'], check=True)
     remote_command = shlex.join(['python3', REMOTE_SOURCE + '/v4090_luna_single_server.py',
                                 REMOTE, REMOTE_SOURCE + '/official_runtime', str(PORT)])

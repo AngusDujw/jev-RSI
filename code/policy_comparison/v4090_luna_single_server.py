@@ -22,7 +22,7 @@ def main():
     python = namespace['executable']()
     env = namespace['native_env'](run, python)
     env['PYTHONPATH'] = str(runtime) + ':' + env['PYTHONPATH']
-    entry = runtime.parent / 'server_entry.py'
+    entry = runtime.parent / 'v4090_luna_entry.py'
     command = [str(python), '-B', '-u', str(entry), '--task', 'stack_blocks',
                '--output', str(run / 'sim'), '--port', str(port), '--eval-seed', '0',
                '--headless', '--enable_cameras', '--device', 'cuda:0']

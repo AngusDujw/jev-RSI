@@ -392,3 +392,4 @@
 - 【Agent】【2026-10-23 11:04】[result] q2固定最终目标close/keep真实15步通过；r2首请求HTTP401 token_invalidated，SSH监听持续正常，0答0步/PID退出；不重发或换凭据，等待有效du认证，监督禁用并在部署后关闭自有转发。
 - 【User】【2026-10-23 13:28】[decision] 授权在v4090-t用本机Pro普通gpt-6-luna/high按GPT-as-Policy只跑stack_blocks/layout0一次，保留图像、动作和视频；不使用company-server-2或Decisions API，不自动重跑。
 - 【Agent】【2026-10-23 13:28】[op] 新增v4090单次前台运行器与原生启动适配：复用现有RoboDojo环境和原GPT-only策略，启用全部媒体保留；本机策略副本过滤native outcome/contact/reward字段，远端原生评分源码不变。Pro账号/SQLite/app-server线程初始化已通过，0推理/0原生步，不做API探测。
+- 【Agent】【2026-10-23 13:31】[result] 单次Luna v4090首次环境启动在注册任务前缺isaacsim.sensors相机扩展：0RPC ready、0策略线程、0模型调用、0物理动作；前台已收尾，原日志保留。只修进程内相机扩展启用，新增严格空启动检查后的独立目录，不替换真实已开始回合。
