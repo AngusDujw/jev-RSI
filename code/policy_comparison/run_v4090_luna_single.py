@@ -112,7 +112,7 @@ def sensor_sync_gate(runtime):
             tools.close()
 
 
-def prepare():
+def prepare(policy_hints=None):
     if LOCAL.exists():
         raise FileExistsError('Single attempt already prepared; inspect it, never auto-restart')
     auth = json.loads((Path.home() / '.codex/auth.json').read_text())
@@ -136,6 +136,15 @@ def prepare():
         'when it becomes true, stop. The host reports the native outcome separately; it is not policy input.')
     text = text.replace('briefly report the native outcome and saved paths, then end.',
         'briefly report the observed progress and saved paths, then end; do not invent the hidden native outcome.')
+    hints_metadata = None
+    if policy_hints is not None:
+        hints = policy_hints.read_text()
+        if not hints.strip() or not hints.isascii():
+            raise ValueError('Policy hint files must contain nonempty English ASCII text')
+        text += '\n\n' + hints
+        shutil.copyfile(policy_hints, LOCAL/'policy-hints.md')
+        hints_metadata = dict(source=str(policy_hints.resolve()),
+            sha256=hashlib.sha256(hints.encode()).hexdigest())
     skill.write_text(text)
     shutil.copyfile(CODE / 'server_entry.py', LOCAL / 'server_entry.py')
     home = LOCAL / 'private_pro_home'; home.mkdir(mode=0o700)
@@ -149,7 +158,8 @@ def prepare():
         model='gpt-6-luna', reasoning_effort='high', authentication='local ChatGPT Pro',
         evaluation_method='gpt_only', native_step_limit=550, attempts=1,
         preserve_images=True, preserve_video=True, api_fallback=False,
-        evaluator_feedback_to_policy=False, remote=REMOTE, files=files))
+        evaluator_feedback_to_policy=False, remote=REMOTE, files=files,
+        policy_hints=hints_metadata))
     return runtime, home
 
 
@@ -162,7 +172,10 @@ def main():
     parser.add_argument('--run-name')
     parser.add_argument('--sensor-check', action='store_true')
     parser.add_argument('--sync-report', type=Path)
+    parser.add_argument('--policy-hints', type=Path)
     args = parser.parse_args()
+    if args.policy_hints is not None and (args.sensor_check or args.prepared):
+        raise ValueError('Hints require a fresh policy episode, not commissioning or a prepared runtime')
     if args.run_name:
         if not args.run_name.startswith('v4090-luna-high-stack-') or '/' in args.run_name or '..' in args.run_name:
             raise ValueError('Invalid isolated run name')
@@ -197,7 +210,7 @@ def main():
         if (LOCAL / 'attempt-started.json').exists():
             raise RuntimeError('One attempt already started; no rerun')
     else:
-        runtime, home = prepare()
+        runtime, home = prepare(args.policy_hints)
     if args.prepare_only:
         print(json.dumps(dict(event='prepared', local=str(LOCAL))), flush=True)
         return
