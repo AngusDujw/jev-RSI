@@ -243,3 +243,4 @@
 - 【Agent】【2026-10-23 21:12】[run] 依据用户新授权，5880同boot实际CUDA矩阵乘法/同步通过；独立capture-only预检已前台启动，未启动正式新回合。保存仅补齐剩余5回合的方案。
 - 【Agent】【2026-10-23 21:15】[run] Restricted下相机capture-only106.016秒完成，capture_complete_no_api且30/30有效RGB；本机Pro桥7915/concurrency2及反向隧道前台启动，剩余5case协调器已启动，独立输出目录restricted-resume，原阈值及控制不变。
 - 【Agent】【2026-10-23 21:15】[op] 写入EXP043真实CUDA/相机预检完整证据；当前正式5回合仍在运行，不将启动算作完成。
+- 【Agent】【2026-10-23 21:22】[op] 同步续跑实际启动状态并复核Discussion显式引用的两份历史笔记；末端增量接口、完整成本与原生评分边界不变。

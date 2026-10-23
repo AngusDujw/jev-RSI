@@ -57,3 +57,5 @@
 用户明确表示“gpu能用就继续实验就行”，因此解除上一轮仅因Restricted标签暂停新准入的限制。仍不绕过许可、不更改驱动；先重新验证真实CUDA和相机，实际失败则停止。当前同一boot_id，Torch2.7.0+cu128矩阵乘法/同步/回读512.0通过，GPU空闲21717MiB、RAM可用22790MiB。相机capture-only在独立.runtime/preflight-bowl-restricted-resume-v1运行，无模型调用。
 
 通过后仅补default_h5:1、default_h1:0、fast_h1:0、default_h1:1、fast_h1:1到独立results/speed-stack-bowls-20261023-restricted-resume，不重跑既有评分结果。所有模型/提示/步长/800步预算/2并发与双7500MiB准入不变，使用本机Pro gpt-6-astra/xhigh。
+
+实际相机预检106.016秒完成、30/30有效RGB，见EXP043。剩余5case协调器已启动，先default_h5/layout1和default_h1/layout0，首29完成响应均有回执。独立本机目录code/runs/2026-10-23-roboicl-speed-5880-restricted-resume；旧结果不覆盖。本轮不再因为Restricted标签单独停止，只在真实GPU/相机失败时中止本人批次。
