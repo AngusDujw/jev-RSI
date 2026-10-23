@@ -437,3 +437,8 @@
 - 【Agent】【2026-10-23 22:31】[result] v5 step178真实高/腕图核验仍为空夹：紫块整体在指尖连线外侧，两指已合拢；v6未启用候选补明确指尖线是边界、块体需进入靠指根的内指面长度范围，不指定世界动作方向。
 - 【Agent】【2026-10-23 22:34】[note] 资源只读核查：v4090-t GPU49140MiB总/33795已用/14714空闲，RAM可用48399MiB，25425空闲；现有两回合GPU合计约34GiB，第三条无足够可靠余量，不新增原生进程、不改渲染条件，候选等现有完整回合释放资源。
 - 【Agent】【2026-10-23 22:40】[op] 合成待运行v6完整英文提示（v5+块体入座/公开CAD路径片段），未改活动回合；沿用原控制/物理/550步、Pro Luna/high与媒体保存。等待v4完整结束释放资源后再用独立新环境测试。
+- 【Agent】【2026-10-23 22:50】[op] 将仅公开机器人URDF/两手指网格及英文manifest/README备份至v4090-t DataStorage/gpt6-dec/gpt-as-policy-single/public_robot_reference；约137KiB，不修改运行中观察或控制。
+- 【Agent】【2026-10-23 23:00】[result] v4 step478/v5 step264本机Pro流式连接出现responseStreamDisconnected，两SSH/native仍存活、未新增物理步；既有Codex重连恢复到483/269，episode未重置无动作重放。无API key/fallback调用。仅公网无凭据HEAD验证TLS可达，403为Cloudflare challenge不代表Pro鉴权结论。
+- 【Agent】【2026-10-23 23:11】[result] EXP017 v4完整550步/126动作/116.4分钟、native success=false complete=true；多次抓起/放置恢复仍未完成堆叠，保留全部原图视频。候选v6待终局收尾释放GPU/25424后启动；v5独立继续。
+- 【Agent】【2026-10-23 23:12】[op] 新建实验块 EXP-2026W43-019：Luna high提示v6：块体进入内指面与公开机器人几何早读  ↪ `EXP-2026W43-019`
+- 【Agent】【2026-10-23 23:13】[run] EXP019 v6已在释放的25424启动，前台exec2574/controller2014063/SSH2013681，1263词英文提示；v5继续。纠正先前GPU归因：33.8GiB为整卡总占用，含其他进程，并非两条实验合计；v4释放约5.6GiB，仍维持两条便于模型连接/回合审阅。
