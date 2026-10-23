@@ -405,3 +405,4 @@
 - 【User】【2026-10-23 15:32】[intent] 确认视觉/物理失配问题后要求修复，验收正确再重新测试原GPT-as-Policy Luna/high。
 - 【Agent】【2026-10-23 15:32】[op] 修正v4090原生入口，将刚体任务实际BaseEnv配置为cuda:0/Fabric；新增零模型20步生产传感验收，要求实测位移、手部光流、腕背景光流及静止左腕对照同时通过，证书绑定入口源码哈希，未经通过禁止新策略回合。
 - 【Agent】【2026-10-23 15:38】[result] 零模型GPU/Fabric验收在reset的原生reward np.concatenate(cuda_tensor)处失败，0物理步/0模型；保留日志。为保留原GPT-as-Policy/RoboDojo CPU物理与评分代码，改用cpu/non-Fabric并显式physics/updateToUsd=true同步已有USD渲染，不修改reward或物理参数。下一独立零模型验收，不能跳过。
+- 【Agent】【2026-10-23 15:41】[result] CPU/USD原生reset已通过；零模型验收器漏建本机controller目录，run.json写入前失败，0物理动作/0模型，原生已收尾。补建自身目录并保证finally关闭RPC；只修验收器，不改变仿真/模型条件。

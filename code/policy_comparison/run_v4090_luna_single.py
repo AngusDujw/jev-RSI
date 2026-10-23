@@ -34,6 +34,7 @@ def sensor_sync_gate(runtime):
     from PIL import Image
     sys.path.insert(0, str(runtime))
     from hybrid_rollout.robodojo.robodojo_server.gpt_only_client import GPTOnlyTools
+    (LOCAL/'controller').mkdir()
     tools = GPTOnlyTools(LOCAL/'controller', 'stack_blocks', sim_port=PORT,
                          seed=0, max_decisions=0)
     def invoke(response=None):
@@ -104,9 +105,11 @@ def sensor_sync_gate(runtime):
         if not passed:
             raise RuntimeError('Sensor synchronization commissioning failed; model run forbidden')
     finally:
-        if tools.episode is not None:
-            tools.finish('sensor_sync_commissioning')
-        tools.close()
+        try:
+            if tools.episode is not None:
+                tools.finish('sensor_sync_commissioning')
+        finally:
+            tools.close()
 
 
 def prepare():
