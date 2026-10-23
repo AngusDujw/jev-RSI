@@ -61,3 +61,11 @@
 实际相机预检106.016秒完成、30/30有效RGB，见EXP043。剩余5case协调器已启动，先default_h5/layout1和default_h1/layout0，首29完成响应均有回执。独立本机目录code/runs/2026-10-23-roboicl-speed-5880-restricted-resume；旧结果不覆盖。本轮不再因为Restricted标签单独停止，只在真实GPU/相机失败时中止本人批次。
 
 未加速5/5布局1原生成功361步/75响应，完整审计见EXP044。之后fast_h1:0/default_h1:1/fast_h1:1启动器因18450端口EADDRINUSE在run目录创建前退出，三次均无仿真/模型。原记录完整保留，不是三个策略失败或新物理回合。协调器仅增加绑定端口等待，本机0ad759b4已推送，远端22189f0部署；roboicl控制模块与7f681b43无差异。空闲slot0 dry-run三配置3/3通过；新的results/speed-stack-bowls-20261023-startup-resume仅补这三项，slot1等原default_h1布局0退出，实际最多两路。
+
+## 2026-10-24 跨日运行检查点（未完成）
+
+用户GPU可用即继续的授权持续有效。未加速5/5布局1已完成361步/75响应的成功结果（EXP044）；两种1/1布局0当前分别370步/414响应和254步/296响应，均仍运行，默认组含1步本地hold，未回执规划按终局再审计；两个布局1尚待槽位，不把等待算物理尝试。旧169成功及重启后191成功、800失败均不重跑。
+
+当前本机Pro桥和SSH反向转发持续前台；原协调器13906的SSH连接曾因跳板超时退出255，重连确认原进程与新协调器18656仍运行，已新增前台只读观察原进程直至summary，不重启任何物理回合。原资源监测及新批监测持续记录。一次Pro上游SSL EOF/RemoteDisconnected造成两路停顿时，实际CUDA复测32.0通过；短暂停止新协调器准入，两个原子回合继续原重试，恢复新成功响应后SIGCONT同一协调器。暂停/恢复证据在startup-resume/admission-suspended-pro.json与admission-resumed-pro.json。后续间歇同类传输错误均沿用原重试，失败推理消耗未知，不按0处理；客户端目前无CUDA102，不能误归因GPU许可。
+
+原始日志已中途同步本机code/runs/2026-10-23-roboicl-speed-5880-restricted-resume/{remote-results,startup-remote-results}，这是未完成前缀备份，最终还需重新同步/校验。全部7个新回合目标尚未完成，后续继续同一批次至原生终局或明确基础设施中断，不自动重跑结果。
