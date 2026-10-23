@@ -39,7 +39,7 @@ def audit(folder):
     decisions = lines(trace/'decisions.jsonl')
     receipts = lines(trace/'tool_results.jsonl')
     observations = lines(trace/'observations.jsonl')
-    horizon = 5 if case['condition'] == 'fast_h5' else 1
+    horizon = 5 if case['condition'] in ('fast_h5', 'default_h5') else 1
     normal = [r for r in receipts if r.get('predicted_steps') == horizon
               and 'executed_step_interval' in r]
     assert len(normal) <= len(decisions), folder

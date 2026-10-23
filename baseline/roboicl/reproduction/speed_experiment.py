@@ -1,4 +1,4 @@
-"""Run the six user-authorized paired bowl episodes without automatic reruns."""
+"""Run explicitly selected paired bowl episodes without automatic reruns."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import datetime
@@ -15,7 +15,9 @@ GUIDANCE = (
     'Complete the task as quickly as possible, using as few control steps as necessary. '
     'After the object-level goal, release, safely retract and return, reserving steps for this finish.'
 )
-CONDITIONS = {'fast_h5': (5, True), 'default_h1': (1, False), 'fast_h1': (1, True)}
+CONDITIONS = {'fast_h5': (5, True), 'default_h1': (1, False), 'fast_h1': (1, True),
+              'default_h5': (5, False)}
+DEFAULT_CONDITIONS = ('fast_h5', 'default_h1', 'fast_h1')
 
 
 def save(path, value):
@@ -44,14 +46,28 @@ def main():
     ap.add_argument('--endpoint', default='http://127.0.0.1:7915/responses')
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--capture-only', action='store_true')
+    ap.add_argument('--case', action='append', dest='cases', metavar='CONDITION:LAYOUT',
+                    help='Explicit physical attempts, in order; repeat for each selected case')
     args = ap.parse_args()
+    selected = []
+    if args.cases:
+        for value in args.cases:
+            condition, separator, layout = value.partition(':')
+            if not separator or condition not in CONDITIONS or layout not in ('0', '1'):
+                ap.error('Invalid --case: ' + value)
+            selected.append((condition, int(layout)))
+        if len(set(selected)) != len(selected):
+            ap.error('Duplicate physical attempts are not allowed')
+    else:
+        selected = [(condition, layout) for layout in (0, 1) for condition in DEFAULT_CONDITIONS]
     if args.endpoint != 'http://127.0.0.1:7915/responses':
         raise ValueError('This experiment only uses its local ChatGPT Pro bridge')
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)
     base = json.loads((ROOT/'configs/protocols/zero_shot_b25.json').read_text())
     profiles = {}
-    for condition, (horizon, fast) in CONDITIONS.items():
+    for condition in dict.fromkeys(condition for condition, _ in selected):
+        horizon, fast = CONDITIONS[condition]
         profile = dict(base, id='bowl-speed-20261023-' + condition,
                        model='gpt-6-astra', endpoint=args.endpoint)
         profile['harness_overrides'] = dict(base['harness_overrides'],
@@ -64,17 +80,17 @@ def main():
         save(path, profile)
         profiles[condition] = path
     protocol = {'date': '2026-10-23', 'task': 'stack_bowls', 'layouts': [0, 1],
-        'conditions': CONDITIONS, 'episode_control_step_limit': 800,
+        'conditions': {condition: CONDITIONS[condition] for condition, _ in selected},
+        'selected_cases': selected, 'episode_control_step_limit': 800,
         'guidance': GUIDANCE, 'guidance_provenance': 'First sentence requested by user; second from GPT-as-Policy SKILL.md finish-budget guidance.',
         'model': 'gpt-6-astra', 'effort': 'xhigh', 'account': 'workstation ChatGPT Pro',
-        'shots': 0, 'seed': 0, 'maximum_physical_attempts': 6,
+        'shots': 0, 'seed': 0, 'maximum_physical_attempts': len(selected),
         'native_outcomes_are_not_rerun': True, 'parallel': args.parallel,
         'sim_python': args.sim_python, 'policy_python': args.policy_python}
     save(out/'protocol.json', protocol)
     jobs = queue.Queue()
-    for layout in (0, 1):
-        for condition in CONDITIONS:
-            jobs.put((condition, layout))
+    for condition, layout in selected:
+        jobs.put((condition, layout))
     admission = threading.Lock()
 
     def worker(slot):
@@ -127,6 +143,8 @@ def main():
                     time.sleep(30)
                 print(json.dumps({'event': 'start', 'condition': condition, 'layout': layout, 'slot': slot}), flush=True)
                 started = time.monotonic()
+                save(folder/'launch.json', {'launched_at': datetime.datetime.now().isoformat(),
+                                           'condition': condition, 'layout': layout})
                 log = (folder/'launcher.log').open('w')
                 process = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
                 # Avoid simultaneous Isaac initializations hiding each other's peak.
@@ -149,12 +167,11 @@ def main():
         for future in futures:
             future.result()
     summary = []
-    for layout in (0, 1):
-        for condition in CONDITIONS:
-            folder = out/condition/f'layout-{layout}'
-            final = folder/'finished.json'
-            summary.append({'condition': condition, 'layout': layout,
-                            **(json.loads(final.read_text()) if final.exists() else {'status': 'not_started'})})
+    for condition, layout in selected:
+        folder = out/condition/f'layout-{layout}'
+        final = folder/'finished.json'
+        summary.append({'condition': condition, 'layout': layout,
+                        **(json.loads(final.read_text()) if final.exists() else {'status': 'not_started'})})
     save(out/'summary.json', summary)
 
 
