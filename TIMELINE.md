@@ -257,6 +257,7 @@ graph LR
     T_2026W43_010["📊 robodojo-decision-stages<br/>p只读审计发现keep复用低层限幅目标而非…"]:::experiment
     T_2026W43_011["📊 gpt-as-policy-luna-media<br/>单次Luna550步失败审计发现实测249…"]:::experiment
     T_2026W43_012["📊 gpt-as-policy-luna-media<br/>原生CPU+updateToUsd零模型2…"]:::experiment
+    T_2026W43_013["📊 gpt-as-policy-luna-media<br/>同步修复后Luna重测550步/111动作…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -466,6 +467,7 @@ graph LR
   T_2026W43_008 --> T_2026W43_009
   T_2026W43_009 --> T_2026W43_010
   T_2026W43_011 --> T_2026W43_012
+  T_2026W43_012 --> T_2026W43_013
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -710,6 +712,7 @@ graph LR
 | `T-2026W43-010` | 2026-10-23 | experiment | robodojo-decision-stages | p只读审计发现keep复用低层限幅目标而非最后selected close；离线显式ledger修复通过，未证明下降过冲因果或抓取收益，下一仅零API保持契约验收 | `EXP-2026W43-007` | - |
 | `T-2026W43-011` | 2026-10-23 | experiment | gpt-as-policy-luna-media | 单次Luna550步失败审计发现实测249.9mm/86.2deg与近静止RGB不符；CPU非Fabric入口漏同步，不能归因模型能力，已交付原生及输入慢放 | `EXP-2026W43-010` | - |
 | `T-2026W43-012` | 2026-10-23 | experiment | gpt-as-policy-luna-media | 原生CPU+updateToUsd零模型20步通过：右48.5mm/高图35.2px/腕图83.2px，旧冻结负对照拒绝；保留原策略启动单次Luna重测，未得终局 | `EXP-2026W43-012` | - |
+| `T-2026W43-013` | 2026-10-23 | experiment | gpt-as-policy-luna-media | 同步修复后Luna重测550步/111动作仍失败；两臂16次闭合无确认持物，画面正常，约32分钟，已交付原生与慢放 | `EXP-2026W43-013` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

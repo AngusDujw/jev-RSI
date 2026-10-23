@@ -409,3 +409,5 @@
 - 【Agent】【2026-10-23 15:44】[result] CPU/non-Fabric+updateToUsd验收20步0模型通过：右实测48.500mm，高位手部光流35.210px/12轨迹，右腕背景83.214px/12轨迹，左腕静止对照.0285px/120轨迹；前后3RGB人工审阅可见手与背景更新，旧冻结负对照拒绝。原GPT-only现有10项单测通过。
 - 【Agent】【2026-10-23 15:44】[run] 绑定已通过原生入口SHA的独立Luna/high Pro GPT-as-Policy重测已启动前台exec28980，run=v4090-luna-high-stack-20261023-cpu-usd-rerun-once；全新layout0、550控制步、只一回合、保存图像及视频，原策略接口/提示不改。
 - 【Agent】【2026-10-23 15:46】[result] 修复后单次Luna已实际执行22/550步；worker确认gpt-6-luna/openai/high/Pro。首批高位和右腕PNG人工审阅显示手臂及视角真实变化；旧/新policy runtime全部文件哈希相同，首批模型结果无评分/contact/物体真位姿key及中文。仅启动层同步修复，任务结果仍待定。
+- 【User】【2026-10-23 18:07】[intent] 要求查看修复视觉反馈后的单次Luna/high GPT-as-Policy实验结果。
+- 【Agent】【2026-10-23 18:07】[result] EXP013结束：550控制步/111动作、1919.702秒、native success=false/score0/truncated。原生551帧22.04秒视频及4倍慢放完整解码并发布；关键帧确认两臂/腕相机正常运动，无旧冻结复现。右12次/左4次open→close，未确认持物或堆叠；0–342步右手尝试，342–427左臂转场85步，427–550左手尝试/结束。只汇总既有回合，不追加策略实验。
