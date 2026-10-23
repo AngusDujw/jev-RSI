@@ -36,7 +36,8 @@ robot-only geometry is available at
 `/home/ykj/project/gpt6/benchmark/gpt_as_policy_robodojo/public_robot_reference/x5/`.
 
 Quaternions are absolute, unit wxyz. With SciPy, convert to xyzw before use.
-Calculate `R(q).apply([1, 0, 0])` to check the measured finger-extension axis;
+Calculate `Rotation.from_quat([x, y, z, w]).apply([1, 0, 0])` to check the
+measured finger-extension axis;
 do not infer a downward grasp from an Euler label or a turning wrist image.
 World-axis rotation increments premultiply the current orientation and follow
 the right-hand rule. Prefer a near-downward pinch for these blocks, then retain
