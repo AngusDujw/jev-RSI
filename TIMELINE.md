@@ -263,6 +263,7 @@ graph LR
     T_2026W43_016["📊 gpt-as-policy-luna-media<br/>Luna提示v4完整550步仍失败：可持物…"]:::experiment
     T_2026W43_017["📊 gpt-as-policy-luna-media<br/>v7历史视觉示例条件已出现无遮挡两层堆放；…"]:::experiment
     T_2026W43_018["🔬 gpt-as-policy-luna-media<br/>整手和携物先越过已有最高层再横移，可减少后…"]:::hypothesis
+    T_2026W43_019["📊 gpt-as-policy-luna-media<br/>v7视觉三层持续至550但原生false/…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -478,6 +479,7 @@ graph LR
   T_2026W43_015 --> T_2026W43_016
   T_2026W43_016 --> T_2026W43_017
   T_2026W43_017 --> T_2026W43_018
+  T_2026W43_018 --> T_2026W43_019
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -728,6 +730,7 @@ graph LR
 | `T-2026W43-016` | 2026-10-23 | experiment | gpt-as-policy-luna-media | Luna提示v4完整550步仍失败：可持物搬运但多次放置偏离；v6仅补块体入座/公开机器人几何早读继续检验 | `EXP-2026W43-017`, `EXP-2026W43-019` | - |
 | `T-2026W43-017` | 2026-10-24 | experiment | gpt-as-policy-luna-media | v7历史视觉示例条件已出现无遮挡两层堆放；v6已依次持有三块，均继续最后一层，完整成功尚未确认 | `EXP-2026W43-019`, `EXP-2026W43-020` | - |
 | `T-2026W43-018` | 2026-10-24 | hypothesis | gpt-as-policy-luna-media | 整手和携物先越过已有最高层再横移，可减少后续接近时移散积木；冻结v8同布局三回合检验 | `EXP-2026W43-019`, `EXP-2026W43-021` | - |
+| `T-2026W43-019` | 2026-10-24 | experiment | gpt-as-policy-luna-media | v7视觉三层持续至550但原生false/0.15；公开任务另需双臂回起始EEF姿态，原提示遗漏，v9仅补目标三回合复验 | `EXP-2026W43-020`, `EXP-2026W43-022` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
