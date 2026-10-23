@@ -448,3 +448,6 @@
 - 【Agent】【2026-10-23 23:29】[op] 新建实验块 EXP-2026W43-020：Luna high提示v7：历史原始RGB抓取形态示例  ↪ `EXP-2026W43-020`
 - 【Agent】【2026-10-23 23:32】[result] EXP019 v6首次真实持物已人工核对：102–113步白块在固定高图随抬升/横移，腕图相对夹指保持且背景变化；不是只采纳model reason。比v3/v4更早，但源物/策略随机性不同不能单归因提示；模型随后将白块放回桌面作底座，完整堆叠未完成。
 - 【Agent】【2026-10-23 23:33】[run] EXP020 v7第三条前台exec66525/controller2047401/SSH2047078/25425已启动；基于实际单条GPU5574MiB/RSS6.5GiB与空闲14.7GiB重估后安全并行，非按整卡总量误归本任务。完整v6+历史视觉示例指引，不提供动作数值/物体坐标/原生结果。
+- 【Agent】【2026-10-23 23:36】[result] EXP020实际图像审计：v7 agent_events imageView事件包含四张open/lifted高/右腕历史PNG完整路径，非仅提示列路径；已执行8步。EXP019 step152公开理由明确整块在指尖线外，选择继续深度接近4cm而非角对齐即闭，行为变化待物理结果验证。
+- 【Agent】【2026-10-23 23:46】[result] EXP018 v5完整终局550步/117动作/96.7分钟、native success=false complete=true；没有确认持物，放置环节提示未获有效检验，公开CAD自主读取混杂保留。v6白块及黄块持物均已人工阅图确认，继续原回合；v7原图示例4张实际imageView已审计。
+- 【Agent】【2026-10-24 00:09】[result] 英文上下文补审：v6/v7 actor cwd与所有祖先AGENTS.md/AGENTS.override.md只发现各自英文agent/AGENTS.md，CJK=0；隔离Pro配置均gpt-6-luna/openai/high。新提示/示例README/manifest为英文，未将本聊天中文管理指令注入内层。
