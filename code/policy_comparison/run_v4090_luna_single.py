@@ -7,6 +7,7 @@ from pathlib import Path
 import shlex
 import shutil
 import subprocess
+import sys
 import time
 
 
@@ -23,6 +24,89 @@ CODE = Path(__file__).resolve().parent
 
 def write(path, value):
     path.write_text(json.dumps(value, indent=2) + '\n')
+
+
+def sensor_sync_gate(runtime):
+    """Production preflight: fixed noncontact motions, no model or API calls."""
+    import copy
+    import cv2
+    import numpy as np
+    from PIL import Image
+    sys.path.insert(0, str(runtime))
+    from hybrid_rollout.robodojo.robodojo_server.gpt_only_client import GPTOnlyTools
+    tools = GPTOnlyTools(LOCAL/'controller', 'stack_blocks', sim_port=PORT,
+                         seed=0, max_decisions=0)
+    def invoke(response=None):
+        call = tools.next_call().copy()
+        name = call.pop('tool')
+        if response is not None:
+            call['response'] = response
+        return (tools.start if name == 'robodojo_start' else tools.act)(**call)
+    def flow(a, b, rectangle):
+        a = cv2.cvtColor(a, cv2.COLOR_RGB2GRAY)
+        b = cv2.cvtColor(b, cv2.COLOR_RGB2GRAY)
+        mask = np.zeros_like(a)
+        x0,y0,x1,y1 = rectangle
+        mask[y0:y1, x0:x1] = 255
+        points = cv2.goodFeaturesToTrack(a, 120, .01, 5, mask=mask)
+        if points is None:
+            raise RuntimeError('No trackable public-image features for sync gate')
+        end, status, _ = cv2.calcOpticalFlowPyrLK(a,b,points,None,
+            winSize=(31,31), maxLevel=4)
+        back, reverse, _ = cv2.calcOpticalFlowPyrLK(b,a,end,None,
+            winSize=(31,31), maxLevel=4)
+        valid = (status.ravel()>0) & (reverse.ravel()>0)
+        valid &= np.linalg.norm((back-points).reshape(-1,2),axis=1)<1.0
+        delta = (end-points).reshape(-1,2)[valid]
+        if len(delta)<6:
+            raise RuntimeError('Too few consistent image tracks for sync gate')
+        return dict(tracks=len(delta), median_motion_px=float(np.median(np.linalg.norm(delta,axis=1))),
+                    median_delta_px=np.median(delta,axis=0).tolist())
+    try:
+        invoke()
+        initial = copy.deepcopy(tools.current_eef())
+        before = {k:tools.obs[k].copy() for k in tools.camera_keys}
+        # Move away from the source cluster and upward, then change view yaw.
+        for axis, amount in [(0,-.04),(2,.04),(1,.04),(None,.2)]:
+            target = copy.deepcopy(tools.current_eef())
+            for arm in target:
+                target[arm] = {k:target[arm][k] for k in ('position','quaternion_wxyz')}
+                target[arm]['gripper_closed'] = False
+            if axis is None:
+                w,x,y,z = target['right']['quaternion_wxyz']
+                c,s = np.cos(amount/2),np.sin(amount/2)
+                target['right']['quaternion_wxyz']=[float(c*w-s*z),float(c*x-s*y),float(c*y+s*x),float(c*z+s*w)]
+            else:
+                target['right']['position'][axis] += amount
+            invoke(dict(mode='eef',request_id=tools.request['request_id'],steps=5,
+                target=target,reason='Fixed noncontact sensor synchronization commissioning motion; no model inference.'))
+        final = tools.current_eef()
+        metrics = dict(
+            right_displacement_m=float(np.linalg.norm(np.array(final['right']['position'])-initial['right']['position'])),
+            left_displacement_m=float(np.linalg.norm(np.array(final['left']['position'])-initial['left']['position'])))
+        metrics['high_hand']=flow(before['cam_high'],tools.obs['cam_high'],(510,268,612,310))
+        metrics['right_wrist_background']=flow(before['cam_right_wrist'],tools.obs['cam_right_wrist'],(20,10,620,240))
+        metrics['left_wrist_background']=flow(before['cam_left_wrist'],tools.obs['cam_left_wrist'],(20,10,620,240))
+        passed=(metrics['right_displacement_m']>.01 and metrics['left_displacement_m']<.002
+            and metrics['high_hand']['median_motion_px']>3
+            and metrics['right_wrist_background']['median_motion_px']>3
+            and metrics['left_wrist_background']['median_motion_px']<2)
+        certificate=dict(passed=bool(passed),metrics=metrics,physical_steps=tools.tick,
+            model_calls=0,scope='Robot render and wrist-camera movement commissioning, not task success or global correctness.',
+            entry_sha256=hashlib.sha256((CODE/'v4090_luna_entry.py').read_bytes()).hexdigest())
+        write(LOCAL/'sensor-sync-report.json',certificate)
+        canvas=Image.new('RGB',(1920,960))
+        for n,k in enumerate(tools.camera_keys):
+            canvas.paste(Image.fromarray(before[k]),(n*640,0))
+            canvas.paste(Image.fromarray(tools.obs[k]),(n*640,480))
+        canvas.save(LOCAL/'sensor-sync-before-after.png')
+        print(json.dumps(certificate),flush=True)
+        if not passed:
+            raise RuntimeError('Sensor synchronization commissioning failed; model run forbidden')
+    finally:
+        if tools.episode is not None:
+            tools.finish('sensor_sync_commissioning')
+        tools.close()
 
 
 def prepare():
@@ -72,7 +156,22 @@ def main():
     parser.add_argument('--prepared', action='store_true')
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--recover-empty-startup', action='store_true')
+    parser.add_argument('--run-name')
+    parser.add_argument('--sensor-check', action='store_true')
+    parser.add_argument('--sync-report', type=Path)
     args = parser.parse_args()
+    if args.run_name:
+        if not args.run_name.startswith('v4090-luna-high-stack-') or '/' in args.run_name or '..' in args.run_name:
+            raise ValueError('Invalid isolated run name')
+        LOCAL = ROOT/'runs'/args.run_name
+        REMOTE = REMOTE_BASE+'/'+args.run_name
+        REMOTE_SOURCE = REMOTE_BASE+'/source-'+args.run_name
+    if not args.sensor_check and args.run_name:
+        if args.sync_report is None:
+            raise ValueError('A reviewed sensor synchronization report is required')
+        report = json.loads(args.sync_report.read_text())
+        if not report.get('passed') or report.get('entry_sha256') != hashlib.sha256((CODE/'v4090_luna_entry.py').read_bytes()).hexdigest():
+            raise ValueError('Missing successful commissioning for this exact native entry')
     if args.recover_empty_startup:
         prior = LOCAL
         camera_prior = prior.with_name(prior.name + '-camera-extension')
@@ -134,6 +233,11 @@ def main():
                 time.sleep(3)
             else:
                 raise TimeoutError('Native RPC readiness deadline')
+            if '"event": "simulation_sync_config"' not in (LOCAL/'server.log').read_text():
+                raise RuntimeError('Native server did not confirm synchronization configuration')
+            if args.sensor_check:
+                sensor_sync_gate(runtime)
+                return
             controller = subprocess.Popen([str(PYTHON), '-B', '-u', '-m', 'hybrid_rollout.robodojo.skill.run',
                 '--output', str(LOCAL / 'controller'), '--task', 'stack_blocks',
                 '--evaluation-method', 'gpt_only', '--codex', shutil.which('codex'),
