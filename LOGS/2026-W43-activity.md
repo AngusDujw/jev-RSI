@@ -466,3 +466,5 @@
 - 【Agent】【2026-10-24 01:57】[op] 新建实验块 EXP-2026W43-023：v8第三回合154步SSH断线，原生不完整归档  ↪ `EXP-2026W43-023`
 - 【Agent】【2026-10-24 02:16】[op] EXP023 五条SSH/RPC提前退出均native incomplete/invalid，已单独记录不计模型失败；新增限速串行archive-only与未来任务SSH容忍，AST/CLI/10项GPT-only单测通过；保留两条健康回合。
 - 【Agent】【2026-10-24 02:16】[result] EXP023 archive-only实测完成：v9-r2 summary/outcome/video均已取回，双向rsync返回0，远端核对private_pro_home/codex_state/tmp/native-results四目录均排除。Discussion已补完整任务漏项与五条基础设施中断。
+- 【Agent】【2026-10-24 02:17】[op] 新建实验块 EXP-2026W43-024：--help  ↪ `EXP-2026W43-024`
+- 【Agent】【2026-10-24 02:17】[run] EXP024 v9-r4独立新回合前台43407已启动，提示/模型/物理固定；EXP023归档恢复队列前台17144串行，native原始大资产仍留DataStorage。new_exp误把--help当标题的空块已补为实际EXP024，未删除历史。
