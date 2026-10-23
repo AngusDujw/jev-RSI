@@ -40,3 +40,8 @@
 本机Pro readiness成功返回gpt-6-astra。代码冻结fd7632ef，六配置dry-run通过。正式入口为baseline/roboicl/reproduction/speed_experiment.py，结果根为远端baseline/roboicl/results/speed-stack-bowls-20261023。运行在前台受控SSH执行中，不使用nohup、后台shell或系统定时器。
 
 正式调度最多3实例；逐实例启动前要求空闲GPU>=7500MiB且可用RAM>=7500MiB，并等待前一实例首次观测形成再启动下一个，避免初始化峰值叠加。实际仅能容纳两实例时第三个排队；不为追求并行而修改显存约束或原生800步预算。运行期间记录resources.jsonl及结束后的资源汇总。
+
+
+## 批次最终阻断（2026-10-23）
+
+已开始3回合：fast_h5/layout0原生成功169步；default_h1/layout0与fast_h1/layout0分别196/185步后因GRID许可证Unlicensed、CUDA102中断，无原生结果。其余layout1均未开始。不是Pro调用失败，最初长响应推断已更正。已停止本人本批全部进程、桥和隧道，GPU回落50MiB；未改驱动/CUDA。详见[结果报告](2026-10-23-roboicl-speed-5880-results.md)与EXP036–038。本人临时资产测试脚本按用户要求删除，审计JSON保留；运行源commit仍为fd7632ef，后续文档/离线审计提交不改变已记录运行源。

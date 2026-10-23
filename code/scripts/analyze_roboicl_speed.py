@@ -25,7 +25,10 @@ def distribution(values, cap):
 
 def audit(folder):
     case = json.loads((folder/'case.json').read_text())
-    final = json.loads((folder/'finished.json').read_text())
+    aborted = folder/'infrastructure-abort.json'
+    final = (json.loads((folder/'finished.json').read_text())
+             if (folder/'finished.json').exists() else
+             {'native_results': [], 'returncode': None, 'wall_seconds': None})
     harness_paths = list(folder.glob('*/harness.json'))
     assert len(harness_paths) == 1, folder
     harness = json.loads(harness_paths[0].read_text())
@@ -62,7 +65,8 @@ def audit(folder):
             add('executed', rows[:count])
             executed += count
             events.update(e.get('type', 'unspecified') for e in receipt.get('controller_events', []))
-    holds = sum(len(r['full_executed_commands_local_only']) for r in lines(trace/'safety_holds.jsonl'))
+    holds = sum(len(r.get('full_executed_commands_local_only', []))
+                for r in lines(trace/'safety_holds.jsonl'))
     observed_steps = max((r['step'] for r in observations), default=0)
     clients = list(folder.glob('*/client.log'))
     logged_steps = [int(x) for p in clients for x in re.findall(r'env0 step: \x1b\[92m(\d+) / 800', p.read_text(errors='replace'))]
@@ -74,6 +78,7 @@ def audit(folder):
     details = result.get('details', {}).get('0', {})
     return {
         'condition': case['condition'], 'layout': case['layout'],
+        'infrastructure_aborted': aborted.exists(),
         'scored': bool(native), 'native_success': details.get('success'),
         'score': result.get('score'), 'returncode': final['returncode'],
         'wall_seconds': final['wall_seconds'], 'native_control_steps': native_steps,
@@ -96,9 +101,10 @@ def main():
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    cases = [audit(p.parent) for p in sorted(args.root.glob('*/*/finished.json'))]
+    cases = [audit(p.parent) for p in sorted(args.root.glob('*/*/case.json'))
+             if (p.parent/'finished.json').exists() or (p.parent/'infrastructure-abort.json').exists()]
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps({'cases': cases, 'scope': 'Completed physical attempts only; valid delta proposals and committed executed prefixes are separate. Units are meters and radians.'}, indent=2)+'\n')
+    args.output.write_text(json.dumps({'cases': cases, 'scope': 'Terminated physical attempts, with infrastructure-aborted cases explicitly unscored; valid delta proposals and committed executed prefixes are separate. Units are meters and radians.'}, indent=2)+'\n')
     print(json.dumps([{k: row[k] for k in ('condition', 'layout', 'native_success', 'native_control_steps', 'gpt_completed', 'native_steps_without_committed_receipt')} for row in cases]))
 
 

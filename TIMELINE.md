@@ -137,6 +137,7 @@ graph LR
     T_2026W43_004["📊 roboicl-action-reuse<br/>RoboICL125尝试结束：首次原生Je…"]:::experiment
     T_2026W43_005["📊 libero-goal-ten<br/>Goal1144同初态固定Jev1.13三…"]:::experiment
     T_2026W43_006["📊 libero-goal-ten<br/>固定Jev1.13两任务2/3倍各一次全成…"]:::experiment
+    T_2026W43_007["⛔ roboicl-bowl-speed<br/>5880 GRID许可证失效：叠碗1原生成…"]:::blocker
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -355,6 +356,7 @@ graph LR
 | `T-2026W43-004` | 2026-10-21 | experiment | roboicl-action-reuse | RoboICL125尝试结束：首次原生Jev15/20、固定均值/最大均14/20；GPT574/756/694，净成功仅1例且耗时无优势；纯GPT仅19原生布局，IK停滞诊断未评分 | `EXP-2026W43-024` | - |
 | `T-2026W43-005` | 2026-10-22 | experiment | libero-goal-ten | Goal1144同初态固定Jev1.13三档全成功，步长1/1.5/2倍用267/219/213步；1.14未复现须单列 | `EXP-2026W43-028` | - |
 | `T-2026W43-006` | 2026-10-23 | experiment | libero-goal-ten | 固定Jev1.13两任务2/3倍各一次全成功：1252为249/228步，1383为255/228；限幅及固定阶段成本使收益非线性，非稳定率结论 | `EXP-2026W43-032` | - |
+| `T-2026W43-007` | 2026-10-23 | blocker | roboicl-bowl-speed | 5880 GRID许可证失效：叠碗1原生成功、2基础设施中断、3未启动，待恢复许可证 | `EXP-2026W43-037` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
