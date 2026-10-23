@@ -699,6 +699,7 @@ def main():
 
         rc = q.returncode
         record["client_returncode"] = rc
+        (out / 'client_exit.json').write_text(json.dumps({'returncode': rc}, indent=2))
         status = "client_exited" if rc == 0 else "failed"
         if args.capture_only:
             probe = out / "capture/capture_probe.json"
