@@ -2,6 +2,14 @@
 
 服务器 company-server-2-ykj 上项目 `/home/ykj/project/jev-rsi-roboicl`、代码、环境解释器软链接及四阶段结果目录均仍存在。这里只读分析，不启动模型或仿真，也未验证环境能否完整启动。
 
+## 来源核验补充
+
+用户提出可能存在个人同名项目后，重新核验：论文 https://arxiv.org/abs/2609.34261 的Code链接直接指向 https://github.com/Mosi-AI/RoboICL 。本地干净上游检出 `.cache/roboicl-upstream-20261021` 的origin是该官方仓库，HEAD为07d6e1c5387710e2de9240724b0015bbf0c95c6e，官方GitHub可查该提交。当前baseline不是独立官方仓库，而是jev-RSI中的vendored复现扩展副本。
+
+逐文件比较官方检出的96个普通文件，当前baseline中89个字节一致、7个有修改、0个缺失。README、dialogue_policy.py、astra_policy.py、shared_harness.json和叠方块/分拣任务配置均与官方固定提交一致。服务器当前840e7ed提交中的dialogue_policy.py、astra_policy.py、shared_harness.json也与干净官方检出的SHA256逐一一致。
+
+因此前述增量定义和步长提示词确实来自论文官方发布代码。新增的Jev复用门控、Pro转发和四条件五任务实验属于本项目复现扩展；125次尝试的结果不能称为论文作者的原始实验，也不代表整套论文协议已复现。未据此认定用户另一个同名项目的身份。
+
 ## 口径
 
 - 按既有 first-native-panel.json 选取每条件/任务/布局的首个原生结果，共79回合；不挑最佳回合。不含46次无原生评分的物理尝试。
