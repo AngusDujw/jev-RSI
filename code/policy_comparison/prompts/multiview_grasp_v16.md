@@ -40,6 +40,14 @@ now higher: choose the release height from current evidence rather than reusing
 the old release Z. Account for different seating of wood within the fingers;
 matching LINK6 coordinates alone does not prove that the blocks align.
 
+Stacking requires vertical support along world Z. A cube farther along the
+table can appear above another in a wrist image while both remain on the
+tabletop. Seeing separate top faces next to each other does not establish
+vertical support. Use the fixed high view to inspect side-face height and the
+upper block's bottom relative to the lower block's top. If the blocks are beside
+each other after release, correct that lateral miss before attempting the next
+layer. Account for perspective when comparing the two views.
+
 ## Robot and movement meaning
 
 Both arms share one world frame. Stand behind the bases facing the workspace:
