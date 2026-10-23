@@ -29,3 +29,9 @@
 本机项目下启动已有pro_oauth_bridge.py，port7915、concurrency2、输出code/runs/2026-10-23-roboicl-speed-5880-reboot/bridge；再前台SSH反向转发127.0.0.1:7915，前台执行远端bash reproduction/resume_bowl_speed_20261023.sh。七回合已明确授权，无需再确认启动，正式输出目录存在时先读取状态，禁止覆盖或自动重跑。保留495次旧模型响应与3个旧尝试，不混为新批次成功率。若许可证或认证仍阻断，记录原因，不替换模型/账号或擅改配置。
 
 执行期间及时检查实际HTTP回执与client.log，不把停顿直接推断为Pro延迟；有CUDA102时停止本人受影响批次并保留未评分记录。完成后回收原始日志、执行analyze_roboicl_speed.py离线审计、写完整EXP和报告，关闭本人桥/隧道；与旧fast_h5/layout0成功169步合并展示时明确来自前批次。
+
+## 执行进展
+
+一次性任务18:35:37触发，查询确认run_count=1且enabled=false，不会重复执行。启动检查uptime349秒、boot_id为重启后值，显存空闲21720MiB、可用内存23482348KiB。相机capture-only于128.018秒完成，明确状态capture_complete_no_api，30/30 RGB有效且无CUDA102，见[EXP040](2026-W43.md#exp-2026w43-040)。
+
+正式7回合已进入前台协调器，先default_h5/layout0、fast_h5/layout1；本机Pro桥7915/concurrency2、反向SSH隧道及远端资源监测保持前台。当前记录只表示启动，尚无新原生结果。运行源仍7f681b43，未在运行中改策略源码。
