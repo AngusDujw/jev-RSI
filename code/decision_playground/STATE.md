@@ -7,7 +7,21 @@ Updated:2026-10-23. Read AGENTS.md, EXP-2026W43-007 and real processes first.
 SSH company-server-2-ykj (JcbotIns), user ykj.
 Remote repo /home/ykj/project/jev-rsi-roboicl/.worktrees/decisions-playground-20261022.
 Baseline/interpreters /home/ykj/project/jev-rsi-roboicl/baseline/roboicl.
-All owned native/policy processes exited; no curl/API in flight.
+q2 zero-API native interface PASSED,15steps; native508333/runner516729 exited.
+Close then keep each sent selected right goal0 through all5 dispatched substeps,
+although the low-level observation after close was.045040808459398916.
+Max fixed-final-goal TCP residual.077189mm, no refusal. Temporary script deleted.
+Raw final head/wrist reviewed; no grasp claim. This runner is not a policy worker;
+zero-dispatch still only offline-covered. Independent ledger audit agreed.
+New r campaign code/runs/playground-selected-gripper-policy-20261023r initializing,
+GPU5/layout1/RPC25405; inspect manifest for real native PID; no worker yet.
+Only selected-gripper-command-v1 ledger/command-source correction changes from p;
+r005 text/three images, prompt,10 questions, actions/physics unchanged.
+One initial <=3-call segment, review on any guard refusal, then at most one second
+segment unless separately justified useful progress. One representative history.
+User explicitly authorizes autonomous owned checker/adapter repair and continuation;
+previous waiting condition superseded, never restore old q/p or replay requests.
+
 q campaign code/runs/playground-gripper-goal-20261023q, source79779389:
 native1082229 / runner1091778 exited; episode8b600a1b-2634-48d1-a9ac-9eb53f333fc6.
 The probe validator failed before dispatch at0native steps/0API. Raw quaternion
@@ -22,11 +36,11 @@ then requires all phase arm goals to match that same canonical reference.
 1mm target changes still rejected, no native/API/test script created.
 Local reviewable plan/audit: code/runs/company2-playground-20261022-deploy/q-audit/
 corrected-probe-plan.json and validator-correction-offline-validation.json.
-USER ANSWER REQUIRED before any independent q2: the current user explicitly
-limited this to one probe/no automatic extra episode. An async question asks
-whether one corrected q2 with the same15-step/zero-API conditions is allowed.
-Until explicit answer: zero environments, no API, no new episode or repeated ask.
-Automatic supervision should be disabled while that decision is pending.
+User explicitly clarified that owned engineering checks/code may be fixed and
+continued autonomously; do not block on another confirmation for checker repairs.
+The previous q2 waiting condition is superseded by that authorization.
+Proceed with one corrected independent q2; never restore q or replay requests.
+All API/input/physics/foreign-process boundaries remain unchanged.
 
 o interface check: native829592/runner838053 ended at8steps,0API; temporary script deleted.
 Full5-step feedback agrees; partial3-step returned exactly the last actual target.
@@ -149,9 +163,9 @@ Actual worker-loop fake integration close/keep/refusal/reset + pure prefix0..5,
 drift/invalid-count/immutability fixtures and independent review PASS. No new API/native.
 q real probe ended before dispatch because its fixed-pose validator compared raw
 and normalized quaternion components exactly. The corrected canonical-reference
-validator is offline-passed, but a new q2 needs the explicit pending user exception.
-No automatic native/policy starts. The selected-gripper command repair remains
-real-unvalidated, not a grasp improvement.
+validator is offline-passed. User now explicitly authorizes its corrected q2
+without further engineering confirmation. The selected-gripper command repair is now q2 runner-interface-validated,
+not yet proven to improve real policy/grasp.
 Do not restore p or replay requests. This repair is not proven to cause/fix p's
 arm overshoot and is not a grasp benefit. All r001-r005 remain unpromoted.
 Outer-only English audit lessons/p_closure_descent_audit.md; model r005 unchanged.

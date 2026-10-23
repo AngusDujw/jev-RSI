@@ -90,3 +90,15 @@ error, not a negative grasp result or evidence against the command repair.
 A canonical first-decoded-hold reference passed1212 offline phase cases and
 still rejects an intentional1mm target change. A new real probe remains
 unauthorized pending the user's explicit exception to the one-probe limit.
+
+## q2 engineering continuation
+
+The user clarified autonomous repair and continuation of owned checkers/code.
+Corrected q2 completed15 real native steps with zero API calls. Right close and
+keep each dispatched five final gripper goals0, despite low-level observation
+0.0450408085 after closure. The fixed final-arm-goal residual stayed below
+0.078mm. The interpolated path includes roughly30micrometre pose corrections;
+not every waypoint equals the fixed final goal. Source step/waypoint audit and
+independent review passed. The temporary script and processes are gone.
+This validates a runner command interface only: no native zero-dispatch case,
+real policy benefit, grasp, or explanation of p arm overshoot is established.
