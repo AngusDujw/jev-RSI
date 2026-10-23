@@ -59,3 +59,5 @@
 通过后仅补default_h5:1、default_h1:0、fast_h1:0、default_h1:1、fast_h1:1到独立results/speed-stack-bowls-20261023-restricted-resume，不重跑既有评分结果。所有模型/提示/步长/800步预算/2并发与双7500MiB准入不变，使用本机Pro gpt-6-astra/xhigh。
 
 实际相机预检106.016秒完成、30/30有效RGB，见EXP043。剩余5case协调器已启动，先default_h5/layout1和default_h1/layout0，首29完成响应均有回执。独立本机目录code/runs/2026-10-23-roboicl-speed-5880-restricted-resume；旧结果不覆盖。本轮不再因为Restricted标签单独停止，只在真实GPU/相机失败时中止本人批次。
+
+未加速5/5布局1原生成功361步/75响应，完整审计见EXP044。之后fast_h1:0/default_h1:1/fast_h1:1启动器因18450端口EADDRINUSE在run目录创建前退出，三次均无仿真/模型。原记录完整保留，不是三个策略失败或新物理回合。协调器仅增加绑定端口等待，本机0ad759b4已推送，远端22189f0部署；roboicl控制模块与7f681b43无差异。空闲slot0 dry-run三配置3/3通过；新的results/speed-stack-bowls-20261023-startup-resume仅补这三项，slot1等原default_h1布局0退出，实际最多两路。
