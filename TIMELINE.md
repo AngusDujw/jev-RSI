@@ -267,6 +267,7 @@ graph LR
     T_2026W43_020["📝 gpt-as-policy-luna-media<br/>回位说明审计更正：v7有通用条件句但tas…"]:::note
     T_2026W43_021["🔬 gpt-as-policy-luna-media<br/>脱手反例、首物体选择、明确世界轴三分支各检…"]:::hypothesis
     T_2026W43_022["📊 gpt-as-policy-luna-media<br/>v11完整550步native false…"]:::experiment
+    T_2026W43_023["🔬 gpt-as-policy-luna-media<br/>短版两条水平首夹回归；明确实测≤15度st…"]:::hypothesis
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -486,6 +487,7 @@ graph LR
   T_2026W43_019 --> T_2026W43_020
   T_2026W43_020 --> T_2026W43_021
   T_2026W43_021 --> T_2026W43_022
+  T_2026W43_022 --> T_2026W43_023
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -740,6 +742,7 @@ graph LR
 | `T-2026W43-020` | 2026-10-24 | note | gpt-as-policy-luna-media | 回位说明审计更正：v7有通用条件句但task_context为空；v9补本任务明确要求 | `EXP-2026W43-022` | - |
 | `T-2026W43-021` | 2026-10-24 | hypothesis | gpt-as-policy-luna-media | 脱手反例、首物体选择、明确世界轴三分支各检验对应视觉控制失效，均需完整终局 | `EXP-2026W43-027` | - |
 | `T-2026W43-022` | 2026-10-24 | experiment | gpt-as-policy-luna-media | v11完整550步native false/0；首抓后第二块重抓耗尽预算，短任务参照提示待验证 | `EXP-2026W43-026` | - |
+| `T-2026W43-023` | 2026-10-24 | hypothesis | gpt-as-policy-luna-media | 短版两条水平首夹回归；明确实测≤15度startup三条检验，首例报角与独立复算一致 | `EXP-2026W43-029` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
