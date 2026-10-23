@@ -396,3 +396,5 @@
 - 【Agent】【2026-10-23 13:33】[result] 第二次空启动相机扩展已过，但RoboDojo急切导入未使用的FluidObject需要isaacsim.replicator namespace；仍无RPC ready/controller/模型/动作。仅暴露已安装扩展的Python路径，进程内修改，不动安装环境/驱动。保留两空启动，实际策略回合仍0。
 - 【Agent】【2026-10-23 13:34】[result] 命名空间修复后原生环境已创建；原官方server在Session创建前写resolved_config，旧Docker脚本会预建sim目录而新适配漏建。仍0RPC ready/0控制器/0模型/0native reset，补预建自身sim目录；完整保留三次环境空启动，不计作物理实验。
 - 【Agent】【2026-10-23 13:38】[run] 唯一Luna/high GPT-as-Policy回合已RPC ready并实际执行15/550步；worker确认gpt-6-luna/openai/high、本机ChatGPT Pro；3RGB已审阅、已保存，模型可读结果递归检查无禁用评分/contact/物体真位姿key及中文。当前前台exec21540/controller1109758/SSH1109423，不重启不加回合。
+- 【User】【2026-10-23 14:25】[intent] 用户要求核实API为何失效及昨晚是否成功；只读对照company-server-2既有请求，不额外API调用/重发。
+- 【Agent】【2026-10-23 14:26】[result] 只读核实p最后成功00:17:52 HTTP200/gpt-6-luna十答，r2 11:02:22明确token_invalidated；同du文件路径/mtime与ctime未变。仅定位服务端凭据作废，撤销主体和原因未知，无新API调用，追加原EXP007及STATE。

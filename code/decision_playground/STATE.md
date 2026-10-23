@@ -18,7 +18,8 @@ curl7/HTTP000/upload0 because remote17897 listener vanished. Never replay reques
 Old detached master840769 exited. Owned local user service now supervises SSH:
 robodojo-c2-proxy-20261023.service,MainPID847131,Restart=on-failure bounded3/60s,
 RuntimeMaxSec12h. Same ControlPath/17897->7897; original7897/shared proxy untouched.
-Service active, remote listener and loopback TCP accepted; no HTTP/API probe.
+Service was active during r2; explicitly stopped after b07b04a5 deployment
+(MainPID0/inactive). Original7897/shared proxy untouched; no HTTP/API probe.
 New independent r2 campaign code/runs/playground-selected-gripper-policy-20261023r2
 GPU5/layout1/RPC25405 native635678/worker693615 both exited after first request.
 Episode40178547-9680-4eec-947a-1572307ef858,0answers/0native steps.
@@ -27,7 +28,12 @@ upload3322196bytes. Persistent SSH service remained active/NRestarts0 and
 remote17897 LISTEN; this failure is authentication rejection, not tunnel refusal.
 Never resend it. No further episode/API call until authorized du credential is valid.
 No change to another credential/provider. HTTP200 total remains65.
-Supervision stays disabled while credential-blocked; owned proxy unit will stop
+Read-only audit: last successful p response2026-10-23 00:17:52 UTC+8,
+model gpt-6-luna/10answers; first401 r2 at11:02:22. Both commands use
+same du key path; key mtime/ctime2026-10-22 20:32:02, no local rewrite
+evidence. API says Your API key has been invalidated.; actor/reason unknown.
+No live retest, so do not assert current validity beyond that recorded rejection.
+Supervision stays disabled while credential-blocked; owned proxy unit stopped
 after documentation deployment. User authorization for engineering repairs persists.
 Only selected-gripper-command-v1 final-goal ledger/command-source changes from p;
 r005 text/images, prompt,10 questions, action/physics unchanged. First<=3 requests
