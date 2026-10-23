@@ -36,6 +36,18 @@
 
 正式7回合已进入前台协调器，先default_h5/layout0、fast_h5/layout1；本机Pro桥7915/concurrency2、反向SSH隧道及远端资源监测保持前台。当前记录只表示启动，尚无新原生结果。运行源仍7f681b43，未在运行中改策略源码。
 
-运行约20分钟启动时间后，许可证转为Unlicensed (Restricted)。依据本次定时续跑指令的Restricted准入限制，SIGSTOP暂停本人协调器的新回合准入；两路已经启动的仿真子进程保持运行，有真实新控制步和回执、无CUDA102。default_h5/layout0与fast_h5/layout1已启动，其余5个新回合未启动。暂停依据保存在新批次admission-suspended-license.json；未改策略或驱动，不能把限速后墙时当作公平动作速度比较。
+服务器启动约20分钟后，许可证转为Unlicensed (Restricted)。依据本次定时续跑指令的Restricted准入限制，SIGSTOP暂停本人协调器的新回合准入；两路已经启动的仿真子进程保持运行，有真实新控制步和回执、无CUDA102。default_h5/layout0与fast_h5/layout1已启动，其余5个新回合未启动。暂停依据保存在新批次admission-suspended-license.json；未改策略或驱动，不能把限速后墙时当作公平动作速度比较。
 
 已通过异步问题请用户选择是否明确允许受限状态下继续剩余5回合；在答复前不恢复新准入，继续收集已启动两组原生终局。另有1次Pro桥SSL EOF连接错误，经原有传输重试继续，需在最终模型尝试统计中保留，不混成物理重跑。
+
+## 本轮最终状态
+
+两个已启动回合均已原生评分：default_h5/layout0成功100分、191步/40完成响应；fast_h5/layout1在800步上限未成功、15分/173完成响应。见[EXP041](2026-W43.md#exp-2026w43-041)、[EXP042](2026-W43.md#exp-2026w43-042)及[完整审计报告](2026-10-23-roboicl-reboot-results.md)。共991控制步全部有回执，无policy_error/CUDA102；3个Pro桥失败HTTP请求经原有重试后继续，传输尝试与模型完成响应分列。
+
+7回合目标尚未完成，以下5个本批新尝试未启动：default_h5/layout1、default_h1/layout0、fast_h1/layout0、default_h1/layout1、fast_h1/layout1。两个旧1/1布局0的196/185步基础设施中断仍在旧目录保留，不补算原生成绩，不表示它们从未被试过。
+
+两个子进程均已退出后，才终止本人暂停的协调器以防新准入；完成元数据根据scored状态与原生文件重建，wall_seconds留空。已关闭本人Pro桥、SSH转发和资源监测，GPU回落50MiB，无本批后台实验。1417次采样显存峰值16227MiB、最低可用RAM9674MiB、swap峰值0；两端原始结果目录校验一致。
+
+旧fast_h5/layout0成功169步不重跑；与新default_h5/layout0成功191步比较少22步=11.52%，响应多2次=5%。布局1没有未加速5/5对照，不能比较该布局的加速幅度。
+
+下一步仅在用户明确选择允许Restricted状态继续、或许可状态恢复满足准入后，补齐上述5个未启动回合。使用现有speed_experiment.py的显式--case与独立新输出目录，不能再次运行含全部7个case的脚本覆盖已完成目录，也不自动重跑800步失败。当前一次性Jobs已触发1次并停用，不会再次自动执行；后续不再重启服务器。
