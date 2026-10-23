@@ -194,3 +194,5 @@
 - 【Agent】【2026-10-23 13:32】[result] 源码确认：dialogue_policy.py:268–271声明world平移米/旋转向量弧度增量；astra_policy.py:64,78–91以最新实测位姿为首步起点，后续逐步累加到上一请求目标，再转换绝对EEF目标交给仿真；夹爪为0..1绝对开度。experiment.py:216–221此前纯GPT条件预测20步执行5步，不是仅预测5步。本轮只读核对策略。
 - 【User】【2026-10-23 13:41】[intent] 确认RoboICL多步规划与Inspect Robots中指导模型每步动作大小的提示词，区分模型输出与执行端限幅。
 - 【Agent】【2026-10-23 13:41】[result] 源码审计：RoboICL提示词明确world平移/rotvec增量、逐目标累积、25Hz、逐步范数上限、IK关节0.15rad连续性拒绝及缩小增量重规划；shared_harness平移0.03m/旋转0.15rad，classify_objects覆盖平移0.034m，stack_blocks无覆盖。TRAIN存在时指导从示范学习action scale，此前zero-shot无示范。Inspect Agent系统提示small deliberate motions，工具声明逐维边界及自动插值/拆步，max_speed_frac=0.1主要是执行参数。当前RealMan/AlphaBot接口为eef_abs_pose，非每次模型调用输出一个底层步增量；此前类比需纠正。本轮未改策略。
+- 【User】【2026-10-23 14:11】[intent] 查询项目是否记录此前运行RoboICL的实验。
+- 【Agent】【2026-10-23 14:11】[result] 确认2026-10-21已有完整RoboICL五任务四布局四条件实验：本机Pro gpt-6-astra/xhigh，company-server-2-ykj；125次物理尝试、79原生评分、46未评分，FINAL_STATUS complete。纯GPT11/19，Jev15/20，固定平均14/20，固定最大14/20；任务为抓取/叠衣/按键/传送带/叠碗，不含本次拟测叠方块与分拣。证据baseline/roboicl/RESULTS_20261021.md及code/runs/2026-10-21-roboicl-pro-evaluation/FINAL_STATUS.json。只读核查，无新实验。
