@@ -1,5 +1,6 @@
 """One foreground Luna/high GPT-only episode; preserve media and never retry a trial."""
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -24,6 +25,34 @@ CODE = Path(__file__).resolve().parent
 
 def write(path, value):
     path.write_text(json.dumps(value, indent=2) + '\n')
+
+
+def archive():
+    """Resume copies without models or simulation; keep native raw assets remote."""
+    if not (LOCAL / 'attempt-started.json').exists():
+        raise RuntimeError('Archive requires an existing attempt')
+    status_path = LOCAL / 'archive-status.json'
+    write(status_path, dict(phase='archive_waiting', time=time.time()))
+    # A single capped transfer leaves bandwidth for the live RPC/image channels.
+    with (ROOT / 'archive-transfer.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        write(status_path, dict(phase='archiving', time=time.time(), bandwidth_kib_s=512))
+        destination = LOCAL / 'native-results'
+        destination.mkdir(exist_ok=True)
+        common = ['rsync', '--partial', '-rlz', '--bwlimit=512', '-e',
+                  'ssh -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=12']
+        fetch = subprocess.run(common + ['--include=/summary.json',
+            '--include=/evaluation_outcome.json', '--include=/sensors.mp4', '--exclude=*',
+            'v4090-t:' + REMOTE + '/sim/', str(destination) + '/'], check=False)
+        upload = subprocess.run(common + ['--exclude=private_pro_home/', '--exclude=codex_state/',
+            '--exclude=tmp/', '--exclude=native-results/', str(LOCAL) + '/',
+            'v4090-t:' + REMOTE + '/local-controller-archive/'], check=False)
+        result = dict(phase='archived' if fetch.returncode == upload.returncode == 0 else 'archive_failed',
+            time=time.time(), fetch_returncode=fetch.returncode, upload_returncode=upload.returncode,
+            native_raw_assets='Preserved on remote DataStorage; not duplicated locally.')
+        write(status_path, result)
+        print(json.dumps(result), flush=True)
+        return fetch.returncode == upload.returncode == 0
 
 
 def sensor_sync_gate(runtime):
@@ -174,6 +203,7 @@ def main():
     parser.add_argument('--sync-report', type=Path)
     parser.add_argument('--policy-hints', type=Path)
     parser.add_argument('--rpc-port', type=int, default=25423)
+    parser.add_argument('--archive-only', action='store_true')
     args = parser.parse_args()
     if not 1024 <= args.rpc_port <= 65535:
         raise ValueError('RPC port must be an unprivileged TCP port')
@@ -186,6 +216,10 @@ def main():
         LOCAL = ROOT/'runs'/args.run_name
         REMOTE = REMOTE_BASE+'/'+args.run_name
         REMOTE_SOURCE = REMOTE_BASE+'/source-'+args.run_name
+    if args.archive_only:
+        if not args.run_name or not (LOCAL / 'controller-exit.json').exists():
+            raise ValueError('Archive-only requires an explicitly named ended controller')
+        raise SystemExit(0 if archive() else 1)
     if not args.sensor_check and args.run_name:
         if args.sync_report is None:
             raise ValueError('A reviewed sensor synchronization report is required')
@@ -236,11 +270,13 @@ def main():
     remote_command = shlex.join(['python3', REMOTE_SOURCE + '/v4090_luna_single_server.py',
                                 REMOTE, REMOTE_SOURCE + '/official_runtime', str(PORT)])
     write(LOCAL / 'attempt-started.json', dict(time=time.time(), attempts=1, command=remote_command))
+    write(LOCAL / 'transport-config.json', dict(server_alive_interval_s=15,
+        server_alive_count_max=12, archive_bandwidth_kib_s=512, archive_serialized=True))
     sim = controller = None
     with (LOCAL / 'server.log').open('w') as slog, (LOCAL / 'controller.log').open('w') as clog:
         try:
             sim = subprocess.Popen(['ssh', '-o', 'ConnectTimeout=15', '-o', 'ServerAliveInterval=15',
-                '-o', 'ServerAliveCountMax=4', '-o', 'ExitOnForwardFailure=yes',
+                '-o', 'ServerAliveCountMax=12', '-o', 'ExitOnForwardFailure=yes',
                 '-L', f'127.0.0.1:{PORT}:127.0.0.1:{PORT}', '--', 'v4090-t', remote_command],
                 stdout=slog, stderr=subprocess.STDOUT)
             print(json.dumps(dict(event='native_starting', ssh_pid=sim.pid, local=str(LOCAL), remote=REMOTE)), flush=True)
@@ -265,12 +301,14 @@ def main():
                 cwd=runtime, env=env, stdout=clog, stderr=subprocess.STDOUT)
             while controller.poll() is None:
                 progress = LOCAL / 'controller/progress.json'
-                write(LOCAL / 'status.json', dict(time=time.time(), controller_pid=controller.pid,
+                write(LOCAL / 'status.json', dict(phase='running', time=time.time(), controller_pid=controller.pid,
                     ssh_pid=sim.pid, progress=json.loads(progress.read_text()) if progress.exists() else {},
                     preserve_media=True, attempts=1))
                 print((LOCAL / 'status.json').read_text(), flush=True)
                 time.sleep(15)
             write(LOCAL / 'controller-exit.json', dict(returncode=controller.returncode))
+            write(LOCAL / 'status.json', dict(phase='controller_exited', time=time.time(),
+                controller_pid=controller.pid, returncode=controller.returncode))
             try:
                 sim.wait(timeout=180)
             except subprocess.TimeoutExpired:
@@ -280,10 +318,8 @@ def main():
                 controller.terminate(); controller.wait(timeout=90)
             if sim is not None and sim.poll() is None:
                 sim.terminate(); sim.wait(timeout=30)
-            # Preserve both raw controller images and videos; never run the old pruner.
-            subprocess.run(['rsync', '-rlz', '--exclude=private_pro_home/', '--exclude=codex_state/',
-                '--exclude=tmp/', str(LOCAL) + '/', 'v4090-t:' + REMOTE + '/local-controller-archive/'], check=False)
-            subprocess.run(['rsync', '-rlz', 'v4090-t:' + REMOTE + '/sim/', str(LOCAL / 'native-results') + '/'], check=False)
+            # Preserve original controller media and remote native raw assets.
+            archive()
     print(json.dumps(dict(event='single_attempt_finished', local=str(LOCAL), remote=REMOTE)), flush=True)
 
 

@@ -463,3 +463,6 @@
 - 【Agent】【2026-10-24 01:33】[op] EXP020 v7原生终局valid=true success=false score0.15，但407–550原图三层稳定。公开任务run_reward还要求all_robot_back_to_origin，当前actor提示缺该收尾条件；静态规则只用于补任务语义，不给模型live奖励/阈值/物体真值。现有接口仅EEF，已确认回起始条件检查末端位置/姿态。新v9基于v7仅补用step0公开EEF姿态安全回位和预算预留，不加入未验证其他改动；旧v8三条仍完整保留并注明协议缺项。
 - 【Agent】【2026-10-24 01:36】[op] 新建实验块 EXP-2026W43-022：Luna high提示v9：补齐堆叠后的双臂回起始EEF姿态，三回合  ↪ `EXP-2026W43-022`
 - 【Agent】【2026-10-24 01:42】[run] EXP022 v9三条已启动并核对同一Pro Luna/high与提示SHA，前台25067/34455/61125、端口25425/25428/25429。以v7仅补公开初始EEF回位目标，原接口EEF-only不新增关节动作、不提供奖励/阈值/物体真值；七原生稳态GPU39.0GiB/RAM仍有47GiB余量。v7真实原生终局0.15/false已保留。
+- 【Agent】【2026-10-24 01:57】[op] 新建实验块 EXP-2026W43-023：v8第三回合154步SSH断线，原生不完整归档  ↪ `EXP-2026W43-023`
+- 【Agent】【2026-10-24 02:16】[op] EXP023 五条SSH/RPC提前退出均native incomplete/invalid，已单独记录不计模型失败；新增限速串行archive-only与未来任务SSH容忍，AST/CLI/10项GPT-only单测通过；保留两条健康回合。
+- 【Agent】【2026-10-24 02:16】[result] EXP023 archive-only实测完成：v9-r2 summary/outcome/video均已取回，双向rsync返回0，远端核对private_pro_home/codex_state/tmp/native-results四目录均排除。Discussion已补完整任务漏项与五条基础设施中断。
