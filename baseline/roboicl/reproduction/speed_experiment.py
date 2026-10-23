@@ -2,10 +2,12 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import datetime
+import errno
 import json
 import os
 from pathlib import Path
 import queue
+import socket
 import subprocess
 import threading
 import time
@@ -127,6 +129,23 @@ def main():
             case = {'condition': condition, 'layout': layout, 'slot': slot,
                     'command': command, 'started_at': datetime.datetime.now().isoformat()}
             save(folder/'case.json', case)
+            # A completed simulator's TCP port may remain in TIME_WAIT. Also
+            # respect a slot still owned by an earlier coordinator.
+            if not args.dry_run:
+                waiting_for_port = False
+                while True:
+                    try:
+                        with socket.socket() as probe:
+                            probe.bind(('127.0.0.1', 18450+slot))
+                        break
+                    except OSError as error:
+                        if error.errno != errno.EADDRINUSE:
+                            raise
+                        if not waiting_for_port:
+                            print(json.dumps({'event': 'waiting_for_port', 'slot': slot,
+                                              'port': 18450+slot}), flush=True)
+                            waiting_for_port = True
+                        time.sleep(2)
             # Admission is serialized; the caller chooses concurrency from measured peaks.
             with admission:
                 while True:

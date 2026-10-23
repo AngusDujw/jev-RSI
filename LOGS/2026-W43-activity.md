@@ -244,3 +244,4 @@
 - 【Agent】【2026-10-23 21:15】[run] Restricted下相机capture-only106.016秒完成，capture_complete_no_api且30/30有效RGB；本机Pro桥7915/concurrency2及反向隧道前台启动，剩余5case协调器已启动，独立输出目录restricted-resume，原阈值及控制不变。
 - 【Agent】【2026-10-23 21:15】[op] 写入EXP043真实CUDA/相机预检完整证据；当前正式5回合仍在运行，不将启动算作完成。
 - 【Agent】【2026-10-23 21:22】[op] 同步续跑实际启动状态并复核Discussion显式引用的两份历史笔记；末端增量接口、完整成本与原生评分边界不变。
+- 【Agent】【2026-10-23 21:59】[op] default_h5布局1原生成功361步/75响应；随后3个启动器在创建run目录前因18450端口EADDRINUSE失败，实际仿真/模型0。修复协调器仅等待槽位端口释放，未改策略/驱动/阈值；5项reference测试与diff检查通过。
