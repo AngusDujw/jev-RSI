@@ -59,6 +59,7 @@ class DialogueConfig:
     max_translation_m: float = .02
     max_rotation_rad: float = .15
     max_joint_increment_rad: float = .15
+    completion_efficiency_guidance: str = ''
     ik_continuity_guard: bool = False  # Shared launcher enables execution-side IK validation.
     max_output_tokens: int | None = None
     # Budget accounting only; this value is never sent as an API output limit.
@@ -315,6 +316,10 @@ class Model(BoundedModel):
                 'the remaining chunk is discarded. Use the receipt to distinguish the executed prefix '
                 'from rejected actions, and replan with smaller increments or another approach.'
             )
+        if c.completion_efficiency_guidance:
+            if not isinstance(c.completion_efficiency_guidance, str):
+                raise ValueError('Completion guidance must be English text')
+            self.prompt += '\n\n' + c.completion_efficiency_guidance
         self.base_prompt = self.prompt
         # Keep serialization/config immutable throughout a conversation.
         self.frozen_tools = self._tools()
