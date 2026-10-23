@@ -406,3 +406,6 @@
 - 【Agent】【2026-10-23 15:32】[op] 修正v4090原生入口，将刚体任务实际BaseEnv配置为cuda:0/Fabric；新增零模型20步生产传感验收，要求实测位移、手部光流、腕背景光流及静止左腕对照同时通过，证书绑定入口源码哈希，未经通过禁止新策略回合。
 - 【Agent】【2026-10-23 15:38】[result] 零模型GPU/Fabric验收在reset的原生reward np.concatenate(cuda_tensor)处失败，0物理步/0模型；保留日志。为保留原GPT-as-Policy/RoboDojo CPU物理与评分代码，改用cpu/non-Fabric并显式physics/updateToUsd=true同步已有USD渲染，不修改reward或物理参数。下一独立零模型验收，不能跳过。
 - 【Agent】【2026-10-23 15:41】[result] CPU/USD原生reset已通过；零模型验收器漏建本机controller目录，run.json写入前失败，0物理动作/0模型，原生已收尾。补建自身目录并保证finally关闭RPC；只修验收器，不改变仿真/模型条件。
+- 【Agent】【2026-10-23 15:44】[result] CPU/non-Fabric+updateToUsd验收20步0模型通过：右实测48.500mm，高位手部光流35.210px/12轨迹，右腕背景83.214px/12轨迹，左腕静止对照.0285px/120轨迹；前后3RGB人工审阅可见手与背景更新，旧冻结负对照拒绝。原GPT-only现有10项单测通过。
+- 【Agent】【2026-10-23 15:44】[run] 绑定已通过原生入口SHA的独立Luna/high Pro GPT-as-Policy重测已启动前台exec28980，run=v4090-luna-high-stack-20261023-cpu-usd-rerun-once；全新layout0、550控制步、只一回合、保存图像及视频，原策略接口/提示不改。
+- 【Agent】【2026-10-23 15:46】[result] 修复后单次Luna已实际执行22/550步；worker确认gpt-6-luna/openai/high/Pro。首批高位和右腕PNG人工审阅显示手臂及视角真实变化；旧/新policy runtime全部文件哈希相同，首批模型结果无评分/contact/物体真位姿key及中文。仅启动层同步修复，任务结果仍待定。
