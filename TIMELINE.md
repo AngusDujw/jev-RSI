@@ -265,6 +265,7 @@ graph LR
     T_2026W43_018["🔬 gpt-as-policy-luna-media<br/>整手和携物先越过已有最高层再横移，可减少后…"]:::hypothesis
     T_2026W43_019["📊 gpt-as-policy-luna-media<br/>v7视觉三层持续至550但原生false/…"]:::experiment
     T_2026W43_020["📝 gpt-as-policy-luna-media<br/>回位说明审计更正：v7有通用条件句但tas…"]:::note
+    T_2026W43_021["🔬 gpt-as-policy-luna-media<br/>脱手反例、首物体选择、明确世界轴三分支各检…"]:::hypothesis
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -482,6 +483,7 @@ graph LR
   T_2026W43_017 --> T_2026W43_018
   T_2026W43_018 --> T_2026W43_019
   T_2026W43_019 --> T_2026W43_020
+  T_2026W43_020 --> T_2026W43_021
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -734,6 +736,7 @@ graph LR
 | `T-2026W43-018` | 2026-10-24 | hypothesis | gpt-as-policy-luna-media | 整手和携物先越过已有最高层再横移，可减少后续接近时移散积木；冻结v8同布局三回合检验 | `EXP-2026W43-019`, `EXP-2026W43-021` | - |
 | `T-2026W43-019` | 2026-10-24 | experiment | gpt-as-policy-luna-media | v7视觉三层持续至550但原生false/0.15；公开任务另需双臂回起始EEF姿态，原提示遗漏，v9仅补目标三回合复验 | `EXP-2026W43-020`, `EXP-2026W43-022` | - |
 | `T-2026W43-020` | 2026-10-24 | note | gpt-as-policy-luna-media | 回位说明审计更正：v7有通用条件句但task_context为空；v9补本任务明确要求 | `EXP-2026W43-022` | - |
+| `T-2026W43-021` | 2026-10-24 | hypothesis | gpt-as-policy-luna-media | 脱手反例、首物体选择、明确世界轴三分支各检验对应视觉控制失效，均需完整终局 | `EXP-2026W43-027` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
