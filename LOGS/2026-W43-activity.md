@@ -400,3 +400,5 @@
 - 【Agent】【2026-10-23 14:26】[result] 只读核实p最后成功00:17:52 HTTP200/gpt-6-luna十答，r2 11:02:22明确token_invalidated；同du文件路径/mtime与ctime未变。仅定位服务端凭据作废，撤销主体和原因未知，无新API调用，追加原EXP007及STATE。
 - 【User】【2026-10-23 14:26】[intent] 要求查看唯一Luna/high GPT-as-Policy叠方块视频，审计550步消耗与失败原因，区分接口/反馈问题和模型能力。
 - 【Agent】【2026-10-23 14:26】[result] 原生回合550步110动作success=false；16次闭合起始，400步重抓/检查、100步接近、50步yaw；9次无效工具请求不消耗原生步。审计揭示CPU非Fabric渲染未同步：末端最大位移249.882mm/转角86.239deg而3RGB手与背景几乎固定。启动器漏接旧同步适配，纠正先前三RGB正常说法；不归因为模型能力、不追加回合。原生22.04s视频与111组原始观测慢放已成功发布。
+- 【User】【2026-10-23 14:35】[intent] 用户要求统计昨晚du API key用量；只读公司2 Playground transport/response usage，未查账单或发API。
+- 【Agent】【2026-10-23 14:35】[result] 昨晚至今晨00:17:52公司2 Playground共65次HTTP200，usage输入/总token548516，cache_write434701为输入子集，cached_read0/output字段0但有十答；午夜前59次487849 tokens、午夜后6次60667。另昨晚1次curl28无usage，不断言免计费。仅本实验记录、非账号账单，金额未知；审计code/runs/company2-playground-20261022-deploy/usage-20261022-night.json，无新模型调用。
