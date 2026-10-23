@@ -96,7 +96,6 @@ def main():
                 TORCH_EXTENSIONS_DIR=str(ROOT/'.runtime/torch-extensions'),
                 CUDA_CACHE_PATH=str(ROOT/'.runtime/cuda-cache'),
                 NUMBA_CACHE_DIR=str(ROOT/'.runtime/numba-cache'),
-                ROBOICL_SIM_LD_PRELOAD='/home/user/miniconda3/envs/isaaclab/lib/libstdc++.so.6',
                 ROBOICL_KIT_PORTABLE_ROOT=str(ROOT/'.runtime'/f'speed-kit-slot{slot}'))
             command = [args.policy_python, '-B', '-m', 'roboicl.run', 'stack_bowls',
                 '--shots', '0', '--seed', '0', '--layout', str(layout),
