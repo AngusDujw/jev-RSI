@@ -234,3 +234,4 @@
 - 【Agent】【2026-10-23 18:36】[run] 确认5880新boot_id及uptime349秒，GPU空闲21720MiB、可用RAM约22.4GiB，许可证Unlicensed (Unrestricted)；启动单次capture-only相机预检，无模型调用。
 - 【Agent】【2026-10-23 18:40】[result] 重启后capture-only通过：capture_complete_no_api，30个RGB观测均480x640x3且非黑，无CUDA102，耗时128秒；启动本机Pro Astra/xhigh桥，准备既定7回合。
 - 【Agent】【2026-10-23 18:41】[run] 启动重启后7回合正式批次，前台协调器及资源监测；本机Pro桥7915、反向隧道、2路资源准入保持，先运行default_h5布局0与fast_h5布局1，不覆盖旧169步成功。
+- 【Agent】【2026-10-23 18:53】[op] 运行中许可证转Unlicensed (Restricted)：按续跑约束SIGSTOP暂停本人协调器的后续准入，已启动default_h5/layout0和fast_h5/layout1子进程仍可执行且无CUDA102，保留继续观测；未启动其余5回合。

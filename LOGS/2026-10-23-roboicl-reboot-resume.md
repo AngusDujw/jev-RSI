@@ -35,3 +35,7 @@
 一次性任务18:35:37触发，查询确认run_count=1且enabled=false，不会重复执行。启动检查uptime349秒、boot_id为重启后值，显存空闲21720MiB、可用内存23482348KiB。相机capture-only于128.018秒完成，明确状态capture_complete_no_api，30/30 RGB有效且无CUDA102，见[EXP040](2026-W43.md#exp-2026w43-040)。
 
 正式7回合已进入前台协调器，先default_h5/layout0、fast_h5/layout1；本机Pro桥7915/concurrency2、反向SSH隧道及远端资源监测保持前台。当前记录只表示启动，尚无新原生结果。运行源仍7f681b43，未在运行中改策略源码。
+
+运行约20分钟启动时间后，许可证转为Unlicensed (Restricted)。依据本次定时续跑指令的Restricted准入限制，SIGSTOP暂停本人协调器的新回合准入；两路已经启动的仿真子进程保持运行，有真实新控制步和回执、无CUDA102。default_h5/layout0与fast_h5/layout1已启动，其余5个新回合未启动。暂停依据保存在新批次admission-suspended-license.json；未改策略或驱动，不能把限速后墙时当作公平动作速度比较。
+
+已通过异步问题请用户选择是否明确允许受限状态下继续剩余5回合；在答复前不恢复新准入，继续收集已启动两组原生终局。另有1次Pro桥SSL EOF连接错误，经原有传输重试继续，需在最终模型尝试统计中保留，不混成物理重跑。
