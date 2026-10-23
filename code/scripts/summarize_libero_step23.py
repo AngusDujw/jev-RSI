@@ -53,6 +53,9 @@ def audit(run):
             assert abs(expected-branch['base_delta'][index]) < 3e-6
             assert abs(branch['delta'][index]-scale*branch['base_delta'][index]) < 1e-12
             assert abs(branch['normalized_xyz'][index]-branch['delta'][index]/.05) < 1e-12
+            native = min(limits['input_high'][index], max(limits['input_low'][index], branch['normalized_xyz'][index]))
+            assert abs(native-branch['controller_clipped_xyz'][index]) < 1e-12
+            assert branch['translation_clipped_axes'][index] == (abs(native-branch['normalized_xyz'][index]) > 1e-12)
             if branch['translation_clipped_axes'][index]:
                 clipped[axis] += block
             key = (stage, axis)
