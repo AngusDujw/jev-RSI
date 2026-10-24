@@ -142,6 +142,7 @@ graph LR
     T_2026W43_009["📊 roboicl-bowl-speed<br/>未加速5/5布局1成功361步/75响应，…"]:::experiment
     T_2026W43_010["📊 roboicl-bowl-speed<br/>最后加速1/1布局1原生800步失败0分/…"]:::experiment
     T_2026W43_011["📊 libero-generic-vision<br/>通用GPT动态合同完成222步/74Jev…"]:::experiment
+    T_2026W43_012["📊 libero-generic-vision<br/>GPT完整程序经三次现场修订首次原生tru…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -242,6 +243,7 @@ graph LR
   T_2026W43_008 --> T_2026W43_009
   T_2026W43_009 --> T_2026W43_010
   T_2026W41_025 --> T_2026W43_011
+  T_2026W43_011 --> T_2026W43_012
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -369,6 +371,7 @@ graph LR
 | `T-2026W43-009` | 2026-10-23 | experiment | roboicl-bowl-speed | 未加速5/5布局1成功361步/75响应，加速同布局800步失败；两布局不支持普遍加速，1/1仍待终局 | `EXP-2026W43-044` | - |
 | `T-2026W43-010` | 2026-10-24 | experiment | roboicl-bowl-speed | 最后加速1/1布局1原生800步失败0分/877响应；七个新尝试已终止，三条基础设施中断仍未评分，单步效率无完整配对，本轮不自动重跑 | `EXP-2026W43-048` | - |
 | `T-2026W43-011` | 2026-10-24 | experiment | libero-generic-vision | 通用GPT动态合同完成222步/74Jev/7GPT，但视觉complete与原生false冲突；无任务配方，可执行性成立而成功/泛化/效率未证 | `EXP-2026W43-053` | - |
+| `T-2026W43-012` | 2026-10-24 | experiment | libero-generic-vision | GPT完整程序经三次现场修订首次原生true：17GPT/114真实Jev/342步；冻结新初态验证尚未结束，未证明泛化或效率 | `EXP-2026W43-060` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

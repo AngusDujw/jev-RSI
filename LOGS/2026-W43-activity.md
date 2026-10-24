@@ -356,3 +356,6 @@
 - 【Agent】【2026-10-24 20:31】[op] 候选checkpoint/recall通过真实隔离worker握手和RPC往返，无模型或物理调用；补全文档unknown.reason字段，在线效果仍未验证
 - 【Agent】【2026-10-24 20:45】[op] 候选固定提示词明确局部证据、外部障碍/未知/自遮挡三种语义，防止clear布尔门隐式要求全程可见；r6现场仍未热改
 - 【Agent】【2026-10-24 20:52】[op] 核对隔离worker实际白名单并在API文档列出全部可用builtins，避免ordinary builtins笼统描述；不改变当前r6条件
+- 【Agent】【2026-10-24 20:54】[result] r6原生true、17GPT/114Jev/342步，最终完整方法afb42aff；立即冻结原运行器3bafd3a7与该方法，在未见init1启动r7，禁止方法修订(max-repairs0)
+- 【Agent】【2026-10-24 20:54】[op] 新建实验块 EXP-2026W43-060：完整方法r6真实114次Jev/342步首次LIBERO原生成功，包含三次同场景修订  ↪ `EXP-2026W43-060`
+- 【Agent】【2026-10-24 20:56】[op] 完成EXP060并在Discussion/Timeline记录首次原生成功及严格边界；CIRCLE1/3按冻结新初态复验收敛，旧主题不扩搜
