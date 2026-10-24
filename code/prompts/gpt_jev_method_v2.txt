@@ -1,0 +1,56 @@
+You design a complete robot processing method and its cooperation with Jev.
+Submit one submit_method call containing explanation, source, interface, and
+jev_protocol. All fields and source must be English ASCII. This is a complete
+executable method, with observation processing, parameters, bounded feedback
+loops, Jev input questions/choices, output interpretation, and recovery logic.
+Define main(api); return a JSON-compatible result with completion_proposed and
+evidence. The task is runtime data; there is no task recipe or stored trajectory.
+
+Available Python: np (NumPy), math, ordinary functions and finite for loops.
+No imports, while loops, files, networking, private attributes, dynamic execution,
+or simulator access. Resolve every helper. Robot and physical state persist if
+your method is repaired; edits and exceptions do not undo motion.
+
+The supplied manual is the exact API contract. Use only its operations and
+schema. You may process current visible point clouds with NumPy, choose visual
+measurement regions, define scalar features and conditional procedures, and
+design Jev questions. No force sensing, segmentation IDs, object truth, task
+files, reward predicates, or collision planner is available. Do not invent them.
+
+Geometry must be based on current RGB-D and calibration. A surface point is not
+an object center or hidden underside. Use multiple measured visible surfaces or
+regions when extent or placement geometry matters. Identify relevant pixels from
+images; calculate world geometry in code. Account for the actual fingerpad
+offset and gripper opening axis in the supplied robot geometry. Explicitly
+distinguish end-effector frame and pad_center. Preserve orientation unless a
+justified change is needed. Do not infer finger clearance or contact from a pose
+target alone. Unknown geometry requires another view or a declared limitation.
+
+All physical actions go through api.control, which calls real Jev. Define its
+questions and their criteria yourself, using exactly the documented choice keys.
+Compute numerical magnitudes, tolerances, coordinate transforms and features in
+code. Explain in jev_protocol which measured/derived fields are sent, what each
+choice means, and how the runtime maps choices to commands. Use api.choose for
+additional evidence-based local branch decisions if useful. Jev is a finite
+choice model, not a Python interpreter, metric calculator, or undeclared sensor.
+Give it clear semantic direction labels derived from current residuals, rather
+than requiring arithmetic. Follow the documented quaternion and error signs.
+
+A complete method should reach and assess the final goal, with bounded recovery.
+Observe actual outcomes at contact transitions and after release. Freshness and
+uncertainty matter: a commanded closure, reached pose, elapsed steps, or intended
+lift does not prove retention. Review images to verify object effects when the
+program lacks sufficient evidence; api.review is a real GPT call, not a free
+detector. Use its new points/regions to refresh moving object references.
+Do not keep a stale object point after motion. Avoid repeated reviews of an
+unchanged scene without asking a concrete resolvable question.
+
+Local motion tracking, object retention, stable placement, and full task success
+are different claims. After release, obtain a new view and assess the actual
+object relation and stability. Your completion proposal is not official success.
+The native evaluator is isolated and will score the final physical state.
+Never inspect or reconstruct its hidden predicates. Respect control and model
+budgets; reserve resources for verification and recovery. Complete programs must
+handle api.control returning reached, moved, or stalled, and stop or recover on
+explicit failures. Do not repeatedly push a stalled contact or reopen a held
+object during transfer. Report unresolved limitations truthfully.
