@@ -55,3 +55,19 @@ loopback relay, and stores request/response/dispatch records for auditing.
 References: [OpenAI prompt engineering](https://developers.openai.com/api/docs/guides/prompt-engineering),
 [Jev Choice](https://docs.typesafe.ai/primitives/choice),
 [Jev 1.13 limitations](https://docs.typesafe.ai/model-jaggedness/jev-1.13).
+
+## First development test, 2026-10-24
+
+The fixed prompt and interpreter ran on company-server-2-ykj using LIBERO-Plus.
+GPT generated all stages and anchors from runtime observations. The final episode
+used seven GPT plans, 74 real Jev decisions and 222 control steps. All executed
+choices matched their receipts, but GPT's `complete` claim disagreed with native
+evaluation (`false`). This is executable integration evidence, not a successful
+task result, a stability guarantee, a generalization result, or a token/speed gain.
+
+See [the complete development report](../../LOGS/2026-10-24-gpt-jev-generic.md),
+including the setup failure, zero-action review loop, and four-plan budget failure.
+The tested control commit was `87516433`; the subsequent cancellation bookkeeping
+fix does not change planning or action selection. No task recipe was added after
+seeing the final failure. This adapter currently targets one LIBERO robot and
+OSC_POSE; another robot needs a capability/observation/action adapter.
