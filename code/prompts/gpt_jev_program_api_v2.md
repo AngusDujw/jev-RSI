@@ -118,6 +118,10 @@ recovery. Return meaningful diagnostic values when a fit is rejected.
   measurement_errors. Inspect membership and errors before indexing: a selected
   pixel is not a successful depth sample. Fit only sufficient valid measurements;
   otherwise obtain a bounded replacement observation or report the exact gap.
+  The program receives only this call's measurements. Historical observations
+  shown to the reviewer are context and are not automatically merged into its
+  return. Save valid partial measurements before retrying or repairing; reuse
+  needs justified identity/freshness, not merely the same requested name.
   Specify the needed visible evidence and named measurements explicitly.
   Parameters are a model interpretation, not independent sensor certification.
   Named region requests have explicit camera, box and stride fields; stride is

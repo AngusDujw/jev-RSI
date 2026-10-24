@@ -460,6 +460,8 @@ def main():
         instructions = prompt+"\n\n"+manual if kind == "method" else (
             "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. "
             "Return submit_review only, all text English ASCII. parameters_json must encode an object with concise actionable numeric or boolean observations requested by the caller. "
+            "The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. "
+            "Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. "
             "Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. "
             "The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.")
         patching = kind == "method" and failed_method is not None
