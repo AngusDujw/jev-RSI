@@ -147,6 +147,7 @@ graph LR
     T_2026W43_014["📊 libero-generic-vision<br/>最终无旧源码冷生成1800秒无方法交付；修…"]:::experiment
     T_2026W43_015["📊 libero-generic-vision<br/>预定冻结新初态原生5/5零修复；独立geo…"]:::experiment
     T_2026W43_016["📊 libero-generic-vision<br/>无旧源码typed冷生成经1次GPT自修订…"]:::experiment
+    T_2026W43_017["📊 libero-generic-vision<br/>9a3冷生成回归原生1/2，恢复与终局假阴…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -252,6 +253,7 @@ graph LR
   T_2026W43_013 --> T_2026W43_014
   T_2026W43_014 --> T_2026W43_015
   T_2026W43_015 --> T_2026W43_016
+  T_2026W43_016 --> T_2026W43_017
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -384,6 +386,7 @@ graph LR
 | `T-2026W43-014` | 2026-10-24 | experiment | libero-generic-vision | 最终无旧源码冷生成1800秒无方法交付；修订复用及一个未见初态原生成功成立，但稳定冷生成/总体成本/加速未证；有限机器人批次结束，deadline事后只本地检查 | `EXP-2026W43-067` | - |
 | `T-2026W43-015` | 2026-10-25 | experiment | libero-generic-vision | 预定冻结新初态原生5/5零修复；独立geo冷生成23Jev后失败，测量所有权/回执契约仍需实测收敛 | `EXP-2026W43-070` | - |
 | `T-2026W43-016` | 2026-10-25 | experiment | libero-generic-vision | 无旧源码typed冷生成经1次GPT自修订原生true；新程序零修复复验0/2，固定框架多初态协作仍待验证 | `EXP-2026W43-076` | - |
+| `T-2026W43-017` | 2026-10-25 | experiment | libero-generic-vision | 9a3冷生成回归原生1/2，恢复与终局假阴性仍未收敛；停止未准入三例 | `EXP-2026W43-077` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

@@ -6,8 +6,11 @@ native success on development init0, then its frozen init9/10 both failed; the
 remaining three planned admissions were stopped. Typed review contracts passed
 offline and real Pro checks. Both the typed revision and the fresh typed builder
 reached native success; the latter needed one same-scene GPT patch. The final9a3e
-framework is fixed for a five-case independently generated cohort; init9/10 are
-active. Earlier pending statements describe intermediate checkpoints.
+framework completed two independently generated cases: native1/2, both program
+completion reports false. Remaining three cases were not admitted after failure.
+New generic observation-recovery candidate251104e6 is running cold init9/10 with
+a declared larger repair/model budget. Earlier pending statements describe
+intermediate checkpoints.
 
 This is an outer-agent experiment record, not model-facing experience.
 
@@ -158,3 +161,75 @@ The independent cold result starts without a prior method, feedback or checkpoin
 Subsequent92d8d481 keeps tool schema numeric constraints exact while data still uses six significant digits; offline boundary/immutability checks and17 real archived-request equality checks passed. Subsequent9a3e1f3d requires fields for generated/repaired methods, preserving legacy compatibility only for untouched selected archives; it adds generic finite-route budget coherence knowledge. Neither was hot-applied to the two b0b episodes.
 
 The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Every episode starts a fresh independent submit_method generation with no archive, feedback or checkpoint. Each has20 GPT/200 Jev/600 policy steps/3 same-scene GPT source repairs/4800s. Outer-agent task-source edits are forbidden. Init9/10 are previously failed-layout regression cases; init11-13 are unused. This tests the complete cooperation system, not zero-repair reuse of one program. Failed episodes remain; no substitute initial states will be selected. Init9 and init10 are admitted. Init9 initial source failed on an incorrect geo.plane return key before physical actions and is undergoing its own model repair; init10 has delivered source. The final-cohort native outcomes are still pending.
+
+
+## Files changed during this continuation
+
+<!-- CHANGED-FILES:BEGIN -->
+
+| Status | File |
+| --- | --- |
+| M | [Discussion.md](../Discussion.md) |
+| A | [LOGS/2026-10-25-gpt-jev-stability.md](../LOGS/2026-10-25-gpt-jev-stability.md) |
+| M | [LOGS/2026-W43-activity.md](../LOGS/2026-W43-activity.md) |
+| M | [LOGS/2026-W43.md](../LOGS/2026-W43.md) |
+| M | [TIMELINE.md](../TIMELINE.md) |
+| M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
+| M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
+| A | [artifacts/gpt-jev-typed-method-20261025/METHOD.md](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) |
+| A | [artifacts/gpt-jev-typed-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-typed-method-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-typed-method-20261025/README.md](../artifacts/gpt-jev-typed-method-20261025/README.md) |
+| A | [artifacts/gpt-jev-typed-method-20261025/method.json](../artifacts/gpt-jev-typed-method-20261025/method.json) |
+| A | [artifacts/gpt-jev-typed-method-20261025/method.py](../artifacts/gpt-jev-typed-method-20261025/method.py) |
+| M | [code/prompts/README.md](../code/prompts/README.md) |
+| M | [code/prompts/gpt_jev_method_lessons_v2.txt](../code/prompts/gpt_jev_method_lessons_v2.txt) |
+| M | [code/prompts/gpt_jev_method_v2.txt](../code/prompts/gpt_jev_method_v2.txt) |
+| M | [code/prompts/gpt_jev_program_api_v2.md](../code/prompts/gpt_jev_program_api_v2.md) |
+| A | [code/scripts/gpt_jev_geometry.py](../code/scripts/gpt_jev_geometry.py) |
+| M | [code/scripts/gpt_jev_program_worker.py](../code/scripts/gpt_jev_program_worker.py) |
+| A | [code/scripts/gpt_jev_review_contract.py](../code/scripts/gpt_jev_review_contract.py) |
+| M | [code/scripts/run_gpt_jev_program.py](../code/scripts/run_gpt_jev_program.py) |
+| M | [ref/notes/idea-draft-v0.1.md](../ref/notes/idea-draft-v0.1.md) |
+| M | [ref/notes/具身智能机械臂控制理论与论文框架-5b7a9009.md](../ref/notes/具身智能机械臂控制理论与论文框架-5b7a9009.md) |
+
+<!-- CHANGED-FILES:END -->
+
+Raw episode requests, responses, all model source versions, RGB-D, both camera videos and audits are retained under project code/runs and mirrored from the server. They are execution artifacts, not automatic builder knowledge.
+
+
+## Frozen9a3e cold cohort: terminal outcomes (EXP077)
+
+Predeclared all-five criterion failed: native init9=false, init10=true.
+Both returned completion_proposed=false. Planned init11–13 were not admitted.
+Each generated its own source and used three automatic same-scene patches;
+the outer agent never edited those sources. Init9 used19GPT/60Jev/180steps,
+3468.36seconds; init10 used18GPT/89Jev/267steps,3127.57seconds.
+
+Init9 independently observed an approximately79.5mm object lift and transferred
+above the receiver. Registration then returned unknown; no executable current
+landmark fallback existed there and the source repair limit was reached. This
+does not establish a lost grasp or a Jev direction error. Earlier revisions
+addressed an incorrect helper field, a finger-envelope gate and insufficient
+patch features. Init10 completed placement but could not establish stability
+through tracking after retreat. Its program returned incomplete while native
+evaluation found success. This false-negative report remains a framework defect.
+
+All149 actual Jev choices/1043labels/447steps and29strict reviews passed audit.
+Exact request hashes matched37GPT/149Jev attempts, no unknown usage: GPT input
+475431/output177690; Jev input293127/output37101. No efficiency claim follows.
+
+## Observation-recovery candidate: predeclared before execution
+
+Framework251104e6 adds task-independent requirements: check helper keys before
+submission; provide current-observation recovery for registration unknown in each
+dependent phase using semantically identified corresponding landmarks or another
+usable patch, with identity and uncertainty checks. No object truth, fabricated
+attachment transform, task coordinates or edited generated source is supplied.
+
+Predeclared init9–13 again: independent cold generation, empty memory and no old
+source; native evaluation only. Init9/10 are regression layouts; init11–13 have
+not been admitted before. Each allows24GPT,5source repairs,200Jev,600policy steps
+and7200seconds. Prompt and budget both changed, so improvement cannot be causally
+attributed to one component. Keep this candidate fixed; any admitted failure
+stops remaining unadmitted cases. Init9/10 are foreground runs in a separate
+worktree; no hot patches.
