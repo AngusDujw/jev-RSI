@@ -27,6 +27,18 @@
       "elapsed_s": 4555.387070104945
     },
     {
+      "init_index": 11,
+      "source_sha256": "89813329eb2cdd1c72aaf80f1fed6bc0c40aaa8151716a8bd5c6db9344412dbd",
+      "source_revisions": 5,
+      "native_success": true,
+      "completion_proposed": false,
+      "termination": "method_incomplete",
+      "gpt_calls": 24,
+      "jev_calls": 99,
+      "native_steps": 297,
+      "elapsed_s": 4369.252127224114
+    },
+    {
       "init_index": 12,
       "source_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4",
       "source_revisions": 0,
@@ -40,7 +52,6 @@
     }
   ],
   "pending": [
-    11,
     13
   ],
   "not_admitted": [],
