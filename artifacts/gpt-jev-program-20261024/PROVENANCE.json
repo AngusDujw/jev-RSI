@@ -1,0 +1,35 @@
+{
+  "artifact": "Unedited GPT-generated complete method output, not a shared prompt or robot skill",
+  "planner": "gpt-6-astra/xhigh/local ChatGPT Pro",
+  "executor": "real jev-1.13.0/official systemone",
+  "source_sha256": "afb42affc7d0f85d0fa1ff44b286ecd33783650a0688540099e0d6cd9e0857b8",
+  "benchmark": "LIBERO-Plus/libero_goal/1335",
+  "development": {
+    "run": "r6",
+    "init_index": 0,
+    "seed": 0,
+    "host_commit": "3bafd3a7",
+    "native_success": true,
+    "same_scene_method_repairs": 3,
+    "gpt_calls": 17,
+    "jev_calls": 114,
+    "policy_steps": 342
+  },
+  "frozen_probes": [
+    {
+      "run": "r7",
+      "init_index": 1,
+      "host_commit": "3bafd3a7",
+      "native_success": false,
+      "method_repairs": 0
+    },
+    {
+      "run": "r8",
+      "init_index": 1,
+      "host_commit": "6c57717a",
+      "native_success": false,
+      "method_repairs": 0
+    }
+  ],
+  "scope": "Single task and development success only. No stability/generalization/efficiency claim. Historical public shape samples occur only in the generated held-scene recovery branch; fresh open-hand runs remeasure geometry."
+}

@@ -368,3 +368,4 @@
 - 【Agent】【2026-10-24 21:26】[run] r8仍nativefalse/4GPT/52Jev/156步，外观增长未解决终局失配；官方OpenCV源码确认retainBest先于mask。候选空间预算验证相同可见印刷区23→168点，原旋转/位移/unknown检查通过；仅tracker分支ea947a98启动同init1 r9，无方法修订
 - 【Agent】【2026-10-24 21:27】[op] 完成EXP062：参考增长物理任务仍失败；记录官方源码与23/168特征覆盖根因，不混淆真实原始帧、JPEG诊断和原生判定
 - 【Agent】【2026-10-24 21:27】[op] 补充实际空间特征预算API契约：4x4网格每格128/总2048，新增feature_search诊断；unknown仍无外推位姿且不放宽配准阈值
+- 【Agent】【2026-10-24 21:28】[op] 将真实GPT最终完整方法原样保存为版本化产物：source/explanation/interface/Jev协议，SHA一致；注明任务运行时输出与固定提示词/共享skill分离、旧冻结失败不隐去
