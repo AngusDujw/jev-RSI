@@ -1,7 +1,8 @@
 # GPT/Jev complete-method development
 
-Status: r6 reached native success after three same-scene repairs; frozen new-init
-validation is in progress. This is not a stability or efficiency result. All model-facing
+Status: r6 reached native success after three same-scene repairs. The first frozen
+new-init probe r7 and appearance-growth comparison r8 failed; a spatial feature
+budget comparison is running. This is not a stability or efficiency result. All model-facing
 prompts, requests and lessons are English. This report describes outer-agent
 experiment organization; it is not supplied as a task-solving prompt.
 
@@ -48,6 +49,8 @@ convenient intermediate state for subsequent fresh-episode tests.
 | r4 | 9244c2b2 | 8 | 67 | 201 | 1702.60 | false | Closure occluded perimeter; later valid patch exceeded old source limit |
 | r5 | f4de7617 | 3 | 32 | 96 | 1055.81 | false | Late texture initialization failed; host mishandled list evidence |
 | r6 | 3bafd3a7 | 17 | 114 | 342 | 3119.04 | true | Three repairs: exact tracker key, mixed-depth rim samples, unattainable visibility gate |
+| r7 | 3bafd3a7 | 4 | 52 | 156 | 313.05 | false | Frozen method on first unused init 1 lost transfer tracking |
+| r8 | 6c57717a | 4 | 52 | 156 | 292.10 | false | Reference growth improved inliers but did not solve feature starvation |
 
 All runs are under `code/runs/2026-10-24-gpt-jev-program/rN/`; complete requests,
 responses, methods, RPC feedback, native receipts, depth/calibration and two camera
@@ -72,6 +75,9 @@ shape samples explicitly labelled historical. Those are GPT runtime output, not
 a fixed prompt, shared skill or host policy. A fresh open-hand episode follows
 the acquisition branch and remeasures its own scene. r7 freezes this exact source
 and the actual r6 host on previously unused init 1, with zero method repairs.
+That probe failed, so the source is preserved as a development-successful output,
+not labelled stable. The exact unedited package is versioned under
+`artifacts/gpt-jev-program-20261024/`, separately from shared prompts and skills.
 
 ## Costs, not efficiency claims
 
@@ -83,6 +89,8 @@ and the actual r6 host on previously unused init 1, with zero method repairs.
 | r4 | 123152 | 44270 | 29183 |
 | r5 | 22242 | 23698 | 16745 |
 | r6 | 210286 | 70942 | 53667 |
+| r7 | 37255 | 4994 | 3895 |
+| r8 | 37236 | 5193 | 4098 |
 
 r2 has one client failure and three upstream attempts with unknown usage; they
 are not zero-cost calls. Archived-method tests retain acquisition costs in their
@@ -97,6 +105,8 @@ r5's first complete method took 877.83 seconds to generate.
 | r4 | 67 | 208313 | 16683 | 67.78 |
 | r5 | 32 | 78805 | 7968 | 34.55 |
 | r6 | 114 | 305465 | 28386 | 133.34 |
+| r7 | 52 | 133763 | 12948 | 58.42 |
+| r8 | 52 | 133653 | 12948 | 60.88 |
 | Separate zero-motion diagnostics | 2 | 6083 | 498 | 3.60 |
 
 These are distinct model token accounting streams, not interchangeable monetary
@@ -164,9 +174,43 @@ Candidate checkpoint/field-documentation/visibility-prompt changes made locally
 during r6 were never hot-patched into it. Its success must be attributed to the
 tested 3bafd3a7 host and the actual recorded GPT revisions, not later candidates.
 
+## Frozen-method failures and feature-budget mechanism
+
+r7's fresh open-hand execution remeasured the face, support and bowl; it did not
+use the historical held-scene shape branch. Grasp and retention passed, but the
+second lateral segment left only two matches per camera. The program correctly
+stopped without release, and native evaluation was false. Four reviews and no
+method repair were used. Its shorter elapsed time is not a speed gain because
+the task failed and acquisition cost remains outside that execution.
+
+r8 changed only `jev_rgbd_tracking.py` on an isolated branch from the tested host.
+It retained the same full GPT method, fixed prompts, simulator init and all other
+host code. Canonical appearance growth increased pre-transfer inliers to 120 and
+first-segment inliers to 64, but the next segment still returned unknown. The final
+images show the carton visibly between the fingers; qpos remained near
++0.02096/-0.02125 m. Unknown registration is not proof that the object was dropped.
+
+The stored-image diagnostic exposed feature starvation. The same visible print
+contained 172 selected points before the patterned destination entered more of
+the image, but only 23 under a global 800-feature limit afterwards. Cropping the
+same final print area yielded 168 points. OpenCV 4.6's
+[official SIFT implementation](https://raw.githubusercontent.com/opencv/opencv/4.6.0/modules/features2d/src/sift.dispatch.cpp)
+applies `retainBest` before `runByPixelsMask`; supplying a mask alone does not
+prevent this competition. These are JPEG diagnostics, not original online RGB
+frames or successful rollouts.
+
+The next isolated source, `ea947a98`, removes the pre-mask global truncation and
+then selects at most 128 features in each of 16 image cells. It retains 168 points
+in the same final print area using 524 descriptors overall. No matching, rigid-fit,
+depth-support, retention or action threshold was relaxed. Known canonical
+translations/rotations, foreground-depth rejection, blank unknown, spatial caps
+and bounded appearance-bank checks passed. r9 reuses the unchanged full method
+on the now-seen development init 1 with no repairs. GPT review outputs remain
+stochastic; freezing simulator seed does not make visual interpretations identical.
+
 ## Evidence boundary
 
-EXP-2026W43-055 through EXP-2026W43-060 preserve all outcomes in the weekly log.
+EXP-2026W43-055 through EXP-2026W43-062 preserve all outcomes in the weekly log.
 The v1 contract adapter and its separate development failures remain unchanged.
 The earlier source-grounded CaP/HexaShell/EmbodiedEvo comparison is in
 `code/prompts/gpt_jev_program_design.md`; its candidate prompt is not the active
