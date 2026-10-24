@@ -69,9 +69,14 @@ reached native success after one same-scene GPT patch (17 GPT /107 real Jev /
 321 steps). A separate GPT-led revision also succeeded (11/106/318). Both full
 episode usages are known; neither establishes net token savings or speedup.
 The [complete generated method and Jev input/output protocol](../../artifacts/gpt-jev-typed-method-20261025/METHOD.md)
-are preserved verbatim with source and provenance. The final9a3e framework is
-currently tested on predeclared init9-13 with independent generation per episode
-and at most three automatic source repairs; no outer-agent task-source edits.
+are preserved verbatim with source and provenance. The frozen9a3e framework
+then obtained native1/2 on independently generated init9/10, each with three
+automatic source repairs. Both completion proposals were false: one stopped
+above the receiver on unknown tracking, the other completed placement but lacked
+tracking evidence for stability. Planned init11-13 were not admitted after the
+failure. The next251104e6 candidate requires phase-local observation recovery
+and exact helper-key checks; its declared larger budget is reported separately.
+No outer-agent task-source edits are used.
 
 ```mermaid
 flowchart LR
