@@ -343,3 +343,4 @@
 - 【Agent】【2026-10-24 19:44】[op] r4完整负结果及后验配准诊断已补EXP058；r5从f4de7617全新生成方法，不喂旧55k源码、任务配方或固定动作，预算18GPT/200Jev/600步/5次同场景修复/3600秒，实际已有API包含公开RGB-D特征配准与完整输入输出语义。
 - 【Agent】【2026-10-24 19:47】[op] 补全API文档中配准结果的精确键名reference/current_inlier_world_m及reference/current_patch_centroid_world_m，避免生成方法依赖猜测字段名；纯文档补充，不改变正在运行的r5。
 - 【Agent】【2026-10-24 19:50】[op] 首轮完整源码生成接近旧loopback客户端900秒等待上限，后续候选独立v2传输允许Pro最多1800秒且受剩余回合wall预算限制，Jev仍最多900秒；保留请求/响应/未知usage记录，不修改v1或热改r5。所有新增延迟会计入成本，不将等待包装为加速。
+- 【Agent】【2026-10-24 19:57】[result] r5终止：1055.81秒、3GPT/32Jev/96策略步+10settle，native false；新158行方法通过交付并到达hover，但track_init所选patch纹理不足，方法正确返回列表式证据，宿主错误假定dict导致AttributeError停止修复。已修复对象/列表/空结果三类修复上下文并检查，跟踪错误回报实际特征数量；后续让GPT决定更清楚的纹理ROI及初始化时机。

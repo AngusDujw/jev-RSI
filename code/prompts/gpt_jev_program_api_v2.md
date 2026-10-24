@@ -7,6 +7,8 @@ rotation vectors rad, quaternions xyzw. Nothing exposes hidden object state.
 
 Available globals: np, math and ordinary Python builtins; define main(api).
 The complete source limit is 120000 ASCII characters; all helpers must resolve.
+Return completion_proposed as a boolean and evidence as a JSON-compatible object
+or list. A list of diagnostic log entries is supported by the repair interface.
 All API arguments/results are JSON-compatible: use ndarray.tolist() at boundaries.
 print(...) and api.note(text) write bounded trace notes through host RPC.
 

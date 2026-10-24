@@ -46,3 +46,8 @@ Generic development lessons, supported only by the recorded development failure:
   was checked on synthetic translations/outliers and on recorded pregrasp/closure
   views with partial occlusion. That is measurement evidence, not a completed
   physical task or a universal tracking guarantee; unknown still needs recovery.
+- Initialize a reliable textured reference before a motion that occludes it when
+  possible. A camera suitable for an object's geometric outline need not be the
+  best camera for texture registration. Keep each ROI tied to its own camera and
+  observation frame; inspect feature-count errors and choose a better visible
+  interior patch rather than blindly repeating the same inadequate selection.

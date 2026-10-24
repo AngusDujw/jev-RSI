@@ -125,6 +125,23 @@ def compact_feedback(value):
     return value
 
 
+def repair_result_context(result):
+    """Generated methods may return structured evidence as an object or a log."""
+    if not isinstance(result, dict):
+        return dict(result=compact_feedback(result))
+    evidence = result.get("evidence")
+    if isinstance(evidence, dict):
+        selected = {k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state", "geometry", "terminal_robot", "final_assessment")}
+    elif isinstance(evidence, list):
+        selected = dict(evidence_log=evidence[-12:])
+    else:
+        selected = dict(evidence=evidence)
+    for key in ("limitations", "error", "phase"):
+        if key in result:
+            selected[key] = result[key]
+    return compact_feedback(selected)
+
+
 def intersect_plane(K, T, pixel, plane):
     """Calibrated ray/plane geometry, with no object identity inference."""
     import numpy as np
@@ -595,8 +612,7 @@ def main():
         question = "Build the complete processing method and Jev input/output cooperation from current observations."
         if args.revise_archived:
             archived_summary = json.loads((args.method_file.resolve().parent / "summary.json").read_text())
-            evidence = (archived_summary.get("result") or {}).get("evidence", {})
-            failure = compact_feedback({k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state", "geometry", "terminal_robot", "final_assessment")})
+            failure = repair_result_context(archived_summary.get("result"))
             for feedback_path in sorted(args.method_file.resolve().parent.glob("rpc-*.json"))[-8:]:
                 recorded = json.loads(feedback_path.read_text())
                 rpc_feedback.append(compact_feedback(dict(request=recorded.get("request"), response=recorded.get("response"),
@@ -611,8 +627,7 @@ def main():
                 if not isinstance(result, dict) or type(result.get("completion_proposed")) is not bool:
                     raise ValueError("Return completion_proposed boolean and evidence")
                 if not result["completion_proposed"] and revision < args.max_repairs:
-                    evidence = result.get("evidence", {})
-                    summary_evidence = compact_feedback({k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state", "geometry", "terminal_robot", "final_assessment")})
+                    summary_evidence = repair_result_context(result)
                     previous_method = dict(method, incomplete_result=summary_evidence)
                     question = "Your method returned incomplete. Repair the full method using current images, executed effects, and its recorded limitations. The same physical scene persists; do not reset or assume actions were undone."
                     save(out / f"method-{revision:02d}.incomplete.json", result)

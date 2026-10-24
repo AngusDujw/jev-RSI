@@ -83,7 +83,7 @@ class RGBDPatch:
         self.descriptors = descriptors[kept]
         self.pixels = pixels[kept]
         if len(kept) < 12:
-            raise ValueError("Need at least 12 textured depth-valid surface features")
+            raise ValueError("Selected patch has "+str(len(kept))+" textured depth-valid features; at least 12 are required. Use a clearer textured interior patch or initialize before occluding camera motion.")
         self.frame_id = frame_id
 
     def update(self, views, frame_id):
