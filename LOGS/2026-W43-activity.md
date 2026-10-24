@@ -553,3 +553,6 @@
 - 【Agent】【2026-10-24 22:31】[result] EXP037：v20原生509步incomplete/valid=false/success/score null，末成功RPC距终局899.601秒，第四条900秒空闲中断；原字节SHA/audit已保存。旧批原生全部结束，2有效完整失败/4无效中断，不计同版成功率。控制器仍未退出，先不启动新回合或改提示；原图509木块在闭合尖外，不采用持物自述。
 - 【Agent】【2026-10-24 22:39】[op] 新建实验块 EXP-2026W43-038：冻结v24同一英文提示六独立回合，延长新服务RPC空闲等待  ↪ `EXP-2026W43-038`
 - 【Agent】【2026-10-24 22:43】[op] EXP038：旧六controller全部退出后冻结唯一v24英文提示/SHA及r1–r6预登记；新服务副本RPC900→7200秒且独立文件/来源路径校验，原entry/550/评分不变。历史原图六张已镜像DataStorage；提示生成引号失败已用apply_patch修复无部分版本；10现有测试+4临时副本检查通过，未改用户experience。
+- 【Agent】【2026-10-24 22:50】[run] EXP038启动同一冻结v24 r1/r2/r3，前台session4536/30268/39094，RPC25440–25442，每条一次。旧controller全部退出且端口/新路径/6张历史图SHA核验通过；先观察启动显存再开余下预登记条目，持续巡检任务已同步EXP037/038。代码3a91c236已SSH推送。
+- 【Agent】【2026-10-24 22:52】[run] EXP038继续启动相同v24 r4/r5/r6，前台session40474/27534/44796，RPC25443–25445；提示SHA与r1–r3相同，不产生新版本。先前三条startup显存used22071/free26438MiB，满足余下三条预算；启动后再核验约8–9GiB余量。
+- 【Agent】【2026-10-24 22:54】[result] EXP038六条v24全部ready且simulation_sync_config确认；worker实际均gpt-6-luna/high、隔离Pro配置/登录和API fallback=false核验，同一提示SHA；远端六副本RPC均7200秒且前后SHA、entry原SHA一致。GPU used37051/free11458MiB，保留约11GiB。外层launch-audit已保存；r1至30步，其余仍初始读图，不能计任务进展或成功。
