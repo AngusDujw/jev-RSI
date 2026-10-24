@@ -146,6 +146,21 @@ Never treat it as an image observation: Jev receives structured text features.
 
 ## Persistence, failure and budgets
 
+- api.checkpoint(key, value): retain caller-owned JSON data across method repairs
+  in this physical episode. key is 1..64 ASCII letters, digits, underscores, dots
+  or hyphens. At most 16 keys, 16384 bytes per value and 131072 total value bytes.
+  Overwriting a key is allowed. Returns key, frame_id, method_number,
+  source_sha256, bytes and source. The host adds these provenance fields; it does
+  not certify the content. Store only useful measurements, assumptions,
+  uncertainties, landmark identities and acknowledged phase evidence.
+- api.recall(key=None): without a key, return a list of checkpoint metadata;
+  with a key, return that record plus value. Unknown keys raise an error. The
+  planner sees the metadata manifest, not every value automatically. Memory is
+  empty in a new episode and is never loaded from an archived method. Stored data
+  are historical program assertions, not fresh observations or native success.
+  Revalidate identity, stationarity and dependencies before reuse. Tracker handles
+  and Python objects are not preserved by storing their names in JSON.
+
 Every physical control request invokes Jev and every native step has a receipt.
 State and measurements change only after actual motion. Scene geometry can become
 stale after any motion. Python in one submitted method persists until return;

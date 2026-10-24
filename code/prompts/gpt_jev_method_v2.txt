@@ -28,6 +28,11 @@ No imports, class definitions, global/nonlocal statements, while loops, files,
 networking, private attributes, dynamic execution,
 or simulator access. Resolve every helper. Robot and physical state persist if
 your method is repaired; edits and exceptions do not undo motion.
+Use bounded episode checkpoints for essential reference measurements and phase
+evidence that a repair needs. A checkpoint is historical data with provenance,
+not a current sensor value. Revalidate affected dependencies after motion; do
+not discard a still-valid measured invariant solely because Python restarted.
+New episodes have empty checkpoint memory and must acquire their own evidence.
 
 The supplied manual is the exact API contract. Use only its operations and
 schema. You may process current visible point clouds with NumPy, choose visual

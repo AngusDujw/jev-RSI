@@ -142,6 +142,40 @@ def repair_result_context(result):
     return compact_feedback(selected)
 
 
+class ProgramMemory:
+    """Caller-owned JSON checkpoints, scoped to one physical episode."""
+    def __init__(self):
+        self.entries = {}
+
+    def manifest(self):
+        return [{k: v for k, v in item.items() if k != "value"} for item in self.entries.values()]
+
+    def put(self, key, value, frame_id, method):
+        if not isinstance(key, str) or not 1 <= len(key) <= 64 or not key.isascii() or not all(c.isalnum() or c in "_.-" for c in key):
+            raise ValueError("Checkpoint key must be 1..64 ASCII letters, digits, underscores, dots or hyphens")
+        english(value)
+        encoded = json.dumps(value, allow_nan=False)
+        if len(encoded.encode()) > 16384:
+            raise ValueError("Checkpoint value exceeds 16384 bytes")
+        if key not in self.entries and len(self.entries) >= 16:
+            raise ValueError("At most 16 checkpoints per episode")
+        record = dict(key=key, frame_id=frame_id, method_number=method["number"],
+            source_sha256=method["source_sha256"], bytes=len(encoded.encode()),
+            value=json.loads(encoded), source="program-supplied historical data; not a fresh measurement")
+        proposed = dict(self.entries, **{key: record})
+        if sum(item["bytes"] for item in proposed.values()) > 131072:
+            raise ValueError("Total checkpoint values exceed 131072 bytes")
+        self.entries = proposed
+        return {k: v for k, v in record.items() if k != "value"}
+
+    def get(self, key=None):
+        if key is None:
+            return self.manifest()
+        if key not in self.entries:
+            raise ValueError("Unknown episode checkpoint")
+        return json.loads(json.dumps(self.entries[key], allow_nan=False))
+
+
 def intersect_plane(K, T, pixel, plane):
     """Calibrated ray/plane geometry, with no object identity inference."""
     import numpy as np
@@ -264,6 +298,7 @@ def main():
     rpc_feedback = []
     annotation_initial = annotation_last = None
     trackers = {}
+    program_memory = ProgramMemory()
     termination, success, result = "not_started", None, None
     own_method_error = None
 
@@ -328,6 +363,11 @@ def main():
         return dict(handle=handle, frame_id=native_steps, reference_features=len(tracker.reference),
                     source="caller-selected visible RGB-D patch; not an object identity oracle")
 
+    def checkpoint(key, value):
+        record = program_memory.put(key, value, native_steps, methods[-1])
+        save(out / "program-checkpoints.json", program_memory.entries)
+        return record
+
     def track_update(handle):
         if handle not in trackers:
             raise ValueError("Unknown patch tracker handle")
@@ -374,7 +414,8 @@ def main():
                 content.extend([dict(type="input_text", text=f"Earlier review {camera}"),
                     dict(type="input_image", image_url="data:image/jpeg;base64,"+base64.b64encode(encoded).decode(), detail="high")])
         payload_state = dict(instruction=task.language, question=question, robot=state(), cameras=cameras,
-            recent_acknowledged_execution=history[-5:], recent_program_feedback=rpc_feedback[-8:])
+            recent_acknowledged_execution=history[-5:], recent_program_feedback=rpc_feedback[-8:],
+            program_checkpoint_manifest=program_memory.manifest())
         if annotation_last:
             payload_state["historical_named_observations"] = dict(initial=annotation_initial, previous=annotation_last,
                 scope="Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.")
@@ -546,7 +587,7 @@ def main():
         selector.register(worker.stdout, selectors.EVENT_READ)
         sandbox = False
         allowed = dict(state=state, point=point, cloud=cloud, camera=camera_geometry, plane_point=plane_point,
-            track_init=track_init, track_update=track_update,
+            track_init=track_init, track_update=track_update, checkpoint=checkpoint, recall=program_memory.get,
             compose=lambda q, r: (Rotation.from_rotvec(r)*Rotation.from_quat(q)).as_quat().tolist(), review=review, choose=choose, control=control, drive=lambda *a, **kw: control_lease(control, *a, **kw), note=lambda text: None)
         try:
             for _ in range(4000):
