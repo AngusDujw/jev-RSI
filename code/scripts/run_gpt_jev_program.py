@@ -475,7 +475,7 @@ def main():
         if args.revise_archived:
             archived_summary = json.loads((args.method_file.resolve().parent / "summary.json").read_text())
             evidence = (archived_summary.get("result") or {}).get("evidence", {})
-            failure = {k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state")}
+            failure = compact_feedback({k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state", "geometry", "terminal_robot", "final_assessment")})
             previous_method = dict(archived_method, incomplete_result=failure)
             question = "Revise the complete archived GPT method using its recorded incomplete outcome and the current observations/API. Produce a concise executable method with feasible phase-local evidence and bounded recovery. Do not assume a previous physical action occurred in this newly initialized episode."
         for revision in range(args.max_repairs+1):
@@ -487,7 +487,7 @@ def main():
                     raise ValueError("Return completion_proposed boolean and evidence")
                 if not result["completion_proposed"] and revision < args.max_repairs:
                     evidence = result.get("evidence", {})
-                    summary_evidence = {k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state")}
+                    summary_evidence = compact_feedback({k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state", "geometry", "terminal_robot", "final_assessment")})
                     previous_method = dict(method, incomplete_result=summary_evidence)
                     question = "Your method returned incomplete. Repair the full method using current images, executed effects, and its recorded limitations. The same physical scene persists; do not reset or assume actions were undone."
                     save(out / f"method-{revision:02d}.incomplete.json", result)
