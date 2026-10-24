@@ -8,6 +8,7 @@ import hashlib
 import io
 import json
 import logging
+import math
 import os
 from pathlib import Path
 import selectors
@@ -21,8 +22,22 @@ from gpt_jev_program_worker import validate_source
 from run_gpt_jev_generic import save, scrub
 
 
+def model_wire_numbers(value):
+    """Compact model inputs only; simulator, program data and receipts stay exact."""
+    if isinstance(value, dict):
+        return {key: model_wire_numbers(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [model_wire_numbers(item) for item in value]
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError("Nonfinite model input")
+        return float(format(value, ".6g"))
+    return value
+
+
 def post(url, payload, path, timeout=1800):
     """Keep long method generation bounded by the actual remaining episode time."""
+    payload = model_wire_numbers(payload)
     english(payload)
     save(path.with_suffix(".request.json"), scrub(payload))
     started = time.monotonic()
@@ -248,6 +263,7 @@ def main():
         prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(), manual_sha256=hashlib.sha256(manual.encode()).hexdigest(),
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
         native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
+        model_wire_numeric_precision="6 significant digits; internal calculations and receipts retain full precision",
         reused_method_sha256=hashlib.sha256(archived_method["source"].encode()).hexdigest() if archived_method else None))
     with contextlib.redirect_stdout(io.StringIO()):
         suite = benchmark.get_benchmark_dict()[args.suite](0)
@@ -391,7 +407,7 @@ def main():
             payload_state["program_supplied_review_context"] = compact_feedback(review_context)
         if failed_method:
             payload_state["previous_method"] = failed_method
-        content.append(dict(type="input_text", text=json.dumps(payload_state)))
+        content.append(dict(type="input_text", text=json.dumps(model_wire_numbers(payload_state), separators=(",", ":"))))
         instructions = prompt+"\n\n"+manual if kind == "method" else (
             "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. "
             "Return submit_review only, all text English ASCII. parameters_json must encode an object with concise actionable numeric or boolean observations requested by the caller. "
