@@ -117,7 +117,7 @@ def jev_request(stage, position_error, rotation_error, gripper_command, executed
     questions = {}
     for j, axis in enumerate(("x", "y", "z", "rx", "ry", "rz")):
         questions[axis] = choice(
-            f"Choose {axis} sign toward the current stage target using the supplied residual. Hold when its error is within the supplied per-axis tolerance.", axes)
+            f"Read axes.{axis}.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. This is a direction choice, not a numeric calculation.", axes)
     questions["gripper"] = choice("Follow the stage gripper requirement; keep preserves the last command. Closure is not grasp evidence.",
         dict(open="Command open", close="Command close", keep="Preserve last command"))
     edges = dict(continue_phase="Execute one bounded control update in this stage", review="Request fresh GPT visual planning", stop="Stop incomplete")
@@ -129,6 +129,10 @@ def jev_request(stage, position_error, rotation_error, gripper_command, executed
         acknowledged_stage_native_steps=executed_steps, local_gates_passed=ready,
         translation_axis_tolerance_m=.008/math.sqrt(3), rotation_axis_tolerance_rad=.06/math.sqrt(3),
         evidence_scope="Robot pose and delivered commands only; object effects require a fresh visual review")
+    state["axes"] = {}
+    for axis, residual in zip(("x", "y", "z", "rx", "ry", "rz"), position_error + rotation_error):
+        tolerance = (.008 if len(axis) == 1 else .06)/math.sqrt(3)
+        state["axes"][axis] = dict(error=residual, goal_relation="within_tolerance" if abs(residual) <= tolerance else "increase" if residual > 0 else "decrease")
     request = dict(model=model, state=state, questions=questions)
     english(request)
     return request
