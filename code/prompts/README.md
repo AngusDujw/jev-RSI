@@ -92,6 +92,8 @@ each. Both completion proposals remained false; native scoring is authoritative,
 and verification defects and all generation/recovery costs remain explicit.
 The same framework now runs independently generated unused init11/12, with13
 not yet admitted. The five-case cold criterion is still pending.
+Both [actual complete regression methods and Jev protocols](../../artifacts/gpt-jev-cold-methods-20261025/README.md)
+are preserved verbatim, separately from generic builder inputs.
 
 ```mermaid
 flowchart LR

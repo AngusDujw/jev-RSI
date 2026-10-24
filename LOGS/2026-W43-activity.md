@@ -463,3 +463,4 @@
 - 【Agent】【2026-10-25 05:11】[op] 新建实验块 EXP-2026W43-079：冻结a8e框架两例独立冷生成回归原生2/2：程序确认假阴性与全量成本单列  ↪ `EXP-2026W43-079`
 - 【Agent】【2026-10-25 05:14】[op] EXP079、报告、README与Discussion完整记录a8e回归原生2/2及两自评false、全量费用、37strict与11源哈希；T-2026W43-018及Weekly Retro补记14/17等CIRCLE-1/3，无CIRCLE-2。收敛仍为冻结候选预定未见11–13，当前只11/12在途。
 - 【Agent】【2026-10-25 05:16】[op] 新增artifacts/gpt-jev-cold-methods-20261025：两回归完整模型源/返回包/原始设计与所有修订理由/最终interface与Jev协议/provenance及cohort状态原样保存；hash/AST/ASCII验证通过。固定prompt不读该目录，未增加模型调用或手改任务源。
+- 【Agent】【2026-10-25 05:19】[op] 主报告文件清单更新为34个已跟踪变更文件；README/报告链接两例原样完整方法与Jev协议产物，不作为模型经验或冷生成输入。

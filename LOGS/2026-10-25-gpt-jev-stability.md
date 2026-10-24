@@ -171,6 +171,8 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
+34 tracked files changed in this continuation.
+
 | Status | File |
 | --- | --- |
 | M | [Discussion.md](../Discussion.md) |
@@ -178,6 +180,18 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 | M | [LOGS/2026-W43-activity.md](../LOGS/2026-W43-activity.md) |
 | M | [LOGS/2026-W43.md](../LOGS/2026-W43.md) |
 | M | [TIMELINE.md](../TIMELINE.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/COHORT.json](../artifacts/gpt-jev-cold-methods-20261025/COHORT.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/README.md](../artifacts/gpt-jev-cold-methods-20261025/README.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init10/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init10/METHOD.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init10/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init10/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init10/README.md](../artifacts/gpt-jev-cold-methods-20261025/init10/README.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init10/method.json](../artifacts/gpt-jev-cold-methods-20261025/init10/method.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init10/method.py](../artifacts/gpt-jev-cold-methods-20261025/init10/method.py) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init9/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init9/METHOD.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init9/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init9/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init9/README.md](../artifacts/gpt-jev-cold-methods-20261025/init9/README.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init9/method.json](../artifacts/gpt-jev-cold-methods-20261025/init9/method.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init9/method.py](../artifacts/gpt-jev-cold-methods-20261025/init9/method.py) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/METHOD.md](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) |
@@ -318,3 +332,9 @@ from compressed JPEG and recorded depth/calibration: frame0→168 gave19/20
 inliers and0.163mm residual. This is not identical raw-RGB replay or native
 success. It suggests reference continuity may reduce recovery overhead, but no
 tracking lifecycle change was applied to this frozen cohort.
+
+The exact complete outputs for both native regression successes, including
+original designs, all model revision rationales, final interfaces, Jev protocols,
+source bytes and full audit provenance, are preserved in
+[the cold-method output package](../artifacts/gpt-jev-cold-methods-20261025/README.md).
+This directory is not model input or shared experience.
