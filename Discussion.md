@@ -760,3 +760,5 @@
 【Agent @Codex】【2026-10-24】[EXP034](LOGS/2026-W43.md#exp-2026w43-034)新增基础设施中断：v18在524/550以controller1/EOF退出，native incomplete/valid=false/success=null，不计完整失败。实际远端900秒receive timeout与终局距末成功RPC899.797秒吻合；此前右回位命令0.445rad超0.35被拒。当前三条原样继续，待本批终止后修复新批连接空闲等待并仅冻结一个新提示多回合，不改变原生550/评分。CIRCLE-1以完整终局和区分基础设施/模型失误收敛。
 
 【Agent @Codex】【2026-10-24】[EXP035](LOGS/2026-W43.md#exp-2026w43-035)：v23在372步controller1/EOF中断，native incomplete/valid=false/success=null；终局距末成功RPC899.490秒，与EXP034的899.797秒一致支持900秒空闲关闭。当前两条完整失败、两条无效中断、v19/v20仍运行；只观察并保留，不改活服务或重跑。CIRCLE-1收敛为本批全部终止后修新隔离服务等待窗口、单一冻结提示多回合，而非把基础设施中断算模型能力失败。
+
+【Agent @Codex】【2026-10-24】[EXP036](LOGS/2026-W43.md#exp-2026w43-036)：v19原生在511步incomplete/valid=false/success=null，终局距末成功RPC899.737秒，第三次支持900秒空闲关闭；controller仍等待不代表原生连接有效。当前只有v20活原生，继续原样；两条有效完整负结果与三条中断分开保存，不报整批0/6。CIRCLE-1收敛方式仍为本批终止后修新隔离连接等待、同一新提示多回合，不因次数停止。
