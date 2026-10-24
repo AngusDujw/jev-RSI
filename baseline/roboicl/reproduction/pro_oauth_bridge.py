@@ -72,7 +72,34 @@ class ProTransportError(RuntimeError):
         self.http_status = http_status
 
 
-def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None):
+class ProDeadlineError(ProTransportError):
+    pass
+
+
+def remaining_budget(deadline):
+    remaining = deadline-time.monotonic()
+    if remaining <= 0:
+        raise ProDeadlineError("Native Pro whole-call deadline exceeded")
+    return remaining
+
+
+def deadline_lines(response, deadline):
+    """Bound SSE heartbeats and silent reads by one absolute deadline."""
+    while True:
+        remaining = remaining_budget(deadline)
+        raw = getattr(getattr(response, "fp", None), "raw", None)
+        sock = getattr(raw, "_sock", None)
+        if sock is not None:
+            sock.settimeout(remaining)
+        line = response.readline()
+        remaining_budget(deadline)
+        if not line:
+            return
+        yield line
+
+
+def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None, *, deadline=None):
+    deadline = time.monotonic()+timeout if deadline is None else deadline
     check_english(payload)
     if payload.get("model") != MODEL or payload.get("reasoning", {}).get("effort") != "xhigh":
         raise ValueError("Only the pinned Astra/xhigh request is authorized")
@@ -91,13 +118,13 @@ def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None):
     try:
         if attempt_record is not None:
             attempt_record["request_sent"] = True
-        response = urllib.request.urlopen(request, timeout=timeout)
+        response = urllib.request.urlopen(request, timeout=min(timeout, remaining_budget(deadline)))
     except urllib.error.HTTPError as error:
         raw = error.read(4096).decode(errors="replace")
         raise ProTransportError(f"Native Pro HTTP {error.code}: " + str(audit(raw))[:1500],
             retryable=error.code in (408, 429, 500, 502, 503, 504), http_status=error.code) from None
     with response:
-        for line in response:
+        for line in deadline_lines(response, deadline):
             if not line.startswith(b"data:"):
                 continue
             text = line[5:].strip()
@@ -121,26 +148,30 @@ def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None):
     raise ProTransportError("Native Pro stream ended without a completed response", retryable=True)
 
 
-def native_request(payload, auth_file, timeout=900, attempt_records=None):
+def native_request(payload, auth_file, timeout=900, attempt_records=None, *, deadline=None):
     """Retry transport failures only; return the first completed pinned response.
 
     Every retry has the identical model-visible payload. A failed inference may
     have consumed quota; its unknown usage is retained rather than treated as zero.
-    Socket timeouts do not provide an absolute whole-call deadline.
+    One absolute deadline covers connection, SSE reads, retries and backoff.
     """
     attempt_records = [] if attempt_records is None else attempt_records
+    deadline = time.monotonic()+timeout if deadline is None else deadline
     for attempt in range(1, 4):
+        remaining_budget(deadline)
         record = {"attempt": attempt, "started": time.time(), "request_sent": False}
         started = time.monotonic()
         retryable = False
         try:
-            result = _native_pro_once(payload, auth_file, timeout, record)
+            result = _native_pro_once(payload, auth_file, min(timeout, remaining_budget(deadline)), record, deadline=deadline)
             record.update(model=result.get("model"), usage=result.get("usage"))
             return result
         except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.IncompleteRead) as error:
             retryable = True
             record.update(error_type=type(error).__name__, error=str(error)[:600],
                           usage_unknown=record["request_sent"])
+            if time.monotonic() >= deadline:
+                raise ProDeadlineError("Native Pro whole-call deadline exceeded") from None
             if attempt == 3:
                 raise ProTransportError("Native Pro transport attempts exhausted: " + str(error)[:600]) from None
         except Exception as error:
@@ -155,6 +186,9 @@ def native_request(payload, auth_file, timeout=900, attempt_records=None):
             attempt_records.append(record)
         if retryable:
             record["retry_delay_s"] = PRO_RETRY_DELAYS_S[attempt - 1]
+            if record["retry_delay_s"] >= remaining_budget(deadline):
+                record["retry_skipped"] = "Insufficient whole-call deadline budget"
+                raise ProDeadlineError("Native Pro retry would exceed whole-call deadline")
             time.sleep(record["retry_delay_s"])
 
 
@@ -244,9 +278,18 @@ class Handler(BaseHTTPRequestHandler):
                     result = native_jev_request(payload, self.server.jev_config, record["upstream_attempts"])
             else:
                 record["upstream_attempts"] = []
-                with self.server.limit:
+                requested_budget = float(self.headers.get("X-Model-Request-Timeout-Seconds", "900"))
+                if not .1 <= requested_budget <= 1800:
+                    raise ValueError("Pro request budget must be 0.1..1800 seconds")
+                deadline = started+requested_budget
+                record["request_budget_s"] = requested_budget
+                if not self.server.limit.acquire(timeout=remaining_budget(deadline)):
+                    raise ProDeadlineError("Native Pro deadline while waiting for relay slot")
+                try:
                     result = native_request(payload, self.server.auth_file,
-                                            attempt_records=record["upstream_attempts"])
+                                            attempt_records=record["upstream_attempts"], deadline=deadline)
+                finally:
+                    self.server.limit.release()
             record.update(response=audit(result), elapsed_s=time.monotonic()-started)
             if payload.get("stream") and not is_jev:
                 data = ("data: " + json.dumps({"type": "response.completed", "response": result}) + "\n\n").encode()
@@ -255,7 +298,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.reply(200, result)
         except Exception as error:
             record.update(error_type=type(error).__name__, error=str(error)[:600], elapsed_s=time.monotonic()-started)
-            self.reply(502, {"error": {"message": record["error"],
+            self.reply(504 if isinstance(error, ProDeadlineError) else 502, {"error": {"message": record["error"],
                 "type": "jev_transport_error" if is_jev else "pro_transport_error"}})
         finally:
             with self.server.audit_lock:

@@ -42,7 +42,10 @@ def post(url, payload, path, timeout=1800):
     save(path.with_suffix(".request.json"), scrub(payload))
     started = time.monotonic()
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-    request = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"})
+    headers = {"Content-Type": "application/json"}
+    if url.endswith("/responses"):
+        headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(1800., timeout-2.)))
+    request = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers)
     try:
         with opener.open(request, timeout=timeout) as response:
             result = json.load(response)
@@ -50,7 +53,9 @@ def post(url, payload, path, timeout=1800):
         return result
     except Exception as error:
         save(path.with_suffix(".failure.json"), dict(error_type=type(error).__name__,
-            elapsed_s=time.monotonic()-started, usage_unknown=True, dispatched=False))
+            elapsed_s=time.monotonic()-started, usage_unknown=True,
+            model_request_attempted=True, physical_dispatch=False,
+            dispatched=False, dispatch_scope="physical_control_only"))
         raise
 
 
@@ -298,6 +303,7 @@ def main():
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
         native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
         model_wire_numeric_precision="6 significant digits; internal calculations and receipts retain full precision",
+        pro_request_deadline="loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
         reused_method_sha256=hashlib.sha256(archived_method["source"].encode()).hexdigest() if archived_method else None))
     with contextlib.redirect_stdout(io.StringIO()):
         suite = benchmark.get_benchmark_dict()[args.suite](0)
