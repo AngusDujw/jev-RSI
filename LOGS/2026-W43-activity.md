@@ -528,3 +528,4 @@
 - 【Agent】【2026-10-24 19:07】[result] EXP033巡检：六条451/480/364/517/520/327仍未终局，未改提示。v20原097/098(step359/364)高图木随夹指抬升、腕图木留在双指间，支持实际留住；木放置/完整成功待定，存wood-lift359-364-visual-audit和原SHA。六worker事件更新，未见timeout/rate-limit，不因慢回合重启。
 - 【Agent】【2026-10-24 19:17】[note] EXP033巡检：v18–23约466/485/378/522/530/333步，六条均无controller-exit；worker事件均更新，stderr未见timeout/rate-limit。v20公开动作已进入木块搬运对齐，尚无原生终局，不据自述计成功。未改提示/未启动新回合；CIRCLE-1仍按整批终局后单一冻结提示多回合收敛。
 - 【Agent】【2026-10-24 19:28】[result] EXP033-v22原生终局已SSH核实并保存原字节/SHA：complete/valid=true、native_success=false/score0、550步；controller/result为140动作/8259.217474秒，controller-exit尚未生成，不把清理等待当新回合。其余五条继续，不补槽/不改提示。
+- 【Agent】【2026-10-24 19:36】[note] EXP033巡检：v22 controller已正常退出0，SSH复核原生完整false/0与已保存字节一致；其它五条约491/492/421/547/343仍运行，未发现新原生终局。保持所有提示、不补开回合；等本批全部结束后只改一版同版多回合，持续检查任务已核验启用。
