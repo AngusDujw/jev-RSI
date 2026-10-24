@@ -27,3 +27,6 @@ The executable expects the exact host API and a restricted worker. It is not a
 standalone robot command script. Raw runs, both camera videos and native summaries
 are retained under `code/runs/2026-10-24-gpt-jev-program/`; the development report
 is [here](../../LOGS/2026-10-24-gpt-jev-program.md).
+
+
+October25 continuation: this exact source completed predeclared unused initial states4-8, native5/5 with zero source repairs. All432 real Jev choices and1296 steps passed audits. This strengthens reuse evidence on one task; a distinct geo-assisted fresh method failed after two GPT patches, so cold generation remains separate. See [continuation report](../../LOGS/2026-10-25-gpt-jev-stability.md).

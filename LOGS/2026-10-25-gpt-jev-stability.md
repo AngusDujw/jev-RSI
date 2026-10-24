@@ -1,5 +1,10 @@
 # GPT/Jev stability continuation
 
+Current status: predeclared frozen init4–8 completed native5/5, no source repairs.
+The first independent geo-assisted cold method failed after two GPT patches and
+23 real Jev calls. A second independent builder and a separate GPT-led revision
+are active. Earlier pending statements below describe intermediate checkpoints.
+
 This is an outer-agent experiment record, not model-facing experience.
 
 The user explicitly requested continued iteration until stable real GPT/Jev
@@ -102,3 +107,12 @@ than state dictionaries or whole-lease endpoints. Main commits30fae198/4e50afc6
 clarify these existing semantics for future calls; they are NOT hot-applied to
 this18e9bede episode. No hand edit was made to the generated source. Native
 execution after its first patch remains pending.
+
+
+## Completed frozen sequence and first cold outcome
+
+Predeclared init4-8: native5/5, zero source repairs,30 GPT reviews,432 real Jev calls and1296 policy steps. Per-case steps258/273/255/264/246 and Jev86/91/85/88/82. All source/dispatch/sign/norm/carried-gripper/acknowledgement/English-request checks passed. Completed GPT228667 input /47907 output excludes one unknown-usage failed attempt; completed Jev963526/107568 excludes another unknown-usage attempt. Full costs are unknown; original method acquisition is not free. See EXP070 and frozen-audit.json.
+
+The 18e9bede cold episode ended native=false/completion=false:7 GPT,23 real Jev,69 steps,1898.78s. GPT71909 input /39446 output; Jev47150/5727; all upstream attempts have known usage. Three complete methods and both exact patches remain retained. The last method acquired six valid samples, then exhausted a20-update high-approach lease and incorrectly indexed a position list as a state dict. This activated the previously diagnosed contract error; no object was grasped. EXP069 records the complete negative result.
+
+The separate 7a640750 cold builder has no prior source. A new e0c93679 run asks GPT to revise its unedited0f4e1e7c generated method with the corrected contract and public failure receipts, beginning a fresh scene and empty checkpoints. It is revision/reuse, not cold generation; no privileged snapshot is restored.
