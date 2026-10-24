@@ -70,6 +70,20 @@ means increasing world coordinate or positive world rotation-vector component.
 Host axis relation is increase/decrease/within_tolerance. The host does not fix
 Jev's answer. Inputs include controller limits and a source-labelled feature dict.
 
+Exact wire state: {"robot": <state()>, "processed_features": {"program": <your
+features>, "objective": {"gripper": ..., "tool_point": ...},
+"translation_error_world_m": [...], "rotation_error_world_rad": [...],
+"axes": {"x": {"error": ..., "goal_relation": ...}, ...}}, "feature_source": ...}.
+The compiler prefixes each control question with its explicit
+state.processed_features.axes.<axis>.goal_relation selector (and the objective
+gripper selector), then appends your instructions and preserves your criteria.
+Question names alone are labels, not sufficient semantic bindings. Full compiled
+requests and unchanged answers are archived. No answer is silently corrected.
+The numerical controller uses a per-axis deadband of the respective pose
+tolerance divided by sqrt(3): magnitude is zero inside it, including when Jev
+selects a nonzero sign. Outside it the signed bounded residual rule applies.
+This is declared magnitude computation, not a substituted Jev direction.
+
 Returns status (reached/moved/stalled), choices, before, after, target_tcp,
 position_error_m, rotation_error_rad, native_steps, acknowledged_steps, frame_id.
 reached uses measured post-action pose and commanded-gripper delivery only.

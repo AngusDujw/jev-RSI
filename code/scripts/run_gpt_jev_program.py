@@ -55,6 +55,17 @@ def validate_questions(questions, control=False):
     english(questions)
 
 
+def bind_control_questions(questions):
+    """Make each model-authored question's axis binding explicit on the wire."""
+    validate_questions(questions, control=True)
+    result = {}
+    for name, question in questions.items():
+        prefix = ("For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. " if name == "gripper" else
+            f"For axis {name}, read state.processed_features.axes.{name}.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. ")
+        result[name] = dict(question, instructions=prefix+"Program-authored policy: "+question["instructions"])
+    return result
+
+
 def apply_method_patch(previous, patch):
     """Apply model-authored unique replacements; archive a complete method."""
     english(patch)
@@ -382,6 +393,7 @@ def main():
         nonlocal native_steps, last_grip
         budget()
         validate_questions(questions, control=True)
+        questions = bind_control_questions(questions)
         target, quaternion = np.asarray(target, float), np.asarray(quaternion, float)
         if target.shape != (3,) or quaternion.shape != (4,) or not np.isfinite(np.r_[target, quaternion]).all() or not .99 <= np.linalg.norm(quaternion) <= 1.01:
             raise ValueError("Invalid target pose")
@@ -404,7 +416,9 @@ def main():
         decision = choose(questions, features)
         choices = decision["choices"]
         signs = np.array([{"negative": -1, "hold": 0, "positive": 1}[choices[a]] for a in ("x", "y", "z", "rx", "ry", "rz")])
-        delta, rotation = signs[:3]*np.minimum(abs(err)*.65, translation_limit), signs[3:]*np.minimum(abs(rot)*.65, rotation_limit)
+        linear_magnitude = np.where(abs(err) <= position_tolerance/3**.5, 0., np.minimum(abs(err)*.65, translation_limit))
+        angular_magnitude = np.where(abs(rot) <= rotation_tolerance/3**.5, 0., np.minimum(abs(rot)*.65, rotation_limit))
+        delta, rotation = signs[:3]*linear_magnitude, signs[3:]*angular_magnitude
         for vector, limit in ((delta, translation_limit), (rotation, rotation_limit)):
             norm = np.linalg.norm(vector)
             if norm > limit:
