@@ -93,11 +93,21 @@ and verification defects and all generation/recovery costs remain explicit.
 The same framework subsequently completed unused init12 with the untouched
 initial complete method:13GPT/109Jev/327steps, native and proposal both true.
 Unused init11 also reached native success after5automatic patches, with a false
-completion proposal. Four completed cases have native4/4; only init13 remains
-running. The five-case cold criterion is still pending.
+completion proposal. The final init13 failed before placement, so the completed
+predeclared cold cohort is native4/5 and falsifies its all-five criterion.
 All [completed methods and Jev protocols](../../artifacts/gpt-jev-cold-methods-20261025/README.md),
 including [the untouched init12 method](../../artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md),
 are preserved verbatim, separately from generic builder inputs.
+
+Candidate618f559b is a separate frozen evaluation. Generic builder knowledge now
+describes interval overlap, phase-local reference frames, measured-effect evidence
+and acknowledged phase checkpoints. References persist across source repairs
+within one physical episode, with creation provenance and a fresh tracking-quality
+check required before reuse; new episodes still have empty memory. Its predeclared
+sequence is regression init13 and unused14-17, each independent cold generation
+with32GPT/5repairs/200Jev/600policy steps/9000seconds. Init13/14 are running; no
+native outcome is established yet. These changes and the larger budget are
+evaluated together, without claiming isolated causality or improved speed.
 
 ```mermaid
 flowchart LR

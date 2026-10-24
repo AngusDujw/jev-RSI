@@ -150,6 +150,7 @@ graph LR
     T_2026W43_017["📊 libero-generic-vision<br/>9a3冷生成回归原生1/2，恢复与终局假阴…"]:::experiment
     T_2026W43_018["📊 libero-generic-vision<br/>a8e框架两例独立冷生成回归原生2/2，自…"]:::experiment
     T_2026W43_019["📊 libero-generic-vision<br/>同a8e框架未见init12冷生成初稿零修…"]:::experiment
+    T_2026W43_020["📊 libero-generic-vision<br/>a8e预定五冷回合原生4/5，稳定性标准驳…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -258,6 +259,7 @@ graph LR
   T_2026W43_016 --> T_2026W43_017
   T_2026W43_017 --> T_2026W43_018
   T_2026W43_018 --> T_2026W43_019
+  T_2026W43_019 --> T_2026W43_020
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -393,6 +395,7 @@ graph LR
 | `T-2026W43-017` | 2026-10-25 | experiment | libero-generic-vision | 9a3冷生成回归原生1/2，恢复与终局假阴性仍未收敛；停止未准入三例 | `EXP-2026W43-077` | - |
 | `T-2026W43-018` | 2026-10-25 | experiment | libero-generic-vision | a8e框架两例独立冷生成回归原生2/2，自评均false；同框架准入未见11/12，五例稳定性待定 | `EXP-2026W43-079` | - |
 | `T-2026W43-019` | 2026-10-25 | experiment | libero-generic-vision | 同a8e框架未见init12冷生成初稿零修复，原生与自评true；完成3/3，11/13仍待定 | `EXP-2026W43-080` | - |
+| `T-2026W43-020` | 2026-10-25 | experiment | libero-generic-vision | a8e预定五冷回合原生4/5，稳定性标准驳斥；保留失败，另冻结通用参考连续性候选 | `EXP-2026W43-082` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

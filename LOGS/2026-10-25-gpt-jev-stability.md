@@ -1,23 +1,17 @@
 # GPT/Jev stability continuation
 
-Current status: original frozen init4–8 completed native5/5, no source repairs.
-Two independent geo-assisted cold episodes failed. A new GPT-led revision reached
-native success on development init0, then its frozen init9/10 both failed; the
-remaining three planned admissions were stopped. Typed review contracts passed
-offline and real Pro checks. Both the typed revision and the fresh typed builder
-reached native success; the latter needed one same-scene GPT patch. The final9a3e
-framework completed two independently generated cases: native1/2, both program
-completion reports false. Remaining three cases were not admitted after failure.
-Observation-recovery candidate251104e6 was interrupted on both zero-action cases
-after a deterministic NumPy sandbox defect repeated. A minimal cached-module
-worker fix a8e6ea72 passed offline checks and native cold init9/10 both succeeded,
-using5/4automatic patches. Both program proposals were false. The same fixed
-framework also completed unused init12 with native/proposal true and zero source
-repairs. Unused init11 subsequently reached native success after5automatic
-patches, with a false completion proposal. Four completed cases have native4/4;
-only the predeclared last init13 is still running. Five-case cold stability
-remains pending.
-Earlier pending statements are intermediate states.
+Current status: the frozen a8e6ea72 independent cold cohort completed all five
+predeclared initial states9-13 with native4/5, falsifying its all-five criterion.
+Init13 exhausted the GPT budget after measured retention, before completing
+transfer/placement. All failures and costs are retained. A new separately frozen
+candidate618f559b is running independent cold init13/14; its predeclared sequence
+is13-17, with32GPT/5repairs/200Jev/600steps/9000seconds per case.
+
+Earlier scoped positives remain distinct: one unchanged prior method passed
+frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
+cold method on unused init12 with native/proposal both true. These do not make
+the failed cold cohort stable. Earlier pending statements below are historical
+checkpoints. No net efficiency or cross-task reliability claim is established.
 
 This is an outer-agent experiment record, not model-facing experience.
 
@@ -180,7 +174,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-44 tracked files changed in this continuation.
+49 tracked files changed in this continuation.
 
 | Status | File |
 | --- | --- |
@@ -206,6 +200,11 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 | A | [artifacts/gpt-jev-cold-methods-20261025/init12/README.md](../artifacts/gpt-jev-cold-methods-20261025/init12/README.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init12/method.json](../artifacts/gpt-jev-cold-methods-20261025/init12/method.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init12/method.py](../artifacts/gpt-jev-cold-methods-20261025/init12/method.py) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init13/METHOD.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init13/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init13/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init13/README.md](../artifacts/gpt-jev-cold-methods-20261025/init13/README.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init13/method.json](../artifacts/gpt-jev-cold-methods-20261025/init13/method.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init13/method.py](../artifacts/gpt-jev-cold-methods-20261025/init13/method.py) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init9/METHOD.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init9/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/README.md](../artifacts/gpt-jev-cold-methods-20261025/init9/README.md) |
@@ -417,3 +416,64 @@ remain included; no first-draft or net efficiency claim follows.
 [The complete output and Jev cooperation](../artifacts/gpt-jev-cold-methods-20261025/init11/METHOD.md)
 are preserved verbatim. Four predeclared cases have completed, native4/4.
 Only init13 remains running under the same frozen framework and budgets.
+
+
+## Frozen a8e five-case terminal result: native4/5 (EXP082)
+
+| Init | Role | Native | Program proposal | Patches | GPT / Jev / policy steps |
+|---|---|---|---|---|---|
+| 9 | regression | true | false | 5 | 24 / 92 / 276 |
+| 10 | regression | true | false | 4 | 24 / 138 / 414 |
+| 11 | unused layout | true | false | 5 | 24 / 99 / 297 |
+| 12 | unused layout | true | true | 0 | 13 / 109 / 327 |
+| 13 | unused layout | false | false | 4 | 24 / 80 / 240 |
+
+All five planned cases were completed. The last failure cannot be removed,
+replaced or hidden behind the earlier4/4 checkpoint. Its final method restored
+same-frame measured evidence and initialized a37-feature patch, but registration
+failed after another upward motion. Current correspondence evidence was required
+and no GPT resource remained. The episode ended gpt_budget/native false at
+5210.25seconds, before transfer and placement.
+
+The whole cohort audit passed518original Jev choices/3626labels/1554policy steps,
+23complete source versions and86strict review returns. All109GPT/518Jev upstream
+attempts have known usage: GPT input1497820/output643236; Jev1171790/128982.
+No unknown attempt is counted as zero. The source patches total18; one case had
+zero patches. This is neither stable all-five success nor token/latency improvement.
+
+The [old complete-output package](../artifacts/gpt-jev-cold-methods-20261025/README.md)
+contains all five outcomes, including the failed init13. The aggregate raw audit
+is code/runs/2026-10-25-gpt-jev-program/a8e-cold-cohort-audit.json.
+
+## New continuity candidate: predeclared separately
+
+Candidate618f559b keeps task language, images, all model text and the exact API
+in English. Its generic inputs contain no task IDs, object names or trajectories.
+It preserves patch references across source repairs within a physical episode,
+with32bounded handles and creation provenance; a new scene has an empty bank.
+A restored handle requires a fresh quality-checked update and correct physical
+surface identity. No tracking threshold or native predicate was weakened.
+
+Generic knowledge adds a positive interval-overlap identity (50000scalar
+feasibility cases checked), phase-local reference gauges, visible plane/edge/
+fiducial pose recovery, separation of pose tolerances from measured effects,
+and acknowledged phase/jaw checkpoints. It contains no task command recipe.
+The allowed GPT ceiling becomes40; this evaluation explicitly uses32.
+
+Predeclared new cohort: regression init13, previously unused14-17, each independent
+cold generation with no old source and empty scene memory. Fixed limits32GPT,
+5source repairs,200Jev,600policy steps,9000seconds. Init13/14 admitted first.
+An admitted failure stops remaining unadmitted cases; already running peers still
+finish and remain in the record. Prompt/knowledge, reference lifecycle and budget
+changed together, so a gain cannot be attributed to a single component. This
+candidate is evaluated separately from the completed a8e4/5 result.
+
+
+Production reference-lifecycle offline validation passed: unchanged production
+functions and actual restricted workers initialize a reference in method0 and
+update it from method1 at frame168 (19/20 inliers, tracked). A new episode cannot
+recall that checkpoint. The first diagnostic incorrectly expected a missing key
+to return None; the API correctly raises ValueError, and the diagnostic expectation
+was corrected without production changes. Temporary neutral method files were
+removed. Recorded public RGB-D only, zero model calls or new physics, Native=N/A.
+Receipt: code/runs/2026-10-25-gpt-jev-program/continuity-production-offline/validation.json.
