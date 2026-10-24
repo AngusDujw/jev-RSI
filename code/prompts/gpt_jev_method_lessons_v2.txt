@@ -1,5 +1,38 @@
 Generic development lessons, supported only by the recorded development failure:
 
+- Reference continuity is part of the runtime contract. A source repair does not
+  reset the physical episode or its saved patch references. Store useful handles
+  and their surface identity in checkpoints. A fresh update must still establish
+  current quality; persistence does not certify object identity or attachment.
+- For positive overlap m between a translated interval [a+t,b+t] and [c,d],
+  feasibility is exactly c+m-b <= t <= d-m-a, provided
+  0 < m <= min(b-a,d-c). A finite contact band can overlap a side even if its
+  center or its entire band is not contained in that side. Intersect the relevant
+  measured overlap and support-clearance constraints in a consistent frame.
+  This mathematical identity is not evidence that physical contact occurred.
+- A prospective motion test can start from a newly measured, identified patch.
+  Its reference gauge need not equal an older full-shape gauge. Compare the
+  independently observed patch motion with measured hand motion; do not substitute
+  hand motion for an object measurement. Reconstruct a global shape pose only
+  when a later action actually needs it. A safe observation-producing action
+  still needs phase-local justification, not proof of an unavailable later state.
+- With a known rigid planar shape, a measured face plane and an identifiable
+  edge direction constrain orientation. An independent physical fiducial can
+  resolve translation and finite edge-identity hypotheses. Use visible geometry,
+  validate residuals and reject ambiguous hypotheses; do not invent hidden corners
+  or require an entire old landmark set when sufficient independent evidence exists.
+- Treat goal-pose tolerance and actual effect uncertainty separately. After a
+  bounded pose lease, evaluate the relevant measured geometry before declaring
+  an object-level outcome. A small residual is neither failure nor proof of the
+  object effect. Do not double-count a future control allowance as an unobserved
+  current displacement after the actual geometry has been measured. Heuristic
+  uncertainty is not a calibrated multi-sigma certificate.
+- Checkpoint acknowledged jaw transitions and phase intent before a later
+  observation can fail. A repair must distinguish approach, possible holding,
+  measured retention, and actual release. After release, a missing observation
+  alone is not a reason to regrasp or disturb the object; seek bounded additional
+  evidence or report uncertainty. Model proposals and native task scores differ.
+
 - A valid reference patch can become untrackable after viewpoint or occlusion
   changes. An unknown registration is not proof of a lost object. Design a
   bounded current-observation fallback for each phase that uses registration,

@@ -71,7 +71,14 @@ recovery. Return meaningful diagnostic values when a fit is rejected.
 - api.track_init(camera, polygon): initialize a generic textured RGB-D surface
   patch tracker on a currently visible 3..16 vertex polygon. Returns handle,
   reference_features and frame_id; at least 12 textured depth-valid features are
-  required. Up to 16 handles per method; handles reset for a repaired method.
+  required. Up to 32 handles per physical episode. Handles persist across source
+  repairs in that same episode; a new episode starts with an empty tracker bank.
+  The receipt also identifies camera, method_number and source_sha256 at creation.
+  Save a useful handle, its physical identity, camera/ROI and reference frame in
+  a checkpoint if a repair may need it. Restoring a handle is not a fresh pose:
+  call track_update for current evidence and reject unknown or inadequate quality.
+  Reuse only a reference to the same physical surface; do not repurpose a handle
+  for a new object merely because its identifier is available.
 - api.track_update(handle): compare the reference patch with both current views
   using SIFT descriptors, depth backprojection and robust rigid registration.
   Returns status tracked or unknown. tracked includes a 4x4

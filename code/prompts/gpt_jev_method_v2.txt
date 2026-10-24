@@ -50,6 +50,10 @@ evidence that a repair needs. A checkpoint is historical data with provenance,
 not a current sensor value. Revalidate affected dependencies after motion; do
 not discard a still-valid measured invariant solely because Python restarted.
 New episodes have empty checkpoint memory and must acquire their own evidence.
+Useful tracker handles also persist within the same physical episode. Checkpoint
+their reference provenance and surface identity; reuse a relevant saved reference
+with a fresh track_update after a repair instead of needlessly discarding it.
+A historical reference is not a current detection, and unknown still needs recovery.
 
 The supplied manual is the exact API contract. Use only its operations and
 schema. Before submission, audit every helper return-key access and every API

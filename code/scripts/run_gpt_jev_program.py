@@ -254,7 +254,7 @@ def main():
     out = args.output.resolve()
     if args.bridge != "http://127.0.0.1:7921" or out.exists() or not out.is_relative_to(repo / "code/runs"):
         p.error("Use a new project code/runs directory and the explicit loopback relay")
-    if not (1 <= args.max_gpt <= 24 and 1 <= args.max_jev <= 300 and 1 <= args.max_native_steps <= 800 and 0 <= args.max_repairs <= 5):
+    if not (1 <= args.max_gpt <= 40 and 1 <= args.max_jev <= 300 and 1 <= args.max_native_steps <= 800 and 0 <= args.max_repairs <= 5):
         p.error("Invalid episode budget")
     archived_method = None
     if args.method_file:
@@ -384,12 +384,13 @@ def main():
             plane=plane, frame_id=native_steps, source="calibrated_ray_intersection_with_program_supplied_plane")
 
     def track_init(camera, polygon):
-        if len(trackers) >= 16:
-            raise ValueError("At most 16 public patch trackers per method")
+        if len(trackers) >= 32:
+            raise ValueError("At most 32 public patch trackers per episode")
         tracker = RGBDPatch(view(camera), polygon, native_steps)
         handle = "patch_"+str(len(trackers))
         trackers[handle] = tracker
         return dict(handle=handle, frame_id=native_steps, reference_features=len(tracker.reference),
+                    camera=camera, method_number=methods[-1]["number"], source_sha256=methods[-1]["source_sha256"],
                     source="caller-selected visible RGB-D patch; not an object identity oracle")
 
     def checkpoint(key, value):
@@ -620,7 +621,6 @@ def main():
     def execute_method(method, number):
         nonlocal worker, rpc_calls, annotation_initial, annotation_last
         annotation_initial = annotation_last = None
-        trackers.clear()
         validate_source(method["source"])
         path = out / f"method-{number:02d}.py"
         path.write_text(method["source"])
