@@ -1,0 +1,55 @@
+{
+  "origin": "Original GPT submit_method plus one GPT-authored exact patch, assembled without hand editing",
+  "host_commit": "b0b53fe4",
+  "task": {
+    "suite": "libero_goal",
+    "task_id": 1335,
+    "init_index": 0,
+    "seed": 0
+  },
+  "fresh_builder": {
+    "archived_method_input": false,
+    "initial_feedback": [],
+    "initial_checkpoint_manifest": []
+  },
+  "same_episode_source_repairs": 1,
+  "source_sha256": "52da6a449b236a017887b6b42849fd8431f0bce59566f25eb76196a39a424f07",
+  "native_audit": {
+    "native_success": true,
+    "termination": "completion_proposed",
+    "gpt_calls": 17,
+    "jev_calls": 107,
+    "native_steps": 321,
+    "elapsed_s": 2524.771372907795,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "dcfd66ec43137ec7a5ffd18c7bcb45b0fd509af959268cb09d839c6e15ea719c"
+      },
+      {
+        "number": 1,
+        "source_sha256": "52da6a449b236a017887b6b42849fd8431f0bce59566f25eb76196a39a424f07"
+      }
+    ],
+    "audit": "107 original choices, labels, bounds, carried gripper and 321 steps passed",
+    "models": {
+      "gpt": {
+        "attempts": 17,
+        "unknown_usage": 0,
+        "completed_input": 165648,
+        "completed_output": 61757,
+        "relay_seconds": 2349.2292503849603
+      },
+      "jev": {
+        "attempts": 107,
+        "unknown_usage": 0,
+        "completed_input": 223312,
+        "completed_output": 26643,
+        "relay_seconds": 120.40998491714709
+      }
+    },
+    "strict_reviews_validated": 15
+  },
+  "raw_run": "code/runs/2026-10-25-gpt-jev-program/typed-cold-init0",
+  "scope": "One development initial state, fresh generation followed by one same-scene GPT repair. No multi-task, statistical stability, net token-saving or speedup claim. New final-framework cold cohort remains separate."
+}
