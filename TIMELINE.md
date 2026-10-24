@@ -272,6 +272,7 @@ graph LR
     T_2026W43_025["🔬 gpt-as-policy-luna-media<br/>去掉Agent自设的白底座搬运，只抓紫木以…"]:::hypothesis
     T_2026W43_026["📊 gpt-as-policy-luna-media<br/>三条近下startup全落实但native…"]:::experiment
     T_2026W43_027["📊 gpt-as-policy-luna-media<br/>两组冻结提示各完整0/3，数值姿态/释放检…"]:::experiment
+    T_2026W43_028["📝 gpt-as-policy-luna-media<br/>用户纠正：一次只改一个版本，同版多独立回合…"]:::note
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -496,6 +497,7 @@ graph LR
   T_2026W43_024 --> T_2026W43_025
   T_2026W43_025 --> T_2026W43_026
   T_2026W43_026 --> T_2026W43_027
+  T_2026W43_027 --> T_2026W43_028
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -755,6 +757,7 @@ graph LR
 | `T-2026W43-025` | 2026-10-24 | hypothesis | gpt-as-policy-luna-media | 去掉Agent自设的白底座搬运，只抓紫木以减少预算浪费；旧回合完整退出后检验 | `EXP-2026W43-031` | - |
 | `T-2026W43-026` | 2026-10-24 | experiment | gpt-as-policy-luna-media | 三条近下startup全落实但native0/3；不搬底座仅.15部分分，冻结实测放置三回合区分输入落实与XY支撑 | `EXP-2026W43-029` | - |
 | `T-2026W43-027` | 2026-10-24 | experiment | gpt-as-policy-luna-media | 两组冻结提示各完整0/3，数值姿态/释放检查仍不足；按用户改为新提示单次并行探索 | `EXP-2026W43-033` | - |
+| `T-2026W43-028` | 2026-10-24 | note | gpt-as-policy-luna-media | 用户纠正：一次只改一个版本，同版多独立回合并行；已启动六分支允许跑完后再改 | `EXP-2026W43-033` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
