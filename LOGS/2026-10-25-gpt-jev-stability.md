@@ -10,8 +10,11 @@ framework completed two independently generated cases: native1/2, both program
 completion reports false. Remaining three cases were not admitted after failure.
 Observation-recovery candidate251104e6 was interrupted on both zero-action cases
 after a deterministic NumPy sandbox defect repeated. A minimal cached-module
-worker fix a8e6ea72 passed offline checks; new cold init9/10 are running with the
-same declared larger budget. Earlier pending statements are intermediate states.
+worker fix a8e6ea72 passed offline checks and native cold init9/10 both succeeded,
+using5/4automatic patches. Both program proposals were false. The same fixed
+framework is now generating independent methods for unused init11/12; init13
+remains unadmitted. Five-case cold stability is still pending. Earlier pending
+statements are intermediate states.
 
 This is an outer-agent experiment record, not model-facing experience.
 
@@ -269,3 +272,49 @@ Interruption-cost closure: all9 upstream attempts were eventually archived with
 known usage: input124354/output79000, no unknown attempt. The two responses
 not delivered to the stopped hosts are saved separately as undelivered-upstream
 receipts. They were not executed or supplied to the new independent episodes.
+
+
+## Corrected worker cohort: native regression2/2 (EXP079)
+
+The fixed a8e6ea72 framework completed independently generated regression init9
+and10 with native true/true. The native evaluator, as explicitly required by the
+user, is authoritative. Both program proposals were false; do not substitute
+those proposals for the score or hide their verification defects.
+
+| Init | Native | Program proposal | GPT patches | GPT / Jev / steps | Seconds |
+|---|---|---|---|---|---|
+| 9 | true | false | 5 | 24 / 92 / 276 | 4199.25 |
+| 10 | true | false | 4 | 24 / 138 / 414 | 4555.39 |
+
+Init9 repaired a finite-pad overlap model, resumed actual engagement after a
+3.87mm residual, recovered registration from partial physical correspondences
+and a broad planar surface, refitted the current receiver rather than assuming
+stationarity, and performed a bounded measured-alignment trial. Release produced
+native success; its program did not establish postrelease stability. Init10
+repaired correspondence/anchor handling and resource allocation, then used
+fixed-camera RGB-D after release with no further visual review. It observed
+detachment and a short stable interval, but its conservative full-footprint
+containment check remained unresolved and an attempted extra repair hit the GPT
+budget. Native success does not validate every stricter geometric proxy.
+
+Audits passed230 actual Jev choices,1610axis/gripper labels,690steps,11complete
+source hashes and37strict review returns. Both protocol manifests are identical
+for prompt/manual/implementation hashes, and implementation hashes match current
+project files. All48GPT/230Jev upstream attempts have known usage. GPT input
+614864/output265373; Jev input513958/output57270. Completed reviews contribute
+344694GPT input/89259output;9source patches contribute253136/127594. Initial
+generation costs are also retained. This is not first-draft success, a net
+token saving, or a speedup result. Two scenes ran concurrently, not as a timing
+comparison.
+
+The unchanged a8e6ea72 candidate now admits fixed unused init11/12, each with a
+fresh physical scene, empty memory and no old source. Init13 remains unadmitted.
+Budgets stay24GPT/5repairs/200Jev/600policy steps/7200seconds. An admitted failure
+stops unadmitted cases; do not replace a layout. Two regression successes do not
+satisfy the original five-case cold criterion.
+
+A separate offline diagnostic reconstructed the original selected public patch
+from compressed JPEG and recorded depth/calibration: frame0→168 gave19/20
+inliers and0.163mm residual. This is not identical raw-RGB replay or native
+success. It suggests reference continuity may reduce recovery overhead, but no
+tracking lifecycle change was applied to this frozen cohort.

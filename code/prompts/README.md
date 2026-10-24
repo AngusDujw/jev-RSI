@@ -86,6 +86,13 @@ seccomp and unchanged-source recorded-RPC checks passed. The new independent
 cold cohort uses this fix; its native outcome is tracked in the continuation
 record, separately from the two interrupted zero-action cases.
 
+The corrected fixed framework subsequently achieved native2/2 on independently
+generated regression init9/10, with5/4automatic source patches and24GPT calls
+each. Both completion proposals remained false; native scoring is authoritative,
+and verification defects and all generation/recovery costs remain explicit.
+The same framework now runs independently generated unused init11/12, with13
+not yet admitted. The five-case cold criterion is still pending.
+
 ```mermaid
 flowchart LR
   F[Fixed English builder/API/lessons] --> G[GPT complete method package]
