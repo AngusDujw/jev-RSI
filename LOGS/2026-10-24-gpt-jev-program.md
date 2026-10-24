@@ -44,6 +44,17 @@ convenient intermediate state for subsequent fresh-episode tests.
   repeatedly observed development scene, not a held-out task or transfer sample.
 - Ten initial settling steps per episode are reported separately from policy steps.
 
+Remote working directories (each line below is a separate path, not a command):
+
+```text
+/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-generic-20261024
+/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-final-framework-20261024
+```
+
+The first directory contains r1-r11b. The second contains r12. Tested commits are
+listed per episode; post-test source/documentation may subsequently advance a
+worktree without changing the recorded outcome or its original hashes.
+
 ## Preserved development episodes
 
 | Run | Actual host source | GPT calls | Jev calls | Policy steps | Elapsed seconds | Native success | Main failure |
@@ -325,6 +336,15 @@ while overall GPT cost and meaningful speedup are not established. This bounded
 batch ends here rather than adding task-specific command tables or claiming
 general stability from a single task.
 
+## Closure
+
+The owned local relay exited, both loopback port-7921 listeners were absent, and
+the remote inspection found no owned robot or worker process. GPU 4 was idle at
+0% utilization and 4 MiB allocated. All code/source checks and strict weekly-log
+lint passed. Original untracked user directories were preserved. Exact generated
+method bytes remain versioned with the recorded source hash. No additional model
+or robot requests were issued after the final timeout and relay cancellation.
+
 ## Evidence boundary
 
 EXP-2026W43-055 through EXP-2026W43-067 preserve all outcomes in the weekly log.
@@ -333,7 +353,7 @@ The earlier source-grounded CaP/HexaShell/EmbodiedEvo comparison is in
 `code/prompts/gpt_jev_program_design.md`; its candidate prompt is not the active
 v2 prompt. No published result from those projects is treated as our result.
 
-After a native-successful development method, freeze the prompt/manual/harness
-and evaluate fresh initial states and held-out tasks. Stability needs repeated
-native successes, and efficiency needs matched-success accounting that includes
-generation, repairs, reviews, Jev, failures and acquisition costs.
+Further stability claims would require more frozen initial states and held-out
+task families. Full efficiency claims would require matched-success accounting
+including generation, repairs, reviews, Jev, failures and acquisition costs, with
+all upstream usage observed. Those claims are outside the evidence of this batch.
