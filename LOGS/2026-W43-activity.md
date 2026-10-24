@@ -537,3 +537,4 @@
 - 【Agent】【2026-10-24 20:40】[result] EXP033-v18慢调用只读定位：524步call114回位命令被Recovery EEF target exceeds0.35rad拒绝，公开state独立复算left0.342841/right0.445032rad，右超0.35而reason声称均合法；原生仍524。之后工具曾读错不存在的obs111路径，末事件仍有活动。保存return524-rejected-rotation-audit与源SHA，不注入替代动作、不重启/改活提示。
 - 【Agent】【2026-10-24 20:48】[op] 新建实验块 EXP-2026W43-034：v18在回位命令拒绝后的900秒RPC空闲超时，524步中断取证  ↪ `EXP-2026W43-034`
 - 【Agent】【2026-10-24 20:49】[result] EXP034记录v18在524步controller1/EOF中断，native incomplete/valid=false/success/score null，不计完整失败。远端实际RPC900秒timeout与终局距末成功RPC899.797秒一致，audit保存；helper已先保存终局原字节，后因缺controller/result报错不影响证据。当前剩三条不改、不补槽；新批再处理连接等待上限。
+- 【Agent】【2026-10-24 20:51】[op] 持续巡检任务已追加EXP034最新中断证据：v18已终止无效不等其变valid、不重跑；当前只等v19/v20/v23自然终止，整批结束后新隔离服务先修RPC空闲等待，再单版本多回合。任务频率/授权范围未扩展，不动活服务。
