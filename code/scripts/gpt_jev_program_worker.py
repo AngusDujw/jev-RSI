@@ -64,6 +64,7 @@ def restrict_syscalls():
 
 def worker():
     import numpy as np
+    import gpt_jev_geometry as geo
     request = json.loads(sys.stdin.readline())
     tree = validate_source(request["source"])
     code = compile(tree, "generated-method", "exec")
@@ -98,7 +99,7 @@ def worker():
     def program_print(*items, **kwargs):
         return RPC().note(" ".join(str(item) for item in items)[:4000])
     safe["print"] = program_print
-    namespace = dict(__builtins__=safe, np=np, math=math)
+    namespace = dict(__builtins__=safe, np=np, math=math, geo=geo)
     restrict_syscalls()
     send(dict(kind="sandbox", isolation="separate_process_default_deny_seccomp"))
     if not json.loads(incoming.readline()).get("ready"):

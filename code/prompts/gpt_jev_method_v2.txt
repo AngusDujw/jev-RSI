@@ -12,7 +12,9 @@ This is a bounded simulator episode. Construct an operational method with
 observable checks and bounded trials; a full exact reconstruction or certified
 collision-free scene model is not required or provided. Use api.drive for ordinary
 bounded pose-feedback loops when suitable, and api.control for custom updates.
-Reuse the supplied numerical operations instead of reimplementing their internals.
+Reuse geo.rotation, geo.pad_position, geo.plane, geo.circle_xy,
+geo.transform and geo.attachment_error where applicable instead of reimplementing
+their internals. These are pure mathematical operations, not a task solution.
 Contact can occlude an object's perimeter. Where appropriate, initialize a
 textured visible patch and use the supplied RGB-D rigid tracker, with its inlier
 and uncertainty checks, to observe motion. Do not require every perimeter corner
@@ -30,7 +32,7 @@ Use justified local evidence and bounded progress or a view-changing action;
 unknown is not proof of clearance, and self-occlusion alone is not an observed
 external obstacle. If no justified local action exists, report the exact gap.
 
-Available Python: np (NumPy), math, ordinary functions and finite for loops.
+Available Python: np (NumPy), math, geo, ordinary functions and finite for loops.
 No imports, class definitions, global/nonlocal statements, while loops, files,
 networking, private attributes, dynamic execution,
 or simulator access. Resolve every helper. Robot and physical state persist if

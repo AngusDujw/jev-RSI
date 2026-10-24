@@ -5,7 +5,7 @@ top-left pixel origin. Depth and calibration support metric backprojection.
 Robot state is proprioception and own finger geometry only. World units are m,
 rotation vectors rad, quaternions xyzw. Nothing exposes hidden object state.
 
-Available globals: np and math; define main(api). The exact allowed builtins are
+Available globals: np, math and geo; define main(api). The exact allowed builtins are
 abs, all, any, bool, dict, enumerate, float, int, len, list, max, min, range,
 reversed, round, set, sorted, str, sum, tuple, zip, isinstance, type, Exception,
 RuntimeError, ValueError and RPC-backed print. Other builtin names are unavailable;
@@ -19,6 +19,29 @@ Structured numbers sent to GPT/Jev are serialized with six significant digits;
 the worker's API data, numerical control and original execution receipts retain
 full precision. Calculate geometry using API measurements rather than assuming
 displayed decimal length establishes sensing accuracy.
+
+## Pure numerical helpers
+
+geo contains pure numerical helpers, not robot skills or task policies. Its
+arrays are local NumPy arrays; use .tolist() for API arguments. No helper reads
+sensors, chooses a measurement region, controls motion or accepts a task goal.
+Use these instead of generating equivalent formulas:
+
+- geo.rotation(quaternion_xyzw): active 3x3 tool-to-world matrix; unit quaternion.
+- geo.transform(points, matrix): N x 3 points transformed by a proper rigid 4x4.
+- geo.pad_position(state): world pad center from api.state() and own tool offset.
+- geo.plane(points): >=3 noncollinear 3D points. Returns coefficients [nx,ny,nz,d]
+  with normal toward +z, center_world_m, rms_m and two in_plane_spread_m values.
+- geo.circle_xy(points): >=3 noncollinear XY or XYZ samples. Returns center_xy_m,
+  radius_m, rms_m, max_radial_error_m, largest_angular_gap_rad. This fits XY only;
+  check horizontal-plane evidence and boundary identity separately.
+- geo.attachment_error(points_before, points_after, state_before, state_after):
+  maximum world discrepancy in m between corresponding measured points and the
+  motion predicted by the measured TCP rigid transform. Does not label a grasp.
+
+Fits reject malformed/nonfinite/degenerate inputs but do not certify model
+adequacy. The program chooses correspondences, uncertainty, thresholds and
+recovery. Return meaningful diagnostic values when a fit is rejected.
 
 ## Observation and geometry
 
