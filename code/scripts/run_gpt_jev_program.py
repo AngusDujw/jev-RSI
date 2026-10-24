@@ -26,6 +26,8 @@ def object_schema(properties):
 
 TEXT = dict(type="string")
 METHOD_SCHEMA = object_schema({k: TEXT for k in ("explanation", "source", "interface", "jev_protocol")})
+PATCH_SCHEMA = object_schema(dict(explanation=TEXT, interface=TEXT, jev_protocol=TEXT,
+    replacements=dict(type="array", minItems=1, maxItems=12, items=object_schema(dict(old=TEXT, new=TEXT)))))
 REVIEW_SCHEMA = object_schema(dict(
     status=dict(type="string", enum=["continue", "complete", "stop"]), explanation=TEXT,
     parameters_json=TEXT,
@@ -51,6 +53,23 @@ def validate_questions(questions, control=False):
         if control and set(criteria) != ({"open", "close", "keep"} if name == "gripper" else {"negative", "hold", "positive"}):
             raise ValueError("Control options do not match dispatch mapping")
     english(questions)
+
+
+def apply_method_patch(previous, patch):
+    """Apply model-authored unique replacements; archive a complete method."""
+    english(patch)
+    replacements = patch.get("replacements")
+    if not isinstance(replacements, list) or not 1 <= len(replacements) <= 12:
+        raise ValueError("Expected 1..12 unique source replacements")
+    source = previous["source"]
+    for edit in replacements:
+        if set(edit) != {"old", "new"} or not isinstance(edit["old"], str) or not edit["old"] or not isinstance(edit["new"], str):
+            raise ValueError("Invalid source replacement")
+        if source.count(edit["old"]) != 1:
+            raise ValueError("Replacement old text must occur exactly once")
+        source = source.replace(edit["old"], edit["new"], 1)
+    validate_source(source)
+    return dict(source=source, **{k: patch[k] for k in ("explanation", "interface", "jev_protocol")})
 
 
 def main():
@@ -230,9 +249,16 @@ def main():
             "Return submit_review only, all text English ASCII. parameters_json must encode an object with concise actionable numeric or boolean observations requested by the caller. "
             "Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. "
             "The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.")
-        tool = "submit_method" if kind == "method" else "submit_review"
+        patching = kind == "method" and failed_method is not None
+        if patching:
+            instructions += ("\n\nREPAIR MODE: Return submit_method_patch with a small set of exact old/new source replacements applied to previous_method.source. "
+                "The runtime will assemble and validate the complete executable method. Each old string must occur exactly once. "
+                "Repair the diagnosed mechanism and any directly coupled defects; preserve useful existing processing and Jev definitions. "
+                "Do not retransmit the whole source. Keep replacement text below 12000 characters when feasible. "
+                "Provide updated concise interface and jev_protocol descriptions. A source patch is a method revision, never a motion command.")
+        tool = "submit_method_patch" if patching else "submit_method" if kind == "method" else "submit_review"
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
-            input=[dict(role="user", content=content)], tools=[dict(type="function", name=tool, description="Return the requested executable method or observation review", parameters=METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA)],
+            input=[dict(role="user", content=content)], tools=[dict(type="function", name=tool, description="Return the requested executable method, unique method patch, or observation review", parameters=PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA)],
             tool_choice=dict(type="function", name=tool), parallel_tool_calls=False, store=False)
         raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}")
         if not raw.get("model", "").startswith("gpt-6-astra") or raw.get("status") != "completed":
@@ -245,7 +271,7 @@ def main():
         previous = current
         save(out / f"gpt-{index:02d}.parsed.json", answer)
         print(json.dumps(dict(event="gpt", index=index, kind=kind, frame=native_steps)), flush=True)
-        return answer
+        return apply_method_patch(failed_method, answer) if patching else answer
 
     def review(question):
         if not isinstance(question, str) or not 1 <= len(question) <= 6000:
