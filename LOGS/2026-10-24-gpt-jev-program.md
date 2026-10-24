@@ -2,8 +2,10 @@
 
 Status: r6 reached native success after three same-scene repairs. The first frozen
 new-init probe r7 and appearance-growth comparison r8 failed. Spatial feature
-budget comparison r9 succeeded with the unchanged method; a frozen unused-init
-probe is running. This is not a stability or efficiency result. All model-facing
+budget comparison r9 succeeded with the unchanged method, and frozen unused init 2
+also succeeded. Completed-response wire usage decreased in a successful pair,
+but full GPT cost remains unknown and speed did not meaningfully improve. A final
+fresh-builder pilot is running. There is no multi-task stability guarantee. All model-facing
 prompts, requests and lessons are English. This report describes outer-agent
 experiment organization; it is not supplied as a task-solving prompt.
 
@@ -53,6 +55,9 @@ convenient intermediate state for subsequent fresh-episode tests.
 | r7 | 3bafd3a7 | 4 | 52 | 156 | 313.05 | false | Frozen method on first unused init 1 lost transfer tracking |
 | r8 | 6c57717a | 4 | 52 | 156 | 292.10 | false | Reference growth improved inliers but did not solve feature starvation |
 | r9 | ea947a98 | 6 | 85 | 255 | 615.37 | true | Same init 1, complete unchanged method with spatial feature coverage |
+| r10 | ea947a98 | 6 | 84 | 252 | 556.95 | true | First unused init 2 after method/library freeze; zero repairs |
+| r11 | 7ab94ac0 | 1 failed client call | 0 | 0 | 295.52 | false at initialization only | Transport failure before the first review; no policy comparison |
+| r11b | 7ab94ac0 | 6 | 85 | 255 | 612.38 | true | Same init 1, wire compaction only; one unknown-usage upstream retry |
 
 All runs are under `code/runs/2026-10-24-gpt-jev-program/rN/`; complete requests,
 responses, methods, RPC feedback, native receipts, depth/calibration and two camera
@@ -94,6 +99,9 @@ not labelled stable. The exact unedited package is versioned under
 | r7 | 37255 | 4994 | 3895 |
 | r8 | 37236 | 5193 | 4098 |
 | r9 | 57227 | 9831 | 7787 |
+| r10 | 56929 | 10060 | 8049 |
+| r11 | unknown | unknown | unknown |
+| r11b | 46281 | 8799 | 6951 |
 
 r2 has one client failure and three upstream attempts with unknown usage; they
 are not zero-cost calls. Archived-method tests retain acquisition costs in their
@@ -101,6 +109,12 @@ originating runs instead of making them disappear. Raw bridge records preserve
 Jev responses and reported usage independently. No matched-success baseline has
 been run, so reduced call frequency is not evidence of token savings or speed.
 r5's first complete method took 877.83 seconds to generate.
+
+The full upstream audit through r11b found nine unknown-usage failed attempts:
+three in r2, two before a completed r3 response, three in interrupted r11, and
+one before r11b's last completed response. These are additional to the table's
+completed-response usage. They must not be assigned zero cost. Bridge elapsed
+times include transport and internal retries, not pure model compute.
 
 | Jev scope | Calls | Reported input tokens | Reported output tokens | Sum of service seconds |
 | --- | ---: | ---: | ---: | ---: |
@@ -111,6 +125,9 @@ r5's first complete method took 877.83 seconds to generate.
 | r7 | 52 | 133763 | 12948 | 58.42 |
 | r8 | 52 | 133653 | 12948 | 60.88 |
 | r9 | 85 | 224705 | 21165 | 97.74 |
+| r10 | 84 | 221653 | 20916 | 91.91 |
+| r11 | 0 | 0 | 0 | 0 |
+| r11b | 85 | 190030 | 21165 | 126.85 |
 | Separate zero-motion diagnostics | 2 | 6083 | 498 | 3.60 |
 
 These are distinct model token accounting streams, not interchangeable monetary
@@ -213,13 +230,46 @@ on the now-seen development init 1 with no repairs. It reached native success:
 at the former failing frame 156 it retained 120 inliers with 33.1 micrometre
 internal registration RMS, then released and verified the placed object. This
 residual is not true-pose accuracy. No method source or question text changed.
-r10 freezes ea947a98 and the same full source on previously unused init 2.
+r10 froze ea947a98 and the same full source on previously unused init 2 and
+completed it natively with six visual reviews, 84 real Jev decisions and 252
+policy steps. No new method generation or repair occurred. This is one successful
+unused initial state, not evidence for unseen task families or statistical stability.
 GPT review outputs remain
 stochastic; freezing simulator seed does not make visual interpretations identical.
 
+## Completed-response wire comparison
+
+r11b and r9 used the same init 1, exact full method and measurement library.
+Only structured input serialization changed: six significant digits and compact
+JSON text. Program/API arithmetic, source strings, images and execution receipts
+retain full precision. Both ended native true with six reviews, 85 Jev decisions
+and 255 policy steps.
+
+Completed-response GPT input fell from 57227 to 46281 tokens (19.1%); known output
+fell from 9831 to 8799. r11b additionally had one failed upstream TLS attempt with
+unknown usage, so its full GPT total cannot be determined. Jev input fell from
+224705 to 190030 (15.4%), with the same 21165 output tokens. All 606 Jev records
+through r11b have completed usage and no unknown internal attempts. These model
+token streams are not interchangeable monetary costs.
+
+Elapsed time changed from 615.37 to 612.38 seconds, only 0.5%; there is no meaningful
+speedup result. The initial interrupted wire episode r11 adds 295.52 seconds and
+three unknown-usage attempts. r11 plus r11b therefore used 907.90 runtime seconds
+before accounting for other acquisition and development work. The comparison
+supports smaller completed-response inputs, not an overall cost or speed claim.
+
+## Final fresh-builder pilot
+
+r12 freezes the final framework at 7fbb7737 on previously unused init 3. It receives
+only fixed English builder/API/generic lessons plus current public images/state.
+There is no archived method, previous-method source, program feedback or checkpoint
+memory in the actual initial request. This was checked in the saved request and
+protocol. The pilot permits at most two same-scene method repairs and retains the
+same account routing and isolated terminal native evaluation. Outcome is pending.
+
 ## Evidence boundary
 
-EXP-2026W43-055 through EXP-2026W43-063 preserve all outcomes in the weekly log.
+EXP-2026W43-055 through EXP-2026W43-066 preserve all outcomes in the weekly log.
 The v1 contract adapter and its separate development failures remain unchanged.
 The earlier source-grounded CaP/HexaShell/EmbodiedEvo comparison is in
 `code/prompts/gpt_jev_program_design.md`; its candidate prompt is not the active

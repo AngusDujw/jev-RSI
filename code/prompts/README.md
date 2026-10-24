@@ -31,9 +31,11 @@ separate from task success. Development failures, source revisions and acquisiti
 costs remain part of the evidence. One repeatedly observed development scene
 reached native success after three same-scene GPT repairs. The first frozen
 new-init probe failed during transfer tracking. A spatial feature-budget fix then
-completed the same init with the unchanged method and no repairs; a frozen
-unused-init probe is running. No stability, transfer, token-saving or speed result has
-been established. See the
+completed the same init and one frozen unused init with the unchanged method and
+no repairs. A successful same-init wire comparison reduced completed-response
+GPT inputs by 19.1%, but unknown retry usage prevents a full GPT cost comparison;
+elapsed time was effectively unchanged. Multi-task stability remains untested.
+One final fresh-builder pilot is running without archived task source. See the
 [complete-method development report](../../LOGS/2026-10-24-gpt-jev-program.md).
 
 The same existing signed-in local Pro planner and separate authorized Jev routing

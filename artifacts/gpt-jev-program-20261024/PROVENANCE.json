@@ -40,7 +40,31 @@
       "gpt_reviews": 6,
       "jev_calls": 85,
       "policy_steps": 255
+    },
+    {
+      "run": "r10",
+      "init_index": 2,
+      "scope": "First unused initial state after method and measurement-library freeze",
+      "host_commit": "ea947a98",
+      "native_success": true,
+      "method_repairs": 0,
+      "gpt_reviews": 6,
+      "jev_calls": 84,
+      "policy_steps": 252
     }
   ],
-  "scope": "Single task and development success only. No stability/generalization/efficiency claim. Historical public shape samples occur only in the generated held-scene recovery branch; fresh open-hand runs remeasure geometry."
+  "scope": "One task and one held-out initial success; no statistical stability, multi-task generalization or overall efficiency claim.",
+  "wire_probe": {
+    "run": "r11b",
+    "init_index": 1,
+    "host_commit": "7ab94ac0",
+    "native_success": true,
+    "method_repairs": 0,
+    "gpt_reviews": 6,
+    "jev_calls": 85,
+    "policy_steps": 255,
+    "known_GPT_input_tokens": 46281,
+    "unknown_prior_upstream_attempts": 1,
+    "scope": "Completed-response usage only; full GPT total unknown"
+  }
 }

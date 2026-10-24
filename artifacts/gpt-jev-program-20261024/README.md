@@ -15,8 +15,10 @@ samples labelled historical; these are not hidden object state. Fresh open-hand
 runs use the acquisition branch and remeasure geometry. The first frozen new-init
 probe failed during transfer tracking, and reference growth alone did not fix it.
 A spatial feature-budget variant subsequently completed that same init with the
-unchanged method and no repairs. An unused-init probe is in progress. Do not
-describe this artifact as generally reliable from development success.
+unchanged method and no repairs, then completed the first unused init 2 under the
+same freeze. This is one task and one held-out initial state, not a general
+reliability guarantee. A wire-compaction probe also completed init 1; see its
+unknown-usage qualification in the provenance and report.
 
 The executable expects the exact host API and a restricted worker. It is not a
 standalone robot command script. Raw runs, both camera videos and native summaries
