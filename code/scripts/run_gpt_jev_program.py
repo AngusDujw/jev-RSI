@@ -224,6 +224,7 @@ def main():
     last_grip = "open"
     history, methods, previous = [], [], None
     rpc_feedback = []
+    annotation_initial = annotation_last = None
     termination, success, result = "not_started", None, None
     own_method_error = None
 
@@ -296,7 +297,7 @@ def main():
         return dict(world_m=xyz.tolist(), rgb=data["rgb"][uv[:, 1], uv[:, 0]].tolist(), pixels=uv.tolist(), frame_id=native_steps,
                     camera=camera, box=box, stride=stride, source="current_visible_depth_region_backprojection")
 
-    def planner(kind, question, failed_method=None):
+    def planner(kind, question, failed_method=None, review_context=None):
         nonlocal gpt_calls, previous
         budget()
         if gpt_calls >= args.max_gpt:
@@ -321,6 +322,20 @@ def main():
                     dict(type="input_image", image_url="data:image/jpeg;base64,"+base64.b64encode(encoded).decode(), detail="high")])
         payload_state = dict(instruction=task.language, question=question, robot=state(), cameras=cameras,
             recent_acknowledged_execution=history[-5:], recent_program_feedback=rpc_feedback[-8:])
+        if annotation_last:
+            payload_state["historical_named_observations"] = dict(initial=annotation_initial, previous=annotation_last,
+                scope="Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.")
+            projections = {}
+            for name, measured in annotation_last.get("points", {}).items():
+                projections[name] = {}
+                for camera, metadata in cameras.items():
+                    position = np.linalg.solve(np.asarray(metadata["camera_to_world_opencv"]), np.r_[measured["world_m"], 1.])[:3]
+                    if position[2] > .02:
+                        pixel = np.asarray(metadata["K"]) @ position
+                        projections[name][camera] = (pixel[:2]/pixel[2]).tolist()
+            payload_state["historical_point_projections_if_stationary"] = projections
+        if review_context is not None:
+            payload_state["program_supplied_review_context"] = compact_feedback(review_context)
         if failed_method:
             payload_state["previous_method"] = failed_method
         content.append(dict(type="input_text", text=json.dumps(payload_state)))
@@ -353,10 +368,11 @@ def main():
         print(json.dumps(dict(event="gpt", index=index, kind=kind, frame=native_steps)), flush=True)
         return apply_method_patch(failed_method, answer) if patching else answer
 
-    def review(question):
+    def review(question, context=None):
+        nonlocal annotation_initial, annotation_last
         if not isinstance(question, str) or not 1 <= len(question) <= 6000:
             raise ValueError("Invalid review question")
-        answer = planner("review", question)
+        answer = planner("review", question, review_context=context)
         parameters = json.loads(answer["parameters_json"])
         if not isinstance(parameters, dict):
             raise ValueError("Review parameters must be an object")
@@ -372,8 +388,12 @@ def main():
                 regions[item["name"]] = cloud(item["camera"], item["box"])
             except ValueError as error:
                 errors.append(dict(name=item["name"], error=str(error)))
-        return dict(status=answer["status"], explanation=answer["explanation"], parameters=parameters,
-                    points=points, regions=regions, measurement_errors=errors, frame_id=native_steps)
+        result = dict(status=answer["status"], explanation=answer["explanation"], parameters=parameters,
+                      points=points, regions=regions, measurement_errors=errors, frame_id=native_steps)
+        annotation_last = compact_feedback(dict(frame_id=native_steps, parameters=parameters, points=points))
+        if annotation_initial is None:
+            annotation_initial = annotation_last
+        return result
 
     def choose(questions, features):
         nonlocal jev_calls
@@ -455,7 +475,8 @@ def main():
             video.write(cv2.cvtColor(np.ascontiguousarray(obs[camera+"_image"][::-1]), cv2.COLOR_RGB2BGR))
 
     def execute_method(method, number):
-        nonlocal worker, rpc_calls
+        nonlocal worker, rpc_calls, annotation_initial, annotation_last
+        annotation_initial = annotation_last = None
         validate_source(method["source"])
         path = out / f"method-{number:02d}.py"
         path.write_text(method["source"])

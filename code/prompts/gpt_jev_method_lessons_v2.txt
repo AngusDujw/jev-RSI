@@ -34,3 +34,9 @@ Generic development lessons, supported only by the recorded development failure:
   axis selector explicitly; arbitrary branch questions still need self-contained
   instructions. Two real zero-motion comparisons supported this fix on one
   stored state; they are not task-success or general direction-accuracy results.
+- Camera-relative corner names are not persistent physical identities. Supply
+  semantic landmark definitions and reference observations/geometry to subsequent
+  reviews, or implement uncertainty-aware correspondence from available data.
+  A changed view must not silently redefine which physical point an ID denotes.
+  Historical projections assume stationarity and must not be treated as current
+  object measurements after manipulation.

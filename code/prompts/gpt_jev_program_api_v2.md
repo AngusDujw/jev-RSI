@@ -33,7 +33,7 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   Process it yourself; geometric extrema need validity checks.
 - api.compose(quaternion_xyzw, rotation_delta_world_rad): compose a world
   rotation-vector delta with a quaternion; returns quaternion xyzw.
-- api.review(question): obtains fresh images and a real GPT observation review.
+- api.review(question, context=None): obtains fresh images and a real GPT observation review.
   Each review supports at most 32 named points and 8 named regions. Request only
   the measurements needed now; use additional reviews when a valid view is missing.
   Returns status (continue/complete/stop), explanation, parameters (dict),
@@ -42,6 +42,13 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   Parameters are a model interpretation, not independent sensor certification.
   Review sees previous review images, your question, current state, and receipts.
   It does not read your source or invent a new API. Every review uses GPT budget.
+  Optional context is your JSON-compatible reference geometry, label definitions,
+  or other needed program state. Historical initial/previous label annotations
+  are also retained within the current method execution, together with current
+  camera projections of previous world points under a stationary-point hypothesis.
+  These projections are reference aids, not tracking detections or current poses.
+  Physical landmark IDs must persist across camera motion; screen upper-left is
+  not a stable identity. Reference annotation scope resets for a repaired method.
 
 ## Real Jev and bounded physical action
 
