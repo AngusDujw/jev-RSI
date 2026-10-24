@@ -8,6 +8,14 @@ the [exact API manual](gpt_jev_program_api_v2.md) and
 images and public robot state are separate data. The fixed files contain no task
 IDs, target coordinates, grasp trajectory or object-specific command recipe.
 
+Generated or repaired methods must declare `api.review(..., fields=...)` for
+every visual review. The [review contract compiler](../scripts/gpt_jev_review_contract.py)
+turns concise type/enum declarations into strict function-tool parameters and
+validates actual returns without coercion. Untouched explicitly selected archive
+methods retain the legacy interface. Schema validity is separate from observation
+truth and physical task success. Tool-schema numeric constraints stay exact;
+model data uses the documented six-significant-digit wire representation.
+
 GPT submits a complete `main(api)` source plus its explanation, interface and Jev
 protocol. It owns observation processing, phase logic, geometric parameters,
 Jev questions, bounded control leases, effect checks and recovery. The
@@ -55,6 +63,15 @@ historical-data ownership and control-receipt types have since been clarified;
 independent cold and revision tests continue. See the
 [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md). Completed token
 totals exclude known unknown-usage retries; no full-cost or speedup claim follows.
+
+Later typed development results: a fresh method, with no previous source input,
+reached native success after one same-scene GPT patch (17 GPT /107 real Jev /
+321 steps). A separate GPT-led revision also succeeded (11/106/318). Both full
+episode usages are known; neither establishes net token savings or speedup.
+The [complete generated method and Jev input/output protocol](../../artifacts/gpt-jev-typed-method-20261025/METHOD.md)
+are preserved verbatim with source and provenance. The final9a3e framework is
+currently tested on predeclared init9-13 with independent generation per episode
+and at most three automatic source repairs; no outer-agent task-source edits.
 
 ```mermaid
 flowchart LR
