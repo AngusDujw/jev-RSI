@@ -264,3 +264,8 @@ New predeclared candidate a8e6ea72 keeps the same generic English prompt/API,
 24GPT/5repairs/200Jev/600steps/7200seconds. Cold init9–13 each get a fresh scene,
 empty memory and no old method. Init9/10 admitted,11–13 not yet admitted; stop
 unadmitted cases if an admitted result fails. No hot patches or source edits.
+
+Interruption-cost closure: all9 upstream attempts were eventually archived with
+known usage: input124354/output79000, no unknown attempt. The two responses
+not delivered to the stopped hosts are saved separately as undelivered-upstream
+receipts. They were not executed or supplied to the new independent episodes.
