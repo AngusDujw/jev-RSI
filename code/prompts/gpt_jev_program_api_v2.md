@@ -62,6 +62,19 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   reason, candidates and source, but no transform or pose estimate. A transform alone does not certify a grasp.
   Comparing observed patch motion with measured hand motion can support retention
   tests without requiring every object perimeter corner to remain visible.
+  The current tracker can retain up to eight appearance keyframes, always keeping
+  the initial one. At least six physical steps must separate additions. Growth
+  requires at least 12 registration inliers, fraction >=0.65 and RMS <=0.0015 m.
+  Up to 200 new features are accepted only where inverse registration projects
+  into the original eroded polygon with original-depth agreement <0.0025 m.
+  New feature coordinates remain in the initial world reference. The initial
+  patch centroid and reference_frame_id do not change. A propagated heuristic
+  uncertainty floor accompanies derived features; this is not a calibrated
+  confidence bound. No appearance growth occurs after unknown registration.
+  tracked additionally returns appearance_reference with keyframes, features,
+  added_features, last_keyframe_frame_id and support. These describe historical
+  appearance support, not a new object-identity or grasp sensor. Incorrect initial
+  identity or an incorrect accepted registration can still cause tracking drift.
 - api.review(question, context=None): obtains fresh images and a real GPT observation review.
   Each review supports at most 32 named points and 8 named regions. Request only
   the measurements needed now; use additional reviews when a valid view is missing.
