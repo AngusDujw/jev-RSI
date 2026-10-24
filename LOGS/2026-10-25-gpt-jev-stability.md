@@ -4,8 +4,10 @@ Current status: original frozen init4–8 completed native5/5, no source repairs
 Two independent geo-assisted cold episodes failed. A new GPT-led revision reached
 native success on development init0, then its frozen init9/10 both failed; the
 remaining three planned admissions were stopped. Typed review contracts passed
-offline and real Pro shape checks. A typed fresh builder and a typed GPT-led
-revision are active. Earlier pending statements describe intermediate checkpoints.
+offline and real Pro checks. Both the typed revision and the fresh typed builder
+reached native success; the latter needed one same-scene GPT patch. The final9a3e
+framework is fixed for a five-case independently generated cohort; init9/10 are
+active. Earlier pending statements describe intermediate checkpoints.
 
 This is an outer-agent experiment record, not model-facing experience.
 
@@ -140,3 +142,19 @@ A read-only audit across all10 terminated episodes found705 real control calls a
 The next task-independent mechanism is api.review(..., fields=...). Compact type/enum/nested declarations become an actual strict function-tool parameters object. The host validates exact types without coercion and keeps legacy calls available. No task command or trajectory is encoded. Fourteen negative cases, nested/nullable positives and unchanged legacy schemas passed. A real Pro public-image probe returned typed booleans/enums/null in4.57s,1068 input/88 output;0 Jev and no native evaluation. It is not a task success (EXP074). Official schema guidance: https://developers.openai.com/api/docs/guides/function-calling .
 
 At b0b53fe4, typed-cold-init0 has no previous method. typed-repair-init0 revises unedited316750b9 with old public failure receipts in a fresh scene with empty checkpoints. Both have20 GPT/200 Jev/600 steps/3 same-scene repairs/4800s budgets. The revised method has delivered source; its actual first review request has strict=true with declared parameters fields, rather than relying on free JSON. No typed native outcome yet.
+
+
+## Typed native results and final fixed-framework cohort
+
+| Run | Host | GPT | Real Jev | Steps | Seconds | Native | Source repairs after fresh/revised initial package |
+| --- | --- | ---: | ---: | ---: | ---: | --- | ---: |
+| typed-repair-init0 |b0b53fe4|11|106|318|1874.30|true|0|
+| typed-cold-init0 |b0b53fe4|17|107|321|2524.77|true|1|
+
+The revision uses c7ec4f4a source. All10 review calls used strict tools with fully validated returns; all106 choices/actions and318 steps passed audits. GPT141056 input/45012 output, Jev215865/26394; all usage known. It starts from the prior generated method and is not a cold result (EXP075).
+
+The independent cold result starts without a prior method, feedback or checkpoint. Initial dcfd66ec source was205 lines/22586 characters and generated in723.66s. It stopped after63 policy steps because local visibility fallback shortened each leg without extending a five-iteration route bound. One model patch produced complete source52da6a44 and continued the same physical scene, reaching native success at321 steps. All15 strict review returns and107 real choices/actions/steps passed audits. GPT165648 input/61757 output and Jev223312/26643 are full episode known usage, with no unknown upstream attempts. No speedup or stable cold-generation claim follows from this42-minute development episode. EXP076 and [the preserved complete method/JeV protocol](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) retain design, full source and exact patch provenance.
+
+Subsequent92d8d481 keeps tool schema numeric constraints exact while data still uses six significant digits; offline boundary/immutability checks and17 real archived-request equality checks passed. Subsequent9a3e1f3d requires fields for generated/repaired methods, preserving legacy compatibility only for untouched selected archives; it adds generic finite-route budget coherence knowledge. Neither was hot-applied to the two b0b episodes.
+
+The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Every episode starts a fresh independent submit_method generation with no archive, feedback or checkpoint. Each has20 GPT/200 Jev/600 policy steps/3 same-scene GPT source repairs/4800s. Outer-agent task-source edits are forbidden. Init9/10 are previously failed-layout regression cases; init11-13 are unused. This tests the complete cooperation system, not zero-repair reuse of one program. Failed episodes remain; no substitute initial states will be selected. Init9 and init10 are admitted. Init9 initial source failed on an incorrect geo.plane return key before physical actions and is undergoing its own model repair; init10 has delivered source. The final-cohort native outcomes are still pending.
