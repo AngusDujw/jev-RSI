@@ -2,6 +2,10 @@
 
 Status: proposed architecture, not an implemented capability or validated skill pack.
 
+Follow-up: [source-grounded program design](gpt_jev_program_design.md) compares
+Code as Policies, HexaShell, and EmbodiedEvo, and specifies a program-capable
+GPT/Jev runtime and a candidate builder prompt. Both documents remain proposals.
+
 ## Evidence and objective
 
 The existing generic runner completed 222 policy control steps through 74 Jev
