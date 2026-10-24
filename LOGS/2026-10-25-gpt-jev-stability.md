@@ -12,9 +12,10 @@ Observation-recovery candidate251104e6 was interrupted on both zero-action cases
 after a deterministic NumPy sandbox defect repeated. A minimal cached-module
 worker fix a8e6ea72 passed offline checks and native cold init9/10 both succeeded,
 using5/4automatic patches. Both program proposals were false. The same fixed
-framework is now generating independent methods for unused init11/12; init13
-remains unadmitted. Five-case cold stability is still pending. Earlier pending
-statements are intermediate states.
+framework also completed unused init12 with native/proposal true and zero source
+repairs. Three completed cases have native3/3; init11 and the predeclared last
+init13 are running independently. Five-case cold stability remains pending.
+Earlier pending statements are intermediate states.
 
 This is an outer-agent experiment record, not model-facing experience.
 
@@ -171,7 +172,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-34 tracked files changed in this continuation.
+39 tracked files changed in this continuation.
 
 | Status | File |
 | --- | --- |
@@ -187,6 +188,11 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 | A | [artifacts/gpt-jev-cold-methods-20261025/init10/README.md](../artifacts/gpt-jev-cold-methods-20261025/init10/README.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init10/method.json](../artifacts/gpt-jev-cold-methods-20261025/init10/method.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init10/method.py](../artifacts/gpt-jev-cold-methods-20261025/init10/method.py) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init12/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init12/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init12/README.md](../artifacts/gpt-jev-cold-methods-20261025/init12/README.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init12/method.json](../artifacts/gpt-jev-cold-methods-20261025/init12/method.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init12/method.py](../artifacts/gpt-jev-cold-methods-20261025/init12/method.py) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init9/METHOD.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init9/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/README.md](../artifacts/gpt-jev-cold-methods-20261025/init9/README.md) |
@@ -338,3 +344,35 @@ original designs, all model revision rationales, final interfaces, Jev protocols
 source bytes and full audit provenance, are preserved in
 [the cold-method output package](../artifacts/gpt-jev-cold-methods-20261025/README.md).
 This directory is not model input or shared experience.
+
+
+## First untouched cold method on an unused layout: init12 (EXP080)
+
+Under the unchanged a8e6ea72 framework, unused init12 completed with both native
+and program-proposed success. Its initial complete source0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4
+ran without a source revision. It used13GPT calls,109real Jev updates and327
+policy steps,2060.78seconds. The input audit confirmed two current images,
+empty checkpoint memory, no previous_method and no reused source. This is
+unseen-layout evidence on the same task, not an unseen task-family result.
+
+Audits passed109original choices/763labels/327steps,12strict review returns and
+the sole source hash. All13GPT/109Jev upstream attempts have known usage: GPT
+input147823/output63161; Jev281232/27141. The1initial generation and12reviews are
+all included, without hiding acquisition costs. No timing comparison was run.
+
+The method measured20.211/20.209mm hand/object motion and0.110mm co-motion
+discrepancy; these are public estimates, not ground-truth accuracy. Final measured
+radial extent47.637mm versus opening radius53.359mm and78.128mm vertical
+hand/object separation supported its completion proposal. An invalid final edge
+sample remained in measurement_errors and did not erase valid partial data.
+
+The exact original complete explanation, source, interface and Jev cooperation
+are preserved in [the init12 package](../artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md).
+They are execution outputs, not fixed model knowledge.
+
+Three of the predeclared five cases have completed, native3/3. Init11 remains
+in its same-scene repair sequence. As no admitted case has failed, the free
+parallel slot admitted the already predeclared init13, without adding or replacing
+an ID. Both remaining cases use the exact same framework and budgets, empty
+new-episode memory and no archived source. Overall cold stability is not yet
+established.

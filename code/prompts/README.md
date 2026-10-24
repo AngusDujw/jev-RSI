@@ -90,9 +90,12 @@ The corrected fixed framework subsequently achieved native2/2 on independently
 generated regression init9/10, with5/4automatic source patches and24GPT calls
 each. Both completion proposals remained false; native scoring is authoritative,
 and verification defects and all generation/recovery costs remain explicit.
-The same framework now runs independently generated unused init11/12, with13
-not yet admitted. The five-case cold criterion is still pending.
-Both [actual complete regression methods and Jev protocols](../../artifacts/gpt-jev-cold-methods-20261025/README.md)
+The same framework subsequently completed unused init12 with the untouched
+initial complete method:13GPT/109Jev/327steps, native and proposal both true.
+Three completed cases have native3/3; init11/13 are still running. The five-case
+cold criterion remains pending.
+All [completed methods and Jev protocols](../../artifacts/gpt-jev-cold-methods-20261025/README.md),
+including [the untouched init12 method](../../artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md),
 are preserved verbatim, separately from generic builder inputs.
 
 ```mermaid

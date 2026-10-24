@@ -497,3 +497,9 @@
 
 
 【Agent @Codex】【2026-10-25】Weekly Retro补记：T-2026W43-018后libero-generic-vision为CIRCLE-1十四轮/十七未决节点及CIRCLE-3跨三周；libero-goal-ten保留32/36与CIRCLE-3，roboicl-bowl-speed保留3/4，无CIRCLE-2。新增支持为EXP079的冻结框架回归原生2/2，未决是其余三个未见初态与自评假阴性/成本。收敛方案保持同a8e框架与预定11–13，不扩任务/模型、不热改、不替换失败布局；旧十任务及RoboICL速度议题仍不恢复，是否关闭议题由用户拍板。
+
+
+【Agent @Codex】【2026-10-25】[EXP080](LOGS/2026-W43.md#exp-2026w43-080)同一冻结a8e框架首次未见init12完整冷方法初稿原样执行、0源码修复，13GPT/109Jev/327步/2060.78秒，completion/native均true。初始两当前图/空记忆/无旧源核验通过，12strict及109回答/763标签/327步/源哈希审计通过，费用全已知。支持前置通用契约能产可执行完整方法的一例未见布局，不证明五例稳定或整体加速。当前已完成3例均native true；11仍运行，按原预定ID用空闲并行槽准入13，固定框架/预算不变，没有替代初态。完整初稿及Jev协议已原样保存。
+
+
+【Agent @Codex】【2026-10-25】Weekly Retro补记：T-2026W43-019后generic-vision为CIRCLE-1十五轮/十八未决节点与CIRCLE-3；goal-ten32/36与CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。新增已支持证据为EXP080未见初态初稿零修复成功；未决为固定五例中的11/13与跨任务/整体效率。收敛仅完成这两例预定在途原生测试，既有失败保留，不新增任务/模型、不开关议题、不改正式目标或理论。
