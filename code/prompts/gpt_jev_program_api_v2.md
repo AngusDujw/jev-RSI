@@ -17,7 +17,7 @@ All API arguments/results are JSON-compatible: use ndarray.tolist() at boundarie
 print(...) and api.note(text) write bounded trace notes through host RPC.
 Structured data numbers sent to GPT/Jev use six significant digits; tool schema
 constraints remain exact so a declared numeric enum or bound is not changed.
-the worker's API data, numerical control and original execution receipts retain
+The worker's API data, numerical control and original execution receipts retain
 full precision. Calculate geometry using API measurements rather than assuming
 displayed decimal length establishes sensing accuracy.
 
@@ -123,10 +123,12 @@ recovery. Return meaningful diagnostic values when a fit is rejected.
   enum, description, minimum/maximum, minLength/maxLength, minItems/maxItems.
   No refs, patterns, anyOf, arbitrary extra properties or implicit defaults.
   At most32 top-level fields, depth8,256 nodes and16384 ASCII declaration chars.
+  Property names are ASCII identifiers of at most64 characters.
   Return parameters is still a dict. Data-shape validation is not evidence truth.
   Use explicit unknown enum/null values where missing evidence needs distinction.
   Ask for the exact declared names/types and validate geometry separately.
-  fields=None retains the legacy free-JSON review interface for archived methods.
+  New and repaired methods must supply fields for every review. fields=None is
+  available only to untouched archived methods for backward compatibility.
   Each review supports at most 32 named points and 8 named regions. Request only
   the measurements needed now; use additional reviews when a valid view is missing.
   Returns status (continue/complete/stop), explanation, parameters (dict),

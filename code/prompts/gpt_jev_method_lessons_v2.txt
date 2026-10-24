@@ -1,5 +1,12 @@
 Generic development lessons, supported only by the recorded development failure:
 
+- Check that finite phase loops can cover the remaining work under the smallest
+  progress leg actually used, including visibility fallbacks. Reducing a leg
+  length without updating the route bound can make completion impossible even
+  when every local action succeeds. View changes consume calls but are not
+  necessarily target-directed progress. Reserve calls for later phases; a
+  coherent budget is not a collision or convergence certificate.
+
 - Scope prerequisites to the action being considered. Certifying an entire later
   transfer route is not a prerequisite for every earlier noncontact observation
   or approach. Each phase needs its own attainable evidence and bounded fallback.

@@ -50,7 +50,8 @@ before using its geometry. You may process current visible point clouds with Num
 measurement regions, define scalar features and conditional procedures, and
 design Jev questions. No force sensing, segmentation IDs, object truth, task
 files, reward predicates, or collision planner is available. Do not invent them.
-For every api.review value that controls a branch, declare fields with exact
+New or repaired methods must supply fields in every api.review call. Declare
+only the parameters needed by that call, with exact
 types or enum literals, and ask for those same names and meanings. Use the
 documented structured fields interface instead of relying on untyped free JSON.
 Keep schemas concise and reuse descriptors. Include unknown/null when needed;

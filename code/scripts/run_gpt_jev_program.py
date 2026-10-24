@@ -268,6 +268,7 @@ def main():
         validate_source(archived_method["source"])
     if args.revise_archived and not archived_method:
         p.error("--revise-archived requires --method-file")
+    require_typed_reviews = archived_method is None or args.revise_archived
     out.mkdir(parents=True)
     cache = out / "runtime"
     config = cache / "libero-config"
@@ -309,6 +310,7 @@ def main():
         model_wire_numeric_precision="data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
         pro_request_deadline="loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
         review_parameters="method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
+        typed_reviews_required_for_generated_methods=True,
         reused_method_sha256=hashlib.sha256(archived_method["source"].encode()).hexdigest() if archived_method else None))
     with contextlib.redirect_stdout(io.StringIO()):
         suite = benchmark.get_benchmark_dict()[args.suite](0)
@@ -510,6 +512,8 @@ def main():
         nonlocal annotation_initial, annotation_last
         if not isinstance(question, str) or not 1 <= len(question) <= 6000:
             raise ValueError("Invalid review question")
+        if fields is None and (require_typed_reviews or len(methods) > 1):
+            raise ValueError("Generated or repaired methods must declare review fields; free JSON is only for untouched archived methods")
         parameter_schema = compile_fields(fields) if fields is not None else None
         answer = planner("review", question, review_context=context, parameter_schema=parameter_schema)
         parameters = answer["parameters"] if parameter_schema is not None else json.loads(answer["parameters_json"])
