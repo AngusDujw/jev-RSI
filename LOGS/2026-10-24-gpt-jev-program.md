@@ -54,6 +54,13 @@ videos are retained. r5's 158-line method is source SHA
 An r4 late continuation recovered from its actual GPT patch is explicitly named
 `unexecuted-method-02.json`; it was not executed or counted as a successful method.
 
+An independent receipt audit of r3-r5 matched all 132 dispatched choice maps to
+their real Jev responses and accounted for all 396 policy steps. It found no
+opposite-sign command, nonzero held axis or violation of the documented vector
+action limits. This is execution-consistency evidence, not perception accuracy,
+grasp evidence or task success. The declared zero-magnitude deadband remains part
+of the numerical controller and is not counted as substituting a Jev choice.
+
 ## Costs, not efficiency claims
 
 | Run | Known GPT input tokens | Known GPT output tokens | Reasoning subset of output |
