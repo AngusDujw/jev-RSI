@@ -1,6 +1,7 @@
 # GPT/Jev complete-method development
 
-Status: active development, not a stability or efficiency result. All model-facing
+Status: r6 reached native success after three same-scene repairs; frozen new-init
+validation is in progress. This is not a stability or efficiency result. All model-facing
 prompts, requests and lessons are English. This report describes outer-agent
 experiment organization; it is not supplied as a task-solving prompt.
 
@@ -46,6 +47,7 @@ convenient intermediate state for subsequent fresh-episode tests.
 | r3 | 7fa785e2 | 6 | 33 | 99 | 1699.18 | false | Identical six-axis question text did not identify the axis |
 | r4 | 9244c2b2 | 8 | 67 | 201 | 1702.60 | false | Closure occluded perimeter; later valid patch exceeded old source limit |
 | r5 | f4de7617 | 3 | 32 | 96 | 1055.81 | false | Late texture initialization failed; host mishandled list evidence |
+| r6 | 3bafd3a7 | 17 | 114 | 342 | 3119.04 | true | Three repairs: exact tracker key, mixed-depth rim samples, unattainable visibility gate |
 
 All runs are under `code/runs/2026-10-24-gpt-jev-program/rN/`; complete requests,
 responses, methods, RPC feedback, native receipts, depth/calibration and two camera
@@ -60,6 +62,16 @@ opposite-sign command, nonzero held axis or violation of the documented vector
 action limits. This is execution-consistency evidence, not perception accuracy,
 grasp evidence or task success. The declared zero-magnitude deadband remains part
 of the numerical controller and is not counted as substituting a Jev choice.
+The same audit additionally passed all 114 r6 choices and 342 acknowledged steps.
+Native success is read from `r6/summary.json`, independently of that audit.
+
+r6's final source is `r6/method-03.py`, SHA
+`afb42affc7d0f85d0fa1ff44b286ecd33783650a0688540099e0d6cd9e0857b8`.
+Its scene-specific held-object recovery branch contains earlier public RGB-D
+shape samples explicitly labelled historical. Those are GPT runtime output, not
+a fixed prompt, shared skill or host policy. A fresh open-hand episode follows
+the acquisition branch and remeasures its own scene. r7 freezes this exact source
+and the actual r6 host on previously unused init 1, with zero method repairs.
 
 ## Costs, not efficiency claims
 
@@ -70,6 +82,7 @@ of the numerical controller and is not counted as substituting a Jev choice.
 | r3 | 69523 | 40616 | 25892 |
 | r4 | 123152 | 44270 | 29183 |
 | r5 | 22242 | 23698 | 16745 |
+| r6 | 210286 | 70942 | 53667 |
 
 r2 has one client failure and three upstream attempts with unknown usage; they
 are not zero-cost calls. Archived-method tests retain acquisition costs in their
@@ -83,6 +96,7 @@ r5's first complete method took 877.83 seconds to generate.
 | r3 | 33 | 94178 | 8217 | 51.98 |
 | r4 | 67 | 208313 | 16683 | 67.78 |
 | r5 | 32 | 78805 | 7968 | 34.55 |
+| r6 | 114 | 305465 | 28386 | 133.34 |
 | Separate zero-motion diagnostics | 2 | 6083 | 498 | 3.60 |
 
 These are distinct model token accounting streams, not interchangeable monetary
@@ -126,9 +140,33 @@ question's dictionary ID: https://docs.typesafe.ai/primitives/choice.
    restricted worker RPC round trip passed without model or physical calls.
    This candidate was not hot-patched into r6 and has no online benefit claim yet.
 
+## First native-successful development episode
+
+r6 progressed from public geometry through actual Jev-controlled approach,
+descent, closure and a retention lift. The hand rose 29.20 mm and the tracked
+object 29.39 mm, with 2.98 mm rigid co-motion discrepancy. After a method repair
+in the persistently closed scene, a fresh lift measured 18.425 mm hand motion,
+18.426 mm object motion and 0.191 mm discrepancy. The repaired program executed
+short elevated transfer segments, measuring retention between segments. It used
+an explicit visible-obstruction question rather than requiring a fully visible
+or certified swept volume. This is a bounded simulator policy, not a collision
+avoidance guarantee for a physical deployment.
+
+Before release, the inferred footprint radius was 45.36 mm and measured opening
+radius 51.61 mm, with a 3.36 mm measurement allowance. The program opened the
+gripper, withdrew, acquired a new view and then added nine physical settling
+steps. Three corresponding print landmarks drifted 0.258 mm. These are public
+effect measurements; only the isolated final LIBERO check established success.
+
+The 52-minute development episode includes 17 GPT calls and 2933.90 GPT service
+seconds. It demonstrates feasibility, not the requested eventual efficiency.
+Candidate checkpoint/field-documentation/visibility-prompt changes made locally
+during r6 were never hot-patched into it. Its success must be attributed to the
+tested 3bafd3a7 host and the actual recorded GPT revisions, not later candidates.
+
 ## Evidence boundary
 
-EXP-2026W43-055 through EXP-2026W43-059 preserve all outcomes in the weekly log.
+EXP-2026W43-055 through EXP-2026W43-060 preserve all outcomes in the weekly log.
 The v1 contract adapter and its separate development failures remain unchanged.
 The earlier source-grounded CaP/HexaShell/EmbodiedEvo comparison is in
 `code/prompts/gpt_jev_program_design.md`; its candidate prompt is not the active
