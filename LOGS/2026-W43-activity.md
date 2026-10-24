@@ -542,3 +542,4 @@
 - 【Agent】【2026-10-24 21:03】[result] EXP035-v23在372步controller1/EOF、native incomplete/valid=false/success/score null，原JSON已SHA验收；末成功call137距原生终局899.490秒，复现900秒空闲关闭。当前仅v19/v20运行，保持原提示和服务、不补槽或重跑。
 - 【Agent】【2026-10-24 21:09】[op] 新建实验块 EXP-2026W43-036：v19在511步第三次复现约900秒RPC空闲超时中断  ↪ `EXP-2026W43-036`
 - 【Agent】【2026-10-24 21:11】[result] EXP036-v19原生511步已incomplete/valid=false/success/score null，原字节SHA已保存；末成功call153距终局899.737秒，复现900秒空闲关闭，controller快照仍等待。当前仅v20活原生，保持配置、不重跑、不因三次中断停整体任务。
+- 【Agent】【2026-10-24 21:17】[note] EXP033巡检：v19现已controller退出1，与已保存原生511步无效中断一致；v18/v23不重跑，v21/v22已完整false0。唯一活回合v20继续至484步，暂无新终局。当前只观察、不改提示/服务、不补槽；CIRCLE-1仍按本批终止后修新隔离RPC等待、单一新提示多回合收敛。
