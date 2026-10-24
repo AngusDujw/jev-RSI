@@ -5,7 +5,11 @@ top-left pixel origin. Depth and calibration support metric backprojection.
 Robot state is proprioception and own finger geometry only. World units are m,
 rotation vectors rad, quaternions xyzw. Nothing exposes hidden object state.
 
-Available globals: np, math and ordinary Python builtins; define main(api).
+Available globals: np and math; define main(api). The exact allowed builtins are
+abs, all, any, bool, dict, enumerate, float, int, len, list, max, min, range,
+reversed, round, set, sorted, str, sum, tuple, zip, isinstance, type, Exception,
+RuntimeError, ValueError and RPC-backed print. Other builtin names are unavailable;
+for example, use Exception rather than an undeclared exception class.
 The complete source limit is 120000 ASCII characters; all helpers must resolve.
 Return completion_proposed as a boolean and evidence as a JSON-compatible object
 or list. A list of diagnostic log entries is supported by the repair interface.
