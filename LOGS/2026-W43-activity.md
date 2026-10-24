@@ -464,3 +464,6 @@
 - 【Agent】【2026-10-25 05:14】[op] EXP079、报告、README与Discussion完整记录a8e回归原生2/2及两自评false、全量费用、37strict与11源哈希；T-2026W43-018及Weekly Retro补记14/17等CIRCLE-1/3，无CIRCLE-2。收敛仍为冻结候选预定未见11–13，当前只11/12在途。
 - 【Agent】【2026-10-25 05:16】[op] 新增artifacts/gpt-jev-cold-methods-20261025：两回归完整模型源/返回包/原始设计与所有修订理由/最终interface与Jev协议/provenance及cohort状态原样保存；hash/AST/ASCII验证通过。固定prompt不读该目录，未增加模型调用或手改任务源。
 - 【Agent】【2026-10-25 05:19】[op] 主报告文件清单更新为34个已跟踪变更文件；README/报告链接两例原样完整方法与Jev协议产物，不作为模型经验或冷生成输入。
+- 【Agent】【2026-10-25 05:45】[run] a8e框架首次未见init12独立冷生成零源码修复终局：completion/native均true，13GPT/109真实Jev/327步/2060.78秒。init11仍在第二次修复，无已准入失败；使用空出的并行槽按原预定ID准入最后init13，同框架/24GPT/200Jev/600步/5修复/7200秒，无旧源/记忆，不添加替代初态。
+- 【Agent】【2026-10-25 05:47】[op] 新建实验块 EXP-2026W43-080：首个未见初态冷生成零源码修复原生与自评双成功：init12  ↪ `EXP-2026W43-080`
+- 【Agent】【2026-10-25 05:49】[op] 将init12零修复原样完整方法/说明/interface/Jev协议与源哈希审计保存至cold-methods产物包，cohort manifest更新完成9/10/12、在途11/13。外层未改模型源，产物不回流冷生成提示词。

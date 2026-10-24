@@ -1,0 +1,75 @@
+{
+  "scope": "Actual independently generated unseen-layout output, not shared task knowledge or a universal guarantee",
+  "task_suite": "libero_goal",
+  "task_id": 1335,
+  "init_index": 12,
+  "framework_commit": "a8e6ea72",
+  "original_run": "code/runs/2026-10-25-gpt-jev-program/numpy-cold-init12",
+  "source_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4",
+  "source_revisions": 0,
+  "native_success": true,
+  "completion_proposed": true,
+  "termination": "completion_proposed",
+  "gpt_calls": 13,
+  "jev_calls": 109,
+  "native_steps": 327,
+  "elapsed_s": 2060.7818414401263,
+  "prompt_sha256": "27237a3a47d1908e0d72ff9343d6810159d23554d0e42cc8dcc10a12df5369cb",
+  "manual_sha256": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e",
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "f79845ccf294749fee5e2cb281fc6b65e7326a5b69433a25c02e63848a145576",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "audit": {
+    "native_success": true,
+    "termination": "completion_proposed",
+    "gpt_calls": 13,
+    "jev_calls": 109,
+    "native_steps": 327,
+    "elapsed_s": 2060.7818414401263,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4"
+      }
+    ],
+    "completion_proposed": true,
+    "audit": "Original Jev choices, semantic labels, finite bounds, carried gripper, steps and all source hashes passed",
+    "dispatches": 109,
+    "models": {
+      "gpt": {
+        "attempts": 13,
+        "unknown_usage": 0,
+        "completed_input": 147823,
+        "completed_output": 63161,
+        "relay_seconds": 1929.4639409029041,
+        "matched_requests": 13
+      },
+      "jev": {
+        "attempts": 109,
+        "unknown_usage": 0,
+        "completed_input": 281232,
+        "completed_output": 27141,
+        "relay_seconds": 76.0577289009234,
+        "matched_requests": 109
+      }
+    },
+    "strict_reviews_validated": 12,
+    "gpt_cost_by_purpose": {
+      "submit_method": {
+        "calls": 1,
+        "input": 8517,
+        "output": 27615
+      },
+      "submit_review": {
+        "calls": 12,
+        "input": 139306,
+        "output": 35546
+      }
+    }
+  },
+  "cold_input_check": "Two current images, empty checkpoint manifest, no previous_method, no reused source"
+}
