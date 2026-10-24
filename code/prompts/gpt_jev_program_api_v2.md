@@ -25,6 +25,8 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
 - api.compose(quaternion_xyzw, rotation_delta_world_rad): compose a world
   rotation-vector delta with a quaternion; returns quaternion xyzw.
 - api.review(question): obtains fresh images and a real GPT observation review.
+  Each review supports at most 32 named points and 8 named regions. Request only
+  the measurements needed now; use additional reviews when a valid view is missing.
   Returns status (continue/complete/stop), explanation, parameters (dict),
   points (dict name -> api.point result), regions (dict name -> api.cloud result),
   frame_id. Specify the needed visible evidence and named measurements explicitly.

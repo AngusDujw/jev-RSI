@@ -27,7 +27,7 @@ def validate_source(source):
             raise ValueError("Unsupported source construct: " + type(node).__name__)
         if isinstance(node, ast.Attribute) and node.attr.startswith("_"):
             raise ValueError("Private attributes are unavailable")
-        if isinstance(node, ast.Name) and (node.id.startswith("_") or node.id in banned):
+        if isinstance(node, ast.Name) and (node.id.startswith("__") or node.id in banned):
             raise ValueError("Unsupported name: " + node.id)
     if not any(isinstance(n, ast.FunctionDef) and n.name == "main" for n in tree.body):
         raise ValueError("Define main(api)")

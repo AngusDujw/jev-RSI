@@ -29,9 +29,9 @@ METHOD_SCHEMA = object_schema({k: TEXT for k in ("explanation", "source", "inter
 REVIEW_SCHEMA = object_schema(dict(
     status=dict(type="string", enum=["continue", "complete", "stop"]), explanation=TEXT,
     parameters_json=TEXT,
-    points=dict(type="array", maxItems=10, items=object_schema(dict(name=TEXT, camera=dict(type="string", enum=list(CAMERAS)),
+    points=dict(type="array", maxItems=32, items=object_schema(dict(name=TEXT, camera=dict(type="string", enum=list(CAMERAS)),
         pixel=dict(type="array", items=dict(type="integer"), minItems=2, maxItems=2), radius=dict(type="integer", minimum=1, maximum=6)))),
-    regions=dict(type="array", maxItems=6, items=object_schema(dict(name=TEXT, camera=dict(type="string", enum=list(CAMERAS)),
+    regions=dict(type="array", maxItems=8, items=object_schema(dict(name=TEXT, camera=dict(type="string", enum=list(CAMERAS)),
         box=dict(type="array", items=dict(type="integer"), minItems=4, maxItems=4))))))
 
 
@@ -67,6 +67,7 @@ def main():
     p.add_argument("--max-jev", type=int, default=200)
     p.add_argument("--max-native-steps", type=int, default=600)
     p.add_argument("--max-repairs", type=int, default=2)
+    p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
     p.add_argument("--wall-seconds", type=int, default=3600)
     args = p.parse_args()
     repo = Path(__file__).resolve().parents[2]
@@ -75,6 +76,16 @@ def main():
         p.error("Use a new project code/runs directory and the explicit loopback relay")
     if not (1 <= args.max_gpt <= 24 and 1 <= args.max_jev <= 300 and 1 <= args.max_native_steps <= 800 and 0 <= args.max_repairs <= 3):
         p.error("Invalid episode budget")
+    archived_method = None
+    if args.method_file:
+        method_path = args.method_file.resolve()
+        if not method_path.is_relative_to(repo / "code/runs"):
+            p.error("Archived method must be a project run artifact")
+        archived_method = json.loads(method_path.read_text())
+        if set(archived_method) != set(METHOD_SCHEMA["properties"]):
+            p.error("Archived method has unexpected fields")
+        english(archived_method)
+        validate_source(archived_method["source"])
     out.mkdir(parents=True)
     cache = out / "runtime"
     config = cache / "libero-config"
@@ -106,7 +117,8 @@ def main():
     save(out / "protocol.json", dict(arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(), manual_sha256=hashlib.sha256(manual.encode()).hexdigest(),
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
-        native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False))
+        native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
+        reused_method_sha256=hashlib.sha256(archived_method["source"].encode()).hexdigest() if archived_method else None))
     with contextlib.redirect_stdout(io.StringIO()):
         suite = benchmark.get_benchmark_dict()[args.suite](0)
     task = suite.get_task(args.task_id)
@@ -405,11 +417,18 @@ def main():
         previous_method = None
         question = "Build the complete processing method and Jev input/output cooperation from current observations."
         for revision in range(args.max_repairs+1):
-            method = planner("method", question, previous_method)
+            method = archived_method if revision == 0 and archived_method else planner("method", question, previous_method)
             try:
                 result = execute_method(method, revision)
                 if not isinstance(result, dict) or type(result.get("completion_proposed")) is not bool:
                     raise ValueError("Return completion_proposed boolean and evidence")
+                if not result["completion_proposed"] and revision < args.max_repairs:
+                    evidence = result.get("evidence", {})
+                    summary_evidence = {k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state")}
+                    previous_method = dict(method, incomplete_result=summary_evidence)
+                    question = "Your method returned incomplete. Repair the full method using current images, executed effects, and its recorded limitations. The same physical scene persists; do not reset or assume actions were undone."
+                    save(out / f"method-{revision:02d}.incomplete.json", result)
+                    continue
                 termination = "completion_proposed" if result["completion_proposed"] else "method_incomplete"
                 break
             except (ValueError, RuntimeError) as error:

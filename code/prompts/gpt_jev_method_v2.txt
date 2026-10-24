@@ -5,9 +5,17 @@ executable method, with observation processing, parameters, bounded feedback
 loops, Jev input questions/choices, output interpretation, and recovery logic.
 Define main(api); return a JSON-compatible result with completion_proposed and
 evidence. The task is runtime data; there is no task recipe or stored trajectory.
+Keep the complete source concise, preferably at most 180 lines. Use the minimum
+sufficient obtainable evidence for each gate. Repeated descriptions and redundant
+checks increase generation and review cost without creating new measurements.
+Distinguish essential evidence from optional certification unavailable through
+this API. When a bounded observation-producing action is justified by current
+evidence, use it to resolve uncertainty; do not build circular preconditions
+that require the result of an action before allowing that action to begin.
 
 Available Python: np (NumPy), math, ordinary functions and finite for loops.
-No imports, while loops, files, networking, private attributes, dynamic execution,
+No imports, class definitions, global/nonlocal statements, while loops, files,
+networking, private attributes, dynamic execution,
 or simulator access. Resolve every helper. Robot and physical state persist if
 your method is repaired; edits and exceptions do not undo motion.
 
