@@ -1,0 +1,54 @@
+{
+  "version": "v26",
+  "parent": "v25",
+  "prompt_sha256": "cbe36aee29324448ab7eb3f435f65cc5b47b97a2f1ab217903e07760f8c20e50",
+  "prompt_words": 2238,
+  "prompt_file": "code/policy_comparison/prompts/multiview_grasp_v26.md",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "authentication": "local ChatGPT Pro",
+  "api_fallback": false,
+  "task": "stack_blocks",
+  "layout": 0,
+  "eval_seed": 0,
+  "native_step_limit": 550,
+  "attempts_per_run": 1,
+  "all_started_runs_included": true,
+  "infrastructure_change": {
+    "fresh_server_copy_rpc_idle_seconds": 7200,
+    "changed_from_v25": false,
+    "native_physics_scoring_unchanged": true
+  },
+  "prompt_changes": [
+    "Append one support-verification section with six raw matched pre-release, adjacent-after-release and supported-two-layer-appearance RGB examples",
+    "Require exposed high-view support evidence after withdrawal before advancing to wood; retain previous grasp and return guidance"
+  ],
+  "causal_scope": "Development-conditioned multi-change iteration; not a single-factor or zero-shot comparison.",
+  "reference_manifest_sha256": "465e503277810e98a3bc1eef9de51c8e7c3485d6113d637c6086fbd421fafa8c",
+  "trials": [
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v26-r1",
+      "rpc_port": 25452
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v26-r2",
+      "rpc_port": 25453
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v26-r3",
+      "rpc_port": 25454
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v26-r4",
+      "rpc_port": 25455
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v26-r5",
+      "rpc_port": 25456
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v26-r6",
+      "rpc_port": 25457
+    }
+  ]
+}
