@@ -300,3 +300,5 @@
 - 【Agent】【2026-10-24 12:56】[op] 补全EXP049–053与英文框架/完整测试报告：启动故障、数值/阶段语义预检、0步中止、4规划183步失败、默认8规划222步视觉complete但原生false全部保留；15GPT和141Jev上游完整成本有usage。复用旧generic-vision主题作过程证据，不关闭议题，不改研究目标或理论。
 - 【Agent】【2026-10-24 13:00】[result] 周志strict检查0 error/0 warning，Python语法与diff检查通过；更广扫描保留5条已报告的CIRCLE-1/3告警（0格式error），未擅自关闭议题或删除历史。临时测试脚本确认已删除。远端最终原文件rsync校验无差异；本机7921无监听。
 - 【Agent】【2026-10-24 13:01】[result] 最终框架与英文报告7f1541b9已通过Git bundle同步至company-server-2-ykj独立worktree，快进合并成功；既有LIBERO解释器执行新版--help成功，未新增模型/仿真请求，远端tracked状态干净。最终结果仍为模型complete/原生false，未追加任务规则。
+- 【User】【2026-10-24 16:08】[intent] 以 LIBERO 原生判定为准，分析如何让 GPT 产出稳定可执行的 Jev 方法，并评估可复用 skill 与 harness 的分工。
+- 【Agent】【2026-10-24 16:09】[op] 补充英文GPT-Jev可靠性设计稿：区分运行时skill与外层SKILL.md，提出效果门控、观测时效、完成提案及LIBERO评估隔离；均标明待实现，未新增模型调用或实验。
