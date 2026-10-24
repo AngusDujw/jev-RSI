@@ -35,8 +35,26 @@ completed the same init and one frozen unused init with the unchanged method and
 no repairs. A successful same-init wire comparison reduced completed-response
 GPT inputs by 19.1%, but unknown retry usage prevents a full GPT cost comparison;
 elapsed time was effectively unchanged. Multi-task stability remains untested.
-One final fresh-builder pilot is running without archived task source. See the
+The final fresh-builder request, with no archived task source, timed out at 1800
+seconds before method delivery. Stable fast cold generation is not validated;
+repair and reuse of a validated method are supported. A post-test absolute relay
+deadline fix passed local fake-stream checks only. See the
 [complete-method development report](../../LOGS/2026-10-24-gpt-jev-program.md).
+
+```mermaid
+flowchart LR
+  F[Fixed English builder/API/lessons] --> G[GPT complete method package]
+  O[Current public observations] --> G
+  G --> P[Restricted program worker]
+  P --> A[Host observation/control API]
+  A -->|Bound questions and features| J[Real Jev]
+  J -->|Unchanged choices| A
+  A -->|Bounded physical command| E[LIBERO]
+  E -->|Public sensing| A
+  A -->|Measured feedback| P
+  P -->|Explicit review or repair| G
+  E -. Terminal native score outside policy .-> R[Outer evaluator]
+```
 
 The same existing signed-in local Pro planner and separate authorized Jev routing
 described below apply to v2. Neither Platform API credentials nor `caz/z` keys

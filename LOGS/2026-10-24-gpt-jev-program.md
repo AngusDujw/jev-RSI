@@ -4,8 +4,10 @@ Status: r6 reached native success after three same-scene repairs. The first froz
 new-init probe r7 and appearance-growth comparison r8 failed. Spatial feature
 budget comparison r9 succeeded with the unchanged method, and frozen unused init 2
 also succeeded. Completed-response wire usage decreased in a successful pair,
-but full GPT cost remains unknown and speed did not meaningfully improve. A final
-fresh-builder pilot is running. There is no multi-task stability guarantee. All model-facing
+but full GPT cost remains unknown and speed did not meaningfully improve. The final
+fresh-builder request timed out before delivering source. The robot experiment
+batch is finished: validated repair/reuse, not stable fast cold generation.
+There is no multi-task stability guarantee. All model-facing
 prompts, requests and lessons are English. This report describes outer-agent
 experiment organization; it is not supplied as a task-solving prompt.
 
@@ -58,6 +60,7 @@ convenient intermediate state for subsequent fresh-episode tests.
 | r10 | ea947a98 | 6 | 84 | 252 | 556.95 | true | First unused init 2 after method/library freeze; zero repairs |
 | r11 | 7ab94ac0 | 1 failed client call | 0 | 0 | 295.52 | false at initialization only | Transport failure before the first review; no policy comparison |
 | r11b | 7ab94ac0 | 6 | 85 | 255 | 612.38 | true | Same init 1, wire compaction only; one unknown-usage upstream retry |
+| r12 | 7fbb7737 | 1 timed-out client call | 0 | 0 | 1812.94 | false at initialization only | Fresh method request did not deliver source within 1800 seconds |
 
 All runs are under `code/runs/2026-10-24-gpt-jev-program/rN/`; complete requests,
 responses, methods, RPC feedback, native receipts, depth/calibration and two camera
@@ -102,6 +105,7 @@ not labelled stable. The exact unedited package is versioned under
 | r10 | 56929 | 10060 | 8049 |
 | r11 | unknown | unknown | unknown |
 | r11b | 46281 | 8799 | 6951 |
+| r12 | unobserved | unobserved | unobserved |
 
 r2 has one client failure and three upstream attempts with unknown usage; they
 are not zero-cost calls. Archived-method tests retain acquisition costs in their
@@ -115,6 +119,10 @@ three in r2, two before a completed r3 response, three in interrupted r11, and
 one before r11b's last completed response. These are additional to the table's
 completed-response usage. They must not be assigned zero cost. Bridge elapsed
 times include transport and internal retries, not pure model compute.
+r12 has no terminal upstream receipt in that ledger: its upstream attempt count
+and usage are unobserved, separately from those nine known failed attempts. The
+owned relay was interrupted after the client timed out; the separate cancellation
+audit is not represented as a provider completion or a confirmed zero-cost call.
 
 | Jev scope | Calls | Reported input tokens | Reported output tokens | Sum of service seconds |
 | --- | ---: | ---: | ---: | ---: |
@@ -128,6 +136,7 @@ times include transport and internal retries, not pure model compute.
 | r10 | 84 | 221653 | 20916 | 91.91 |
 | r11 | 0 | 0 | 0 | 0 |
 | r11b | 85 | 190030 | 21165 | 126.85 |
+| r12 | 0 | 0 | 0 | 0 |
 | Separate zero-motion diagnostics | 2 | 6083 | 498 | 3.60 |
 
 These are distinct model token accounting streams, not interchangeable monetary
@@ -265,11 +274,60 @@ only fixed English builder/API/generic lessons plus current public images/state.
 There is no archived method, previous-method source, program feedback or checkpoint
 memory in the actual initial request. This was checked in the saved request and
 protocol. The pilot permits at most two same-scene method repairs and retains the
-same account routing and isolated terminal native evaluation. Outcome is pending.
+same account routing and isolated terminal native evaluation. The first request
+timed out after 1800.10 seconds; episode elapsed time was 1812.94 seconds, with no
+method delivery, no program RPC and no Jev or policy action. Native false is only
+the initialization diagnostic, not an evaluated manipulation policy. This does
+not falsify planning capability, but it leaves stable cold generation unverified.
+
+The upstream relay still had no terminal receipt after the client stopped.
+Only this task's owned relay was interrupted; its cancellation metadata is
+`bridge/r12-client-timeout-cancelled.json`. No late response was fabricated and no
+undelivered source was executed. Unknown usage remains unknown.
+
+## Post-test deadline repair and checks
+
+The original relay used socket timeouts, which do not bound a heartbeat-producing
+SSE stream. After all robot trials, f64cc7ed added a client budget header and an
+absolute relay budget across queue acquisition, stream events/silent reads, retry
+attempts and backoff. Deadline exhaustion returns a 504 and retains unknown-usage
+attempt records. Client failure metadata now explicitly distinguishes attempted
+model requests from physical dispatch. No account or model routing changed.
+
+This repair was checked with local-only fake HTTP/SSE fixtures: continuous
+heartbeats, silent reads, a normal completion, skipped retries without sufficient
+budget, queued-request timeout and actual header propagation. Numeric/source/image
+immutability and physical-dispatch audit fields were checked as well. No real
+model, credential or robot call was made after the fix. Fixture data were created
+under the project and automatically removed; no test script was retained.
+
+All 604 real policy Jev choices through r11b have matching unchanged answers and
+1812 acknowledged policy steps, with no opposite-sign command or vector-limit
+violation in the receipt audit. Two additional real zero-motion Jev diagnostics
+are separate. The native-successful releases remain tied to their actual tested
+commits, not this post-test transport repair.
+
+## Practical conclusion
+
+The useful artifact is a task-independent builder/API/lesson framework plus a
+bounded harness and measured generic capabilities. GPT still produces the complete
+processing method, state logic and Jev input/output cooperation. The generated
+task program is not moved into the shared prompt as a hidden recipe. Exact
+semantics, observable effects, actual execution and repair/reuse matter more than
+format validity alone.
+
+One generated method completed the development scene after repair and, after a
+generic measurement fix, completed a frozen unused initial state without source
+repair. The final from-scratch request did not deliver a method. Thus validated
+repair/reuse is currently supported; universal or consistently fast cold generation
+is not. Completed-response input reduction is supported by one successful pair,
+while overall GPT cost and meaningful speedup are not established. This bounded
+batch ends here rather than adding task-specific command tables or claiming
+general stability from a single task.
 
 ## Evidence boundary
 
-EXP-2026W43-055 through EXP-2026W43-066 preserve all outcomes in the weekly log.
+EXP-2026W43-055 through EXP-2026W43-067 preserve all outcomes in the weekly log.
 The v1 contract adapter and its separate development failures remain unchanged.
 The earlier source-grounded CaP/HexaShell/EmbodiedEvo comparison is in
 `code/prompts/gpt_jev_program_design.md`; its candidate prompt is not the active

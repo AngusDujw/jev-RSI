@@ -19,6 +19,9 @@ unchanged method and no repairs, then completed the first unused init 2 under th
 same freeze. This is one task and one held-out initial state, not a general
 reliability guarantee. A wire-compaction probe also completed init 1; see its
 unknown-usage qualification in the provenance and report.
+The final framework's separate from-scratch request timed out before delivering
+another method. This directory is evidence for the actual generated method and
+its repair/reuse, not proof that a prompt alone reliably generates a fresh success.
 
 The executable expects the exact host API and a restricted worker. It is not a
 standalone robot command script. Raw runs, both camera videos and native summaries

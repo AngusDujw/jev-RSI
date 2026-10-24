@@ -53,7 +53,7 @@
       "policy_steps": 252
     }
   ],
-  "scope": "One task and one held-out initial success; no statistical stability, multi-task generalization or overall efficiency claim.",
+  "scope": "One task and one held-out initial success under validated repair/reuse. Final cold generation timed out. No statistical stability, multi-task generalization, overall GPT cost saving or meaningful speedup claim.",
   "wire_probe": {
     "run": "r11b",
     "init_index": 1,
@@ -66,5 +66,22 @@
     "known_GPT_input_tokens": 46281,
     "unknown_prior_upstream_attempts": 1,
     "scope": "Completed-response usage only; full GPT total unknown"
+  },
+  "fresh_builder_probe": {
+    "run": "r12",
+    "init_index": 3,
+    "host_commit": "7fbb7737",
+    "archived_method_input": false,
+    "outcome": "client_timeout_before_method_delivery",
+    "source_delivered": false,
+    "native_success": false,
+    "native_scope": "Initialization diagnostic only; no policy action",
+    "gpt_client_requests": 1,
+    "jev_calls": 0,
+    "policy_steps": 0,
+    "elapsed_s": 1812.9376498290803,
+    "upstream_terminal_receipt_observed": false,
+    "upstream_attempt_count": null,
+    "usage_unknown": true
   }
 }
