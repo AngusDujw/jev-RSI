@@ -275,6 +275,7 @@ graph LR
     T_2026W43_028["📝 gpt-as-policy-luna-media<br/>用户纠正：一次只改一个版本，同版多独立回合…"]:::note
     T_2026W43_029["📊 gpt-as-policy-luna-media<br/>v18在524步因RPC900秒空闲等待中…"]:::experiment
     T_2026W43_030["📊 gpt-as-policy-luna-media<br/>旧六分支2完整失败4空闲中断；新副本RPC…"]:::experiment
+    T_2026W43_031["📊 gpt-as-policy-luna-media<br/>v24完整0/6、无空闲中断；紫块指尖外首…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -502,6 +503,7 @@ graph LR
   T_2026W43_027 --> T_2026W43_028
   T_2026W43_028 --> T_2026W43_029
   T_2026W43_029 --> T_2026W43_030
+  T_2026W43_030 --> T_2026W43_031
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -764,6 +766,7 @@ graph LR
 | `T-2026W43-028` | 2026-10-24 | note | gpt-as-policy-luna-media | 用户纠正：一次只改一个版本，同版多独立回合并行；已启动六分支允许跑完后再改 | `EXP-2026W43-033` | - |
 | `T-2026W43-029` | 2026-10-24 | experiment | gpt-as-policy-luna-media | v18在524步因RPC900秒空闲等待中断，无效样本；原生终局与末成功RPC相距899.8秒 | `EXP-2026W43-034` | - |
 | `T-2026W43-030` | 2026-10-24 | experiment | gpt-as-policy-luna-media | 旧六分支2完整失败4空闲中断；新副本RPC7200秒，冻结v24同提示六回合已ready，首次区分示例消费落实 | `EXP-2026W43-038` | - |
+| `T-2026W43-031` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v24完整0/6、无空闲中断；紫块指尖外首失误与真实持有对照，冻结唯一v25同版六回合 | `EXP-2026W43-039` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

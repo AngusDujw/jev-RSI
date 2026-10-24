@@ -1,0 +1,55 @@
+{
+  "version": "v25",
+  "parent": "v24",
+  "prompt_sha256": "4b37371c08553255a29960502160b21919e227ad8fdc2338c6b1e8d52e72fc2e",
+  "prompt_words": 1906,
+  "prompt_file": "code/policy_comparison/prompts/multiview_grasp_v25.md",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "authentication": "local ChatGPT Pro",
+  "api_fallback": false,
+  "task": "stack_blocks",
+  "layout": 0,
+  "eval_seed": 0,
+  "native_step_limit": 550,
+  "attempts_per_run": 1,
+  "all_started_runs_included": true,
+  "infrastructure_change": {
+    "fresh_server_copy_rpc_idle_seconds": 7200,
+    "changed_from_v24": false,
+    "native_physics_scoring_unchanged": true
+  },
+  "prompt_changes": [
+    "Replace six white illustrations with four raw same-task purple body-between-faces versus beyond-tips examples",
+    "Separate closing-axis, finger-length and height diagnostics using one-axis open probes",
+    "Keep an idle arm at initial pose; account for executed underreach and reserve 80 physical controls for finish"
+  ],
+  "causal_scope": "Development-conditioned multi-change iteration; not a single-factor or zero-shot comparison.",
+  "reference_manifest_sha256": "319dd415a8008cd45ab5edfc83da132c5d3024d04045b8d951d1515d7bf0bf88",
+  "trials": [
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v25-r1",
+      "rpc_port": 25446
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v25-r2",
+      "rpc_port": 25447
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v25-r3",
+      "rpc_port": 25448
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v25-r4",
+      "rpc_port": 25449
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v25-r5",
+      "rpc_port": 25450
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v25-r6",
+      "rpc_port": 25451
+    }
+  ]
+}
