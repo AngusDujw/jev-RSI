@@ -300,6 +300,8 @@ def main():
     english([prompt, manual])
     save(out / "protocol.json", dict(arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(), manual_sha256=hashlib.sha256(manual.encode()).hexdigest(),
+        implementation_sha256={name: hashlib.sha256((repo / "code/scripts" / name).read_bytes()).hexdigest()
+            for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "jev_rgbd_tracking.py")},
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
         native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
         model_wire_numeric_precision="6 significant digits; internal calculations and receipts retain full precision",

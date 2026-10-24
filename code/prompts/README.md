@@ -19,6 +19,11 @@ starts a new Python namespace in the same physical scene; it does not reset moti
 The harness supplies public RGB-D/calibration, own robot geometry, finite-choice
 Jev RPC, bounded OSC commands, observation reviews and a
 [generic RGB-D patch registration primitive](../scripts/jev_rgbd_tracking.py).
+The candidate worker also preloads a [pure numerical geometry library](../scripts/gpt_jev_geometry.py)
+as `geo`; the exact manual lists its operations. It computes caller-selected
+geometry without selecting observations, accepting a task, or controlling motion.
+Its analytical and sandbox checks passed; native cold-builder evaluation is
+tracked separately in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
 It supplies no hidden object pose, segmentation identity, contact oracle, goal
 predicate, task-dispatch branch or prewritten grasp/transfer policy. Every physical
 update invokes real Jev, and raw choices and dispatched actions are retained.
