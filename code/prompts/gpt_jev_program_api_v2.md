@@ -113,7 +113,12 @@ recovery. Return meaningful diagnostic values when a fit is rejected.
   the measurements needed now; use additional reviews when a valid view is missing.
   Returns status (continue/complete/stop), explanation, parameters (dict),
   points (dict name -> api.point result), regions (dict name -> api.cloud result),
-  frame_id. Specify the needed visible evidence and named measurements explicitly.
+  measurement_errors (list of {name,error}), frame_id. A requested point/region
+  whose measurement fails is omitted from its dictionary and listed in
+  measurement_errors. Inspect membership and errors before indexing: a selected
+  pixel is not a successful depth sample. Fit only sufficient valid measurements;
+  otherwise obtain a bounded replacement observation or report the exact gap.
+  Specify the needed visible evidence and named measurements explicitly.
   Parameters are a model interpretation, not independent sensor certification.
   Named region requests have explicit camera, box and stride fields; stride is
   4..32. Arbitrary region_strides inside parameters are not executable requests.

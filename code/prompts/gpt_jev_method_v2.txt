@@ -44,7 +44,9 @@ not discard a still-valid measured invariant solely because Python restarted.
 New episodes have empty checkpoint memory and must acquire their own evidence.
 
 The supplied manual is the exact API contract. Use only its operations and
-schema. You may process current visible point clouds with NumPy, choose visual
+schema. Check returned measurement membership and measurement_errors; a requested
+pixel or region can fail measurement and is then absent. Handle that locally
+before using its geometry. You may process current visible point clouds with NumPy, choose visual
 measurement regions, define scalar features and conditional procedures, and
 design Jev questions. No force sensing, segmentation IDs, object truth, task
 files, reward predicates, or collision planner is available. Do not invent them.
