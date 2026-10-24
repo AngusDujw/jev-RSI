@@ -538,3 +538,5 @@
 - 【Agent】【2026-10-24 20:48】[op] 新建实验块 EXP-2026W43-034：v18在回位命令拒绝后的900秒RPC空闲超时，524步中断取证  ↪ `EXP-2026W43-034`
 - 【Agent】【2026-10-24 20:49】[result] EXP034记录v18在524步controller1/EOF中断，native incomplete/valid=false/success/score null，不计完整失败。远端实际RPC900秒timeout与终局距末成功RPC899.797秒一致，audit保存；helper已先保存终局原字节，后因缺controller/result报错不影响证据。当前剩三条不改、不补槽；新批再处理连接等待上限。
 - 【Agent】【2026-10-24 20:51】[op] 持续巡检任务已追加EXP034最新中断证据：v18已终止无效不等其变valid、不重跑；当前只等v19/v20/v23自然终止，整批结束后新隔离服务先修RPC空闲等待，再单版本多回合。任务频率/授权范围未扩展，不动活服务。
+- 【Agent】【2026-10-24 21:01】[op] 新建实验块 EXP-2026W43-035：v23在372步再次因约900秒RPC空闲超时中断  ↪ `EXP-2026W43-035`
+- 【Agent】【2026-10-24 21:03】[result] EXP035-v23在372步controller1/EOF、native incomplete/valid=false/success/score null，原JSON已SHA验收；末成功call137距原生终局899.490秒，复现900秒空闲关闭。当前仅v19/v20运行，保持原提示和服务、不补槽或重跑。
