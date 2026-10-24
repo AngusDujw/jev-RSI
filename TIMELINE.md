@@ -144,6 +144,7 @@ graph LR
     T_2026W43_011["📊 libero-generic-vision<br/>通用GPT动态合同完成222步/74Jev…"]:::experiment
     T_2026W43_012["📊 libero-generic-vision<br/>GPT完整程序经三次现场修订首次原生tru…"]:::experiment
     T_2026W43_013["📊 libero-generic-vision<br/>原冻结init1两版失败后，通用空间特征预…"]:::experiment
+    T_2026W43_014["📊 libero-generic-vision<br/>最终无旧源码冷生成1800秒无方法交付；修…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -246,6 +247,7 @@ graph LR
   T_2026W41_025 --> T_2026W43_011
   T_2026W43_011 --> T_2026W43_012
   T_2026W43_012 --> T_2026W43_013
+  T_2026W43_013 --> T_2026W43_014
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -375,6 +377,7 @@ graph LR
 | `T-2026W43-011` | 2026-10-24 | experiment | libero-generic-vision | 通用GPT动态合同完成222步/74Jev/7GPT，但视觉complete与原生false冲突；无任务配方，可执行性成立而成功/泛化/效率未证 | `EXP-2026W43-053` | - |
 | `T-2026W43-012` | 2026-10-24 | experiment | libero-generic-vision | GPT完整程序经三次现场修订首次原生true：17GPT/114真实Jev/342步；冻结新初态验证尚未结束，未证明泛化或效率 | `EXP-2026W43-060` | - |
 | `T-2026W43-013` | 2026-10-24 | experiment | libero-generic-vision | 原冻结init1两版失败后，通用空间特征预算让同完整GPT源无修订完成开发init1及首次未见init2；wire完成输入减少但全量未知、无有意义加速 | `EXP-2026W43-064` | - |
+| `T-2026W43-014` | 2026-10-24 | experiment | libero-generic-vision | 最终无旧源码冷生成1800秒无方法交付；修订复用及一个未见初态原生成功成立，但稳定冷生成/总体成本/加速未证；有限机器人批次结束，deadline事后只本地检查 | `EXP-2026W43-067` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
