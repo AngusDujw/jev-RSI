@@ -23,10 +23,11 @@ from gpt_jev_review_contract import compile_fields, validate_value
 from run_gpt_jev_generic import save, scrub
 
 
-def model_wire_numbers(value):
+def model_wire_numbers(value, *, preserve_tools=False):
     """Compact model inputs only; simulator, program data and receipts stay exact."""
     if isinstance(value, dict):
-        return {key: model_wire_numbers(item) for key, item in value.items()}
+        return {key: json.loads(json.dumps(item, allow_nan=False)) if preserve_tools and key == "tools"
+                else model_wire_numbers(item) for key, item in value.items()}
     if isinstance(value, list):
         return [model_wire_numbers(item) for item in value]
     if isinstance(value, float):
@@ -38,7 +39,7 @@ def model_wire_numbers(value):
 
 def post(url, payload, path, timeout=1800):
     """Keep long method generation bounded by the actual remaining episode time."""
-    payload = model_wire_numbers(payload)
+    payload = model_wire_numbers(payload, preserve_tools=True)
     english(payload)
     save(path.with_suffix(".request.json"), scrub(payload))
     started = time.monotonic()
@@ -305,7 +306,7 @@ def main():
             for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "gpt_jev_review_contract.py", "jev_rgbd_tracking.py")},
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
         native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
-        model_wire_numeric_precision="6 significant digits; internal calculations and receipts retain full precision",
+        model_wire_numeric_precision="data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
         pro_request_deadline="loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
         review_parameters="method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
         reused_method_sha256=hashlib.sha256(archived_method["source"].encode()).hexdigest() if archived_method else None))

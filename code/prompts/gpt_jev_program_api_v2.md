@@ -15,7 +15,8 @@ Return completion_proposed as a boolean and evidence as a JSON-compatible object
 or list. A list of diagnostic log entries is supported by the repair interface.
 All API arguments/results are JSON-compatible: use ndarray.tolist() at boundaries.
 print(...) and api.note(text) write bounded trace notes through host RPC.
-Structured numbers sent to GPT/Jev are serialized with six significant digits;
+Structured data numbers sent to GPT/Jev use six significant digits; tool schema
+constraints remain exact so a declared numeric enum or bound is not changed.
 the worker's API data, numerical control and original execution receipts retain
 full precision. Calculate geometry using API measurements rather than assuming
 displayed decimal length establishes sensing accuracy.
