@@ -23,3 +23,8 @@ Generic development lessons, supported only by the recorded development failure:
   Derive grasp clearances and margins jointly from measured object dimensions,
   own finger geometry, measurement uncertainty, and controller tolerance. A valid
   small object can make independently chosen fixed margins mutually infeasible.
+- A depth sample at a visual boundary can hit an adjacent surface. Check
+  consistency with an interior measured surface rather than assuming all marked
+  corners have equally reliable depth. Current calibration and a fitted plane
+  support explicitly derived ray intersections for genuinely visible planar
+  landmarks, with the plane-fit uncertainty and correspondence limits retained.

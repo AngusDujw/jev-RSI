@@ -95,6 +95,27 @@ def compact_feedback(value):
     return value
 
 
+def intersect_plane(K, T, pixel, plane):
+    """Calibrated ray/plane geometry, with no object identity inference."""
+    import numpy as np
+    K, T, pixel, plane = (np.asarray(x, float) for x in (K, T, pixel, plane))
+    if K.shape != (3, 3) or T.shape != (4, 4) or pixel.shape != (2,) or plane.shape != (4,) or not np.isfinite(np.r_[K.ravel(), T.ravel(), pixel, plane]).all():
+        raise ValueError("Invalid ray/plane input")
+    if not np.all((pixel >= 0) & (pixel < 768)) or np.linalg.norm(plane[:3]) < 1e-8:
+        raise ValueError("Invalid pixel or plane normal")
+    normal = plane[:3]/np.linalg.norm(plane[:3])
+    offset = plane[3]/np.linalg.norm(plane[:3])
+    ray = T[:3, :3] @ np.linalg.solve(K, np.r_[pixel, 1.])
+    ray /= np.linalg.norm(ray)
+    denominator = float(np.dot(normal, ray))
+    if abs(denominator) < .05:
+        raise ValueError("Ray is parallel or grazing the supplied plane")
+    distance = -(float(np.dot(normal, T[:3, 3]))+offset)/denominator
+    if not .02 <= distance <= 3:
+        raise ValueError("Plane intersection is behind camera or outside metric range")
+    return (T[:3, 3]+distance*ray).tolist()
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
@@ -223,6 +244,15 @@ def main():
         depth = float(np.median(z))
         xyz = data["T"][:3, :3] @ (np.linalg.solve(data["K"], [u, v, 1.])*depth) + data["T"][:3, 3]
         return dict(world_m=xyz.tolist(), depth_m=depth, frame_id=native_steps, pixel=pixel)
+
+    def camera_geometry(camera):
+        data = view(camera)
+        return dict(K=data["K"].tolist(), camera_to_world_opencv=data["T"].tolist(), frame_id=native_steps)
+
+    def plane_point(camera, pixel, plane):
+        data = view(camera)
+        return dict(world_m=intersect_plane(data["K"], data["T"], pixel, plane), pixel=pixel,
+            plane=plane, frame_id=native_steps, source="calibrated_ray_intersection_with_program_supplied_plane")
 
     def cloud(camera, box, stride=6):
         if len(box) != 4 or any(type(x) is not int for x in box) or type(stride) is not int or not 4 <= stride <= 32:
@@ -409,7 +439,7 @@ def main():
         selector = selectors.DefaultSelector()
         selector.register(worker.stdout, selectors.EVENT_READ)
         sandbox = False
-        allowed = dict(state=state, point=point, cloud=cloud, compose=lambda q, r: (Rotation.from_rotvec(r)*Rotation.from_quat(q)).as_quat().tolist(), review=review, choose=choose, control=control, note=lambda text: None)
+        allowed = dict(state=state, point=point, cloud=cloud, camera=camera_geometry, plane_point=plane_point, compose=lambda q, r: (Rotation.from_rotvec(r)*Rotation.from_quat(q)).as_quat().tolist(), review=review, choose=choose, control=control, note=lambda text: None)
         try:
             for _ in range(4000):
                 budget()

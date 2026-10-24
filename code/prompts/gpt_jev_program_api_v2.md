@@ -18,6 +18,14 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
 - api.point(camera, pixel, radius=3): current visible surface point as
   world_m, depth_m, frame_id, pixel. camera is agentview or robot0_eye_in_hand.
   pixel=[u,v]; radius 1..6. Invalid/discontinuous depth raises an error.
+- api.camera(camera): current K, camera_to_world_opencv, frame_id.
+- api.plane_point(camera, pixel, plane): intersect the calibrated current pixel ray
+  with a program-supplied world plane [nx,ny,nz,d], n dot X + d = 0. Returns
+  world_m, pixel, plane, frame_id and an explicit derived-source label. Rejects
+  grazing, behind-camera and out-of-range intersections. Fit/validate the plane
+  from actual visible measurements first. This can support visible boundary
+  landmarks whose depth patch mixes surfaces; it does not prove that a selected
+  pixel belongs to that plane or reveal a hidden object boundary.
 - api.cloud(camera, box, stride=6): sampled visible surface points world_m,
   corresponding rgb and pixels, frame_id. box=[u0,v0,u1,v1], integer image bounds.
   stride 4..32. Includes background/occluders; no object isolation is implied.
