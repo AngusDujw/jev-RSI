@@ -354,3 +354,4 @@
 - 【Agent】【2026-10-24 20:18】[result] r6在111步公开跟踪14内点后因GPT读取不存在current_frame_id停止，现场自动修复中；后续手册明确frame_id/reference_frame_id，未热改当前执行条件
 - 【Agent】【2026-10-24 20:26】[op] 新增候选通用episode checkpoint/recall：跨方法修复保留有来源的公开程序数据、新回合为空；复制隔离/原子容量/英文/键数检查通过。r6保持原源未热改，在线效果未验证
 - 【Agent】【2026-10-24 20:31】[op] 候选checkpoint/recall通过真实隔离worker握手和RPC往返，无模型或物理调用；补全文档unknown.reason字段，在线效果仍未验证
+- 【Agent】【2026-10-24 20:45】[op] 候选固定提示词明确局部证据、外部障碍/未知/自遮挡三种语义，防止clear布尔门隐式要求全程可见；r6现场仍未热改

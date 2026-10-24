@@ -56,3 +56,11 @@ Generic development lessons, supported only by the recorded development failure:
   current_frame_id key: the tracker uses frame_id and reference_frame_id. Include
   relevant measured values in evidence before a later operation can fail; a
   method repair starts a fresh Python namespace while physical effects persist.
+- A gate labelled clear can silently require complete visibility even when the
+  requested fact was only absence of a visible external obstruction. Ask for
+  separate obstruction and visibility evidence with defined decision meanings.
+  Repeated observation moves that preserve the same self-occlusion do not resolve
+  that uncertainty. Use a justified local action or a genuinely different view;
+  never replace unknown with certified clearance. Preserve valid historical
+  geometry explicitly instead of rebuilding every unrelated prerequisite after
+  a repair. These lessons do not authorize motion through an observed obstacle.

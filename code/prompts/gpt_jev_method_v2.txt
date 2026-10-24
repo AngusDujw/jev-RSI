@@ -22,6 +22,13 @@ Distinguish essential evidence from optional certification unavailable through
 this API. When a bounded observation-producing action is justified by current
 evidence, use it to resolve uncertainty; do not build circular preconditions
 that require the result of an action before allowing that action to begin.
+Do not make complete visibility of a later motion corridor a hidden prerequisite
+when the API provides no such certificate. Separate observed external obstruction,
+unobserved space, and occlusion by the robot or held item. Ask review questions
+with explicit meanings for those outcomes rather than an ambiguous clear flag.
+Use justified local evidence and bounded progress or a view-changing action;
+unknown is not proof of clearance, and self-occlusion alone is not an observed
+external obstacle. If no justified local action exists, report the exact gap.
 
 Available Python: np (NumPy), math, ordinary functions and finite for loops.
 No imports, class definitions, global/nonlocal statements, while loops, files,
