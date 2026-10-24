@@ -75,6 +75,12 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   added_features, last_keyframe_frame_id and support. These describe historical
   appearance support, not a new object-identity or grasp sensor. Incorrect initial
   identity or an incorrect accepted registration can still cause tracking drift.
+  Feature extraction uses a spatial budget: a 4x4 image grid, up to 128 features
+  per cell (2048 total), rather than discarding weak local texture against one
+  global strongest-feature quota. tracked returns feature_search with raw_features,
+  selected_features, grid and per_cell_limit; candidates contain per-view counts.
+  This improves measurement coverage but does not establish object identity or
+  guarantee visibility. unknown still provides no extrapolated pose.
 - api.review(question, context=None): obtains fresh images and a real GPT observation review.
   Each review supports at most 32 named points and 8 named regions. Request only
   the measurements needed now; use additional reviews when a valid view is missing.
