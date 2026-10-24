@@ -38,6 +38,12 @@ No formal research goal, primary metric or theorem is changed here.
    package with the generic prompt/API. Any online repair and its cost are
    reported separately. Native evaluation remains isolated until termination.
 
+Step-count clarification: summary.settling_steps=10 describes the fixed initial
+reset settling before the policy starts. native_steps counts policy-controlled
+steps. Terminal evaluation reads the final state directly after policy termination;
+it performs no additional settling, release or goal-completing action. Do not
+interpret a native/proposal mismatch as a change produced by post-policy steps.
+
 Planner remains local signed-in Pro gpt-6-astra/xhigh; no Platform API, Decisions
 credential or caz/z credential is used. Server is company-server-2-ykj, existing
 LIBERO-Plus UV interpreter and EGL GPU 4. All work stays in project directories.

@@ -471,3 +471,4 @@
 - 【Agent】【2026-10-25 06:28】[op] 新建实验块 EXP-2026W43-081：未见init11限额自动修复后原生成功：完成四例原生4/4  ↪ `EXP-2026W43-081`
 - 【Agent】【2026-10-25 06:34】[op] 将未见init11原样最终完整源/全部修订理由/interface/Jev协议及audit provenance加入cold-methods包，核验冷输入空记忆无旧源；COHORT更新完成9/10/11/12、仅13在途，仍不回流模型输入。
 - 【Agent】【2026-10-25 06:35】[op] EXP081完整记录未见11原生成功、自评false与24GPT/99Jev/297步全成本；报告/README/Discussion/44项文件清单更新完成4/4，仅13在途。作为同冻结批次新增样本，整体五例判断留待最后终局，不另改假设/主线或提示词。
+- 【Agent】【2026-10-25 07:04】[note] 核对run_gpt_jev_program.py：settling_steps=10仅指初始reset后固定settle，native_steps为策略步；finally直接取最终图/诊断快照与env.check_success，无追加终局物理动作。主报告澄清计数，避免把自评/原生差异误解为评分前另行静置或补做释放。
