@@ -116,6 +116,19 @@ def intersect_plane(K, T, pixel, plane):
     return (T[:3, 3]+distance*ray).tolist()
 
 
+def control_lease(controller, target, quaternion, gripper, questions, features=None, max_calls=30, **limits):
+    """Generic local feedback loop; every update still invokes real Jev."""
+    if type(max_calls) is not int or not 1 <= max_calls <= 40:
+        raise ValueError("Control lease max_calls must be integer 1..40")
+    stalled = 0
+    for index in range(max_calls):
+        result = controller(target, quaternion, gripper, questions, features=features, **limits)
+        stalled = stalled+1 if result["status"] == "stalled" else 0
+        if result["status"] == "reached" or stalled >= 3:
+            return dict(result, lease_calls=index+1)
+    return dict(result, status="lease_exhausted", lease_calls=max_calls)
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
@@ -417,6 +430,8 @@ def main():
         rot_error = float(np.linalg.norm((desired*Rotation.from_quat(obs["robot0_eef_quat"]).inv()).as_rotvec()))
         reached = pos_error <= position_tolerance and rot_error <= rotation_tolerance and (gripper == "keep" or grip == gripper)
         status = "reached" if reached else "stalled" if np.linalg.norm(after-before) < .0008 and pos_error > .015 else "moved"
+        if jev_calls % 10 == 0:
+            print(json.dumps(dict(event="control", jev_calls=jev_calls, native_steps=native_steps, position_error_m=pos_error, status=status)), flush=True)
         return dict(**receipt, status=status, position_error_m=pos_error, rotation_error_rad=rot_error)
 
     def step_env(action):
@@ -441,7 +456,7 @@ def main():
         selector = selectors.DefaultSelector()
         selector.register(worker.stdout, selectors.EVENT_READ)
         sandbox = False
-        allowed = dict(state=state, point=point, cloud=cloud, camera=camera_geometry, plane_point=plane_point, compose=lambda q, r: (Rotation.from_rotvec(r)*Rotation.from_quat(q)).as_quat().tolist(), review=review, choose=choose, control=control, note=lambda text: None)
+        allowed = dict(state=state, point=point, cloud=cloud, camera=camera_geometry, plane_point=plane_point, compose=lambda q, r: (Rotation.from_rotvec(r)*Rotation.from_quat(q)).as_quat().tolist(), review=review, choose=choose, control=control, drive=lambda *a, **kw: control_lease(control, *a, **kw), note=lambda text: None)
         try:
             for _ in range(4000):
                 budget()

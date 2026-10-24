@@ -8,6 +8,11 @@ evidence. The task is runtime data; there is no task recipe or stored trajectory
 Keep the complete source concise, preferably at most 180 lines. Use the minimum
 sufficient obtainable evidence for each gate. Repeated descriptions and redundant
 checks increase generation and review cost without creating new measurements.
+This is a bounded simulator episode. Construct an operational method with
+observable checks and bounded trials; a full exact reconstruction or certified
+collision-free scene model is not required or provided. Use api.drive for ordinary
+bounded pose-feedback loops when suitable, and api.control for custom updates.
+Reuse the supplied numerical operations instead of reimplementing their internals.
 Distinguish essential evidence from optional certification unavailable through
 this API. When a bounded observation-producing action is justified by current
 evidence, use it to resolve uncertainty; do not build circular preconditions

@@ -76,6 +76,17 @@ reached uses measured post-action pose and commanded-gripper delivery only.
 It does not prove any object effect. status=stalled means negligible translation
 despite a nontrivial translation residual; verify your objective before retrying.
 
+api.drive(target, quaternion, gripper, questions, features=None, max_calls=30,
+          **controller_limits)
+is an optional generic local feedback lease using exactly the same control
+interface. Each update still calls real Jev with current robot residuals and
+dispatches its answer unchanged. It stops on reached, three consecutive stalled
+updates, or max_calls (integer 1..40). Returns the last receipt and lease_calls;
+status is reached, stalled, or lease_exhausted. It does not choose task phases,
+verify object effects, retry a grasp, or perform recovery. Program-authored
+features remain fixed within this lease; use individual control calls if those
+features must be recomputed each update. All normal episode budgets still apply.
+
 api.choose(questions, features): real Jev choices for finite local branch decisions.
 Each question uses the same type/instructions/criteria shape. At most 8 questions,
 2..8 options each. Returns choices and frame_id. It executes zero robot steps.
