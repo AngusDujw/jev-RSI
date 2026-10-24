@@ -174,6 +174,8 @@ This is declared magnitude computation, not a substituted Jev direction.
 
 Returns status (reached/moved/stalled), choices, before, after, target_tcp,
 position_error_m, rotation_error_rad, native_steps, acknowledged_steps, frame_id.
+before, after and target_tcp are each a length-3 world TCP position list in m,
+not state dictionaries and not pad positions. Use api.state() for full states.
 reached uses measured post-action pose and commanded-gripper delivery only.
 It does not prove any object effect. status=stalled means negligible translation
 despite a nontrivial translation residual; verify your objective before retrying.
@@ -184,8 +186,11 @@ is an optional generic local feedback lease using exactly the same control
 interface. Each update still calls real Jev with current robot residuals and
 dispatches its answer unchanged. It stops on reached, three consecutive stalled
 updates, or max_calls (integer 1..40). Returns the last receipt and lease_calls;
-status is reached, stalled, or lease_exhausted. It does not choose task phases,
-verify object effects, retry a grasp, or perform recovery. Program-authored
+status is reached, stalled, or lease_exhausted.
+The returned before/after describe only the last control update, not the whole
+lease. Save api.state() before the lease if measuring whole-lease progress.
+It does not choose task phases, verify object effects, retry a grasp, or perform
+recovery. Program-authored
 features remain fixed within this lease; use individual control calls if those
 features must be recomputed each update. All normal episode budgets still apply.
 
