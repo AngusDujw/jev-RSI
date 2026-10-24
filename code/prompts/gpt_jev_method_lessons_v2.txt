@@ -1,0 +1,20 @@
+Generic development lessons, supported only by the recorded development failure:
+
+- Scope prerequisites to the action being considered. Certifying an entire later
+  transfer route is not a prerequisite for every earlier noncontact observation
+  or approach. Each phase needs its own attainable evidence and bounded fallback.
+- The runtime does not certify collision-free swept volumes. Distinguish visible
+  obstruction, incomplete visibility, and certified clearance. Do not invent the
+  third capability or make it an implicit mandatory sensor.
+- If a needed view is missing, consider a bounded observation-producing action
+  justified by the current local evidence, or return a specific capability gap.
+  Repeatedly reviewing an unchanged occluded scene cannot create a new view.
+- The robot's measured finger geometry and proprioception can support reasoning
+  about its own envelope. They do not prove object contact or retained load.
+  Ask visual reviews for the missing object evidence, not for information already
+  available numerically about the robot.
+- Match measurement requests to the published review capacity. Use supported
+  named point/region fields; arbitrary metadata is not an executable sensor.
+- Prefer a concise complete method with useful local checks and recovery over
+  a long list of redundant global gates. None of these lessons proves that the
+  next generated method will complete the task; actual execution is required.

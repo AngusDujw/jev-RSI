@@ -68,6 +68,7 @@ def main():
     p.add_argument("--max-native-steps", type=int, default=600)
     p.add_argument("--max-repairs", type=int, default=2)
     p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
+    p.add_argument("--revise-archived", action="store_true", help="Ask GPT to revise the archived method using its adjacent summary.json")
     p.add_argument("--wall-seconds", type=int, default=3600)
     args = p.parse_args()
     repo = Path(__file__).resolve().parents[2]
@@ -86,6 +87,8 @@ def main():
             p.error("Archived method has unexpected fields")
         english(archived_method)
         validate_source(archived_method["source"])
+    if args.revise_archived and not archived_method:
+        p.error("--revise-archived requires --method-file")
     out.mkdir(parents=True)
     cache = out / "runtime"
     config = cache / "libero-config"
@@ -112,6 +115,8 @@ def main():
         logging.FileHandler = handler
     from libero_robot_geometry import gripper_geometry
     prompt = (repo / "code/prompts/gpt_jev_method_v2.txt").read_text()
+    lessons = (repo / "code/prompts/gpt_jev_method_lessons_v2.txt").read_text()
+    prompt += "\n\n"+lessons
     manual = (repo / "code/prompts/gpt_jev_program_api_v2.md").read_text()
     english([prompt, manual])
     save(out / "protocol.json", dict(arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
@@ -416,8 +421,14 @@ def main():
         termination = "running"
         previous_method = None
         question = "Build the complete processing method and Jev input/output cooperation from current observations."
+        if args.revise_archived:
+            archived_summary = json.loads((args.method_file.resolve().parent / "summary.json").read_text())
+            evidence = (archived_summary.get("result") or {}).get("evidence", {})
+            failure = {k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state")}
+            previous_method = dict(archived_method, incomplete_result=failure)
+            question = "Revise the complete archived GPT method using its recorded incomplete outcome and the current observations/API. Produce a concise executable method with feasible phase-local evidence and bounded recovery. Do not assume a previous physical action occurred in this newly initialized episode."
         for revision in range(args.max_repairs+1):
-            method = archived_method if revision == 0 and archived_method else planner("method", question, previous_method)
+            method = archived_method if revision == 0 and archived_method and not args.revise_archived else planner("method", question, previous_method)
             try:
                 result = execute_method(method, revision)
                 if not isinstance(result, dict) or type(result.get("completion_proposed")) is not bool:
