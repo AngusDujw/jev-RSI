@@ -1,9 +1,11 @@
 # GPT/Jev stability continuation
 
-Current status: predeclared frozen init4–8 completed native5/5, no source repairs.
-The first independent geo-assisted cold method failed after two GPT patches and
-23 real Jev calls. A second independent builder and a separate GPT-led revision
-are active. Earlier pending statements below describe intermediate checkpoints.
+Current status: original frozen init4–8 completed native5/5, no source repairs.
+Two independent geo-assisted cold episodes failed. A new GPT-led revision reached
+native success on development init0, then its frozen init9/10 both failed; the
+remaining three planned admissions were stopped. Typed review contracts passed
+offline and real Pro shape checks. A typed fresh builder and a typed GPT-led
+revision are active. Earlier pending statements describe intermediate checkpoints.
 
 This is an outer-agent experiment record, not model-facing experience.
 
@@ -116,3 +118,25 @@ Predeclared init4-8: native5/5, zero source repairs,30 GPT reviews,432 real Jev 
 The 18e9bede cold episode ended native=false/completion=false:7 GPT,23 real Jev,69 steps,1898.78s. GPT71909 input /39446 output; Jev47150/5727; all upstream attempts have known usage. Three complete methods and both exact patches remain retained. The last method acquired six valid samples, then exhausted a20-update high-approach lease and incorrectly indexed a position list as a state dict. This activated the previously diagnosed contract error; no object was grasped. EXP069 records the complete negative result.
 
 The separate 7a640750 cold builder has no prior source. A new e0c93679 run asks GPT to revise its unedited0f4e1e7c generated method with the corrected contract and public failure receipts, beginning a fresh scene and empty checkpoints. It is revision/reuse, not cold generation; no privileged snapshot is restored.
+
+
+## Later completed episodes and typed candidate
+
+| Run | Tested host | GPT | Real Jev | Steps | Seconds | Native |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| repair-geo-init0 | e0c93679 |9|98|294|1578.86|true|
+| cold-contract-init0 |7a640750|8|53|159|2510.20|false|
+| geo-init9, no source repair |e0c93679|3|17|51|407.57|false|
+| geo-init10, no source repair |e0c93679|4|82|246|783.60|false|
+
+The successful revision source is7e6c8e8e1d86476f6b18bcdd2e0c6858f46176e94330edc8f5d49d70ae9659f5. Its measured hand/object rise was22.507/22.626mm. All98 real choices and294 steps passed audits. GPT125249 input/34618 output; Jev202394/24402, all usage known. Original failed-method acquisition remains separately counted. EXP071 is revision/reuse, not independent cold generation.
+
+The independent second cold method failed retention (hand23.879mm rise, object0.038mm rise and7.866mm lateral shift). After two GPT patches it stopped again on a free-JSON recovery-field mismatch. All53 real choices/159 steps passed audits; completed GPT101326/51023 excludes one unknown-usage upstream attempt, Jev108196/13197 is complete. All source versions and failures remain (EXP072).
+
+The new7e6 source was predeclared for init9-13. Both admitted cases failed, so remaining init11-13 were not launched:0/2 admitted, not0/5. Init9 stopped on unresolved local rim/open-finger-envelope overlap, not a confirmed physical collision. Init10 failed a1.5mm pose gate at1.990mm residual after two24-update leases; this does not establish a global servo accuracy floor or a contact cause. All99 responses/297 steps passed audits, all usage known (GPT64056/19967, Jev204461/24651). See EXP073. The original afb42aff five-case evidence remains separate.
+
+A read-only audit across all10 terminated episodes found705 real control calls and4935 axis/gripper choices, with zero mismatches against the supplied semantic goal labels. This validates label selection only, not whether the program targets or physical plans are feasible.
+
+The next task-independent mechanism is api.review(..., fields=...). Compact type/enum/nested declarations become an actual strict function-tool parameters object. The host validates exact types without coercion and keeps legacy calls available. No task command or trajectory is encoded. Fourteen negative cases, nested/nullable positives and unchanged legacy schemas passed. A real Pro public-image probe returned typed booleans/enums/null in4.57s,1068 input/88 output;0 Jev and no native evaluation. It is not a task success (EXP074). Official schema guidance: https://developers.openai.com/api/docs/guides/function-calling .
+
+At b0b53fe4, typed-cold-init0 has no previous method. typed-repair-init0 revises unedited316750b9 with old public failure receipts in a fresh scene with empty checkpoints. Both have20 GPT/200 Jev/600 steps/3 same-scene repairs/4800s budgets. The revised method has delivered source; its actual first review request has strict=true with declared parameters fields, rather than relying on free JSON. No typed native outcome yet.
