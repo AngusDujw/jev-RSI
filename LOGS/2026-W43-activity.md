@@ -530,3 +530,4 @@
 - 【Agent】【2026-10-24 19:28】[result] EXP033-v22原生终局已SSH核实并保存原字节/SHA：complete/valid=true、native_success=false/score0、550步；controller/result为140动作/8259.217474秒，controller-exit尚未生成，不把清理等待当新回合。其余五条继续，不补槽/不改提示。
 - 【Agent】【2026-10-24 19:36】[note] EXP033巡检：v22 controller已正常退出0，SSH复核原生完整false/0与已保存字节一致；其它五条约491/492/421/547/343仍运行，未发现新原生终局。保持所有提示、不补开回合；等本批全部结束后只改一版同版多回合，持续检查任务已核验启用。
 - 【Agent】【2026-10-24 19:46】[result] EXP033-v21完整终局已SSH保存原字节并SHA核验：550步/126动作/8986.314288秒，complete/valid=true、native_success=false/score0、controller0。v21/v22两条均失败，剩v18/19/20/23约500/494/431/345仍运行，worker事件均更新且未见timeout/rate-limit；不补槽/不改提示。
+- 【Agent】【2026-10-24 19:56】[note] EXP033巡检：剩余v18/19/20/23约505/495/439/351步，均无新controller终局；v21/v22先前完整false/0不重跑。当前只观察，不改提示不补槽；待本批全结束后按单一冻结版本多回合收敛CIRCLE-1，持续巡检任务仍启用。
