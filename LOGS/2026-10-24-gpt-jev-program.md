@@ -1,8 +1,9 @@
 # GPT/Jev complete-method development
 
 Status: r6 reached native success after three same-scene repairs. The first frozen
-new-init probe r7 and appearance-growth comparison r8 failed; a spatial feature
-budget comparison is running. This is not a stability or efficiency result. All model-facing
+new-init probe r7 and appearance-growth comparison r8 failed. Spatial feature
+budget comparison r9 succeeded with the unchanged method; a frozen unused-init
+probe is running. This is not a stability or efficiency result. All model-facing
 prompts, requests and lessons are English. This report describes outer-agent
 experiment organization; it is not supplied as a task-solving prompt.
 
@@ -51,6 +52,7 @@ convenient intermediate state for subsequent fresh-episode tests.
 | r6 | 3bafd3a7 | 17 | 114 | 342 | 3119.04 | true | Three repairs: exact tracker key, mixed-depth rim samples, unattainable visibility gate |
 | r7 | 3bafd3a7 | 4 | 52 | 156 | 313.05 | false | Frozen method on first unused init 1 lost transfer tracking |
 | r8 | 6c57717a | 4 | 52 | 156 | 292.10 | false | Reference growth improved inliers but did not solve feature starvation |
+| r9 | ea947a98 | 6 | 85 | 255 | 615.37 | true | Same init 1, complete unchanged method with spatial feature coverage |
 
 All runs are under `code/runs/2026-10-24-gpt-jev-program/rN/`; complete requests,
 responses, methods, RPC feedback, native receipts, depth/calibration and two camera
@@ -91,6 +93,7 @@ not labelled stable. The exact unedited package is versioned under
 | r6 | 210286 | 70942 | 53667 |
 | r7 | 37255 | 4994 | 3895 |
 | r8 | 37236 | 5193 | 4098 |
+| r9 | 57227 | 9831 | 7787 |
 
 r2 has one client failure and three upstream attempts with unknown usage; they
 are not zero-cost calls. Archived-method tests retain acquisition costs in their
@@ -107,6 +110,7 @@ r5's first complete method took 877.83 seconds to generate.
 | r6 | 114 | 305465 | 28386 | 133.34 |
 | r7 | 52 | 133763 | 12948 | 58.42 |
 | r8 | 52 | 133653 | 12948 | 60.88 |
+| r9 | 85 | 224705 | 21165 | 97.74 |
 | Separate zero-motion diagnostics | 2 | 6083 | 498 | 3.60 |
 
 These are distinct model token accounting streams, not interchangeable monetary
@@ -205,12 +209,17 @@ in the same final print area using 524 descriptors overall. No matching, rigid-f
 depth-support, retention or action threshold was relaxed. Known canonical
 translations/rotations, foreground-depth rejection, blank unknown, spatial caps
 and bounded appearance-bank checks passed. r9 reuses the unchanged full method
-on the now-seen development init 1 with no repairs. GPT review outputs remain
+on the now-seen development init 1 with no repairs. It reached native success:
+at the former failing frame 156 it retained 120 inliers with 33.1 micrometre
+internal registration RMS, then released and verified the placed object. This
+residual is not true-pose accuracy. No method source or question text changed.
+r10 freezes ea947a98 and the same full source on previously unused init 2.
+GPT review outputs remain
 stochastic; freezing simulator seed does not make visual interpretations identical.
 
 ## Evidence boundary
 
-EXP-2026W43-055 through EXP-2026W43-062 preserve all outcomes in the weekly log.
+EXP-2026W43-055 through EXP-2026W43-063 preserve all outcomes in the weekly log.
 The v1 contract adapter and its separate development failures remain unchanged.
 The earlier source-grounded CaP/HexaShell/EmbodiedEvo comparison is in
 `code/prompts/gpt_jev_program_design.md`; its candidate prompt is not the active

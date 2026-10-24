@@ -29,6 +29,17 @@
       "host_commit": "6c57717a",
       "native_success": false,
       "method_repairs": 0
+    },
+    {
+      "run": "r9",
+      "init_index": 1,
+      "scope": "Repeated development initial state; no method repairs",
+      "host_commit": "ea947a98",
+      "native_success": true,
+      "method_repairs": 0,
+      "gpt_reviews": 6,
+      "jev_calls": 85,
+      "policy_steps": 255
     }
   ],
   "scope": "Single task and development success only. No stability/generalization/efficiency claim. Historical public shape samples occur only in the generated held-scene recovery branch; fresh open-hand runs remeasure geometry."

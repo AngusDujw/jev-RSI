@@ -30,8 +30,9 @@ Executable source, reached poses, a tracked patch and a completion proposal are
 separate from task success. Development failures, source revisions and acquisition
 costs remain part of the evidence. One repeatedly observed development scene
 reached native success after three same-scene GPT repairs. The first frozen
-new-init probe failed during transfer tracking; a generic measurement-library
-comparison is running. No stability, transfer, token-saving or speed result has
+new-init probe failed during transfer tracking. A spatial feature-budget fix then
+completed the same init with the unchanged method and no repairs; a frozen
+unused-init probe is running. No stability, transfer, token-saving or speed result has
 been established. See the
 [complete-method development report](../../LOGS/2026-10-24-gpt-jev-program.md).
 

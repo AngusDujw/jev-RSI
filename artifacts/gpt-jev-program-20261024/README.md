@@ -14,7 +14,9 @@ repairs. Its held-object recovery branch contains earlier public RGB-D shape
 samples labelled historical; these are not hidden object state. Fresh open-hand
 runs use the acquisition branch and remeasure geometry. The first frozen new-init
 probe failed during transfer tracking, and reference growth alone did not fix it.
-Do not describe this artifact as generally reliable from development success.
+A spatial feature-budget variant subsequently completed that same init with the
+unchanged method and no repairs. An unused-init probe is in progress. Do not
+describe this artifact as generally reliable from development success.
 
 The executable expects the exact host API and a restricted worker. It is not a
 standalone robot command script. Raw runs, both camera videos and native summaries
