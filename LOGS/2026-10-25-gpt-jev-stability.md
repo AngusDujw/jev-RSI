@@ -13,8 +13,10 @@ after a deterministic NumPy sandbox defect repeated. A minimal cached-module
 worker fix a8e6ea72 passed offline checks and native cold init9/10 both succeeded,
 using5/4automatic patches. Both program proposals were false. The same fixed
 framework also completed unused init12 with native/proposal true and zero source
-repairs. Three completed cases have native3/3; init11 and the predeclared last
-init13 are running independently. Five-case cold stability remains pending.
+repairs. Unused init11 subsequently reached native success after5automatic
+patches, with a false completion proposal. Four completed cases have native4/4;
+only the predeclared last init13 is still running. Five-case cold stability
+remains pending.
 Earlier pending statements are intermediate states.
 
 This is an outer-agent experiment record, not model-facing experience.
@@ -172,7 +174,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-39 tracked files changed in this continuation.
+44 tracked files changed in this continuation.
 
 | Status | File |
 | --- | --- |
@@ -188,6 +190,11 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 | A | [artifacts/gpt-jev-cold-methods-20261025/init10/README.md](../artifacts/gpt-jev-cold-methods-20261025/init10/README.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init10/method.json](../artifacts/gpt-jev-cold-methods-20261025/init10/method.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init10/method.py](../artifacts/gpt-jev-cold-methods-20261025/init10/method.py) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init11/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init11/METHOD.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init11/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init11/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init11/README.md](../artifacts/gpt-jev-cold-methods-20261025/init11/README.md) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init11/method.json](../artifacts/gpt-jev-cold-methods-20261025/init11/method.json) |
+| A | [artifacts/gpt-jev-cold-methods-20261025/init11/method.py](../artifacts/gpt-jev-cold-methods-20261025/init11/method.py) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init12/PROVENANCE.json](../artifacts/gpt-jev-cold-methods-20261025/init12/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init12/README.md](../artifacts/gpt-jev-cold-methods-20261025/init12/README.md) |
@@ -376,3 +383,31 @@ parallel slot admitted the already predeclared init13, without adding or replaci
 an ID. Both remaining cases use the exact same framework and budgets, empty
 new-episode memory and no archived source. Overall cold stability is not yet
 established.
+
+
+## Second unused-layout result: init11 native true (EXP081)
+
+The unchanged a8e6ea72 framework completed init11 with native true and program
+proposal false,24GPT/99real Jev/297policy steps,4369.25seconds,5automatic
+same-scene source repairs. Final complete source:
+89813329eb2cdd1c72aaf80f1fed6bc0c40aaa8151716a8bd5c6db9344412dbd.
+No previous source or scene memory was supplied to its initial builder.
+
+Its method repaired an approach pose gate, partial correspondence recovery,
+lower-interior samples mistaken for upper-rim measurements, measured release
+alignment, and an unnecessarily exact submillimeter pose gate. The final patch
+selected visible corner/print landmarks from its own supplied current image,
+then measured them through the public RGB-D API. Its evidence explicitly says
+this was not another api.review response; no free or hidden visual call is being
+claimed. The outer agent never supplied task pixels, coordinates or source edits.
+Actual release and retreat occurred; final cavity/rest evidence stayed unresolved,
+so model self-assessment remained false while native evaluation was true.
+
+Audits passed99original choices/693labels/297steps,6source hashes and18strict
+review returns. All24GPT/99Jev upstream attempts have known usage: GPT input
+379181/output139677, Jev211926/24651. All source-generation and repair costs
+remain included; no first-draft or net efficiency claim follows.
+
+[The complete output and Jev cooperation](../artifacts/gpt-jev-cold-methods-20261025/init11/METHOD.md)
+are preserved verbatim. Four predeclared cases have completed, native4/4.
+Only init13 remains running under the same frozen framework and budgets.

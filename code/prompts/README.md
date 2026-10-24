@@ -92,8 +92,9 @@ each. Both completion proposals remained false; native scoring is authoritative,
 and verification defects and all generation/recovery costs remain explicit.
 The same framework subsequently completed unused init12 with the untouched
 initial complete method:13GPT/109Jev/327steps, native and proposal both true.
-Three completed cases have native3/3; init11/13 are still running. The five-case
-cold criterion remains pending.
+Unused init11 also reached native success after5automatic patches, with a false
+completion proposal. Four completed cases have native4/4; only init13 remains
+running. The five-case cold criterion is still pending.
 All [completed methods and Jev protocols](../../artifacts/gpt-jev-cold-methods-20261025/README.md),
 including [the untouched init12 method](../../artifacts/gpt-jev-cold-methods-20261025/init12/METHOD.md),
 are preserved verbatim, separately from generic builder inputs.
