@@ -46,6 +46,16 @@ repair and reuse of a validated method are supported. A post-test absolute relay
 deadline fix passed local fake-stream checks only. See the
 [complete-method development report](../../LOGS/2026-10-24-gpt-jev-program.md).
 
+October25 continuation: the exact previously generated source passed the
+predeclared five unused initial states4-8 with native5/5 and zero source repairs,
+30 GPT reviews /432 real Jev calls /1296 policy steps. This is small-scale reuse
+reliability on one task. The distinct geo-assisted cold method delivered source
+but failed after two GPT patches at23 Jev /69 steps. Precise partial-measurement,
+historical-data ownership and control-receipt types have since been clarified;
+independent cold and revision tests continue. See the
+[continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md). Completed token
+totals exclude known unknown-usage retries; no full-cost or speedup claim follows.
+
 ```mermaid
 flowchart LR
   F[Fixed English builder/API/lessons] --> G[GPT complete method package]
