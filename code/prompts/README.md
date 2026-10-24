@@ -1,4 +1,41 @@
-# GPT to Jev contract planner v1
+# GPT/Jev complete-method framework
+
+## Active program interface v2
+
+The actual builder is [gpt_jev_method_v2.txt](gpt_jev_method_v2.txt), supplied with
+the [exact API manual](gpt_jev_program_api_v2.md) and
+[generic development lessons](gpt_jev_method_lessons_v2.txt). Runtime task language,
+images and public robot state are separate data. The fixed files contain no task
+IDs, target coordinates, grasp trajectory or object-specific command recipe.
+
+GPT submits a complete `main(api)` source plus its explanation, interface and Jev
+protocol. It owns observation processing, phase logic, geometric parameters,
+Jev questions, bounded control leases, effect checks and recovery. The
+[host](../scripts/run_gpt_jev_program.py) validates the package and runs it in a
+[separate restricted worker](../scripts/gpt_jev_program_worker.py). Exact local
+patches are assembled into a complete retained source before execution. A repair
+starts a new Python namespace in the same physical scene; it does not reset motion.
+
+The harness supplies public RGB-D/calibration, own robot geometry, finite-choice
+Jev RPC, bounded OSC commands, observation reviews and a
+[generic RGB-D patch registration primitive](../scripts/jev_rgbd_tracking.py).
+It supplies no hidden object pose, segmentation identity, contact oracle, goal
+predicate, task-dispatch branch or prewritten grasp/transfer policy. Every physical
+update invokes real Jev, and raw choices and dispatched actions are retained.
+Jev does not see dictionary question IDs: the compiler explicitly binds each
+axis question to its state selector. The manual declares magnitude/deadband rules.
+
+Native LIBERO evaluation is terminal and isolated from the generated method.
+Executable source, reached poses, a tracked patch and a completion proposal are
+separate from task success. Development failures, source revisions and acquisition
+costs remain part of the evidence. The v2 development evaluation is still ongoing;
+no stability, transfer, token-saving or speed result has been established.
+
+The same existing signed-in local Pro planner and separate authorized Jev routing
+described below apply to v2. Neither Platform API credentials nor `caz/z` keys
+are used. The v1 contract adapter remains available for comparison.
+
+## Previous contract planner v1
 
 The reusable prompt is `gpt_jev_planner_v1.txt`. It contains no task names,
 task IDs, fixed manipulation recipes, demonstrations, or known trajectories.
