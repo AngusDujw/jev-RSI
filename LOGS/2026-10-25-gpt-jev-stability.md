@@ -51,5 +51,20 @@ effort or API route was changed on the basis of documentation.
 
 ## Native results
 
-Pending. Every launched episode, including infrastructure failures, will remain
-in the record. No policy success is inferred from program validity or pose reach.
+| Run | Source/harness | GPT | Real Jev | Policy steps | Seconds | Native |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| init4 | afb42aff / c669ed34, no repair | 6 | 86 | 258 | 638.73 | true |
+
+Init4 is first use. All 86 dispatched choice maps match the original real Jev
+responses; sign, norm and 258 acknowledged-step checks pass. GPT completed input
+45400/output9226, six upstream attempts with known usage, relay423.48s. Jev
+completed input192037/output21414; 87 upstream attempts include one failed attempt
+with unknown usage, relay173.43s. These are not full Jev costs. Post-release
+measured landmark drift was0.244mm, not ground-truth sensing accuracy.
+
+Init5 frozen validation and init0 fresh candidate builder are running in separate
+worktrees and simulators, sharing a two-slot Pro bridge after init4 terminated.
+Both render on GPU4. Concurrent wall times will not be interpreted as a speed
+comparison. The cold candidate has no archived method or scene checkpoints.
+Every launched episode, including infrastructure failures, remains in the record.
+No policy success is inferred from program validity or pose reach.

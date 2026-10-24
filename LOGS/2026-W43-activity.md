@@ -396,3 +396,10 @@
 - 【Agent】【2026-10-24 23:38】[op] 最终Reflect回写Discussion/Timeline：EXP067超时不归因未执行策略，保留已验证复用/未见初态成功及全部成本边界；有限机器人批次结束，议题Open
 - 【Agent】【2026-10-24 23:50】[result] 最终只读资源核验：本任务relay PID已退出、本地/远端7921无监听、远端机器人/worker PID为空，GPU4为0%/4MiB；源/产物哈希、四实现文件编译和周志strict检查通过，原用户未跟踪目录保留
 - 【Agent】【2026-10-24 23:54】[result] 最终源码/文档已通过Git bundle快进同步company-server-2-ykj的final-framework worktree至c669ed34；本机origin/main已推送，最终diff与周志strict通过，无模型/机器人后台任务
+- 【User】【2026-10-25 00:09】[intent] 用户要求继续迭代GPT完整方法与真实Jev协作，直到LIBERO原生稳定成功；本轮先固定方法多新初态验证，再分离冷生成可靠性。
+- 【Agent】【2026-10-25 00:09】[op] 恢复本机Pro桥与company-server-2-ykj前台单回合；冻结afb42aff完整方法、c669ed34运行器/空间特征库，未用init4，禁源码修复，真实Jev与LIBERO终局。
+- 【Agent】【2026-10-25 00:13】[op] 候选通用geo数值层及精确英文接口完成：纯旋转/刚体/平面/圆/共运动计算，无任务策略；解析基准、退化输入及真实seccomp worker检查通过，未保留测试脚本。当前init4仍冻结旧版本。
+- 【Agent】【2026-10-25 00:16】[op] 新增每回合host/worker/geo/tracker实现哈希与文档说明，解析/全英文/固定提示词任务配方哨兵检查通过；候选代码分组SSH提交推送，远端独立worktree以Git bundle同步，不热改init4。
+- 【Agent】【2026-10-25 00:21】[result] 冻结init4首次原生true：6GPT/86真实Jev/258步/638.73秒，source afb42aff未修复；启动init5冻结复验及18e9bede通用geo冷生成init0，无旧源码/记忆，独立worker与场景，共享两并发Pro桥，墙时不用于速度配对。
+- 【Agent】【2026-10-25 00:22】[op] 新建实验块 EXP-2026W43-068：完整GPT方法冻结未用init4原生成功，禁止源码修复  ↪ `EXP-2026W43-068`
+- 【Agent】【2026-10-25 00:23】[result] init4全量审计通过：86回答动作及258步一致；GPT6上游usage全知，Jev87上游含1次usage未知失败，故192037/21414仅完成响应成本。EXP068已完整填入且周志strict lint通过。
