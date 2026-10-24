@@ -353,3 +353,4 @@
 - 【Agent】【2026-10-24 20:15】[result] 独立核验r3-r5全部132真实Jev方向与396策略步回执，选择未替换、无反向符号或向量限幅违规；不当作原生成功
 - 【Agent】【2026-10-24 20:18】[result] r6在111步公开跟踪14内点后因GPT读取不存在current_frame_id停止，现场自动修复中；后续手册明确frame_id/reference_frame_id，未热改当前执行条件
 - 【Agent】【2026-10-24 20:26】[op] 新增候选通用episode checkpoint/recall：跨方法修复保留有来源的公开程序数据、新回合为空；复制隔离/原子容量/英文/键数检查通过。r6保持原源未热改，在线效果未验证
+- 【Agent】【2026-10-24 20:31】[op] 候选checkpoint/recall通过真实隔离worker握手和RPC往返，无模型或物理调用；补全文档unknown.reason字段，在线效果仍未验证

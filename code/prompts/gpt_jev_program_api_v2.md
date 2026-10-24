@@ -55,7 +55,7 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   Validate identity, rigidity, feature coverage and uncertainty before using it.
   Partial occlusion may still leave enough correspondences; total occlusion or
   insufficient texture yields unknown. unknown returns frame_id, reference_frame_id,
-  candidates and source, but no transform or pose estimate. A transform alone does not certify a grasp.
+  reason, candidates and source, but no transform or pose estimate. A transform alone does not certify a grasp.
   Comparing observed patch motion with measured hand motion can support retention
   tests without requiring every object perimeter corner to remain visible.
 - api.review(question, context=None): obtains fresh images and a real GPT observation review.

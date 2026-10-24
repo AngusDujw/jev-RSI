@@ -119,6 +119,12 @@ question's dictionary ID: https://docs.typesafe.ai/primitives/choice.
 8. List-shaped diagnostic evidence is valid. Host repair-context extraction now
    accepts objects, lists and absent evidence; r5's host crash is not relabelled as
    a model-schema failure.
+9. The candidate host now supports bounded, provenance-labelled caller checkpoints
+   across repairs in one episode. New episodes start empty; recalled values are
+   historical assertions and require dependency/identity checks. Copy isolation,
+   per-entry/total/count limits, atomic rejected writes, missing keys and the
+   restricted worker RPC round trip passed without model or physical calls.
+   This candidate was not hot-patched into r6 and has no online benefit claim yet.
 
 ## Evidence boundary
 
