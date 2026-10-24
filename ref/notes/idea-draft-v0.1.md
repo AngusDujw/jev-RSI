@@ -183,3 +183,7 @@ F_t 包含采样前已知的信息。上式显式保留动作二阶矩，说明�
 
 ### 2026-10-24 GPT-to-Jev planning discussion
 Historical notes support separating qualitative decisions, action magnitudes, and full execution costs. They do not establish reliable automated plan generation. A proposed next evaluation would compare human-authored and GPT-authored stage contracts through the same executor on held-out states, accounting for planning tokens, recovery calls, and elapsed time. This discussion did not launch experiments or modify model prompts.
+
+
+### 2026-10-25 reference check
+Historical notes motivate separating direction, magnitude and full costs; they do not certify contact-task success. EXP-2026W43-068 records native success on a new initial state (6 GPT, 86 Jev, 258 steps), with one unknown-usage Jev retry. No formal claim is changed. These notes are not supplied to either runtime model.

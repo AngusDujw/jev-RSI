@@ -54,6 +54,8 @@ effort or API route was changed on the basis of documentation.
 | Run | Source/harness | GPT | Real Jev | Policy steps | Seconds | Native |
 | --- | --- | ---: | ---: | ---: | ---: | --- |
 | init4 | afb42aff / c669ed34, no repair | 6 | 86 | 258 | 638.73 | true |
+| init5 | afb42aff / c669ed34, no repair | 6 | 91 | 273 | 732.57 | true |
+| init6 | afb42aff / c669ed34, no repair | 6 | 85 | 255 | 928.73 | true |
 
 Init4 is first use. All 86 dispatched choice maps match the original real Jev
 responses; sign, norm and 258 acknowledged-step checks pass. GPT completed input
@@ -62,9 +64,41 @@ completed input192037/output21414; 87 upstream attempts include one failed attem
 with unknown usage, relay173.43s. These are not full Jev costs. Post-release
 measured landmark drift was0.244mm, not ground-truth sensing accuracy.
 
-Init5 frozen validation and init0 fresh candidate builder are running in separate
-worktrees and simulators, sharing a two-slot Pro bridge after init4 terminated.
-Both render on GPU4. Concurrent wall times will not be interpreted as a speed
-comparison. The cold candidate has no archived method or scene checkpoints.
+Init5 and init6 also passed unchanged-response, sign, norm, carried-gripper and
+acknowledged-step checks; all three source hashes match the original package.
+`code/runs/2026-10-25-gpt-jev-program/frozen-audit.json` retains per-run audit and
+completed usage. Requests were matched to bridge records by canonical full-body
+SHA256, including hashed image contents, rather than by completion ordering.
+Init5 GPT completed input45944/output8798, Jev202509/22659; init6 GPT45911/10038,
+Jev189932/21165. All of these upstream attempts have known usage. The prior init4
+unknown Jev retry remains part of the batch cost and is not erased.
+
+Init7/init8 frozen validation and init0 fresh candidate builder are running in
+separate simulators, sharing a two-slot Pro bridge after init4 terminated. At most
+two frozen simulators and one cold-builder simulator are active. All render on
+GPU4. Concurrent wall times will not be interpreted as a speed comparison.
 Every launched episode, including infrastructure failures, remains in the record.
 No policy success is inferred from program validity or pose reach.
+
+## Cold candidate at 18e9bede
+
+The initial request was verified to have no previous_method, empty feedback and
+checkpoint manifest, no method-file or reused source hash, frame0, and forced
+submit_method. Generation completed in888.97s, one upstream attempt, input7476 /
+output20631 tokens. The complete output is213 lines /24750 characters and uses
+geo13 times. It explains the full strategy and Jev feature/question/choice/action
+mapping. This is delivery evidence, not improved speed or task success.
+
+The first execution stopped before any physical action: a requested depth point
+was discontinuous and omitted from review.points, but the program indexed it.
+The raw review already recorded measurement_errors. GPT's first exact-source
+patch now uses available valid samples, preserves geometric adequacy checks,
+records missing names and checkpoints source measurements. The original failure
+is retained; no point was invented and the scene was not reset.
+
+This exposed omissions in the exact manual: partial measurement/error behavior,
+and before/after being TCP position lists from the last control update rather
+than state dictionaries or whole-lease endpoints. Main commits30fae198/4e50afc6
+clarify these existing semantics for future calls; they are NOT hot-applied to
+this18e9bede episode. No hand edit was made to the generated source. Native
+execution after its first patch remains pending.
