@@ -1,0 +1,39 @@
+{
+  "framework_commit": "a8e6ea72",
+  "criterion": "Native terminal success on predeclared init9-13 with independent cold generation; automatic same-scene repairs allowed",
+  "completed": [
+    {
+      "init_index": 9,
+      "source_sha256": "69df7e057155445f564939055e06236aa7fb7254dc9a535e63f9ddc170c3ed8f",
+      "source_revisions": 5,
+      "native_success": true,
+      "completion_proposed": false,
+      "termination": "method_incomplete",
+      "gpt_calls": 24,
+      "jev_calls": 92,
+      "native_steps": 276,
+      "elapsed_s": 4199.249124633847
+    },
+    {
+      "init_index": 10,
+      "source_sha256": "57c3e80317284b22ba2d840318963c68fcedaca498e06969b3e6c5b4befe8fa6",
+      "source_revisions": 4,
+      "native_success": true,
+      "completion_proposed": false,
+      "termination": "gpt_budget",
+      "gpt_calls": 24,
+      "jev_calls": 138,
+      "native_steps": 414,
+      "elapsed_s": 4555.387070104945
+    }
+  ],
+  "pending": [
+    11,
+    12
+  ],
+  "not_admitted": [
+    13
+  ],
+  "universal_or_multitask_reliability_proven": false,
+  "full_efficiency_improvement_proven": false
+}

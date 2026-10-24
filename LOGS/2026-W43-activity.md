@@ -462,3 +462,4 @@
 - 【Agent】【2026-10-25 05:10】[run] a8e冷生成回归init9/10原生均true，程序均未确认完成（10终止gpt_budget）；严格按用户Libero标准记2/2而不冒充初稿或自评成功。继续预定未见init11/12各自无旧源冷生成，框架/24GPT/200Jev/600步/5修复/7200秒不变，失败停止尚未准入13。
 - 【Agent】【2026-10-25 05:11】[op] 新建实验块 EXP-2026W43-079：冻结a8e框架两例独立冷生成回归原生2/2：程序确认假阴性与全量成本单列  ↪ `EXP-2026W43-079`
 - 【Agent】【2026-10-25 05:14】[op] EXP079、报告、README与Discussion完整记录a8e回归原生2/2及两自评false、全量费用、37strict与11源哈希；T-2026W43-018及Weekly Retro补记14/17等CIRCLE-1/3，无CIRCLE-2。收敛仍为冻结候选预定未见11–13，当前只11/12在途。
+- 【Agent】【2026-10-25 05:16】[op] 新增artifacts/gpt-jev-cold-methods-20261025：两回归完整模型源/返回包/原始设计与所有修订理由/最终interface与Jev协议/provenance及cohort状态原样保存；hash/AST/ASCII验证通过。固定prompt不读该目录，未增加模型调用或手改任务源。
