@@ -79,6 +79,10 @@ state.processed_features.axes.<axis>.goal_relation selector (and the objective
 gripper selector), then appends your instructions and preserves your criteria.
 Question names alone are labels, not sufficient semantic bindings. Full compiled
 requests and unchanged answers are archived. No answer is silently corrected.
+Jev does not see the question ID at all: each question is evaluated from its
+instructions/criteria against state. Therefore all custom api.choose questions
+must state their subject and relevant feature fields explicitly as well.
+Source: https://docs.typesafe.ai/primitives/choice (request structure).
 The numerical controller uses a per-axis deadband of the respective pose
 tolerance divided by sqrt(3): magnitude is zero inside it, including when Jev
 selects a nonzero sign. Outside it the signed bounded residual rule applies.

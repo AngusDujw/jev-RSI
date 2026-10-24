@@ -28,3 +28,9 @@ Generic development lessons, supported only by the recorded development failure:
   corners have equally reliable depth. Current calibration and a fitted plane
   support explicitly derived ray intersections for genuinely visible planar
   landmarks, with the plane-fit uncertainty and correspondence limits retained.
+- Jev never sees a question's dictionary ID. Identical axis question text with
+  identical criteria does not identify six different axes. Specify each subject
+  and feature selector in question content. The control compiler now binds the
+  axis selector explicitly; arbitrary branch questions still need self-contained
+  instructions. Two real zero-motion comparisons supported this fix on one
+  stored state; they are not task-success or general direction-accuracy results.
