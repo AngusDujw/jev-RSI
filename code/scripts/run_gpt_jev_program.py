@@ -454,8 +454,9 @@ def main():
             previous_method = dict(archived_method, incomplete_result=failure)
             question = "Revise the complete archived GPT method using its recorded incomplete outcome and the current observations/API. Produce a concise executable method with feasible phase-local evidence and bounded recovery. Do not assume a previous physical action occurred in this newly initialized episode."
         for revision in range(args.max_repairs+1):
-            method = archived_method if revision == 0 and archived_method and not args.revise_archived else planner("method", question, previous_method)
+            method = previous_method
             try:
+                method = archived_method if revision == 0 and archived_method and not args.revise_archived else planner("method", question, previous_method)
                 result = execute_method(method, revision)
                 if not isinstance(result, dict) or type(result.get("completion_proposed")) is not bool:
                     raise ValueError("Return completion_proposed boolean and evidence")
@@ -468,7 +469,7 @@ def main():
                     continue
                 termination = "completion_proposed" if result["completion_proposed"] else "method_incomplete"
                 break
-            except (ValueError, RuntimeError) as error:
+            except (ValueError, RuntimeError, SyntaxError) as error:
                 own_method_error = str(error)[:1400]
                 save(out / f"method-{revision:02d}.failure.json", dict(error=own_method_error, native_steps=native_steps))
                 if own_method_error in ("gpt_budget", "jev_budget", "native_step_budget", "wall_budget"):
