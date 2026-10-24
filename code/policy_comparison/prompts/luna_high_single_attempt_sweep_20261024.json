@@ -1,0 +1,75 @@
+{
+  "scope": "Adaptive development sweep, one complete attempt per distinct prompt; not a success-rate estimate or blind comparison.",
+  "base_prompt": "multiview_grasp_v16.md",
+  "base_sha256": "91b40c03fdecab563d94d00b1ce93c041e6ae64c3f7e6941acc7ded84852fe79",
+  "model": "gpt-6-luna",
+  "effort": "high",
+  "account": "local ChatGPT Pro",
+  "task": "stack_blocks",
+  "layout": 0,
+  "eval_seed": 0,
+  "native_control_limit": 550,
+  "maximum_concurrent_native_runs": 6,
+  "variants": [
+    {
+      "version": 18,
+      "focus": "alignment_example",
+      "prompt": "code/policy_comparison/prompts/multiview_grasp_v18.md",
+      "sha256": "cf86201ed6a58d2f71cc2d7e20b8b1b712286e7eb8c7c44e76445a87cfaffa5a",
+      "words": 1231,
+      "rpc_port": 25434,
+      "run_name": "v4090-luna-high-stack-20261024-hints-v18",
+      "attempts": 1
+    },
+    {
+      "version": 19,
+      "focus": "causal_probe",
+      "prompt": "code/policy_comparison/prompts/multiview_grasp_v19.md",
+      "sha256": "467fc3a9a2aa14be876cb0a5b4ab4508949e58a7dcceb0fec3155fcdfe69c189",
+      "words": 1257,
+      "rpc_port": 25435,
+      "run_name": "v4090-luna-high-stack-20261024-hints-v19",
+      "attempts": 1
+    },
+    {
+      "version": 20,
+      "focus": "local_inspection",
+      "prompt": "code/policy_comparison/prompts/multiview_grasp_v20.md",
+      "sha256": "2d8a950ed1ad831986f3dd6244c2e2ec7ed32ed8b32b0407644e894a6ff33355",
+      "words": 1242,
+      "rpc_port": 25436,
+      "run_name": "v4090-luna-high-stack-20261024-hints-v20",
+      "attempts": 1
+    },
+    {
+      "version": 21,
+      "focus": "preserve_posture",
+      "prompt": "code/policy_comparison/prompts/multiview_grasp_v21.md",
+      "sha256": "83d5cf0196a9f938e1deab8a3ffcfb8ab9ceb9d0fa81fbcb0213923f803913e2",
+      "words": 1226,
+      "rpc_port": 25437,
+      "run_name": "v4090-luna-high-stack-20261024-hints-v21",
+      "attempts": 1
+    },
+    {
+      "version": 22,
+      "focus": "explicit_transfer",
+      "prompt": "code/policy_comparison/prompts/multiview_grasp_v22.md",
+      "sha256": "ddf0b1f18168db3e246a6a7bf7a2dadd42bfd7c31a9d8fa330db7ad3a51f4a00",
+      "words": 1261,
+      "rpc_port": 25438,
+      "run_name": "v4090-luna-high-stack-20261024-hints-v22",
+      "attempts": 1
+    },
+    {
+      "version": 23,
+      "focus": "budget",
+      "prompt": "code/policy_comparison/prompts/multiview_grasp_v23.md",
+      "sha256": "090bdc0558f5d5d3ed8d663bb6907e0eb1a31e376b2e062cbce57c84033e9fb5",
+      "words": 1254,
+      "rpc_port": 25439,
+      "run_name": "v4090-luna-high-stack-20261024-hints-v23",
+      "attempts": 1
+    }
+  ]
+}
