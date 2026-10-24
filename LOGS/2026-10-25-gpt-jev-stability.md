@@ -8,9 +8,10 @@ offline and real Pro checks. Both the typed revision and the fresh typed builder
 reached native success; the latter needed one same-scene GPT patch. The final9a3e
 framework completed two independently generated cases: native1/2, both program
 completion reports false. Remaining three cases were not admitted after failure.
-New generic observation-recovery candidate251104e6 is running cold init9/10 with
-a declared larger repair/model budget. Earlier pending statements describe
-intermediate checkpoints.
+Observation-recovery candidate251104e6 was interrupted on both zero-action cases
+after a deterministic NumPy sandbox defect repeated. A minimal cached-module
+worker fix a8e6ea72 passed offline checks; new cold init9/10 are running with the
+same declared larger budget. Earlier pending statements are intermediate states.
 
 This is an outer-agent experiment record, not model-facing experience.
 
@@ -233,3 +234,33 @@ and7200seconds. Prompt and budget both changed, so improvement cannot be causall
 attributed to one component. Keep this candidate fixed; any admitted failure
 stops remaining unadmitted cases. Init9/10 are foreground runs in a separate
 worktree; no hot patches.
+
+## Deterministic worker defect and separate candidate (EXP078)
+
+Both251104e6 cases repeated KeyError __import__ before any action. Unmodified
+source and recorded public RPCs replayed under the original seccomp isolated
+init10 line170, an ndarray.min call. NumPy's C ndarray reductions consult the
+calling frame's import builtin for an internal module even if already loaded.
+The original worker had no such builtin. This is an environment capability defect,
+not a missing task recipe. After two failures per case the outer agent sent SIGINT
+to the two inspected owned run PIDs; both saved interrupted/native-false terminal
+summaries. Init9 used4GPT, init10 used5GPT; both0Jev/0policy steps,1190.87/1190.73s.
+Neither is a completed physical-policy trial. Planned11–13 were not admitted.
+Each had one in-flight response undelivered at interruption. Keep those upstream
+costs, including any response completed later at the bridge, in the ledger.
+
+Worker a8e6ea72 permits only cached loaded objects for four explicit NumPy
+reduction/array-formatting module names across NumPy naming versions. It never
+calls an importer; arbitrary imports, relative imports, private source access,
+files/network and default-deny seccomp remain restricted. Actual UV/seccomp
+worker tests passed13 array operations,6 denied imports and3 forbidden source
+cases, without a model or physics. An unchanged-source replay matched9 original
+RPCs and reached the measured gripper-geometry note beyond the old failure;
+no divergent request was delivered to a robot. The first diagnostic expected a
+state request at divergence but found a valid intervening note; inspection
+corrected the diagnostic expectation, not the method source.
+
+New predeclared candidate a8e6ea72 keeps the same generic English prompt/API,
+24GPT/5repairs/200Jev/600steps/7200seconds. Cold init9–13 each get a fresh scene,
+empty memory and no old method. Init9/10 admitted,11–13 not yet admitted; stop
+unadmitted cases if an admitted result fails. No hot patches or source edits.

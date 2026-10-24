@@ -78,6 +78,14 @@ failure. The next251104e6 candidate requires phase-local observation recovery
 and exact helper-key checks; its declared larger budget is reported separately.
 No outer-agent task-source edits are used.
 
+The observation-recovery candidate exposed a deterministic pre-action worker
+defect: ndarray reductions required a cached NumPy internal module through the
+calling frame's builtins. The minimal worker fix returns only explicitly named,
+already loaded NumPy internals; it does not invoke general imports. Offline
+seccomp and unchanged-source recorded-RPC checks passed. The new independent
+cold cohort uses this fix; its native outcome is tracked in the continuation
+record, separately from the two interrupted zero-action cases.
+
 ```mermaid
 flowchart LR
   F[Fixed English builder/API/lessons] --> G[GPT complete method package]
