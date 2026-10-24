@@ -1,0 +1,59 @@
+{
+  "candidate_commit": "618f559b",
+  "predeclared_init_indices": [
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "task_id": 1335,
+  "init_roles": {
+    "13": "regression",
+    "14": "unused at admission",
+    "15": "unused at admission",
+    "16": "unused at admission",
+    "17": "unused at admission"
+  },
+  "limits": {
+    "gpt": 32,
+    "jev": 200,
+    "policy_steps": 600,
+    "source_repairs": 5,
+    "wall_seconds": 9000
+  },
+  "fixed_file_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "d5fcb0a6a983947772049d054f593a63a337e93176258da0aa09c93f088dba5f",
+    "code/prompts/gpt_jev_program_api_v2.md": "3e2d82dd87330b927792111065facb0d8f03715817b58fce5cf4f2db461a9aac",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "82c11a935d3cbd89886de448b8622aced53cc87c4c9cd3808d50f4c17c583e9f"
+  },
+  "admitted": [
+    13,
+    14,
+    15
+  ],
+  "criterion": "All five native terminal scores true; failed admitted case stops unadmitted cases, with running peers retained",
+  "cold_generation": "Independent method generation, empty episode memory, no previous task source",
+  "attribution": "Knowledge, lifecycle and budget changed together; no isolated causal or speed claim",
+  "completed": [
+    {
+      "init_index": 14,
+      "source_sha256": "7cfaa9b0130ef84a5e4876987a20ef00f68da0bc933eb3356cf3ed1141b5266e",
+      "source_revisions": 0,
+      "native_success": true,
+      "completion_proposed": true,
+      "termination": "completion_proposed",
+      "gpt_calls": 17,
+      "jev_calls": 100,
+      "native_steps": 300,
+      "elapsed_s": 1946.8865959679242
+    }
+  ],
+  "pending": [
+    13,
+    15,
+    16,
+    17
+  ],
+  "accounting": "Uncompleted indices include running and unadmitted; admission list is explicit"
+}

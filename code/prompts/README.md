@@ -105,8 +105,9 @@ and acknowledged phase checkpoints. References persist across source repairs
 within one physical episode, with creation provenance and a fresh tracking-quality
 check required before reuse; new episodes still have empty memory. Its predeclared
 sequence is regression init13 and unused14-17, each independent cold generation
-with32GPT/5repairs/200Jev/600policy steps/9000seconds. Init13/14 are running; no
-native outcome is established yet. These changes and the larger budget are
+with32GPT/5repairs/200Jev/600policy steps/9000seconds. Init14 completed with native/proposal both true,
+17GPT/100Jev/300steps and zero source repairs; init13/15 are running. The full
+five-case criterion remains pending. Its [complete initial method](../../artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md) is preserved verbatim. These changes and the larger budget are
 evaluated together, without claiming isolated causality or improved speed.
 
 ```mermaid

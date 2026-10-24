@@ -4,7 +4,9 @@ Current status: the frozen a8e6ea72 independent cold cohort completed all five
 predeclared initial states9-13 with native4/5, falsifying its all-five criterion.
 Init13 exhausted the GPT budget after measured retention, before completing
 transfer/placement. All failures and costs are retained. A new separately frozen
-candidate618f559b is running independent cold init13/14; its predeclared sequence
+candidate618f559b completed unused init14 with native/proposal true and zero
+source repairs (17GPT/100Jev/300steps/1946.89seconds). Independent cold init13/15
+are running; its predeclared sequence
 is13-17, with32GPT/5repairs/200Jev/600steps/9000seconds per case.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
@@ -174,10 +176,10 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-49 tracked files changed in this continuation.
+Complete changed-file inventory against9d710e19: 56 tracked files.
 
-| Status | File |
-| --- | --- |
+| Change | File |
+|---|---|
 | M | [Discussion.md](../Discussion.md) |
 | A | [LOGS/2026-10-25-gpt-jev-stability.md](../LOGS/2026-10-25-gpt-jev-stability.md) |
 | M | [LOGS/2026-W43-activity.md](../LOGS/2026-W43-activity.md) |
@@ -210,6 +212,13 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/README.md](../artifacts/gpt-jev-cold-methods-20261025/init9/README.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/method.json](../artifacts/gpt-jev-cold-methods-20261025/init9/method.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/method.py](../artifacts/gpt-jev-cold-methods-20261025/init9/method.py) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/COHORT.json](../artifacts/gpt-jev-continuity-methods-20261025/COHORT.json) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/README.md](../artifacts/gpt-jev-continuity-methods-20261025/README.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md](../artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init14/PROVENANCE.json](../artifacts/gpt-jev-continuity-methods-20261025/init14/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init14/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init14/README.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init14/method.json](../artifacts/gpt-jev-continuity-methods-20261025/init14/method.json) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init14/method.py](../artifacts/gpt-jev-continuity-methods-20261025/init14/method.py) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/METHOD.md](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) |
@@ -477,3 +486,22 @@ to return None; the API correctly raises ValueError, and the diagnostic expectat
 was corrected without production changes. Temporary neutral method files were
 removed. Recorded public RGB-D only, zero model calls or new physics, Native=N/A.
 Receipt: code/runs/2026-10-25-gpt-jev-program/continuity-production-offline/validation.json.
+
+
+## New continuity candidate first terminal result (EXP083)
+
+Unused init14 completed native=true and proposal=true with its untouched initial
+complete method:17GPT/100real Jev/300policy steps,1946.89seconds, zero repairs.
+All100choices/700labels/300steps,16strict reviews and sole source hash passed
+audit. All17/100upstream usages are known: GPT213799input/62812output;
+Jev219947/24900. Generation is9178/21365; visual reviews204621/41447.
+The final tracker became unknown and the method used current semantic landmarks
+and visual relation evidence; no unknown pose was promoted to a detection.
+No source repair occurred, so this case cannot establish a native causal benefit
+from cross-revision reference persistence. The three simultaneous candidate
+changes remain confounded; full speed/token improvement is unproven.
+
+[Exact complete initial method and Jev protocol](../artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md),
+[separate cohort manifest](../artifacts/gpt-jev-continuity-methods-20261025/COHORT.json).
+Only1/5has completed;13/15are running,16/17not yet admitted. All initial
+generations have empty scene memory and no archived task source.
