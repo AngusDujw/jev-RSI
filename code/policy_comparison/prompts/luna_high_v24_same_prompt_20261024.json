@@ -1,0 +1,55 @@
+{
+  "version": "v24",
+  "parent": "v20",
+  "prompt_sha256": "8c7c84949cb849bd031ea33648e87e17926b597ee9edb4420fb0332175bfac09",
+  "prompt_words": 1627,
+  "prompt_file": "code/policy_comparison/prompts/multiview_grasp_v24.md",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "authentication": "local ChatGPT Pro",
+  "api_fallback": false,
+  "task": "stack_blocks",
+  "layout": 0,
+  "eval_seed": 0,
+  "native_step_limit": 550,
+  "attempts_per_run": 1,
+  "all_started_runs_included": true,
+  "infrastructure_change": {
+    "fresh_server_copy_rpc_idle_seconds": 7200,
+    "old_seconds": 900,
+    "native_physics_scoring_unchanged": true
+  },
+  "prompt_changes": [
+    "Six raw historical wood retained/missed/released-beside RGB examples",
+    "Retain verified near-down posture for wood as well as purple; avoid repeating lifts of a missed pinch",
+    "Validate both arms translation and quaternion increment and use exact tool paths"
+  ],
+  "causal_scope": "Development-conditioned multi-change iteration; not a single-factor or zero-shot comparison.",
+  "reference_manifest_sha256": "b86db5e970c9a47b69199b9deae865fe6d16225dbcd1a03ee348eb29527278f8",
+  "trials": [
+    {
+      "run_name": "v4090-luna-high-stack-20261024-hints-v24-r1",
+      "rpc_port": 25440
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261024-hints-v24-r2",
+      "rpc_port": 25441
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261024-hints-v24-r3",
+      "rpc_port": 25442
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261024-hints-v24-r4",
+      "rpc_port": 25443
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261024-hints-v24-r5",
+      "rpc_port": 25444
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261024-hints-v24-r6",
+      "rpc_port": 25445
+    }
+  ]
+}
