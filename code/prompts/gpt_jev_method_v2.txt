@@ -20,6 +20,14 @@ textured visible patch and use the supplied RGB-D rigid tracker, with its inlier
 and uncertainty checks, to observe motion. Do not require every perimeter corner
 to remain visible for every local action. Compare observed patch/object motion
 with actual hand motion to test retention; a track alone is not grasp evidence.
+Tracking is fallible. Include an executable recovery for unknown registration:
+request current identifiable corresponding landmarks or another usable patch,
+retain their semantic reference definitions, and compare independently observed
+motion with the saved reference and robot motion. State uncertainty and reject
+ambiguous correspondence. Do not fabricate a transform, assume rigid attachment,
+or make an optional tracker the sole gate when another obtainable measurement
+can resolve the same question. Stop when neither evidence nor a justified
+observation-producing action is available.
 Distinguish essential evidence from optional certification unavailable through
 this API. When a bounded observation-producing action is justified by current
 evidence, use it to resolve uncertainty; do not build circular preconditions
@@ -44,7 +52,9 @@ not discard a still-valid measured invariant solely because Python restarted.
 New episodes have empty checkpoint memory and must acquire their own evidence.
 
 The supplied manual is the exact API contract. Use only its operations and
-schema. Check returned measurement membership and measurement_errors; a requested
+schema. Before submission, audit every helper return-key access and every API
+argument against that manual, including paths in recovery branches. A descriptive
+concept name is not a field alias. Check returned measurement membership and measurement_errors; a requested
 pixel or region can fail measurement and is then absent. Handle that locally
 before using its geometry. You may process current visible point clouds with NumPy, choose visual
 measurement regions, define scalar features and conditional procedures, and

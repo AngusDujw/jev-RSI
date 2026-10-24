@@ -1,5 +1,20 @@
 Generic development lessons, supported only by the recorded development failure:
 
+- A valid reference patch can become untrackable after viewpoint or occlusion
+  changes. An unknown registration is not proof of a lost object. Design a
+  bounded current-observation fallback for each phase that uses registration,
+  rather than only at initialization. Semantically defined, visually identifiable
+  corresponding landmarks can provide independent motion evidence when their
+  uncertainty and identity checks are adequate. If they are not adequate, seek
+  another justified observation or stop. Never turn a command prediction into a
+  measured object transform. Store the reference definitions and measurements
+  before motion so a later fallback or repair can use their actual provenance.
+- Check exact numerical-helper return fields before using them. In particular,
+  a plane fit returns coefficients, not an undocumented alias for that vector.
+  Early interface mistakes consume the same limited repair budget needed for
+  genuinely new physical observations. An offline-valid source still requires
+  real execution and native evaluation.
+
 - Check that finite phase loops can cover the remaining work under the smallest
   progress leg actually used, including visibility fallbacks. Reducing a leg
   length without updating the route bound can make completion impossible even
