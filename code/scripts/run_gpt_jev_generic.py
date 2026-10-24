@@ -11,6 +11,7 @@ import contextlib
 import hashlib
 import io
 import json
+import logging
 import math
 import os
 from pathlib import Path
@@ -86,15 +87,27 @@ def main():
     save(config_dir / "config.yaml", dict(benchmark_root=str(base), bddl_files=str(base / "bddl_files"),
         init_states=str(base / "init_files"), datasets=str(args.libero_root / "libero/datasets"), assets=str(base / "assets")))
     os.environ.update(LIBERO_CONFIG_PATH=str(config_dir),
-        MUJOCO_GL="egl", TMPDIR=str(cache), XDG_CACHE_HOME=str(cache))
+        MUJOCO_GL="egl", TMPDIR=str(cache), XDG_CACHE_HOME=str(cache),
+        NUMBA_CACHE_DIR=str(cache / "numba"), MPLCONFIGDIR=str(cache / "matplotlib"))
     os.environ.setdefault("MUJOCO_EGL_DEVICE_ID", "0")
     sys.path.insert(0, str(args.libero_root))
     import cv2
     import numpy as np
     from scipy.spatial.transform import Rotation
-    from libero.libero import benchmark
-    from libero.libero.envs.env_wrapper import ControlEnv
-    from robosuite.utils.camera_utils import get_real_depth_map, get_camera_intrinsic_matrix, get_camera_extrinsic_matrix
+    # This installed robosuite hardcodes a global temporary log. Relocate only
+    # that handler during import; never change the installed package or file.
+    original_handler = logging.FileHandler
+    def project_handler(filename, *handler_args, **handler_kwargs):
+        if str(filename) == "/tmp/robosuite.log":
+            filename = cache / "robosuite.log"
+        return original_handler(filename, *handler_args, **handler_kwargs)
+    logging.FileHandler = project_handler
+    try:
+        from libero.libero import benchmark
+        from libero.libero.envs.env_wrapper import ControlEnv
+        from robosuite.utils.camera_utils import get_real_depth_map, get_camera_intrinsic_matrix, get_camera_extrinsic_matrix
+    finally:
+        logging.FileHandler = original_handler
     from libero_robot_geometry import gripper_geometry
 
     prompt_path = repo / "code/prompts/gpt_jev_planner_v1.txt"

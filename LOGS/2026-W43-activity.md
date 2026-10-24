@@ -282,3 +282,6 @@
 - 【Agent】【2026-10-24 12:26】[result] 通用合同8项检查通过：数据语法、禁止额外代码、未知锚点、NaN/Inf/布尔数值、嵌套非英文、阶段证据门、Jev版本/选项严格校验、提示词无选定任务配方；临时测试脚本已删除。Python语法和diff检查通过。
 - 【Agent】【2026-10-24 12:26】[op] 为服务器路径重定位在每回合输出下生成独立LIBERO配置，保留原安装/原配置权限与内容；提交前冻结通用提示词和合同，首测选libero_goal任务1335/init0，仅一次开发回合，160 Jev/8 GPT/600控制步上限。
 - 【Agent】【2026-10-24 12:27】[result] 本机Pro Astra/xhigh工具调用预检完成；真实Jev1.13预检虽接口/选项合法，却将正X残差选为negative，未执行任何动作。通用修正为代码显式计算每轴increase/decrease/within_tolerance关系，Jev做文字方向选择，避免隐含数值推导；预检负结果完整保留。远端GitHub TLS失败，改用190KiB Git bundle传递已提交历史，不复制环境。
+- 【Agent】【2026-10-24 12:28】[run] 已提交并SSH推送通用框架06f30f52；真实Jev显式关系预检XYZ/旋转六轴全部选对，0物理步。准备company-server-2-ykj独立worktree，继承现有LIBERO虚拟环境，输出仅放该项目所在挂载盘。GPT使用本机ChatGPT Pro，不读OpenAI API或caz/z密钥。
+- 【Agent】【2026-10-24 12:28】[note] 远端独立worktree缺少被忽略的研究锚点文件，补入本会话MODE/idea/method/Discussion/TIMELINE快照，不新开议题。LIBERO环境的Torch是CPU版，CUDA张量探针不可用；仿真使用MuJoCo EGL渲染，不安装或修改CUDA/驱动。下一步直接验证现有EGL链路。
+- 【Agent】【2026-10-24 12:29】[result] 首启动在导入robosuite时即失败：依赖硬编码全局临时日志路径而当前账户无权限；环境未构造、机器人0步、GPT/Jev任务请求0。只在进程导入期间把该日志handler重定向到项目输出，设置项目Numba/绘图库缓存；不改依赖文件、环境权限或系统目录。保留启动日志后重试未开始的唯一任务。
