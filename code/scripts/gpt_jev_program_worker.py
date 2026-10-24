@@ -62,6 +62,26 @@ def restrict_syscalls():
         lib.seccomp_release(context)
 
 
+def cached_numpy_importer(modules):
+    """Support ndarray C reductions without opening general Python imports.
+
+    NumPy's ndarray methods resolve these internal modules through the calling
+    frame's builtins even when the modules have already been imported. Return
+    only explicitly named, already loaded objects; never invoke an importer.
+    """
+    names = ("numpy.core._methods", "numpy._core._methods",
+             "numpy.core.arrayprint", "numpy._core.arrayprint")
+    cached = {name: modules[name] for name in names if name in modules}
+    root = modules["numpy"]
+
+    def cached_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if level != 0 or name not in cached:
+            raise ImportError("Only cached NumPy reduction/formatting internals are available")
+        return cached[name] if fromlist else root
+
+    return cached_import
+
+
 def worker():
     import numpy as np
     import gpt_jev_geometry as geo
@@ -99,6 +119,7 @@ def worker():
     def program_print(*items, **kwargs):
         return RPC().note(" ".join(str(item) for item in items)[:4000])
     safe["print"] = program_print
+    safe["__import__"] = cached_numpy_importer(sys.modules)
     namespace = dict(__builtins__=safe, np=np, math=math, geo=geo)
     restrict_syscalls()
     send(dict(kind="sandbox", isolation="separate_process_default_deny_seccomp"))
