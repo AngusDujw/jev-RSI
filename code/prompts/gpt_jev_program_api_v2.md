@@ -48,6 +48,9 @@ The host adds trusted current robot state, pose residuals, and axis relations.
 Each translation/rotation vector is L2-limited; translation_limit 0.001..0.02,
 rotation_limit 0.01..0.10. A decision executes 1..3 native steps. A goal farther
 than 0.6m is rejected. No object collision certification or grasp is implicit.
+position_tolerance accepts 0.0005..0.012 m; rotation_tolerance 0.01..0.10 rad.
+Tighter tolerances do not certify physical accuracy or successful convergence;
+they can require more decisions, and every controller still has bounded budgets.
 
 questions is a dictionary with exactly x,y,z,rx,ry,rz,gripper. Each value is:
 {"type":"choice","instructions":"...","criteria":{"option":"meaning",...}}.

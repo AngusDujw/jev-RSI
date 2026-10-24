@@ -342,8 +342,8 @@ def main():
             raise ValueError("Invalid target pose")
         if gripper not in ("open", "close", "keep") or tool_point not in ("tcp", "pad_center"):
             raise ValueError("Invalid gripper/tool point")
-        if not (.001 <= translation_limit <= .02 and .01 <= rotation_limit <= .10 and type(steps) is int and 1 <= steps <= 3 and .002 <= position_tolerance <= .012 and .02 <= rotation_tolerance <= .10):
-            raise ValueError("Invalid controller bounds")
+        if not (.001 <= translation_limit <= .02 and .01 <= rotation_limit <= .10 and type(steps) is int and 1 <= steps <= 3 and .0005 <= position_tolerance <= .012 and .01 <= rotation_tolerance <= .10):
+            raise ValueError("Controller bounds: translation_limit 0.001..0.02 m; rotation_limit 0.01..0.10 rad; steps integer 1..3; position_tolerance 0.0005..0.012 m; rotation_tolerance 0.01..0.10 rad. Received "+str(dict(translation_limit=translation_limit, rotation_limit=rotation_limit, steps=steps, position_tolerance=position_tolerance, rotation_tolerance=rotation_tolerance)))
         desired = Rotation.from_quat(quaternion)
         if tool_point == "pad_center":
             target = target-desired.apply(state()["own_geometry"]["pad_center_in_tool_m"])
