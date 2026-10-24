@@ -123,8 +123,10 @@ def jev_request(stage, position_error, rotation_error, gripper_command, executed
     edges = dict(continue_phase="Execute one bounded control update in this stage", review="Request fresh GPT visual planning", stop="Stop incomplete")
     if ready:
         edges["advance"] = "Local pose and command-delivery gates passed; advance, without claiming object or task success"
-    questions["transition"] = choice("Choose advance when all local gates pass. Otherwise continue, or review on missing evidence. Stop if execution cannot be justified.", edges)
-    state = dict(stage=stage, translation_error_world_m=position_error,
+    questions["transition"] = choice(
+        "The supplied axes and local_gates_passed are current valid execution evidence. When local_gates_passed is false, choose continue_phase to approach the local goal. When true, choose advance. Visual object-effect checks belong to the next GPT review, not this local gate. Choose review only if current local motion evidence is missing or contradictory; do not demand future arrival evidence before moving.", edges)
+    local_stage = dict(id=stage["id"], intent=stage["intent"], gripper=stage["gripper"])
+    state = dict(stage=local_stage, translation_error_world_m=position_error,
         rotation_error_world_rad=rotation_error, previous_gripper_command=gripper_command,
         acknowledged_stage_native_steps=executed_steps, local_gates_passed=ready,
         translation_axis_tolerance_m=.008/math.sqrt(3), rotation_axis_tolerance_rad=.06/math.sqrt(3),
