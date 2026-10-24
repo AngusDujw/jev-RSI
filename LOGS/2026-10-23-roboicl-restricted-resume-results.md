@@ -94,3 +94,11 @@ Complete the task as quickly as possible, using as few control steps as necessar
 两端最终普通文件数分别82/101；两次rsync -anrc --itemize-changes均exit0且无差异，完整日志本机已回收，离线审计重跑通过。没有新建测试脚本；代码变更仅协调器端口等待和离线审计对启动/首请求失败的分列处理，其余控制源冻结。七个授权新尝试按原生或未评分状态收口，三个基础设施中断保留，不新增物理尝试；本轮没有足够完整数据判断1步规划是否更有效。
 
 最终时间线检查新增roboicl-bowl-speed的CIRCLE-1（3个实验节点尚无用户decision），另保留两个旧LIBERO CIRCLE-1和一个CIRCLE-3。本轮收敛方案是固定七尝试到此结束、明确“不支持普遍加速/单步比较证据不足”，不再调参或重跑；是否补测三个中断、明确挂起或关闭议题由用户后续决定。不把协议提示当成扩大实验的理由，也不擅自代用户写decision。
+
+## 视频核查（2026-10-24）
+
+用户希望查看失败和中断的具体画面。本机回收目录与5880-jump原始四批结果均已只读核查：原批/重启首批/Restricted续跑/启动恢复分别96/77/82/101个普通文件，均无MP4/MOV/AVI/WEBM/MKV/GIF/JPEG/PNG或HDF5/NPZ图像轨迹。因此没有这两次原生失败、三个续跑中断或更早CUDA中断的原始录像可以提供。
+
+原因是[启动器](../baseline/roboicl/reproduction/speed_experiment.py#L112)沿用原复现配置ROBOICL_NO_MEDIA=1；[仿真适配器](../baseline/roboicl/roboicl/robodojo.py#L142)据此关闭_stream_vision媒体落盘，但保持相机输入和原生评分。桥的[audit函数](../baseline/roboicl/reproduction/pro_oauth_bridge.py#L42)将图像替换为SHA256和长度，实际日志也已核对为哈希，不能从中还原图像。此前30/30 RGB有效的capture-only检查只证明当时相机采集成功，不表示帧已保存。
+
+本轮可用于复盘的是动作/观测状态/执行回执和错误日志；它们不能替代原始画面，也不能证明抓持、掉落等视觉失败机制。若后续用户授权另跑，应先增加明确录像选项并保留成功、失败及中断视频；新录像必须标注为新物理尝试，不能冒充本批回放。本次仅核查和记录，没有新增仿真、模型调用或重跑，也没有生成合成的“实验视频”。

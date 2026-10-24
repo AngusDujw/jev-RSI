@@ -302,3 +302,6 @@
 - 【Agent】【2026-10-24 13:01】[result] 最终框架与英文报告7f1541b9已通过Git bundle同步至company-server-2-ykj独立worktree，快进合并成功；既有LIBERO解释器执行新版--help成功，未新增模型/仿真请求，远端tracked状态干净。最终结果仍为模型complete/原生false，未追加任务规则。
 - 【User】【2026-10-24 16:08】[intent] 以 LIBERO 原生判定为准，分析如何让 GPT 产出稳定可执行的 Jev 方法，并评估可复用 skill 与 harness 的分工。
 - 【Agent】【2026-10-24 16:09】[op] 补充英文GPT-Jev可靠性设计稿：区分运行时skill与外层SKILL.md，提出效果门控、观测时效、完成提案及LIBERO评估隔离；均标明待实现，未新增模型调用或实验。
+- 【User】【2026-10-24 16:32】[intent] 用户询问是否有视频，想查看RoboICL失败及基础设施中断的具体实验情况；检查已保存证据并整理可播放回放，不启动新物理试验或模型调用。
+- 【User】【2026-10-24 16:34】[intent] 参考 Code as Policies、HexaShell 和 EmbodiedEvo 的论文与代码，确定 GPT 如何生成完整可执行方法并与 Jev 配合；以 LIBERO 原生成功判定为准。
+- 【Agent】【2026-10-24 16:34】[result] 视频核查：本机与5880-jump四批原始结果96/77/82/101文件均无视频/图像/图像轨迹；speed_experiment.py设置ROBOICL_NO_MEDIA=1，robodojo.py关闭媒体落盘，桥与模型日志只存图像哈希，不能恢复原视频。已将限制写入结果报告；仅只读SSH核查，无新增物理尝试、模型调用或合成实验录像。
