@@ -556,3 +556,4 @@
 - 【Agent】【2026-10-24 22:50】[run] EXP038启动同一冻结v24 r1/r2/r3，前台session4536/30268/39094，RPC25440–25442，每条一次。旧controller全部退出且端口/新路径/6张历史图SHA核验通过；先观察启动显存再开余下预登记条目，持续巡检任务已同步EXP037/038。代码3a91c236已SSH推送。
 - 【Agent】【2026-10-24 22:52】[run] EXP038继续启动相同v24 r4/r5/r6，前台session40474/27534/44796，RPC25443–25445；提示SHA与r1–r3相同，不产生新版本。先前三条startup显存used22071/free26438MiB，满足余下三条预算；启动后再核验约8–9GiB余量。
 - 【Agent】【2026-10-24 22:54】[result] EXP038六条v24全部ready且simulation_sync_config确认；worker实际均gpt-6-luna/high、隔离Pro配置/登录和API fallback=false核验，同一提示SHA；远端六副本RPC均7200秒且前后SHA、entry原SHA一致。GPU used37051/free11458MiB，保留约11GiB。外层launch-audit已保存；r1至30步，其余仍初始读图，不能计任务进展或成功。
+- 【Agent】【2026-10-24 23:00】[note] EXP038巡检：v24 r1–r6已65/22/36/24/9/32步，六条无controller退出或远端原生终局，公开事件6–20秒内更新；均保留冻结提示不补开。r2–r6现各实际读取6白块+6木块历史示例，r1仍0示例；记录输入落实差异，不把动作自述当成功。GPU used38919/free9590MiB，仍留约9GiB。CIRCLE-1按同版全部终局及首次失败证据收敛，持续巡检启用。
