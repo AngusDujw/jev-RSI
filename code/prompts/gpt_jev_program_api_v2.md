@@ -6,6 +6,7 @@ Robot state is proprioception and own finger geometry only. World units are m,
 rotation vectors rad, quaternions xyzw. Nothing exposes hidden object state.
 
 Available globals: np, math and ordinary Python builtins; define main(api).
+The complete source limit is 120000 ASCII characters; all helpers must resolve.
 All API arguments/results are JSON-compatible: use ndarray.tolist() at boundaries.
 print(...) and api.note(text) write bounded trace notes through host RPC.
 
@@ -33,6 +34,24 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   Process it yourself; geometric extrema need validity checks.
 - api.compose(quaternion_xyzw, rotation_delta_world_rad): compose a world
   rotation-vector delta with a quaternion; returns quaternion xyzw.
+- api.track_init(camera, polygon): initialize a generic textured RGB-D surface
+  patch tracker on a currently visible 3..16 vertex polygon. Returns handle,
+  reference_features and frame_id; at least 12 textured depth-valid features are
+  required. Up to 16 handles per method; handles reset for a repaired method.
+- api.track_update(handle): compare the reference patch with both current views
+  using SIFT descriptors, depth backprojection and robust rigid registration.
+  Returns status tracked or unknown. tracked includes a 4x4
+  transform_initial_world_to_current_world, camera, reference/current frame IDs,
+  matches, inliers, rms_m, inlier_spread_m, uncertainty_floor_m, and reference/current
+  inlier world points and patch centroids. Apply the rigid transform to a point
+  to obtain its position: its translation column alone is not point displacement
+  when rotation is present. unknown provides no pose estimate. No physics advances.
+  This tracks a caller-selected textured surface, not a named object oracle.
+  Validate identity, rigidity, feature coverage and uncertainty before using it.
+  Partial occlusion may still leave enough correspondences; total occlusion or
+  insufficient texture yields unknown. A transform alone does not certify a grasp.
+  Comparing observed patch motion with measured hand motion can support retention
+  tests without requiring every object perimeter corner to remain visible.
 - api.review(question, context=None): obtains fresh images and a real GPT observation review.
   Each review supports at most 32 named points and 8 named regions. Request only
   the measurements needed now; use additional reviews when a valid view is missing.
@@ -40,6 +59,8 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   points (dict name -> api.point result), regions (dict name -> api.cloud result),
   frame_id. Specify the needed visible evidence and named measurements explicitly.
   Parameters are a model interpretation, not independent sensor certification.
+  Named region requests have explicit camera, box and stride fields; stride is
+  4..32. Arbitrary region_strides inside parameters are not executable requests.
   Review sees previous review images, your question, current state, and receipts.
   It does not read your source or invent a new API. Every review uses GPT budget.
   Optional context is your JSON-compatible reference geometry, label definitions,

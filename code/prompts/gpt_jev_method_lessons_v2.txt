@@ -40,3 +40,9 @@ Generic development lessons, supported only by the recorded development failure:
   A changed view must not silently redefine which physical point an ID denotes.
   Historical projections assume stationarity and must not be treated as current
   object measurements after manipulation.
+- Closure can hide the outline while leaving a textured interior patch visible.
+  Requiring a complete perimeter before a justified retention-measurement lift
+  can create another circular precondition. The RGB-D registration primitive
+  was checked on synthetic translations/outliers and on recorded pregrasp/closure
+  views with partial occlusion. That is measurement evidence, not a completed
+  physical task or a universal tracking guarantee; unknown still needs recovery.

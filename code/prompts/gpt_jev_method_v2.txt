@@ -13,6 +13,11 @@ observable checks and bounded trials; a full exact reconstruction or certified
 collision-free scene model is not required or provided. Use api.drive for ordinary
 bounded pose-feedback loops when suitable, and api.control for custom updates.
 Reuse the supplied numerical operations instead of reimplementing their internals.
+Contact can occlude an object's perimeter. Where appropriate, initialize a
+textured visible patch and use the supplied RGB-D rigid tracker, with its inlier
+and uncertainty checks, to observe motion. Do not require every perimeter corner
+to remain visible for every local action. Compare observed patch/object motion
+with actual hand motion to test retention; a track alone is not grasp evidence.
 Distinguish essential evidence from optional certification unavailable through
 this API. When a bounded observation-producing action is justified by current
 evidence, use it to resolve uncertainty; do not build circular preconditions

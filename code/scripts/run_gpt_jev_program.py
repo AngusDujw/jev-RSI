@@ -34,7 +34,7 @@ REVIEW_SCHEMA = object_schema(dict(
     points=dict(type="array", maxItems=32, items=object_schema(dict(name=TEXT, camera=dict(type="string", enum=list(CAMERAS)),
         pixel=dict(type="array", items=dict(type="integer"), minItems=2, maxItems=2), radius=dict(type="integer", minimum=1, maximum=6)))),
     regions=dict(type="array", maxItems=8, items=object_schema(dict(name=TEXT, camera=dict(type="string", enum=list(CAMERAS)),
-        box=dict(type="array", items=dict(type="integer"), minItems=4, maxItems=4))))))
+        box=dict(type="array", items=dict(type="integer"), minItems=4, maxItems=4), stride=dict(type="integer", minimum=4, maximum=32))))))
 
 
 def validate_questions(questions, control=False):
@@ -162,7 +162,7 @@ def main():
     out = args.output.resolve()
     if args.bridge != "http://127.0.0.1:7921" or out.exists() or not out.is_relative_to(repo / "code/runs"):
         p.error("Use a new project code/runs directory and the explicit loopback relay")
-    if not (1 <= args.max_gpt <= 24 and 1 <= args.max_jev <= 300 and 1 <= args.max_native_steps <= 800 and 0 <= args.max_repairs <= 3):
+    if not (1 <= args.max_gpt <= 24 and 1 <= args.max_jev <= 300 and 1 <= args.max_native_steps <= 800 and 0 <= args.max_repairs <= 5):
         p.error("Invalid episode budget")
     archived_method = None
     if args.method_file:
@@ -188,6 +188,7 @@ def main():
         MPLCONFIGDIR=str(cache / "matplotlib"), OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1")
     sys.path.insert(0, str(args.libero_root))
     import cv2
+    cv2.setNumThreads(1)
     import numpy as np
     from scipy.spatial.transform import Rotation
     handler = logging.FileHandler
@@ -201,6 +202,7 @@ def main():
     finally:
         logging.FileHandler = handler
     from libero_robot_geometry import gripper_geometry
+    from jev_rgbd_tracking import RGBDPatch
     prompt = (repo / "code/prompts/gpt_jev_method_v2.txt").read_text()
     lessons = (repo / "code/prompts/gpt_jev_method_lessons_v2.txt").read_text()
     prompt += "\n\n"+lessons
@@ -225,6 +227,7 @@ def main():
     history, methods, previous = [], [], None
     rpc_feedback = []
     annotation_initial = annotation_last = None
+    trackers = {}
     termination, success, result = "not_started", None, None
     own_method_error = None
 
@@ -279,6 +282,20 @@ def main():
         data = view(camera)
         return dict(world_m=intersect_plane(data["K"], data["T"], pixel, plane), pixel=pixel, camera=camera,
             plane=plane, frame_id=native_steps, source="calibrated_ray_intersection_with_program_supplied_plane")
+
+    def track_init(camera, polygon):
+        if len(trackers) >= 16:
+            raise ValueError("At most 16 public patch trackers per method")
+        tracker = RGBDPatch(view(camera), polygon, native_steps)
+        handle = "patch_"+str(len(trackers))
+        trackers[handle] = tracker
+        return dict(handle=handle, frame_id=native_steps, reference_features=len(tracker.reference),
+                    source="caller-selected visible RGB-D patch; not an object identity oracle")
+
+    def track_update(handle):
+        if handle not in trackers:
+            raise ValueError("Unknown patch tracker handle")
+        return trackers[handle].update({camera: view(camera) for camera in CAMERAS}, native_steps)
 
     def cloud(camera, box, stride=6):
         if len(box) != 4 or any(type(x) is not int for x in box) or type(stride) is not int or not 4 <= stride <= 32:
@@ -385,7 +402,7 @@ def main():
                 errors.append(dict(name=item["name"], error=str(error)))
         for item in answer["regions"]:
             try:
-                regions[item["name"]] = cloud(item["camera"], item["box"])
+                regions[item["name"]] = cloud(item["camera"], item["box"], item.get("stride", 6))
             except ValueError as error:
                 errors.append(dict(name=item["name"], error=str(error)))
         result = dict(status=answer["status"], explanation=answer["explanation"], parameters=parameters,
@@ -477,6 +494,7 @@ def main():
     def execute_method(method, number):
         nonlocal worker, rpc_calls, annotation_initial, annotation_last
         annotation_initial = annotation_last = None
+        trackers.clear()
         validate_source(method["source"])
         path = out / f"method-{number:02d}.py"
         path.write_text(method["source"])
@@ -491,7 +509,9 @@ def main():
         selector = selectors.DefaultSelector()
         selector.register(worker.stdout, selectors.EVENT_READ)
         sandbox = False
-        allowed = dict(state=state, point=point, cloud=cloud, camera=camera_geometry, plane_point=plane_point, compose=lambda q, r: (Rotation.from_rotvec(r)*Rotation.from_quat(q)).as_quat().tolist(), review=review, choose=choose, control=control, drive=lambda *a, **kw: control_lease(control, *a, **kw), note=lambda text: None)
+        allowed = dict(state=state, point=point, cloud=cloud, camera=camera_geometry, plane_point=plane_point,
+            track_init=track_init, track_update=track_update,
+            compose=lambda q, r: (Rotation.from_rotvec(r)*Rotation.from_quat(q)).as_quat().tolist(), review=review, choose=choose, control=control, drive=lambda *a, **kw: control_lease(control, *a, **kw), note=lambda text: None)
         try:
             for _ in range(4000):
                 budget()

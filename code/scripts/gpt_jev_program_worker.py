@@ -15,8 +15,8 @@ import sys
 
 
 def validate_source(source):
-    if not isinstance(source, str) or not source.isascii() or len(source) > 60000:
-        raise ValueError("Expected at most 60000 ASCII source characters")
+    if not isinstance(source, str) or not source.isascii() or len(source) > 120000:
+        raise ValueError("Expected at most 120000 ASCII source characters")
     tree = ast.parse(source)
     forbidden = (ast.Import, ast.ImportFrom, ast.ClassDef, ast.With, ast.AsyncWith,
                  ast.AsyncFunctionDef, ast.While, ast.Global, ast.Nonlocal)
