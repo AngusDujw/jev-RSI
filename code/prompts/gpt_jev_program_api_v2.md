@@ -43,7 +43,9 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   Returns status tracked or unknown. tracked includes a 4x4
   transform_initial_world_to_current_world, camera, reference/current frame IDs,
   matches, inliers, rms_m, inlier_spread_m, uncertainty_floor_m, and reference/current
-  inlier world points and patch centroids. Apply the rigid transform to a point
+  inlier world points (reference_inlier_world_m, current_inlier_world_m) and patch
+  centroids (reference_patch_centroid_world_m, current_patch_centroid_world_m).
+  Apply the rigid transform to a point
   to obtain its position: its translation column alone is not point displacement
   when rotation is present. unknown provides no pose estimate. No physics advances.
   This tracks a caller-selected textured surface, not a named object oracle.

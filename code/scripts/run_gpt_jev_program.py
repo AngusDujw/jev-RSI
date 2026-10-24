@@ -14,10 +14,29 @@ import selectors
 import subprocess
 import sys
 import time
+import urllib.request
 
 from gpt_jev_contract import CAMERAS, english, parse_jev
 from gpt_jev_program_worker import validate_source
-from run_gpt_jev_generic import post, save
+from run_gpt_jev_generic import save, scrub
+
+
+def post(url, payload, path, timeout=1800):
+    """Keep long method generation bounded by the actual remaining episode time."""
+    english(payload)
+    save(path.with_suffix(".request.json"), scrub(payload))
+    started = time.monotonic()
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    request = urllib.request.Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"})
+    try:
+        with opener.open(request, timeout=timeout) as response:
+            result = json.load(response)
+        save(path.with_suffix(".response.json"), result)
+        return result
+    except Exception as error:
+        save(path.with_suffix(".failure.json"), dict(error_type=type(error).__name__,
+            elapsed_s=time.monotonic()-started, usage_unknown=True, dispatched=False))
+        raise
 
 
 def object_schema(properties):
@@ -372,7 +391,7 @@ def main():
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
             input=[dict(role="user", content=content)], tools=[dict(type="function", name=tool, description="Return the requested executable method, unique method patch, or observation review", parameters=PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA)],
             tool_choice=dict(type="function", name=tool), parallel_tool_calls=False, store=False)
-        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}")
+        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=max(1, min(1800, budgets()["wall_seconds_remaining"])))
         if not raw.get("model", "").startswith("gpt-6-astra") or raw.get("status") != "completed":
             raise ValueError("Unexpected planner response")
         calls = [x for x in raw.get("output", []) if x.get("type") == "function_call"]
@@ -422,7 +441,7 @@ def main():
             feature_source="GPT-authored program; not an independent sensor"), questions=questions)
         index = jev_calls
         jev_calls += 1
-        raw = post(args.bridge+"/systemone", request, out / f"jev-{index:03d}")
+        raw = post(args.bridge+"/systemone", request, out / f"jev-{index:03d}", timeout=max(1, min(900, budgets()["wall_seconds_remaining"])))
         return dict(choices=parse_jev(request, raw), frame_id=native_steps, decision=index)
 
     def control(target, quaternion, gripper, questions, features=None, tool_point="tcp",
