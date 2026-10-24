@@ -16,7 +16,7 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   own_geometry contains pad_center_in_tool_m, pad_extent_in_tool_m,
   finger_low_offset_tool_m and finger_high_offset_tool_m.
 - api.point(camera, pixel, radius=3): current visible surface point as
-  world_m, depth_m, frame_id, pixel. camera is agentview or robot0_eye_in_hand.
+  world_m, depth_m, frame_id, pixel, camera, source. camera is agentview or robot0_eye_in_hand.
   pixel=[u,v]; radius 1..6. Invalid/discontinuous depth raises an error.
 - api.camera(camera): current K, camera_to_world_opencv, frame_id.
 - api.plane_point(camera, pixel, plane): intersect the calibrated current pixel ray
@@ -27,7 +27,8 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   landmarks whose depth patch mixes surfaces; it does not prove that a selected
   pixel belongs to that plane or reveal a hidden object boundary.
 - api.cloud(camera, box, stride=6): sampled visible surface points world_m,
-  corresponding rgb and pixels, frame_id. box=[u0,v0,u1,v1], integer image bounds.
+  corresponding rgb and pixels, frame_id, camera, box, stride, source.
+  box=[u0,v0,u1,v1], integer image bounds.
   stride 4..32. Includes background/occluders; no object isolation is implied.
   Process it yourself; geometric extrema need validity checks.
 - api.compose(quaternion_xyzw, rotation_delta_world_rad): compose a world

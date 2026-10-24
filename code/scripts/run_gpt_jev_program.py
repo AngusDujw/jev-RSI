@@ -243,7 +243,8 @@ def main():
             raise ValueError("Invalid or discontinuous surface depth")
         depth = float(np.median(z))
         xyz = data["T"][:3, :3] @ (np.linalg.solve(data["K"], [u, v, 1.])*depth) + data["T"][:3, 3]
-        return dict(world_m=xyz.tolist(), depth_m=depth, frame_id=native_steps, pixel=pixel)
+        return dict(world_m=xyz.tolist(), depth_m=depth, frame_id=native_steps, pixel=pixel, camera=camera,
+                    source="current_depth_patch_backprojection")
 
     def camera_geometry(camera):
         data = view(camera)
@@ -251,7 +252,7 @@ def main():
 
     def plane_point(camera, pixel, plane):
         data = view(camera)
-        return dict(world_m=intersect_plane(data["K"], data["T"], pixel, plane), pixel=pixel,
+        return dict(world_m=intersect_plane(data["K"], data["T"], pixel, plane), pixel=pixel, camera=camera,
             plane=plane, frame_id=native_steps, source="calibrated_ray_intersection_with_program_supplied_plane")
 
     def cloud(camera, box, stride=6):
@@ -268,7 +269,8 @@ def main():
         uv, z = uv[good], z[good]
         rays = np.linalg.solve(data["K"], np.column_stack((uv, np.ones(len(uv)))).T).T
         xyz = (rays*z[:, None]) @ data["T"][:3, :3].T + data["T"][:3, 3]
-        return dict(world_m=xyz.tolist(), rgb=data["rgb"][uv[:, 1], uv[:, 0]].tolist(), pixels=uv.tolist(), frame_id=native_steps)
+        return dict(world_m=xyz.tolist(), rgb=data["rgb"][uv[:, 1], uv[:, 0]].tolist(), pixels=uv.tolist(), frame_id=native_steps,
+                    camera=camera, box=box, stride=stride, source="current_visible_depth_region_backprojection")
 
     def planner(kind, question, failed_method=None):
         nonlocal gpt_calls, previous
