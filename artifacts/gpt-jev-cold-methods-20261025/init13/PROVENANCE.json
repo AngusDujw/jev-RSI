@@ -1,0 +1,96 @@
+{
+  "scope": "Actual independently generated unseen-layout output, not shared knowledge or a universal guarantee",
+  "task_suite": "libero_goal",
+  "task_id": 1335,
+  "init_index": 13,
+  "framework_commit": "a8e6ea72",
+  "original_run": "code/runs/2026-10-25-gpt-jev-program/numpy-cold-init13",
+  "source_sha256": "d5ef32ed83b5a083fea0b3f02d2d47f44f7b37c003e98baede5e08459716c161",
+  "source_revisions": 4,
+  "native_success": false,
+  "completion_proposed": false,
+  "termination": "gpt_budget",
+  "gpt_calls": 24,
+  "jev_calls": 80,
+  "native_steps": 240,
+  "elapsed_s": 5210.250737854978,
+  "prompt_sha256": "27237a3a47d1908e0d72ff9343d6810159d23554d0e42cc8dcc10a12df5369cb",
+  "manual_sha256": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e",
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "f79845ccf294749fee5e2cb281fc6b65e7326a5b69433a25c02e63848a145576",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "audit": {
+    "native_success": false,
+    "termination": "gpt_budget",
+    "gpt_calls": 24,
+    "jev_calls": 80,
+    "native_steps": 240,
+    "elapsed_s": 5210.250737854978,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "c76bd20f0d6683e6ecf5601e9482f80e1e719818fa9f7c9f160c0f36725a4ebb"
+      },
+      {
+        "number": 1,
+        "source_sha256": "a5c31331e301e0b46d49143395bb5d70317f3278c733891d4cc21e236e552df9"
+      },
+      {
+        "number": 2,
+        "source_sha256": "1ad4effe2198e0944a4b6eb1db55ceaae64c80ab01ac0977e65916aae353a56e"
+      },
+      {
+        "number": 3,
+        "source_sha256": "6691d8e0c93f0616d995bb7a61e187cc59be4002eed230bbbe05af5ebb42140e"
+      },
+      {
+        "number": 4,
+        "source_sha256": "d5ef32ed83b5a083fea0b3f02d2d47f44f7b37c003e98baede5e08459716c161"
+      }
+    ],
+    "completion_proposed": false,
+    "audit": "Original Jev choices, semantic labels, finite bounds, carried gripper, steps and all source hashes passed",
+    "dispatches": 80,
+    "models": {
+      "gpt": {
+        "attempts": 24,
+        "unknown_usage": 0,
+        "completed_input": 355952,
+        "completed_output": 175025,
+        "relay_seconds": 5101.699707950989,
+        "matched_requests": 24
+      },
+      "jev": {
+        "attempts": 80,
+        "unknown_usage": 0,
+        "completed_input": 164674,
+        "completed_output": 19920,
+        "relay_seconds": 54.81452700367663,
+        "matched_requests": 80
+      }
+    },
+    "strict_reviews_validated": 19,
+    "gpt_cost_by_purpose": {
+      "submit_method": {
+        "calls": 1,
+        "input": 8520,
+        "output": 20214
+      },
+      "submit_review": {
+        "calls": 19,
+        "input": 228484,
+        "output": 97624
+      },
+      "submit_method_patch": {
+        "calls": 4,
+        "input": 118948,
+        "output": 57187
+      }
+    }
+  },
+  "cold_input_check": "Empty initial memory, no previous_method or reused source"
+}

@@ -49,11 +49,21 @@
       "jev_calls": 109,
       "native_steps": 327,
       "elapsed_s": 2060.7818414401263
+    },
+    {
+      "init_index": 13,
+      "source_sha256": "d5ef32ed83b5a083fea0b3f02d2d47f44f7b37c003e98baede5e08459716c161",
+      "source_revisions": 4,
+      "native_success": false,
+      "completion_proposed": false,
+      "termination": "gpt_budget",
+      "gpt_calls": 24,
+      "jev_calls": 80,
+      "native_steps": 240,
+      "elapsed_s": 5210.250737854978
     }
   ],
-  "pending": [
-    13
-  ],
+  "pending": [],
   "not_admitted": [],
   "universal_or_multitask_reliability_proven": false,
   "full_efficiency_improvement_proven": false
