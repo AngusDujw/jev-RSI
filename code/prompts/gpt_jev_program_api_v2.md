@@ -108,7 +108,24 @@ recovery. Return meaningful diagnostic values when a fit is rejected.
   selected_features, grid and per_cell_limit; candidates contain per-view counts.
   This improves measurement coverage but does not establish object identity or
   guarantee visibility. unknown still provides no extrapolated pose.
-- api.review(question, context=None): obtains fresh images and a real GPT observation review.
+- api.review(question, context=None, fields=None): obtains fresh images and a real GPT observation review.
+  Declare fields for branch-critical parameters. It is a dict of parameter names
+  to type descriptors: "boolean", "number", "integer", "string"; a list of
+  string enum literals; or a small JSON Schema object. The host sends these as
+  an actual strict function-tool object, not JSON encoded inside a free string,
+  and validates exact returned types without coercion. For example, a declared
+  boolean cannot become the string "yes", and an enum literal cannot become true.
+  All declared fields are required, with no undeclared properties. Nested object
+  descriptors use type/object/properties; nested arrays use type/array/items.
+  Strings default to maxLength6000, arrays to maxItems64; optional values can use
+  type:["boolean","null"] (or another type plus null). Supported constraints:
+  enum, description, minimum/maximum, minLength/maxLength, minItems/maxItems.
+  No refs, patterns, anyOf, arbitrary extra properties or implicit defaults.
+  At most32 top-level fields, depth8,256 nodes and16384 ASCII declaration chars.
+  Return parameters is still a dict. Data-shape validation is not evidence truth.
+  Use explicit unknown enum/null values where missing evidence needs distinction.
+  Ask for the exact declared names/types and validate geometry separately.
+  fields=None retains the legacy free-JSON review interface for archived methods.
   Each review supports at most 32 named points and 8 named regions. Request only
   the measurements needed now; use additional reviews when a valid view is missing.
   Returns status (continue/complete/stop), explanation, parameters (dict),

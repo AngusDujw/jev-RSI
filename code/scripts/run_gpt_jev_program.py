@@ -19,6 +19,7 @@ import urllib.request
 
 from gpt_jev_contract import CAMERAS, english, parse_jev
 from gpt_jev_program_worker import validate_source
+from gpt_jev_review_contract import compile_fields, validate_value
 from run_gpt_jev_generic import save, scrub
 
 
@@ -301,11 +302,12 @@ def main():
     save(out / "protocol.json", dict(arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(), manual_sha256=hashlib.sha256(manual.encode()).hexdigest(),
         implementation_sha256={name: hashlib.sha256((repo / "code/scripts" / name).read_bytes()).hexdigest()
-            for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "jev_rgbd_tracking.py")},
+            for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "gpt_jev_review_contract.py", "jev_rgbd_tracking.py")},
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
         native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
         model_wire_numeric_precision="6 significant digits; internal calculations and receipts retain full precision",
         pro_request_deadline="loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
+        review_parameters="method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
         reused_method_sha256=hashlib.sha256(archived_method["source"].encode()).hexdigest() if archived_method else None))
     with contextlib.redirect_stdout(io.StringIO()):
         suite = benchmark.get_benchmark_dict()[args.suite](0)
@@ -414,7 +416,7 @@ def main():
         return dict(world_m=xyz.tolist(), rgb=data["rgb"][uv[:, 1], uv[:, 0]].tolist(), pixels=uv.tolist(), frame_id=native_steps,
                     camera=camera, box=box, stride=stride, source="current_visible_depth_region_backprojection")
 
-    def planner(kind, question, failed_method=None, review_context=None):
+    def planner(kind, question, failed_method=None, review_context=None, parameter_schema=None):
         nonlocal gpt_calls, previous
         budget()
         if gpt_calls >= args.max_gpt:
@@ -471,9 +473,22 @@ def main():
                 "Repair the diagnosed mechanism and any directly coupled defects; preserve useful existing processing and Jev definitions. "
                 "Do not retransmit the whole source. Keep replacement text below 12000 characters when feasible. "
                 "Provide updated concise interface and jev_protocol descriptions. A source patch is a method revision, never a motion command.")
+        response_schema = PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA
+        if parameter_schema is not None:
+            response_schema = json.loads(json.dumps(REVIEW_SCHEMA))
+            del response_schema["properties"]["parameters_json"]
+            response_schema["properties"]["parameters"] = parameter_schema
+            response_schema["required"] = list(response_schema["properties"])
+            instructions = instructions.replace(
+                "parameters_json must encode an object with concise actionable numeric or boolean observations requested by the caller.",
+                "parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth.")
         tool = "submit_method_patch" if patching else "submit_method" if kind == "method" else "submit_review"
+        tool_definition = dict(type="function", name=tool,
+            description="Return the requested executable method, unique method patch, or observation review", parameters=response_schema)
+        if parameter_schema is not None:
+            tool_definition["strict"] = True
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
-            input=[dict(role="user", content=content)], tools=[dict(type="function", name=tool, description="Return the requested executable method, unique method patch, or observation review", parameters=PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA)],
+            input=[dict(role="user", content=content)], tools=[tool_definition],
             tool_choice=dict(type="function", name=tool), parallel_tool_calls=False, store=False)
         raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=max(1, min(1800, budgets()["wall_seconds_remaining"])))
         if not raw.get("model", "").startswith("gpt-6-astra") or raw.get("status") != "completed":
@@ -483,17 +498,20 @@ def main():
             raise ValueError("Expected one matching function call")
         answer = json.loads(calls[0]["arguments"])
         english(answer)
+        if parameter_schema is not None:
+            validate_value(answer, response_schema, "submit_review")
         previous = current
         save(out / f"gpt-{index:02d}.parsed.json", answer)
         print(json.dumps(dict(event="gpt", index=index, kind=kind, frame=native_steps)), flush=True)
         return apply_method_patch(failed_method, answer) if patching else answer
 
-    def review(question, context=None):
+    def review(question, context=None, fields=None):
         nonlocal annotation_initial, annotation_last
         if not isinstance(question, str) or not 1 <= len(question) <= 6000:
             raise ValueError("Invalid review question")
-        answer = planner("review", question, review_context=context)
-        parameters = json.loads(answer["parameters_json"])
+        parameter_schema = compile_fields(fields) if fields is not None else None
+        answer = planner("review", question, review_context=context, parameter_schema=parameter_schema)
+        parameters = answer["parameters"] if parameter_schema is not None else json.loads(answer["parameters_json"])
         if not isinstance(parameters, dict):
             raise ValueError("Review parameters must be an object")
         english(parameters)
