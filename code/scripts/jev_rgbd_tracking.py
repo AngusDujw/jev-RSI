@@ -61,6 +61,23 @@ def lift_pixels(view, pixels):
     return np.asarray(xyz).reshape(-1, 3), np.asarray(kept, int)
 
 
+def balanced_features(sift, gray, mask=None):
+    """Prevent distant high-contrast texture from consuming all feature slots."""
+    kp, desc = sift.detectAndCompute(gray, mask)
+    if desc is None:
+        return [], None, dict(raw_features=0, selected_features=0)
+    h, w = gray.shape
+    cells = {}
+    for i, keypoint in enumerate(kp):
+        cell = (min(3, int(keypoint.pt[0]*4/w)), min(3, int(keypoint.pt[1]*4/h)))
+        cells.setdefault(cell, []).append(i)
+    selected = []
+    for cell in sorted(cells):
+        selected.extend(sorted(cells[cell], key=lambda i: kp[i].response, reverse=True)[:128])
+    return [kp[i] for i in selected], desc[selected], dict(raw_features=len(kp),
+        selected_features=len(selected), grid=[4, 4], per_cell_limit=128)
+
+
 class RGBDPatch:
     """Register a caller-selected textured rigid surface across public views."""
 
@@ -71,11 +88,12 @@ class RGBDPatch:
             raise ValueError("Expected 3..16 visible polygon vertices")
         if (poly < 0).any() or (poly[:, 0] >= w).any() or (poly[:, 1] >= h).any():
             raise ValueError("Tracking polygon crosses image boundary")
-        self.sift = cv2.SIFT_create(nfeatures=800, contrastThreshold=.02)
+        # OpenCV applies retainBest before its mask. Budget spatially afterwards.
+        self.sift = cv2.SIFT_create(nfeatures=0, contrastThreshold=.02)
         mask = np.zeros((h, w), np.uint8)
         cv2.fillPoly(mask, [poly.astype(np.int32)], 255)
         mask = cv2.erode(mask, np.ones((3, 3), np.uint8), iterations=2)
-        keypoints, descriptors = self.sift.detectAndCompute(cv2.cvtColor(view["rgb"], cv2.COLOR_RGB2GRAY), mask)
+        keypoints, descriptors, _ = balanced_features(self.sift, cv2.cvtColor(view["rgb"], cv2.COLOR_RGB2GRAY), mask)
         if descriptors is None:
             raise ValueError("Selected surface has no usable visual texture")
         pixels = np.array([k.pt for k in keypoints])
@@ -131,9 +149,9 @@ class RGBDPatch:
         best = None
         candidates = []
         for camera, view in views.items():
-            kp, desc = self.sift.detectAndCompute(cv2.cvtColor(view["rgb"], cv2.COLOR_RGB2GRAY), None)
+            kp, desc, search = balanced_features(self.sift, cv2.cvtColor(view["rgb"], cv2.COLOR_RGB2GRAY))
             if desc is None or len(desc) < 2:
-                candidates.append(dict(camera=camera, matches=0))
+                candidates.append(dict(camera=camera, matches=0, feature_search=search))
                 continue
             matches = cv2.BFMatcher(cv2.NORM_L2).knnMatch(self.descriptors, desc, k=2)
             pairs = [m[0] for m in matches if len(m) == 2 and m[0].distance < .72*m[1].distance]
@@ -150,7 +168,7 @@ class RGBDPatch:
             source = np.asarray([self.reference[unique[i].queryIdx] for i in kept]).reshape(-1, 3)
             uncertainty = np.asarray([self.reference_uncertainty[unique[i].queryIdx] for i in kept])
             fit = robust_registration(source, target)
-            candidates.append(dict(camera=camera, matches=len(kept), rigid_consensus=fit is not None))
+            candidates.append(dict(camera=camera, matches=len(kept), rigid_consensus=fit is not None, feature_search=search))
             if fit is None:
                 continue
             r, t, inliers, rms, spread = fit
@@ -164,7 +182,7 @@ class RGBDPatch:
                     matches=len(source), inliers=int(inliers.sum()), rms_m=rms,
                     inlier_spread_m=spread.tolist(), uncertainty_floor_m=max(.0015, rms, float(uncertainty[inliers].max())),
                     reference_inlier_world_m=source[inliers].tolist(), current_inlier_world_m=target[inliers].tolist(),
-                    source="RGB-D feature correspondence and rigid registration; not object truth")
+                    source="RGB-D feature correspondence and rigid registration; not object truth", feature_search=search)
                 best = ((int(inliers.sum()), -rms), result, (view, kp, desc, r, t))
         if best is None:
             return dict(status="unknown", frame_id=frame_id, reference_frame_id=self.frame_id,
