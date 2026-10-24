@@ -317,6 +317,11 @@ def main():
                     break
             plan, anchors, earlier_views = planner(review_reason, earlier_views, review_check)
         termination = "planner_" + plan["status"]
+    except KeyboardInterrupt:
+        error_type = "KeyboardInterrupt"
+        termination = "agent_or_user_interrupted"
+        save(output / "failure.json", dict(error_type=error_type, reason=termination,
+            native_steps=native_steps, jev_calls=jev_calls, plan_calls=plan_calls))
     except Exception as error:
         error_type = type(error).__name__
         termination = str(error)[:160] if isinstance(error, (RuntimeError, ValueError)) else "infrastructure_error"
