@@ -71,6 +71,16 @@ Jev responses and reported usage independently. No matched-success baseline has
 been run, so reduced call frequency is not evidence of token savings or speed.
 r5's first complete method took 877.83 seconds to generate.
 
+| Jev scope | Calls | Reported input tokens | Reported output tokens | Sum of service seconds |
+| --- | ---: | ---: | ---: | ---: |
+| r3 | 33 | 94178 | 8217 | 51.98 |
+| r4 | 67 | 208313 | 16683 | 67.78 |
+| r5 | 32 | 78805 | 7968 | 34.55 |
+| Separate zero-motion diagnostics | 2 | 6083 | 498 | 3.60 |
+
+These are distinct model token accounting streams, not interchangeable monetary
+costs. Service-time sums exclude GPT waits, local simulation and other overhead.
+
 Two additional real Jev diagnostics used the same stored r3 state and zero
 physical actions. Original identical question text selected the same sign on all
 six axes; explicit state selectors, including the compiler-prefix variant, each
