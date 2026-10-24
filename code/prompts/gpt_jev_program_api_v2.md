@@ -43,7 +43,8 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
 - api.track_update(handle): compare the reference patch with both current views
   using SIFT descriptors, depth backprojection and robust rigid registration.
   Returns status tracked or unknown. tracked includes a 4x4
-  transform_initial_world_to_current_world, camera, reference/current frame IDs,
+  transform_initial_world_to_current_world, camera, frame_id (current observation),
+  reference_frame_id (initial observation; there is no current_frame_id field),
   matches, inliers, rms_m, inlier_spread_m, uncertainty_floor_m, and reference/current
   inlier world points (reference_inlier_world_m, current_inlier_world_m) and patch
   centroids (reference_patch_centroid_world_m, current_patch_centroid_world_m).
@@ -53,7 +54,8 @@ print(...) and api.note(text) write bounded trace notes through host RPC.
   This tracks a caller-selected textured surface, not a named object oracle.
   Validate identity, rigidity, feature coverage and uncertainty before using it.
   Partial occlusion may still leave enough correspondences; total occlusion or
-  insufficient texture yields unknown. A transform alone does not certify a grasp.
+  insufficient texture yields unknown. unknown returns frame_id, reference_frame_id,
+  candidates and source, but no transform or pose estimate. A transform alone does not certify a grasp.
   Comparing observed patch motion with measured hand motion can support retention
   tests without requiring every object perimeter corner to remain visible.
 - api.review(question, context=None): obtains fresh images and a real GPT observation review.

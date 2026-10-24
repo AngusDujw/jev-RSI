@@ -51,3 +51,8 @@ Generic development lessons, supported only by the recorded development failure:
   best camera for texture registration. Keep each ROI tied to its own camera and
   observation frame; inspect feature-count errors and choose a better visible
   interior patch rather than blindly repeating the same inadequate selection.
+- Use exact response field names from the current manual and actual receipts.
+  A descriptive phrase such as current observation does not imply an additional
+  current_frame_id key: the tracker uses frame_id and reference_frame_id. Include
+  relevant measured values in evidence before a later operation can fail; a
+  method repair starts a fresh Python namespace while physical effects persist.
