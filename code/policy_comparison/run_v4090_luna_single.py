@@ -141,7 +141,7 @@ def sensor_sync_gate(runtime):
             tools.close()
 
 
-def prepare(policy_hints=None):
+def prepare(policy_hints=None, policy_reference_manifest=None):
     if LOCAL.exists():
         raise FileExistsError('Single attempt already prepared; inspect it, never auto-restart')
     auth = json.loads((Path.home() / '.codex/auth.json').read_text())
@@ -159,6 +159,15 @@ def prepare(policy_hints=None):
     io.write_text(text)
     policy = runtime / 'hybrid_rollout/robodojo/skill/run.py'
     text = policy.read_text().replace('visible_packet = packet\n', 'from ..io import public_only\n    packet = public_only(packet)\n    visible_packet = packet\n')
+    reference_metadata = None
+    if policy_reference_manifest is not None:
+        from policy_reference_images import install_reference_delivery, validate_reference_manifest
+        _, manifest_sha = validate_reference_manifest(policy_reference_manifest)
+        text = install_reference_delivery(text)
+        shutil.copyfile(CODE/'policy_reference_images.py', policy.parent/'policy_reference_images.py')
+        shutil.copyfile(policy_reference_manifest, LOCAL/'policy-reference-manifest.json')
+        reference_metadata = dict(source=str(policy_reference_manifest.resolve()),
+            sha256=manifest_sha, delivery='First observation stdio image attachments; historical labels separate from live RGB.')
     policy.write_text(text)
     workspace = runtime / 'hybrid_rollout/robodojo/skill/workspace.py'
     text = workspace.read_text()
@@ -198,7 +207,7 @@ def prepare(policy_hints=None):
         evaluation_method='gpt_only', native_step_limit=550, attempts=1,
         preserve_images=True, preserve_video=True, api_fallback=False,
         evaluator_feedback_to_policy=False, remote=REMOTE, files=files,
-        policy_hints=hints_metadata, rpc_port=PORT))
+        policy_hints=hints_metadata, policy_reference_manifest=reference_metadata, rpc_port=PORT))
     return runtime, home
 
 
@@ -212,6 +221,7 @@ def main():
     parser.add_argument('--sensor-check', action='store_true')
     parser.add_argument('--sync-report', type=Path)
     parser.add_argument('--policy-hints', type=Path)
+    parser.add_argument('--policy-reference-manifest', type=Path)
     parser.add_argument('--rpc-port', type=int, default=25423)
     parser.add_argument('--archive-only', action='store_true')
     args = parser.parse_args()
@@ -220,6 +230,8 @@ def main():
     PORT = args.rpc_port
     if args.policy_hints is not None and (args.sensor_check or args.prepared):
         raise ValueError('Hints require a fresh policy episode, not commissioning or a prepared runtime')
+    if args.policy_reference_manifest is not None and (args.sensor_check or args.prepared or not args.policy_hints):
+        raise ValueError('Reference attachments require a fresh hinted policy episode')
     if args.run_name:
         if not args.run_name.startswith('v4090-luna-high-stack-') or '/' in args.run_name or '..' in args.run_name:
             raise ValueError('Invalid isolated run name')
@@ -258,7 +270,7 @@ def main():
         if (LOCAL / 'attempt-started.json').exists():
             raise RuntimeError('One attempt already started; no rerun')
     else:
-        runtime, home = prepare(args.policy_hints)
+        runtime, home = prepare(args.policy_hints, args.policy_reference_manifest)
     if args.prepare_only:
         print(json.dumps(dict(event='prepared', local=str(LOCAL))), flush=True)
         return
@@ -270,6 +282,10 @@ def main():
     env.update(CODEX_HOME=str(home), ROLLOUT_AUTH_PROFILE='codex_a',
         ROLLOUT_EVALUATION_METHOD='gpt_only', ROLLOUT_CODEX_STATE_DIR=str(LOCAL / 'codex_state'),
         PYTHONPATH=str(runtime), TMPDIR=str(LOCAL / 'tmp'))
+    # Do not inherit a reference manifest from another run.
+    env.pop('ROLLOUT_POLICY_REFERENCE_MANIFEST', None)
+    if (LOCAL/'policy-reference-manifest.json').exists():
+        env['ROLLOUT_POLICY_REFERENCE_MANIFEST'] = str(LOCAL/'policy-reference-manifest.json')
     subprocess.run(['ssh', '-o', 'ConnectTimeout=15', '--', 'v4090-t',
         'mkdir -p ' + shlex.quote(REMOTE_BASE) + ' && test ! -e ' + shlex.quote(REMOTE)
         + ' && mkdir ' + shlex.quote(REMOTE_SOURCE)], check=True)

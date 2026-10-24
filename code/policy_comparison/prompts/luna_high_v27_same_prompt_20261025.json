@@ -1,0 +1,61 @@
+{
+  "version": "v27",
+  "parent": "v26",
+  "prompt_sha256": "99f8b5ed2b9911ba4c594eaefe082d1106e9f66f69d438487f7ae6b8a9932db5",
+  "prompt_words": 2334,
+  "prompt_file": "code/policy_comparison/prompts/multiview_grasp_v27.md",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "authentication": "local ChatGPT Pro",
+  "api_fallback": false,
+  "task": "stack_blocks",
+  "layout": 0,
+  "eval_seed": 0,
+  "native_step_limit": 550,
+  "attempts_per_run": 1,
+  "all_started_runs_included": true,
+  "infrastructure_change": {
+    "fresh_server_copy_rpc_idle_seconds": 7200,
+    "changed_from_v26": false,
+    "native_physics_scoring_unchanged": true
+  },
+  "prompt_changes": [
+    "Describe the sixteen approved historical raw RGB attachments in the first observation; retain all v26 grasp, support and return guidance"
+  ],
+  "causal_scope": "Development-conditioned multi-change iteration; not a single-factor or zero-shot comparison.",
+  "reference_manifest_sha256": "c81e34393c5299a2cce4add74d3a0a506fe4fe1ffa27c11df6c03e7033db787a",
+  "trials": [
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v27-r1",
+      "rpc_port": 25458
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v27-r2",
+      "rpc_port": 25459
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v27-r3",
+      "rpc_port": 25460
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v27-r4",
+      "rpc_port": 25461
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v27-r5",
+      "rpc_port": 25462
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v27-r6",
+      "rpc_port": 25463
+    }
+  ],
+  "policy_reference_manifest": "code/policy_comparison/prompts/luna_high_v27_reference_images_20261025.json",
+  "input_delivery_change": {
+    "first_observation_historical_rgb_attachments": 16,
+    "unchanged_live_rgb": 3,
+    "later_observations_historical_attachments": 0,
+    "receipt": "stdio submission only, not model attention",
+    "fresh_local_actor_runtime_only": true
+  }
+}
