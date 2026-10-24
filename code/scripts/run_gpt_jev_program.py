@@ -72,6 +72,29 @@ def apply_method_patch(previous, patch):
     return dict(source=source, **{k: patch[k] for k in ("explanation", "interface", "jev_protocol")})
 
 
+def compact_feedback(value):
+    """Bound numeric observation feedback without inventing object semantics."""
+    if isinstance(value, dict):
+        result = {}
+        for key, item in value.items():
+            if key in ("rgb", "pixels"):
+                continue
+            if key == "world_m" and isinstance(item, list) and item and isinstance(item[0], list):
+                import numpy as np
+                points = np.asarray(item, float)
+                if points.ndim == 2 and points.shape[1] == 3:
+                    result["visible_world_summary"] = dict(count=len(points),
+                        minimum=points.min(0).tolist(), median=np.median(points, axis=0).tolist(), maximum=points.max(0).tolist())
+                    continue
+            result[key] = compact_feedback(item)
+        return result
+    if isinstance(value, list):
+        return [compact_feedback(x) for x in value[:40]]
+    if isinstance(value, str):
+        return value[:6000]
+    return value
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
@@ -155,6 +178,7 @@ def main():
     native_steps = jev_calls = gpt_calls = rpc_calls = 0
     last_grip = "open"
     history, methods, previous = [], [], None
+    rpc_feedback = []
     termination, success, result = "not_started", None, None
     own_method_error = None
 
@@ -240,7 +264,7 @@ def main():
                 content.extend([dict(type="input_text", text=f"Earlier review {camera}"),
                     dict(type="input_image", image_url="data:image/jpeg;base64,"+base64.b64encode(encoded).decode(), detail="high")])
         payload_state = dict(instruction=task.language, question=question, robot=state(), cameras=cameras,
-            recent_acknowledged_execution=history[-5:])
+            recent_acknowledged_execution=history[-5:], recent_program_feedback=rpc_feedback[-8:])
         if failed_method:
             payload_state["previous_method"] = failed_method
         content.append(dict(type="input_text", text=json.dumps(payload_state)))
@@ -420,6 +444,7 @@ def main():
                     response = dict(error=type(error).__name__+": "+str(error)[:1000])
                 record.update(response=response, frame_after=native_steps)
                 save(out / f"rpc-{rpc_calls:04d}.json", record)
+                rpc_feedback.append(compact_feedback(dict(request=message, response=response, frame_id=native_steps)))
                 worker.stdin.write(json.dumps(response, allow_nan=False)+"\n")
                 worker.stdin.flush()
             raise RuntimeError("rpc_budget")

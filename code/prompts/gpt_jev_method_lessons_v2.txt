@@ -18,3 +18,8 @@ Generic development lessons, supported only by the recorded development failure:
 - Prefer a concise complete method with useful local checks and recovery over
   a long list of redundant global gates. None of these lessons proves that the
   next generated method will complete the task; actual execution is required.
+- Report the numerical values behind a failed geometric check in trace notes or
+  result evidence. Arbitrary fixed object-size ranges are not physical laws.
+  Derive grasp clearances and margins jointly from measured object dimensions,
+  own finger geometry, measurement uncertainty, and controller tolerance. A valid
+  small object can make independently chosen fixed margins mutually infeasible.
