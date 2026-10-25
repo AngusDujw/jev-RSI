@@ -204,3 +204,13 @@ The tested control commit was `87516433`; the subsequent cancellation bookkeepin
 fix does not change planning or action selection. No task recipe was added after
 seeing the final failure. This adapter currently targets one LIBERO robot and
 OSC_POSE; another robot needs a capability/observation/action adapter.
+
+
+Current candidate0d15ab18 requires an explicit per-gate sufficient-evidence contract
+in the complete interface, implements local reference handoff without unnecessary
+old-shape registration, and adds bounded-memory/numerical-effect guidance. Visual
+reviews distinguish local evidence scope, self-occlusion and observed obstacles.
+The mathematical/execution API and limits are unchanged. Native evaluation is
+predeclared13regression then unused16-19; only13is admitted, with32GPT/5repairs/
+200Jev/600policy steps/9000seconds. Regression failure stops unused admissions.
+This is a new frozen candidate, not a successful result yet.

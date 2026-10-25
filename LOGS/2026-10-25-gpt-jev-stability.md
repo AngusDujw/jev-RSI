@@ -3,9 +3,9 @@
 Current status: both frozen cold candidates failed their all-five criteria:
 a8e6ea72 completed five cases, native4/5;618f559b completed three admitted cases,
 native2/3, with16/17 unadmitted after regression13 failed. All failures, complete methods and
-known costs are retained. Stable cold success is not established. The next
-generic candidate targets phase-specific sufficient evidence and reference
-handoff, with the same limits and regression-first admission.
+known costs are retained. Stable cold success is not established. Candidate0d15ab18 now runs only regression13, targeting phase-specific sufficient
+evidence and reference handoff with the same limits. Unused16-19 remain
+unadmitted pending regression success.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
 frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
@@ -562,3 +562,24 @@ consistency. Keep32GPT/5repairs/200Jev/600steps/9000seconds. Predeclare regressi
 and unused16-19, admit13alone first, then the four unused cases only if it succeeds.
 A failed regression closes that candidate before unused cases; actual native
 testing remains mandatory. No formal research goal/theory/metric is changed.
+
+
+## Factored-evidence candidate0d15ab18: regression-first, same limits
+
+The fixed generic builder now requires each phase gate's minimal state components,
+obtainable witnesses, retained invariants, and executable occlusion fallback in
+the full interface and source. New lessons separate local differential references
+from full old-shape registration, current partial evidence from invalidation,
+bounded checkpoints from growing diagnostic copies, and effect margins from
+control deadbands. The review prefix clarifies local action/model scope and
+observed obstruction versus unknown geometry/self-occlusion. No task names, IDs,
+coordinates or trajectories occur in shared files. AST and ASCII/task-sentinel
+checks passed; these are not native task results. No driver, dependency, actuation
+limit, tracker threshold or evaluator changes were made.
+
+Predeclared13regression plus unused16-19. Only13is admitted; the four unused
+cases require regression success. Limits stay32GPT/5repairs/200Jev/600policy
+steps/9000seconds. Each is independent cold generation with empty episode memory
+and no previous task source. An admitted failure stops unadmitted cases, with
+running peers retained. Builder knowledge and review scope changed together,
+so no isolated-component or speed comparison is claimed.
