@@ -548,3 +548,8 @@
 【Agent @Codex】【2026-10-25】[EXP091](LOGS/2026-W43.md#exp-2026w43-091)afb既有5/5完整源在2dhost回归13零修复原生false，2GPT/28Jev/84步/353.69秒；196标签/原源哈希/全usage审计通过。停在近侧夹指通道未确认，并非确认接触，原方法无恢复。旧非strict复核2次单列解码，不能当新strict通过。完整负结果和原源码链接保存，16–19未准入；这收窄已有5/5范围，不是改写历史成功。
 
 【Agent @Codex】【2026-10-25】Weekly Retro补记：T028后generic-vision CIRCLE-1二十一轮/二十五未决且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。收敛：0c4c成功初稿的原样复用继续，另冻结daf12dfc只改通用保守代理/有界参数或测量试探前知并独立冷回归13，旧世界不热改，过13才准入固定未见。原失败不补选、各候选不混算、无外层任务动作或坐标，不改正式目标/理论，不关闭议题。
+
+
+【Agent @Codex】【2026-10-25】[EXP092](LOGS/2026-W43.md#exp-2026w43-092)0c4c独立成功初稿在2dhost原样迁移回归13失败，4GPT/29Jev/87步/582.86秒，0源码修复；4strict/203标签/原源哈希及全usage审计通过。当前复核拒绝邻近容器边缘处的完整指轮廓下降，程序无替代配置。原init12生成成功保留，本次0/1和原获取费用分别归档；16–19未准入。第二槽显式archive-assisted cold12-revised-reg13由GPT在新场景重新写完整方法，原源字节未改，历史结果/最后8公开RPC带来源，未传privileged NPZ，不算冷生成或零修复复用；初始重写加最多5同场景修复，32GPT等限额，主独立冷回归保持原样。
+
+【Agent @Codex】【2026-10-25】Weekly Retro补记：T029后generic-vision CIRCLE-1二十二轮/二十六未决且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。两份成功源直接迁移都已负，收敛到新通用有界替代前知在固定13检验，冷生成与archive-assisted两个条件单列，先终局再决定未见准入，不重复旧源测试或手工任务轨迹；不改正式目标理论或关闭议题。

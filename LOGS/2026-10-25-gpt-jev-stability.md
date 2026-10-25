@@ -9,8 +9,10 @@ Frozen2d710418 also failed cold regression13 (31GPT/179Jev/537steps) despite
 the verified repair-context fix. Previous50432131 failed separately, and the
 archive-assisted rewrite failed before release (28GPT/98Jev/294steps). The afb
 exact-source reuse regression13 has now failed on unresolved finger access;
-its earlier scoped5/5 is not a broader portability guarantee. A second exact
-initial-output source0c4c is being tested separately. Unused16-19remain unadmitted.
+its earlier scoped5/5 is not a broader portability guarantee. The second exact
+initial-output source0c4c also failed13before grasp (4GPT/29Jev/87steps).
+New daf12dfc runs cold13and separate archive-assisted0c4c revision13with bounded
+alternative-configurations knowledge, with unchanged limits/accounts/bridge. Unused16-19remain unadmitted.
 Stable cold or hard-regression portability is still unestablished.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
@@ -180,7 +182,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete tracked-file inventory against9d710e19: 96 files.
+Complete tracked-file inventory against9d710e19: 98 files.
 
 | Status | File |
 |---|---|
@@ -222,6 +224,8 @@ Complete tracked-file inventory against9d710e19: 96 files.
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/README.md](../artifacts/gpt-jev-cold-methods-20261025/init9/README.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/method.json](../artifacts/gpt-jev-cold-methods-20261025/init9/method.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/method.py](../artifacts/gpt-jev-cold-methods-20261025/init9/method.py) |
+| A | [artifacts/gpt-jev-cold12-portability-20261025/PROVENANCE.json](../artifacts/gpt-jev-cold12-portability-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-cold12-portability-20261025/README.md](../artifacts/gpt-jev-cold12-portability-20261025/README.md) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/COHORT.json](../artifacts/gpt-jev-continuity-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/README.md](../artifacts/gpt-jev-continuity-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-continuity-methods-20261025/init13/METHOD.md) |
@@ -820,3 +824,20 @@ new independent cold13in its own worktree with unchanged32GPT/5repairs/200Jev/
 Manifest trial-cohort-manifest.json declares13before16-19and stop-on-failure.
 CIRCLE1is21rounds/25unresolved plus CIRCLE3; these frozen candidate admission
 rules remain the convergence plan, not a new research goal or formal-method change.
+
+## Exact0c4c portability regression closed (EXP092)
+
+Native=false/method_incomplete,4GPT/29real Jev/87steps/582.86seconds,zero repairs.
+All4strict reviews,203labels, source and costs audited: GPT41069input/14284output,
+Jev76576/7221,zero unknown. Current review rejected the proposed full-finger
+descent near the neighboring rim; no grasp occurred. This is a reviewer finding,
+not confirmed physical contact or privileged state. Original init12generation
+success and acquisition13GPT/109Jev/327steps/2060.78s remain separate.
+[Exact-source negative provenance](../artifacts/gpt-jev-cold12-portability-20261025/README.md).
+Unused16-19not admitted. New separately declared cold12-revised-reg13uses original
+source bytes and historical failed public result/last8RPCs, no privileged NPZ.
+GPT rewrites in a fresh scene under daf12dfc,32GPT/5repairs/200Jev/600steps/9000s.
+Its initial rewrite is archive-assisted, never cold or zero-source-repair reuse.
+Original acquisition, failed reuse and this revision are all retained separately.
+CIRCLE1now22rounds/26unresolved plus CIRCLE3; both current conditions test the
+new generic bounded alternatives on fixed regression13before unused admissions.

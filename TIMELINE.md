@@ -159,6 +159,7 @@ graph LR
     T_2026W43_026["📝 generic-gpt-jev-vision<br/>T024主题键误记；本结果属于既有libe…"]:::note
     T_2026W43_027["📊 libero-generic-vision<br/>Archive-assisted新回合修订…"]:::experiment
     T_2026W43_028["📊 libero-generic-vision<br/>afb既有5/5完整源零修复迁移到回归13…"]:::experiment
+    T_2026W43_029["📊 libero-generic-vision<br/>0c4c独立成功初稿零修复迁移回归13失败…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -275,6 +276,7 @@ graph LR
   T_2026W43_024 --> T_2026W43_026
   T_2026W43_025 --> T_2026W43_027
   T_2026W43_027 --> T_2026W43_028
+  T_2026W43_028 --> T_2026W43_029
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -419,6 +421,7 @@ graph LR
 | `T-2026W43-026` | 2026-10-25 | note | generic-gpt-jev-vision | T024主题键误记；本结果属于既有libero-generic-vision，T025已补正确experiment，同一EXP非两次实验；保留历史 | `EXP-2026W43-089` | - |
 | `T-2026W43-027` | 2026-10-25 | experiment | libero-generic-vision | Archive-assisted新回合修订仍native失败：28GPT/98Jev/294步；已搬运但保守放置余量门槛阻止释放，完整成本单列 | `EXP-2026W43-090` | - |
 | `T-2026W43-028` | 2026-10-25 | experiment | libero-generic-vision | afb既有5/5完整源零修复迁移到回归13失败：2GPT/28Jev/84步，局部夹指通道未确认；原范围成功不能泛化 | `EXP-2026W43-091` | - |
+| `T-2026W43-029` | 2026-10-25 | experiment | libero-generic-vision | 0c4c独立成功初稿零修复迁移回归13失败：4GPT/29Jev/87步；当前完整指轮廓下降被拒，需有界替代配置 | `EXP-2026W43-092` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

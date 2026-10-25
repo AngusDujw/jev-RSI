@@ -1,0 +1,313 @@
+{
+  "condition": "Exact-source zero-repair regression failure, separate from initial successful generation",
+  "framework_commit": "2d710418",
+  "source_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4",
+  "summary": {
+    "termination": "method_incomplete",
+    "native_success": false,
+    "result": {
+      "completion_proposed": false,
+      "evidence": [
+        {
+          "review_frame": 0,
+          "parameters": {
+            "eligible": "yes",
+            "identity": "Source: the rigid, shallow rectangular silver-gray and blue package printed 'Cream Cheese', lying flat on the wooden tabletop beside the bowl. Its broad printed face and narrow dark side faces are visible. Destination: the open round bowl with dense black-and-white floral decoration and a thin yellow-gold rim. Its interior is visible and contains no visible object. The white plate with red rings is not the destination.",
+            "camera": "robot0_eye_in_hand",
+            "corners": [
+              [
+                190,
+                154
+              ],
+              [
+                252,
+                153
+              ],
+              [
+                254,
+                276
+              ],
+              [
+                193,
+                276
+              ]
+            ],
+            "landmark_definitions": [
+              "Center of the white capital C beginning 'Cream' in the large blue product-name graphic.",
+              "Center of the white capital C beginning 'Cheese' in the large blue product-name graphic.",
+              "Center of the separate small dark-blue oval badge beneath the product-name lettering."
+            ],
+            "patch_camera": "robot0_eye_in_hand",
+            "patch": [
+              [
+                196,
+                160
+              ],
+              [
+                247,
+                159
+              ],
+              [
+                249,
+                270
+              ],
+              [
+                198,
+                270
+              ]
+            ]
+          },
+          "explanation": "The task is to place the packaged cream cheese into the open patterned bowl, not onto the nearby plate. The current images support eligibility: the source has a rectangular planar printed top, visible narrow side faces, and appears to rest flat on the exposed tabletop. The bowl has an accessible, approximately circular opening and a visible cavity bottom. No underside geometry is inferred. The selected patch is on the package's printed top.",
+          "measurement_errors": []
+        },
+        {
+          "name": "top",
+          "coefficients": [
+            1.5520231362713673e-05,
+            0.022171712391369502,
+            0.9997541772499662,
+            -0.9203337483635033
+          ],
+          "rms_m": 9.110705156073267e-05,
+          "spread_m": [
+            0.019769447810248024,
+            0.00932877083698429
+          ]
+        },
+        {
+          "name": "support",
+          "coefficients": [
+            -5.156948392721373e-05,
+            8.248308806788127e-06,
+            0.9999999986362768,
+            -0.8999689568490817
+          ],
+          "rms_m": 2.0606540216007304e-07,
+          "spread_m": [
+            0.024085714853375354,
+            0.010578961909026716
+          ]
+        },
+        {
+          "rim_fit": {
+            "xy": [
+              -0.0791168417492246,
+              0.008523399946124699
+            ],
+            "z": 0.9483009348364119,
+            "radius": 0.052888979035767246,
+            "rms": 0.000497724334455238,
+            "max_error": 0.0008031836477345455,
+            "gap_rad": 1.0754500677407333,
+            "frame": 0
+          },
+          "plane_rms": 0.0005404116771467446
+        },
+        {
+          "height_m": 0.018067667657583386,
+          "edge_lengths_m": [
+            0.041622007147701846,
+            0.08051926235583656
+          ],
+          "half_diagonal_m": 0.04549447626619689,
+          "rim_radius_m": 0.052888979035767246,
+          "uncertainty_m": 0.0015
+        },
+        {
+          "patch_reference_frame": 0,
+          "features": 99,
+          "camera": "robot0_eye_in_hand"
+        },
+        {
+          "tracking_status": "tracked",
+          "frame": 0,
+          "reference_frame": 0,
+          "reason": null
+        },
+        {
+          "inliers": 31,
+          "matches": 31,
+          "rms_m": 6.073530366455372e-18,
+          "uncertainty_m": 0.0015,
+          "spatial_support_m": [
+            0.009718230473001473,
+            0.004993147702374193,
+            3.0879110527873834e-05
+          ]
+        },
+        {
+          "review_frame": 0,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "observed",
+            "action": "local_supported"
+          },
+          "explanation": "The current and earlier frame-0 images show the same cream cheese package and patterned bowl, with no visible target displacement or identity inconsistency. The red-ringed plate is not the destination. The proposed high_alignment is locally supported: it translates the open gripper above the package at pad height 1.16911 m, rather than descending to grasp. Using the supplied finger envelope, the lowest finger surface remains approximately 1.156 m high, about 0.208 m above the measured bowl rim. The visible local sweep has no observed external obstruction. The opening axis is across the package's approximately 0.042 m short dimension, not its 0.081 m length; the supplied open-pad dimensions support straddling the package rather than descending through its top. This assessment supports only the bounded high alignment, not a subsequent low descent, closure, or transfer. The source, adjacent tabletop, and bowl surfaces are visible; robot structure at the bottom of the wrist image does not conceal those local surfaces. Returned regions include the neighboring bowl and both package-side tabletop strips for envelope checks. Named landmarks and rim/floor samples are returned again rather than relying on historical measurements being available. No grasp, retention, or task completion is claimed.",
+          "measurement_errors": []
+        },
+        {
+          "motion": "high_alignment",
+          "status": "reached",
+          "position_error_m": 0.0014091244614510114,
+          "rotation_error_rad": 0.010292445222069107,
+          "lease_calls": 14,
+          "whole_lease_progress_m": 0.18312173874118484
+        },
+        {
+          "tracking_status": "tracked",
+          "frame": 42,
+          "reference_frame": 0,
+          "reason": null
+        },
+        {
+          "inliers": 34,
+          "matches": 35,
+          "rms_m": 0.0005285193791817998,
+          "uncertainty_m": 0.0015,
+          "spatial_support_m": [
+            0.017056048204314528,
+            0.004112622581762918,
+            7.082611136007038e-05
+          ]
+        },
+        {
+          "review_frame": 42,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "observed",
+            "action": "local_supported"
+          },
+          "explanation": "The current and earlier images support the same source identity: the blue and silver rectangular Cream Cheese package remains flat beside the patterned bowl. The fixed agentview shows no visible target displacement; the wrist-view appearance and reported registration are consistent with this. The red-ringed plate is not the destination.\n\nThe proposed open-gripper source_hover descent to pad position [-0.0528417, 0.114084, 0.96804] is locally supported. It is centered over the package, with the opening direction across its approximately 42 mm width, not its approximately 81 mm length. The open pads straddle the two long edges, and visible tabletop supports the lateral finger lanes. At the hover endpoint, the pad center remains approximately 50 mm above the package top. Transforming the supplied finger envelope gives a lowest finger height of approximately 0.954 m. The nearby bowl rim is approximately 0.948-0.950 m high, leaving only about 4-6 mm nominal vertical separation where the outer finger envelope approaches it. No external obstruction to this bounded hover descent is observed. This does not authorize a deeper approach, closure, or transport.\n\nThe wrist image's bottom band is robot self-occlusion, not an external obstacle; the relevant package and adjacent approach surfaces are visible. Returned points are current visible surface samples, including all three named landmarks and the bowl samples. Package corner samples are slightly inset onto the visible top face to avoid mixed table/edge depth; some historical corner projections fall outside that face and should not replace the current boundary evidence. Regions provide the surface geometry needed to check the local envelope. No retention or task completion is claimed.",
+          "measurement_errors": []
+        },
+        {
+          "motion": "source_hover",
+          "status": "reached",
+          "position_error_m": 0.002138554556539095,
+          "rotation_error_rad": 0.004006290457182898,
+          "lease_calls": 15,
+          "whole_lease_progress_m": 0.20030455150461116
+        },
+        {
+          "tracking_status": "tracked",
+          "frame": 87,
+          "reference_frame": 0,
+          "reason": null
+        },
+        {
+          "inliers": 55,
+          "matches": 56,
+          "rms_m": 0.000203754279633524,
+          "uncertainty_m": 0.0015811388300841897,
+          "spatial_support_m": [
+            0.016115139097120444,
+            0.005044536557896243,
+            3.542418729898624e-05
+          ]
+        },
+        {
+          "grasp_pad_z": 0.9165959849690914,
+          "table_z": 0.8999652888400221,
+          "top_z": 0.9180284707529053,
+          "finger_low_relative_pad": -0.013468418468900857,
+          "projected_width": 0.04184235779930738,
+          "outer_pad_span": 0.0924460580611341,
+          "u": 0.0015811388300841897
+        },
+        {
+          "review_frame": 87,
+          "parameters": {
+            "external": "observed_obstacle",
+            "visibility": "self_occluded",
+            "action": "unsupported"
+          },
+          "explanation": "The cream-cheese package and patterned destination bowl match the earlier images; neither shows an observed displacement. The proposed action is the open-gripper grasp descent, approximately 0.052 m downward, not a transfer or retention test. The fingers straddle the package's roughly 0.042 m width, so descent through the package is not the concern. The observed bowl-side rim is the concern: at the proposed endpoint, the supplied full finger envelope extends to approximately world y=0.0475 and spans z=0.903 to 0.958 near the package middle. The adjacent bowl rim, including k5 near world y=0.055 and z=0.949, lies within that swept envelope. Thus the full open-finger descent is not locally supported as specified, even though the narrower pad surfaces appear to clear the package. This is an observed external rim obstruction to the supplied envelope, not an inference from unavailable global clearance. The robot also obscures part of the nearby rim and the lower end of the package in the wrist view. Package corners 2 and 3 are therefore returned from agentview. Bowl landmark k4 is robot-occluded and cannot be returned as a current visible surface measurement. All other listed historical landmarks are returned at current visible locations. The rim-and-gap region intentionally includes the visible rim arc and adjacent space for local geometry processing. No grasp, retention, placement, or task completion is established.",
+          "measurement_errors": [
+            {
+              "name": "k5",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "gap": "No justified local action: grasp_descent",
+          "values": {
+            "external": "observed_obstacle",
+            "visibility": "self_occluded",
+            "action": "unsupported"
+          }
+        },
+        {
+          "stopped": "No justified local action: grasp_descent",
+          "phase": "approach",
+          "held_evidence": false
+        }
+      ]
+    },
+    "native_steps": 87,
+    "settling_steps": 10,
+    "jev_calls": 29,
+    "gpt_calls": 4,
+    "rpc_calls": 44,
+    "elapsed_s": 582.8622928338591,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4"
+      }
+    ],
+    "last_method_error": null
+  },
+  "audit": {
+    "native_success": false,
+    "termination": "method_incomplete",
+    "gpt_calls": 4,
+    "jev_calls": 29,
+    "native_steps": 87,
+    "elapsed_s": 582.8622928338591,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4"
+      }
+    ],
+    "completion_proposed": false,
+    "audit": "Original Jev choices, semantic labels, finite bounds, carried gripper, steps and all source hashes passed",
+    "dispatches": 29,
+    "models": {
+      "gpt": {
+        "attempts": 4,
+        "unknown_usage": 0,
+        "completed_input": 41069,
+        "completed_output": 14284,
+        "relay_seconds": 475.52290262602037,
+        "matched_requests": 4
+      },
+      "jev": {
+        "attempts": 29,
+        "unknown_usage": 0,
+        "completed_input": 76576,
+        "completed_output": 7221,
+        "relay_seconds": 68.140515730076,
+        "matched_requests": 29
+      }
+    },
+    "strict_reviews_validated": 4,
+    "legacy_reviews_json_decoded": 0,
+    "gpt_cost_by_purpose": {
+      "submit_review": {
+        "calls": 4,
+        "input": 41069,
+        "output": 14284
+      }
+    }
+  },
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "original_output": "artifacts/gpt-jev-cold-methods-20261025/init12",
+  "acquisition": "13GPT/109Jev/327steps/2060.78s retained separately"
+}
