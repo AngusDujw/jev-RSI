@@ -1,16 +1,20 @@
 {
-  "status": "pending exact-source fresh13zero-repair regression",
+  "status": "fresh13passed; unused16,17running;18,19unadmitted",
   "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
-  "completed": [],
-  "admitted": [
+  "completed": [
     13
   ],
-  "unadmitted": [
+  "admitted": [
+    13,
     16,
-    17,
+    17
+  ],
+  "unadmitted": [
     18,
     19
   ],
-  "claim": "No stable reuse claim",
-  "manifest": "code/runs/2026-10-25-gpt-jev-program/correspondence-frozen-cohort-manifest.json"
+  "claim": "Exact-source fresh13passed; cross-initial cohort pending; no universal reliability guarantee",
+  "manifest": "code/runs/2026-10-25-gpt-jev-program/correspondence-frozen-cohort-manifest.json",
+  "native_successes": 1,
+  "native_trials": 1
 }

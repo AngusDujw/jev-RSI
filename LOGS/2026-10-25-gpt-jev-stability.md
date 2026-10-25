@@ -1,11 +1,12 @@
 # GPT/Jev stability continuation
 
-Current status:23567dfb archive-assisted GPT full rewrite acquired native
-success(17GPT/88Jev/264steps/2871.000sec), with4actual unindexed-envelope
-witnesses and no same-scene source repair. Exact-source fresh13zero-repair
-validation is running on the same302host;16-19unadmitted. Stable reuse and
-net efficiency remain unestablished. Prior a18positive acquisition and0/1failed
-exact replay remain separately retained.
+Current status:23567dfb complete GPT method passed exact-source fresh13
+zero-repair regression (native/proposal true,16GPT/87Jev/261steps/2426.153sec).
+Acquisition was17GPT/88Jev/264steps. The frozen cohort is1/1completed;
+unused16,17are running on the same302host;18,19unadmitted. One Jev failed
+retry has unknown usage and remains additional cost. Cross-initial stability,
+cross-task generality and net efficiency are not yet established. Previous
+5e/a18positive acquisitions and failed exact replays remain separate.
 
 Previous status retained: archive-assisted GPT rewrite/one repair reached native success
 on hard13(21GPT/84Jev/252steps), but exact final5e source fresh13zero-repair reuse
@@ -183,7 +184,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Files changed since9d710e19: 126. Generated from tracked staged changes; user-owned untracked directories excluded.
+Files changed since9d710e19: 127. Generated from tracked staged changes; user-owned untracked directories excluded.
 
 | Status | File |
 |---|---|
@@ -250,6 +251,7 @@ Files changed since9d710e19: 126. Generated from tracked staged changes; user-ow
 | A | [artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.json](../artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/method.json](../artifacts/gpt-jev-correspondence-method-20261025/method.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/method.py](../artifacts/gpt-jev-correspondence-method-20261025/method.py) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init13.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init13.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/COHORT.json](../artifacts/gpt-jev-factored-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/README.md](../artifacts/gpt-jev-factored-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md) |
@@ -1056,3 +1058,18 @@ repair is running:24GPT/200Jev/600steps/7200sec; unused16-19admit only after
 native success, and stop new admission on failure. This acquisition is archive
 assisted, not independent cold generation or proven efficiency. CIRCLE27rounds/
 33unresolved plus CIRCLE3; fixed source validation is the convergence action.
+
+## Exact235fresh replay passed; unused admission (EXP102)
+
+Native/proposal true,16GPT/87real Jev/261policy steps/2426.153231sec,
+exact235source and no repairs on same302host.16strict reviews/87dispatches/
+actual relay responses/source-reuse origins audited. GPT191753input/45208output
+all known. Jev known251154/21663;88upstream attempts include1failed retry with
+unknown usage, not zero. Frozen cohort1/1completed. Under the prior manifest,
+unused16and17are admitted/running with identical source/limits;18and19remain
+unadmitted. Stop new admission on failure and retain all started cases.
+
+This passes the previously failed fresh-episode replay gate, not yet the fixed
+cross-initial cohort. No controlled speedup or universal reliability claim.
+CIRCLE28rounds/34unresolved plus CIRCLE3: complete the fixed source cohort,
+no alternative source pooling, replacement cases or new cold-synthesis branch.
