@@ -231,3 +231,13 @@ transport. Only13is admitted; unused16-19require regression success. Prior
 transport-interrupted nativefalse and unknown attempts remain separate. Native
 outcomes are pending. Two additional actual socket checks passed without models
 or physics; they do not establish task success.
+
+
+A real dictionary-evidence contract bug was reproduced: fixed-field summarization
+sent seven nulls while the method's actual gap/phase/measurements were present.
+Candidate2d710418 preserves arbitrary program_result fields and explicit bounded
+log excerpts; the exact manual describes the new repair input. Eight actual-result
+and schema checks passed (Native=N/A). Its independent cold13regression is now
+the primary evaluation before unused16-19. The older504regression remains
+unchanged and separate; its known contract bug prevents unused admissions there.
+No task policy or trajectory was added, and no new native success is claimed.

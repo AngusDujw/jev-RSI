@@ -5,10 +5,10 @@ a8e6ea72 completed five cases, native4/5;618f559b completed three admitted cases
 native2/3, with16/17 unadmitted after regression13 failed. All failures, complete methods and
 known costs are retained. Stable cold success is not established. Candidate0d15ab18 then stopped on a Jev transport502 before completion,
 native0/1 admitted;16-19 remained unadmitted. Its policy effect is uncompleted.
-New frozen50432131 now runs a fresh independent cold regression13 with
-the same model-visible instructions and logical limits;16-19 remain unadmitted.
-Its bounded transport passed11fault/loopback checks plus2real-socket checks,
-all Native=N/A. Stable native success is still unestablished.
+Primary frozen2d710418 now runs an independent cold regression13 after fixing
+real repair-context data loss (8offline checks, Native=N/A). Previous50432131
+regression continues unchanged and will be retained separately. Unused16-19
+await primary regression success. Stable native success is still unestablished.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
 frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
@@ -648,3 +648,36 @@ Two additional actual HTTPResponse/socket checks passed: read1/socket timeout on
 loopback JSON and rejection of slow chunks at0.121seconds against a0.12second
 budget. Zero model calls, physics or temporary scripts; test server joined.
 Receipt: code/runs/2026-10-25-gpt-jev-program/jev-transport-offline-20261025/socket-validation.json.
+
+## Generic repair-context data loss reproduced and fixed (EXP087)
+
+The actual504method01return contains phase, gap, last_acknowledged_motion,
+jaw_calls, retention_trials, six measurements and recovery_policy. Its actual
+gpt20repair request instead contains seven unrelated null fields. An unchanged
+production-function replay reproduces that exact loss. This is a harness contract
+bug: documented arbitrary dictionary evidence was filtered by an assumed schema.
+The original raw outcome remains intact; it was the model input that lost it.
+
+New frozen2d710418 preserves the actual outcome under
+previous_method.incomplete_result.program_result. It retains caller field names;
+a long top-level evidence log keeps its latest12with explicit omitted-entry
+counts, while existing bounded observation compaction remains. The exact English
+manual documents that format. No physical policy, coordinates, task recipe,
+driver threshold, model/account, or bridge implementation was changed.
+
+Eight offline checks passed over two real dictionary schemas and one42-entry
+real list plus neutral schema fixtures: gap/phase, numeric receipts/measurements,
+reason/history, latest12and omission30, unknown fields/full precision, metadata
+key collisions, short/non-dictionary outcomes, and immutable JSON ASCII. The
+initial third fixture was selected from the wrong run, and an early activity
+claim was explicitly corrected before the full successful rerun. Zero real
+models/new physics/test scripts; Native=N/A.
+Receipts: code/runs/2026-10-25-gpt-jev-program/repair-context-observed-loss.json
+and repair-context-offline-20261025/validation.json.
+
+Primary new evaluation is2d710418, independent cold13regression before unused
+16-19, with32GPT/5repairs/200logical Jev/600steps/9000seconds and the unchanged
+bounded504transport. Existing504regression continues unchanged in its own world
+and will be retained separately; it is superseded for unused admissions because
+of the known diagnostic contract bug. Do not pool its result into the new cohort.
+Both episodes receive no archived source; global concurrency remains at most2.
