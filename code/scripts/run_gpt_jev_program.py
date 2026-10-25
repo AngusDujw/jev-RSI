@@ -38,15 +38,16 @@ def model_wire_numbers(value, *, preserve_tools=False):
 
 
 def post(url, payload, path, timeout=1800):
-    """Keep long method generation bounded by the actual remaining episode time."""
+    """Bound model/classification transport by remaining episode time, before dispatch."""
     payload = model_wire_numbers(payload, preserve_tools=True)
     english(payload)
     save(path.with_suffix(".request.json"), scrub(payload))
     started = time.monotonic()
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     headers = {"Content-Type": "application/json"}
-    if url.endswith("/responses"):
-        headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(1800., timeout-2.)))
+    if url.endswith(("/responses", "/systemone")):
+        ceiling = 900. if url.endswith("/systemone") else 1800.
+        headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(ceiling, timeout-2.)))
     request = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers)
     try:
         with opener.open(request, timeout=timeout) as response:

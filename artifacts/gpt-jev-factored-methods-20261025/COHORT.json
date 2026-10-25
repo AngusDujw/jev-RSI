@@ -1,0 +1,57 @@
+{
+  "candidate_commit": "0d15ab18",
+  "predeclared_init_indices": [
+    13,
+    16,
+    17,
+    18,
+    19
+  ],
+  "task_id": 1335,
+  "admitted": [
+    13
+  ],
+  "completed": [
+    {
+      "init_index": 13,
+      "source_sha256": "eb692d1f2cc5c659fb4a3992c461f42ac16cb0a083b5a9a0d73963f99d6fcb68",
+      "source_revisions": 1,
+      "native_success": false,
+      "completion_proposed": false,
+      "termination": "HTTP Error 502: Bad Gateway",
+      "gpt_calls": 8,
+      "jev_calls": 19,
+      "native_steps": 54,
+      "elapsed_s": 1847.3150446389336
+    }
+  ],
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "regression_first": true,
+  "limits": {
+    "gpt": 32,
+    "jev": 200,
+    "policy_steps": 600,
+    "source_repairs": 5,
+    "wall_seconds": 9000
+  },
+  "fixed_file_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "8575ff018f3f89e039a5728fdecd20c0398cbdcf9b5bfa0e4afa44e725ee1ee7",
+    "code/prompts/gpt_jev_program_api_v2.md": "3e2d82dd87330b927792111065facb0d8f03715817b58fce5cf4f2db461a9aac",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "fefcbabce42d8939da21135951d02d0ad59acba1038fe96caf81d11c4d21de55",
+    "code/scripts/run_gpt_jev_program.py": "f24f31eb97e6789d3f5acfaa0863d291ac8dc7765542961190f114180f575a57"
+  },
+  "criterion": "All five native terminal scores true; regression13 must succeed before admitting unused16-19; admitted failures stop unadmitted, running peers retained",
+  "cold_generation": "Independent generation, empty episode memory, no previous task source",
+  "attribution": "Generic builder/lessons and visual-review scope changed together; same limits, no isolated causal or speed claim",
+  "pending": [],
+  "status": "closed_transport_failure",
+  "native_successes": 0,
+  "admitted_count": 1,
+  "termination": "HTTP502 after three upstream TLS EOF failures",
+  "accounting": "One native false retained; four unadmitted are not executed failures; three unknown-usage upstream attempts retained"
+}

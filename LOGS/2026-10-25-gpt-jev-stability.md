@@ -3,9 +3,10 @@
 Current status: both frozen cold candidates failed their all-five criteria:
 a8e6ea72 completed five cases, native4/5;618f559b completed three admitted cases,
 native2/3, with16/17 unadmitted after regression13 failed. All failures, complete methods and
-known costs are retained. Stable cold success is not established. Candidate0d15ab18 now runs only regression13, targeting phase-specific sufficient
-evidence and reference handoff with the same limits. Unused16-19 remain
-unadmitted pending regression success.
+known costs are retained. Stable cold success is not established. Candidate0d15ab18 then stopped on a Jev transport502 before completion,
+native0/1 admitted;16-19 remained unadmitted. Its policy effect is uncompleted.
+A bounded classification-transport revision passed11offline checks and will
+undergo a new independent regression-first native evaluation.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
 frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
@@ -174,7 +175,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete changed-file inventory against9d710e19: 66 tracked files.
+Complete changed-file inventory against9d710e19: 74 tracked files.
 
 | Change | File |
 |---|---|
@@ -227,6 +228,13 @@ Complete changed-file inventory against9d710e19: 66 tracked files.
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init15/README.md) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.json](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.json) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.py](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.py) |
+| A | [artifacts/gpt-jev-factored-methods-20261025/COHORT.json](../artifacts/gpt-jev-factored-methods-20261025/COHORT.json) |
+| A | [artifacts/gpt-jev-factored-methods-20261025/README.md](../artifacts/gpt-jev-factored-methods-20261025/README.md) |
+| A | [artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md) |
+| A | [artifacts/gpt-jev-factored-methods-20261025/init13/PROVENANCE.json](../artifacts/gpt-jev-factored-methods-20261025/init13/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-factored-methods-20261025/init13/README.md](../artifacts/gpt-jev-factored-methods-20261025/init13/README.md) |
+| A | [artifacts/gpt-jev-factored-methods-20261025/init13/method.json](../artifacts/gpt-jev-factored-methods-20261025/init13/method.json) |
+| A | [artifacts/gpt-jev-factored-methods-20261025/init13/method.py](../artifacts/gpt-jev-factored-methods-20261025/init13/method.py) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/METHOD.md](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) |
@@ -234,6 +242,7 @@ Complete changed-file inventory against9d710e19: 66 tracked files.
 | A | [artifacts/gpt-jev-typed-method-20261025/README.md](../artifacts/gpt-jev-typed-method-20261025/README.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/method.json](../artifacts/gpt-jev-typed-method-20261025/method.json) |
 | A | [artifacts/gpt-jev-typed-method-20261025/method.py](../artifacts/gpt-jev-typed-method-20261025/method.py) |
+| M | [baseline/roboicl/reproduction/pro_oauth_bridge.py](../baseline/roboicl/reproduction/pro_oauth_bridge.py) |
 | M | [code/prompts/README.md](../code/prompts/README.md) |
 | M | [code/prompts/gpt_jev_method_lessons_v2.txt](../code/prompts/gpt_jev_method_lessons_v2.txt) |
 | M | [code/prompts/gpt_jev_method_v2.txt](../code/prompts/gpt_jev_method_v2.txt) |
@@ -583,3 +592,39 @@ steps/9000seconds. Each is independent cold generation with empty episode memory
 and no previous task source. An admitted failure stops unadmitted cases, with
 running peers retained. Builder knowledge and review scope changed together,
 so no isolated-component or speed comparison is claimed.
+
+## Factored candidate interrupted by transport (EXP086)
+
+Regression13 terminated native=false/HTTP502 at1847.32seconds, before the
+phase-evidence policy could complete. It delivered a complete dependency-aware
+method, detected a real outer-finger/bowl-wall obstruction before descent, and
+produced one self-repair. The19th logical Jev classification then encountered
+three upstream TLS EOF failures and exhausted its75second retry window.
+No19th physical dispatch occurred. Init16-19were not admitted.
+
+Audit:8GPT/19logical Jev/18successful dispatches/54policy steps,6strict reviews,
+2complete source hashes and126dispatched labels. GPT usage is fully known:
+94276input/56207output. Jev has21upstream attempts:18completed with35653/4482
+tokens, plus3unknown-usage TLS attempts, not zero. The actual termination is
+transport; terminal.result contains the older initial-method incomplete result
+and must not be treated as the later method's terminal diagnostic.
+[Complete interrupted method and rationale](../artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md)
+and all negative accounting remain retained. The all-five end-to-end standard
+was not met; no policy success or efficiency claim follows.
+
+A generic transport revision now allows at most5non-actuating Jev classification
+attempts with15/45/60/60second backoffs. One absolute request budget covers queue,
+connection, chunked JSON reading and retries, with a caller margin and no late
+physical dispatch. Each request ledger records the active bridge source hash;
+all failed upstream usage remains unknown unless actually observed. The official
+endpoint, credential source, pinned models, task logic and payload are unchanged.
+
+11offline checks passed using actual retry/reader code and actual post/Handler
+loopback: three EOFs then recovery, exhaustion, nonretryable401/redaction,
+retry-deadline refusal, slow-chunk deadline, wrong model, oversized response,
+expired-before-send, Jev header propagation, queue timeout with zero upstream,
+and preserved Pro deadline route. Fake upstream/dummy fixtures only, zero real
+models or physics, Native=N/A; exact owned key/config fixtures were removed and
+no temporary test program was written. Receipt:
+code/runs/2026-10-25-gpt-jev-program/jev-transport-offline-20261025/validation.json.
+Actual renewed native evaluation is still required.

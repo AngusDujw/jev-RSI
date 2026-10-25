@@ -214,3 +214,12 @@ The mathematical/execution API and limits are unchanged. Native evaluation is
 predeclared13regression then unused16-19; only13is admitted, with32GPT/5repairs/
 200Jev/600policy steps/9000seconds. Regression failure stops unused admissions.
 This is a new frozen candidate, not a successful result yet.
+
+
+The0d15ab18regression was interrupted by bridge502after three upstream TLS EOFs:
+nativefalse,8GPT/19logical Jev/18dispatches/54steps. Four unused cases were not
+admitted. The full interrupted method and all unknown usage remain retained.
+A transport revision adds at most5identical non-actuating classification
+attempts, an absolute queue/read/retry deadline, and active bridge source hashes.
+11mock-upstream/real-loopback checks passed with no real models or physics.
+Native regression must be rerun; static tests do not establish task reliability.

@@ -20,8 +20,9 @@ import urllib.request
 
 MODEL = "gpt-6-astra"
 ENDPOINT = "https://chatgpt.com/backend-api/codex/responses"
-JEV_RETRY_DELAYS_S = (15, 45)
+JEV_RETRY_DELAYS_S = (15, 45, 60, 60)
 PRO_RETRY_DELAYS_S = (15, 45)
+BRIDGE_IMPLEMENTATION_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 CJK = re.compile(r"[\u3400-\u9fff]")
 
 
@@ -192,7 +193,38 @@ def native_request(payload, auth_file, timeout=900, attempt_records=None, *, dea
             time.sleep(record["retry_delay_s"])
 
 
-def native_jev_request(payload, config_file, attempt_records=None):
+class JevDeadlineError(RuntimeError):
+    pass
+
+
+def jev_remaining_budget(deadline):
+    remaining = deadline-time.monotonic()
+    if remaining <= 0:
+        raise JevDeadlineError("Jev whole-call deadline exceeded")
+    return remaining
+
+
+def jev_json_response(reply, deadline, timeout):
+    """Read a small JSON response without allowing slow chunks to reset its budget."""
+    chunks, size = [], 0
+    while True:
+        remaining = jev_remaining_budget(deadline)
+        raw = getattr(getattr(reply, "fp", None), "raw", None)
+        sock = getattr(raw, "_sock", None)
+        if sock is not None:
+            sock.settimeout(min(timeout, remaining))
+        chunk = reply.read1(65536)
+        jev_remaining_budget(deadline)
+        if not chunk:
+            break
+        size += len(chunk)
+        if size > 2 * 2**20:
+            raise ValueError("Jev JSON response exceeds 2 MiB")
+        chunks.append(chunk)
+    return json.loads(b"".join(chunks))
+
+
+def native_jev_request(payload, config_file, attempt_records=None, *, deadline=None):
     """Relay the unchanged, image-free gate request through the workstation."""
     check_english(payload)
     config_file = Path(config_file)
@@ -209,21 +241,28 @@ def native_jev_request(payload, config_file, attempt_records=None):
     request = urllib.request.Request(config["base_url"].rstrip("/") + "/systemone",
         data=json.dumps(payload).encode(), headers={"Authorization": "Bearer " + key,
         "Content-Type": "application/json"})
-    attempts = config.get("max_attempts", 3)
-    if type(attempts) is not int or not 1 <= attempts <= 3:
-        raise ValueError("Jev transport allows one to three attempts")
+    attempts = config.get("max_attempts", 5)
+    if type(attempts) is not int or not 1 <= attempts <= 5:
+        raise ValueError("Jev transport allows one to five attempts")
     attempt_records = [] if attempt_records is None else attempt_records
     timeout = min(config.get("attempt_timeout_s", 60), 60)
+    deadline = time.monotonic()+900 if deadline is None else deadline
     for attempt in range(1, attempts + 1):
+        remaining = jev_remaining_budget(deadline)
         started = time.monotonic()
         record = {"attempt": attempt}
         try:
-            with urllib.request.urlopen(request, timeout=timeout) as reply:
-                result = json.load(reply)
+            record["request_sent"] = True
+            with urllib.request.urlopen(request, timeout=min(timeout, remaining)) as reply:
+                result = jev_json_response(reply, deadline, timeout)
             record.update(model=result.get("model"), usage=result.get("usage"))
+            jev_remaining_budget(deadline)
             if result.get("model") != config["model"]:
                 raise ValueError("Unexpected model in Jev response")
             return result
+        except JevDeadlineError as error:
+            record.update(error_type=type(error).__name__, error=str(error), usage_unknown=record.get("usage") is None)
+            raise
         except urllib.error.HTTPError as error:
             detail = error.read(2048).decode(errors="replace").replace(key, "[redacted]")
             message = f"Jev HTTP {error.code}: " + str(audit(detail))[:1200]
@@ -240,6 +279,9 @@ def native_jev_request(payload, config_file, attempt_records=None):
             record["elapsed_s"] = time.monotonic() - started
             attempt_records.append(record)
         record["retry_delay_s"] = JEV_RETRY_DELAYS_S[attempt - 1]
+        if record["retry_delay_s"] >= jev_remaining_budget(deadline):
+            record["retry_skipped"] = "Insufficient whole-call deadline budget"
+            raise JevDeadlineError("Jev retry would exceed whole-call deadline")
         time.sleep(record["retry_delay_s"])
 
 
@@ -271,11 +313,21 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError("Invalid request size")
             payload = json.loads(self.rfile.read(count))
             record = {"started": time.time(), "request": audit(payload),
+                      "transport_implementation_sha256": BRIDGE_IMPLEMENTATION_SHA256,
                       "transport_omits": [] if is_jev else ["prompt_cache_options", "prompt_cache_breakpoint"]}
             if is_jev:
                 record["upstream_attempts"] = []
-                with self.server.jev_limit:
-                    result = native_jev_request(payload, self.server.jev_config, record["upstream_attempts"])
+                requested_budget = float(self.headers.get("X-Model-Request-Timeout-Seconds", "900"))
+                if not .1 <= requested_budget <= 900:
+                    raise ValueError("Jev request budget must be 0.1..900 seconds")
+                deadline = started+requested_budget
+                record["request_budget_s"] = requested_budget
+                if not self.server.jev_limit.acquire(timeout=jev_remaining_budget(deadline)):
+                    raise JevDeadlineError("Jev deadline while waiting for relay slot")
+                try:
+                    result = native_jev_request(payload, self.server.jev_config, record["upstream_attempts"], deadline=deadline)
+                finally:
+                    self.server.jev_limit.release()
             else:
                 record["upstream_attempts"] = []
                 requested_budget = float(self.headers.get("X-Model-Request-Timeout-Seconds", "900"))
@@ -298,7 +350,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.reply(200, result)
         except Exception as error:
             record.update(error_type=type(error).__name__, error=str(error)[:600], elapsed_s=time.monotonic()-started)
-            self.reply(504 if isinstance(error, ProDeadlineError) else 502, {"error": {"message": record["error"],
+            self.reply(504 if isinstance(error, (ProDeadlineError, JevDeadlineError)) else 502, {"error": {"message": record["error"],
                 "type": "jev_transport_error" if is_jev else "pro_transport_error"}})
         finally:
             with self.server.audit_lock:
