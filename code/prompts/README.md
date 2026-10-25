@@ -1,14 +1,17 @@
 # GPT/Jev complete-method framework
 
-Current evidence: after generic identity/correspondence guidance, an archive-
-assisted GPT full rewrite completed hard13with native success
-(17GPT/88real Jev/264steps), no same-scene source repair, and4actual unindexed
-envelope observations. [Complete unedited method and Jev protocol](../../artifacts/gpt-jev-correspondence-method-20261025/METHOD.md)
-are preserved; exact-source zero-repair native3/3passed(13,16,17). Fixed18/19are running. Init16native=true but completion_proposed=false from final visual uncertainty; both statuses remain unchanged. The cohort is incomplete; one Jev retry has unknown usage.
-Previous5e and a18sources succeeded during acquisition but failed fresh exact
-replay. Earlier5/5frozen evidence remains limited to those initial states.
-Failures and costs remain separate in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
-Stable reuse, independent fresh synthesis and net efficiency remain unestablished.
+Current evidence: the exact complete GPT method23567dfb passed native LIBERO
+5/5on fixed13,16,17,18,19with zero source repairs and actual Jev.13is a fresh
+development-state regression;16-19were unused at freeze. Program proposals4/5:
+16native success with conservative incomplete final visual confirmation, retained
+separately. [Full method and Jev protocol](../../artifacts/gpt-jev-correspondence-method-20261025/METHOD.md),
+[frozen hashes and scope](../../artifacts/gpt-jev-correspondence-method-20261025/FREEZE.json),
+and [case results/costs](../../artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.md)
+are saved.79runtime GPT visual reviews/430real Jev dispatches/1290steps audited;
+one failed Jev retry has unknown usage. The earlier failed5e/a18replays remain
+separate. This supports bounded same-task reuse. Cross-task fresh-generation
+reliability, a universal success rate and controlled net efficiency are not
+established. Acquisition/repair and unknown costs are not free.
 
 ## Active program interface v2
 
@@ -65,7 +68,15 @@ axis question to its state selector. The manual declares magnitude/deadband rule
 Native LIBERO evaluation is terminal and isolated from the generated method.
 Executable source, reached poses, a tracked patch and a completion proposal are
 separate from task success. Development failures, source revisions and acquisition
-costs remain part of the evidence. One repeatedly observed development scene
+costs remain part of the evidence.
+
+### Historical development snapshots
+
+These are retained checkpoints. Pending/continuing statements describe their
+then-current state; final results and the frozen candidate are summarized at the
+top. No experiment remains running after the final cohort.
+
+One repeatedly observed development scene
 reached native success after three same-scene GPT repairs. The first frozen
 new-init probe failed during transfer tracking. A spatial feature-budget fix then
 completed the same init and one frozen unused init with the unchanged method and
@@ -135,6 +146,8 @@ true after3automatic repairs,26GPT/107Jev/321steps. Regression13 then failed bef
 The candidate closed with native2/3 admitted;16/17 were not admitted. Its all-five
 criterion is falsified. Its [complete initial method](../../artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md) is preserved verbatim. These changes and the larger budget are
 evaluated together, without claiming isolated causality or improved speed.
+
+### Runtime loop
 
 ```mermaid
 flowchart LR
@@ -214,6 +227,9 @@ References: [OpenAI prompt engineering](https://developers.openai.com/api/docs/g
 [Jev 1.13 limitations](https://docs.typesafe.ai/model-jaggedness/jev-1.13).
 
 ## First development test, 2026-10-24
+
+This section retains historical snapshots; pending notices below are superseded
+by the final current-evidence summary at the top.
 
 The fixed prompt and interpreter ran on company-server-2-ykj using LIBERO-Plus.
 GPT generated all stages and anchors from runtime observations. The final episode

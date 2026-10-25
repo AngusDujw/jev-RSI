@@ -1,12 +1,16 @@
 # GPT/Jev stability continuation
 
-Current status: exact23567dfb full GPT method is native3/3on frozen
-fresh episodes13,16,17, with zero source repairs on the same302host. Program
-completion proposals are2/3:16stopped at final visual confirmation but native
-true. Both statuses are retained under the predeclared native LIBERO criterion.
-Fixed18,19are running. No knowledge/source/controller/account changes during
-validation. One failed Jev retry in13has unknown usage. Full5case cohort,
-cross-task reliability and controlled efficiency remain unestablished.
+Current status: frozen exact23567dfb complete GPT method passed native5/5
+on fixed13,16,17,18,19, with zero source repairs on the same302host and fixed
+knowledge.13is a fresh development-state regression;16-19were unused at freeze.
+Program proposals4/5:16native true but final visual confirmation incomplete,
+both statuses unchanged.79strict GPT reviews/430real Jev dispatches/1290steps
+audited, one failed Jev retry has unknown usage. Full method, explanation,
+interface, Jev I/O, case evidence and frozen hashes are preserved in
+artifacts/gpt-jev-correspondence-method-20261025/. Own bridge/tunnel/workers
+are stopped, ports closed, external GPU4workload untouched. This is bounded
+same-task regression success, not cross-task or universal reliability, or proven
+controlled token/latency speedup. Earlier5e/a18failures remain separate.
 
 Previous status retained: archive-assisted GPT rewrite/one repair reached native success
 on hard13(21GPT/84Jev/252steps), but exact final5e source fresh13zero-repair reuse
@@ -184,7 +188,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Files changed since9d710e19: 129. Generated from tracked staged changes; user-owned untracked directories excluded.
+Files changed since9d710e19: 133. Generated from tracked staged changes; user-owned untracked directories excluded.
 
 | Status | File |
 |---|---|
@@ -245,15 +249,19 @@ Files changed since9d710e19: 129. Generated from tracked staged changes; user-ow
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init15/README.md) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.json](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.json) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.py](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.py) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/FREEZE.json](../artifacts/gpt-jev-correspondence-method-20261025/FREEZE.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/METHOD.md](../artifacts/gpt-jev-correspondence-method-20261025/METHOD.md) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-correspondence-method-20261025/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/README.md](../artifacts/gpt-jev-correspondence-method-20261025/README.md) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.json](../artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.md](../artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.md) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/method.json](../artifacts/gpt-jev-correspondence-method-20261025/method.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/method.py](../artifacts/gpt-jev-correspondence-method-20261025/method.py) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init13.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init13.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init16.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init16.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init17.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init17.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init18.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init18.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init19.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init19.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/COHORT.json](../artifacts/gpt-jev-factored-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/README.md](../artifacts/gpt-jev-factored-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md) |
@@ -1092,3 +1100,30 @@ Under the original native criterion,18and19were admitted and launched with
 same exact source/host/limits, zero repairs. No replacement states. CIRCLE29
 rounds/35unresolved plus CIRCLE3: finish the fixed cohort, preserve dual outcome
 and costs, no new method edits or synthesis branches during validation.
+
+## Fixed cohort complete and frozen (EXP104)
+
+Final18native/proposal true:16GPT/89Jev/267steps/2189.575966sec.
+Final19native/proposal true:16GPT/85Jev/255steps/1980.112532sec.
+Exact235source native5/5and proposal4/5on13,16,17,18,19, zero source repairs.
+All79strict reviews,430dispatches, raw returned choices, bounded actions,
+acknowledged steps and source-reuse origins audited. Known GPT947708input/
+220609output; known Jev1241854/107070, plus1unknown failed retry. Acquisition
+and all older failed/parent methods remain additional separate costs.13is a
+fresh development-state regression;16-19were unused at source freeze.
+
+FREEZE.jsonpins source/package hashes, actual host commit, fixed knowledge,
+runtime/API hashes, account/model sources, limits and scope. VALIDATION.md/json
+retain each native/proposal outcome and all audit/cost receipts. No code or
+knowledge changed during this cohort, no replacement cases, no extra native
+evaluation action or hidden score in policy. Source repair or a new task starts
+a separate candidate, not another entry pooled into5/5.
+
+Own bridge1904385and reverse tunnel589897terminated after all native runs and
+audits. Local/remote7921closed, no robot host/worker left. GPU4has external
+supermimic process1056780; read-only check shows no match to this experiment,
+and it was not modified. No environment/driver changes or temporary test scripts.
+CIRCLE30rounds/36unresolved plus CIRCLE3is retained in the formal research topic;
+this bounded candidate is empirically closed by the predeclared five-case
+regression. Formal Discussion is not automatically closed and no theory/goal
+is changed. Net efficiency and cross-task generation reliability remain open.

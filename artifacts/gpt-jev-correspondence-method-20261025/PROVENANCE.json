@@ -1490,6 +1490,13 @@
     "reused_method_sha256": "a18c0e26e16f4f92d1d5e96657e9ca751a1c7332ec25c121bf4bdb9dbc06044a"
   },
   "unindexed_envelope_witnesses": 4,
-  "validation_scope": "Native3/3exact source zero repair(13,16,17);18,19running. Init16proposal false verification gap retained; native true, not relabeled as program completion.",
-  "prior_costs": "All prior failed reuse/acquisition and broader research costs remain separate"
+  "validation_scope": "One task, one fresh development-state replay plus four unused initial states, fixed seed0 and bounded budgets. Not a cross-task or statistical universal reliability guarantee.",
+  "prior_costs": "All prior failed reuse/acquisition and broader research costs remain separate",
+  "final_validation": {
+    "native": "5/5",
+    "proposal": "4/5",
+    "source_repairs": 0,
+    "validation": "VALIDATION.json",
+    "freeze": "FREEZE.json"
+  }
 }

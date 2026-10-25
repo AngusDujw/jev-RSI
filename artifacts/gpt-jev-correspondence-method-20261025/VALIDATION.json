@@ -1,12 +1,13 @@
 {
-  "status": "native3of3; fixed18,19running",
+  "status": "frozen scoped native regression passed",
   "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
-  "completed": [
-    13,
-    16,
-    17
+  "native_successes": 5,
+  "native_trials": 5,
+  "completion_proposals": 4,
+  "proposal_false_inits": [
+    16
   ],
-  "admitted": [
+  "completed": [
     13,
     16,
     17,
@@ -14,15 +15,101 @@
     19
   ],
   "unadmitted": [],
-  "claim": "Native LIBERO is authoritative; cohort incomplete; method status and evaluator score remain separate",
-  "manifest": "code/runs/2026-10-25-gpt-jev-program/correspondence-frozen-cohort-manifest.json",
-  "native_successes": 3,
-  "native_trials": 3,
-  "proposal_true_inits": [
-    13,
-    17
+  "source_repairs": 0,
+  "cases": [
+    {
+      "init_index": 13,
+      "scope": "fresh regression",
+      "native_success": true,
+      "completion_proposed": true,
+      "termination": "completion_proposed",
+      "gpt_calls": 16,
+      "jev_calls": 87,
+      "native_steps": 261,
+      "elapsed_s": 2426.1532307160087,
+      "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+      "repairs": 0,
+      "artifact": "validation/init13.json"
+    },
+    {
+      "init_index": 16,
+      "scope": "unused at source freeze",
+      "native_success": true,
+      "completion_proposed": false,
+      "termination": "method_incomplete",
+      "gpt_calls": 15,
+      "jev_calls": 82,
+      "native_steps": 246,
+      "elapsed_s": 2235.244958950905,
+      "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+      "repairs": 0,
+      "artifact": "validation/init16.json"
+    },
+    {
+      "init_index": 17,
+      "scope": "unused at source freeze",
+      "native_success": true,
+      "completion_proposed": true,
+      "termination": "completion_proposed",
+      "gpt_calls": 16,
+      "jev_calls": 87,
+      "native_steps": 261,
+      "elapsed_s": 2218.8468977611046,
+      "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+      "repairs": 0,
+      "artifact": "validation/init17.json"
+    },
+    {
+      "init_index": 18,
+      "scope": "unused at source freeze",
+      "native_success": true,
+      "completion_proposed": true,
+      "termination": "completion_proposed",
+      "gpt_calls": 16,
+      "jev_calls": 89,
+      "native_steps": 267,
+      "elapsed_s": 2189.575966153061,
+      "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+      "repairs": 0,
+      "artifact": "validation/init18.json"
+    },
+    {
+      "init_index": 19,
+      "scope": "unused at source freeze",
+      "native_success": true,
+      "completion_proposed": true,
+      "termination": "completion_proposed",
+      "gpt_calls": 16,
+      "jev_calls": 85,
+      "native_steps": 255,
+      "elapsed_s": 1980.1125317430124,
+      "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+      "repairs": 0,
+      "artifact": "validation/init19.json"
+    }
   ],
-  "proposal_false_inits": [
-    16
-  ]
+  "totals": {
+    "gpt_calls": 79,
+    "jev_calls": 430,
+    "native_steps": 1290,
+    "elapsed_s": 11049.933585324092,
+    "strict_reviews": 79
+  },
+  "cost": {
+    "gpt": {
+      "attempts": 79,
+      "unknown_usage": 0,
+      "completed_input": 947708,
+      "completed_output": 220609
+    },
+    "jev": {
+      "attempts": 431,
+      "unknown_usage": 1,
+      "completed_input": 1241854,
+      "completed_output": 107070
+    }
+  },
+  "criterion": "Isolated terminal native LIBERO score, never policy input; program proposal is separate",
+  "scope": "One task, one fresh development-state replay plus four unused initial states, fixed seed0 and bounded budgets. Not a cross-task or statistical universal reliability guarantee.",
+  "cost_scope": "Known token totals exclude one unknown-usage failed Jev retry; not total research costs. No controlled speedup comparison."
 }

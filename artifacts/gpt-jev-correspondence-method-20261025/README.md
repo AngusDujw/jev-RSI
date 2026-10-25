@@ -1,14 +1,14 @@
-# Correspondence candidate
+# Frozen complete GPT method with Jev
 
-Native-positive archive-assisted acquisition:17GPT/88real Jev/264steps/2871.000sec, one full rewrite and no same-scene source repair.4actual unindexed envelope witnesses. Exact-source zero-repair native3/3(13,16,17); fixed18,19are running.
-Init16native=true but completion_proposed=false because final visual evidence
-was inconclusive. Both results remain unchanged. Native LIBERO is the predeclared
-success criterion. The cross-initial cohort is incomplete. One failed Jev retry
-in13has unknown usage and remains additional cost.
+Native LIBERO5/5across fixed initial states13,16,17,18,19, same exact source and zero source repairs.13is a fresh regression after development;16-19were unused when the source was frozen. Program completion proposals4/5:16returned incomplete at final visual confirmation despite native success. Both statuses are preserved.
 
-- [Complete package](method.json) and [exact source](method.py).
-- [Explanation, interface and Jev protocol](METHOD.md).
-- [Original result, provenance and audit](PROVENANCE.json).
-- [Frozen validation](VALIDATION.json).
+- [Complete four-string method package](method.json) and [exact executable source](method.py).
+- [Full explanation, interface and Jev input/output protocol](METHOD.md).
+- [Frozen hashes, host, models, limits and reuse scope](FREEZE.json).
+- [Readable case results and costs](VALIDATION.md); [full audit records](VALIDATION.json).
+- [Archive-assisted acquisition provenance](PROVENANCE.json).
+- [Generic framework and execution guide](../../code/prompts/README.md).
 
-Pro gpt-6-astra/xhigh and official real jev-1.13.0; no account/controller change or task-source hand edit. Earlier a18 acquisition and failed0/1reuse are retained separately.
+This supports bounded same-task reuse, not cross-task generality or universal reliability. All430physical dispatches use actual official Jev responses.79GPTcalls are runtime visual reviews, not new method generation. One failed Jev retry has unknown usage and remains additional cost. Acquisition and earlier failed candidates are separate, not free. No controlled speedup is established.
+
+The source, fixed knowledge and runtime hashes define the frozen candidate. Reuse acquires fresh public observations with empty episode memory through the existing host; it does not replay old pixels, positions or actions. Changed source or knowledge starts a new candidate. The orchestration skill is outer-agent guidance and is not automatically loaded into Pro.
