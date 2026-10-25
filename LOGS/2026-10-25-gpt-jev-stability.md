@@ -180,6 +180,8 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
+Complete tracked-file inventory against9d710e19: 96 files.
+
 | Status | File |
 |---|---|
 | A | [.agents/skills/gpt-jev-method/SKILL.md](../.agents/skills/gpt-jev-method/SKILL.md) |
@@ -251,6 +253,8 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 | A | [artifacts/gpt-jev-feedback-methods-20261025/init13/README.md](../artifacts/gpt-jev-feedback-methods-20261025/init13/README.md) |
 | A | [artifacts/gpt-jev-feedback-methods-20261025/init13/method.json](../artifacts/gpt-jev-feedback-methods-20261025/init13/method.json) |
 | A | [artifacts/gpt-jev-feedback-methods-20261025/init13/method.py](../artifacts/gpt-jev-feedback-methods-20261025/init13/method.py) |
+| A | [artifacts/gpt-jev-portable-regression-20261025/PROVENANCE.json](../artifacts/gpt-jev-portable-regression-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-portable-regression-20261025/README.md](../artifacts/gpt-jev-portable-regression-20261025/README.md) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/COHORT.json](../artifacts/gpt-jev-resilient-methods-20261025/COHORT.json) |
@@ -795,3 +799,24 @@ cooperation protocol remain in
 [the archive-assisted failure package](../artifacts/gpt-jev-archive-assisted-method-20261025/README.md).
 Historical32GPT acquisition is separate, not omitted. Two exact-source reuse
 candidates now run independently; no pooled rate or task-source edits.
+
+## Exact afb portability regression closed (EXP091)
+
+Native=false/method_incomplete,2GPT/28real Jev/84steps/353.69seconds,zero repairs.
+The unchanged method stopped when a current visual review could not establish
+near-side finger access; it did not report confirmed contact. All196labels,
+source hash and costs audited: GPT13057input/7534output,Jev59510/6972,zero
+unknown attempts. Two legal legacy JSON reviews are explicitly not strict
+schema-validation successes. Original acquisition and earlier c6695/5remain
+separate. See [failure provenance](../artifacts/gpt-jev-portable-regression-20261025/README.md).
+No unused16-19were admitted.
+
+New frozen daf12dfc changes only generic lessons about inconclusive conservative
+proxy gates, bounded parameter search/relevant uncertainty reduction/independently
+checked simulator trials, and correlated errors. No task names, coordinates,
+commands or trajectories; English ASCII/task sentinel checks passed. It runs a
+new independent cold13in its own worktree with unchanged32GPT/5repairs/200Jev/
+600steps/9000seconds, same bridge/account;0c4c frozen reuse remains on2d separately.
+Manifest trial-cohort-manifest.json declares13before16-19and stop-on-failure.
+CIRCLE1is21rounds/25unresolved plus CIRCLE3; these frozen candidate admission
+rules remain the convergence plan, not a new research goal or formal-method change.

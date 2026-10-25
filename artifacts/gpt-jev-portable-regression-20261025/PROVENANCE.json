@@ -1,0 +1,170 @@
+{
+  "condition": "Exact frozen afb source, zero repair; separate from prior5/5 and independent cold",
+  "framework_commit": "2d710418",
+  "source_file": "artifacts/gpt-jev-program-20261024/method.json",
+  "source_sha256": "afb42affc7d0f85d0fa1ff44b286ecd33783650a0688540099e0d6cd9e0857b8",
+  "task_id": 1335,
+  "init_index": 13,
+  "summary": {
+    "termination": "method_incomplete",
+    "native_success": false,
+    "result": {
+      "completion_proposed": false,
+      "evidence": [
+        {
+          "review_frame": 0,
+          "observation": "The source is the cream cheese carton; the destination is the empty patterned bowl, not the plate. Both are upright on the tabletop. The wrist view provides the largest unobstructed printed carton face. Rim points target the thin upper ceramic lip, while bowl_boundary separately samples its inner opening edge; do not use inner-wall or floor depths as lip heights. The open hand is not holding or trapping the carton. No external obstruction is visible for the elevated approach, local vertical appr"
+        },
+        {
+          "lip_depth_heights_m": [
+            0.9498650232673835,
+            0.9495023184442777,
+            0.9490500162929341,
+            0.8999691052818228,
+            0.9503306872988381
+          ],
+          "accepted_lip_indices": [
+            0,
+            1,
+            2,
+            4
+          ],
+          "lip_plane_rms_m": 0.0005,
+          "opening_radii_m": [
+            0.05356257033736526,
+            0.05369030174999562,
+            0.05386967452533215,
+            0.053666204171593124,
+            0.053558677424502425,
+            0.05390908105512826,
+            0.05356187944004906,
+            0.0538774358303424
+          ],
+          "circle_rms_m": 0.00014230798424842177,
+          "largest_angular_gap_rad": 0.8003102608964485,
+          "boundary_measurement_uncertainty_m": 0.001,
+          "lip_parallel_to_measured_support_model": true
+        },
+        {
+          "face_edge_lengths_m": [
+            0.042290377008116116,
+            0.08025791244200058,
+            0.041522854073228845,
+            0.0805052842967876
+          ],
+          "grasp_width_m": 0.042278412508663626,
+          "estimated_open_gap_m": 0.0624451268930577,
+          "margin_m": 0.004924947391710343
+        },
+        {
+          "tracker_initialized": {
+            "selection_frame": 0,
+            "camera": "robot0_eye_in_hand",
+            "polygon_bounds_px": [
+              [
+                195.0,
+                158.0
+              ],
+              [
+                250.0,
+                271.0
+              ]
+            ]
+          },
+          "reference_features": 99
+        },
+        {
+          "phase": "elevated_approach",
+          "status": "reached",
+          "position_error_m": 0.001410748213897399,
+          "rotation_error_rad": 0.009067276574282971
+        },
+        {
+          "phase": "carton_hover",
+          "status": "reached",
+          "position_error_m": 0.002277006561136556,
+          "rotation_error_rad": 0.002767706034156979
+        },
+        {
+          "review_frame": 84,
+          "observation": "The same printed broad face remains upward, with the carton supported on the tabletop. Use current agentview for the full face; the hand hides its lower end in the wrist view. Corners are ordered clockwise from upper left. Actual-finger descent clearance is unresolved on the bowl side: the finger overlaps the nearby bowl rim in projection and hides the closest clearance. descent_clear=false means that local clearance is not established, not that contact is confirmed."
+        },
+        {
+          "failure": "Local finger access unresolved",
+          "values": null
+        },
+        {
+          "stopped_phase": "carton_hover",
+          "holding_claim": "none",
+          "error": "Local finger access unresolved",
+          "recovery_policy": "Physical state persists. No further motion or automatic reopening."
+        }
+      ]
+    },
+    "native_steps": 84,
+    "settling_steps": 10,
+    "jev_calls": 28,
+    "gpt_calls": 2,
+    "rpc_calls": 49,
+    "elapsed_s": 353.6946904079523,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "afb42affc7d0f85d0fa1ff44b286ecd33783650a0688540099e0d6cd9e0857b8"
+      }
+    ],
+    "last_method_error": null
+  },
+  "audit": {
+    "native_success": false,
+    "termination": "method_incomplete",
+    "gpt_calls": 2,
+    "jev_calls": 28,
+    "native_steps": 84,
+    "elapsed_s": 353.6946904079523,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "afb42affc7d0f85d0fa1ff44b286ecd33783650a0688540099e0d6cd9e0857b8"
+      }
+    ],
+    "completion_proposed": false,
+    "audit": "Original Jev choices, semantic labels, finite bounds, carried gripper, steps and all source hashes passed",
+    "dispatches": 28,
+    "models": {
+      "gpt": {
+        "attempts": 2,
+        "unknown_usage": 0,
+        "completed_input": 13057,
+        "completed_output": 7534,
+        "relay_seconds": 297.5949185239733,
+        "matched_requests": 2
+      },
+      "jev": {
+        "attempts": 28,
+        "unknown_usage": 0,
+        "completed_input": 59510,
+        "completed_output": 6972,
+        "relay_seconds": 27.58652327687014,
+        "matched_requests": 28
+      }
+    },
+    "strict_reviews_validated": 0,
+    "legacy_reviews_json_decoded": 2,
+    "gpt_cost_by_purpose": {
+      "submit_review": {
+        "calls": 2,
+        "input": 13057,
+        "output": 7534
+      }
+    }
+  },
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "prior_scope": "Earlier initial states4-8native5/5 on c669host remain separate; no broader reliability guarantee",
+  "acquisition": "Original synthesis and repairs retained in canonical artifact provenance; not free"
+}
