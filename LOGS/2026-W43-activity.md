@@ -572,3 +572,5 @@
 - 【Agent】【2026-10-25 19:15】[op] 最终EXP104与FREEZE/VALIDATION表保存：固定235五初态native5/5零修复、自报4/5，全部来源审计和1未知Jev重试保留。自有bridge/tunnel已停、双端端口关闭、机器人worker无残留，外部GPU4supermimic进程未动；CIRCLE30轮按限定五例收敛，不改正式研究目标。
 - 【Agent】【2026-10-25 19:17】[op] 最终完整包/英文契约/源语法/冻结源码与知识哈希/五例记录一致性验证通过，无新模型或物理调用；周志strict无error/warning。标明README旧pending为历史快照，准备SSH推送最终冻结文档和全文件清单。
 - 【User】【2026-10-25 19:30】[intent] 用户询问当前GPT具体处理、完整方法输出形式以及与Jev的实际配合协议；本轮只解释冻结实现，不启动新实验或改内部模型指令。
+- 【User】【2026-10-25 19:51】[prompt] 把JEV 实验输出和GPT-ICL 实验记录的图像都删除一下
+- 【Agent】【2026-10-25 20:01】[op] 按用户授权清理 JEV code/runs 和 GPT-ICL runs 中的独立图像、NumPy 深度/掩码、NPZ 深度数组和日志/压缩包内嵌图像；共释放约72.537 GiB（JEV39.637、GPT-ICL32.900），保留文本、动作、指标、相机矩阵、机器人状态和视频。35989个删除项已核验，847个改写文件哈希及71568条JSON记录验证通过，无错误。完整清单位于 /home/ykj/project/gpt6/cleanup-reports/20261025-195236-jev-gpticl-images。会话01a17251-e776-7590-b27a-7f1001f4da37，第二次空间清理。
