@@ -11,8 +11,10 @@ archive-assisted rewrite failed before release (28GPT/98Jev/294steps). The afb
 exact-source reuse regression13 has now failed on unresolved finger access;
 its earlier scoped5/5 is not a broader portability guarantee. The second exact
 initial-output source0c4c also failed13before grasp (4GPT/29Jev/87steps).
-New daf12dfc runs cold13and separate archive-assisted0c4c revision13with bounded
-alternative-configurations knowledge, with unchanged limits/accounts/bridge. Unused16-19remain unadmitted.
+New daf12dfc cold13failed before source delivery on a Pro incomplete stream
+and total deadline. Its separate archive-assisted0c4c revision13continues.
+Frozen85527c5b staged cold13now tests saved design then complete code; no
+archive input, total32GPT/5repairs/200Jev/600steps/9000s,900s planning stages. Unused16-19remain unadmitted.
 Stable cold or hard-regression portability is still unestablished.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
@@ -885,3 +887,18 @@ authorized accounts/bridge; only regression13before fixed16-19admissions.
 Current daf archive-assisted source remains untouched in its own world.
 CIRCLE1remains22rounds,27unresolved plus CIRCLE3; split generation and fixed
 regression admissions are the convergence plan.
+
+## Staged candidate admitted; user clarification answered
+
+85527c5b staged-cold-init13has been admitted in its own frozen worktree.
+Total32GPT includes design and materialization;5repairs/200Jev/600steps/9000s,
+planning stages900s, visual reviews1800s, same ProAstra/xhigh and real Jev bridge.
+Manifest staged-cohort-manifest.json declares13before16-19with stop-on-failure.
+Current daf archive-assisted remains unchanged. At latest status it had12GPT,
+48Jev,144steps and1same-scene repair; a single physical mark co-moved20.3mm
+with the hand, while full-envelope recovery for transport remained pending.
+This does not prove full pose, retention under arbitrary motion or native success.
+The user asked what generate/repair/validate/freeze means and current results;
+we explained fresh runtime sensing and retained GPT review calls, scoped old5/5
+and hard-layout failures, current incomplete execution and unproven full savings.
+The question is not a selection of an evaluation unit or a request to stop.
