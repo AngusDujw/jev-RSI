@@ -13,6 +13,13 @@ for example, use Exception rather than an undeclared exception class.
 The complete source limit is 120000 ASCII characters; all helpers must resolve.
 Return completion_proposed as a boolean and evidence as a JSON-compatible object
 or list. A list of diagnostic log entries is supported by the repair interface.
+On repair, previous_method.incomplete_result.program_result contains the actual
+program-returned outcome with its own field names preserved. It is program
+evidence, not native evaluator feedback. A top-level evidence log longer than
+12 entries retains its latest 12 with explicit evidence_excerpt counts. Other
+feedback lists are bounded to 40 entries and strings to 6000 characters; dense
+world point clouds are summarized. Full original outcomes remain in raw records.
+Treat excerpts and historical measurements according to their scope and provenance.
 All API arguments/results are JSON-compatible: use ndarray.tolist() at boundaries.
 print(...) and api.note(text) write bounded trace notes through host RPC.
 Structured data numbers sent to GPT/Jev use six significant digits; tool schema

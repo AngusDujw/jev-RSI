@@ -149,20 +149,17 @@ def compact_feedback(value):
 
 
 def repair_result_context(result):
-    """Generated methods may return structured evidence as an object or a log."""
+    """Keep caller-defined outcome fields instead of assuming an evidence schema."""
     if not isinstance(result, dict):
-        return dict(result=compact_feedback(result))
-    evidence = result.get("evidence")
-    if isinstance(evidence, dict):
-        selected = {k: evidence.get(k) for k in ("limitations", "terminal_phase", "counts", "holding_evidence_state", "geometry", "terminal_robot", "final_assessment")}
-    elif isinstance(evidence, list):
-        selected = dict(evidence_log=evidence[-12:])
-    else:
-        selected = dict(evidence=evidence)
-    for key in ("limitations", "error", "phase"):
-        if key in result:
-            selected[key] = result[key]
-    return compact_feedback(selected)
+        return dict(program_result=compact_feedback(result))
+    returned = dict(result)
+    context = dict(program_result=returned)
+    evidence = returned.get("evidence")
+    if isinstance(evidence, list) and len(evidence) > 12:
+        returned["evidence"] = evidence[-12:]
+        context["evidence_excerpt"] = dict(original_entries=len(evidence),
+            omitted_earlier_entries=len(evidence)-12, retained_entries=12)
+    return compact_feedback(context)
 
 
 class ProgramMemory:
