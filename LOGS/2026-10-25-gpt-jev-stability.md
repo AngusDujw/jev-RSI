@@ -1,11 +1,11 @@
 # GPT/Jev stability continuation
 
-Current status: a18 acquired native success(17GPT/89Jev/267steps), but exact
-fresh13zero-repair validation failed(10GPT/51Jev/153steps).0/1closed;16-19
-unadmitted. Recovery ran, but same-body identity was coupled to unique physical
-corner indices; view benefit was unsupported. Stable reuse and net efficiency
-remain unestablished. Next generic knowledge separates identity/correspondence,
-supported symmetry hypotheses and future observation dependencies.
+Current status:23567dfb archive-assisted GPT full rewrite acquired native
+success(17GPT/88Jev/264steps/2871.000sec), with4actual unindexed-envelope
+witnesses and no same-scene source repair. Exact-source fresh13zero-repair
+validation is running on the same302host;16-19unadmitted. Stable reuse and
+net efficiency remain unestablished. Prior a18positive acquisition and0/1failed
+exact replay remain separately retained.
 
 Previous status retained: archive-assisted GPT rewrite/one repair reached native success
 on hard13(21GPT/84Jev/252steps), but exact final5e source fresh13zero-repair reuse
@@ -183,7 +183,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Files changed since9d710e19: 120. Generated from tracked staged changes; user-owned untracked directories excluded.
+Files changed since9d710e19: 126. Generated from tracked staged changes; user-owned untracked directories excluded.
 
 | Status | File |
 |---|---|
@@ -244,6 +244,12 @@ Files changed since9d710e19: 120. Generated from tracked staged changes; user-ow
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init15/README.md) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.json](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.json) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.py](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.py) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/METHOD.md](../artifacts/gpt-jev-correspondence-method-20261025/METHOD.md) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-correspondence-method-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/README.md](../artifacts/gpt-jev-correspondence-method-20261025/README.md) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.json](../artifacts/gpt-jev-correspondence-method-20261025/VALIDATION.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/method.json](../artifacts/gpt-jev-correspondence-method-20261025/method.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/method.py](../artifacts/gpt-jev-correspondence-method-20261025/method.py) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/COHORT.json](../artifacts/gpt-jev-factored-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/README.md](../artifacts/gpt-jev-factored-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md) |
@@ -1033,3 +1039,20 @@ controller or account changes. Prepared correspondence-method-input contains
 unedited a18 source, failed public result and last8publicRPCs, no privilegedstate.
 CIRCLE26rounds/32unresolved: fixed settings, revised full method then exact-source
 regression before any new admission is the convergence action.
+
+## Identity/correspondence-guided acquisition (EXP101)
+
+The complete503line GPT235source separates body identity from old vertex
+correspondence and implements current exterior-face/upper-edge geometry with
+supported dimensional alternatives.4unindexed-envelope witnesses actually ran.
+Native/proposal true:17GPT/88real Jev/264steps/2871.000015seconds;0same-scene
+patches.16strict reviews, source model origin,88dispatches and actual relay
+responses audited. All usage known: GPT235467input/57716output,
+Jev254100/21912. Final9step visible mark drift0.241017mm is measurement only.
+
+Full unedited method/interface/Jev protocol preserved at
+artifacts/gpt-jev-correspondence-method-20261025/. Exact-source fresh13zero
+repair is running:24GPT/200Jev/600steps/7200sec; unused16-19admit only after
+native success, and stop new admission on failure. This acquisition is archive
+assisted, not independent cold generation or proven efficiency. CIRCLE27rounds/
+33unresolved plus CIRCLE3; fixed source validation is the convergence action.

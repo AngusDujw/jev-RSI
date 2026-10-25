@@ -1,13 +1,14 @@
 # GPT/Jev complete-method framework
 
-Current evidence: after generic recovery guidance, a GPT archive-assisted full
-rewrite completed hard13with native success (17GPT/89real Jev/267steps), without
-same-scene source repair. [The exact full method and Jev protocol](../../artifacts/gpt-jev-recovery-method-20261025/METHOD.md)
-are preserved; its exact-source fresh13validation failed0/1 before transfer: body identity was coupled to unresolved corner indices and view recovery was unsupported.16-19were not admitted. The previous
-5e method succeeded during acquisition but failed exact fresh replay. Earlier
-frozen-source5/5 was specific to those initial states, and later failures remain
-separate in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
-Reliable independent fresh synthesis and net efficiency remain unestablished.
+Current evidence: after generic identity/correspondence guidance, an archive-
+assisted GPT full rewrite completed hard13with native success
+(17GPT/88real Jev/264steps), no same-scene source repair, and4actual unindexed
+envelope observations. [Complete unedited method and Jev protocol](../../artifacts/gpt-jev-correspondence-method-20261025/METHOD.md)
+are preserved; exact-source fresh13zero-repair validation is pending.
+Previous5e and a18sources succeeded during acquisition but failed fresh exact
+replay. Earlier5/5frozen evidence remains limited to those initial states.
+Failures and costs remain separate in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
+Stable reuse, independent fresh synthesis and net efficiency remain unestablished.
 
 ## Active program interface v2
 

@@ -1,0 +1,16 @@
+{
+  "status": "pending exact-source fresh13zero-repair regression",
+  "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+  "completed": [],
+  "admitted": [
+    13
+  ],
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "claim": "No stable reuse claim",
+  "manifest": "code/runs/2026-10-25-gpt-jev-program/correspondence-frozen-cohort-manifest.json"
+}
