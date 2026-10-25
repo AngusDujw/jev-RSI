@@ -534,3 +534,12 @@
 
 
 【Agent @Codex】【2026-10-25】[EXP088](LOGS/2026-W43.md#exp-2026w43-088)旧504冻结回归nativefalse/gpt_budget，32GPT/91Jev/273步/5661.02秒，4自动修复、27strict/5源哈希/637标签及费用全部审计；测得抬升保留不等于放置。最后57e源含frame273同回合分支、下次review预算已尽，末版无物理control/drive，不能算验证过的可复用程序。全部负结果及source范围保留，16–19未准入。2d主线仍独立冷回归；第二槽单独archive-assisted新场景由GPT清理旧感知依赖，初次修订已去掉273分支，仍待原生，不能算冷生成或零修复复用。外层未改任务源码。\n\n【Agent @Codex】【2026-10-25】Weekly Retro补记：T023后generic-vision为CIRCLE-1十八轮/二十二未决节点与CIRCLE-3；goal-ten32/36与CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。收敛仍以修正I/O契约的2d回归先行，未见16–19不启动；完整方法的辅助修订单列，不用其结果替换冷生成标准。已向用户异步澄清冷生成与验证后冻结复用的验收单位，在未答复时继续原严格口径。用户未改正式目标/理论或关闭议题。\n
+
+【Agent @Codex】【2026-10-25】[EXP089](LOGS/2026-W43.md#exp-2026w43-089)2d独立冷回归13仍native/proposal false，31GPT/179Jev/537步/6044.07秒，5次自动修复；25strict/6源哈希/1253标签及全部费用审计通过。修复输入诊断已完整保留，仍受过严位姿控制及完整形状定位门槛影响，有限抬升后停止，不能把审计通过当成功。完整失败输出归档，16–19未准入。另行预登记并启动afb精确源码零修复复用回归13，不修改任务源，不与冷生成或archive-assisted混算。
+
+【Agent @Codex】【2026-10-25】Weekly Retro补记：T025后libero-generic-vision CIRCLE-1十九轮/二十三未决且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。T024误用新主题键，T025补回既有主题，后续note说明同一EXP并非两次实验。收敛为保留失败、当前archive-assisted修订完成终局，另测已验证完整输出的冻结复用路线；各条件先过回归再进未见，不扩大任务/模型或恢复旧线，不修改正式目标/理论或关闭议题。
+
+
+【Agent @Codex】【2026-10-25】[EXP090](LOGS/2026-W43.md#exp-2026w43-090)archive-assisted新回合初次重写加2次修复仍native/proposal false，28GPT/98Jev/294步/3803.97秒。25strict/686标签/3源哈希和全usage审计通过；独立测量支持三段搬运，但程序保守放置余量-0.202mm在释放前停止，不证明物理不可行。原获取32GPT另列，完整失败方法保存，不混入冷生成或冻结复用。两份既有成功源afb与0c4c分别原样零修复回归13，无外层任务源修改、不得混算；各自通过再扩固定未见。
+
+【Agent @Codex】【2026-10-25】Weekly Retro补记：T027后generic-vision CIRCLE-1二十轮/二十四未决节点且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。新增驳斥为限定两修复的archive-assisted端到端成功，支持仅独立搬运测量。收敛为冻结已成功完整输出检验真正迁移能力，两个源码分别回归先行、失败即止未准入，不通过增加提示词反复覆盖失败，不改正式目标理论或关闭议题。

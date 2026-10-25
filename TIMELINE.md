@@ -154,6 +154,10 @@ graph LR
     T_2026W43_021["📊 libero-generic-vision<br/>618冻结候选三准入原生2/3，回归13仍…"]:::experiment
     T_2026W43_022["⛔ libero-generic-vision<br/>0d15回归13第19逻辑Jev分类三次T…"]:::blocker
     T_2026W43_023["📊 libero-generic-vision<br/>504独立回归13测得保留仍未放置，32G…"]:::experiment
+    T_2026W43_024["📊 generic-gpt-jev-vision<br/>2d冷回归13仍native失败：31GP…"]:::experiment
+    T_2026W43_025["📊 libero-generic-vision<br/>2d冷回归13仍native失败：31GP…"]:::experiment
+    T_2026W43_026["📝 generic-gpt-jev-vision<br/>T024主题键误记；本结果属于既有libe…"]:::note
+    T_2026W43_027["📊 libero-generic-vision<br/>Archive-assisted新回合修订…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -266,6 +270,9 @@ graph LR
   T_2026W43_020 --> T_2026W43_021
   T_2026W43_021 --> T_2026W43_022
   T_2026W43_022 --> T_2026W43_023
+  T_2026W43_023 --> T_2026W43_025
+  T_2026W43_024 --> T_2026W43_026
+  T_2026W43_025 --> T_2026W43_027
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -405,6 +412,10 @@ graph LR
 | `T-2026W43-021` | 2026-10-25 | experiment | libero-generic-vision | 618冻结候选三准入原生2/3，回归13仍因完整注册门限未抓取；停止未准入16/17，下一版改阶段最小观测依赖 | `EXP-2026W43-085` | - |
 | `T-2026W43-022` | 2026-10-25 | blocker | libero-generic-vision | 0d15回归13第19逻辑Jev分类三次TLS EOF耗尽，原生false；保留未知费用，修通用分类传输预算后重测 | `EXP-2026W43-086` | - |
 | `T-2026W43-023` | 2026-10-25 | experiment | libero-generic-vision | 504独立回归13测得保留仍未放置，32GPT耗尽原生0/1；字典诊断和帧范围契约修正另测，不混入复用 | `EXP-2026W43-088` | - |
+| `T-2026W43-024` | 2026-10-25 | experiment | generic-gpt-jev-vision | 2d冷回归13仍native失败：31GPT/179Jev/537步，诊断契约已修复但形状定位未完成；冻结复用另列 | `EXP-2026W43-089` | - |
+| `T-2026W43-025` | 2026-10-25 | experiment | libero-generic-vision | 2d冷回归13仍native失败：31GPT/179Jev/537步，诊断契约已修复但形状定位未完成；冻结复用另列 | `EXP-2026W43-089` | - |
+| `T-2026W43-026` | 2026-10-25 | note | generic-gpt-jev-vision | T024主题键误记；本结果属于既有libero-generic-vision，T025已补正确experiment，同一EXP非两次实验；保留历史 | `EXP-2026W43-089` | - |
+| `T-2026W43-027` | 2026-10-25 | experiment | libero-generic-vision | Archive-assisted新回合修订仍native失败：28GPT/98Jev/294步；已搬运但保守放置余量门槛阻止释放，完整成本单列 | `EXP-2026W43-090` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

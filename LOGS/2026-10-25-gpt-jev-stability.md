@@ -178,9 +178,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete changed-file inventory against9d710e19: 82 tracked files.
-
-| Change | File |
+| Status | File |
 |---|---|
 | A | [.agents/skills/gpt-jev-method/SKILL.md](../.agents/skills/gpt-jev-method/SKILL.md) |
 | M | [Discussion.md](../Discussion.md) |
@@ -188,6 +186,11 @@ Complete changed-file inventory against9d710e19: 82 tracked files.
 | M | [LOGS/2026-W43-activity.md](../LOGS/2026-W43-activity.md) |
 | M | [LOGS/2026-W43.md](../LOGS/2026-W43.md) |
 | M | [TIMELINE.md](../TIMELINE.md) |
+| A | [artifacts/gpt-jev-archive-assisted-method-20261025/METHOD.md](../artifacts/gpt-jev-archive-assisted-method-20261025/METHOD.md) |
+| A | [artifacts/gpt-jev-archive-assisted-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-archive-assisted-method-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-archive-assisted-method-20261025/README.md](../artifacts/gpt-jev-archive-assisted-method-20261025/README.md) |
+| A | [artifacts/gpt-jev-archive-assisted-method-20261025/method.json](../artifacts/gpt-jev-archive-assisted-method-20261025/method.json) |
+| A | [artifacts/gpt-jev-archive-assisted-method-20261025/method.py](../artifacts/gpt-jev-archive-assisted-method-20261025/method.py) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/COHORT.json](../artifacts/gpt-jev-cold-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/README.md](../artifacts/gpt-jev-cold-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-cold-methods-20261025/init10/METHOD.md](../artifacts/gpt-jev-cold-methods-20261025/init10/METHOD.md) |
@@ -239,6 +242,13 @@ Complete changed-file inventory against9d710e19: 82 tracked files.
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/README.md](../artifacts/gpt-jev-factored-methods-20261025/init13/README.md) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/method.json](../artifacts/gpt-jev-factored-methods-20261025/init13/method.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/method.py](../artifacts/gpt-jev-factored-methods-20261025/init13/method.py) |
+| A | [artifacts/gpt-jev-feedback-methods-20261025/COHORT.json](../artifacts/gpt-jev-feedback-methods-20261025/COHORT.json) |
+| A | [artifacts/gpt-jev-feedback-methods-20261025/README.md](../artifacts/gpt-jev-feedback-methods-20261025/README.md) |
+| A | [artifacts/gpt-jev-feedback-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-feedback-methods-20261025/init13/METHOD.md) |
+| A | [artifacts/gpt-jev-feedback-methods-20261025/init13/PROVENANCE.json](../artifacts/gpt-jev-feedback-methods-20261025/init13/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-feedback-methods-20261025/init13/README.md](../artifacts/gpt-jev-feedback-methods-20261025/init13/README.md) |
+| A | [artifacts/gpt-jev-feedback-methods-20261025/init13/method.json](../artifacts/gpt-jev-feedback-methods-20261025/init13/method.json) |
+| A | [artifacts/gpt-jev-feedback-methods-20261025/init13/method.py](../artifacts/gpt-jev-feedback-methods-20261025/init13/method.py) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/COHORT.json](../artifacts/gpt-jev-resilient-methods-20261025/COHORT.json) |
@@ -263,7 +273,7 @@ Complete changed-file inventory against9d710e19: 82 tracked files.
 | A | [code/scripts/gpt_jev_review_contract.py](../code/scripts/gpt_jev_review_contract.py) |
 | M | [code/scripts/run_gpt_jev_program.py](../code/scripts/run_gpt_jev_program.py) |
 | M | [ref/notes/idea-draft-v0.1.md](../ref/notes/idea-draft-v0.1.md) |
-| M | [ref/notes/具身智能机械臂控制理论与论文框架-5b7a9009.md](../ref/notes/具身智能机械臂控制理论与论文框架-5b7a9009.md) |
+| M | ["ref/notes/\345\205\267\350\272\253\346\231\272\350\203\275\346\234\272\346\242\260\350\207\202\346\216\247\345\210\266\347\220\206\350\256\272\344\270\216\350\256\272\346\226\207\346\241\206\346\236\266-5b7a9009.md"](../"ref/notes/\345\205\267\350\272\253\346\231\272\350\203\275\346\234\272\346\242\260\350\207\202\346\216\247\345\210\266\347\220\206\350\256\272\344\270\216\350\256\272\346\226\207\346\241\206\346\236\266-5b7a9009.md") |
 
 <!-- CHANGED-FILES:END -->
 
@@ -742,3 +752,44 @@ is retained independently and is not pooled into this new host validation.
 Manifest: code/runs/2026-10-25-gpt-jev-program/portable-frozen-cohort-manifest.json.
 Current cold and archive-assisted episodes continue unchanged; global concurrency
 remains at most2. No task source, coordinates, trajectories or prompts are edited.
+
+## Feedback-contract cold regression closed (EXP089)
+
+Frozen2d710418 regression13 ended native=false/method_incomplete after31GPT,
+179real Jev,537policy steps and6044.07seconds,5source repairs and6versions.
+All25strict reviews,1253dispatch labels and usage records passed audit. GPT
+421778input/169885output; Jev367757/44571,zero unknown attempts. The diagnostic
+contract fix is present in actual repair requests, but did not establish native
+success. The final revision used measured finite finger overlap instead of an
+overstrict TCP gate, closed and made a bounded lift, then stopped on unresolved
+envelope correspondence. Its3.034mm transverse spread was below its7.5mm gate;
+that program threshold is not a native evaluator requirement or truth accuracy.
+All failed complete outputs are preserved in
+[the feedback package](../artifacts/gpt-jev-feedback-methods-20261025/README.md).
+No unused16-19were admitted. Exact afb source reuse regression13 is now running
+in the freed slot; archive-assisted remains separate. No task source was edited.
+Timeline CIRCLE-1 is19rounds/23unresolved plus CIRCLE-3; current admission/failure
+rule is the convergence plan, with no old ten-task or speed-line revival.
+
+## Separate initial-output frozen candidate predeclared
+
+The independently generated init12 initial source0c4cdaf3, originally native true
+with no source repairs, is a second explicit frozen-reuse candidate. Preserve its
+13GPT/109Jev/327steps/2060.78s acquisition separately. On the same2d host, test
+regression13 before unused16-19;24GPT/200Jev/600steps/0repairs/7200s,stop admissions
+after failure. No source edits or archive-revision call; do not pool candidates
+or relabel this as independent generation. This uses the slot freed by the closed
+archive-assisted failure, keeping at most2worlds. Manifest cold12-frozen-cohort-manifest.json.
+
+## Archive-assisted regression closed (EXP090)
+
+Native=false/method_incomplete after28GPT/98real Jev/294policy steps/3803.97s.
+One initial archival rewrite and2same-scene repairs;25strict reviews,686labels
+and3source versions audited. All usage known: GPT370100input/109178output,
+Jev209476/24402. Three measured transport legs progressed, but the conservative
+fit slack was-0.202mm, so no release occurred. A failed conservative proxy gate
+is not proof that the physical goal is impossible. Final source and complete
+cooperation protocol remain in
+[the archive-assisted failure package](../artifacts/gpt-jev-archive-assisted-method-20261025/README.md).
+Historical32GPT acquisition is separate, not omitted. Two exact-source reuse
+candidates now run independently; no pooled rate or task-source edits.

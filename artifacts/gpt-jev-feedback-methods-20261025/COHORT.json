@@ -1,0 +1,37 @@
+{
+  "candidate_commit": "2d710418",
+  "scope": "Independent cold generation; bounded five source repairs, native evaluator authoritative",
+  "task_id": 1335,
+  "predeclared_init_indices": [
+    13,
+    16,
+    17,
+    18,
+    19
+  ],
+  "completed": [
+    {
+      "init_index": 13,
+      "source_sha256": "ed8bd452a522a3dc92b8165f0e4708f4bd762e378b2a261b3d26315ba7c82c76",
+      "source_revisions": 5,
+      "native_success": false,
+      "completion_proposed": false,
+      "termination": "method_incomplete",
+      "gpt_calls": 31,
+      "jev_calls": 179,
+      "native_steps": 537,
+      "elapsed_s": 6044.067991640186
+    }
+  ],
+  "pending": [],
+  "admitted": [
+    13
+  ],
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "status": "closed, all-five criterion falsified by native regression failure"
+}
