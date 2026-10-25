@@ -1,6 +1,6 @@
 # Complete GPT method and Jev protocol
 
-Archive-assisted acquisition succeeded natively; exact-source fresh13zero-repair passed, while the cross-initial cohort is pending. Geometric bounds are heuristic, not calibrated truth guarantees.
+Archive-assisted acquisition succeeded natively; exact-source zero-repair native3/3passed(13,16,17), while18,19are pending. Init16completion_proposed=false is retained separately from native=true. Geometric bounds are heuristic, not calibrated truth guarantees.
 
 ## Explanation
 

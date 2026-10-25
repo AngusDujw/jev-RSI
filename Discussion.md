@@ -590,3 +590,7 @@
 【Agent @Codex】【2026-10-25】[EXP102](LOGS/2026-W43.md#exp-2026w43-102)235精确源新空13零修复native/proposal true，16GPT/87Jev/261步/2426.15秒；16strict/87派发/实际响应/复用来源审计通过。GPT191753/45208已知；Jev已知251154/21663，1次失败重试usage未知保留额外成本。已按预声明准入16/17同源零修复并启动，18/19尚未准入，任何失败停止新增准入且不替换。当前1/1仅回归，不是跨初态或跨任务稳定证明。
 
 【Agent @Codex】【2026-10-25】Weekly Retro补记：T037后generic-vision CIRCLE-1二十八轮/三十四未决且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。支持新增为精确源从新回合可重现，跨初态和效率仍未决。收敛完成同源固定未见序列、保留全部负例未知成本、不扩新冷生成分支，不改正式目标理论或关闭议题。
+
+【Agent @Codex】【2026-10-25】[EXP103](LOGS/2026-W43.md#exp-2026w43-103)235精确源未用16/17native均true，分别15/16GPT、82/87Jev、246/261步、2235.24/2218.85秒；31strict/169派发/实际响应/源复用审计通过，二例全部用量已知。16完成物理放置后最终视觉对应unknown，proposal=false；按用户与预声明native指标计成功，同时保持method_incomplete。当前原生3/3、proposal2/3，原13未知重试另计。已准入固定18/19同源零修复；不改知识源追认自报，不将native输入控制。
+
+【Agent @Codex】【2026-10-25】Weekly Retro补记：T038后generic-vision CIRCLE-1二十九轮/三十五未决且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。新支持为两未用初态原生完成，未决为完整固定批次、程序完成自报保守性和效率。收敛完成18/19且双状态/全部负例费用保留，不修改当前方法或补选初态，不改正式目标理论或关闭议题。

@@ -168,6 +168,7 @@ graph LR
     T_2026W43_035["📊 libero-generic-vision<br/>a18原样空回合0修复失败0/1：恢复可达…"]:::experiment
     T_2026W43_036["📊 libero-generic-vision<br/>身份对应分离后完整235方法native成…"]:::experiment
     T_2026W43_037["📊 libero-generic-vision<br/>235精确源新空13零修复native通过…"]:::experiment
+    T_2026W43_038["📊 libero-generic-vision<br/>235固定未用16/17均native成功…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -293,6 +294,7 @@ graph LR
   T_2026W43_034 --> T_2026W43_035
   T_2026W43_035 --> T_2026W43_036
   T_2026W43_036 --> T_2026W43_037
+  T_2026W43_037 --> T_2026W43_038
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -446,6 +448,7 @@ graph LR
 | `T-2026W43-035` | 2026-10-25 | experiment | libero-generic-vision | a18原样空回合0修复失败0/1：恢复可达但身份耦合角编号，下一候选分离对应及等价假设 | `EXP-2026W43-100` | - |
 | `T-2026W43-036` | 2026-10-25 | experiment | libero-generic-vision | 身份对应分离后完整235方法native成功17GPT88Jev264步，4次无编号几何实际使用，冻结待回归 | `EXP-2026W43-101` | - |
 | `T-2026W43-037` | 2026-10-25 | experiment | libero-generic-vision | 235精确源新空13零修复native通过16GPT87Jev261步，1/1回归后准入固定未用16/17 | `EXP-2026W43-102` | - |
+| `T-2026W43-038` | 2026-10-25 | experiment | libero-generic-vision | 235固定未用16/17均native成功，原生3/3自报2/3，保留16终局视觉未知，继续18/19 | `EXP-2026W43-103` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

@@ -4,7 +4,7 @@ Current evidence: after generic identity/correspondence guidance, an archive-
 assisted GPT full rewrite completed hard13with native success
 (17GPT/88real Jev/264steps), no same-scene source repair, and4actual unindexed
 envelope observations. [Complete unedited method and Jev protocol](../../artifacts/gpt-jev-correspondence-method-20261025/METHOD.md)
-are preserved; exact-source fresh13zero-repair validation passed (16GPT/87Jev/261steps). Unused16/17are running;18/19remain unadmitted. The cross-initial cohort is incomplete; one Jev retry has unknown usage.
+are preserved; exact-source zero-repair native3/3passed(13,16,17). Fixed18/19are running. Init16native=true but completion_proposed=false from final visual uncertainty; both statuses remain unchanged. The cohort is incomplete; one Jev retry has unknown usage.
 Previous5e and a18sources succeeded during acquisition but failed fresh exact
 replay. Earlier5/5frozen evidence remains limited to those initial states.
 Failures and costs remain separate in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).

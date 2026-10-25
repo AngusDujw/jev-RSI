@@ -1,20 +1,28 @@
 {
-  "status": "fresh13passed; unused16,17running;18,19unadmitted",
+  "status": "native3of3; fixed18,19running",
   "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
   "completed": [
-    13
-  ],
-  "admitted": [
     13,
     16,
     17
   ],
-  "unadmitted": [
+  "admitted": [
+    13,
+    16,
+    17,
     18,
     19
   ],
-  "claim": "Exact-source fresh13passed; cross-initial cohort pending; no universal reliability guarantee",
+  "unadmitted": [],
+  "claim": "Native LIBERO is authoritative; cohort incomplete; method status and evaluator score remain separate",
   "manifest": "code/runs/2026-10-25-gpt-jev-program/correspondence-frozen-cohort-manifest.json",
-  "native_successes": 1,
-  "native_trials": 1
+  "native_successes": 3,
+  "native_trials": 3,
+  "proposal_true_inits": [
+    13,
+    17
+  ],
+  "proposal_false_inits": [
+    16
+  ]
 }

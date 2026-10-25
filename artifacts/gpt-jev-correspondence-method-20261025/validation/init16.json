@@ -1,0 +1,1455 @@
+{
+  "summary": {
+    "termination": "method_incomplete",
+    "native_success": true,
+    "result": {
+      "completion_proposed": false,
+      "evidence": [
+        {
+          "review_frame": 0,
+          "parameters": {
+            "eligible": "yes",
+            "identity": "Source: a small rigid rectangular cream cheese package with a pale gray-blue planar top, large outlined 'Cream Cheese' script, and a narrow dark-blue oval emblem. Its right and near side faces are visible, and it lies flat on the exposed wooden tabletop. Destination: the open round bowl with dense black-and-white interior patterning, a thin yellowish rim, and dark exterior. The bowl is empty and distinct from the nearby white plate with red rings. No grasp or retention is present in these images.",
+            "camera": "robot0_eye_in_hand",
+            "corners": [
+              [
+                195,
+                150
+              ],
+              [
+                252,
+                149
+              ],
+              [
+                254,
+                263
+              ],
+              [
+                198,
+                263
+              ]
+            ],
+            "landmark_definitions": [
+              "l0: The initial capital C in the large printed word 'Cream', at the center of its curved stroke.",
+              "l1: The terminal curled stroke of the final letter in the large printed word 'Cheese'.",
+              "l2: The midpoint of the long outer border of the dark-blue oval emblem, on the side opposite the large Cream Cheese script."
+            ],
+            "patch_camera": "robot0_eye_in_hand",
+            "patch": [
+              [
+                202,
+                157
+              ],
+              [
+                247,
+                157
+              ],
+              [
+                249,
+                255
+              ],
+              [
+                203,
+                256
+              ]
+            ]
+          },
+          "explanation": "The source is the rigid rectangular cream cheese package lying label-up on the tabletop beside the bowl. Its planar printed top and narrow visible side faces support a flat resting pose on that single support; its underside is not visible or inferred from a top sample. The destination is the empty, open, approximately circular patterned bowl, not the striped plate. Its inner rim and cavity bottom are visible, with no observed obstruction across the opening. All measurements below are from the current wrist image. The textured patch is inside the source package's printed top face. These observations establish local object eligibility, not clearance for an entire transfer.",
+          "measurement_errors": []
+        },
+        {
+          "name": "top",
+          "coefficients": [
+            0.00011604415378657273,
+            0.02254336531235692,
+            0.9997458593133298,
+            -0.9205996465259361
+          ],
+          "rms_m": 9.562739686720637e-05,
+          "spread_m": [
+            0.020045932961277137,
+            0.009843036754982173
+          ]
+        },
+        {
+          "name": "support",
+          "coefficients": [
+            2.5437073499822823e-05,
+            1.0257517435096162e-05,
+            0.9999999996238693,
+            -0.8999599943604226
+          ],
+          "rms_m": 3.2130253949457046e-07,
+          "spread_m": [
+            0.03309697142109598,
+            0.005094914125711752
+          ]
+        },
+        {
+          "rim_fit": {
+            "xy": [
+              -0.09236711618596967,
+              0.010939106570211283
+            ],
+            "z": 0.9476995742808193,
+            "radius": 0.05237734740417776,
+            "rms": 0.00010423213733879144,
+            "max_error": 0.00017963575488328526,
+            "gap_rad": 1.054336134414684,
+            "frame": 0
+          },
+          "plane_rms": 0.0004071065491261389
+        },
+        {
+          "height_m": 0.018065570733696523,
+          "edge_lengths_m": [
+            0.0404058988184217,
+            0.07864624823173662
+          ],
+          "half_diagonal_m": 0.04442449889915657,
+          "rim_radius_m": 0.05237734740417776,
+          "uncertainty_m": 0.0015
+        },
+        {
+          "patch_reference_frame": 0,
+          "features": 84,
+          "camera": "robot0_eye_in_hand"
+        },
+        {
+          "tracking_status": "tracked",
+          "frame": 0,
+          "reference_frame": 0,
+          "reason": null
+        },
+        {
+          "inliers": 41,
+          "matches": 41,
+          "rms_m": 5.682830016312134e-18,
+          "uncertainty_m": 0.0015,
+          "spatial_support_m": [
+            0.014713602366964701,
+            0.005933522074594753,
+            4.3513291327545185e-05
+          ]
+        },
+        {
+          "grasp_candidates": [
+            {
+              "offset": [
+                0.034381863641090415,
+                0.00029052342058861455,
+                -0.0
+              ],
+              "side_overlap_m": 0.013490724290845357,
+              "inner_lip_box_gap_m": 0.03191747194719465
+            },
+            {
+              "offset": [
+                0.025756644365593055,
+                0.0002176411523845844,
+                -0.0
+              ],
+              "side_overlap_m": 0.016863405363556697,
+              "inner_lip_box_gap_m": 0.025007306003696557
+            },
+            {
+              "offset": [
+                0.017131425090095687,
+                0.00014475888418055417,
+                -0.0
+              ],
+              "side_overlap_m": 0.016863405363556697,
+              "inner_lip_box_gap_m": 0.01847427244592883
+            },
+            {
+              "offset": [
+                0.00850620581459832,
+                7.187661597652394e-05,
+                -0.0
+              ],
+              "side_overlap_m": 0.016863405363556697,
+              "inner_lip_box_gap_m": 0.012432520104266202
+            },
+            {
+              "offset": [
+                -0.00011901346089904645,
+                -1.005652227506296e-06,
+                0.0
+              ],
+              "side_overlap_m": 0.0168634053635567,
+              "inner_lip_box_gap_m": 0.007032123695058276
+            },
+            {
+              "offset": [
+                -0.008744232736396414,
+                -7.388792043153652e-05,
+                0.0
+              ],
+              "side_overlap_m": 0.016863405363556697,
+              "inner_lip_box_gap_m": 0.0024628844048757564
+            },
+            {
+              "offset": [
+                -0.01736945201189378,
+                -0.00014677018863556675,
+                0.0
+              ],
+              "side_overlap_m": 0.016863405363556697,
+              "inner_lip_box_gap_m": -0.0010527311640016815
+            },
+            {
+              "offset": [
+                -0.025994671287391146,
+                -0.00021965245683959697,
+                0.0
+              ],
+              "side_overlap_m": 0.016863405363556697,
+              "inner_lip_box_gap_m": -0.0032878283773750197
+            },
+            {
+              "offset": [
+                -0.034619890562888514,
+                -0.0002925347250436272,
+                0.0
+              ],
+              "side_overlap_m": 0.013490724290845357,
+              "inner_lip_box_gap_m": -0.0040655301668320945
+            }
+          ],
+          "meaning": "Finite pad overlap and conservative box/INNER lip ranking only; not observed clearance. Outer bowl material needs local review."
+        },
+        {
+          "review_frame": 0,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "self_occluded",
+            "action": "local_supported"
+          },
+          "explanation": "The proposed high_alignment action is locally supported with the gripper open. Current and earlier images show the same cream cheese package, printed landmarks, bowl and support surfaces, with no observed displacement or intervening interaction. This is a nearly level translation above the package, not a descent or grasp. The supplied own-finger envelope has its lowest extent near 1.174 m, well above the observed package top near 0.918 m, bowl lip near 0.948 m and tabletop near 0.900 m. The visible bottle and fixtures do not present external material obstructing this high alignment. The end-biased target is not inconsistent with the package identity or geometry. Some immediate hand surroundings are hidden by the robot itself; this is self-occlusion, not an external obstacle. No upward observation action is needed to justify this alignment. Returned landmarks and surface regions provide current measurements rather than relying on saved points. This finding does not approve a later descent, certify a complete corridor, establish retention, or indicate task completion.",
+          "measurement_errors": []
+        },
+        {
+          "motion": "high_alignment",
+          "status": "reached",
+          "position_error_m": 0.0015368534693317587,
+          "rotation_error_rad": 0.013790376684863893,
+          "lease_calls": 17,
+          "whole_lease_progress_m": 0.22409467267379804
+        },
+        {
+          "review_frame": 51,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "observed",
+            "action": "local_supported"
+          },
+          "explanation": "The proposed open-hand descent to the source_hover pad target is locally supported, only to that hover height. The current package outline, Cream Cheese lettering and emblem agree with the earlier identity and stationary landmark projections. The fixed agentview also shows no source or bowl displacement. The acknowledged high, open-hand approach shows no evidence of disturbing interaction, so the saved source, bowl and support geometry remains a usable short-horizon prior here.\n\nThe visible tabletop flanks both actual finger lanes near the selected package end. The bowl is offset from those lanes; no external material is observed obstructing this descent. Using the supplied final finger envelope, its lowest height is approximately 0.9546 m, about 0.036 m above the package top and 0.0069 m above the saved rim height. The nearby bowl material is also horizontally separated from the end-biased finger footprint. The approximately 0.0135 m longitudinal pad/side overlap is finite despite the end bias, but this hover stops above side contact and does not establish a grasp.\n\nCurrent measurements are returned below, including bowl and support observations. The wrist-view projection of k2 is covered by the robot, so k2 is selected in agentview instead. That self-occlusion does not hide the relevant descent lanes in the combined views. Bowl region bounds include surrounding background for boundary fitting. This finding is not certified clearance, retention evidence, or approval of a subsequent contact descent, closing action or transfer.",
+          "measurement_errors": []
+        },
+        {
+          "motion": "source_hover",
+          "status": "reached",
+          "position_error_m": 0.001991230200807666,
+          "rotation_error_rad": 0.010155948789148947,
+          "lease_calls": 16,
+          "whole_lease_progress_m": 0.2193936734564467
+        },
+        {
+          "grasp_pad_z": 0.9164333216715327,
+          "table_z": 0.8999590160960134,
+          "top_z": 0.9180254643837518,
+          "projected_width": 0.04048795859458165,
+          "outer_pad_span": 0.09244576225426052,
+          "u": 0.0015,
+          "candidate": {
+            "offset": [
+              0.034381863641090415,
+              0.00029052342058861455,
+              -0.0
+            ],
+            "side_overlap_m": 0.013490724290845357,
+            "inner_lip_box_gap_m": 0.03191747194719465
+          }
+        },
+        {
+          "review_frame": 99,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "self_occluded",
+            "action": "local_supported"
+          },
+          "explanation": "The proposed open-hand grasp descent is locally supported. The current package outline, visible end face and printed landmarks agree with the earlier stationary cream cheese package; no target displacement or inconsistent identity is observed. The preceding approach remains consistent with noncontact motion. Visible bowl portions also agree with the earlier pose.\n\nBoth actual lateral finger lanes project onto exposed tabletop, outside the package sides. The supplied own geometry and observed package end support an end-biased pinch: approximately 13 mm of longitudinal pad/side overlap remains, with finite vertical overlap at the proposed pad height. Centering on the package length is not necessary. The proposed endpoint has only about 3 mm nominal lowest-finger clearance above the observed table, so this assessment supports the specified endpoint and orientation, not a deeper descent. No external material is observed obstructing these lanes; the nearby bowl is separated from this end of the package. This is not certified clearance or support for a later transport corridor.\n\nSelf-occlusion hides the far package corner insets, bowl landmarks k4 and k5, and stove_burner_top; those measurements cannot be freshly returned. Other obtainable historical named points are returned below using current visible surfaces. The visible partial source and bowl observations support retaining their stationary geometry only for this short local action. No grasp, retention, placement or task completion is claimed.",
+          "measurement_errors": []
+        },
+        {
+          "motion": "grasp_descent",
+          "status": "reached",
+          "position_error_m": 0.001693508665225211,
+          "rotation_error_rad": 0.010117960030600805,
+          "lease_calls": 5,
+          "whole_lease_progress_m": 0.05124092483568842
+        },
+        {
+          "review_frame": 114,
+          "parameters": {
+            "bracketing": "observed"
+          },
+          "explanation": "Bracketing is observed in frame 114. The actual open fingers are visible on opposite sides of the cream cheese package. Agentview shows both lowered finger tips beside the exposed package end; the wrist view independently shows both fingers and visible tabletop gaps separating them from the package. Compared with the earlier images, the fingers have descended alongside this same item. No table penetration or neighboring-object intrusion is observed in this local bracketing area. The gripper housing self-occludes the rest of the package and portions of the inner finger surfaces; those hidden surfaces are not certified. This is a pre-closure observation, not evidence of retention or task completion.",
+          "measurement_errors": []
+        },
+        {
+          "transition": "close",
+          "frame": 129,
+          "actual_gripper_qpos_m": [
+            0.020767259262983534,
+            -0.0208888648564516
+          ]
+        },
+        {
+          "review_frame": 129,
+          "parameters": {
+            "identity": "exact",
+            "patch_camera": "robot0_eye_in_hand",
+            "patch": [
+              [
+                301,
+                588
+              ],
+              [
+                457,
+                584
+              ],
+              [
+                471,
+                606
+              ],
+              [
+                292,
+                610
+              ]
+            ],
+            "candidate": "present",
+            "probe": "supported",
+            "definitions": [
+              "p0: Lower central extremum of the large dark-blue oval outline printed on the exposed short end face, immediately above the pale lower folded edge. This is a new local package landmark, not a finger feature or a historical top-face landmark.",
+              "unavailable",
+              "unavailable"
+            ]
+          },
+          "explanation": "The same cream cheese package remains visibly between the fingers, which are now closer together than in the earlier images. This establishes candidate presence, not retention. The exposed printed short end face supports a new local reference independent of the historical top-face landmarks. p0 selects the lower extremum of its large blue oval outline; p1 and p2 are omitted because additional printed marks are not reliably distinguishable at this resolution. No external obstruction is observed for an orientation-preserving upward measurement lift of at most 0.035 m from this pose. The housing and fingers self-occlude other package surfaces; that is not an observed external obstruction. Support is limited to this bounded measurement trial, not subsequent transport, hidden-surface clearance, or task completion.",
+          "measurement_errors": []
+        },
+        {
+          "local_reference_names": [
+            "p0"
+          ],
+          "u": 0.0015,
+          "scope": "Small-rotation translation retention only; full envelope measured separately."
+        },
+        {
+          "local_patch_initialization_error": "ValueError: Selected patch has 8 textured depth-valid features; at least 12 are required. Use a clearer textured interior patch or initialize before occluding camera motion."
+        },
+        {
+          "motion": "retention_measurement_lift",
+          "status": "reached",
+          "position_error_m": 0.0018286775488007222,
+          "rotation_error_rad": 0.010387725233691658,
+          "lease_calls": 3,
+          "whole_lease_progress_m": 0.02010917789783715
+        },
+        {
+          "review_frame": 138,
+          "parameters": {
+            "identity": "exact"
+          },
+          "explanation": "p0 is visible in the current wrist image: the lower central extremum of the large dark-blue oval printed on the exposed package end face, immediately above the pale lower folded edge. The printed outline and adjacent fold match the earlier image unambiguously on the same package. This is a current visual correspondence, not the stationary projection or an inference from robot motion. This single landmark does not by itself establish completed placement.",
+          "measurement_errors": []
+        },
+        {
+          "actual_hand_motion_m": 0.020312660394757855,
+          "observed_object_motion_m": 0.0203246783257746,
+          "attachment_error_m": 3.6866061932706206e-05,
+          "tolerance_m": 0.0055000000000000005,
+          "observed_object_rise_m": 0.020308330022743792,
+          "reference_frame": 129,
+          "current_frame": 138,
+          "local_witness_count": 1,
+          "hand_rotation_frobenius": 0.0020538689393961333
+        },
+        {
+          "tracking_status": "unknown",
+          "frame": 138,
+          "reference_frame": 0,
+          "reason": "No sufficient nondegenerate rigid feature consensus"
+        },
+        {
+          "review_frame": 138,
+          "parameters": {
+            "identity": "ambiguous",
+            "patch_camera": "robot0_eye_in_hand",
+            "patch": [
+              [
+                304,
+                586
+              ],
+              [
+                460,
+                583
+              ],
+              [
+                475,
+                607
+              ],
+              [
+                294,
+                610
+              ]
+            ],
+            "body": "same",
+            "boundary_camera": "robot0_eye_in_hand",
+            "boundary": null,
+            "face": "side_upright",
+            "edge": [
+              [
+                274,
+                624
+              ],
+              [
+                492,
+                622
+              ]
+            ],
+            "edge_ids": null
+          },
+          "explanation": "The visible printed short end belongs to the same package as in the earlier images. It is an exterior rectangular side, approximately upright. Its physical upper edge is the seam adjoining the pale upward-facing surface, near image y=623; the opposite silhouette near y=578 is the lower edge, not the requested upper edge. Both upper-edge endpoints are visible. The face region is strictly inside the printed side and excludes folds, fingers and background. These observations support the requested partial-face/upper-edge envelope model, with dimensional alternatives left for checking. Old P endpoint numbering is ambiguous. None of l0, l1 or l2 is identifiable at its saved top-face definition: the robot occludes the relevant broad face. Four top corners are therefore unavailable. The patch is on the same printed side; it is not independently a grasp or placement witness.",
+          "measurement_errors": []
+        },
+        {
+          "measured_edge_length": 0.03904372647018919,
+          "u": 0.0015,
+          "dimension_hypotheses": [
+            {
+              "edge": [
+                0,
+                1
+              ],
+              "length": 0.0404058988184217,
+              "extrusion": 0.07864624823173662
+            },
+            {
+              "edge": [
+                2,
+                3
+              ],
+              "length": 0.04017441820563324,
+              "extrusion": 0.07912294011452597
+            }
+          ],
+          "body": "same",
+          "old_correspondence": "ambiguous"
+        },
+        {
+          "symmetry_invariant_envelope": {
+            "frame": 138,
+            "plane": [
+              -0.9998629851287114,
+              -0.014436592094421722,
+              0.008099122063624726,
+              -0.010166679934454493
+            ],
+            "edge_world_m": [
+              [
+                -0.0046336790439835615,
+                0.14452371938923453,
+                0.9408508352310784
+              ],
+              [
+                -0.004066412048656459,
+                0.10548668337879005,
+                0.9412987240054692
+              ]
+            ],
+            "inward": [
+              -0.9998629851287114,
+              -0.014436592094421564,
+              0.008099122063624724
+            ],
+            "dimension_hypotheses": [
+              {
+                "edge": [
+                  0,
+                  1
+                ],
+                "length": 0.0404058988184217,
+                "extrusion": 0.07864624823173662
+              },
+              {
+                "edge": [
+                  2,
+                  3
+                ],
+                "length": 0.04017441820563324,
+                "extrusion": 0.07912294011452597
+              }
+            ],
+            "bounds": [
+              [
+                0.0016344905904824365,
+                0.0016344905904824365,
+                0.0016344905904824365
+              ],
+              [
+                0.0016344905904824365,
+                0.0016344905904824365,
+                0.0016344905904824365
+              ],
+              [
+                0.0023353534523889116,
+                0.0020853510076890886,
+                0.0039379026242667625
+              ],
+              [
+                0.0023353534523889116,
+                0.0020853510076890886,
+                0.0039379026242667625
+              ],
+              [
+                0.0021247785622981793,
+                0.0017068849287912053,
+                0.0031916830573181414
+              ],
+              [
+                0.0021247785622981793,
+                0.0017068849287912053,
+                0.0031916830573181414
+              ],
+              [
+                0.0027607941336278345,
+                0.0021102558554174844,
+                0.005459649733243416
+              ],
+              [
+                0.0027607941336278345,
+                0.0021102558554174844,
+                0.005459649733243416
+              ]
+            ],
+            "angular_u": 0.023785445281710164,
+            "u": 0.0015,
+            "gauge": "Current visible upper edge; no old vertex assignment"
+          }
+        },
+        {
+          "patch_initialization_error": "ValueError: Selected patch has 8 textured depth-valid features; at least 12 are required. Use a clearer textured interior patch or initialize before occluding camera motion.",
+          "camera": "robot0_eye_in_hand"
+        },
+        {
+          "review_frame": 138,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "self_occluded",
+            "action": "local_supported"
+          },
+          "explanation": "The proposed lift_clear action is locally supported: approximately 0.100 m upward with essentially unchanged lateral position and gripper setting. The visible cream-cheese package face and edge remain between the opposing fingers, consistent with an end-biased pinch and the supplied finite side overlap. No inconsistent identity or visible displacement is evident. The exposed bowl material is lateral to the package and finger lanes, not above them; the vertical lift increases separation from the tabletop. No external material is observed obstructing this lift. This is not certified clearance for subsequent transport or insertion.\n\nThe principal missing package/contact geometry is robot-self-occluded, not an external obstacle. The supplied earlier images repeat the current view, so they do not independently establish package co-motion during the preceding lift. Closed fingers and the retained checkpoint alone do not prove retention. The visible bowl rim and interior do not contradict the saved bowl geometry, but its covered sector is not freshly measured.\n\nReturned edge points are current visible surface witnesses, not assignments to historical vertices. The face regions support surface sampling; they do not imply successful feature tracking. The original individual printed landmarks and hidden package corners cannot be reliably reidentified here.",
+          "measurement_errors": []
+        },
+        {
+          "motion": "lift_clear",
+          "status": "reached",
+          "position_error_m": 0.0022765161061002524,
+          "rotation_error_rad": 0.009855714047519103,
+          "lease_calls": 8,
+          "whole_lease_progress_m": 0.09742742225602544
+        },
+        {
+          "tracking_status": "unknown",
+          "frame": 162,
+          "reference_frame": 0,
+          "reason": "No sufficient nondegenerate rigid feature consensus"
+        },
+        {
+          "review_frame": 162,
+          "parameters": {
+            "identity": "ambiguous",
+            "patch_camera": "robot0_eye_in_hand",
+            "patch": [
+              [
+                300,
+                586
+              ],
+              [
+                466,
+                586
+              ],
+              [
+                466,
+                608
+              ],
+              [
+                300,
+                608
+              ]
+            ],
+            "body": "same",
+            "boundary_camera": "robot0_eye_in_hand",
+            "boundary": null,
+            "face": "side_upright",
+            "edge": [
+              [
+                275,
+                623
+              ],
+              [
+                493,
+                621
+              ]
+            ],
+            "edge_ids": null
+          },
+          "explanation": "The visible package is the same physical body as in the earlier review: its printing, silhouette and pose relative to the fingers agree, while the agentview shows it raised with the hand. This evidence is separate from the unavailable original landmark numbering.\n\nThe wrist view supports an exterior rectangular, approximately upright short-end face. Its complete upper edge is the lower-in-image seam adjoining the narrow upward-facing strip; the opposite, physically lower edge is visible near image y=578. Returned edge endpoints are current, unindexed corners. The face region is strictly inside this printed short end. These observations support the requested local side-plane/upper-edge envelope model, not a reconstruction of hidden surfaces.\n\nThe broad top is largely robot-self-occluded, so four top corners are unavailable. The saved l0, l1 and l2 definitions cannot be reliably located on that top; similar printing on the short end is not a substitute. Old P indices are also ambiguous. The optional patch contains only the visible package face, not fingers or background.",
+          "measurement_errors": []
+        },
+        {
+          "measured_edge_length": 0.03908099697788414,
+          "u": 0.0015,
+          "dimension_hypotheses": [
+            {
+              "edge": [
+                0,
+                1
+              ],
+              "length": 0.0404058988184217,
+              "extrusion": 0.07864624823173662
+            },
+            {
+              "edge": [
+                2,
+                3
+              ],
+              "length": 0.04017441820563324,
+              "extrusion": 0.07912294011452597
+            }
+          ],
+          "body": "same",
+          "old_correspondence": "ambiguous"
+        },
+        {
+          "symmetry_invariant_envelope": {
+            "frame": 162,
+            "plane": [
+              -0.9997124053055298,
+              -0.017787162738586708,
+              0.016084884828408433,
+              -0.020177640124064457
+            ],
+            "edge_world_m": [
+              [
+                -0.0060549260126105675,
+                0.14552490559791015,
+                1.039045714826653
+              ],
+              [
+                -0.005348669399128862,
+                0.10645642464775133,
+                1.0397380461262344
+              ]
+            ],
+            "inward": [
+              -0.9997124053055298,
+              -0.01778716273858706,
+              0.01608488482840844
+            ],
+            "dimension_hypotheses": [
+              {
+                "edge": [
+                  0,
+                  1
+                ],
+                "length": 0.0404058988184217,
+                "extrusion": 0.07864624823173662
+              },
+              {
+                "edge": [
+                  2,
+                  3
+                ],
+                "length": 0.04017441820563324,
+                "extrusion": 0.07912294011452597
+              }
+            ],
+            "bounds": [
+              [
+                0.0016348063672460415,
+                0.0016348063672460415,
+                0.0016348063672460415
+              ],
+              [
+                0.0016348063672460417,
+                0.0016348063672460417,
+                0.0016348063672460417
+              ],
+              [
+                0.00234637952396071,
+                0.0020969613144984694,
+                0.003826073954054748
+              ],
+              [
+                0.00234637952396071,
+                0.0020969613144984694,
+                0.003826073954054748
+              ],
+              [
+                0.00211066054521344,
+                0.0017178500102100285,
+                0.003194155985081254
+              ],
+              [
+                0.00211066054521344,
+                0.0017178500102100285,
+                0.003194155985081254
+              ],
+              [
+                0.0027315870989840273,
+                0.0021305525582443877,
+                0.0053496912962759146
+              ],
+              [
+                0.0027315870989840273,
+                0.0021305525582443877,
+                0.0053496912962759146
+              ]
+            ],
+            "angular_u": 0.022335364731407764,
+            "u": 0.0015,
+            "gauge": "Current visible upper edge; no old vertex assignment"
+          }
+        },
+        {
+          "patch_initialization_error": "ValueError: Selected patch has 8 textured depth-valid features; at least 12 are required. Use a clearer textured interior patch or initialize before occluding camera motion.",
+          "camera": "robot0_eye_in_hand"
+        },
+        {
+          "continuation_attachment_hypotheses": [
+            {
+              "error_m": 0.0002713668051387844,
+              "tolerance_m": 0.005
+            },
+            {
+              "error_m": 0.03921435333399127,
+              "tolerance_m": 0.005
+            },
+            {
+              "error_m": 0.08827995607787179,
+              "tolerance_m": 0.008530868876353443
+            },
+            {
+              "error_m": 0.0002713668051387844,
+              "tolerance_m": 0.006331020747208835
+            },
+            {
+              "error_m": 0.03921435333399127,
+              "tolerance_m": 0.006331020747208835
+            },
+            {
+              "error_m": 0.07909272265923581,
+              "tolerance_m": 0.008530868876353443
+            },
+            {
+              "error_m": 0.08801957430970998,
+              "tolerance_m": 0.008530868876353443
+            },
+            {
+              "error_m": 0.08827995607787179,
+              "tolerance_m": 0.008530868876353443
+            },
+            {
+              "error_m": 0.07909272265923581,
+              "tolerance_m": 0.008530868876353443
+            },
+            {
+              "error_m": 0.0789524508814683,
+              "tolerance_m": 0.008530868876353443
+            }
+          ],
+          "correspondence": "finite_geometric_symmetries_not_physical_index_claims",
+          "reason": "lift_clear actual retained-object outcome"
+        },
+        {
+          "review_frame": 162,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "self_occluded",
+            "action": "local_supported"
+          },
+          "explanation": "The proposed near-level transfer toward the bowl is locally supported; this does not approve descent or release. The package's exposed printed face is visible between the fingers above the table, not merely inferred from finger closure. Its appearance is consistent with the source package. No displacement or identity inconsistency is visible relative to the supplied earlier images, although those images show the same configuration and provide no independent temporal retention test. The visible bowl agrees with the saved bowl location, with no visible disturbance. The supplied target finger envelope bottoms near 1.023 m, about 0.075 m above the bowl lip near 0.948 m; the current exposed package edge is also elevated. Together with the visible separation from the bottle and other tabletop objects, this supports the specified horizontal transfer at maintained height. No external material is observed obstructing that action. This is not certified clearance of hidden geometry. The gripper hides much of the package and some nearby space, so visibility is self_occluded. The returned package edge has no asserted correspondence to original corner IDs. The original individual printed landmarks cannot be reliably resolved here; the failed texture initialization does not itself show slip. Regions provide current bowl, bottle and package surface samples; object bounding regions include some backdrop that must be separated by depth.",
+          "measurement_errors": [
+            {
+              "name": "bowl_rim_near",
+              "error": "Invalid or discontinuous surface depth"
+            },
+            {
+              "name": "bowl_rim_near_right",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "motion": "transfer",
+          "status": "reached",
+          "position_error_m": 0.001657125061741502,
+          "rotation_error_rad": 0.0073421439280282825,
+          "lease_calls": 11,
+          "whole_lease_progress_m": 0.1218839088536517
+        },
+        {
+          "tracking_status": "unknown",
+          "frame": 195,
+          "reference_frame": 0,
+          "reason": "No sufficient nondegenerate rigid feature consensus"
+        },
+        {
+          "review_frame": 195,
+          "parameters": {
+            "identity": "ambiguous",
+            "patch_camera": "robot0_eye_in_hand",
+            "patch": [
+              [
+                302,
+                587
+              ],
+              [
+                464,
+                587
+              ],
+              [
+                464,
+                607
+              ],
+              [
+                302,
+                607
+              ]
+            ],
+            "body": "same",
+            "boundary_camera": "robot0_eye_in_hand",
+            "boundary": null,
+            "face": "side_upright",
+            "edge": [
+              [
+                275,
+                623
+              ],
+              [
+                493,
+                621
+              ]
+            ],
+            "edge_ids": null
+          },
+          "explanation": "The current and earlier views support body=same: the pale blue package and its printed short end remain in the same configuration relative to the fingers while their position relative to the bowl changes. This is visual body correspondence, not an inference from closed fingers. Original vertex numbering remains ambiguous. The exposed printed short end is an approximately upright exterior rectangular side. Its complete upper edge is visible at the screen-lower boundary near y=623; its physical lower edge is the distinct screen-upper boundary near y=578. The returned face region lies strictly inside this side, excluding fingers and the adjoining face. These observations support the local side-plane and upper-edge envelope model, without supplying hidden corners. Four broad-top corners are not visible, so boundary is null. The saved l0 and l1 strokes and l2 border midpoint cannot be identified on their original physical face; the exposed side printing must not substitute for them. No l0, l1 or l2 measurements are returned. Robot self-occlusion hides most of the broad top. The optional patch is current side texture only, not an original-landmark correspondence or an independent grasp witness.",
+          "measurement_errors": []
+        },
+        {
+          "measured_edge_length": 0.0391531174884302,
+          "u": 0.0015,
+          "dimension_hypotheses": [
+            {
+              "edge": [
+                0,
+                1
+              ],
+              "length": 0.0404058988184217,
+              "extrusion": 0.07864624823173662
+            },
+            {
+              "edge": [
+                2,
+                3
+              ],
+              "length": 0.04017441820563324,
+              "extrusion": 0.07912294011452597
+            }
+          ],
+          "body": "same",
+          "old_correspondence": "ambiguous"
+        },
+        {
+          "symmetry_invariant_envelope": {
+            "frame": 195,
+            "plane": [
+              -0.9998088438981448,
+              -0.01926912278281115,
+              0.003313090737679307,
+              -0.05740889437930715
+            ],
+            "edge_world_m": [
+              [
+                -0.0545716806202788,
+                0.030837773045098146,
+                1.0388675036207324
+              ],
+              [
+                -0.053815294524759416,
+                -0.008303249930901953,
+                1.0394797205182094
+              ]
+            ],
+            "inward": [
+              -0.9998088438981448,
+              -0.01926912278281128,
+              0.003313090737679309
+            ],
+            "dimension_hypotheses": [
+              {
+                "edge": [
+                  0,
+                  1
+                ],
+                "length": 0.0404058988184217,
+                "extrusion": 0.07864624823173662
+              },
+              {
+                "edge": [
+                  2,
+                  3
+                ],
+                "length": 0.04017441820563324,
+                "extrusion": 0.07912294011452597
+              }
+            ],
+            "bounds": [
+              [
+                0.0016350463056832097,
+                0.001635046305683207,
+                0.001635046305683207
+              ],
+              [
+                0.0016350463056832097,
+                0.001635046305683207,
+                0.001635046305683207
+              ],
+              [
+                0.0023269165396313514,
+                0.0020951408796932355,
+                0.003936571163803624
+              ],
+              [
+                0.002326916539631352,
+                0.002095140879693236,
+                0.003936571163803625
+              ],
+              [
+                0.0021176707458837396,
+                0.0017156634542930015,
+                0.0031900976645928307
+              ],
+              [
+                0.0021176707458837396,
+                0.0017156634542930015,
+                0.0031900976645928307
+              ],
+              [
+                0.002763216588099401,
+                0.0021241749906704744,
+                0.005456442386764704
+              ],
+              [
+                0.0027632165880994014,
+                0.002124174990670475,
+                0.005456442386764705
+              ]
+            ],
+            "angular_u": 0.02377450582153854,
+            "u": 0.0015,
+            "gauge": "Current visible upper edge; no old vertex assignment"
+          }
+        },
+        {
+          "patch_initialization_error": "ValueError: Selected patch has 6 textured depth-valid features; at least 12 are required. Use a clearer textured interior patch or initialize before occluding camera motion.",
+          "camera": "robot0_eye_in_hand"
+        },
+        {
+          "continuation_attachment_hypotheses": [
+            {
+              "error_m": 0.00020437914203465514,
+              "tolerance_m": 0.005
+            },
+            {
+              "error_m": 0.039121528858022205,
+              "tolerance_m": 0.005
+            },
+            {
+              "error_m": 0.08798519563226972,
+              "tolerance_m": 0.008453946459829918
+            },
+            {
+              "error_m": 0.00020437914203465514,
+              "tolerance_m": 0.006331567688607249
+            },
+            {
+              "error_m": 0.039121528858022205,
+              "tolerance_m": 0.006331567688607249
+            },
+            {
+              "error_m": 0.07880953242529365,
+              "tolerance_m": 0.008453946459829918
+            },
+            {
+              "error_m": 0.0879878139610822,
+              "tolerance_m": 0.008453946459829918
+            },
+            {
+              "error_m": 0.0879878139610822,
+              "tolerance_m": 0.008453946459829918
+            },
+            {
+              "error_m": 0.07881638232252126,
+              "tolerance_m": 0.008453946459829918
+            },
+            {
+              "error_m": 0.07881638232252126,
+              "tolerance_m": 0.008453946459829918
+            }
+          ],
+          "correspondence": "finite_geometric_symmetries_not_physical_index_claims",
+          "reason": "transfer actual retained-object outcome"
+        },
+        {
+          "review_frame": 195,
+          "parameters": {
+            "external": "none_observed",
+            "visibility": "self_occluded",
+            "action": "local_supported"
+          },
+          "explanation": "The specified keep-grip lowering is locally supported; this is not approval of release or a later trajectory. The visible package end has a short vertical extent and a lower boundary above the bowl, consistent with the supplied shallow-box exterior-side model rather than a long downward-hanging package. Its upper edge and visible side are returned for current measurement. Hidden rear vertices are model hypotheses, not observed surfaces.\n\nThe supplied endpoint finger envelope has minimum world z 0.95919 m, approximately 0.0115 m above the saved lip height 0.9477 m. Thus the actual finger lanes remain above the lip for this lowering, rather than requiring passage through its material. The visible bowl rim and interior agree with the short-horizon bowl prior; these current and earlier review images show no apparent displacement or package identity inconsistency. The shallow visible package end and bounded local envelope support lowering above the opening. No external material is observed obstructing this action. Inner-lip overlap by a conservative box would not independently establish collision.\n\nThe main missing package geometry is hidden by the robot. The full package boundary and the original printed landmarks l0, l1 and l2 cannot be reliably reacquired here. The identical review views and closed fingers do not independently demonstrate retention through motion. No release, placement success, or global clearance is established. Bowl regions include boundary background and should be segmented before fitting surfaces.",
+          "measurement_errors": []
+        },
+        {
+          "motion": "lower_to_release",
+          "status": "reached",
+          "position_error_m": 0.001997898210181229,
+          "rotation_error_rad": 0.00932782885487132,
+          "lease_calls": 6,
+          "whole_lease_progress_m": 0.06144497264604594
+        },
+        {
+          "tracking_status": "unknown",
+          "frame": 213,
+          "reference_frame": 0,
+          "reason": "No sufficient nondegenerate rigid feature consensus"
+        },
+        {
+          "review_frame": 213,
+          "parameters": {
+            "identity": "ambiguous",
+            "patch_camera": "robot0_eye_in_hand",
+            "patch": [
+              [
+                305,
+                585
+              ],
+              [
+                466,
+                585
+              ],
+              [
+                475,
+                606
+              ],
+              [
+                296,
+                608
+              ]
+            ],
+            "body": "same",
+            "boundary_camera": "robot0_eye_in_hand",
+            "boundary": null,
+            "face": "side_upright",
+            "edge": [
+              [
+                274,
+                623
+              ],
+              [
+                492,
+                621
+              ]
+            ],
+            "edge_ids": null
+          },
+          "explanation": "The current and earlier images support body=same: the same shallow rectangular package and printed short end remain visible between the fingers. Its original P numbering and saved broad-top landmarks are not recoverable unambiguously, so identity=ambiguous and edge_ids=null. l0, l1 and l2 cannot be reliably identified at their saved definitions; the visible side printing must not be substituted for those top-face landmarks.\n\nThe wrist view shows an exterior rectangular short side, approximately upright, with distinguishable upper and lower edges. Its upper edge is the seam at image y621-623 adjoining the pale upward-face sliver below it in the image. Its lower contour is near image y578; image vertical order here is opposite physical height. Both endpoints of the complete upper edge are visible. The returned face region lies strictly inside the adjoining printed side, excluding fingers, seams and bowl. The optional textured patch is on that same side.\n\nFour broad-top corners are not visible, primarily because of robot self-occlusion, so boundary=null. The observed side plane and unindexed upper edge support the requested local envelope reconstruction with dimensional alternatives; hidden vertices are not observations. This review does not establish release, placement success or retention merely from closed fingers.",
+          "measurement_errors": []
+        },
+        {
+          "measured_edge_length": 0.039139814882949056,
+          "u": 0.0015,
+          "dimension_hypotheses": [
+            {
+              "edge": [
+                0,
+                1
+              ],
+              "length": 0.0404058988184217,
+              "extrusion": 0.07864624823173662
+            },
+            {
+              "edge": [
+                2,
+                3
+              ],
+              "length": 0.04017441820563324,
+              "extrusion": 0.07912294011452597
+            }
+          ],
+          "body": "same",
+          "old_correspondence": "ambiguous"
+        },
+        {
+          "symmetry_invariant_envelope": {
+            "frame": 213,
+            "plane": [
+              -0.9998056720336949,
+              -0.0189720279146399,
+              0.005355401577661798,
+              -0.05941438991175495
+            ],
+            "edge_world_m": [
+              [
+                -0.05477548520099584,
+                0.030409059613856752,
+                0.9759250677024963
+              ],
+              [
+                -0.05402942785839336,
+                -0.008717886633737936,
+                0.9765963238763264
+              ]
+            ],
+            "inward": [
+              -0.9998056720336949,
+              -0.018972027914640262,
+              0.005355401577661804
+            ],
+            "dimension_hypotheses": [
+              {
+                "edge": [
+                  0,
+                  1
+                ],
+                "length": 0.0404058988184217,
+                "extrusion": 0.07864624823173662
+              },
+              {
+                "edge": [
+                  2,
+                  3
+                ],
+                "length": 0.04017441820563324,
+                "extrusion": 0.07912294011452597
+              }
+            ],
+            "bounds": [
+              [
+                0.0016350065337951733,
+                0.001635006533795172,
+                0.001635006533795172
+              ],
+              [
+                0.0016350065337951733,
+                0.001635006533795172,
+                0.001635006533795172
+              ],
+              [
+                0.0023310227241134505,
+                0.0020981768491364528,
+                0.003947768701985198
+              ],
+              [
+                0.00233102272411345,
+                0.0020981768491364523,
+                0.003947768701985197
+              ],
+              [
+                0.00212313408673768,
+                0.0017178931475304994,
+                0.0031909703203525106
+              ],
+              [
+                0.00212313408673768,
+                0.0017178931475304994,
+                0.0031909703203525106
+              ],
+              [
+                0.0027651379480299505,
+                0.0021296290115844466,
+                0.00546844506877518
+              ],
+              [
+                0.0027651379480299505,
+                0.0021296290115844466,
+                0.00546844506877518
+              ]
+            ],
+            "angular_u": 0.023910368255215003,
+            "u": 0.0015,
+            "gauge": "Current visible upper edge; no old vertex assignment"
+          }
+        },
+        {
+          "patch_initialization_error": "ValueError: Selected patch has 5 textured depth-valid features; at least 12 are required. Use a clearer textured interior patch or initialize before occluding camera motion.",
+          "camera": "robot0_eye_in_hand"
+        },
+        {
+          "continuation_attachment_hypotheses": [
+            {
+              "error_m": 0.00019356703329143988,
+              "tolerance_m": 0.005
+            },
+            {
+              "error_m": 0.039332480608886916,
+              "tolerance_m": 0.005
+            },
+            {
+              "error_m": 0.08798983784192206,
+              "tolerance_m": 0.008529984931971657
+            },
+            {
+              "error_m": 0.00019356703329143988,
+              "tolerance_m": 0.00633198327417111
+            },
+            {
+              "error_m": 0.039332480608886916,
+              "tolerance_m": 0.00633198327417111
+            },
+            {
+              "error_m": 0.07889443648644463,
+              "tolerance_m": 0.008529984931971657
+            },
+            {
+              "error_m": 0.08814844279059893,
+              "tolerance_m": 0.008529984931971657
+            },
+            {
+              "error_m": 0.08814844279059893,
+              "tolerance_m": 0.008529984931971657
+            },
+            {
+              "error_m": 0.07889443648644463,
+              "tolerance_m": 0.008529984931971657
+            },
+            {
+              "error_m": 0.0788868564294801,
+              "tolerance_m": 0.008529984931971657
+            }
+          ],
+          "correspondence": "finite_geometric_symmetries_not_physical_index_claims",
+          "reason": "lower_to_release actual retained-object outcome"
+        },
+        {
+          "nominal_radial_margin_m": 0.006432427450816423,
+          "bounded_radial_margin_m": 0.0014422544467065368,
+          "bounded_bottom_margin_m": 0.0036168524093797574,
+          "finger_margin_m": 0.010475834851112977,
+          "upper_drop_m": 0.05819005082130346,
+          "max_xyz_bound_m": [
+            0.0027651379480299505,
+            0.0021296290115844466,
+            0.00546844506877518
+          ],
+          "refinement": 0
+        },
+        {
+          "transition": "open",
+          "frame": 228,
+          "actual_gripper_qpos_m": [
+            0.038842179166082756,
+            -0.03885343901932046
+          ]
+        },
+        {
+          "motion": "post_release_view_and_separation_on_reverse_vertical_path",
+          "status": "reached",
+          "position_error_m": 0.0015649683911866004,
+          "rotation_error_rad": 0.0010818023111143454,
+          "lease_calls": 6,
+          "whole_lease_progress_m": 0.06839027343216157
+        },
+        {
+          "review_frame": 246,
+          "parameters": {
+            "identity": "same",
+            "correspondence": "unknown",
+            "relation": "inside",
+            "separation": "observed",
+            "comparison": "unknown",
+            "definitions": [
+              "v0: Corner of the pale printed broad face at the short end nearest the initial capital C in Cream, on the long-edge side bearing the dark-blue Fresh Taste oval. Currently the upper-left face corner in the wrist image.",
+              "v1: Other corner of that same pale printed broad face short end nearest the initial capital C in Cream, on the long-edge side opposite the Fresh Taste oval. Currently the upper-right face corner in the wrist image."
+            ],
+            "external": "none_observed",
+            "visibility": "self_occluded",
+            "view": "not_needed"
+          },
+          "explanation": "The intended cream cheese package is visibly nested in the patterned bowl cavity. In agentview its near end lies below and behind the near rim, with bowl interior surrounding it; it is not visibly balanced across the rim. Both open fingers are separated from the package. The wrist image hides the near portion behind the hand, but agentview supplies that evidence. No released-state reference or prior v0/v1 definitions were supplied, so these are newly defined physical face landmarks, not replacements for historical unindexed edges. The earlier images obscure the support and do not establish unchanged orientation and support. No external material is observed obstructing the locally scoped 0.035 m upward hand withdrawal; robot self-occlusion is not an external obstacle. An upward view is not needed to establish the currently visible placement, and this assessment is not a full-scene clearance or native-success certificate.",
+          "measurement_errors": []
+        },
+        {
+          "gap": "Released support or current corresponding marks remain unobservable; leave object undisturbed",
+          "values": {
+            "parameters": {
+              "identity": "same",
+              "correspondence": "unknown",
+              "relation": "inside",
+              "separation": "observed",
+              "comparison": "unknown",
+              "definitions": [
+                "v0: Corner of the pale printed broad face at the short end nearest the initial capital C in Cream, on the long-edge side bearing the dark-blue Fresh Taste oval. Currently the upper-left face corner in the wrist image.",
+                "v1: Other corner of that same pale printed broad face short end nearest the initial capital C in Cream, on the long-edge side opposite the Fresh Taste oval. Currently the upper-right face corner in the wrist image."
+              ],
+              "external": "none_observed",
+              "visibility": "self_occluded",
+              "view": "not_needed"
+            },
+            "measurement_errors": []
+          }
+        },
+        {
+          "stopped": "Released support or current corresponding marks remain unobservable; leave object undisturbed",
+          "phase": "verification",
+          "held_evidence": false
+        }
+      ]
+    },
+    "native_steps": 246,
+    "settling_steps": 10,
+    "jev_calls": 82,
+    "gpt_calls": 15,
+    "rpc_calls": 192,
+    "elapsed_s": 2235.244958950905,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e"
+      }
+    ],
+    "last_method_error": null
+  },
+  "audit": {
+    "native_success": true,
+    "termination": "method_incomplete",
+    "gpt_calls": 15,
+    "jev_calls": 82,
+    "native_steps": 246,
+    "elapsed_s": 2235.244958950905,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e"
+      }
+    ],
+    "completion_proposed": false,
+    "program_result_contract_valid": true,
+    "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+    "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+    "dispatches": 82,
+    "models": {
+      "gpt": {
+        "attempts": 15,
+        "unknown_usage": 0,
+        "completed_input": 181759,
+        "completed_output": 43295,
+        "relay_seconds": 2119.856289798976,
+        "matched_requests": 15,
+        "undelivered_or_missing_responses": 0,
+        "request_models": [
+          "gpt-6-astra"
+        ],
+        "transport_source_hashes": [
+          "36d3470de72e088a38c8e171c5f86e4d5aba4ba00bb0f141f476083d653d53ed"
+        ]
+      },
+      "jev": {
+        "attempts": 82,
+        "unknown_usage": 0,
+        "completed_input": 238440,
+        "completed_output": 20418,
+        "relay_seconds": 73.30466054921271,
+        "matched_requests": 82,
+        "undelivered_or_missing_responses": 0,
+        "request_models": [
+          "jev-1.13.0"
+        ],
+        "transport_source_hashes": [
+          "36d3470de72e088a38c8e171c5f86e4d5aba4ba00bb0f141f476083d653d53ed"
+        ]
+      }
+    },
+    "strict_reviews_validated": 15,
+    "strict_designs_validated": 0,
+    "legacy_reviews_json_decoded": 0,
+    "source_origins": [
+      {
+        "number": 0,
+        "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+        "origin": "declared exact-source reuse"
+      }
+    ],
+    "gpt_cost_by_purpose": {
+      "submit_review": {
+        "calls": 15,
+        "upstream_attempts": 15,
+        "completed_returns": 15,
+        "input": 181759,
+        "output": 43295,
+        "unknown_usage": 0
+      }
+    },
+    "usage_scope": "Completed token totals cover attempts with both components known; unknown attempts are additional"
+  },
+  "protocol": {
+    "arguments": {
+      "output": "code/runs/2026-10-25-gpt-jev-program/correspondence-frozen-init16",
+      "libero_root": "/home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 16,
+      "seed": 0,
+      "gpu": "4",
+      "bridge": "http://127.0.0.1:7921",
+      "max_gpt": 24,
+      "max_jev": 200,
+      "max_native_steps": 600,
+      "max_repairs": 0,
+      "method_file": "code/runs/2026-10-25-gpt-jev-program/correspondence-revised-reg13/method-00.json",
+      "revise_archived": false,
+      "staged_design": false,
+      "wall_seconds": 7200
+    },
+    "prompt_sha256": "98b4ecd980d486dc513139506eca3577a0bee99e1c8e739fb80b6ff9b6526fc1",
+    "manual_sha256": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a",
+    "implementation_sha256": {
+      "run_gpt_jev_program.py": "b43427798eee163423c37f28ff037d51c3b8e81cc0e4999ae6b61b3ceeb3030f",
+      "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+      "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+      "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+      "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+    },
+    "planner": "gpt-6-astra/xhigh/local ChatGPT Pro",
+    "executor": "real jev-1.13.0/official systemone",
+    "native_evaluation": "terminal only; never in policy input",
+    "task_recipes": false,
+    "stage_templates": false,
+    "model_wire_numeric_precision": "data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
+    "pro_request_deadline": "loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
+    "review_parameters": "method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
+    "typed_reviews_required_for_generated_methods": true,
+    "staged_design": {
+      "enabled": false,
+      "prompt_sha256": null,
+      "schema_sha256": "ce9a6493bc9112f144a11fef1a937cdf346974552c61c7724ab8a0821437bbb7",
+      "planning_request_deadline_seconds": 1800,
+      "executable_output": "Complete four-string method; design alone is never executed"
+    },
+    "reused_method_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e"
+  }
+}

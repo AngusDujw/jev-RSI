@@ -1,12 +1,12 @@
 # GPT/Jev stability continuation
 
-Current status:23567dfb complete GPT method passed exact-source fresh13
-zero-repair regression (native/proposal true,16GPT/87Jev/261steps/2426.153sec).
-Acquisition was17GPT/88Jev/264steps. The frozen cohort is1/1completed;
-unused16,17are running on the same302host;18,19unadmitted. One Jev failed
-retry has unknown usage and remains additional cost. Cross-initial stability,
-cross-task generality and net efficiency are not yet established. Previous
-5e/a18positive acquisitions and failed exact replays remain separate.
+Current status: exact23567dfb full GPT method is native3/3on frozen
+fresh episodes13,16,17, with zero source repairs on the same302host. Program
+completion proposals are2/3:16stopped at final visual confirmation but native
+true. Both statuses are retained under the predeclared native LIBERO criterion.
+Fixed18,19are running. No knowledge/source/controller/account changes during
+validation. One failed Jev retry in13has unknown usage. Full5case cohort,
+cross-task reliability and controlled efficiency remain unestablished.
 
 Previous status retained: archive-assisted GPT rewrite/one repair reached native success
 on hard13(21GPT/84Jev/252steps), but exact final5e source fresh13zero-repair reuse
@@ -184,7 +184,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Files changed since9d710e19: 127. Generated from tracked staged changes; user-owned untracked directories excluded.
+Files changed since9d710e19: 129. Generated from tracked staged changes; user-owned untracked directories excluded.
 
 | Status | File |
 |---|---|
@@ -252,6 +252,8 @@ Files changed since9d710e19: 127. Generated from tracked staged changes; user-ow
 | A | [artifacts/gpt-jev-correspondence-method-20261025/method.json](../artifacts/gpt-jev-correspondence-method-20261025/method.json) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/method.py](../artifacts/gpt-jev-correspondence-method-20261025/method.py) |
 | A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init13.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init13.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init16.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init16.json) |
+| A | [artifacts/gpt-jev-correspondence-method-20261025/validation/init17.json](../artifacts/gpt-jev-correspondence-method-20261025/validation/init17.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/COHORT.json](../artifacts/gpt-jev-factored-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/README.md](../artifacts/gpt-jev-factored-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-factored-methods-20261025/init13/METHOD.md) |
@@ -1073,3 +1075,20 @@ This passes the previously failed fresh-episode replay gate, not yet the fixed
 cross-initial cohort. No controlled speedup or universal reliability claim.
 CIRCLE28rounds/34unresolved plus CIRCLE3: complete the fixed source cohort,
 no alternative source pooling, replacement cases or new cold-synthesis branch.
+
+## Fixed unused16/17native successes (EXP103)
+
+Init16:native true/proposal false,15GPT/82real Jev/246steps/2235.244959sec.
+The item was physically placed; final visual correspondence was unknown at the
+first released reference, and the method conservatively returned incomplete.
+Init17:native/proposal true,16GPT/87Jev/261steps/2218.846898sec.
+31strict reviews/169dispatches/actual responses/exact source origins audited.
+All two-run usage known: GPT372378input/88297output, Jev489291/42081.
+The earlier13unknown retry remains extra cohort cost. Source and native scorer
+were not changed; evaluator score never entered policy. Do not rewrite16as a
+program completion. Native3/3and proposal2/3are distinct outcomes.
+
+Under the original native criterion,18and19were admitted and launched with
+same exact source/host/limits, zero repairs. No replacement states. CIRCLE29
+rounds/35unresolved plus CIRCLE3: finish the fixed cohort, preserve dual outcome
+and costs, no new method edits or synthesis branches during validation.
