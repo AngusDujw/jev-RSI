@@ -841,3 +841,17 @@ Its initial rewrite is archive-assisted, never cold or zero-source-repair reuse.
 Original acquisition, failed reuse and this revision are all retained separately.
 CIRCLE1now22rounds/26unresolved plus CIRCLE3; both current conditions test the
 new generic bounded alternatives on fixed regression13before unused admissions.
+
+## Actual new archive-assisted input and implemented alternatives
+
+The daf12dfc cold12-revised initial request is audited at frame0with empty
+checkpoint memory, exact original0c4c source,8historically scoped public RPCs,
+English ASCII and exact frozen instruction prefix, Astra/xhigh via existing Pro
+bridge. No native evaluator score or privileged state is in input. Receipt:
+code/runs/2026-10-25-gpt-jev-program/cold12-revised-reg13/provenance-input-audit.json.
+Returned source d6494f31 implements9geometry-derived grasp-offset candidates
+and at most3distinct locally reviewed approaches, separates local retention
+references from full-envelope pose, and preserves explicit recovery dependencies.
+These are actual GPT-written source changes, not outer-agent task edits or
+shared recipes. No additional model/physics calls were made for this audit;
+execution and native outcome remain pending.
