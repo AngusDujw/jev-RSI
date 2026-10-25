@@ -8,6 +8,21 @@ evidence. The task is runtime data; there is no task recipe or stored trajectory
 Keep the complete source concise, preferably at most 180 lines. Use the minimum
 sufficient obtainable evidence for each gate. Repeated descriptions and redundant
 checks increase generation and review cost without creating new measurements.
+Design the observation dependencies before writing the phase logic. In interface,
+list each important gate, its minimal required state components, obtainable
+measurement witnesses, retained invariants, and executable occlusion fallback.
+Implement those distinctions in source. Do not call an all-purpose full-object
+registration routine unconditionally at every phase. A gate needs the components
+that its next action actually uses, not every component of a global shape pose.
+Landmarks chosen before an intervention can become hidden by the hand; the
+ordinary path must still have an attainable local witness or a justified bounded
+trial with an independent effect check. A change of camera view is not by itself
+evidence of object motion. Retain a stated short-horizon world-geometry prior
+only while current partial observations and possible physical interactions remain
+consistent with it, with uncertainty and explicit invalidation conditions.
+Acquiring a new identified rigid patch for a prospective motion test must not
+require first registering that patch to every old shape landmark. Its local
+motion reference and a later full-envelope pose have different evidence needs.
 This is a bounded simulator episode. Construct an operational method with
 observable checks and bounded trials; a full exact reconstruction or certified
 collision-free scene model is not required or provided. Use api.drive for ordinary

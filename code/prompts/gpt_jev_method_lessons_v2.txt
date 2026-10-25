@@ -1,4 +1,41 @@
-Generic development lessons, supported only by the recorded development failure:
+Generic development lessons, bounded by recorded development evidence:
+
+- Factor the estimated state by the next predicate. If a gate is g(x_S),
+  unobservability of unrelated components x_not_S does not establish that g is
+  false. Identify the minimal current witness for x_S and explicitly retain or
+  invalidate its historical dependencies. Do not make every local action depend
+  on a fresh global object transform. Relative surface/effector alignment,
+  a support relation, differential motion, and a full transported envelope can
+  require different measurements. A returned null for an old mark is not a
+  measurement that the body moved. A prior remains a hypothesis, not a detection;
+  check current partial evidence and relevant possible interactions before use.
+- Initial named landmarks are not a permanent sensor specification. When they
+  become hidden, identify an obtainable rigid surface on the same body and form
+  a current local reference for the next differential test. Initializing that
+  reference does not require a full old-shape registration. Independently measure
+  patch/body motion and hand motion after the intervention. If later envelope
+  reasoning needs a patch-to-shape relation, establish that relation from then
+  obtainable geometry or explicitly retain its uncertainty; do not fabricate it.
+  A fallback that simply requests the same hidden marks is not executable recovery.
+- Separate a currently justified observation action from a later unobserved
+  action. Assess each at its actual scope. Visible partial surfaces can support
+  an explicit local geometric model when identity, model assumptions, residuals
+  and uncertainty are checked. A model is not a collision certificate. Neither
+  missing global visibility nor robot self-occlusion is an observed external
+  obstacle; an observed obstruction still forbids the rejected local action.
+- Keep persistent state bounded by construction. Save essential reference
+  geometry, handles, acknowledgments and phase dependencies; keep diagnostic
+  histories as a bounded window outside nested copies of old state. Split
+  independent numeric structures within the documented key/value/total limits.
+  Audit the worst branch, not just initialization, before calling checkpoint.
+- Make geometric gates and numerical control compatible. Derive each local
+  stopping tolerance from the measured effect margin and uncertainty. If a
+  correction is smaller than a routine's early-return deadband while the effect
+  predicate is still false, repeating that routine unchanged cannot fix it.
+  Use a justified finer correction or an explicitly supported bounded trial,
+  then remeasure the effect. Feature spread is an observability quantity relative
+  to residuals and noise, not a universal absolute object-size threshold. Keep
+  heuristic uncertainty distinct from calibrated statistical confidence.
 
 - Reference continuity is part of the runtime contract. A source repair does not
   reset the physical episode or its saved patch references. Store useful handles

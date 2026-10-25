@@ -468,6 +468,8 @@ def main():
             "Return submit_review only, all text English ASCII. parameters_json must encode an object with concise actionable numeric or boolean observations requested by the caller. "
             "The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. "
             "Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. "
+            "Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. "
+            "Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. "
             "Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. "
             "The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.")
         patching = kind == "method" and failed_method is not None
