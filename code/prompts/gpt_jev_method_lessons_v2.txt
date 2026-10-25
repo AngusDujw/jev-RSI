@@ -1,5 +1,25 @@
 Generic development lessons, bounded by recorded development evidence:
 
+- Recovery must be reachable from every relevant measurement call site, not
+  just the first use of a helper. An exception or require inside a shared
+  observer can bypass a caller's intended alternatives. Handle inconclusive
+  measurements at the helper boundary or explicitly at all its callers, with
+  finite retries, distinct informative measurements or supported observation
+  actions, and preservation of acknowledged physical state. Distinguish this
+  outcome from an observed contradiction, actual loss, exhausted resources and
+  a programming error; do not catch all failures and silently continue.
+  Before submission, follow each important unknown-result path through the
+  actual source to its recovery or justified terminal limitation, including
+  uses after later interventions. A recovery described only in interface text
+  or around an earlier call is not implemented for those later calls.
+- Derive measurement adequacy from the next predicate, not an unrelated fixed
+  ceiling on one global pose-error scalar. Retain componentwise bounds or a
+  bounded set of physically consistent hypotheses when different components
+  have different observability. Propagate those dependencies into the actual
+  effect margin. Large uncertainty in an unused direction need not make that
+  margin inconclusive. If it is inconclusive, seek relevant new information or
+  a supported bounded alternative; raising a quality threshold alone creates
+  neither a measurement nor evidence that the action will work.
 - A failed conservative proxy is not an observed physical impossibility. For
   an effect margin g(theta, x), distinguish nominal feasibility, robust
   feasibility over a stated uncertainty set, and an observed failed trial.

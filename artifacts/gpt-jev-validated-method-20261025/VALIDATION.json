@@ -1,0 +1,55 @@
+{
+  "condition": "Exact final GPT method frozen reuse, zero source repair; separate from its acquisition",
+  "framework_commit": "daf12dfc",
+  "source_sha256": "5e5083d55b53664d10f8a018e8b0fda7ed6daf8b7de7291881fc4cde86919074",
+  "method_file": "code/runs/2026-10-25-gpt-jev-program/cold12-revised-reg13/method-01.json",
+  "task_id": 1335,
+  "seed": 0,
+  "gpu": "4",
+  "predeclared_init_indices": [
+    13,
+    16,
+    17,
+    18,
+    19
+  ],
+  "admitted": [
+    13
+  ],
+  "completed": [
+    {
+      "native_success": false,
+      "termination": "method_incomplete",
+      "gpt_calls": 12,
+      "jev_calls": 67,
+      "native_steps": 201,
+      "elapsed_s": 1591.3174744341522,
+      "init_index": 13
+    }
+  ],
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "limits": {
+    "gpt": 24,
+    "jev": 200,
+    "native_steps": 600,
+    "source_repairs": 0,
+    "wall_seconds": 7200
+  },
+  "admission_rule": "Fresh regression13 first; only after native success admit16-19; first failure stops remaining admissions; no source edits or replacement cases",
+  "criterion": "Five predeclared native successes with one exact source and zero source repair",
+  "acquisition_lineage": {
+    "gpt_calls": 38,
+    "jev_calls": 222,
+    "native_steps": 666,
+    "elapsed_s": 6498.356984575978
+  },
+  "status": "closed, native regression failed;16-19not admitted",
+  "scope": "Single task portability; not universal or cross-task reliability, and not independent new synthesis per episode",
+  "native_successes": 0,
+  "executed_cases": 1
+}

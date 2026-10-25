@@ -161,6 +161,9 @@ graph LR
     T_2026W43_028["📊 libero-generic-vision<br/>afb既有5/5完整源零修复迁移到回归13…"]:::experiment
     T_2026W43_029["📊 libero-generic-vision<br/>0c4c独立成功初稿零修复迁移回归13失败…"]:::experiment
     T_2026W43_030["⛔ libero-generic-vision<br/>daf独立冷方法未交付：Pro首流903秒…"]:::blocker
+    T_2026W43_031["📊 libero-generic-vision<br/>GPT归档适配加1次现场修复终于通过困难1…"]:::experiment
+    T_2026W43_032["⛔ libero-generic-vision<br/>855两阶段设计已交付但完整代码900秒超…"]:::blocker
+    T_2026W43_033["📊 libero-generic-vision<br/>精确5e源新空13零修复失败：12GPT/…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -279,6 +282,9 @@ graph LR
   T_2026W43_027 --> T_2026W43_028
   T_2026W43_028 --> T_2026W43_029
   T_2026W43_029 --> T_2026W43_030
+  T_2026W43_030 --> T_2026W43_031
+  T_2026W43_031 --> T_2026W43_032
+  T_2026W43_032 --> T_2026W43_033
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -425,6 +431,9 @@ graph LR
 | `T-2026W43-028` | 2026-10-25 | experiment | libero-generic-vision | afb既有5/5完整源零修复迁移到回归13失败：2GPT/28Jev/84步，局部夹指通道未确认；原范围成功不能泛化 | `EXP-2026W43-091` | - |
 | `T-2026W43-029` | 2026-10-25 | experiment | libero-generic-vision | 0c4c独立成功初稿零修复迁移回归13失败：4GPT/29Jev/87步；当前完整指轮廓下降被拒，需有界替代配置 | `EXP-2026W43-092` | - |
 | `T-2026W43-030` | 2026-10-25 | blocker | libero-generic-vision | daf独立冷方法未交付：Pro首流903秒无completed、重试余时耗尽，2未知费用尝试；0Jev/0策略步，阶段合成另检验 | `EXP-2026W43-093` | - |
+| `T-2026W43-031` | 2026-10-25 | experiment | libero-generic-vision | GPT归档适配加1次现场修复终于通过困难13：native/proposal true，21GPT/84Jev/252步；精确最终源跨初态复用另验 | `EXP-2026W43-095` | - |
+| `T-2026W43-032` | 2026-10-25 | blocker | libero-generic-vision | 855两阶段设计已交付但完整代码900秒超时：1已知设计usage加1未知代码尝试，0Jev/0源码；不计冷生成成功 | `EXP-2026W43-096` | - |
+| `T-2026W43-033` | 2026-10-25 | experiment | libero-generic-vision | 精确5e源新空13零修复失败：12GPT/67Jev/201步；搬运后6.84mm估计触发6mm硬门限且恢复作用域缺失，16-19未准入 | `EXP-2026W43-098` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

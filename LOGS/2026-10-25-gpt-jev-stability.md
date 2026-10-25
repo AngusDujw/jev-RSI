@@ -1,21 +1,13 @@
 # GPT/Jev stability continuation
 
-Current status: both frozen cold candidates failed their all-five criteria:
-a8e6ea72 completed five cases, native4/5;618f559b completed three admitted cases,
-native2/3, with16/17 unadmitted after regression13 failed. All failures, complete methods and
-known costs are retained. Stable cold success is not established. Candidate0d15ab18 then stopped on a Jev transport502 before completion,
-native0/1 admitted;16-19 remained unadmitted. Its policy effect is uncompleted.
-Frozen2d710418 also failed cold regression13 (31GPT/179Jev/537steps) despite
-the verified repair-context fix. Previous50432131 failed separately, and the
-archive-assisted rewrite failed before release (28GPT/98Jev/294steps). The afb
-exact-source reuse regression13 has now failed on unresolved finger access;
-its earlier scoped5/5 is not a broader portability guarantee. The second exact
-initial-output source0c4c also failed13before grasp (4GPT/29Jev/87steps).
-New daf12dfc cold13failed before source delivery on a Pro incomplete stream
-and total deadline. Its separate archive-assisted0c4c revision13continues.
-Frozen85527c5b staged cold13now tests saved design then complete code; no
-archive input, total32GPT/5repairs/200Jev/600steps/9000s,900s planning stages. Unused16-19remain unadmitted.
-Stable cold or hard-regression portability is still unestablished.
+Current status: archive-assisted GPT rewrite/one repair reached native success
+on hard13(21GPT/84Jev/252steps), but exact final5e source fresh13zero-repair reuse
+failed after transfer(12GPT/67Jev/201steps). The0/1frozen cohort is closed and
+16-19were not admitted. Stable cooperation is still unestablished. All acquisition
+positives and replay negatives remain separate. Next generic lessons address
+all-call-site unknown-observation recovery and predicate-specific uncertainty;
+GPT, not the outer agent, will revise the complete source from the failed trace.
+Cold single-request and staged synthesis failures are retained with unknown costs.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
 frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
@@ -184,7 +176,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete tracked-file inventory against9d710e19: 102 files.
+Complete tracked-file inventory against9d710e19: 113 files.
 
 | Status | File |
 |---|---|
@@ -270,6 +262,9 @@ Complete tracked-file inventory against9d710e19: 102 files.
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/README.md](../artifacts/gpt-jev-resilient-methods-20261025/init13/README.md) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/method.json](../artifacts/gpt-jev-resilient-methods-20261025/init13/method.json) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/method.py](../artifacts/gpt-jev-resilient-methods-20261025/init13/method.py) |
+| A | [artifacts/gpt-jev-staged-synthesis-20261025/DESIGN.json](../artifacts/gpt-jev-staged-synthesis-20261025/DESIGN.json) |
+| A | [artifacts/gpt-jev-staged-synthesis-20261025/PROVENANCE.json](../artifacts/gpt-jev-staged-synthesis-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-staged-synthesis-20261025/README.md](../artifacts/gpt-jev-staged-synthesis-20261025/README.md) |
 | A | [artifacts/gpt-jev-trial-methods-20261025/COHORT.json](../artifacts/gpt-jev-trial-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-trial-methods-20261025/PROVENANCE.json](../artifacts/gpt-jev-trial-methods-20261025/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-trial-methods-20261025/README.md](../artifacts/gpt-jev-trial-methods-20261025/README.md) |
@@ -278,12 +273,20 @@ Complete tracked-file inventory against9d710e19: 102 files.
 | A | [artifacts/gpt-jev-typed-method-20261025/README.md](../artifacts/gpt-jev-typed-method-20261025/README.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/method.json](../artifacts/gpt-jev-typed-method-20261025/method.json) |
 | A | [artifacts/gpt-jev-typed-method-20261025/method.py](../artifacts/gpt-jev-typed-method-20261025/method.py) |
+| A | [artifacts/gpt-jev-validated-method-20261025/METHOD.md](../artifacts/gpt-jev-validated-method-20261025/METHOD.md) |
+| A | [artifacts/gpt-jev-validated-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-validated-method-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-validated-method-20261025/README.md](../artifacts/gpt-jev-validated-method-20261025/README.md) |
+| A | [artifacts/gpt-jev-validated-method-20261025/VALIDATION.json](../artifacts/gpt-jev-validated-method-20261025/VALIDATION.json) |
+| A | [artifacts/gpt-jev-validated-method-20261025/method.json](../artifacts/gpt-jev-validated-method-20261025/method.json) |
+| A | [artifacts/gpt-jev-validated-method-20261025/method.py](../artifacts/gpt-jev-validated-method-20261025/method.py) |
+| A | [artifacts/gpt-jev-validated-method-20261025/validation/init13.json](../artifacts/gpt-jev-validated-method-20261025/validation/init13.json) |
 | M | [baseline/roboicl/reproduction/pro_oauth_bridge.py](../baseline/roboicl/reproduction/pro_oauth_bridge.py) |
 | M | [code/prompts/README.md](../code/prompts/README.md) |
 | A | [code/prompts/gpt_jev_design_v1.txt](../code/prompts/gpt_jev_design_v1.txt) |
 | M | [code/prompts/gpt_jev_method_lessons_v2.txt](../code/prompts/gpt_jev_method_lessons_v2.txt) |
 | M | [code/prompts/gpt_jev_method_v2.txt](../code/prompts/gpt_jev_method_v2.txt) |
 | M | [code/prompts/gpt_jev_program_api_v2.md](../code/prompts/gpt_jev_program_api_v2.md) |
+| A | [code/scripts/audit_gpt_jev_run.py](../code/scripts/audit_gpt_jev_run.py) |
 | A | [code/scripts/gpt_jev_geometry.py](../code/scripts/gpt_jev_geometry.py) |
 | M | [code/scripts/gpt_jev_program_worker.py](../code/scripts/gpt_jev_program_worker.py) |
 | A | [code/scripts/gpt_jev_review_contract.py](../code/scripts/gpt_jev_review_contract.py) |
@@ -913,3 +916,68 @@ No duplicate earlier design images or physical dispatch. Design usage is known:
 9036input/3709output, including2588reported reasoning output. These are partial
 synthesis costs; full-program delivery, native success and efficiency remain
 pending. Audit: staged-cold-init13/staged-input-audit.json,zero additional calls.
+
+## Actual hard-regression native success (EXP095)
+
+The independently generated0c4c method was adapted by GPT from its failed reuse
+record and repaired once in the new13scene. Native and program proposal are both
+true:21GPT/84real Jev/252policy steps/3854.71seconds. All19strict reviews,588labels,
+2source hashes and costs audited. GPT282410input/97316output; Jev215186/20916,
+zero unknown attempts. Final source5e5083d5 is372lines and was not edited by the
+outer agent. Measured post-release drift0.245mm over9physical steps is not
+truth accuracy; terminal isolated LIBERO is the authoritative positive outcome.
+[Complete method and Jev protocol](../artifacts/gpt-jev-validated-method-20261025/METHOD.md).
+
+Its three lineage episodes (independent initial success, failed exact reuse,
+then this revision) total38GPT/222Jev/666steps/6498.36seconds. These acquisition
+costs are not free, and this is not a sum of all research/exploration costs.
+The acquisition13episode had a source repair and does not count as fresh frozen
+reuse. Predeclared validated-frozen-cohort-manifest.json now admits a new empty
+13episode using the exact final source on the unchanged dafhost,24GPT/200Jev/
+600steps/0source repairs/7200seconds. Only after it passes admit16-19. No source
+editing, replacement cases or pooled acquisition/reuse rate.
+
+## Staged complete-code delivery failed (EXP096)
+
+Strict design completed, but code materialization exhausted its900second ceiling.
+Nativefalse/0source/0Jev/0policy steps;2logical requests/1093.20seconds. Design
+9036input/3709outputknown; one code attempt has unknown usage, not zero.
+[Preserved incomplete design and failure](../artifacts/gpt-jev-staged-synthesis-20261025/README.md).
+No physical policy was tested. The staged runtime remains optional, with no
+claim of stable fresh synthesis or speedup. Current focus is the exact-source
+cross-initial validation of the genuinely native-positive complete method.
+CIRCLE1is23rounds/29unresolved plus CIRCLE3; the frozen source and regression-first
+admissions are the convergence plan, with formal goals and theory unchanged.
+
+## Exact final-source fresh replay failed (EXP098)
+
+Frozen5e source on fresh empty13ended native/proposal false,12GPT/67real Jev/
+201policy steps/1591.32seconds,zero source repairs. All12strict reviews,469labels,
+source reuse origin and raw relay responses audited. GPT134489input/34820output;
+Jev174430/16683,zero unknown. The method grasped and transferred, then stopped
+on heuristic partial-face uncertainty6.840mm exceeding its own6mm ceiling.
+The source's recovery try covers the first post-retention observe, while later
+lift/transfer/lower observe calls lie outside it. This is a recovery reachability
+and unrelated global-quality-gate defect, not measured truth error or proof of
+physical impossibility. Original acquisition success is retained separately.
+[Closed0/1validation and raw outcome](../artifacts/gpt-jev-validated-method-20261025/validation/init13.json).
+No unused16-19were admitted; no replacement samples or source edits.
+
+Only shared generic English lessons now add all-call-site inconclusive recovery
+and predicate-specific uncertainty adequacy; numerical control/API/account stay
+unchanged. Next GPT revision receives unedited5e source plus this actual failed
+public outcome and last8historical RPCs in a fresh13scene, never privileged NPZ.
+The source itself remains model-authored. Cross-initial stability remains unmet.
+
+## Reusable mechanical audit (EXP097)
+
+The production saved-run auditor verifies actual model-source/patch origins,
+exact sanitized relay responses, raw Jev choices/actions/bounds/acknowledgments,
+strict versus legacy schemas, and per-purpose known/unknown/undelivered costs.
+Nineteen real-record/RAM-corruption checks passed with0new calls or physics;
+receipt audit-tool-offline-20261025/validation.json records0177801c source.
+It reads saved terminal native results without rerunning hidden evaluation or
+certifying observation truth. This is a reusable harness tool, not a temporary
+test script. Current failure was mechanically consistent, not a successful task.
+CIRCLE1is24rounds/30unresolved plus CIRCLE3; fixed recovery-only knowledge and
+regression-first admissions are the convergence plan, with formal goals unchanged.

@@ -40,6 +40,11 @@ evidence for its gates. Follow actual helper return fields and structured review
 schemas. Program-returned diagnostic keys must survive into repair inputs under
 `incomplete_result.program_result`; verify real request files, not only templates.
 
+Use the [saved-run auditor](../../../code/scripts/audit_gpt_jev_run.py) to check
+actual source origins, relay returns, Jev dispatches and usage attempts. Its
+guide command supports read-only inspection. A mechanical audit cannot establish
+observation truth or replace the saved isolated native evaluator result.
+
 ## Execute through the existing harness
 
 Read the [framework guide](../../../code/prompts/README.md) for the current tested

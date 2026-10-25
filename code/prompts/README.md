@@ -1,12 +1,12 @@
 # GPT/Jev complete-method framework
 
-Current limitation: the successful frozen-source5/5 was specific to those
-initial states. Additional hard-regression13tests failed for cold generation,
-archive-assisted revision, and the old source without repair. These outcomes
-are retained separately in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
-Current generic lessons distinguish conservative proxy infeasibility from an
-observed failed action and require bounded alternatives for inconclusive gates.
-This guidance change has not yet established native success.
+Current evidence: a GPT archive-assisted rewrite and one same-scene repair now
+completed hard regression13with native success (21GPT/84real Jev/252steps).
+[The complete unedited method and Jev protocol](../../artifacts/gpt-jev-validated-method-20261025/METHOD.md)
+are preserved; its first exact-source fresh13trial failed after transfer. Earlier
+frozen-source5/5 was specific to those initial states, and later failures remain
+separate in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
+Reliable independent fresh synthesis and net efficiency remain unestablished.
 
 ## Active program interface v2
 
@@ -20,7 +20,9 @@ ceilings, while visual review keeps its existing deadline. No duplicate earlier
 images are appended to the immediate same-frame materialization. This mode is
 separate from archive-assisted revision and is not combined with method reuse.
 Fifteen offline production-planner/real-CLI checks passed, with zero model calls
-or physics. Native reliability and latency improvements remain untested.
+or physics. The actual design stage subsequently completed, but full-code
+generation timed out without an executable method; its failure and unknown usage
+are [retained](../../artifacts/gpt-jev-staged-synthesis-20261025/README.md).
 
 The actual builder is [gpt_jev_method_v2.txt](gpt_jev_method_v2.txt), supplied with
 the [exact API manual](gpt_jev_program_api_v2.md) and
@@ -270,3 +272,25 @@ references and English/task-free checks passed; native success is separate.
 The older504regression has now ended nativefalse/gpt_budget; its last source
 was episode-bound. A separately labeled archive-assisted revision on2dremoves
 old frame-specific observation shortcuts; independent cold validation continues.
+
+## Reproduce the saved-run audit
+
+The [audit tool](../scripts/audit_gpt_jev_run.py) checks raw Jev choices against
+dispatches, bounds/acknowledged steps, complete source hashes against actual GPT
+returns or declared reuse, exact relay responses, tool schemas, and all known or
+unknown upstream usages. It reads the saved terminal native result and does not
+rerun physics, infer hidden state or certify observation truth. Missing/ambiguous
+request matches are explicit errors. Undelivered completed responses retain
+their costs without inventing an executed method. Legacy untyped reviews stay
+separate from strict visual reviews and strict designs.
+
+The following command is one line. It performs a read-only audit of the actual
+completed acquisition; replace the final directory for another completed run.
+
+```bash
+python3 -B code/scripts/audit_gpt_jev_run.py --no-write --bridge-dir code/runs/2026-10-25-gpt-jev-program/bridge-concurrent code/runs/2026-10-25-gpt-jev-program/cold12-revised-reg13
+```
+
+Omit the read-only option to write the derived audit.json in that run directory.
+Nineteen offline checks over four real completed runs and in-memory corrupted
+fixtures passed, with zero new model calls or physics and no temporary test scripts.
