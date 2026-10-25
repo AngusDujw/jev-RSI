@@ -5,8 +5,10 @@ a8e6ea72 completed five cases, native4/5;618f559b completed three admitted cases
 native2/3, with16/17 unadmitted after regression13 failed. All failures, complete methods and
 known costs are retained. Stable cold success is not established. Candidate0d15ab18 then stopped on a Jev transport502 before completion,
 native0/1 admitted;16-19 remained unadmitted. Its policy effect is uncompleted.
-A bounded classification-transport revision passed11offline checks and will
-undergo a new independent regression-first native evaluation.
+New frozen50432131 now runs a fresh independent cold regression13 with
+the same model-visible instructions and logical limits;16-19 remain unadmitted.
+Its bounded transport passed11fault/loopback checks plus2real-socket checks,
+all Native=N/A. Stable native success is still unestablished.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
 frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
@@ -628,3 +630,21 @@ models or physics, Native=N/A; exact owned key/config fixtures were removed and
 no temporary test program was written. Receipt:
 code/runs/2026-10-25-gpt-jev-program/jev-transport-offline-20261025/validation.json.
 Actual renewed native evaluation is still required.
+
+
+## Resilient transport candidate50432131: fresh regression admitted
+
+The own idle bridge was restarted with the committed implementation on the same
+loopback port and append-only audit directory. Its source hash is recorded per
+request. Only regression13is admitted;16-19require its success. New root manifest
+records32GPT/5repairs/200logical Jev/600policy steps/9000seconds and up to5upstream
+attempts per Jev request. The prior0d15nativefalse and all3unknown attempts remain
+separate. Each new episode starts empty, with no archived source. Actual initial
+instructions match0d15byte-for-byte (ecd22f1530724c9d56bcf0057747c5582379d5b5a4342b088881768b490c10ce),
+while actual host implementation hashes match50432131. Thus no new task knowledge
+or policy recipe was injected during the transport fix. No native result yet.
+
+Two additional actual HTTPResponse/socket checks passed: read1/socket timeout on
+loopback JSON and rejection of slow chunks at0.121seconds against a0.12second
+budget. Zero model calls, physics or temporary scripts; test server joined.
+Receipt: code/runs/2026-10-25-gpt-jev-program/jev-transport-offline-20261025/socket-validation.json.

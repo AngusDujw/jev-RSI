@@ -223,3 +223,11 @@ A transport revision adds at most5identical non-actuating classification
 attempts, an absolute queue/read/retry deadline, and active bridge source hashes.
 11mock-upstream/real-loopback checks passed with no real models or physics.
 Native regression must be rerun; static tests do not establish task reliability.
+
+
+Candidate50432131 has restarted an independent cold regression13 with the same
+model-visible builder/API/lessons as0d15and the new bounded classification
+transport. Only13is admitted; unused16-19require regression success. Prior
+transport-interrupted nativefalse and unknown attempts remain separate. Native
+outcomes are pending. Two additional actual socket checks passed without models
+or physics; they do not establish task success.

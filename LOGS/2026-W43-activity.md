@@ -496,3 +496,6 @@
 - 【Agent】【2026-10-25 09:03】[result] 0d15回归13实际初始请求核验：固定instructions与冻结commit的前知+经验+manual逐字匹配，五实现文件哈希也匹配；frame0、空checkpoint、无旧源、gpt-6-astra/xhigh、全ASCII英文。cold-input-audit已落盘，无新模型/物理调用，仅输入契约证据。
 - 【Agent】【2026-10-25 09:36】[op] 新建实验块 EXP-2026W43-086：0d15回归13被Jev三次TLS EOF后桥502中止，原生false，保留传输失败与未知费用  ↪ `EXP-2026W43-086`
 - 【Agent】【2026-10-25 09:47】[op] 保留0d15传输中断native0/1、8GPT已知及Jev3未知上游费用、完整2源版本；16–19未准入。通用桥Jev最多5尝试+15/45/60/60退避、队列/读取/重试全调用deadline及实际桥源码哈希，host传header；11实际生产函数/真实回环HTTP故障注入通过，0真实模型/新物理，所有自建key/config夹具删除且无测试脚本文件。负结果/Discussion/Retro/T022同步，不热改原冻结数据。  ↪ `EXP-2026W43-086`
+- 【Agent】【2026-10-25 09:49】[run] 50432131冻结新分类传输版本：仅停止本任务空闲旧桥61437，重启本任务7921同目录追加审计，新真实桥带源哈希/5有界尝试；反向隧道未改。server2独立resilient工作树同模型/前知/32GPT/5修复/200Jev/600步/9000秒，预定13回归+16–19，先仅准入13独立冷生成；原0d15传输失败不删除、不并成成功。
+- 【Agent】【2026-10-25 09:50】[note] 同步启动纠正：fetch曾在前台仍未完成时后续worktree尝试提前，出现invalid reference；已等fetch成功后安全重试新增独立worktree。首次native SSH连接reset、未启动机器人，不按任务回合/模型调用；先前run流水为启动意图，实际准入以新protocol/task文件为准。
+- 【Agent】【2026-10-25 09:53】[result] 50432131原生回归13实际启动且初始请求/五实现哈希匹配冻结commit，空记忆无旧源；model-visible instructions SHA与0d15逐字相同，只有通用传输版本变。追加2实际HTTPResponse/socket读验证通过（慢流0.121秒在0.12秒预算拒绝），无真实模型/新物理/临时脚本，测试服务已join。
