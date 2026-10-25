@@ -4,9 +4,10 @@ Current status: the frozen a8e6ea72 independent cold cohort completed all five
 predeclared initial states9-13 with native4/5, falsifying its all-five criterion.
 Init13 exhausted the GPT budget after measured retention, before completing
 transfer/placement. All failures and costs are retained. A new separately frozen
-candidate618f559b completed unused init14 with native/proposal true and zero
-source repairs (17GPT/100Jev/300steps/1946.89seconds). Independent cold init13/15
-are running; its predeclared sequence
+candidate618f559b completed unused init14/15 with native/proposal true: zero
+repairs/17GPT/100Jev/300steps/1946.89seconds and3repairs/26GPT/107Jev/321steps/
+3183.01seconds. Regression13 is running its last allowed repair;16/17 remain
+unadmitted pending that terminal result. Its predeclared sequence
 is13-17, with32GPT/5repairs/200Jev/600steps/9000seconds per case.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
@@ -176,7 +177,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete changed-file inventory against9d710e19: 56 tracked files.
+Complete changed-file inventory against9d710e19: 61 tracked files.
 
 | Change | File |
 |---|---|
@@ -219,6 +220,11 @@ Complete changed-file inventory against9d710e19: 56 tracked files.
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init14/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init14/README.md) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init14/method.json](../artifacts/gpt-jev-continuity-methods-20261025/init14/method.json) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init14/method.py](../artifacts/gpt-jev-continuity-methods-20261025/init14/method.py) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init15/METHOD.md](../artifacts/gpt-jev-continuity-methods-20261025/init15/METHOD.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init15/PROVENANCE.json](../artifacts/gpt-jev-continuity-methods-20261025/init15/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init15/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init15/README.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.json](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.json) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init15/method.py](../artifacts/gpt-jev-continuity-methods-20261025/init15/method.py) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/METHOD.md](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) |
@@ -505,3 +511,24 @@ changes remain confounded; full speed/token improvement is unproven.
 [separate cohort manifest](../artifacts/gpt-jev-continuity-methods-20261025/COHORT.json).
 Only1/5has completed;13/15are running,16/17not yet admitted. All initial
 generations have empty scene memory and no archived task source.
+
+## Continuity candidate second terminal result (EXP084)
+
+Unused init15 completed native=true/proposal=true after3automatic source repairs:
+26GPT/107real Jev/321policy steps/3183.01seconds. All107choices/749labels,
+4complete source hashes and22strict reviews passed audit. All26/107upstream
+usages are known: GPT466051input/102467output; Jev222862/26643.
+Initial generation9183/25106,22reviews367456/51775,3repairs89412/25586.
+
+The repairs address finite side-band overlap, a fixed patch-spread threshold,
+and a release correction smaller than the control routine's3mm early-return
+tolerance. The third repair preserves the release criterion, derives a tighter
+local tolerance from available radial margin, moves, and remeasures. The earlier
+live commentary attributing that final stop to bottom gap was inaccurate: the
+decisive recorded mismatch is radial uncertainty clearance and ineffective small
+recentering. Exact rationales and all source versions remain in the raw run.
+
+[Complete final method and all revision rationales](../artifacts/gpt-jev-continuity-methods-20261025/init15/METHOD.md).
+Both completed cases14/15 have native/proposal true; regression13 still runs its
+last allowed repair. Init16/17 remain unadmitted until13terminal. No stable-five,
+cross-task, isolated-component, or net token/latency claim follows.

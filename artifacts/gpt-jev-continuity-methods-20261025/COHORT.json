@@ -47,11 +47,22 @@
       "jev_calls": 100,
       "native_steps": 300,
       "elapsed_s": 1946.8865959679242
+    },
+    {
+      "init_index": 15,
+      "source_sha256": "b30ff3004735da9468746dca6f05ade3980cc07e4c4de280af7eb7ff24441c57",
+      "source_revisions": 3,
+      "native_success": true,
+      "completion_proposed": true,
+      "termination": "completion_proposed",
+      "gpt_calls": 26,
+      "jev_calls": 107,
+      "native_steps": 321,
+      "elapsed_s": 3183.0116929789074
     }
   ],
   "pending": [
     13,
-    15,
     16,
     17
   ],

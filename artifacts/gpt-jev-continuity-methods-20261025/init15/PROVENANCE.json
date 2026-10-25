@@ -1,0 +1,92 @@
+{
+  "scope": "Actual independently cold-generated output, not shared knowledge or a universal guarantee",
+  "task_suite": "libero_goal",
+  "task_id": 1335,
+  "init_index": 15,
+  "framework_commit": "618f559b",
+  "original_run": "code/runs/2026-10-25-gpt-jev-program/continuity-cold-init15",
+  "source_sha256": "b30ff3004735da9468746dca6f05ade3980cc07e4c4de280af7eb7ff24441c57",
+  "source_revisions": 3,
+  "native_success": true,
+  "completion_proposed": true,
+  "termination": "completion_proposed",
+  "gpt_calls": 26,
+  "jev_calls": 107,
+  "native_steps": 321,
+  "elapsed_s": 3183.0116929789074,
+  "prompt_sha256": "8106ca0efe870480774a22f90bd8d0a4f501ff4a7d0d16fe705c7f907054c573",
+  "manual_sha256": "3e2d82dd87330b927792111065facb0d8f03715817b58fce5cf4f2db461a9aac",
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "041ef3ad6f225f999796c78112ef45578a6d35b276d66b7dbef06625ccdf4303",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "audit": {
+    "native_success": true,
+    "termination": "completion_proposed",
+    "gpt_calls": 26,
+    "jev_calls": 107,
+    "native_steps": 321,
+    "elapsed_s": 3183.0116929789074,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "d73eb7a9393d0d68585c60d82a69a8c212abce93596aef6ec6082d50b292076e"
+      },
+      {
+        "number": 1,
+        "source_sha256": "e7ab38d520fc21391280255ad1bfceda3ac05d484de7dbca8c55ee2153ea9f9f"
+      },
+      {
+        "number": 2,
+        "source_sha256": "a91bc4d91db6cbbc6f807a19755c9ed364de65eeeba6727fa9008ec4e1c36489"
+      },
+      {
+        "number": 3,
+        "source_sha256": "b30ff3004735da9468746dca6f05ade3980cc07e4c4de280af7eb7ff24441c57"
+      }
+    ],
+    "completion_proposed": true,
+    "audit": "Original Jev choices, semantic labels, finite bounds, carried gripper, steps and all source hashes passed",
+    "dispatches": 107,
+    "models": {
+      "gpt": {
+        "attempts": 26,
+        "unknown_usage": 0,
+        "completed_input": 466051,
+        "completed_output": 102467,
+        "relay_seconds": 3044.7408432979137,
+        "matched_requests": 26
+      },
+      "jev": {
+        "attempts": 107,
+        "unknown_usage": 0,
+        "completed_input": 222862,
+        "completed_output": 26643,
+        "relay_seconds": 77.00227339286357,
+        "matched_requests": 107
+      }
+    },
+    "strict_reviews_validated": 22,
+    "gpt_cost_by_purpose": {
+      "submit_method": {
+        "calls": 1,
+        "input": 9183,
+        "output": 25106
+      },
+      "submit_review": {
+        "calls": 22,
+        "input": 367456,
+        "output": 51775
+      },
+      "submit_method_patch": {
+        "calls": 3,
+        "input": 89412,
+        "output": 25586
+      }
+    }
+  },
+  "cold_input_check": "Empty initial memory, no previous_method or reused source"
+}

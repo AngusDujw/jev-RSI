@@ -8,12 +8,13 @@ control update used real Jev. No outer-agent task-source edits were made.
 | Init | Native success | Program proposal | Source patches | GPT / Jev / steps |
 |---|---|---|---|---|
 | [14](init14/METHOD.md) | true | true | 0 | 17 / 100 / 300 |
+| [15](init15/METHOD.md) | true | true | 3 | 26 / 107 / 321 |
 
 Init13 is a regression layout; init14-17 were previously unused at admission.
 Native terminal evaluation is authoritative. Program proposals, bounded
 automatic source repair and all acquisition costs remain explicit.
 
-The predeclared five-case criterion remains pending. Uncompleted indices: 13/15/16/17.
+The predeclared five-case criterion remains pending. Uncompleted indices: 13/16/17.
 
 These task-specific sources are retained outputs, not recipes injected into shared
 knowledge or automatically loaded by the builder. Full token/latency improvement
