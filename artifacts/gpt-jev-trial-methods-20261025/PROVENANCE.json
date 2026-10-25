@@ -1,0 +1,104 @@
+{
+  "scope": "Transport failure before complete source delivery; no invented executable method",
+  "framework_commit": "daf12dfc",
+  "original_run": "code/runs/2026-10-25-gpt-jev-program/trial-cold-init13",
+  "summary": {
+    "termination": "HTTP Error 504: Gateway Timeout",
+    "native_success": false,
+    "result": null,
+    "native_steps": 0,
+    "settling_steps": 10,
+    "jev_calls": 0,
+    "gpt_calls": 1,
+    "rpc_calls": 0,
+    "elapsed_s": 1810.4025392769836,
+    "methods": [],
+    "last_method_error": null
+  },
+  "audit": {
+    "native_success": false,
+    "termination": "HTTP Error 504: Gateway Timeout",
+    "gpt_calls": 1,
+    "jev_calls": 0,
+    "native_steps": 0,
+    "elapsed_s": 1810.4025392769836,
+    "methods": [],
+    "completion_proposed": null,
+    "audit": "No method delivered and no physical dispatch; only request/cost and zero-step consistency were audited",
+    "dispatches": 0,
+    "models": {
+      "gpt": {
+        "attempts": 2,
+        "unknown_usage": 2,
+        "completed_input": 0,
+        "completed_output": 0,
+        "relay_seconds": 1798.0013928649714,
+        "matched_requests": 1
+      },
+      "jev": {
+        "attempts": 0,
+        "unknown_usage": 0,
+        "completed_input": 0,
+        "completed_output": 0,
+        "relay_seconds": 0.0,
+        "matched_requests": 0
+      }
+    },
+    "strict_reviews_validated": 0,
+    "gpt_cost_by_purpose": {}
+  },
+  "protocol": {
+    "arguments": {
+      "output": "code/runs/2026-10-25-gpt-jev-program/trial-cold-init13",
+      "libero_root": "/home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 13,
+      "seed": 0,
+      "gpu": "4",
+      "bridge": "http://127.0.0.1:7921",
+      "max_gpt": 32,
+      "max_jev": 200,
+      "max_native_steps": 600,
+      "max_repairs": 5,
+      "method_file": null,
+      "revise_archived": false,
+      "wall_seconds": 9000
+    },
+    "prompt_sha256": "e9c9d82110695212da435ccbb26253e539c7b76e0db46273675322cb6b878ca7",
+    "manual_sha256": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a",
+    "implementation_sha256": {
+      "run_gpt_jev_program.py": "bfd1c8c176e2df14a404af9fe3273852be6f223d67d1657294dd84ad923f0212",
+      "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+      "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+      "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+      "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+    },
+    "planner": "gpt-6-astra/xhigh/local ChatGPT Pro",
+    "executor": "real jev-1.13.0/official systemone",
+    "native_evaluation": "terminal only; never in policy input",
+    "task_recipes": false,
+    "stage_templates": false,
+    "model_wire_numeric_precision": "data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
+    "pro_request_deadline": "loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
+    "review_parameters": "method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
+    "typed_reviews_required_for_generated_methods": true,
+    "reused_method_sha256": null
+  },
+  "upstream_failures": [
+    {
+      "attempt": 1,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "elapsed_s": 902.8783441820415,
+      "usage": "unknown"
+    },
+    {
+      "attempt": 2,
+      "error_type": "TimeoutError",
+      "error": "The read operation timed out",
+      "elapsed_s": 879.9883908309857,
+      "usage": "unknown"
+    }
+  ]
+}

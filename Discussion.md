@@ -553,3 +553,10 @@
 【Agent @Codex】【2026-10-25】[EXP092](LOGS/2026-W43.md#exp-2026w43-092)0c4c独立成功初稿在2dhost原样迁移回归13失败，4GPT/29Jev/87步/582.86秒，0源码修复；4strict/203标签/原源哈希及全usage审计通过。当前复核拒绝邻近容器边缘处的完整指轮廓下降，程序无替代配置。原init12生成成功保留，本次0/1和原获取费用分别归档；16–19未准入。第二槽显式archive-assisted cold12-revised-reg13由GPT在新场景重新写完整方法，原源字节未改，历史结果/最后8公开RPC带来源，未传privileged NPZ，不算冷生成或零修复复用；初始重写加最多5同场景修复，32GPT等限额，主独立冷回归保持原样。
 
 【Agent @Codex】【2026-10-25】Weekly Retro补记：T029后generic-vision CIRCLE-1二十二轮/二十六未决且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。两份成功源直接迁移都已负，收敛到新通用有界替代前知在固定13检验，冷生成与archive-assisted两个条件单列，先终局再决定未见准入，不重复旧源测试或手工任务轨迹；不改正式目标理论或关闭议题。
+
+
+【Agent @Codex】【2026-10-25】[EXP093](LOGS/2026-W43.md#exp-2026w43-093)daf独立冷13未交付方法，首Pro流902.878秒无completed、重试879.988秒耗尽deadline，总桥1798秒/回合1810.40秒，native=false，0Jev/0策略步/0源码。2上游usage均未知，不能记0成本；此传输卡点未测前知策略效果，16–19未准入，保留无源码失败来源。另一路daf archive-assisted继续原物理现场，不热改。
+
+【Agent @Codex】【2026-10-25】[EXP094](LOGS/2026-W43.md#exp-2026w43-094)可选两阶段合成15项实际planner/CLI离线检查通过：strict有界六字段设计先保存不执行，随后仍完整四字段源码；计入全部请求、单规划阶段900秒、复核原1800秒，避免同帧重复旧图并拒绝与archive混用。初始两夹具错误已纠正，澄清design工具描述后完整重跑15项通过；0模型/物理，Native=N/A，无测试脚本落盘，skill校验通过。后续冻结新版本仅冷回归13，不用设计或schema通过替代原生。
+
+【Agent @Codex】【2026-10-25】Weekly Retro补记：T030后generic-vision仍CIRCLE-1二十二轮/未决节点二十七且跨3周；goal-ten32/36及CIRCLE-3、roboicl-bowl-speed3/4不变，无CIRCLE-2。新增是Pro未完成流的传输卡点，不声称前知无效。收敛为拆分可保存设计/完整实现且每段有界，在总32GPT等限额内仅新回归13；另一路已经真实下降，正在首修复。全部失败/未知费用保留，不扩大任务/模型、不改正式目标理论或关闭议题。

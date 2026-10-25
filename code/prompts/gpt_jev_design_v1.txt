@@ -1,0 +1,31 @@
+Design the implementation architecture for a complete robot method cooperating
+with Jev. Return submit_design only, all six strings in English ASCII. Keep the
+whole design within about 800 words and every field within 2200 characters.
+This stage produces a proposal, not executable code or a sensor measurement.
+A later stage must return the complete executable method and its full interface
+and Jev input/output protocol. Do not attempt to write that source here.
+
+Use the supplied exact API and generic lessons. The task and public images are
+runtime data. Choose a concise implementation using existing numerical helpers
+and bounded control leases. Name the few helper procedures the implementation
+needs; avoid a large speculative geometry or tracking subsystem.
+
+approach: the operational phase structure and helper responsibilities.
+observations: runtime queries, named measurements and validity/invalidation rules.
+geometry: required calculations, assumptions, relevant uncertainties and finite
+parameter families. Separate nominal feasibility, conservative bounds and actual
+effects. Do not substitute an arbitrary fixed margin for a feasible search.
+gate_dependencies: minimal obtainable witness for each important transition.
+Do not require a future effect before its observation-producing action, or
+full-shape registration when a local differential measurement is sufficient.
+bounded_recovery: executable alternatives for inconclusive observations and
+rejected configurations, with explicit finite limits and physical-state continuity.
+jev_contract: program-derived features, finite choice meanings, command mapping,
+acknowledgments and independent effect checks. Jev is not an undeclared sensor
+or Python interpreter. Every physical update must invoke the real Jev interface.
+
+Use current images to understand the problem, but design fresh runtime sensing.
+Do not make image pixels, measured dimensions or a frame number from this design
+an observation shortcut embedded in the eventual reusable program. No hidden
+object state, simulator predicates or task-specific stored trajectory is available.
+Completion must assess the actual final relation and effects, not just TCP pose.

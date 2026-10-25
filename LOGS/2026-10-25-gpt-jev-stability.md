@@ -182,7 +182,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete tracked-file inventory against9d710e19: 98 files.
+Complete tracked-file inventory against9d710e19: 102 files.
 
 | Status | File |
 |---|---|
@@ -268,6 +268,9 @@ Complete tracked-file inventory against9d710e19: 98 files.
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/README.md](../artifacts/gpt-jev-resilient-methods-20261025/init13/README.md) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/method.json](../artifacts/gpt-jev-resilient-methods-20261025/init13/method.json) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/method.py](../artifacts/gpt-jev-resilient-methods-20261025/init13/method.py) |
+| A | [artifacts/gpt-jev-trial-methods-20261025/COHORT.json](../artifacts/gpt-jev-trial-methods-20261025/COHORT.json) |
+| A | [artifacts/gpt-jev-trial-methods-20261025/PROVENANCE.json](../artifacts/gpt-jev-trial-methods-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-trial-methods-20261025/README.md](../artifacts/gpt-jev-trial-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/METHOD.md](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-typed-method-20261025/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-typed-method-20261025/README.md](../artifacts/gpt-jev-typed-method-20261025/README.md) |
@@ -275,6 +278,7 @@ Complete tracked-file inventory against9d710e19: 98 files.
 | A | [artifacts/gpt-jev-typed-method-20261025/method.py](../artifacts/gpt-jev-typed-method-20261025/method.py) |
 | M | [baseline/roboicl/reproduction/pro_oauth_bridge.py](../baseline/roboicl/reproduction/pro_oauth_bridge.py) |
 | M | [code/prompts/README.md](../code/prompts/README.md) |
+| A | [code/prompts/gpt_jev_design_v1.txt](../code/prompts/gpt_jev_design_v1.txt) |
 | M | [code/prompts/gpt_jev_method_lessons_v2.txt](../code/prompts/gpt_jev_method_lessons_v2.txt) |
 | M | [code/prompts/gpt_jev_method_v2.txt](../code/prompts/gpt_jev_method_v2.txt) |
 | M | [code/prompts/gpt_jev_program_api_v2.md](../code/prompts/gpt_jev_program_api_v2.md) |
@@ -855,3 +859,29 @@ references from full-envelope pose, and preserves explicit recovery dependencies
 These are actual GPT-written source changes, not outer-agent task edits or
 shared recipes. No additional model/physics calls were made for this audit;
 execution and native outcome remain pending.
+
+## Single-request synthesis transport failure and optional staged harness
+
+EXP093: frozen daf cold13ended HTTP504/nativefalse with no delivered method,
+zero Jev and zero policy steps. Its first Pro stream ended without completed
+after902.878seconds; the retry timed out after879.988seconds. Both upstream
+usages are unknown; zero completed tokens is not zero cost. Entire episode
+1810.40seconds; unused16-19unadmitted. No policy outcome was measured.
+[No-source failure provenance](../artifacts/gpt-jev-trial-methods-20261025/README.md).
+
+EXP094: optional staged-design fresh synthesis saves a strict bounded6-string
+architecture proposal, then materializes the unchanged complete4-string output.
+The design is never executed or treated as sensor truth. Both calls count;
+staged planning requests including repairs have900s ceilings, reviews retain1800s.
+Same-frame source generation does not repeat earlier identical design images.
+Archive reuse cannot be combined with this condition. Fifteen actual-production
+planner/realCLI checks passed with zero real calls/physics; initial fake-buffer
+and missing-task fixture errors were corrected, and all15were rerun after final
+design-tool wording clarified its non-executable role. Skill validation passed.
+Receipt staged-contract-offline-20261025/validation.json records final source hash.
+This is contract evidence, not native success or latency savings. New native
+candidate will retain32GPT total,5repairs/200Jev/600steps/9000seconds and same
+authorized accounts/bridge; only regression13before fixed16-19admissions.
+Current daf archive-assisted source remains untouched in its own world.
+CIRCLE1remains22rounds,27unresolved plus CIRCLE3; split generation and fixed
+regression admissions are the convergence plan.

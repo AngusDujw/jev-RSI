@@ -17,6 +17,13 @@ Use the canonical files without making task-specific copies of shared knowledge:
 - [Exact runtime API](../../../code/prompts/gpt_jev_program_api_v2.md).
 - [Generic lessons](../../../code/prompts/gpt_jev_method_lessons_v2.txt).
 
+For explicitly selected staged fresh synthesis, the host first uses the
+[bounded design contract](../../../code/prompts/gpt_jev_design_v1.txt) and saves
+its proposal, then requests the complete method. The design is neither sensor
+truth nor executable code. Count both requests and failed attempts. Keep this
+condition separate from single-request synthesis and archive-assisted revision.
+Do not stop at a design or return stubs as the final complete processing method.
+
 Keep the runtime instruction, current public observations, own robot geometry,
 and acknowledged execution separate from those fixed files. Inspect the final
 serialized request, including nested JSON text, for English-only content and

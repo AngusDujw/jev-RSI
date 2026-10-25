@@ -68,6 +68,8 @@ def object_schema(properties):
 
 TEXT = dict(type="string")
 METHOD_SCHEMA = object_schema({k: TEXT for k in ("explanation", "source", "interface", "jev_protocol")})
+DESIGN_SCHEMA = object_schema({k: dict(type="string", minLength=1, maxLength=2200)
+    for k in ("approach", "observations", "geometry", "gate_dependencies", "bounded_recovery", "jev_contract")})
 PATCH_SCHEMA = object_schema(dict(explanation=TEXT, interface=TEXT, jev_protocol=TEXT,
     replacements=dict(type="array", minItems=1, maxItems=12, items=object_schema(dict(old=TEXT, new=TEXT)))))
 REVIEW_SCHEMA = object_schema(dict(
@@ -246,6 +248,7 @@ def main():
     p.add_argument("--max-repairs", type=int, default=2)
     p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
     p.add_argument("--revise-archived", action="store_true", help="Ask GPT to revise the archived method using its adjacent summary.json")
+    p.add_argument("--staged-design", action="store_true", help="Fresh generation: save a bounded design before materializing the complete method")
     p.add_argument("--wall-seconds", type=int, default=3600)
     args = p.parse_args()
     repo = Path(__file__).resolve().parents[2]
@@ -266,6 +269,8 @@ def main():
         validate_source(archived_method["source"])
     if args.revise_archived and not archived_method:
         p.error("--revise-archived requires --method-file")
+    if args.staged_design and archived_method:
+        p.error("--staged-design is a fresh-generation condition, not archived-method reuse")
     require_typed_reviews = archived_method is None or args.revise_archived
     out.mkdir(parents=True)
     cache = out / "runtime"
@@ -296,9 +301,12 @@ def main():
     from jev_rgbd_tracking import RGBDPatch
     prompt = (repo / "code/prompts/gpt_jev_method_v2.txt").read_text()
     lessons = (repo / "code/prompts/gpt_jev_method_lessons_v2.txt").read_text()
+    design_prompt = (repo / "code/prompts/gpt_jev_design_v1.txt").read_text() if args.staged_design else None
     prompt += "\n\n"+lessons
     manual = (repo / "code/prompts/gpt_jev_program_api_v2.md").read_text()
     english([prompt, manual])
+    if design_prompt is not None:
+        english(design_prompt)
     save(out / "protocol.json", dict(arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(), manual_sha256=hashlib.sha256(manual.encode()).hexdigest(),
         implementation_sha256={name: hashlib.sha256((repo / "code/scripts" / name).read_bytes()).hexdigest()
@@ -309,6 +317,11 @@ def main():
         pro_request_deadline="loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
         review_parameters="method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
         typed_reviews_required_for_generated_methods=True,
+        staged_design=dict(enabled=args.staged_design,
+            prompt_sha256=hashlib.sha256(design_prompt.encode()).hexdigest() if design_prompt else None,
+            schema_sha256=hashlib.sha256(json.dumps(DESIGN_SCHEMA, sort_keys=True).encode()).hexdigest(),
+            planning_request_deadline_seconds=900 if args.staged_design else 1800,
+            executable_output="Complete four-string method; design alone is never executed"),
         reused_method_sha256=hashlib.sha256(archived_method["source"].encode()).hexdigest() if archived_method else None))
     with contextlib.redirect_stdout(io.StringIO()):
         suite = benchmark.get_benchmark_dict()[args.suite](0)
@@ -328,6 +341,7 @@ def main():
     program_memory = ProgramMemory()
     termination, success, result = "not_started", None, None
     own_method_error = None
+    method_design = None
 
     def budgets():
         return dict(gpt_remaining=args.max_gpt-gpt_calls, jev_remaining=args.max_jev-jev_calls,
@@ -460,6 +474,9 @@ def main():
             payload_state["program_supplied_review_context"] = compact_feedback(review_context)
         if failed_method:
             payload_state["previous_method"] = failed_method
+        if kind == "method" and method_design is not None:
+            payload_state["method_design"] = dict(proposal=method_design,
+                scope="Earlier model design, not sensor truth or executed actions; implementation must acquire runtime evidence")
         content.append(dict(type="input_text", text=json.dumps(model_wire_numbers(payload_state), separators=(",", ":"))))
         instructions = prompt+"\n\n"+manual if kind == "method" else (
             "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. "
@@ -470,6 +487,13 @@ def main():
             "Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. "
             "Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. "
             "The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.")
+        if kind == "design":
+            instructions = design_prompt+"\n\n"+lessons+"\n\n"+manual
+        elif kind == "method" and method_design is not None:
+            instructions += ("\n\nMATERIALIZATION STAGE: Implement the supplied method_design as the complete four-string method. "
+                "Correct design defects when needed. A design is not a measurement receipt. Acquire current runtime evidence; "
+                "do not embed this episode's pixels, measurements or frame-counter shortcuts as reusable observations. "
+                "Return complete executable source, not stubs, pseudocode or a plan awaiting another coding step.")
         patching = kind == "method" and failed_method is not None
         if patching:
             instructions += ("\n\nREPAIR MODE: Return submit_method_patch with a small set of exact old/new source replacements applied to previous_method.source. "
@@ -477,7 +501,7 @@ def main():
                 "Repair the diagnosed mechanism and any directly coupled defects; preserve useful existing processing and Jev definitions. "
                 "Do not retransmit the whole source. Keep replacement text below 12000 characters when feasible. "
                 "Provide updated concise interface and jev_protocol descriptions. A source patch is a method revision, never a motion command.")
-        response_schema = PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA
+        response_schema = DESIGN_SCHEMA if kind == "design" else PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA
         if parameter_schema is not None:
             response_schema = json.loads(json.dumps(REVIEW_SCHEMA))
             del response_schema["properties"]["parameters_json"]
@@ -486,15 +510,17 @@ def main():
             instructions = instructions.replace(
                 "parameters_json must encode an object with concise actionable numeric or boolean observations requested by the caller.",
                 "parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth.")
-        tool = "submit_method_patch" if patching else "submit_method" if kind == "method" else "submit_review"
+        tool = "submit_design" if kind == "design" else "submit_method_patch" if patching else "submit_method" if kind == "method" else "submit_review"
         tool_definition = dict(type="function", name=tool,
-            description="Return the requested executable method, unique method patch, or observation review", parameters=response_schema)
-        if parameter_schema is not None:
+            description="Return a bounded implementation design proposal without executable source" if kind == "design" else
+                "Return the requested executable method, unique method patch, or observation review", parameters=response_schema)
+        if parameter_schema is not None or kind == "design":
             tool_definition["strict"] = True
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
             input=[dict(role="user", content=content)], tools=[tool_definition],
             tool_choice=dict(type="function", name=tool), parallel_tool_calls=False, store=False)
-        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=max(1, min(1800, budgets()["wall_seconds_remaining"])))
+        request_ceiling = 900 if kind == "design" or (args.staged_design and kind == "method") else 1800
+        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=max(1, min(request_ceiling, budgets()["wall_seconds_remaining"])))
         if not raw.get("model", "").startswith("gpt-6-astra") or raw.get("status") != "completed":
             raise ValueError("Unexpected planner response")
         calls = [x for x in raw.get("output", []) if x.get("type") == "function_call"]
@@ -502,8 +528,8 @@ def main():
             raise ValueError("Expected one matching function call")
         answer = json.loads(calls[0]["arguments"])
         english(answer)
-        if parameter_schema is not None:
-            validate_value(answer, response_schema, "submit_review")
+        if parameter_schema is not None or kind == "design":
+            validate_value(answer, response_schema, tool)
         previous = current
         save(out / f"gpt-{index:02d}.parsed.json", answer)
         print(json.dumps(dict(event="gpt", index=index, kind=kind, frame=native_steps)), flush=True)
@@ -709,6 +735,10 @@ def main():
                     frame_id=recorded.get("frame_after"), evidence_scope="archived previous episode; remeasure current geometry before acting")))
             previous_method = dict(archived_method, incomplete_result=failure)
             question = "Revise the complete archived GPT method using its recorded incomplete outcome and the current observations/API. Produce a concise executable method with feasible phase-local evidence and bounded recovery. Do not assume a previous physical action occurred in this newly initialized episode."
+        if args.staged_design:
+            method_design = planner("design", "Design a concise complete processing architecture and Jev cooperation before writing executable code.")
+            save(out / "method-design.json", method_design)
+            previous = None  # No physical action occurred; avoid duplicate same-frame images.
         for revision in range(args.max_repairs+1):
             method = previous_method
             try:

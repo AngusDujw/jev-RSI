@@ -10,6 +10,18 @@ This guidance change has not yet established native success.
 
 ## Active program interface v2
 
+Optional fresh synthesis can use the host's staged-design mode. The
+[design-stage instructions](gpt_jev_design_v1.txt) first request a bounded,
+strictly typed six-field architecture, saved as a proposal without execution.
+The next request materializes the same complete four-string method described
+below, with current runtime evidence and explicit design provenance. Both calls
+count against the GPT budget; staged design/code/repair requests have900second
+ceilings, while visual review keeps its existing deadline. No duplicate earlier
+images are appended to the immediate same-frame materialization. This mode is
+separate from archive-assisted revision and is not combined with method reuse.
+Fifteen offline production-planner/real-CLI checks passed, with zero model calls
+or physics. Native reliability and latency improvements remain untested.
+
 The actual builder is [gpt_jev_method_v2.txt](gpt_jev_method_v2.txt), supplied with
 the [exact API manual](gpt_jev_program_api_v2.md) and
 [generic development lessons](gpt_jev_method_lessons_v2.txt). Runtime task language,

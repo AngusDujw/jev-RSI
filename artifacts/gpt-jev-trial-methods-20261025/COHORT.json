@@ -1,0 +1,22 @@
+{
+  "candidate_commit": "daf12dfc",
+  "condition": "Independent single-request cold synthesis, empty initial memory",
+  "admitted": [
+    13
+  ],
+  "completed": [
+    {
+      "init_index": 13,
+      "native_success": false,
+      "termination": "HTTP Error 504: Gateway Timeout",
+      "method_delivered": false
+    }
+  ],
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "status": "closed, end-to-end criterion not achieved"
+}
