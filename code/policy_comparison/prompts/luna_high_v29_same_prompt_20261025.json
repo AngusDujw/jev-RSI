@@ -1,0 +1,62 @@
+{
+  "version": "v29",
+  "parent": "v28",
+  "prompt_sha256": "7a12117f9fe21546f273ce6d848b382ffad7d9cf7ba08c5a3792b7512092c8e2",
+  "prompt_words": 2980,
+  "prompt_file": "code/policy_comparison/prompts/multiview_grasp_v29.md",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "authentication": "local ChatGPT Pro",
+  "api_fallback": false,
+  "task": "stack_blocks",
+  "layout": 0,
+  "eval_seed": 0,
+  "native_step_limit": 550,
+  "attempts_per_run": 1,
+  "all_started_runs_included": true,
+  "infrastructure_change": {
+    "fresh_server_copy_rpc_idle_seconds": 7200,
+    "native_physics_scoring_unchanged": true,
+    "changed_from_v28": false
+  },
+  "prompt_changes": [
+    "Append observation-pair evidence ledger for actual finger segments, crop coordinate consistency, capture uncertainty and signed probe response",
+    "Latch final clear-and-return phase; use measured executed motion and the allowed control horizon"
+  ],
+  "causal_scope": "Task-conditioned prompt development; unchanged reference selection and delivery; no claim of stable or general success.",
+  "reference_manifest_sha256": "1032b6b3d4d7d2738cf6d2b398999c4b64b2ee2952ba52f292ce2814dbd3410a",
+  "trials": [
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v29-r1",
+      "rpc_port": 25470
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v29-r2",
+      "rpc_port": 25471
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v29-r3",
+      "rpc_port": 25472
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v29-r4",
+      "rpc_port": 25473
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v29-r5",
+      "rpc_port": 25474
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261025-hints-v29-r6",
+      "rpc_port": 25475
+    }
+  ],
+  "policy_reference_manifest": "code/policy_comparison/prompts/luna_high_v28_reference_images_20261025.json",
+  "input_delivery_change": {
+    "first_observation_historical_rgb_attachments": 16,
+    "unchanged_live_rgb": 3,
+    "later_observations_historical_attachments": 0,
+    "receipt": "stdio submission only, not model attention",
+    "fresh_local_actor_runtime_only": true
+  }
+}
