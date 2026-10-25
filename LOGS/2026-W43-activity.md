@@ -759,3 +759,5 @@
 - 【Agent】【2026-10-25 20:08】[result] EXP043无新原生终局，仍3有效完整失败+2已终止无效中断；唯一r1推进480步/115动作，worker存活、事件121秒前，无controller结果/退出或原生终局，GPU余42846MiB。公开reason保持最终开爪回位锁定。保持冻结提示、活服务、原550及已有边界回放；CIRCLE-1按全批结果/真实输入/首次可见失误收敛。
 - 【Agent】【2026-10-25 20:15】[intent] 用户继续EXP043 v29冻结同版六独立单次巡检；仅本机Pro，不重启旧回合，健康同版未全终止不修改提示或补槽。
 - 【Agent】【2026-10-25 20:15】[result] EXP043无新原生终局，仍3有效完整失败+2无效中断，唯一r1为485步/116动作、worker存活，事件220秒前，无controller结果/退出或原生终局，GPU余42846MiB。公开reason保持最终回位锁定；本次仅检查，不改提示/服务或启动实验。CIRCLE-1继续以整批原生结果/真实输入/首次可见失误收敛。
+- 【Agent】【2026-10-25 20:27】[intent] 用户继续EXP043 v29巡检，仅本机Pro，禁止重复启动；以实际controller/native退出证据核验整批。
+- 【Agent】【2026-10-25 20:27】[result] EXP043-r1停490/117，worker与runner消失、provider前台会话Unknown process id，无controller/result或exit；原因未定。远端native1316017/RPC25470仍活、无原生终局，保留自然终止。保存controller-disappearance490-audit与源SHA。现3完整失败+2原生无效终局+r1控制器中断待原生，不重启或开新批；CIRCLE-1按全批结果/实际输入/首失误收敛。
