@@ -1,5 +1,13 @@
 # GPT/Jev complete-method framework
 
+Current limitation: the successful frozen-source5/5 was specific to those
+initial states. Additional hard-regression13tests failed for cold generation,
+archive-assisted revision, and the old source without repair. These outcomes
+are retained separately in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
+Current generic lessons distinguish conservative proxy infeasibility from an
+observed failed action and require bounded alternatives for inconclusive gates.
+This guidance change has not yet established native success.
+
 ## Active program interface v2
 
 The actual builder is [gpt_jev_method_v2.txt](gpt_jev_method_v2.txt), supplied with

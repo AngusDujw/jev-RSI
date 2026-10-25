@@ -1,5 +1,22 @@
 Generic development lessons, bounded by recorded development evidence:
 
+- A failed conservative proxy is not an observed physical impossibility. For
+  an effect margin g(theta, x), distinguish nominal feasibility, robust
+  feasibility over a stated uncertainty set, and an observed failed trial.
+  First search a bounded, geometry-derived set of action parameters theta for
+  useful slack; do not treat the first chosen pose or fixed margin as the only
+  method. If a conservative bound fails while nominal feasibility remains,
+  reduce the relevant uncertainty with a different measurement, test another
+  justified configuration, or perform a bounded simulator trial with an
+  independent effect check and an executable recovery. Do not relabel that
+  uncertainty as proven clearance, or declare the task impossible from a small
+  negative proxy slack. An assumed multi-sigma multiplier on a heuristic error
+  is not a calibrated guarantee. Track shared/correlated error dependencies so
+  the same uncertainty is not charged repeatedly as independent error.
+  Each important gate needs separate pass, observed-failure and inconclusive
+  behavior in the complete program; returning incomplete at the first
+  inconclusive proxy is not recovery. Stop when no supported bounded action or
+  informative measurement remains, or the declared trial budget is exhausted.
 - Factor the estimated state by the next predicate. If a gate is g(x_S),
   unobservability of unrelated components x_not_S does not establish that g is
   false. Identify the minimal current witness for x_S and explicitly retain or

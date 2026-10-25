@@ -5,11 +5,13 @@ a8e6ea72 completed five cases, native4/5;618f559b completed three admitted cases
 native2/3, with16/17 unadmitted after regression13 failed. All failures, complete methods and
 known costs are retained. Stable cold success is not established. Candidate0d15ab18 then stopped on a Jev transport502 before completion,
 native0/1 admitted;16-19 remained unadmitted. Its policy effect is uncompleted.
-Primary frozen2d710418 now runs an independent cold regression13 after fixing
-real repair-context data loss (8offline checks, Native=N/A). Previous50432131
-regression ended nativefalse/gpt_budget and is retained separately. A separate
-archive-assisted portability revision is also running. Unused16-19
-await primary regression success. Stable native success is still unestablished.
+Frozen2d710418 also failed cold regression13 (31GPT/179Jev/537steps) despite
+the verified repair-context fix. Previous50432131 failed separately, and the
+archive-assisted rewrite failed before release (28GPT/98Jev/294steps). The afb
+exact-source reuse regression13 has now failed on unresolved finger access;
+its earlier scoped5/5 is not a broader portability guarantee. A second exact
+initial-output source0c4c is being tested separately. Unused16-19remain unadmitted.
+Stable cold or hard-regression portability is still unestablished.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
 frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
