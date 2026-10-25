@@ -107,9 +107,9 @@ check required before reuse; new episodes still have empty memory. Its predeclar
 sequence is regression init13 and unused14-17, each independent cold generation
 with32GPT/5repairs/200Jev/600policy steps/9000seconds. Init14 completed with native/proposal both true,
 17GPT/100Jev/300steps and zero source repairs. Init15 also completed with both
-true after3automatic repairs,26GPT/107Jev/321steps. Regression13 remains running;
-16/17 are unadmitted pending its terminal result. The full
-five-case criterion remains pending. Its [complete initial method](../../artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md) is preserved verbatim. These changes and the larger budget are
+true after3automatic repairs,26GPT/107Jev/321steps. Regression13 then failed before closure after5repairs,31GPT/97Jev/291steps.
+The candidate closed with native2/3 admitted;16/17 were not admitted. Its all-five
+criterion is falsified. Its [complete initial method](../../artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md) is preserved verbatim. These changes and the larger budget are
 evaluated together, without claiming isolated causality or improved speed.
 
 ```mermaid

@@ -1,14 +1,11 @@
 # GPT/Jev stability continuation
 
-Current status: the frozen a8e6ea72 independent cold cohort completed all five
-predeclared initial states9-13 with native4/5, falsifying its all-five criterion.
-Init13 exhausted the GPT budget after measured retention, before completing
-transfer/placement. All failures and costs are retained. A new separately frozen
-candidate618f559b completed unused init14/15 with native/proposal true: zero
-repairs/17GPT/100Jev/300steps/1946.89seconds and3repairs/26GPT/107Jev/321steps/
-3183.01seconds. Regression13 is running its last allowed repair;16/17 remain
-unadmitted pending that terminal result. Its predeclared sequence
-is13-17, with32GPT/5repairs/200Jev/600steps/9000seconds per case.
+Current status: both frozen cold candidates failed their all-five criteria:
+a8e6ea72 completed five cases, native4/5;618f559b completed three admitted cases,
+native2/3, with16/17 unadmitted after regression13 failed. All failures, complete methods and
+known costs are retained. Stable cold success is not established. The next
+generic candidate targets phase-specific sufficient evidence and reference
+handoff, with the same limits and regression-first admission.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
 frozen init4-8 native5/5 with zero repairs; the a8e cohort included an untouched
@@ -177,7 +174,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete changed-file inventory against9d710e19: 61 tracked files.
+Complete changed-file inventory against9d710e19: 66 tracked files.
 
 | Change | File |
 |---|---|
@@ -215,6 +212,11 @@ Complete changed-file inventory against9d710e19: 61 tracked files.
 | A | [artifacts/gpt-jev-cold-methods-20261025/init9/method.py](../artifacts/gpt-jev-cold-methods-20261025/init9/method.py) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/COHORT.json](../artifacts/gpt-jev-continuity-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/README.md](../artifacts/gpt-jev-continuity-methods-20261025/README.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-continuity-methods-20261025/init13/METHOD.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init13/PROVENANCE.json](../artifacts/gpt-jev-continuity-methods-20261025/init13/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init13/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init13/README.md) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init13/method.json](../artifacts/gpt-jev-continuity-methods-20261025/init13/method.json) |
+| A | [artifacts/gpt-jev-continuity-methods-20261025/init13/method.py](../artifacts/gpt-jev-continuity-methods-20261025/init13/method.py) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md](../artifacts/gpt-jev-continuity-methods-20261025/init14/METHOD.md) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init14/PROVENANCE.json](../artifacts/gpt-jev-continuity-methods-20261025/init14/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-continuity-methods-20261025/init14/README.md](../artifacts/gpt-jev-continuity-methods-20261025/init14/README.md) |
@@ -532,3 +534,31 @@ recentering. Exact rationales and all source versions remain in the raw run.
 Both completed cases14/15 have native/proposal true; regression13 still runs its
 last allowed repair. Init16/17 remain unadmitted until13terminal. No stable-five,
 cross-task, isolated-component, or net token/latency claim follows.
+
+## Continuity candidate closed: native2/3 admitted, criterion falsified (EXP085)
+
+| Init | Role | Native/proposal | Patches | GPT/Jev/steps | Seconds |
+|---|---|---|---|---|---|
+| 13 | regression | false/false | 5 | 31/97/291 | 5608.48 |
+| 14 | unused | true/true | 0 | 17/100/300 | 1946.89 |
+| 15 | unused | true/true | 3 | 26/107/321 | 3183.01 |
+
+Init16/17 were not admitted after the regression failed. This is2/3 admitted,
+not2/5 executed. The predeclared all-five criterion is falsified. The failed
+[complete final method](../artifacts/gpt-jev-continuity-methods-20261025/init13/METHOD.md)
+is retained alongside both positives. Actual cross-revision reference updates
+were tracked, but the last approach again required unavailable full object
+correspondence before closure. It stopped with open jaws, no placement. The
+historical last_method_error checkpoint text is not its terminal result.gap.
+
+Whole-cohort audit:74GPT/304real Jev/912policy steps/2128labels/63strict,
+11complete versions/8patches. All74/304upstream usages are known:
+GPT1210362input/346973output; Jev669615/75696. The negative criterion remains;
+no task-source edit, substituted layout, success proxy, or efficiency claim.
+
+Next outer convergence plan: freeze generic phase-specific sufficient-evidence
+and reference-handoff guidance, with bounded-memory and controller/effect
+consistency. Keep32GPT/5repairs/200Jev/600steps/9000seconds. Predeclare regression13
+and unused16-19, admit13alone first, then the four unused cases only if it succeeds.
+A failed regression closes that candidate before unused cases; actual native
+testing remains mandatory. No formal research goal/theory/metric is changed.

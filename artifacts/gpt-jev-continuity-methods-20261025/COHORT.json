@@ -37,6 +37,18 @@
   "attribution": "Knowledge, lifecycle and budget changed together; no isolated causal or speed claim",
   "completed": [
     {
+      "init_index": 13,
+      "source_sha256": "7bd9c741468bef005fd19ac06ea4ba60f1fa2d671895f42833b4ae98c3206e3b",
+      "source_revisions": 5,
+      "native_success": false,
+      "completion_proposed": false,
+      "termination": "method_incomplete",
+      "gpt_calls": 31,
+      "jev_calls": 97,
+      "native_steps": 291,
+      "elapsed_s": 5608.479129981017
+    },
+    {
       "init_index": 14,
       "source_sha256": "7cfaa9b0130ef84a5e4876987a20ef00f68da0bc933eb3356cf3ed1141b5266e",
       "source_revisions": 0,
@@ -61,10 +73,13 @@
       "elapsed_s": 3183.0116929789074
     }
   ],
-  "pending": [
-    13,
+  "pending": [],
+  "accounting": "Three actually admitted completed; two unadmitted are not executed failures or replacements",
+  "unadmitted": [
     16,
     17
   ],
-  "accounting": "Uncompleted indices include running and unadmitted; admission list is explicit"
+  "status": "closed_criterion_falsified",
+  "native_successes": 2,
+  "admitted_count": 3
 }
