@@ -512,3 +512,4 @@
 - 【Agent】【2026-10-25 11:35】[run] 单独archive-assisted-reg13在2d710418工作树前台启动：Astra/xhigh本机Pro+真实Jev，输入57e末版原source及明确旧回合来源，先由GPT修订可迁移性；32GPT/200逻辑Jev/600步/2同现场修复/9000秒。当前主线feedback-cold-init13继续独立冷生成验证，两个环境分开、最多两并发，不把辅助修订算冷启动或零修复复用，不准入新未见布局。
 - 【Agent】【2026-10-25 11:47】[op] 使用skill-creator创建项目内.agents/skills/gpt-jev-method/SKILL.md，只编排三固定前知、完整4字符串方法包、实际Jev/harness、冷生成/辅助修订/冻结复用分开验收、数据来源与成本；不含任务ID/物名/坐标轨迹，不自动把外层管理规则拼入内部请求。官方quick_validate通过，引用真实文件均解析、英文ASCII/任务词哨兵通过，无新脚本或额外模型。
 - 【Agent】【2026-10-25 11:48】[op] 504负结果完整记录并保存5版本/全量费用，明确末版无物理执行且frame273不具跨回合保证；archive-assisted先由GPT去除旧分支的真实初版已核验，不当作冷生成。主报告/Discussion/Retro/T023、项目skill引用同步；新skill只有通用编排，不存具体任务命令。  ↪ `EXP-2026W43-088`
+- 【Agent】【2026-10-25 12:35】[op] Predeclared separate exact-source afb42aff frozen portability validation on host2d710418: regression13 before unused16-19, zero repairs, 24GPT/200Jev/600steps/7200s; no case admitted yet, current two runs unchanged.

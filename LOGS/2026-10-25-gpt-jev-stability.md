@@ -729,3 +729,16 @@ provenance, real dispatches and full costs. It contains no task IDs, names,
 coordinates or trajectory. skill-creator quick validation and reference/ASCII
 checks passed. This outer-agent skill is not appended to internal model requests;
 packaging does not itself prove token savings or native success.
+
+## Predeclared separate exact-source portability validation
+
+After an execution slot becomes free, test the already generated afb42aff source
+unchanged on the current frozen2d710418 host and504 bridge. This is explicit frozen
+reuse, not another cold cohort or archive-assisted revision. Regression13 must
+pass before unused16-19are admitted; stop further admissions after any failure.
+Limits per case:24GPT/200Jev/600policy steps/0source repairs/7200seconds.
+The original synthesis and repair costs remain separate. Earlier c669 reuse5/5
+is retained independently and is not pooled into this new host validation.
+Manifest: code/runs/2026-10-25-gpt-jev-program/portable-frozen-cohort-manifest.json.
+Current cold and archive-assisted episodes continue unchanged; global concurrency
+remains at most2. No task source, coordinates, trajectories or prompts are edited.
