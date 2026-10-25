@@ -1,9 +1,10 @@
 # GPT/Jev complete-method framework
 
-Current evidence: a GPT archive-assisted rewrite and one same-scene repair now
-completed hard regression13with native success (21GPT/84real Jev/252steps).
-[The complete unedited method and Jev protocol](../../artifacts/gpt-jev-validated-method-20261025/METHOD.md)
-are preserved; its first exact-source fresh13trial failed after transfer. Earlier
+Current evidence: after generic recovery guidance, a GPT archive-assisted full
+rewrite completed hard13with native success (17GPT/89real Jev/267steps), without
+same-scene source repair. [The exact full method and Jev protocol](../../artifacts/gpt-jev-recovery-method-20261025/METHOD.md)
+are preserved; its zero-source-repair fresh13validation is pending. The previous
+5e method succeeded during acquisition but failed exact fresh replay. Earlier
 frozen-source5/5 was specific to those initial states, and later failures remain
 separate in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).
 Reliable independent fresh synthesis and net efficiency remain unestablished.

@@ -1,0 +1,16 @@
+{
+  "status": "pending fresh13 zero-repair regression",
+  "source_sha256": "a18c0e26e16f4f92d1d5e96657e9ca751a1c7332ec25c121bf4bdb9dbc06044a",
+  "completed": [],
+  "admitted": [
+    13
+  ],
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "claim": "No stable reuse claim",
+  "manifest": "code/runs/2026-10-25-gpt-jev-program/recovery-frozen-cohort-manifest.json"
+}

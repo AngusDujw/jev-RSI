@@ -1,6 +1,12 @@
 # GPT/Jev stability continuation
 
-Current status: archive-assisted GPT rewrite/one repair reached native success
+Current status: generic recovery guidance led to an archive-assisted full GPT
+rewrite a18c0e reaching native success on hard13(17GPT/89Jev/267steps), with no
+same-scene source repair. Its exact-source fresh13zero-repair validation is
+running; unused16-19 remain unadmitted. Stable reuse and net efficiency are not
+established. Full package: artifacts/gpt-jev-recovery-method-20261025/.
+
+Previous status retained: archive-assisted GPT rewrite/one repair reached native success
 on hard13(21GPT/84Jev/252steps), but exact final5e source fresh13zero-repair reuse
 failed after transfer(12GPT/67Jev/201steps). The0/1frozen cohort is closed and
 16-19were not admitted. Stable cooperation is still unestablished. All acquisition
@@ -176,7 +182,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete tracked-file inventory against9d710e19: 113 files.
+Files changed since9d710e19: 119. Generated from tracked staged changes; user-owned untracked directories are excluded.
 
 | Status | File |
 |---|---|
@@ -255,6 +261,12 @@ Complete tracked-file inventory against9d710e19: 113 files.
 | A | [artifacts/gpt-jev-portable-regression-20261025/README.md](../artifacts/gpt-jev-portable-regression-20261025/README.md) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
+| A | [artifacts/gpt-jev-recovery-method-20261025/METHOD.md](../artifacts/gpt-jev-recovery-method-20261025/METHOD.md) |
+| A | [artifacts/gpt-jev-recovery-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-recovery-method-20261025/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-recovery-method-20261025/README.md](../artifacts/gpt-jev-recovery-method-20261025/README.md) |
+| A | [artifacts/gpt-jev-recovery-method-20261025/VALIDATION.json](../artifacts/gpt-jev-recovery-method-20261025/VALIDATION.json) |
+| A | [artifacts/gpt-jev-recovery-method-20261025/method.json](../artifacts/gpt-jev-recovery-method-20261025/method.json) |
+| A | [artifacts/gpt-jev-recovery-method-20261025/method.py](../artifacts/gpt-jev-recovery-method-20261025/method.py) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/COHORT.json](../artifacts/gpt-jev-resilient-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/README.md](../artifacts/gpt-jev-resilient-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-resilient-methods-20261025/init13/METHOD.md) |
@@ -981,3 +993,23 @@ certifying observation truth. This is a reusable harness tool, not a temporary
 test script. Current failure was mechanically consistent, not a successful task.
 CIRCLE1is24rounds/30unresolved plus CIRCLE3; fixed recovery-only knowledge and
 regression-first admissions are the convergence plan, with formal goals unchanged.
+
+## Recovery-guided full method acquisition (EXP099)
+
+The generic English recovery/uncertainty lessons changed; task source, controller,
+API and account were not hand-edited. Actual archive-assisted request carried
+exact5e source plus the failed public outcome; two current images, empty new
+episode memory, English ASCII text and Pro Astra/xhigh were checked. Native
+true/proposal true:17GPT/89real Jev/267policy steps/3090.213325seconds. The one
+449line full rewrite a18c0e had no same-scene source repair.16strict reviews,
+source origins, all89dispatches and relay responses audited. All usage known:
+GPT229492input/67886output; Jev256283/22161. Post-release visible mark motion
+0.184474mm over9steps is a measurement, not a truth accuracy certificate.
+
+Exact package and explanation/interface/Jev protocol are preserved at
+artifacts/gpt-jev-recovery-method-20261025/. Its fresh13zero-source-repair
+validation is running on the same cfa25host.24GPT/200Jev/600steps/7200sec;
+unused16-19admit only on native success, stop new admissions on failure. Prior
+5e acquisition and failed0/1reuse remain separate. No stable reuse, independent
+cold reliability or net efficiency claim. CIRCLE1is25rounds/31unresolved and
+CIRCLE3; this exact-source sequence is the convergence action.

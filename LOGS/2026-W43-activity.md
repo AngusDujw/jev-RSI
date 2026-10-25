@@ -547,3 +547,11 @@
 - 【Agent】【2026-10-25 14:44】[op] 新建实验块 EXP-2026W43-098：原生成功最终5e源码在新空回合零修复回归13未通过，定位搬运后未知观测恢复缺口  ↪ `EXP-2026W43-098`
 - 【Agent】【2026-10-25 14:46】[op] Frozen exact5e fresh13 failed after transfer:12GPT/67Jev/201steps/1591.32s,0repairs; all usage known and12strict/469labels/source-origin audit passed. Observed heuristic u6.840mm hit a6mm generated-method ceiling; source recovery wraps only initial envelope observation, later transfer observe call bypasses it. Added only generic English lessons on all-call-site reachable inconclusive recovery and predicate-specific uncertainty; no task commands or source edits.16-19not admitted, negative remains retained.
 - 【Agent】【2026-10-25 14:54】[op] Closed exact5e0/1frozen cohort and preserved failing case/known costs in canonical validation record; native-positive acquisition remains unchanged. Prepared raw-source recovery archive with only failed public result/last8RPCs. Current report/README now state reproducibility failure, not pending success. EXP095-098 complete, CIRCLE1=24rounds/30nodes disclosed; next generic lessons only, no task-source edits.
+- 【Agent】【2026-10-25 15:00】[op] 保存并SSH推送cfa25bf3：原样保留一次native成功及其冻结复测失败；新增通用未知恢复经验与已验证离线审计工具。下一轮仅GPT归档辅助修完整方法，不手改任务程序。
+- 【Agent】【2026-10-25 15:01】[run] 在company-server-2-ykj新隔离worktree启动cfa25bf3归档辅助修复recovery-revised-reg13：32GPT/200真实Jev/600步/5次修复/9000秒；固定Pro Astra xhigh和Jev1.13，未经成功及原样回归不扩展初态。
+- 【User】【2026-10-25 15:34】[intent] 用户提供新的API key，授权先检查其能否调用OpenAI /v1/decisions；暂不重跑Luna high与decision model的policy对比。
+- 【Agent】【2026-10-25 15:35】[result] 经用户授权，用本次提供的key对https://api.openai.com/v1/decisions发起一次gpt-6-luna英文predicate最小请求；3.966秒返回HTTP401，code=invalid_api_key，message=Incorrect API key provided，request_id=req_2ee744714a6f43198d721670413b1271。结论：该key当前未通过认证，尚无法验证模型推理。未调用其他API，未启动实验，未保存key。
+- 【Agent】【2026-10-25 15:53】[result] cfa25bf3归档辅助完整方法修订native成功：a18c0e源码，17GPT/89真实Jev/267步/3090.213秒，无同场景源码修复；下一步仅原样新回合回归13，成功获取不等于稳定。
+- 【Agent】【2026-10-25 15:54】[op] 新建实验块 EXP-2026W43-099：通用恢复知识修订后GPT完整方法原生成功；a18源码冻结回归待验证  ↪ `EXP-2026W43-099`
+- 【Agent】【2026-10-25 15:54】[run] 启动a18c0e精确源码全新回合13零修复复测：24GPT/200Jev/600步/7200秒；成功获取原始响应、源码来源、89次派发、16严格复核及全部token审计通过。
+- 【Agent】【2026-10-25 15:57】[op] 保存EXP099完整获取证据、a18完整方法包/接口/Jev协议，更新当前状态和Weekly Retro；严格周志lint通过，CIRCLE25轮按精确源零修复固定序列收敛。
