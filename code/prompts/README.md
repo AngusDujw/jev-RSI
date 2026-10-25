@@ -3,7 +3,7 @@
 Current evidence: after generic recovery guidance, a GPT archive-assisted full
 rewrite completed hard13with native success (17GPT/89real Jev/267steps), without
 same-scene source repair. [The exact full method and Jev protocol](../../artifacts/gpt-jev-recovery-method-20261025/METHOD.md)
-are preserved; its zero-source-repair fresh13validation is pending. The previous
+are preserved; its exact-source fresh13validation failed0/1 before transfer: body identity was coupled to unresolved corner indices and view recovery was unsupported.16-19were not admitted. The previous
 5e method succeeded during acquisition but failed exact fresh replay. Earlier
 frozen-source5/5 was specific to those initial states, and later failures remain
 separate in the [continuation record](../../LOGS/2026-10-25-gpt-jev-stability.md).

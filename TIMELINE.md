@@ -165,6 +165,7 @@ graph LR
     T_2026W43_032["⛔ libero-generic-vision<br/>855两阶段设计已交付但完整代码900秒超…"]:::blocker
     T_2026W43_033["📊 libero-generic-vision<br/>精确5e源新空13零修复失败：12GPT/…"]:::experiment
     T_2026W43_034["📊 libero-generic-vision<br/>通用恢复经验驱动GPT完整a18方法获取n…"]:::experiment
+    T_2026W43_035["📊 libero-generic-vision<br/>a18原样空回合0修复失败0/1：恢复可达…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -287,6 +288,7 @@ graph LR
   T_2026W43_031 --> T_2026W43_032
   T_2026W43_032 --> T_2026W43_033
   T_2026W43_033 --> T_2026W43_034
+  T_2026W43_034 --> T_2026W43_035
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -437,6 +439,7 @@ graph LR
 | `T-2026W43-032` | 2026-10-25 | blocker | libero-generic-vision | 855两阶段设计已交付但完整代码900秒超时：1已知设计usage加1未知代码尝试，0Jev/0源码；不计冷生成成功 | `EXP-2026W43-096` | - |
 | `T-2026W43-033` | 2026-10-25 | experiment | libero-generic-vision | 精确5e源新空13零修复失败：12GPT/67Jev/201步；搬运后6.84mm估计触发6mm硬门限且恢复作用域缺失，16-19未准入 | `EXP-2026W43-098` | - |
 | `T-2026W43-034` | 2026-10-25 | experiment | libero-generic-vision | 通用恢复经验驱动GPT完整a18方法获取native成功17GPT89Jev267步，冻结复用待新回合验证 | `EXP-2026W43-099` | - |
+| `T-2026W43-035` | 2026-10-25 | experiment | libero-generic-vision | a18原样空回合0修复失败0/1：恢复可达但身份耦合角编号，下一候选分离对应及等价假设 | `EXP-2026W43-100` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

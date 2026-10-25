@@ -995,6 +995,6 @@
   },
   "source_parent": "5e5083d55b53664d10f8a018e8b0fda7ed6daf8b7de7291881fc4cde86919074",
   "root_task_source_edits": false,
-  "validation_scope": "Acquisition success only; fresh exact-source regression13 currently pending; unused16-19 unadmitted",
+  "validation_scope": "Fresh exact-source13failed0/1;16-19unadmitted; original source unchanged",
   "prior_lineage_costs": "Earlier acquisition, failed reuse, and broader research costs remain separate; see stability report"
 }

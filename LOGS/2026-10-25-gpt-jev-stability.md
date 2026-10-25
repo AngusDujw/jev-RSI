@@ -1,10 +1,11 @@
 # GPT/Jev stability continuation
 
-Current status: generic recovery guidance led to an archive-assisted full GPT
-rewrite a18c0e reaching native success on hard13(17GPT/89Jev/267steps), with no
-same-scene source repair. Its exact-source fresh13zero-repair validation is
-running; unused16-19 remain unadmitted. Stable reuse and net efficiency are not
-established. Full package: artifacts/gpt-jev-recovery-method-20261025/.
+Current status: a18 acquired native success(17GPT/89Jev/267steps), but exact
+fresh13zero-repair validation failed(10GPT/51Jev/153steps).0/1closed;16-19
+unadmitted. Recovery ran, but same-body identity was coupled to unique physical
+corner indices; view benefit was unsupported. Stable reuse and net efficiency
+remain unestablished. Next generic knowledge separates identity/correspondence,
+supported symmetry hypotheses and future observation dependencies.
 
 Previous status retained: archive-assisted GPT rewrite/one repair reached native success
 on hard13(21GPT/84Jev/252steps), but exact final5e source fresh13zero-repair reuse
@@ -182,7 +183,7 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Files changed since9d710e19: 119. Generated from tracked staged changes; user-owned untracked directories are excluded.
+Files changed since9d710e19: 120. Generated from tracked staged changes; user-owned untracked directories excluded.
 
 | Status | File |
 |---|---|
@@ -267,6 +268,7 @@ Files changed since9d710e19: 119. Generated from tracked staged changes; user-ow
 | A | [artifacts/gpt-jev-recovery-method-20261025/VALIDATION.json](../artifacts/gpt-jev-recovery-method-20261025/VALIDATION.json) |
 | A | [artifacts/gpt-jev-recovery-method-20261025/method.json](../artifacts/gpt-jev-recovery-method-20261025/method.json) |
 | A | [artifacts/gpt-jev-recovery-method-20261025/method.py](../artifacts/gpt-jev-recovery-method-20261025/method.py) |
+| A | [artifacts/gpt-jev-recovery-method-20261025/validation/init13.json](../artifacts/gpt-jev-recovery-method-20261025/validation/init13.json) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/COHORT.json](../artifacts/gpt-jev-resilient-methods-20261025/COHORT.json) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/README.md](../artifacts/gpt-jev-resilient-methods-20261025/README.md) |
 | A | [artifacts/gpt-jev-resilient-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-resilient-methods-20261025/init13/METHOD.md) |
@@ -1013,3 +1015,21 @@ unused16-19admit only on native success, stop new admissions on failure. Prior
 5e acquisition and failed0/1reuse remain separate. No stable reuse, independent
 cold reliability or net efficiency claim. CIRCLE1is25rounds/31unresolved and
 CIRCLE3; this exact-source sequence is the convergence action.
+
+## Exact a18 replay failure (EXP100)
+
+Exact fresh13zero-repair source failed native/proposal false:
+10GPT/51real Jev/153steps/1335.145283sec.10strict reviews, exact reuse,
+51dispatches and raw relay responses audited. All usage known:
+GPT115487input/26231output; Jev148635/12699. Recovery retried measurement,
+but a visible same-body end could not resolve physical reference vertex indices.
+The upward view benefit was unsupported.0/1closed;16-19unadmitted.
+Original source/acquisition retained in artifacts/gpt-jev-recovery-method-20261025/.
+
+Only generic English knowledge now separates body identity and correspondence,
+retains supported finite symmetry hypotheses and checks actual next predicates,
+and checks future observability before occlusion. No task motion, coordinates,
+controller or account changes. Prepared correspondence-method-input contains
+unedited a18 source, failed public result and last8publicRPCs, no privilegedstate.
+CIRCLE26rounds/32unresolved: fixed settings, revised full method then exact-source
+regression before any new admission is the convergence action.

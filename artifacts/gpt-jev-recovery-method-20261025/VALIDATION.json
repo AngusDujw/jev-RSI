@@ -1,7 +1,9 @@
 {
-  "status": "pending fresh13 zero-repair regression",
+  "status": "closed failed fresh13 exact-source regression",
   "source_sha256": "a18c0e26e16f4f92d1d5e96657e9ca751a1c7332ec25c121bf4bdb9dbc06044a",
-  "completed": [],
+  "completed": [
+    13
+  ],
   "admitted": [
     13
   ],
@@ -11,6 +13,8 @@
     18,
     19
   ],
-  "claim": "No stable reuse claim",
-  "manifest": "code/runs/2026-10-25-gpt-jev-program/recovery-frozen-cohort-manifest.json"
+  "claim": "Acquisition succeeded; stable frozen reuse failed",
+  "manifest": "code/runs/2026-10-25-gpt-jev-program/recovery-frozen-cohort-manifest.json",
+  "native_successes": 0,
+  "native_trials": 1
 }

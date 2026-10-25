@@ -93,8 +93,27 @@ Generic development lessons, bounded by recorded development evidence:
 - With a known rigid planar shape, a measured face plane and an identifiable
   edge direction constrain orientation. An independent physical fiducial can
   resolve translation and finite edge-identity hypotheses. Use visible geometry,
-  validate residuals and reject ambiguous hypotheses; do not invent hidden corners
+  validate residuals and reject contradicted hypotheses; do not invent hidden corners
   or require an entire old landmark set when sufficient independent evidence exists.
+- Separate same-body identity from the correspondence of named marks or indexed
+  vertices. A current surface can belong unambiguously to the intended body while
+  its reference vertex indices remain ambiguous. Give those facts separate
+  response fields and program branches. When a measured geometric model admits
+  finitely many correspondences or rigid symmetries, retain the supported set
+  and propagate it to the next action predicate. A unique index assignment is
+  unnecessary if every supported hypothesis gives the same relevant envelope
+  or passes that predicate with its stated uncertainty. Reject hypotheses with
+  actual contradictory measurements; do not select one merely to pass a gate.
+  If supported hypotheses disagree on the effect, obtain relevant information
+  or use another justified bounded action. Same-body identity alone establishes
+  neither a complete transform nor retained attachment.
+- Check future observation dependencies before an occluding intervention. A
+  local motion witness can establish retention without establishing its relation
+  to a later shape envelope. Acquire the needed relation while observable, or
+  implement a later witness or symmetry-invariant construction that does not
+  need unavailable named features. Explain which distinction a proposed view
+  action can resolve. Repeating an unchanged self-occluded view, or asking for
+  the same missing index assignment under a new name, is not new information.
 - Treat goal-pose tolerance and actual effect uncertainty separately. After a
   bounded pose lease, evaluate the relevant measured geometry before declaring
   an object-level outcome. A small residual is neither failure nor proof of the

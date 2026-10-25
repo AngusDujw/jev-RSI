@@ -1,6 +1,6 @@
 # Complete GPT-authored method
 
-Archive-assisted acquisition succeeded natively; frozen reuse is pending. Heuristic measurement bounds are not calibrated truth guarantees.
+Archive-assisted acquisition succeeded natively; exact-source fresh13reuse failed (0/1), and16-19were not admitted. Heuristic measurement bounds are not calibrated truth guarantees.
 
 ## Explanation
 
