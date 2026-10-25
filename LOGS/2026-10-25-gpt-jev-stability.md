@@ -902,3 +902,14 @@ The user asked what generate/repair/validate/freeze means and current results;
 we explained fresh runtime sensing and retained GPT review calls, scoped old5/5
 and hard-layout failures, current incomplete execution and unproven full savings.
 The question is not a selection of an evaluation unit or a request to stop.
+
+## Actual staged request audit; complete source still pending
+
+855staged q0design completed; q1materialization is pending. Both actual requests
+are frame0with empty memory/execution, no archived source, frozen instructions
+and implementation, English ASCII and two current images each. q1contains the
+exact strict-bounded design under explicit proposal provenance, not sensor truth.
+No duplicate earlier design images or physical dispatch. Design usage is known:
+9036input/3709output, including2588reported reasoning output. These are partial
+synthesis costs; full-program delivery, native success and efficiency remain
+pending. Audit: staged-cold-init13/staged-input-audit.json,zero additional calls.
