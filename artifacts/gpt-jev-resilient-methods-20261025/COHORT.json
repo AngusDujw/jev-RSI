@@ -1,0 +1,61 @@
+{
+  "candidate_commit": "50432131",
+  "predeclared_init_indices": [
+    13,
+    16,
+    17,
+    18,
+    19
+  ],
+  "task_id": 1335,
+  "admitted": [
+    13
+  ],
+  "completed": [
+    {
+      "init_index": 13,
+      "source_sha256": "57e728ab732c91b4c5a87066d8daa72200409423afde2a6ab0950c9c83fdecfc",
+      "source_revisions": 4,
+      "native_success": false,
+      "completion_proposed": false,
+      "termination": "gpt_budget",
+      "gpt_calls": 32,
+      "jev_calls": 91,
+      "native_steps": 273,
+      "elapsed_s": 5661.015800897032
+    }
+  ],
+  "unadmitted": [
+    16,
+    17,
+    18,
+    19
+  ],
+  "regression_first": true,
+  "limits": {
+    "gpt": 32,
+    "jev_logical_requests": 200,
+    "policy_steps": 600,
+    "source_repairs": 5,
+    "wall_seconds": 9000,
+    "jev_upstream_attempts_per_request": 5
+  },
+  "fixed_file_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "8575ff018f3f89e039a5728fdecd20c0398cbdcf9b5bfa0e4afa44e725ee1ee7",
+    "code/prompts/gpt_jev_program_api_v2.md": "3e2d82dd87330b927792111065facb0d8f03715817b58fce5cf4f2db461a9aac",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "fefcbabce42d8939da21135951d02d0ad59acba1038fe96caf81d11c4d21de55",
+    "code/scripts/run_gpt_jev_program.py": "45dd0a2f8f0a2923f60a9254be508b1a2ccba90bafbe318ac008a8493e67a645",
+    "baseline/roboicl/reproduction/pro_oauth_bridge.py": "36d3470de72e088a38c8e171c5f86e4d5aba4ba00bb0f141f476083d653d53ed"
+  },
+  "criterion": "All five native terminal scores true; regression13 succeeds before admitting16-19; failures stop unadmitted and all started results remain",
+  "cold_generation": "Independent fresh generation, empty episode memory, no archived source",
+  "previous_transport_failure": "0d15regression nativefalse retained separately, with three unknown-usage upstream attempts",
+  "attribution": "Same model-visible builder/lessons/API; transport and deadline implementation changed. No speed or isolated policy comparison.",
+  "admission_policy_note": "Known generic repair-context data loss discovered; do not admit unused cases on this superseded version. Retain ongoing13terminal separately; fixed2d710418evaluation is independent.",
+  "pending": [],
+  "status": "closed_regression_failed",
+  "native_successes": 0,
+  "admitted_count": 1,
+  "termination": "gpt_budget",
+  "accounting": "Regression13nativefalse retained; four unadmitted not executed failures. Known repair-context bug fixed in separate2dversion; no pooled outcome."
+}

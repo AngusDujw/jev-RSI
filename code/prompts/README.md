@@ -241,3 +241,12 @@ and schema checks passed (Native=N/A). Its independent cold13regression is now
 the primary evaluation before unused16-19. The older504regression remains
 unchanged and separate; its known contract bug prevents unused admissions there.
 No task policy or trajectory was added, and no new native success is claimed.
+
+
+[Project-local orchestration skill](../../.agents/skills/gpt-jev-method/SKILL.md)
+provides a concise entry point to the canonical files and validation units. It
+is outer-agent guidance, not automatically loaded planner context. Structure,
+references and English/task-free checks passed; native success is separate.
+The older504regression has now ended nativefalse/gpt_budget; its last source
+was episode-bound. A separately labeled archive-assisted revision on2dremoves
+old frame-specific observation shortcuts; independent cold validation continues.

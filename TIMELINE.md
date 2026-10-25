@@ -153,6 +153,7 @@ graph LR
     T_2026W43_020["📊 libero-generic-vision<br/>a8e预定五冷回合原生4/5，稳定性标准驳…"]:::experiment
     T_2026W43_021["📊 libero-generic-vision<br/>618冻结候选三准入原生2/3，回归13仍…"]:::experiment
     T_2026W43_022["⛔ libero-generic-vision<br/>0d15回归13第19逻辑Jev分类三次T…"]:::blocker
+    T_2026W43_023["📊 libero-generic-vision<br/>504独立回归13测得保留仍未放置，32G…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -264,6 +265,7 @@ graph LR
   T_2026W43_019 --> T_2026W43_020
   T_2026W43_020 --> T_2026W43_021
   T_2026W43_021 --> T_2026W43_022
+  T_2026W43_022 --> T_2026W43_023
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -402,6 +404,7 @@ graph LR
 | `T-2026W43-020` | 2026-10-25 | experiment | libero-generic-vision | a8e预定五冷回合原生4/5，稳定性标准驳斥；保留失败，另冻结通用参考连续性候选 | `EXP-2026W43-082` | - |
 | `T-2026W43-021` | 2026-10-25 | experiment | libero-generic-vision | 618冻结候选三准入原生2/3，回归13仍因完整注册门限未抓取；停止未准入16/17，下一版改阶段最小观测依赖 | `EXP-2026W43-085` | - |
 | `T-2026W43-022` | 2026-10-25 | blocker | libero-generic-vision | 0d15回归13第19逻辑Jev分类三次TLS EOF耗尽，原生false；保留未知费用，修通用分类传输预算后重测 | `EXP-2026W43-086` | - |
+| `T-2026W43-023` | 2026-10-25 | experiment | libero-generic-vision | 504独立回归13测得保留仍未放置，32GPT耗尽原生0/1；字典诊断和帧范围契约修正另测，不混入复用 | `EXP-2026W43-088` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

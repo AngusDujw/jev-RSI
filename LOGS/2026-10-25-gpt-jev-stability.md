@@ -7,7 +7,8 @@ known costs are retained. Stable cold success is not established. Candidate0d15a
 native0/1 admitted;16-19 remained unadmitted. Its policy effect is uncompleted.
 Primary frozen2d710418 now runs an independent cold regression13 after fixing
 real repair-context data loss (8offline checks, Native=N/A). Previous50432131
-regression continues unchanged and will be retained separately. Unused16-19
+regression ended nativefalse/gpt_budget and is retained separately. A separate
+archive-assisted portability revision is also running. Unused16-19
 await primary regression success. Stable native success is still unestablished.
 
 Earlier scoped positives remain distinct: one unchanged prior method passed
@@ -177,10 +178,11 @@ The final framework is frozen at9a3e1f3d for predeclared init9/10/11/12/13. Ever
 
 <!-- CHANGED-FILES:BEGIN -->
 
-Complete changed-file inventory against9d710e19: 74 tracked files.
+Complete changed-file inventory against9d710e19: 82 tracked files.
 
 | Change | File |
 |---|---|
+| A | [.agents/skills/gpt-jev-method/SKILL.md](../.agents/skills/gpt-jev-method/SKILL.md) |
 | M | [Discussion.md](../Discussion.md) |
 | A | [LOGS/2026-10-25-gpt-jev-stability.md](../LOGS/2026-10-25-gpt-jev-stability.md) |
 | M | [LOGS/2026-W43-activity.md](../LOGS/2026-W43-activity.md) |
@@ -239,6 +241,13 @@ Complete changed-file inventory against9d710e19: 74 tracked files.
 | A | [artifacts/gpt-jev-factored-methods-20261025/init13/method.py](../artifacts/gpt-jev-factored-methods-20261025/init13/method.py) |
 | M | [artifacts/gpt-jev-program-20261024/PROVENANCE.json](../artifacts/gpt-jev-program-20261024/PROVENANCE.json) |
 | M | [artifacts/gpt-jev-program-20261024/README.md](../artifacts/gpt-jev-program-20261024/README.md) |
+| A | [artifacts/gpt-jev-resilient-methods-20261025/COHORT.json](../artifacts/gpt-jev-resilient-methods-20261025/COHORT.json) |
+| A | [artifacts/gpt-jev-resilient-methods-20261025/README.md](../artifacts/gpt-jev-resilient-methods-20261025/README.md) |
+| A | [artifacts/gpt-jev-resilient-methods-20261025/init13/METHOD.md](../artifacts/gpt-jev-resilient-methods-20261025/init13/METHOD.md) |
+| A | [artifacts/gpt-jev-resilient-methods-20261025/init13/PROVENANCE.json](../artifacts/gpt-jev-resilient-methods-20261025/init13/PROVENANCE.json) |
+| A | [artifacts/gpt-jev-resilient-methods-20261025/init13/README.md](../artifacts/gpt-jev-resilient-methods-20261025/init13/README.md) |
+| A | [artifacts/gpt-jev-resilient-methods-20261025/init13/method.json](../artifacts/gpt-jev-resilient-methods-20261025/init13/method.json) |
+| A | [artifacts/gpt-jev-resilient-methods-20261025/init13/method.py](../artifacts/gpt-jev-resilient-methods-20261025/init13/method.py) |
 | A | [artifacts/gpt-jev-typed-method-20261025/METHOD.md](../artifacts/gpt-jev-typed-method-20261025/METHOD.md) |
 | A | [artifacts/gpt-jev-typed-method-20261025/PROVENANCE.json](../artifacts/gpt-jev-typed-method-20261025/PROVENANCE.json) |
 | A | [artifacts/gpt-jev-typed-method-20261025/README.md](../artifacts/gpt-jev-typed-method-20261025/README.md) |
@@ -681,3 +690,42 @@ bounded504transport. Existing504regression continues unchanged in its own world
 and will be retained separately; it is superseded for unused admissions because
 of the known diagnostic contract bug. Do not pool its result into the new cohort.
 Both episodes receive no archived source; global concurrency remains at most2.
+
+## Superseded504regression closed (EXP088); portability revision separate
+
+The unchanged504regression ended native=false/gpt_budget:32GPT/91real Jev/
+273policy steps/5661.02seconds,4automatic source repairs,5complete source hashes,
+27strict reviews and637dispatch labels audited. All32/91upstream usages are
+known: GPT406774input/173059output; Jev192189/22659. Observed retention reached
+hand/object rises29.180/28.977mm, but transfer/placement was not completed.
+No unused16-19were admitted. The exact failed complete outputs are preserved in
+[the separate resilient package](../artifacts/gpt-jev-resilient-methods-20261025/README.md).
+
+The last57e728source compiled and entered its worker, but all its recorded RPCs
+were sensing/checkpoint operations; its next review hit the budget before any
+control/drive from that final version. It also embedded an old frame273repair
+observation shortcut. It is a same-episode candidate, not a proven portable
+method. Original source/package/summary remain unmodified and labeled.
+
+A separate archive-assisted-reg13was therefore admitted on2d710418. Its derived
+revision input keeps the original source bytes and adds only a labeled outer
+provenance note in explanation; old summary and8public RPCs are explicitly
+historical. The planner, not the outer agent, removes stale observation shortcuts
+and generates a full method from current images. Limits32GPT/200logical Jev/
+600steps/2repairs/9000seconds. This condition is neither cold generation nor
+zero-source-repair reuse, and it does not replace primary cold validation.
+
+Its actual first revised source contains no old frame273branch and describes
+fresh runtime surveys and episode-scoped references. Actual initial input is
+frame0/empty memory with an explicit previous_method and old-observation scope.
+That is provenance/contract evidence only; native outcome remains pending.
+
+## Project-local orchestration skill
+
+[Skill entry](../.agents/skills/gpt-jev-method/SKILL.md) routes the three canonical
+input files and existing harness, preserves the four-string complete method
+contract, distinguishes cold/archive-assisted/frozen validation, and checks
+provenance, real dispatches and full costs. It contains no task IDs, names,
+coordinates or trajectory. skill-creator quick validation and reference/ASCII
+checks passed. This outer-agent skill is not appended to internal model requests;
+packaging does not itself prove token savings or native success.

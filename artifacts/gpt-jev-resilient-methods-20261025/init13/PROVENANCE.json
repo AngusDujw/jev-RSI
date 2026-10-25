@@ -1,0 +1,98 @@
+{
+  "scope": "Actual independently cold-generated output, not shared knowledge or a universal guarantee",
+  "task_suite": "libero_goal",
+  "task_id": 1335,
+  "init_index": 13,
+  "framework_commit": "50432131",
+  "original_run": "code/runs/2026-10-25-gpt-jev-program/resilient-cold-init13",
+  "source_sha256": "57e728ab732c91b4c5a87066d8daa72200409423afde2a6ab0950c9c83fdecfc",
+  "source_revisions": 4,
+  "native_success": false,
+  "completion_proposed": false,
+  "termination": "gpt_budget",
+  "gpt_calls": 32,
+  "jev_calls": 91,
+  "native_steps": 273,
+  "elapsed_s": 5661.015800897032,
+  "prompt_sha256": "a15bc5b7972d6acd54edcf97fff2b436e479c2c852729d8a587de8054041df06",
+  "manual_sha256": "3e2d82dd87330b927792111065facb0d8f03715817b58fce5cf4f2db461a9aac",
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "45dd0a2f8f0a2923f60a9254be508b1a2ccba90bafbe318ac008a8493e67a645",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "audit": {
+    "native_success": false,
+    "termination": "gpt_budget",
+    "gpt_calls": 32,
+    "jev_calls": 91,
+    "native_steps": 273,
+    "elapsed_s": 5661.015800897032,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "84e82e6eb033686154496190bf720758f145406f5dc013a5789d43060a2d8ad4"
+      },
+      {
+        "number": 1,
+        "source_sha256": "1fc494f3a4ecae2c89885b3ae989dd1f49017be4c090169e4b435a84c4296846"
+      },
+      {
+        "number": 2,
+        "source_sha256": "37d5379905958608135142299b55aa9a8558df8d5badb5d37e3adc4ce5e368f8"
+      },
+      {
+        "number": 3,
+        "source_sha256": "8c6d01c71e6f73c29422a2689cf0b5c12abdb50079484ead686e992a9f2df4f5"
+      },
+      {
+        "number": 4,
+        "source_sha256": "57e728ab732c91b4c5a87066d8daa72200409423afde2a6ab0950c9c83fdecfc"
+      }
+    ],
+    "completion_proposed": false,
+    "audit": "Original Jev choices, semantic labels, finite bounds, carried gripper, steps and all source hashes passed",
+    "dispatches": 91,
+    "models": {
+      "gpt": {
+        "attempts": 32,
+        "unknown_usage": 0,
+        "completed_input": 406774,
+        "completed_output": 173059,
+        "relay_seconds": 5504.543953644112,
+        "matched_requests": 32
+      },
+      "jev": {
+        "attempts": 91,
+        "unknown_usage": 0,
+        "completed_input": 192189,
+        "completed_output": 22659,
+        "relay_seconds": 98.201520365139,
+        "matched_requests": 91
+      }
+    },
+    "strict_reviews_validated": 27,
+    "gpt_cost_by_purpose": {
+      "submit_method": {
+        "calls": 1,
+        "input": 9926,
+        "output": 26501
+      },
+      "submit_review": {
+        "calls": 27,
+        "input": 270694,
+        "output": 75763
+      },
+      "submit_method_patch": {
+        "calls": 4,
+        "input": 126154,
+        "output": 70795
+      }
+    }
+  },
+  "cold_input_check": "Empty initial memory, no previous_method or reused source",
+  "final_source_execution_scope": "Final version compiled/entered worker, then its next review hit gpt_budget; no physical control/drive RPC from final version. Earlier versions executed the273steps.",
+  "portability_limit": "Contains an old-episode frame273observation branch; separate archive-assisted revision reacquires current observations. No frozen reuse claim."
+}

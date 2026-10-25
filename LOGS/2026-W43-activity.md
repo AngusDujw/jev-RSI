@@ -507,3 +507,8 @@
 - 【Agent】【2026-10-25 11:01】[op] 2d710418实际独立冷回归准入与证据契约修复/8检查/样本纠正同步外层报告、README及Discussion；旧504冻结现场继续，因已知I/O丢失bug不再准入未见，不将其结果混入新版本。正式目标理论不变，16–19仍未见未准入。  ↪ `EXP-2026W43-087`
 - 【Agent】【2026-10-25 11:03】[result] 2d710418实际初始请求核验通过：英文instructions匹配冻结前知+新manual，5实现哈希匹配，frame0空checkpoint无旧源，Astra/xhigh本机Pro；新的program_result契约未热改旧504。后续须核验真正发生修复时的实际输入，不把离线回放或初始输入核验当原生成功。
 - 【Agent】【2026-10-25 11:16】[result] 2d实际Gpt03修复输入已核验：与method00真实返回经冻结生产compactor+6有效位数字处理逐字结构相等，phase/holding/gap/events/recovery全部保留、2条数值事件完整、全英文ASCII；repair-input-audit已落盘，未额外调用模型或物理。不再以7个null替代合法字典。新方法动作前不可行仍待GPT修复与原生测试。  ↪ `EXP-2026W43-087`
+- 【Agent】【2026-10-25 11:29】[op] 新建实验块 EXP-2026W43-088：504冻结回归13原生false：已测保留但未放置、32GPT耗尽；字典修复诊断丢失版本单列保留  ↪ `EXP-2026W43-088`
+- 【Agent】【2026-10-25 11:35】[note] 原样复用前源码审查发现末版57e含frame273同回合感知分支，跨回合仅凭帧号不可靠；因此未启动原样复用。改准备明确标注的archive-assisted portability修订输入：原4字段包/source不变，单独derived输入只在explanation附英文来源/重新观测要求，不加坐标轨迹，原summary与8条公开RPC按旧回合原样保存；仍不是冷生成，单独统计。
+- 【Agent】【2026-10-25 11:35】[run] 单独archive-assisted-reg13在2d710418工作树前台启动：Astra/xhigh本机Pro+真实Jev，输入57e末版原source及明确旧回合来源，先由GPT修订可迁移性；32GPT/200逻辑Jev/600步/2同现场修复/9000秒。当前主线feedback-cold-init13继续独立冷生成验证，两个环境分开、最多两并发，不把辅助修订算冷启动或零修复复用，不准入新未见布局。
+- 【Agent】【2026-10-25 11:47】[op] 使用skill-creator创建项目内.agents/skills/gpt-jev-method/SKILL.md，只编排三固定前知、完整4字符串方法包、实际Jev/harness、冷生成/辅助修订/冻结复用分开验收、数据来源与成本；不含任务ID/物名/坐标轨迹，不自动把外层管理规则拼入内部请求。官方quick_validate通过，引用真实文件均解析、英文ASCII/任务词哨兵通过，无新脚本或额外模型。
+- 【Agent】【2026-10-25 11:48】[op] 504负结果完整记录并保存5版本/全量费用，明确末版无物理执行且frame273不具跨回合保证；archive-assisted先由GPT去除旧分支的真实初版已核验，不当作冷生成。主报告/Discussion/Retro/T023、项目skill引用同步；新skill只有通用编排，不存具体任务命令。  ↪ `EXP-2026W43-088`
