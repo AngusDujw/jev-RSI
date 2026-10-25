@@ -278,6 +278,7 @@ graph LR
     T_2026W43_031["📊 gpt-as-policy-luna-media<br/>v24完整0/6、无空闲中断；紫块指尖外首…"]:::experiment
     T_2026W43_032["📊 gpt-as-policy-luna-media<br/>v25完整0/6；同刻腕图支撑假阳性由高图…"]:::experiment
     T_2026W43_033["📊 gpt-as-policy-luna-media<br/>v26完整0/6、历史示例路径消费不一致；…"]:::experiment
+    T_2026W43_034["📊 gpt-as-policy-luna-media<br/>v27全部16图提交仍完整0/6；闭爪搬运…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -508,6 +509,7 @@ graph LR
   T_2026W43_030 --> T_2026W43_031
   T_2026W43_031 --> T_2026W43_032
   T_2026W43_032 --> T_2026W43_033
+  T_2026W43_033 --> T_2026W43_034
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -773,6 +775,7 @@ graph LR
 | `T-2026W43-031` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v24完整0/6、无空闲中断；紫块指尖外首失误与真实持有对照，冻结唯一v25同版六回合 | `EXP-2026W43-039` | - |
 | `T-2026W43-032` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v25完整0/6；同刻腕图支撑假阳性由高图否定，唯一v26新增原图验层对照 | `EXP-2026W43-040` | - |
 | `T-2026W43-033` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v26完整0/6、历史示例路径消费不一致；唯一v27直接附16原图并审计stdio提交 | `EXP-2026W43-041` | - |
+| `T-2026W43-034` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v27全部16图提交仍完整0/6；闭爪搬运层丢失再现，唯一v28检验整体净空与下层复查 | `EXP-2026W43-042` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

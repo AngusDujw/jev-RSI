@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "images": [
+    {
+      "label": "x5_purple_v24_missed_cam_high",
+      "description": "Purple beyond converging fingertips; not a retained grasp.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_purple_v24/missed_cam_high.png",
+      "sha256": "a713dfe6974accf1a6acde5ed40d9d74d9a65ed1fdc8f753a56a0d9bc1304680"
+    },
+    {
+      "label": "x5_purple_v24_missed_cam_right_wrist",
+      "description": "Purple beyond converging fingertips; not a retained grasp.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_purple_v24/missed_cam_right_wrist.png",
+      "sha256": "9a55eb29ab5835e55327bab9025799211085a8844759316efcec9b6604d0bd7a"
+    },
+    {
+      "label": "x5_purple_v24_retained_cam_high",
+      "description": "Purple body seated along both inner faces after a small lift.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_purple_v24/retained_cam_high.png",
+      "sha256": "be6448af79397ba3c9da9120cef05ff1f02abe26d7b16b23f6e09c9f6682bf8a"
+    },
+    {
+      "label": "x5_purple_v24_retained_cam_right_wrist",
+      "description": "Purple body seated along both inner faces after a small lift.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_purple_v24/retained_cam_right_wrist.png",
+      "sha256": "d9caccb672009faee6755ea033e1be41bb508e78e9fbc3483d80f78a9d823dd5"
+    },
+    {
+      "label": "x5_wood_v20_retained_cam_high",
+      "description": "Wood carried between separated inner faces.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_wood_v20/retained_cam_high.png",
+      "sha256": "863a0d3be92d76de7d4604023ad3ff4d68f09d8dadccfd6a700dcb09fca0b1b9"
+    },
+    {
+      "label": "x5_wood_v20_retained_cam_right_wrist",
+      "description": "Wood carried between separated inner faces.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_wood_v20/retained_cam_right_wrist.png",
+      "sha256": "5926c57d7838410c2872d74b96cd31743f6bae43681b790438a592467343c559"
+    },
+    {
+      "label": "x5_wood_v20_missed_cam_high",
+      "description": "Wood beyond nearly touching tips; missed lift.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_wood_v20/missed_cam_high.png",
+      "sha256": "ad44a5ce03b103a669f56b62e47527d2a939609eabfe6808287b50e7f92967e9"
+    },
+    {
+      "label": "x5_wood_v20_missed_cam_right_wrist",
+      "description": "Wood beyond nearly touching tips; missed lift.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_wood_v20/missed_cam_right_wrist.png",
+      "sha256": "75ec8e798e16d5e8b8662a6d7b72c20766f2b6c307c7e1767461a57cbf328d2b"
+    },
+    {
+      "label": "x5_wood_v20_released_beside_cam_high",
+      "description": "Wood beside the purple-white pair after release; not a supported third layer.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_wood_v20/released_beside_cam_high.png",
+      "sha256": "5fa02b7ef4a3932499147297a69fc8ea2e4d4485b5bb5ca4ef9868bb400050d1"
+    },
+    {
+      "label": "x5_wood_v20_released_beside_cam_right_wrist",
+      "description": "Wood beside the purple-white pair after release; not a supported third layer.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_wood_v20/released_beside_cam_right_wrist.png",
+      "sha256": "5b5ffacc140ca8a98b8b143dd0e07dc17264b2d7e8bbb609d31c2736f1b5d113"
+    },
+    {
+      "label": "x5_support_v25_adjacent_after_release_cam_high",
+      "description": "After release and withdrawal, wrist ordering is misleading; the high view shows adjacent tabletop cubes.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_support_v25/adjacent_after_release_cam_high.png",
+      "sha256": "6d819e8818f334580f1a3b6bb395dfc7a020cfe540a879e364c9f063511e82f9"
+    },
+    {
+      "label": "x5_support_v25_adjacent_after_release_cam_right_wrist",
+      "description": "After release and withdrawal, wrist ordering is misleading; the high view shows adjacent tabletop cubes.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_support_v25/adjacent_after_release_cam_right_wrist.png",
+      "sha256": "0bdf61815f93ffe39dafb81702be47e9d4f8eb56d5ecc44d778556dc503cbc0d"
+    },
+    {
+      "label": "x5_support_v25_supported_two_layer_appearance_cam_high",
+      "description": "Cleared high view shows purple elevated on white; two-layer appearance only, not complete task success.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_support_v25/supported_two_layer_appearance_cam_high.png",
+      "sha256": "178096e2ff610cdfa4edd7592bf0a002a81bdef1f2a4ebac20af29d1359c71c2"
+    },
+    {
+      "label": "x5_support_v25_supported_two_layer_appearance_cam_right_wrist",
+      "description": "Cleared high view shows purple elevated on white; two-layer appearance only, not complete task success.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_support_v25/supported_two_layer_appearance_cam_right_wrist.png",
+      "sha256": "7e12fa321b19d906c7761bfd4dee071fcb6e6af1f74ef4637a9caf376736ab90"
+    },
+    {
+      "label": "x5_clearance_v27_before_layer_loss",
+      "description": "Wood held near the purple-white pair before the lateral approach; lower layers still show a two-layer appearance.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_clearance_v27/before_layer_loss_cam_high.png",
+      "sha256": "40ad34218e05f60eef522e69f57152c89d3d34562371361930ab42a4b2b185fd"
+    },
+    {
+      "label": "x5_clearance_v27_after_layer_loss",
+      "description": "Wood remains closed in the hand, but purple is displaced beside white before wood is opened. Exact hidden contact is not available.",
+      "path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/x5_clearance_v27/after_layer_loss_cam_high.png",
+      "sha256": "0d754daceca5b4ffadd525ad6d708deb4f9dab1ff17860dc0982474fe0ca274c"
+    }
+  ]
+}
