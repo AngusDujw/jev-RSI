@@ -1,0 +1,71 @@
+{
+  "format": "agentsdock-session-origins",
+  "version": 1,
+  "conversations": {
+    "01a16c02-a00b-7d01-bc12-70adc0dd6ffa": {
+      "snapshots": {
+        "692cf5f0002f50adda892c8630c57d188031ae66b26fe4b34b7d67dc0cb368ed": {
+          "message_count": 686,
+          "message_fingerprint": "692cf5f0002f50adda892c8630c57d188031ae66b26fe4b34b7d67dc0cb368ed",
+          "segments": [
+            {
+              "first_message": {
+                "number": 1,
+                "role": "user",
+                "timestamp": "2026-10-24T03:44:38.068Z",
+                "item_id": "msg_01a16c02-b0b3-7051-a1fd-17af8506c1b8",
+                "text_sha256": "5a285869016a9174a4745468611810e9d9252659401fff757d759c1ea152b49a",
+                "excerpt": "# AGENTS.md instructions for /home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI <INSTRUCTIONS> ### 遵守以下规则 1. 用中文回答问题 2. 如果调试时要用"
+              },
+              "last_message": {
+                "number": 686,
+                "role": "assistant",
+                "timestamp": "2026-10-25T11:34:32.056Z",
+                "item_id": "msg_01be2b25d5c8d4f0016adde927e7288191b1e27deca8276d2d",
+                "text_sha256": "cd9473210cb51875296e3fa672e2c57e7cbf99eb575ce81e5aa4edca16221da8",
+                "excerpt": "现在的分工是：**GPT 编写完整方法，程序负责阶段逻辑和数值计算，Jev 做有限控制选择，GPT 在关键阶段看图复核。** **1. GPT 接收什么、处理什么** 生成方法时，GPT 收到三份通用英文材料：生成要求、准确的运行 API、"
+              },
+              "message_count": 686,
+              "execution_location": null,
+              "basis": "before_tracking",
+              "first_observed_at": {
+                "host": "local",
+                "hostname": "ykj-RS",
+                "cwd": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI",
+                "project_root": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI"
+              }
+            }
+          ]
+        }
+      },
+      "checkpoints": {
+        "01a16c02-a00b-7d01-bc12-70adc0dd6ffa": "692cf5f0002f50adda892c8630c57d188031ae66b26fe4b34b7d67dc0cb368ed"
+      },
+      "handoffs": [
+        {
+          "id": "0f93b4c88ac429fee5e28d89c97a4253fbd997c480884457fb2f83f2026fc347",
+          "synced_at": "2026-10-25T12:40:26.956230+00:00",
+          "mode": "sync",
+          "source": {
+            "host": "local",
+            "hostname": "ykj-RS",
+            "cwd": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI",
+            "project_root": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI"
+          },
+          "destination": {
+            "host": "server02",
+            "hostname": "ubuntu",
+            "cwd": "/home/user/ykj/project/gpt6/jev-RSI",
+            "project_root": "/home/user/ykj/project/gpt6/jev-RSI"
+          },
+          "source_session_id": "sess_cbced456d31e44e1",
+          "source_thread_id": "01a16c02-a00b-7d01-bc12-70adc0dd6ffa",
+          "destination_session_id": "sess_4cbeb6a2388d4f50",
+          "destination_thread_id": "01a16c02-a00b-7d01-bc12-70adc0dd6ffa",
+          "snapshot_id": "692cf5f0002f50adda892c8630c57d188031ae66b26fe4b34b7d67dc0cb368ed",
+          "snapshot_cutoff": "20261025T123726062634Z"
+        }
+      ]
+    }
+  }
+}
