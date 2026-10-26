@@ -17,3 +17,7 @@
 - 【Agent】【2026-10-26 16:31】[note] Astra示范查找当前等待指定会话读取/答复；经验选择拟采用关键动作前后原图+简短英文可见关系，不把完整成功标签/评分或动作坐标输入actor。当前v30 r1准备进程未观察到且无attempt-started/仿真/actor，不重启；后续核验来源再形成单一下一版。
 - 【Agent】【2026-10-26 16:39】[result] 已直接SSH核验Astra Pro/high旧布局成功403步/81决策、上限2200，原终局/结果/动作history SHA与对端一致，原媒体实际0文件；完整结果配置存outer-audit，不输入actor。参考对端真实历史机制：持续上下文；后续LIBERO例图实际SHA校验/base64输入和历史结束边界，不能冒充RoboDojo图。创建英文文本经验与manifest候选，历史判断标不确定、无真值/当前目标；尚未注入任何冻结版本。
 - 【Agent】【2026-10-26 16:39】[op] 将Astra已核验无图结论和278词英文经验SHA接入既有巡检后续要求：下一单一冻结提示精确拼入并审计真实提交，当前只准备候选，不改活版；不再等待不存在的原图。
+- 【Agent】【2026-10-26 16:43】[intent] 用户明确授权本机Pro ordinary Astra high做一次当前任务，完整保留历史，选关键原图/英文总结供Luna经验；只一次不自动重跑。
+- 【Agent】【2026-10-26 16:43】[op] runner新增显式policy-model仅允许Luna/Astra high，默认Luna不变；模型仅改新本地副本settings/身份context/Pro配置与manifest，prepared模型一致校验，原entry/550/评分不改。
+- 【Agent】【2026-10-26 16:43】[op] 新建实验块 EXP-2026W44-002：Astra high独立单次保存当前layout0真实历史，提取Luna经验  ↪ `EXP-2026W44-002`
+- 【Agent】【2026-10-26 16:44】[op] Astra单次目录prepare-only验收：实际settings/隔离Pro配置均gpt-6-astra/high，auth仅bool验收/fallbackfalse/评价不输入/历史图0/550，上游Luna settings未改，prepared-policy-audit保存；尚未启动仿真或模型，10原测试通过。

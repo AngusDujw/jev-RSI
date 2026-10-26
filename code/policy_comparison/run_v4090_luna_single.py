@@ -1,4 +1,4 @@
-"""One foreground Luna/high GPT-only episode; preserve media and never retry a trial."""
+"""One foreground Pro/high GPT-only episode; preserve media and never retry a trial."""
 import argparse
 import fcntl
 import hashlib
@@ -141,7 +141,9 @@ def sensor_sync_gate(runtime):
             tools.close()
 
 
-def prepare(policy_hints=None, policy_reference_manifest=None):
+def prepare(policy_hints=None, policy_reference_manifest=None, policy_model='gpt-6-luna'):
+    if policy_model not in ('gpt-6-luna', 'gpt-6-astra'):
+        raise ValueError('Unsupported ordinary Pro policy model')
     if LOCAL.exists():
         raise FileExistsError('Single attempt already prepared; inspect it, never auto-restart')
     auth = json.loads((Path.home() / '.codex/auth.json').read_text())
@@ -151,7 +153,15 @@ def prepare(policy_hints=None, policy_reference_manifest=None):
     runtime = LOCAL / 'runtime'
     shutil.copytree(SOURCE / 'hybrid_rollout', runtime / 'hybrid_rollout',
                     ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
-    # Retain the original ordinary Luna/high policy and native image/tool access.
+    settings = runtime / 'hybrid_rollout/robodojo/settings.py'
+    settings_text = settings.read_text()
+    if settings_text.count("MODEL = 'gpt-6-luna'") != 1 or "EFFORT = 'high'" not in settings_text:
+        raise ValueError('Unexpected source policy model or effort')
+    settings.write_text(settings_text.replace("MODEL = 'gpt-6-luna'", f"MODEL = '{policy_model}'"))
+    context = runtime / 'hybrid_rollout/robodojo/robodojo-gpt-only-rollout/context/teacher_context.md'
+    if policy_model == 'gpt-6-astra':
+        context.write_text(context.read_text().replace('GPT-6 Luna/high', 'GPT-6 Astra/high'))
+    # Retain native image/tool access for the explicitly selected Pro/high policy.
     # Remove evaluator fields from model-readable JSON, not from native scoring.
     io = runtime / 'hybrid_rollout/robodojo/io.py'
     text = io.read_text()
@@ -199,11 +209,11 @@ def prepare(policy_hints=None, policy_reference_manifest=None):
     fd = os.open(home / 'auth.json', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(fd, 'w') as stream:
         json.dump(auth, stream)
-    (home / 'config.toml').write_text('model_provider = "openai"\nmodel = "gpt-6-luna"\nmodel_reasoning_effort = "high"\ncli_auth_credentials_store = "file"\nforced_login_method = "chatgpt"\n')
+    (home / 'config.toml').write_text(f'model_provider = "openai"\nmodel = "{policy_model}"\nmodel_reasoning_effort = "high"\ncli_auth_credentials_store = "file"\nforced_login_method = "chatgpt"\n')
     files = {str(p.relative_to(runtime)): hashlib.sha256(p.read_bytes()).hexdigest()
              for p in runtime.rglob('*') if p.is_file()}
     write(LOCAL / 'launch.json', dict(host='v4090-t', task='stack_blocks', layout=0,
-        model='gpt-6-luna', reasoning_effort='high', authentication='local ChatGPT Pro',
+        model=policy_model, reasoning_effort='high', authentication='local ChatGPT Pro',
         evaluation_method='gpt_only', native_step_limit=550, attempts=1,
         preserve_images=True, preserve_video=True, api_fallback=False,
         evaluator_feedback_to_policy=False, remote=REMOTE, files=files,
@@ -218,6 +228,7 @@ def main():
     parser.add_argument('--prepare-only', action='store_true')
     parser.add_argument('--recover-empty-startup', action='store_true')
     parser.add_argument('--run-name')
+    parser.add_argument('--policy-model', choices=('gpt-6-luna', 'gpt-6-astra'), default='gpt-6-luna')
     parser.add_argument('--sensor-check', action='store_true')
     parser.add_argument('--sync-report', type=Path)
     parser.add_argument('--policy-hints', type=Path)
@@ -233,7 +244,8 @@ def main():
     if args.policy_reference_manifest is not None and (args.sensor_check or args.prepared or not args.policy_hints):
         raise ValueError('Reference attachments require a fresh hinted policy episode')
     if args.run_name:
-        if not args.run_name.startswith('v4090-luna-high-stack-') or '/' in args.run_name or '..' in args.run_name:
+        expected_prefix = f'v4090-{args.policy_model.removeprefix("gpt-6-")}-high-stack-'
+        if not args.run_name.startswith(expected_prefix) or '/' in args.run_name or '..' in args.run_name:
             raise ValueError('Invalid isolated run name')
         LOCAL = ROOT/'runs'/args.run_name
         REMOTE = REMOTE_BASE+'/'+args.run_name
@@ -269,8 +281,10 @@ def main():
         runtime, home = LOCAL / 'runtime', LOCAL / 'private_pro_home'
         if (LOCAL / 'attempt-started.json').exists():
             raise RuntimeError('One attempt already started; no rerun')
+        if json.loads((LOCAL / 'launch.json').read_text())['model'] != args.policy_model:
+            raise ValueError('Prepared policy model differs from requested model')
     else:
-        runtime, home = prepare(args.policy_hints, args.policy_reference_manifest)
+        runtime, home = prepare(args.policy_hints, args.policy_reference_manifest, args.policy_model)
     if args.prepare_only:
         print(json.dumps(dict(event='prepared', local=str(LOCAL))), flush=True)
         return
