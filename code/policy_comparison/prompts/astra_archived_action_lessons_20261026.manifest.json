@@ -1,0 +1,22 @@
+{
+  "status": "prepared_for_next_frozen_policy_not_submitted_to_actor",
+  "actor_text_file": "code/policy_comparison/prompts/astra_archived_action_lessons_20261026.md",
+  "actor_text_sha256": "df45b86b1d957c66f5ec6852edb8aee7486c14125bb23059759a3fd2e3771504",
+  "actor_text_words": 278,
+  "kind": "text_only_public_action_history_lessons",
+  "historical_rgb_count": 0,
+  "source_rgb_availability": "deleted_before_this_request",
+  "outer_audit_path": "/home/ykj/project/gpt6/benchmark/gpt_as_policy_reference_assets/astra_stack_20261007/outer-audit/provenance.json",
+  "composition": "Append the exact English text to the next single frozen policy hints before preparing a fresh local actor runtime. Record the composite SHA and source text SHA; do not modify any existing runtime or frozen cohort.",
+  "existing_live_rgb": 3,
+  "existing_reference_rgb_manifest": "code/policy_comparison/prompts/luna_high_v28_reference_images_20261025.json",
+  "historical_source_boundary": "The existing 16 RGB references are Luna campaign images, not Astra images.",
+  "forbidden_actor_fields": [
+    "native_success",
+    "native_score",
+    "contact",
+    "true_object_pose",
+    "archived_numeric_action_targets"
+  ],
+  "claims": "No claim of current layout equivalence or a visual demonstration."
+}
