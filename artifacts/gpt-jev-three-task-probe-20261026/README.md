@@ -34,3 +34,5 @@ Original and supplement requests, English input, strict designs, source absence 
 Terminal nativefalse outcomes are retained exactly. They were evaluated on settled initial scenes with zero policy actions, so reporting a Jev physical success rate of0/3 would be misleading. No executable method, reusable new-task policy or efficiency gain was established. Full source acquisition/transport must work before the intended physical generalization test can be completed. No current method was patched into success.
 
 [Files added or updated](CHANGED-FILES.md). No executable runtime or model-facing prompt was edited.
+
+A later [single-request phase diagnosis](../gpt-jev-timeout-diagnosis-20261026/README.md) found ongoing reasoning through882swith zero method-argument characters before the local898sdeadline. This does not change these original outcomes or costs, and cannot reconstruct their missing phase traces.

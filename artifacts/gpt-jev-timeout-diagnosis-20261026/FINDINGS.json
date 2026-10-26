@@ -1,0 +1,31 @@
+{
+  "request_model": "gpt-6-astra",
+  "request_effort": "xhigh",
+  "replay_scope": "single original staged-bowl method request; archived public images; no live simulator or Jev",
+  "same_model_visible_request_verified": true,
+  "first_response_header_s": 2.279131650000636,
+  "first_sse_event_s": 2.280190092000339,
+  "last_reasoning_item_s": 882.3409574019988,
+  "reasoning_items_completed": 22,
+  "keepalive_events": 22,
+  "function_argument_characters": 0,
+  "function_items_completed": 0,
+  "terminal_completed_event": false,
+  "local_deadline_s": 898,
+  "observed_elapsed_s": 898.002078339001,
+  "source_code_delivered": false,
+  "jev_calls": 0,
+  "request_attempts": 1,
+  "usage": "unknown, not zero; no completed usage event",
+  "original_request_instruction_characters": 44898,
+  "original_request_input_text_characters": 7755,
+  "images": 2,
+  "reasoning_text_saved": false,
+  "interpretation": "The replay received ongoing reasoning-item completions up to882.34s, but no method tool argument output before the local898sdeadline. This narrows this replay to pre-method-output reasoning/acquisition, not a silent initial connection or completed code lost in delivery.",
+  "limits": [
+    "Old failed requests had no intermediate SSE logs, so their exact phase cannot be reconstructed.",
+    "The reason for the original single-request upstream EOF near903s remains unresolved.",
+    "This trace does not expose reasoning content, prove why reasoning takes this long, or establish whether a longer request would finish.",
+    "No physical task success rate was measured."
+  ]
+}

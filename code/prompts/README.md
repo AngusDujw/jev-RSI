@@ -15,6 +15,8 @@ established. Acquisition/repair and unknown costs are not free.
 
 Cross-task probe on October26 retained this runtime and all fixed inputs. Three different tasks (drawer0, push75, bowl102; init0) did not receive complete source within the declared budgets. A separately labeled existing staged mode delivered3/3designs, then0/3complete methods; real Jev calls and policy steps were0. This is a source-acquisition limitation, not a measured Jev physical success rate. Queue-confounded and bridge-interrupted attempts, unknown usage, and the successful small Pro diagnostic are retained in the [complete probe report](../../artifacts/gpt-jev-three-task-probe-20261026/README.md). The earlier same-task frozen5/5is unchanged and cannot substitute for this missing physical generalization evidence.
 
+A later [exact-input streaming diagnosis](../../artifacts/gpt-jev-timeout-diagnosis-20261026/README.md) replayed one failed method request without a robot or queue: upstream SSE began at2.28s,22reasoning items completed through882.34s, and method argument output remained0characters before the local898sdeadline. This establishes pre-method-output reasoning/acquisition for that replay, not GPT planning inability. Old requests lacked phase traces; their precise intermediate phases and the original903sEOF remain unresolved. No model-facing file or production transport was changed.
+
 ## Active program interface v2
 
 Optional fresh synthesis can use the host's staged-design mode. The

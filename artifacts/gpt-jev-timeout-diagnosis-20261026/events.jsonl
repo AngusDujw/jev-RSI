@@ -1,0 +1,68 @@
+{"elapsed_s": 2.280190092000339, "attempt": 1, "type": "response.created"}
+{"elapsed_s": 2.5088945999996213, "attempt": 1, "type": "response.in_progress"}
+{"elapsed_s": 32.3493583620002, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 36.29007645999991, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 36.50545709399921, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 66.33153026400032, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 74.23817371599944, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 74.35281702099928, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 104.19663785599914, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 114.42350097400049, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 114.60286356899996, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 144.41487568200137, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 154.82099852599822, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 154.821428448, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 184.52294490299937, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 196.86163932800082, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 196.8622560950007, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 227.07199918800143, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 235.27714845400078, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 235.27748562899978, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 265.2683906609982, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 274.6665333910005, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 274.8956573129999, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 304.6848046879986, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 319.4337448819988, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 319.434333616, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 349.05685572100083, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 359.2531349639994, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 359.3753417509997, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 389.1637047230015, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 397.98430855600054, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 398.12908713400066, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 427.91058613300083, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 437.2232903189997, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 437.4410289009993, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 467.1914492550004, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 476.7787228500001, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 476.96088966700154, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 506.75444206299835, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 517.8500891200001, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 517.8507605869981, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 547.8800557689992, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 553.7403702440006, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 553.9401423779982, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 583.890787579001, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 592.2359490729996, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 592.2369041619986, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 622.1949619809984, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 633.1911804499996, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 633.1921989940001, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 663.0529041120008, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 678.2755906410002, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 678.2762432369982, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 708.3223339039996, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 720.1927031539981, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 720.3002618160008, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 750.1146389680016, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 764.1520387010005, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 764.3282971220015, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 794.1677150960004, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 807.7512698279988, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 807.8766829069991, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 837.7391606239999, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 846.5671553929988, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 846.5678869179992, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 876.4142481760009, "attempt": 1, "type": "keepalive"}
+{"elapsed_s": 882.2242921550005, "attempt": 1, "type": "response.output_item.added", "item_type": "reasoning", "item_status": null}
+{"elapsed_s": 882.3409574019988, "attempt": 1, "type": "response.output_item.done", "item_type": "reasoning", "item_status": null}

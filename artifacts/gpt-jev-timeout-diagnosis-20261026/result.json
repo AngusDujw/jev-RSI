@@ -1,0 +1,46 @@
+{
+  "manifest": {
+    "purpose": "One exact failed method-request replay for SSE phase diagnosis; archived public views, no robot actions",
+    "started_utc": "2026-10-26T09:17:27.069418+00:00",
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "request_deadline_seconds": 898,
+    "archived_request_sha256": "2a9c0f69d17f7fef097eacf1733947a96382178bc5cd6ae0aa1d3c9ffdb210ed",
+    "restored_image_hashes_verified": true,
+    "model_visible_request_unchanged": true,
+    "transport_source_sha256": "36d3470de72e088a38c8e171c5f86e4d5aba4ba00bb0f141f476083d653d53ed",
+    "reasoning_text_recorded": false
+  },
+  "error_type": "ProDeadlineError",
+  "error": "Native Pro whole-call deadline exceeded",
+  "elapsed_s": 898.002078339001,
+  "progress": {
+    "first_sse_s": 2.280190092000339,
+    "last_sse_s": 882.3409574019988,
+    "first_reasoning_delta_s": null,
+    "first_tool_arguments_delta_s": null,
+    "tool_argument_characters": 0,
+    "reasoning_delta_characters": 0,
+    "completed_event_seen": false,
+    "tool_items_completed": 0,
+    "header_received_s": 2.279131650000636
+  },
+  "event_counts": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "keepalive": 22,
+    "response.output_item.added": 22,
+    "response.output_item.done": 22
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "started": 1793006247.0699415,
+      "request_sent": true,
+      "error_type": "TimeoutError",
+      "error": "The read operation timed out",
+      "usage_unknown": true,
+      "elapsed_s": 898.001805816999
+    }
+  ]
+}

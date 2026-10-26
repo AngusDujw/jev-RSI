@@ -1,0 +1,12 @@
+{
+  "purpose": "One exact failed method-request replay for SSE phase diagnosis; archived public views, no robot actions",
+  "started_utc": "2026-10-26T09:17:27.069418+00:00",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "request_deadline_seconds": 898,
+  "archived_request_sha256": "2a9c0f69d17f7fef097eacf1733947a96382178bc5cd6ae0aa1d3c9ffdb210ed",
+  "restored_image_hashes_verified": true,
+  "model_visible_request_unchanged": true,
+  "transport_source_sha256": "36d3470de72e088a38c8e171c5f86e4d5aba4ba00bb0f141f476083d653d53ed",
+  "reasoning_text_recorded": false
+}

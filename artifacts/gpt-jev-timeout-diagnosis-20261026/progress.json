@@ -1,0 +1,19 @@
+{
+  "first_sse_s": 2.280190092000339,
+  "last_sse_s": 882.3409574019988,
+  "first_reasoning_delta_s": null,
+  "first_tool_arguments_delta_s": null,
+  "tool_argument_characters": 0,
+  "reasoning_delta_characters": 0,
+  "completed_event_seen": false,
+  "tool_items_completed": 0,
+  "header_received_s": 2.279131650000636,
+  "event_counts": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "keepalive": 22,
+    "response.output_item.added": 22,
+    "response.output_item.done": 22
+  },
+  "elapsed_s": 882.3409574019988
+}
