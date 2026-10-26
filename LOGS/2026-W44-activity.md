@@ -11,3 +11,4 @@
 - 【Agent】【2026-10-26 12:57】[op] 新建实验块 EXP-2026W44-001：继续同版独立单次；v29释放旁落证据后冻结唯一v30支撑诊断提示  ↪ `EXP-2026W44-001`
 - 【Agent】【2026-10-26 12:57】[op] 冻结唯一v30英文提示和六单次manifest，针对v29原图旁落及跨抓取漂移复用；16附件/runtime/原550评分不变，未启动，所有当前动作actor选。
 - 【Agent】【2026-10-26 12:58】[op] v30提示英文3304词/SHAfae065a21de99a93ba7d08044535ffeb488013239fe359be5f6160621fb7a77c，10原测试与严格协议lint通过，六新本地名不存在；准备提交SSH推送后单次启动。
+- 【Agent】【2026-10-26 13:00】[run] v30 r1单次前台启动session35689，隔离源码rsync仍推进（620KiB至1.2MiB），未到attempt-started/ready/actor；r2–r6未启动。启动前native全退/端口空闲/free48463MiB，真实launch Pro Luna/high/fallbackfalse/evaluator反馈false/550。监控已切v30，保持单条准备不重跑。
