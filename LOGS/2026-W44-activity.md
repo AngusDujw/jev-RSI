@@ -12,3 +12,6 @@
 - 【Agent】【2026-10-26 12:57】[op] 冻结唯一v30英文提示和六单次manifest，针对v29原图旁落及跨抓取漂移复用；16附件/runtime/原550评分不变，未启动，所有当前动作actor选。
 - 【Agent】【2026-10-26 12:58】[op] v30提示英文3304词/SHAfae065a21de99a93ba7d08044535ffeb488013239fe359be5f6160621fb7a77c，10原测试与严格协议lint通过，六新本地名不存在；准备提交SSH推送后单次启动。
 - 【Agent】【2026-10-26 13:00】[run] v30 r1单次前台启动session35689，隔离源码rsync仍推进（620KiB至1.2MiB），未到attempt-started/ready/actor；r2–r6未启动。启动前native全退/端口空闲/free48463MiB，真实launch Pro Luna/high/fallbackfalse/evaluator反馈false/550。监控已切v30，保持单条准备不重跑。
+- 【Agent】【2026-10-26 16:29】[intent] 用户@提前规划好的decision robodojo v4090，授权查找Astra完成任务的原图历史、参考其历史利用方式，选关键图/英文总结作为Luna high额外经验输入；不改已启动冻结回合。
+- 【Agent】【2026-10-26 16:29】[op] 通过run-bound Chats向指定会话发送已有Astra终局/关键原图/历史输入方式查找请求，已接受尚未读，未重复发送；独立核查本地旧baseline发现原Astra high回合失败、另有Sol成功，不能将Sol冒称Astra。
+- 【Agent】【2026-10-26 16:31】[note] Astra示范查找当前等待指定会话读取/答复；经验选择拟采用关键动作前后原图+简短英文可见关系，不把完整成功标签/评分或动作坐标输入actor。当前v30 r1准备进程未观察到且无attempt-started/仿真/actor，不重启；后续核验来源再形成单一下一版。
