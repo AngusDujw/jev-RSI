@@ -1,0 +1,5 @@
+{
+  "type": "RemoteDisconnected",
+  "error": "Remote end closed connection without response",
+  "native_steps": 0
+}

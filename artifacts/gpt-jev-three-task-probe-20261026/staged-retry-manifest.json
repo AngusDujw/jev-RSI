@@ -1,0 +1,65 @@
+{
+  "created_utc": "2026-10-26T08:24:46.783233+00:00",
+  "condition": "independent infrastructure supplement of staged cold generation; same tasks and zero source repairs",
+  "server": "company-server-2-ykj",
+  "host_commit": "302ff1eb639fffc2cb8a4a51cd5364eb4ce1c15e",
+  "suite": "libero_goal",
+  "cases": [
+    {
+      "slug": "drawer",
+      "task_id": 0,
+      "name": "open_the_middle_drawer_of_the_cabinet_table_1",
+      "init_index": 0,
+      "seed": 0
+    },
+    {
+      "slug": "push",
+      "task_id": 75,
+      "name": "push_the_plate_to_the_front_of_the_stove_table_12",
+      "init_index": 0,
+      "seed": 0
+    },
+    {
+      "slug": "bowl",
+      "task_id": 102,
+      "name": "put_the_bowl_on_the_plate_table_1",
+      "init_index": 0,
+      "seed": 0
+    }
+  ],
+  "budgets": {
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_repairs": 0,
+    "wall_seconds": 7200
+  },
+  "planner": "local signed-in ChatGPT Pro gpt-6-astra/xhigh",
+  "executor": "official Jev jev-1.13.0 /v1/systemone",
+  "source_input": "no archived source or old task design; empty episode memory",
+  "runtime_recovery": "only bounded recovery already present in the initial GPT-generated source",
+  "evaluation": "terminal native LIBERO score, isolated from policy",
+  "admission": "all three declared cases run independently; no substitution after failures",
+  "fixed_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "8575ff018f3f89e039a5728fdecd20c0398cbdcf9b5bfa0e4afa44e725ee1ee7",
+    "code/prompts/gpt_jev_program_api_v2.md": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "02a783f6388a5ad00033f7063097e0fb5224a2a05bceb3aac3bf30e07931afb2",
+    "code/scripts/run_gpt_jev_program.py": "b43427798eee163423c37f28ff037d51c3b8e81cc0e4999ae6b61b3ceeb3030f",
+    "code/scripts/gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "code/scripts/gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "code/scripts/gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "code/scripts/jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67",
+    "baseline/roboicl/reproduction/pro_oauth_bridge.py": "36d3470de72e088a38c8e171c5f86e4d5aba4ba00bb0f141f476083d653d53ed",
+    "code/prompts/gpt_jev_design_v1.txt": "20c65d2c3ae116af3f6bf1b78f3c35c92a3a188a8ffc374e9f4467a0c0440ae4"
+  },
+  "scope": "same three predeclared tasks, same init0/seed0; separate synthesis condition, not replacement successes",
+  "cost": "count generation, reviews, real Jev attempts and unknown usage; no automatic repair condition in this batch",
+  "bridge_concurrency": 3,
+  "reason": "Previous staged bridge exited SIGTERM143 with no terminal ledger. Preserve that interruption and unknown usage. One foreground parent now owns bridge and SSH children.",
+  "per_stage_deadline_seconds": 900,
+  "slugs": [
+    "staged-retry-drawer",
+    "staged-retry-push",
+    "staged-retry-bowl"
+  ]
+}

@@ -70,3 +70,7 @@ All three returned HTTP504 without executable source or Jev dispatches. This is 
 ## Separate staged condition
 
 Predeclared before launch: same three tasks/init0/seed0, unchanged fixed builder/API/lessons/host, existing staged design then full-source mode, zero source repairs,3relay slots,900seconds per synthesis stage and same episode budgets. No old source or task-specific template. Results pending.
+
+## Staged infrastructure interruption and independent supplement
+
+The first staged bridge exitedSIGTERM143 after about290seconds; all three design requests disconnected, no design/source/Jev actions were delivered. No terminal relay ledger exists, so actual upstream attempts and usage are unverifiable, not zero. Preserve this interruption separately. A predeclared same-condition supplement now runs under one foreground parent owning its bridge and SSH children; no fixed prompt, runtime code, task, initial state or source-repair budget changed.

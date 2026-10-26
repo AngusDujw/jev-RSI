@@ -1,0 +1,11 @@
+{
+  "bridge_exit_code": 143,
+  "cause": "unknown SIGTERM",
+  "terminal_ledger_present": false,
+  "model_visible_source_changes": false,
+  "logical_requests": 3,
+  "upstream_attempts": "unverifiable",
+  "usage": "unknown, not zero",
+  "source_deliveries": 0,
+  "jev_dispatches": 0
+}

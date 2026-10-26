@@ -1,0 +1,46 @@
+{
+  "arguments": {
+    "output": "code/runs/2026-10-26-gpt-jev-three-tasks/staged-bowl",
+    "libero_root": "/home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus",
+    "suite": "libero_goal",
+    "task_id": 102,
+    "init_index": 0,
+    "seed": 0,
+    "gpu": "4",
+    "bridge": "http://127.0.0.1:7921",
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_repairs": 0,
+    "method_file": null,
+    "revise_archived": false,
+    "staged_design": true,
+    "wall_seconds": 7200
+  },
+  "prompt_sha256": "98b4ecd980d486dc513139506eca3577a0bee99e1c8e739fb80b6ff9b6526fc1",
+  "manual_sha256": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a",
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "b43427798eee163423c37f28ff037d51c3b8e81cc0e4999ae6b61b3ceeb3030f",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "planner": "gpt-6-astra/xhigh/local ChatGPT Pro",
+  "executor": "real jev-1.13.0/official systemone",
+  "native_evaluation": "terminal only; never in policy input",
+  "task_recipes": false,
+  "stage_templates": false,
+  "model_wire_numeric_precision": "data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
+  "pro_request_deadline": "loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
+  "review_parameters": "method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
+  "typed_reviews_required_for_generated_methods": true,
+  "staged_design": {
+    "enabled": true,
+    "prompt_sha256": "20c65d2c3ae116af3f6bf1b78f3c35c92a3a188a8ffc374e9f4467a0c0440ae4",
+    "schema_sha256": "ce9a6493bc9112f144a11fef1a937cdf346974552c61c7724ab8a0821437bbb7",
+    "planning_request_deadline_seconds": 900,
+    "executable_output": "Complete four-string method; design alone is never executed"
+  },
+  "reused_method_sha256": null
+}
