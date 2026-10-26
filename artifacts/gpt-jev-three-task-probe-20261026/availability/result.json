@@ -1,0 +1,59 @@
+{
+  "purpose": "Post-failure local Pro availability diagnostic; no robot actions; additional cost outside task cohort",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "usage": {
+    "input_tokens": 120,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "output_tokens": 13,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 133,
+    "attribution": {
+      "items": {
+        "fc_0017528695998b6c016adf0bdb14648191b7c4dd3691cebf6e": {
+          "input_tokens": 2,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 13
+        },
+        "msg_0017528695998b6c016adf0bd90d588191a86d85960a6e57c6": {
+          "input_tokens": 7,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0,
+          "content": [
+            {
+              "input_tokens": 7,
+              "cached_tokens": 0,
+              "cache_write_tokens": 0,
+              "output_tokens": 0
+            }
+          ]
+        }
+      },
+      "request_fields": {
+        "instructions": {
+          "input_tokens": 11,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        },
+        "tools": {
+          "input_tokens": 100,
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "output_tokens": 0
+        }
+      }
+    }
+  },
+  "output_types": [
+    "function_call"
+  ],
+  "elapsed_s": 3.1230587270001706
+}

@@ -62,3 +62,11 @@ Predeclared before model or simulator execution.
 ## Results
 
 Pending actual execution. No native success is claimed.
+
+## Original single-request outcomes
+
+All three returned HTTP504 without executable source or Jev dispatches. This is a delivery/transport limitation, not a measured physical policy failure rate. The drawer/push requests each had two upstream attempts with unknown usage. Bowl waited for a relay slot and had only34.4seconds upstream; do not treat it as an equal-budget source test. A separate minimal pinned Pro request completed in3.12seconds,120input/13outputtokens.
+
+## Separate staged condition
+
+Predeclared before launch: same three tasks/init0/seed0, unchanged fixed builder/API/lessons/host, existing staged design then full-source mode, zero source repairs,3relay slots,900seconds per synthesis stage and same episode budgets. No old source or task-specific template. Results pending.

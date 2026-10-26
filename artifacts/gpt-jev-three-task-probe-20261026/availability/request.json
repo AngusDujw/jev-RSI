@@ -1,0 +1,30 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Return the ready tool call only.",
+  "input": [
+    {
+      "role": "user",
+      "content": "Check readiness."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "ready",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "ready"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

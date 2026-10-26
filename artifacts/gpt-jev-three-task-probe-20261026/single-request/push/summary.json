@@ -1,0 +1,13 @@
+{
+  "termination": "HTTP Error 504: Gateway Timeout",
+  "native_success": false,
+  "result": null,
+  "native_steps": 0,
+  "settling_steps": 10,
+  "jev_calls": 0,
+  "gpt_calls": 1,
+  "rpc_calls": 0,
+  "elapsed_s": 1810.6437434249092,
+  "methods": [],
+  "last_method_error": null
+}
