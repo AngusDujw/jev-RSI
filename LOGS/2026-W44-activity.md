@@ -21,3 +21,4 @@
 - 【Agent】【2026-10-26 16:43】[op] runner新增显式policy-model仅允许Luna/Astra high，默认Luna不变；模型仅改新本地副本settings/身份context/Pro配置与manifest，prepared模型一致校验，原entry/550/评分不改。
 - 【Agent】【2026-10-26 16:43】[op] 新建实验块 EXP-2026W44-002：Astra high独立单次保存当前layout0真实历史，提取Luna经验  ↪ `EXP-2026W44-002`
 - 【Agent】【2026-10-26 16:44】[op] Astra单次目录prepare-only验收：实际settings/隔离Pro配置均gpt-6-astra/high，auth仅bool验收/fallbackfalse/评价不输入/历史图0/550，上游Luna settings未改，prepared-policy-audit保存；尚未启动仿真或模型，10原测试通过。
+- 【Agent】【2026-10-26 16:46】[run] 27335d3d SSH推送后Astra唯一单次前台session55744实际启动，native ready原550，worker实测gpt-6-astra/high/gpt_only；三RGB首观测待工具调用，媒体保留审计已落。旧Luna无运行，现监督只跟踪Astra并提取真实图像经验，不重试。
