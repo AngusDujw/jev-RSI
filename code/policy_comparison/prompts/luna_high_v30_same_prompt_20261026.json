@@ -1,0 +1,62 @@
+{
+  "version": "v30",
+  "parent": "v29",
+  "prompt_sha256": "fae065a21de99a93ba7d08044535ffeb488013239fe359be5f6160621fb7a77c",
+  "prompt_words": 3304,
+  "prompt_file": "code/policy_comparison/prompts/multiview_grasp_v30.md",
+  "model": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "authentication": "local ChatGPT Pro",
+  "api_fallback": false,
+  "task": "stack_blocks",
+  "layout": 0,
+  "eval_seed": 0,
+  "native_step_limit": 550,
+  "attempts_per_run": 1,
+  "all_started_runs_included": true,
+  "infrastructure_change": {
+    "fresh_server_copy_rpc_idle_seconds": 7200,
+    "native_physics_scoring_unchanged": true,
+    "changed_from_v29": false
+  },
+  "prompt_changes": [
+    "Replace permissive release-when-plausible sentence with explicit current-body support check",
+    "Append two-lateral-dimension and vertical-evidence checks; distinguish opening/withdrawal/settled boundaries and invalidate release-drift reuse after reseating"
+  ],
+  "causal_scope": "Task-conditioned prompt development based on representative v29 releases; no stable/general success claim.",
+  "reference_manifest_sha256": "1032b6b3d4d7d2738cf6d2b398999c4b64b2ee2952ba52f292ce2814dbd3410a",
+  "trials": [
+    {
+      "run_name": "v4090-luna-high-stack-20261026-hints-v30-r1",
+      "rpc_port": 25476
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261026-hints-v30-r2",
+      "rpc_port": 25477
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261026-hints-v30-r3",
+      "rpc_port": 25478
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261026-hints-v30-r4",
+      "rpc_port": 25479
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261026-hints-v30-r5",
+      "rpc_port": 25480
+    },
+    {
+      "run_name": "v4090-luna-high-stack-20261026-hints-v30-r6",
+      "rpc_port": 25481
+    }
+  ],
+  "policy_reference_manifest": "code/policy_comparison/prompts/luna_high_v28_reference_images_20261025.json",
+  "input_delivery_change": {
+    "first_observation_historical_rgb_attachments": 16,
+    "unchanged_live_rgb": 3,
+    "later_observations_historical_attachments": 0,
+    "receipt": "stdio submission only, not model attention",
+    "fresh_local_actor_runtime_only": true
+  }
+}

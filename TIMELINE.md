@@ -281,6 +281,10 @@ graph LR
     T_2026W43_034["📊 gpt-as-policy-luna-media<br/>v27全部16图提交仍完整0/6；闭爪搬运…"]:::experiment
     T_2026W43_035["📊 gpt-as-policy-luna-media<br/>v28五完整失败一事件超时无效；唯一v29…"]:::experiment
   end
+  subgraph wk_2026_W44["2026-W44"]
+    direction TB
+    T_2026W44_001["📊 gpt-as-policy-luna-media<br/>v29三完整失败三无效中断；v30唯一提示…"]:::experiment
+  end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
   T_2026W39_003 --> T_2026W39_004
@@ -512,6 +516,7 @@ graph LR
   T_2026W43_032 --> T_2026W43_033
   T_2026W43_033 --> T_2026W43_034
   T_2026W43_034 --> T_2026W43_035
+  T_2026W43_035 --> T_2026W44_001
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -779,6 +784,7 @@ graph LR
 | `T-2026W43-033` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v26完整0/6、历史示例路径消费不一致；唯一v27直接附16原图并审计stdio提交 | `EXP-2026W43-041` | - |
 | `T-2026W43-034` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v27全部16图提交仍完整0/6；闭爪搬运层丢失再现，唯一v28检验整体净空与下层复查 | `EXP-2026W43-042` | - |
 | `T-2026W43-035` | 2026-10-25 | experiment | gpt-as-policy-luna-media | v28五完整失败一事件超时无效；唯一v29检验观测证据对照与回位锁定，16附件不变 | `EXP-2026W43-043` | - |
+| `T-2026W44-001` | 2026-10-26 | experiment | gpt-as-policy-luna-media | v29三完整失败三无效中断；v30唯一提示检验当前块体支撑和释放诊断 | `EXP-2026W44-001` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
