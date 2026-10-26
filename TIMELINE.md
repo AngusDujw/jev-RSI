@@ -171,6 +171,10 @@ graph LR
     T_2026W43_038["📊 libero-generic-vision<br/>235固定未用16/17均native成功…"]:::experiment
     T_2026W43_039["📊 libero-generic-vision<br/>235精确完整源固定五初态native5/…"]:::experiment
   end
+  subgraph wk_2026_W44["2026-W44"]
+    direction TB
+    T_2026W44_001["🔬 libero-generic-vision<br/>用户授权固定现有框架跨三任务冷生成探针：d…"]:::hypothesis
+  end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
   T_2026W39_003 --> T_2026W39_004
@@ -297,6 +301,7 @@ graph LR
   T_2026W43_036 --> T_2026W43_037
   T_2026W43_037 --> T_2026W43_038
   T_2026W43_038 --> T_2026W43_039
+  T_2026W43_039 --> T_2026W44_001
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -452,6 +457,7 @@ graph LR
 | `T-2026W43-037` | 2026-10-25 | experiment | libero-generic-vision | 235精确源新空13零修复native通过16GPT87Jev261步，1/1回归后准入固定未用16/17 | `EXP-2026W43-102` | - |
 | `T-2026W43-038` | 2026-10-25 | experiment | libero-generic-vision | 235固定未用16/17均native成功，原生3/3自报2/3，保留16终局视觉未知，继续18/19 | `EXP-2026W43-103` | - |
 | `T-2026W43-039` | 2026-10-25 | experiment | libero-generic-vision | 235精确完整源固定五初态native5/5零修复，proposal4/5与未知费用保留，按哈希冻结有限复用 | `EXP-2026W43-104` | - |
+| `T-2026W44-001` | 2026-10-26 | hypothesis | libero-generic-vision | 用户授权固定现有框架跨三任务冷生成探针：drawer/push/bowl各init0，零源码修复，按原生判定保留全部结果；不以旧同任务5/5替代。 | `DISC-2026W39-001` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
