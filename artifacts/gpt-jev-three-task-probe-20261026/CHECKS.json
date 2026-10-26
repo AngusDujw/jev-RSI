@@ -1,0 +1,15 @@
+{
+  "fixed_model_inputs_unchanged": true,
+  "frozen_runtime_hashes_match_all_nine_cases": true,
+  "native_records_preserved": true,
+  "six_auditable_cases_request_cost_zero_step_checks_passed": true,
+  "three_interrupted_cases_have_missing_ledgers_explicit": true,
+  "strict_design_returns_validated": 3,
+  "complete_methods_delivered": 0,
+  "jev_dispatches": 0,
+  "physical_success_rate_measured": false,
+  "cleanup_verified": true,
+  "staged_design_prompt_hash_verified": true,
+  "known_and_unknown_costs_recomputed_from_actual_ledgers": true,
+  "new_report_links_resolve": true
+}

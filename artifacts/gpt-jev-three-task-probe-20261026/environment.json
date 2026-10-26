@@ -1,0 +1,13 @@
+{
+  "python": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+  "platform": "Linux-5.15.0-152-generic-x86_64-with-glibc2.35",
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "opencv-python": "4.6.0.66",
+    "mujoco": "2.3.7",
+    "robosuite": "1.4.0",
+    "torch": "2.2.2+cpu"
+  },
+  "gpu4": "NVIDIA GeForce RTX 4090, 580.82.09, 24564 MiB"
+}

@@ -1,0 +1,36 @@
+{
+  "bridge_pid": 433340,
+  "started_utc": "2026-10-26T08:24:46.783631+00:00",
+  "cases": [
+    {
+      "slug": "staged-retry-drawer",
+      "task_id": 0,
+      "ssh_pid": 433341,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-correspondence-20261025 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-26-gpt-jev-three-tasks/staged-retry-drawer --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 0 --init-index 0 --seed 0 --gpu 4 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 --staged-design > code/runs/2026-10-26-gpt-jev-three-tasks/staged-retry-drawer.console.log 2>&1",
+      "exit_code": 0,
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    },
+    {
+      "slug": "staged-retry-push",
+      "task_id": 75,
+      "ssh_pid": 433342,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-correspondence-20261025 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-26-gpt-jev-three-tasks/staged-retry-push --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 75 --init-index 0 --seed 0 --gpu 4 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 --staged-design > code/runs/2026-10-26-gpt-jev-three-tasks/staged-retry-push.console.log 2>&1",
+      "exit_code": 0,
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    },
+    {
+      "slug": "staged-retry-bowl",
+      "task_id": 102,
+      "ssh_pid": 433343,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-correspondence-20261025 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-26-gpt-jev-three-tasks/staged-retry-bowl --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 102 --init-index 0 --seed 0 --gpu 4 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 --staged-design > code/runs/2026-10-26-gpt-jev-three-tasks/staged-retry-bowl.console.log 2>&1",
+      "exit_code": 0,
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    }
+  ],
+  "foreground_parent_pid": 433338,
+  "bridge_exit_code": -15,
+  "finished_utc": "2026-10-26T08:46:52.438679+00:00"
+}
