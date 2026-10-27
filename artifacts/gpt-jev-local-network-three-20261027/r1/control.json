@@ -1,0 +1,378 @@
+{
+  "requests": [
+    {
+      "elapsed_s": 0.23269718000005923,
+      "latency_s": 0.22742341899993335,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 20.501650729999938,
+      "latency_s": 0.2684938709999187,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 40.61451583600001,
+      "latency_s": 0.11233820500001457,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 60.94348229599996,
+      "latency_s": 0.32844642700001714,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 81.05888345199992,
+      "latency_s": 0.11505020499998864,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 101.17022034399997,
+      "latency_s": 0.1108533990000069,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 121.28243636100001,
+      "latency_s": 0.11160548700013351,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 141.4035821760001,
+      "latency_s": 0.11911655500011875,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 161.54145913599996,
+      "latency_s": 0.1373149739999917,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 181.65631744400002,
+      "latency_s": 0.11434744200005298,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 201.774973543,
+      "latency_s": 0.11816306900004747,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 221.90180925100003,
+      "latency_s": 0.12626676600007158,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 242.012985071,
+      "latency_s": 0.11078583099993011,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 262.12457193299997,
+      "latency_s": 0.1112055800001599,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 282.239290256,
+      "latency_s": 0.11404052600005343,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 302.3495775870001,
+      "latency_s": 0.10981113799994091,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 322.46293176099994,
+      "latency_s": 0.1129974460000085,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 342.5780749140001,
+      "latency_s": 0.1147764349998397,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 362.6888729740001,
+      "latency_s": 0.1103544069999316,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 382.80066611200004,
+      "latency_s": 0.11109074299997701,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 402.91393281399996,
+      "latency_s": 0.11282367199987675,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 423.0319986280001,
+      "latency_s": 0.11769514599996,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 443.14331625599993,
+      "latency_s": 0.11087249100000918,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 463.25749480900004,
+      "latency_s": 0.11387142300009145,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 483.37488502500014,
+      "latency_s": 0.1168964280000182,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 503.490551957,
+      "latency_s": 0.11523100999988856,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 523.6023789410001,
+      "latency_s": 0.1113137940001252,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 543.718391916,
+      "latency_s": 0.11556146199995965,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 563.840748604,
+      "latency_s": 0.11753934500006835,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 583.9571019970001,
+      "latency_s": 0.11596123899994382,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 604.1173922319999,
+      "latency_s": 0.15980568500003756,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 624.253440793,
+      "latency_s": 0.1355643179999788,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 644.3994637210001,
+      "latency_s": 0.1454567649998353,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 664.5095751260001,
+      "latency_s": 0.1095044199998938,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 684.621100248,
+      "latency_s": 0.11113507799996114,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 704.8075827780001,
+      "latency_s": 0.1859612030000335,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 724.9232370270001,
+      "latency_s": 0.11517436899998756,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 745.10023174,
+      "latency_s": 0.1763901189999615,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 765.210899828,
+      "latency_s": 0.11028997699986576,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 785.3403709090001,
+      "latency_s": 0.1291732659999525,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 805.4502755030001,
+      "latency_s": 0.10931771099990328,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 825.5617835790001,
+      "latency_s": 0.11100972199983516,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 845.7841180319999,
+      "latency_s": 0.22181444099987857,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 865.8968705500001,
+      "latency_s": 0.11242691200004629,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 886.0105700099998,
+      "latency_s": 0.11330368099970656,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 901.866509258,
+      "latency_s": 0.11548200899960648,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    }
+  ],
+  "started_utc": "2026-10-27T15:13:03.275929+00:00",
+  "errors": [],
+  "closed": true,
+  "socket_local_port": 45604,
+  "elapsed_s": 901.8669798229998,
+  "outcome": "completed"
+}
