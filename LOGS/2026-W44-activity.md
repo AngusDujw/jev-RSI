@@ -64,3 +64,4 @@
 - 【Agent】【2026-10-27 12:40】[op] 新建实验块 EXP-2026W44-014：按历史原配置从零生成完整方法并通过真实Jev复现任务1335/init12成功，禁止旧源输入和现场修复  ↪ `EXP-2026W44-014`
 - 【Agent】【2026-10-27 12:42】[result] EXP-2026W44-014 finished: native/proposal true; new cold source6ddc1bca,0repairs,721.191s generation,2585.398s episode,14GPT/107realJev/321policy steps; audit passed,1GPT+1Jev unknown usages preserved, owned processes and both7921ports closed. Archived exact method/protocol and result evidence.
 - 【Agent】【2026-10-27 12:42】[op] Archived EXP014 result package, unchanged generated source and Jev protocol; strict weekly protocol lint passed, source hash/JSON checks passed. Retained circle warnings with one-case convergence; no production changes, no temporary test script.
+- 【User】【2026-10-27 12:52】[intent] 用户追问：为什么此前同任务从零生成有问题，本次是否改动；核对历史a8e一阶段与288两阶段实际配置和失败/成功证据，解释非同条件重复且未隔离因果。
