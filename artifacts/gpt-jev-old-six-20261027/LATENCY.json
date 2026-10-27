@@ -1,0 +1,170 @@
+{
+  "attempts": [
+    {
+      "case": "known-r1-init12",
+      "attempt": 1,
+      "elapsed_s": 901.6729545070011,
+      "first_sse_s": 2.5207901569992828,
+      "first_method_arguments_s": null,
+      "last_sse_s": 894.532635896001,
+      "reasoning_items": 25,
+      "method_argument_chars": 0,
+      "error": "ProTransportError"
+    },
+    {
+      "case": "known-r1-init12",
+      "attempt": 2,
+      "elapsed_s": 881.1632939730007,
+      "first_sse_s": 2.6913439330019173,
+      "first_method_arguments_s": 789.7850902790015,
+      "last_sse_s": 880.9652364100002,
+      "reasoning_items": 21,
+      "method_argument_chars": 11373,
+      "error": "TimeoutError"
+    },
+    {
+      "case": "known-r2-init13",
+      "attempt": 1,
+      "elapsed_s": 901.6266381259993,
+      "first_sse_s": 2.4651890540008026,
+      "first_method_arguments_s": 746.8554653060019,
+      "last_sse_s": 887.0389801000019,
+      "reasoning_items": 22,
+      "method_argument_chars": 2104,
+      "error": "ProTransportError"
+    },
+    {
+      "case": "known-r2-init13",
+      "attempt": 2,
+      "elapsed_s": 881.2330310200014,
+      "first_sse_s": 2.1548253870023473,
+      "first_method_arguments_s": null,
+      "last_sse_s": 853.7075842269987,
+      "reasoning_items": 25,
+      "method_argument_chars": 0,
+      "error": "TimeoutError"
+    },
+    {
+      "case": "known-r3-init14",
+      "attempt": 1,
+      "elapsed_s": 901.8864024319992,
+      "first_sse_s": 1.373909903006279,
+      "first_method_arguments_s": 830.9919844380056,
+      "last_sse_s": 871.3513010400056,
+      "reasoning_items": 27,
+      "method_argument_chars": 1134,
+      "error": "ProTransportError"
+    },
+    {
+      "case": "known-r3-init14",
+      "attempt": 2,
+      "elapsed_s": 880.884175170002,
+      "first_sse_s": 2.1316500319953775,
+      "first_method_arguments_s": 680.0796711839939,
+      "last_sse_s": 864.697479603994,
+      "reasoning_items": 22,
+      "method_argument_chars": 28641,
+      "error": "TimeoutError"
+    },
+    {
+      "case": "new-r1-init0",
+      "attempt": 1,
+      "elapsed_s": 901.6191436549998,
+      "first_sse_s": 1.918854368999746,
+      "first_method_arguments_s": 891.3574163910016,
+      "last_sse_s": 900.5123304970002,
+      "reasoning_items": 25,
+      "method_argument_chars": 761,
+      "error": "ProTransportError"
+    },
+    {
+      "case": "new-r1-init0",
+      "attempt": 2,
+      "elapsed_s": 881.0662144849994,
+      "first_sse_s": 2.2791855440009385,
+      "first_method_arguments_s": null,
+      "last_sse_s": 855.7281766689994,
+      "reasoning_items": 22,
+      "method_argument_chars": 0,
+      "error": "TimeoutError"
+    },
+    {
+      "case": "new-r2-init1",
+      "attempt": 1,
+      "elapsed_s": 901.4530404830002,
+      "first_sse_s": 1.885623531001329,
+      "first_method_arguments_s": null,
+      "last_sse_s": 873.6525530569997,
+      "reasoning_items": 24,
+      "method_argument_chars": 0,
+      "error": "ProTransportError"
+    },
+    {
+      "case": "new-r2-init1",
+      "attempt": 2,
+      "elapsed_s": 881.3870679050051,
+      "first_sse_s": 1.576437622999947,
+      "first_method_arguments_s": null,
+      "last_sse_s": 875.8419599519984,
+      "reasoning_items": 24,
+      "method_argument_chars": 0,
+      "error": "TimeoutError"
+    },
+    {
+      "case": "new-r3-init2",
+      "attempt": 1,
+      "elapsed_s": 901.4091404819992,
+      "first_sse_s": 1.0680726879945723,
+      "first_method_arguments_s": 858.3041169200005,
+      "last_sse_s": 901.2312016489959,
+      "reasoning_items": 29,
+      "method_argument_chars": 7331,
+      "error": "ProTransportError"
+    },
+    {
+      "case": "new-r3-init2",
+      "attempt": 2,
+      "elapsed_s": 881.4058614780006,
+      "first_sse_s": 1.272352823005349,
+      "first_method_arguments_s": 698.2659623510044,
+      "last_sse_s": 879.8823322970056,
+      "reasoning_items": 24,
+      "method_argument_chars": 9545,
+      "error": "TimeoutError"
+    }
+  ],
+  "first_sse_range_s": [
+    1.0680726879945723,
+    2.6913439330019173
+  ],
+  "first_attempt_admission_delay_range_s": [
+    0.000186920166015625,
+    0.00043487548828125
+  ],
+  "attempts_with_method_arguments": 7,
+  "attempts_without_method_arguments": 5,
+  "first_method_arguments_range_s": [
+    680.0796711839939,
+    891.3574163910016
+  ],
+  "first_method_arguments_median_s": 789.7850902790015,
+  "pre_argument_or_no_argument_seconds": 9942.452015269017,
+  "attempt_seconds": 10696.806963716008,
+  "pre_argument_fraction": 0.9294784928805584,
+  "bucket_definition": "Time before first method-argument delta; entire attempt counted when no method arguments appeared. This is an observed pre-output interval, not a direct GPU-compute measurement.",
+  "retry_behavior": "Identical request payload from scratch; no continuation of partial output.",
+  "local_budget_seconds": 1798,
+  "first_stream_end_note": "All first attempts ended without a completed response at901.4to901.9seconds; the closing layer/root cause is unknown. The local read loop uses the shared absolute deadline, not a hard900-second total stream deadline.",
+  "known_success": {
+    "first_sse_s": 1.061077132999344,
+    "first_method_arguments_s": 554.8423478610002,
+    "complete_s": 721.1909006419992,
+    "method_output_after_first_args_s": 166.34855278099894
+  },
+  "inputs": {
+    "instructions_chars": 32308,
+    "images": 2,
+    "reasoning_effort": "xhigh"
+  },
+  "causal_limit": "Prompt length, complete-program scope, inference effort, stochastic generation and2-way concurrency are candidate contributors; no causal ablation was run. Reasoning event counts do not expose reasoning contents or actual compute utilization."
+}

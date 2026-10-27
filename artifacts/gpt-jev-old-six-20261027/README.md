@@ -42,3 +42,5 @@
 - [检查说明](CHECKS.md)、[服务生命周期](lifecycle.json)、[本机清理](cleanup-local.json)、[远端清理](cleanup-remote.json)。
 - 原始请求/响应及仅事件元数据的生成进度保留在项目code/runs/2026-10-27-gpt-jev-old-six/。
 - 未改生产实现、固定提示词、环境、驱动；没有创建临时测试脚本。
+
+耗时事后拆解见[LATENCY.md](LATENCY.md)及[LATENCY.json](LATENCY.json)，无新增模型/机器人调用。
