@@ -58,6 +58,15 @@ signed-in local Pro path by default; the separately authorized Jev credential
 serves its official classifier. Key presence or service connectivity does not
 authorize another API purpose. Keep credentials out of model inputs and outputs.
 
+For recoverable Pro delivery, use the bridge's default native-session transport
+and the current program host's idempotent asynchronous waiting. Let native retries
+and bounded same-thread continuations finish within one logical deadline; do not
+restart cold generation merely because a polling connection disconnected. Retain
+the native dynamic-tool receipt and label its compatibility envelope separately
+from historical raw Responses. Conversation recovery does not promise exact
+token-level inference continuation. Never send partial tool arguments to Jev.
+Report native aggregate usage separately from unknown provider retry counts.
+
 Distinguish reached robot pose, jaw command, independent object effect, program
 completion proposal, and terminal native LIBERO score. The evaluator score stays
 outside policy input. Retain failed episodes and unknown upstream usage.

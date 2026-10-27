@@ -1,8 +1,9 @@
 """Loopback Responses transport using the local signed-in ChatGPT account.
 
-Never accepts or reads a Platform API key. Image bytes remain in memory only.
-The native Responses tool-call grammar is preserved rather than flattened into
-a coding-agent prompt. This transport is a reproduction-specific deviation.
+Never accepts or reads a Platform API key. Bridge ledgers hash image data;
+the native client persists its normal conversation history locally. Native
+dynamic-tool results use an explicitly labeled compatibility envelope. The
+historical raw Responses transport remains available for reproduction.
 An optional Jev route uses a separate user-authorized credential and forwards
 the unchanged image-free gate request to the official Jev endpoint.
 """
@@ -17,6 +18,9 @@ import threading
 import time
 import urllib.error
 import urllib.request
+import uuid
+
+from pro_session_jobs import SessionJobs
 
 MODEL = "gpt-6-astra"
 ENDPOINT = "https://chatgpt.com/backend-api/codex/responses"
@@ -339,14 +343,27 @@ class Handler(BaseHTTPRequestHandler):
 
     def reply(self, status, body, content_type="application/json"):
         wire = body if isinstance(body, bytes) else json.dumps(body).encode()
-        self.send_response(status)
-        self.send_header("Content-Type", content_type)
-        self.send_header("Content-Length", str(len(wire)))
-        self.end_headers()
-        self.wfile.write(wire)
+        try:
+            self.send_response(status)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(wire)))
+            self.end_headers()
+            self.wfile.write(wire)
+        except (BrokenPipeError, ConnectionResetError):
+            # A departed HTTP waiter does not own/cancel the native job.
+            pass
 
     def do_GET(self):
-        self.reply(200, {"ok": True, "model": MODEL, "effort": "xhigh", "auth": "ChatGPT", "images_persisted": False})
+        if self.path.startswith("/responses/jobs/"):
+            try:
+                status, body = self.server.session_jobs.get(self.path.rsplit("/", 1)[1])
+                self.reply(status, body)
+            except ValueError as error:
+                self.reply(400, {"error": str(error)})
+            return
+        self.reply(200, {"ok": True, "model": MODEL, "effort": "xhigh", "auth": "ChatGPT",
+            "transport": self.server.pro_transport,
+            "native_history_persisted": self.server.pro_transport == "native-session"})
 
     def do_POST(self):
         is_jev = self.path == "/systemone" and self.server.jev_config is not None
@@ -355,11 +372,30 @@ class Handler(BaseHTTPRequestHandler):
             return
         started = time.monotonic()
         record = {}
+        native_job = not is_jev and getattr(self.server, "pro_transport", "legacy-http") == "native-session"
         try:
             count = int(self.headers.get("Content-Length", "0"))
             if not 0 < count <= 64 * 2**20:
                 raise ValueError("Invalid request size")
             payload = json.loads(self.rfile.read(count))
+            if native_job:
+                budget = float(self.headers.get("X-Model-Request-Timeout-Seconds", "3600"))
+                if not .1 <= budget <= 3600:
+                    raise ValueError("Native session budget must be 0.1..3600 seconds")
+                ident = self.headers.get("X-Request-ID") or uuid.uuid4().hex
+                status, body = self.server.session_jobs.submit(ident, payload, budget)
+                if self.headers.get("Prefer") != "respond-async":
+                    # Older hosts retain synchronous/SSE response semantics.
+                    # Their HTTP disconnect still cannot cancel the native job.
+                    while status == 202 and time.monotonic()-started < budget:
+                        time.sleep(.5)
+                        status, body = self.server.session_jobs.get(ident)
+                    if status == 200 and payload.get("stream"):
+                        data = ("data: "+json.dumps(dict(type="response.completed", response=body))+"\n\n").encode()
+                        self.reply(200, data, "text/event-stream")
+                        return
+                self.reply(status, body)
+                return
             record = {"started": time.time(), "request": audit(payload),
                       "transport_implementation_sha256": BRIDGE_IMPLEMENTATION_SHA256,
                       "transport_omits": [] if is_jev else ["prompt_cache_options", "prompt_cache_breakpoint"]}
@@ -414,11 +450,12 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as error:
             record.update(error_type=type(error).__name__, error=str(error)[:600], elapsed_s=time.monotonic()-started)
             self.reply(504 if isinstance(error, (ProDeadlineError, JevDeadlineError)) else 502, {"error": {"message": record["error"],
-                "type": "jev_transport_error" if is_jev else "pro_transport_error"}})
+                "type": "jev_transport_error" if is_jev else "pro_transport_error"}, "terminal": native_job})
         finally:
-            with self.server.audit_lock:
-                with (self.server.output / ("jev-requests.jsonl" if is_jev else "requests.jsonl")).open("a") as stream:
-                    stream.write(json.dumps(record) + "\n")
+            if record and not native_job:
+                with self.server.audit_lock:
+                    with (self.server.output / ("jev-requests.jsonl" if is_jev else "requests.jsonl")).open("a") as stream:
+                        stream.write(json.dumps(record) + "\n")
 
 
 def main():
@@ -431,16 +468,24 @@ def main():
     parser.add_argument("--jev-config", type=Path)
     parser.add_argument("--progress-metadata", action="store_true",
         help="Save live SSE timing/count metadata without reasoning text or method arguments")
+    parser.add_argument("--pro-transport", choices=("native-session", "legacy-http"),
+        default="native-session", help="Recoverable Codex session (default), or historical raw HTTP")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     if args.probe:
         attempts = []
-        response = native_request({"model": MODEL, "reasoning": {"effort": "xhigh"},
+        probe_payload = {"model": MODEL, "reasoning": {"effort": "xhigh"},
             "instructions": "Return the ready tool call. Do not use any other tools.",
-            "input": [{"role": "user", "content": "Test the signed-in ChatGPT transport."}],
+            "input": [{"role": "user", "content": [{"type": "input_text", "text": "Test the signed-in ChatGPT transport."}]}],
             "tools": [{"type": "function", "name": "ready", "parameters": {"type": "object", "properties": {}, "additionalProperties": False}}],
-            "tool_choice": {"type": "function", "name": "ready"}, "parallel_tool_calls": False}, args.auth_file,
-            attempt_records=attempts)
+            "tool_choice": {"type": "function", "name": "ready"}, "parallel_tool_calls": False}
+        if args.pro_transport == "native-session":
+            from pro_session_client import SessionPlanner
+            response, state = SessionPlanner(probe_payload, args.output/"probe-session",
+                time.monotonic()+180).run()
+            attempts.append(dict(kind="native_thread_aggregate", usage=response.get("usage")))
+        else:
+            response = native_request(probe_payload, args.auth_file, attempt_records=attempts)
         (args.output/"probe-attempts.json").write_text(json.dumps(attempts, indent=2))
         (args.output/"probe.json").write_text(json.dumps(audit(response), indent=2))
         print(json.dumps({"model": response.get("model"), "status": response.get("status"), "output_types": [x.get("type") for x in response.get("output", [])]}))
@@ -453,6 +498,9 @@ def main():
     server.limit = threading.BoundedSemaphore(args.concurrency)
     server.jev_limit = threading.BoundedSemaphore(args.concurrency)
     server.audit_lock = threading.Lock()
+    server.pro_transport = args.pro_transport
+    server.session_jobs = SessionJobs(args.output, server.limit, server.audit_lock,
+        audit, BRIDGE_IMPLEMENTATION_SHA256)
     print(json.dumps({"listen": f"127.0.0.1:{args.port}", "model": MODEL, "auth": "ChatGPT"}), flush=True)
     try:
         server.serve_forever()

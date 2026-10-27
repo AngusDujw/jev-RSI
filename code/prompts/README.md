@@ -27,11 +27,42 @@ the unexecuted new task. Fixed model-facing knowledge was unchanged.
 
 ## Active program interface v2
 
+The local Pro bridge now defaults to `--pro-transport native-session`. It uses
+the installed Codex app-server with the existing ChatGPT login and pins
+`gpt-6-astra` / `xhigh`. It does not use a Platform key. The program host submits
+an idempotent job and polls it; reconnecting HTTP or SSH transport reattaches to
+the same job. Codex handles its native stream retries. If its transport fails
+terminally, the adapter automatically continues in the same persisted thread,
+up to three turns and two app-server reconnections within the original deadline.
+This preserves conversation context; it cannot guarantee exact token-level
+continuation of an interrupted inference. Partial tool arguments are never run.
+
+Native mode requires Linux `bwrap` and Codex app-server with experimental dynamic
+tools (validated with CLI0.164.0). The child mount namespace masks global guidance,
+skills, plugins and user config without editing them, changing `CODEX_HOME`, or
+copying account credentials. The canonical English task instructions, observation
+input and four-string method contract remain the inputs. Native Codex adds its
+own harness/tool framing, so this is a transport/harness condition distinct from
+historical raw HTTP. Native conversation history persists locally, including
+observations; bridge request ledgers continue hashing image data.
+
+`session.json` records thread/turn IDs, validated complete dynamic-tool arguments,
+recovery metadata and reported usage. `receipt.json` and the response explicitly
+identify the native compatibility envelope: it is not a raw Responses response.
+Native thread token aggregates and unknown recovery usage are recorded separately
+from actual legacy upstream HTTP attempts. An adapter cannot infer hidden native
+retry costs. The saved-run auditor verifies the dynamic-tool receipt as the
+source of the delivered method. Repeated POSTs use one job and one ledger receipt.
+Legacy clients retain synchronous/SSE responses; the updated program host uses
+`Prefer: respond-async`. `--pro-transport legacy-http` selects the prior raw relay
+for historical comparisons. `--progress-metadata` applies to that legacy mode.
+
 Complete-method request time can be selected explicitly with
-`--method-request-seconds 1800`. This changes only method/patch calls: staged
+`--method-request-seconds 1800` or `--method-request-seconds 3600`. This changes only method/patch calls: staged
 design remains900seconds, review remains1800seconds, and the episode wall budget
 is still separate. Omitted overrides preserve all prior defaults. The relay's
-two-second margin gives1798seconds for a1800-second caller budget; queueing and
+two-second margin gives1798seconds for a1800-second caller budget; native mode
+allows3598seconds for a3600-second caller budget. Queueing and
 transport retries share that absolute deadline. `--no-video` suppresses episode
 videos while retaining the observation evidence needed by the existing harness.
 

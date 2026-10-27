@@ -16,6 +16,8 @@ import subprocess
 import sys
 import time
 import urllib.request
+import urllib.error
+import uuid
 
 from gpt_jev_contract import CAMERAS, english, parse_jev
 from gpt_jev_program_worker import validate_source
@@ -46,12 +48,70 @@ def post(url, payload, path, timeout=1800):
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     headers = {"Content-Type": "application/json"}
     if url.endswith(("/responses", "/systemone")):
-        ceiling = 900. if url.endswith("/systemone") else 1800.
+        ceiling = 900. if url.endswith("/systemone") else 3600.
         headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(ceiling, timeout-2.)))
+    if url.endswith("/responses"):
+        headers["X-Request-ID"] = uuid.uuid4().hex
+        headers["Prefer"] = "respond-async"
     request = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers)
     try:
-        with opener.open(request, timeout=timeout) as response:
-            result = json.load(response)
+        if url.endswith("/responses"):
+            # A request ID is stable across transport retries, never across episodes.
+            # The bridge owns inference; a broken polling socket cannot cancel it.
+            active, reconnects = request, 0
+            while True:
+                remaining = timeout-(time.monotonic()-started)
+                if remaining <= 0:
+                    raise TimeoutError("Planner bridge unavailable until logical deadline")
+                try:
+                    with opener.open(url[:-len("/responses")]+"/", timeout=min(10, remaining)) as health:
+                        asynchronous = json.load(health).get("transport") == "native-session"
+                    break
+                except (OSError, urllib.error.URLError, ValueError):
+                    reconnects += 1
+                    time.sleep(min(2, max(0, timeout-(time.monotonic()-started))))
+            while True:
+                remaining = timeout-(time.monotonic()-started)
+                if remaining <= 0:
+                    raise TimeoutError("Planner logical request deadline exceeded")
+                save(path.with_suffix(".transport.json"), dict(request_id=headers["X-Request-ID"],
+                    reconnects=reconnects, elapsed_s=time.monotonic()-started))
+                try:
+                    with opener.open(active, timeout=min(30, remaining) if asynchronous else remaining) as response:
+                        result = json.load(response)
+                        pending = response.status == 202
+                except urllib.error.HTTPError as error:
+                    if not asynchronous:
+                        raise
+                    body = error.read()
+                    try:
+                        detail = json.loads(body)
+                    except (ValueError, UnicodeError):
+                        detail = {}
+                    if detail.get("terminal") or error.code not in (404, 408, 502, 503, 504):
+                        raise
+                    # Repost after a bridge restart: it resumes the same saved thread.
+                    active = request
+                    reconnects += 1
+                    time.sleep(min(2, max(0, remaining)))
+                    continue
+                except (OSError, urllib.error.URLError, ValueError) as error:
+                    if not asynchronous:
+                        raise
+                    reconnects += 1
+                    active = request
+                    time.sleep(min(2, max(0, remaining)))
+                    continue
+                if not pending:
+                    break
+                ident = result["job_id"]
+                if ident != headers["X-Request-ID"]:
+                    raise ValueError("Native bridge job ID mismatch")
+                active = urllib.request.Request(url+"/jobs/"+ident)
+                time.sleep(min(2, max(0, timeout-(time.monotonic()-started))))
+        else:
+            with opener.open(request, timeout=timeout) as response:
+                result = json.load(response)
         save(path.with_suffix(".response.json"), result)
         return result
     except Exception as error:
@@ -256,7 +316,7 @@ def main():
     p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
     p.add_argument("--revise-archived", action="store_true", help="Ask GPT to revise the archived method using its adjacent summary.json")
     p.add_argument("--staged-design", action="store_true", help="Fresh generation: save a bounded design before materializing the complete method")
-    p.add_argument("--method-request-seconds", type=int, choices=(900, 1800),
+    p.add_argument("--method-request-seconds", type=int, choices=(900, 1800, 3600),
         help="Override the complete-method request deadline; design/review limits stay unchanged")
     p.add_argument("--no-video", action="store_true", help="Keep observation evidence without recording full episode videos")
     p.add_argument("--wall-seconds", type=int, default=3600)

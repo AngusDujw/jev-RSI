@@ -56,6 +56,18 @@ def known_tokens(usage):
     return input_tokens, output_tokens
 
 
+def check_native_origin(response, entry, answer, tool):
+    native = entry.get("native_session", {})
+    submitted = native.get("submission", {})
+    calls = [x for x in response.get("output", []) if x.get("type") == "function_call"]
+    require(len(calls) == 1 and native.get("completed") is True and
+        native.get("thread_id") == response["transport"]["thread_id"] and
+        submitted.get("arguments") == answer and submitted.get("tool") == tool and
+        submitted.get("callId") == calls[0]["call_id"],
+        "Native session envelope differs from validated dynamic-tool receipt")
+    require(not native.get("instruction_sources"), "Native planner loaded instruction files")
+
+
 def check_dispatch(request, response, receipt, previous_grip):
     choices = parse_jev(request, response)
     require(choices == receipt["choices"], "Dispatched choices differ from raw Jev response")
@@ -96,7 +108,7 @@ def audit_run(run, ledgers):
     for kind in ("gpt", "jev"):
         totals = dict(attempts=0, unknown_usage=0, completed_input=0,
             completed_output=0, relay_seconds=0., matched_requests=0,
-            undelivered_or_missing_responses=0)
+            undelivered_or_missing_responses=0, native_accounting_records=0)
         request_models, transport_hashes = set(), set()
         for path in sorted(run.glob(kind+"-*.request.json")):
             request = read(path)
@@ -114,10 +126,12 @@ def audit_run(run, ledgers):
             if kind == "gpt":
                 tool = request["tool_choice"]["name"]
                 group = purpose.setdefault(tool, dict(calls=0, upstream_attempts=0,
-                    completed_returns=0, input=0, output=0, unknown_usage=0))
+                    completed_returns=0, input=0, output=0, unknown_usage=0,
+                    native_accounting_records=0))
                 group["calls"] += 1
-            for attempt in entry.get("upstream_attempts", []):
-                totals["attempts"] += 1
+            for attempt in entry.get("upstream_attempts", [])+entry.get("native_accounting", []):
+                native_record = attempt.get("kind", "").startswith("native_")
+                totals["native_accounting_records" if native_record else "attempts"] += 1
                 tokens = known_tokens(attempt.get("usage"))
                 if tokens is None:
                     totals["unknown_usage"] += 1
@@ -125,7 +139,7 @@ def audit_run(run, ledgers):
                     totals["completed_input"] += tokens[0]
                     totals["completed_output"] += tokens[1]
                 if group is not None:
-                    group["upstream_attempts"] += 1
+                    group["native_accounting_records" if native_record else "upstream_attempts"] += 1
                     if tokens is None:
                         group["unknown_usage"] += 1
                     else:
@@ -146,6 +160,8 @@ def audit_run(run, ledgers):
             calls = [x for x in response["output"] if x.get("type") == "function_call"]
             require(len(calls) == 1 and calls[0].get("name") == tool, "Unexpected model tool return")
             answer = json.loads(calls[0]["arguments"])
+            if response.get("transport", {}).get("kind") == "codex_app_server":
+                check_native_origin(response, entry, answer, tool)
             english(answer)
             definition = request["tools"][0]
             require(definition["name"] == tool, "Tool declaration mismatch")
@@ -195,7 +211,7 @@ def audit_run(run, ledgers):
         dispatches=dispatches, models=usage, strict_reviews_validated=strict,
         strict_designs_validated=designs, legacy_reviews_json_decoded=legacy,
         source_origins=source_origins, gpt_cost_by_purpose=purpose,
-        usage_scope="Completed token totals cover attempts with both components known; unknown attempts are additional")
+        usage_scope="Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown.")
     return result
 
 
