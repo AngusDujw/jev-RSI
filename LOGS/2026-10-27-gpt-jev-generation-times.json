@@ -1,0 +1,97 @@
+{
+  "scope": "Retrospective saved-request timing audit; no new inference or physics",
+  "time_definition": "relay receipt to completed response; includes inference, generation and transport, not pure model compute",
+  "ledger": "code/runs/2026-10-25-gpt-jev-program/bridge-concurrent/requests.jsonl",
+  "cases": [
+    {
+      "run": "correspondence-revised-reg13",
+      "label": "Final frozen235: archive-assisted model patch",
+      "request_sha256": "1265ebd104555d7d1ca9805ed8419d1bff87f1d68438aa164dbfe080113a7a44",
+      "request_tool": "submit_method_patch",
+      "method_request_elapsed_s": 600.6367629219894,
+      "upstream_attempts": 1,
+      "upstream_elapsed_s": [
+        600.5757927139639
+      ],
+      "completed": "completed",
+      "model": "gpt-6-astra",
+      "effort": {
+        "effort": "xhigh"
+      },
+      "whole_episode_elapsed_s": 2871.0000145239756,
+      "native_success": true,
+      "source_sha256": "23567dfb525ae8160d9e5306d3521ad95243fb512a3634ceeb9acdef2179733e",
+      "gpt_calls": 17,
+      "jev_calls": 88
+    },
+    {
+      "run": "recovery-revised-reg13",
+      "label": "Parent a18: archive-assisted model patch",
+      "request_sha256": "977d8cbdd830b26d2b271d0618cf6f752cf54d4078910b2ad914401f39066faf",
+      "request_tool": "submit_method_patch",
+      "method_request_elapsed_s": 748.3064650880406,
+      "upstream_attempts": 1,
+      "upstream_elapsed_s": [
+        748.2070692279958
+      ],
+      "completed": "completed",
+      "model": "gpt-6-astra",
+      "effort": {
+        "effort": "xhigh"
+      },
+      "whole_episode_elapsed_s": 3090.2133252429776,
+      "native_success": true,
+      "source_sha256": "a18c0e26e16f4f92d1d5e96657e9ca751a1c7332ec25c121bf4bdb9dbc06044a",
+      "gpt_calls": 17,
+      "jev_calls": 89
+    },
+    {
+      "run": "numpy-cold-init12",
+      "label": "Independent cold complete method, init12",
+      "request_sha256": "15c45ef8b6ba356ae42df09896676aadf0b318d67721418ef562c8ee1f04bcc1",
+      "request_tool": "submit_method",
+      "method_request_elapsed_s": 850.5198939429829,
+      "upstream_attempts": 1,
+      "upstream_elapsed_s": [
+        850.3863473089878
+      ],
+      "completed": "completed",
+      "model": "gpt-6-astra",
+      "effort": {
+        "effort": "xhigh"
+      },
+      "whole_episode_elapsed_s": 2060.7818414401263,
+      "native_success": true,
+      "source_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4",
+      "gpt_calls": 13,
+      "jev_calls": 109
+    },
+    {
+      "run": "continuity-cold-init14",
+      "label": "Independent cold complete method, init14",
+      "request_sha256": "a68c145780f3b2eb6568ea6d21b17244e98e5b1e603bbba8c258e5c5d6f54f41",
+      "request_tool": "submit_method",
+      "method_request_elapsed_s": 637.1670672309701,
+      "upstream_attempts": 1,
+      "upstream_elapsed_s": [
+        637.0122405670118
+      ],
+      "completed": "completed",
+      "model": "gpt-6-astra",
+      "effort": {
+        "effort": "xhigh"
+      },
+      "whole_episode_elapsed_s": 1946.8865959679242,
+      "native_success": true,
+      "source_sha256": "7cfaa9b0130ef84a5e4876987a20ef00f68da0bc933eb3356cf3ed1141b5266e",
+      "gpt_calls": 17,
+      "jev_calls": 100
+    }
+  ],
+  "limits": [
+    "Same cream-cheese-into-bowl task, different prior framework versions; not cross-task reliability evidence.",
+    "Final235was assembled from an archived source and an actual GPT patch, not generated from an empty source.",
+    "Episode duration includes generation, visual reviews and physical execution; previous candidate failures/development and later frozen validation are additional.",
+    "Each matched generation has one completed upstream attempt; all four exact request hashes matched uniquely."
+  ]
+}
