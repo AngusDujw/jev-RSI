@@ -1,0 +1,23 @@
+{
+  "started_utc": "2026-10-27T01:49:36.793305+00:00",
+  "host_commit": "288dfde9bb7fd2a4f7f7f5a73fab3f118196e4f1",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-30min-20261027",
+  "foreground_parent_pid": 110314,
+  "cases": [
+    {
+      "slug": "known-cream-init12",
+      "task_id": 1335,
+      "init_index": 12,
+      "ssh_pid": 110317,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-30min-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-30min/known-cream-init12 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 1335 --init-index 12 --seed 0 --gpu 2 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 --staged-design --method-request-seconds 1800 --no-video > code/runs/2026-10-27-gpt-jev-30min/known-cream-init12.console.log 2>&1"
+    },
+    {
+      "slug": "new-stove-init0",
+      "task_id": 270,
+      "init_index": 0,
+      "ssh_pid": 110318,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-30min-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-30min/new-stove-init0 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 270 --init-index 0 --seed 0 --gpu 2 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 --staged-design --method-request-seconds 1800 --no-video > code/runs/2026-10-27-gpt-jev-30min/new-stove-init0.console.log 2>&1"
+    }
+  ],
+  "bridge_pid": 110315
+}
