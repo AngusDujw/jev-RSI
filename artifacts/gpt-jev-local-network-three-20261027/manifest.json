@@ -1,0 +1,41 @@
+{
+  "created_utc": "2026-10-27T15:10:13.907435+00:00",
+  "purpose": "Three local same-input trials to quantify observed transport interruptions separately from generation latency and paired public connectivity.",
+  "cases": [
+    "r1",
+    "r2",
+    "r3"
+  ],
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "auth": "Existing local signed-in ChatGPT Pro only; no Platform/caz keys.",
+  "condition": "Historical urllib HTTP1.1 client, original payload, same proxy, single model call at a time, one attempt per trial, no automatic retries, no robot/Jev/SSH.",
+  "initial_socket_timeout_s": 900,
+  "whole_deadline_s": 2100,
+  "max_model_calls": 3,
+  "source_request": "code/runs/2026-10-27-gpt-jev-old-six/known-r1-init12/gpt-00.request.json",
+  "source_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee",
+  "images": [
+    {
+      "name": "gpt-00-agentview.jpg",
+      "sha256": "4fd58ad4171e5178d105b6f8739fb9233b5891308631a6cbf21709a25df473e0"
+    },
+    {
+      "name": "gpt-00-robot0_eye_in_hand.jpg",
+      "sha256": "8c905c12f36042e193ba35dbf4666c373ea2b223527ef4145bf841db15797062"
+    }
+  ],
+  "control": "Per-trial unauthenticated HTTPS robots.txt control over the same proxy/domain; starts before the model, requests every20seconds and once after model return; log same socket, request latency/status/errors and matching proxy chain.",
+  "measurements": [
+    "connection/first SSE latency",
+    "first method argument time",
+    "completed/failed response and output duration",
+    "HTTP terminal chunk and low-level truncated-read/reset/TLS errors",
+    "socket read timeout actually applied",
+    "paired public latency and failure timeline",
+    "known and unknown upstream usage"
+  ],
+  "classification": "Only observed incomplete HTTP/network responses count as transport interruption. Local deadline and explicit service errors are separate. A transport interruption alone does not prove a local network fault; mark the closing hop unresolved without evidence. No exact percentage of wall-time caused by networking can be inferred from client waiting alone.",
+  "admission": "All3predeclared trials retained; no replacements or prompt/model changes between them.",
+  "privacy": "Event metadata and allowed response headers only, no reasoning text/credentials. Completed method output may be retained unexecuted."
+}
