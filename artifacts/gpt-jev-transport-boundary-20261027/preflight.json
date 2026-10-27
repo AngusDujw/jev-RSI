@@ -1,0 +1,22 @@
+{
+  "proxy_host": "127.0.0.1",
+  "proxy_port": 7897,
+  "proxy_type": "Mihomo",
+  "version": "v1.19.13",
+  "global_config_changed": false,
+  "runtime_keep_alive_interval": 0,
+  "runtime_keep_alive_idle": 0,
+  "runtime_disable_keep_alive": false,
+  "direct_unauthenticated_head": {
+    "outcome": "connection_failed",
+    "seconds": 16.056
+  },
+  "proxy_unauthenticated_head": {
+    "http_status": 403,
+    "seconds": 0.265,
+    "interpretation": "Fast unauthenticated response only; not an inference health test."
+  },
+  "warning_log_note": "Existing proxy warnings include network unreachable and context deadline exceeded, but no exact source-port correlation to the earlier model requests; not sufficient for causal attribution.",
+  "official_docs": "https://learn.chatgpt.com/docs/config-file/config-reference",
+  "docs_scope_note": "Codex CLI stream_idle_timeout_ms is not read by this standalone Python bridge."
+}

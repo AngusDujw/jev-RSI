@@ -1,0 +1,30 @@
+{
+  "matching_flows": [
+    {
+      "role": "persistent-public-control",
+      "source_port": "34122",
+      "network": "tcp",
+      "host": "chatgpt.com",
+      "start": "2026-10-27T19:31:02.616081193+08:00",
+      "chain_name_hashes": [
+        "49618769b2469314",
+        "7d6c0940067f8441",
+        "50a4122943273ad2"
+      ],
+      "rule": "DomainSuffix",
+      "destination_port": "443"
+    },
+    {
+      "role": "curl-http2",
+      "source_port": "46890",
+      "host": "chatgpt.com",
+      "rule": "DomainSuffix",
+      "chain_name_hashes": [
+        "49618769b2469314",
+        "7d6c0940067f8441",
+        "50a4122943273ad2"
+      ],
+      "start": "2026-10-27T19:30:29.302470087+08:00"
+    }
+  ]
+}

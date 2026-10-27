@@ -1,0 +1,21 @@
+{
+  "controller_status": 200,
+  "own_connection_matches": [
+    {
+      "network": "tcp",
+      "type": "HTTPS",
+      "host": "chatgpt.com",
+      "source_port": "45292",
+      "destination_port": "443",
+      "start": "2026-10-27T19:14:10.100008136+08:00",
+      "upload": 248008,
+      "download": 112726,
+      "chain_name_hashes": [
+        "49618769b2469314",
+        "7d6c0940067f8441",
+        "50a4122943273ad2"
+      ],
+      "rule": "DomainSuffix"
+    }
+  ]
+}

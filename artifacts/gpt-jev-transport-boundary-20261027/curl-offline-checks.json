@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "config_and_payload_memfd_only": true,
+  "matching_payload_and_dummy_auth": true,
+  "metrics_parsed": true,
+  "no_auth_in_process_arguments": true,
+  "fixture_http_version": "1.1"
+}

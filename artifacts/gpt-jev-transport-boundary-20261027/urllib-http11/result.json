@@ -1,0 +1,80 @@
+{
+  "started_utc": "2026-10-27T11:14:10.093595+00:00",
+  "pid": 1380319,
+  "source_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee",
+  "http": {
+    "status": 200,
+    "version": 11,
+    "chunked": true,
+    "content_length": null,
+    "response_headers": {
+      "date": "Tue, 27 Oct 2026 11:14:11 GMT",
+      "transfer-encoding": "chunked",
+      "connection": "close",
+      "server": "cloudflare",
+      "cf-ray": "a51146938c9bf57e-KIX"
+    },
+    "initial_socket_timeout_s": 900.0,
+    "socket_peer": [
+      "127.0.0.1",
+      7897
+    ],
+    "socket_local_port": 45292,
+    "tls_version": "TLSv1.3",
+    "certificate_issuer": [
+      [
+        "countryName",
+        "US"
+      ],
+      [
+        "organizationName",
+        "Google Trust Services"
+      ],
+      [
+        "commonName",
+        "WE1"
+      ]
+    ],
+    "certificate_subject": [
+      [
+        "commonName",
+        "chatgpt.com"
+      ]
+    ],
+    "chunks": 865,
+    "reader_returned_eof": true,
+    "response_isclosed": true,
+    "remaining_length": null,
+    "chunk_left": 0
+  },
+  "progress": {
+    "event_counts": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 28,
+      "response.output_item.done": 27,
+      "keepalive": 10,
+      "response.function_call_arguments.delta": 4106
+    },
+    "reasoning_items": 27,
+    "function_argument_chars": 14849,
+    "completed": false,
+    "done_marker": false,
+    "sse_bytes": 1562755,
+    "first_sse_s": 2.3385766970022814,
+    "last_sse_s": 877.8464079990008,
+    "last_reasoning_item_s": 781.0993195449992,
+    "first_method_args_s": 781.3391072769955
+  },
+  "budget_s": 2100,
+  "initial_socket_timeout_s": 900,
+  "automatic_retries": 0,
+  "elapsed_s": 902.3680839599983,
+  "updated_utc": "2026-10-27T11:29:12.461678+00:00",
+  "header_received_s": 2.3063528459970257,
+  "outcome": "failed",
+  "error_type": "ProTransportError",
+  "error": "Native Pro stream ended without a completed response",
+  "usage_unknown": true,
+  "finished_utc": "2026-10-27T11:29:12.461673+00:00"
+}
