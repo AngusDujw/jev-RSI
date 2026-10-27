@@ -65,3 +65,5 @@
 - 【Agent】【2026-10-27 12:42】[result] EXP-2026W44-014 finished: native/proposal true; new cold source6ddc1bca,0repairs,721.191s generation,2585.398s episode,14GPT/107realJev/321policy steps; audit passed,1GPT+1Jev unknown usages preserved, owned processes and both7921ports closed. Archived exact method/protocol and result evidence.
 - 【Agent】【2026-10-27 12:42】[op] Archived EXP014 result package, unchanged generated source and Jev protocol; strict weekly protocol lint passed, source hash/JSON checks passed. Retained circle warnings with one-case convergence; no production changes, no temporary test script.
 - 【User】【2026-10-27 12:52】[intent] 用户追问：为什么此前同任务从零生成有问题，本次是否改动；核对历史a8e一阶段与288两阶段实际配置和失败/成功证据，解释非同条件重复且未隔离因果。
+- 【User】【2026-10-27 17:11】[intent] 用户要求使用此前成功的旧配置，已测任务与未见任务各测3次成功率；按独立冷生成理解，固定旧提示词/harness、零旧源输入及零修复，共6例。
+- 【Agent】【2026-10-27 17:14】[op] 预声明旧版a8e六例冷生成：1335/init12,13,14与框架未测229/init0,1,2；每例空记忆/0修复，同24GPT/200Jev/600步/7200秒及1800单请求，GPU6/7两lane各3串行，6例全准入、不补选、不中途迭代。当前CIRCLE-1/3按本固定批次收敛，不扩展任务。
