@@ -1,0 +1,15 @@
+{
+  "pids_alive": {
+    "urllib_parent": false,
+    "curl_parent": false,
+    "curl": false,
+    "control": false
+  },
+  "control_socket_closed": true,
+  "temporary_fixture_files_absent": true,
+  "production_files_changed": false,
+  "global_proxy_changed": false,
+  "robot_or_jev_calls": 0,
+  "ssh_reverse_tunnels_started": 0,
+  "proxy_records_for_owned_ports_remaining": []
+}

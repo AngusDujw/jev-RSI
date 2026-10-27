@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "elapsed_s": 4.003452312004811,
+  "initial_timeout_s": 2,
+  "whole_deadline_s": 8,
+  "sampled_tls_socket_timeouts_s": [
+    7.956098471,
+    7.956056015,
+    7.956049675,
+    6.997494064,
+    6.99747294,
+    5.997062448,
+    5.997051025,
+    4.996947994,
+    4.996937034
+  ],
+  "connection_close_and_chunked": true,
+  "all_temporary_fixtures_deleted": true
+}

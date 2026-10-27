@@ -1,0 +1,380 @@
+{
+  "pid": 1425254,
+  "purpose": "Unauthenticated same-host same-proxy persistent TLS control; no model call.",
+  "started_utc": "2026-10-27T11:31:02.609810+00:00",
+  "target_seconds": 1000,
+  "interval_seconds": 20,
+  "endpoint": "https://chatgpt.com/robots.txt",
+  "requests": [
+    {
+      "elapsed_s": 0.32729802199901314,
+      "latency_s": 0.3215419300031499,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 20.44827233700198,
+      "latency_s": 0.1206790779979201,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 40.86334833499859,
+      "latency_s": 0.41481787300290307,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 60.995866507000756,
+      "latency_s": 0.13223947899678024,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 81.14093950700044,
+      "latency_s": 0.14467233799950918,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 101.26064919099736,
+      "latency_s": 0.11933691000012914,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 121.40049612699659,
+      "latency_s": 0.1393737879989203,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 141.92117279399827,
+      "latency_s": 0.5201833540049847,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 162.04779803699785,
+      "latency_s": 0.12622050599748036,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 182.20751544999803,
+      "latency_s": 0.15927525999723002,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 202.40153891500086,
+      "latency_s": 0.1937258749967441,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 222.88008894700033,
+      "latency_s": 0.47811342700151727,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 243.03240735500003,
+      "latency_s": 0.15194647799944505,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 263.17492843900254,
+      "latency_s": 0.14223551099712495,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 283.3081966769969,
+      "latency_s": 0.13292872400052147,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 304.31859881799755,
+      "latency_s": 1.0099440589983715,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 324.78154560899566,
+      "latency_s": 0.46253368199541,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 345.0740350089982,
+      "latency_s": 0.291987140000856,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 365.3165261730028,
+      "latency_s": 0.24202644699835218,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 387.561713158997,
+      "latency_s": 2.2447317390033277,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 407.75273125700187,
+      "latency_s": 0.19039398599852575,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 427.8983726689985,
+      "latency_s": 0.14512209300301038,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 448.0492076149967,
+      "latency_s": 0.1504771100007929,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 468.24355230700166,
+      "latency_s": 0.1939830269984668,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 488.7891374530009,
+      "latency_s": 0.5452216499979841,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 508.96102003399574,
+      "latency_s": 0.17159200300375232,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 529.0946949639983,
+      "latency_s": 0.13334865399519913,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 549.3697809799996,
+      "latency_s": 0.27474123499996495,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 569.5273538699985,
+      "latency_s": 0.1570163440046599,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 589.6635100200001,
+      "latency_s": 0.13564679800037993,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 610.7166916639981,
+      "latency_s": 1.052752262003196,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 630.8639578869988,
+      "latency_s": 0.1469702350004809,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 651.0161428209976,
+      "latency_s": 0.15179500699741766,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 671.3889132949989,
+      "latency_s": 0.37235471999883885,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 691.5824958910016,
+      "latency_s": 0.1931316929985769,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 711.7184155400028,
+      "latency_s": 0.13557747999584535,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 731.8574925540015,
+      "latency_s": 0.1385450910020154,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 752.9703084810026,
+      "latency_s": 1.1124937499989755,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 773.1097223559991,
+      "latency_s": 0.13895665400195867,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 793.6909817199994,
+      "latency_s": 0.5808385530035594,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 813.8370332420018,
+      "latency_s": 0.1455100230014068,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 834.8968239500027,
+      "latency_s": 1.0592270839988487,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 855.0350791500023,
+      "latency_s": 0.13772908999817446,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 878.517462689997,
+      "latency_s": 3.4819183989966405,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 898.6990987429963,
+      "latency_s": 0.18127748800179688,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 918.8332153730007,
+      "latency_s": 0.133693324001797,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 939.0506511499989,
+      "latency_s": 0.2169175279996125,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 959.2470089849958,
+      "latency_s": 0.19586156900186324,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 979.9711469489994,
+      "latency_s": 0.7238203470042208,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    },
+    {
+      "elapsed_s": 1000.7809495969996,
+      "latency_s": 0.8093360800048686,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true
+    }
+  ],
+  "socket_local_port": 34122,
+  "tls_version": "TLSv1.3",
+  "certificate_issuer": [
+    [
+      "countryName",
+      "US"
+    ],
+    [
+      "organizationName",
+      "Google Trust Services"
+    ],
+    [
+      "commonName",
+      "WE1"
+    ]
+  ],
+  "elapsed_s": 1000.7814373290021,
+  "outcome": "survived_past_900_seconds",
+  "finished_utc": "2026-10-27T11:47:43.391235+00:00",
+  "socket_closed": true
+}

@@ -1,0 +1,13 @@
+{
+  "same_request_hash_both_arms": true,
+  "both_single_request_no_retry": true,
+  "http2_returned_expected_model": true,
+  "http2_tls_verified": true,
+  "temporary_files_removed": true,
+  "all_owned_processes_exited": true,
+  "public_same_tls_over_900": true,
+  "public_all_200": true,
+  "source_static_validation_passed": true,
+  "method_robot_execution_validated": false,
+  "network_control_overlap_note": "Public TLS control overlapped the HTTP2 arm, not the earlier HTTP1 failure. It rules out a universal900-second connection lifetime in that control, not every transient failure during older runs."
+}
