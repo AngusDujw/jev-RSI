@@ -1,0 +1,63 @@
+# Historical cold-generation reproduction
+
+Predeclared before live inference or robot execution.
+
+```json
+{
+  "created_utc": "2026-10-27T03:54:31.572484+00:00",
+  "purpose": "Regenerate and execute the earlier successful cold task; do not replay its source",
+  "historical_commit": "a8e6ea72ef7a6d21dea4215de79c3cc3b09b8739",
+  "original_run": "code/runs/2026-10-25-gpt-jev-program/numpy-cold-init12",
+  "original_method_sha256": "0c4cdaf3ab8a50446fc777bafba9951c807f3a16a24247771866e6097f543bb4",
+  "server": "company-server-2-ykj",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027",
+  "case": {
+    "suite": "libero_goal",
+    "task_id": 1335,
+    "init_index": 12,
+    "seed": 0,
+    "gpu": "4"
+  },
+  "condition": "one-stage independent cold generation; no old source/design/feedback or episode memory; no source repair",
+  "budgets": {
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_repairs": 0,
+    "wall_seconds": 7200,
+    "request_ceiling_seconds": 1800,
+    "relay_request_seconds": 1798
+  },
+  "original_configured_repairs": 5,
+  "original_actual_source_repairs": 0,
+  "repair_limit_note": "Set0to test an untouched initial method; the original successful episode needed0despite its configured ceiling5.",
+  "planner": "current local signed-in ChatGPT Pro gpt-6-astra/xhigh",
+  "executor": "official Jev jev-1.13.0 /v1/systemone",
+  "historical_prompt_sha256": "27237a3a47d1908e0d72ff9343d6810159d23554d0e42cc8dcc10a12df5369cb",
+  "historical_manual_sha256": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e",
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "f79845ccf294749fee5e2cb281fc6b65e7326a5b69433a25c02e63848a145576",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "fixed_files_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "2e2e3d96ab5e29866635ba97a1febdc5b2a2940bd9066b5ff94c08e6ca97a6f5",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "f4c63ffc1cb8253c1efcc97ebfc8b7e23602fbc14d62f99dac0edf65c93ee465",
+    "code/prompts/gpt_jev_program_api_v2.md": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e"
+  },
+  "bridge_source_sha256": "254afc9556dd58422ed0912fc3dc78af94f3a3349e8f39adf03da4f2d1aa8687",
+  "historical_loaded_bridge_hash_available": false,
+  "bridge_limit_note": "Use bridge file from matching historical commit; original completed ledger did not record the loaded bridge hash.",
+  "observer": "In-memory read-only SSE metadata shim on historical bridge; exact request-wire and response equivalence tested; no text captured or model input changed.",
+  "media": "Preserve the unmodified historical host output behavior for reproduction; media retained only as run/evaluation evidence.",
+  "evaluation": "Terminal native LIBERO only, never in policy; report program proposal separately.",
+  "admission": "One declared fresh episode, preserve any failure; no replacement tasks, no outer source edits.",
+  "limits": "One stochastic model rerun on the same task/initial state is not a cross-task reliability estimate; current provider weights are not independently frozen."
+}
+```
+
+## Results
+
+Pending actual execution; no reproduction success claimed.
