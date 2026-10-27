@@ -25,3 +25,17 @@
 - 历史bridge：baseline/roboicl/reproduction/pro_oauth_bridge.py，commit a8e6ea72。
 - deadline_lines：86行；只接收completed返回：141行；同输入重试：151行；共享请求预算：284行。
 - 历史builder：code/prompts/gpt_jev_method_v2.txt，1行起要求完整四字段程序及恢复逻辑。
+
+## 固定说明的准确组成与网络解释
+
+实际instructions=32308字符，来自历史a8e文件：
+- code/prompts/gpt_jev_method_v2.txt：7762字符，完整方法四字段、程序约束、观测/控制/验证/恢复职责。
+- code/prompts/gpt_jev_method_lessons_v2.txt：6565字符，通用失败经验、追踪/对应恢复及证据判断等；不是旧程序或本回合反馈。
+- code/prompts/gpt_jev_program_api_v2.md：17977字符，数值辅助、观察与几何、真实Jev控制、持久化/失败/预算的精确API约定。
+- 两处双换行：4字符。不是32308tokens；成功例账本将这份instructions计为6432输入tokens。
+
+六例bridge账本外层错误均为ProDeadlineError：Native Pro whole-call deadline exceeded。HTTP504由本地Handler在预算耗尽后生成，不是上游明确返回HTTP504。六次首尝试错误均为Native Pro stream ended without a completed response，http_status为空。
+
+因此可以是网络/代理/网关/服务端连接限制导致的中途截断，现有证据不能定位哪一层，也不能排除传输故障是完整程序未交付的直接原因。1–3秒建流只能说明连接建立快；持续推理事件只能证明持续收到服务事件，不能排除随后断流或把全部公开输出前时间认定为GPU思考时间。约902秒重复出现是待检查的超时线索，不证明固定的模型硬限制。
+
+没有运行网络/模型额外探测，没有改提示词、桥接实现或账号配置。
