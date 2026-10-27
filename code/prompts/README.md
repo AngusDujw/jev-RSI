@@ -19,6 +19,20 @@ A later [exact-input streaming diagnosis](../../artifacts/gpt-jev-timeout-diagno
 
 ## Active program interface v2
 
+Complete-method request time can be selected explicitly with
+`--method-request-seconds 1800`. This changes only method/patch calls: staged
+design remains900seconds, review remains1800seconds, and the episode wall budget
+is still separate. Omitted overrides preserve all prior defaults. The relay's
+two-second margin gives1798seconds for a1800-second caller budget; queueing and
+transport retries share that absolute deadline. `--no-video` suppresses episode
+videos while retaining the observation evidence needed by the existing harness.
+
+The optional local bridge flag `--progress-metadata` saves live per-attempt SSE
+timing/count snapshots and includes them in the ordinary attempt ledger. It
+records no reasoning text or method arguments, changes no model-visible payload,
+and an observer write failure cannot replace a model response. Failed/unfinished
+attempt usage remains unknown. Completed request/response audits still apply.
+
 Optional fresh synthesis can use the host's staged-design mode. The
 [design-stage instructions](gpt_jev_design_v1.txt) first request a bounded,
 strictly typed six-field architecture, saved as a proposal without execution.

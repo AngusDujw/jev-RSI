@@ -99,8 +99,26 @@ def deadline_lines(response, deadline):
         yield line
 
 
-def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None, *, deadline=None):
+def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None, *, deadline=None,
+                     progress_callback=None):
     deadline = time.monotonic()+timeout if deadline is None else deadline
+    progress_started = time.monotonic()
+    progress = dict(event_counts={}, reasoning_items_completed=0,
+        function_items_completed=0, function_argument_delta_characters=0,
+        completed_function_argument_characters=0, function_argument_characters=0,
+        completed_event_seen=False) if progress_callback is not None else None
+    if progress is not None and attempt_record is not None:
+        attempt_record["progress"] = progress
+
+    def emit_progress():
+        if progress is None:
+            return
+        try:
+            progress_callback((attempt_record or {}).get("attempt", 0), progress)
+        except Exception as error:
+            # Observation failures must not change the model request or response.
+            if attempt_record is not None:
+                attempt_record["progress_observer_error"] = type(error).__name__
     check_english(payload)
     if payload.get("model") != MODEL or payload.get("reasoning", {}).get("effort") != "xhigh":
         raise ValueError("Only the pinned Astra/xhigh request is authorized")
@@ -125,6 +143,9 @@ def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None, *, de
         raise ProTransportError(f"Native Pro HTTP {error.code}: " + str(audit(raw))[:1500],
             retryable=error.code in (408, 429, 500, 502, 503, 504), http_status=error.code) from None
     with response:
+        if progress is not None:
+            progress["header_received_s"] = time.monotonic()-progress_started
+            emit_progress()
         for line in deadline_lines(response, deadline):
             if not line.startswith(b"data:"):
                 continue
@@ -132,6 +153,31 @@ def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None, *, de
             if text == b"[DONE]":
                 break
             event = json.loads(text)
+            if progress is not None:
+                elapsed = time.monotonic()-progress_started
+                progress.setdefault("first_sse_s", elapsed)
+                progress["last_sse_s"] = elapsed
+                event_type = event.get("type", "unknown")
+                event_type = event_type[:120] if isinstance(event_type, str) else "unknown"
+                counts = progress["event_counts"]
+                counts[event_type] = counts.get(event_type, 0)+1
+                item = event.get("item")
+                item = item if isinstance(item, dict) else {}
+                if event_type == "response.output_item.done" and item.get("type") == "reasoning":
+                    progress["reasoning_items_completed"] += 1
+                    progress["last_reasoning_item_s"] = elapsed
+                if event_type == "response.function_call_arguments.delta":
+                    delta = event.get("delta")
+                    progress["function_argument_delta_characters"] += len(delta) if isinstance(delta, str) else 0
+                    progress.setdefault("first_function_arguments_s", elapsed)
+                if event_type == "response.output_item.done" and item.get("type") == "function_call":
+                    progress["function_items_completed"] += 1
+                    arguments = item.get("arguments")
+                    progress["completed_function_argument_characters"] += len(arguments) if isinstance(arguments, str) else 0
+                progress["function_argument_characters"] = max(
+                    progress["function_argument_delta_characters"], progress["completed_function_argument_characters"])
+                progress["completed_event_seen"] = event_type == "response.completed"
+                emit_progress()
             if event.get("type") in ("response.failed", "response.incomplete", "error"):
                 details = event.get("response", {}).get("error") or event.get("error") or {}
                 code = details.get("code") if isinstance(details, dict) else None
@@ -149,7 +195,8 @@ def _native_pro_once(payload, auth_file, timeout=900, attempt_record=None, *, de
     raise ProTransportError("Native Pro stream ended without a completed response", retryable=True)
 
 
-def native_request(payload, auth_file, timeout=900, attempt_records=None, *, deadline=None):
+def native_request(payload, auth_file, timeout=900, attempt_records=None, *, deadline=None,
+                   progress_callback=None):
     """Retry transport failures only; return the first completed pinned response.
 
     Every retry has the identical model-visible payload. A failed inference may
@@ -164,7 +211,8 @@ def native_request(payload, auth_file, timeout=900, attempt_records=None, *, dea
         started = time.monotonic()
         retryable = False
         try:
-            result = _native_pro_once(payload, auth_file, min(timeout, remaining_budget(deadline)), record, deadline=deadline)
+            result = _native_pro_once(payload, auth_file, min(timeout, remaining_budget(deadline)), record,
+                                      deadline=deadline, progress_callback=progress_callback)
             record.update(model=result.get("model"), usage=result.get("usage"))
             return result
         except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.IncompleteRead) as error:
@@ -330,6 +378,20 @@ class Handler(BaseHTTPRequestHandler):
                     self.server.jev_limit.release()
             else:
                 record["upstream_attempts"] = []
+                progress_callback = None
+                if getattr(self.server, "progress_metadata", False):
+                    request_hash = hashlib.sha256(json.dumps(record["request"], sort_keys=True,
+                        separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+                    call_tag = f"{time.time_ns()}-{request_hash[:16]}"
+
+                    def progress_callback(attempt, progress):
+                        path = self.server.output / f"{call_tag}-attempt-{attempt}.progress.json"
+                        pending = path.with_suffix(".pending")
+                        metadata = dict(request_sha256=request_hash, tool=payload.get("tool_choice"),
+                            attempt=attempt, updated_at=time.time(), progress=progress,
+                            text_recorded=False)
+                        pending.write_text(json.dumps(metadata))
+                        pending.replace(path)
                 requested_budget = float(self.headers.get("X-Model-Request-Timeout-Seconds", "900"))
                 if not .1 <= requested_budget <= 1800:
                     raise ValueError("Pro request budget must be 0.1..1800 seconds")
@@ -339,7 +401,8 @@ class Handler(BaseHTTPRequestHandler):
                     raise ProDeadlineError("Native Pro deadline while waiting for relay slot")
                 try:
                     result = native_request(payload, self.server.auth_file,
-                                            attempt_records=record["upstream_attempts"], deadline=deadline)
+                                            attempt_records=record["upstream_attempts"], deadline=deadline,
+                                            progress_callback=progress_callback)
                 finally:
                     self.server.limit.release()
             record.update(response=audit(result), elapsed_s=time.monotonic()-started)
@@ -366,6 +429,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--probe", action="store_true")
     parser.add_argument("--jev-config", type=Path)
+    parser.add_argument("--progress-metadata", action="store_true",
+        help="Save live SSE timing/count metadata without reasoning text or method arguments")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     if args.probe:
@@ -383,6 +448,7 @@ def main():
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     server.auth_file = args.auth_file
     server.jev_config = args.jev_config
+    server.progress_metadata = args.progress_metadata
     server.output = args.output
     server.limit = threading.BoundedSemaphore(args.concurrency)
     server.jev_limit = threading.BoundedSemaphore(args.concurrency)

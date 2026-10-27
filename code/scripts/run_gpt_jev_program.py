@@ -232,6 +232,13 @@ def control_lease(controller, target, quaternion, gripper, questions, features=N
     return dict(result, status="lease_exhausted", lease_calls=max_calls)
 
 
+def planner_request_timeout(kind, staged_design=False, method_request_seconds=None):
+    """Keep legacy defaults while allowing an explicit complete-method budget."""
+    if kind == "method" and method_request_seconds is not None:
+        return method_request_seconds
+    return 900 if kind == "design" or (staged_design and kind == "method") else 1800
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
@@ -249,6 +256,9 @@ def main():
     p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
     p.add_argument("--revise-archived", action="store_true", help="Ask GPT to revise the archived method using its adjacent summary.json")
     p.add_argument("--staged-design", action="store_true", help="Fresh generation: save a bounded design before materializing the complete method")
+    p.add_argument("--method-request-seconds", type=int, choices=(900, 1800),
+        help="Override the complete-method request deadline; design/review limits stay unchanged")
+    p.add_argument("--no-video", action="store_true", help="Keep observation evidence without recording full episode videos")
     p.add_argument("--wall-seconds", type=int, default=3600)
     args = p.parse_args()
     repo = Path(__file__).resolve().parents[2]
@@ -317,6 +327,7 @@ def main():
         pro_request_deadline="loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
         review_parameters="method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
         typed_reviews_required_for_generated_methods=True,
+        method_request_deadline_seconds=planner_request_timeout("method", args.staged_design, args.method_request_seconds),
         staged_design=dict(enabled=args.staged_design,
             prompt_sha256=hashlib.sha256(design_prompt.encode()).hexdigest() if design_prompt else None,
             schema_sha256=hashlib.sha256(json.dumps(DESIGN_SCHEMA, sort_keys=True).encode()).hexdigest(),
@@ -519,7 +530,7 @@ def main():
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
             input=[dict(role="user", content=content)], tools=[tool_definition],
             tool_choice=dict(type="function", name=tool), parallel_tool_calls=False, store=False)
-        request_ceiling = 900 if kind == "design" or (args.staged_design and kind == "method") else 1800
+        request_ceiling = planner_request_timeout(kind, args.staged_design, args.method_request_seconds)
         raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=max(1, min(request_ceiling, budgets()["wall_seconds_remaining"])))
         if not raw.get("model", "").startswith("gpt-6-astra") or raw.get("status") != "completed":
             raise ValueError("Unexpected planner response")
@@ -717,6 +728,8 @@ def main():
         env.reset()
         obs = env.set_init_state(np.asarray(suite.get_task_init_states(args.task_id)[args.init_index], float))
         for camera in CAMERAS:
+            if args.no_video:
+                continue
             writer = cv2.VideoWriter(str(out / f"{camera}.mp4"), cv2.VideoWriter_fourcc(*"mp4v"), 20., (768, 768))
             if not writer.isOpened():
                 raise RuntimeError("Video writer unavailable")

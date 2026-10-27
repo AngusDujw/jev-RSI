@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "Legacy defaults and method-only override",
+    "Real CLI exposes explicit deadline and video options",
+    "Observed and legacy transport preserve exact wire and response",
+    "Progress counts events/characters without reasoning or argument content",
+    "Progress write failure leaves model response unchanged",
+    "Retry keeps separate progress, identical payload and unknown first-attempt cost",
+    "Actual loopback POST carries 898/1798-second margins with identical model input"
+  ],
+  "passed": 7,
+  "real_model_calls": 0,
+  "physics_steps": 0,
+  "temporary_fixture_files_removed": true
+}
