@@ -1,0 +1,16 @@
+{
+  "historical_hashes_match": true,
+  "port7921_free_before_start": true,
+  "output_created": true,
+  "gpus_at_preflight": {
+    "6": {
+      "memory_mib": 5,
+      "utilization_percent": 0
+    },
+    "7": {
+      "memory_mib": 6,
+      "utilization_percent": 0
+    }
+  },
+  "disk_free_gb": 162
+}

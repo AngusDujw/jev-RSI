@@ -1,0 +1,11 @@
+{
+  "historical_bridge_source_unchanged": true,
+  "request_wire_identical": true,
+  "response_identical": true,
+  "progress_counts_correct": true,
+  "reasoning_and_argument_text_absent": true,
+  "observer_io_failure_does_not_change_response": true,
+  "temporary_fixtures_removed": true,
+  "real_model_calls": 0,
+  "physics_steps": 0
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "case": "known-r1-init12",
+    "tool": "submit_method",
+    "instructions_match_successful_old_run": true,
+    "model_match": true,
+    "effort_match": true,
+    "tool_schema_match": true,
+    "all_text_ascii": true,
+    "initial_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee"
+  },
+  {
+    "case": "new-r1-init0",
+    "tool": "submit_method",
+    "instructions_match_successful_old_run": true,
+    "model_match": true,
+    "effort_match": true,
+    "tool_schema_match": true,
+    "all_text_ascii": true,
+    "initial_request_sha256": "d2de0f58a8976ef64d1c78dddabea47b64e80c692c87cfe68e52d523c151cc27"
+  }
+]
