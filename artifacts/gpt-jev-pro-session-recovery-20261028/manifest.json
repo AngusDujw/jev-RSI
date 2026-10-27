@@ -1,0 +1,216 @@
+{
+  "production_commit": "591299b422654cfff0100ce51fa7b65ec42c42c2",
+  "production_hashes": {
+    "baseline/roboicl/reproduction/pro_session_client.py": "b32e19d48ce385742ae2a4f6ac6d3b245d66ce2dfaf2d7a351acf301a3da2d68",
+    "baseline/roboicl/reproduction/pro_session_jobs.py": "782e2adbf98cd9bef53099f9017e890ca2639b8fe2e0b37e342f497debe2b7b5",
+    "baseline/roboicl/reproduction/pro_oauth_bridge.py": "558a717223788b1c31b930ca8d8cb0b27d9f459ccedc614c706720a19b4d9142",
+    "code/scripts/run_gpt_jev_program.py": "b45adfee41781fc90ea8fc2e444e417df5e8b914f3d7e867d5b852870957d67e",
+    "code/scripts/audit_gpt_jev_run.py": "bb8c6a4f6efa3b17f2ed07e3e2f0376db41d7499c6e55b85686a35145a05936d",
+    "code/prompts/README.md": "78bb8582d1acb17a1adc71597a3e17af1c14ffd637199aa63dc9559e020a4b35",
+    ".agents/skills/gpt-jev-method/SKILL.md": "74371bcfa848e65668219e399f73f411c5e65f95b754f6a5b057a8051a7990c7"
+  },
+  "request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee",
+  "instructions_sha256": "45fe962315bd9e0cba92bd5bb748183b6519c4ca1364dae767830ce3a2ca516d",
+  "tools_sha256": "3523341b564ae7501e57f333ee50aa1e21ce8ca478e195dd0b666d5079ad453f",
+  "native_model_input_checks": [
+    {
+      "role": "developer",
+      "type": "additional_tools",
+      "ascii": true
+    },
+    {
+      "role": "developer",
+      "type": "message",
+      "ascii": true
+    },
+    {
+      "role": "developer",
+      "type": "message",
+      "ascii": true
+    },
+    {
+      "role": "developer",
+      "type": "message",
+      "ascii": true
+    },
+    {
+      "role": "user",
+      "type": "message",
+      "ascii": true
+    },
+    {
+      "role": "user",
+      "type": "message",
+      "ascii": true
+    },
+    {
+      "role": "developer",
+      "type": "message",
+      "ascii": true
+    },
+    {
+      "role": "user",
+      "type": "message",
+      "ascii": true
+    }
+  ],
+  "native_preparation_calls": [
+    {
+      "name": "exec",
+      "characters": 27753
+    },
+    {
+      "name": "exec",
+      "characters": 3994
+    },
+    {
+      "name": "exec",
+      "characters": 2433
+    },
+    {
+      "name": "exec",
+      "characters": 1842
+    },
+    {
+      "name": "exec",
+      "characters": 5502
+    }
+  ],
+  "live_test_script_sha256": "a0840ef1db349b8a0de0e6fe5e80c5253f3ef2952fa72b0b833b9a5e918244c0",
+  "live_transport_sha256": "43c68eb92ca1bdde80a701d4371079647cd09cc619ee2705ac814921a5a3d58a",
+  "live_adapter_started_before_final_compatibility_hardening": true,
+  "probes": [
+    {
+      "name": "native-ready",
+      "completed": true,
+      "usage": {
+        "input_tokens": 19887,
+        "output_tokens": 22,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "reported_token_usage": {
+        "total": {
+          "totalTokens": 19909,
+          "inputTokens": 19887,
+          "cachedInputTokens": 9728,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 22,
+          "reasoningOutputTokens": 0
+        },
+        "last": {
+          "totalTokens": 9970,
+          "inputTokens": 9962,
+          "cachedInputTokens": 9728,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 8,
+          "reasoningOutputTokens": 0
+        },
+        "modelContextWindow": 258400
+      },
+      "turns": 1
+    },
+    {
+      "name": "native-ready-clean",
+      "completed": true,
+      "usage": {
+        "input_tokens": 10943,
+        "output_tokens": 18,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "reported_token_usage": {
+        "total": {
+          "totalTokens": 10961,
+          "inputTokens": 10943,
+          "cachedInputTokens": 5248,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 18,
+          "reasoningOutputTokens": 0
+        },
+        "last": {
+          "totalTokens": 5494,
+          "inputTokens": 5490,
+          "cachedInputTokens": 5248,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 4,
+          "reasoningOutputTokens": 0
+        },
+        "modelContextWindow": 258400
+      },
+      "turns": 1
+    },
+    {
+      "name": "native-ready-minimal",
+      "completed": false,
+      "usage": null,
+      "reported_token_usage": {
+        "total": {
+          "totalTokens": 33751,
+          "inputTokens": 33575,
+          "cachedInputTokens": 16128,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 176,
+          "reasoningOutputTokens": 76
+        },
+        "last": {
+          "totalTokens": 5732,
+          "inputTokens": 5713,
+          "cachedInputTokens": 5248,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 19,
+          "reasoningOutputTokens": 0
+        },
+        "modelContextWindow": 258400
+      },
+      "turns": 3
+    },
+    {
+      "name": "final-production-probe/probe-session",
+      "completed": true,
+      "usage": {
+        "input_tokens": 10935,
+        "output_tokens": 18,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "reported_token_usage": {
+        "total": {
+          "totalTokens": 10953,
+          "inputTokens": 10935,
+          "cachedInputTokens": 0,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 18,
+          "reasoningOutputTokens": 0
+        },
+        "last": {
+          "totalTokens": 5490,
+          "inputTokens": 5486,
+          "cachedInputTokens": 0,
+          "cacheWriteInputTokens": 0,
+          "outputTokens": 4,
+          "reasoningOutputTokens": 0
+        },
+        "modelContextWindow": 258400
+      },
+      "turns": 1
+    }
+  ],
+  "source_origin_validated": true,
+  "logical_job_receipts": 1,
+  "native_usage": {
+    "totalTokens": 294313,
+    "inputTokens": 254603,
+    "cachedInputTokens": 252288,
+    "cacheWriteInputTokens": 0,
+    "outputTokens": 39710,
+    "reasoningOutputTokens": 29157
+  },
+  "interrupted_attempt_usage_unknown": true,
+  "jev_calls": 0,
+  "physical_execution": false,
+  "native_libero_score": null
+}

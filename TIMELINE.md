@@ -183,6 +183,9 @@ graph LR
     T_2026W44_008["📊 libero-generic-vision<br/>Old-generator six-cas…"]:::experiment
     T_2026W44_009["📊 libero-generic-vision<br/>Transport diagnosis: …"]:::experiment
     T_2026W44_010["📊 libero-generic-vision<br/>Local3paired trials:3…"]:::experiment
+    T_2026W44_011["📊 generic-vision<br/>原生Pro同线程自动恢复后原失败输入170…"]:::experiment
+    T_2026W44_012["📝 generic-vision<br/>T-2026W44-011误用缩写topi…"]:::note
+    T_2026W44_013["📊 libero-generic-vision<br/>原生Pro同线程自动恢复后原失败输入170…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -319,6 +322,9 @@ graph LR
   T_2026W44_007 --> T_2026W44_008
   T_2026W44_008 --> T_2026W44_009
   T_2026W44_009 --> T_2026W44_010
+  T_2026W44_006 --> T_2026W44_011
+  T_2026W44_011 --> T_2026W44_012
+  T_2026W44_010 --> T_2026W44_013
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -484,6 +490,9 @@ graph LR
 | `T-2026W44-008` | 2026-10-27 | experiment | libero-generic-vision | Old-generator six-case batch: known1335and unseen229 each0/3end-to-end; all synthesis timeouts,0Jev; physical success unmeasured; preserve concurrency2condition and12unknown usages | `EXP-2026W44-020` | - |
 | `T-2026W44-009` | 2026-10-27 | experiment | libero-generic-vision | Transport diagnosis: single HTTP1 truncates at902s despite2100s local limit; HTTP2 completes717s; same-proxy TLS control survives1001s. Closing hop unresolved; no robot. | `EXP-2026W44-021` | - |
 | `T-2026W44-010` | 2026-10-27 | experiment | libero-generic-vision | Local3paired trials:3HTTP truncations;2public-control timeouts12.7/17.3s before failure;1near902s with healthy probes. Mixed connectivity and long-stream failure, no causal time fraction. | `EXP-2026W44-022` | - |
+| `T-2026W44-011` | 2026-10-28 | experiment | generic-vision | 原生Pro同线程自动恢复后原失败输入1702.824秒交付完整247行方法；十项机制检查通过，0Jev/物理，效率与长期率未验证 | `EXP-2026W44-023` | - |
+| `T-2026W44-012` | 2026-10-28 | note | generic-vision | T-2026W44-011误用缩写topic；其EXP023应归入libero-generic-vision，保留历史并在正确主题追加实验节点，不作为独立研究问题 | `EXP-2026W44-023` | - |
+| `T-2026W44-013` | 2026-10-28 | experiment | libero-generic-vision | 原生Pro同线程自动恢复后原失败输入1702.824秒交付完整247行方法；10项机制检查通过，未执行Jev或物理任务 | `EXP-2026W44-023` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

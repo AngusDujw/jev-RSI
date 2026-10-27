@@ -1,0 +1,25 @@
+{
+  "status": "completed",
+  "elapsed_s": 1702.8237142240005,
+  "source_sha256": "381dda9c7a573c4432c466d572ed503cc0ac347c6dc59fa6330c4514b5274ff8",
+  "source_lines": 247,
+  "usage": {
+    "input_tokens": 254603,
+    "output_tokens": 39710,
+    "output_tokens_details": {
+      "reasoning_tokens": 29157
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a17e53-e034-76d1-9209-b10097f770be",
+    "turn_ids": [
+      "01a17e53-e045-73d1-bdfa-f158de63d9d2",
+      "01a17e54-977d-7283-8915-6af93e0e79d4"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  },
+  "fault_injected": true,
+  "physical_execution": false,
+  "jev_calls": 0
+}
