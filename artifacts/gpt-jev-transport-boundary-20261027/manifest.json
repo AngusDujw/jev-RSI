@@ -1,0 +1,45 @@
+{
+  "created_utc": "2026-10-27T11:13:19.954670+00:00",
+  "purpose": "Diagnose the approximately902-second incomplete SSE stream boundary; no robot execution, no method repair.",
+  "source_request": "code/runs/2026-10-27-gpt-jev-old-six/known-r1-init12/gpt-00.request.json",
+  "source_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee",
+  "restored_images": [
+    {
+      "file": "gpt-00-agentview.jpg",
+      "data_url_sha256": "4fd58ad4171e5178d105b6f8739fb9233b5891308631a6cbf21709a25df473e0",
+      "characters": 102939
+    },
+    {
+      "file": "gpt-00-robot0_eye_in_hand.jpg",
+      "data_url_sha256": "8c905c12f36042e193ba35dbf4666c373ea2b223527ef4145bf841db15797062",
+      "characters": 105807
+    }
+  ],
+  "model": "gpt-6-astra",
+  "reasoning": "xhigh",
+  "auth": "Local signed-in ChatGPT Pro only; no Platform or caz API key.",
+  "condition": "One model request at a time; identical historical model-visible payload; zero automatic retries; no SSH reverse tunnel or simulator.",
+  "arms": [
+    {
+      "name": "urllib-http11",
+      "implementation": "Unmodified historical _native_pro_once with in-memory protocol/metadata observation",
+      "socket_initial_timeout_s": 900,
+      "whole_deadline_s": 2100
+    },
+    {
+      "name": "curl-http2",
+      "admission": "Run one sequential transport comparison if needed to test framing/connection boundary; preserve first result.",
+      "implementation": "System curl HTTP2 through same proxy, same payload/auth/header values; request and credential config in memfd only.",
+      "whole_deadline_s": 2100
+    }
+  ],
+  "max_model_requests": 2,
+  "network": {
+    "proxy": "127.0.0.1:7897",
+    "runtime": "Mihomo v1.19.13",
+    "direct_head_probe": "Could not establish direct connection; unauthenticated proxy HEAD returned403 promptly, not an inference health verdict."
+  },
+  "observations": "Only event types/counts/timing, argument character counts, protocol framing, whitelisted response headers and TLS certificate metadata. Never record reasoning contents, auth headers or proxy secrets.",
+  "interpretation": "Network-vs-service localization relies on response framing and TLS boundary; timing alone is not a model-capability or causal concurrency test.",
+  "offline_checks": "Original reader exceeds initial socket timeout and virtual900-second boundary; absolute deadline still enforced; fixtures deleted."
+}

@@ -1,0 +1,23 @@
+{
+  "active_stream_outlives_initial_socket_timeout": {
+    "passed": true,
+    "initial_socket_timeout_s": 2,
+    "elapsed_s": 4.0061472700035665,
+    "whole_deadline_s": 8
+  },
+  "shared_deadline_still_enforced": {
+    "passed": true,
+    "elapsed_s": 1.5010601499961922,
+    "deadline_s": 1.5
+  },
+  "virtual_stream_crosses_900_seconds": {
+    "passed": true,
+    "observed_line_times_s": [
+      901,
+      1200
+    ],
+    "whole_deadline_s": 1800
+  },
+  "temporary_fixture_deleted": true,
+  "production_source_unchanged_sha256": "254afc9556dd58422ed0912fc3dc78af94f3a3349e8f39adf03da4f2d1aa8687"
+}
