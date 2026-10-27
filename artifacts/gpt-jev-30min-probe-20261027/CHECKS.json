@@ -1,0 +1,17 @@
+{
+  "fixed_model_knowledge_unchanged": true,
+  "actual_protocol_method_deadlines_1800": true,
+  "actual_relay_method_budgets_1798": true,
+  "empty_source_reuse_and_zero_repairs": true,
+  "host_and_helper_hashes_match_launch": true,
+  "both_completed_case_audits_passed": true,
+  "strict_designs": 2,
+  "strict_runtime_reviews": 10,
+  "raw_jev_dispatches_validated": 49,
+  "acknowledged_policy_steps": 147,
+  "known_exact_full_model_source_preserved": true,
+  "new_task_has_no_policy_action": true,
+  "video_files_created": 0,
+  "owned_processes_and_tunnel_closed": true,
+  "temporary_test_scripts_created": false
+}

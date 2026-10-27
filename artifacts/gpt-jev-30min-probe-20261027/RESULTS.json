@@ -1,0 +1,517 @@
+{
+  "finished_utc": "2026-10-27T02:44:15.223492+00:00",
+  "host_commit": "288dfde9bb7fd2a4f7f7f5a73fab3f118196e4f1",
+  "condition": "Staged independent cold methods;1800-second method caller ceiling,1798-second relay budget;0source repairs",
+  "cases": [
+    {
+      "slug": "known-cream-init12",
+      "task_id": 1335,
+      "init_index": 12,
+      "design_delivered": true,
+      "complete_method_delivered": true,
+      "native_success": false,
+      "completion_proposed": false,
+      "termination": "method_incomplete",
+      "elapsed_s": 2296.726067034062,
+      "gpt_calls": 12,
+      "real_jev_dispatches": 49,
+      "policy_steps": 147,
+      "source_repairs": 0,
+      "models": {
+        "gpt": {
+          "attempts": 12,
+          "unknown_usage": 0,
+          "completed_input": 119264,
+          "completed_output": 57794,
+          "relay_seconds": 2241.5206103990004,
+          "matched_requests": 12,
+          "undelivered_or_missing_responses": 0,
+          "request_models": [
+            "gpt-6-astra"
+          ],
+          "transport_source_hashes": [
+            "4b597e289723fadfc942d3537a6e98c20f375048f4e0a004ebd776b7c2f2a067"
+          ]
+        },
+        "jev": {
+          "attempts": 49,
+          "unknown_usage": 0,
+          "completed_input": 101688,
+          "completed_output": 12201,
+          "relay_seconds": 22.14118949099975,
+          "matched_requests": 49,
+          "undelivered_or_missing_responses": 0,
+          "request_models": [
+            "jev-1.13.0"
+          ],
+          "transport_source_hashes": [
+            "4b597e289723fadfc942d3537a6e98c20f375048f4e0a004ebd776b7c2f2a067"
+          ]
+        }
+      },
+      "generation": {
+        "design_elapsed_s": 269.944318457,
+        "method_elapsed_s": 816.7447682500001,
+        "method_budget_s": 1798.0,
+        "method_request_sha256": "c370f3e4290086e216918b0b74d5e59a9c995e7d80a56863afd4aad66d11cfe9",
+        "method_attempts": [
+          {
+            "attempt": 1,
+            "started": 1793066065.173436,
+            "request_sent": true,
+            "progress": {
+              "event_counts": {
+                "response.created": 1,
+                "response.in_progress": 1,
+                "response.output_item.added": 34,
+                "response.output_item.done": 34,
+                "response.function_call_arguments.delta": 10938,
+                "keepalive": 4,
+                "response.function_call_arguments.done": 1,
+                "response.metadata": 1,
+                "response.completed": 1
+              },
+              "reasoning_items_completed": 33,
+              "function_items_completed": 1,
+              "function_argument_delta_characters": 45367,
+              "completed_function_argument_characters": 45367,
+              "function_argument_characters": 45367,
+              "completed_event_seen": true,
+              "header_received_s": 1.1212946260002354,
+              "first_sse_s": 1.199224637000043,
+              "last_sse_s": 816.5991361710003,
+              "last_reasoning_item_s": 615.353194623,
+              "first_function_arguments_s": 615.3537006370002
+            },
+            "model": "gpt-6-astra",
+            "usage": {
+              "input_tokens": 12019,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0
+              },
+              "output_tokens": 27989,
+              "output_tokens_details": {
+                "reasoning_tokens": 17036
+              },
+              "total_tokens": 40008,
+              "attribution": {
+                "items": {
+                  "fc_0e8268a880d540db016ae006b79eb481918808fe76e9d30fb4": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 10953
+                  },
+                  "msg_0e8268a880d540db016ae00451cf048191b2a03aaf0a4f8c13": {
+                    "input_tokens": 3064,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 0,
+                    "content": [
+                      {
+                        "input_tokens": 15,
+                        "cached_tokens": 0,
+                        "cache_write_tokens": 0,
+                        "output_tokens": 0
+                      },
+                      {
+                        "input_tokens": 692,
+                        "cached_tokens": 0,
+                        "cache_write_tokens": 0,
+                        "output_tokens": 0
+                      },
+                      {
+                        "input_tokens": 15,
+                        "cached_tokens": 0,
+                        "cache_write_tokens": 0,
+                        "output_tokens": 0
+                      },
+                      {
+                        "input_tokens": 692,
+                        "cached_tokens": 0,
+                        "cache_write_tokens": 0,
+                        "output_tokens": 0
+                      },
+                      {
+                        "input_tokens": 1650,
+                        "cached_tokens": 0,
+                        "cache_write_tokens": 0,
+                        "output_tokens": 0
+                      }
+                    ]
+                  },
+                  "rs_0e8268a880d540db016ae00468b260819190de98b2a33ec4f5": {
+                    "input_tokens": 2,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 516
+                  },
+                  "rs_0e8268a880d540db016ae0047c62008191939b2191a3ebb17d": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae00493954881919be3d7cb4dee24a2": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae004a50ee08191b1507d29fdaebf4c": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae004b7c7e48191a96a1af3704a3025": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae004ca43588191b961c48c6a27f75c": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae004dc8eec81919f1ec7a3294c5211": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae004ee73348191a980d32f0537747d": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae00503c65c819182eff67ec22601c8": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae00517f44c8191beeac5692d92df0d": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae0052b917481919fc3f1a51aaf8e35": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae0053d15a08191bb8fadb96fea15f8": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005510b688191bca25a973c6041de": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae00561aba88191bcf660b556e3391d": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005734f0481918c7d8ed77292ea10": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005846a948191b363e80b77466864": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005958d808191a06365c42b44e8d4": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005a717b881919b91dc4da8f31930": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005b9c1288191a1ea8205071455ad": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005ca29408191b575c5492647ac5f": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005db1e54819189eed73139623dcf": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005ecef808191bdbe1d9ba022e085": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae005ff552481919aa5ee617dd0b4cc": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae0060f4c9c8191b399d78e4389b172": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae006217ee88191a20f129eceea7765": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae00632217c81919142c245da722334": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae006466f0081919f82af81c4b9d4af": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae00659a7bc8191a538e4d9e8b2c637": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae0066bae24819195a691add8448e53": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae0067ed90881919ad6d128d444f144": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae00692ec748191a08ea906fe3c5eca": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae006a7816c819188961e843bb978f8": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 518
+                  },
+                  "rs_0e8268a880d540db016ae006b780108191af76b848bd2a902a": {
+                    "input_tokens": 0,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 462
+                  }
+                },
+                "request_fields": {
+                  "instructions": {
+                    "input_tokens": 8817,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 0
+                  },
+                  "tools": {
+                    "input_tokens": 136,
+                    "cached_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "output_tokens": 0
+                  }
+                }
+              }
+            },
+            "elapsed_s": 816.599405687
+          }
+        ],
+        "model": "gpt-6-astra",
+        "effort": {
+          "effort": "xhigh"
+        }
+      }
+    },
+    {
+      "slug": "new-stove-init0",
+      "task_id": 270,
+      "init_index": 0,
+      "design_delivered": true,
+      "complete_method_delivered": false,
+      "native_success": false,
+      "completion_proposed": null,
+      "termination": "HTTP Error 504: Gateway Timeout",
+      "elapsed_s": 2071.10049350583,
+      "gpt_calls": 2,
+      "real_jev_dispatches": 0,
+      "policy_steps": 0,
+      "source_repairs": 0,
+      "models": {
+        "gpt": {
+          "attempts": 3,
+          "unknown_usage": 2,
+          "completed_input": 9585,
+          "completed_output": 3703,
+          "relay_seconds": 2058.016737328,
+          "matched_requests": 2,
+          "undelivered_or_missing_responses": 0,
+          "request_models": [
+            "gpt-6-astra"
+          ],
+          "transport_source_hashes": [
+            "4b597e289723fadfc942d3537a6e98c20f375048f4e0a004ebd776b7c2f2a067"
+          ]
+        },
+        "jev": {
+          "attempts": 0,
+          "unknown_usage": 0,
+          "completed_input": 0,
+          "completed_output": 0,
+          "relay_seconds": 0.0,
+          "matched_requests": 0,
+          "undelivered_or_missing_responses": 0,
+          "request_models": [],
+          "transport_source_hashes": []
+        }
+      },
+      "generation": {
+        "design_elapsed_s": 260.01578061200007,
+        "method_elapsed_s": 1798.000956716,
+        "method_budget_s": 1798.0,
+        "method_request_sha256": "7ad57b29bd7c38935c2beebfed632b5a496debdd698454144570edd63025379d",
+        "method_attempts": [
+          {
+            "attempt": 1,
+            "started": 1793066054.9974425,
+            "request_sent": true,
+            "progress": {
+              "event_counts": {
+                "response.created": 1,
+                "response.in_progress": 1,
+                "keepalive": 24,
+                "response.output_item.added": 25,
+                "response.output_item.done": 25
+              },
+              "reasoning_items_completed": 25,
+              "function_items_completed": 0,
+              "function_argument_delta_characters": 0,
+              "completed_function_argument_characters": 0,
+              "function_argument_characters": 0,
+              "completed_event_seen": false,
+              "header_received_s": 0.9617865619998156,
+              "first_sse_s": 0.9662134589998459,
+              "last_sse_s": 880.1192582129997,
+              "last_reasoning_item_s": 880.1192582129997
+            },
+            "error_type": "ProTransportError",
+            "error": "Native Pro stream ended without a completed response",
+            "http_status": null,
+            "usage_unknown": true,
+            "elapsed_s": 901.4182979920001,
+            "retry_delay_s": 15
+          },
+          {
+            "attempt": 2,
+            "started": 1793066971.4159513,
+            "request_sent": true,
+            "progress": {
+              "event_counts": {
+                "response.created": 1,
+                "response.in_progress": 1,
+                "keepalive": 24,
+                "response.output_item.added": 24,
+                "response.output_item.done": 24
+              },
+              "reasoning_items_completed": 24,
+              "function_items_completed": 0,
+              "function_argument_delta_characters": 0,
+              "completed_function_argument_characters": 0,
+              "function_argument_characters": 0,
+              "completed_event_seen": false,
+              "header_received_s": 1.097853528000087,
+              "first_sse_s": 1.143064109000079,
+              "last_sse_s": 861.2588762469995,
+              "last_reasoning_item_s": 861.2588762469995
+            },
+            "error_type": "TimeoutError",
+            "error": "The read operation timed out",
+            "usage_unknown": true,
+            "elapsed_s": 881.3273566340004
+          }
+        ],
+        "model": "gpt-6-astra",
+        "effort": {
+          "effort": "xhigh"
+        }
+      }
+    }
+  ],
+  "known_source_sha256": "0fd27243bb6033a8570cabd9923f67b5819d534cbdd3a9f616dae5aebbb36b62",
+  "known_source_lines": 324,
+  "known_retention_tests": [
+    {
+      "kind": "motion_test",
+      "data": {
+        "object_rise": 5.7052287877751295e-06,
+        "hand_rise": 0.024350165109274013,
+        "attachment_error": 0.02436077720444237,
+        "local_uncertainty_sum": 0.0032751232448068354,
+        "source": "RGB-D patch"
+      },
+      "frame_id": 102
+    },
+    {
+      "kind": "motion_test",
+      "data": {
+        "object_rise": 7.3939362299907385e-06,
+        "hand_rise": 0.024339441045569843,
+        "attachment_error": 0.02436633576072089,
+        "local_uncertainty_sum": 0.0035302444814875908,
+        "source": "RGB-D patch"
+      },
+      "frame_id": 147
+    }
+  ],
+  "cost": {
+    "gpt_known_input": 128849,
+    "gpt_known_output": 61497,
+    "gpt_unknown_usage_attempts": 2,
+    "jev_known_input": 101688,
+    "jev_known_output": 12201,
+    "jev_unknown_usage_attempts": 0
+  },
+  "interpretation": "No success sample. Known task delivered a fresh method and ran real Jev but native failed. New task delivered no source and never entered execution; do not label it a Jev physical failure. Longer local request budget did not remove upstream EOF or guarantee correct grasping. Different source histories and tasks prevent controlled speed/reliability conclusions."
+}

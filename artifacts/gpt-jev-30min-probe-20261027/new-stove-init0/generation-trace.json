@@ -1,9 +1,9 @@
 {
-  "request_sha256": "7ad57b29bd7c38935c2beebfed632b5a496debdd698454144570edd63025379d",
-  "request_budget_s": 1798.0,
-  "elapsed_s": 1798.000956716,
-  "error": "Native Pro whole-call deadline exceeded",
-  "attempts": [
+  "design_elapsed_s": 260.01578061200007,
+  "method_elapsed_s": 1798.000956716,
+  "method_budget_s": 1798.0,
+  "method_request_sha256": "7ad57b29bd7c38935c2beebfed632b5a496debdd698454144570edd63025379d",
+  "method_attempts": [
     {
       "attempt": 1,
       "started": 1793066054.9974425,
@@ -63,5 +63,8 @@
       "elapsed_s": 881.3273566340004
     }
   ],
-  "scope": "Original unchanged payload; retries restart rather than resume reasoning; no source delivered."
+  "model": "gpt-6-astra",
+  "effort": {
+    "effort": "xhigh"
+  }
 }

@@ -17,6 +17,14 @@ Cross-task probe on October26 retained this runtime and all fixed inputs. Three 
 
 A later [exact-input streaming diagnosis](../../artifacts/gpt-jev-timeout-diagnosis-20261026/README.md) replayed one failed method request without a robot or queue: upstream SSE began at2.28s,22reasoning items completed through882.34s, and method argument output remained0characters before the local898sdeadline. This establishes pre-method-output reasoning/acquisition for that replay, not GPT planning inability. Old requests lacked phase traces; their precise intermediate phases and the original903sEOF remain unresolved. No model-facing file or production transport was changed.
 
+October27 thirty-minute probe: known task1335/init12 produced a fresh324-line
+method in816.74seconds and executed49real Jev/147policy steps, but nativefalse
+after two failed retention tests. New framework task270/init0 delivered a design
+but no source within1798seconds; first upstream EOF901.42s and retry881.33s are
+retained, with no Jev execution. [Exact methods, outcomes, costs and limits](../../artifacts/gpt-jev-30min-probe-20261027/README.md).
+This does not establish stable cold execution or a Jev physical failure rate on
+the unexecuted new task. Fixed model-facing knowledge was unchanged.
+
 ## Active program interface v2
 
 Complete-method request time can be selected explicitly with
@@ -38,7 +46,7 @@ Optional fresh synthesis can use the host's staged-design mode. The
 strictly typed six-field architecture, saved as a proposal without execution.
 The next request materializes the same complete four-string method described
 below, with current runtime evidence and explicit design provenance. Both calls
-count against the GPT budget; staged design/code/repair requests have900second
+count against the GPT budget; by default staged design/code/repair requests have900second
 ceilings, while visual review keeps its existing deadline. No duplicate earlier
 images are appended to the immediate same-frame materialization. This mode is
 separate from archive-assisted revision and is not combined with method reuse.

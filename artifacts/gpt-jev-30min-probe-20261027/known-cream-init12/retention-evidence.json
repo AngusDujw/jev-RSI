@@ -1,0 +1,29 @@
+{
+  "program_reason": "No retention; no independently localized supported regrasp remains.",
+  "program_phase": "lifting",
+  "motion_tests": [
+    {
+      "kind": "motion_test",
+      "data": {
+        "object_rise": 5.7052287877751295e-06,
+        "hand_rise": 0.024350165109274013,
+        "attachment_error": 0.02436077720444237,
+        "local_uncertainty_sum": 0.0032751232448068354,
+        "source": "RGB-D patch"
+      },
+      "frame_id": 102
+    },
+    {
+      "kind": "motion_test",
+      "data": {
+        "object_rise": 7.3939362299907385e-06,
+        "hand_rise": 0.024339441045569843,
+        "attachment_error": 0.02436633576072089,
+        "local_uncertainty_sum": 0.0035302444814875908,
+        "source": "RGB-D patch"
+      },
+      "frame_id": 147
+    }
+  ],
+  "scope": "Method-reported public RGB-D patch estimates, not hidden simulator truth. Native final score independently false."
+}

@@ -1,0 +1,114 @@
+{
+  "termination": "method_incomplete",
+  "native_success": false,
+  "result": {
+    "completion_proposed": false,
+    "evidence": {
+      "reason": "No retention; no independently localized supported regrasp remains.",
+      "phase": "lifting",
+      "checks": [
+        {
+          "kind": "initial_geometry",
+          "data": {
+            "roles": {
+              "item": "blue rectangular cream cheese package",
+              "vessel": "round patterned bowl"
+            },
+            "lengths": [
+              0.04039151480878834,
+              0.07974334053721052
+            ],
+            "height": 0.018111977547074415,
+            "radius": 0.052156542436365055,
+            "rim_z": 0.947346662470686,
+            "uncertainty_m": 0.001
+          },
+          "frame_id": 0
+        },
+        {
+          "kind": "grasp_candidate",
+          "data": {
+            "nominal_opening_proxy": 0.06244541368013859,
+            "width": 0.04095716583685852,
+            "contact_interval": [
+              0.9151059395188754,
+              0.9236732581547477
+            ],
+            "side_overlap": 0.003382628183809105,
+            "finger_floor": -0.013446263737223442
+          },
+          "frame_id": 0
+        },
+        {
+          "kind": "visible_jaw_gap",
+          "data": {
+            "m": 0.07986454688153809
+          },
+          "frame_id": 87
+        },
+        {
+          "kind": "motion_test",
+          "data": {
+            "object_rise": 5.7052287877751295e-06,
+            "hand_rise": 0.024350165109274013,
+            "attachment_error": 0.02436077720444237,
+            "local_uncertainty_sum": 0.0032751232448068354,
+            "source": "RGB-D patch"
+          },
+          "frame_id": 102
+        },
+        {
+          "kind": "grasp_candidate",
+          "data": {
+            "nominal_opening_proxy": -0.00240643092974761,
+            "width": 0.04237240639204226,
+            "contact_interval": [
+              0.9150635799076876,
+              0.9236366344536666
+            ],
+            "side_overlap": 0.003374541195622056,
+            "finger_floor": -0.013425243358407606
+          },
+          "frame_id": 105
+        },
+        {
+          "kind": "visible_jaw_gap",
+          "data": {
+            "m": 0.07870838582252483
+          },
+          "frame_id": 132
+        },
+        {
+          "kind": "motion_test",
+          "data": {
+            "object_rise": 7.3939362299907385e-06,
+            "hand_rise": 0.024339441045569843,
+            "attachment_error": 0.02436633576072089,
+            "local_uncertainty_sum": 0.0035302444814875908,
+            "source": "RGB-D patch"
+          },
+          "frame_id": 147
+        },
+        {
+          "kind": "incomplete",
+          "data": "No retention; no independently localized supported regrasp remains.",
+          "frame_id": 147
+        }
+      ],
+      "limitations": "Heuristic measurement uncertainty and bounded observed stability, not collision certification or official task success."
+    }
+  },
+  "native_steps": 147,
+  "settling_steps": 10,
+  "jev_calls": 49,
+  "gpt_calls": 12,
+  "rpc_calls": 144,
+  "elapsed_s": 2296.726067034062,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "0fd27243bb6033a8570cabd9923f67b5819d534cbdd3a9f616dae5aebbb36b62"
+    }
+  ],
+  "last_method_error": null
+}
