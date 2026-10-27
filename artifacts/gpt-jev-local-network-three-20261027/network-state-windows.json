@@ -1,0 +1,20 @@
+[
+  {
+    "case": "r2",
+    "since": "2026-10-27 15:34:16 UTC",
+    "until": "2026-10-27 15:36:16 UTC",
+    "journal_exit_code": 0,
+    "matching_network_state_events": [],
+    "journal_lines": 0,
+    "journal_permission_warning": false
+  },
+  {
+    "case": "r3",
+    "since": "2026-10-27 15:40:40 UTC",
+    "until": "2026-10-27 15:42:40 UTC",
+    "journal_exit_code": 0,
+    "matching_network_state_events": [],
+    "journal_lines": 0,
+    "journal_permission_warning": false
+  }
+]

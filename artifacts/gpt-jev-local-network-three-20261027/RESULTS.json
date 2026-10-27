@@ -1,0 +1,119 @@
+{
+  "cases": [
+    {
+      "case": "r1",
+      "model_seconds": 901.5178138209999,
+      "first_sse_seconds": 1.3636850769999,
+      "first_method_arguments_seconds": 822.9959529179998,
+      "method_argument_characters": 12125,
+      "completed": false,
+      "http_truncated": true,
+      "model_error": "ProTransportError",
+      "explicit_local_deadline": false,
+      "control_http200": 46,
+      "control_attempts": 46,
+      "control_errors": [],
+      "paired_control_anomaly_within60s": false,
+      "paired_control_time_differences_s": [],
+      "same_proxy_chain_verified": true,
+      "control_same_socket": true,
+      "control_rtt_median_s": 0.11491331999991417,
+      "control_final_after_model_s": 0.11551379699994868,
+      "usage_unknown": true,
+      "control_closed": true,
+      "control_thread_exited": true,
+      "last_applied_socket_timeout_s": 1199.577612253,
+      "source_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee"
+    },
+    {
+      "case": "r2",
+      "model_seconds": 443.6354221290003,
+      "first_sse_seconds": 1.3598649919999843,
+      "first_method_arguments_seconds": null,
+      "method_argument_characters": 0,
+      "completed": false,
+      "http_truncated": true,
+      "model_error": "ProTransportError",
+      "explicit_local_deadline": false,
+      "control_http200": 21,
+      "control_attempts": 22,
+      "control_errors": [
+        {
+          "elapsed_s": 431.1452306170004,
+          "type": "TimeoutError",
+          "message": "The read operation timed out"
+        }
+      ],
+      "paired_control_anomaly_within60s": true,
+      "paired_control_time_differences_s": [
+        12.720139311999901
+      ],
+      "same_proxy_chain_verified": true,
+      "control_same_socket": true,
+      "control_rtt_median_s": 0.11727096599997822,
+      "control_final_after_model_s": -40.72864901000003,
+      "usage_unknown": true,
+      "control_closed": true,
+      "control_thread_exited": true,
+      "last_applied_socket_timeout_s": 1689.908733643,
+      "source_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee"
+    },
+    {
+      "case": "r3",
+      "model_seconds": 387.98101983100014,
+      "first_sse_seconds": 1.0866763660001197,
+      "first_method_arguments_seconds": null,
+      "method_argument_characters": 0,
+      "completed": false,
+      "http_truncated": true,
+      "model_error": "ProTransportError",
+      "explicit_local_deadline": false,
+      "control_http200": 18,
+      "control_attempts": 19,
+      "control_errors": [
+        {
+          "elapsed_s": 371.248681647,
+          "type": "TimeoutError",
+          "message": "The read operation timed out"
+        }
+      ],
+      "paired_control_anomaly_within60s": true,
+      "paired_control_time_differences_s": [
+        17.25504883199983
+      ],
+      "same_proxy_chain_verified": true,
+      "control_same_socket": true,
+      "control_rtt_median_s": 0.12813230550000299,
+      "control_final_after_model_s": -45.26403064099986,
+      "usage_unknown": true,
+      "control_closed": true,
+      "control_thread_exited": true,
+      "last_applied_socket_timeout_s": 1752.026420526,
+      "source_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee"
+    }
+  ],
+  "trials": 3,
+  "model_requests": 3,
+  "automatic_retries": 0,
+  "response_completions": 0,
+  "observed_http_transport_interruptions": 3,
+  "paired_general_connectivity_anomaly_trials": 2,
+  "paired_general_connectivity_anomaly_fraction": 0.6666666666666666,
+  "truncated_with_normal_control_trials": 1,
+  "public_control": {
+    "attempts": 87,
+    "http200": 85,
+    "read_timeouts": 2,
+    "probe_failure_fraction": 0.022988505747126436,
+    "successful_request_rtt_median_s": 0.11769514599996,
+    "successful_request_rtt_max_s": 0.5167624119999346
+  },
+  "network_wall_time_fraction": null,
+  "network_wall_time_fraction_note": "Client waiting time cannot be uniquely decomposed into network delay versus service queue/inference.2/3is the observed overlap frequency, not a proven local-network causal fraction or time percentage.",
+  "known_usage_attempts": 0,
+  "unknown_usage_attempts": 3,
+  "native_success": null,
+  "sum_model_seconds": 1733.1342557810003,
+  "batch_wall_seconds": 1734.240489,
+  "interpretation": "Mixed failure modes: r2/r3show general-connectivity read timeouts immediately before model truncation; r1has a near902-second incomplete model response while the simultaneous same-proxy same-domain control stays healthy. All three failures are retained; normal completion latency cannot be estimated from this batch."
+}

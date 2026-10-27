@@ -1,0 +1,14 @@
+{
+  "three_predeclared_cases_all_preserved": true,
+  "same_request_hash_all_three": true,
+  "same_proxy_chain_each_control": true,
+  "original_transport_source_unchanged": true,
+  "all_three_incomplete_reads_recorded": true,
+  "two_public_read_timeouts_observed": true,
+  "no_automatic_model_retry": true,
+  "unknown_usage_attempts": 3,
+  "no_robot_calls": true,
+  "fixture_removed": true,
+  "all_owned_processes_and_connections_closed": true,
+  "time_fraction_not_inferred": true
+}

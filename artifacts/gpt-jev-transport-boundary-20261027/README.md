@@ -42,3 +42,7 @@ HTTP1失败尝试用量未知，不计为零；本轮2次推理共1已知+1未�
 - [相同代理路径核对](proxy-http2-control-flows.json)
 - [诊断生成方法](curl-http2/METHOD.md)、[原样源](curl-http2/method.py)，未执行。
 - 原始元数据保留在项目code/runs/2026-10-27-gpt-jev-transport-boundary/。未采集推理正文、密钥或代理secret；curl请求和凭据通过memfd，临时夹具已删除。
+
+## 后续本地配对统计
+
+[EXP022](../gpt-jev-local-network-three-20261027/README.md)增加每条模型流同时运行的同代理/同域公开TLS对照：三次模型截断中两次伴随公开读取超时，分别早12.72/17.26秒；另一次902秒截断时对照正常。新证据说明间歇连通性异常与长流截断都需考虑，不能将此前全部失败解释为单一服务时限；原始两臂结果与未知项保持不变。

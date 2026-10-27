@@ -1,0 +1,10 @@
+{
+  "diagnostic_parent_alive": false,
+  "all_control_threads_exited": true,
+  "all_control_connections_closed": true,
+  "fixture_auth_deleted": true,
+  "production_code_changed": false,
+  "global_proxy_changed": false,
+  "robot_or_jev_calls": 0,
+  "proxy_records_for_own_ports_remaining": []
+}

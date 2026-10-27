@@ -1,0 +1,29 @@
+{
+  "pid": 47669,
+  "started_utc": "2026-10-27T15:13:03.275759+00:00",
+  "cases": {
+    "r1": {
+      "started_utc": "2026-10-27T15:13:03.508911+00:00",
+      "status": "finished",
+      "outcome": "failed",
+      "elapsed_s": 901.750995461,
+      "finished_utc": "2026-10-27T15:28:05.144912+00:00"
+    },
+    "r2": {
+      "started_utc": "2026-10-27T15:28:05.375025+00:00",
+      "status": "finished",
+      "outcome": "failed",
+      "elapsed_s": 443.8653699290003,
+      "finished_utc": "2026-10-27T15:35:29.010741+00:00"
+    },
+    "r3": {
+      "started_utc": "2026-10-27T15:35:29.534670+00:00",
+      "status": "finished",
+      "outcome": "failed",
+      "elapsed_s": 388.50373047899984,
+      "finished_utc": "2026-10-27T15:41:57.516029+00:00"
+    }
+  },
+  "all_cases_finished": true,
+  "finished_utc": "2026-10-27T15:41:57.516248+00:00"
+}
