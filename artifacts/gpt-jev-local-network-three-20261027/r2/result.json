@@ -1,0 +1,119 @@
+{
+  "pid": 47669,
+  "case": "r2",
+  "started_utc": "2026-10-27T15:28:05.375025+00:00",
+  "source_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee",
+  "http": {
+    "status": 200,
+    "version": 11,
+    "chunked": true,
+    "content_length": null,
+    "header_latency_s": 1.3575220980001177,
+    "headers": {
+      "date": "Tue, 27 Oct 2026 15:28:06 GMT",
+      "transfer-encoding": "chunked",
+      "connection": "close",
+      "server": "cloudflare",
+      "cf-ray": "a512ba82ae1c62d0-NRT"
+    },
+    "initial_socket_timeout_s": 900.0,
+    "socket_local_port": 53292,
+    "socket_peer": [
+      "127.0.0.1",
+      7897
+    ],
+    "tls_version": "TLSv1.3",
+    "certificate_issuer": [
+      [
+        "countryName",
+        "US"
+      ],
+      [
+        "organizationName",
+        "Google Trust Services"
+      ],
+      [
+        "commonName",
+        "WE1"
+      ]
+    ],
+    "chunks": 100,
+    "low_level_errors": [
+      {
+        "where": "chunk_size",
+        "type": "ValueError",
+        "elapsed_s": 443.85913640900026
+      },
+      {
+        "where": "chunk_body_or_boundary",
+        "type": "IncompleteRead",
+        "elapsed_s": 443.8595097880002,
+        "partial_bytes": 0
+      }
+    ],
+    "reader_returned_eof": true,
+    "response_isclosed": true,
+    "chunk_left": 0,
+    "remaining_length": null
+  },
+  "progress": {
+    "event_counts": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 9,
+      "response.output_item.added": 12,
+      "response.output_item.done": 12
+    },
+    "received_bytes": 275746,
+    "reasoning_items": 12,
+    "argument_chars": 0,
+    "completed": false,
+    "done_marker": false,
+    "last_received_s": 410.32122656399997,
+    "first_applied_read_timeout_s": 2098.640450065,
+    "last_applied_read_timeout_s": 1689.908733643,
+    "max_received_gap_s": 5.104130808000264,
+    "first_sse_s": 1.5898127919999752,
+    "last_sse_s": 385.3156483020002,
+    "last_reasoning_s": 385.3156483020002
+  },
+  "whole_deadline_s": 2100,
+  "automatic_retries": 0,
+  "elapsed_s": 443.8653997370002,
+  "updated_utc": "2026-10-27T15:35:29.010748+00:00",
+  "model_start_s": 0.22994779999999082,
+  "header_received_s": 1.5885133120000319,
+  "proxy_routes": [
+    {
+      "role": "model",
+      "source_port": "53292",
+      "host": "chatgpt.com",
+      "chain_hashes": [
+        "49618769b2469314",
+        "7d6c0940067f8441",
+        "50a4122943273ad2"
+      ],
+      "rule": "DomainSuffix"
+    },
+    {
+      "role": "public-control",
+      "source_port": "53286",
+      "host": "chatgpt.com",
+      "chain_hashes": [
+        "49618769b2469314",
+        "7d6c0940067f8441",
+        "50a4122943273ad2"
+      ],
+      "rule": "DomainSuffix"
+    }
+  ],
+  "outcome": "failed",
+  "error_type": "ProTransportError",
+  "error": "Native Pro stream ended without a completed response",
+  "http_error_status": null,
+  "model_return_s": 443.8653699290003,
+  "request_sent": true,
+  "usage_unknown": true,
+  "control_thread_exited": true,
+  "finished_utc": "2026-10-27T15:35:29.010741+00:00"
+}

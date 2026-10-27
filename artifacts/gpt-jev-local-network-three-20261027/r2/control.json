@@ -1,0 +1,184 @@
+{
+  "requests": [
+    {
+      "elapsed_s": 0.22939908300031675,
+      "latency_s": 0.22401382399993963,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 20.349184247000267,
+      "latency_s": 0.1194225379999807,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 40.46064201900026,
+      "latency_s": 0.11106835999999021,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 60.57436916400002,
+      "latency_s": 0.11330404699992869,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 80.68814296600021,
+      "latency_s": 0.11343923000003997,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 100.81026682500033,
+      "latency_s": 0.1217688939996151,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 120.93365730699998,
+      "latency_s": 0.1229596009998204,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 141.0551878440001,
+      "latency_s": 0.12110105800002202,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 161.17136462300004,
+      "latency_s": 0.11559172399984163,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 181.28409768500023,
+      "latency_s": 0.11234313900013149,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 201.778776871,
+      "latency_s": 0.49410805800016533,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 221.91856071600023,
+      "latency_s": 0.13940509599979123,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 242.0396006570004,
+      "latency_s": 0.1206764009998551,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 262.20297638500006,
+      "latency_s": 0.16298453499985044,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 282.3206390080004,
+      "latency_s": 0.11727096599997822,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 302.43378730700033,
+      "latency_s": 0.11266833800027598,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 322.67222855299997,
+      "latency_s": 0.23799493299975438,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 342.787685712,
+      "latency_s": 0.1147620370002187,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 362.902826345,
+      "latency_s": 0.11463839999987613,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 383.02055654900005,
+      "latency_s": 0.11719714600030784,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    },
+    {
+      "elapsed_s": 403.13672091900025,
+      "latency_s": 0.11577397800010658,
+      "status": 200,
+      "bytes": 4357,
+      "same_socket": true,
+      "peer_will_close": false
+    }
+  ],
+  "started_utc": "2026-10-27T15:28:05.145357+00:00",
+  "errors": [
+    {
+      "elapsed_s": 431.1452306170004,
+      "type": "TimeoutError",
+      "message": "The read operation timed out"
+    }
+  ],
+  "closed": true,
+  "socket_local_port": 53286,
+  "elapsed_s": 431.145319665,
+  "outcome": "control_error"
+}
