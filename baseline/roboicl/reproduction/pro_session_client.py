@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "code/scripts"))
 from gpt_jev_review_contract import validate_value
 from gpt_jev_program_worker import validate_source
+from gpt_jev_contract import english
 
 
 def atomic(path, value):
@@ -35,11 +36,6 @@ def atomic(path, value):
 def digest(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True,
         separators=(",", ":"), allow_nan=False).encode()).hexdigest()
-
-
-def english(value):
-    if not json.dumps(value, ensure_ascii=False).isascii():
-        raise ValueError("Session model input and output must be English ASCII")
 
 
 def session_config():

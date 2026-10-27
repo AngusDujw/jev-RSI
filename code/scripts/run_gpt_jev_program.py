@@ -77,6 +77,9 @@ def post(url, payload, path, timeout=1800):
                 save(path.with_suffix(".transport.json"), dict(request_id=headers["X-Request-ID"],
                     reconnects=reconnects, elapsed_s=time.monotonic()-started))
                 try:
+                    if active is request:
+                        request.add_header("X-Model-Request-Timeout-Seconds",
+                            str(max(.1, min(3600 if asynchronous else 1800, remaining-2))))
                     with opener.open(active, timeout=min(30, remaining) if asynchronous else remaining) as response:
                         result = json.load(response)
                         pending = response.status == 202
