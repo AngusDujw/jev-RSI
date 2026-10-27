@@ -1,0 +1,324 @@
+{
+  "termination": "completion_proposed",
+  "native_success": true,
+  "result": {
+    "completion_proposed": true,
+    "evidence": [
+      {
+        "review": "Interpret the active runtime user instruction, identifying its movable obje",
+        "frame": 0,
+        "measurement_errors": []
+      },
+      {
+        "height_m": 0.018054287488865062,
+        "width_along_opening_m": 0.04160262912438674,
+        "qpos_opening_coordinate_m": 0.07744558094349585,
+        "receiver_radius_m": 0.053118414115005286,
+        "object_half_diagonal_m": 0.045749911745632844,
+        "margin_m": 0.004,
+        "grasp_pad_z_m": 0.9174077709143281,
+        "finger_low_relative_pad_m": -0.013446263737223442
+      },
+      {
+        "patch_frame": 0,
+        "features": 72
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 0,
+        "measurement_errors": []
+      },
+      {
+        "motion": "above source at conservative height",
+        "status": "reached",
+        "position_error_m": 0.0014063547916201167,
+        "lease_calls": 21
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 63,
+        "measurement_errors": []
+      },
+      {
+        "motion": "open-finger pregrasp",
+        "status": "reached",
+        "position_error_m": 0.001656761881802121,
+        "lease_calls": 16
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 111,
+        "measurement_errors": [
+          {
+            "name": "r5",
+            "error": "Invalid or discontinuous surface depth"
+          }
+        ]
+      },
+      {
+        "motion": "final side-engagement approach",
+        "status": "reached",
+        "position_error_m": 0.001959644340152668,
+        "lease_calls": 29
+      },
+      {
+        "transition": "opposing-finger closure",
+        "last_status": "reached",
+        "frame": 207
+      },
+      {
+        "review": "Observe the actual closure effect. contact=candidate means the intended obj",
+        "frame": 207,
+        "measurement_errors": []
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 207,
+        "measurement_errors": []
+      },
+      {
+        "motion": "small observation-producing retention lift",
+        "status": "reached",
+        "position_error_m": 0.001397786211791264,
+        "lease_calls": 4
+      },
+      {
+        "attachment_error_m": 0.00029809974684335676,
+        "threshold_m": 0.008162277660168379,
+        "hand_motion_m": [
+          -0.0001479676692041354,
+          0.0008012126246500217,
+          0.033821575911933466
+        ],
+        "observed_object_motion_m": [
+          -0.00012730475227341193,
+          0.0010062662625047458,
+          0.03382244129440626
+        ],
+        "probe": true
+      },
+      {
+        "attachment_error_m": 2.7809732887839817e-17,
+        "threshold_m": 0.008324555320336758,
+        "hand_motion_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "observed_object_motion_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "probe": false
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 219,
+        "measurement_errors": [
+          {
+            "name": "bowl_visible_front_rim",
+            "error": "Invalid or discontinuous surface depth"
+          }
+        ]
+      },
+      {
+        "motion": "raise load above receiver lip",
+        "status": "reached",
+        "position_error_m": 0.001969283082891044,
+        "lease_calls": 6
+      },
+      {
+        "attachment_error_m": 0.0001844409729212562,
+        "threshold_m": 0.00847890245052378,
+        "hand_motion_m": [
+          -0.001130736900277235,
+          0.0008506767038952145,
+          0.06857465418506148
+        ],
+        "observed_object_motion_m": [
+          -0.001101460113304767,
+          0.0008172116539629237,
+          0.06857681968932483
+        ],
+        "probe": false
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 237,
+        "measurement_errors": [
+          {
+            "name": "r5",
+            "error": "Invalid or discontinuous surface depth"
+          }
+        ]
+      },
+      {
+        "motion": "transfer above receiver",
+        "status": "reached",
+        "position_error_m": 0.0014154175592888682,
+        "lease_calls": 12
+      },
+      {
+        "attachment_error_m": 0.00016788468723217292,
+        "threshold_m": 0.008780726405493156,
+        "hand_motion_m": [
+          -0.03736090922802733,
+          -0.14088396476067422,
+          0.0005863590502217519
+        ],
+        "observed_object_motion_m": [
+          -0.037290371793332375,
+          -0.1408629332736645,
+          0.0005827388376868914
+        ],
+        "probe": false
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 273,
+        "measurement_errors": [
+          {
+            "name": "r5",
+            "error": "Invalid or discontinuous surface depth"
+          }
+        ]
+      },
+      {
+        "motion": "low release hover over opening",
+        "status": "reached",
+        "position_error_m": 0.0016021215152854714,
+        "lease_calls": 5
+      },
+      {
+        "attachment_error_m": 4.4491927077433354e-05,
+        "threshold_m": 0.009069652890601746,
+        "hand_motion_m": [
+          -6.74587930232784e-06,
+          -0.000906148368017271,
+          -0.047865240660252883
+        ],
+        "observed_object_motion_m": [
+          1.292431288607565e-05,
+          -0.000908401256597479,
+          -0.04786592186370475
+        ],
+        "probe": false
+      },
+      {
+        "release_footprint_radius_m": 0.04842430912124539,
+        "opening_radius_m": 0.053118414115005286,
+        "bottom_min_z_m": 0.9550415853651292
+      },
+      {
+        "attachment_error_m": 1.2509268882771003e-17,
+        "threshold_m": 0.009211102550927979,
+        "hand_motion_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "observed_object_motion_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "probe": false
+      },
+      {
+        "transition": "release above receiver",
+        "last_status": "reached",
+        "frame": 297
+      },
+      {
+        "review": "Assess the proposed local motion, not the entire later task route. external",
+        "frame": 297,
+        "measurement_errors": []
+      },
+      {
+        "motion": "withdraw for independent placement view",
+        "status": "reached",
+        "position_error_m": 0.0016373282138916793,
+        "lease_calls": 6
+      },
+      {
+        "registration_unknown": "No sufficient nondegenerate rigid feature consensus",
+        "frame": 315
+      },
+      {
+        "review": "Registration recovery: independently identify the SAME physical l0,l1,l2 te",
+        "frame": 315,
+        "measurement_errors": []
+      },
+      {
+        "landmark_registration_error_m": 0.0008188869347099965,
+        "frame": 315
+      },
+      {
+        "patch_frame": 315,
+        "features": 213
+      },
+      {
+        "transition": "unloaded settling observation interval",
+        "last_status": "reached",
+        "frame": 321
+      },
+      {
+        "registration_unknown": "No sufficient nondegenerate rigid feature consensus",
+        "frame": 321
+      },
+      {
+        "review": "Registration recovery: independently identify the SAME physical l0,l1,l2 te",
+        "frame": 321,
+        "measurement_errors": []
+      },
+      {
+        "landmark_registration_error_m": 0.000867127457741694,
+        "frame": 321
+      },
+      {
+        "patch_frame": 321,
+        "features": 225
+      },
+      {
+        "post_release_drift_m": 0.00012127897929089494,
+        "stability_threshold_m": 0.008,
+        "frames": [
+          315,
+          321
+        ]
+      },
+      {
+        "review": "Assess the actual runtime goal after release and withdrawal. identity=confi",
+        "frame": 321,
+        "measurement_errors": []
+      },
+      {
+        "final_relation": {
+          "identity": "confirmed",
+          "relation": "inside_resting",
+          "stability": "resting"
+        },
+        "footprint_radius_m": 0.04645456420658763,
+        "current_opening_radius_m": 0.05314321482501814,
+        "inferred_bottom_z_m": 0.9287070011806503,
+        "current_rim_z_m": 0.9487519414020317,
+        "uncertainty_m": 0.002,
+        "completion_is_proposal_not_official_success": true
+      }
+    ]
+  },
+  "native_steps": 321,
+  "settling_steps": 10,
+  "jev_calls": 107,
+  "gpt_calls": 14,
+  "rpc_calls": 127,
+  "elapsed_s": 2585.3981145480648,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54"
+    }
+  ],
+  "last_method_error": null
+}

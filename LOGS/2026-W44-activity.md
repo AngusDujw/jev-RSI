@@ -58,3 +58,9 @@
 - 【Agent】【2026-10-27 11:57】[run] 历史原配置一例已由前台父进程启动：a8e6ea72、task1335/init12/seed0/GPU4，单阶段首次完整生成1800秒、无旧源/设计/反馈、0源码修补。原桥接源254af加内存只读SSE观察，observer离线wire/response等价；父进程同时管理桥接、反向隧道与SSH执行，健康检查后准入。
 - 【User】【2026-10-27 12:00】[intent] 执行每日北京时间12:00项目进度SSH同步：审阅代码、配置和进度变更，排除缓存、工作树与大型产物，不启动实验或模型API。
 - 【Agent】【2026-10-27 12:00】[op] 会话daily-progress-sync，轮次20261027-01：main与SSH远程main起点同dd200a48，暂存区为空；只同步新增11:57历史原配置复现启动流水及本轮说明，仍标为运行中，不将其视为成功结果。已有两例30分钟结果报告已上传，不动运行中输出；缓存/浏览器记录/工作树/独立基线仓库排除。CIRCLE-1两主题及generic-vision的CIRCLE-3建议按已声明案例与预算收口，由用户决定结论或挂起，不扩大实验。
+- 【Agent】【2026-10-27 12:01】[run] 历史原版一阶段case实际准入，首次请求为submit_method而非design，流已建立；同task/init/seed/GPU4、24GPT/200Jev/600步/7200秒，首次单请求30分钟。外层时间线仍有CIRCLE-1/3，本轮只按已声明一例核验，保留结果不扩任务；不改原成功代码或模型输入。
+- 【Agent】【2026-10-27 12:04】[result] 实际初始请求核对：与历史成功记录的完整instructions、模型/强度、工具schema、任务语言、相机标定、两张新渲染图像哈希全部相同；未提供previous_method/design，checkpoint为空。公开robot状态仅budgets.wall_seconds_remaining因启动耗时不同，其他值一致；无模型或物理诊断追加调用。
+- 【Agent】【2026-10-27 12:26】[run] Historical cold reproduction: fresh unmodified method generated in about721sec; actual Jev execution reached measured retention lift and receiver-height raise; terminal outcome pending.
+- 【Agent】【2026-10-27 12:40】[op] 新建实验块 EXP-2026W44-014：按历史原配置从零生成完整方法并通过真实Jev复现任务1335/init12成功，禁止旧源输入和现场修复  ↪ `EXP-2026W44-014`
+- 【Agent】【2026-10-27 12:42】[result] EXP-2026W44-014 finished: native/proposal true; new cold source6ddc1bca,0repairs,721.191s generation,2585.398s episode,14GPT/107realJev/321policy steps; audit passed,1GPT+1Jev unknown usages preserved, owned processes and both7921ports closed. Archived exact method/protocol and result evidence.
+- 【Agent】【2026-10-27 12:42】[op] Archived EXP014 result package, unchanged generated source and Jev protocol; strict weekly protocol lint passed, source hash/JSON checks passed. Retained circle warnings with one-case convergence; no production changes, no temporary test script.

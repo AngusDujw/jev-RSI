@@ -1,0 +1,7 @@
+{
+  "parent_pid_alive": false,
+  "bridge_pid_alive": false,
+  "tunnel_pid_alive": false,
+  "case_ssh_pid_alive": false,
+  "port7921_open": false
+}

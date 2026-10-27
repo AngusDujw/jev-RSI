@@ -1,0 +1,17 @@
+{
+  "instructions_identical": true,
+  "model_and_effort_identical": true,
+  "tool_schema_identical": true,
+  "task_language_identical": true,
+  "public_camera_calibration_identical": true,
+  "initial_image_hashes_identical": true,
+  "previous_method_absent": true,
+  "method_design_absent": true,
+  "checkpoints_empty": true,
+  "state_keys_differing": [
+    "robot"
+  ],
+  "robot_differences": [
+    "robot.budgets.wall_seconds_remaining"
+  ]
+}

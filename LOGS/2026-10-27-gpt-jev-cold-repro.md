@@ -60,4 +60,4 @@ Predeclared before live inference or robot execution.
 
 ## Results
 
-Pending actual execution; no reproduction success claimed.
+Completed: terminal native_success=true and completion_proposed=true; fresh source6ddc1bca…,0source repairs,107real Jev calls,321policy steps,14GPT calls,721.191s generation and2585.398s episode. Full evidence: [report](../artifacts/gpt-jev-cold-repro-20261027/README.md). Unknown usage retained for1GPT and1Jev attempt. This one same-task/init replication does not establish general reliability.

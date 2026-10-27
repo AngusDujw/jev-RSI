@@ -1,0 +1,13 @@
+{
+  "commit": "a8e6ea72ef7a6d21dea4215de79c3cc3b09b8739",
+  "status": "",
+  "implementation": {
+    "run_gpt_jev_program.py": "f79845ccf294749fee5e2cb281fc6b65e7326a5b69433a25c02e63848a145576",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "prompt_sha256": "27237a3a47d1908e0d72ff9343d6810159d23554d0e42cc8dcc10a12df5369cb",
+  "manual_sha256": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e"
+}

@@ -1,0 +1,56 @@
+{
+  "experiment": "EXP-2026W44-014",
+  "condition": "independent one-stage cold regeneration",
+  "task": 1335,
+  "init": 12,
+  "seed": 0,
+  "native_success": true,
+  "completion_proposed": true,
+  "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54",
+  "source_repairs": 0,
+  "method_generation_seconds": 721.1909006419992,
+  "episode_seconds": 2585.3981145480648,
+  "gpt_calls": 14,
+  "strict_reviews": 13,
+  "jev_calls": 107,
+  "native_policy_steps": 321,
+  "settling_steps": 10,
+  "models": {
+    "gpt": {
+      "attempts": 15,
+      "unknown_usage": 1,
+      "completed_input": 146835,
+      "completed_output": 55469,
+      "relay_seconds": 2314.7552608339993,
+      "matched_requests": 14,
+      "undelivered_or_missing_responses": 0,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": []
+    },
+    "jev": {
+      "attempts": 108,
+      "unknown_usage": 1,
+      "completed_input": 224323,
+      "completed_output": 26643,
+      "relay_seconds": 157.96454251998875,
+      "matched_requests": 107,
+      "undelivered_or_missing_responses": 0,
+      "request_models": [
+        "jev-1.13.0"
+      ],
+      "transport_source_hashes": []
+    }
+  },
+  "generation_usage": {
+    "calls": 1,
+    "upstream_attempts": 1,
+    "completed_returns": 1,
+    "input": 8517,
+    "output": 18126,
+    "unknown_usage": 0
+  },
+  "source_differs_from_historical": true,
+  "scope": "One same-task, same-initial-state stochastic replication. Does not establish cross-task reliability or token/latency savings."
+}

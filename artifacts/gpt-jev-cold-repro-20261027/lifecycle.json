@@ -1,0 +1,18 @@
+{
+  "started_utc": "2026-10-27T03:56:59.343723+00:00",
+  "historical_commit": "a8e6ea72ef7a6d21dea4215de79c3cc3b09b8739",
+  "parent_pid": 398941,
+  "bridge_source_sha256": "254afc9556dd58422ed0912fc3dc78af94f3a3349e8f39adf03da4f2d1aa8687",
+  "observer_source_sha256": "0ccd10cccb04b3025f58c8a29116ae28109c0a6508f3827d5b302e4cd1f96365",
+  "bridge_pid": 398942,
+  "tunnel_pid": 398966,
+  "loopback_ready_before_case": true,
+  "case_ssh_pid": 399054,
+  "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-cold-repro/init12 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 1335 --init-index 12 --seed 0 --gpu 4 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 > code/runs/2026-10-27-gpt-jev-cold-repro/init12.console.log 2>&1",
+  "case_exit_code": 0,
+  "ssh_stdout": "",
+  "ssh_stderr": "",
+  "bridge_exit_code": -15,
+  "tunnel_exit_code": 0,
+  "finished_utc": "2026-10-27T04:40:11.829311+00:00"
+}

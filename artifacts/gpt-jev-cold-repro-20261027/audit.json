@@ -1,0 +1,76 @@
+{
+  "native_success": true,
+  "termination": "completion_proposed",
+  "gpt_calls": 14,
+  "jev_calls": 107,
+  "native_steps": 321,
+  "elapsed_s": 2585.3981145480648,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54"
+    }
+  ],
+  "completion_proposed": true,
+  "program_result_contract_valid": true,
+  "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+  "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+  "dispatches": 107,
+  "models": {
+    "gpt": {
+      "attempts": 15,
+      "unknown_usage": 1,
+      "completed_input": 146835,
+      "completed_output": 55469,
+      "relay_seconds": 2314.7552608339993,
+      "matched_requests": 14,
+      "undelivered_or_missing_responses": 0,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": []
+    },
+    "jev": {
+      "attempts": 108,
+      "unknown_usage": 1,
+      "completed_input": 224323,
+      "completed_output": 26643,
+      "relay_seconds": 157.96454251998875,
+      "matched_requests": 107,
+      "undelivered_or_missing_responses": 0,
+      "request_models": [
+        "jev-1.13.0"
+      ],
+      "transport_source_hashes": []
+    }
+  },
+  "strict_reviews_validated": 13,
+  "strict_designs_validated": 0,
+  "legacy_reviews_json_decoded": 0,
+  "source_origins": [
+    {
+      "number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54",
+      "origin": "actual model output or assembled model patch"
+    }
+  ],
+  "gpt_cost_by_purpose": {
+    "submit_method": {
+      "calls": 1,
+      "upstream_attempts": 1,
+      "completed_returns": 1,
+      "input": 8517,
+      "output": 18126,
+      "unknown_usage": 0
+    },
+    "submit_review": {
+      "calls": 13,
+      "upstream_attempts": 14,
+      "completed_returns": 13,
+      "input": 138318,
+      "output": 37343,
+      "unknown_usage": 1
+    }
+  },
+  "usage_scope": "Completed token totals cover attempts with both components known; unknown attempts are additional"
+}
