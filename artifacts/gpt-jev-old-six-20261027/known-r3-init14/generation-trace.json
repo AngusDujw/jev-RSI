@@ -1,0 +1,63 @@
+{
+  "request_sha256": "eb2280b4ee2a2d2a735919e4c56907619c7b111e72fb9ddb56ead3a277e85fc1",
+  "relay_seconds": 1798.0016510459973,
+  "request_budget_s": 1798.0,
+  "attempts": [
+    {
+      "attempt": 1,
+      "elapsed_s": 901.8864024319992,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 18,
+          "response.output_item.added": 28,
+          "response.output_item.done": 27,
+          "response.function_call_arguments.delta": 195
+        },
+        "reasoning_items_completed": 27,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 1134,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 1134,
+        "completed_event_seen": false,
+        "header_received_s": 1.2333395060049952,
+        "first_sse_s": 1.373909903006279,
+        "last_sse_s": 871.3513010400056,
+        "last_reasoning_item_s": 830.6166545060041,
+        "first_function_arguments_s": 830.9919844380056
+      }
+    },
+    {
+      "attempt": 2,
+      "elapsed_s": 880.884175170002,
+      "error_type": "TimeoutError",
+      "error": "The read operation timed out",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 16,
+          "response.output_item.added": 23,
+          "response.output_item.done": 22,
+          "response.function_call_arguments.delta": 7552
+        },
+        "reasoning_items_completed": 22,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 28641,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 28641,
+        "completed_event_seen": false,
+        "header_received_s": 2.0429384789968026,
+        "first_sse_s": 2.1316500319953775,
+        "last_sse_s": 864.697479603994,
+        "last_reasoning_item_s": 680.0749915219931,
+        "first_function_arguments_s": 680.0796711839939
+      }
+    }
+  ]
+}

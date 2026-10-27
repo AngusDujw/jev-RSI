@@ -1,0 +1,14 @@
+{
+  "owned_pids_alive": {
+    "parent_pid": false,
+    "bridge_pid": false,
+    "tunnel_pid": false,
+    "known-r1-init12": false,
+    "new-r1-init0": false,
+    "known-r2-init13": false,
+    "new-r2-init1": false,
+    "known-r3-init14": false,
+    "new-r3-init2": false
+  },
+  "port7921_open": false
+}

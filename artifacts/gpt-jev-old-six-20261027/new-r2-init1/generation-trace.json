@@ -1,0 +1,59 @@
+{
+  "request_sha256": "a6aca073bad0ec0c19f6b33eb5a8851badfec4d4f310382e6f9f9c95a146eefb",
+  "relay_seconds": 1798.001596983002,
+  "request_budget_s": 1798.0,
+  "attempts": [
+    {
+      "attempt": 1,
+      "elapsed_s": 901.4530404830002,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 24,
+          "response.output_item.added": 24,
+          "response.output_item.done": 24
+        },
+        "reasoning_items_completed": 24,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 0,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 0,
+        "completed_event_seen": false,
+        "header_received_s": 1.8379029679999803,
+        "first_sse_s": 1.885623531001329,
+        "last_sse_s": 873.6525530569997,
+        "last_reasoning_item_s": 873.6525530569997
+      }
+    },
+    {
+      "attempt": 2,
+      "elapsed_s": 881.3870679050051,
+      "error_type": "TimeoutError",
+      "error": "The read operation timed out",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 24,
+          "response.output_item.added": 24,
+          "response.output_item.done": 24
+        },
+        "reasoning_items_completed": 24,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 0,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 0,
+        "completed_event_seen": false,
+        "header_received_s": 1.508367411999643,
+        "first_sse_s": 1.576437622999947,
+        "last_sse_s": 875.8419599519984,
+        "last_reasoning_item_s": 875.8419599519984
+      }
+    }
+  ]
+}

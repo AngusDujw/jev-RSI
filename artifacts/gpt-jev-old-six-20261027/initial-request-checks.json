@@ -1,22 +1,62 @@
 [
   {
     "case": "known-r1-init12",
-    "tool": "submit_method",
-    "instructions_match_successful_old_run": true,
+    "instructions_match": true,
     "model_match": true,
     "effort_match": true,
-    "tool_schema_match": true,
-    "all_text_ascii": true,
-    "initial_request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee"
+    "tools_match": true,
+    "text_ascii": true,
+    "history_fields": [],
+    "request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee"
+  },
+  {
+    "case": "known-r2-init13",
+    "instructions_match": true,
+    "model_match": true,
+    "effort_match": true,
+    "tools_match": true,
+    "text_ascii": true,
+    "history_fields": [],
+    "request_sha256": "955563c1224ad11bc375f4c7a6dd1ef14aff658bf11d23e8995664a90d9be6e1"
+  },
+  {
+    "case": "known-r3-init14",
+    "instructions_match": true,
+    "model_match": true,
+    "effort_match": true,
+    "tools_match": true,
+    "text_ascii": true,
+    "history_fields": [],
+    "request_sha256": "eb2280b4ee2a2d2a735919e4c56907619c7b111e72fb9ddb56ead3a277e85fc1"
   },
   {
     "case": "new-r1-init0",
-    "tool": "submit_method",
-    "instructions_match_successful_old_run": true,
+    "instructions_match": true,
     "model_match": true,
     "effort_match": true,
-    "tool_schema_match": true,
-    "all_text_ascii": true,
-    "initial_request_sha256": "d2de0f58a8976ef64d1c78dddabea47b64e80c692c87cfe68e52d523c151cc27"
+    "tools_match": true,
+    "text_ascii": true,
+    "history_fields": [],
+    "request_sha256": "d2de0f58a8976ef64d1c78dddabea47b64e80c692c87cfe68e52d523c151cc27"
+  },
+  {
+    "case": "new-r2-init1",
+    "instructions_match": true,
+    "model_match": true,
+    "effort_match": true,
+    "tools_match": true,
+    "text_ascii": true,
+    "history_fields": [],
+    "request_sha256": "a6aca073bad0ec0c19f6b33eb5a8851badfec4d4f310382e6f9f9c95a146eefb"
+  },
+  {
+    "case": "new-r3-init2",
+    "instructions_match": true,
+    "model_match": true,
+    "effort_match": true,
+    "tools_match": true,
+    "text_ascii": true,
+    "history_fields": [],
+    "request_sha256": "881940f83d6ead43903c5acab304af45d6396c540cbbb0c4ce49f4845c45bfa0"
   }
 ]

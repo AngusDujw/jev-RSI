@@ -1,0 +1,61 @@
+{
+  "request_sha256": "b8c819c18e8e8a788a8a1566fb8f73ccec3528a043942a004dc36548004a23ee",
+  "relay_seconds": 1798.0013523750022,
+  "request_budget_s": 1798.0,
+  "attempts": [
+    {
+      "attempt": 1,
+      "elapsed_s": 901.6729545070011,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 25,
+          "response.output_item.added": 25,
+          "response.output_item.done": 25
+        },
+        "reasoning_items_completed": 25,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 0,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 0,
+        "completed_event_seen": false,
+        "header_received_s": 2.2923382129993115,
+        "first_sse_s": 2.5207901569992828,
+        "last_sse_s": 894.532635896001,
+        "last_reasoning_item_s": 894.532635896001
+      }
+    },
+    {
+      "attempt": 2,
+      "elapsed_s": 881.1632939730007,
+      "error_type": "TimeoutError",
+      "error": "The read operation timed out",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 21,
+          "response.output_item.added": 22,
+          "response.output_item.done": 21,
+          "response.function_call_arguments.delta": 2973
+        },
+        "reasoning_items_completed": 21,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 11373,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 11373,
+        "completed_event_seen": false,
+        "header_received_s": 2.2844058410009893,
+        "first_sse_s": 2.6913439330019173,
+        "last_sse_s": 880.9652364100002,
+        "last_reasoning_item_s": 789.4869910190027,
+        "first_function_arguments_s": 789.7850902790015
+      }
+    }
+  ]
+}

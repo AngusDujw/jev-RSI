@@ -1,0 +1,61 @@
+{
+  "request_sha256": "d2de0f58a8976ef64d1c78dddabea47b64e80c692c87cfe68e52d523c151cc27",
+  "relay_seconds": 1798.0017395790019,
+  "request_budget_s": 1798.0,
+  "attempts": [
+    {
+      "attempt": 1,
+      "elapsed_s": 901.6191436549998,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 24,
+          "response.output_item.added": 26,
+          "response.output_item.done": 25,
+          "response.function_call_arguments.delta": 134
+        },
+        "reasoning_items_completed": 25,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 761,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 761,
+        "completed_event_seen": false,
+        "header_received_s": 1.7209657890016388,
+        "first_sse_s": 1.918854368999746,
+        "last_sse_s": 900.5123304970002,
+        "last_reasoning_item_s": 891.3164261420025,
+        "first_function_arguments_s": 891.3574163910016
+      }
+    },
+    {
+      "attempt": 2,
+      "elapsed_s": 881.0662144849994,
+      "error_type": "TimeoutError",
+      "error": "The read operation timed out",
+      "usage_unknown": true,
+      "progress": {
+        "event_counts": {
+          "response.created": 1,
+          "response.in_progress": 1,
+          "keepalive": 22,
+          "response.output_item.added": 22,
+          "response.output_item.done": 22
+        },
+        "reasoning_items_completed": 22,
+        "function_items_completed": 0,
+        "function_argument_delta_characters": 0,
+        "completed_function_argument_characters": 0,
+        "function_argument_characters": 0,
+        "completed_event_seen": false,
+        "header_received_s": 1.6678599459992256,
+        "first_sse_s": 2.2791855440009385,
+        "last_sse_s": 855.7281766689994,
+        "last_reasoning_item_s": 855.7281766689994
+      }
+    }
+  ]
+}

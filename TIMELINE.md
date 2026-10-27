@@ -180,6 +180,7 @@ graph LR
     T_2026W44_005["📊 libero-generic-vision<br/>30分钟两例：已测新源817秒交付、49J…"]:::experiment
     T_2026W44_006["📊 generic-vision<br/>Historical one-stage …"]:::experiment
     T_2026W44_007["📝 libero-generic-vision<br/>EXP014 same-task cold…"]:::note
+    T_2026W44_008["📊 libero-generic-vision<br/>Old-generator six-cas…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -313,6 +314,7 @@ graph LR
   T_2026W44_003 --> T_2026W44_004
   T_2026W44_004 --> T_2026W44_005
   T_2026W44_005 --> T_2026W44_007
+  T_2026W44_007 --> T_2026W44_008
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -475,6 +477,7 @@ graph LR
 | `T-2026W44-005` | 2026-10-27 | experiment | libero-generic-vision | 30分钟两例：已测新源817秒交付、49Jev/147步后未夹稳native失败；未测炉灶1798秒无源码（901秒断流后重试）。未得到成功样本，源获取与物理执行问题分别保留。 | `EXP-2026W44-012`, `EXP-2026W44-013` | - |
 | `T-2026W44-006` | 2026-10-27 | experiment | generic-vision | Historical one-stage cold regeneration1335/init12 native/proposal true; new source6ddc,0repairs,14GPT/107Jev/321steps; one-case replication only | `EXP-2026W44-014` | - |
 | `T-2026W44-007` | 2026-10-27 | note | libero-generic-vision | EXP014 same-task cold reproduction: T-2026W44-006 used abbreviated topic generic-vision; intended continuing topic is libero-generic-vision. One-case native success does not close cross-task reliability; batch ends without replacement. | `EXP-2026W44-014` | - |
+| `T-2026W44-008` | 2026-10-27 | experiment | libero-generic-vision | Old-generator six-case batch: known1335and unseen229 each0/3end-to-end; all synthesis timeouts,0Jev; physical success unmeasured; preserve concurrency2condition and12unknown usages | `EXP-2026W44-020` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

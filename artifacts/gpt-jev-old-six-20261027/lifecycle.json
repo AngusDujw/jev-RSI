@@ -1,0 +1,69 @@
+{
+  "started_utc": "2026-10-27T09:15:04.237650+00:00",
+  "historical_commit": "a8e6ea72ef7a6d21dea4215de79c3cc3b09b8739",
+  "parent_pid": 1098517,
+  "cases": {
+    "known-r1-init12": {
+      "started_utc": "2026-10-27T09:15:06.206189+00:00",
+      "case_ssh_pid": 1098608,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-old-six/known-r1-init12 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 1335 --init-index 12 --seed 0 --gpu 6 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 > code/runs/2026-10-27-gpt-jev-old-six/known-r1-init12.console.log 2>&1",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T09:45:21.870659+00:00",
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    },
+    "new-r1-init0": {
+      "started_utc": "2026-10-27T09:15:06.206450+00:00",
+      "case_ssh_pid": 1098607,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-old-six/new-r1-init0 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 229 --init-index 0 --seed 0 --gpu 7 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 > code/runs/2026-10-27-gpt-jev-old-six/new-r1-init0.console.log 2>&1",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T09:45:22.279014+00:00",
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    },
+    "known-r2-init13": {
+      "started_utc": "2026-10-27T09:45:21.871677+00:00",
+      "case_ssh_pid": 1167897,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-old-six/known-r2-init13 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 1335 --init-index 13 --seed 0 --gpu 6 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 > code/runs/2026-10-27-gpt-jev-old-six/known-r2-init13.console.log 2>&1",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T10:15:37.971863+00:00",
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    },
+    "new-r2-init1": {
+      "started_utc": "2026-10-27T09:45:22.280006+00:00",
+      "case_ssh_pid": 1167906,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-old-six/new-r2-init1 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 229 --init-index 1 --seed 0 --gpu 7 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 > code/runs/2026-10-27-gpt-jev-old-six/new-r2-init1.console.log 2>&1",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T10:15:38.345279+00:00",
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    },
+    "known-r3-init14": {
+      "started_utc": "2026-10-27T10:15:37.973000+00:00",
+      "case_ssh_pid": 1240151,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-old-six/known-r3-init14 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 1335 --init-index 14 --seed 0 --gpu 6 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 > code/runs/2026-10-27-gpt-jev-old-six/known-r3-init14.console.log 2>&1",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T10:45:53.503583+00:00",
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    },
+    "new-r3-init2": {
+      "started_utc": "2026-10-27T10:15:38.346252+00:00",
+      "case_ssh_pid": 1240157,
+      "command": "cd /home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027 && exec /home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python -B -u code/scripts/run_gpt_jev_program.py --output code/runs/2026-10-27-gpt-jev-old-six/new-r3-init2 --libero-root /home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus --suite libero_goal --task-id 229 --init-index 2 --seed 0 --gpu 7 --max-gpt 24 --max-jev 200 --max-native-steps 600 --max-repairs 0 --wall-seconds 7200 > code/runs/2026-10-27-gpt-jev-old-six/new-r3-init2.console.log 2>&1",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T10:45:53.991553+00:00",
+      "ssh_stdout": "",
+      "ssh_stderr": ""
+    }
+  },
+  "bridge_concurrency": 2,
+  "bridge_source_sha256": "254afc9556dd58422ed0912fc3dc78af94f3a3349e8f39adf03da4f2d1aa8687",
+  "bridge_pid": 1098519,
+  "tunnel_pid": 1098520,
+  "loopback_ready_before_cases": true,
+  "bridge_exit_code": -15,
+  "tunnel_exit_code": 0,
+  "finished_utc": "2026-10-27T10:45:53.994603+00:00"
+}
