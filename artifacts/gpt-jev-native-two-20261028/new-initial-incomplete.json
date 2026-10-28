@@ -1,0 +1,50 @@
+{
+  "completion_proposed": false,
+  "evidence": {
+    "phase": "insert",
+    "reason": "Insertion stalled/exhausted outside rim band; will not push.",
+    "measurements": [
+      {
+        "tracker_probes_saved": "patch_0:0"
+      },
+      {
+        "envelope_bound": "patch_0:0",
+        "measurement_frame": 0
+      },
+      {
+        "pad_vertical_half_extent": 0.008471472618391394,
+        "rim_z_u": 0.002442164520947963,
+        "finger_low_relative_pad": -0.013464138154344387,
+        "bowl_height": 0.04959720930847045,
+        "height_u": 0.004442164520947963,
+        "feasible_grasp_candidates": 6
+      },
+      {
+        "approach_intent": [
+          -0.09426049658131158,
+          -0.05582854962739467,
+          1.1641718017188047
+        ]
+      },
+      {
+        "motion": "reached",
+        "position_error": 0.0024015454209060172,
+        "frame": 30
+      },
+      {
+        "phase": "insert"
+      },
+      {
+        "motion": "lease_exhausted",
+        "position_error": 0.004392612277385501,
+        "frame": 75
+      },
+      {
+        "result": "Insertion stalled/exhausted outside rim band; will not push."
+      }
+    ],
+    "last_jaw": null,
+    "partial_measurements": {},
+    "limitations": "RGB-D uncertainty is heuristic; no swept-volume certificate or official success predicate."
+  }
+}

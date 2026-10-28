@@ -1,0 +1,50 @@
+{
+  "thread_id": "01a180fa-0f81-7982-b4ec-f981ffe5804c",
+  "turns": [
+    {
+      "id": "01a180fa-0f8a-7c03-abf3-160d1ea124a7",
+      "continuation": false
+    }
+  ],
+  "status": "completed",
+  "events": {
+    "remoteControl/status/changed": 1,
+    "account/updated": 1,
+    "thread/started": 1,
+    "warning": 1,
+    "thread/status/changed": 2,
+    "turn/started": 1,
+    "item/started": 67,
+    "item/completed": 67,
+    "turn/moderationMetadata": 11,
+    "model/safetyBuffering/updated": 1,
+    "thread/tokenUsage/updated": 11,
+    "account/rateLimits/updated": 11,
+    "item/tool/call": 1,
+    "item/agentMessage/delta": 23,
+    "thread/readState/changed": 1,
+    "turn/completed": 1
+  },
+  "recoveries": [],
+  "token_usage": {
+    "total": {
+      "totalTokens": 643391,
+      "inputTokens": 594909,
+      "cachedInputTokens": 583168,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 48482,
+      "reasoningOutputTokens": 31902
+    },
+    "last": {
+      "totalTokens": 74511,
+      "inputTokens": 74484,
+      "cachedInputTokens": 74240,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 27,
+      "reasoningOutputTokens": 0
+    },
+    "modelContextWindow": 258400
+  },
+  "payload_sha256": "fe84a41f99248deb343956ff406c4907722c8497c1dccc180039c3706c4baae5",
+  "instruction_sources": []
+}

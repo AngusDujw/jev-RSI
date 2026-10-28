@@ -1,0 +1,437 @@
+[
+  {
+    "job_id": "ec4b4b581adb49dfb565682686dfd555",
+    "elapsed_s": 109.4734742641449,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 6,
+      "item/completed": 6,
+      "item/tool/call": 2,
+      "turn/moderationMetadata": 3,
+      "thread/tokenUsage/updated": 3,
+      "account/rateLimits/updated": 3,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [
+      "submit_review.regions[0].stride: numeric value outside schema"
+    ],
+    "payload_sha256": "a3d592a38e082c94f941aa855aee475ee69c964c6f7d2a635a6779a01bb746a4"
+  },
+  {
+    "job_id": "bc655349151d4dd2a04ae31acdaef9de",
+    "elapsed_s": 151.08628678321838,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 7,
+      "item/completed": 7,
+      "turn/moderationMetadata": 2,
+      "item/tool/call": 1,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "bcb7b511e40100e4060d5dfc834464332f8ec965a54fa5567ae3b1b7cdbad871"
+  },
+  {
+    "job_id": "8019582e30e04b55b650c64f181a7c53",
+    "elapsed_s": 92.95869040489197,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 5,
+      "item/completed": 5,
+      "item/tool/call": 1,
+      "turn/moderationMetadata": 2,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "a1ac3d06650b30b1e0156320ff446852df1a9980c4b830a48d389afc350b6610"
+  },
+  {
+    "job_id": "6dac04e7f5d147dfb1e6067d60b9fd82",
+    "elapsed_s": 146.8896245956421,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 7,
+      "item/completed": 7,
+      "item/tool/call": 2,
+      "turn/moderationMetadata": 3,
+      "thread/tokenUsage/updated": 3,
+      "account/rateLimits/updated": 3,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [
+      "submit_review.parameters.rim_pixels: length outside schema"
+    ],
+    "payload_sha256": "d46df16f8c02d0958e145a5722be58d3d0f291b5eb8884be34345b5ff50c67d0"
+  },
+  {
+    "job_id": "b6931409608d43289b3c3a2e4a86b817",
+    "elapsed_s": 69.2874960899353,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 5,
+      "item/completed": 5,
+      "item/tool/call": 2,
+      "turn/moderationMetadata": 3,
+      "thread/tokenUsage/updated": 3,
+      "account/rateLimits/updated": 3,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [
+      "submit_review.regions[0].stride: numeric value outside schema"
+    ],
+    "payload_sha256": "3c448f4ed131d40e839a1e23047e21ba599dd2b772e82b80f363b2963682ae47"
+  },
+  {
+    "job_id": "6ed4b8f53ed940a3ae34993a41a433aa",
+    "elapsed_s": 92.87927174568176,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 5,
+      "item/completed": 5,
+      "turn/moderationMetadata": 2,
+      "item/tool/call": 1,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "9ad0366a2ab9a51f4988b23f9acfda50a68d1ece2b8535a252f23caa2a7b1eef"
+  },
+  {
+    "job_id": "4a02930498474180a14f404326b3cdf6",
+    "elapsed_s": 158.13767838478088,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "warning": 1,
+      "thread/started": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 7,
+      "item/completed": 7,
+      "item/tool/call": 1,
+      "turn/moderationMetadata": 2,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "ecd4b5e61df8b0e27f457f2beac981af632cfa121d2f390518fa7621c25b8320"
+  },
+  {
+    "job_id": "b973c4cf12a3465b8fc146c4028ec39b",
+    "elapsed_s": 128.67972111701965,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 7,
+      "item/completed": 7,
+      "item/tool/call": 1,
+      "turn/moderationMetadata": 2,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "d306da3b9c68a597a82cbc9ad9167af617cc2f2c1e9044bc9271c5db4467f460"
+  },
+  {
+    "job_id": "af9921b2aeff4dfdb304f623f932cf36",
+    "elapsed_s": 100.58536338806152,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 6,
+      "item/completed": 6,
+      "item/tool/call": 2,
+      "turn/moderationMetadata": 3,
+      "thread/tokenUsage/updated": 3,
+      "account/rateLimits/updated": 3,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [
+      "submit_review.regions[0].stride: numeric value outside schema"
+    ],
+    "payload_sha256": "d00d3981c7175019b32bf215e0baf4f195f01e44f26dc9413dd1b28dabc91a17"
+  },
+  {
+    "job_id": "c7f7cb1907214145b6ba8f365790b91a",
+    "elapsed_s": 157.6513192653656,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 8,
+      "item/completed": 8,
+      "item/tool/call": 2,
+      "turn/moderationMetadata": 3,
+      "thread/tokenUsage/updated": 3,
+      "account/rateLimits/updated": 3,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [
+      "submit_review.regions[0].stride: numeric value outside schema"
+    ],
+    "payload_sha256": "d9f96e8c23c48b396e8601b6a04aacbcb697c20172eb5f2dd0204c9f4700cf75"
+  },
+  {
+    "job_id": "396513aec7524afb96c0ac627049e8e7",
+    "elapsed_s": 84.15825057029724,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 5,
+      "item/completed": 5,
+      "turn/moderationMetadata": 2,
+      "item/tool/call": 1,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "73ac7da177914d195162bc0dc6fd8eccb89c6c12c90313d460d6eae4ea101e93"
+  },
+  {
+    "job_id": "fc19dd7bb7e64ae59692c05984d3f7be",
+    "elapsed_s": 1335.6929535865784,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 33,
+      "item/completed": 33,
+      "turn/moderationMetadata": 9,
+      "thread/tokenUsage/updated": 10,
+      "account/rateLimits/updated": 10,
+      "item/agentMessage/delta": 73,
+      "item/tool/call": 2,
+      "thread/readState/changed": 1,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [
+      "submit_method_patch.replacements: length outside schema"
+    ],
+    "payload_sha256": "13bf22f72d8eb957182832a32f123a507788ed9b3196ec4b4ed806eb6a5a0e26"
+  },
+  {
+    "job_id": "b02eac320881407d9eb6f678e9325c82",
+    "elapsed_s": 1536.4062936306,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 40,
+      "item/completed": 40,
+      "turn/moderationMetadata": 6,
+      "thread/tokenUsage/updated": 7,
+      "account/rateLimits/updated": 7,
+      "item/tool/call": 1,
+      "item/agentMessage/delta": 33,
+      "thread/readState/changed": 1,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "5c3d32750d9b817f6f5bb4661ed7cdd08e3b59fc2ade823e00db83d018f506ea"
+  },
+  {
+    "job_id": "ee96404c0e34450ba05e1ca101f70439",
+    "elapsed_s": 140.80594563484192,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 7,
+      "item/completed": 7,
+      "item/tool/call": 2,
+      "turn/moderationMetadata": 3,
+      "thread/tokenUsage/updated": 3,
+      "account/rateLimits/updated": 3,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [
+      "submit_review.regions[1].stride: numeric value outside schema"
+    ],
+    "payload_sha256": "dd051a86a19851c3effcb3d2247ecbb355eebd77e2abb33196769df23d25af76"
+  },
+  {
+    "job_id": "85dbc5b7851f43089f5bdb969d970fb7",
+    "elapsed_s": 146.2629406452179,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 7,
+      "item/completed": 7,
+      "item/tool/call": 1,
+      "turn/moderationMetadata": 2,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "3eab845acbcee552967a1c463904b7041bfa215d08ab5c41f89ac2bada2846d7"
+  },
+  {
+    "job_id": "66cabe364c0b49e699719d7e58c9cb30",
+    "elapsed_s": 87.05714511871338,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 5,
+      "item/completed": 5,
+      "item/tool/call": 1,
+      "turn/moderationMetadata": 2,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "2176a53de12a3b0dacc440bd9d0af23daf86238082c27ceaace88aa403c127c6"
+  },
+  {
+    "job_id": "70dac94c9dad4d758e9c74dc8bee887d",
+    "elapsed_s": 2408.626209259033,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 67,
+      "item/completed": 67,
+      "turn/moderationMetadata": 11,
+      "model/safetyBuffering/updated": 1,
+      "thread/tokenUsage/updated": 11,
+      "account/rateLimits/updated": 11,
+      "item/tool/call": 1,
+      "item/agentMessage/delta": 23,
+      "thread/readState/changed": 1,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "fe84a41f99248deb343956ff406c4907722c8497c1dccc180039c3706c4baae5"
+  },
+  {
+    "job_id": "d1aff745443745e7b790e90391208454",
+    "elapsed_s": 113.62636303901672,
+    "status": "completed",
+    "events": {
+      "remoteControl/status/changed": 1,
+      "account/updated": 1,
+      "thread/started": 1,
+      "warning": 1,
+      "thread/status/changed": 2,
+      "turn/started": 1,
+      "item/started": 6,
+      "item/completed": 6,
+      "turn/moderationMetadata": 2,
+      "item/tool/call": 1,
+      "thread/tokenUsage/updated": 2,
+      "account/rateLimits/updated": 2,
+      "turn/completed": 1
+    },
+    "recoveries": [],
+    "invalids": [],
+    "payload_sha256": "105cd88947ee03c5684bd02859c082104adc41ad532c05b686b406459f921ec6"
+  }
+]

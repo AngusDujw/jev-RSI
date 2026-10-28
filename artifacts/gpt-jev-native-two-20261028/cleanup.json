@@ -1,0 +1,10 @@
+{
+  "checked_epoch": 1793172528.309408,
+  "local_port7921_closed": true,
+  "remote_port7921_closed": true,
+  "remote_known_pid1591990_absent": true,
+  "remote_new_pid2162170_absent": true,
+  "own_bridge_and_supervisor_stopped": true,
+  "other_sessions_untouched": true,
+  "verification_scripts_deleted": true
+}

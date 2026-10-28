@@ -1,0 +1,55 @@
+{
+  "completion_proposed": false,
+  "evidence": {
+    "phase": "lift",
+    "reason": "Independently measured bowl did not follow actual hand motion.",
+    "measurements": [
+      {
+        "closing_intent": true,
+        "gate": "positive component overlap margins",
+        "contact_not_proven": true
+      },
+      {
+        "jaw_requested": "close",
+        "choice": "close",
+        "receipt": "reached",
+        "acknowledged_steps": 3
+      },
+      {
+        "jaw_delivery_recorded": "close"
+      },
+      {
+        "closure_acknowledged": true,
+        "retention": false
+      },
+      {
+        "lift_reference_frame": 78,
+        "test": 1
+      },
+      {
+        "motion": "reached",
+        "position_error": 0.0012794166043621773,
+        "frame": 90
+      },
+      {
+        "hand_motion": 0.03387446606413518,
+        "independent_object_progress": 1.559857041596383e-05,
+        "attachment_error": 0.033887965953067,
+        "combined_u": 0.0033826514835975903
+      },
+      {
+        "result": "Independently measured bowl did not follow actual hand motion."
+      }
+    ],
+    "last_jaw": {
+      "command": "close",
+      "frame": 78,
+      "qpos": [
+        0.03398424793699638,
+        -0.033981137432667674
+      ]
+    },
+    "partial_measurements": {},
+    "limitations": "RGB-D uncertainty is heuristic; no swept-volume certificate or official success predicate."
+  }
+}

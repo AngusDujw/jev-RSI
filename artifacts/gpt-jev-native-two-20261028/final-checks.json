@@ -1,0 +1,21 @@
+{
+  "gpt_requests": 18,
+  "all_inputs_ascii": true,
+  "all_model_effort_pinned": true,
+  "fixed_file_hashes_match": {
+    "code/prompts/gpt_jev_method_v2.txt": true,
+    "code/prompts/gpt_jev_method_lessons_v2.txt": true,
+    "code/prompts/gpt_jev_program_api_v2.md": true,
+    "code/scripts/run_gpt_jev_program.py": true,
+    "code/scripts/gpt_jev_program_worker.py": true,
+    "code/scripts/gpt_jev_geometry.py": true,
+    "code/scripts/gpt_jev_review_contract.py": true,
+    "code/scripts/jev_rgbd_tracking.py": true,
+    "baseline/roboicl/reproduction/pro_oauth_bridge.py": true,
+    "baseline/roboicl/reproduction/pro_session_client.py": true,
+    "baseline/roboicl/reproduction/pro_session_jobs.py": true
+  },
+  "new_request_has_no_previous_method": true,
+  "native_job_recoveries": 0,
+  "invalid_submissions_corrected": 7
+}

@@ -1,0 +1,4 @@
+{"event": "started", "pid": 1614691, "time": 1793165124.426592}
+{"event": "exited", "pid": 1614691, "returncode": 0, "fatal": false, "message": "", "time": 1793165176.4764519}
+{"event": "started", "pid": 1617194, "time": 1793165179.4775732}
+{"event": "stopped", "time": 1793172478.5667362}

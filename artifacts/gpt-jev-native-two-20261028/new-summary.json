@@ -1,0 +1,82 @@
+{
+  "termination": "method_incomplete",
+  "native_success": false,
+  "result": {
+    "completion_proposed": false,
+    "evidence": {
+      "phase": "transfer",
+      "reason": "Local route observation unavailable.",
+      "measurements": [
+        {
+          "hand_motion": 0.08482323348251244,
+          "independent_object_progress": 0.0842830104236839,
+          "attachment_error": 0.0014821158047322019,
+          "combined_u": 0.0040528570432465105
+        },
+        {
+          "leg_outcome": "pass"
+        },
+        {
+          "leg_intent": [
+            -0.20201502416222467,
+            0.0804238398771333,
+            1.0254908674372436
+          ],
+          "visibility": "robot_or_bowl_occlusion"
+        },
+        {
+          "motion": "reached",
+          "position_error": 0.002001888738119435,
+          "frame": 249
+        },
+        {
+          "hand_motion": 0.00333410193602087,
+          "independent_object_progress": 0.003085772145663099,
+          "attachment_error": 0.00039368539368811223,
+          "combined_u": 0.004171684691705381
+        },
+        {
+          "leg_outcome": "consistent"
+        },
+        {
+          "gap": "review reserve reached"
+        },
+        {
+          "result": "Local route observation unavailable."
+        }
+      ],
+      "last_jaw": {
+        "command": "close",
+        "frame": 168,
+        "qpos": [
+          0.003564672938493048,
+          -0.003643563813084277
+        ],
+        "settled": true
+      },
+      "partial_measurements": {},
+      "limitations": "RGB-D uncertainty is heuristic; no swept-volume certificate or official success predicate."
+    }
+  },
+  "native_steps": 249,
+  "settling_steps": 10,
+  "jev_calls": 83,
+  "gpt_calls": 18,
+  "rpc_calls": 310,
+  "elapsed_s": 7180.437228999799,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "1474a6629201002322ab54506b258b29f47a0220ec8d4916ef2e888666d54647"
+    },
+    {
+      "number": 1,
+      "source_sha256": "ed11830d9b6cca805ed4d6561de0b3848b56608f6daf9a8ff7f9d268326712bc"
+    },
+    {
+      "number": 2,
+      "source_sha256": "df640692632c389dda43f391b8309b1ecfb7bd49b536573d23efdd470f5820fd"
+    }
+  ],
+  "last_method_error": null
+}
