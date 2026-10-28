@@ -1,0 +1,58 @@
+{
+  "termination": "Planner logical request deadline exceeded",
+  "native_success": false,
+  "result": {
+    "completion_proposed": false,
+    "evidence": {
+      "phase": "approach",
+      "gap": "Grasp approach incomplete; no grasp claim.",
+      "measurements": [
+        {
+          "kind": "grasp_margins",
+          "data": "{'opening_gap': 0.06244541368013859, 'projected_width': 0.04248996145282241, 'pad_z_interval': [0.9154076142704329, 0.9204598409163263], 'overlap': 0.006023271739034969, 'bowl_nominal_slack': 0.007146024387357279, 'uncertainty': 0.001}"
+        },
+        {
+          "kind": "grasp_trial",
+          "data": "{'uncertainty_limited': False, 'nominal_lateral_margin': 0.01995545222731618, 'support_clearance': 0.0020000000000000018}"
+        },
+        {
+          "kind": "measurement_errors",
+          "data": "[{'name': 'rim1', 'error': 'Invalid or discontinuous surface depth'}, {'name': 'rim7', 'error': 'Invalid or discontinuous surface depth'}]"
+        },
+        {
+          "kind": "measurement_errors",
+          "data": "[{'name': 'rim1', 'error': 'Invalid or discontinuous surface depth'}, {'name': 'rim7', 'error': 'Invalid or discontinuous surface depth'}]"
+        },
+        {
+          "kind": "measurement_errors",
+          "data": "[{'name': 'rim0', 'error': 'Invalid or discontinuous surface depth'}, {'name': 'rim1', 'error': 'Invalid or discontinuous surface depth'}]"
+        },
+        {
+          "kind": "observed_route_contradiction",
+          "data": "{'change': 'container_moved', 'local': 'unknown', 'obstruction': 'none_visible', 'view_up': 'yes', 'visibility': 'self_occluded'}"
+        }
+      ],
+      "retention": null,
+      "final": null,
+      "budgets": {
+        "gpt_remaining": 12,
+        "jev_remaining": 140,
+        "native_steps_remaining": 420,
+        "wall_seconds_remaining": 1869.4061900291126
+      }
+    }
+  },
+  "native_steps": 180,
+  "settling_steps": 10,
+  "jev_calls": 60,
+  "gpt_calls": 10,
+  "rpc_calls": 95,
+  "elapsed_s": 2830.2271376717836,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "087289618b060dacd1f0a4492f54ed5ffccd800b61f0293f126de5a29f032a8d"
+    }
+  ],
+  "last_method_error": null
+}
