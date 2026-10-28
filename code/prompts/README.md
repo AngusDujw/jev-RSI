@@ -37,6 +37,10 @@ up to three turns and two app-server reconnections within the original deadline.
 Native `serverOverloaded` failures use the same-thread continuation path with
 15/45-second backoff. The selected model is retained; authentication errors are
 terminal and overload recovery never resets the original request budget.
+Invalid tool arguments are returned to the same native turn with the exact
+declared schema, allowing two model-authored corrections before termination.
+All rejected arguments remain in `invalid_submissions`; the adapter never
+coerces a numeric value or dispatches a rejected candidate.
 This preserves conversation context; it cannot guarantee exact token-level
 continuation of an interrupted inference. Partial tool arguments are never run.
 

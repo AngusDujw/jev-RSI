@@ -328,7 +328,22 @@ class SessionPlanner:
                 if method == "item/tool/call":
                     if params.get("threadId") != self.state["thread_id"] or params.get("tool") != self.definition["name"]:
                         raise ValueError("Unexpected native dynamic tool request")
-                    validate_submission(params["arguments"], self.definition)
+                    try:
+                        validate_submission(params["arguments"], self.definition)
+                    except (ValueError, SyntaxError) as error:
+                        failures = self.state.setdefault("invalid_submissions", [])
+                        failures.append(dict(call_id=params["callId"], turn_id=params["turnId"],
+                            arguments=params["arguments"], error=str(error)[:600]))
+                        self.save("correcting_invalid_submission")
+                        if len(failures) >= 3:
+                            raise ValueError("Native submission validation repair budget exhausted") from error
+                        feedback = dict(error=str(error)[:600],
+                            required_schema=self.definition["parameters"],
+                            action="Submit a corrected complete result using the same tool. Keep the original task and include every required field.")
+                        english(feedback)
+                        self.rpc.send(dict(id=item["id"], result=dict(success=False,
+                            contentItems=[dict(type="inputText", text=json.dumps(feedback))])))
+                        continue
                     if self.state.get("submission") and self.state["submission"]["arguments"] != params["arguments"]:
                         raise ValueError("Conflicting duplicate native submission")
                     self.state["submission"] = {k: params[k] for k in
