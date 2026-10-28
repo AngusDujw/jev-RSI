@@ -130,3 +130,5 @@
 - 【Agent】【2026-10-28 15:31】[op] 补全EXP027、Discussion与T016并保存最终完整方法/成本报告；严格周志lint通过。CIRCLE-1/3长期告警保留，当前两例收口，不追加修补或替换任务。
 - 【User】【2026-10-28 17:02】[prompt] 看一下 https://github.com/OpenPhysLab/TwinHarness 这种 code as policy 的方法最后得到的代码是什么样的，最后是怎么用代码控制机械臂的，具体是什么样的代码
 - 【Agent】【2026-10-28 17:03】[result] TwinHarness 指定公开仓库返回 HTTP 404；OpenPhysLab 公开组织页无公开仓库。只读核对原版 Code as Policies 官方 Interactive_Demo.ipynb：LMP.__call__执行生成代码，LMP_wrapper.put_first_on_second传pick/place，PickPlaceEnv.step展开抓放，movep调用IK，servoj调用PyBullet关节位置控制；演示物体位姿取仿真真值。未运行机器人或调用模型API。
+- 【User】【2026-10-28 17:26】[prompt] 这个twin harness仓库我有权限，你再试一下啊
+- 【Agent】【2026-10-28 17:31】[result] 经本机SSH成功读取私有TwinHarness main@48b6459e；匿名404不代表无权限，GitHub SSH443可用。只读核对固定EmbodiedEvo@470278c：当前reference入口直接委托上游，四原语；阶段solution经Unix socket送宿主持久Python沙箱，step(action)经RoboDojoLowLevelApi.control_step到native.take_action；EE绝对世界位姿+四元数/关节角及夹爪，25Hz动作。只冻结skills/lessons，仓库未含runs成功生成轨迹；bundles/default的robo.move抓放属于旧扩展。源码缓存于项目.cache，未运行模型或仿真。
