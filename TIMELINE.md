@@ -186,6 +186,7 @@ graph LR
     T_2026W44_011["📊 generic-vision<br/>原生Pro同线程自动恢复后原失败输入170…"]:::experiment
     T_2026W44_012["📝 generic-vision<br/>T-2026W44-011误用缩写topi…"]:::note
     T_2026W44_013["📊 libero-generic-vision<br/>原生Pro同线程自动恢复后原失败输入170…"]:::experiment
+    T_2026W44_014["📊 libero-generic-vision<br/>实际任务1335首例因serverOver…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -325,6 +326,7 @@ graph LR
   T_2026W44_006 --> T_2026W44_011
   T_2026W44_011 --> T_2026W44_012
   T_2026W44_010 --> T_2026W44_013
+  T_2026W44_013 --> T_2026W44_014
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -493,6 +495,7 @@ graph LR
 | `T-2026W44-011` | 2026-10-28 | experiment | generic-vision | 原生Pro同线程自动恢复后原失败输入1702.824秒交付完整247行方法；十项机制检查通过，0Jev/物理，效率与长期率未验证 | `EXP-2026W44-023` | - |
 | `T-2026W44-012` | 2026-10-28 | note | generic-vision | T-2026W44-011误用缩写topic；其EXP023应归入libero-generic-vision，保留历史并在正确主题追加实验节点，不作为独立研究问题 | `EXP-2026W44-023` | - |
 | `T-2026W44-013` | 2026-10-28 | experiment | libero-generic-vision | 原生Pro同线程自动恢复后原失败输入1702.824秒交付完整247行方法；10项机制检查通过，未执行Jev或物理任务 | `EXP-2026W44-023` | - |
+| `T-2026W44-014` | 2026-10-28 | experiment | libero-generic-vision | 实际任务1335首例因serverOverloaded在2299秒结束，0Jev；补充同模型同线程有界恢复，另声明修复版两例，原失败保留 | `EXP-2026W44-024` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

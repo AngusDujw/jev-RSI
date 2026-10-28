@@ -111,3 +111,4 @@
 - 【Agent】【2026-10-28 10:21】[op] 已通过服务器现有HTTPS origin只读拉取77e1fd6（服务器GitHub SSH无认证）；在同挂载盘创建独立工作树gpt-jev-native-two-20261028，原工作树不改。GPU均空闲，沿用已存在.venv-libero-plus与LIBERO-plus，无环境或驱动变动。
 - 【Agent】【2026-10-28 10:25】[run] 两例预声明并SSH推送3e9708fd；固定77e1fd6当前通用提示词/实现，已测1335/init12及新132/init0，顺序单Pro通道，method3600/review1800/wall7200/maxGPT24/Jev200/steps600/repairs2/no-video。两端7921健康且native-session路由正确；开始首例独立冷生成，不输入任何旧源。
 - 【Agent】【2026-10-28 11:08】[result] 首例原版测试结束：2299.316秒，native_false，0Jev/0policy步；原生serverOverloaded（模型满载）被误归为非可恢复错误。保留失败与报告359072/44642部分线程tokens（336384缓存），不当物理失败。补充过载同线程15/45秒退避，保持模型/强度/原deadline不变；五项故障与上限检查通过，测试脚本删除。将另预声明修正版两例，不覆盖原负结果。
+- 【Agent】【2026-10-28 11:09】[op] 新建实验块 EXP-2026W44-024：修复版真实任务首例在服务满载时提前结束，识别并修复原生过载未恢复问题，保留零Jev负结果  ↪ `EXP-2026W44-024`
