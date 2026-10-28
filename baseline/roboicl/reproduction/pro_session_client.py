@@ -358,11 +358,19 @@ class SessionPlanner:
                     if len(self.state["turns"]) >= 3:
                         raise RuntimeError("Native planner exhausted automatic same-thread continuations")
                     error = turn.get("error") or {}
-                    code = json.dumps(error.get("codexErrorInfo", ""))
-                    if turn["status"] == "failed" and not any(x in code.lower() for x in
-                            ("stream", "connection", "http", "internalserver")):
+                    code = json.dumps(error.get("codexErrorInfo", "")).lower()
+                    overloaded = "serveroverloaded" in code
+                    if turn["status"] == "failed" and not any(x in code for x in
+                            ("stream", "connection", "http", "internalserver", "serveroverloaded")):
                         raise RuntimeError("Non-transport native turn failure: " + str(error)[:600])
-                    self.state["recoveries"].append(dict(kind="same_thread_continue", error=error))
+                    delay = (15, 45)[min(len(self.state["turns"])-1, 1)] if overloaded else 0
+                    if time.monotonic()+delay >= self.deadline:
+                        raise TimeoutError("No logical request budget remains for capacity recovery")
+                    self.state["recoveries"].append(dict(kind="same_thread_continue",
+                        error=error, retry_delay_s=delay))
+                    self.save("capacity_backoff" if overloaded else "continuing")
+                    if delay:
+                        time.sleep(delay)
                     self.start_turn(True)
                 elif "id" in item and method:
                     # No shell, filesystem, connector, approval or other tool is admitted.

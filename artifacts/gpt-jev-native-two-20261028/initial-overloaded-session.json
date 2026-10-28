@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "thread_id": "01a18053-95ca-70a3-8055-55e171c03ea2",
+  "turns": [
+    {
+      "id": "01a18053-95d1-7b22-aca5-00c57fadd4f6",
+      "continuation": false
+    }
+  ],
+  "recoveries": [
+    {
+      "kind": "native_stream_error",
+      "will_retry": false,
+      "error": {
+        "message": "Selected model is at capacity. Please try a different model.",
+        "codexErrorInfo": "serverOverloaded",
+        "additionalDetails": null,
+        "misalignment": null
+      },
+      "at": 1793156608.6902952
+    }
+  ],
+  "events": {
+    "remoteControl/status/changed": 1,
+    "account/updated": 1,
+    "thread/started": 1,
+    "warning": 1,
+    "thread/status/changed": 2,
+    "turn/started": 1,
+    "item/started": 65,
+    "item/completed": 65,
+    "turn/moderationMetadata": 9,
+    "thread/tokenUsage/updated": 9,
+    "account/rateLimits/updated": 9,
+    "item/agentMessage/delta": 29,
+    "error": 1,
+    "thread/readState/changed": 1,
+    "turn/completed": 1
+  },
+  "token_usage": {
+    "total": {
+      "totalTokens": 403714,
+      "inputTokens": 359072,
+      "cachedInputTokens": 336384,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 44642,
+      "reasoningOutputTokens": 31016
+    },
+    "last": {
+      "totalTokens": 66292,
+      "inputTokens": 63200,
+      "cachedInputTokens": 62976,
+      "cacheWriteInputTokens": 0,
+      "outputTokens": 3092,
+      "reasoningOutputTokens": 2715
+    },
+    "modelContextWindow": 258400
+  },
+  "payload_sha256": "3ff44b69fbed4b9a5c8dbd430c8fc43ebd1375bbaf93479af30225106e65c6f4",
+  "completed": false,
+  "instruction_sources": [],
+  "status": "failed",
+  "updated_at": 1793156608.706752
+}

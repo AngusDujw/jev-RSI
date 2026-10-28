@@ -1,0 +1,12 @@
+{
+  "case": "known-1335-init12",
+  "actual_initial_request_english": true,
+  "empty_history_and_memory": true,
+  "archived_method_input": false,
+  "staged_design": false,
+  "implementation_matches_predeclaration": true,
+  "instructions_characters": 44493,
+  "prompt_sha256": "98b4ecd980d486dc513139506eca3577a0bee99e1c8e739fb80b6ff9b6526fc1",
+  "manual_sha256": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a",
+  "fixed_condition_note": "Current canonical 77e1fd6 prompt files. Historical a8e6ea72 raw-HTTP cold-reproduction inputs were different; do not interpret this as a controlled one-factor transport comparison."
+}

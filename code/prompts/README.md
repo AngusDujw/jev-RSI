@@ -34,6 +34,9 @@ an idempotent job and polls it; reconnecting HTTP or SSH transport reattaches to
 the same job. Codex handles its native stream retries. If its transport fails
 terminally, the adapter automatically continues in the same persisted thread,
 up to three turns and two app-server reconnections within the original deadline.
+Native `serverOverloaded` failures use the same-thread continuation path with
+15/45-second backoff. The selected model is retained; authentication errors are
+terminal and overload recovery never resets the original request budget.
 This preserves conversation context; it cannot guarantee exact token-level
 continuation of an interrupted inference. Partial tool arguments are never run.
 
