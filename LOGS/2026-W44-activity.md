@@ -128,3 +128,5 @@
 - 【Agent】【2026-10-28 15:28】[result] 两任务终局均native_false；新132独立冷生成及两自动修补完整返回，83Jev/249步、7180.437秒，15strict审查/18GPT审计通过；7次非法提交同轮纠正、0恢复事件；停止自有桥接及监督隧道，双端7921关闭、机器人PID均退出。
 - 【Agent】【2026-10-28 15:28】[op] 新建实验块 EXP-2026W44-027：在框架未测132任务从零生成完整方案，接Jev并以LIBERO终局测试实际效果  ↪ `EXP-2026W44-027`
 - 【Agent】【2026-10-28 15:31】[op] 补全EXP027、Discussion与T016并保存最终完整方法/成本报告；严格周志lint通过。CIRCLE-1/3长期告警保留，当前两例收口，不追加修补或替换任务。
+- 【User】【2026-10-28 17:02】[prompt] 看一下 https://github.com/OpenPhysLab/TwinHarness 这种 code as policy 的方法最后得到的代码是什么样的，最后是怎么用代码控制机械臂的，具体是什么样的代码
+- 【Agent】【2026-10-28 17:03】[result] TwinHarness 指定公开仓库返回 HTTP 404；OpenPhysLab 公开组织页无公开仓库。只读核对原版 Code as Policies 官方 Interactive_Demo.ipynb：LMP.__call__执行生成代码，LMP_wrapper.put_first_on_second传pick/place，PickPlaceEnv.step展开抓放，movep调用IK，servoj调用PyBullet关节位置控制；演示物体位姿取仿真真值。未运行机器人或调用模型API。
