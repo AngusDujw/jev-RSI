@@ -19,6 +19,7 @@ exec docker run --rm --gpus "device=$gpu" --network host --ipc private --shm-siz
   --entrypoint /bin/bash nvcr.io/nvidia/isaac-sim:5.1.0 -lc '
     export CARB_APP_PATH=/isaac-sim/kit ISAAC_PATH=/isaac-sim EXP_PATH=/isaac-sim/apps
     source /isaac-sim/setup_python_env.sh
+    export PATH="$PWD/.cache/bin:$PATH"
     export LD_LIBRARY_PATH=/data/ykj_robodojo/RoboLaya/.conda/lib:$LD_LIBRARY_PATH
     export LD_PRELOAD=/isaac-sim/kit/libcarb.so
     export PYTHONPATH="$PWD:$PWD/vendor/robodojo:$PWD/vendor/robodojo/XPolicyLab:$PWD/vendor/robodojo/third_party/curobo:$PYTHONPATH"
