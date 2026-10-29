@@ -1,0 +1,25 @@
+{
+  "status": "preflight_in_progress",
+  "server": "server02",
+  "upstream_commit": "470278c478bdb5e4b6f17dde1ea0393761f230f0",
+  "task": "play_tic_tac_toe",
+  "phase": "playground",
+  "scene_seed": 0,
+  "arms": {"baseline": {"gpu": 0}, "jev": {"gpu": 1}},
+  "gpt": {"model": "gpt-6-astra", "effort": "high", "account": "local signed-in ChatGPT account via dedicated forwarding"},
+  "execution_requests_per_arm": 100,
+  "native_action_limit": "Read from the selected native task; identical in both arms",
+  "recipes": "Original supplied recipe enabled identically",
+  "reset": "Original Playground rules; every reset and consumed execution slot recorded",
+  "jev_admission": "Real API held-out protocol checks before runtime integration; missing or stale visual evidence requires escalation",
+  "startup_acceptance": [
+    "Native scene renders public observations and accepts documented actions",
+    "Actual model and effort verified in forwarded requests",
+    "Each arm completes multiple observe-submit-execute-feedback cycles",
+    "Jev arm contains real recorded Jev choices mapped to executed registered branches",
+    "Model token usage and retries are recorded separately by provider; unknown usage is not zero"
+  ],
+  "metrics": ["native_success", "native_steps", "executions", "resets", "wall_seconds", "gpt_input_tokens", "gpt_cached_input_tokens", "gpt_output_tokens", "jev_input_tokens", "jev_output_tokens", "retries", "unknown_usage_attempts"],
+  "interpretation": "A paired development run is not a benchmark success-rate estimate. Formal Test requires separately frozen skills and lessons and matched held-out scenes.",
+  "outer_agent_policy": "Monitor infrastructure and evidence; task control code and task-specific revisions remain authored by the measured coding agent. Preserve all failed attempts."
+}
