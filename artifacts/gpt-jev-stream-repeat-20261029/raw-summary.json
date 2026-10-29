@@ -1,0 +1,12 @@
+{
+  "raw_completed": 0,
+  "raw_trials": 3,
+  "raw_elapsed_s": [
+    652.4195448819992,
+    900.3555937359997,
+    900.4266116120016
+  ],
+  "startup_failures": 3,
+  "startup_model_turns": 0,
+  "scope": "Startup failures retained separately; model trials are three raw and three PATH-corrected native requests"
+}

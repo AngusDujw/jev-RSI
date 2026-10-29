@@ -1,0 +1,14 @@
+{
+  "arm": "raw",
+  "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+  "started": 1793271247.2294037,
+  "retry_policy": "One independent upstream attempt; no automatic resend",
+  "completed": false,
+  "error_type": "ProTransportError",
+  "error": "Native Pro stream ended without a completed response",
+  "elapsed_s": 900.4266116120016,
+  "upstream_attempt": {
+    "request_sent": true
+  },
+  "usage_unknown": true
+}

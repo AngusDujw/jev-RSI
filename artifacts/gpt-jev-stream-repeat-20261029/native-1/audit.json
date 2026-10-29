@@ -1,0 +1,28 @@
+{
+  "thread_id": "01a18759-7b3d-7561-941c-08cf2eedb132",
+  "same_thread": true,
+  "stored_turns": [
+    {
+      "id": "01a18759-7b48-7053-ab29-5b225e9b8dad",
+      "status": "completed",
+      "items": {
+        "userMessage": 1,
+        "reasoning": 61,
+        "dynamicToolCall": 1,
+        "agentMessage": 1
+      }
+    }
+  ],
+  "initial_text_matches": true,
+  "initial_images": 2,
+  "expected_images": 2,
+  "user_message_count": 1,
+  "subsequent_images": [],
+  "pre_fault_completed_reasoning_items": 0,
+  "pre_fault_item_ids_preserved": true,
+  "instruction_sources": [],
+  "scope": "Stored history and complete tool receipt; not exact token-level inference resumption",
+  "source_hash_matches": true,
+  "receipt_arguments_match": true,
+  "checks_passed": true
+}

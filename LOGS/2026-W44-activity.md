@@ -203,3 +203,4 @@
 - 【Agent】【2026-10-29 19:09】[result] 原HTTP三独立无时限请求全部自然中断：652.420/900.356/900.427秒，均chunk IncompleteRead且无completed；后两例已输出19324及部分参数字符。原批3个native均因systemd PATH缺Codex启动退出、0模型turn，全部保留。native-fixed已通过同服务账号预检并开始顺序三例，不更换账号模型提示词。
 - 【Agent】【2026-10-29 19:47】[result] native-fixed第1例2256.991秒完整交付205行，schema/英文/AST通过；自然TLS handshake EOF后SDK同会话同轮自动恢复并继续，0自身RPC故障/0外层新轮。同期普通HTTPS握手超时与native错误相差约10秒，支持瞬时链路异常但不定位关闭层；0Jev/0GPU。第2例按计划开始。
 - 【Agent】【2026-10-29 19:50】[op] 补充NativeRpc启动保护：PATH找不到Codex时在发出模型请求前明确FileNotFoundError，存在时固定绝对可执行文件；13项离线机制/启动检查通过。只影响启动错误分类，模型输入与有效环境恢复策略不改；记录native-1/2已启动、native-3将加载守卫的版本边界。
+- 【Agent】【2026-10-29 20:17】[op] 归档三次旧HTTP中断及自然TLS恢复完整正例为EXP-2026W44-035/036；保留原systemd PATH启动失败，0模型turn不混计。更正可复核检查为11项机制+1项启动共12项，均通过；此前13项为口误。当前原生主动故障第2例仍执行中。

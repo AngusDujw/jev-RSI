@@ -668,3 +668,6 @@
 【Agent @Codex】【2026-10-29】[EXP034](LOGS/2026-W44.md#exp-2026w44-034)取消时间截止后205行d4727784原源复用完成物理目标：native=true，19GPT/92Jev/276步/3997.658秒，0修补，全部来源/strict审查/派发审计通过，host自然exit0且无信号。程序proposal=false来自verify首帧协议矛盾：previous_definition=None但无条件要求correspondence=certain；GPT整体complete且inside_supported/released=yes，明确因无前一参考返回unknown，程序在保存首次定义前退出。并非Jev没完成目标或预算耗尽。GPT桥链路3637.491秒，首参数前3065.026秒，50814推理tokens但非纯计算秒；Jev203.024秒/94尝试含2未知失败后恢复。空载2484.388秒未复现原40分钟SIGTERM，旧发送方仍未知，主动停止已分标。完整[诊断报告](artifacts/gpt-jev-unlimited-20261029/README.md)。
 
 【Agent @Codex】【2026-10-29】Weekly Retro补记：长期CIRCLE-1/3仍保留，无新增CIRCLE-2；本轮收敛为无时限传输诊断和同源执行诊断，加无模型进程对照，不继续换任务或改策略补选成功。物理成功与程序自评/观测契约分开，恢复交付及验证协议各自需要后续修复，不改正式理论目标。
+
+
+【Agent @Codex】【2026-10-29】[EXP035](LOGS/2026-W44.md#exp-2026w44-035)按固定183首请求独立重放，移除应用/读流/进程时限后旧HTTP仍652.420/900.356/900.427秒自然chunk EOF，0/3完整交付，后两例首参数775.622/794.150秒，未知用量全部保留；普通HTTPS当时可达不能定位关闭层。原批3个native因systemd PATH缺NVM Codex启动失败，0模型turn，原记录保留、单独修正启动环境后预声明三例。[EXP036](LOGS/2026-W44.md#exp-2026w44-036)修正后的原生对照例自然TLS EOF后SDK同会话同轮继续，2256.991秒交付205行/source b71a65fe，历史审计文本/两图仅一次、工具回执/源码/英文/schema/AST全部通过；378397输入/39902输出/29060推理tokens（360192缓存输入），中断片段费用仍可能未知。同期普通HTTPS握手超时与native错误相差9.6秒，支持瞬时链路异常而非全程纯推理或全程网络等待；原生代码模式内部8次工具调用、多版草稿检查也是耗时来源，不是只换HTTP协议的纯对照。0Jev、LIBERO未测；一次/两次自身RPC故障两例仍按预声明执行，不补选成功样本。

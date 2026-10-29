@@ -1,0 +1,29 @@
+{
+  "arm": "native",
+  "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+  "started": 1793270346.6571758,
+  "requested_faults": 0,
+  "fault_interval": 45.0,
+  "completed": false,
+  "error_type": "RpcDisconnected",
+  "error": "Native app-server stdout closed",
+  "thread_id": null,
+  "turns": [],
+  "recoveries": [
+    {
+      "kind": "rpc_reconnect",
+      "at": 1793270346.6618664
+    },
+    {
+      "kind": "rpc_reconnect",
+      "at": 1793270346.6664329
+    }
+  ],
+  "usage_unknown": true,
+  "elapsed_s": 0.014269471997977234,
+  "injected_faults": 0,
+  "model_turns_started": 0,
+  "same_thread_after_faults": true,
+  "requested_faults_observed": true,
+  "observed_rpc_reconnects": 2
+}
