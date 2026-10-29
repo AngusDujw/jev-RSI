@@ -1,0 +1,11 @@
+{
+  "completed_after_virtual_1800_seconds": true,
+  "no_socket_deadline": true,
+  "same_payload_on_retry": true,
+  "failed_attempt_usage_unknown": true,
+  "reasoning_text_not_logged": true,
+  "metadata_and_argument_counts": true,
+  "host_timeout_none": true,
+  "host_omits_timeout_header": true,
+  "fixture_removed": true
+}

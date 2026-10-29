@@ -1,0 +1,5 @@
+{"epoch": 1793255805.1301572, "event": "started", "pid": 453485, "ppid": 1903, "pgid": 453485, "sid": 453485}
+{"epoch": 1793255805.130559, "event": "alive", "pid": 453485, "ppid": 1903}
+{"epoch": 1793255805.1777053, "event": "signal_received", "signal": 15, "sender_pid": 1903, "sender_uid": 1000, "signal_code": 0}
+{"epoch": 1793255806.1307287, "event": "interrupted"}
+{"epoch": 1793255806.1307747, "event": "exited"}

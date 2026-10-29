@@ -1,0 +1,48 @@
+{
+  "created_utc": "2026-10-29T06:38:35.235867+00:00",
+  "purpose": "Separate method generation timing, transport/retry overhead and execution termination after removing wall cutoffs",
+  "diagnostic_commit": "8b4bfdd6",
+  "historical_commit": "a8e6ea72",
+  "server": "company-server-2-ykj",
+  "local_worktree": ".worktrees/gpt-jev-timing-unlimited-20261029",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-timing-unlimited-20261029",
+  "planner": "current local signed-in ChatGPT Pro gpt-6-astra/xhigh",
+  "executor": "official Jev jev-1.13.0 /v1/systemone",
+  "fixed_files_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "2e2e3d96ab5e29866635ba97a1febdc5b2a2940bd9066b5ff94c08e6ca97a6f5",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "f4c63ffc1cb8253c1efcc97ebfc8b7e23602fbc14d62f99dac0edf65c93ee465",
+    "code/prompts/gpt_jev_program_api_v2.md": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e"
+  },
+  "conditions": [
+    {
+      "name": "generation-replay",
+      "unit": "Exact failed task183 initial request and image replay, local, no SSH or simulator",
+      "request": "code/runs/2026-10-29-gpt-jev-historical-two/new-183-init0/gpt-00.request.json",
+      "time_limit": null,
+      "max_transport_attempts": 3,
+      "payload_unchanged": true
+    },
+    {
+      "name": "known-execution",
+      "unit": "Exact205-line source reuse in identical initial state; empty memory; not cold generation",
+      "task_id": 1335,
+      "init_index": 12,
+      "seed": 0,
+      "gpu": 4,
+      "source_sha256": "d4727784609020653491bd482d52370d7ae100dec09f6323df3bfd3a89671813",
+      "wall_limit": null,
+      "gpt_request_limit": null,
+      "max_gpt": 24,
+      "max_jev": 200,
+      "max_native_steps": 600,
+      "max_source_repairs": 0
+    }
+  ],
+  "order": "generation replay then known execution; sequential Pro calls",
+  "time_removal": "No application wall/request cutoff or GPT socket read timeout. No finite model RuntimeMaxSec in user systemd. Keep count limits and Jev per-attempt network timeout. API compatibility wall_seconds_remaining is fixed1e12, not an enforced deadline.",
+  "process_lifecycle": "User systemd transient units; no reboot persistence/global config changes. Bridge captures SIGTERM sender PID/UID. Host uses ordinary signal handler to avoid blocking worker termination.",
+  "evidence": "SSE event types/counts, first headers/event/reasoning/arguments, complete usage, EOF/chunk errors, retry/backoff, host per-call timings, native terminal outcome. Never log hidden reasoning text or execute partial arguments.",
+  "limits": "Observed pre-output time includes provider queue/inference/network; event/token counts do not identify exact pure GPU compute time. Raw ChatGPT backend reproduction is not Platform Responses API; official event docs are semantic reference only.",
+  "docs": "https://developers.openai.com/api/reference/resources/responses/streaming-events",
+  "admission": "Two declared diagnostic units; preserve failures and unknown costs; no hand editing task source or adding replacement tasks"
+}
