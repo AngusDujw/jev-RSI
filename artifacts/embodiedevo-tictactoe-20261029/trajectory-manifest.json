@@ -1,0 +1,186 @@
+{
+  "source": "RoboDojo-Benchmark/RoboDojo",
+  "commit": "269457a3b42d8d0ae69898a601f2c1487c2f826e",
+  "files": [
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_0.pkl",
+      "size": 816662,
+      "sha256": "dad5dd0760bd27e3d9f651c939e6134be2dd9fa1b80abc45084ab4b93240f427"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_1.pkl",
+      "size": 816662,
+      "sha256": "f6a8e85781c34a56d8a34043e4471028c714680dd724464686b1f297d521d234"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_2.pkl",
+      "size": 816662,
+      "sha256": "fec0ca8c48958e940a07af54ff1226ab07302bde365c631975736f35cdae095e"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_3.pkl",
+      "size": 737524,
+      "sha256": "7d36159c0b0d068b8bbd0de475cad8326e41dc81bc4e0fef3778fa4095109fed"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_4.pkl",
+      "size": 737524,
+      "sha256": "fb01be2709ea2cf0d0100d2380e986baa76b3d3cc0b7bf33ae6ed9e25db25b24"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_5.pkl",
+      "size": 737524,
+      "sha256": "bab034fbf15cee5ae15ca91229d3be3d2c7ae7e4557b836291ab1f7a5e360776"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_6.pkl",
+      "size": 684761,
+      "sha256": "e7d521e958c21a889e8c0eeb25b21dd47967b6a0c4c90b7d34f2cf1ba1999953"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_7.pkl",
+      "size": 684761,
+      "sha256": "c1cfe98a1f46a9c9117957039f6a9f85d1ca66d2e3d4206edffac4e90020e8a4"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/0_8.pkl",
+      "size": 684761,
+      "sha256": "aa307a55199ad921b2a733a144d0d90705a90c236f13704aa4f294f11aeabe9e"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_0.pkl",
+      "size": 816247,
+      "sha256": "6f04c7c507deea31d10ed59115f70eef81aa955f4f0addba1bc346ebef84f410"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_1.pkl",
+      "size": 816247,
+      "sha256": "adb7278058fb12b033d821e2ce1c6b617c048da905c4e21ac856fe26fecf0da2"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_2.pkl",
+      "size": 816247,
+      "sha256": "50e9a8e3c4c5961c6e85edce48de78c00f273e45f059aa42d58bc37261cd35b2"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_3.pkl",
+      "size": 737109,
+      "sha256": "dcd7a15121c24601705a93beaf1b760498eb3131690883a590294d475da07ef8"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_4.pkl",
+      "size": 737109,
+      "sha256": "feb6c12fe73ff8773066343825f880ffbea45e55af0ee9c4c2b1d79661ab4a56"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_5.pkl",
+      "size": 737109,
+      "sha256": "550a82ff213862886a880b8f7fe75f48704bb7a9c080ee8a0625812c93faab4d"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_6.pkl",
+      "size": 684346,
+      "sha256": "7830f973c30f25dbac96b41e6f647106fe0f31ad546597365e7ce720c894bfe8"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_7.pkl",
+      "size": 684346,
+      "sha256": "0355b8c0ac7d9001954309f600061591706b256bc203efde84eb89eb4cf90edb"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/1_8.pkl",
+      "size": 684346,
+      "sha256": "56c22e7fb7af682939591d34d4236760424ffd0e6a95edbe923e6e75895146e7"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_0.pkl",
+      "size": 816247,
+      "sha256": "32352fc8ec927a47af53db90ccd6df08d47e739691fbd55045cc954c60906d6e"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_1.pkl",
+      "size": 816247,
+      "sha256": "2133da843a71e2464f9e410593c71d47c5a5161a55c7ba993cfc9b479a5ad019"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_2.pkl",
+      "size": 816247,
+      "sha256": "64564af0761134994e5dc0123398bc1d876e08d3ea3a22bc9f2b11cef75c3c16"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_3.pkl",
+      "size": 737109,
+      "sha256": "724d3bee4df84a2a37e0d3ac39968948e12f303faec0c650f5900f006abe2dd2"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_4.pkl",
+      "size": 737109,
+      "sha256": "42dc92e833aa0abfa24432eee69b892052d9d4a7c489b18940de4505048bf66a"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_5.pkl",
+      "size": 737109,
+      "sha256": "ebdc0c4ede4f1d8ecc2942c478307a3338998be1f6c4e502d8843a1d9f5c8a60"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_6.pkl",
+      "size": 684346,
+      "sha256": "e5525d3e8075abb86ec8e522b93539e2bbf103241a24bfb786cb8e4a3be02305"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_7.pkl",
+      "size": 684346,
+      "sha256": "1105289166187e79e7f6ef167d987b1dee57cda84dc1fc82c206182b0773873a"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/2_8.pkl",
+      "size": 684346,
+      "sha256": "9be2536afc03f47976aa893a914b7bfc70dbe3543f5dbf27f06a0e2d3218fbaa"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_0.pkl",
+      "size": 816662,
+      "sha256": "839858f31736757141f995b8e56955c30a42842227f91fbb7f811d9093f63d8e"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_1.pkl",
+      "size": 816662,
+      "sha256": "5b56effc81ffb4ecca8e77d8c55141a4b0b318f1997f178c0f7e553f50bf6fcc"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_2.pkl",
+      "size": 816662,
+      "sha256": "2fec162fd199479e5c7e848a1eccfd33e5078d88ec3d466e484c15ca96150e87"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_3.pkl",
+      "size": 737524,
+      "sha256": "4f83e75356ee8e5dda8ae08ef34455866f4ca338828ba832356bac786aa9b55b"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_4.pkl",
+      "size": 737524,
+      "sha256": "9b4bf148b67f879af824ed77e19fa87edf715994b041e230c14987aad96d4743"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_5.pkl",
+      "size": 737524,
+      "sha256": "7bbc39f1fdcb55f0429aad6813c61da05dfd11b774dd7442dbf2ac8f50b98301"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_6.pkl",
+      "size": 684761,
+      "sha256": "a6dcf4cc59be915701738225b5001585ba918bf2f1fb17521e65b01129f4c99c"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_7.pkl",
+      "size": 684761,
+      "sha256": "ff6171ff93574098a2a82cc66281f43d3188aee092a07949da7b03dffc6453e0"
+    },
+    {
+      "path": "Assets/Traj/RoboDojo/play_tic_tac_toe/3_8.pkl",
+      "size": 684761,
+      "sha256": "217bb232fcbbc0163a6d035f8d4355444ebafdfdcd96c38fa3362e9bbc10df76"
+    }
+  ]
+}

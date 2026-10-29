@@ -1,0 +1,10 @@
+{
+  "passed": false,
+  "kind": "host-only-smoke",
+  "env_task": "play_tic_tac_toe",
+  "python": "/data/ykj_robodojo/RoboLaya/.conda/bin/python",
+  "python_prefix": "/data/ykj_robodojo/RoboLaya/.conda",
+  "isaaclab_source": "/data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/third_party/IsaacLab/source/isaaclab/isaaclab/__init__.py",
+  "curobo_source": "/data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/third_party/curobo/curobo/__init__.py",
+  "error": "Traceback (most recent call last):\n  File \"/data/ykj_robodojo/embodiedevo-comparison-20261029/scripts/smoke_robodojo.py\", line 75, in main\n    session = Session(\n              ^^^^^^^^\n  File \"/data/ykj_robodojo/embodiedevo-comparison-20261029/orchestrator/session.py\", line 96, in __init__\n    self.env.reset(seed=seed)\n  File \"/data/ykj_robodojo/embodiedevo-comparison-20261029/simulators/robodojo.py\", line 384, in reset\n    self.native.run_reward()\n  File \"/data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/task/RoboDojo/tasks/play_tic_tac_toe.py\", line 193, in run_reward\n    self.load_support_arm_traj()\n  File \"/data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/task/RoboDojo/tasks/play_tic_tac_toe.py\", line 40, in load_support_arm_traj\n    data = load_pkl(traj_path)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/utils/load_file.py\", line 18, in load_pkl\n    raise FileNotFoundError(f\"File {file_path} does not exist.\")\nFileNotFoundError: File /data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/env/../Assets/Traj/RoboDojo/play_tic_tac_toe/0_0.pkl does not exist.\n"
+}
