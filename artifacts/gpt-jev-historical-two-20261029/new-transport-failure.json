@@ -1,0 +1,28 @@
+{
+  "error_type": "ProDeadlineError",
+  "error": "Native Pro whole-call deadline exceeded",
+  "elapsed_s": 1798.0010576719997,
+  "upstream_attempts": [
+    {
+      "attempt": 1,
+      "started": 1793252268.0759606,
+      "request_sent": true,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "http_status": null,
+      "usage_unknown": true,
+      "elapsed_s": 900.3813582029998,
+      "retry_delay_s": 15
+    },
+    {
+      "attempt": 2,
+      "started": 1793253183.457512,
+      "request_sent": true,
+      "error_type": "TimeoutError",
+      "error": "The read operation timed out",
+      "usage_unknown": true,
+      "elapsed_s": 882.4125160650001
+    }
+  ],
+  "request_budget_s": 1798.0
+}

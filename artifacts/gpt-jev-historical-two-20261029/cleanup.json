@@ -1,0 +1,10 @@
+{
+  "checked_epoch": 1793254133.0788095,
+  "local7921_closed": true,
+  "remote7921_closed": true,
+  "remote_known_pid1133485_absent": true,
+  "remote_new_pid1618263_absent": true,
+  "own_bridge_and_tunnel_stopped": true,
+  "production_files_modified": false,
+  "verification_script_created": false
+}

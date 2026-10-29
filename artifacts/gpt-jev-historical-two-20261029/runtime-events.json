@@ -1,0 +1,11 @@
+{
+  "known_orchestrator_tool_session": 10289,
+  "exit_code": 143,
+  "signal_interpretation": "SIGTERM indicated by exit143; sender and cause not established",
+  "observed": "Local bridge and reverse tunnel disappeared; remote host then returned Remote end closed connection without response",
+  "known_final_request_unreceipted": "gpt-12.request.json",
+  "new_run_change": "Same historical bridge source, independent TTY service83253 and tunnel supervisor80303; no planner input/code changes",
+  "earlier_ssh_monitor_failures": 2,
+  "earlier_ssh_error": "No route to host",
+  "earlier_monitor_recovered": true
+}

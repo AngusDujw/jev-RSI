@@ -189,6 +189,8 @@ graph LR
     T_2026W44_014["📊 libero-generic-vision<br/>实际任务1335首例因serverOver…"]:::experiment
     T_2026W44_015["📊 libero-generic-vision<br/>已测新源经校验修复后进入真实60Jev/1…"]:::experiment
     T_2026W44_016["📊 libero-generic-vision<br/>新132完整冷生成及两修补、18GPT全返…"]:::experiment
+    T_2026W44_017["📊 libero-generic-vision<br/>原样10月27日框架：原任务12.3分钟新…"]:::experiment
+    T_2026W44_018["📝 libero-generic-vision<br/>T-2026W44-017同时依据新183…"]:::note
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -331,6 +333,8 @@ graph LR
   T_2026W44_013 --> T_2026W44_014
   T_2026W44_014 --> T_2026W44_015
   T_2026W44_015 --> T_2026W44_016
+  T_2026W44_016 --> T_2026W44_017
+  T_2026W44_017 --> T_2026W44_018
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -502,6 +506,8 @@ graph LR
 | `T-2026W44-014` | 2026-10-28 | experiment | libero-generic-vision | 实际任务1335首例因serverOverloaded在2299秒结束，0Jev；补充同模型同线程有界恢复，另声明修复版两例，原失败保留 | `EXP-2026W44-024` | - |
 | `T-2026W44-015` | 2026-10-28 | experiment | libero-generic-vision | 已测新源经校验修复后进入真实60Jev/180步，原生目标未成；修补连接失败耗尽原预算，尚不稳定 | `EXP-2026W44-026` | - |
 | `T-2026W44-016` | 2026-10-28 | experiment | libero-generic-vision | 新132完整冷生成及两修补、18GPT全返回无恢复，83Jev/249步仍两小时未完成；生成修补审查成本不能单归网络 | `EXP-2026W44-027` | - |
+| `T-2026W44-017` | 2026-10-29 | experiment | libero-generic-vision | 原样10月27日框架：原任务12.3分钟新源并59Jev但外部SIGTERM中断，新183方法获取30分钟超时；未复现完整成功 EXP-2026W44-030 | `EXP-2026W44-029` | - |
+| `T-2026W44-018` | 2026-10-29 | note | libero-generic-vision | T-2026W44-017同时依据新183方法获取失败EXP030；ref参数只收单ID，第二ID进入了原节点描述，关联在此补记 | `EXP-2026W44-030` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
