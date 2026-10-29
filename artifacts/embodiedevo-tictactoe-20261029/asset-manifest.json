@@ -1,0 +1,61 @@
+{
+  "source": "RoboDojo-Benchmark/RoboDojo",
+  "commit": "269457a3b42d8d0ae69898a601f2c1487c2f826e",
+  "files": [
+    {
+      "path": "Assets/Object/RoboDojo/Rigid/chessman/00000/description.json",
+      "size": 6968,
+      "sha256": "78f9bf52ab7001fba492c6cb644f4af7e9a933ff55e128934ba38bedc47fcee2"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Rigid/chessman/00000/metadata.json",
+      "size": 3889,
+      "sha256": "c505c0b287d219c39f447d82b9a4463b71109c4fe78c393757a68b1db7708e38"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Rigid/chessman/00000/object.usdz",
+      "size": 1787087,
+      "sha256": "df00d91f5ab3d172ad8699751be9a5b3b6115eb1702e8a6c65da29470151d550"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Rigid/chessman/00001/description.json",
+      "size": 7082,
+      "sha256": "a1eaf35066e33215bd5c69e1f082179a28d6da7703763ce39bb006814b609733"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Rigid/chessman/00001/metadata.json",
+      "size": 3424,
+      "sha256": "ce09f87a2cee17ada246970523dbf653a6b60237a670c507f3ec89179e423680"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Rigid/chessman/00001/object.usdz",
+      "size": 3074896,
+      "sha256": "2382dcf531f9c314cb4d923a639ae19ea6e4c7b0101c2fde189b573abf336d2c"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Geometry/checkerboard/00000/description.json",
+      "size": 8039,
+      "sha256": "b0bd4e0811e615b4a518c6556bca5fb901b17ebee6efcac1a669adb295ac503c"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Geometry/checkerboard/00000/metadata.json",
+      "size": 8033,
+      "sha256": "24c884f5fd0ed860f9a874296924350760591939824b920fc7de02813a67bb67"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Geometry/checkerboard/00000/object.usdz",
+      "size": 21301,
+      "sha256": "ca578aae66cabca62343aff47076afe88cc81db00af27df1273fe9ef246a2244"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Geometry/camera_stand/00000/metadata.json",
+      "size": 2414,
+      "sha256": "981392df89e5a45a28c0240ef0cb289b778550ec7ad49e98419a813865bb3d30"
+    },
+    {
+      "path": "Assets/Object/RoboDojo/Geometry/camera_stand/00000/object.usd",
+      "size": 8103315,
+      "sha256": "6c4b9ec4cd325f6e47d862b87e7dddbe9adc5e9a5aa0f04224c47d0f16a600a8"
+    }
+  ]
+}
