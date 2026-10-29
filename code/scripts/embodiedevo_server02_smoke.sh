@@ -17,6 +17,7 @@ exec docker run --rm --gpus "device=$gpu" --network host --ipc private --shm-siz
   --env "TORCH_EXTENSIONS_DIR=$root/.cache/torch" --env PYTHONDONTWRITEBYTECODE=1 \
   --env SETUPTOOLS_SCM_PRETEND_VERSION=0.0.post1.dev100 \
   --entrypoint /bin/bash nvcr.io/nvidia/isaac-sim:5.1.0 -lc '
+    export CARB_APP_PATH=/isaac-sim/kit ISAAC_PATH=/isaac-sim EXP_PATH=/isaac-sim/apps
     source /isaac-sim/setup_python_env.sh
     export LD_LIBRARY_PATH=/data/ykj_robodojo/RoboLaya/.conda/lib:$LD_LIBRARY_PATH
     export LD_PRELOAD=/isaac-sim/kit/libcarb.so

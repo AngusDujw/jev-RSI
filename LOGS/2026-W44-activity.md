@@ -153,3 +153,4 @@
 - 【Agent】【2026-10-29 12:59】[op] 原任务实际首请求核对：与10月27日成功请求instructions/tools/model/effort/两图像全部相同，初态仅剩余墙钟不同，空历史且全英文；保存known-initial-input-checks。
 - 【User】【2026-10-29 13:16】[prompt] 启动一下吧
 - 【Agent】【2026-10-29 13:16】[op] 开始server02原版下棋启动：同/data盘独立复制约21GB现有RoboDojo源码资产；原版orchestrator导入已通过。新增运行适配脚本复用只读RoboLaya环境与Isaac镜像，所有缓存放本项目，修正原版smoke的临时路径设置但不改变动作/评分。实际场景验收待完成。
+- 【Agent】【2026-10-29 13:20】[run] 已启动server02受控启动链：原版资产复制进程3180828完成后自动运行原版scripts.smoke_robodojo的play_tic_tac_toe检查，GPU0，run=runs/20261029-tictactoe-smoke-01；日志.cache/tictactoe-smoke-01.log。当前复制19/21GB，尚无场景通过结论，未启动两组GPT迭代。
