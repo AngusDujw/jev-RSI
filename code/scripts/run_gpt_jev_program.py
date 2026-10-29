@@ -45,15 +45,24 @@ def post(url, payload, path, timeout=1800):
     started = time.monotonic()
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     headers = {"Content-Type": "application/json"}
-    if url.endswith("/responses"):
+    if url.endswith("/responses") and timeout is not None:
         headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(1800., timeout-2.)))
     request = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers)
+    def timing(event, **values):
+        with (path.parent / "model-timing.jsonl").open("a") as stream:
+            stream.write(json.dumps(dict(event=event, request=path.stem,
+                route="gpt" if url.endswith("/responses") else "jev",
+                epoch=time.time(), elapsed_s=time.monotonic()-started,
+                timeout_s=timeout, **values))+"\n")
+    timing("request_started")
     try:
         with opener.open(request, timeout=timeout) as response:
             result = json.load(response)
         save(path.with_suffix(".response.json"), result)
+        timing("request_completed")
         return result
     except Exception as error:
+        timing("request_failed", error_type=type(error).__name__, message=str(error)[:300])
         save(path.with_suffix(".failure.json"), dict(error_type=type(error).__name__,
             elapsed_s=time.monotonic()-started, usage_unknown=True,
             model_request_attempted=True, physical_dispatch=False,
@@ -249,6 +258,8 @@ def main():
     p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
     p.add_argument("--revise-archived", action="store_true", help="Ask GPT to revise the archived method using its adjacent summary.json")
     p.add_argument("--wall-seconds", type=int, default=3600)
+    p.add_argument("--unlimited-time", action="store_true",
+                   help="Diagnostic: no host/model wall cutoff; retain count limits. Time budget display is a fixed compatibility sentinel.")
     args = p.parse_args()
     repo = Path(__file__).resolve().parents[2]
     out = args.output.resolve()
@@ -334,10 +345,10 @@ def main():
     def budgets():
         return dict(gpt_remaining=args.max_gpt-gpt_calls, jev_remaining=args.max_jev-jev_calls,
                     native_steps_remaining=args.max_native_steps-native_steps,
-                    wall_seconds_remaining=max(0, args.wall_seconds-(time.monotonic()-started)))
+                    wall_seconds_remaining=1e12 if args.unlimited_time else max(0, args.wall_seconds-(time.monotonic()-started)))
 
     def budget():
-        if time.monotonic()-started >= args.wall_seconds:
+        if not args.unlimited_time and time.monotonic()-started >= args.wall_seconds:
             raise RuntimeError("wall_budget")
         if native_steps >= args.max_native_steps:
             raise RuntimeError("native_step_budget")
@@ -493,7 +504,7 @@ def main():
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
             input=[dict(role="user", content=content)], tools=[tool_definition],
             tool_choice=dict(type="function", name=tool), parallel_tool_calls=False, store=False)
-        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=max(1, min(1800, budgets()["wall_seconds_remaining"])))
+        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=None if args.unlimited_time else max(1, min(1800, budgets()["wall_seconds_remaining"])))
         if not raw.get("model", "").startswith("gpt-6-astra") or raw.get("status") != "completed":
             raise ValueError("Unexpected planner response")
         calls = [x for x in raw.get("output", []) if x.get("type") == "function_call"]
@@ -548,7 +559,7 @@ def main():
             feature_source="GPT-authored program; not an independent sensor"), questions=questions)
         index = jev_calls
         jev_calls += 1
-        raw = post(args.bridge+"/systemone", request, out / f"jev-{index:03d}", timeout=max(1, min(900, budgets()["wall_seconds_remaining"])))
+        raw = post(args.bridge+"/systemone", request, out / f"jev-{index:03d}", timeout=None if args.unlimited_time else max(1, min(900, budgets()["wall_seconds_remaining"])))
         return dict(choices=parse_jev(request, raw), frame_id=native_steps, decision=index)
 
     def control(target, quaternion, gripper, questions, features=None, tool_point="tcp",
