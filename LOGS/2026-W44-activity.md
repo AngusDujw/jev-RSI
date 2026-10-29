@@ -149,3 +149,5 @@
 - 【Agent】【2026-10-29 12:34】[result] 选定现有RoboLaya .conda + IsaacSim5.1镜像，复用private-ipc启动包装实际验证Python3.11.15/NumPy1.26.0/Torch2.7.0+cu128/Gymnasium1.2.1导入通过，isaaclab/isaacsim/curobo可见且CUDA true。无需从零重建仿真环境；只创建本轮preflight缓存，未改旧环境。原版EmbodiedEvo经SSH克隆至/data/ykj_robodojo/embodiedevo-comparison-20261029，固定470278c；原版适配器及下棋场景尚待验证，两组实验尚未启动。
 - 【User】【2026-10-29 12:53】[intent] 用户要求恢复10月27日1335/init12成功时提示词/API/旧host/旧桥，原任务和一个新任务各独立冷生成一次，max_repairs0；冻结两例不补选，原生LIBERO判定，沿用Pro Astra/xhigh和官方Jev1.13。
 - 【Agent】【2026-10-29 12:55】[op] 冻结10月27日a8e6ea72框架原样复测：双端提示词及旧host哈希匹配，旧桥254afc95、Pro ChatGPT OAuth/Astra-xhigh、官方Jev1.13不变；原1335/init12及新183/init0顺序各一例、0源码修补。引用旧笔记仅支持完整成本与位姿/任务成功分开，不作为模型输入。
+- 【Agent】【2026-10-29 12:56】[run] 原样旧框架两例顺序运行器启动，旧桥固定哈希未修改；本机自有7921桥及可重连SSH转发，当前原任务1335/init12进入冷生成，后续按预声明运行183/init0。
+- 【Agent】【2026-10-29 12:59】[op] 原任务实际首请求核对：与10月27日成功请求instructions/tools/model/effort/两图像全部相同，初态仅剩余墙钟不同，空历史且全英文；保存known-initial-input-checks。

@@ -1,0 +1,10 @@
+{
+  "model": true,
+  "reasoning": true,
+  "instructions": true,
+  "tools": true,
+  "tool_choice": true,
+  "initial_images_identical": true,
+  "initial_state_identical_except_wall_budget": true,
+  "all_request_text_ascii": true
+}
