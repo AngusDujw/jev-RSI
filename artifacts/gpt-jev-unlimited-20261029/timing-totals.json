@@ -1,0 +1,14 @@
+{
+  "wall_seconds": 3997.657970942091,
+  "gpt_host_seconds": 3741.1806222677696,
+  "gpt_bridge_seconds": 3637.4910618270005,
+  "gpt_upstream_attempt_seconds": 3628.4897714530016,
+  "pre_argument_seconds": 3065.025715642998,
+  "argument_to_complete_seconds": 563.4640558100036,
+  "reasoning_tokens": 50814,
+  "jev_host_seconds": 230.396132388385,
+  "jev_bridge_seconds": 203.02359560500554,
+  "jev_median_relay_seconds": 0.6802009835000717,
+  "other_host_wall_seconds": 26.081216285936534,
+  "warning": "Pre-argument time includes server queue/processing/inference and network; host-minus-relay differences include roundtrip, parsing and I/O, not pure network time."
+}

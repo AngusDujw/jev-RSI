@@ -1,0 +1,7 @@
+{
+  "created_epoch": 1793258072.7728193,
+  "purpose": "Check whether the previous plain exec tool launch style reproducibly sends SIGTERM near2400s",
+  "condition": "Harmless lifecycle-only Python process via plain exec session, no model/robot/network",
+  "sender_logging": "sigwaitinfo records signal sender PID/UID; running probe does not own production service processes",
+  "boundary": "Observe through previous2398.5s boundary plus margin; if still alive, stop own probe manually and label non-reproduction, not a model cutoff"
+}

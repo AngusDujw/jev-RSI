@@ -190,3 +190,9 @@
 - 【Agent】【2026-10-29 15:07】[run] 诊断A无时限终局：900.868s/338.805s两次IncompleteRead后3.581s TLS EOF，三尝试失败、总1303.256秒含60秒退避、0完整方法，服务正常退出无SIGTERM。启动诊断B：同源d4727784/205行、1335/init12/seed0/GPU4、零修补、取消请求及整回合时限；双端用户systemd运行、实际无RuntimeMaxSec，桥接SSE追踪继续。
 - 【Agent】【2026-10-29 15:09】[op] 新建实验块 EXP-2026W44-033：取消本地时间截止，精确重放新183失败请求并统计SSE阶段、断流与重试开销  ↪ `EXP-2026W44-033`
 - 【Agent】【2026-10-29 15:11】[op] 保存无时限生成阶段数据及EXP033/Discussion/引用笔记/T019，排除本地deadline为中断必要原因，关闭层和纯GPU推理份额仍未知；执行诊断进行中，原源不改。
+- 【Agent】【2026-10-29 15:14】[run] 执行诊断进入9次真实Jev；新增空载进程机制对照（无模型/机器人），按旧plain exec启动，记录SIGTERM发送PID以检查上轮约40分钟退出是否可复现；正式systemd服务独立，未改模型或任务源码。
+- 【Agent】【2026-10-29 15:36】[note] 执行诊断已47Jev/9GPT请求；一次SSH监控banner exchange超时，远端终止未确认。该监控网络异常单列，不归入GPT推理；正式systemd服务与空载信号对照继续。
+- 【Agent】【2026-10-29 15:55】[result] 空载plain-exec对照越过原2398.539秒位置，约42分钟未收到SIGTERM；按预声明主动结束自有空载进程并分开标记人为SIGTERM，发送PID被正确记录。未复现固定40分钟机制，旧SIGTERM来源仍未知；正式systemd机器人诊断仍在运行。
+- 【Agent】【2026-10-29 16:20】[op] 新建实验块 EXP-2026W44-034：取消请求/整回合时间截止，用上次205行原源同初态接Jev，定位实际终止条件与各链路耗时  ↪ `EXP-2026W44-034`
+- 【Agent】【2026-10-29 16:22】[result] 无时限同源执行终局LIBERO=true、program proposal=false：205行d4727784未改，19GPT/92Jev/276步/3997.658秒，0超时/0SIGTERM。最后verify已判断inside_supported/released=yes，但印刷C特征对应unknown触发程序停止；不是Jev未完成物理任务。完整来源/19strict审查/92派发审计通过。GPT216299/68868含50814推理tokens、relay3637.491秒；Jev192397/22908、relay203.024秒，94上游尝试含2未知失败后恢复。
+- 【Agent】【2026-10-29 16:28】[op] 补全EXP034与最终报告：同源物理目标成功，首帧reference=None却先验certain的验证契约矛盾导致proposal=false；保存逐请求计时、最终审查、全部审计、SIGTERM非复现及清理证据。无时限生成仍HTTP/TLS失败，纯GPU推理份额未知；本轮按两诊断加空载机制对照收口，不改任务源或固定提示词。

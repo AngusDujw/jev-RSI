@@ -191,3 +191,5 @@ Historical notes motivate separating direction, magnitude and full costs; they d
 
 ### 2026-10-29 unlimited timing diagnostic reference check
 EXP-2026W44-033 separates observed pre-argument processing, partial argument delivery, HTTP/TLS failure, and retry costs. Removing application deadlines did not prevent incomplete streams. Historical local control statements do not certify complete contact-task success or pure inference time; these notes are not runtime model input.
+
+EXP-2026W44-034 reached the isolated native goal with an unchanged generated method, while its first-reference correspondence gate returned incomplete. Native goal, program proposal, observation correspondence and transport costs remain separate claims; no static-control theorem or general success rate is inferred.

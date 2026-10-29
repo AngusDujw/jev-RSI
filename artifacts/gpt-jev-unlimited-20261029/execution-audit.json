@@ -1,0 +1,71 @@
+{
+  "native_success": true,
+  "termination": "method_incomplete",
+  "gpt_calls": 19,
+  "jev_calls": 92,
+  "native_steps": 276,
+  "elapsed_s": 3997.657970942091,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "d4727784609020653491bd482d52370d7ae100dec09f6323df3bfd3a89671813"
+    }
+  ],
+  "completion_proposed": false,
+  "program_result_contract_valid": true,
+  "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+  "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+  "dispatches": 92,
+  "models": {
+    "gpt": {
+      "attempts": 19,
+      "unknown_usage": 0,
+      "completed_input": 216299,
+      "completed_output": 68868,
+      "relay_seconds": 3637.4910618270005,
+      "matched_requests": 19,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": []
+    },
+    "jev": {
+      "attempts": 94,
+      "unknown_usage": 2,
+      "completed_input": 192397,
+      "completed_output": 22908,
+      "relay_seconds": 203.02359560500554,
+      "matched_requests": 92,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "jev-1.13.0"
+      ],
+      "transport_source_hashes": []
+    }
+  },
+  "strict_reviews_validated": 19,
+  "strict_designs_validated": 0,
+  "legacy_reviews_json_decoded": 0,
+  "source_origins": [
+    {
+      "number": 0,
+      "source_sha256": "d4727784609020653491bd482d52370d7ae100dec09f6323df3bfd3a89671813",
+      "origin": "declared exact-source reuse"
+    }
+  ],
+  "gpt_cost_by_purpose": {
+    "submit_review": {
+      "calls": 19,
+      "upstream_attempts": 19,
+      "completed_returns": 19,
+      "input": 216299,
+      "output": 68868,
+      "unknown_usage": 0,
+      "native_accounting_records": 0
+    }
+  },
+  "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+}

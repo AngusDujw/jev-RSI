@@ -1,0 +1,644 @@
+[
+  {
+    "request": "gpt-00",
+    "frame_id": 0,
+    "bridge_seconds": 78.40497478200086,
+    "host_seconds": 78.9332556289155,
+    "upstream_seconds": 77.84580179500153,
+    "first_event_s": 1.5039322130014625,
+    "first_reasoning_event_s": 21.819774274999872,
+    "first_argument_s": 70.4618353400001,
+    "argument_to_complete_s": 7.383966455001428,
+    "argument_characters": 2211,
+    "usage": {
+      "input_tokens": 3112,
+      "output_tokens": 2597,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 2001
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 5,
+      "response.output_item.done": 5,
+      "response.function_call_arguments.delta": 581,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-01",
+    "frame_id": 0,
+    "bridge_seconds": 123.43405891700058,
+    "host_seconds": 123.81371675385162,
+    "upstream_seconds": 122.6845554979991,
+    "first_event_s": 2.1045573440005683,
+    "first_reasoning_event_s": 34.392688501999146,
+    "first_argument_s": 108.80410268299966,
+    "argument_to_complete_s": 13.880452814999444,
+    "argument_characters": 2402,
+    "usage": {
+      "input_tokens": 8080,
+      "output_tokens": 2402,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1773
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 2,
+      "response.output_item.added": 5,
+      "response.output_item.done": 5,
+      "response.function_call_arguments.delta": 614,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-02",
+    "frame_id": 0,
+    "bridge_seconds": 115.3394313939989,
+    "host_seconds": 115.79411739413626,
+    "upstream_seconds": 114.68168928100022,
+    "first_event_s": 1.821851411001262,
+    "first_reasoning_event_s": 34.31346328099971,
+    "first_argument_s": 94.22171099499974,
+    "argument_to_complete_s": 20.459978286000478,
+    "argument_characters": 3162,
+    "usage": {
+      "input_tokens": 9776,
+      "output_tokens": 2388,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1552
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 2,
+      "response.output_item.added": 4,
+      "response.output_item.done": 4,
+      "response.function_call_arguments.delta": 821,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-03",
+    "frame_id": 27,
+    "bridge_seconds": 155.23627795599896,
+    "host_seconds": 156.25036046211608,
+    "upstream_seconds": 153.2585283820008,
+    "first_event_s": 1.973002210001141,
+    "first_reasoning_event_s": 29.307990892000817,
+    "first_argument_s": 129.26668471599987,
+    "argument_to_complete_s": 23.991843666000932,
+    "argument_characters": 3464,
+    "usage": {
+      "input_tokens": 12589,
+      "output_tokens": 2964,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 2070
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 5,
+      "response.output_item.done": 5,
+      "keepalive": 3,
+      "response.function_call_arguments.delta": 879,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-04",
+    "frame_id": 54,
+    "bridge_seconds": 91.42192583200085,
+    "host_seconds": 91.6573484109249,
+    "upstream_seconds": 90.98526709699945,
+    "first_event_s": 1.7646791120005219,
+    "first_reasoning_event_s": 31.01794013399922,
+    "first_argument_s": 67.08971229000053,
+    "argument_to_complete_s": 23.895554806998916,
+    "argument_characters": 3718,
+    "usage": {
+      "input_tokens": 12652,
+      "output_tokens": 1973,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1034
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 3,
+      "response.output_item.done": 3,
+      "keepalive": 1,
+      "response.function_call_arguments.delta": 924,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-05",
+    "frame_id": 69,
+    "bridge_seconds": 281.20923508600026,
+    "host_seconds": 281.6849235028494,
+    "upstream_seconds": 280.8269603280005,
+    "first_event_s": 2.2548290520007868,
+    "first_reasoning_event_s": 31.985798351000994,
+    "first_argument_s": 242.55214315600097,
+    "argument_to_complete_s": 38.27481717199953,
+    "argument_characters": 4774,
+    "usage": {
+      "input_tokens": 12748,
+      "output_tokens": 5008,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 3814
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 9,
+      "response.output_item.done": 9,
+      "keepalive": 4,
+      "response.function_call_arguments.delta": 1179,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-06",
+    "frame_id": 96,
+    "bridge_seconds": 268.1166847129989,
+    "host_seconds": 272.00972551992163,
+    "upstream_seconds": 267.67671405700094,
+    "first_event_s": 5.826767239999754,
+    "first_reasoning_event_s": 33.33719773099983,
+    "first_argument_s": 234.45083714900102,
+    "argument_to_complete_s": 33.22587690799992,
+    "argument_characters": 4976,
+    "usage": {
+      "input_tokens": 13076,
+      "output_tokens": 4809,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 3579
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 8,
+      "response.output_item.done": 8,
+      "keepalive": 5,
+      "response.function_call_arguments.delta": 1215,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-07",
+    "frame_id": 120,
+    "bridge_seconds": 288.65059032299905,
+    "host_seconds": 290.12776158191264,
+    "upstream_seconds": 288.36000186099955,
+    "first_event_s": 2.519287274999442,
+    "first_reasoning_event_s": 35.081163847000425,
+    "first_argument_s": 245.76440543599892,
+    "argument_to_complete_s": 42.59559642500062,
+    "argument_characters": 5679,
+    "usage": {
+      "input_tokens": 13254,
+      "output_tokens": 5303,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 3920
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 5,
+      "response.output_item.added": 9,
+      "response.output_item.done": 9,
+      "response.function_call_arguments.delta": 1368,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-08",
+    "frame_id": 141,
+    "bridge_seconds": 198.89618053400045,
+    "host_seconds": 200.4433988230303,
+    "upstream_seconds": 198.67750612599957,
+    "first_event_s": 2.553927246999592,
+    "first_reasoning_event_s": 30.98929328200029,
+    "first_argument_s": 155.34929038599876,
+    "argument_to_complete_s": 43.328215740000815,
+    "argument_characters": 6055,
+    "usage": {
+      "input_tokens": 13147,
+      "output_tokens": 4536,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 3106
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 7,
+      "response.output_item.done": 7,
+      "response.function_call_arguments.delta": 1415,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-09",
+    "frame_id": 141,
+    "bridge_seconds": 167.57924685799844,
+    "host_seconds": 169.22003379790112,
+    "upstream_seconds": 167.10669385099936,
+    "first_event_s": 6.733811851998325,
+    "first_reasoning_event_s": 39.58946796300006,
+    "first_argument_s": 124.74644779199843,
+    "argument_to_complete_s": 42.36024605900093,
+    "argument_characters": 5945,
+    "usage": {
+      "input_tokens": 13839,
+      "output_tokens": 3509,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 2070
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 2,
+      "response.output_item.added": 5,
+      "response.output_item.done": 5,
+      "response.function_call_arguments.delta": 1424,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-10",
+    "frame_id": 162,
+    "bridge_seconds": 140.71822552199956,
+    "host_seconds": 141.76364311994985,
+    "upstream_seconds": 140.38178154399975,
+    "first_event_s": 4.132722699001533,
+    "first_reasoning_event_s": 38.10683086900099,
+    "first_argument_s": 103.8436811190004,
+    "argument_to_complete_s": 36.53810042499936,
+    "argument_characters": 4588,
+    "usage": {
+      "input_tokens": 11966,
+      "output_tokens": 2627,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1552
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 3,
+      "response.output_item.added": 4,
+      "response.output_item.done": 4,
+      "response.function_call_arguments.delta": 1060,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-11",
+    "frame_id": 162,
+    "bridge_seconds": 145.2026744199993,
+    "host_seconds": 145.97715110797435,
+    "upstream_seconds": 144.70051827099996,
+    "first_event_s": 4.837353082999471,
+    "first_reasoning_event_s": 42.04474828899947,
+    "first_argument_s": 127.9752197179987,
+    "argument_to_complete_s": 16.725298553001267,
+    "argument_characters": 1882,
+    "usage": {
+      "input_tokens": 12873,
+      "output_tokens": 2250,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1833
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 2,
+      "response.output_item.added": 5,
+      "response.output_item.done": 5,
+      "response.function_call_arguments.delta": 402,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-12",
+    "frame_id": 162,
+    "bridge_seconds": 130.21772511600102,
+    "host_seconds": 130.65888480399735,
+    "upstream_seconds": 130.01270697200016,
+    "first_event_s": 2.4424752239992813,
+    "first_reasoning_event_s": 39.57542235999972,
+    "first_argument_s": 104.86013004300003,
+    "argument_to_complete_s": 25.152576929000134,
+    "argument_characters": 2634,
+    "usage": {
+      "input_tokens": 9497,
+      "output_tokens": 2032,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1451
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 2,
+      "response.output_item.added": 4,
+      "response.output_item.done": 4,
+      "response.function_call_arguments.delta": 566,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-13",
+    "frame_id": 177,
+    "bridge_seconds": 86.95936350199918,
+    "host_seconds": 95.24872613302432,
+    "upstream_seconds": 86.82841624600042,
+    "first_event_s": 5.161643808000008,
+    "first_reasoning_event_s": 27.357887248001134,
+    "first_argument_s": 69.72406998800034,
+    "argument_to_complete_s": 17.104346258000078,
+    "argument_characters": 2868,
+    "usage": {
+      "input_tokens": 11178,
+      "output_tokens": 2172,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1534
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 4,
+      "response.output_item.done": 4,
+      "response.function_call_arguments.delta": 623,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-14",
+    "frame_id": 192,
+    "bridge_seconds": 293.3111892050001,
+    "host_seconds": 294.62846192903817,
+    "upstream_seconds": 292.6901891010002,
+    "first_event_s": 4.7320753679996415,
+    "first_reasoning_event_s": 38.97090681100053,
+    "first_argument_s": 260.8838911589992,
+    "argument_to_complete_s": 31.806297942001038,
+    "argument_characters": 3702,
+    "usage": {
+      "input_tokens": 10474,
+      "output_tokens": 5016,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 4142
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 6,
+      "response.output_item.added": 9,
+      "response.output_item.done": 9,
+      "response.function_call_arguments.delta": 859,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-15",
+    "frame_id": 219,
+    "bridge_seconds": 238.91576186300153,
+    "host_seconds": 240.77973483107053,
+    "upstream_seconds": 238.6117087980001,
+    "first_event_s": 5.247788939001111,
+    "first_reasoning_event_s": 30.755686752001566,
+    "first_argument_s": 209.6708382910001,
+    "argument_to_complete_s": 28.940870507,
+    "argument_characters": 4215,
+    "usage": {
+      "input_tokens": 12152,
+      "output_tokens": 5080,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 4113
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "response.output_item.added": 9,
+      "response.output_item.done": 9,
+      "response.function_call_arguments.delta": 952,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-16",
+    "frame_id": 237,
+    "bridge_seconds": 413.10682805000215,
+    "host_seconds": 490.2126021529548,
+    "upstream_seconds": 412.9303209649988,
+    "first_event_s": 3.858915550999882,
+    "first_reasoning_event_s": 40.699524018000375,
+    "first_argument_s": 355.42266133999874,
+    "argument_to_complete_s": 57.50765962500009,
+    "argument_characters": 4742,
+    "usage": {
+      "input_tokens": 11052,
+      "output_tokens": 7239,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 6137
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 6,
+      "response.output_item.added": 13,
+      "response.output_item.done": 13,
+      "response.function_call_arguments.delta": 1087,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-17",
+    "frame_id": 255,
+    "bridge_seconds": 297.5751463520028,
+    "host_seconds": 298.23805890302174,
+    "upstream_seconds": 297.3389359870016,
+    "first_event_s": 1.7121511730001657,
+    "first_reasoning_event_s": 40.22840083000119,
+    "first_argument_s": 255.18340927300233,
+    "argument_to_complete_s": 42.15552671399928,
+    "argument_characters": 4715,
+    "usage": {
+      "input_tokens": 12200,
+      "output_tokens": 4698,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 3581
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 7,
+      "response.output_item.added": 8,
+      "response.output_item.done": 8,
+      "response.function_call_arguments.delta": 1102,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  },
+  {
+    "request": "gpt-18",
+    "frame_id": 276,
+    "bridge_seconds": 123.19554140199762,
+    "host_seconds": 123.7387174111791,
+    "upstream_seconds": 122.89147529299953,
+    "first_event_s": 1.7812336560018593,
+    "first_reasoning_event_s": 35.81771168200066,
+    "first_argument_s": 104.75464476900015,
+    "argument_to_complete_s": 18.13683052399938,
+    "argument_characters": 2907,
+    "usage": {
+      "input_tokens": 12634,
+      "output_tokens": 2265,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens_details": {
+        "reasoning_tokens": 1552
+      }
+    },
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 3,
+      "response.output_item.added": 4,
+      "response.output_item.done": 4,
+      "response.function_call_arguments.delta": 698,
+      "response.function_call_arguments.done": 1,
+      "response.metadata": 1,
+      "response.completed": 1
+    }
+  }
+]

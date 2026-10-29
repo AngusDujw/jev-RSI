@@ -1,0 +1,183 @@
+{
+  "status": "complete",
+  "explanation": "The images support a released placement inside the bowl. The current wrist view shows the complete package outline within the opening, with visible bowl interior separating its corners from the rim. Compared with the earlier agentview, the package remains in the same bowl-relative position while the hand has moved upward. Both fingers are visibly separated from the package. Together, these observations support seating on the bowl interior rather than rim balancing or retention by the hand. The exact underside contact locations remain occluded and are not measured. This is a visual completion assessment, not a native success signal. Point v establishes a printed-feature reference; no previous v definition was supplied, so correspondence is unknown. All selections are from the current images. Segment the bowl and package separately within the agentview region.",
+  "points": [
+    {
+      "name": "v",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        373,
+        414
+      ],
+      "radius": 1
+    },
+    {
+      "name": "package_upper_left_visible_face_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        338,
+        396
+      ],
+      "radius": 2
+    },
+    {
+      "name": "package_upper_right_visible_face_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        432,
+        395
+      ],
+      "radius": 2
+    },
+    {
+      "name": "package_lower_left_visible_face_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        339,
+        588
+      ],
+      "radius": 2
+    },
+    {
+      "name": "package_lower_right_visible_face_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        434,
+        588
+      ],
+      "radius": 2
+    },
+    {
+      "name": "bowl_upper_visible_rim_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        384,
+        352
+      ],
+      "radius": 1
+    },
+    {
+      "name": "bowl_left_visible_rim_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        242,
+        490
+      ],
+      "radius": 1
+    },
+    {
+      "name": "bowl_right_visible_rim_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        525,
+        490
+      ],
+      "radius": 1
+    },
+    {
+      "name": "bowl_lower_visible_rim_surface",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        384,
+        630
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "name": "package_visible_printed_face",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        337,
+        393,
+        435,
+        591
+      ],
+      "stride": 4
+    },
+    {
+      "name": "bowl_left_visible_interior",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        267,
+        426,
+        329,
+        560
+      ],
+      "stride": 4
+    },
+    {
+      "name": "bowl_right_visible_interior",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        443,
+        425,
+        502,
+        562
+      ],
+      "stride": 4
+    },
+    {
+      "name": "bowl_upper_visible_interior",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        333,
+        362,
+        436,
+        383
+      ],
+      "stride": 4
+    },
+    {
+      "name": "bowl_lower_visible_interior",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        331,
+        602,
+        439,
+        619
+      ],
+      "stride": 4
+    },
+    {
+      "name": "left_separated_finger_visible_surface",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        164,
+        591,
+        192,
+        637
+      ],
+      "stride": 4
+    },
+    {
+      "name": "right_separated_finger_visible_surface",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        575,
+        594,
+        599,
+        637
+      ],
+      "stride": 4
+    },
+    {
+      "name": "bowl_and_package_visible_agentview",
+      "camera": "agentview",
+      "box": [
+        338,
+        392,
+        443,
+        474
+      ],
+      "stride": 4
+    }
+  ],
+  "parameters": {
+    "relation": "inside_supported",
+    "released": "yes",
+    "correspondence": "unknown",
+    "definition": "Center of the rounded curl of the capital C beginning 'Cream' in the cream-colored script package logo."
+  }
+}

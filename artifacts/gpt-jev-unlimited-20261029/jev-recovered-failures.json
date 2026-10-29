@@ -1,0 +1,279 @@
+[
+  {
+    "epoch": 1793261203.8320808,
+    "started": 1793261098.101368,
+    "request": {
+      "model": "jev-1.13.0",
+      "state": {
+        "robot": {
+          "frame_id": 237,
+          "native_steps": 237,
+          "budgets": {
+            "gpt_remaining": 7,
+            "jev_remaining": 121,
+            "native_steps_remaining": 363,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.0917435,
+            0.00974932,
+            0.99991
+          ],
+          "tcp_quaternion_xyzw": [
+            0.999628,
+            0.0117981,
+            -0.0245799,
+            -0.000510188
+          ],
+          "gripper_qpos_m": [
+            0.0209693,
+            -0.0212485
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -3.92766e-06,
+              -8.47653e-05,
+              -0.00359728
+            ],
+            "pad_extent_in_tool_m": [
+              0.0160001,
+              0.0572178,
+              0.0160002
+            ],
+            "finger_low_offset_tool_m": [
+              -0.0104986,
+              -0.0475971,
+              -0.0444657
+            ],
+            "finger_high_offset_tool_m": [
+              0.0104911,
+              0.0474275,
+              0.00925181
+            ]
+          }
+        },
+        "processed_features": {
+          "program": {
+            "phase": "lower to above-rim release",
+            "source": "RGB-D geometry and current proprioception"
+          },
+          "objective": {
+            "gripper": "keep",
+            "tool_point": "pad_center"
+          },
+          "translation_error_world_m": [
+            0.00072139,
+            -0.00188255,
+            -0.0249256
+          ],
+          "rotation_error_world_rad": [
+            -0.00227371,
+            0.00638,
+            0.000656292
+          ],
+          "axes": {
+            "x": {
+              "error": 0.00072139,
+              "goal_relation": "within_tolerance"
+            },
+            "y": {
+              "error": -0.00188255,
+              "goal_relation": "decrease"
+            },
+            "z": {
+              "error": -0.0249256,
+              "goal_relation": "decrease"
+            },
+            "rx": {
+              "error": -0.00227371,
+              "goal_relation": "within_tolerance"
+            },
+            "ry": {
+              "error": 0.00638,
+              "goal_relation": "within_tolerance"
+            },
+            "rz": {
+              "error": 0.000656292,
+              "goal_relation": "within_tolerance"
+            }
+          }
+        },
+        "feature_source": "GPT-authored program; not an independent sensor"
+      },
+      "questions": {
+        "x": {
+          "type": "choice",
+          "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis x, use the explicitly bound axes.x.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. Do not infer direction from an image.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or rotation component.",
+            "hold": "This axis is within its deadband.",
+            "positive": "Increase this world coordinate or rotation component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis y, use the explicitly bound axes.y.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. Do not infer direction from an image.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or rotation component.",
+            "hold": "This axis is within its deadband.",
+            "positive": "Increase this world coordinate or rotation component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis z, use the explicitly bound axes.z.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. Do not infer direction from an image.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or rotation component.",
+            "hold": "This axis is within its deadband.",
+            "positive": "Increase this world coordinate or rotation component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis rx, use the explicitly bound axes.rx.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. Do not infer direction from an image.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or rotation component.",
+            "hold": "This axis is within its deadband.",
+            "positive": "Increase this world coordinate or rotation component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis ry, use the explicitly bound axes.ry.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. Do not infer direction from an image.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or rotation component.",
+            "hold": "This axis is within its deadband.",
+            "positive": "Increase this world coordinate or rotation component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis rz, use the explicitly bound axes.rz.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. Do not infer direction from an image.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or rotation component.",
+            "hold": "This axis is within its deadband.",
+            "positive": "Increase this world coordinate or rotation component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read processed_features.objective.gripper and deliver that exact requested gripper operation.",
+          "criteria": {
+            "open": "Objective requests open.",
+            "close": "Objective requests close.",
+            "keep": "Objective requests keep; preserve the grip."
+          }
+        }
+      }
+    },
+    "upstream_attempts": [
+      {
+        "attempt": 1,
+        "error_type": "RemoteDisconnected",
+        "error": "Remote end closed connection without response",
+        "usage_unknown": true,
+        "elapsed_s": 16.962766996999562,
+        "retry_delay_s": 15
+      },
+      {
+        "attempt": 2,
+        "error_type": "URLError",
+        "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)>",
+        "usage_unknown": true,
+        "elapsed_s": 18.537465361001523,
+        "retry_delay_s": 45
+      },
+      {
+        "attempt": 3,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 2102,
+          "output_tokens": 249
+        },
+        "elapsed_s": 10.229754067000613
+      }
+    ],
+    "request_budget_s": null,
+    "response": {
+      "model": "jev-1.13.0",
+      "answers": {
+        "x": {
+          "type": "choice",
+          "choice": "hold",
+          "confidence": 1.0,
+          "probabilities": {
+            "negative": 0.0,
+            "hold": 1.0,
+            "positive": 0.0
+          }
+        },
+        "y": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 1.0,
+          "probabilities": {
+            "negative": 1.0,
+            "hold": 0.0,
+            "positive": 0.0
+          }
+        },
+        "z": {
+          "type": "choice",
+          "choice": "negative",
+          "confidence": 1.0,
+          "probabilities": {
+            "negative": 1.0,
+            "hold": 0.0,
+            "positive": 0.0
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "choice": "hold",
+          "confidence": 1.0,
+          "probabilities": {
+            "negative": 0.0,
+            "hold": 1.0,
+            "positive": 0.0
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "choice": "hold",
+          "confidence": 1.0,
+          "probabilities": {
+            "negative": 0.0,
+            "hold": 1.0,
+            "positive": 0.0
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "choice": "hold",
+          "confidence": 1.0,
+          "probabilities": {
+            "negative": 0.0,
+            "hold": 1.0,
+            "positive": 0.0
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "choice": "keep",
+          "confidence": 1.0,
+          "probabilities": {
+            "open": 0.0,
+            "close": 0.0,
+            "keep": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 2102,
+        "output_tokens": 249
+      }
+    },
+    "elapsed_s": 105.73065524699996
+  }
+]

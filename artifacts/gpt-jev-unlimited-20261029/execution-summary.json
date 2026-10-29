@@ -1,0 +1,706 @@
+{
+  "termination": "method_incomplete",
+  "native_success": true,
+  "result": {
+    "completion_proposed": false,
+    "evidence": {
+      "phase": {
+        "phase": "verify",
+        "baseline": {
+          "lm": [
+            [
+              -0.02337075889132876,
+              0.14790918016653418,
+              0.9180599616412368
+            ],
+            [
+              -0.05932182070757541,
+              0.14137972671517288,
+              0.9190017500692624
+            ],
+            [
+              -0.050377423949465684,
+              0.15448259953313898,
+              0.9179915750615837
+            ]
+          ],
+          "corners": [
+            [
+              -0.012827787106489238,
+              0.16486901932343997,
+              0.9168546157796126
+            ],
+            [
+              -0.011494478697333842,
+              0.12385735490256383,
+              0.9197362022182681
+            ],
+            [
+              -0.0926117097285494,
+              0.12273361011712691,
+              0.9206355344325885
+            ],
+            [
+              -0.09207943167500038,
+              0.16350047660842687,
+              0.9177523695663397
+            ]
+          ],
+          "bottom": [
+            -0.05241515775776947,
+            0.14288835638841677,
+            0.9006661331771568
+          ],
+          "center": [
+            -0.0523446021734602,
+            0.1431029064034741,
+            0.9097179410454383
+          ],
+          "u": 0.004326803101073075,
+          "state": {
+            "frame_id": 162,
+            "native_steps": 162,
+            "budgets": {
+              "gpt_remaining": 12,
+              "jev_remaining": 146,
+              "native_steps_remaining": 438,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.054068695579451945,
+              0.14374808209682724,
+              0.9180325871110597
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9996017022416523,
+              0.011867033926910409,
+              -0.02560487900508472,
+              2.3505397001293005e-05
+            ],
+            "gripper_qpos_m": [
+              0.020963019555750747,
+              -0.021090723632509883
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -2.1487751879906147e-08,
+                -6.412843561141857e-05,
+                -0.0036000344064533543
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000016273972954,
+                0.05705375182593295,
+                0.016000015341830195
+              ],
+              "finger_low_offset_tool_m": [
+                -0.01049483023073838,
+                -0.04749437415237482,
+                -0.04446834502072307
+              ],
+              "finger_high_offset_tool_m": [
+                0.0104947861057619,
+                0.04736613866438999,
+                0.009249009569807128
+              ]
+            }
+          },
+          "quality": {
+            "source": "fresh corresponding RGB-D printed landmarks",
+            "fit_residual_m": 0.001326803101073075,
+            "frame_id": 162
+          }
+        },
+        "lift": [
+          -0.05388595707912594,
+          0.14381454890318485,
+          0.9616279381354405
+        ],
+        "held": {
+          "lm": [
+            [
+              -0.02271050219052364,
+              0.1495953921902743,
+              0.9569591773338213
+            ],
+            [
+              -0.060697922294221135,
+              0.14178725357123773,
+              0.9579281410866445
+            ],
+            [
+              -0.050500456739071456,
+              0.15600155087022258,
+              0.9568569888338958
+            ]
+          ],
+          "corners": [
+            [
+              -0.013353209584444817,
+              0.16652725128677354,
+              0.9558037999485443
+            ],
+            [
+              -0.011432251479634772,
+              0.1255366187127822,
+              0.9586526297840263
+            ],
+            [
+              -0.09252586785150078,
+              0.12324291645000121,
+              0.9594533073773504
+            ],
+            [
+              -0.0925779037898622,
+              0.1640156704149098,
+              0.956604941272039
+            ]
+          ],
+          "bottom": [
+            -0.052600261777193034,
+            0.14399207030588668,
+            0.9395492332224413
+          ],
+          "center": [
+            -0.05254359970349604,
+            0.14419987501056358,
+            0.9486012960866641
+          ],
+          "u": 0.0030341858052529633,
+          "state": {
+            "frame_id": 177,
+            "native_steps": 177,
+            "budgets": {
+              "gpt_remaining": 11,
+              "jev_remaining": 141,
+              "native_steps_remaining": 423,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.05431293153695901,
+              0.14463170547019313,
+              0.956893227430542
+            ],
+            "tcp_quaternion_xyzw": [
+              0.999625974176316,
+              0.011153353115778475,
+              -0.024970255752285873,
+              2.8177853781908777e-05
+            ],
+            "gripper_qpos_m": [
+              0.02105066284012675,
+              -0.021172818587590143
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -2.9046956618013556e-06,
+                -6.162923726881799e-05,
+                -0.0036191381767997676
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000130919802666,
+                0.05722351801623751,
+                0.016000021945793017
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010497783282907744,
+                -0.04757673798445305,
+                -0.04448745402430242
+              ],
+              "finger_high_offset_tool_m": [
+                0.010492004928360301,
+                0.047453463889296145,
+                0.009229906819488602
+              ]
+            }
+          },
+          "quality": {
+            "inliers": 117,
+            "matches": 117,
+            "rms_m": 3.4185805252963063e-05,
+            "uncertainty_floor_m": 0.0015,
+            "frame_id": 177,
+            "reference_frame_id": 162
+          }
+        },
+        "release_observation": {
+          "lm": [
+            [
+              -0.060487044510957155,
+              0.012386264191355356,
+              0.9771666975867167
+            ],
+            [
+              -0.09840713889689368,
+              0.004262300663365276,
+              0.9781754908959382
+            ],
+            [
+              -0.08832926864797264,
+              0.018561853272291567,
+              0.9771072001904546
+            ]
+          ],
+          "corners": [
+            [
+              -0.05127195860016676,
+              0.029396409331567758,
+              0.9760182951104254
+            ],
+            [
+              -0.04900752828788657,
+              -0.011580013964509944,
+              0.9788188235443849
+            ],
+            [
+              -0.13007824078515795,
+              -0.01454702196369892,
+              0.9797206049278882
+            ],
+            [
+              -0.1304720075981513,
+              0.026227028570501465,
+              0.976917907330359
+            ]
+          ],
+          "bottom": [
+            -0.09035170979122348,
+            0.006554551469271752,
+            0.959788723231946
+          ],
+          "center": [
+            -0.09028511700919914,
+            0.006752791797946134,
+            0.9688409329984721
+          ],
+          "u": 0.0032621648452902017,
+          "state": {
+            "frame_id": 246,
+            "native_steps": 246,
+            "budgets": {
+              "gpt_remaining": 7,
+              "jev_remaining": 118,
+              "native_steps_remaining": 354,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.09213904220061533,
+              0.0071579107553560815,
+              0.9772123896276396
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9996039586898555,
+              0.01169490161437231,
+              -0.02559374431635128,
+              -0.00033955804992356203
+            ],
+            "gripper_qpos_m": [
+              0.020973652586246987,
+              -0.021245310296630668
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                2.412229085490408e-07,
+                -0.00013477784125682547,
+                -0.003553917548683991
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000010169963202,
+                0.057219005089809774,
+                0.01600014714380756
+              ],
+              "finger_low_offset_tool_m": [
+                -0.01049456807920994,
+                -0.04764774524296355,
+                -0.04442228328483621
+              ],
+              "finger_high_offset_tool_m": [
+                0.010495059513277909,
+                0.04737798403475255,
+                0.009295207168363304
+              ]
+            }
+          },
+          "quality": {
+            "inliers": 110,
+            "matches": 111,
+            "rms_m": 3.0114037721324023e-05,
+            "uncertainty_floor_m": 0.0017320508075688776,
+            "frame_id": 246,
+            "reference_frame_id": 162
+          }
+        }
+      },
+      "measurements": [
+        {
+          "measurement_errors": [
+            {
+              "name": "r2",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "acquisition_attempt": 0,
+          "gap": "Missing current depth measurements: ['r2']"
+        },
+        {
+          "package_edges_m": [
+            0.041134387928932765,
+            0.0811299992046476
+          ],
+          "height_m": 0.01809932450619267,
+          "corner_uncertainty_m": 0.0015,
+          "package_radius_m": 0.04553410570650293,
+          "bowl_radius_m": 0.05402775640858932,
+          "fit_margin_m": 0.006,
+          "rim_rms_m": 0.0003637173273278894,
+          "circle_max_error_m": 0.000629952636208117
+        },
+        {
+          "observation": "source before approach",
+          "quality": {
+            "inliers": 77,
+            "matches": 77,
+            "rms_m": 1.700134750955301e-17,
+            "uncertainty_floor_m": 0.0015,
+            "frame_id": 0,
+            "reference_frame_id": 0
+          },
+          "uncertainty_m": 0.003000000000000017
+        },
+        {
+          "motion": "empty open hand above source",
+          "status": "reached",
+          "position_error_m": 0.0007684811459218743,
+          "rotation_error_rad": 0.0018300114791353907,
+          "lease_calls": 9
+        },
+        {
+          "motion": "empty open hand above source",
+          "status": "reached",
+          "position_error_m": 0.0011039689381275573,
+          "rotation_error_rad": 0.002372485937941035,
+          "lease_calls": 9
+        },
+        {
+          "motion": "empty open hand above source",
+          "status": "reached",
+          "position_error_m": 0.0005000549807775965,
+          "rotation_error_rad": 0.0016936009693104346,
+          "lease_calls": 5
+        },
+        {
+          "measurement_errors": [
+            {
+              "name": "r1",
+              "error": "Invalid or discontinuous surface depth"
+            },
+            {
+              "name": "r3",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "motion": "open hand pregrasp",
+          "status": "reached",
+          "position_error_m": 0.0013791466809641591,
+          "rotation_error_rad": 0.006295350475213693,
+          "lease_calls": 9
+        },
+        {
+          "measurement_errors": [
+            {
+              "name": "r4",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "motion": "open hand pregrasp",
+          "status": "reached",
+          "position_error_m": 0.002563254465901803,
+          "rotation_error_rad": 0.0046916997264790546,
+          "lease_calls": 8
+        },
+        {
+          "measurement_errors": [
+            {
+              "name": "r4",
+              "error": "Invalid or discontinuous surface depth"
+            },
+            {
+              "name": "r5",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "motion": "open hand pregrasp",
+          "status": "reached",
+          "position_error_m": 0.001991937059407026,
+          "rotation_error_rad": 0.004569889846998816,
+          "lease_calls": 7
+        },
+        {
+          "motion": "grasp descent",
+          "status": "reached",
+          "position_error_m": 0.002870885167470648,
+          "rotation_error_rad": 0.004746950083250606,
+          "lease_calls": 4
+        },
+        {
+          "measurement_errors": [
+            {
+              "name": "r1",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "phase": "closure baseline",
+          "registration": {
+            "inliers": 11,
+            "matches": 11,
+            "rms_m": 0.00014477127188088198,
+            "uncertainty_floor_m": 0.0015,
+            "frame_id": 162,
+            "reference_frame_id": 0
+          }
+        },
+        {
+          "observation": "closure baseline",
+          "quality": {
+            "source": "fresh corresponding RGB-D printed landmarks",
+            "fit_residual_m": 0.001326803101073075,
+            "frame_id": 162
+          },
+          "uncertainty_m": 0.004326803101073075
+        },
+        {
+          "motion": "retention measurement lift",
+          "status": "reached",
+          "position_error_m": 0.0014189645931019666,
+          "rotation_error_rad": 0.006042177891309134,
+          "lease_calls": 5
+        },
+        {
+          "observation": "after lift",
+          "quality": {
+            "inliers": 117,
+            "matches": 117,
+            "rms_m": 3.4185805252963063e-05,
+            "uncertainty_floor_m": 0.0015,
+            "frame_id": 177,
+            "reference_frame_id": 162
+          },
+          "uncertainty_m": 0.0030341858052529633
+        },
+        {
+          "retention_attachment_error_m": 0.0012344864209006326,
+          "tolerance_m": 0.010360988906326038,
+          "actual_hand_motion_m": [
+            -0.00025057739151679304,
+            0.000880925463114357,
+            0.03888009016732086
+          ],
+          "observed_package_motion_m": [
+            -0.00027962589181545805,
+            0.001204230072296188,
+            0.038897006827426216
+          ],
+          "probe": true
+        },
+        {
+          "observation": "transfer start",
+          "quality": {
+            "inliers": 120,
+            "matches": 120,
+            "rms_m": 2.5290400230058424e-16,
+            "uncertainty_floor_m": 0.0015811388300841897,
+            "frame_id": 177,
+            "reference_frame_id": 162
+          },
+          "uncertainty_m": 0.0030811388300844428
+        },
+        {
+          "retention_attachment_error_m": 3.377324398933778e-16,
+          "tolerance_m": 0.009115324635337405,
+          "actual_hand_motion_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "observed_package_motion_m": [
+            6.938893903907228e-18,
+            -5.551115123125783e-17,
+            2.9605947323337506e-16
+          ],
+          "probe": false
+        },
+        {
+          "motion": "lift to transfer level",
+          "status": "reached",
+          "position_error_m": 0.001520638650321087,
+          "rotation_error_rad": 0.005668770937924588,
+          "lease_calls": 5
+        },
+        {
+          "observation": "transfer clearance height",
+          "quality": {
+            "inliers": 120,
+            "matches": 120,
+            "rms_m": 2.650068599444647e-05,
+            "uncertainty_floor_m": 0.0015811388300841897,
+            "frame_id": 192,
+            "reference_frame_id": 162
+          },
+          "uncertainty_m": 0.003107639516078636
+        },
+        {
+          "retention_attachment_error_m": 0.00015186385259094464,
+          "tolerance_m": 0.0091418253213316,
+          "actual_hand_motion_m": [
+            -0.00048113014379638774,
+            0.0008105162628862517,
+            0.04182799058465558
+          ],
+          "observed_package_motion_m": [
+            -0.00048608562368011865,
+            0.0008514783078511593,
+            0.04182402076521904
+          ],
+          "probe": false
+        },
+        {
+          "measurement_errors": [
+            {
+              "name": "r0",
+              "error": "Invalid or discontinuous surface depth"
+            },
+            {
+              "name": "r4",
+              "error": "Invalid or discontinuous surface depth"
+            },
+            {
+              "name": "r5",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "motion": "bounded transfer above bowl",
+          "status": "reached",
+          "position_error_m": 0.002014426096776174,
+          "rotation_error_rad": 0.00700430172895329,
+          "lease_calls": 9
+        },
+        {
+          "motion": "bounded transfer above bowl",
+          "status": "reached",
+          "position_error_m": 0.0019697194401775415,
+          "rotation_error_rad": 0.006804769440134316,
+          "lease_calls": 6
+        },
+        {
+          "observation": "above bowl",
+          "quality": {
+            "inliers": 109,
+            "matches": 110,
+            "rms_m": 2.4340736697060144e-05,
+            "uncertainty_floor_m": 0.0016583123951777001,
+            "frame_id": 237,
+            "reference_frame_id": 162
+          },
+          "uncertainty_m": 0.0031826531318747604
+        },
+        {
+          "retention_attachment_error_m": 0.00025423924774939453,
+          "tolerance_m": 0.009216838937127724,
+          "actual_hand_motion_m": [
+            -0.03743605701727584,
+            -0.13486308548786594,
+            0.04299548484546467
+          ],
+          "observed_package_motion_m": [
+            -0.03738858577440181,
+            -0.13477583879158683,
+            0.042997746573711804
+          ],
+          "probe": false
+        },
+        {
+          "measurement_errors": [
+            {
+              "name": "r4",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        {
+          "motion": "lower to above-rim release",
+          "status": "reached",
+          "position_error_m": 0.0024891100309598823,
+          "rotation_error_rad": 0.004829543920800289,
+          "lease_calls": 3
+        },
+        {
+          "observation": "release alignment",
+          "quality": {
+            "inliers": 110,
+            "matches": 111,
+            "rms_m": 3.0114037721324023e-05,
+            "uncertainty_floor_m": 0.0017320508075688776,
+            "frame_id": 246,
+            "reference_frame_id": 162
+          },
+          "uncertainty_m": 0.0032621648452902017
+        },
+        {
+          "retention_attachment_error_m": 0.00024923713129780783,
+          "tolerance_m": 0.009296350650543166,
+          "actual_hand_motion_m": [
+            -0.03782354343143626,
+            -0.13740310209969062,
+            0.020253781974698182
+          ],
+          "observed_package_motion_m": [
+            -0.03777152361066908,
+            -0.13739125950157413,
+            0.020235027139582657
+          ],
+          "probe": false
+        },
+        {
+          "motion": "open-hand withdrawal for release inspection",
+          "status": "reached",
+          "position_error_m": 0.0020188078912550234,
+          "rotation_error_rad": 0.000989621452338235,
+          "lease_calls": 7
+        },
+        {
+          "stopped": "Final relation, release or stability landmark remains unresolved: {'relation': 'inside_supported', 'released': 'yes', 'correspondence': 'unknown', 'definition': \"Center of the rounded curl of the capital C beginning 'Cream' in the cream-colored script package logo.\"}",
+          "phase": "verify",
+          "gripper_policy": "Do not reopen an uncertain held object"
+        }
+      ],
+      "gap": "Final relation, release or stability landmark remains unresolved: {'relation': 'inside_supported', 'released': 'yes', 'correspondence': 'unknown', 'definition': \"Center of the rounded curl of the capital C beginning 'Cream' in the cream-colored script package logo.\"}"
+    }
+  },
+  "native_steps": 276,
+  "settling_steps": 10,
+  "jev_calls": 92,
+  "gpt_calls": 19,
+  "rpc_calls": 174,
+  "elapsed_s": 3997.657970942091,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "d4727784609020653491bd482d52370d7ae100dec09f6323df3bfd3a89671813"
+    }
+  ],
+  "last_method_error": null
+}

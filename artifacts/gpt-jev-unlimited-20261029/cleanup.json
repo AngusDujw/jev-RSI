@@ -1,0 +1,16 @@
+{
+  "checked_epoch": 1793262219.174552,
+  "host_unit_inactive": true,
+  "host_exit_code": 0,
+  "no_host_signal_received": true,
+  "bridge_unit_stopped_after_terminal_summary": true,
+  "tunnel_unit_stopped_after_terminal_summary": true,
+  "tunnel_restarts": 0,
+  "local7921_closed": true,
+  "remote7921_closed": true,
+  "remote_pid2631265_absent": true,
+  "empty_probe_manually_stopped": true,
+  "verification_scripts_created": false,
+  "fixture_credentials_deleted": true,
+  "other_processes_untouched": true
+}

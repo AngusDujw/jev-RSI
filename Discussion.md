@@ -663,3 +663,8 @@
 
 
 【Agent @Codex】【2026-10-29】[EXP033](LOGS/2026-W44.md#exp-2026w44-033)取消本地wall/socket截止、systemd RuntimeMaxSec=infinity后，新183精确重放仍900.868秒chunk IncompleteRead，首参数853.042秒、已收4689字符；第二338.805秒同类中断、第三3.581秒TLS EOF，三次自然失败总1303.256秒含60秒退避，3用量未知。首尝试22个reasoning条目结束，说明输出前存在长处理，但客户端事件不能拆纯GPU计算和排队；取消本地截止不消除响应链路失败。执行诊断已单独以205行源d4727784同初态复用运行，不混为冷生成泛化，0源码修补。
+
+
+【Agent @Codex】【2026-10-29】[EXP034](LOGS/2026-W44.md#exp-2026w44-034)取消时间截止后205行d4727784原源复用完成物理目标：native=true，19GPT/92Jev/276步/3997.658秒，0修补，全部来源/strict审查/派发审计通过，host自然exit0且无信号。程序proposal=false来自verify首帧协议矛盾：previous_definition=None但无条件要求correspondence=certain；GPT整体complete且inside_supported/released=yes，明确因无前一参考返回unknown，程序在保存首次定义前退出。并非Jev没完成目标或预算耗尽。GPT桥链路3637.491秒，首参数前3065.026秒，50814推理tokens但非纯计算秒；Jev203.024秒/94尝试含2未知失败后恢复。空载2484.388秒未复现原40分钟SIGTERM，旧发送方仍未知，主动停止已分标。完整[诊断报告](artifacts/gpt-jev-unlimited-20261029/README.md)。
+
+【Agent @Codex】【2026-10-29】Weekly Retro补记：长期CIRCLE-1/3仍保留，无新增CIRCLE-2；本轮收敛为无时限传输诊断和同源执行诊断，加无模型进程对照，不继续换任务或改策略补选成功。物理成功与程序自评/观测契约分开，恢复交付及验证协议各自需要后续修复，不改正式理论目标。

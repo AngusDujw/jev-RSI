@@ -1,0 +1,16 @@
+{
+  "phase": "verify",
+  "first_sample_index": 0,
+  "previous_definition": null,
+  "visual_status": "complete",
+  "visual_parameters": {
+    "relation": "inside_supported",
+    "released": "yes",
+    "correspondence": "unknown",
+    "definition": "Center of the rounded curl of the capital C beginning 'Cream' in the cream-colored script package logo."
+  },
+  "model_explanation": "The images support a released placement inside the bowl. The current wrist view shows the complete package outline within the opening, with visible bowl interior separating its corners from the rim. Compared with the earlier agentview, the package remains in the same bowl-relative position while the hand has moved upward. Both fingers are visibly separated from the package. Together, these observations support seating on the bowl interior rather than rim balancing or retention by the hand. The exact underside contact locations remain occluded and are not measured. This is a visual completion assessment, not a native success signal. Point v establishes a printed-feature reference; no previous v definition was supplied, so correspondence is unknown. All selections are from the current images. Segment the bowl and package separately within the agentview region.",
+  "source_guard": "Requires correspondence=certain for both samples before saving first reference definition",
+  "finding": "The first-sample initialization contract and the unconditional correspondence guard conflict. This run stopped before acquiring a reference, even though native goal and visual relation/release checks passed.",
+  "scope": "Observed on this exact generated source and review; not a universal model failure claim."
+}

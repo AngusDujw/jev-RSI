@@ -1,0 +1,10 @@
+{
+  "observed_seconds": 2484.387823343277,
+  "signals_before_manual_stop": [],
+  "comparison_boundary_s": 2398.539,
+  "probe_pid": 550215,
+  "manual_stop_epoch": 1793260556.0290148,
+  "manual_sender_pid": 640221,
+  "manual_signal": 15,
+  "result": "Previous approximately40-minute SIGTERM did not reproduce in this empty-process control; prior sender remains unknown"
+}
