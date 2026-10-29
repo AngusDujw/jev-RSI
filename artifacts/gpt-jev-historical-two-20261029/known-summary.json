@@ -1,0 +1,18 @@
+{
+  "termination": "Remote end closed connection without response",
+  "native_success": false,
+  "result": null,
+  "native_steps": 177,
+  "settling_steps": 10,
+  "jev_calls": 59,
+  "gpt_calls": 13,
+  "rpc_calls": 106,
+  "elapsed_s": 2398.538981055841,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "d4727784609020653491bd482d52370d7ae100dec09f6323df3bfd3a89671813"
+    }
+  ],
+  "last_method_error": null
+}

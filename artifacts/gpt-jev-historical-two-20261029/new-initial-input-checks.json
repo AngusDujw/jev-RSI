@@ -1,0 +1,11 @@
+{
+  "instructions": true,
+  "model": true,
+  "reasoning": true,
+  "tools": true,
+  "tool_choice": true,
+  "empty_execution": true,
+  "empty_feedback": true,
+  "empty_checkpoints": true,
+  "no_old_method": true
+}

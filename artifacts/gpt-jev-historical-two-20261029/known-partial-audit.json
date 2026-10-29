@@ -1,0 +1,31 @@
+{
+  "scope": "Partial audit only; full ledger audit fails on missing final bridge receipt. Original ledger is unchanged; no synthetic upstream entries.",
+  "native_success": false,
+  "termination": "Remote end closed connection without response",
+  "dispatches_validated": 59,
+  "steps_validated": 177,
+  "strict_reviews_validated": 11,
+  "source_origin_validated": true,
+  "missing_bridge_receipts": [
+    "gpt-12.request.json"
+  ],
+  "unknown_unreceipted_requests": 1,
+  "known_costs": {
+    "gpt": {
+      "matched_requests": 12,
+      "attempts": 14,
+      "unknown_attempt_usage": 2,
+      "input": 137378,
+      "output": 54585,
+      "relay_seconds": 2188.303350522
+    },
+    "jev": {
+      "matched_requests": 59,
+      "attempts": 59,
+      "unknown_attempt_usage": 0,
+      "input": 123097,
+      "output": 14691,
+      "relay_seconds": 25.552959960998123
+    }
+  }
+}

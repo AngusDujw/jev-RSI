@@ -159,3 +159,5 @@
 - 【Agent】【2026-10-29 13:34】[result] 核实第二次下棋smoke已退出且无smoke.json：Isaac应用123秒完成启动，129秒关闭，0正式对照。新增关闭前异常输出与无缓冲模式以定位构造失败；不改变控制或评分。
 - 【Agent】【2026-10-29 13:37】[result] 原任务在2398.539秒被外层进程中断：本机编排工具会话exit143(SIGTERM)，桥接及转发均消失，远端记录Remote end closed connection without response/native_false、59Jev/177步/13GPT/0修补。未明确来源，不归咎方法或上游网络；保留原负结果，新183尚未入场，将用相同旧桥独立TTY服务启动。
 - 【Agent】【2026-10-29 13:37】[result] smoke03已定位明确根因：原版任务初始化CuroboPlanner缺Assets/Robots/x5/curobo.yml，源资产仅模板curobo_tmp.yml。按官方utils/update_embodiment_config_path.py在本次独立vendor副本生成路径配置，再启动smoke04；未改旧项目、驱动或任务逻辑。正式两组与GPT控制仍未启动。
+- 【Agent】【2026-10-29 13:38】[op] 新建实验块 EXP-2026W44-029：原样恢复10月27日成功提示词及旧HTTP框架，在1335/init12独立冷生成零修补复测  ↪ `EXP-2026W44-029`
+- 【Agent】【2026-10-29 13:39】[op] 补全EXP029及Discussion，旧原任务部分审计明确缺失末次回执、完整审计未通过；新183首请求英文/空历史/同提示词工具核对通过；生产代码与提示词全未改。
