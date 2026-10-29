@@ -1,0 +1,24 @@
+{
+  "started_epoch": 1793255980.565889,
+  "pid": 465221,
+  "events": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "keepalive": 21,
+    "response.output_item.added": 23,
+    "response.output_item.done": 22,
+    "response.function_call_arguments.delta": 1090
+  },
+  "argument_characters": 4689,
+  "first_event_s": 2.0998328309997305,
+  "first_argument_s": 853.0421733370003,
+  "first_reasoning_event_s": 43.92911579200154,
+  "last_event_s": 900.867767441001,
+  "max_event_gap_s": 30.09943317500074,
+  "payload_sha256": "95bfc437efbe75e64a5a25c72f2c92a1198e554b54490269ae0f820da8cf8f1e",
+  "scope": "Client-observed events; not pure server compute time",
+  "status": "failed",
+  "error_type": "ProTransportError",
+  "error": "Native Pro stream ended without a completed response",
+  "elapsed_s": 900.8681316000002
+}

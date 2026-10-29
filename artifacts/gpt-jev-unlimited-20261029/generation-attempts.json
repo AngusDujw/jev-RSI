@@ -1,0 +1,88 @@
+[
+  {
+    "started_epoch": 1793255980.565889,
+    "pid": 465221,
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 21,
+      "response.output_item.added": 23,
+      "response.output_item.done": 22,
+      "response.function_call_arguments.delta": 1090
+    },
+    "argument_characters": 4689,
+    "first_event_s": 2.0998328309997305,
+    "first_argument_s": 853.0421733370003,
+    "first_reasoning_event_s": 43.92911579200154,
+    "last_event_s": 900.867767441001,
+    "max_event_gap_s": 30.09943317500074,
+    "payload_sha256": "95bfc437efbe75e64a5a25c72f2c92a1198e554b54490269ae0f820da8cf8f1e",
+    "scope": "Client-observed events; not pure server compute time",
+    "status": "failed",
+    "error_type": "ProTransportError",
+    "error": "Native Pro stream ended without a completed response",
+    "elapsed_s": 900.8681316000002,
+    "completed_reasoning_items": 22,
+    "transport_errors": [
+      {
+        "epoch": 1793256881.4339092,
+        "elapsed_s": 900.867912175001,
+        "kind": "http_chunk_error",
+        "error_type": "IncompleteRead",
+        "message": "IncompleteRead(0 bytes read)"
+      }
+    ]
+  },
+  {
+    "started_epoch": 1793256896.4346921,
+    "pid": 465221,
+    "events": {
+      "response.created": 1,
+      "response.in_progress": 1,
+      "keepalive": 7,
+      "response.output_item.added": 7,
+      "response.output_item.done": 7
+    },
+    "argument_characters": 0,
+    "first_event_s": 4.386166145999596,
+    "first_argument_s": null,
+    "first_reasoning_event_s": 45.283039116999134,
+    "last_event_s": 288.2429600380001,
+    "max_event_gap_s": 30.442977996999616,
+    "payload_sha256": "95bfc437efbe75e64a5a25c72f2c92a1198e554b54490269ae0f820da8cf8f1e",
+    "scope": "Client-observed events; not pure server compute time",
+    "status": "failed",
+    "error_type": "ProTransportError",
+    "error": "Native Pro stream ended without a completed response",
+    "elapsed_s": 338.8047563220007,
+    "completed_reasoning_items": 7,
+    "transport_errors": [
+      {
+        "epoch": 1793257235.2393262,
+        "elapsed_s": 338.8045121790001,
+        "kind": "http_chunk_error",
+        "error_type": "IncompleteRead",
+        "message": "IncompleteRead(0 bytes read)"
+      }
+    ]
+  },
+  {
+    "started_epoch": 1793257280.24014,
+    "pid": 465221,
+    "events": {},
+    "argument_characters": 0,
+    "first_event_s": null,
+    "first_argument_s": null,
+    "first_reasoning_event_s": null,
+    "last_event_s": null,
+    "max_event_gap_s": 0.0,
+    "payload_sha256": "95bfc437efbe75e64a5a25c72f2c92a1198e554b54490269ae0f820da8cf8f1e",
+    "scope": "Client-observed events; not pure server compute time",
+    "status": "failed",
+    "error_type": "URLError",
+    "error": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1032)>",
+    "elapsed_s": 3.581096878000608,
+    "completed_reasoning_items": 0,
+    "transport_errors": []
+  }
+]

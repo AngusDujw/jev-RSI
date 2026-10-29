@@ -1,0 +1,74 @@
+{"epoch": 1793255982.6599367, "elapsed_s": 2.0939313340004446, "kind": "response_headers", "status": 200}
+{"epoch": 1793255982.665785, "elapsed_s": 2.0998374210012116, "kind": "first_event", "event_type": "response.created"}
+{"epoch": 1793255982.66584, "elapsed_s": 2.0999219590012217, "kind": "stream_event", "event_type": "response.created", "item_type": null}
+{"epoch": 1793255982.6731055, "elapsed_s": 2.1071709420011757, "kind": "stream_event", "event_type": "response.in_progress", "item_type": null}
+{"epoch": 1793256012.6632242, "elapsed_s": 32.097231685000224, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256024.4951046, "elapsed_s": 43.929120722001244, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256024.4954658, "elapsed_s": 43.929546131999814, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256054.5652761, "elapsed_s": 73.99931450599979, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256067.1413822, "elapsed_s": 86.57539439200082, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256067.2753477, "elapsed_s": 86.70936353900106, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256097.1027873, "elapsed_s": 116.53679807700064, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256107.2654376, "elapsed_s": 126.6994612590006, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256107.430776, "elapsed_s": 126.86479715000132, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256137.2662785, "elapsed_s": 156.7002949480011, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256145.7743313, "elapsed_s": 165.20835062700098, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256145.879552, "elapsed_s": 165.3135779940003, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256175.9789803, "elapsed_s": 195.413011775001, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256180.8141055, "elapsed_s": 200.24811615900035, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256180.8144703, "elapsed_s": 200.24854985599995, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256210.7364085, "elapsed_s": 230.17042582100112, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256217.73673, "elapsed_s": 237.17074288200092, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256217.7371264, "elapsed_s": 237.17120541300028, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256247.589326, "elapsed_s": 267.0233465250003, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256257.791311, "elapsed_s": 277.2253461569999, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256257.8655593, "elapsed_s": 277.2995688709998, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256287.788667, "elapsed_s": 307.2226904750005, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256293.5828156, "elapsed_s": 313.0166194370013, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256293.5831661, "elapsed_s": 313.0172575590004, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256323.351087, "elapsed_s": 342.78495329900034, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256334.8243184, "elapsed_s": 354.2583101520013, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256334.824748, "elapsed_s": 354.2588240180012, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256364.744906, "elapsed_s": 384.1789210920015, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256375.3692245, "elapsed_s": 394.80326755900023, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256375.7193627, "elapsed_s": 395.1533707160015, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256405.4669125, "elapsed_s": 424.9009256270001, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256414.902043, "elapsed_s": 434.33604808400014, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256414.902401, "elapsed_s": 434.33648144200015, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256444.4773855, "elapsed_s": 463.911421832001, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256455.590444, "elapsed_s": 475.0244784740007, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256455.7896667, "elapsed_s": 475.223660089001, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256485.696537, "elapsed_s": 505.13055403600083, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256498.9049647, "elapsed_s": 518.3389641869999, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256498.905336, "elapsed_s": 518.3394148630014, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256528.8012831, "elapsed_s": 548.2352978560011, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256537.6639903, "elapsed_s": 557.0979998870007, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256537.6643524, "elapsed_s": 557.098433481, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256567.5321233, "elapsed_s": 586.9661585080012, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256579.874331, "elapsed_s": 599.308341330001, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256579.874745, "elapsed_s": 599.3088228369998, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256609.7051811, "elapsed_s": 629.1391968300013, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256618.7289608, "elapsed_s": 638.1629721680001, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256618.855157, "elapsed_s": 638.2891716009999, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256648.7835565, "elapsed_s": 668.2175655299998, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256658.0731747, "elapsed_s": 677.5071818530014, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256658.0735693, "elapsed_s": 677.5076488310006, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256687.989984, "elapsed_s": 707.4239935750011, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256697.0747747, "elapsed_s": 716.5087788360015, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256697.075145, "elapsed_s": 716.5092252710001, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256726.2921984, "elapsed_s": 745.7262364050002, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256735.7731967, "elapsed_s": 755.2072119450004, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256735.77357, "elapsed_s": 755.2076495279998, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256765.6295063, "elapsed_s": 785.0635191910005, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256776.9644923, "elapsed_s": 796.3985085990007, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256777.1100178, "elapsed_s": 796.5440545780002, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256807.047226, "elapsed_s": 826.4812413930013, "kind": "stream_event", "event_type": "keepalive", "item_type": null}
+{"epoch": 1793256819.8337402, "elapsed_s": 839.2677711060005, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256819.833978, "elapsed_s": 839.268072279001, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256833.607738, "elapsed_s": 853.0417686540004, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "reasoning"}
+{"epoch": 1793256833.607974, "elapsed_s": 853.0420686430007, "kind": "stream_event", "event_type": "response.output_item.done", "item_type": "reasoning"}
+{"epoch": 1793256833.6080325, "elapsed_s": 853.0421318040007, "kind": "stream_event", "event_type": "response.output_item.added", "item_type": "function_call"}
+{"epoch": 1793256833.608076, "elapsed_s": 853.0421753660012, "kind": "first_argument"}
+{"epoch": 1793256881.4339092, "elapsed_s": 900.867912175001, "kind": "http_chunk_error", "error_type": "IncompleteRead", "message": "IncompleteRead(0 bytes read)"}
+{"epoch": 1793256881.433985, "elapsed_s": 900.8680670060003, "kind": "stream_eof"}
+{"epoch": 1793256881.4342425, "elapsed_s": 900.8683252530009, "kind": "attempt_finished", "status": "failed"}

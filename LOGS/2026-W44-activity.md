@@ -187,3 +187,6 @@
 - 【Agent】【2026-10-29 14:56】[result] 1454两组已runtime running且真实Astra/high多请求完成。独立审计实际coding-agent容器只有各自workspace/home/只读session，无GPU/docker socket/vendor，根只读且同镜像。原版首段模型代码exec成功40native步，模型已按反馈修改并启动第二段；Jev组仍等待实际路由执行验收，不提前认定完成启动。
 - 【Agent】【2026-10-29 14:57】[op] 新建实验块 EXP-2026W44-032：server02原版与Jev版下棋配对Playground均进入真实模型代码反馈迭代  ↪ `EXP-2026W44-032`
 - 【Agent】【2026-10-29 14:59】[result] 最终启动验收：原版连续两物理代码abb4aac8→fe2d331a、40→75步并继续到110；Jev两真实act请求对应35/25步执行，候选/原生event/code.py三重SHA一致，合计1192输入90输出。两组均active继续迭代，成功尚未达成。原版启动证据与公平快照已落盘，Jev证据4dfa72bc已推送，父agent已独立核验状态和隔离；子agent继续监督，自有tmux/桥保持运行。
+- 【Agent】【2026-10-29 15:07】[run] 诊断A无时限终局：900.868s/338.805s两次IncompleteRead后3.581s TLS EOF，三尝试失败、总1303.256秒含60秒退避、0完整方法，服务正常退出无SIGTERM。启动诊断B：同源d4727784/205行、1335/init12/seed0/GPU4、零修补、取消请求及整回合时限；双端用户systemd运行、实际无RuntimeMaxSec，桥接SSE追踪继续。
+- 【Agent】【2026-10-29 15:09】[op] 新建实验块 EXP-2026W44-033：取消本地时间截止，精确重放新183失败请求并统计SSE阶段、断流与重试开销  ↪ `EXP-2026W44-033`
+- 【Agent】【2026-10-29 15:11】[op] 保存无时限生成阶段数据及EXP033/Discussion/引用笔记/T019，排除本地deadline为中断必要原因，关闭层和纯GPU推理份额仍未知；执行诊断进行中，原源不改。
