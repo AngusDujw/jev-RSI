@@ -145,3 +145,5 @@
 - 【User】【2026-10-29 12:29】[intent] 授权server02上RoboDojo下棋任务两卡对照：原版EmbodiedEvo迭代与Jev扩展；先验证Jev文本输入输出判定可靠性再接入；GPT指定gpt-6-astra/high经本机签入账号转发，统计全部token/失败/重试。提供Jev凭据仅用于此任务，不写入日志。
 - 【Agent】【2026-10-29 12:31】[op] 新建实验块 EXP-2026W44-028：--help  ↪ `EXP-2026W44-028`
 - 【Agent】【2026-10-29 12:32】[result] EXP028：Jev1.14官方真实单请求六路由状态6/6，1567输入/256输出tokens，0.725秒，仅冒烟。server02两4090空闲，原版agent镜像未部署；环境来源按规则询问用户，未启动GPT或机器人。密钥未落盘。new_exp.py不支持--help造成的空块已填为本轮真实EXP028，编号保留。
+- 【User】【2026-10-29 12:34】[intent] 用户授权参考server02其他RoboDojo项目自行选择可用环境，询问是否必须新建。
+- 【Agent】【2026-10-29 12:34】[result] 选定现有RoboLaya .conda + IsaacSim5.1镜像，复用private-ipc启动包装实际验证Python3.11.15/NumPy1.26.0/Torch2.7.0+cu128/Gymnasium1.2.1导入通过，isaaclab/isaacsim/curobo可见且CUDA true。无需从零重建仿真环境；只创建本轮preflight缓存，未改旧环境。原版EmbodiedEvo经SSH克隆至/data/ykj_robodojo/embodiedevo-comparison-20261029，固定470278c；原版适配器及下棋场景尚待验证，两组实验尚未启动。
