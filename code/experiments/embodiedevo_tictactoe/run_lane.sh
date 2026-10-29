@@ -19,13 +19,15 @@ exec docker run --rm --name "embodiedevo-orchestrator-$lane-20261029" \
   --env "XDG_CACHE_HOME=$cache/xdg" --env "XDG_RUNTIME_DIR=$cache/runtime" \
   --env "TORCH_EXTENSIONS_DIR=$cache/torch" --env PYTHONDONTWRITEBYTECODE=1 \
   --env "EMBODIEDEVO_CODEX_HOME=$root/.cache/transport-home" \
-  --env "JEV_ROUTER_URL=${JEV_ROUTER_URL:-http://172.17.0.1:7934/route}" \
+  --env "JEV_ROUTER_URL=${JEV_ROUTER_URL:-http://172.18.0.1:7934/route}" \
+  --env "EMBODIEDEVO_RUN_ID=$run" \
   --env SETUPTOOLS_SCM_PRETEND_VERSION=0.0.post1.dev100 \
   --env EMBODIEDEVO_SIMULATOR_STARTUP_TIMEOUT=1800 \
   --entrypoint /bin/bash nvcr.io/nvidia/isaac-sim:5.1.0 -lc '
     export CARB_APP_PATH=/isaac-sim/kit ISAAC_PATH=/isaac-sim EXP_PATH=/isaac-sim/apps
     source /isaac-sim/setup_python_env.sh
     export LD_LIBRARY_PATH=/data/ykj_robodojo/RoboLaya/.conda/lib:$LD_LIBRARY_PATH
+    export PATH="$PWD/.cache/bin:$PATH"
     export LD_PRELOAD=/isaac-sim/kit/libcarb.so
     export PYTHONPATH="$PWD:$PWD/vendor/robodojo:$PWD/vendor/robodojo/XPolicyLab:$PWD/vendor/robodojo/third_party/curobo:$PYTHONPATH"
     for source in "$PWD"/vendor/robodojo/third_party/IsaacLab/source/*; do

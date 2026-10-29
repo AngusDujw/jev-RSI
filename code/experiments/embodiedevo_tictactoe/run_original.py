@@ -23,6 +23,8 @@ def main():
         argv[2:2]=["--env","TMPDIR=/runtime-tmp","--env","TMP=/runtime-tmp","--env","TEMP=/runtime-tmp"]
         if os.environ.get("JEV_ROUTER_URL"):
             argv[2:2]=["--env","JEV_ROUTER_URL="+os.environ["JEV_ROUTER_URL"]]
+        if os.environ.get("EMBODIEDEVO_RUN_ID"):
+            argv[2:2]=["--env","EMBODIEDEVO_RUN_ID="+os.environ["EMBODIEDEVO_RUN_ID"]]
         return argv
     launch_agent.docker_argv=docker_argv
     from orchestrator.config import load_task
