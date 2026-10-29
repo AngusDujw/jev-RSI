@@ -26,6 +26,7 @@ exec docker run --rm --name "embodiedevo-orchestrator-$lane-20261029" \
   --env "JEV_ROUTER_URL=${JEV_ROUTER_URL:-http://172.18.0.1:7934/route}" \
   --env "EMBODIEDEVO_RUN_ID=$run" \
   --env SETUPTOOLS_SCM_PRETEND_VERSION=0.0.post1.dev100 \
+  --env "EMBODIEDEVO_AGENT_RECOVERY={\"max_restarts\":3,\"idle_seconds\":900,\"backoff_seconds\":30}" \
   --env EMBODIEDEVO_SIMULATOR_STARTUP_TIMEOUT=1800 \
   --entrypoint /bin/bash nvcr.io/nvidia/isaac-sim:5.1.0 -lc '
     export CARB_APP_PATH=/isaac-sim/kit ISAAC_PATH=/isaac-sim EXP_PATH=/isaac-sim/apps
