@@ -1,0 +1,82 @@
+{
+  "created_epoch": 1793295032.8070798,
+  "server": "company-server-2-ykj",
+  "historical_success_commit": "a8e6ea72",
+  "historical_unlimited_base": "8b4bfdd6",
+  "local_worktree": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI/.worktrees/gpt-jev-native-historical-20261030",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-native-historical-20261030",
+  "remote_python": "/home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python",
+  "libero_root": "/home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "account": "Local signed-in ChatGPT Pro; no Platform or caz API key",
+  "cli": "codex-cli 0.165.0",
+  "jev": {
+    "model": "jev-1.13.0",
+    "endpoint": "https://api.typesafe.ai/v1/systemone",
+    "authorization": "Existing separately authorized Jev credential, local relay only"
+  },
+  "condition": "Independent cold complete-method generation; empty episode memory; no archived source/design/feedback; real Jev execution; zero source repairs",
+  "cases": [
+    {
+      "slug": "known-1335-init12",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 12,
+      "seed": 0,
+      "gpu": 4,
+      "language": "could you put the cream cheese into the bowl"
+    },
+    {
+      "slug": "new-138-init0",
+      "suite": "libero_goal",
+      "task_id": 138,
+      "init_index": 0,
+      "seed": 0,
+      "gpu": 4,
+      "name": "put_the_bowl_on_top_of_the_cabinet_table_1"
+    }
+  ],
+  "budgets": {
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_repairs": 0,
+    "wall_limit": null,
+    "gpt_request_limit": null,
+    "jev_network_budget_s": 900
+  },
+  "time_semantics": "No application whole-request/episode deadline; existing 1e12 seconds API display sentinel from previous unlimited diagnostic, not an enforced cutoff; per-socket polling timeouts reconnect same job",
+  "fixed_prompt_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "2e2e3d96ab5e29866635ba97a1febdc5b2a2940bd9066b5ff94c08e6ca97a6f5",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "f4c63ffc1cb8253c1efcc97ebfc8b7e23602fbc14d62f99dac0edf65c93ee465",
+    "code/prompts/gpt_jev_program_api_v2.md": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e"
+  },
+  "historical_helpers_sha256": {
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "host_sha256": "4e601328540b3a3e5b7446754b16483e973cb7a3c75db180afda3f6dc2e08f5f",
+  "host_change_scope": "Only post() replaced by current idempotent async client with None deadline support, plus transport imports; all remaining historical host AST matches 8b4bfdd6",
+  "new_task_provenance": {
+    "local_framework_task_records": 83,
+    "remote_framework_task_records": 83,
+    "previous_task_ids": [
+      0,
+      75,
+      102,
+      132,
+      183,
+      229,
+      270,
+      1335
+    ],
+    "task138_hits": 0,
+    "scope": "Available GPT-Jev framework records only; not training novelty"
+  },
+  "order": "Known then new, sequential, one episode each; preserve every failure; no replacement cases or task-source edits",
+  "evaluation": "Terminal isolated native LIBERO score is primary, not program proposal; retain generation, review, Jev dispatch and usage evidence",
+  "limitations": "Native Codex adds internal tool/draft scaffolding; same task-facing instructions/config does not imply identical complete model context or pure protocol-only comparison"
+}

@@ -376,3 +376,6 @@ python3 -B code/scripts/audit_gpt_jev_run.py --no-write --bridge-dir code/runs/2
 Omit the read-only option to write the derived audit.json in that run directory.
 Nineteen offline checks over four real completed runs and in-memory corrupted
 fixtures passed, with zero new model calls or physics and no temporary test scripts.
+
+
+Explicit unlimited native waiting is supported for reproduction callers passing timeout=None. The loopback-only unlimited request header produces a JSON-null job deadline and an unbounded semaphore wait; finite defaults are unchanged. It requires native-session mode and keeps polling reconnections on the same request ID. The historical reproduction branch preserves its existing count limits and 1e12 display sentinel while replacing only the transport post() function. This option is not a token-saving or task-success claim.

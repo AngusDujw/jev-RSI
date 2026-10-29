@@ -47,7 +47,9 @@ def post(url, payload, path, timeout=1800):
     started = time.monotonic()
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     headers = {"Content-Type": "application/json"}
-    if url.endswith(("/responses", "/systemone")):
+    if url.endswith("/responses") and timeout is None:
+        headers["X-Model-Request-Timeout-Seconds"] = "unlimited"
+    elif url.endswith(("/responses", "/systemone")) and timeout is not None:
         ceiling = 900. if url.endswith("/systemone") else 3600.
         headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(ceiling, timeout-2.)))
     if url.endswith("/responses"):
@@ -60,7 +62,7 @@ def post(url, payload, path, timeout=1800):
             # The bridge owns inference; a broken polling socket cannot cancel it.
             active, reconnects = request, 0
             while True:
-                remaining = timeout-(time.monotonic()-started)
+                remaining = math.inf if timeout is None else timeout-(time.monotonic()-started)
                 if remaining <= 0:
                     raise TimeoutError("Planner bridge unavailable until logical deadline")
                 try:
@@ -69,16 +71,18 @@ def post(url, payload, path, timeout=1800):
                     break
                 except (OSError, urllib.error.URLError, ValueError):
                     reconnects += 1
-                    time.sleep(min(2, max(0, timeout-(time.monotonic()-started))))
+                    time.sleep(2 if timeout is None else min(2, max(0, timeout-(time.monotonic()-started))))
+            if timeout is None and not asynchronous:
+                raise ValueError("Unlimited planner waiting requires native-session transport")
             while True:
-                remaining = timeout-(time.monotonic()-started)
+                remaining = math.inf if timeout is None else timeout-(time.monotonic()-started)
                 if remaining <= 0:
                     raise TimeoutError("Planner logical request deadline exceeded")
                 save(path.with_suffix(".transport.json"), dict(request_id=headers["X-Request-ID"],
                     reconnects=reconnects, elapsed_s=time.monotonic()-started))
                 try:
                     if active is request:
-                        request.add_header("X-Model-Request-Timeout-Seconds",
+                        request.add_header("X-Model-Request-Timeout-Seconds", "unlimited" if timeout is None else
                             str(max(.1, min(3600 if asynchronous else 1800, remaining-2))))
                     with opener.open(active, timeout=min(30, remaining) if asynchronous else remaining) as response:
                         result = json.load(response)
@@ -111,7 +115,7 @@ def post(url, payload, path, timeout=1800):
                 if ident != headers["X-Request-ID"]:
                     raise ValueError("Native bridge job ID mismatch")
                 active = urllib.request.Request(url+"/jobs/"+ident)
-                time.sleep(min(2, max(0, timeout-(time.monotonic()-started))))
+                time.sleep(2 if timeout is None else min(2, max(0, timeout-(time.monotonic()-started))))
         else:
             with opener.open(request, timeout=timeout) as response:
                 result = json.load(response)

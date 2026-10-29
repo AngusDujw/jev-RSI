@@ -379,15 +379,16 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError("Invalid request size")
             payload = json.loads(self.rfile.read(count))
             if native_job:
-                budget = float(self.headers.get("X-Model-Request-Timeout-Seconds", "3600"))
-                if not .1 <= budget <= 3600:
+                requested = self.headers.get("X-Model-Request-Timeout-Seconds", "3600")
+                budget = None if requested == "unlimited" else float(requested)
+                if budget is not None and not .1 <= budget <= 3600:
                     raise ValueError("Native session budget must be 0.1..3600 seconds")
                 ident = self.headers.get("X-Request-ID") or uuid.uuid4().hex
                 status, body = self.server.session_jobs.submit(ident, payload, budget)
                 if self.headers.get("Prefer") != "respond-async":
                     # Older hosts retain synchronous/SSE response semantics.
                     # Their HTTP disconnect still cannot cancel the native job.
-                    while status == 202 and time.monotonic()-started < budget:
+                    while status == 202 and (budget is None or time.monotonic()-started < budget):
                         time.sleep(.5)
                         status, body = self.server.session_jobs.get(ident)
                     if status == 200 and payload.get("stream"):

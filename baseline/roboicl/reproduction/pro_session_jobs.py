@@ -32,7 +32,7 @@ class SessionJobs:
                 if value["payload_sha256"] != signature:
                     raise ValueError("Request ID already belongs to different input")
             else:
-                value = dict(payload_sha256=signature, deadline=time.time()+budget,
+                value = dict(payload_sha256=signature, deadline=None if budget is None else time.time()+budget,
                     started=time.time(), job_id=ident)
                 atomic(meta, value)
             if not (folder / "result.json").exists() and ident not in self.running:
@@ -43,13 +43,15 @@ class SessionJobs:
 
     def execute(self, ident, payload, meta):
         folder = self.folder(ident)
-        deadline = time.monotonic()+max(0, meta["deadline"]-time.time())
+        deadline = float("inf") if meta["deadline"] is None else time.monotonic()+max(0, meta["deadline"]-time.time())
         record = dict(started=meta["started"], request=self.audit(payload), job_id=ident,
             transport_implementation_sha256=self.implementation, transport_omits=[],
             transport_kind="codex_app_server", upstream_attempts=[])
         try:
             remaining = deadline-time.monotonic()
-            if remaining <= 0 or not self.semaphore.acquire(timeout=remaining):
+            admitted = self.semaphore.acquire() if meta["deadline"] is None else (
+                remaining > 0 and self.semaphore.acquire(timeout=remaining))
+            if not admitted:
                 raise TimeoutError("Native job deadline exhausted while queued")
             try:
                 response, state = SessionPlanner(payload, folder, deadline).run()

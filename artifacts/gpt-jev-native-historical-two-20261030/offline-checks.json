@@ -1,0 +1,11 @@
+{
+  "unlimited_async_roundtrip": true,
+  "null_deadline_and_infinite_native_budget": true,
+  "poll_failure_reuses_original_job": true,
+  "duplicate_post_does_not_regenerate": true,
+  "unlimited_legacy_rejected": true,
+  "finite_deadline_unchanged": true,
+  "historical_policy_ast_unchanged": true,
+  "historical_prompt_hashes_unchanged": true,
+  "historical_helper_hashes_unchanged": true
+}
