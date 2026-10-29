@@ -259,6 +259,8 @@ class SessionPlanner:
             raise ValueError("Native session reasoning effort mismatch")
         if result.get("instructionSources"):
             raise ValueError("Unexpected instruction files loaded into native planner")
+        if self.state["thread_id"] and result["thread"]["id"] != self.state["thread_id"]:
+            raise ValueError("Native resume returned a different thread; refusing silent cold restart")
         self.state["thread_id"] = result["thread"]["id"]
         self.state["instruction_sources"] = result.get("instructionSources", [])
         self.save("connected")

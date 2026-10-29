@@ -1,0 +1,44 @@
+{
+  "declared_cases": [
+    [
+      "raw-1",
+      0
+    ],
+    [
+      "native-1",
+      0
+    ],
+    [
+      "raw-2",
+      0
+    ],
+    [
+      "native-2",
+      1
+    ],
+    [
+      "raw-3",
+      0
+    ],
+    [
+      "native-3",
+      2
+    ]
+  ],
+  "request": "code/runs/2026-10-29-gpt-jev-historical-two/new-183-init0/gpt-00.request.json",
+  "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "account": "local ChatGPT Pro OAuth; no Platform key",
+  "cli": "codex-cli 0.165.0",
+  "raw_diagnostic_commit": "8b4bfdd6",
+  "deadline": "No application overall generation cutoff",
+  "fault": "Own native RPC child process terminated after >=45 seconds; repeated only on distinct live PID",
+  "native_limits": "Existing maximum 3 turns and 2 RPC reconnections; not token-level inference resumption",
+  "control": "Credentialless public HTTPS reachability, not API health or causal network fraction",
+  "confound": "Raw and native agent framing differ; six diagnostic trials are not robot success measurements",
+  "source_hashes": {
+    "baseline/roboicl/reproduction/pro_recovery_repeat.py": "9f77291733ee092d7a7c797d09dca88121ea2cbb53958d04f21060fcbc80955c",
+    "baseline/roboicl/reproduction/pro_session_client.py": "df40dabb30ffce1a67c0ba815549511465c430f369c5cb101a1e732050fb2093"
+  }
+}
