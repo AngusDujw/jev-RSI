@@ -6,11 +6,13 @@ lane=${1:?baseline or jev}
 run=${2:?fresh YYYYMMDDHHMM-prefixed run directory}
 case "$lane" in baseline) gpu=0; task=RoboDojo;; jev) gpu=1; task=RoboDojoJev;; *) exit 2;; esac
 cache="$root/.cache/$lane"
-mkdir -p "$cache"/{home,xdg,runtime,torch} "$root/.t$gpu"
+mkdir -p "$cache"/{home,xdg,runtime,torch,kit-cache,kit-logs} "$root/.t$gpu"
 exec docker run --rm --name "embodiedevo-orchestrator-$lane-20261029" \
   --gpus "device=$gpu" --network host --ipc private --shm-size=1g --user 0:0 \
   --mount "type=bind,src=$root,dst=$root" \
   --mount "type=bind,src=$base,dst=$base,readonly" \
+  --mount "type=bind,src=$cache/kit-cache,dst=/isaac-sim/kit/cache" \
+  --mount "type=bind,src=$cache/kit-logs,dst=/isaac-sim/kit/logs" \
   --mount type=bind,src=/usr/bin/docker,dst=/usr/local/bin/docker,readonly \
   --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
   --workdir "$root" --env ACCEPT_EULA=Y --env OMNI_KIT_ACCEPT_EULA=YES \
