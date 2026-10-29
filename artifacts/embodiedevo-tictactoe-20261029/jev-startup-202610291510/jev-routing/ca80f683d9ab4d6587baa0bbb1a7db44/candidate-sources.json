@@ -1,0 +1,8 @@
+{
+  "act": [
+    {
+      "path": "submission/solution.py",
+      "code": "# The opponent stayed at its initial pose across a measured hold and the center cell is empty.\n# Approach above the leftmost ring to calibrate the downward grasp frame.\no = get_observation()\ns = o['state']\na = {'left_ee_pose': [-0.20,-0.20,0.94,0.7071068,0,0.7071068,0], 'right_ee_pose':s['right_ee_pose'], 'left_ee_joint_state':[1.0], 'right_ee_joint_state':s['right_ee_joint_state']}\nfor i in range(35):\n    o,r,t,u,info=step(a)\n    if t or u: break\nprint(o['state'])\n"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "observation": "observations/000003",
+  "state": {
+    "current_execution": 3,
+    "evidence": {
+      "execution": 3,
+      "source": "Head and left wrist current frames in observation 000003 compared with 000002",
+      "contradictory": false,
+      "opponent_motion": "stopped",
+      "player_turn": true,
+      "destination_empty": true,
+      "description": "Opponent remains in same starting pose across 35 steps. Board empty, first ring still in supply; player initial turn continues. Center destination empty."
+    },
+    "run_id": "runs/202610291510-jev",
+    "terminated": false,
+    "truncated": false,
+    "success": false,
+    "native_steps_remaining": 1055,
+    "executions_remaining": 97,
+    "available_branches": [
+      "act"
+    ]
+  },
+  "branches": {
+    "act": {
+      "entry": "submission/solution.py",
+      "includes": [
+        "skills/ee_stage.py"
+      ]
+    }
+  }
+}

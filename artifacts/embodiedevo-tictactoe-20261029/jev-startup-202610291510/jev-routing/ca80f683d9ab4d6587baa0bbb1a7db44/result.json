@@ -1,0 +1,42 @@
+{
+  "protocol": "tictactoe-routing-v2",
+  "request_id": "b3a0a6279e624905a88719f8ddc68758",
+  "jev_choice": "act",
+  "usage": {
+    "input_tokens": 596,
+    "output_tokens": 45
+  },
+  "executed": true,
+  "route": "act",
+  "feedback": {
+    "ok": true,
+    "phase": "playground",
+    "closed": false,
+    "reason": "active",
+    "execution_budget": 100,
+    "executions_used": 3,
+    "executions_remaining": 97,
+    "seconds_remaining": null,
+    "execution_timeout_sec": 1200.0,
+    "native_action_limit": 1100,
+    "native_steps_used": 45,
+    "native_steps_remaining": 1055,
+    "success": false,
+    "terminated": false,
+    "truncated": false,
+    "observation": "observations/000003",
+    "stdout": "env0 step: \u001b[92m11 / 1100\u001b[0m\renv0 step: \u001b[92m12 / 1100\u001b[0m\renv0 step: \u001b[92m13 / 1100\u001b[0m\renv0 step: \u001b[92m14 / 1100\u001b[0m\renv0 step: \u001b[92m15 / 1100\u001b[0m\renv0 step: \u001b[92m16 / 1100\u001b[0m\renv0 step: \u001b[92m17 / 1100\u001b[0m\renv0 step: \u001b[92m18 / 1100\u001b[0m\renv0 step: \u001b[92m19 / 1100\u001b[0m\renv0 step: \u001b[92m20 / 1100\u001b[0m\renv0 step: \u001b[92m21 / 1100\u001b[0m\renv0 step: \u001b[92m22 / 1100\u001b[0m\renv0 step: \u001b[92m23 / 1100\u001b[0m\renv0 step: \u001b[92m24 / 1100\u001b[0m\renv0 step: \u001b[92m25 / 1100\u001b[0m\renv0 step: \u001b[92m26 / 1100\u001b[0m\renv0 step: \u001b[92m27 / 1100\u001b[0m\renv0 step: \u001b[92m28 / 1100\u001b[0m\renv0 step: \u001b[92m29 / 1100\u001b[0m\renv0 step: \u001b[92m30 / 1100\u001b[0m\renv0 step: \u001b[92m31 / 1100\u001b[0m\renv0 step: \u001b[92m32 / 1100\u001b[0m\renv0 step: \u001b[92m33 / 1100\u001b[0m\renv0 step: \u001b[92m34 / 1100\u001b[0m\renv0 step: \u001b[92m35 / 1100\u001b[0m\renv0 step: \u001b[92m36 / 1100\u001b[0m\renv0 step: \u001b[92m37 / 1100\u001b[0m\renv0 step: \u001b[92m38 / 1100\u001b[0m\renv0 step: \u001b[92m39 / 1100\u001b[0m\renv0 step: \u001b[92m40 / 1100\u001b[0m\renv0 step: \u001b[92m41 / 1100\u001b[0m\renv0 step: \u001b[92m42 / 1100\u001b[0m\renv0 step: \u001b[92m43 / 1100\u001b[0m\renv0 step: \u001b[92m44 / 1100\u001b[0m\renv0 step: \u001b[92m45 / 1100\u001b[0m\r{'left_arm_joint_state': array([-3.7864316e-01,  1.6296121e+00,  1.0286545e+00, -9.6983570e-01,\n       -3.9882403e-07,  1.1921518e+00], dtype=float32), 'left_ee_pose': array([-2.00075567e-01, -1.99969962e-01,  9.40000951e-01,  7.07107186e-01,\n       -1.06276202e-04,  7.07106233e-01,  1.08618726e-04], dtype=float32), 'right_arm_joint_state': array([ 2.8279322e-04, -3.2476012e-07,  7.9374054e-08, -3.8316898e-07,\n       -1.8994393e-05, -1.4713503e-07], dtype=float32), 'right_ee_pose': array([ 3.00442725e-01, -3.52299690e-01,  9.21499968e-01,  7.06893265e-01,\n       -1.45188352e-07,  1.09470356e-07,  7.07320213e-01], dtype=float32), 'left_ee_joint_state': [1.0], 'right_ee_joint_state': [1.0]}\n",
+    "stderr": "",
+    "execution": 3,
+    "videos": {
+      "cam_head": "observations/000003/execution_cam_head.mp4",
+      "cam_left_wrist": "observations/000003/execution_cam_left_wrist.mp4",
+      "cam_right_wrist": "observations/000003/execution_cam_right_wrist.mp4"
+    },
+    "timing": {
+      "simulation_execution_sec": 12.682332,
+      "feedback_capture_sec": 3.01017,
+      "request_handler_sec": 15.738461
+    }
+  }
+}

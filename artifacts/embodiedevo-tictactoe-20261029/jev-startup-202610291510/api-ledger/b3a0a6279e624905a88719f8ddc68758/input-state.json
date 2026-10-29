@@ -1,0 +1,21 @@
+{
+  "current_execution": 2,
+  "evidence": {
+    "execution": 2,
+    "source": "Visual comparison of current_cam_head.png in observations/000001 and 000002 after 10 hold steps",
+    "contradictory": false,
+    "opponent_motion": "stopped",
+    "player_turn": true,
+    "destination_empty": true,
+    "description": "Opponent stays in same raised starting pose, all rings and crosses remain in supply, and board center is empty. Initial first player turn is specified by task."
+  },
+  "run_id": "runs/202610291510-jev",
+  "terminated": false,
+  "truncated": false,
+  "success": false,
+  "native_steps_remaining": 1090,
+  "executions_remaining": 98,
+  "available_branches": [
+    "act"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "protocol": "tictactoe-routing-v2",
+  "request_id": "fac1944619b44cb4b01ef0a8b8bcab04",
+  "jev_choice": "act",
+  "usage": {
+    "input_tokens": 596,
+    "output_tokens": 45
+  },
+  "executed": true,
+  "route": "act",
+  "feedback": {
+    "ok": true,
+    "phase": "playground",
+    "closed": false,
+    "reason": "active",
+    "execution_budget": 100,
+    "executions_used": 4,
+    "executions_remaining": 96,
+    "seconds_remaining": null,
+    "execution_timeout_sec": 1200.0,
+    "native_action_limit": 1100,
+    "native_steps_used": 70,
+    "native_steps_remaining": 1030,
+    "success": false,
+    "terminated": false,
+    "truncated": false,
+    "observation": "observations/000004",
+    "stdout": "env0 step: \u001b[92m46 / 1100\u001b[0m\renv0 step: \u001b[92m47 / 1100\u001b[0m\renv0 step: \u001b[92m48 / 1100\u001b[0m\renv0 step: \u001b[92m49 / 1100\u001b[0m\renv0 step: \u001b[92m50 / 1100\u001b[0m\renv0 step: \u001b[92m51 / 1100\u001b[0m\renv0 step: \u001b[92m52 / 1100\u001b[0m\renv0 step: \u001b[92m53 / 1100\u001b[0m\renv0 step: \u001b[92m54 / 1100\u001b[0m\renv0 step: \u001b[92m55 / 1100\u001b[0m\renv0 step: \u001b[92m56 / 1100\u001b[0m\renv0 step: \u001b[92m57 / 1100\u001b[0m\renv0 step: \u001b[92m58 / 1100\u001b[0m\renv0 step: \u001b[92m59 / 1100\u001b[0m\renv0 step: \u001b[92m60 / 1100\u001b[0m\renv0 step: \u001b[92m61 / 1100\u001b[0m\renv0 step: \u001b[92m62 / 1100\u001b[0m\renv0 step: \u001b[92m63 / 1100\u001b[0m\renv0 step: \u001b[92m64 / 1100\u001b[0m\renv0 step: \u001b[92m65 / 1100\u001b[0m\renv0 step: \u001b[92m66 / 1100\u001b[0m\renv0 step: \u001b[92m67 / 1100\u001b[0m\renv0 step: \u001b[92m68 / 1100\u001b[0m\renv0 step: \u001b[92m69 / 1100\u001b[0m\renv0 step: \u001b[92m70 / 1100\u001b[0m\rmove left steps 25 position [-0.20075242 -0.15969539  0.9242195 ] error 0.014242640153178611\n",
+    "stderr": "",
+    "execution": 4,
+    "videos": {
+      "cam_head": "observations/000004/execution_cam_head.mp4",
+      "cam_left_wrist": "observations/000004/execution_cam_left_wrist.mp4",
+      "cam_right_wrist": "observations/000004/execution_cam_right_wrist.mp4"
+    },
+    "timing": {
+      "simulation_execution_sec": 9.184527,
+      "feedback_capture_sec": 2.904368,
+      "request_handler_sec": 12.135576
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "run_id": "202610291510-jev",
+  "captured_utc": "2026-10-29T07:13:55.482821+00:00",
+  "scope": "Startup operability; not task success or efficiency evidence. Continues running.",
+  "routes": [
+    {
+      "request_id": "b3a0a6279e624905a88719f8ddc68758",
+      "raw_choice": "act",
+      "execution": 3,
+      "native_steps": 45,
+      "candidate_source_hashes": [
+        "a3e398fcbb6b6db2ba13e0ce737a9e19bc520c9152528e23cf33e68954bff91f"
+      ],
+      "event_source_hashes": [
+        "a3e398fcbb6b6db2ba13e0ce737a9e19bc520c9152528e23cf33e68954bff91f"
+      ],
+      "concatenation_separator": "two newlines",
+      "candidate_concatenated_sha256": "a3e398fcbb6b6db2ba13e0ce737a9e19bc520c9152528e23cf33e68954bff91f",
+      "executed_sha256": "a3e398fcbb6b6db2ba13e0ce737a9e19bc520c9152528e23cf33e68954bff91f",
+      "ok": true,
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      },
+      "evidence": {
+        "execution": 2,
+        "source": "Visual comparison of current_cam_head.png in observations/000001 and 000002 after 10 hold steps",
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": true,
+        "description": "Opponent stays in same raised starting pose, all rings and crosses remain in supply, and board center is empty. Initial first player turn is specified by task."
+      }
+    },
+    {
+      "request_id": "fac1944619b44cb4b01ef0a8b8bcab04",
+      "raw_choice": "act",
+      "execution": 4,
+      "native_steps": 70,
+      "candidate_source_hashes": [
+        "e2e1e8c376051f1ece344946bac09e77746d1be0957ebd064ff563b7a8a576d8",
+        "8abedd6318bf468279c5bc9bc0f78b72349b461e9c1db9205243bc32fd74c539"
+      ],
+      "event_source_hashes": [
+        "e2e1e8c376051f1ece344946bac09e77746d1be0957ebd064ff563b7a8a576d8",
+        "8abedd6318bf468279c5bc9bc0f78b72349b461e9c1db9205243bc32fd74c539"
+      ],
+      "concatenation_separator": "two newlines",
+      "candidate_concatenated_sha256": "215a889b1083609ae21ecf58eaa1a51204dc57f53c82d1c7625f536d6bc0f438",
+      "executed_sha256": "215a889b1083609ae21ecf58eaa1a51204dc57f53c82d1c7625f536d6bc0f438",
+      "ok": true,
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      },
+      "evidence": {
+        "execution": 3,
+        "source": "Head and left wrist current frames in observation 000003 compared with 000002",
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": true,
+        "description": "Opponent remains in same starting pose across 35 steps. Board empty, first ring still in supply; player initial turn continues. Center destination empty."
+      }
+    }
+  ],
+  "total_input_tokens": 1192,
+  "total_output_tokens": 90
+}
