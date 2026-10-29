@@ -12,6 +12,11 @@ from jev_protocol import payload, VERSION
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *args): pass
+    def do_GET(self):
+        if self.path != '/health': self.send_error(404); return
+        data=json.dumps({'ready':True,'protocol':VERSION,'credential_loaded':bool(self.server.key)}).encode()
+        self.send_response(200); self.send_header('Content-Type','application/json')
+        self.send_header('Content-Length',str(len(data))); self.end_headers(); self.wfile.write(data)
     def do_POST(self):
         if self.path != '/route':
             self.send_error(404); return
@@ -24,6 +29,7 @@ class Handler(BaseHTTPRequestHandler):
             if not 0 < length < 100000: raise ValueError('Invalid request size')
             state = json.loads(self.rfile.read(length))
             body = payload(state)
+            (folder/'input-state.json').write_text(json.dumps(state,indent=2))
             (folder/'request.json').write_text(json.dumps(body,indent=2))
             req = urllib.request.Request('https://api.typesafe.ai/v1/systemone',
                 data=json.dumps(body).encode(), headers={'Authorization':'Bearer '+self.server.key,
@@ -32,6 +38,7 @@ class Handler(BaseHTTPRequestHandler):
                 raw = json.load(stream)
             (folder/'response.json').write_text(json.dumps(raw,indent=2))
             result = {'request_id':ident, 'protocol':VERSION, 'raw':raw,
+                      'run_id':state.get('run_id','unlabeled'),
                       'elapsed_seconds':time.monotonic()-start}
             code = 200
         except Exception as exc:

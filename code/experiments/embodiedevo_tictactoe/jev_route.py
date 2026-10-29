@@ -16,6 +16,7 @@ def main():
     plan=json.loads(plan_path.read_text()); english(plan)
     status=native.request({'op':'status'})
     state=plan['state']
+    state['run_id']=os.environ.get('EMBODIEDEVO_RUN_ID',str(root))
     if state.get('current_execution') != status['executions_used']:
         raise ValueError('Plan is stale: inspect current native observations before routing')
     if plan.get('observation') != status['observation']:
