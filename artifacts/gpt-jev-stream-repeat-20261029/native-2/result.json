@@ -1,0 +1,56 @@
+{
+  "arm": "native",
+  "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+  "started": 1793274406.3401945,
+  "requested_faults": 1,
+  "fault_interval": 45.0,
+  "completed": true,
+  "thread_id": "01a1877b-e9a1-7dd2-b7c9-b84f27fdd616",
+  "turns": [
+    {
+      "id": "01a1877b-e9a7-7370-b238-d0b798f3703d",
+      "continuation": false
+    },
+    {
+      "id": "01a1877c-9a75-7fa2-99a9-c4d35d504a33",
+      "continuation": true
+    }
+  ],
+  "recoveries": [
+    {
+      "kind": "rpc_reconnect",
+      "at": 1793274451.4186969
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 2/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "stream disconnected before completion: tls handshake eof",
+        "misalignment": null
+      },
+      "at": 1793276553.930472
+    }
+  ],
+  "usage": {
+    "input_tokens": 528872,
+    "output_tokens": 44839,
+    "output_tokens_details": {
+      "reasoning_tokens": 32909
+    }
+  },
+  "source_sha256": "1dfb1e15b74d8adef935da02d5b4c8cdf1aaa9ac5f2087019178d40991e75a18",
+  "source_lines": 247,
+  "accounting_scope": "Native thread aggregate, not exact provider attempt count",
+  "elapsed_s": 2855.2183278500015,
+  "injected_faults": 1,
+  "model_turns_started": 2,
+  "same_thread_after_faults": true,
+  "requested_faults_observed": true,
+  "observed_rpc_reconnects": 1
+}

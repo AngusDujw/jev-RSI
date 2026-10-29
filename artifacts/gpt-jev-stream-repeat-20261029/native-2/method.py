@@ -1,0 +1,247 @@
+def main(api):
+    task = "put the wine bottle on the rack table 1"
+    key = "wine.method.v2"
+    c = {"phase":"survey", "geometry":{}, "object":None, "pending":None, "log":[]}
+    tracker = {}; counts = {"patches":0, "views":0}
+    camera_enum = ["agentview","robot0_eye_in_hand"]
+    pixel = {"type":"array","items":{"type":"integer","minimum":0,"maximum":767},"minItems":2,"maxItems":2}
+    polygon = {"type":"array","items":pixel,"maxItems":12}
+    cap_fields = {"identity":["same_bottle","unknown"],"upright":["yes","no","unknown"],"cap_camera":camera_enum,"cap_pixels":polygon,"patch_camera":camera_enum,"patch_polygon":polygon}
+    gate_fields = {"obstruction":["observed_external","none_observed","unknown"],"visibility":["local_visible","self_occluded","unobserved"],"basis":["visible_local_envelope","known_support_and_self_occlusion","none"],"up_view":["justified","blocked","unknown"]}
+    questions = {}
+    for axis in ["x","y","z","rx","ry","rz"]:
+        questions[axis] = {"type":"choice","instructions":"For world axis "+axis+", read state.processed_features.axes."+axis+".goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. Do not infer object effects.","criteria":{"negative":"This axis relation is decrease.","hold":"This axis relation is within_tolerance.","positive":"This axis relation is increase."}}
+    questions["gripper"] = {"type":"choice","instructions":"Read state.processed_features.objective.gripper. Deliver exactly that open, close, or keep objective; do not infer a grasp.","criteria":{"open":"Objective is open.","close":"Objective is close.","keep":"Objective is keep."}}
+    def need(ok, message):
+        if not ok: raise RuntimeError(message)
+    def log(data):
+        c["log"] = (c["log"]+[data])[-10:]; api.note(str(data))
+    def save():
+        api.checkpoint(key,c)
+    def ask(question, fields, context=None, reserve=5):
+        need(api.state()["budgets"]["gpt_remaining"]>reserve,"Review reserve reached; no justified new observation available.")
+        r = api.review(question,context=context,fields=fields)
+        log({"review_frame":r["frame_id"],"measurement_errors":r["measurement_errors"],"explanation":r["explanation"][:450]})
+        need(r["status"]!="stop","Observation reviewer stopped: "+r["explanation"])
+        return r
+    def cloud(r, name):
+        need(name in r["regions"],"Missing region "+name+"; errors="+str(r["measurement_errors"]))
+        p = np.asarray(r["regions"][name]["world_m"],dtype=float)
+        need(len(p)>=6 and bool(np.all(np.isfinite(p))),"Insufficient finite surface measurements: "+name)
+        return p
+    def plane(r, name):
+        f = geo.plane(cloud(r,name)); log({name:{"rms":float(f["rms_m"]),"spread":np.asarray(f["in_plane_spread_m"]).tolist(),"coefficients":np.asarray(f["coefficients"]).tolist()}})
+        need(f["rms_m"]<=0.002 and min(f["in_plane_spread_m"])>0.002,"Inadequate measured plane: "+name)
+        return f
+    def height(pl, xy):
+        return float(-(pl[0]*xy[0]+pl[1]*xy[1]+pl[3])/pl[2])
+    def rim(r, name, f):
+        p = r["parameters"]; pixels = p[name+"_pixels"]
+        need(len(pixels)>=5 if name=="cap" else len(pixels)>=4,"Missing visible planar boundary samples: "+name)
+        return np.asarray([api.plane_point(p[name+"_camera"],v,np.asarray(f["coefficients"]).tolist())["world_m"] for v in pixels])
+    def cap(r):
+        p = r["parameters"]; need(p["identity"]=="same_bottle" and p["upright"]=="yes","Ambiguous bottle identity or non-upright bottle.")
+        f = plane(r,"cap"); n = np.asarray(f["coefficients"])[:3]; need(n[2]>0.99,"Cap normal does not support upright model.")
+        pts = rim(r,"cap",f); fit = geo.circle_xy(pts); rad = float(fit["radius_m"])
+        u = max(0.0015,float(f["rms_m"])+float(fit["max_radial_error_m"]))
+        log({"cap_radius":rad,"cap_uncertainty_heuristic":u,"cap_boundary_gap":float(fit["largest_angular_gap_rad"])})
+        need(fit["largest_angular_gap_rad"]<math.pi and u<=min(0.004,rad*0.22),"Circular cap landmark insufficiently constrained.")
+        xy = fit["center_xy_m"]; center = [float(xy[0]),float(xy[1]),height(f["coefficients"],xy)]
+        return {"cap":center,"normal":n.tolist(),"u":u,"radius":rad,"frame":r["frame_id"],"state":api.state(),"source":"measured cap plane and visible circular rim"}
+    def patch(r, o):
+        p = r["parameters"]
+        if len(p["patch_polygon"])>=3 and counts["patches"]<8:
+            counts["patches"] += 1
+            try:
+                t = api.track_init(p["patch_camera"],p["patch_polygon"])
+                tracker.clear(); tracker.update({"handle":t["handle"],"frame":t["frame_id"],"reference":o})
+                log({"patch_frame":t["frame_id"],"initialization_passed_minimum_feature_gate":True})
+            except Exception as e: log({"patch_unavailable":str(e)})
+    def observe(reason, reserve=5):
+        o = None
+        if "handle" in tracker:
+            try:
+                t = api.track_update(tracker["handle"])
+                if t["status"]=="tracked":
+                    spread = sorted(np.asarray(t["inlier_spread_m"]).reshape(-1).tolist())
+                    s = spread[-2] if len(spread)>=2 else 0.0
+                    ref = tracker["reference"]; lever = float(np.linalg.norm(np.asarray(ref["cap"])-np.asarray(t["reference_patch_centroid_world_m"])))
+                    u = ref["u"]+float(t["rms_m"])+float(t["uncertainty_floor_m"])*(1+lever/max(s,0.001))
+                    T = np.asarray(t["transform_initial_world_to_current_world"]); n = T[:3,:3]@np.asarray(ref["normal"])
+                    if t["reference_frame_id"]==tracker["frame"] and t["inliers"]>=12 and t["inliers"]/max(1,t["matches"])>=0.6 and s>0.003 and t["rms_m"]<=0.002 and u<=0.004 and n[2]>0.985:
+                        o = {"cap":geo.transform([ref["cap"]],T)[0].tolist(),"normal":n.tolist(),"u":u,"radius":ref["radius"],"frame":t["frame_id"],"state":api.state(),"source":"RGB-D patch registration"}
+                log({"track_status":t["status"],"frame":t["frame_id"],"reason":t.get("reason",""),"usable":o is not None})
+            except Exception as e: log({"track_error":str(e)})
+        if o is None:
+            recovery_fields=dict(cap_fields); recovery_fields["recovery_view"]=["up_justified","not_justified","unknown"]
+            recovery_context={"task":task,"definition":c["geometry"].get("cap_definition"),"historical":c["object"],"reason":reason,"up_finger_envelope":envelope(geo.pad_position(api.state())+[0,0,0.025],False)}
+            r = ask("Recover current independent bottle geometry for "+reason+". identity means the SAME task bottle, not merely a similar object; upright means its circular cork top and vertical bottle axis are identifiable. Recover the persistent landmark: center of the circular gold cork TOP, not a screen-relative corner or a predicted hand-attached point. Request named region cap entirely on its visible planar top, with explicit camera, integer box and stride 4. cap_camera and cap_pixels select 5-12 genuinely visible rim pixels spanning more than a semicircle; these will be ray-intersected with the measured plane. Empty cap_pixels and unknown if inadequate. Supply patch_camera and patch_polygon for a textured interior patch belonging solely to this bottle if available, otherwise []. Unknown registration does NOT mean lost bottle. Historical projections are not detections. recovery_view=up_justified ONLY if a 25 mm upward pad move with unchanged gripper and orientation has current local evidence against external obstruction and would genuinely reveal new cap or correspondence evidence; not_justified or unknown otherwise. Include the potentially held bottle, not only the supplied own-finger envelope. This does not require complete later-route visibility.",recovery_fields,recovery_context,reserve)
+            try: o=cap(r)
+            except Exception as e:
+                need(counts["views"]<2 and r["parameters"]["recovery_view"]=="up_justified","Registration and independent landmark recovery failed: "+str(e))
+                counts["views"]+=1; keep_reserve={"ready":100,"approach":95,"closing":80,"closed":80,"retained":48,"transfer":45,"lowering":28}.get(c["phase"],2)
+                run((geo.pad_position(api.state())+[0,0,0.025]).tolist(),"keep",c["phase"],keep_reserve)
+                r=ask("After the acknowledged view-producing move, recover the SAME physical circular cork-top center. Request cap interior region with camera/box/stride 4, cap_camera and 5-12 visible rim cap_pixels spanning over a semicircle. identity and upright must be independently observed. Supply a bottle-only textured patch_camera/patch_polygon if usable. Unknown/empty if still occluded or correspondence is ambiguous. Do not reuse old pixels or the hand-motion prediction as a detection.",cap_fields,{"reference_definition":c["geometry"]["cap_definition"],"historical":c["object"],"failed_measurement":str(e)},reserve)
+                o=cap(r)
+            patch(r,o)
+        c["object"] = o; save(); return o
+    def margin(xy):
+        poly = np.asarray(c["geometry"]["shelf_polygon"])[:,:2]; q = np.asarray(xy)
+        area = sum(float(np.cross(poly[(i+1)%len(poly)]-poly[i],poly[(i+2)%len(poly)]-poly[(i+1)%len(poly)])) for i in range(len(poly)))
+        sign = 1 if area>0 else -1
+        return min(sign*float(np.cross(poly[(i+1)%len(poly)]-poly[i],q-poly[i]))/float(np.linalg.norm(poly[(i+1)%len(poly)]-poly[i])) for i in range(len(poly)))
+    def envelope(target, held):
+        st = api.state(); own = st["own_geometry"]; R = geo.rotation(st["tcp_quaternion_xyzw"])
+        corners = np.asarray([[a,b,d] for a in [own["finger_low_offset_tool_m"][0],own["finger_high_offset_tool_m"][0]] for b in [own["finger_low_offset_tool_m"][1],own["finger_high_offset_tool_m"][1]] for d in [own["finger_low_offset_tool_m"][2],own["finger_high_offset_tool_m"][2]]])
+        now = corners@R.T+np.asarray(st["tcp_position_world_m"]); delta = np.asarray(target)-geo.pad_position(st); pts = np.concatenate([now,now+delta])
+        if held:
+            g = c["geometry"]; p = np.asarray(c["object"]["cap"]); r = g["body_radius"]+c["object"]["u"]
+            box = np.asarray([[p[0]+a*r,p[1]+b*r,z] for a in [-1,1] for b in [-1,1] for z in [p[2]-g["height"],p[2]]]); pts = np.concatenate([pts,box,box+delta])
+        images = {}
+        for cam in camera_enum:
+            cal = api.camera(cam); v = geo.transform(pts,np.linalg.inv(np.asarray(cal["camera_to_world_opencv"]))); pix = v@np.asarray(cal["K"]).T
+            images[cam] = [[round(float(x[0]/x[2]),1),round(float(x[1]/x[2]),1)] if x[2]>0 else None for x in pix]
+        return {"planned_envelope_pixels":images,"pad_target_world_m":np.asarray(target).tolist(),"held_envelope_is_prediction_not_measurement":held,"finger_bounds_include_empty_opening":True}
+    def run(target, grip, phase, reserve):
+        st = api.state(); p = geo.pad_position(st); dist = float(np.linalg.norm(np.asarray(target)-p))
+        calls = min(18,int(st["budgets"]["jev_remaining"])-reserve,int(st["budgets"]["native_steps_remaining"]/3)-reserve)
+        need(calls>0,"Insufficient control reserve for "+phase)
+        c["phase"]=phase; c["pending"]={"target":np.asarray(target).tolist(),"gripper":grip,"before":st,"object_before":c["object"]}; save()
+        r = api.drive(np.asarray(target).tolist(),c["geometry"]["quaternion"],grip,questions,features={"phase":phase,"measured_object":c["object"],"goal_semantics":"Bounded pad-center pose step; no inferred grasp."},max_calls=calls,tool_point="pad_center",translation_limit=0.02,rotation_limit=0.08,steps=3,position_tolerance=0.0025,rotation_tolerance=0.04)
+        log({"phase":phase,"status":r["status"],"calls":r["lease_calls"],"position_error":r["position_error_m"]})
+        c["pending"]=None; save()
+        need(r["choices"]["gripper"]==grip,"Last lease gripper choice did not match the requested objective.")
+        need(r["status"]!="stalled" or phase=="lowering","Stalled "+phase+"; no repeated pushing or automatic opening.")
+        if r["status"]=="lease_exhausted":
+            progress = dist-float(np.linalg.norm(np.asarray(target)-geo.pad_position(api.state())))
+            need(progress>=0.5*dist,"Lease exhausted with inadequate progress: "+str(progress))
+        return r
+    def retained(a,b, minimum=0.0):
+        hand = float(np.linalg.norm(geo.pad_position(b["state"])-geo.pad_position(a["state"])))
+        obj = float(np.linalg.norm(np.asarray(b["cap"])-np.asarray(a["cap"])))
+        err = float(geo.attachment_error([a["cap"]],[b["cap"]],a["state"],b["state"]))
+        tol = max(0.004,2*(a["u"]+b["u"])); proof={"retention_hand_motion":hand,"object_motion":obj,"attachment_error":err,"tolerance":tol,"before_cap":a["cap"],"after_cap":b["cap"],"before_state":a["state"],"after_state":b["state"]}
+        c["retention_check"]=proof; log({"retention_hand_motion":hand,"object_motion":obj,"attachment_error":err,"tolerance":tol})
+        need(err<=tol and b["normal"][2]>0.985 and hand>=minimum and (hand<0.012 or 0.65*hand<=obj<=1.35*hand),"Observed motion does not support continued upright retention.")
+    def route(goal, held, grip, phase, reserve):
+        goal = np.asarray(goal,dtype=float); g = c["geometry"]
+        for attempt in range(40):
+            old = c["object"]; st = api.state(); pad = geo.pad_position(st); origin = np.asarray(old["cap"]) if held else pad
+            delta = goal-origin; distance = float(np.linalg.norm(delta))
+            if distance<=0.004: return
+            need(distance<=0.6,"Remaining local route exceeds 0.6 m.")
+            step = min(0.08 if phase=="withdraw" else 0.06,distance); target = pad+delta*(step/distance); up = pad+np.asarray([0,0,0.025])
+            ctx = {"phase":phase,"next_leg_m":step,"geometry":g,"current_object":old,"main":envelope(target,held),"alternate_up":envelope(up,held)}
+            r = ask("Assess ONLY this next bounded leg, not the entire later route. obstruction: observed_external means a visible nonrobot obstacle intersects the planned envelope; none_observed is not certified clearance; unknown means identity/location cannot be determined. visibility: local_visible, self_occluded by robot/bottle, or unobserved unrelated space. basis: visible_local_envelope, or known_support_and_self_occlusion ONLY if current measured object/own-finger geometry and stationary support justify this small leg; otherwise none. Self-occlusion is not an external obstacle. up_view=justified ONLY if the separately projected 25 mm upward leg has a visible local free basis AND would expose useful new bottle/obstacle evidence; blocked or unknown otherwise. The projected finger assembly bounds include its EMPTY central opening, not a solid occupied box. During approach the target neck in that opening is expected, but visible finger/shoulder contact or inadequate actual finger separation is obstruction. Check actual finger paths, not just TCP arrival. Check no visible unintended contact or displacement of fixed rack/table. Do not demand a complete swept-volume certificate.",gate_fields,ctx,1 if phase=="withdraw" else 5)
+            p = r["parameters"]; advance = p["obstruction"]=="none_observed" and p["visibility"]!="unobserved" and p["basis"]!="none"
+            if not advance:
+                need(counts["views"]<2 and p["up_view"]=="justified","Local evidence gap: "+str(p))
+                target=up; counts["views"]+=1
+            receipt=run(target.tolist(),grip,phase,reserve)
+            if held:
+                new = observe(phase); retained(old,new)
+                if receipt["status"]=="stalled":
+                    gap=new["cap"][2]-g["height"]-height(g["shelf_plane"],new["cap"][:2]); log({"stalled_descent_base_gap":gap,"footprint_margin":margin(new["cap"][:2])})
+                    need(phase=="lowering" and -0.004<=gap<=0.012 and margin(new["cap"][:2])>g["body_radius"]+new["u"]+0.003,"Stall not explained by observable placement geometry; no further push.")
+                    return
+                if advance: need(distance-float(np.linalg.norm(goal-np.asarray(new["cap"])))>=max(0.0015,0.5*step-0.003),"Object-directed progress too small.")
+        raise RuntimeError("Finite route bound exhausted; no completion claim.")
+    def jaw(grip, phase):
+        for trial in range(1 if grip=="keep" else 3):
+            st = api.state(); need(st["budgets"]["jev_remaining"]>(0 if grip=="keep" else 2),"No gripper command budget.")
+            c["phase"]=phase; c["pending"]={"gripper":grip,"before":st,"object_before":c["object"]}; save()
+            r = api.control(geo.pad_position(st).tolist(),st["tcp_quaternion_xyzw"],grip,questions,features={"phase":phase,"effect_requires_observation":True},tool_point="pad_center",steps=3,translation_limit=0.005,rotation_limit=0.04,position_tolerance=0.003,rotation_tolerance=0.04)
+            log({"jaw":grip,"status":r["status"],"choice":r["choices"]["gripper"]}); need(r["status"] in ["reached","moved"] and r["choices"]["gripper"]==grip,"Gripper command not acknowledged as requested.")
+            c["pending"]=None; save()
+    try:
+        manifest = api.recall(); keys = [m["key"] for m in manifest]
+        if key in keys:
+            c = api.recall(key)["value"]
+            r = ask("Repair revalidation: same_identity means this is the same wine bottle and same intended rack support described in historical geometry. invariant_support means rack/table and bottle shape have not changed; do not call old object positions current. Give unknown if correspondence is ambiguous. Never infer retention from closed fingers.",{"same_identity":["yes","no","unknown"],"invariant_support":["yes","no","unknown"]},{"historical":c,"task":task},5)
+            need(all(v=="yes" for v in r["parameters"].values()),"Historical reference dependencies cannot be revalidated.")
+        if not c["geometry"].get("valid",False):
+            cached=api.recall("wine.survey.v2")["value"] if "wine.survey.v2" in keys else None
+            reusable=key in keys and cached is not None and c["phase"]=="survey" and cached["native_steps"]==api.state()["native_steps"]
+            fields = dict(cap_fields); fields.update({"model":["upright_round_bottle","other","unknown"],"placement":["upright_on_planar_rack","other","unknown"],"target_definition":"string","shelf_camera":camera_enum,"shelf_pixels":polygon,"initial_support":["resting_on_table","unknown"],"target_space":["upright_bottle_fits","obstructed","unknown"]})
+            if reusable:
+                r=cached; log({"reused_stationary_survey_frame":r["frame_id"],"reason":"No intervening native steps; identities and support invariants revalidated."})
+            else:
+                r = ask("Interpret runtime task: "+task+". Identify the intended rack table 1 and a usable support patch, not the stove, cabinet, or an arbitrary wooden face. Return model, placement, target_definition, initial_support and target_space with their exact enum meanings. Require visible evidence that the upright round bottle rests on the source table and that the intended rack supports upright placement with room for the full bottle, not a mandatory later-route certificate. target_space=unknown is allowed at this stage and must be resolved by later local approach evidence. Request FIVE named regions cap, neck, body, table, shelf with explicit camera, tight interior box, stride 4: cork top plane; straight circular neck side; widest cylindrical body side; source supporting table; intended rack support top. Keep regions off silhouettes/background. Request named points nt and nb just INSIDE the visible straight neck surface at the upper/lower limits of its contact band, not on a silhouette or background boundary. identity=same_bottle means the task wine bottle unambiguously identified; upright=yes requires visible vertical axis. cap_camera/cap_pixels: 5-12 visible circular cork-top rim pixels spanning over a semicircle. shelf_camera/shelf_pixels: 4-8 ordered vertices of a convex usable support polygon on the SAME measured shelf plane, excluding rails/posts. These pixels use calibrated plane intersections, not raw boundary depth. patch_camera/patch_polygon: textured bottle-only visible interior, preferably cork texture in the wrist view; [] if no usable texture.",fields,{"task":task},5)
+            compact = {"parameters":r["parameters"],"points":r["points"],"regions":{},"measurement_errors":r["measurement_errors"],"frame_id":r["frame_id"],"native_steps":api.state()["native_steps"]}
+            for name, region in r["regions"].items():
+                pts = np.asarray(region["world_m"]); ix=np.linspace(0,len(pts)-1,min(64,len(pts))).astype(int)
+                compact["regions"][name]={"world_m":np.round(pts[ix],6).tolist(),"camera":region["camera"],"frame_id":region["frame_id"],"box":region["box"]}
+            api.checkpoint("wine.survey.v2",compact)
+            p=r["parameters"]; need(p["model"]=="upright_round_bottle" and p["placement"]=="upright_on_planar_rack" and p["initial_support"]=="resting_on_table" and p["target_space"]!="obstructed","Unsupported task/shape/support interpretation: "+str(p))
+            o=cap(r); table=plane(r,"table"); shelf=plane(r,"shelf"); poly=rim(r,"shelf",shelf)
+            need(table["coefficients"][2]>0.99 and shelf["coefficients"][2]>0.995,"Upright placement needs a measured nearly level support; inclined-cradle placement is unresolved.")
+            body=geo.circle_xy(cloud(r,"body")); neck=geo.circle_xy(cloud(r,"neck")); st=api.state(); own=st["own_geometry"]; R=geo.rotation(st["tcp_quaternion_xyzw"])
+            for name, fit in [("body",body),("neck",neck)]:
+                log({name:{"radius":float(fit["radius_m"]),"rms":float(fit["rms_m"]),"gap":float(fit["largest_angular_gap_rad"]),"center_error":float(np.linalg.norm(np.asarray(fit["center_xy_m"])-np.asarray(o["cap"])[:2])),"center_error_limit":max(0.004,0.2*float(fit["radius_m"]))}})
+                need(fit["radius_m"]>2*o["u"] and fit["rms_m"]<max(0.0015,0.08*fit["radius_m"]) and fit["largest_angular_gap_rad"]<5.4 and np.linalg.norm(np.asarray(fit["center_xy_m"])-np.asarray(o["cap"])[:2])<max(0.004,0.2*fit["radius_m"]),"Inconsistent upright cylindrical surface: "+name)
+            need("nt" in r["points"] and "nb" in r["points"],"Missing neck boundary measurements: "+str(r["measurement_errors"]))
+            nt=r["points"]["nt"]["world_m"][2]; nb=r["points"]["nb"]["world_m"][2]
+            radial=[float(np.linalg.norm(np.asarray(r["points"][name]["world_m"])[:2]-np.asarray(o["cap"])[:2])) for name in ["nt","nb"]]
+            log({"neck_landmark_radial_distances":radial,"neck_radius":float(neck["radius_m"]),"neck_z":[nb,nt]})
+            need(all(abs(v-neck["radius_m"])<=3*o["u"] for v in radial) and height(table["coefficients"],o["cap"][:2])<nb<nt<o["cap"][2]+o["u"],"Neck limit samples are inconsistent with the measured interior surface.")
+            ext=np.asarray(own["pad_extent_in_tool_m"]); axis=int(np.argmax(ext)); need(abs(R[2,axis])<0.1,"Current opening axis is not horizontal.")
+            corners=np.asarray([[a,b,d] for a in [own["finger_low_offset_tool_m"][0],own["finger_high_offset_tool_m"][0]] for b in [own["finger_low_offset_tool_m"][1],own["finger_high_offset_tool_m"][1]] for d in [own["finger_low_offset_tool_m"][2],own["finger_high_offset_tool_m"][2]]])
+            bottom=float(np.min((corners-np.asarray(own["pad_center_in_tool_m"]))@R.T,axis=0)[2]); half=float((np.abs(R)@ext)[2]/2); uncertainty=o["u"]+0.0025
+            gap=sum(abs(v) for v in st["gripper_qpos_m"])-2*max(ext[i] for i in range(3) if i!=axis)
+            low=max(nb+half+uncertainty,nb-bottom+uncertainty); high=nt-half-uncertainty
+            log({"neck_band_z":[nb,nt],"pad_feasible_z":[low,high],"conservative_opening_screen_not_contact_proof":gap,"required_gap":2*max(o["radius"],float(neck["radius_m"]))+2*uncertainty,"finger_bottom_from_pad":bottom})
+            need(high>low and gap>2*max(o["radius"],neck["radius_m"])+2*uncertainty,"Measured neck/finger clearance is infeasible.")
+            turns=[float(np.cross(poly[(i+1)%len(poly),:2]-poly[i,:2],poly[(i+2)%len(poly),:2]-poly[(i+1)%len(poly),:2])) for i in range(len(poly))]
+            need(all(v>0.000001 for v in turns) or all(v< -0.000001 for v in turns),"Usable shelf polygon is not strictly convex or has duplicate vertices.")
+            center=np.mean(poly,axis=0); support=np.asarray(shelf["coefficients"]).tolist(); center[2]=height(support,center[:2])
+            g={"task":task,"target_definition":p["target_definition"],"cap_definition":"Physical center of the circular gold cork TOP; derived from visible rim on its measured plane, never a screen corner.","source_plane":np.asarray(table["coefficients"]).tolist(),"shelf_plane":support,"shelf_polygon":poly.tolist(),"destination":center.tolist(),"height":o["cap"][2]-height(table["coefficients"],o["cap"][:2]),"body_radius":float(body["radius_m"])+float(body["max_radial_error_m"]),"drop":o["cap"][2]-(low+high)/2,"finger_bottom":bottom,"quaternion":st["tcp_quaternion_xyzw"],"survey_frame":r["frame_id"],"height_uncertainty":o["u"]+float(table["rms_m"])+0.001,"shelf_rms":float(shelf["rms_m"])}
+            c["geometry"]=g; c["object"]=o; log({"bottle_height":g["height"],"height_uncertainty":g["height_uncertainty"],"support_margin":margin(center[:2]),"required_margin":g["body_radius"]+2*uncertainty})
+            need(g["height"]>3*g["height_uncertainty"] and margin(center[:2])>g["body_radius"]+2*uncertainty,"Measured support footprint or bottle model is inadequate.")
+            g["valid"]=True; c["phase"]="ready"; save(); patch(r,o)
+        else:
+            observe("repair: independently refresh the moving object reference")
+        g=c["geometry"]; phase=c["phase"]; pending=c["pending"]; st=api.state()
+        released=phase in ["released","withdraw","verified"] or (phase=="release_ready" and st["last_gripper_command"]=="open")
+        closed=phase in ["closing","closed","retained","transfer","lowering","release_ready"] or (pending is not None and pending["gripper"]=="close" and st["last_gripper_command"]=="close")
+        if not released:
+            if not closed:
+                need(st["last_gripper_command"]!="close","Unexpected closed gripper; do not reopen an unclassified load.")
+                o=c["object"]; approach=np.asarray(o["cap"])+[0,0,-g["finger_bottom"]+0.02]
+                route(approach,False,"open","approach",100)
+                o=observe("fresh precontact cap"); grasp=np.asarray(o["cap"])+[0,0,-g["drop"]]
+                route(grasp,False,"open","approach",95); jaw("close","closing")
+            o=observe("after closure / repair before retention test")
+            r=ask("Assess actual contact transition. neck_relation=aligned means fingers visibly bracket the intended neck, displaced_or_wrong means wrong contact or bottle displaced/tipped, self_occluded means the planned neck is hidden only by the correctly located fingers, unknown otherwise. A closed command is not retention. test_lift=justified only if a small upward measurement lift has no visible external obstruction and the current measured neck/cap alignment supports trying it; unknown is not clearance.",{"neck_relation":["aligned","displaced_or_wrong","self_occluded","unknown"],"test_lift":["justified","blocked","unknown"]},{"object":o,"geometry":g,"lift_m":max(0.035,8*o["u"])},5)
+            need(r["parameters"]["neck_relation"] in ["aligned","self_occluded"] and r["parameters"]["test_lift"]=="justified","No justified retention-measurement lift.")
+            c["phase"]="closed"; save(); lift=max(0.035,8*o["u"])
+            run((geo.pad_position(api.state())+[0,0,lift]).tolist(),"keep","closed",80)
+            new=observe("retention measurement after actual lift"); retained(o,new,0.018)
+            base_clearance=new["cap"][2]-g["height"]-height(g["source_plane"],new["cap"][:2]); log({"measured_lift_base_clearance":base_clearance})
+            need(base_clearance>new["u"]+g["height_uncertainty"],"Lift did not measurably clear the original support.")
+            c["phase"]="retained"; save()
+            dest=np.asarray(g["destination"]); cruise=max(new["cap"][2],dest[2]+g["height"]+max(0.035,2*g["body_radius"]))
+            route([new["cap"][0],new["cap"][1],cruise],True,"keep","transfer",48)
+            route([dest[0],dest[1],cruise],True,"keep","transfer",45)
+            route([dest[0],dest[1],dest[2]+g["height"]+0.004],True,"keep","lowering",28)
+            o=c["object"]; clearance=o["cap"][2]-g["height"]-height(g["shelf_plane"],o["cap"][:2])
+            log({"placement_base_gap_estimate":clearance,"uncertainty":o["u"]+g["height_uncertainty"]+g["shelf_rms"],"footprint_margin":margin(o["cap"][:2])})
+            need(-0.004<=clearance<=0.012 and margin(o["cap"][:2])>g["body_radius"]+o["u"]+0.003,"Bottle is not over the measured support at release height.")
+            r=ask("Check actual pre-release scene. relation=over_intended_support_near_contact includes a small measured release gap; it does not require the unsupported bottle already to be resting. resting is observed support contact. external_collision means visible wrong contact. opening=justified means opening here can deposit onto that support without visible obstruction; unknown if target identity or support is ambiguous.",{"relation":["over_intended_support_near_contact","resting","external_collision","unknown"],"opening":["justified","blocked","unknown"]},{"object":o,"geometry":g,"measured_base_gap":clearance},4)
+            need(r["parameters"]["relation"] in ["over_intended_support_near_contact","resting"] and r["parameters"]["opening"]=="justified","Release not justified.")
+            c["phase"]="release_ready"; save(); jaw("open","release_ready"); c["phase"]="released"; save()
+        a=observe("fresh post-release object position",1)
+        retreat=geo.pad_position(api.state()); retreat[2]=max(retreat[2],a["cap"][2]-g["finger_bottom"]+0.025)
+        route(retreat,False,"open","withdraw",2)
+        if api.state()["native_steps"]==a["state"]["native_steps"]: jaw("keep","withdraw")
+        b=observe("post-withdrawal object stability and support relation",1)
+        drift=float(np.linalg.norm(np.asarray(b["cap"])-np.asarray(a["cap"]))); tilt=float(np.linalg.norm(np.asarray(b["normal"])-np.asarray(a["normal"])))
+        final=ask("Assess the actual task after release and withdrawal, not the planned pose. relation=on_intended_rack only if the task bottle is visibly supported by the exact rack table 1 described in target_definition; wrong or unknown otherwise. state=stable_upright only if not falling/tipping and no robot support; moving_or_tipped, held_or_touching, or unknown otherwise. Use current images; historical projections and command delivery are not success.",{"relation":["on_intended_rack","wrong","unknown"],"state":["stable_upright","moving_or_tipped","held_or_touching","unknown"]},{"task":task,"geometry":g,"before":a,"after":b,"measured_drift":drift,"normal_change":tilt},0)
+        gap=b["cap"][2]-g["height"]-height(g["shelf_plane"],b["cap"][:2]); separated=geo.pad_position(api.state())[2]+g["finger_bottom"]-b["cap"][2]
+        ok=final["parameters"]["relation"]=="on_intended_rack" and final["parameters"]["state"]=="stable_upright" and drift<=max(0.005,2*(a["u"]+b["u"])) and tilt<0.08 and abs(gap)<0.015 and margin(b["cap"][:2])>g["body_radius"]+b["u"] and separated>0.008 and b["state"]["native_steps"]>a["state"]["native_steps"]
+        log({"completion_proposed":bool(ok),"post_release_drift":drift,"normal_change":tilt,"base_gap":gap,"finger_vertical_separation":float(separated),"final_review":final["parameters"]}); c["phase"]="verified"; save()
+        return {"completion_proposed":bool(ok),"evidence":{"events":c["log"],"last_retention_measurement":c.get("retention_check"),"final_object_measurement":c["object"],"geometry_reference_frame":g["survey_frame"]},"limitations":"Heuristic RGB-D uncertainty and local visual checks, not collision certification or official evaluator success."}
+    except Exception as e:
+        failure={"incomplete":str(e),"phase":c["phase"],"pending_action":c["pending"] is not None}; c["log"]=(c["log"]+[failure])[-10:]
+        try: api.note(str(failure)); save()
+        except Exception: c["checkpoint_write_failed"]=True
+        return {"completion_proposed":False,"evidence":{"events":c["log"],"last_retention_measurement":c.get("retention_check")},"unresolved":str(e),"physical_state_not_reset":True}

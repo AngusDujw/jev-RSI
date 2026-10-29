@@ -1,0 +1,38 @@
+{
+  "thread_id": "01a1877b-e9a1-7dd2-b7c9-b84f27fdd616",
+  "same_thread": true,
+  "stored_turns": [
+    {
+      "id": "01a1877b-e9a7-7370-b238-d0b798f3703d",
+      "status": "interrupted",
+      "items": {
+        "userMessage": 1,
+        "reasoning": 1
+      }
+    },
+    {
+      "id": "01a1877c-9a75-7fa2-99a9-c4d35d504a33",
+      "status": "completed",
+      "items": {
+        "userMessage": 1,
+        "reasoning": 71,
+        "dynamicToolCall": 1,
+        "agentMessage": 1
+      }
+    }
+  ],
+  "initial_text_matches": true,
+  "initial_images": 2,
+  "expected_images": 2,
+  "user_message_count": 2,
+  "subsequent_images": [
+    0
+  ],
+  "pre_fault_completed_reasoning_items": 1,
+  "pre_fault_item_ids_preserved": true,
+  "instruction_sources": [],
+  "scope": "Stored history and complete tool receipt; not exact token-level inference resumption",
+  "source_hash_matches": true,
+  "receipt_arguments_match": true,
+  "checks_passed": true
+}
