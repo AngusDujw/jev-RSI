@@ -1,0 +1,75 @@
+{
+  "model": "jev-1.14.0",
+  "answers": {
+    "moving": {
+      "type": "choice",
+      "choice": "wait",
+      "confidence": 0.99,
+      "probabilities": {
+        "wait": 0.99,
+        "observe": 0.01,
+        "act": 0.0,
+        "stop": 0.0
+      }
+    },
+    "unknown": {
+      "type": "choice",
+      "choice": "observe",
+      "confidence": 1.0,
+      "probabilities": {
+        "wait": 0.0,
+        "observe": 1.0,
+        "act": 0.0,
+        "stop": 0.0
+      }
+    },
+    "stale": {
+      "type": "choice",
+      "choice": "observe",
+      "confidence": 1.0,
+      "probabilities": {
+        "wait": 0.0,
+        "observe": 1.0,
+        "act": 0.0,
+        "stop": 0.0
+      }
+    },
+    "ready": {
+      "type": "choice",
+      "choice": "act",
+      "confidence": 1.0,
+      "probabilities": {
+        "wait": 0.0,
+        "observe": 0.0,
+        "act": 1.0,
+        "stop": 0.0
+      }
+    },
+    "ended": {
+      "type": "choice",
+      "choice": "stop",
+      "confidence": 1.0,
+      "probabilities": {
+        "wait": 0.0,
+        "observe": 0.0,
+        "act": 0.0,
+        "stop": 1.0
+      }
+    },
+    "budget": {
+      "type": "choice",
+      "choice": "stop",
+      "confidence": 1.0,
+      "probabilities": {
+        "wait": 0.0,
+        "observe": 0.0,
+        "act": 0.0,
+        "stop": 1.0
+      }
+    }
+  },
+  "usage": {
+    "input_tokens": 1567,
+    "output_tokens": 256
+  }
+}

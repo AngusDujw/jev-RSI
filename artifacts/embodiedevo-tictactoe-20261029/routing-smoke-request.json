@@ -1,0 +1,111 @@
+{
+  "model": "jev-1.14.0",
+  "state": {
+    "cases": [
+      {
+        "id": "moving",
+        "state": {
+          "opponent_motion": "moving",
+          "board_observation": "fresh"
+        }
+      },
+      {
+        "id": "unknown",
+        "state": {
+          "opponent_motion": "unknown",
+          "board_observation": "fresh"
+        }
+      },
+      {
+        "id": "stale",
+        "state": {
+          "opponent_motion": "stopped",
+          "board_observation": "stale"
+        }
+      },
+      {
+        "id": "ready",
+        "state": {
+          "opponent_motion": "stopped",
+          "board_observation": "fresh",
+          "legal_empty_cell_confirmed": true,
+          "player_turn_confirmed": true
+        }
+      },
+      {
+        "id": "ended",
+        "state": {
+          "native_terminated": true
+        }
+      },
+      {
+        "id": "budget",
+        "state": {
+          "native_steps_remaining": 0
+        }
+      }
+    ]
+  },
+  "questions": {
+    "moving": {
+      "type": "choice",
+      "instructions": "Choose the next control route using only explicit current evidence. Stop on native termination or zero remaining action budget. Otherwise wait while the opponent is moving. Act only with a fresh board observation, a confirmed player turn, a confirmed legal empty destination, and confirmed stopped opponent. Missing, stale or unknown required evidence requires observation by the visual planner. Do not infer missing facts. Evaluate only case id moving",
+      "criteria": {
+        "wait": "Hold the current robot pose while opponent motion continues.",
+        "observe": "Return to the visual planner for missing or stale evidence.",
+        "act": "Execute the already prepared placement branch.",
+        "stop": "End execution because the native episode or action budget has ended."
+      }
+    },
+    "unknown": {
+      "type": "choice",
+      "instructions": "Choose the next control route using only explicit current evidence. Stop on native termination or zero remaining action budget. Otherwise wait while the opponent is moving. Act only with a fresh board observation, a confirmed player turn, a confirmed legal empty destination, and confirmed stopped opponent. Missing, stale or unknown required evidence requires observation by the visual planner. Do not infer missing facts. Evaluate only case id unknown",
+      "criteria": {
+        "wait": "Hold the current robot pose while opponent motion continues.",
+        "observe": "Return to the visual planner for missing or stale evidence.",
+        "act": "Execute the already prepared placement branch.",
+        "stop": "End execution because the native episode or action budget has ended."
+      }
+    },
+    "stale": {
+      "type": "choice",
+      "instructions": "Choose the next control route using only explicit current evidence. Stop on native termination or zero remaining action budget. Otherwise wait while the opponent is moving. Act only with a fresh board observation, a confirmed player turn, a confirmed legal empty destination, and confirmed stopped opponent. Missing, stale or unknown required evidence requires observation by the visual planner. Do not infer missing facts. Evaluate only case id stale",
+      "criteria": {
+        "wait": "Hold the current robot pose while opponent motion continues.",
+        "observe": "Return to the visual planner for missing or stale evidence.",
+        "act": "Execute the already prepared placement branch.",
+        "stop": "End execution because the native episode or action budget has ended."
+      }
+    },
+    "ready": {
+      "type": "choice",
+      "instructions": "Choose the next control route using only explicit current evidence. Stop on native termination or zero remaining action budget. Otherwise wait while the opponent is moving. Act only with a fresh board observation, a confirmed player turn, a confirmed legal empty destination, and confirmed stopped opponent. Missing, stale or unknown required evidence requires observation by the visual planner. Do not infer missing facts. Evaluate only case id ready",
+      "criteria": {
+        "wait": "Hold the current robot pose while opponent motion continues.",
+        "observe": "Return to the visual planner for missing or stale evidence.",
+        "act": "Execute the already prepared placement branch.",
+        "stop": "End execution because the native episode or action budget has ended."
+      }
+    },
+    "ended": {
+      "type": "choice",
+      "instructions": "Choose the next control route using only explicit current evidence. Stop on native termination or zero remaining action budget. Otherwise wait while the opponent is moving. Act only with a fresh board observation, a confirmed player turn, a confirmed legal empty destination, and confirmed stopped opponent. Missing, stale or unknown required evidence requires observation by the visual planner. Do not infer missing facts. Evaluate only case id ended",
+      "criteria": {
+        "wait": "Hold the current robot pose while opponent motion continues.",
+        "observe": "Return to the visual planner for missing or stale evidence.",
+        "act": "Execute the already prepared placement branch.",
+        "stop": "End execution because the native episode or action budget has ended."
+      }
+    },
+    "budget": {
+      "type": "choice",
+      "instructions": "Choose the next control route using only explicit current evidence. Stop on native termination or zero remaining action budget. Otherwise wait while the opponent is moving. Act only with a fresh board observation, a confirmed player turn, a confirmed legal empty destination, and confirmed stopped opponent. Missing, stale or unknown required evidence requires observation by the visual planner. Do not infer missing facts. Evaluate only case id budget",
+      "criteria": {
+        "wait": "Hold the current robot pose while opponent motion continues.",
+        "observe": "Return to the visual planner for missing or stale evidence.",
+        "act": "Execute the already prepared placement branch.",
+        "stop": "End execution because the native episode or action budget has ended."
+      }
+    }
+  }
+}
