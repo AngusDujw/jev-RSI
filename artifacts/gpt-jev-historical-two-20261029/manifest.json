@@ -1,0 +1,59 @@
+{
+  "created_utc": "2026-10-29T04:55:20.092414+00:00",
+  "purpose": "User-requested exact October27 successful framework rerun on known and new tasks",
+  "historical_commit": "a8e6ea72ef7a6d21dea4215de79c3cc3b09b8739",
+  "server": "company-server-2-ykj",
+  "local_worktree": ".worktrees/gpt-jev-cold-repro-20261027",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-cold-repro-20261027",
+  "planner": "current local signed-in ChatGPT Pro gpt-6-astra/xhigh",
+  "executor": "official Jev jev-1.13.0 /v1/systemone",
+  "condition": "one-stage independent cold generation; no old source/design/feedback or episode memory; no source repair",
+  "budgets": {
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_repairs": 0,
+    "wall_seconds": 7200,
+    "request_ceiling_seconds": 1800,
+    "relay_request_seconds": 1798
+  },
+  "cases": [
+    {
+      "slug": "known-1335-init12",
+      "task_id": 1335,
+      "init_index": 12,
+      "seed": 0,
+      "gpu": 4,
+      "unit": "independent cold generation",
+      "language": "could you put the cream cheese into the bowl"
+    },
+    {
+      "slug": "new-183-init0",
+      "task_id": 183,
+      "init_index": 0,
+      "seed": 0,
+      "gpu": 4,
+      "unit": "independent cold generation",
+      "name": "put_the_wine_bottle_on_the_rack_table_1"
+    }
+  ],
+  "order": "known then new; sequential, one episode each, preserve every admitted failure; no replacement case or source repair",
+  "fixed_files_sha256": {
+    "code/prompts/gpt_jev_method_v2.txt": "2e2e3d96ab5e29866635ba97a1febdc5b2a2940bd9066b5ff94c08e6ca97a6f5",
+    "code/prompts/gpt_jev_method_lessons_v2.txt": "f4c63ffc1cb8253c1efcc97ebfc8b7e23602fbc14d62f99dac0edf65c93ee465",
+    "code/prompts/gpt_jev_program_api_v2.md": "1b6dc5873fbacae233cc74df66617470b91394310d4f106f1be548cab7ff7e7e"
+  },
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "f79845ccf294749fee5e2cb281fc6b65e7326a5b69433a25c02e63848a145576",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67"
+  },
+  "bridge_source_sha256": "254afc9556dd58422ed0912fc3dc78af94f3a3349e8f39adf03da4f2d1aa8687",
+  "bridge": "Unmodified historical raw HTTP OAuth bridge, concurrency1; not current native-session adapter; no task-specific prompt edits or source reuse",
+  "media": "Unmodified historical host video behavior, bounded600steps; project filesystem only",
+  "new_task_scope": "183 absent from80 available local framework task records; no training novelty claim",
+  "evaluation": "Terminal native LIBERO only; score excluded from policy; proposal, acquisition, dispatch, failures and unknown costs separate",
+  "limits": "One episode per task, current Pro service weights not independently frozen; raw HTTP can fail and is not silently replaced by repaired native transport"
+}

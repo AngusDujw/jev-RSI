@@ -147,3 +147,5 @@
 - 【Agent】【2026-10-29 12:32】[result] EXP028：Jev1.14官方真实单请求六路由状态6/6，1567输入/256输出tokens，0.725秒，仅冒烟。server02两4090空闲，原版agent镜像未部署；环境来源按规则询问用户，未启动GPT或机器人。密钥未落盘。new_exp.py不支持--help造成的空块已填为本轮真实EXP028，编号保留。
 - 【User】【2026-10-29 12:34】[intent] 用户授权参考server02其他RoboDojo项目自行选择可用环境，询问是否必须新建。
 - 【Agent】【2026-10-29 12:34】[result] 选定现有RoboLaya .conda + IsaacSim5.1镜像，复用private-ipc启动包装实际验证Python3.11.15/NumPy1.26.0/Torch2.7.0+cu128/Gymnasium1.2.1导入通过，isaaclab/isaacsim/curobo可见且CUDA true。无需从零重建仿真环境；只创建本轮preflight缓存，未改旧环境。原版EmbodiedEvo经SSH克隆至/data/ykj_robodojo/embodiedevo-comparison-20261029，固定470278c；原版适配器及下棋场景尚待验证，两组实验尚未启动。
+- 【User】【2026-10-29 12:53】[intent] 用户要求恢复10月27日1335/init12成功时提示词/API/旧host/旧桥，原任务和一个新任务各独立冷生成一次，max_repairs0；冻结两例不补选，原生LIBERO判定，沿用Pro Astra/xhigh和官方Jev1.13。
+- 【Agent】【2026-10-29 12:55】[op] 冻结10月27日a8e6ea72框架原样复测：双端提示词及旧host哈希匹配，旧桥254afc95、Pro ChatGPT OAuth/Astra-xhigh、官方Jev1.13不变；原1335/init12及新183/init0顺序各一例、0源码修补。引用旧笔记仅支持完整成本与位姿/任务成功分开，不作为模型输入。
