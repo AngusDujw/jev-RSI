@@ -1,0 +1,11 @@
+{
+  "local_transport_commit": "726ccaee",
+  "remote_host_commit": "95f042f3",
+  "source_sha256": {
+    "baseline/roboicl/reproduction/pro_oauth_bridge.py": "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470",
+    "baseline/roboicl/reproduction/pro_session_client.py": "031effa60a13cab246c0e91cd783fb0d4872e1990a25348dc10f0bec74975040",
+    "baseline/roboicl/reproduction/pro_session_jobs.py": "c8e1eb71fad8f2ea751d0c611c98297e844a817ae8d0ee0aa6ba3cbee6c76927"
+  },
+  "initial_job_deadline": null,
+  "source_repair_policy": "Zero external method-source repair; native submission format corrections, if any, reported separately"
+}

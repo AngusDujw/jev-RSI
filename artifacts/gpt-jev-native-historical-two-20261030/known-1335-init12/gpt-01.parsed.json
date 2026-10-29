@@ -1,0 +1,139 @@
+{
+  "status": "continue",
+  "explanation": "The current and earlier views show the same intact cream cheese box resting flat on the tabletop, outside the bowl. All four printed lid corners are visible. The selected lid region and patch exclude the side faces and table. The six bowl samples lie on the visible inner ceramic lip just inside the yellow outline and surround the opening. No hidden underside geometry or completed placement is inferred.",
+  "parameters": {
+    "object": "supported_rectangular_box",
+    "top_camera": "robot0_eye_in_hand",
+    "corners_visible": "yes",
+    "corners": [
+      [
+        146,
+        159
+      ],
+      [
+        204,
+        158
+      ],
+      [
+        207,
+        274
+      ],
+      [
+        149,
+        273
+      ]
+    ],
+    "corner_definitions": [
+      "Lid corner at the short edge nearest the initial C of Cream and the long edge on the bottoms-of-letters side of the printing.",
+      "Lid corner at the short edge nearest the initial C of Cream and the long edge on the tops-of-letters side of the printing.",
+      "Lid corner at the short edge nearest the final e of Cheese and the long edge on the tops-of-letters side of the printing.",
+      "Lid corner at the short edge nearest the final e of Cheese and the long edge on the bottoms-of-letters side of the printing."
+    ],
+    "landmark_definitions": [
+      "p0: Pale curved stroke of the initial capital C in Cream, near the beginning of the printed logo.",
+      "p1: Pale printed stroke of the terminal lowercase e in Cheese, near the end of the printed logo.",
+      "p2: Dark blue crescent beside the gap between Cream and Cheese, on the tops-of-letters side of the logo."
+    ],
+    "rim_camera": "robot0_eye_in_hand",
+    "rim_identity": "inner_lip",
+    "rim_pixels": [
+      [
+        369,
+        177
+      ],
+      [
+        438,
+        218
+      ],
+      [
+        438,
+        299
+      ],
+      [
+        370,
+        340
+      ],
+      [
+        300,
+        300
+      ],
+      [
+        299,
+        217
+      ]
+    ],
+    "patch_camera": "robot0_eye_in_hand",
+    "patch_identity": "box_only",
+    "patch": [
+      [
+        158,
+        168
+      ],
+      [
+        195,
+        169
+      ],
+      [
+        199,
+        263
+      ],
+      [
+        158,
+        263
+      ]
+    ]
+  },
+  "points": [
+    {
+      "name": "p0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        169,
+        174
+      ],
+      "radius": 1
+    },
+    {
+      "name": "p1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        170,
+        259
+      ],
+      "radius": 1
+    },
+    {
+      "name": "p2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        192,
+        214
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "name": "lid",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        153,
+        165,
+        200,
+        267
+      ],
+      "stride": 4
+    },
+    {
+      "name": "table",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        222,
+        177,
+        264,
+        318
+      ],
+      "stride": 4
+    }
+  ]
+}

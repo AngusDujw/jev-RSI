@@ -1,0 +1,191 @@
+{
+  "termination": "method_incomplete",
+  "native_success": false,
+  "result": {
+    "completion_proposed": false,
+    "evidence": [
+      {
+        "kind": "review",
+        "value": {
+          "frame": 0,
+          "parameters": {
+            "object": "supported_rectangular_box",
+            "top_camera": "robot0_eye_in_hand",
+            "corners_visible": "yes",
+            "corners": [
+              [
+                146,
+                159
+              ],
+              [
+                204,
+                158
+              ],
+              [
+                207,
+                274
+              ],
+              [
+                149,
+                273
+              ]
+            ],
+            "corner_definitions": [
+              "Lid corner at the short edge nearest the initial C of Cream and the long edge on the bottoms-of-letters side of the printing.",
+              "Lid corner at the short edge nearest the initial C of Cream and the long edge on the tops-of-letters side of the printing.",
+              "Lid corner at the short edge nearest the final e of Cheese and the long edge on the tops-of-letters side of the printing.",
+              "Lid corner at the short edge nearest the final e of Cheese and the long edge on the bottoms-of-letters side of the printing."
+            ],
+            "landmark_definitions": [
+              "p0: Pale curved stroke of the initial capital C in Cream, near the beginning of the printed logo.",
+              "p1: Pale printed stroke of the terminal lowercase e in Cheese, near the end of the printed logo.",
+              "p2: Dark blue crescent beside the gap between Cream and Cheese, on the tops-of-letters side of the logo."
+            ],
+            "rim_camera": "robot0_eye_in_hand",
+            "rim_identity": "inner_lip",
+            "rim_pixels": [
+              [
+                369,
+                177
+              ],
+              [
+                438,
+                218
+              ],
+              [
+                438,
+                299
+              ],
+              [
+                370,
+                340
+              ],
+              [
+                300,
+                300
+              ],
+              [
+                299,
+                217
+              ]
+            ],
+            "patch_camera": "robot0_eye_in_hand",
+            "patch_identity": "box_only",
+            "patch": [
+              [
+                158,
+                168
+              ],
+              [
+                195,
+                169
+              ],
+              [
+                199,
+                263
+              ],
+              [
+                158,
+                263
+              ]
+            ]
+          },
+          "errors": [],
+          "explanation": "The current and earlier views show the same intact cream cheese box resting flat on the tabletop, outside the bowl. All four printed lid corners are visible. The selected lid region and patch exclude the side faces and table. The six bowl samples lie on the visible inner ceramic lip just inside the yellow outline and surround the opening. No hidden underside geometry or completed placement is inferred."
+        }
+      },
+      {
+        "kind": "geometry_fits",
+        "value": {
+          "surfaces": {
+            "table": {
+              "coefficients": [
+                3.1653381278259016e-05,
+                -4.743137832359034e-06,
+                0.9999999994877831,
+                -0.8999591132709535
+              ],
+              "center_world_m": [
+                -0.07090538963898312,
+                0.1027878796050558,
+                0.8999618456643426
+              ],
+              "rms_m": 2.9531310789095934e-07,
+              "in_plane_spread_m": [
+                0.03050733188505867,
+                0.009409441505371171
+              ]
+            },
+            "lid": {
+              "coefficients": [
+                -0.00027818011140596236,
+                0.022618588831460788,
+                0.9997441282923842,
+                -0.9210595380573312
+              ],
+              "center_world_m": [
+                -0.0524173307961342,
+                0.14468871495077126,
+                0.9180071941147485
+              ],
+              "rms_m": 0.00010796206086477048,
+              "in_plane_spread_m": [
+                0.020827586998186865,
+                0.009837333441067212
+              ]
+            }
+          },
+          "rim_plane": {
+            "coefficients": [
+              -0.0020043079268357543,
+              -0.016710251271620926,
+              0.9998583650958638,
+              -0.9474447161734068
+            ],
+            "center_world_m": [
+              -0.08863277115016853,
+              0.0068546135213924725,
+              0.9475158124331869
+            ],
+            "rms_m": 0.00045007108729211697,
+            "in_plane_spread_m": [
+              0.03711360011440019,
+              0.036832411500125145
+            ]
+          },
+          "circle": {
+            "center_xy_m": [
+              -0.0888263163479017,
+              0.007176188819136898
+            ],
+            "radius_m": 0.0522855259994148,
+            "rms_m": 0.00016078587433013635,
+            "max_radial_error_m": 0.00024354526191282255,
+            "largest_angular_gap_rad": 1.0724263976236736
+          }
+        }
+      },
+      {
+        "kind": "stopped",
+        "value": {
+          "reason": "Measured extent/placement infeasible: {'height': 0.01806886585740186, 'box_radius': 0.04543968530889454, 'mouth_radius': 0.0522855259994148, 'margin': 0.0073215717486602725}",
+          "phase": "uninitialized",
+          "policy": "No blind reopening, transform extrapolation, or repeated contact pushing."
+        }
+      }
+    ]
+  },
+  "native_steps": 0,
+  "settling_steps": 10,
+  "jev_calls": 0,
+  "gpt_calls": 2,
+  "rpc_calls": 16,
+  "elapsed_s": 1492.7897978250403,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "75a8b23a4450ee9d6334d057510b80c236022337c13672e008e5d954cc177d8e"
+    }
+  ],
+  "last_method_error": null
+}

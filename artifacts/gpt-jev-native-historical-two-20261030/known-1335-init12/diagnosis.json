@@ -1,0 +1,12 @@
+{
+  "reason": "Generated pre-action geometry gate rejected current measurement and its chosen margin",
+  "source_line": 139,
+  "observed_box_radius_m": 0.04543968530889454,
+  "chosen_margin_m": 0.0073215717486602725,
+  "observed_mouth_radius_m": 0.0522855259994148,
+  "excess_m": 0.0004757310581400137,
+  "excess_mm": 0.4757310581400137,
+  "physical_infeasibility_established": false,
+  "network_failure": false,
+  "jev_dispatches": 0
+}

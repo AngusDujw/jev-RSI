@@ -1,0 +1,10 @@
+{
+  "known_initial_instructions_characters": 32308,
+  "known_initial_instructions_sha256": "45fe962315bd9e0cba92bd5bb748183b6519c4ca1364dae767830ce3a2ca516d",
+  "known_initial_tools_sha256": "3523341b564ae7501e57f333ee50aa1e21ce8ca478e195dd0b666d5079ad453f",
+  "matches_historical_request": true,
+  "planner": "gpt-6-astra/xhigh",
+  "task138_absent_from_both_83_record_scans": true,
+  "remote_host_commit": "95f042f3",
+  "deployment": "Incremental Git bundle after remote GitHub TLS failure; identical pushed commit"
+}
