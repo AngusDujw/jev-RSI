@@ -1,0 +1,69 @@
+{
+  "captured_utc": "2026-10-29T06:58:30.364866+00:00",
+  "run_id": "202610291454-jev",
+  "scope": "First two real Jev-routed native code submissions; startup operability only, no task success or token efficiency claim.",
+  "routes": [
+    {
+      "route_folder": "4d9a3e9b29f0445fbd2d44c077cd35ce",
+      "run_id": "runs/202610291454-jev",
+      "request_id": "37971130c4194a269498901f68ce13ec",
+      "raw_choice": "act",
+      "native_execution": 3,
+      "native_steps_used": 40,
+      "ok": true,
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      },
+      "evidence": {
+        "execution": 2,
+        "source": "observations/000002/current_cam_head.png",
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": true,
+        "description": "The initial board is empty and we move first. Opponent pose is visually unchanged between executions 1 and 2 separated by five native holds. The intended center cell is empty."
+      },
+      "candidate_sha256": [
+        "6ca81535306d489619fa0b5f283ce457690ead44df49028bc6f2ce0840ecac01"
+      ],
+      "event_source_sha256": [
+        "6ca81535306d489619fa0b5f283ce457690ead44df49028bc6f2ce0840ecac01"
+      ],
+      "executed_code_sha256": "6ca81535306d489619fa0b5f283ce457690ead44df49028bc6f2ce0840ecac01",
+      "exact_single_source_match": true,
+      "candidate_matches_event": true
+    },
+    {
+      "route_folder": "76d5fa0ddf444478a1ee284e272849af",
+      "run_id": "runs/202610291454-jev",
+      "request_id": "77ab8528ae8e4f9185e1c14cb3f4b6fc",
+      "raw_choice": "act",
+      "native_execution": 4,
+      "native_steps_used": 65,
+      "ok": true,
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      },
+      "evidence": {
+        "execution": 3,
+        "source": "observations/000003/current_cam_head.png",
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": true,
+        "description": "Opponent remains at initial pose across executions 2 and 3. No move has been placed; first turn continues and center cell is empty."
+      },
+      "candidate_sha256": [
+        "2598b2d081c075c58769328daa6133e63d5dda12f4d9e51063ecc9b7d45200af"
+      ],
+      "event_source_sha256": [
+        "2598b2d081c075c58769328daa6133e63d5dda12f4d9e51063ecc9b7d45200af"
+      ],
+      "executed_code_sha256": "2598b2d081c075c58769328daa6133e63d5dda12f4d9e51063ecc9b7d45200af",
+      "exact_single_source_match": true,
+      "candidate_matches_event": true
+    }
+  ]
+}

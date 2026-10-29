@@ -1,0 +1,14 @@
+{"seq":1,"timestamp":1793256828.5226722,"phase":"playground","request":{"op":"status"}}
+{"seq":2,"timestamp":1793256831.3438797,"phase":"playground","request":{"op":"instruction"},"code_ref":"workspace/observations/000001/code.py","feedback_ref":"workspace/observations/000001","result":{"ok":true,"success":false,"executions_used":1,"native_steps_used":0}}
+{"seq":3,"timestamp":1793256880.2130418,"phase":"playground","request":{"op":"exec","files":[{"path":"submission/solution.py","bytes":365,"sha256":"52508f37205e793cc22bc5b6943967f55498de61464500174373f111e53918a0"}]},"code_ref":"workspace/observations/000002/code.py","feedback_ref":"workspace/observations/000002","result":{"ok":true,"success":false,"executions_used":2,"native_steps_used":5}}
+{"seq":4,"timestamp":1793256923.8315132,"phase":"playground","request":{"op":"status"}}
+{"seq":5,"timestamp":1793256923.907075,"phase":"playground","request":{"op":"status"}}
+{"seq":6,"timestamp":1793256925.5280282,"phase":"playground","request":{"op":"status"}}
+{"seq":7,"timestamp":1793256941.6486478,"phase":"playground","request":{"op":"exec","files":[{"path":"submission/solution.py","bytes":570,"sha256":"6ca81535306d489619fa0b5f283ce457690ead44df49028bc6f2ce0840ecac01"}]},"code_ref":"workspace/observations/000003/code.py","feedback_ref":"workspace/observations/000003","result":{"ok":true,"success":false,"executions_used":3,"native_steps_used":40}}
+{"seq":8,"timestamp":1793256993.5533552,"phase":"playground","request":{"op":"status"}}
+{"seq":9,"timestamp":1793256993.6373734,"phase":"playground","request":{"op":"status"}}
+{"seq":10,"timestamp":1793256994.8214931,"phase":"playground","request":{"op":"status"}}
+{"seq":11,"timestamp":1793257007.1364253,"phase":"playground","request":{"op":"exec","files":[{"path":"submission/solution.py","bytes":495,"sha256":"2598b2d081c075c58769328daa6133e63d5dda12f4d9e51063ecc9b7d45200af"}]},"code_ref":"workspace/observations/000004/code.py","feedback_ref":"workspace/observations/000004","result":{"ok":true,"success":false,"executions_used":4,"native_steps_used":65}}
+{"seq":12,"timestamp":1793257064.6547973,"phase":"playground","request":{"op":"status"}}
+{"seq":13,"timestamp":1793257064.7355537,"phase":"playground","request":{"op":"status"}}
+{"seq":14,"timestamp":1793257066.6201727,"phase":"playground","request":{"op":"status"}}

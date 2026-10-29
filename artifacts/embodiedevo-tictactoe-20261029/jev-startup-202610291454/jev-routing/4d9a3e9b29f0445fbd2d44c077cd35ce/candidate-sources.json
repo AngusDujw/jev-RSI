@@ -1,0 +1,8 @@
+{
+  "act": [
+    {
+      "path": "submission/solution.py",
+      "code": "# The opponent has remained at its initial pose across a five-step hold, and the board is empty.\n# Approach above the leftmost ring with a downward gripper to calibrate the grasp from the wrist camera.\no = get_observation()\nright_hold = o['state']['right_ee_pose'].copy()\ntarget = [-0.16, -0.18, 0.92, 0.7071068, 0, 0.7071068, 0]\nfor i in range(35):\n    o,r,terminated,truncated,info=step({'left_ee_pose':target,'right_ee_pose':right_hold,'left_ee_joint_state':[1.0],'right_ee_joint_state':[1.0]})\n    if terminated or truncated: break\nprint(o['state']['left_ee_pose'])\n"
+    }
+  ]
+}
