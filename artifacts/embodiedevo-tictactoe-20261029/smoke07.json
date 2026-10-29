@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "kind": "host-only-smoke",
+  "env_task": "play_tic_tac_toe",
+  "python": "/data/ykj_robodojo/RoboLaya/.conda/bin/python",
+  "python_prefix": "/data/ykj_robodojo/RoboLaya/.conda",
+  "isaaclab_source": "/data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/third_party/IsaacLab/source/isaaclab/isaaclab/__init__.py",
+  "curobo_source": "/data/ykj_robodojo/embodiedevo-comparison-20261029/vendor/robodojo/third_party/curobo/curobo/__init__.py",
+  "cameras": {
+    "cam_head": [
+      480,
+      640,
+      3
+    ],
+    "cam_left_wrist": [
+      480,
+      640,
+      3
+    ],
+    "cam_right_wrist": [
+      480,
+      640,
+      3
+    ]
+  },
+  "native_steps": 6,
+  "native_action_limit": 1100,
+  "success": false,
+  "reset_budget_preserved": true,
+  "reset_renews_native_action_budget": true,
+  "test_reset_rejected": true,
+  "persistent_variables": true
+}
