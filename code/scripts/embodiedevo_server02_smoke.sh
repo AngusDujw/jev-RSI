@@ -25,5 +25,5 @@ exec docker run --rm --gpus "device=$gpu" --network host --ipc private --shm-siz
     for source in "$PWD"/vendor/robodojo/third_party/IsaacLab/source/*; do
       if [ -d "$source" ]; then export PYTHONPATH="$source:$PYTHONPATH"; fi
     done
-    exec /data/ykj_robodojo/RoboLaya/.conda/bin/python -c '\''import os,sys; from orchestrator import resources; original=resources.sim_env; resources.sim_env=lambda *a,**k: dict(original(*a,**k),XDG_RUNTIME_DIR=os.environ["XDG_RUNTIME_DIR"]); from scripts.smoke_robodojo import main; sys.exit(main())'\'' --worker --gpu 0 --env-task play_tic_tac_toe --run-dir "$1"
+    exec /data/ykj_robodojo/RoboLaya/.conda/bin/python -u -c '\''import os,sys,traceback; from orchestrator import resources; original=resources.sim_env; resources.sim_env=lambda *a,**k: dict(original(*a,**k),XDG_RUNTIME_DIR=os.environ["XDG_RUNTIME_DIR"]); from simulators.robodojo import RoboDojoTask; original_close=RoboDojoTask.close; RoboDojoTask.close=lambda self: (traceback.print_exception(*sys.exc_info()) if sys.exc_info()[0] else None, sys.stderr.flush(), original_close(self))[-1]; from scripts.smoke_robodojo import main; sys.exit(main())'\'' --worker --gpu 0 --env-task play_tic_tac_toe --run-dir "$1"
   ' bash "$run"
