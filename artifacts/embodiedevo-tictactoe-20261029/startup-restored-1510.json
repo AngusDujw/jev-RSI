@@ -1,0 +1,343 @@
+{
+  "captured_utc": "2026-10-29T07:14:48.778282+00:00",
+  "supersedes_current_status_in": "startup-summary.json (1454 remains historical real startup evidence)",
+  "scope": "Restored startup operability after transient transport failure; not task success or efficiency evidence.",
+  "current_runs": {
+    "baseline": {
+      "run_path": "/data/ykj_robodojo/embodiedevo-comparison-20261029/runs/202610291510-baseline",
+      "runtime": {
+        "run_id": "202610291510-baseline",
+        "episode_id": "playground",
+        "phase": "playground",
+        "backend": "robodojo",
+        "env_task": "play_tic_tac_toe",
+        "gpu": "0",
+        "supervisor_pid": 1,
+        "status": "running",
+        "started_at": 1793257765.5079596,
+        "simulator_pid": 74,
+        "agent_pid": 675,
+        "container": "embodiedevo-session-1-1793257765586758934",
+        "ready_at": 1793257846.465347
+      },
+      "status": {
+        "ok": true,
+        "phase": "playground",
+        "closed": false,
+        "reason": "active",
+        "execution_budget": 100,
+        "executions_used": 4,
+        "executions_remaining": 96,
+        "seconds_remaining": null,
+        "execution_timeout_sec": 1200.0,
+        "native_action_limit": 1100,
+        "native_steps_used": 109,
+        "native_steps_remaining": 991,
+        "success": false,
+        "terminated": false,
+        "truncated": false,
+        "observation": "observations/000004",
+        "protocol": "workspace-session-v1",
+        "valid": true,
+        "task_completed": false,
+        "score": 0.0,
+        "score_schema": "robodojo-native-score-v1",
+        "score_record": "scoring/000004.json",
+        "score_execution": 4
+      },
+      "completed_execution_events": [
+        {
+          "seq": 3,
+          "timestamp": 1793257917.0038376,
+          "phase": "playground",
+          "request": {
+            "op": "exec",
+            "files": [
+              {
+                "path": "submission/solution.py",
+                "bytes": 503,
+                "sha256": "5b0d097c46968d0bc5ebc20513eefee955ff9c908d526db26621ac9dbd28b4c2"
+              }
+            ]
+          },
+          "code_ref": "workspace/observations/000002/code.py",
+          "feedback_ref": "workspace/observations/000002",
+          "result": {
+            "ok": true,
+            "success": false,
+            "executions_used": 2,
+            "native_steps_used": 35
+          }
+        },
+        {
+          "seq": 4,
+          "timestamp": 1793257966.257468,
+          "phase": "playground",
+          "request": {
+            "op": "exec",
+            "files": [
+              {
+                "path": "submission/solution.py",
+                "bytes": 402,
+                "sha256": "169b94243667cfe979c3bcd19c37df2829072425b01c46f792b4f08fae8a9ce4"
+              }
+            ]
+          },
+          "code_ref": "workspace/observations/000003/code.py",
+          "feedback_ref": "workspace/observations/000003",
+          "result": {
+            "ok": true,
+            "success": false,
+            "executions_used": 3,
+            "native_steps_used": 55
+          }
+        },
+        {
+          "seq": 5,
+          "timestamp": 1793258031.945547,
+          "phase": "playground",
+          "request": {
+            "op": "exec",
+            "files": [
+              {
+                "path": "submission/solution.py",
+                "bytes": 615,
+                "sha256": "defabdfe2269d2a2b842078735d32ad6837180466e501e8e2647a7e5e320304b"
+              }
+            ]
+          },
+          "code_ref": "workspace/observations/000004/code.py",
+          "feedback_ref": "workspace/observations/000004",
+          "result": {
+            "ok": true,
+            "success": false,
+            "executions_used": 4,
+            "native_steps_used": 109
+          }
+        }
+      ]
+    },
+    "jev": {
+      "run_path": "/data/ykj_robodojo/embodiedevo-comparison-20261029/runs/202610291510-jev",
+      "runtime": {
+        "run_id": "202610291510-jev",
+        "episode_id": "playground",
+        "phase": "playground",
+        "backend": "robodojo",
+        "env_task": "play_tic_tac_toe",
+        "gpu": "0",
+        "supervisor_pid": 1,
+        "status": "running",
+        "started_at": 1793257710.8141994,
+        "simulator_pid": 73,
+        "agent_pid": 673,
+        "container": "embodiedevo-session-1-1793257710906246233",
+        "ready_at": 1793257791.4436505
+      },
+      "status": {
+        "ok": true,
+        "phase": "playground",
+        "closed": false,
+        "reason": "active",
+        "execution_budget": 100,
+        "executions_used": 5,
+        "executions_remaining": 95,
+        "seconds_remaining": null,
+        "execution_timeout_sec": 1200.0,
+        "native_action_limit": 1100,
+        "native_steps_used": 76,
+        "native_steps_remaining": 1024,
+        "success": false,
+        "terminated": false,
+        "truncated": false,
+        "observation": "observations/000005",
+        "protocol": "workspace-session-v1",
+        "valid": true,
+        "task_completed": false,
+        "score": 0.0,
+        "score_schema": "robodojo-native-score-v1",
+        "score_record": "scoring/000005.json",
+        "score_execution": 5
+      },
+      "completed_execution_events": [
+        {
+          "seq": 3,
+          "timestamp": 1793257834.7806282,
+          "phase": "playground",
+          "request": {
+            "op": "exec",
+            "files": [
+              {
+                "path": "submission/solution.py",
+                "bytes": 353,
+                "sha256": "c20d2fb866de3900ca48cc43f2ed365dcd8da74fe7bf95491d15e80b03f821b1"
+              }
+            ]
+          },
+          "code_ref": "workspace/observations/000002/code.py",
+          "feedback_ref": "workspace/observations/000002",
+          "result": {
+            "ok": true,
+            "success": false,
+            "executions_used": 2,
+            "native_steps_used": 10
+          }
+        },
+        {
+          "seq": 7,
+          "timestamp": 1793257888.3207288,
+          "phase": "playground",
+          "request": {
+            "op": "exec",
+            "files": [
+              {
+                "path": "submission/solution.py",
+                "bytes": 470,
+                "sha256": "a3e398fcbb6b6db2ba13e0ce737a9e19bc520c9152528e23cf33e68954bff91f"
+              }
+            ]
+          },
+          "code_ref": "workspace/observations/000003/code.py",
+          "feedback_ref": "workspace/observations/000003",
+          "result": {
+            "ok": true,
+            "success": false,
+            "executions_used": 3,
+            "native_steps_used": 45
+          }
+        },
+        {
+          "seq": 10,
+          "timestamp": 1793257978.468207,
+          "phase": "playground",
+          "request": {
+            "op": "exec",
+            "files": [
+              {
+                "path": "skills/ee_stage.py",
+                "bytes": 1010,
+                "sha256": "e2e1e8c376051f1ece344946bac09e77746d1be0957ebd064ff563b7a8a576d8"
+              },
+              {
+                "path": "submission/solution.py",
+                "bytes": 252,
+                "sha256": "8abedd6318bf468279c5bc9bc0f78b72349b461e9c1db9205243bc32fd74c539"
+              }
+            ]
+          },
+          "code_ref": "workspace/observations/000004/code.py",
+          "feedback_ref": "workspace/observations/000004",
+          "result": {
+            "ok": true,
+            "success": false,
+            "executions_used": 4,
+            "native_steps_used": 70
+          }
+        },
+        {
+          "seq": 13,
+          "timestamp": 1793258026.313109,
+          "phase": "playground",
+          "request": {
+            "op": "exec",
+            "files": [
+              {
+                "path": "skills/ee_stage.py",
+                "bytes": 1010,
+                "sha256": "e2e1e8c376051f1ece344946bac09e77746d1be0957ebd064ff563b7a8a576d8"
+              },
+              {
+                "path": "submission/solution.py",
+                "bytes": 238,
+                "sha256": "0e2951a23c298e8a9de2113039b46493189266e6527a8ec4897f445dd913b3e6"
+              }
+            ]
+          },
+          "code_ref": "workspace/observations/000005/code.py",
+          "feedback_ref": "workspace/observations/000005",
+          "result": {
+            "ok": true,
+            "success": false,
+            "executions_used": 5,
+            "native_steps_used": 76
+          }
+        }
+      ]
+    }
+  },
+  "gpt_usage_by_attempt": {
+    "preflight": {
+      "requests_recorded": 2,
+      "complete": 2,
+      "input_tokens": 9906,
+      "output_tokens": 10,
+      "cached_input_tokens": 8320,
+      "unknown_usage": 0
+    },
+    "202610291454-jev": {
+      "requests_recorded": 18,
+      "complete": 17,
+      "input_tokens": 387369,
+      "output_tokens": 3908,
+      "cached_input_tokens": 166912,
+      "unknown_usage": 1
+    },
+    "202610291454-baseline": {
+      "requests_recorded": 20,
+      "complete": 19,
+      "input_tokens": 395539,
+      "output_tokens": 3509,
+      "cached_input_tokens": 123008,
+      "unknown_usage": 1
+    },
+    "202610291510-jev": {
+      "requests_recorded": 16,
+      "complete": 16,
+      "input_tokens": 381772,
+      "output_tokens": 4079,
+      "cached_input_tokens": 157568,
+      "unknown_usage": 0
+    },
+    "202610291510-baseline": {
+      "requests_recorded": 13,
+      "complete": 13,
+      "input_tokens": 255507,
+      "output_tokens": 2402,
+      "cached_input_tokens": 111104,
+      "unknown_usage": 0
+    }
+  },
+  "deployment_commit": "01c7b8ac",
+  "recovery": {
+    "implementation": "unchanged upstream orchestrator.agent_recovery",
+    "max_restarts": 3,
+    "idle_seconds": 900,
+    "backoff_seconds": 30,
+    "ssh_tunnel": "persistent tmux with reconnect loop",
+    "note": "Resume same live simulator and Codex session only after native action idle; no scene reset or duplicated submission"
+  },
+  "previous_attempts": {
+    "202610291454-baseline": {
+      "status": "failed",
+      "valid": false,
+      "agent_exit_code": 1,
+      "cause": "stream disconnected before response.completed",
+      "executions_used": 6,
+      "native_steps_used": 185
+    },
+    "202610291454-jev": {
+      "status": "failed",
+      "valid": false,
+      "agent_exit_code": 1,
+      "cause": "stream disconnected: error sending request",
+      "executions_used": 6,
+      "native_steps_used": 125
+    }
+  },
+  "image": {
+    "id": "sha256:3486d19ac6c44defe265c57d627458af7db8549f4ed64c00df45e6b511c1bcb5",
+    "uncompressed_bytes": 1346647934
+  },
+  "token_note": "Input includes cache; do not add cached input again. Unknown requests remain unknown. Snapshot excludes in-flight requests. Failed attempt costs preserved separately; unequal-progress snapshots cannot establish savings.",
+  "jev_startup_evidence": "jev-startup-202610291510/startup-jev.json"
+}
