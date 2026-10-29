@@ -1,0 +1,52 @@
+{
+  "run_id": "202610291454-jev",
+  "outcome": "GPT transport interruption after valid native iteration",
+  "routes": [
+    {
+      "request_id": "37971130c4194a269498901f68ce13ec",
+      "choice": "act",
+      "execution": 3,
+      "native_steps": 40,
+      "candidate_equals_executed_sha256": "6ca81535306d489619fa0b5f283ce457690ead44df49028bc6f2ce0840ecac01",
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      }
+    },
+    {
+      "request_id": "77ab8528ae8e4f9185e1c14cb3f4b6fc",
+      "choice": "act",
+      "execution": 4,
+      "native_steps": 65,
+      "candidate_equals_executed_sha256": "2598b2d081c075c58769328daa6133e63d5dda12f4d9e51063ecc9b7d45200af",
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      }
+    },
+    {
+      "request_id": "4df39daab2bd4dc79e8816878d334bc8",
+      "choice": "act",
+      "execution": 5,
+      "native_steps": 105,
+      "candidate_equals_executed_sha256": "1b3677cf1f17507345e178535275db20ec4e3d7f3c56710281d1fe81b53849dc",
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      }
+    },
+    {
+      "request_id": "4243e9cd193244d0a1a0993d8141b755",
+      "choice": "act",
+      "execution": 6,
+      "native_steps": 125,
+      "candidate_equals_executed_sha256": "74bbde5af12192fb539e79a19ab4c9e2074db2a3a6d510edc37bca37780f4b75",
+      "usage": {
+        "input_tokens": 596,
+        "output_tokens": 45
+      }
+    }
+  ],
+  "total_input_tokens": 2384,
+  "total_output_tokens": 180
+}

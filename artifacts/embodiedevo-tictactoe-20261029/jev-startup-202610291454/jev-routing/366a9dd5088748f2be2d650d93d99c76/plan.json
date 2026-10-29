@@ -1,0 +1,30 @@
+{
+  "observation": "observations/000004",
+  "state": {
+    "current_execution": 4,
+    "evidence": {
+      "execution": 4,
+      "source": "observations/000004/current_cam_head.png",
+      "contradictory": false,
+      "opponent_motion": "stopped",
+      "player_turn": true,
+      "destination_empty": true,
+      "description": "The opponent is unchanged in executions 3 and 4, the board remains empty, and our first turn continues. Correct grasp alignment only."
+    },
+    "run_id": "runs/202610291454-jev",
+    "terminated": false,
+    "truncated": false,
+    "success": false,
+    "native_steps_remaining": 1035,
+    "executions_remaining": 96,
+    "available_branches": [
+      "act"
+    ]
+  },
+  "branches": {
+    "act": {
+      "entry": "submission/solution.py",
+      "includes": []
+    }
+  }
+}

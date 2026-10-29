@@ -1,0 +1,42 @@
+{
+  "protocol": "tictactoe-routing-v2",
+  "request_id": "4df39daab2bd4dc79e8816878d334bc8",
+  "jev_choice": "act",
+  "usage": {
+    "input_tokens": 596,
+    "output_tokens": 45
+  },
+  "executed": true,
+  "route": "act",
+  "feedback": {
+    "ok": true,
+    "phase": "playground",
+    "closed": false,
+    "reason": "active",
+    "execution_budget": 100,
+    "executions_used": 5,
+    "executions_remaining": 95,
+    "seconds_remaining": null,
+    "execution_timeout_sec": 1200.0,
+    "native_action_limit": 1100,
+    "native_steps_used": 105,
+    "native_steps_remaining": 995,
+    "success": false,
+    "terminated": false,
+    "truncated": false,
+    "observation": "observations/000005",
+    "stdout": "env0 step: \u001b[92m66 / 1100\u001b[0m\renv0 step: \u001b[92m67 / 1100\u001b[0m\renv0 step: \u001b[92m68 / 1100\u001b[0m\renv0 step: \u001b[92m69 / 1100\u001b[0m\renv0 step: \u001b[92m70 / 1100\u001b[0m\renv0 step: \u001b[92m71 / 1100\u001b[0m\renv0 step: \u001b[92m72 / 1100\u001b[0m\renv0 step: \u001b[92m73 / 1100\u001b[0m\renv0 step: \u001b[92m74 / 1100\u001b[0m\renv0 step: \u001b[92m75 / 1100\u001b[0m\renv0 step: \u001b[92m76 / 1100\u001b[0m\renv0 step: \u001b[92m77 / 1100\u001b[0m\renv0 step: \u001b[92m78 / 1100\u001b[0m\renv0 step: \u001b[92m79 / 1100\u001b[0m\renv0 step: \u001b[92m80 / 1100\u001b[0m\renv0 step: \u001b[92m81 / 1100\u001b[0m\renv0 step: \u001b[92m82 / 1100\u001b[0m\renv0 step: \u001b[92m83 / 1100\u001b[0m\renv0 step: \u001b[92m84 / 1100\u001b[0m\renv0 step: \u001b[92m85 / 1100\u001b[0m\renv0 step: \u001b[92m86 / 1100\u001b[0m\renv0 step: \u001b[92m87 / 1100\u001b[0m\renv0 step: \u001b[92m88 / 1100\u001b[0m\renv0 step: \u001b[92m89 / 1100\u001b[0m\renv0 step: \u001b[92m90 / 1100\u001b[0m\renv0 step: \u001b[92m91 / 1100\u001b[0m\renv0 step: \u001b[92m92 / 1100\u001b[0m\renv0 step: \u001b[92m93 / 1100\u001b[0m\renv0 step: \u001b[92m94 / 1100\u001b[0m\renv0 step: \u001b[92m95 / 1100\u001b[0m\renv0 step: \u001b[92m96 / 1100\u001b[0m\renv0 step: \u001b[92m97 / 1100\u001b[0m\renv0 step: \u001b[92m98 / 1100\u001b[0m\renv0 step: \u001b[92m99 / 1100\u001b[0m\renv0 step: \u001b[92m100 / 1100\u001b[0m\renv0 step: \u001b[92m101 / 1100\u001b[0m\renv0 step: \u001b[92m102 / 1100\u001b[0m\renv0 step: \u001b[92m103 / 1100\u001b[0m\renv0 step: \u001b[92m104 / 1100\u001b[0m\renv0 step: \u001b[92m105 / 1100\u001b[0m\r[-2.00090468e-01 -1.49969697e-01  9.50001121e-01  7.07107067e-01\n -1.06777596e-04  7.07106471e-01  1.08204295e-04]\n",
+    "stderr": "",
+    "execution": 5,
+    "videos": {
+      "cam_head": "observations/000005/execution_cam_head.mp4",
+      "cam_left_wrist": "observations/000005/execution_cam_left_wrist.mp4",
+      "cam_right_wrist": "observations/000005/execution_cam_right_wrist.mp4"
+    },
+    "timing": {
+      "simulation_execution_sec": 14.386269,
+      "feedback_capture_sec": 3.228255,
+      "request_handler_sec": 17.661074
+    }
+  }
+}

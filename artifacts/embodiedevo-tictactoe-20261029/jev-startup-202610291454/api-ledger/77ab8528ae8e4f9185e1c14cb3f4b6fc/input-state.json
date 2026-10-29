@@ -1,0 +1,21 @@
+{
+  "current_execution": 3,
+  "evidence": {
+    "execution": 3,
+    "source": "observations/000003/current_cam_head.png",
+    "contradictory": false,
+    "opponent_motion": "stopped",
+    "player_turn": true,
+    "destination_empty": true,
+    "description": "Opponent remains at initial pose across executions 2 and 3. No move has been placed; first turn continues and center cell is empty."
+  },
+  "run_id": "runs/202610291454-jev",
+  "terminated": false,
+  "truncated": false,
+  "success": false,
+  "native_steps_remaining": 1060,
+  "executions_remaining": 97,
+  "available_branches": [
+    "act"
+  ]
+}

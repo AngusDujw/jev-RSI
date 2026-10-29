@@ -1,0 +1,42 @@
+{
+  "protocol": "tictactoe-routing-v2",
+  "request_id": "4243e9cd193244d0a1a0993d8141b755",
+  "jev_choice": "act",
+  "usage": {
+    "input_tokens": 596,
+    "output_tokens": 45
+  },
+  "executed": true,
+  "route": "act",
+  "feedback": {
+    "ok": true,
+    "phase": "playground",
+    "closed": false,
+    "reason": "active",
+    "execution_budget": 100,
+    "executions_used": 6,
+    "executions_remaining": 94,
+    "seconds_remaining": null,
+    "execution_timeout_sec": 1200.0,
+    "native_action_limit": 1100,
+    "native_steps_used": 125,
+    "native_steps_remaining": 975,
+    "success": false,
+    "terminated": false,
+    "truncated": false,
+    "observation": "observations/000006",
+    "stdout": "env0 step: \u001b[92m106 / 1100\u001b[0m\renv0 step: \u001b[92m107 / 1100\u001b[0m\renv0 step: \u001b[92m108 / 1100\u001b[0m\renv0 step: \u001b[92m109 / 1100\u001b[0m\renv0 step: \u001b[92m110 / 1100\u001b[0m\renv0 step: \u001b[92m111 / 1100\u001b[0m\renv0 step: \u001b[92m112 / 1100\u001b[0m\renv0 step: \u001b[92m113 / 1100\u001b[0m\renv0 step: \u001b[92m114 / 1100\u001b[0m\renv0 step: \u001b[92m115 / 1100\u001b[0m\renv0 step: \u001b[92m116 / 1100\u001b[0m\renv0 step: \u001b[92m117 / 1100\u001b[0m\renv0 step: \u001b[92m118 / 1100\u001b[0m\renv0 step: \u001b[92m119 / 1100\u001b[0m\renv0 step: \u001b[92m120 / 1100\u001b[0m\renv0 step: \u001b[92m121 / 1100\u001b[0m\renv0 step: \u001b[92m122 / 1100\u001b[0m\renv0 step: \u001b[92m123 / 1100\u001b[0m\renv0 step: \u001b[92m124 / 1100\u001b[0m\renv0 step: \u001b[92m125 / 1100\u001b[0m\r[-2.0004535e-01 -2.9996923e-01  9.5000023e-01  7.0710641e-01\n -1.0756086e-04  7.0710707e-01  1.0641805e-04]\n",
+    "stderr": "",
+    "execution": 6,
+    "videos": {
+      "cam_head": "observations/000006/execution_cam_head.mp4",
+      "cam_left_wrist": "observations/000006/execution_cam_left_wrist.mp4",
+      "cam_right_wrist": "observations/000006/execution_cam_right_wrist.mp4"
+    },
+    "timing": {
+      "simulation_execution_sec": 7.253173,
+      "feedback_capture_sec": 2.915236,
+      "request_handler_sec": 10.214583
+    }
+  }
+}

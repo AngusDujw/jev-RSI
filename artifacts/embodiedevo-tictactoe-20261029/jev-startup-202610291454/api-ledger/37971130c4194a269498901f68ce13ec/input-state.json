@@ -1,0 +1,21 @@
+{
+  "current_execution": 2,
+  "evidence": {
+    "execution": 2,
+    "source": "observations/000002/current_cam_head.png",
+    "contradictory": false,
+    "opponent_motion": "stopped",
+    "player_turn": true,
+    "destination_empty": true,
+    "description": "The initial board is empty and we move first. Opponent pose is visually unchanged between executions 1 and 2 separated by five native holds. The intended center cell is empty."
+  },
+  "run_id": "runs/202610291454-jev",
+  "terminated": false,
+  "truncated": false,
+  "success": false,
+  "native_steps_remaining": 1095,
+  "executions_remaining": 98,
+  "available_branches": [
+    "act"
+  ]
+}

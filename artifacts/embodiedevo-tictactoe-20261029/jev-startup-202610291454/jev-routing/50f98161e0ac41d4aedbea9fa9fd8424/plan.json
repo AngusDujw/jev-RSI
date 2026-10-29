@@ -1,0 +1,30 @@
+{
+  "observation": "observations/000005",
+  "state": {
+    "current_execution": 5,
+    "evidence": {
+      "execution": 5,
+      "source": "observations/000005/current_cam_head.png",
+      "contradictory": false,
+      "opponent_motion": "stopped",
+      "player_turn": true,
+      "destination_empty": true,
+      "description": "Opponent unchanged from execution 4 to 5, center cell empty, first turn still in progress."
+    },
+    "run_id": "runs/202610291454-jev",
+    "terminated": false,
+    "truncated": false,
+    "success": false,
+    "native_steps_remaining": 995,
+    "executions_remaining": 95,
+    "available_branches": [
+      "act"
+    ]
+  },
+  "branches": {
+    "act": {
+      "entry": "submission/solution.py",
+      "includes": []
+    }
+  }
+}
