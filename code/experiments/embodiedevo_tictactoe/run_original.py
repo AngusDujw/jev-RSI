@@ -16,6 +16,14 @@ def main():
     from orchestrator import resources, launch_agent
     original_env=resources.sim_env
     resources.sim_env=lambda *args,**kw: dict(original_env(*args,**kw),XDG_RUNTIME_DIR=os.environ["XDG_RUNTIME_DIR"])
+    original_agent=launch_agent.agent_argv
+    def agent_argv(*args, **kw):
+        argv=original_agent(*args, **kw)
+        run_id=str(a.run_dir.resolve())
+        import json
+        argv[-1:-1]=["-c", "model_providers.paired-local-pro.http_headers={\"X-Experiment-Run\"="+json.dumps(run_id)+"}"]
+        return argv
+    launch_agent.agent_argv=agent_argv
     original_docker=launch_agent.docker_argv
     def docker_argv(*args,**kw):
         argv=original_docker(*args,**kw)

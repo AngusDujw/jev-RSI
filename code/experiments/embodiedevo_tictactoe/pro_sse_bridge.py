@@ -27,7 +27,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         ident = uuid.uuid4().hex
-        record = dict(id=ident, started=time.time(), completed=False, usage=None)
+        record = dict(id=ident, started=time.time(), completed=False, usage=None, run_id=self.headers.get("X-Experiment-Run", "preflight"))
         sent = False
         try:
             if self.server.transport_token and self.headers.get("Authorization") != "Bearer "+self.server.transport_token:
