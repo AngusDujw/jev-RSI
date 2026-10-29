@@ -1,0 +1,127 @@
+{
+  "record_types": {
+    "('session_meta', None)": 1,
+    "('event_msg', 'task_started')": 1,
+    "('response_item', 'additional_tools')": 1,
+    "('response_item', 'message')": 6,
+    "('world_state', None)": 1,
+    "('turn_context', None)": 1,
+    "('event_msg', 'thread_settings_applied')": 1,
+    "('event_msg', 'item_completed')": 64,
+    "('response_item', 'reasoning')": 61,
+    "('response_item', 'custom_tool_call')": 8,
+    "('token_usage_record', None)": 9,
+    "('response_item', 'custom_tool_call_output')": 8,
+    "('event_msg', 'token_count')": 10,
+    "('event_msg', 'task_complete')": 1
+  },
+  "tool_names": {
+    "exec": 8
+  },
+  "call_timestamps": [
+    {
+      "timestamp": "2026-10-29T11:17:05.568Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:27:38.649Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:34:12.033Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:38:15.181Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:41:05.564Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:43:00.379Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:46:11.062Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:46:40.574Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    }
+  ],
+  "draft_checks": [
+    {
+      "timestamp": "2026-10-29T11:27:38.737Z",
+      "reported_numbers": [
+        [
+          "187",
+          ""
+        ],
+        [
+          "",
+          "22756"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T11:34:12.066Z",
+      "reported_numbers": [
+        [
+          "199",
+          ""
+        ],
+        [
+          "",
+          "23711"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T11:38:15.303Z",
+      "reported_numbers": [
+        [
+          "202",
+          ""
+        ],
+        [
+          "",
+          "24456"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T11:41:05.627Z",
+      "reported_numbers": [
+        [
+          "206",
+          ""
+        ],
+        [
+          "",
+          "25122"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T11:43:00.435Z",
+      "reported_numbers": [
+        [
+          "206",
+          ""
+        ]
+      ]
+    }
+  ],
+  "scope": "Only tool-call metadata and numeric draft checks; no reasoning text"
+}

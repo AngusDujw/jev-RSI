@@ -1,0 +1,148 @@
+{
+  "record_types": {
+    "('session_meta', None)": 1,
+    "('event_msg', 'task_started')": 2,
+    "('response_item', 'additional_tools')": 1,
+    "('response_item', 'message')": 8,
+    "('world_state', None)": 1,
+    "('turn_context', None)": 2,
+    "('event_msg', 'thread_settings_applied')": 2,
+    "('event_msg', 'item_completed')": 76,
+    "('response_item', 'reasoning')": 72,
+    "('response_item', 'custom_tool_call')": 11,
+    "('token_usage_record', None)": 12,
+    "('response_item', 'custom_tool_call_output')": 11,
+    "('event_msg', 'token_count')": 14,
+    "('event_msg', 'turn_aborted')": 1,
+    "('event_msg', 'task_complete')": 1
+  },
+  "tool_names": {
+    "exec": 11
+  },
+  "call_timestamps": [
+    {
+      "timestamp": "2026-10-29T11:47:28.354Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T11:54:22.266Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:05:28.360Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:12:38.524Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:16:37.724Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:16:43.243Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:19:29.371Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:23:25.928Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:26:38.918Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:31:14.910Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    },
+    {
+      "timestamp": "2026-10-29T12:34:16.081Z",
+      "kind": "custom_tool_call",
+      "tool": "exec"
+    }
+  ],
+  "draft_checks": [
+    {
+      "timestamp": "2026-10-29T12:05:28.523Z",
+      "reported_numbers": [
+        [
+          "217",
+          ""
+        ],
+        [
+          "",
+          "26830"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T12:12:38.606Z",
+      "reported_numbers": [
+        [
+          "229",
+          ""
+        ],
+        [
+          "",
+          "29221"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T12:16:37.777Z",
+      "reported_numbers": [
+        [
+          "234",
+          ""
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T12:23:26.669Z",
+      "reported_numbers": [
+        [
+          "245",
+          ""
+        ],
+        [
+          "",
+          "32311"
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T12:26:39.078Z",
+      "reported_numbers": [
+        [
+          "245",
+          ""
+        ]
+      ]
+    },
+    {
+      "timestamp": "2026-10-29T12:31:15.026Z",
+      "reported_numbers": [
+        [
+          "248",
+          ""
+        ]
+      ]
+    }
+  ],
+  "scope": "Only tool-call metadata and numeric draft checks; no reasoning text"
+}

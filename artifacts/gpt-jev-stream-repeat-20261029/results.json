@@ -1,0 +1,264 @@
+{
+  "raw": [
+    {
+      "arm": "raw",
+      "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+      "started": 1793269694.1776924,
+      "retry_policy": "One independent upstream attempt; no automatic resend",
+      "completed": false,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "elapsed_s": 652.4195448819992,
+      "upstream_attempt": {
+        "request_sent": true
+      },
+      "usage_unknown": true
+    },
+    {
+      "arm": "raw",
+      "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+      "started": 1793270346.7342513,
+      "retry_policy": "One independent upstream attempt; no automatic resend",
+      "completed": false,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "elapsed_s": 900.3555937359997,
+      "upstream_attempt": {
+        "request_sent": true
+      },
+      "usage_unknown": true
+    },
+    {
+      "arm": "raw",
+      "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+      "started": 1793271247.2294037,
+      "retry_policy": "One independent upstream attempt; no automatic resend",
+      "completed": false,
+      "error_type": "ProTransportError",
+      "error": "Native Pro stream ended without a completed response",
+      "elapsed_s": 900.4266116120016,
+      "upstream_attempt": {
+        "request_sent": true
+      },
+      "usage_unknown": true
+    }
+  ],
+  "native": [
+    {
+      "arm": "native",
+      "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+      "started": 1793272149.2777643,
+      "requested_faults": 0,
+      "fault_interval": 45.0,
+      "completed": true,
+      "thread_id": "01a18759-7b3d-7561-941c-08cf2eedb132",
+      "turns": [
+        {
+          "id": "01a18759-7b48-7053-ab29-5b225e9b8dad",
+          "continuation": false
+        }
+      ],
+      "recoveries": [
+        {
+          "kind": "native_stream_error",
+          "will_retry": true,
+          "error": {
+            "message": "Reconnecting... 2/5",
+            "codexErrorInfo": {
+              "responseStreamDisconnected": {
+                "httpStatusCode": null
+              }
+            },
+            "additionalDetails": "stream disconnected before completion: tls handshake eof",
+            "misalignment": null
+          },
+          "at": 1793273407.8289313
+        }
+      ],
+      "usage": {
+        "input_tokens": 378397,
+        "output_tokens": 39902,
+        "output_tokens_details": {
+          "reasoning_tokens": 29060
+        }
+      },
+      "source_sha256": "b71a65fe11b4f53870225bfddbaee254ed56a67d57289ff20651059800c2e0c8",
+      "source_lines": 205,
+      "accounting_scope": "Native thread aggregate, not exact provider attempt count",
+      "elapsed_s": 2256.9912729770003,
+      "injected_faults": 0,
+      "model_turns_started": 1,
+      "same_thread_after_faults": true,
+      "requested_faults_observed": true,
+      "observed_rpc_reconnects": 0,
+      "cached_input_tokens": 360192,
+      "internal_code_tool_calls": 8,
+      "invalid_submissions": 0,
+      "unknown_interrupted_usage_possible": true
+    },
+    {
+      "arm": "native",
+      "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+      "started": 1793274406.3401945,
+      "requested_faults": 1,
+      "fault_interval": 45.0,
+      "completed": true,
+      "thread_id": "01a1877b-e9a1-7dd2-b7c9-b84f27fdd616",
+      "turns": [
+        {
+          "id": "01a1877b-e9a7-7370-b238-d0b798f3703d",
+          "continuation": false
+        },
+        {
+          "id": "01a1877c-9a75-7fa2-99a9-c4d35d504a33",
+          "continuation": true
+        }
+      ],
+      "recoveries": [
+        {
+          "kind": "rpc_reconnect",
+          "at": 1793274451.4186969
+        },
+        {
+          "kind": "native_stream_error",
+          "will_retry": true,
+          "error": {
+            "message": "Reconnecting... 2/5",
+            "codexErrorInfo": {
+              "responseStreamDisconnected": {
+                "httpStatusCode": null
+              }
+            },
+            "additionalDetails": "stream disconnected before completion: tls handshake eof",
+            "misalignment": null
+          },
+          "at": 1793276553.930472
+        }
+      ],
+      "usage": {
+        "input_tokens": 528872,
+        "output_tokens": 44839,
+        "output_tokens_details": {
+          "reasoning_tokens": 32909
+        }
+      },
+      "source_sha256": "1dfb1e15b74d8adef935da02d5b4c8cdf1aaa9ac5f2087019178d40991e75a18",
+      "source_lines": 247,
+      "accounting_scope": "Native thread aggregate, not exact provider attempt count",
+      "elapsed_s": 2855.2183278500015,
+      "injected_faults": 1,
+      "model_turns_started": 2,
+      "same_thread_after_faults": true,
+      "requested_faults_observed": true,
+      "observed_rpc_reconnects": 1,
+      "cached_input_tokens": 506240,
+      "internal_code_tool_calls": 11,
+      "invalid_submissions": 0,
+      "unknown_interrupted_usage_possible": true
+    },
+    {
+      "arm": "native",
+      "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+      "started": 1793277261.623295,
+      "requested_faults": 2,
+      "fault_interval": 45.0,
+      "completed": true,
+      "thread_id": "01a187a7-7b47-7221-943b-dd3e83031e77",
+      "turns": [
+        {
+          "id": "01a187a7-7b4d-7c22-9165-c4bed4bb44cb",
+          "continuation": false
+        },
+        {
+          "id": "01a187a8-2c72-7cf2-bdc1-8bbf382124d2",
+          "continuation": true
+        },
+        {
+          "id": "01a187a8-de70-77e1-b0ae-f617a4102757",
+          "continuation": true
+        }
+      ],
+      "recoveries": [
+        {
+          "kind": "rpc_reconnect",
+          "at": 1793277306.8227015
+        },
+        {
+          "kind": "rpc_reconnect",
+          "at": 1793277352.066644
+        }
+      ],
+      "usage": {
+        "input_tokens": 474657,
+        "output_tokens": 37056,
+        "output_tokens_details": {
+          "reasoning_tokens": 26533
+        }
+      },
+      "source_sha256": "f059b04db3085e726f40d9392d1114945691b7f645346db80d0bf289496d1fa0",
+      "source_lines": 211,
+      "accounting_scope": "Native thread aggregate, not exact provider attempt count",
+      "elapsed_s": 2463.4062203970025,
+      "injected_faults": 2,
+      "model_turns_started": 3,
+      "same_thread_after_faults": true,
+      "requested_faults_observed": true,
+      "observed_rpc_reconnects": 2,
+      "cached_input_tokens": 467840,
+      "internal_code_tool_calls": 11,
+      "invalid_submissions": 0,
+      "unknown_interrupted_usage_possible": true
+    }
+  ],
+  "public_probe": {
+    "total": 495,
+    "failed": 2,
+    "correlations": [
+      {
+        "thread_id": "01a18759-7b3d-7561-941c-08cf2eedb132",
+        "native_epoch": 1793273407.8289313,
+        "native_error": "stream disconnected before completion: tls handshake eof",
+        "nearest_public_failure": {
+          "epoch": 1793273398.2322028,
+          "kind": "unauthenticated_public_https",
+          "host": "chatgpt.com",
+          "path": "/favicon.ico",
+          "error_type": "TimeoutError",
+          "error": "_ssl.c:1015: The handshake operation timed out",
+          "reachable_http": false,
+          "elapsed_s": 10.014649070002633
+        },
+        "delta_s": 9.596728563308716
+      },
+      {
+        "thread_id": "01a1877b-e9a1-7dd2-b7c9-b84f27fdd616",
+        "native_epoch": 1793276553.930472,
+        "native_error": "stream disconnected before completion: tls handshake eof",
+        "nearest_public_failure": {
+          "epoch": 1793276535.9196146,
+          "kind": "unauthenticated_public_https",
+          "host": "chatgpt.com",
+          "path": "/favicon.ico",
+          "error_type": "TimeoutError",
+          "error": "_ssl.c:1015: The handshake operation timed out",
+          "reachable_http": false,
+          "elapsed_s": 10.012792614001228
+        },
+        "delta_s": 18.010857343673706
+      }
+    ],
+    "scope": "Sampled unauthenticated HTTPS; not model API health or network-time percentage"
+  },
+  "known_native_usage": {
+    "input_tokens": 1381926,
+    "output_tokens": 121797
+  },
+  "known_native_reasoning_tokens": 88502,
+  "raw_usage_unknown_attempts": 3,
+  "native_interrupted_usage_may_be_unreported": true,
+  "initial_payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+  "robot_calls": 0,
+  "libero_evaluated": false,
+  "independent_native_threads": 3,
+  "independent_generated_sources": 3
+}

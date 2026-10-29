@@ -24,5 +24,22 @@
   "scope": "Stored history and complete tool receipt; not exact token-level inference resumption",
   "source_hash_matches": true,
   "receipt_arguments_match": true,
+  "stored_dynamic_tool_fields": [
+    [
+      "arguments",
+      "contentItems",
+      "durationMs",
+      "id",
+      "namespace",
+      "status",
+      "success",
+      "tool",
+      "type"
+    ]
+  ],
+  "stored_dynamic_arguments_match": true,
+  "pre_fault_preservation_test_applicable": false,
+  "pre_fault_preservation_note": "Completed pre-fault item IDs checked when present",
+  "per_fault_completed_reasoning_counts": [],
   "checks_passed": true
 }

@@ -1,0 +1,14 @@
+{
+  "silent_thread_replacement_rejected": true,
+  "same_thread_recovery": true,
+  "original_observation_sent_once": true,
+  "continuation_not_cold_restart": true,
+  "complete_source_contract": true,
+  "completed_receipt_not_regenerated": true,
+  "partial_source_rejected": true,
+  "exact_request_images_restored": true,
+  "faults_target_distinct_owned_rpc_instances": true,
+  "batch_preserves_infrastructure_failure_and_all_cases": true,
+  "public403_is_reachable_not_api_health": true,
+  "missing_executable_rejected_before_model_request": true
+}

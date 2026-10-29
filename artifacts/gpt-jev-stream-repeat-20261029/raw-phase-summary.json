@@ -1,0 +1,23 @@
+[
+  {
+    "first_event_s": 1.184913733999565,
+    "first_argument_s": null,
+    "argument_characters": 0,
+    "last_event_s": 624.5517712469991,
+    "max_event_gap_s": 30.011573093997868
+  },
+  {
+    "first_event_s": 1.2209203739985242,
+    "first_argument_s": 775.6222980349994,
+    "argument_characters": 19324,
+    "last_event_s": 887.1932879749984,
+    "max_event_gap_s": 31.54316057399774
+  },
+  {
+    "first_event_s": 1.250620753999101,
+    "first_argument_s": 794.1504559629975,
+    "argument_characters": 16686,
+    "last_event_s": 900.2102017109974,
+    "max_event_gap_s": 30.063695007000206
+  }
+]

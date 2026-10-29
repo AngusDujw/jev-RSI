@@ -193,6 +193,7 @@ graph LR
     T_2026W44_018["📝 libero-generic-vision<br/>T-2026W44-017同时依据新183…"]:::note
     T_2026W44_019["📊 libero-generic-vision<br/>无本地时间截止仍900.868秒HTTP截…"]:::experiment
     T_2026W44_020["📊 libero-generic-vision<br/>无时限同源205行完成LIBERO目标，1…"]:::experiment
+    T_2026W44_021["📊 libero-generic-vision<br/>固定183请求旧HTTP0/3完整，Pro…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -339,6 +340,7 @@ graph LR
   T_2026W44_017 --> T_2026W44_018
   T_2026W44_018 --> T_2026W44_019
   T_2026W44_019 --> T_2026W44_020
+  T_2026W44_020 --> T_2026W44_021
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -514,6 +516,7 @@ graph LR
 | `T-2026W44-018` | 2026-10-29 | note | libero-generic-vision | T-2026W44-017同时依据新183方法获取失败EXP030；ref参数只收单ID，第二ID进入了原节点描述，关联在此补记 | `EXP-2026W44-030` | - |
 | `T-2026W44-019` | 2026-10-29 | experiment | libero-generic-vision | 无本地时间截止仍900.868秒HTTP截断，853秒才开始参数输出；339秒二次断流及TLS EOF，等待不能全算推理 | `EXP-2026W44-033` | - |
 | `T-2026W44-020` | 2026-10-29 | experiment | libero-generic-vision | 无时限同源205行完成LIBERO目标，19GPT/92Jev/66.6分钟；程序首帧无参考却要求对应certain而自报未完，非Jev失败 | `EXP-2026W44-034` | - |
+| `T-2026W44-021` | 2026-10-29 | experiment | libero-generic-vision | 固定183请求旧HTTP0/3完整，Pro持久会话3/3完整并恢复0/1/2次RPC故障；仅交付与上下文恢复，LIBERO未测，生成仍37.6–47.6分钟 | `EXP-2026W44-038` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

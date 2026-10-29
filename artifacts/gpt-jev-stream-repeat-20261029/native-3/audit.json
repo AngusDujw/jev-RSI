@@ -1,0 +1,65 @@
+{
+  "thread_id": "01a187a7-7b47-7221-943b-dd3e83031e77",
+  "same_thread": true,
+  "stored_turns": [
+    {
+      "id": "01a187a7-7b4d-7c22-9165-c4bed4bb44cb",
+      "status": "interrupted",
+      "items": {
+        "userMessage": 1
+      }
+    },
+    {
+      "id": "01a187a8-2c72-7cf2-bdc1-8bbf382124d2",
+      "status": "interrupted",
+      "items": {
+        "userMessage": 1
+      }
+    },
+    {
+      "id": "01a187a8-de70-77e1-b0ae-f617a4102757",
+      "status": "completed",
+      "items": {
+        "userMessage": 1,
+        "reasoning": 55,
+        "dynamicToolCall": 1,
+        "agentMessage": 1
+      }
+    }
+  ],
+  "initial_text_matches": true,
+  "initial_images": 2,
+  "expected_images": 2,
+  "user_message_count": 3,
+  "subsequent_images": [
+    0,
+    0
+  ],
+  "pre_fault_completed_reasoning_items": 0,
+  "pre_fault_item_ids_preserved": true,
+  "instruction_sources": [],
+  "scope": "Stored history and complete tool receipt; not exact token-level inference resumption",
+  "source_hash_matches": true,
+  "receipt_arguments_match": true,
+  "stored_dynamic_tool_fields": [
+    [
+      "arguments",
+      "contentItems",
+      "durationMs",
+      "id",
+      "namespace",
+      "status",
+      "success",
+      "tool",
+      "type"
+    ]
+  ],
+  "stored_dynamic_arguments_match": true,
+  "pre_fault_preservation_test_applicable": false,
+  "pre_fault_preservation_note": "No completed reasoning item existed before the controlled faults; original input retention was checked",
+  "per_fault_completed_reasoning_counts": [
+    0,
+    0
+  ],
+  "checks_passed": true
+}

@@ -1,0 +1,49 @@
+{
+  "arm": "native",
+  "payload_sha256": "31e1a703d115605fe00dda98ef399743c2edd8a511752ecdc09a6c8b533e7b97",
+  "started": 1793277261.623295,
+  "requested_faults": 2,
+  "fault_interval": 45.0,
+  "completed": true,
+  "thread_id": "01a187a7-7b47-7221-943b-dd3e83031e77",
+  "turns": [
+    {
+      "id": "01a187a7-7b4d-7c22-9165-c4bed4bb44cb",
+      "continuation": false
+    },
+    {
+      "id": "01a187a8-2c72-7cf2-bdc1-8bbf382124d2",
+      "continuation": true
+    },
+    {
+      "id": "01a187a8-de70-77e1-b0ae-f617a4102757",
+      "continuation": true
+    }
+  ],
+  "recoveries": [
+    {
+      "kind": "rpc_reconnect",
+      "at": 1793277306.8227015
+    },
+    {
+      "kind": "rpc_reconnect",
+      "at": 1793277352.066644
+    }
+  ],
+  "usage": {
+    "input_tokens": 474657,
+    "output_tokens": 37056,
+    "output_tokens_details": {
+      "reasoning_tokens": 26533
+    }
+  },
+  "source_sha256": "f059b04db3085e726f40d9392d1114945691b7f645346db80d0bf289496d1fa0",
+  "source_lines": 211,
+  "accounting_scope": "Native thread aggregate, not exact provider attempt count",
+  "elapsed_s": 2463.4062203970025,
+  "injected_faults": 2,
+  "model_turns_started": 3,
+  "same_thread_after_faults": true,
+  "requested_faults_observed": true,
+  "observed_rpc_reconnects": 2
+}

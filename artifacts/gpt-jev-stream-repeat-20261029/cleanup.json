@@ -1,0 +1,41 @@
+{
+  "units": [
+    {
+      "RuntimeMaxUSec": "infinity",
+      "Result": "success",
+      "NRestarts": "0",
+      "ExecMainStatus": "0",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "unit": "gpt-jev-stream-repeat-batch-20261029.service"
+    },
+    {
+      "RuntimeMaxUSec": "infinity",
+      "Result": "success",
+      "NRestarts": "0",
+      "ExecMainStatus": "0",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "unit": "gpt-jev-stream-repeat-native-fixed-20261029.service"
+    },
+    {
+      "RuntimeMaxUSec": "infinity",
+      "Result": "success",
+      "NRestarts": "0",
+      "ExecMainStatus": "0",
+      "ActiveState": "inactive",
+      "SubState": "dead",
+      "unit": "gpt-jev-stream-repeat-probe-20261029.service"
+    }
+  ],
+  "probe_stop_sentinel": true,
+  "scope": "Only owned transient test services; no GPU, driver, Conda, or proxy configuration changes",
+  "temporary_diagnostic_script": {
+    "path": "baseline/roboicl/reproduction/pro_recovery_repeat.py",
+    "sha256_before_removal": "bea83a45e6f6a27c6cdccb9e55cd4d99bf68bea2537cb5af42419cec97dfa29d",
+    "retained_git_revision": "1a7165bf",
+    "remove_after_completed_trials_and_audits": true,
+    "removed": true
+  },
+  "owned_failed_startup_check_reset": true
+}
