@@ -1,0 +1,13 @@
+{
+  "commit": "bffb5d01",
+  "protocol_unchanged": true,
+  "files": {
+    "jev_protocol.py": "42846ffe140a5ae33e9f276e0dd1780086927aa6c429b50f7e9592661ec3c893",
+    "jev_route.py": "32f95de471a79b6de9e4c255b2090960c0e212372ef1529f92e7e30f21da82eb",
+    "jev_proxy.py": "d2a20b7bc3f6d9344f43851a7928e92e271b80e03c1ed8215f9ad89929ae09b1",
+    "jev_instructions.md": "76a078f64d4ee878f88587a08ecc01ca0bb933f7dbfa295a0b772c8de6c853e0"
+  },
+  "health_local": "passed",
+  "health_server02_loopback": "passed",
+  "credential_scan": "no credential strings in validation artifacts"
+}
