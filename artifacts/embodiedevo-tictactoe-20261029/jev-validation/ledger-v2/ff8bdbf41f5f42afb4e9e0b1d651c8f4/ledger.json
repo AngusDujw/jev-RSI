@@ -1,0 +1,25 @@
+{
+  "request_id": "ff8bdbf41f5f42afb4e9e0b1d651c8f4",
+  "protocol": "tictactoe-routing-v2",
+  "raw": {
+    "model": "jev-1.14.0",
+    "answers": {
+      "route": {
+        "type": "choice",
+        "choice": "observe",
+        "confidence": 0.99,
+        "probabilities": {
+          "wait": 0.01,
+          "observe": 0.99,
+          "act": 0.0,
+          "stop": 0.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 597,
+      "output_tokens": 45
+    }
+  },
+  "elapsed_seconds": 0.39907171500090044
+}

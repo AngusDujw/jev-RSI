@@ -1,0 +1,1046 @@
+[
+  {
+    "id": "ready_v0",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "86a203215cef4ee690e372843753e0d7",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4239601160006714
+  },
+  {
+    "id": "moving_v0",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "71c2fc82f6b9478292b802dc7958fd65",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40524948999882326
+  },
+  {
+    "id": "terminated_v0",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "1d064206853844ed87039538bc0c392f",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40759618999982195
+  },
+  {
+    "id": "truncated_v0",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "08637fd7a2d84fbc9ccc45be5176ae28",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.43781459999991057
+  },
+  {
+    "id": "success_v0",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "83011f6a215e40049dcc2663024d39d2",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4461267389997374
+  },
+  {
+    "id": "native_steps_remaining_v0",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "1dba18ecdc364a9caa3205273d82836f",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.43214695300048334
+  },
+  {
+    "id": "executions_remaining_v0",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "77eab16a57394425b521b32d31429fb4",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4156713789998321
+  },
+  {
+    "id": "missing_opponent_motion_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "0140e697d7e94389b3ca4faa6651603f",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.42123029999856954
+  },
+  {
+    "id": "missing_player_turn_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "bfe9edd4a73e4b14b0085b5ce6975a15",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4046298810008011
+  },
+  {
+    "id": "missing_destination_empty_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "0764bdcd31b047e1bd5b95e18a962b28",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.41206493900062924
+  },
+  {
+    "id": "missing_contradictory_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "cffdd186d6a84ae780355fbfc30fa6c2",
+    "usage": {
+      "input_tokens": 597,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.41512202600097226
+  },
+  {
+    "id": "missing_execution_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "ea6543e3157d4b6aa4c6126b1a718f92",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40882943700125907
+  },
+  {
+    "id": "unknown_opponent_motion_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "977cc4edb84e4584ac344535f646e287",
+    "usage": {
+      "input_tokens": 591,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4301815290000377
+  },
+  {
+    "id": "unknown_player_turn_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "dbc509a2785f461ea85b060131befd77",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.434232907000478
+  },
+  {
+    "id": "unknown_destination_empty_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "83f1d1b7b23a46a2aa3e4c9689a3f7c8",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4271399069984909
+  },
+  {
+    "id": "occupied_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "666335690cd1481e8c6e4d77213b0329",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4131695169999148
+  },
+  {
+    "id": "not_our_turn_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "103e928ebd7a44bca16bd04c69416e06",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40761716199995135
+  },
+  {
+    "id": "stale_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "4a595dc6418d402280369032f9e3057b",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40739634099918476
+  },
+  {
+    "id": "future_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "d5d65d86397a4f2e8714db74d520f2d7",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4076751040011004
+  },
+  {
+    "id": "contradiction_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "6ec00cbbe68542e5b7ef051687f5f2cc",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3986802170002193
+  },
+  {
+    "id": "no_evidence_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "2a7c94bcdbd84e3481fb9ee3622c7382",
+    "usage": {
+      "input_tokens": 597,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3992186520008545
+  },
+  {
+    "id": "no_action_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "56107af079f94ed3956d35f6571d023a",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4040671039983863
+  },
+  {
+    "id": "stale_moving_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "57922d9c53004b60901a21f4815df766",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4269570399992517
+  },
+  {
+    "id": "stop_over_moving_v0",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "eb55bcc7c21d4eb8b01dc9467b2416a3",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40925891599908937
+  },
+  {
+    "id": "stop_over_missing_v0",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "dad0d0d8891e45f2a2ce939617074b7b",
+    "usage": {
+      "input_tokens": 600,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.41081849900001544
+  },
+  {
+    "id": "inject_stale_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "a5a9f092934b4e09bc0c901294acf446",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.39633559600042645
+  },
+  {
+    "id": "win_not_complete_v0",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "ce98dd3875324a7a9bc1a3f0ef4096c8",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4234345350014337
+  },
+  {
+    "id": "no_hold_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "c892a55db111401aaacd7ad4f463ba8e",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.5977559700004349
+  },
+  {
+    "id": "both_absent_v0",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "3820e24efcca4265920e6ad51c7ec885",
+    "usage": {
+      "input_tokens": 599,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4859995019996859
+  },
+  {
+    "id": "ready_v1",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "f2f3aef0a541452db9ed085f81d2f83c",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.5508210290008719
+  },
+  {
+    "id": "moving_v1",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "c10a31afa01f4c899ac3558068b1bb97",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4015444140004547
+  },
+  {
+    "id": "terminated_v1",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "3718551414544e59bf405a78cbc43baf",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4089240780012915
+  },
+  {
+    "id": "truncated_v1",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "c061eefb6cf7467698b581f98cd74fb1",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.39921213500019803
+  },
+  {
+    "id": "success_v1",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "c12d29977afd46418003ed8b847849ed",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4186972389998118
+  },
+  {
+    "id": "native_steps_remaining_v1",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "6d24fb799c72478586238e430fde1661",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4075133549995371
+  },
+  {
+    "id": "executions_remaining_v1",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "72ea6880c8fb4ea6af46a2fcc984557c",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40867482800058497
+  },
+  {
+    "id": "missing_opponent_motion_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "9fdf1ac8d50d43cf90866f31651bd26a",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.41850257300029625
+  },
+  {
+    "id": "missing_player_turn_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "397c0a0edd714110bcd77e1661237802",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4257951409999805
+  },
+  {
+    "id": "missing_destination_empty_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "e49ab439e9d24faf9690c21a350675a9",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.42203610700016725
+  },
+  {
+    "id": "missing_contradictory_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "946f2f5e2baa4b74b41dc0d824a3c8ef",
+    "usage": {
+      "input_tokens": 597,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4269931929993618
+  },
+  {
+    "id": "missing_execution_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "7412154a791f493e96d20c12eaddfd61",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.39634021099845995
+  },
+  {
+    "id": "unknown_opponent_motion_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "02aa45595d304202859601d557c4bb68",
+    "usage": {
+      "input_tokens": 591,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.440014465000786
+  },
+  {
+    "id": "unknown_player_turn_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "b48eca945b154562839ab5a179bce191",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4223355960002664
+  },
+  {
+    "id": "unknown_destination_empty_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "85eb35cc8ffa45d8ab1894506905c540",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.45260933299869066
+  },
+  {
+    "id": "occupied_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "de80cc2859754c63908ca1074e2fd585",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4014705080007843
+  },
+  {
+    "id": "not_our_turn_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "6e7e43bf71bd4729a25036f3a16acb2f",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4449390800000401
+  },
+  {
+    "id": "stale_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "490b9919298745f5ba2aa2ce3906172b",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4090734800010978
+  },
+  {
+    "id": "future_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "bc795f4186364ba38118c99828b0db5e",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.43188322500100185
+  },
+  {
+    "id": "contradiction_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "14ec2c408b5941da94a7e62c893810b7",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.43488105700089363
+  },
+  {
+    "id": "no_evidence_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "83f36ebeac0f4ad3af55a459dc5a26ef",
+    "usage": {
+      "input_tokens": 597,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.417047189999721
+  },
+  {
+    "id": "no_action_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "9632df7d55954a839ac992cd6764c5c7",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.39937452699996356
+  },
+  {
+    "id": "stale_moving_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "cb68cbfd009842688bbe9d6dc75f7089",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4378148410014546
+  },
+  {
+    "id": "stop_over_moving_v1",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "affc34d37e76434f8c79896bdb85a31d",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4233135049998964
+  },
+  {
+    "id": "stop_over_missing_v1",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "d8a11b0cdb1d48dbb9b4420b3d23ef8b",
+    "usage": {
+      "input_tokens": 600,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.41783051200036425
+  },
+  {
+    "id": "inject_stale_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "d8a1b783b7874702b971d5c2cd806598",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.47961852600019483
+  },
+  {
+    "id": "win_not_complete_v1",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "6a498cd54c5d46598925becdd420918c",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.45336696399863285
+  },
+  {
+    "id": "no_hold_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "a71e93a10b3e48f8ba9761616b12e6d1",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.5011930640011997
+  },
+  {
+    "id": "both_absent_v1",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "fac9b5bb40af4b33b8167be18b7bef2d",
+    "usage": {
+      "input_tokens": 599,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.45625294000092254
+  },
+  {
+    "id": "ready_v2",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "c8f3d4426e1c4208b5c5867c2ffeb1dd",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.45390769000005093
+  },
+  {
+    "id": "moving_v2",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "9fb7103fe0bd417eaefc27c3224afe1b",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4899220059996878
+  },
+  {
+    "id": "terminated_v2",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "98473561c2584d45a25953312c5dd2ab",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.42151553700023214
+  },
+  {
+    "id": "truncated_v2",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "ffbfd92f4267408cb9330697721d4b1b",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.41048988700094924
+  },
+  {
+    "id": "success_v2",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "0453a202897b479cafc7d9b5ef07bcd3",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4201704539991624
+  },
+  {
+    "id": "native_steps_remaining_v2",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "e81c9fc9b5184c6d89c4649cea185977",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.49306992200035893
+  },
+  {
+    "id": "executions_remaining_v2",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "5798ccb29e6b420dbd9178e29a9657b5",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.48671655599900987
+  },
+  {
+    "id": "missing_opponent_motion_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "f5b5e9606c08458d9ca097573017d842",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3957720180005708
+  },
+  {
+    "id": "missing_player_turn_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "e19e9f395dd04582bb709ef6357c6187",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4672169869991194
+  },
+  {
+    "id": "missing_destination_empty_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "8a5e179469774554aebfd8c80b7182e4",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4505208490008954
+  },
+  {
+    "id": "missing_contradictory_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "f077efcf8ad44bdf9fe4d841be0ab668",
+    "usage": {
+      "input_tokens": 597,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.5372612280007161
+  },
+  {
+    "id": "missing_execution_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "329e0d669d4f407dba7efd93bb242704",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4270570789994963
+  },
+  {
+    "id": "unknown_opponent_motion_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "f5eb912445104a4f93836f2d8bb07985",
+    "usage": {
+      "input_tokens": 591,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3925820590011426
+  },
+  {
+    "id": "unknown_player_turn_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "dfb541cc20b04e0cab6dc6d31d5d6666",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.42115452500001993
+  },
+  {
+    "id": "unknown_destination_empty_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "b1fda723a0d6406bbcfffed4bbaf13c9",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3917477349987166
+  },
+  {
+    "id": "occupied_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "58a8dc8a80094f8c96ca5edb80766d1c",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3938317239990283
+  },
+  {
+    "id": "not_our_turn_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "f3cfb701a1f744169ae8bdae6ecdf05c",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.40215213100054825
+  },
+  {
+    "id": "stale_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "4911ef8a836b4bbc926e6e2bec5a96fa",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4512634469992918
+  },
+  {
+    "id": "future_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "3a9fcd9b89ac4abf9f9e003ecf4bdefc",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4202188559993374
+  },
+  {
+    "id": "contradiction_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "aa671a10be454409837afab000014f99",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3916834440005914
+  },
+  {
+    "id": "no_evidence_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "7a4e583738024939994d7be129700fe6",
+    "usage": {
+      "input_tokens": 597,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4048714970012952
+  },
+  {
+    "id": "no_action_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "9ed7943ed2d94afd9a04fc9af3510e50",
+    "usage": {
+      "input_tokens": 596,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.39000578700142796
+  },
+  {
+    "id": "stale_moving_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "a3a0bee31bb8424c9baa96005442fecf",
+    "usage": {
+      "input_tokens": 594,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.39662992199919245
+  },
+  {
+    "id": "stop_over_moving_v2",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "7e649cc331104007881af10dfc1909c7",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.3917624210007489
+  },
+  {
+    "id": "stop_over_missing_v2",
+    "expected": "stop",
+    "actual": "stop",
+    "correct": true,
+    "request_id": "05632fc9f30a4b7e9150deafe0927230",
+    "usage": {
+      "input_tokens": 600,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.38481995099937194
+  },
+  {
+    "id": "inject_stale_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "3d96bb86592a4029be33899b7761a0f7",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4080128580008022
+  },
+  {
+    "id": "win_not_complete_v2",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "cd9cfa5602484de7861a433410e74b9b",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.4033124390007288
+  },
+  {
+    "id": "no_hold_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "14cfc0cc51d44d60a51c2ef94fa1482a",
+    "usage": {
+      "input_tokens": 595,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.5247096309994959
+  },
+  {
+    "id": "both_absent_v2",
+    "expected": "observe",
+    "actual": "observe",
+    "correct": true,
+    "request_id": "b435908e9b7c4e518069bf8632eb5723",
+    "usage": {
+      "input_tokens": 599,
+      "output_tokens": 45
+    },
+    "elapsed_seconds": 0.41681862600125896
+  }
+]

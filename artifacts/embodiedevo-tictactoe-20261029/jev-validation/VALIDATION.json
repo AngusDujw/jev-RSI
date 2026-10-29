@@ -1,0 +1,17 @@
+{
+  "requests": 415,
+  "input_tokens": 254985,
+  "output_tokens": 18675,
+  "unknown_usage": 0,
+  "v1_first_holdout": "52/81: FAILED; became development set",
+  "v2_development": "87/87; repeated once after a local script edit failure; both charged",
+  "v2_independent_mixed": "120/120 (87 observe, 23 stop, 10 wait)",
+  "v2_independent_positive": "40/40 (20 act, 20 wait)",
+  "offline_runner_checks": 5,
+  "source_sha256": {
+    "jev_protocol.py": "42846ffe140a5ae33e9f276e0dd1780086927aa6c429b50f7e9592661ec3c893",
+    "jev_route.py": "3e2e7211edeb6d75e870c94d2577402578b25600f3ffad9f5c8eaa18d59a1b46",
+    "jev_proxy.py": "cc72f1152a78ecc0830d8b7155f8c478b4dcc5c5136e18135aecd567881fe88c"
+  },
+  "limitation": "This validates routing-contract adherence with program-normalized facts, not perception, robotics success or benefit over deterministic routing. No native state oracle is supplied."
+}

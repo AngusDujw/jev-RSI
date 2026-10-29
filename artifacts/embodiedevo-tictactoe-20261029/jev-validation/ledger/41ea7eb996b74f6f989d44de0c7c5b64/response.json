@@ -1,0 +1,20 @@
+{
+  "model": "jev-1.14.0",
+  "answers": {
+    "route": {
+      "type": "choice",
+      "choice": "stop",
+      "confidence": 0.53,
+      "probabilities": {
+        "wait": 0.0,
+        "observe": 0.04,
+        "act": 0.31,
+        "stop": 0.65
+      }
+    }
+  },
+  "usage": {
+    "input_tokens": 713,
+    "output_tokens": 45
+  }
+}

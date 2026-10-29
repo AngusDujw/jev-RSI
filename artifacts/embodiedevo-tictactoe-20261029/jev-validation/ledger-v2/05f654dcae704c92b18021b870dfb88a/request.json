@@ -1,0 +1,26 @@
+{
+  "model": "jev-1.14.0",
+  "state": {
+    "native_episode": "ACTIVE",
+    "budgets": "AVAILABLE",
+    "evidence_status": "STALE OR INCOMPLETE",
+    "contradiction": "NO",
+    "opponent_motion": "STOPPED",
+    "player_turn": "CONFIRMED",
+    "empty_destination": "CONFIRMED",
+    "action_branch": "AVAILABLE",
+    "hold_branch": "AVAILABLE"
+  },
+  "questions": {
+    "route": {
+      "type": "choice",
+      "instructions": "Choose the route whose complete conditions match these facts. Evaluate episode and budgets first, evidence next, opponent motion next, then the action prerequisites. Missing evidence never permits action.",
+      "criteria": {
+        "wait": "Episode ACTIVE, budgets AVAILABLE, evidence FRESH AND COMPLETE, no contradiction, opponent MOVING, and hold branch AVAILABLE. Hold current pose for a bounded interval.",
+        "observe": "Episode ACTIVE and budgets AVAILABLE, but evidence is stale, incomplete or contradictory; OR opponent motion is UNKNOWN; OR player turn or empty destination is not confirmed when opponent is stopped; OR the required branch is unavailable. Return to visual planner.",
+        "act": "Episode ACTIVE, budgets AVAILABLE, evidence FRESH AND COMPLETE, no contradiction, opponent STOPPED, player turn CONFIRMED, empty destination CONFIRMED, action branch AVAILABLE. Every condition is required.",
+        "stop": "Episode ENDED OR a budget EXHAUSTED. This overrides every other condition, even if all action conditions are satisfied."
+      }
+    }
+  }
+}

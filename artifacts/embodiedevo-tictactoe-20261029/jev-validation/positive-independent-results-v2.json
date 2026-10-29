@@ -1,0 +1,442 @@
+[
+  {
+    "id": "independent_000",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "9d1f4754440445bca25e427432c81007",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_001",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "37da72bace6c42b89fdd7eb08d757bf5",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_002",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "1751df009a5e43beb474bc79c41c7cad",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_003",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "63e0f48671a84ad7a6deb860c645bf8d",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_004",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "4559595875d94d3c9a97d12a064950d2",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_005",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "40b2495a9a904d96ad8cf02405ea83af",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_006",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "2930a2d66c944a8ba41a494c3df6dd0d",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_007",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "6242b6e566444494b69cd507f80299e0",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_008",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "83c71f8d959b4429af5f18f794c19949",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_009",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "79aee07724a34e6a8cad16320326efad",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_010",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "c4425dd9f86444d4833233de4196a8ec",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_011",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "4e569d240e2140aea4d907d01c96296c",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_012",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "928e5376de444fea89a6ef3195d05721",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_013",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "2edd6f398a034c65abc1fc1ce5721f44",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_014",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "07f6e8115f1b4181923ba37936020828",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_015",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "676f0f2fb8e44be6b86ab8653103b602",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_016",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "da6ddd3f1f174a53b25ffc8bc474a3d2",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_017",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "b996515c7e224cf39ab6229a5d392b02",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_018",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "b774317b036b40e39ecf074f3d6a14c4",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_019",
+    "expected": "act",
+    "actual": "act",
+    "correct": true,
+    "request_id": "7651c546a3db4dc0ab49f63561fd0a64",
+    "usage": {
+      "input_tokens": 593,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_020",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "e5444581e87c4b4a9fc36274b2b0c5db",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_021",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "c3b405f3005840d8bbbf9752ff418377",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_022",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "1400af37b53b4bb6a6ab40f397d55737",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_023",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "386652a146f04b4f8de2cef4f67bcdc1",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_024",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "424b50989aaa4234b85a5a2a57e807e0",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_025",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "720bd157cbf347a2a9111e927351ba9f",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_026",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "7887ac75b664493da36b37412e48469f",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_027",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "cdad851864c443238c73cfbca66cd292",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_028",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "6186d0e520334dfaa6424ecb4143a791",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_029",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "f755e016078749979e1421f6da08a4c4",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_030",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "33f2df62b5be452a95f916cbbe5c6055",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_031",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "3f5f241907634ae7962bc1ba87a7d9a1",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_032",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "ea5bd5daff4c4b8fbb0dd7895884e6a3",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_033",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "f61100b108584eceb66f3a1de37c90db",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_034",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "8b8a5df9a7c24a53a0dd58fdb97fbb90",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_035",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "e8375a0e29284edcb7259a72004ee8ad",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_036",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "3b9f1fa84ae243eaaddda33f8f2a8795",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_037",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "6605f93f357c4302bd699938ee42003e",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_038",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "addf95a88d8946ea880c136a5370a31f",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  },
+  {
+    "id": "independent_039",
+    "expected": "wait",
+    "actual": "wait",
+    "correct": true,
+    "request_id": "face216026234f348739a0e3b32663d1",
+    "usage": {
+      "input_tokens": 592,
+      "output_tokens": 45
+    }
+  }
+]

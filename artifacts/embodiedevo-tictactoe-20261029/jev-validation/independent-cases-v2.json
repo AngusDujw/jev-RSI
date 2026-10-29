@@ -1,0 +1,2723 @@
+[
+  {
+    "id": "independent_000",
+    "expected": "observe",
+    "state": {
+      "current_execution": 480,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 445,
+      "executions_remaining": 75,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 480,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_001",
+    "expected": "observe",
+    "state": {
+      "current_execution": 65,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 941,
+      "executions_remaining": 40,
+      "available_branches": [],
+      "evidence": {
+        "execution": 65,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_002",
+    "expected": "observe",
+    "state": {
+      "current_execution": 240,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 936,
+      "executions_remaining": 6,
+      "available_branches": [],
+      "evidence": {
+        "execution": 233,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_003",
+    "expected": "observe",
+    "state": {
+      "current_execution": 404,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 270,
+      "executions_remaining": 91,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 390,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_004",
+    "expected": "observe",
+    "state": {
+      "current_execution": 765,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 965,
+      "executions_remaining": 5,
+      "available_branches": [],
+      "evidence": {
+        "execution": 754,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_005",
+    "expected": "observe",
+    "state": {
+      "current_execution": 891,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 346,
+      "executions_remaining": 98,
+      "available_branches": [],
+      "evidence": {
+        "execution": 891,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_006",
+    "expected": "observe",
+    "state": {
+      "current_execution": 493,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 742,
+      "executions_remaining": 11,
+      "available_branches": [],
+      "evidence": {
+        "execution": 493,
+        "contradictory": true,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_007",
+    "expected": "stop",
+    "state": {
+      "current_execution": 133,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 736,
+      "executions_remaining": 15,
+      "available_branches": [],
+      "evidence": {
+        "execution": 133,
+        "contradictory": true,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_008",
+    "expected": "observe",
+    "state": {
+      "current_execution": 58,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 480,
+      "executions_remaining": 21,
+      "available_branches": [],
+      "evidence": {
+        "execution": 58,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_009",
+    "expected": "wait",
+    "state": {
+      "current_execution": 230,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 28,
+      "executions_remaining": 80,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 230,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_010",
+    "expected": "observe",
+    "state": {
+      "current_execution": 887,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 539,
+      "executions_remaining": 81,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 887,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_011",
+    "expected": "observe",
+    "state": {
+      "current_execution": 693,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 67,
+      "executions_remaining": 69,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 693,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_012",
+    "expected": "stop",
+    "state": {
+      "current_execution": 447,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 848,
+      "executions_remaining": 25,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 447,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_013",
+    "expected": "wait",
+    "state": {
+      "current_execution": 890,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 914,
+      "executions_remaining": 9,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 890,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_014",
+    "expected": "stop",
+    "state": {
+      "current_execution": 752,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 71,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 747,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_015",
+    "expected": "observe",
+    "state": {
+      "current_execution": 824,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 835,
+      "executions_remaining": 76,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 824,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_016",
+    "expected": "stop",
+    "state": {
+      "current_execution": 582,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 639,
+      "executions_remaining": 89,
+      "available_branches": [],
+      "evidence": {
+        "execution": 582,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_017",
+    "expected": "wait",
+    "state": {
+      "current_execution": 352,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 370,
+      "executions_remaining": 73,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 352,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_018",
+    "expected": "observe",
+    "state": {
+      "current_execution": 438,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 466,
+      "executions_remaining": 64,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 438,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_019",
+    "expected": "observe",
+    "state": {
+      "current_execution": 401,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 741,
+      "executions_remaining": 73,
+      "available_branches": [],
+      "evidence": {
+        "execution": 392,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_020",
+    "expected": "observe",
+    "state": {
+      "current_execution": 307,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 779,
+      "executions_remaining": 42,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 307,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_021",
+    "expected": "stop",
+    "state": {
+      "current_execution": 740,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 45,
+      "available_branches": [],
+      "evidence": {
+        "execution": 740,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_022",
+    "expected": "observe",
+    "state": {
+      "current_execution": 181,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 613,
+      "executions_remaining": 56,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 180,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_023",
+    "expected": "observe",
+    "state": {
+      "current_execution": 484,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 649,
+      "executions_remaining": 91,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 484,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_024",
+    "expected": "observe",
+    "state": {
+      "current_execution": 481,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 694,
+      "executions_remaining": 96,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 481,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_025",
+    "expected": "stop",
+    "state": {
+      "current_execution": 679,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 596,
+      "executions_remaining": 18,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 679,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_026",
+    "expected": "observe",
+    "state": {
+      "current_execution": 400,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 135,
+      "executions_remaining": 41,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 391,
+        "contradictory": true,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_027",
+    "expected": "observe",
+    "state": {
+      "current_execution": 752,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 560,
+      "executions_remaining": 71,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 752,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_028",
+    "expected": "observe",
+    "state": {
+      "current_execution": 157,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 104,
+      "executions_remaining": 1,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 157,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_029",
+    "expected": "observe",
+    "state": {
+      "current_execution": 619,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 53,
+      "executions_remaining": 56,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 619,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_030",
+    "expected": "stop",
+    "state": {
+      "current_execution": 473,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 31,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 473,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_031",
+    "expected": "stop",
+    "state": {
+      "current_execution": 236,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 4,
+      "available_branches": [],
+      "evidence": {
+        "execution": 236,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_032",
+    "expected": "observe",
+    "state": {
+      "current_execution": 432,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 312,
+      "executions_remaining": 39,
+      "available_branches": [],
+      "evidence": {
+        "execution": 432,
+        "contradictory": true,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_033",
+    "expected": "observe",
+    "state": {
+      "current_execution": 58,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 399,
+      "executions_remaining": 55,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 58,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_034",
+    "expected": "stop",
+    "state": {
+      "current_execution": 675,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 962,
+      "executions_remaining": 11,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 675,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_035",
+    "expected": "observe",
+    "state": {
+      "current_execution": 316,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 857,
+      "executions_remaining": 86,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 316,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_036",
+    "expected": "observe",
+    "state": {
+      "current_execution": 283,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 72,
+      "executions_remaining": 37,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 283,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_037",
+    "expected": "observe",
+    "state": {
+      "current_execution": 546,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 500,
+      "executions_remaining": 97,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 546,
+        "contradictory": true,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_038",
+    "expected": "observe",
+    "state": {
+      "current_execution": 652,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 110,
+      "executions_remaining": 59,
+      "available_branches": [],
+      "evidence": {
+        "execution": 652,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_039",
+    "expected": "observe",
+    "state": {
+      "current_execution": 526,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 670,
+      "executions_remaining": 14,
+      "available_branches": [],
+      "evidence": {
+        "execution": 519,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_040",
+    "expected": "observe",
+    "state": {
+      "current_execution": 839,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 907,
+      "executions_remaining": 10,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 839,
+        "contradictory": true,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_041",
+    "expected": "observe",
+    "state": {
+      "current_execution": 749,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 406,
+      "executions_remaining": 45,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 749,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_042",
+    "expected": "observe",
+    "state": {
+      "current_execution": 267,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 277,
+      "executions_remaining": 23,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 267,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_043",
+    "expected": "observe",
+    "state": {
+      "current_execution": 95,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 716,
+      "executions_remaining": 57,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 95,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_044",
+    "expected": "observe",
+    "state": {
+      "current_execution": 483,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 335,
+      "executions_remaining": 98,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 483,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_045",
+    "expected": "observe",
+    "state": {
+      "current_execution": 190,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 686,
+      "executions_remaining": 42,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 190,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_046",
+    "expected": "observe",
+    "state": {
+      "current_execution": 467,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 18,
+      "executions_remaining": 63,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 467,
+        "contradictory": true,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_047",
+    "expected": "observe",
+    "state": {
+      "current_execution": 160,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 970,
+      "executions_remaining": 88,
+      "available_branches": [],
+      "evidence": {
+        "execution": 160,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_048",
+    "expected": "observe",
+    "state": {
+      "current_execution": 185,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 378,
+      "executions_remaining": 8,
+      "available_branches": [],
+      "evidence": {
+        "execution": 178,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_049",
+    "expected": "observe",
+    "state": {
+      "current_execution": 390,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 626,
+      "executions_remaining": 98,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 390,
+        "contradictory": true,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_050",
+    "expected": "observe",
+    "state": {
+      "current_execution": 706,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 778,
+      "executions_remaining": 18,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 706,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_051",
+    "expected": "observe",
+    "state": {
+      "current_execution": 395,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 25,
+      "executions_remaining": 54,
+      "available_branches": [],
+      "evidence": {
+        "execution": 395,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_052",
+    "expected": "stop",
+    "state": {
+      "current_execution": 423,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 765,
+      "executions_remaining": 62,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 423,
+        "contradictory": true,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_053",
+    "expected": "observe",
+    "state": {
+      "current_execution": 479,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 234,
+      "executions_remaining": 36,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 479,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_054",
+    "expected": "observe",
+    "state": {
+      "current_execution": 867,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 605,
+      "executions_remaining": 40,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 867,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_055",
+    "expected": "stop",
+    "state": {
+      "current_execution": 837,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 161,
+      "executions_remaining": 74,
+      "available_branches": [],
+      "evidence": {
+        "execution": 837,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_056",
+    "expected": "stop",
+    "state": {
+      "current_execution": 342,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 19,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 342,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_057",
+    "expected": "observe",
+    "state": {
+      "current_execution": 689,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 659,
+      "executions_remaining": 63,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 689,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_058",
+    "expected": "stop",
+    "state": {
+      "current_execution": 450,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 3,
+      "executions_remaining": 6,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 450,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_059",
+    "expected": "observe",
+    "state": {
+      "current_execution": 873,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 12,
+      "executions_remaining": 7,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 872,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_060",
+    "expected": "observe",
+    "state": {
+      "current_execution": 879,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 434,
+      "executions_remaining": 58,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 879,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_061",
+    "expected": "observe",
+    "state": {
+      "current_execution": 482,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 236,
+      "executions_remaining": 29,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 482,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_062",
+    "expected": "stop",
+    "state": {
+      "current_execution": 235,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 24,
+      "executions_remaining": 3,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 235,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_063",
+    "expected": "observe",
+    "state": {
+      "current_execution": 654,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 990,
+      "executions_remaining": 93,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 654,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_064",
+    "expected": "observe",
+    "state": {
+      "current_execution": 106,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 307,
+      "executions_remaining": 20,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 106,
+        "contradictory": true,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_065",
+    "expected": "wait",
+    "state": {
+      "current_execution": 891,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 753,
+      "executions_remaining": 69,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 891,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_066",
+    "expected": "observe",
+    "state": {
+      "current_execution": 873,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 236,
+      "executions_remaining": 40,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 873,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_067",
+    "expected": "stop",
+    "state": {
+      "current_execution": 266,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 7,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 266,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_068",
+    "expected": "observe",
+    "state": {
+      "current_execution": 289,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 621,
+      "executions_remaining": 58,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 289,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_069",
+    "expected": "observe",
+    "state": {
+      "current_execution": 345,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 239,
+      "executions_remaining": 99,
+      "available_branches": [],
+      "evidence": {
+        "execution": 343,
+        "contradictory": true,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_070",
+    "expected": "observe",
+    "state": {
+      "current_execution": 470,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 446,
+      "executions_remaining": 56,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 470,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_071",
+    "expected": "wait",
+    "state": {
+      "current_execution": 577,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 148,
+      "executions_remaining": 70,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 577,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_072",
+    "expected": "observe",
+    "state": {
+      "current_execution": 230,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 75,
+      "executions_remaining": 12,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 219,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_073",
+    "expected": "wait",
+    "state": {
+      "current_execution": 277,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 984,
+      "executions_remaining": 86,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 277,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_074",
+    "expected": "observe",
+    "state": {
+      "current_execution": 535,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 139,
+      "executions_remaining": 41,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 535,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_075",
+    "expected": "observe",
+    "state": {
+      "current_execution": 823,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 702,
+      "executions_remaining": 33,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 823,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_076",
+    "expected": "observe",
+    "state": {
+      "current_execution": 595,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 194,
+      "executions_remaining": 46,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 586,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_077",
+    "expected": "observe",
+    "state": {
+      "current_execution": 458,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 215,
+      "executions_remaining": 52,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 458,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_078",
+    "expected": "stop",
+    "state": {
+      "current_execution": 34,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 60,
+      "available_branches": [],
+      "evidence": {
+        "execution": 34,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_079",
+    "expected": "observe",
+    "state": {
+      "current_execution": 453,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 82,
+      "executions_remaining": 32,
+      "available_branches": [],
+      "evidence": {
+        "execution": 440,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_080",
+    "expected": "observe",
+    "state": {
+      "current_execution": 324,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 716,
+      "executions_remaining": 33,
+      "available_branches": [],
+      "evidence": {
+        "execution": 324,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_081",
+    "expected": "observe",
+    "state": {
+      "current_execution": 417,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 900,
+      "executions_remaining": 82,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 406,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_082",
+    "expected": "wait",
+    "state": {
+      "current_execution": 767,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 30,
+      "executions_remaining": 18,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 767,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_083",
+    "expected": "stop",
+    "state": {
+      "current_execution": 617,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 82,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 617,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_084",
+    "expected": "stop",
+    "state": {
+      "current_execution": 709,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 586,
+      "executions_remaining": 49,
+      "available_branches": [],
+      "evidence": {
+        "execution": 695,
+        "contradictory": true,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_085",
+    "expected": "stop",
+    "state": {
+      "current_execution": 496,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 100,
+      "executions_remaining": 7,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 496,
+        "contradictory": true,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_086",
+    "expected": "observe",
+    "state": {
+      "current_execution": 715,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 485,
+      "executions_remaining": 49,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 715,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_087",
+    "expected": "observe",
+    "state": {
+      "current_execution": 173,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 829,
+      "executions_remaining": 57,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 167,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_088",
+    "expected": "stop",
+    "state": {
+      "current_execution": 855,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 8,
+      "available_branches": [],
+      "evidence": {
+        "execution": 855,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_089",
+    "expected": "observe",
+    "state": {
+      "current_execution": 364,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 179,
+      "executions_remaining": 3,
+      "available_branches": [],
+      "evidence": {
+        "execution": 364,
+        "contradictory": true,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_090",
+    "expected": "observe",
+    "state": {
+      "current_execution": 61,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 149,
+      "executions_remaining": 59,
+      "available_branches": [],
+      "evidence": {
+        "execution": 51,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_091",
+    "expected": "observe",
+    "state": {
+      "current_execution": 670,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 336,
+      "executions_remaining": 6,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 670,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_092",
+    "expected": "observe",
+    "state": {
+      "current_execution": 123,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 801,
+      "executions_remaining": 43,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 123,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_093",
+    "expected": "observe",
+    "state": {
+      "current_execution": 380,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 567,
+      "executions_remaining": 91,
+      "available_branches": [],
+      "evidence": {
+        "execution": 380,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_094",
+    "expected": "observe",
+    "state": {
+      "current_execution": 443,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 608,
+      "executions_remaining": 56,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 443,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_095",
+    "expected": "observe",
+    "state": {
+      "current_execution": 848,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 339,
+      "executions_remaining": 98,
+      "available_branches": [],
+      "evidence": {
+        "execution": 842,
+        "contradictory": true,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_096",
+    "expected": "stop",
+    "state": {
+      "current_execution": 774,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 40,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 774,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_097",
+    "expected": "observe",
+    "state": {
+      "current_execution": 171,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 58,
+      "executions_remaining": 38,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 171,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_098",
+    "expected": "wait",
+    "state": {
+      "current_execution": 147,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 365,
+      "executions_remaining": 87,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 147,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_099",
+    "expected": "observe",
+    "state": {
+      "current_execution": 27,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 261,
+      "executions_remaining": 94,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 27,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_100",
+    "expected": "observe",
+    "state": {
+      "current_execution": 390,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 982,
+      "executions_remaining": 48,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 390,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_101",
+    "expected": "observe",
+    "state": {
+      "current_execution": 62,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 82,
+      "executions_remaining": 43,
+      "available_branches": [],
+      "evidence": {
+        "execution": 57,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_102",
+    "expected": "wait",
+    "state": {
+      "current_execution": 380,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 119,
+      "executions_remaining": 20,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 380,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_103",
+    "expected": "observe",
+    "state": {
+      "current_execution": 529,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 553,
+      "executions_remaining": 56,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 529,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_104",
+    "expected": "wait",
+    "state": {
+      "current_execution": 455,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 776,
+      "executions_remaining": 22,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 455,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_105",
+    "expected": "observe",
+    "state": {
+      "current_execution": 46,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 293,
+      "executions_remaining": 56,
+      "available_branches": [],
+      "evidence": {
+        "execution": 46,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": false,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_106",
+    "expected": "observe",
+    "state": {
+      "current_execution": 689,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 907,
+      "executions_remaining": 24,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 689,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_107",
+    "expected": "stop",
+    "state": {
+      "current_execution": 448,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 0,
+      "executions_remaining": 49,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 448,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_108",
+    "expected": "observe",
+    "state": {
+      "current_execution": 879,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 162,
+      "executions_remaining": 94,
+      "available_branches": [],
+      "evidence": {
+        "execution": 879,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_109",
+    "expected": "stop",
+    "state": {
+      "current_execution": 480,
+      "terminated": true,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 349,
+      "executions_remaining": 18,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 480,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_110",
+    "expected": "observe",
+    "state": {
+      "current_execution": 30,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 928,
+      "executions_remaining": 82,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 30,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_111",
+    "expected": "observe",
+    "state": {
+      "current_execution": 254,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 301,
+      "executions_remaining": 38,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 254,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_112",
+    "expected": "observe",
+    "state": {
+      "current_execution": 100,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 858,
+      "executions_remaining": 7,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 100,
+        "contradictory": false,
+        "opponent_motion": "unknown",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_113",
+    "expected": "observe",
+    "state": {
+      "current_execution": 727,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 507,
+      "executions_remaining": 76,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 727,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_114",
+    "expected": "observe",
+    "state": {
+      "current_execution": 20,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 147,
+      "executions_remaining": 9,
+      "available_branches": [],
+      "evidence": {
+        "execution": 6,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_115",
+    "expected": "observe",
+    "state": {
+      "current_execution": 459,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 554,
+      "executions_remaining": 78,
+      "available_branches": [
+        "act",
+        "wait"
+      ],
+      "evidence": {
+        "execution": 459,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": true,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_116",
+    "expected": "observe",
+    "state": {
+      "current_execution": 748,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 425,
+      "executions_remaining": 59,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 748,
+        "contradictory": true,
+        "opponent_motion": "stopped",
+        "player_turn": false,
+        "destination_empty": "unknown",
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_117",
+    "expected": "observe",
+    "state": {
+      "current_execution": 677,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 596,
+      "executions_remaining": 56,
+      "available_branches": [],
+      "evidence": {
+        "execution": 677,
+        "contradictory": false,
+        "opponent_motion": "moving",
+        "player_turn": true,
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_118",
+    "expected": "observe",
+    "state": {
+      "current_execution": 225,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 170,
+      "executions_remaining": 86,
+      "available_branches": [
+        "wait"
+      ],
+      "evidence": {
+        "execution": 225,
+        "contradictory": false,
+        "opponent_motion": "stopped",
+        "player_turn": "unknown",
+        "destination_empty": false,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  },
+  {
+    "id": "independent_119",
+    "expected": "observe",
+    "state": {
+      "current_execution": 146,
+      "terminated": false,
+      "truncated": false,
+      "success": false,
+      "native_steps_remaining": 747,
+      "executions_remaining": 61,
+      "available_branches": [
+        "act"
+      ],
+      "evidence": {
+        "execution": 146,
+        "contradictory": true,
+        "opponent_motion": "unknown",
+        "player_turn": true,
+        "destination_empty": true,
+        "source": "Current visual planner evidence; missing facts are unknown."
+      }
+    }
+  }
+]
