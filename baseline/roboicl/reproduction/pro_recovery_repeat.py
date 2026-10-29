@@ -229,7 +229,9 @@ def public_probe(args):
 
 
 def batch(args):
-    cases = [("raw-1", "raw", 0), ("native-1", "native", 0),
+    cases = [("native-1", "native", 0), ("native-2", "native", 1),
+             ("native-3", "native", 2)] if args.mode == "native-batch" else [
+             ("raw-1", "raw", 0), ("native-1", "native", 0),
              ("raw-2", "raw", 0), ("native-2", "native", 1),
              ("raw-3", "raw", 0), ("native-3", "native", 2)]
     record = dict(started=time.time(), cases=[], current=None, completed=False)
@@ -263,7 +265,7 @@ def batch(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=("raw", "native", "batch", "probe"))
+    parser.add_argument("mode", choices=("raw", "native", "batch", "native-batch", "probe"))
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--request", type=Path)
     parser.add_argument("--diagnostic", type=Path,
@@ -277,7 +279,7 @@ def main():
         args.request = args.request.resolve()
     if args.mode != "probe" and args.request is None:
         parser.error("--request required")
-    {"raw": raw_case, "native": native_case, "batch": batch,
+    {"raw": raw_case, "native": native_case, "batch": batch, "native-batch": batch,
      "probe": public_probe}[args.mode](args)
 
 

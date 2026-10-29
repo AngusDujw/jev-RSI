@@ -1,0 +1,23 @@
+{
+  "reason": "Native arm in original systemd batch cannot find Codex: manager PATH omits NVM bin; first case started zero model turns. All original records retained.",
+  "fixed_preflight": {
+    "account_type": "chatgpt",
+    "model_request_sent": false
+  },
+  "declared_additional_cases": [
+    [
+      "native-fixed/native-1",
+      0
+    ],
+    [
+      "native-fixed/native-2",
+      1
+    ],
+    [
+      "native-fixed/native-3",
+      2
+    ]
+  ],
+  "launch": "Only after original batch terminal; same model/input/config, explicit inherited PATH; no overall generation cutoff",
+  "source_sha256": "bea83a45e6f6a27c6cdccb9e55cd4d99bf68bea2537cb5af42419cec97dfa29d"
+}
