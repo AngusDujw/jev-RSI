@@ -13,5 +13,37 @@
     "jev_route.py": "3e2e7211edeb6d75e870c94d2577402578b25600f3ffad9f5c8eaa18d59a1b46",
     "jev_proxy.py": "cc72f1152a78ecc0830d8b7155f8c478b4dcc5c5136e18135aecd567881fe88c"
   },
-  "limitation": "This validates routing-contract adherence with program-normalized facts, not perception, robotics success or benefit over deterministic routing. No native state oracle is supplied."
+  "limitation": "This validates routing-contract adherence with program-normalized facts, not perception, robotics success or benefit over deterministic routing. No native state oracle is supplied.",
+  "request_batches": [
+    81,
+    87,
+    87,
+    120,
+    40
+  ],
+  "earlier_smoke": {
+    "http_requests": 1,
+    "logical_questions": 6,
+    "input_tokens": 1567,
+    "output_tokens": 256
+  },
+  "total_including_earlier_smoke": {
+    "http_requests": 416,
+    "logical_questions": 421,
+    "input_tokens": 256552,
+    "output_tokens": 18931
+  },
+  "v2_frozen_commit": "21695409",
+  "fixture_write_times_utc": {
+    "independent-cases-v2.json": "2026-10-29T06:33:34.748374+00:00",
+    "positive-independent-cases-v2.json": "2026-10-29T06:35:02.442491+00:00"
+  },
+  "result_write_times_utc": {
+    "independent-results-v2.json": "2026-10-29T06:33:51.946367+00:00",
+    "positive-independent-results-v2.json": "2026-10-29T06:35:08.348169+00:00"
+  },
+  "ledger_integrity": {
+    "ledger_files": 415,
+    "complete_request_response_pairs": 415
+  }
 }
