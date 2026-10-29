@@ -178,3 +178,12 @@
 - 【Agent】【2026-10-29 14:36】[result] Jev v2独立120例全部正确，71688输入5400输出tokens，未知用量0；仅路由协议一致性，不是物理成功率或净加速证明。原版官方对手36条轨迹约27MB已补齐并逐SHA验证，smoke06进行中。
 - 【Agent】【2026-10-29 14:37】[op] 新建实验块 EXP-2026W44-031：server02下棋两组迭代前置：官方资产补全、Jev协议独立验收及原版运行链路  ↪ `EXP-2026W44-031`
 - 【Agent】【2026-10-29 14:38】[op] 实现诊断分支8b4bfdd6：旧host新增unlimited-time，GPT/主机读流无截止、墙钟兼容占位1e12，计数/物理上限不变；新增SSE元数据/HTTP chunk错误/信号发送PID记录。九项离线边界检查及systemd独立生命周期/受控SIGTERM发送方检查通过，无隐藏推理文本落盘，假凭据删除；未创建独立测试脚本。
+- 【Agent】【2026-10-29 14:39】[run] 正式启动诊断A：用户级systemd gpt-jev-unlimited-generation-20261029，RuntimeMaxSec=infinity，精确重放新183失败首请求及校验哈希图像，旧模型/Astra-xhigh/Pro，SSE元数据追踪，无时间截止、最多3传输尝试；无SSH/机器人并发。
+- 【Agent】【2026-10-29 14:39】[result] smoke06已通过原生下棋场景创建及reset，随后相机导出找不到ffmpeg；子agent修复容器PATH复用既有二进制，不改视频或评分语义。轻量镜像服务器DockerHub超时，改本机原版Dockerfile构建后同/data传输加载。两组尚未开始模型迭代。
+- 【Agent】【2026-10-29 14:41】[op] Jev runtime服务已独立会话化且GET健康检查ready；新增run_id分账。父agent审核路由说明与实现，证据必须对应当前execution，旧视觉不自动刷新；仅一段执行后交回GPT。原版smoke07使用已验证静态ffmpeg路径继续验收。
+- 【Agent】【2026-10-29 14:45】[result] 原版smoke07 passed：3相机480x640x3、6native步、limit1100、持久变量/reset恢复allowance/Test拒绝reset全通过。薄容器真实GPT high预检READY，9875输入5输出（cache8320），Jev容器联网预检606/45tokens均单列。baseline子agent已发起tmux ee-baseline-20261029，尚待确认真实迭代；Jev组准备准入。
+- 【Agent】【2026-10-29 14:49】[result] 两组初启动已独立审计GPU物理0/1、seed0、100提交、high、recipe与初始skills一致，原版无Jev说明。尚在simulator_starting、0正式模型调用时发现Isaac kit缓存/日志默认overlay；授权仅自有容器停止并迁移cache/log至/data后新run重启，旧attempt完整保留，不计为策略失败或运行成功。
+- 【Agent】【2026-10-29 14:55】[result] 无时限诊断A首尝试真实复现900.868秒未完成结束：首SSE2.100秒、首推理条目43.929秒、首方法参数853.042秒、已收4689参数字符，22输出条目done；无本地截止/无socket读超时，随后按旧策略15秒退避同payload重试。不能称30分钟全是推理，具体上游关闭层尚未知。
+- 【Agent】【2026-10-29 14:56】[result] 1454两组已runtime running且真实Astra/high多请求完成。独立审计实际coding-agent容器只有各自workspace/home/只读session，无GPU/docker socket/vendor，根只读且同镜像。原版首段模型代码exec成功40native步，模型已按反馈修改并启动第二段；Jev组仍等待实际路由执行验收，不提前认定完成启动。
+- 【Agent】【2026-10-29 14:57】[op] 新建实验块 EXP-2026W44-032：server02原版与Jev版下棋配对Playground均进入真实模型代码反馈迭代  ↪ `EXP-2026W44-032`
+- 【Agent】【2026-10-29 14:59】[result] 最终启动验收：原版连续两物理代码abb4aac8→fe2d331a、40→75步并继续到110；Jev两真实act请求对应35/25步执行，候选/原生event/code.py三重SHA一致，合计1192输入90输出。两组均active继续迭代，成功尚未达成。原版启动证据与公平快照已落盘，Jev证据4dfa72bc已推送，父agent已独立核验状态和隔离；子agent继续监督，自有tmux/桥保持运行。

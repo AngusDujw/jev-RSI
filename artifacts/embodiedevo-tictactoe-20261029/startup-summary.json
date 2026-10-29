@@ -1,0 +1,109 @@
+{
+  "captured_at": "2026-10-29T06:58:04.559405+00:00",
+  "scope": "Startup evidence; ongoing runs, not benchmark success or equal-progress token comparison",
+  "baseline_first_two_physical_feedback_events": [
+    {
+      "seq": 3,
+      "timestamp": 1793256899.9471633,
+      "phase": "playground",
+      "request": {
+        "op": "exec",
+        "files": [
+          {
+            "path": "submission/solution.py",
+            "bytes": 555,
+            "sha256": "abb4aac820ac04d5d8a092074db7c2498a9228cfbb81a43bfb3127317752cc39"
+          }
+        ]
+      },
+      "code_ref": "workspace/observations/000002/code.py",
+      "feedback_ref": "workspace/observations/000002",
+      "result": {
+        "ok": true,
+        "success": false,
+        "executions_used": 2,
+        "native_steps_used": 40
+      }
+    },
+    {
+      "seq": 4,
+      "timestamp": 1793256947.01345,
+      "phase": "playground",
+      "request": {
+        "op": "exec",
+        "files": [
+          {
+            "path": "submission/solution.py",
+            "bytes": 338,
+            "sha256": "fe2d331a2e1f4df5463209f2385c470cc7d69efb6805257d9c69dae7cb38dce9"
+          }
+        ]
+      },
+      "code_ref": "workspace/observations/000003/code.py",
+      "feedback_ref": "workspace/observations/000003",
+      "result": {
+        "ok": true,
+        "success": false,
+        "executions_used": 3,
+        "native_steps_used": 75
+      }
+    }
+  ],
+  "baseline_status_snapshot": {
+    "ok": true,
+    "phase": "playground",
+    "closed": false,
+    "reason": "active",
+    "execution_budget": 100,
+    "executions_used": 5,
+    "executions_remaining": 95,
+    "seconds_remaining": null,
+    "execution_timeout_sec": 1200.0,
+    "native_action_limit": 1100,
+    "native_steps_used": 145,
+    "native_steps_remaining": 955,
+    "success": false,
+    "terminated": false,
+    "truncated": false,
+    "observation": "observations/000005",
+    "protocol": "workspace-session-v1",
+    "valid": true,
+    "task_completed": false,
+    "score": 0.0,
+    "score_schema": "robodojo-native-score-v1",
+    "score_record": "scoring/000005.json",
+    "score_execution": 5
+  },
+  "gpt_completed_usage_snapshot": {
+    "preflight": {
+      "completed_requests": 2,
+      "input_tokens": 9906,
+      "output_tokens": 10,
+      "cached_input_tokens": 8320,
+      "unknown_usage": 0
+    },
+    "/data/ykj_robodojo/embodiedevo-comparison-20261029/runs/202610291454-jev": {
+      "completed_requests": 13,
+      "input_tokens": 271812,
+      "output_tokens": 3028,
+      "cached_input_tokens": 132224,
+      "unknown_usage": 0
+    },
+    "/data/ykj_robodojo/embodiedevo-comparison-20261029/runs/202610291454-baseline": {
+      "completed_requests": 16,
+      "input_tokens": 317460,
+      "output_tokens": 2583,
+      "cached_input_tokens": 103168,
+      "unknown_usage": 0
+    }
+  },
+  "token_note": "Input includes cached tokens; cached count must not be added again. In-flight HTTP requests not yet in completed ledger; session rollout retained for request-tool chronology.",
+  "persistent_services": [
+    "local tmux embodied-pro-20261029",
+    "local tmux embodied-tunnel-20261029",
+    "server02 tmux ee-pro-relay-20261029",
+    "server02 tmux ee-jev-relay-20261029",
+    "server02 tmux ee-baseline-20261029",
+    "server02 tmux ee-jev-20261029"
+  ]
+}
