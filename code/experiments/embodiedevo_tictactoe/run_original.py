@@ -21,6 +21,8 @@ def main():
         argv=original_docker(*args,**kw)
         argv=["/runtime-tmp:mode=1777" if x=="/tmp:mode=1777" else x for x in argv]
         argv[2:2]=["--env","TMPDIR=/runtime-tmp","--env","TMP=/runtime-tmp","--env","TEMP=/runtime-tmp"]
+        if os.environ.get("JEV_ROUTER_URL"):
+            argv[2:2]=["--env","JEV_ROUTER_URL="+os.environ["JEV_ROUTER_URL"]]
         return argv
     launch_agent.docker_argv=docker_argv
     from orchestrator.config import load_task
