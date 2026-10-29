@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import selectors
+import shutil
 import subprocess
 import sys
 import time
@@ -71,6 +72,9 @@ class NativeRpc:
         self.counter = 0
         self.stderr = b""
         if command is None:
+            executable = shutil.which("codex")
+            if executable is None:
+                raise FileNotFoundError("Codex executable is missing from PATH; pass the local Codex bin directory to the service environment")
             # Mask global guidance only in this child mount namespace. Do not
             # edit user files, change CODEX_HOME, or copy account credentials.
             cwd = Path(cwd).resolve()
@@ -88,7 +92,7 @@ class NativeRpc:
                 target = Path.home() / ".codex" / name
                 if target.exists():
                     command += ["--ro-bind", "/dev/null", str(target)]
-            command += ["--", "codex", "app-server", "--stdio"] + [
+            command += ["--", executable, "app-server", "--stdio"] + [
                 part for key, value in session_config().items()
                 for part in ("-c", key + "=" + json.dumps(value))]
         env = dict(os.environ)

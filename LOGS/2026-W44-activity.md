@@ -199,3 +199,7 @@
 - 【User】【2026-10-29 18:15】[intent] 用户要求重复多次确认断流原因并测试能否继续。预备同一183首请求：原HTTP3次独立无自动重试、原生持久会话3次（自然对照/单RPC故障/双RPC故障），顺序、无整请求时限，本机Pro Astra-xhigh，不使用普通API key，不启动Jev或机器人；并行仅无凭据公共TLS连通性对照。
 - 【Agent】【2026-10-29 18:27】[op] 实现固定6例断流重复诊断：原HTTP单次请求3例、原生持久会话3例（0/1/2次仅终止自身RPC），无整体生成时限；新增拒绝会话ID静默替换的保护。离线12项检查全部通过，尚未启动模型。
 - 【Agent】【2026-10-29 18:40】[result] 首个原HTTP无时限重放652.420秒自然chunk IncompleteRead/未completed；native-1在0.014秒启动失败且0turn。定位systemd PATH缺少NVM Codex目录（shell可见codex0.165，systemd command -v codex退出127），不是模型请求失败。保留原6例，不修改运行中条件；原批结束后另声明3例技术修复后的原生测试，显式传PATH并先同服务上下文账号预检。
+- 【Agent】【2026-10-29 18:56】[run] 已以显式PATH和既有代理启动native-fixed持久服务，先等待原批terminal再顺序执行预声明0/1/2次自身RPC故障三例；同systemd上下文账号预检chatgpt且无模型请求通过。原始HTTP第二例900.356秒chunk不完整，首参数775.622秒、19324字符后中断；0本地deadline。
+- 【Agent】【2026-10-29 19:09】[result] 原HTTP三独立无时限请求全部自然中断：652.420/900.356/900.427秒，均chunk IncompleteRead且无completed；后两例已输出19324及部分参数字符。原批3个native均因systemd PATH缺Codex启动退出、0模型turn，全部保留。native-fixed已通过同服务账号预检并开始顺序三例，不更换账号模型提示词。
+- 【Agent】【2026-10-29 19:47】[result] native-fixed第1例2256.991秒完整交付205行，schema/英文/AST通过；自然TLS handshake EOF后SDK同会话同轮自动恢复并继续，0自身RPC故障/0外层新轮。同期普通HTTPS握手超时与native错误相差约10秒，支持瞬时链路异常但不定位关闭层；0Jev/0GPU。第2例按计划开始。
+- 【Agent】【2026-10-29 19:50】[op] 补充NativeRpc启动保护：PATH找不到Codex时在发出模型请求前明确FileNotFoundError，存在时固定绝对可执行文件；13项离线机制/启动检查通过。只影响启动错误分类，模型输入与有效环境恢复策略不改；记录native-1/2已启动、native-3将加载守卫的版本边界。

@@ -1,0 +1,143 @@
+[
+  {
+    "file": "2026-10-29-1128.log",
+    "service": false,
+    "total_lines": 164,
+    "chatgpt_matches": 0,
+    "last_matches": [],
+    "mtime_epoch": 1793257863.811756,
+    "modified_before_batch": true,
+    "interpretation": "No contemporaneous proxy log evidence; older warnings do not diagnose current trial"
+  },
+  {
+    "file": "2026-10-29-1128.log",
+    "service": true,
+    "total_lines": 6847,
+    "chatgpt_matches": 3832,
+    "last_matches": [
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.414414177+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.429189029+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.472348084+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.516564152+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.564905149+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.709777137+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.740665401+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.766504533+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.812464489+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.926062682+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:56.941782660+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      },
+      {
+        "timestamp": [
+          "2026-10-29T15:03:57.050257853+08:00"
+        ],
+        "labels": [
+          "error",
+          "warn",
+          "TCP"
+        ]
+      }
+    ],
+    "mtime_epoch": 1793268647.6196108,
+    "modified_before_batch": true,
+    "interpretation": "No contemporaneous proxy log evidence; older warnings do not diagnose current trial"
+  }
+]
