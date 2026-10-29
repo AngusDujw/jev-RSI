@@ -1,0 +1,14 @@
+{
+  "observed_at_utc": "2026-10-29T07:07:22.430641+00:00",
+  "event_timestamp": "2026-10-29T07:05:03.607Z",
+  "run_id": "202610291454-jev",
+  "runtime_status": "replaying",
+  "last_native_execution": 6,
+  "last_native_steps": 125,
+  "jev_requests_completed": 4,
+  "jev_input_tokens": 2384,
+  "jev_output_tokens": 180,
+  "error": "stream disconnected before completion: error sending request",
+  "last_agent_message": null,
+  "interpretation": "Inner Codex transport interruption, not task completion; infrastructure agent notified for recovery."
+}
