@@ -161,3 +161,5 @@
 - 【Agent】【2026-10-29 13:37】[result] smoke03已定位明确根因：原版任务初始化CuroboPlanner缺Assets/Robots/x5/curobo.yml，源资产仅模板curobo_tmp.yml。按官方utils/update_embodiment_config_path.py在本次独立vendor副本生成路径配置，再启动smoke04；未改旧项目、驱动或任务逻辑。正式两组与GPT控制仍未启动。
 - 【Agent】【2026-10-29 13:38】[op] 新建实验块 EXP-2026W44-029：原样恢复10月27日成功提示词及旧HTTP框架，在1335/init12独立冷生成零修补复测  ↪ `EXP-2026W44-029`
 - 【Agent】【2026-10-29 13:39】[op] 补全EXP029及Discussion，旧原任务部分审计明确缺失末次回执、完整审计未通过；新183首请求英文/空历史/同提示词工具核对通过；生产代码与提示词全未改。
+- 【User】【2026-10-29 13:49】[prompt] 现在可以正式开始跑了吗
+- 【Agent】【2026-10-29 13:49】[result] smoke04 passed=false：规划器配置修复后推进到场景reset，在layout_manager.py:190因load_object_metadata返回None失败。布局包含chessman，源RoboLaya及独立副本资产目录限定检索未找到chess相关资产；需核对补全任务资产。当前无机器人/GPT正式对照运行，Jev尚仅6例冒烟、可靠性验收与两组自动链路未完成，不宣称可正式启动。
