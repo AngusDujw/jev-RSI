@@ -30,6 +30,8 @@ class Handler(BaseHTTPRequestHandler):
         record = dict(id=ident, started=time.time(), completed=False, usage=None)
         sent = False
         try:
+            if self.server.transport_token and self.headers.get("Authorization") != "Bearer "+self.server.transport_token:
+                raise ValueError("Invalid experiment transport credential")
             if self.path not in ("/responses", "/v1/responses"):
                 raise ValueError("Only Responses requests are accepted")
             n = int(self.headers.get("Content-Length", "0"))
@@ -95,9 +97,11 @@ def main():
     p.add_argument("--port",type=int,default=7933)
     p.add_argument("--auth",type=Path,default=Path.home()/".codex/auth.json")
     p.add_argument("--output",type=Path,required=True)
+    p.add_argument("--transport-token-file",type=Path)
     a=p.parse_args(); a.output.mkdir(parents=True,exist_ok=True)
     server=ThreadingHTTPServer(("127.0.0.1",a.port),Handler)
     server.auth=a.auth; server.output=a.output; server.lock=threading.Lock()
+    server.transport_token=a.transport_token_file.read_text().strip() if a.transport_token_file else None
     print(json.dumps({"listen":a.port,"model":"gpt-6-astra","effort":"high"}),flush=True)
     server.serve_forever()
 
