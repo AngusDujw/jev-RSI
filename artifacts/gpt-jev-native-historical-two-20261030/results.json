@@ -1,0 +1,237 @@
+{
+  "cases": [
+    {
+      "case": "known-1335-init12",
+      "group": "known",
+      "native_success": false,
+      "proposal": false,
+      "termination": "method_incomplete",
+      "elapsed_s": 1492.7897978250403,
+      "gpt_calls": 2,
+      "jev_calls": 0,
+      "policy_steps": 0,
+      "source_lines": 206,
+      "source_sha256": "75a8b23a4450ee9d6334d057510b80c236022337c13672e008e5d954cc177d8e",
+      "diagnosis": {
+        "reason": "Generated pre-action geometry gate rejected current measurement and its chosen margin",
+        "source_line": 139,
+        "observed_box_radius_m": 0.04543968530889454,
+        "chosen_margin_m": 0.0073215717486602725,
+        "observed_mouth_radius_m": 0.0522855259994148,
+        "excess_m": 0.0004757310581400137,
+        "excess_mm": 0.4757310581400137,
+        "physical_infeasibility_established": false,
+        "network_failure": false,
+        "jev_dispatches": 0
+      },
+      "audit": {
+        "native_success": false,
+        "termination": "method_incomplete",
+        "gpt_calls": 2,
+        "jev_calls": 0,
+        "native_steps": 0,
+        "elapsed_s": 1492.7897978250403,
+        "methods": [
+          {
+            "number": 0,
+            "source_sha256": "75a8b23a4450ee9d6334d057510b80c236022337c13672e008e5d954cc177d8e"
+          }
+        ],
+        "completion_proposed": false,
+        "program_result_contract_valid": true,
+        "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+        "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+        "dispatches": 0,
+        "models": {
+          "gpt": {
+            "attempts": 0,
+            "unknown_usage": 0,
+            "completed_input": 307099,
+            "completed_output": 32800,
+            "relay_seconds": 1478.1208891868591,
+            "matched_requests": 2,
+            "undelivered_or_missing_responses": 0,
+            "native_accounting_records": 2,
+            "request_models": [
+              "gpt-6-astra"
+            ],
+            "transport_source_hashes": [
+              "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+            ]
+          },
+          "jev": {
+            "attempts": 0,
+            "unknown_usage": 0,
+            "completed_input": 0,
+            "completed_output": 0,
+            "relay_seconds": 0.0,
+            "matched_requests": 0,
+            "undelivered_or_missing_responses": 0,
+            "native_accounting_records": 0,
+            "request_models": [],
+            "transport_source_hashes": []
+          }
+        },
+        "strict_reviews_validated": 1,
+        "strict_designs_validated": 0,
+        "legacy_reviews_json_decoded": 0,
+        "source_origins": [
+          {
+            "number": 0,
+            "source_sha256": "75a8b23a4450ee9d6334d057510b80c236022337c13672e008e5d954cc177d8e",
+            "origin": "actual model output or assembled model patch"
+          }
+        ],
+        "gpt_cost_by_purpose": {
+          "submit_method": {
+            "calls": 1,
+            "upstream_attempts": 0,
+            "completed_returns": 1,
+            "input": 284724,
+            "output": 29717,
+            "unknown_usage": 0,
+            "native_accounting_records": 1
+          },
+          "submit_review": {
+            "calls": 1,
+            "upstream_attempts": 0,
+            "completed_returns": 1,
+            "input": 22375,
+            "output": 3083,
+            "unknown_usage": 0,
+            "native_accounting_records": 1
+          }
+        },
+        "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+      }
+    },
+    {
+      "case": "new-138-init0",
+      "group": "new",
+      "native_success": false,
+      "proposal": false,
+      "termination": "method_incomplete",
+      "elapsed_s": 2076.5329950558953,
+      "gpt_calls": 2,
+      "jev_calls": 0,
+      "policy_steps": 0,
+      "source_lines": 172,
+      "source_sha256": "9cd849d94bd9437f5cd64550c48ba3dd7c7ac79bf7fffa941e67fe85d62643e9",
+      "diagnosis": {
+        "reason": "Generated pre-action visible landing patch gate rejected selected region",
+        "source_line": 128,
+        "landing_inradius_m": 0.0643685191753587,
+        "bowl_radius_m": 0.05554223094492816,
+        "chosen_margin_m": 0.009,
+        "excess_m": 0.00017371176956945678,
+        "excess_mm": 0.17371176956945678,
+        "remaining_gpt_calls": 22,
+        "remaining_jev_calls": 200,
+        "physical_infeasibility_established": false,
+        "network_failure": false,
+        "jev_dispatches": 0,
+        "additional_observation_limits": [
+          "lip4 surface depth invalid/discontinuous",
+          "Repeated floral texture did not establish unique persistent landmark identities"
+        ],
+        "counterfactual_relaxed_threshold_tested": false
+      },
+      "audit": {
+        "native_success": false,
+        "termination": "method_incomplete",
+        "gpt_calls": 2,
+        "jev_calls": 0,
+        "native_steps": 0,
+        "elapsed_s": 2076.5329950558953,
+        "methods": [
+          {
+            "number": 0,
+            "source_sha256": "9cd849d94bd9437f5cd64550c48ba3dd7c7ac79bf7fffa941e67fe85d62643e9"
+          }
+        ],
+        "completion_proposed": false,
+        "program_result_contract_valid": true,
+        "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+        "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+        "dispatches": 0,
+        "models": {
+          "gpt": {
+            "attempts": 0,
+            "unknown_usage": 0,
+            "completed_input": 640418,
+            "completed_output": 43994,
+            "relay_seconds": 2060.6730716228485,
+            "matched_requests": 2,
+            "undelivered_or_missing_responses": 0,
+            "native_accounting_records": 2,
+            "request_models": [
+              "gpt-6-astra"
+            ],
+            "transport_source_hashes": [
+              "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+            ]
+          },
+          "jev": {
+            "attempts": 0,
+            "unknown_usage": 0,
+            "completed_input": 0,
+            "completed_output": 0,
+            "relay_seconds": 0.0,
+            "matched_requests": 0,
+            "undelivered_or_missing_responses": 0,
+            "native_accounting_records": 0,
+            "request_models": [],
+            "transport_source_hashes": []
+          }
+        },
+        "strict_reviews_validated": 1,
+        "strict_designs_validated": 0,
+        "legacy_reviews_json_decoded": 0,
+        "source_origins": [
+          {
+            "number": 0,
+            "source_sha256": "9cd849d94bd9437f5cd64550c48ba3dd7c7ac79bf7fffa941e67fe85d62643e9",
+            "origin": "actual model output or assembled model patch"
+          }
+        ],
+        "gpt_cost_by_purpose": {
+          "submit_method": {
+            "calls": 1,
+            "upstream_attempts": 0,
+            "completed_returns": 1,
+            "input": 605790,
+            "output": 39539,
+            "unknown_usage": 0,
+            "native_accounting_records": 1
+          },
+          "submit_review": {
+            "calls": 1,
+            "upstream_attempts": 0,
+            "completed_returns": 1,
+            "input": 34628,
+            "output": 4455,
+            "unknown_usage": 0,
+            "native_accounting_records": 1
+          }
+        },
+        "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+      }
+    }
+  ],
+  "method_deliveries": 2,
+  "method_requests": 2,
+  "completed_gpt_requests": 4,
+  "total_gpt_requests": 4,
+  "libero_successes": 0,
+  "episodes": 2,
+  "total_jev_dispatches": 0,
+  "observed_recovery_events": 0,
+  "format_corrections": 0,
+  "totals": {
+    "reported_input_tokens": 947517,
+    "reported_output_tokens": 76794,
+    "reported_reasoning_tokens": 48680,
+    "reported_cached_input_tokens": 880128
+  },
+  "cost_scope": "Reported native thread aggregates, not exact provider attempt counts; no Jev control performance was exercised"
+}

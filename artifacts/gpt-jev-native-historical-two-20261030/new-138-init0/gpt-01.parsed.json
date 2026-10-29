@@ -1,0 +1,256 @@
+{
+  "explanation": "Current and earlier views show the same patterned bowl upright on the source tabletop, not on the cabinet. Its upper rim is widest and the visible exterior tapers downward. The destination is the empty dark cabinet top at image left, not the plate or stove. Rim boundaries are selected in the wrist view; the thin lip is only narrowly resolved. The four m points select visible floral texture features, but repeated motifs prevent establishing four uniquely recognizable persistent identities at this resolution. Their definitions describe candidates, not verified unique landmarks.",
+  "parameters": {
+    "camera": "robot0_eye_in_hand",
+    "definitions": [
+      "m0: center of the dense fine-petal concentric rosette medallion; uniqueness is unresolved.",
+      "m1: center of the large flower with elongated dark radial petals and a pale central disk; uniqueness is unresolved.",
+      "m2: center of the dark broad-petal flower with a small pale center; uniqueness is unresolved.",
+      "m3: center of the compact dark teardrop-petal flower with a pale center; uniqueness is unresolved."
+    ],
+    "destination_camera": "agentview",
+    "destination_pixels": [
+      [
+        30,
+        305
+      ],
+      [
+        195,
+        305
+      ],
+      [
+        165,
+        449
+      ],
+      [
+        18,
+        449
+      ]
+    ],
+    "identity": "confirmed",
+    "inner_pixels": [
+      [
+        341,
+        181
+      ],
+      [
+        403,
+        207
+      ],
+      [
+        429,
+        269
+      ],
+      [
+        403,
+        331
+      ],
+      [
+        341,
+        356
+      ],
+      [
+        280,
+        331
+      ],
+      [
+        254,
+        269
+      ],
+      [
+        280,
+        207
+      ]
+    ],
+    "landmark_identity": "unknown",
+    "outer_pixels": [
+      [
+        341,
+        178
+      ],
+      [
+        405,
+        205
+      ],
+      [
+        432,
+        269
+      ],
+      [
+        405,
+        333
+      ],
+      [
+        341,
+        359
+      ],
+      [
+        278,
+        333
+      ],
+      [
+        251,
+        269
+      ],
+      [
+        278,
+        205
+      ]
+    ],
+    "patch_camera": "robot0_eye_in_hand",
+    "patch_polygon": [
+      [
+        306,
+        245
+      ],
+      [
+        379,
+        251
+      ],
+      [
+        380,
+        314
+      ],
+      [
+        312,
+        330
+      ]
+    ],
+    "shape": "upright_tapered_bowl_resting_on_source"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "lip0",
+      "pixel": [
+        341,
+        180
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "lip1",
+      "pixel": [
+        404,
+        206
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "lip2",
+      "pixel": [
+        430,
+        269
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "lip3",
+      "pixel": [
+        341,
+        357
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "lip4",
+      "pixel": [
+        279,
+        332
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "lip5",
+      "pixel": [
+        253,
+        269
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "m0",
+      "pixel": [
+        340,
+        280
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "m1",
+      "pixel": [
+        373,
+        275
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "m2",
+      "pixel": [
+        309,
+        246
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "m3",
+      "pixel": [
+        314,
+        318
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "agentview",
+      "name": "side0",
+      "pixel": [
+        380,
+        459
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "side1",
+      "pixel": [
+        409,
+        456
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "source_table",
+      "box": [
+        273,
+        373,
+        376,
+        411
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "cabinet_top",
+      "box": [
+        33,
+        315,
+        163,
+        436
+      ],
+      "stride": 4
+    }
+  ],
+  "status": "continue"
+}

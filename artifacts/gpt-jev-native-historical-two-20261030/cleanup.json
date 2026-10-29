@@ -1,0 +1,50 @@
+{
+  "local_units": [
+    {
+      "RuntimeMaxUSec": "infinity",
+      "Result": "success",
+      "NRestarts": "0",
+      "ExecMainStatus": "0",
+      "ActiveState": "inactive",
+      "unit": "gpt-jev-native-historical-batch-20261030.service"
+    },
+    {
+      "RuntimeMaxUSec": "infinity",
+      "Result": "success",
+      "NRestarts": "0",
+      "ExecMainStatus": "0",
+      "ActiveState": "inactive",
+      "unit": "gpt-jev-native-historical-bridge-20261030.service"
+    },
+    {
+      "RuntimeMaxUSec": "infinity",
+      "Result": "success",
+      "NRestarts": "0",
+      "ExecMainStatus": "0",
+      "ActiveState": "inactive",
+      "unit": "gpt-jev-native-historical-tunnel-20261030.service"
+    }
+  ],
+  "remote": {
+    "bundle_removed": true,
+    "units": [
+      {
+        "unit": "gpt-jev-native-historical-known-20261030.service",
+        "properties": "Result=success\nExecMainStatus=0\nActiveState=inactive\n"
+      },
+      {
+        "unit": "gpt-jev-native-historical-new-20261030.service",
+        "properties": "Result=success\nExecMainStatus=0\nActiveState=inactive\n"
+      }
+    ],
+    "port7921": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n"
+  },
+  "local_bundle_removed": true,
+  "bundle_sha256": "bba449fc39a802c024a9e1c1f06c099c9dfa8174c4c96f6dc0bc1b8af1f60b0c",
+  "local_port7921_closed": true,
+  "remote_port7921_closed": true,
+  "verification_scripts_created": false,
+  "credentials_copied": false,
+  "drivers_environments_changed": false,
+  "scope": "Only owned services and our two temporary Git bundle files"
+}

@@ -1,0 +1,19 @@
+{
+  "reason": "Generated pre-action visible landing patch gate rejected selected region",
+  "source_line": 128,
+  "landing_inradius_m": 0.0643685191753587,
+  "bowl_radius_m": 0.05554223094492816,
+  "chosen_margin_m": 0.009,
+  "excess_m": 0.00017371176956945678,
+  "excess_mm": 0.17371176956945678,
+  "remaining_gpt_calls": 22,
+  "remaining_jev_calls": 200,
+  "physical_infeasibility_established": false,
+  "network_failure": false,
+  "jev_dispatches": 0,
+  "additional_observation_limits": [
+    "lip4 surface depth invalid/discontinuous",
+    "Repeated floral texture did not establish unique persistent landmark identities"
+  ],
+  "counterfactual_relaxed_threshold_tested": false
+}

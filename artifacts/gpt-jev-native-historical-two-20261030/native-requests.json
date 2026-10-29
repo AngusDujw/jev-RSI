@@ -1,0 +1,78 @@
+[
+  {
+    "job_id": "2d0515a09b3d44f6929fec4d49775b62",
+    "elapsed_s": 1335.4640262126923,
+    "reported_usage": {
+      "input_tokens": 284724,
+      "output_tokens": 29717,
+      "output_tokens_details": {
+        "reasoning_tokens": 18520
+      }
+    },
+    "cached_input_tokens": 267776,
+    "recoveries": [],
+    "invalid_submissions": 0,
+    "instruction_sources": [],
+    "deadline": null,
+    "request_tools": [
+      "submit_method"
+    ]
+  },
+  {
+    "job_id": "37e08243de60463ab3af4cc5921d8dce",
+    "elapsed_s": 142.65686297416687,
+    "reported_usage": {
+      "input_tokens": 22375,
+      "output_tokens": 3083,
+      "output_tokens_details": {
+        "reasoning_tokens": 2475
+      }
+    },
+    "cached_input_tokens": 12544,
+    "recoveries": [],
+    "invalid_submissions": 0,
+    "instruction_sources": [],
+    "deadline": null,
+    "request_tools": [
+      "submit_review"
+    ]
+  },
+  {
+    "job_id": "b9ada49af94548719bf7ad978c2d654f",
+    "elapsed_s": 1859.9567761421204,
+    "reported_usage": {
+      "input_tokens": 605790,
+      "output_tokens": 39539,
+      "output_tokens_details": {
+        "reasoning_tokens": 24067
+      }
+    },
+    "cached_input_tokens": 575488,
+    "recoveries": [],
+    "invalid_submissions": 0,
+    "instruction_sources": [],
+    "deadline": null,
+    "request_tools": [
+      "submit_method"
+    ]
+  },
+  {
+    "job_id": "d4cfd3e58206404da1d5f9b14d235dad",
+    "elapsed_s": 200.71629548072815,
+    "reported_usage": {
+      "input_tokens": 34628,
+      "output_tokens": 4455,
+      "output_tokens_details": {
+        "reasoning_tokens": 3618
+      }
+    },
+    "cached_input_tokens": 24320,
+    "recoveries": [],
+    "invalid_submissions": 0,
+    "instruction_sources": [],
+    "deadline": null,
+    "request_tools": [
+      "submit_review"
+    ]
+  }
+]
