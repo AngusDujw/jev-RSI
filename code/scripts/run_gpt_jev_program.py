@@ -16,6 +16,8 @@ import subprocess
 import sys
 import time
 import urllib.request
+import urllib.error
+import uuid
 
 from gpt_jev_contract import CAMERAS, english, parse_jev
 from gpt_jev_program_worker import validate_source
@@ -38,31 +40,88 @@ def model_wire_numbers(value, *, preserve_tools=False):
 
 
 def post(url, payload, path, timeout=1800):
-    """Keep long method generation bounded by the actual remaining episode time."""
+    """Bound model/classification transport by remaining episode time, before dispatch."""
     payload = model_wire_numbers(payload, preserve_tools=True)
     english(payload)
     save(path.with_suffix(".request.json"), scrub(payload))
     started = time.monotonic()
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     headers = {"Content-Type": "application/json"}
-    if url.endswith("/responses") and timeout is not None:
-        headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(1800., timeout-2.)))
+    if url.endswith("/responses") and timeout is None:
+        headers["X-Model-Request-Timeout-Seconds"] = "unlimited"
+    elif url.endswith(("/responses", "/systemone")) and timeout is not None:
+        ceiling = 900. if url.endswith("/systemone") else 3600.
+        headers["X-Model-Request-Timeout-Seconds"] = str(max(.1, min(ceiling, timeout-2.)))
+    if url.endswith("/responses"):
+        headers["X-Request-ID"] = uuid.uuid4().hex
+        headers["Prefer"] = "respond-async"
     request = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers)
-    def timing(event, **values):
-        with (path.parent / "model-timing.jsonl").open("a") as stream:
-            stream.write(json.dumps(dict(event=event, request=path.stem,
-                route="gpt" if url.endswith("/responses") else "jev",
-                epoch=time.time(), elapsed_s=time.monotonic()-started,
-                timeout_s=timeout, **values))+"\n")
-    timing("request_started")
     try:
-        with opener.open(request, timeout=timeout) as response:
-            result = json.load(response)
+        if url.endswith("/responses"):
+            # A request ID is stable across transport retries, never across episodes.
+            # The bridge owns inference; a broken polling socket cannot cancel it.
+            active, reconnects = request, 0
+            while True:
+                remaining = math.inf if timeout is None else timeout-(time.monotonic()-started)
+                if remaining <= 0:
+                    raise TimeoutError("Planner bridge unavailable until logical deadline")
+                try:
+                    with opener.open(url[:-len("/responses")]+"/", timeout=min(10, remaining)) as health:
+                        asynchronous = json.load(health).get("transport") == "native-session"
+                    break
+                except (OSError, urllib.error.URLError, ValueError):
+                    reconnects += 1
+                    time.sleep(2 if timeout is None else min(2, max(0, timeout-(time.monotonic()-started))))
+            if timeout is None and not asynchronous:
+                raise ValueError("Unlimited planner waiting requires native-session transport")
+            while True:
+                remaining = math.inf if timeout is None else timeout-(time.monotonic()-started)
+                if remaining <= 0:
+                    raise TimeoutError("Planner logical request deadline exceeded")
+                save(path.with_suffix(".transport.json"), dict(request_id=headers["X-Request-ID"],
+                    reconnects=reconnects, elapsed_s=time.monotonic()-started))
+                try:
+                    if active is request:
+                        request.add_header("X-Model-Request-Timeout-Seconds", "unlimited" if timeout is None else
+                            str(max(.1, min(3600 if asynchronous else 1800, remaining-2))))
+                    with opener.open(active, timeout=min(30, remaining) if asynchronous else remaining) as response:
+                        result = json.load(response)
+                        pending = response.status == 202
+                except urllib.error.HTTPError as error:
+                    if not asynchronous:
+                        raise
+                    body = error.read()
+                    try:
+                        detail = json.loads(body)
+                    except (ValueError, UnicodeError):
+                        detail = {}
+                    if detail.get("terminal") or error.code not in (404, 408, 502, 503, 504):
+                        raise
+                    # Repost after a bridge restart: it resumes the same saved thread.
+                    active = request
+                    reconnects += 1
+                    time.sleep(min(2, max(0, remaining)))
+                    continue
+                except (OSError, urllib.error.URLError, ValueError) as error:
+                    if not asynchronous:
+                        raise
+                    reconnects += 1
+                    active = request
+                    time.sleep(min(2, max(0, remaining)))
+                    continue
+                if not pending:
+                    break
+                ident = result["job_id"]
+                if ident != headers["X-Request-ID"]:
+                    raise ValueError("Native bridge job ID mismatch")
+                active = urllib.request.Request(url+"/jobs/"+ident)
+                time.sleep(2 if timeout is None else min(2, max(0, timeout-(time.monotonic()-started))))
+        else:
+            with opener.open(request, timeout=timeout) as response:
+                result = json.load(response)
         save(path.with_suffix(".response.json"), result)
-        timing("request_completed")
         return result
     except Exception as error:
-        timing("request_failed", error_type=type(error).__name__, message=str(error)[:300])
         save(path.with_suffix(".failure.json"), dict(error_type=type(error).__name__,
             elapsed_s=time.monotonic()-started, usage_unknown=True,
             model_request_attempted=True, physical_dispatch=False,
