@@ -46,6 +46,130 @@
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
-  "retreat_checkpoints": {},
+  "retreat_checkpoints": {
+    "secure.stall": {
+      "key": "secure.stall",
+      "frame_id": 156,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 2212,
+      "value": {
+        "retreat_status": "finished",
+        "failed_gate": "actual_open_grasp_pose",
+        "failure_checkpoint": "secure.failure",
+        "before_state": {
+          "frame_id": 144,
+          "native_steps": 144,
+          "budgets": {
+            "gpt_remaining": 26,
+            "jev_remaining": 152,
+            "native_steps_remaining": 456,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.05228259955299699,
+            0.145780397350109,
+            0.9160103687715757
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999896205422898,
+            0.004241138049698056,
+            0.0004344995916160352,
+            0.001607098576787441
+          ],
+          "gripper_qpos_m": [
+            0.039995061862538504,
+            -0.040000129260074326
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -7.899373099390372e-08,
+              -2.3503331887005097e-06,
+              -0.0035997521350720116
+            ],
+            "pad_extent_in_tool_m": [
+              0.0160000437926978,
+              0.09499520026008842,
+              0.016000021382234483
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010494867273571776,
+              -0.06640333885324153,
+              -0.044468066991273376
+            ],
+            "finger_high_offset_tool_m": [
+              0.010494724691763675,
+              0.06639862449627032,
+              0.009249293361793968
+            ]
+          }
+        },
+        "review_frame": 144,
+        "target_pad_world_m": [
+          -0.05228587569703348,
+          0.14579430384237718,
+          0.9316100933222343
+        ],
+        "command": "keep open actuation; upward only; no return descent",
+        "reference_checkpoint": "secure.refinement",
+        "after_state": {
+          "frame_id": 156,
+          "native_steps": 156,
+          "budgets": {
+            "gpt_remaining": 26,
+            "jev_remaining": 148,
+            "native_steps_remaining": 444,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.052206468216291255,
+            0.14645610706852707,
+            0.926667336228979
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999917709947127,
+            0.003629271247386489,
+            0.0008867838966841146,
+            0.0015811221937476398
+          ],
+          "gripper_qpos_m": [
+            0.03999570057579666,
+            -0.04000013906552679
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -6.619404828191178e-07,
+              -4.0291636558414945e-06,
+              -0.003620390295359011
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000061583421554,
+              0.09499585425539436,
+              0.016000067002199563
+            ],
+            "finger_low_offset_tool_m": [
+              -0.0104955332362256,
+              -0.06640530666301453,
+              -0.044488728688976346
+            ],
+            "finger_high_offset_tool_m": [
+              0.010494150379962725,
+              0.06639728797303508,
+              0.009228677541084307
+            ]
+          }
+        },
+        "drive_error": null,
+        "actual_tcp_delta_world_m": [
+          7.613133670573285e-05,
+          0.0006757097184180716,
+          0.010656967457403299
+        ]
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
   "scope": "Actual upward diagnostic motion; not a grasp, task success or proof of contact cause"
 }
