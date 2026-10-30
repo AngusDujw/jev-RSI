@@ -30,6 +30,28 @@
           "replan_conditions": "If the package catches on the fingers or rim, falls outside, or destabilizes the bowl, assess the resulting state before recovery. If containment is obscured, obtain a safe alternate view or depth evidence and allow further settling rather than declaring success from gripper opening alone."
         }
       ]
+    },
+    {
+      "explanation": "Replan from frame 216: the package remains on the counter, the open gripper is empty, and the acknowledged raised, tilted observation pose is the actual start. No pickup is complete. Abandon the rejected height-only search; its failure does not rule out different contact geometry. Historical alignment and clearance checks do not authorize a new approach. Two physical stages leave room within 17 remaining calls for fresh observations, corrections, and verification.",
+      "goal_evidence": "After release, withdrawal, and settling, fresh images and depth show the cream cheese package resting inside the bowl independently of the gripper, not perched on the rim or supported by the counter outside. Resolve occlusion with a complementary or safely acquired view.",
+      "stages": [
+        {
+          "id": "alternate_pickup",
+          "objective": "Lift and retain the package using a materially different, evidence-supported contact configuration rather than repeating the failed height-only approach.",
+          "entry_evidence": "Frame 216 shows the package on the counter outside the bowl and empty open fingers at the raised oblique pose. The tested grasp-height interval failed; current surface samples cover only a local segment.",
+          "success_evidence": "Fresh observations show the package separated from the counter and moving with the fingers while remaining retained. The changed contact configuration has supported clearance and overlap margins using its actual finger envelope.",
+          "handoff_requirements": "Provide current package and gripper observations, independent lift and retention evidence, and updated bowl and nearby-obstacle observations. Preserve required clearance and overlap margins; do not treat historical checkpoints as current authorization.",
+          "replan_conditions": "Assess a different orientation or contact segment using fresh boundaries and robot geometry. Use complementary camera/depth evidence or a clearance-supported viewpoint change when needed. If direct pickup remains unsupported, consider a supported change of package presentation only with observed contact and motion clearance. Do not repeat the rejected height-only search or infer global impossibility from one failed screen. Reassess any package displacement or slip from its actual state."
+        },
+        {
+          "id": "place_assess",
+          "objective": "Transfer the retained package into the bowl, release it, and assess the goal after withdrawal and settling.",
+          "entry_evidence": "Fresh evidence establishes a retained lift. Current observations identify the bowl opening and support assessing package fit and the occupied motion envelope.",
+          "success_evidence": "After the physical placement effects settle, fresh observations show the released package resting inside the bowl without finger support, rim perching, or counter support outside the bowl; the bowl remains stable.",
+          "handoff_requirements": "Before release, establish current retention, placement alignment, fit, and package/finger clearance from the rim and surrounding objects. Report final independent containment and stability evidence, or the specific unresolved condition.",
+          "replan_conditions": "If fit, retention, or clearance is uncertain, obtain useful depth or a safe complementary view before continuing; unknown space is not free. If the package slips, catches, falls outside, or moves the bowl, assess the resulting state before recovery. If final containment is obscured, improve the observation and allow settling rather than declaring success from robot pose or gripper opening."
+        }
+      ]
     }
   ],
   "events": [
@@ -1078,20 +1100,21 @@
         "recovery_available": "yes",
         "stage_satisfied": "no",
         "task_satisfied": "no"
-      }
+      },
+      "host_override": "Repeated unproductive revisions require a plan-level reconsideration"
     }
   ],
   "completed": [],
   "current_stage": {
-    "plan_revision": 0,
+    "plan_revision": 1,
     "index": 0,
     "definition": {
-      "id": "secure",
-      "objective": "Establish a stable grasp of the cream cheese package clear of the counter.",
-      "entry_evidence": "Frame 0 shows the labeled package separate from the bowl; robot state reports an open gripper and no prior actions.",
-      "success_evidence": "Fresh images show the package lifted from its original support and retained between the fingers, with observed package motion consistent with the gripper rather than merely a closed-gripper command.",
-      "handoff_requirements": "Provide current package, gripper, and bowl observations, evidence of retention, and observed clearance from nearby objects.",
-      "replan_conditions": "If the package shifts, slips, or remains on the counter, use its actual observed state rather than assuming a grasp. If grasp geometry or clearance is uncertain, obtain useful depth or another safe view before contact."
+      "id": "alternate_pickup",
+      "objective": "Lift and retain the package using a materially different, evidence-supported contact configuration rather than repeating the failed height-only approach.",
+      "entry_evidence": "Frame 216 shows the package on the counter outside the bowl and empty open fingers at the raised oblique pose. The tested grasp-height interval failed; current surface samples cover only a local segment.",
+      "success_evidence": "Fresh observations show the package separated from the counter and moving with the fingers while remaining retained. The changed contact configuration has supported clearance and overlap margins using its actual finger envelope.",
+      "handoff_requirements": "Provide current package and gripper observations, independent lift and retention evidence, and updated bowl and nearby-obstacle observations. Preserve required clearance and overlap margins; do not treat historical checkpoints as current authorization.",
+      "replan_conditions": "Assess a different orientation or contact segment using fresh boundaries and robot geometry. Use complementary camera/depth evidence or a clearance-supported viewpoint change when needed. If direct pickup remains unsupported, consider a supported change of package presentation only with observed contact and motion clearance. Do not repeat the rejected height-only search or infer global impossibility from one failed screen. Reassess any package displacement or slip from its actual state."
     }
   }
 }

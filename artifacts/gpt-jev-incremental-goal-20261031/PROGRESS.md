@@ -529,3 +529,15 @@ Atframe216/72Jev, gripper open, zero completed stages. Retain failure; do not
 infer all grasps impossible. Candidate-grasp-search-replan.json preserves
 evidence. Budget-pressure trigger has not been observed yet; this is revision
 limit escalation.
+
+## Candidate remaining plan delivered: changed pickup then placement
+
+Plan22 returned in53.733s, no reconnect. It acknowledges zero pickup at
+frame216 and17 remaining calls after planning, with two stages:
+alternate_pickup (materially different contact configuration) and
+place_assess (transfer/release/withdraw/settle and goal assessment). It
+explicitly rejects more height-only search. Builder23 is a fresh full
+current-stage method, not a patch to the old stage: request
+216565ec7cdb46f2b6e0887bf8e42fc6 / thread
+01a18ef7-dad9-7ca2-8227-f6dc6475dbb6, actual child1112817 observed.
+No physics evidence for the new plan yet;72Jev216steps, gripper open.
