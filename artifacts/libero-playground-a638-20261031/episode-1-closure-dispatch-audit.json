@@ -1,0 +1,14 @@
+{
+  "episode": 1,
+  "method_job": "fa058ad1c6ac411aa026d4ff17c74cb4",
+  "verified_dispatches": 58,
+  "acknowledged_steps": 174,
+  "close_decisions": [
+    54,
+    55,
+    56,
+    57
+  ],
+  "all_dispatch_checks_passed": true,
+  "scope": "Partial saved-receipt audit only; closure commands do not establish grasp retention, lift or native task success."
+}
