@@ -112,7 +112,9 @@ def validate_value(value, schema, path="parameters"):
         raise ValueError(path+": wrong declared type")
     if actual in ("integer", "number"):
         if not math.isfinite(value) or value < schema.get("minimum", -math.inf) or value > schema.get("maximum", math.inf):
-            raise ValueError(path+": numeric value outside schema")
+            raise ValueError(path+": numeric value outside schema; actual="+repr(value)+
+                ", minimum="+str(schema.get("minimum", "unbounded"))+
+                ", maximum="+str(schema.get("maximum", "unbounded"))+"; value must be finite")
     if "enum" in schema and not any(
             (type(value) is type(v) or type(value) in (int, float) and type(v) in (int, float))
             and value == v for v in schema["enum"]):

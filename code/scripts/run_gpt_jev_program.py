@@ -613,13 +613,7 @@ def main():
                 "Correct design defects when needed. A design is not a measurement receipt. Acquire current runtime evidence; "
                 "do not embed this episode's pixels, measurements or frame-counter shortcuts as reusable observations. "
                 "Return complete executable source, not stubs, pseudocode or a plan awaiting another coding step.")
-        patching = kind == "method" and failed_method is not None
-        if patching:
-            instructions += ("\n\nREPAIR MODE: Return submit_method_patch with a small set of exact old/new source replacements applied to previous_method.source. "
-                "The runtime will assemble and validate the complete executable method. Each old string must occur exactly once. "
-                "Repair the diagnosed mechanism and any directly coupled defects; preserve useful existing processing and Jev definitions. "
-                "Do not retransmit the whole source. Keep replacement text below 12000 characters when feasible. "
-                "Provide updated concise interface and jev_protocol descriptions. A source patch is a method revision, never a motion command.")
+        patching = kind in {"method", "stage_method"} and failed_method is not None
         response_schema = DESIGN_SCHEMA if kind == "design" else PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA
         if parameter_schema is not None:
             response_schema = json.loads(json.dumps(REVIEW_SCHEMA))
@@ -636,8 +630,15 @@ def main():
                 response_schema = budgeted_plan_schema(budgets()["gpt_remaining"])
             instructions = stage_prompts[prompt_name]
         elif kind == "stage_method":
-            tool, response_schema = "submit_method", METHOD_SCHEMA
+            tool, response_schema = ("submit_method_patch", PATCH_SCHEMA) if patching else ("submit_method", METHOD_SCHEMA)
             instructions = stage_prompts["gpt_jev_stage_method_v1.txt"]+"\n\n"+manual
+        if patching:
+            instructions += ("\n\nREPAIR MODE overrides the full-source submission format: Return submit_method_patch with a small set of exact old/new source replacements applied to previous_method.source. "
+                "The runtime will assemble and validate the complete executable method. Each old string must occur exactly once. "
+                "Repair the diagnosed mechanism and any directly coupled defects; preserve useful existing processing and Jev definitions. "
+                "Do not retransmit the whole source. Keep replacement text below 12000 characters when feasible. "
+                "Provide updated concise interface and jev_protocol descriptions. A source patch is a method revision, never a motion command. "
+                "For a current-stage repair, main(api) restarts at the actual physical state; preserve checkpoint provenance and account for all acknowledged actions without replaying them.")
         tool_definition = dict(type="function", name=tool,
             description="Return a bounded implementation design proposal without executable source" if kind == "design" else
                 "Return the requested executable method, unique method patch, or observation review", parameters=response_schema)
@@ -645,7 +646,8 @@ def main():
             tool_definition["description"] = ("Return remaining observable subgoals without source code" if kind == "stage_plan" else
                 "Return an evidence-based current-stage transition or recovery decision")
         elif kind == "stage_method":
-            tool_definition["description"] = "Return complete executable source and Jev cooperation for the current stage only"
+            tool_definition["description"] = ("Return unique source replacements and updated Jev cooperation for the current stage only" if patching else
+                "Return complete executable source and Jev cooperation for the current stage only")
         if parameter_schema is not None or kind == "design" or kind in STAGE_KINDS or kind == "stage_method":
             tool_definition["strict"] = True
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,

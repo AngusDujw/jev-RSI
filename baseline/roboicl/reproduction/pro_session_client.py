@@ -273,6 +273,14 @@ class SessionPlanner:
         content = native_input(self.payload) if not continuation else [dict(type="text",
             text="Continue the interrupted request in this same conversation. Submit the complete "
                  "result using " + self.definition["name"] + ". Keep the original task and contract.")]
+        failures = self.state.get("invalid_submissions", [])
+        if continuation and failures and not self.state.get("submission"):
+            correction = dict(
+                action="Your previous submission was rejected, not accepted. Correct the listed fields before resubmitting the complete result. Do not repeat the rejected values. Keep the original task; do not invent new observations to resolve a format error.",
+                validation_errors=[item["error"] for item in failures[-3:]],
+                required_schema=self.definition["parameters"])
+            english(correction)
+            content.append(dict(type="text", text=json.dumps(correction)))
         result = self.rpc.call("turn/start", dict(threadId=self.state["thread_id"],
             input=content, model=MODEL, effort=EFFORT, summary="none", environments=[]))
         ident = result["turn"]["id"]
