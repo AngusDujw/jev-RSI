@@ -979,7 +979,7 @@
     "frame_id": 156,
     "method_number": 2,
     "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
-    "bytes": 2212,
+    "bytes": 4268,
     "value": {
       "retreat_status": "finished",
       "failed_gate": "actual_open_grasp_pose",
@@ -1093,7 +1093,102 @@
         7.613133670573285e-05,
         0.0006757097184180716,
         0.010656967457403299
-      ]
+      ],
+      "fresh_review": {
+        "frame": 156,
+        "parameters": {
+          "empty_open_hand": "yes",
+          "finger_clearance": "clear",
+          "package_support": "counter"
+        },
+        "notes": "Clearance describes the visible fingers only; the gripper body self-occludes part of the package. No retention or grasp is demonstrated. u0,u1,u2 are separated, noncollinear current interior top samples; c0,c1 are adjacent visible counter samples. These are depth sampling locations, not material correspondences. Review is limited to the upward retreat; no downward retry or closure is authorized, and bowl placement is not complete.",
+        "points": {
+          "u0": {
+            "world_m": [
+              -0.047931397315130526,
+              0.1578756952112036,
+              0.917879163615213
+            ],
+            "depth_m": 0.10578010976314545,
+            "frame_id": 156,
+            "pixel": [
+              330,
+              600
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u1": {
+            "world_m": [
+              -0.020454542564675583,
+              0.1559696010785392,
+              0.9178379318768018
+            ],
+            "depth_m": 0.10587643831968307,
+            "frame_id": 156,
+            "pixel": [
+              340,
+              470
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u2": {
+            "world_m": [
+              -0.026500376956742032,
+              0.12934617495673567,
+              0.9183812941100669
+            ],
+            "depth_m": 0.10540628433227539,
+            "frame_id": 156,
+            "pixel": [
+              466,
+              500
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c0": {
+            "world_m": [
+              -0.028581655021375545,
+              0.17964293045111923,
+              0.9000205701973977
+            ],
+            "depth_m": 0.12360446900129318,
+            "frame_id": 156,
+            "pixel": [
+              250,
+              490
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c1": {
+            "world_m": [
+              -0.038009497447669516,
+              0.10911742434992353,
+              0.9000205168043826
+            ],
+            "depth_m": 0.12381020933389664,
+            "frame_id": 156,
+            "pixel": [
+              535,
+              530
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      },
+      "upward_response": {
+        "actual_rise_m": 0.010656967457403299,
+        "diagnostic_threshold_m": 0.008,
+        "target_rise_m": 0.012,
+        "position_tolerance_m": 0.0025,
+        "residual_margin_m": 0.002656967457403299,
+        "scope": "Robot response only, not contact identification or retention."
+      }
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },

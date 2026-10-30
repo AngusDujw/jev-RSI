@@ -318,6 +318,323 @@
         "stage_satisfied": "no",
         "task_satisfied": "no"
       }
+    },
+    {
+      "update": 2,
+      "stage": "secure",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 156,
+      "trigger": "stage_returned",
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "Actual grasp margin fails; no descent replay or closure. One authorized upward retreat was assessed; revise contact strategy from secure.stall. No descent replay.",
+        "evidence": {
+          "events": [
+            {
+              "review_frame": 144,
+              "parameters": {
+                "camera": "robot0_eye_in_hand",
+                "closure": "unknown",
+                "contact_assessment": "unresolved",
+                "empty_open_hand": true,
+                "end_boundary": "identified",
+                "end_pixels": [
+                  [
+                    500,
+                    442
+                  ],
+                  [
+                    285,
+                    442
+                  ]
+                ],
+                "identity": "same_package_unchanged",
+                "notes": "End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.",
+                "package_state": "unchanged",
+                "sidewall_evidence": "unknown",
+                "support": "same_support",
+                "upward_retreat": "clear"
+              },
+              "measurement_errors": []
+            },
+            {
+              "review_frame": 144,
+              "parameters": {
+                "camera": "robot0_eye_in_hand",
+                "closure": "unknown",
+                "contact_assessment": "unresolved",
+                "empty_open_hand": true,
+                "end_boundary": "identified",
+                "end_pixels": [
+                  [
+                    500,
+                    442
+                  ],
+                  [
+                    285,
+                    442
+                  ]
+                ],
+                "identity": "same_package_unchanged",
+                "notes": "End corners are returned in reference order: image-right then image-left at the exposed top-face end, not the outer dark rim. Retry samples u0,u1,u2 use different, widely separated, noncollinear interior top patches. c0,c1 are visible counter patches outside opposing long sides. Current placement agrees with supplied frame-144 observations; no earlier image is available for direct temporal comparison. Hidden long-side walls are not established. Closure assessment includes no descent. Retreat assessment is independent and local, not a hidden-clearance certificate. Ineffective descent does not establish contact or its cause; metric margins remain for code to check.",
+                "package_state": "unchanged",
+                "sidewall_evidence": "unknown",
+                "support": "same_support",
+                "upward_retreat": "clear"
+              },
+              "measurement_errors": []
+            },
+            {
+              "phase": "stall_diagnostic_retreat",
+              "receipt_status": "reached",
+              "lease_calls": 4,
+              "before_state": {
+                "frame_id": 144,
+                "native_steps": 144,
+                "budgets": {
+                  "gpt_remaining": 26,
+                  "jev_remaining": 152,
+                  "native_steps_remaining": 456,
+                  "wall_seconds_remaining": 1000000000000.0
+                },
+                "tcp_position_world_m": [
+                  -0.05228259955299699,
+                  0.145780397350109,
+                  0.9160103687715757
+                ],
+                "tcp_quaternion_xyzw": [
+                  0.9999896205422898,
+                  0.004241138049698056,
+                  0.0004344995916160352,
+                  0.001607098576787441
+                ],
+                "gripper_qpos_m": [
+                  0.039995061862538504,
+                  -0.040000129260074326
+                ],
+                "last_gripper_command": "open",
+                "own_geometry": {
+                  "pad_center_in_tool_m": [
+                    -7.899373099390372e-08,
+                    -2.3503331887005097e-06,
+                    -0.0035997521350720116
+                  ],
+                  "pad_extent_in_tool_m": [
+                    0.0160000437926978,
+                    0.09499520026008842,
+                    0.016000021382234483
+                  ],
+                  "finger_low_offset_tool_m": [
+                    -0.010494867273571776,
+                    -0.06640333885324153,
+                    -0.044468066991273376
+                  ],
+                  "finger_high_offset_tool_m": [
+                    0.010494724691763675,
+                    0.06639862449627032,
+                    0.009249293361793968
+                  ]
+                }
+              },
+              "after_state": {
+                "frame_id": 156,
+                "native_steps": 156,
+                "budgets": {
+                  "gpt_remaining": 26,
+                  "jev_remaining": 148,
+                  "native_steps_remaining": 444,
+                  "wall_seconds_remaining": 1000000000000.0
+                },
+                "tcp_position_world_m": [
+                  -0.052206468216291255,
+                  0.14645610706852707,
+                  0.926667336228979
+                ],
+                "tcp_quaternion_xyzw": [
+                  0.9999917709947127,
+                  0.003629271247386489,
+                  0.0008867838966841146,
+                  0.0015811221937476398
+                ],
+                "gripper_qpos_m": [
+                  0.03999570057579666,
+                  -0.04000013906552679
+                ],
+                "last_gripper_command": "open",
+                "own_geometry": {
+                  "pad_center_in_tool_m": [
+                    -6.619404828191178e-07,
+                    -4.0291636558414945e-06,
+                    -0.003620390295359011
+                  ],
+                  "pad_extent_in_tool_m": [
+                    0.016000061583421554,
+                    0.09499585425539436,
+                    0.016000067002199563
+                  ],
+                  "finger_low_offset_tool_m": [
+                    -0.0104955332362256,
+                    -0.06640530666301453,
+                    -0.044488728688976346
+                  ],
+                  "finger_high_offset_tool_m": [
+                    0.010494150379962725,
+                    0.06639728797303508,
+                    0.009228677541084307
+                  ]
+                }
+              },
+              "position_gain_m": 0.010512503628234717,
+              "rotation_gain_rad": -0.0015226575471603508,
+              "remaining_position_error_m": 0.0014874963717652942
+            },
+            {
+              "review_frame": 156,
+              "parameters": {
+                "empty_open_hand": "yes",
+                "finger_clearance": "clear",
+                "package_support": "counter",
+                "notes": "Clearance describes the visible fingers only; the gripper body self-occludes part of the package. No retention or grasp is demonstrated. u0,u1,u2 are separated, noncollinear current interior top samples; c0,c1 are adjacent visible counter samples. These are depth sampling locations, not material correspondences. Review is limited to the upward retreat; no downward retry or closure is authorized, and bowl placement is not complete."
+              },
+              "measurement_errors": []
+            }
+          ],
+          "detail": {
+            "failure": {
+              "gate": "actual_open_grasp_pose",
+              "prevented_action": "closure or repeated downward correction",
+              "operands_and_margins": {
+                "frame": 144,
+                "surface_validation_frame": 144,
+                "surface_measurement_frame": 144,
+                "actual_pad_world_m": [
+                  -0.05228587569703348,
+                  0.14579430384237718,
+                  0.9196100933222343
+                ],
+                "actual_quaternion_xyzw": [
+                  0.9999896205422898,
+                  0.004241138049698056,
+                  0.0004344995916160352,
+                  0.001607098576787441
+                ],
+                "finger_bottom_world_z_m": 0.9065384738677811,
+                "counter_ceiling_world_z_m": 0.8999997917295539,
+                "top_floor_world_z_m": 0.9174048789633263,
+                "overlap_m": 0.005954434993573732,
+                "guard_m": 0.001741372874978718,
+                "required_guarded_counter_clearance_m": 0.003,
+                "required_guarded_overlap_m": 0.005,
+                "margins_m": {
+                  "counter": 0.001797309263248452,
+                  "overlap": -0.000786937881404986,
+                  "lateral_opening": 0.00797715096577657
+                },
+                "scope": "Actual proprioceptive finger envelope versus freshly validated local surfaces. Commanded-position tolerance is no longer an unobserved pose error; the unchanged measurement guard remains. This is not a hidden-clearance certificate.",
+                "current_aperture": {
+                  "usable_m": 0.06399514732991503,
+                  "projected_half_width_m": 0.020880776328854468,
+                  "center_offset_m": 0.0013982734953477574,
+                  "guard_m": 0.001741372874978718,
+                  "frame": 144,
+                  "model": "Prismatic opening screen, not visible-straddling evidence."
+                }
+              },
+              "observation_frame": 144,
+              "reason": "Actual grasp margin fails; no descent replay or closure."
+            },
+            "recovery_checkpoint": "secure.stall",
+            "drive_error": null
+          }
+        },
+        "handoff": {
+          "stage": "secure",
+          "checkpoint_keys": [
+            "secure.partial",
+            "secure.plane_check",
+            "secure.geometry",
+            "secure.failure",
+            "secure.repair_reference",
+            "secure.refinement",
+            "secure.candidate",
+            "secure.progress",
+            "secure.alignment",
+            "secure.stall",
+            "secure.pose_gate"
+          ],
+          "state": {
+            "frame_id": 156,
+            "native_steps": 156,
+            "budgets": {
+              "gpt_remaining": 25,
+              "jev_remaining": 148,
+              "native_steps_remaining": 444,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.052206468216291255,
+              0.14645610706852707,
+              0.926667336228979
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999917709947127,
+              0.003629271247386489,
+              0.0008867838966841146,
+              0.0015811221937476398
+            ],
+            "gripper_qpos_m": [
+              0.03999570057579666,
+              -0.04000013906552679
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -6.619404828191178e-07,
+                -4.0291636558414945e-06,
+                -0.003620390295359011
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000061583421554,
+                0.09499585425539436,
+                0.016000067002199563
+              ],
+              "finger_low_offset_tool_m": [
+                -0.0104955332362256,
+                -0.06640530666301453,
+                -0.044488728688976346
+              ],
+              "finger_high_offset_tool_m": [
+                0.010494150379962725,
+                0.06639728797303508,
+                0.009228677541084307
+              ]
+            }
+          },
+          "frames": "All metric coordinates are world meters; quaternions are tool-to-world xyzw.",
+          "assumptions": "Do not reopen. Check actual holding state before further motion. Geometry in secure.geometry is historical after contact. Current patch observations are not a complete package pose. Bowl observations do not authorize transport or release."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "evidence": [
+          "Frame 156 shows the package still on the counter outside the bowl. The open fingers appear empty, with visible gaps; some geometry remains occluded.",
+          "Acknowledged execution raised the TCP about 10.7 mm. The package did not visibly follow, and the prior descent stall cause remains unresolved.",
+          "The frame-144 grasp check reported a guarded overlap deficit of about 0.79 mm. This rejects that candidate pose, not all possible grasps.",
+          "The stage returned blocked, not stage_complete, and live continuation is unavailable."
+        ],
+        "invalidated_assumptions": [
+          "The previously reached open-hand pose provides the required guarded grasp overlap.",
+          "Unchanged downward correction is a justified way to complete this grasp."
+        ],
+        "plan_valid": "yes",
+        "reason": "The secure subgoal and overall ordering remain suitable. Revise the local contact strategy from the already-retreated state, using a safe alternate view to resolve sidewall and finger geometry and assess a different candidate. Do not replay the failed descent or weaken margins merely to pass. The successful retreat does not identify prior contact or establish grasp feasibility.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      }
     }
   ],
   "completed": [],

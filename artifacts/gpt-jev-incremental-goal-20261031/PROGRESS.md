@@ -484,3 +484,13 @@ supported one-shot upward retreat used4Jev/12steps, reachingframe156/52Jev;
 actualTCP rise10.656967mm with open gripper. This does not establish contact
 as stall cause. Review14 assesses post-retreat scene; no return descent,
 no grasp or native result. Save candidate-diagnostic-retreat.json.
+
+## Candidate post-retreat supervision requests different local strategy
+
+Supervisor15 atframe156 confirms empty open fingers and package still on
+the counter. It selects revise while keeping the plan: assess alternate
+view/sidewall/finger geometry and a different grasp candidate, without
+replaying failed descent or weakening margins. Third local patch request16
+uses submit_method_patch, jobc7590d76b9ce49e889b89bc3feecbd41 / native
+thread01a18ee0-80fc-7030-b25a-81bac10e68a0, actual child1058049 observed.
+No new control beyond52Jev156steps. Grasp/whole-task success unproven.

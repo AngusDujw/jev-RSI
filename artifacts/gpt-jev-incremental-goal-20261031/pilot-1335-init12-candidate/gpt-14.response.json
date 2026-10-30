@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-691adc7d-0850-45b7-a313-bc27eaa261ba",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-691adc7d-0850-45b7-a313-bc27eaa261ba",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Compared with the earlier images, the package remains at the same visible counter location while the hand rises. Its smaller appearance in the wrist view supports separation, not following the hand. The open fingers appear empty with visible gaps from the package. No finger-package contact is visible; hidden or transient contact cannot be excluded. The upward response cannot identify the prior stall cause.\", \"parameters\": {\"empty_open_hand\": \"yes\", \"finger_clearance\": \"clear\", \"package_support\": \"counter\", \"notes\": \"Clearance describes the visible fingers only; the gripper body self-occludes part of the package. No retention or grasp is demonstrated. u0,u1,u2 are separated, noncollinear current interior top samples; c0,c1 are adjacent visible counter samples. These are depth sampling locations, not material correspondences. Review is limited to the upward retreat; no downward retry or closure is authorized, and bowl placement is not complete.\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"u0\", \"pixel\": [330, 600], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"u1\", \"pixel\": [340, 470], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"u2\", \"pixel\": [466, 500], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [250, 490], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [535, 530], \"radius\": 3}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 34804,
+    "output_tokens": 1170,
+    "output_tokens_details": {
+      "reasoning_tokens": 783
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18edf-44a1-75c0-b6d1-8113a783fb9c",
+    "turn_ids": [
+      "01a18edf-44a9-7722-be91-e9c83d1490b0"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-77a3228a-7c4a-475c-a25a-b6055e57721a",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-77a3228a-7c4a-475c-a25a-b6055e57721a",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 156 shows the package still on the counter outside the bowl. The open fingers appear empty, with visible gaps; some geometry remains occluded.\", \"Acknowledged execution raised the TCP about 10.7 mm. The package did not visibly follow, and the prior descent stall cause remains unresolved.\", \"The frame-144 grasp check reported a guarded overlap deficit of about 0.79 mm. This rejects that candidate pose, not all possible grasps.\", \"The stage returned blocked, not stage_complete, and live continuation is unavailable.\"], \"invalidated_assumptions\": [\"The previously reached open-hand pose provides the required guarded grasp overlap.\", \"Unchanged downward correction is a justified way to complete this grasp.\"], \"plan_valid\": \"yes\", \"reason\": \"The secure subgoal and overall ordering remain suitable. Revise the local contact strategy from the already-retreated state, using a safe alternate view to resolve sidewall and finger geometry and assess a different candidate. Do not replay the failed descent or weaken margins merely to pass. The successful retreat does not identify prior contact or establish grasp feasibility.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 40368,
+    "output_tokens": 765,
+    "output_tokens_details": {
+      "reasoning_tokens": 434
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18edf-fb69-79f1-ac9d-593c6d6f388f",
+    "turn_ids": [
+      "01a18edf-fb6f-7480-8ac0-29edb3212e21"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
