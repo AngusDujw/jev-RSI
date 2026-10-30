@@ -1,0 +1,13 @@
+{
+  "episodes": [
+    {
+      "episode": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031/code/runs/playground-a638/episode-0",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 0,
+      "seed": 0,
+      "protocol_sha256": "7fb2fbeb9eb67839f98f568e37954c51edbf8e1512c61e0beb25a1621db8aa18",
+      "summary_sha256": "93c0f971398989915eb5d6c13fdaa67d86a185ffeaca72e13c26636a79f619bd"
+    }
+  ]
+}
