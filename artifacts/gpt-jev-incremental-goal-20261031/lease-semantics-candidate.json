@@ -1,0 +1,10 @@
+{
+  "status": "future_candidate_not_applied_to_active_trials",
+  "prompt_sha256": "873c9284377e7bea9ae258728910b15b8834671e8686b09f61171f78394d18f3",
+  "basis": [
+    "Historical source6ddc1bca move() continues bounded leases only after actual progress",
+    "Current generated sourcef06f24ac move() returns blocked for any non-reached lease"
+  ],
+  "change": "Explain progress-preserving bounded lease continuation without treating exhaustion as a physical failure",
+  "validation": "English ASCII; existing host control_lease semantics inspected; no live effectiveness claim"
+}

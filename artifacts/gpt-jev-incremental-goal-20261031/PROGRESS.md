@@ -91,3 +91,20 @@ gates, then asked the local-motion evidence review (gpt-01); 0 controls dispatch
 at that observation. Incremental first repair remains generating in job27e2b2c9.
 Neither has a terminal LIBERO result. Do not stop shared relay/tunnel until both
 cases finish. Preserve all admitted failures separately.
+
+## Bounded-lease candidate (not active)
+
+The reference reuse diagnostic reached 28 actual Jev dispatches / 84 steps at
+latest read, after passing its initial geometry and local-motion evidence. It
+has not completed the task. The incremental first repair is still generating.
+
+A future-only stage prompt clarification now distinguishes drive lease_exhausted
+from stalls: continue a finite outer feedback loop only with actual whole-lease
+pose progress, unchanged justified objective and remaining budget; reserve future
+observations. No replay, no unsafe threshold relaxation, no unbounded retries.
+This is based on historical source6ddc1bca move() versus current generated source
+f06f24ac move(). English check passed. See lease-semantics-candidate.json. Neither
+active remote c8dedfa8 trial receives this change. Any future deployment must
+freeze a new condition and preserve both current outcomes. Root has concurrent
+skill-memory changes from another session; do not silently include them in a
+future pilot. Prefer a c8-based isolated branch/worktree plus intended changes.

@@ -263,3 +263,4 @@
 - 【Agent】【2026-10-31 02:14】[run] EXP050首次启动被参数检查拒绝：归档source必须位于code/runs，未创建环境/未调用模型，未准入物理episode。将同份method.json复制至项目reference-archive并cmp逐字节一致，改正路径后新owned unit已启动，源码/预算/条件不变。
 - 【Agent】【2026-10-31 02:15】[op] 修正本轮引入的知识phase默认值：未显式声明的既有宿主运行标为development，只有显式playground才可用于提炼/冻结；带skill却未选phase在输出/环境/模型副作用前拒绝，检查通过。正在运行的首轮显式playground不受影响，保持原快照。
 - 【Agent】【2026-10-31 02:18】[result] EXP050 corrected unit PID571826存活；旧成功源首次观测返回并通过初始几何门槛，gpt-01正在询问局部运动证据，暂0Jev/0步；新版首修订同job27e2b2c9继续，两个条件分开记分、共享relay按请求digest审计。
+- 【Agent】【2026-10-31 02:20】[op] 根据成功源与本次首稿对照，补充下一版stage方法提示：lease_exhausted是反馈批次结束，满足实际进展和局部证据时可有限续行，不能等同stall；不允许无效重复或放宽几何。仅未来candidate，当前两例远端c8dedfa8不变；英文校验通过，尚无效果声明。

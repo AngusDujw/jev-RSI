@@ -54,6 +54,14 @@ Keep local Jev loops finite and checkpoint progress. The host pauses at control
 slice boundaries and can supervise then continue the same live program stack;
 do not return yield merely because a control slice has elapsed. Use yield only
 when the program must hand control back and cannot continue its current method.
+Distinguish api.drive lease_exhausted from stalled or an observed task failure.
+A lease is a bounded batch of feedback updates, not a physical deadline. Allocate
+its calls from the remaining control/step budget, reserving required observations.
+If a lease ends with independently measured pose progress, unchanged valid local
+assumptions and a still-justified objective, a finite outer feedback loop may
+continue from the actual state without a source revision. Compare api.state()
+before and after the whole lease, not just its final update. Do not continue
+stalls, contact loss, invalid geometry or ineffective unchanged corrections.
 The host can interrupt a slice on
 repeated stalls, no pose progress, invalid measurements, command mismatch or
 resource limits. Do not repeat a stalled contact, blindly reopen a possibly held
