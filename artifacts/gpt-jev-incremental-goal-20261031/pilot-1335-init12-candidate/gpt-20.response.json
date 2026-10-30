@@ -1,0 +1,30 @@
+{
+  "object": "response",
+  "id": "exec-31d27668-529d-4e61-9495-5b6638fe2712",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-31d27668-529d-4e61-9495-5b6638fe2712",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The visible package and counter agree with the supplied observations. At the shifted station, the wrist view shows the positive-across wall and agentview shows the opposite wall continuing from their upper edges toward support. These local strips support the straight-wall hypothesis. No external obstruction is visible in the changed open-finger approach. The prior central stall cause remains unknown.\", \"parameters\": {\"camera\": \"robot0_eye_in_hand\", \"candidate_path\": \"clear\", \"edge_pixels\": [[344, 530], [344, 450], [464, 444], [464, 518]], \"empty_open_hand\": true, \"identity\": \"same_package_unchanged\", \"local_boundary\": \"visible\", \"notes\": \"Retry uses different samples, including a wider noncollinear top triangle. All requested names are returned. Wall samples use minimum-radius patches; validate depths and height separation and reject top/counter mixing, especially on the narrow opposite wall. Both visible wall strips support only the supplied local contact segment, not hidden geometry or global clearance. Edge samples retain the supplied endpoint order and are not material corners. Lower wrist-image occlusion is robot self-occlusion, not an external obstacle. Earlier raw images are unavailable for direct comparison. No contact, retention, closure authorization, or completion is established.\", \"sidewall_evidence\": \"consistent\", \"support\": \"same_support\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"u0\", \"pixel\": [357, 522], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"u1\", \"pixel\": [402, 450], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"u2\", \"pixel\": [450, 515], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [300, 489], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [493, 491], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"a0\", \"pixel\": [341, 478], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"a1\", \"pixel\": [334, 496], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"b0\", \"pixel\": [501, 483], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"b1\", \"pixel\": [501, 493], \"radius\": 1}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"station_top_interior\", \"box\": [353, 453, 455, 515], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"positive_across_wall_interior\", \"box\": [334, 458, 342, 515], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"opposite_wall_local_interior\", \"box\": [501, 482, 502, 495], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"positive_across_adjacent_counter\", \"box\": [290, 457, 315, 505], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"opposite_adjacent_counter\", \"box\": [482, 454, 510, 506], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 99704,
+    "output_tokens": 3436,
+    "output_tokens_details": {
+      "reasoning_tokens": 2048
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ef4-e347-7761-8809-0ab88f77a81e",
+    "turn_ids": [
+      "01a18ef4-e34e-7a82-8a1a-14dadba9ea37",
+      "01a18ef6-4187-7b92-8937-1587f16cf53a"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

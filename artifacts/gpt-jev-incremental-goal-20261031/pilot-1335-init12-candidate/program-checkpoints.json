@@ -302,52 +302,59 @@
   },
   "secure.failure": {
     "key": "secure.failure",
-    "frame_id": 144,
-    "method_number": 2,
-    "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
-    "bytes": 1422,
+    "frame_id": 216,
+    "method_number": 3,
+    "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
+    "bytes": 2056,
     "value": {
-      "gate": "actual_open_grasp_pose",
-      "prevented_action": "closure or repeated downward correction",
+      "gate": "lower_grasp_feasible_interval",
+      "prevented_action": "approach for lower grasp",
       "operands_and_margins": {
-        "frame": 144,
-        "surface_validation_frame": 144,
-        "surface_measurement_frame": 144,
-        "actual_pad_world_m": [
-          -0.05228587569703348,
-          0.14579430384237718,
-          0.9196100933222343
+        "frame": 216,
+        "reference_frame": 0,
+        "trials": [
+          {
+            "position_tolerance_m": 0.002,
+            "lower_pad_z_m": 0.9195521192849956,
+            "upper_pad_z_m": 0.9166577122808268,
+            "required_nominal_overlap_m": 0.008741372874978719,
+            "interval_width_m": -0.002894407004168764,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -0.0030944070041687643
+          },
+          {
+            "position_tolerance_m": 0.001,
+            "lower_pad_z_m": 0.9185521192849956,
+            "upper_pad_z_m": 0.9176577122808268,
+            "required_nominal_overlap_m": 0.007741372874978719,
+            "interval_width_m": -0.0008944070041687624,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -0.0010944070041687625
+          },
+          {
+            "position_tolerance_m": 0.0005,
+            "lower_pad_z_m": 0.9180521192849955,
+            "upper_pad_z_m": 0.9181577122808268,
+            "required_nominal_overlap_m": 0.007241372874978719,
+            "interval_width_m": 0.00010559299583123849,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -9.440700416876152e-05
+          }
         ],
-        "actual_quaternion_xyzw": [
-          0.9999896205422898,
-          0.004241138049698056,
-          0.0004344995916160352,
-          0.001607098576787441
-        ],
-        "finger_bottom_world_z_m": 0.9065384738677811,
-        "counter_ceiling_world_z_m": 0.8999997917295539,
-        "top_floor_world_z_m": 0.9174048789633263,
-        "overlap_m": 0.005954434993573732,
+        "chosen": null,
+        "top_floor_world_z_m": 0.9173981955851098,
+        "counter_ceiling_world_z_m": 0.89996073026739,
+        "finger_bottom_offset_m": -0.012850016142626902,
+        "half_pad_z_m": 0.008000889570695686,
         "guard_m": 0.001741372874978718,
         "required_guarded_counter_clearance_m": 0.003,
         "required_guarded_overlap_m": 0.005,
-        "margins_m": {
-          "counter": 0.001797309263248452,
-          "overlap": -0.000786937881404986,
-          "lateral_opening": 0.00797715096577657
-        },
-        "scope": "Actual proprioceptive finger envelope versus freshly validated local surfaces. Commanded-position tolerance is no longer an unobserved pose error; the unchanged measurement guard remains. This is not a hidden-clearance certificate.",
-        "current_aperture": {
-          "usable_m": 0.06399514732991503,
-          "projected_half_width_m": 0.020880776328854468,
-          "center_offset_m": 0.0013982734953477574,
-          "guard_m": 0.001741372874978718,
-          "frame": 144,
-          "model": "Prismatic opening screen, not visible-straddling evidence."
-        }
+        "preserved_nominal_overlap_floor_m": 0.007,
+        "guard_accounting": "Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.",
+        "candidate_change": "Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold."
       },
-      "observation_frame": 144,
-      "reason": "Actual grasp margin fails; no descent replay or closure."
+      "observation_frame": 216,
+      "reason": "No alternate height meets the preserved margins within allowed pose tolerances."
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
@@ -593,199 +600,232 @@
   },
   "secure.refinement": {
     "key": "secure.refinement",
-    "frame_id": 144,
-    "method_number": 2,
-    "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
-    "bytes": 3179,
+    "frame_id": 216,
+    "method_number": 3,
+    "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
+    "bytes": 3420,
     "value": {
-      "frame": 144,
+      "frame": 216,
       "parameters": {
         "camera": "robot0_eye_in_hand",
-        "closure": "unknown",
-        "contact_assessment": "unresolved",
-        "empty_open_hand": true,
-        "end_boundary": "identified",
-        "end_pixels": [
+        "candidate_path": "clear",
+        "edge_pixels": [
           [
-            500,
-            442
+            344,
+            530
           ],
           [
-            285,
-            442
+            344,
+            450
+          ],
+          [
+            464,
+            444
+          ],
+          [
+            464,
+            518
           ]
         ],
+        "empty_open_hand": true,
         "identity": "same_package_unchanged",
-        "notes": "End corners are returned in reference order: image-right then image-left at the exposed top-face end, not the outer dark rim. Retry samples u0,u1,u2 use different, widely separated, noncollinear interior top patches. c0,c1 are visible counter patches outside opposing long sides. Current placement agrees with supplied frame-144 observations; no earlier image is available for direct temporal comparison. Hidden long-side walls are not established. Closure assessment includes no descent. Retreat assessment is independent and local, not a hidden-clearance certificate. Ineffective descent does not establish contact or its cause; metric margins remain for code to check.",
-        "package_state": "unchanged",
-        "sidewall_evidence": "unknown",
-        "support": "same_support",
-        "upward_retreat": "clear"
+        "local_boundary": "visible",
+        "notes": "Retry uses different samples, including a wider noncollinear top triangle. All requested names are returned. Wall samples use minimum-radius patches; validate depths and height separation and reject top/counter mixing, especially on the narrow opposite wall. Both visible wall strips support only the supplied local contact segment, not hidden geometry or global clearance. Edge samples retain the supplied endpoint order and are not material corners. Lower wrist-image occlusion is robot self-occlusion, not an external obstacle. Earlier raw images are unavailable for direct comparison. No contact, retention, closure authorization, or completion is established.",
+        "sidewall_evidence": "consistent",
+        "support": "same_support"
       },
       "points": {
         "u0": {
           "world_m": [
-            -0.043626710289807566,
-            0.15688497675564947,
-            0.9178559780327402
+            -0.04330049541085416,
+            0.16112295877034175,
+            0.9177797624184787
           ],
-          "depth_m": 0.09512613713741302,
-          "frame_id": 144,
+          "depth_m": 0.1517539769411087,
+          "frame_id": 216,
           "pixel": [
-            326,
-            601
+            357,
+            522
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "u1": {
           "world_m": [
-            -0.020059363531681855,
-            0.15576154124696154,
-            0.9178067064231801
+            -0.02208841328847896,
+            0.14647418268775805,
+            0.9178065613166557
           ],
-          "depth_m": 0.09519980847835541,
-          "frame_id": 144,
+          "depth_m": 0.15676331520080566,
+          "frame_id": 216,
           "pixel": [
-            333,
-            477
+            402,
+            450
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "u2": {
           "world_m": [
-            -0.024129480845772457,
-            0.1304911669180371,
-            0.9182786264749351
+            -0.04379205857664746,
+            0.12981785774967403,
+            0.918452249443334
           ],
-          "depth_m": 0.09480543434619904,
-          "frame_id": 144,
+          "depth_m": 0.16207124292850494,
+          "frame_id": 216,
           "pixel": [
-            466,
-            500
+            450,
+            515
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "c0": {
           "world_m": [
-            -0.02601371224917907,
-            0.1784477259045605,
-            0.8999997784411765
+            -0.035899705526331246,
+            0.17506880013369258,
+            0.8999593377808986
           ],
-          "depth_m": 0.11292854696512222,
-          "frame_id": 144,
+          "depth_m": 0.16354317963123322,
+          "frame_id": 216,
           "pixel": [
-            240,
-            488
+            300,
+            489
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "c1": {
           "world_m": [
-            -0.03904389992174251,
-            0.11034602752553035,
-            0.8999997917295539
+            -0.04184726688937794,
+            0.10174939535428751,
+            0.8999510244976457
           ],
-          "depth_m": 0.1131356880068779,
-          "frame_id": 144,
+          "depth_m": 0.18921028077602386,
+          "frame_id": 216,
           "pixel": [
-            541,
-            548
+            493,
+            491
           ],
           "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "a0": {
+          "world_m": [
+            -0.030169328686803606,
+            0.1654374333174657,
+            0.9150570464878005
+          ],
+          "depth_m": 0.15274234116077423,
+          "frame_id": 216,
+          "pixel": [
+            341,
+            478
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "a1": {
+          "world_m": [
+            -0.03754633262447169,
+            0.16531868023175927,
+            0.9063746209110367
+          ],
+          "depth_m": 0.16094857454299927,
+          "frame_id": 216,
+          "pixel": [
+            334,
+            496
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b0": {
+          "world_m": [
+            -0.0363000437207317,
+            0.12337720258045522,
+            0.914920860415984
+          ],
+          "depth_m": 0.9775882363319397,
+          "frame_id": 216,
+          "pixel": [
+            501,
+            483
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b1": {
+          "world_m": [
+            -0.02991226374118905,
+            0.12341989998171671,
+            0.9064739959394548
+          ],
+          "depth_m": 0.9779265522956848,
+          "frame_id": 216,
+          "pixel": [
+            501,
+            493
+          ],
+          "camera": "agentview",
           "source": "current_depth_patch_backprojection"
         }
       },
       "measurement_errors": [],
       "reference_frame": 0,
       "model_check": {
-        "top_residual_m": 0.00020210787557606302,
-        "support_residual_m": 3.926499940265504e-05,
-        "threshold_m": 0.0015,
+        "top_residual_m": 1.1102230246251565e-16,
+        "support_residual_m": 9.960849573054098e-06,
+        "threshold_m": 0.001741372874978718,
         "guard_provenance": "Unchanged design floor or twice measured fit RMS; not a calibrated confidence bound.",
-        "residual_margin_m": 0.001297892124423937
-      },
-      "current_end_world_m": [
-        [
-          -0.013081526556571747,
-          0.1241559172478147,
-          0.9183612359970451
-        ],
-        [
-          -0.013497957977459271,
-          0.1649804527784336,
-          0.9176195273647807
-        ]
-      ],
-      "fresh_top": {
-        "coefficients": [
-          0.002957671599012219,
-          0.01819529008495927,
-          0.9998300773618668,
-          -0.9204255477035853
-        ],
-        "center_world_m": [
-          -0.029271851555753958,
-          0.14771256164021604,
-          0.9179804369769519
-        ],
-        "rms_m": 1.1102230246251565e-16,
-        "in_plane_spread_m": [
-          0.013429340252737844,
-          0.008601640149090027
-        ]
-      },
-      "guard_m": 0.001741372874978718,
-      "guard_provenance": "Historical guard, never reduced, plus measured top/support disagreement; current fit floor also retained."
+        "residual_margin_m": 0.001731412025405664
+      }
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "secure.candidate": {
     "key": "secure.candidate",
-    "frame_id": 144,
-    "method_number": 2,
-    "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
-    "bytes": 1823,
+    "frame_id": 216,
+    "method_number": 3,
+    "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
+    "bytes": 1822,
     "value": {
-      "frame": 144,
+      "frame": 216,
       "reference_frame": 0,
       "trials": [
         {
           "position_tolerance_m": 0.002,
-          "lower_pad_z_m": 0.9195902101013985,
-          "upper_pad_z_m": 0.9166635167794649,
+          "lower_pad_z_m": 0.9195521192849956,
+          "upper_pad_z_m": 0.9166577122808268,
           "required_nominal_overlap_m": 0.008741372874978719,
-          "interval_width_m": -0.0029266933219336266,
+          "interval_width_m": -0.002894407004168764,
           "minimum_interval_width_m": 0.0002,
-          "residual_margin_m": -0.0031266933219336267
+          "residual_margin_m": -0.0030944070041687643
         },
         {
           "position_tolerance_m": 0.001,
-          "lower_pad_z_m": 0.9185902101013985,
-          "upper_pad_z_m": 0.9176635167794649,
+          "lower_pad_z_m": 0.9185521192849956,
+          "upper_pad_z_m": 0.9176577122808268,
           "required_nominal_overlap_m": 0.007741372874978719,
-          "interval_width_m": -0.0009266933219336249,
+          "interval_width_m": -0.0008944070041687624,
           "minimum_interval_width_m": 0.0002,
-          "residual_margin_m": -0.001126693321933625
+          "residual_margin_m": -0.0010944070041687625
         },
         {
           "position_tolerance_m": 0.0005,
-          "lower_pad_z_m": 0.9180902101013985,
-          "upper_pad_z_m": 0.9181635167794648,
+          "lower_pad_z_m": 0.9180521192849955,
+          "upper_pad_z_m": 0.9181577122808268,
           "required_nominal_overlap_m": 0.007241372874978719,
-          "interval_width_m": 7.330667806637603e-05,
+          "interval_width_m": 0.00010559299583123849,
           "minimum_interval_width_m": 0.0002,
-          "residual_margin_m": -0.00012669332193362398
+          "residual_margin_m": -9.440700416876152e-05
         }
       ],
       "chosen": null,
-      "top_floor_world_z_m": 0.9174048789633263,
-      "counter_ceiling_world_z_m": 0.8999997917295539,
-      "finger_bottom_offset_m": -0.01284904549686598,
-      "half_pad_z_m": 0.008000010691117242,
+      "top_floor_world_z_m": 0.9173981955851098,
+      "counter_ceiling_world_z_m": 0.89996073026739,
+      "finger_bottom_offset_m": -0.012850016142626902,
+      "half_pad_z_m": 0.008000889570695686,
       "guard_m": 0.001741372874978718,
       "required_guarded_counter_clearance_m": 0.003,
       "required_guarded_overlap_m": 0.005,
@@ -1242,9 +1282,9 @@
     "frame_id": 216,
     "method_number": 3,
     "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
-    "bytes": 4805,
+    "bytes": 11145,
     "value": {
-      "phase": "oblique_finished",
+      "phase": "different_candidate_accepted",
       "entry_state": {
         "frame_id": 156,
         "native_steps": 156,
@@ -1458,6 +1498,333 @@
             0.009249580173758033
           ]
         }
+      },
+      "candidate_frame": 216,
+      "parameters": {
+        "camera": "robot0_eye_in_hand",
+        "candidate_path": "clear",
+        "edge_pixels": [
+          [
+            344,
+            530
+          ],
+          [
+            344,
+            450
+          ],
+          [
+            464,
+            444
+          ],
+          [
+            464,
+            518
+          ]
+        ],
+        "empty_open_hand": true,
+        "identity": "same_package_unchanged",
+        "local_boundary": "visible",
+        "notes": "Retry uses different samples, including a wider noncollinear top triangle. All requested names are returned. Wall samples use minimum-radius patches; validate depths and height separation and reject top/counter mixing, especially on the narrow opposite wall. Both visible wall strips support only the supplied local contact segment, not hidden geometry or global clearance. Edge samples retain the supplied endpoint order and are not material corners. Lower wrist-image occlusion is robot self-occlusion, not an external obstacle. Earlier raw images are unavailable for direct comparison. No contact, retention, closure authorization, or completion is established.",
+        "sidewall_evidence": "consistent",
+        "support": "same_support"
+      },
+      "points": {
+        "u0": {
+          "world_m": [
+            -0.04330049541085416,
+            0.16112295877034175,
+            0.9177797624184787
+          ],
+          "depth_m": 0.1517539769411087,
+          "frame_id": 216,
+          "pixel": [
+            357,
+            522
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "u1": {
+          "world_m": [
+            -0.02208841328847896,
+            0.14647418268775805,
+            0.9178065613166557
+          ],
+          "depth_m": 0.15676331520080566,
+          "frame_id": 216,
+          "pixel": [
+            402,
+            450
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "u2": {
+          "world_m": [
+            -0.04379205857664746,
+            0.12981785774967403,
+            0.918452249443334
+          ],
+          "depth_m": 0.16207124292850494,
+          "frame_id": 216,
+          "pixel": [
+            450,
+            515
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c0": {
+          "world_m": [
+            -0.035899705526331246,
+            0.17506880013369258,
+            0.8999593377808986
+          ],
+          "depth_m": 0.16354317963123322,
+          "frame_id": 216,
+          "pixel": [
+            300,
+            489
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c1": {
+          "world_m": [
+            -0.04184726688937794,
+            0.10174939535428751,
+            0.8999510244976457
+          ],
+          "depth_m": 0.18921028077602386,
+          "frame_id": 216,
+          "pixel": [
+            493,
+            491
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "a0": {
+          "world_m": [
+            -0.030169328686803606,
+            0.1654374333174657,
+            0.9150570464878005
+          ],
+          "depth_m": 0.15274234116077423,
+          "frame_id": 216,
+          "pixel": [
+            341,
+            478
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "a1": {
+          "world_m": [
+            -0.03754633262447169,
+            0.16531868023175927,
+            0.9063746209110367
+          ],
+          "depth_m": 0.16094857454299927,
+          "frame_id": 216,
+          "pixel": [
+            334,
+            496
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b0": {
+          "world_m": [
+            -0.0363000437207317,
+            0.12337720258045522,
+            0.914920860415984
+          ],
+          "depth_m": 0.9775882363319397,
+          "frame_id": 216,
+          "pixel": [
+            501,
+            483
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b1": {
+          "world_m": [
+            -0.02991226374118905,
+            0.12341989998171671,
+            0.9064739959394548
+          ],
+          "depth_m": 0.9779265522956848,
+          "frame_id": 216,
+          "pixel": [
+            501,
+            493
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "measurement_errors": [],
+      "candidate_center_world_m": [
+        -0.0332807729536372,
+        0.14445553025724317,
+        0.917985010898746
+      ],
+      "shift_from_failed_station_m": 0.02,
+      "local_plane_gate": {
+        "frame": 216,
+        "plane": {
+          "coefficients": [
+            0.013421762229175285,
+            0.021264161943004962,
+            0.999683795865235,
+            -0.9203345323970171
+          ],
+          "center_world_m": [
+            -0.036393655758660194,
+            0.14580499973592462,
+            0.9180128577261563
+          ],
+          "rms_m": 1.1102230246251565e-16,
+          "in_plane_spread_m": [
+            0.012826308473907465,
+            0.010074795838614755
+          ]
+        },
+        "guard_m": 0.001741372874978718,
+        "thresholds": {
+          "normal_z_min": 0.985,
+          "rms_max_m": 0.000870686437489359,
+          "spread_min_m": 0.006965491499914872
+        },
+        "margins": {
+          "horizontal": 0.01468379586523505,
+          "fit_m": 0.001741372874978496,
+          "spread_m": 0.0031093043386998826
+        }
+      },
+      "candidate_geometry": {
+        "frame": 216,
+        "historical_reference_frame": 0,
+        "top": {
+          "coefficients": [
+            0.013421762229175285,
+            0.021264161943004962,
+            0.999683795865235,
+            -0.9203345323970171
+          ],
+          "center_world_m": [
+            -0.036393655758660194,
+            0.14580499973592462,
+            0.9180128577261563
+          ],
+          "rms_m": 1.1102230246251565e-16,
+          "in_plane_spread_m": [
+            0.012826308473907465,
+            0.010074795838614755
+          ]
+        },
+        "sidewall_points_world_m": [
+          [
+            [
+              -0.030169328686803606,
+              0.1654374333174657,
+              0.9150570464878005
+            ],
+            [
+              -0.03754633262447169,
+              0.16531868023175927,
+              0.9063746209110367
+            ]
+          ],
+          [
+            [
+              -0.0363000437207317,
+              0.12337720258045522,
+              0.914920860415984
+            ],
+            [
+              -0.02991226374118905,
+              0.12341989998171671,
+              0.9064739959394548
+            ]
+          ]
+        ],
+        "local_upper_world_m": [
+          [
+            -0.04534191544711782,
+            0.16518348581047962,
+            0.917720799523949
+          ],
+          [
+            -0.02132710372820252,
+            0.16519199013200528,
+            0.9173981955851098
+          ],
+          [
+            -0.021011022068078155,
+            0.12468958984490727,
+            0.9182554738859512
+          ],
+          [
+            -0.04519504125050744,
+            0.12473532681562007,
+            0.9185791958450336
+          ]
+        ],
+        "expected_upper_segment_world_m": [
+          [
+            -0.045356006575467414,
+            0.16498242072871422,
+            0.917985010898746
+          ],
+          [
+            -0.02135616742709238,
+            0.1650702891082665,
+            0.917985010898746
+          ],
+          [
+            -0.021205539331806984,
+            0.12392863978577211,
+            0.917985010898746
+          ],
+          [
+            -0.04520537848018201,
+            0.12384077140621984,
+            0.917985010898746
+          ]
+        ],
+        "top_reference_residual_m": 0.00023427130428133047,
+        "support_reference_residual_m": 9.960849573054098e-06,
+        "boundary_xy_error_m": 0.0008946151344598151,
+        "guard_m": 0.001741372874978718,
+        "thresholds": {
+          "reference_m": 0.001741372874978718,
+          "boundary_and_wall_m": 0.003482745749957436,
+          "wall_vertical_signal_m": 0.003482745749957436,
+          "contact_half_zone_m": 0.012,
+          "half_package_length_m": 0.0402257211724967,
+          "station_shift_m": 0.02
+        },
+        "margins": {
+          "top_reference_m": 0.0015071015706973876,
+          "support_reference_m": 0.001731412025405664,
+          "local_boundary_xy_m": 0.002588130615497621,
+          "top_horizontal": 0.01468379586523505,
+          "top_fit_m": 0.001741372874978496,
+          "top_spread_m": 0.0031093043386998826,
+          "end_inset_m": 0.0047429754225392666,
+          "wall_location_0": 0.003083337409804884,
+          "wall_vertical_signal_0": 0.005199679826806361,
+          "wall_locality_0": 0.007810852716783062,
+          "wall_height_0": 0.001741372874978718,
+          "wall_location_1": 0.0029865759754892857,
+          "wall_vertical_signal_1": 0.004964118726571767,
+          "wall_locality_1": 0.00870852864485818,
+          "wall_height_1": 0.001741372874978718
+        },
+        "guard_provenance": "Guard never reduced. Current local heights replace global heights only for the observed segment; old-model residuals validate stationarity, not propagated old heights."
       }
     },
     "source": "program-supplied historical data; not a fresh measurement"

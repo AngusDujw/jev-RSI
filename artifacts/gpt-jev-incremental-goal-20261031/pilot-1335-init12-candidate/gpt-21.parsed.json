@@ -1,0 +1,17 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Frame 216 shows the cream cheese package on the counter outside the bowl; the visible open fingers are empty.",
+    "Acknowledged execution reached an elevated, oblique observation pose. No package lift or retention is demonstrated.",
+    "The reported height-only screen rejected all tested tolerances. Its best interval was about 0.106 mm, below the required 0.200 mm; this rejects the tested geometry, not every grasp.",
+    "New local surface samples were obtained at frame 216, but they do not establish complete contact or approach clearance. The stage returned blocked and live continuation is unavailable."
+  ],
+  "invalidated_assumptions": [
+    "Changing only grasp height and tightening pose tolerance can satisfy the preserved margins for the tested geometry."
+  ],
+  "plan_valid": "yes",
+  "reason": "The secure subgoal and overall ordering remain suitable. Revise the local method from the current raised, tilted state to assess a genuinely different contact segment or orientation using fresh boundary measurements and the corresponding finger envelope. Preserve clearance and overlap requirements, revalidate historical dependencies, and avoid replaying the failed descent or repeating the same height-only search. The new evidence supports further local assessment, not closure or completion.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

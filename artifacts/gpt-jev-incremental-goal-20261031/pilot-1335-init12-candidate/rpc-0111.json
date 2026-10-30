@@ -1,0 +1,446 @@
+{
+  "index": 111,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.view",
+      {
+        "phase": "candidate_observed",
+        "entry_state": {
+          "frame_id": 156,
+          "native_steps": 156,
+          "budgets": {
+            "gpt_remaining": 23,
+            "jev_remaining": 148,
+            "native_steps_remaining": 444,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.052206468216291255,
+            0.14645610706852707,
+            0.926667336228979
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999917709947127,
+            0.003629271247386489,
+            0.0008867838966841146,
+            0.0015811221937476398
+          ],
+          "gripper_qpos_m": [
+            0.03999570057579666,
+            -0.04000013906552679
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -6.619404828191178e-07,
+              -4.0291636558414945e-06,
+              -0.003620390295359011
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000061583421554,
+              0.09499585425539436,
+              0.016000067002199563
+            ],
+            "finger_low_offset_tool_m": [
+              -0.0104955332362256,
+              -0.06640530666301453,
+              -0.044488728688976346
+            ],
+            "finger_high_offset_tool_m": [
+              0.010494150379962725,
+              0.06639728797303508,
+              0.009228677541084307
+            ]
+          }
+        },
+        "retreat_checkpoint": "secure.stall",
+        "prior_pose_gate": {
+          "frame": 144,
+          "surface_validation_frame": 144,
+          "surface_measurement_frame": 144,
+          "actual_pad_world_m": [
+            -0.05228587569703348,
+            0.14579430384237718,
+            0.9196100933222343
+          ],
+          "actual_quaternion_xyzw": [
+            0.9999896205422898,
+            0.004241138049698056,
+            0.0004344995916160352,
+            0.001607098576787441
+          ],
+          "finger_bottom_world_z_m": 0.9065384738677811,
+          "counter_ceiling_world_z_m": 0.8999997917295539,
+          "top_floor_world_z_m": 0.9174048789633263,
+          "overlap_m": 0.005954434993573732,
+          "guard_m": 0.001741372874978718,
+          "required_guarded_counter_clearance_m": 0.003,
+          "required_guarded_overlap_m": 0.005,
+          "margins_m": {
+            "counter": 0.001797309263248452,
+            "overlap": -0.000786937881404986,
+            "lateral_opening": 0.00797715096577657
+          },
+          "scope": "Actual proprioceptive finger envelope versus freshly validated local surfaces. Commanded-position tolerance is no longer an unobserved pose error; the unchanged measurement guard remains. This is not a hidden-clearance certificate.",
+          "current_aperture": {
+            "usable_m": 0.06399514732991503,
+            "projected_half_width_m": 0.020880776328854468,
+            "center_offset_m": 0.0013982734953477574,
+            "guard_m": 0.001741372874978718,
+            "frame": 144,
+            "model": "Prismatic opening screen, not visible-straddling evidence."
+          }
+        },
+        "guard_m": 0.001741372874978718,
+        "upward_review_frame": 156,
+        "target_pad_world_m": [
+          -0.052213621877325984,
+          0.14647155646045998,
+          0.9755719423570585
+        ],
+        "raised_state": {
+          "frame_id": 180,
+          "native_steps": 180,
+          "budgets": {
+            "gpt_remaining": 22,
+            "jev_remaining": 140,
+            "native_steps_remaining": 420,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.05272846694032124,
+            0.14765377966623863,
+            0.9705740101454231
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999923380196519,
+            0.0034465461979367173,
+            0.0008210190153030045,
+            0.00166467686725447
+          ],
+          "gripper_qpos_m": [
+            0.03999576022041765,
+            -0.04000020328360127
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              3.0899145258850985e-07,
+              5.067228703414806e-06,
+              -0.003625603760140789
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000040957121195,
+              0.09499598385940387,
+              0.01600014432932785
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010494468862003222,
+              -0.06639634370869768,
+              -0.04449397905299243
+            ],
+            "finger_high_offset_tool_m": [
+              0.010495177710317428,
+              0.06640638175497339,
+              0.009223505537420466
+            ]
+          }
+        },
+        "drive_error": null,
+        "tilt_envelope_gate": {
+          "frame": 180,
+          "own_envelope_radius_m": 0.07867346276211049,
+          "rotation_bound_rad": 0.37,
+          "pose_allowance_m": 0.0025,
+          "finger_lower_bound_z_m": 0.929668603905288,
+          "historical_package_top_z_m": 0.9185719423570584,
+          "guard_m": 0.001741372874978718,
+          "clearance_threshold_m": 0.003,
+          "residual_margin_m": 0.006355288673250918,
+          "scope": "Own-finger bound above reidentified stationary package only; other obstacles still require current path review."
+        },
+        "oblique_review_frame": 180,
+        "view_target_pad_world_m": [
+          -0.05273411797848702,
+          0.17266076502307312,
+          0.9741996063265204
+        ],
+        "view_quaternion_xyzw": [
+          0.9844291601604913,
+          0.0035368516003535157,
+          0.00020840747366141334,
+          0.17574605507035387
+        ],
+        "oblique_state": {
+          "frame_id": 216,
+          "native_steps": 216,
+          "budgets": {
+            "gpt_remaining": 21,
+            "jev_remaining": 128,
+            "native_steps_remaining": 384,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.051186833667093146,
+            0.17258251451771828,
+            0.9719803645112318
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9840897958324522,
+            0.0017826528425609056,
+            -0.002416137972240079,
+            0.17764644146333114
+          ],
+          "gripper_qpos_m": [
+            0.03974770365249626,
+            -0.0400145659407872
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -5.289736297596145e-06,
+              -0.00012454243511837368,
+              -0.0036004359688688687
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600070816006704,
+              0.09476263988188754,
+              0.01600177914139137
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010499989796687845,
+              -0.06640841702551084,
+              -0.04446956613236933
+            ],
+            "finger_high_offset_tool_m": [
+              0.010488995509738905,
+              0.06616073909922433,
+              0.009249580173758033
+            ]
+          }
+        },
+        "candidate_frame": 216,
+        "parameters": {
+          "camera": "robot0_eye_in_hand",
+          "candidate_path": "clear",
+          "edge_pixels": [
+            [
+              344,
+              530
+            ],
+            [
+              344,
+              450
+            ],
+            [
+              464,
+              444
+            ],
+            [
+              464,
+              518
+            ]
+          ],
+          "empty_open_hand": true,
+          "identity": "same_package_unchanged",
+          "local_boundary": "visible",
+          "notes": "Retry uses different samples, including a wider noncollinear top triangle. All requested names are returned. Wall samples use minimum-radius patches; validate depths and height separation and reject top/counter mixing, especially on the narrow opposite wall. Both visible wall strips support only the supplied local contact segment, not hidden geometry or global clearance. Edge samples retain the supplied endpoint order and are not material corners. Lower wrist-image occlusion is robot self-occlusion, not an external obstacle. Earlier raw images are unavailable for direct comparison. No contact, retention, closure authorization, or completion is established.",
+          "sidewall_evidence": "consistent",
+          "support": "same_support"
+        },
+        "points": {
+          "u0": {
+            "world_m": [
+              -0.04330049541085416,
+              0.16112295877034175,
+              0.9177797624184787
+            ],
+            "depth_m": 0.1517539769411087,
+            "frame_id": 216,
+            "pixel": [
+              357,
+              522
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u1": {
+            "world_m": [
+              -0.02208841328847896,
+              0.14647418268775805,
+              0.9178065613166557
+            ],
+            "depth_m": 0.15676331520080566,
+            "frame_id": 216,
+            "pixel": [
+              402,
+              450
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u2": {
+            "world_m": [
+              -0.04379205857664746,
+              0.12981785774967403,
+              0.918452249443334
+            ],
+            "depth_m": 0.16207124292850494,
+            "frame_id": 216,
+            "pixel": [
+              450,
+              515
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c0": {
+            "world_m": [
+              -0.035899705526331246,
+              0.17506880013369258,
+              0.8999593377808986
+            ],
+            "depth_m": 0.16354317963123322,
+            "frame_id": 216,
+            "pixel": [
+              300,
+              489
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c1": {
+            "world_m": [
+              -0.04184726688937794,
+              0.10174939535428751,
+              0.8999510244976457
+            ],
+            "depth_m": 0.18921028077602386,
+            "frame_id": 216,
+            "pixel": [
+              493,
+              491
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "a0": {
+            "world_m": [
+              -0.030169328686803606,
+              0.1654374333174657,
+              0.9150570464878005
+            ],
+            "depth_m": 0.15274234116077423,
+            "frame_id": 216,
+            "pixel": [
+              341,
+              478
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "a1": {
+            "world_m": [
+              -0.03754633262447169,
+              0.16531868023175927,
+              0.9063746209110367
+            ],
+            "depth_m": 0.16094857454299927,
+            "frame_id": 216,
+            "pixel": [
+              334,
+              496
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b0": {
+            "world_m": [
+              -0.0363000437207317,
+              0.12337720258045522,
+              0.914920860415984
+            ],
+            "depth_m": 0.9775882363319397,
+            "frame_id": 216,
+            "pixel": [
+              501,
+              483
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b1": {
+            "world_m": [
+              -0.02991226374118905,
+              0.12341989998171671,
+              0.9064739959394548
+            ],
+            "depth_m": 0.9779265522956848,
+            "frame_id": 216,
+            "pixel": [
+              501,
+              493
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": [],
+        "candidate_center_world_m": [
+          -0.0332807729536372,
+          0.14445553025724317,
+          0.917985010898746
+        ],
+        "shift_from_failed_station_m": 0.02,
+        "local_plane_gate": {
+          "frame": 216,
+          "plane": {
+            "coefficients": [
+              0.008554076060666584,
+              0.022051657173408814,
+              0.9997202369656497,
+              -0.9206684850671011
+            ],
+            "center_world_m": [
+              -0.032784882572043546,
+              0.14695053333531935,
+              0.9179652394045063
+            ],
+            "rms_m": 1.1102230246251565e-16,
+            "in_plane_spread_m": [
+              0.010115180736015195,
+              0.005378223096396404
+            ]
+          },
+          "guard_m": 0.001741372874978718,
+          "thresholds": {
+            "normal_z_min": 0.985,
+            "rms_max_m": 0.000870686437489359,
+            "spread_min_m": 0.006965491499914872
+          },
+          "margins": {
+            "horizontal": 0.014720236965649725,
+            "fit_m": 0.001741372874978496,
+            "spread_m": -0.001587268403518468
+          }
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 216,
+  "response": {
+    "result": {
+      "key": "secure.view",
+      "frame_id": 216,
+      "method_number": 3,
+      "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
+      "bytes": 8645,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 216
+}

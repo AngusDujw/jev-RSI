@@ -516,3 +516,16 @@ Actual move reachedframe216/72Jev, open gripper, hand approximately
 and local contact geometry from the changed view. This is physical evidence
 acquisition, not grasp success; observed surfaces must still support a new
 candidate. Save candidate-alternate-view.json.
+
+## Candidate observed local segment still fails height interval
+
+Review19 corrected radius0 belowmin1 within its original turn. New views
+support visible local sidewall strips; review20 repeated local measurement.
+The method still returned blocked: best height interval0.106mm below0.200mm
+required minimum. Supervisor21 invalidates height-only/tighter-tolerance
+search and asks different contact segment or orientation. Three local repairs
+already consumed, so request22 is submit_stage_plan for remaining work.
+Atframe216/72Jev, gripper open, zero completed stages. Retain failure; do not
+infer all grasps impossible. Candidate-grasp-search-replan.json preserves
+evidence. Budget-pressure trigger has not been observed yet; this is revision
+limit escalation.
