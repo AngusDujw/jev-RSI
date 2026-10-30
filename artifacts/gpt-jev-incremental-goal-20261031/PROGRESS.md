@@ -187,3 +187,16 @@ Save secure-stage-evidence.json and the full running JSON/source snapshot.
 Repair2 native aggregate182185 input/19550 output/12107 reasoning tokens;
 these are not the one-request prompt length. Still remote c8dedfa8 and original
 loaded relay, no candidate fixes injected.
+
+## Placement method delivered; first observation pending
+
+Placement method3 arrived after953.881 seconds,298 lines, with no reconnect or
+native recovery. It begins from retained frame234, measures the current top and
+bowl opening, checks fit and local route, then proposes bounded transfer and
+release with intermediate retention and bowl-motion checks. No final withdrawal
+is included. Current review job5ccd985bdb064cffa5ae2ac902242035 / thread
+01a18e36-a783-78a0-9445-cf80ce4b200d is live under bridge childPID661074.
+Last confirmed frame remains234/78Jev; placement has no acknowledged action yet.
+Placement generation native aggregate320627 input/31076 output/21677 reasoning
+tokens; includes native internal usage, not a one-shot prompt size. Long source
+and review latency remain unresolved; stage support alone is not a speedup.
