@@ -1,5 +1,5 @@
 {
-  "status": "declared-before-first-run",
+  "status": "episode-0-live",
   "commit": "7a57e644",
   "server": "5880-jump",
   "gpu": 0,
@@ -56,5 +56,20 @@
   ],
   "training": "Sequential episode, Pro refinement, next revision; all prior acquisition evidence retained",
   "scoring": "terminal native LIBERO success; retain all failures and unknown usage",
-  "initial_skill_count": 0
+  "initial_skill_count": 0,
+  "refinement_commit": "7a1a373d",
+  "orchestrator_commit": "779714a3",
+  "preflight": {
+    "render_shape": [
+      128,
+      128,
+      3
+    ],
+    "jev_model": "jev-1.13.0",
+    "jev_choice": "hold",
+    "jev_probe_physical_steps": 0
+  },
+  "local_bridge": "http://127.0.0.1:7941",
+  "remote_bridge": "http://127.0.0.1:7921",
+  "known_limit": "Existing generic host lessons are shared by both conditions; empty means no newly learned Playground skills."
 }
