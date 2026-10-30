@@ -439,3 +439,13 @@ This is format recovery, not network recovery. Actual method1 then issued
 15Jev controls/45native steps and reached the high alignment. Review7 now
 checks the descent route. Gripper remains open, no grasp/terminal result.
 Save candidate-first-motion-and-format-repair.json.
+
+## Candidate live continuation after patch
+
+Review7 accepted the pregrasp descent after one stride2<minimum4 submission
+was corrected in the same native thread. Frame72/24Jev reached a normal
+control slice; supervisor8 chose continue with no invalidated assumptions.
+The same method1 worker continued to30Jev/90steps, no source regeneration.
+Current review9 assesses subsequent geometry; gripper is still open.
+Candidate-live-continuation.json records the real journal event. No
+confirmed grasp or native success.

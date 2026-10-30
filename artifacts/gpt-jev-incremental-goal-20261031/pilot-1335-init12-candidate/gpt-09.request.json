@@ -1,0 +1,225 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 90; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "0ddb8266a971bad6b8ed006c99202d0ead43b2998bd81f98e7506995a2f62d67",
+            "characters": 107795
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 90; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "33e618e2e5c81b4874eb0a8d0f6a7e2a5497e5f11c7c0b15961af54a9e90b3e4",
+            "characters": 62211
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review agentview"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "2311c4f7a4f45b2e069e690e339a02866e0af33009a098db957e22d041531d74",
+            "characters": 109011
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review robot0_eye_in_hand"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "2ff5b6b165e92bbce2957dfe274aec97a6a837efaf658ab2070ed47c4ebbdc9f",
+            "characters": 77971
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Authorize only the straight vertical descent to the supplied grasp pad height, still keeping the gripper open. Confirm open fingers align outside the two short-width opposing sides, with unobstructed side gaps and no bowl/stove/counter interference along the supplied own-finger envelope. Request named top_center as a valid depth point at the geometric center of the flat package top. If its depth is occluded, request the previously identified printed landmark as named p0 instead; do not sample the hand. On a retry use the other view, not the same occluded point.\",\"robot\":{\"frame_id\":90,\"native_steps\":90,\"budgets\":{\"gpt_remaining\":30,\"jev_remaining\":170,\"native_steps_remaining\":510,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.054726,0.143898,0.980156],\"tcp_quaternion_xyzw\":[0.999991,0.00400733,0.00100182,0.00133468],\"gripper_qpos_m\":[0.0399779,-0.0399763],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[6.45447e-06,3.29318e-07,-0.00357317],\"pad_extent_in_tool_m\":[0.0160002,0.0949543,0.0160003],\"finger_low_offset_tool_m\":[-0.0104883,-0.0663803,-0.0444415],\"finger_high_offset_tool_m\":[0.0105011,0.0663807,0.00927598]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.00800978,-0.999966,0.00201738,-0.00491688],[-0.999964,-0.00801514,-0.00266373,0.144558],[0.00267981,-0.00199597,-0.999994,1.07723],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":25,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.4,0.0,0.0,0.0,-1.0],\"before\":[-0.0549528,0.144593,1.03562],\"after\":[-0.0550855,0.144334,1.01956],\"target_tcp\":[-0.0532844,0.144389,0.979596],\"acknowledged_steps\":3,\"native_steps\":78,\"frame_id\":78},{\"decision\":26,\"choices\":{\"x\":\"positive\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0234623,0.0,-0.399311,0.0,0.0,0.0,-1.0],\"before\":[-0.0550855,0.144334,1.01956],\"after\":[-0.0547829,0.144066,1.00348],\"target_tcp\":[-0.0532776,0.144388,0.979592],\"acknowledged_steps\":3,\"native_steps\":81,\"frame_id\":81},{\"decision\":27,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.310451,0.0,0.0,0.0,-1.0],\"before\":[-0.0547829,0.144066,1.00348],\"after\":[-0.0548813,0.143896,0.990168],\"target_tcp\":[-0.0532855,0.144388,0.979595],\"acknowledged_steps\":3,\"native_steps\":84,\"frame_id\":84},{\"decision\":28,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.138081,0.0,0.0,0.0,-1.0],\"before\":[-0.0548813,0.143896,0.990168],\"after\":[-0.0550838,0.143895,0.983015],\"target_tcp\":[-0.0532781,0.144385,0.979546],\"acknowledged_steps\":3,\"native_steps\":87,\"frame_id\":87},{\"decision\":29,\"choices\":{\"x\":\"positive\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.023472,0.0,-0.0462411,0.0,0.0,0.0,-1.0],\"before\":[-0.0550838,0.143895,0.983015],\"after\":[-0.054726,0.143898,0.980156],\"target_tcp\":[-0.0532783,0.144383,0.979458],\"acknowledged_steps\":3,\"native_steps\":90,\"frame_id\":90}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":45,\"native_steps\":45,\"budgets\":{\"gpt_remaining\":33,\"jev_remaining\":185,\"native_steps_remaining\":555,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.055109,0.143707,1.18333],\"tcp_quaternion_xyzw\":[0.999985,0.00490433,-0.0020315,-0.00134683],\"gripper_qpos_m\":[0.0398554,-0.0398152],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[8.32999e-05,-1.2792e-05,-0.00362103],\"pad_extent_in_tool_m\":[0.0160016,0.0946709,0.0160022],\"finger_low_offset_tool_m\":[-0.01041,-0.0662519,-0.0444906],\"finger_high_offset_tool_m\":[0.0105801,0.0662254,0.00922896]}}},\"frame_id\":45},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.progress\",{\"phase\":\"high_alignment\",\"receipt_status\":\"reached\",\"lease_calls\":15,\"before_state\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":33,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.207198,-0.00268411,1.1834],\"tcp_quaternion_xyzw\":[0.999614,-0.000163778,-0.0277874,0.000255883],\"gripper_qpos_m\":[0.0387218,-0.0387238],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[4.17768e-06,-1.23337e-06,-0.00360314],\"pad_extent_in_tool_m\":[0.0160013,0.0924457,0.0160008],\"finger_low_offset_tool_m\":[-0.0104903,-0.0651272,-0.0444717],\"finger_high_offset_tool_m\":[0.0105003,0.0651249,0.00924596]}},\"after_state\":{\"frame_id\":45,\"native_steps\":45,\"budgets\":{\"gpt_remaining\":33,\"jev_remaining\":185,\"native_steps_remaining\":555,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.055109,0.143707,1.18333],\"tcp_quaternion_xyzw\":[0.999985,0.00490433,-0.0020315,-0.00134683],\"gripper_qpos_m\":[0.0398554,-0.0398152],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[8.32999e-05,-1.2792e-05,-0.00362103],\"pad_extent_in_tool_m\":[0.0160016,0.0946709,0.0160022],\"finger_low_offset_tool_m\":[-0.01041,-0.0662519,-0.0444906],\"finger_high_offset_tool_m\":[0.0105801,0.0662254,0.00922896]}},\"position_gain_m\":0.210877,\"rotation_gain_rad\":0.050164,\"remaining_position_error_m\":0.00185669}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.progress\",\"frame_id\":45,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":1970,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":45},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":45,\"native_steps\":45,\"budgets\":{\"gpt_remaining\":33,\"jev_remaining\":185,\"native_steps_remaining\":555,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.055109,0.143707,1.18333],\"tcp_quaternion_xyzw\":[0.999985,0.00490433,-0.0020315,-0.00134683],\"gripper_qpos_m\":[0.0398554,-0.0398152],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[8.32999e-05,-1.2792e-05,-0.00362103],\"pad_extent_in_tool_m\":[0.0160016,0.0946709,0.0160022],\"finger_low_offset_tool_m\":[-0.01041,-0.0662519,-0.0444906],\"finger_high_offset_tool_m\":[0.0105801,0.0662254,0.00922896]}}},\"frame_id\":45},{\"request\":{\"kind\":\"rpc\",\"method\":\"review\",\"args\":[\"Authorize ONLY vertical_pregrasp. Assess the actual open hand swept path to this pad-center target and orientation, including fingers and nearby bowl, bottle, stove and cabinet. The high alignment stays at current altitude; vertical_pregrasp stops 65 mm above the package top. Do not require retention or later bowl fit. Confirm the measured package has not moved. Unknown is not clear.\"],\"kwargs\":{\"context\":{\"geometry\":{\"frame\":0,\"top_plane\":{\"coefficients\":[0.00131597,0.0254661,0.999675,-0.921293],\"center_world_m\":[-0.0524727,0.142037,0.918044],\"rms_m\":8.91339e-06,\"in_plane_spread_m\":[0.0268475,0.0110926]},\"counter_plane\":{\"coefficients\":[3.07537e-05,-1.96033e-07,1.0,-0.89996],\"center_world_m\":[-0.0450888,0.15066,0.899961],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0552986,0.0285792]},\"upper_corners_world_m\":[[-0.0134854,0.165099,0.917405],[-0.0132077,0.123958,0.918453],[-0.0936574,0.123429,0.918572],[-0.0927722,0.165043,0.917511]],\"center_world_m\":[-0.0532806,0.144382,0.917985],\"width_m\":0.0411419,\"length_m\":0.0804514,\"height_m\":0.0174435,\"quaternion_xyzw\":[0.999995,0.00328947,0.0,0.0],\"grasp_pad_z_m\":0.918108,\"guard_m\":0.0015,\"grasp_tolerance_m\":0.0005,\"finger_bottom_offset_m\":-0.0128491,\"side_overlap_m\":0.00729741,\"nominal_usable_aperture_m\":0.0614442,\"required_aperture_m\":0.0471476,\"aperture_assumption\":\"Symmetric prismatic joint separation less one transverse pad-size allowance is a conservative screening model, not measured inner-face clearance; fresh visible straddling is also required.\",\"p0_identity\":\"White curled capital C beginning Cream near the upper end of the printed blue logo.\",\"top_floor_world_z_m\":0.917405,\"counter_ceiling_world_z_m\":0.899961,\"required_nominal_overlap_m\":0.007,\"candidate_checkpoint\":\"secure.candidate\",\"refinement_checkpoint\":\"secure.refinement\",\"geometry_scope\":\"Original same-frame upper boundary and planes, independently checked local top/support samples, and a new lower grasp target; actual pose margins must pass before closure.\"},\"target_pad_world_m\":[-0.0532806,0.144382,0.982985],\"target_quaternion_xyzw\":[0.999995,0.00328947,0.0,0.0],\"state\":{\"frame_id\":45,\"native_steps\":45,\"budgets\":{\"gpt_remaining\":33,\"jev_remaining\":185,\"native_steps_remaining\":555,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.055109,0.143707,1.18333],\"tcp_quaternion_xyzw\":[0.999985,0.00490433,-0.0020315,-0.00134683],\"gripper_qpos_m\":[0.0398554,-0.0398152],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[8.32999e-05,-1.2792e-05,-0.00362103],\"pad_extent_in_tool_m\":[0.0160016,0.0946709,0.0160022],\"finger_low_offset_tool_m\":[-0.01041,-0.0662519,-0.0444906],\"finger_high_offset_tool_m\":[0.0105801,0.0662254,0.00922896]}}},\"fields\":{\"clear\":[\"clear\",\"blocked\",\"unknown\"],\"package_state\":[\"unchanged\",\"moved\",\"unknown\"],\"notes\":\"string\"}}},\"response\":{\"result\":{\"status\":\"continue\",\"explanation\":\"Clear for vertical_pregrasp only. Using the current open-finger bounds and target orientation, the lowest finger surface stops near 0.970 m: approximately 51 mm above the package top and 19 mm above the measured bowl rim. The visible hand housing remains higher. The bottle and cabinet are laterally outside this descent; the stove is below and outside it. No external obstruction is visible in this local sweep. The package outline, logo and position relative to neighboring objects match the earlier fixed-camera image.\",\"parameters\":{\"clear\":\"clear\",\"package_state\":\"unchanged\",\"notes\":\"Authorization covers only descent to pad center [-0.0532806, 0.144382, 0.982985] with the stated orientation and open hand, including the small remaining alignment correction. It does not authorize lower descent, closure or transfer. Package agreement is within image resolution, not a new submillimeter pose measurement. Current package, support and obstacle selections are returned for fresh measurement. Wrist-image bottom occlusion is robot self-occlusion; the agentview exposes the relevant neighboring surfaces. No hidden-surface or global clearance certificate is claimed.\"},\"points\":{\"u0\":{\"world_m\":[-0.0531668,0.143752,0.91813],\"depth_m\":0.362212,\"frame_id\":45,\"pixel\":[385,449],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0483997,0.184101,0.900019],\"depth_m\":0.380411,\"frame_id\":45,\"pixel\":[332,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.048437,0.112659,0.900019],\"depth_m\":0.38022,\"frame_id\":45,\"pixel\":[426,440],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"bottle_cap\":{\"world_m\":[-0.182846,-0.0378363,1.05721],\"depth_m\":1.00219,\"frame_id\":45,\"pixel\":[349,293],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"cabinet_top\":{\"world_m\":[-0.0529821,-0.163663,1.12717],\"depth_m\":0.857202,\"frame_id\":45,\"pixel\":[207,307],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"}},\"regions\":{\"package_visible_top_and_boundary\":{\"visible_world_summary\":{\"count\":480,\"minimum\":[-0.0984498,0.122037,0.900016],\"median\":[-0.0528641,0.145235,0.917879],\"maximum\":[-0.00978579,0.168499,0.918599]},\"frame_id\":45,\"camera\":\"robot0_eye_in_hand\",\"box\":[353,389,416,508],\"stride\":4,\"source\":\"current_visible_depth_region_backprojection\"},\"bowl_visible_surface_and_rim\":{\"visible_world_summary\":{\"count\":594,\"minimum\":[-0.206452,-0.0555468,0.900741],\"median\":[-0.108827,0.00560667,0.920212],\"maximum\":[-0.0350222,0.06879,0.95172]},\"frame_id\":45,\"camera\":\"agentview\",\"box\":[337,391,443,476],\"stride\":4,\"source\":\"current_visible_depth_region_backprojection\"},\"bottle_visible_surfaces\":{\"visible_world_summary\":{\"count\":352,\"minimum\":[-0.438289,-0.0742688,0.900804],\"median\":[-0.182032,-0.0370141,0.936048],\"maximum\":[-0.115283,-0.014527,1.05831]},\"frame_id\":45,\"camera\":\"agentview\",\"box\":[331,286,372,412],\"stride\":4,\"source\":\"current_visible_depth_region_backprojection\"},\"stove_visible_surfaces\":{\"visible_world_summary\":{\"count\":1260,\"minimum\":[-0.386128,0.0947486,0.900801],\"median\":[-0.234852,0.204892,0.925829],\"maximum\":[-0.160018,0.348889,0.931298]},\"frame_id\":45,\"camera\":\"agentview\",\"box\":[465,307,644,419],\"stride\":4,\"source\":\"current_visible_depth_region_backprojection\"},\"stove_rear_fixture\":{\"visible_world_summary\":{\"count\":199,\"minimum\":[-0.491193,0.162609,0.900924],\"median\":[-0.395361,0.200078,0.922332],\"maximum\":[-0.362331,0.261667,0.959837]},\"frame_id\":45,\"camera\":\"agentview\",\"box\":[505,246,566,307],\"stride\":4,\"source\":\"current_visible_depth_region_backprojection\"},\"cabinet_top_inner_side_and_handles\":{\"visible_world_summary\":{\"count\":3744,\"minimum\":[-0.440854,-0.537521,0.900619],\"median\":[0.110764,-0.212051,1.0885],\"maximum\":[0.163805,-0.116229,1.12727]},\"frame_id\":45,\"camera\":\"agentview\",\"box\":[1,285,260,642],\"stride\":5,\"source\":\"current_visible_depth_region_backprojection\"},\"open_hand_visible_housing_and_fingers\":{\"visible_world_summary\":{\"count\":2467,\"minimum\":[-1.99178,0.0431518,0.122085],\"median\":[-0.0378927,0.147551,1.25878],\"maximum\":[-0.0109207,0.966606,1.3446]},\"frame_id\":45,\"camera\":\"agentview\",\"box\":[435,95,687,269],\"stride\":4,\"source\":\"current_visible_depth_region_backprojection\"}},\"measurement_errors\":[],\"frame_id\":45}},\"frame_id\":45},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":45,\"native_steps\":45,\"budgets\":{\"gpt_remaining\":32,\"jev_remaining\":185,\"native_steps_remaining\":555,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.055109,0.143707,1.18333],\"tcp_quaternion_xyzw\":[0.999985,0.00490433,-0.0020315,-0.00134683],\"gripper_qpos_m\":[0.0398554,-0.0398152],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[8.32999e-05,-1.2792e-05,-0.00362103],\"pad_extent_in_tool_m\":[0.0160016,0.0946709,0.0160022],\"finger_low_offset_tool_m\":[-0.01041,-0.0662519,-0.0444906],\"finger_high_offset_tool_m\":[0.0105801,0.0662254,0.00922896]}}},\"frame_id\":45},{\"request\":{\"kind\":\"rpc\",\"method\":\"drive\",\"args\":[[-0.0532806,0.144382,0.982985],[0.999995,0.00328947,0.0,0.0],\"keep\",{\"x\":{\"type\":\"choice\",\"instructions\":\"Control world translation x using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.\",\"criteria\":{\"negative\":\"Decrease this world component when its goal_relation is decrease.\",\"hold\":\"Zero this component when its goal_relation is within_tolerance.\",\"positive\":\"Increase this world component when its goal_relation is increase.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"Control world translation y using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.\",\"criteria\":{\"negative\":\"Decrease this world component when its goal_relation is decrease.\",\"hold\":\"Zero this component when its goal_relation is within_tolerance.\",\"positive\":\"Increase this world component when its goal_relation is increase.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"Control world translation z using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.\",\"criteria\":{\"negative\":\"Decrease this world component when its goal_relation is decrease.\",\"hold\":\"Zero this component when its goal_relation is within_tolerance.\",\"positive\":\"Increase this world component when its goal_relation is increase.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"Control world rotation-vector x using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.\",\"criteria\":{\"negative\":\"Decrease this world component when its goal_relation is decrease.\",\"hold\":\"Zero this component when its goal_relation is within_tolerance.\",\"positive\":\"Increase this world component when its goal_relation is increase.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"Control world rotation-vector y using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.\",\"criteria\":{\"negative\":\"Decrease this world component when its goal_relation is decrease.\",\"hold\":\"Zero this component when its goal_relation is within_tolerance.\",\"positive\":\"Increase this world component when its goal_relation is increase.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"Control world rotation-vector z using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.\",\"criteria\":{\"negative\":\"Decrease this world component when its goal_relation is decrease.\",\"hold\":\"Zero this component when its goal_relation is within_tolerance.\",\"positive\":\"Increase this world component when its goal_relation is increase.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Use state.processed_features.objective.gripper exactly. This is a commanded actuator choice, not a grasp assessment.\",\"criteria\":{\"open\":\"Open only for objective gripper open.\",\"close\":\"Close only for objective gripper close.\",\"keep\":\"Preserve the previous gripper actuation for objective gripper keep.\"}}}],\"kwargs\":{\"features\":{\"source\":\"program_measured_geometry_and_proprioception\",\"phase\":\"vertical_pregrasp\",\"authorized_local_target_world_m\":[-0.0532806,0.144382,0.982985],\"geometry_checkpoint\":\"secure.geometry\",\"guard_m\":0.0015,\"no_object_effect_inferred_from_pose\":true},\"max_calls\":24,\"tool_point\":\"pad_center\",\"translation_limit\":0.02,\"rotation_limit\":0.08,\"steps\":3,\"position_tolerance\":0.003,\"rotation_tolerance\":0.01}},\"response\":{\"result\":{\"decision\":29,\"choices\":{\"x\":\"positive\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.023472,0.0,-0.0462411,0.0,0.0,0.0,-1.0],\"before\":[-0.0550838,0.143895,0.983015],\"after\":[-0.054726,0.143898,0.980156],\"target_tcp\":[-0.0532783,0.144383,0.979458],\"acknowledged_steps\":3,\"native_steps\":90,\"frame_id\":90,\"status\":\"reached\",\"position_error_m\":0.00167885,\"rotation_error_rad\":0.00363337,\"lease_calls\":15}},\"frame_id\":90},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":90,\"native_steps\":90,\"budgets\":{\"gpt_remaining\":31,\"jev_remaining\":170,\"native_steps_remaining\":510,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.054726,0.143898,0.980156],\"tcp_quaternion_xyzw\":[0.999991,0.00400733,0.00100182,0.00133468],\"gripper_qpos_m\":[0.0399779,-0.0399763],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[6.45447e-06,3.29318e-07,-0.00357317],\"pad_extent_in_tool_m\":[0.0160002,0.0949543,0.0160003],\"finger_low_offset_tool_m\":[-0.0104883,-0.0663803,-0.0444415],\"finger_high_offset_tool_m\":[0.0105011,0.0663807,0.00927598]}}},\"frame_id\":90},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.progress\",{\"phase\":\"vertical_pregrasp\",\"receipt_status\":\"reached\",\"lease_calls\":15,\"before_state\":{\"frame_id\":45,\"native_steps\":45,\"budgets\":{\"gpt_remaining\":32,\"jev_remaining\":185,\"native_steps_remaining\":555,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.055109,0.143707,1.18333],\"tcp_quaternion_xyzw\":[0.999985,0.00490433,-0.0020315,-0.00134683],\"gripper_qpos_m\":[0.0398554,-0.0398152],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[8.32999e-05,-1.2792e-05,-0.00362103],\"pad_extent_in_tool_m\":[0.0160016,0.0946709,0.0160022],\"finger_low_offset_tool_m\":[-0.01041,-0.0662519,-0.0444906],\"finger_high_offset_tool_m\":[0.0105801,0.0662254,0.00922896]}},\"after_state\":{\"frame_id\":90,\"native_steps\":90,\"budgets\":{\"gpt_remaining\":31,\"jev_remaining\":170,\"native_steps_remaining\":510,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.054726,0.143898,0.980156],\"tcp_quaternion_xyzw\":[0.999991,0.00400733,0.00100182,0.00133468],\"gripper_qpos_m\":[0.0399779,-0.0399763],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[6.45447e-06,3.29318e-07,-0.00357317],\"pad_extent_in_tool_m\":[0.0160002,0.0949543,0.0160003],\"finger_low_offset_tool_m\":[-0.0104883,-0.0663803,-0.0444415],\"finger_high_offset_tool_m\":[0.0105011,0.0663807,0.00927598]}},\"position_gain_m\":0.202283,\"rotation_gain_rad\":0.0022143,\"remaining_position_error_m\":0.00169407}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.progress\",\"frame_id\":90,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":1972,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":90}],\"program_checkpoint_manifest\":[{\"key\":\"secure.partial\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2273,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.plane_check\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":985,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.geometry\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":2156,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.failure\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2105,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.repair_reference\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":4910,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.refinement\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":1613,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.candidate\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":2066,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.progress\",\"frame_id\":90,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":1972,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"historical_named_observations\":{\"initial\":{\"frame_id\":0,\"parameters\":{\"empty_open_hand\":true,\"identity\":\"same_package_unchanged\",\"notes\":\"u0 selects an interior top patch near the geometric center. c0 and c1 select clean counter patches immediately outside the opposing long sides, distinct from the earlier distributed plane samples. Use these measurements to refine a different, lower candidate rather than reuse the rejected pad height of 0.91931 m. Lower-height feasibility, hidden sidewall geometry, and descent clearance remain for the later gate.\",\"sidewall_evidence\":\"consistent\",\"support\":\"same_support\"},\"points\":{\"u0\":{\"world_m\":[-0.053059,0.143967,0.918068],\"depth_m\":0.353279,\"frame_id\":0,\"pixel\":[176,216],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0480752,0.183971,0.899961],\"depth_m\":0.37106,\"frame_id\":0,\"pixel\":[132,216],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0480867,0.112801,0.899961],\"depth_m\":0.371097,\"frame_id\":0,\"pixel\":[228,216],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"previous\":{\"frame_id\":45,\"parameters\":{\"clear\":\"clear\",\"package_state\":\"unchanged\",\"notes\":\"Authorization covers only descent to pad center [-0.0532806, 0.144382, 0.982985] with the stated orientation and open hand, including the small remaining alignment correction. It does not authorize lower descent, closure or transfer. Package agreement is within image resolution, not a new submillimeter pose measurement. Current package, support and obstacle selections are returned for fresh measurement. Wrist-image bottom occlusion is robot self-occlusion; the agentview exposes the relevant neighboring surfaces. No hidden-surface or global clearance certificate is claimed.\"},\"points\":{\"u0\":{\"world_m\":[-0.0531668,0.143752,0.91813],\"depth_m\":0.362212,\"frame_id\":45,\"pixel\":[385,449],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0483997,0.184101,0.900019],\"depth_m\":0.380411,\"frame_id\":45,\"pixel\":[332,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.048437,0.112659,0.900019],\"depth_m\":0.38022,\"frame_id\":45,\"pixel\":[426,440],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"bottle_cap\":{\"world_m\":[-0.182846,-0.0378363,1.05721],\"depth_m\":1.00219,\"frame_id\":45,\"pixel\":[349,293],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"cabinet_top\":{\"world_m\":[-0.0529821,-0.163663,1.12717],\"depth_m\":0.857202,\"frame_id\":45,\"pixel\":[207,307],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"}}},\"scope\":\"Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.\"},\"historical_point_projections_if_stationary\":{\"u0\":{\"agentview\":[518.79,469.61],\"robot0_eye_in_hand\":[383.979,536.875]},\"c0\":{\"agentview\":[555.295,484.847],\"robot0_eye_in_hand\":[269.884,507.029]},\"c1\":{\"agentview\":[488.819,484.822],\"robot0_eye_in_hand\":[471.757,508.62]},\"bottle_cap\":{\"agentview\":[349.0,293.0],\"robot0_eye_in_hand\":[4877.46,4840.59]},\"cabinet_top\":{\"agentview\":[207.0,307.0]}},\"program_supplied_review_context\":{\"geometry\":{\"frame\":0,\"top_plane\":{\"coefficients\":[0.00131597,0.0254661,0.999675,-0.921293],\"center_world_m\":[-0.0524727,0.142037,0.918044],\"rms_m\":8.91339e-06,\"in_plane_spread_m\":[0.0268475,0.0110926]},\"counter_plane\":{\"coefficients\":[3.07537e-05,-1.96033e-07,1.0,-0.89996],\"center_world_m\":[-0.0450888,0.15066,0.899961],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0552986,0.0285792]},\"upper_corners_world_m\":[[-0.0134854,0.165099,0.917405],[-0.0132077,0.123958,0.918453],[-0.0936574,0.123429,0.918572],[-0.0927722,0.165043,0.917511]],\"center_world_m\":[-0.0532806,0.144382,0.917985],\"width_m\":0.0411419,\"length_m\":0.0804514,\"height_m\":0.0174435,\"quaternion_xyzw\":[0.999995,0.00328947,0.0,0.0],\"grasp_pad_z_m\":0.918108,\"guard_m\":0.0015,\"grasp_tolerance_m\":0.0005,\"finger_bottom_offset_m\":-0.0128491,\"side_overlap_m\":0.00729741,\"nominal_usable_aperture_m\":0.0614442,\"required_aperture_m\":0.0471476,\"aperture_assumption\":\"Symmetric prismatic joint separation less one transverse pad-size allowance is a conservative screening model, not measured inner-face clearance; fresh visible straddling is also required.\",\"p0_identity\":\"White curled capital C beginning Cream near the upper end of the printed blue logo.\",\"top_floor_world_z_m\":0.917405,\"counter_ceiling_world_z_m\":0.899961,\"required_nominal_overlap_m\":0.007,\"candidate_checkpoint\":\"secure.candidate\",\"refinement_checkpoint\":\"secure.refinement\",\"geometry_scope\":\"Original same-frame upper boundary and planes, independently checked local top/support samples, and a new lower grasp target; actual pose margins must pass before closure.\"},\"target_pad_world_m\":[-0.0532806,0.144382,0.918108],\"attempt\":0}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "clear": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "clear",
+                  "blocked",
+                  "unknown"
+                ]
+              },
+              "straddling": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "yes",
+                  "no",
+                  "unknown"
+                ]
+              },
+              "package_state": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "unchanged",
+                  "moved",
+                  "unknown"
+                ]
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 6000
+              }
+            },
+            "required": [
+              "clear",
+              "straddling",
+              "package_state",
+              "notes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

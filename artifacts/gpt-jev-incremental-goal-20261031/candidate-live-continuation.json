@@ -1,0 +1,35 @@
+{
+  "event": {
+    "update": 1,
+    "stage": "secure",
+    "plan_revision": 0,
+    "stage_index": 0,
+    "frame_id": 72,
+    "trigger": "control_slice_limit",
+    "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+    "outcome": {
+      "stage_status": "yield",
+      "completion_proposed": false,
+      "reason": "Control slice ended before the next unexecuted control; worker stack remains live."
+    },
+    "decision": {
+      "action": "continue",
+      "evidence": [
+        "The current trigger is control_slice_limit; the stage yielded with its worker stack live and live_continuation_available=true.",
+        "Acknowledged execution reached high alignment, then continued descending toward vertical_pregrasp. Recent TCP height decreased steadily from 1.13191 m to 1.05181 m without stalled motion.",
+        "Current images show the cream cheese still on the counter, separate from the bowl, with its fixed-camera position and orientation visually unchanged.",
+        "The gripper remains open above the package. No lift, retention, displacement, or new obstruction is visible."
+      ],
+      "invalidated_assumptions": [],
+      "plan_valid": "yes",
+      "reason": "Acknowledged progress and current views support the unchanged, previously reviewed pregrasp approach. Resume the suspended live program without repeating executed actions, preserving its later geometry and contact checks. Neither the secure stage nor the overall task is complete.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    },
+    "live_continuation": true
+  },
+  "dispatches_at_checkpoint": 30,
+  "method_count": 2,
+  "scope": "Real supervised live continuation after generated patch; no grasp or terminal success"
+}

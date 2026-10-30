@@ -1,0 +1,30 @@
+{
+  "object": "response",
+  "id": "exec-ec06493b-9c86-4420-9d14-97aab45fb323",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-ec06493b-9c86-4420-9d14-97aab45fb323",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Clear for vertical_pregrasp only. Using the current open-finger bounds and target orientation, the lowest finger surface stops near 0.970 m: approximately 51 mm above the package top and 19 mm above the measured bowl rim. The visible hand housing remains higher. The bottle and cabinet are laterally outside this descent; the stove is below and outside it. No external obstruction is visible in this local sweep. The package outline, logo and position relative to neighboring objects match the earlier fixed-camera image.\", \"parameters\": {\"clear\": \"clear\", \"package_state\": \"unchanged\", \"notes\": \"Authorization covers only descent to pad center [-0.0532806, 0.144382, 0.982985] with the stated orientation and open hand, including the small remaining alignment correction. It does not authorize lower descent, closure or transfer. Package agreement is within image resolution, not a new submillimeter pose measurement. Current package, support and obstacle selections are returned for fresh measurement. Wrist-image bottom occlusion is robot self-occlusion; the agentview exposes the relevant neighboring surfaces. No hidden-surface or global clearance certificate is claimed.\"}, \"points\": [{\"name\": \"u0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [385, 449], \"radius\": 2}, {\"name\": \"c0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [332, 439], \"radius\": 3}, {\"name\": \"c1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [426, 440], \"radius\": 3}, {\"name\": \"bottle_cap\", \"camera\": \"agentview\", \"pixel\": [349, 293], \"radius\": 2}, {\"name\": \"cabinet_top\", \"camera\": \"agentview\", \"pixel\": [207, 307], \"radius\": 3}], \"regions\": [{\"name\": \"package_visible_top_and_boundary\", \"camera\": \"robot0_eye_in_hand\", \"box\": [353, 389, 416, 508], \"stride\": 4}, {\"name\": \"bowl_visible_surface_and_rim\", \"camera\": \"agentview\", \"box\": [337, 391, 443, 476], \"stride\": 4}, {\"name\": \"bottle_visible_surfaces\", \"camera\": \"agentview\", \"box\": [331, 286, 372, 412], \"stride\": 4}, {\"name\": \"stove_visible_surfaces\", \"camera\": \"agentview\", \"box\": [465, 307, 644, 419], \"stride\": 4}, {\"name\": \"stove_rear_fixture\", \"camera\": \"agentview\", \"box\": [505, 246, 566, 307], \"stride\": 4}, {\"name\": \"cabinet_top_inner_side_and_handles\", \"camera\": \"agentview\", \"box\": [1, 285, 260, 642], \"stride\": 5}, {\"name\": \"open_hand_visible_housing_and_fingers\", \"camera\": \"agentview\", \"box\": [435, 95, 687, 269], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 82007,
+    "output_tokens": 4647,
+    "output_tokens_details": {
+      "reasoning_tokens": 3265
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ec7-11f6-7d63-94a7-8627b5ef17b7",
+    "turn_ids": [
+      "01a18ec7-11fc-7592-87ca-351eb7b9c9ac",
+      "01a18ec8-f1f7-7f11-bf4c-b56510b78445"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

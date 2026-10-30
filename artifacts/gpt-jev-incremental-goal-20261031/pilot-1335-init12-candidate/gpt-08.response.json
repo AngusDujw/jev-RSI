@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-a2e0a63f-3d21-4a86-b33f-d6f9ad00d39b",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-a2e0a63f-3d21-4a86-b33f-d6f9ad00d39b",
+      "arguments": "{\"action\": \"continue\", \"evidence\": [\"The current trigger is control_slice_limit; the stage yielded with its worker stack live and live_continuation_available=true.\", \"Acknowledged execution reached high alignment, then continued descending toward vertical_pregrasp. Recent TCP height decreased steadily from 1.13191 m to 1.05181 m without stalled motion.\", \"Current images show the cream cheese still on the counter, separate from the bowl, with its fixed-camera position and orientation visually unchanged.\", \"The gripper remains open above the package. No lift, retention, displacement, or new obstruction is visible.\"], \"invalidated_assumptions\": [], \"plan_valid\": \"yes\", \"reason\": \"Acknowledged progress and current views support the unchanged, previously reviewed pregrasp approach. Resume the suspended live program without repeating executed actions, preserving its later geometry and contact checks. Neither the secure stage nor the overall task is complete.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 44235,
+    "output_tokens": 471,
+    "output_tokens_details": {
+      "reasoning_tokens": 207
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ec9-4046-7d10-8ece-d6cc5f9e4f2b",
+    "turn_ids": [
+      "01a18ec9-404d-7692-925c-14749d02a6e5"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
