@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-83e30dea-38d9-4637-8176-56dfec908625",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-83e30dea-38d9-4637-8176-56dfec908625",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 234 shows the cream-cheese package flat on the counter outside the bowl and an empty open gripper.\", \"Acknowledged execution raised the hand to the current observation pose; no retained lift is observed.\", \"Current depth measurements cover the package top, counter, and one short-end wall. The opposite short-end wall remains object-occluded; b0 and b1 are missing.\", \"Resampling at the same frame did not resolve the missing opposed contact geometry. Visible top strips do not establish usable vertical wall contacts.\", \"The historical height-interval failures and palm-counter route rejection remain unresolved; no new feasible grasp interval is established.\", \"The stage returned blocked, not stage_complete, and live continuation is unavailable.\"], \"invalidated_assumptions\": [\"Removing wrist self-occlusion suffices to expose both opposed short-end contact walls.\", \"The current views and repeated visible-surface sampling suffice to validate the proposed short-end pinch.\"], \"plan_valid\": \"yes\", \"reason\": \"The alternate-pickup subgoal and pickup-before-placement ordering remain suitable. Revise the sensing method from the actual raised pose: assess a clearance-supported complementary viewing direction that can expose the hidden wall, rather than repeating samples from these views. Contact visibility alone will not repair the height deficit; evaluate fresh candidate geometry against the actual aperture and full hand envelope while preserving margins. These local failures do not establish global impossibility. If useful sensing cannot resolve the candidate, reconsider contact configuration or a separately supported presentation change.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 51486,
+    "output_tokens": 935,
+    "output_tokens_details": {
+      "reasoning_tokens": 516
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f2d-e597-7831-aef3-e524eb46ee77",
+    "turn_ids": [
+      "01a18f2d-e59e-7591-966d-22614eaa8bc5"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

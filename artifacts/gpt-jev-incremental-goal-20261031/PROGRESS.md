@@ -607,3 +607,12 @@ It independently authorized a useful30mm empty-hand rise. Method07
 executed6Jev18steps, frame216to234; actual TCP rise28.971mm, open hand.
 Review34 reacquires short-end geometry. Total78Jev234steps, zero completed
 stages. This is observation motion, not pickup or native success.
+
+## Repeated contact occlusion leads to late single-stage plan
+
+Review35 again lacks b0/b1; method07 blocks. Supervisor36 requests new
+view direction; local revision cap forces plan37, not budget-pressure
+heuristic. Plan37 returns55.163s and consolidates acquire/place/verify
+into one stage with only2calls after planning. Builder38 live. This exposes
+insufficient reserve during within-stage review consumption; no new
+actions beyond78Jev234steps, zero completed stages or native success.

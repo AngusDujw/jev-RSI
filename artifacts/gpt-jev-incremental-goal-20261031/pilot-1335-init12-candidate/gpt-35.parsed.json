@@ -1,0 +1,217 @@
+{
+  "status": "continue",
+  "explanation": "Assessment and measurement only; no approach or closure is authorized. The current views show the cream-cheese package flat on the counter and an empty open hand. The printed landmarks match the supplied physical IDs. Earlier frames are supplied as records, not images, so an independent earlier-image comparison is unavailable. A is the short end at the upper wrist-image boundary and lower agentview boundary. Its vertical wall is visible in agentview. Opposite B's vertical wall is hidden by the package in both views: b0/b1 and a B-wall region are unavailable. The visible long-side wall is not a substitute. This is unobserved contact geometry, not an observed external obstruction or current robot self-occlusion. Visible short-end top edges support a local strip model, but do not establish two usable opposed end-wall contacts. Upright orientation alone does not repair the height deficit. Every supplied interval fails the minimum-width requirement, including the positive 0.106 mm interval that is narrower than 0.200 mm. Approach remains blocked pending a measured feasible interval and adequate contact evidence. The exposed broad top is a possible surface for separately assessing a presentation change; no raised or overhanging end is visible and no such action is authorized. The rejected near-horizontal routes remain excluded.",
+  "parameters": {
+    "camera": "robot0_eye_in_hand",
+    "edge_pixels": [
+      [
+        342,
+        417
+      ],
+      [
+        408,
+        415
+      ],
+      [
+        408,
+        622
+      ],
+      [
+        342,
+        631
+      ]
+    ],
+    "empty_open_hand": true,
+    "identity": "same_package_on_counter",
+    "landmark_identity": "same_reference_landmarks",
+    "local_walls": "unknown",
+    "notes": "A is upper in wrist view; B is lower. Edge order is A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1. New top-side lip pixels sit just inside the boundaries to reduce mixed depth; transverse spans are about 25 mm, subject to depth verification. These are short-end strips, not a perimeter. t IDs retain their printed features. New s/c/a samples replace previous sample locations; depth validity still needs checking. b0/b1 are unavailable through object occlusion. Continue permits assessment only, not approach.",
+    "s0_surface": "same_package_top",
+    "s1_surface": "same_package_top",
+    "s2_surface": "same_package_top",
+    "s3_surface": "same_package_top",
+    "top_boundary": "visible_local_edges",
+    "top_ids": [
+      "t0",
+      "t1",
+      "t2",
+      "t3"
+    ]
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        371,
+        439
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        381,
+        529
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        349,
+        497
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t3",
+      "pixel": [
+        350,
+        557
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "c0",
+      "pixel": [
+        263,
+        454
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "c1",
+      "pixel": [
+        486,
+        456
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "c2",
+      "pixel": [
+        478,
+        596
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "a0",
+      "pixel": [
+        516,
+        502
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "a1",
+      "pixel": [
+        516,
+        506
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s0",
+      "pixel": [
+        338,
+        451
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s1",
+      "pixel": [
+        407,
+        451
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s2",
+      "pixel": [
+        340,
+        600
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s3",
+      "pixel": [
+        405,
+        594
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "package_top_interior",
+      "box": [
+        331,
+        427,
+        416,
+        612
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "a_short_end_wall",
+      "box": [
+        509,
+        502,
+        533,
+        507
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "counter_beside_package",
+      "box": [
+        454,
+        440,
+        520,
+        601
+      ],
+      "stride": 5
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a_short_end_top_strip",
+      "box": [
+        342,
+        418,
+        408,
+        424
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "b_short_end_top_strip",
+      "box": [
+        342,
+        613,
+        408,
+        620
+      ],
+      "stride": 4
+    }
+  ]
+}

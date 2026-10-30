@@ -1,0 +1,48 @@
+{
+  "frame": 234,
+  "jev_calls": 78,
+  "completed_stages": 0,
+  "missing_contact_samples": [
+    "b0",
+    "b1"
+  ],
+  "supervisor36": {
+    "action": "revise",
+    "evidence": [
+      "Frame 234 shows the cream-cheese package flat on the counter outside the bowl and an empty open gripper.",
+      "Acknowledged execution raised the hand to the current observation pose; no retained lift is observed.",
+      "Current depth measurements cover the package top, counter, and one short-end wall. The opposite short-end wall remains object-occluded; b0 and b1 are missing.",
+      "Resampling at the same frame did not resolve the missing opposed contact geometry. Visible top strips do not establish usable vertical wall contacts.",
+      "The historical height-interval failures and palm-counter route rejection remain unresolved; no new feasible grasp interval is established.",
+      "The stage returned blocked, not stage_complete, and live continuation is unavailable."
+    ],
+    "invalidated_assumptions": [
+      "Removing wrist self-occlusion suffices to expose both opposed short-end contact walls.",
+      "The current views and repeated visible-surface sampling suffice to validate the proposed short-end pinch."
+    ],
+    "plan_valid": "yes",
+    "reason": "The alternate-pickup subgoal and pickup-before-placement ordering remain suitable. Revise the sensing method from the actual raised pose: assess a clearance-supported complementary viewing direction that can expose the hidden wall, rather than repeating samples from these views. Contact visibility alone will not repair the height deficit; evaluate fresh candidate geometry against the actual aperture and full hand envelope while preserving margins. These local failures do not establish global impossibility. If useful sensing cannot resolve the candidate, reconsider contact configuration or a separately supported presentation change.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "plan37": {
+    "explanation": "Frame 234 shows no pickup: only the observation retreat was executed. Removing wrist self-occlusion did not expose the opposite contact wall, and repeated sampling did not establish a feasible grasp. Historical checkpoints do not authorize contact. Two remaining calls permit only one combined physical completion and assessment stage, with no extra review or repair reserve. Completion is conditional on sufficient public evidence; budget pressure must not relax safety margins.",
+    "goal_evidence": "After release, hand withdrawal, and settling, fresh public images and depth show the cream cheese package resting inside the stable bowl independently of the gripper, not perched on the rim or supported by the counter outside.",
+    "stages": [
+      {
+        "id": "place_verify",
+        "objective": "Acquire the package using an evidence-supported configuration, place it inside the bowl, and assess independent settled containment.",
+        "entry_evidence": "At frame 234 the package remains flat on the counter outside the bowl and the raised gripper is visibly open and empty. One short-end wall is observed; its opposite remains object-occluded. No retained lift or newly feasible grasp interval has been established.",
+        "success_evidence": "Observed separation from the counter and package motion with the hand establish acquisition and retention. Following placement, release, withdrawal, and settling, fresh observations establish the whole-task goal, including independent containment and bowl stability.",
+        "handoff_requirements": "Require current contact, aperture, full-hand clearance, and overlap evidence before acquisition, preserving established margins. Require current retention, bowl fit, and occupied-path clearance evidence before placement. Report acknowledged actions and final object-effect evidence or the precise unresolved condition; robot pose and gripper commands alone are insufficient.",
+        "replan_conditions": "Do not repeat same-view sampling, the rejected height-only search, or the palm-counter route. A clearance-supported complementary viewing direction may resolve the hidden wall; changed contact geometry or an exposed-top presentation change requires its own observed contact and motion clearance. Visibility alone does not repair the height deficit. Reassess after any package or bowl displacement. Resolve final occlusion through a supported alternative view if available. If necessary evidence or recovery exceeds the remaining budget, stop safely and report the actual incomplete state, not global impossibility or success."
+      }
+    ]
+  },
+  "plan_trigger": "Repeated unproductive revisions require a plan-level reconsideration",
+  "budget_pressure_trigger_observed": false,
+  "builder38_pending": "a0b63827baac4c169318ee0e201a5c7d",
+  "limitation": "Only two model calls remain after plan37; no extra observation or repair reserve. Stage-boundary reserve heuristic did not prevent intra-stage review consumption.",
+  "terminal_result": null
+}

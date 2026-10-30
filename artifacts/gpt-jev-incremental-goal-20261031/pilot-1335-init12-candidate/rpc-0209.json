@@ -1,0 +1,38 @@
+{
+  "index": 209,
+  "method_number": 7,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "alt.failure",
+      {
+        "gate": "local_depth_membership",
+        "prevented_action": "side-entry assessment",
+        "observation_frame": 234,
+        "diagnostics": {
+          "gate": "local_depth_membership",
+          "action": "side-entry assessment",
+          "missing": [
+            "b0",
+            "b1"
+          ],
+          "errors": []
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "key": "alt.failure",
+      "frame_id": 234,
+      "method_number": 7,
+      "source_sha256": "0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431",
+      "bytes": 230,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 234
+}

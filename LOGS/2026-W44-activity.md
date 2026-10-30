@@ -323,3 +323,4 @@
 - 【Agent】【2026-10-31 07:33】[result] EXP-2026W44-054: patch32 delivered946.475s,18-to12 replacements corrected in original turn; exact replay to method07; new short-end upright candidate, review33 live.
 - 【Agent】【2026-10-31 07:34】[result] EXP-2026W44-054: real Jev6calls18steps moved empty open hand upward28.971mm for new short-end view; total78Jev234steps; review34 live. Review33 region-count correction succeeded.
 - 【Agent】【2026-10-31 07:37】[result] EXP-2026W44-054: review34 delivered after same-turn notes837-to600 correction; opposite short-end wall remains occluded, request35 measurement retry live, no descent/closure. Total78Jev234steps.
+- 【Agent】【2026-10-31 07:40】[result] EXP-2026W44-054: repeated occlusion leads revision-cap replan37; only2calls remain for combined acquisition/placement, builder38 live. Budget-pressure trigger absent; reserve is too late for within-stage reviews.

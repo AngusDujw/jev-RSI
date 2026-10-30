@@ -1,0 +1,14 @@
+{
+  "explanation": "Frame 234 shows no pickup: only the observation retreat was executed. Removing wrist self-occlusion did not expose the opposite contact wall, and repeated sampling did not establish a feasible grasp. Historical checkpoints do not authorize contact. Two remaining calls permit only one combined physical completion and assessment stage, with no extra review or repair reserve. Completion is conditional on sufficient public evidence; budget pressure must not relax safety margins.",
+  "goal_evidence": "After release, hand withdrawal, and settling, fresh public images and depth show the cream cheese package resting inside the stable bowl independently of the gripper, not perched on the rim or supported by the counter outside.",
+  "stages": [
+    {
+      "id": "place_verify",
+      "objective": "Acquire the package using an evidence-supported configuration, place it inside the bowl, and assess independent settled containment.",
+      "entry_evidence": "At frame 234 the package remains flat on the counter outside the bowl and the raised gripper is visibly open and empty. One short-end wall is observed; its opposite remains object-occluded. No retained lift or newly feasible grasp interval has been established.",
+      "success_evidence": "Observed separation from the counter and package motion with the hand establish acquisition and retention. Following placement, release, withdrawal, and settling, fresh observations establish the whole-task goal, including independent containment and bowl stability.",
+      "handoff_requirements": "Require current contact, aperture, full-hand clearance, and overlap evidence before acquisition, preserving established margins. Require current retention, bowl fit, and occupied-path clearance evidence before placement. Report acknowledged actions and final object-effect evidence or the precise unresolved condition; robot pose and gripper commands alone are insufficient.",
+      "replan_conditions": "Do not repeat same-view sampling, the rejected height-only search, or the palm-counter route. A clearance-supported complementary viewing direction may resolve the hidden wall; changed contact geometry or an exposed-top presentation change requires its own observed contact and motion clearance. Visibility alone does not repair the height deficit. Reassess after any package or bowl displacement. Resolve final occlusion through a supported alternative view if available. If necessary evidence or recovery exceeds the remaining budget, stop safely and report the actual incomplete state, not global impossibility or success."
+    }
+  ]
+}
