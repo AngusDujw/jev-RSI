@@ -580,3 +580,12 @@ measured spread12.301492mm exceeds unchanged5.224119mm threshold,
 margin7.077373mm; all plane components pass. alt.model saves14070bytes.
 Review30 now evaluates next action; no new action yet,72Jev216steps.
 Passing measurement quality is not pickup or native terminal success.
+
+## Side-entry descent rejected by action review
+
+Review30 returned172.035s with zero host reconnects and one same-thread
+continuation(error details empty, cause not classified). It marks all four
+high alignments clear but descents blocked by predicted palm/counter
+intersection. Method06 returns new_orientation_path blocked without
+physical actions; supervisor31 is live. This is a VLM assessment, not an
+executed collision test. Still72Jev216steps, zero completed stages.

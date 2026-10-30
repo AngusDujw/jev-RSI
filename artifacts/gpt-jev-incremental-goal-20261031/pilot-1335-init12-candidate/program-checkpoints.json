@@ -2388,33 +2388,201 @@
   "alt.failure": {
     "key": "alt.failure",
     "frame_id": 216,
-    "method_number": 5,
-    "source_sha256": "6e099a4020a906d7c12b7e5168e03516e3a2596a149a0cf50b19e1028b392361",
-    "bytes": 773,
+    "method_number": 6,
+    "source_sha256": "3576fba664533ff5b6ac0a59bdf53870bd88acacbd3d247fc8c7fe185fa0e5ed",
+    "bytes": 5677,
     "value": {
-      "gate": "plane_quality",
-      "prevented_action": "side entry",
+      "gate": "new_orientation_path",
+      "prevented_action": "high alignment",
       "observation_frame": 216,
       "diagnostics": {
-        "frame": 216,
-        "guard_m": 0.001741372874978718,
-        "guard_provenance": "Never below inherited guard; increased by twice either fresh fit RMS. Operational allowance, not a calibrated confidence interval.",
-        "top_rms_m": 6.213389856321618e-05,
-        "counter_rms_m": 1.1102230246251565e-16,
-        "top_spread_m": 0.005080927164365157,
-        "counter_spread_m": 0.016950770482551995,
-        "normal_z": [
-          0.9996938239174114,
-          0.9999999935930465
-        ],
-        "rms_limit_m": 0.0015,
-        "spread_noise_ratio_min": 3.0,
-        "horizontal_normal_z_min": 0.98,
-        "rms_margin_m": 0.0014378661014367838,
-        "normal_margin": 0.01969382391741137,
-        "gate": "plane_quality",
-        "action": "side entry",
-        "residual_margin_m": -0.00014319146057099798
+        "gate": "new_orientation_path",
+        "action": "high alignment",
+        "parameters": {
+          "align_0": "clear",
+          "align_1": "clear",
+          "align_2": "clear",
+          "align_3": "clear",
+          "descent_0": "blocked",
+          "descent_1": "blocked",
+          "descent_2": "blocked",
+          "descent_3": "blocked",
+          "notes": "Clear applies only to high local alignment, not lowering or closure. The package top is about 18 mm above the counter; the visible palm thickness cannot fit that side-entry height. Some inner finger surfaces and the package's near end are robot-occluded, not observed external obstructions; hidden clearance is not certified. Regions sample visible palm, counter, package and bowl surfaces. Earlier image frames are not present here; historical measurements are not additional views."
+        },
+        "candidates": [
+          {
+            "q": [
+              0.0015177560958414792,
+              -0.7193381991578678,
+              -0.0014656800246491187,
+              -0.6946568242166882
+            ],
+            "low": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9173554195630232
+            ],
+            "high": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9825767408029684
+            ],
+            "tilt_degrees": 88,
+            "screen": {
+              "lower_pad_z_m": 0.9169272175277776,
+              "upper_pad_z_m": 0.9177836215982689,
+              "interval_m": 0.0008564040704912568,
+              "interval_threshold_m": 0.0002,
+              "residual_margin_m": 0.0006564040704912568,
+              "contact_core_half_height_m": 0.00793538911126806,
+              "finger_bottom_relative_pad_m": -0.010936351507007412,
+              "support_ceiling_m": 0.8999637347174074,
+              "top_floor_m": 0.9175767408029685,
+              "counter_allowance_m": 0.0030271313033627713,
+              "overlap_allowance_m": 0.0027285083159676133,
+              "finger_rotation_lever_m": 0.07857584283840532,
+              "pad_rotation_lever_m": 0.0487135440988895,
+              "finger_rotation_allowance_m": 0.0007857584283840533,
+              "pad_rotation_allowance_m": 0.000487135440988895,
+              "required_nominal_overlap_m": 0.0077285083159676134,
+              "guard_m": 0.001741372874978718,
+              "position_tolerance_m": 0.0005,
+              "rotation_tolerance_rad": 0.01,
+              "longitudinal_margin_m": 0.0015149200960862148,
+              "outer_span_necessary_margin_m": 0.05071721538079083,
+              "frame": 216
+            }
+          },
+          {
+            "q": [
+              0.0015177560958414792,
+              -0.7193381991578678,
+              0.0014656800246491187,
+              0.6946568242166882
+            ],
+            "low": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9173558517400722
+            ],
+            "high": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9825767408029684
+            ],
+            "tilt_degrees": -88,
+            "screen": {
+              "lower_pad_z_m": 0.9169280818818755,
+              "upper_pad_z_m": 0.9177836215982689,
+              "interval_m": 0.0008555397163934053,
+              "interval_threshold_m": 0.0002,
+              "residual_margin_m": 0.0006555397163934053,
+              "contact_core_half_height_m": 0.00793538911126806,
+              "finger_bottom_relative_pad_m": -0.010936766068667465,
+              "support_ceiling_m": 0.8999641845098453,
+              "top_floor_m": 0.9175767408029685,
+              "counter_allowance_m": 0.0030271313033627713,
+              "overlap_allowance_m": 0.0027285083159676133,
+              "finger_rotation_lever_m": 0.07857584283840532,
+              "pad_rotation_lever_m": 0.0487135440988895,
+              "finger_rotation_allowance_m": 0.0007857584283840533,
+              "pad_rotation_allowance_m": 0.000487135440988895,
+              "required_nominal_overlap_m": 0.0077285083159676134,
+              "guard_m": 0.001741372874978718,
+              "position_tolerance_m": 0.0005,
+              "rotation_tolerance_rad": 0.01,
+              "longitudinal_margin_m": 0.0015149200960862148,
+              "outer_span_necessary_margin_m": 0.05071721538079083,
+              "frame": 216
+            }
+          },
+          {
+            "q": [
+              0.0014919452907394813,
+              -0.7071052072352809,
+              -0.0014919452907394737,
+              -0.7071052072352808
+            ],
+            "low": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9171668660382033
+            ],
+            "high": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9825767408029684
+            ],
+            "tilt_degrees": 90,
+            "screen": {
+              "lower_pad_z_m": 0.9164851455093721,
+              "upper_pad_z_m": 0.9178485865670344,
+              "interval_m": 0.0013634410576622846,
+              "interval_threshold_m": 0.0002,
+              "residual_margin_m": 0.0011634410576622845,
+              "contact_core_half_height_m": 0.008000354080033517,
+              "finger_bottom_relative_pad_m": -0.010494285246036506,
+              "support_ceiling_m": 0.8999637289599729,
+              "top_floor_m": 0.9175767408029685,
+              "counter_allowance_m": 0.0030271313033627713,
+              "overlap_allowance_m": 0.0027285083159676133,
+              "finger_rotation_lever_m": 0.07857584283840532,
+              "pad_rotation_lever_m": 0.0487135440988895,
+              "finger_rotation_allowance_m": 0.0007857584283840533,
+              "pad_rotation_allowance_m": 0.000487135440988895,
+              "required_nominal_overlap_m": 0.0077285083159676134,
+              "guard_m": 0.001741372874978718,
+              "position_tolerance_m": 0.0005,
+              "rotation_tolerance_rad": 0.01,
+              "longitudinal_margin_m": 0.0017892545011715198,
+              "outer_span_necessary_margin_m": 0.05071721538079083,
+              "frame": 216
+            }
+          },
+          {
+            "q": [
+              0.0014919452907394813,
+              -0.7071052072352809,
+              0.0014919452907394737,
+              0.7071052072352808
+            ],
+            "low": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9171672984786833
+            ],
+            "high": [
+              -0.027279161250490847,
+              0.14494843200137114,
+              0.9825767408029684
+            ],
+            "tilt_degrees": -90,
+            "screen": {
+              "lower_pad_z_m": 0.9164860103903322,
+              "upper_pad_z_m": 0.9178485865670344,
+              "interval_m": 0.0013625761767022126,
+              "interval_threshold_m": 0.0002,
+              "residual_margin_m": 0.0011625761767022126,
+              "contact_core_half_height_m": 0.008000354080033517,
+              "finger_bottom_relative_pad_m": -0.010494700060390254,
+              "support_ceiling_m": 0.8999641790265792,
+              "top_floor_m": 0.9175767408029685,
+              "counter_allowance_m": 0.0030271313033627713,
+              "overlap_allowance_m": 0.0027285083159676133,
+              "finger_rotation_lever_m": 0.07857584283840532,
+              "pad_rotation_lever_m": 0.0487135440988895,
+              "finger_rotation_allowance_m": 0.0007857584283840533,
+              "pad_rotation_allowance_m": 0.000487135440988895,
+              "required_nominal_overlap_m": 0.0077285083159676134,
+              "guard_m": 0.001741372874978718,
+              "position_tolerance_m": 0.0005,
+              "rotation_tolerance_rad": 0.01,
+              "longitudinal_margin_m": 0.0017892545011715198,
+              "outer_span_necessary_margin_m": 0.05071721538079083,
+              "frame": 216
+            }
+          }
+        ]
       }
     },
     "source": "program-supplied historical data; not a fresh measurement"

@@ -1,0 +1,179 @@
+{
+  "status": "continue",
+  "explanation": "Alternatives 0 (+88), 1 (-88), 2 (+90), and 3 (-90): the high, empty, open-hand alignments are clear within the visible local workspace, separately from descent. The package and counter lie below that high sweep; the bowl is lateral to it. All four descents are blocked: turning the visible bulky palm sideways places its lower extent below the counter before the pads reach the proposed low wall-contact height. Reversing the tilt sign moves the palm to the other longitudinal side but does not remove this counter obstruction. The finger-only height intervals and outer-span margins do not establish palm clearance or an unobstructed inner aperture.",
+  "parameters": {
+    "align_0": "clear",
+    "align_1": "clear",
+    "align_2": "clear",
+    "align_3": "clear",
+    "descent_0": "blocked",
+    "descent_1": "blocked",
+    "descent_2": "blocked",
+    "descent_3": "blocked",
+    "notes": "Clear applies only to high local alignment, not lowering or closure. The package top is about 18 mm above the counter; the visible palm thickness cannot fit that side-entry height. Some inner finger surfaces and the package's near end are robot-occluded, not observed external obstructions; hidden clearance is not certified. Regions sample visible palm, counter, package and bowl surfaces. Earlier image frames are not present here; historical measurements are not additional views."
+  },
+  "points": [
+    {
+      "name": "a0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        341,
+        478
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        334,
+        496
+      ],
+      "radius": 1
+    },
+    {
+      "name": "b0",
+      "camera": "agentview",
+      "pixel": [
+        501,
+        483
+      ],
+      "radius": 1
+    },
+    {
+      "name": "b1",
+      "camera": "agentview",
+      "pixel": [
+        501,
+        493
+      ],
+      "radius": 1
+    },
+    {
+      "name": "t0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        400,
+        450
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        412,
+        556
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        375,
+        519
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t3",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        376,
+        589
+      ],
+      "radius": 2
+    }
+  ],
+  "regions": [
+    {
+      "name": "visible_palm_upper_surface",
+      "camera": "agentview",
+      "box": [
+        541,
+        375,
+        613,
+        397
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_palm_lower_surface",
+      "camera": "agentview",
+      "box": [
+        538,
+        405,
+        611,
+        419
+      ],
+      "stride": 4
+    },
+    {
+      "name": "counter_beyond_exposed_package_end",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        335,
+        280,
+        480,
+        399
+      ],
+      "stride": 6
+    },
+    {
+      "name": "counter_beside_wall_a",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        240,
+        430,
+        318,
+        570
+      ],
+      "stride": 5
+    },
+    {
+      "name": "counter_beside_wall_b",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        482,
+        430,
+        555,
+        565
+      ],
+      "stride": 5
+    },
+    {
+      "name": "counter_toward_package_other_end",
+      "camera": "agentview",
+      "box": [
+        475,
+        520,
+        623,
+        580
+      ],
+      "stride": 5
+    },
+    {
+      "name": "visible_package_top",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        351,
+        429,
+        456,
+        633
+      ],
+      "stride": 5
+    },
+    {
+      "name": "visible_bowl_inner_surface",
+      "camera": "agentview",
+      "box": [
+        363,
+        415,
+        415,
+        439
+      ],
+      "stride": 4
+    }
+  ]
+}
