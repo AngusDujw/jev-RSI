@@ -228,8 +228,8 @@ def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:792
     source, destination, receipts = Path(source), Path(destination), Path(receipts)
     if not re.fullmatch(r"http://127\.0\.0\.1:(7921|7941)", bridge):
         raise ValueError("Use the declared local Pro bridge")
-    if destination.exists() or receipts.exists():
-        raise ValueError("Use new revision and receipt directories")
+    if destination.exists():
+        raise ValueError("Use a new revision directory")
     previous = read_files(source)
     lineage = json.loads((source / "lineage.json").read_text())["episodes"] if (source / "lineage.json").exists() else []
     evidence = []
@@ -282,25 +282,48 @@ def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:792
         "For each skills/<name>.md use YAML frontmatter with name and description. "
         "Use concise English ASCII throughout. Return submit_skill_revision only."
     )
-    receipts.mkdir(parents=True)
+    receipts.mkdir(parents=True, exist_ok=True)
     payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
         input=[dict(role="user", content=[dict(type="input_text", text=text)])],
         tools=[dict(type="function", name="submit_skill_revision", description="Submit reusable knowledge",
                     parameters=schema, strict=True)],
         tool_choice=dict(type="function", name="submit_skill_revision"), parallel_tool_calls=False, store=False)
-    result = post(bridge+"/responses", payload, receipts / "refinement", timeout=None)
-    calls = [item for item in result.get("output", []) if item.get("type") == "function_call"]
-    if result.get("status") != "completed" or len(calls) != 1 or calls[0].get("name") != "submit_skill_revision":
-        raise ValueError("Refinement did not complete exactly one valid submission")
-    answer = json.loads(calls[0]["arguments"])
-    validate_value(answer, schema, "skill revision")
-    english(answer)
-    files = {item["path"]: item["content"] for item in answer["files"]}
-    if len(files) != len(answer["files"]) or sum(map(len, files.values())) > LIMIT:
-        raise ValueError("Duplicate paths or oversized knowledge revision")
-    for name in files:
-        if not re.fullmatch(r"(skills|lessons)/[a-z0-9-]+\.md", name):
-            raise ValueError("Invalid knowledge output path")
+    attempts = []
+    for attempt in range(3):
+        prefix = receipts / ("refinement" if attempt == 0 else f"correction-{attempt}")
+        request_path, response_path = prefix.with_suffix(".request.json"), prefix.with_suffix(".response.json")
+        if request_path.exists() or response_path.exists():
+            if not request_path.exists() or not response_path.exists():
+                raise ValueError("Incomplete refinement request; inspect its bridge job before resuming")
+            if json.loads(request_path.read_text()) != payload:
+                raise ValueError("Refinement inputs changed before resume")
+            result = json.loads(response_path.read_text())
+        else:
+            result = post(bridge+"/responses", payload, prefix, timeout=None)
+        attempts.append(dict(receipt=prefix.name, usage=result.get("usage")))
+        try:
+            calls = [item for item in result.get("output", []) if item.get("type") == "function_call"]
+            if result.get("status") != "completed" or len(calls) != 1 or calls[0].get("name") != "submit_skill_revision":
+                raise ValueError("Refinement did not complete exactly one valid submission")
+            answer = json.loads(calls[0]["arguments"])
+            validate_value(answer, schema, "skill revision")
+            english(answer)
+            files = {item["path"]: item["content"] for item in answer["files"]}
+            if len(files) != len(answer["files"]) or sum(map(len, files.values())) > LIMIT:
+                raise ValueError("Duplicate paths or oversized knowledge revision")
+            invalid = [name for name in files if not re.fullmatch(r"(skills|lessons)/[a-z0-9-]+\.md", name)]
+            if invalid:
+                raise ValueError("Invalid knowledge output paths: " + ", ".join(invalid))
+            break
+        except (ValueError, KeyError, TypeError) as error:
+            attempts[-1]["validation_error"] = str(error)
+            (receipts / "validation.json").write_text(json.dumps(attempts, indent=2)+"\n")
+            if attempt == 2:
+                raise ValueError("Refinement exhausted two format corrections") from error
+            payload = json.loads(json.dumps(payload))
+            feedback = dict(validation_error=str(error), previous_output=result.get("output"),
+                correction="Return the complete corrected revision. Every path must match skills/<lowercase-hyphen-name>.md or lessons/<lowercase-hyphen-name>.md. No README.md, references directory, nested directories or other paths. Preserve evidence limits; do not invent new observations.")
+            payload["input"].append(dict(role="user", content=[dict(type="input_text", text=json.dumps(feedback))]))
     destination.mkdir(parents=True)
     for component in ("skills", "lessons"):
         (destination / component).mkdir()
@@ -308,7 +331,8 @@ def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:792
         (destination / name).write_text(content)
     (destination / "lineage.json").write_text(json.dumps(dict(episodes=lineage), indent=2)+"\n")
     (receipts / "revision.json").write_text(json.dumps(dict(files=file_hashes(files),
-        episodes=[str(Path(p).resolve()) for p in episodes], usage=result.get("usage")), indent=2)+"\n")
+        episodes=[str(Path(p).resolve()) for p in episodes], usage=result.get("usage"),
+        refinement_attempts=attempts), indent=2)+"\n")
     return dict(files=len(files), usage=result.get("usage"))
 
 
