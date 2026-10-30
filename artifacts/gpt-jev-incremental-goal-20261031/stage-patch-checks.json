@@ -1,0 +1,15 @@
+{
+  "scope": "Offline actual request-selection AST and actual source validator; no model or physical execution",
+  "checks": [
+    "stage_method:submit_method",
+    "stage_method:submit_method_patch",
+    "method:submit_method",
+    "method:submit_method_patch",
+    "complete validated source assembled without mutating original",
+    "reject:'absent'",
+    "reject:''",
+    "reject:'return'"
+  ],
+  "active_pilot_unchanged": true,
+  "host_sha256": "522126db95ad2aa0aabff808203fea396cdda9494e202f8673d90f6caefc53fd"
+}

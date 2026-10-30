@@ -152,3 +152,12 @@ retention remains false. Current native repair job4d53c77b5f5e41dba2fe414b7e7b9a
 is generating on thread01a18e19-281f-71d3-a8cf-b59b1c09b9a6.
 64 Jev calls/192 native steps are acknowledged; no terminal result exists yet.
 This is a local execution limitation, not evidence of a communication dropout.
+
+## Future-only stage patch submission
+
+EXP052 connects the existing exact-replacement method protocol to same-stage
+repairs. Initial/new stages still return complete source. Assembled methods keep
+all four fields, original source remains archived, and validate_source rejects
+invalid output. Eight offline checks passed; no live latency or success evidence
+yet. Current c8 pilot and loaded bridge remain unchanged. Root also contains
+other-session changes; future deployment must isolate intended candidate edits.
