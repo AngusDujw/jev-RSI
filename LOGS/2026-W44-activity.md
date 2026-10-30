@@ -325,3 +325,5 @@
 - 【Agent】【2026-10-31 07:37】[result] EXP-2026W44-054: review34 delivered after same-turn notes837-to600 correction; opposite short-end wall remains occluded, request35 measurement retry live, no descent/closure. Total78Jev234steps.
 - 【Agent】【2026-10-31 07:40】[result] EXP-2026W44-054: repeated occlusion leads revision-cap replan37; only2calls remain for combined acquisition/placement, builder38 live. Budget-pressure trigger absent; reserve is too late for within-stage reviews.
 - 【Agent】【2026-10-31 07:48】[result] EXP-2026W44-054 terminal: nativefalse planner_stop,40GPT78Jev234steps8867.413s,0stages; all requests delivered; full provenance/dispatch audit passes, qualification unstarted. Saved failure and next framework gaps.
+- 【Agent】【2026-10-31 07:51】[op] 新建实验块 EXP-2026W44-055：阶段内部观测预算保护与模型自选门槛来源区分  ↪ `EXP-2026W44-055`
+- 【Agent】【2026-10-31 07:52】[op] EXP055 candidatea0fd40ad isolated and SSHpushed: per-review reserve shared across repairs, heuristic provenance prompts; offline real orchestration checks pass, physical validation pending.

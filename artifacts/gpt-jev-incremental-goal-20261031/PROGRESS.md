@@ -640,3 +640,16 @@ thresholds without establishing their necessity for task success. Do not
 hand-edit a task trajectory or lower thresholds solely to pass this episode.
 Reconcile public robot geometry/contact semantics and prior successful-source
 behavior before declaring a next frozen candidate. Preserve both failed pilots.
+
+## Next isolated candidate a0fd40ad
+
+Based on68799bb5 in .worktrees/gpt-jev-evidence-budget-20261031.
+Adds per-review stage allocation protection, shared across revisions;
+supervisor and future-stage reserve survive internal review loops. Actual
+run_stages callback replay replans with21of40calls remaining. Tests also
+verify reserve boundary, final supervisor and repair non-reset. No real
+model/physics calls in these checks. Prompts distinguish explicit limits,
+physical evidence and model-chosen heuristics, require justified replacement
+criteria and compact checkpoints. No task coordinates or recipes added.
+Physical validation of this candidate remains pending; prior candidate
+failure unchanged. Branch pushed over SSH.

@@ -1,0 +1,18 @@
+{
+  "candidate_commit": "a0fd40ad",
+  "base_commit": "68799bb5",
+  "checks": [
+    "Python syntax parses",
+    "review permitted above reserve",
+    "review blocked at reserve",
+    "final-stage supervisor retained",
+    "actual run_stages triggers replan with21of40calls remaining",
+    "final-stage reserve resets to1",
+    "repair preserves floor22and reduces available reviews by3",
+    "real host review hook installed",
+    "git diff check passes"
+  ],
+  "physical_calls": 0,
+  "model_calls": 0,
+  "scope": "Offline callback checks; not evidence of robot completion."
+}
