@@ -321,3 +321,17 @@ No release. It requested actual-pose measurement and local revision, preserving
 completed transfer. Active repair3973288fe18f4373b98834939aa9a00c / thread
 01a18e86-30c1-7b50-a795-1c0c3f6b9527. Save restage-transfer-evidence.json.
 No terminal native result; do not interpret transfer as completed placement.
+
+## Achieved-pose method reached a measurement disagreement
+
+Method8 delivered236 lines in427.794 seconds, no reconnect. It retires the old
+residual target and assesses the achieved approach without repeating transfer.
+Review33 returned fresh observations, then the method reported needs_replan
+because current rim measurements disagreed with the historical opening.
+Supervisor34 chose local revise: no matched bowl landmarks establish movement;
+resolve inner/outer lip selection and consistent current geometry instead.
+No action since frame396/132Jev; bowl-movement and task-impossibility claims are
+unsupported. Active next method job91f93c6767c8497396281cf70e1f059e / thread
+01a18e90-7499-7f11-93ad-2a9c1d6f8f63. Budget40 remains fixed; after supervisor34
+there are five logical calls left before the new method charge. Preserve
+bowl-measurement-disagreement.json. No terminal native result.

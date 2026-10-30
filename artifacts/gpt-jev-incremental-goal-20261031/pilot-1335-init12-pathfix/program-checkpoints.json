@@ -3637,17 +3637,11 @@
   },
   "restage.reference": {
     "key": "restage.reference",
-    "frame_id": 348,
-    "method_number": 7,
-    "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
-    "bytes": 15071,
+    "frame_id": 396,
+    "method_number": 8,
+    "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3",
+    "bytes": 8619,
     "value": {
-      "historical_keys": [
-        "place.geometry",
-        "place.progress",
-        "secure.geometry"
-      ],
-      "historical_geometry_frame": 306,
       "dimensions_m": [
         0.07914261644195739,
         0.041028237497574255,
@@ -3695,646 +3689,6 @@
           }
         },
         "scope": "Physical identity reference only; after movement these pixels are not current measurements."
-      },
-      "source_records": [
-        {
-          "key": "place.geometry",
-          "frame_id": 315,
-          "method_number": 6,
-          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
-        },
-        {
-          "key": "place.progress",
-          "frame_id": 315,
-          "method_number": 6,
-          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
-        }
-      ],
-      "uncertainty_scope": "The 0.4 mm measurement floor is a conservative operational floor, not calibrated confidence. Historical carton dimensions bound unseen extent; current short-edge width, plane residual, feature spread and identities revalidate their use.",
-      "partial_valid_measurements": {
-        "c0": {
-          "world_m": [
-            -0.05976211331572566,
-            0.16253939523093774,
-            0.9913648711763232
-          ],
-          "depth_m": 0.09649578481912613,
-          "frame_id": 324,
-          "pixel": [
-            280,
-            445
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "c1": {
-          "world_m": [
-            -0.05989303851228632,
-            0.12228982355523738,
-            0.9915779329983836
-          ],
-          "depth_m": 0.09625326097011566,
-          "frame_id": 324,
-          "pixel": [
-            489,
-            444
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p0": {
-          "world_m": [
-            -0.06183191045923914,
-            0.15826863490684076,
-            0.9952800913313553
-          ],
-          "depth_m": 0.09602370113134384,
-          "frame_id": 324,
-          "pixel": [
-            302,
-            468
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p1": {
-          "world_m": [
-            -0.06209872783141407,
-            0.12685837999703828,
-            0.9959387353661558
-          ],
-          "depth_m": 0.09569857269525528,
-          "frame_id": 324,
-          "pixel": [
-            466,
-            470
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p2": {
-          "world_m": [
-            -0.06909391819431249,
-            0.15706640693650195,
-            1.006335629525652
-          ],
-          "depth_m": 0.09593340009450912,
-          "frame_id": 324,
-          "pixel": [
-            309,
-            537
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p3": {
-          "world_m": [
-            -0.06889114337676285,
-            0.12724622067588018,
-            1.0066924430222373
-          ],
-          "depth_m": 0.09539393335580826,
-          "frame_id": 324,
-          "pixel": [
-            465,
-            537
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p4": {
-          "world_m": [
-            -0.07727663482576091,
-            0.15781588182198802,
-            1.0186160706350775
-          ],
-          "depth_m": 0.09594182670116425,
-          "frame_id": 324,
-          "pixel": [
-            306,
-            614
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p5": {
-          "world_m": [
-            -0.0769995710349509,
-            0.127248585902391,
-            1.0190896109634244
-          ],
-          "depth_m": 0.09527149796485901,
-          "frame_id": 324,
-          "pixel": [
-            466,
-            615
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "b0": {
-          "world_m": [
-            -0.12069322344689914,
-            0.006766388130185493,
-            0.9113687037892098
-          ],
-          "depth_m": 1.0454723834991455,
-          "frame_id": 324,
-          "pixel": [
-            390,
-            432
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "b1": {
-          "world_m": [
-            -0.12691070243057512,
-            -0.019013194341648897,
-            0.9327994531859265
-          ],
-          "depth_m": 1.036843180656433,
-          "frame_id": 324,
-          "pixel": [
-            367,
-            414
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d0": {
-          "world_m": [
-            -0.14303447301790928,
-            0.0056065835102766725,
-            0.9484925757784247
-          ],
-          "depth_m": 1.0395256280899048,
-          "frame_id": 324,
-          "pixel": [
-            389,
-            394
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d1": {
-          "world_m": [
-            -0.08742593144210342,
-            0.0580339862968735,
-            0.9484186116668333
-          ],
-          "depth_m": 0.9963124394416809,
-          "frame_id": 324,
-          "pixel": [
-            438,
-            427
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d2": {
-          "world_m": [
-            -0.03594527180410523,
-            0.00515193943523978,
-            0.9500652218845044
-          ],
-          "depth_m": 0.9552293419837952,
-          "frame_id": 324,
-          "pixel": [
-            389,
-            459
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d3": {
-          "world_m": [
-            -0.08695855361146032,
-            -0.04725732699217783,
-            0.9488333364266109
-          ],
-          "depth_m": 0.995688259601593,
-          "frame_id": 324,
-          "pixel": [
-            340,
-            427
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        }
-      },
-      "current_valid_measurements": {
-        "c0": {
-          "world_m": [
-            -0.05976211331572566,
-            0.16253939523093774,
-            0.9913648711763232
-          ],
-          "depth_m": 0.09649578481912613,
-          "frame_id": 324,
-          "pixel": [
-            280,
-            445
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "c1": {
-          "world_m": [
-            -0.05989303851228632,
-            0.12228982355523738,
-            0.9915779329983836
-          ],
-          "depth_m": 0.09625326097011566,
-          "frame_id": 324,
-          "pixel": [
-            489,
-            444
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p0": {
-          "world_m": [
-            -0.06183191045923914,
-            0.15826863490684076,
-            0.9952800913313553
-          ],
-          "depth_m": 0.09602370113134384,
-          "frame_id": 324,
-          "pixel": [
-            302,
-            468
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p1": {
-          "world_m": [
-            -0.06209872783141407,
-            0.12685837999703828,
-            0.9959387353661558
-          ],
-          "depth_m": 0.09569857269525528,
-          "frame_id": 324,
-          "pixel": [
-            466,
-            470
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p2": {
-          "world_m": [
-            -0.06909391819431249,
-            0.15706640693650195,
-            1.006335629525652
-          ],
-          "depth_m": 0.09593340009450912,
-          "frame_id": 324,
-          "pixel": [
-            309,
-            537
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p3": {
-          "world_m": [
-            -0.06889114337676285,
-            0.12724622067588018,
-            1.0066924430222373
-          ],
-          "depth_m": 0.09539393335580826,
-          "frame_id": 324,
-          "pixel": [
-            465,
-            537
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p4": {
-          "world_m": [
-            -0.07727663482576091,
-            0.15781588182198802,
-            1.0186160706350775
-          ],
-          "depth_m": 0.09594182670116425,
-          "frame_id": 324,
-          "pixel": [
-            306,
-            614
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p5": {
-          "world_m": [
-            -0.0769995710349509,
-            0.127248585902391,
-            1.0190896109634244
-          ],
-          "depth_m": 0.09527149796485901,
-          "frame_id": 324,
-          "pixel": [
-            466,
-            615
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "b0": {
-          "world_m": [
-            -0.12069322344689914,
-            0.006766388130185493,
-            0.9113687037892098
-          ],
-          "depth_m": 1.0454723834991455,
-          "frame_id": 324,
-          "pixel": [
-            390,
-            432
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "b1": {
-          "world_m": [
-            -0.12691070243057512,
-            -0.019013194341648897,
-            0.9327994531859265
-          ],
-          "depth_m": 1.036843180656433,
-          "frame_id": 324,
-          "pixel": [
-            367,
-            414
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d0": {
-          "world_m": [
-            -0.14303447301790928,
-            0.0056065835102766725,
-            0.9484925757784247
-          ],
-          "depth_m": 1.0395256280899048,
-          "frame_id": 324,
-          "pixel": [
-            389,
-            394
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d1": {
-          "world_m": [
-            -0.08742593144210342,
-            0.0580339862968735,
-            0.9484186116668333
-          ],
-          "depth_m": 0.9963124394416809,
-          "frame_id": 324,
-          "pixel": [
-            438,
-            427
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d2": {
-          "world_m": [
-            -0.03594527180410523,
-            0.00515193943523978,
-            0.9500652218845044
-          ],
-          "depth_m": 0.9552293419837952,
-          "frame_id": 324,
-          "pixel": [
-            389,
-            459
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d3": {
-          "world_m": [
-            -0.08695855361146032,
-            -0.04725732699217783,
-            0.9488333364266109
-          ],
-          "depth_m": 0.995688259601593,
-          "frame_id": 324,
-          "pixel": [
-            340,
-            427
-          ],
-          "camera": "agentview",
-          "source": "current_depth_patch_backprojection"
-        }
-      },
-      "current_carton": {
-        "frame_id": 324,
-        "anchors_world_m": [
-          [
-            -0.05950351219216535,
-            0.1624774395845195,
-            0.9914957299164364
-          ],
-          [
-            -0.05925256016439234,
-            0.12243381535071389,
-            0.991899968847273
-          ]
-        ],
-        "normal_world": [
-          0.8372296544305363,
-          0.010766265196333346,
-          0.5467454556517567
-        ],
-        "short_axis_world": [
-          0.006266523556514776,
-          -0.9999294158975589,
-          0.010094251100610522
-        ],
-        "box_world_m": [
-          [
-            -0.05950351219216535,
-            0.1624774395845195,
-            0.9914957299164364
-          ],
-          [
-            -0.05925256016439234,
-            0.12243381535071389,
-            0.991899968847273
-          ],
-          [
-            -0.10252897282973417,
-            0.1228315080337924,
-            1.0581611768397905
-          ],
-          [
-            -0.10277992485750717,
-            0.162875132267598,
-            1.0577569379089538
-          ],
-          [
-            -0.07673994019225751,
-            0.1622557895821522,
-            0.9802396323441054
-          ],
-          [
-            -0.0764889881644845,
-            0.1222121653483466,
-            0.980643871274942
-          ],
-          [
-            -0.11976540082982633,
-            0.12260985803142511,
-            1.0469050792674595
-          ],
-          [
-            -0.12001635285759933,
-            0.16265348226523071,
-            1.0465008403366227
-          ]
-        ],
-        "u_m": 0.0069993395734219335,
-        "edge_u_m": 0.0004,
-        "normal_u_rad": 0.03527845891052137,
-        "plane": {
-          "coefficients": [
-            0.8372296544305363,
-            0.010766265196333346,
-            0.5467454556517567,
-            -0.49402695488287157
-          ],
-          "center_world_m": [
-            -0.06936531762040672,
-            0.14241735170677336,
-            1.0069920968073172
-          ],
-          "rms_m": 8.291350492179376e-05,
-          "in_plane_spread_m": [
-            0.015307823931099125,
-            0.011338363759441457
-          ]
-        }
-      },
-      "current_bowl": {
-        "frame_id": 324,
-        "center_xy_m": [
-          -0.08957493842595858,
-          0.005398342458602747
-        ],
-        "radius_m": 0.04867718218197758,
-        "u_m": 0.004727011998797738,
-        "base_u_m": 0.004727011998797738,
-        "rim_high_m": 0.9496363579627182,
-        "rim_world_m": [
-          [
-            -0.1380813414681068,
-            0.005586672425111143,
-            0.9482356270593258
-          ],
-          [
-            -0.12242463643519352,
-            0.039748799937990256,
-            0.9483285422958513
-          ],
-          [
-            -0.08866923343784028,
-            0.055927090654666556,
-            0.9487517262861452
-          ],
-          [
-            -0.05648508112547879,
-            0.03982998963103915,
-            0.9492774423799301
-          ],
-          [
-            -0.04088723876444422,
-            0.005174127853818073,
-            0.9496363579627182
-          ],
-          [
-            -0.05619040357160532,
-            -0.029336319300884775,
-            0.9495498826576428
-          ],
-          [
-            -0.08822407157518186,
-            -0.04407009093626698,
-            0.9491458821870862
-          ],
-          [
-            -0.12209587475624262,
-            -0.03090271972841575,
-            0.9486072322549974
-          ]
-        ],
-        "plane": {
-          "coefficients": [
-            -0.014393628100988107,
-            0.0038771553915448132,
-            0.9998888893952969,
-            -0.9501394198992936
-          ],
-          "center_world_m": [
-            -0.08834105746889456,
-            0.005383795562553032,
-            0.9489524364390933
-          ],
-          "rms_m": 0.0003431006584775917,
-          "in_plane_spread_m": [
-            0.037921755789139554,
-            0.03718773449851333
-          ]
-        },
-        "circle": {
-          "center_xy_m": [
-            -0.08957493842595858,
-            0.005398342458602747
-          ],
-          "radius_m": 0.04867718218197758,
-          "rms_m": 0.0009059370250588101,
-          "max_radial_error_m": 0.0018596825386075697,
-          "largest_angular_gap_rad": 0.8441517153711287
-        },
-        "marks": {
-          "b0": {
-            "world_m": [
-              -0.12069322344689914,
-              0.006766388130185493,
-              0.9113687037892098
-            ],
-            "depth_m": 1.0454723834991455,
-            "frame_id": 324,
-            "pixel": [
-              390,
-              432
-            ],
-            "camera": "agentview",
-            "source": "current_depth_patch_backprojection"
-          },
-          "b1": {
-            "world_m": [
-              -0.12691070243057512,
-              -0.019013194341648897,
-              0.9327994531859265
-            ],
-            "depth_m": 1.036843180656433,
-            "frame_id": 324,
-            "pixel": [
-              367,
-              414
-            ],
-            "camera": "agentview",
-            "source": "current_depth_patch_backprojection"
-          }
-        }
       },
       "baseline_carton": {
         "frame_id": 324,
@@ -4584,67 +3938,312 @@
             0.009264742113884214
           ]
         }
+      },
+      "provenance": [
+        {
+          "key": "restage.reference",
+          "frame_id": 348,
+          "method_number": 7,
+          "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e"
+        },
+        {
+          "key": "restage.progress",
+          "frame_id": 348,
+          "method_number": 7,
+          "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e"
+        }
+      ],
+      "dimension_source_records": [
+        {
+          "key": "place.geometry",
+          "frame_id": 315,
+          "method_number": 6,
+          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+        },
+        {
+          "key": "place.progress",
+          "frame_id": 315,
+          "method_number": 6,
+          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+        }
+      ],
+      "scope": "Historical dimensions and physical identities; current face-anchored extent envelopes are not observations of hidden corners. The 0.4 mm floor and propagated uncertainties are conservative operational allowances, not calibrated confidence bounds.",
+      "partial_valid_measurements": {
+        "c0": {
+          "world_m": [
+            -0.05686353312247086,
+            0.025518655462462604,
+            1.0102078946309754
+          ],
+          "depth_m": 0.09617847204208374,
+          "frame_id": 396,
+          "pixel": [
+            280,
+            445
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c1": {
+          "world_m": [
+            -0.05689110268352213,
+            -0.014466381361086956,
+            1.0102322513928592
+          ],
+          "depth_m": 0.09621720016002655,
+          "frame_id": 396,
+          "pixel": [
+            488,
+            443
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p0": {
+          "world_m": [
+            -0.05929793099261621,
+            0.020923483319554126,
+            1.0143704061397716
+          ],
+          "depth_m": 0.09597467631101608,
+          "frame_id": 396,
+          "pixel": [
+            304,
+            470
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p1": {
+          "world_m": [
+            -0.05915081671514559,
+            -0.00970868019974143,
+            1.014777665352494
+          ],
+          "depth_m": 0.0956524983048439,
+          "frame_id": 396,
+          "pixel": [
+            464,
+            470
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p2": {
+          "world_m": [
+            -0.06638056721926987,
+            0.020472416227213255,
+            1.0255241458684856
+          ],
+          "depth_m": 0.09589045494794846,
+          "frame_id": 396,
+          "pixel": [
+            307,
+            539
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p3": {
+          "world_m": [
+            -0.06597757560487832,
+            -0.009522801206680327,
+            1.0259519630537008
+          ],
+          "depth_m": 0.09534156322479248,
+          "frame_id": 396,
+          "pixel": [
+            464,
+            539
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p4": {
+          "world_m": [
+            -0.07437498314565578,
+            0.020626515718083403,
+            1.0379269141997136
+          ],
+          "depth_m": 0.09589608013629913,
+          "frame_id": 396,
+          "pixel": [
+            307,
+            616
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p5": {
+          "world_m": [
+            -0.07380125954001752,
+            -0.009353520872612058,
+            1.03830094007654
+          ],
+          "depth_m": 0.0952327623963356,
+          "frame_id": 396,
+          "pixel": [
+            464,
+            616
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "d0": {
+          "world_m": [
+            -0.03511738900389587,
+            0.005976432136756824,
+            0.9501344064189193
+          ],
+          "depth_m": 0.11043640971183777,
+          "frame_id": 396,
+          "pixel": [
+            379,
+            154
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "d1": {
+          "world_m": [
+            -0.07491985608919438,
+            -0.046332036720309985,
+            0.9491170720804798
+          ],
+          "depth_m": 0.1444881409406662,
+          "frame_id": 396,
+          "pixel": [
+            562,
+            278
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "d2": {
+          "world_m": [
+            -0.14422294424214965,
+            0.0074394271911039506,
+            0.9498422910929162
+          ],
+          "depth_m": 0.202322319149971,
+          "frame_id": 396,
+          "pixel": [
+            379,
+            404
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "d3": {
+          "world_m": [
+            -0.07212339142335027,
+            0.0584516571697017,
+            0.9504117297302106
+          ],
+          "depth_m": 0.14136075973510742,
+          "frame_id": 396,
+          "pixel": [
+            195,
+            278
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
       }
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "restage.progress": {
     "key": "restage.progress",
-    "frame_id": 348,
-    "method_number": 7,
-    "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
-    "bytes": 5598,
+    "frame_id": 396,
+    "method_number": 8,
+    "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3",
+    "bytes": 6739,
     "value": {
-      "stage": "restage",
       "entry": {
-        "frame_id": 324,
-        "native_steps": 324,
+        "frame_id": 396,
+        "native_steps": 396,
         "budgets": {
-          "gpt_remaining": 10,
-          "jev_remaining": 92,
-          "native_steps_remaining": 276,
+          "gpt_remaining": 7,
+          "jev_remaining": 68,
+          "native_steps_remaining": 204,
           "wall_seconds_remaining": 1000000000000.0
         },
         "tcp_position_world_m": [
-          -0.08158015587319868,
-          0.14294237622835615,
-          1.023040717794808
+          -0.07837901739681576,
+          0.0059290049818064815,
+          1.0421218692481256
         ],
         "tcp_quaternion_xyzw": [
-          0.8815049180996555,
-          -0.006529392307856707,
-          -0.4721296446017755,
-          0.00021234502845446368
+          0.8778969366996343,
+          -0.004386223863806938,
+          -0.478821345011136,
+          0.0028016308361273616
         ],
         "gripper_qpos_m": [
-          0.021174802827425204,
-          -0.02104295739246088
+          0.021016941263675867,
+          -0.02120052931954178
         ],
         "last_gripper_command": "close",
         "own_geometry": {
           "pad_center_in_tool_m": [
-            -1.247999211467267e-05,
-            6.985110512411699e-05,
-            -0.003585079286736884
+            -1.3262515994368757e-06,
+            -9.180311632590171e-05,
+            -0.0036016258435817338
           ],
           "pad_extent_in_tool_m": [
-            0.01600195840638054,
-            0.057218049909055414,
-            0.016001939835296772
+            0.016000053029658158,
+            0.0572174713220174,
+            0.01600005244279639
           ],
           "finger_low_offset_tool_m": [
-            -0.010508982850169922,
-            -0.04744214330246539,
-            -0.044454522637541335
+            -0.010496217998763395,
+            -0.04760392078235169,
+            -0.044469962979924796
           ],
           "finger_high_offset_tool_m": [
-            0.01047998610208124,
-            0.04758257173115936,
-            0.009264742113884214
+            0.010493420476072551,
+            0.0474203130826097,
+            0.00924742507745397
           ]
         }
       },
-      "actions": [
+      "retired_pending": {
+        "phase": "translate_to_central_bowl_workspace_without_tilt",
+        "before": {
+          "frame_id": 348,
+          "native_steps": 348,
+          "tcp_position_world_m": [
+            -0.08276587271111988,
+            0.1427279402801323,
+            1.0429817362244527
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8824643568650514,
+            -0.007143340073525295,
+            -0.4703231477226258,
+            0.0013297637482669322
+          ],
+          "gripper_qpos_m": [
+            0.021167330977119092,
+            -0.021050295858852746
+          ],
+          "last_gripper_command": "close"
+        },
+        "target_tcp_world_m": [
+          -0.08153635197137837,
+          0.005806879241782997,
+          1.0429817362244527
+        ],
+        "quaternion_xyzw": [
+          0.8824643568650514,
+          -0.007143340073525295,
+          -0.4703231477226258,
+          0.0013297637482669322
+        ],
+        "gripper": "close"
+      },
+      "preserved_actions": [
         {
           "phase": "fixed_attitude_raise",
           "before": {
@@ -4739,7 +4338,7 @@
           ]
         }
       ],
-      "retention": [
+      "preserved_retention": [
         {
           "before_frame": 306,
           "after_frame": 324,
@@ -4756,119 +4355,128 @@
         }
       ],
       "reviews": 1,
-      "release_started": false,
-      "retired_pending": {
-        "target_tcp_world_m": [
-          -0.07064181434492284,
-          0.1449600172513511,
-          1.0240085784185258
-        ],
-        "quaternion_xyzw": [
-          0.8088284936287635,
-          -0.0038096661131060113,
-          -0.5879642826816197,
-          0.008941847069848267
-        ],
-        "gripper": "close",
-        "chunk": 1
-      },
-      "acknowledged_since_old_checkpoint_steps": 9,
-      "strategy": "Translate with actual attitude to the central bowl workspace before considering one object-centered attitude change.",
+      "actions": [],
+      "retention": [],
+      "release_authorized": false,
+      "acknowledged_since_pending_steps": 48,
+      "actual_since_pending_translation_m": [
+        0.0043868553143041195,
+        -0.13679893529832582,
+        -0.0008598669763271172
+      ],
+      "retired_target_residual_m": 0.0032746064693460076,
+      "revision": "The raise and transfer already happened. Retire the stalled residual target; assess the achieved object pose before any new action.",
       "last_review": {
-        "frame_id": 324,
+        "frame_id": 396,
         "parameters": {
           "bowl": "same_upright",
           "bowl_mode": "rim",
           "closed_route": "clear",
           "end_camera": "robot0_eye_in_hand",
-          "end_ids_match": true,
+          "end_ids": "matched",
           "end_pixels": [
             [
               280,
               445
             ],
             [
-              489,
-              444
+              488,
+              443
             ]
           ],
           "identity": "same_carton",
-          "notes": "p0..p5 are six current printed-face plane samples, not correspondences. c0/c1 identify the visible Cream/C short end; the opposite end is self-occluded and is not inferred. Check corner depth patches for boundary mixing. b0 is the large pale floor medallion center; b1 is the separate bottle-side rear inner-wall rosette. Fresh d0..d3 and eight inner-boundary pixels are supplied for the initial rim model. Use only upper-lip surface depths in the narrow d patches, excluding background and sloping interior. Bowl identity and upright appearance agree with the supplied reference; metric stationarity remains a depth check. Closed-route clear describes the visible local raised route, not hidden geometry or a full-scene certificate. The 20 mm outward jaw corridors and short withdrawal cannot be fully seen because of robot self-occlusion, so opening_corridor is unknown, not an observed obstruction. Assess any additional tilt of at most 0.32 rad at the raised approach using its then-current evidence. Regions contain silhouettes and require object segmentation; bowl_visible_surfaces is not a lip-plane sample region. Closure alone does not establish retention. No release is authorized.",
+          "notes": "c0 is the visible left Cream/C short-end corner; c1 is its right counterpart, in reference identity order. p0..p5 are current interior printed-face plane samples, not historical correspondences. d0..d3 target the narrow upper-lip surface, not the patterned sloping interior. Use only lip-surface depth returns; reject boundary mixing and test horizontal coplanarity. Eight inner opening boundary pixels are supplied separately. If lip returns fail, a landmark fallback has not been independently established here; do not substitute arbitrary rosettes. Regions require surface segmentation, especially local_surroundings; robot pixels are not external obstacles. Closed-route clear is limited to the visible local 15 mm raise, at most 12 mm recentering and at most 0.32 rad center-compensated tilt, not a global clearance certificate. Opening clearance remains unknown rather than obstructed: robot occlusion and unmeasured bottle separation do not demonstrate contact. Compare fresh depths with the baseline before asserting metric pose or retention; closed fingers alone are not retention evidence. No descent or opening is authorized.",
           "opening_corridor": "unknown",
-          "patch": "same_printed_face",
-          "rim_camera": "agentview",
+          "rim_camera": "robot0_eye_in_hand",
           "rim_pixels": [
             [
-              389,
-              397
+              379,
+              159
             ],
             [
-              420,
-              406
+              505,
+              195
             ],
             [
-              436,
-              426
+              559,
+              279
             ],
             [
-              422,
-              446
+              507,
+              364
             ],
             [
-              389,
-              456
+              379,
+              400
             ],
             [
-              356,
-              446
+              252,
+              364
             ],
             [
-              343,
-              426
+              199,
+              279
             ],
             [
-              356,
-              406
+              250,
+              195
             ]
-          ]
+          ],
+          "shape": "same_rigid_printed_face"
         },
         "measurement_errors": []
       },
-      "pending": {
-        "phase": "translate_to_central_bowl_workspace_without_tilt",
-        "before": {
-          "frame_id": 348,
-          "native_steps": 348,
-          "tcp_position_world_m": [
-            -0.08276587271111988,
-            0.1427279402801323,
-            1.0429817362244527
-          ],
-          "tcp_quaternion_xyzw": [
-            0.8824643568650514,
-            -0.007143340073525295,
-            -0.4703231477226258,
-            0.0013297637482669322
-          ],
-          "gripper_qpos_m": [
-            0.021167330977119092,
-            -0.021050295858852746
-          ],
-          "last_gripper_command": "close"
+      "invalidated": "Fresh bowl opening differs materially from the preserved opening; reassess bowl stationarity.",
+      "measurement_gap": "Fresh bowl opening differs materially from the preserved opening; reassess bowl stationarity.",
+      "actual_state": {
+        "frame_id": 396,
+        "native_steps": 396,
+        "budgets": {
+          "gpt_remaining": 6,
+          "jev_remaining": 68,
+          "native_steps_remaining": 204,
+          "wall_seconds_remaining": 1000000000000.0
         },
-        "target_tcp_world_m": [
-          -0.08153635197137837,
-          0.005806879241782997,
-          1.0429817362244527
+        "tcp_position_world_m": [
+          -0.07837901739681576,
+          0.0059290049818064815,
+          1.0421218692481256
         ],
-        "quaternion_xyzw": [
-          0.8824643568650514,
-          -0.007143340073525295,
-          -0.4703231477226258,
-          0.0013297637482669322
+        "tcp_quaternion_xyzw": [
+          0.8778969366996343,
+          -0.004386223863806938,
+          -0.478821345011136,
+          0.0028016308361273616
         ],
-        "gripper": "close"
-      }
+        "gripper_qpos_m": [
+          0.021016941263675867,
+          -0.02120052931954178
+        ],
+        "last_gripper_command": "close",
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            -1.3262515994368757e-06,
+            -9.180311632590171e-05,
+            -0.0036016258435817338
+          ],
+          "pad_extent_in_tool_m": [
+            0.016000053029658158,
+            0.0572174713220174,
+            0.01600005244279639
+          ],
+          "finger_low_offset_tool_m": [
+            -0.010496217998763395,
+            -0.04760392078235169,
+            -0.044469962979924796
+          ],
+          "finger_high_offset_tool_m": [
+            0.010493420476072551,
+            0.0474203130826097,
+            0.00924742507745397
+          ]
+        }
+      },
+      "reason": "Fresh bowl opening differs materially from the preserved opening; reassess bowl stationarity."
     },
     "source": "program-supplied historical data; not a fresh measurement"
   }

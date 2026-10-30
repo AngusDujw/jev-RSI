@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-db16c278-3847-49bc-b28a-6fd0e2123b7b",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-db16c278-3847-49bc-b28a-6fd0e2123b7b",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"The program returned needs_replan, not stage_complete; no live continuation is available.\", \"The completed raise and transfer are acknowledged. The latest residual corrections stalled and their target has been retired.\", \"Current images show the carton between the fingers and the upright bowl interior empty. Fresh carton end landmarks show displacement consistent with the completed transfer.\", \"Fresh rim measurements disagree with the historical opening model, but no matched bowl landmark displacement establishes that the bowl moved. Plane intersections depend on the supplied plane and selected boundary.\", \"No supported placement option or finger-opening clearance was established, and no release was acknowledged.\"], \"invalidated_assumptions\": [\"The frame-324 opening model can be reused unchanged without resolving its disagreement with current measurements.\"], \"plan_valid\": \"yes\", \"reason\": \"Restaging remains appropriate. The discrepancy requires local measurement correction, not an unsupported conclusion of bowl motion or placement impossibility. Distinguish inner opening from outer lip using fresh segmented depth and consistent physical features, then reassess retention, fit and finger clearance at the achieved pose. Preserve the completed raise and transfer; do not repeat stalled corrections or reduce margins merely to proceed.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 72046,
+    "output_tokens": 1992,
+    "output_tokens_details": {
+      "reasoning_tokens": 1302
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e8f-510a-72e2-835a-697d5027690e",
+    "turn_ids": [
+      "01a18e8f-5111-7721-a4cd-71d4aaab0ed7"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

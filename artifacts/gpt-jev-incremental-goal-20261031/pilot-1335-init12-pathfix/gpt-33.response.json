@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-793c91af-e3a5-407d-9851-5384f47dce7e",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-793c91af-e3a5-407d-9851-5384f47dce7e",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"At frame 396, the visible Cream face and its C-end corners support the same rigid carton identity. The opposite end is robot-occluded and is not inferred. The patterned bowl appears unchanged and upright. Fresh face and lip samples are supplied to measure the achieved pose, not to resume the retired residual target. No external obstruction is apparent along the scoped local closed restaging motion. The outward opening envelope is not fully established, particularly beside the visible dark bottle. No release or completion is established.\", \"parameters\": {\"bowl\": \"same_upright\", \"bowl_mode\": \"rim\", \"closed_route\": \"clear\", \"end_camera\": \"robot0_eye_in_hand\", \"end_ids\": \"matched\", \"end_pixels\": [[280, 445], [488, 443]], \"identity\": \"same_carton\", \"notes\": \"c0 is the visible left Cream/C short-end corner; c1 is its right counterpart, in reference identity order. p0..p5 are current interior printed-face plane samples, not historical correspondences. d0..d3 target the narrow upper-lip surface, not the patterned sloping interior. Use only lip-surface depth returns; reject boundary mixing and test horizontal coplanarity. Eight inner opening boundary pixels are supplied separately. If lip returns fail, a landmark fallback has not been independently established here; do not substitute arbitrary rosettes. Regions require surface segmentation, especially local_surroundings; robot pixels are not external obstacles. Closed-route clear is limited to the visible local 15 mm raise, at most 12 mm recentering and at most 0.32 rad center-compensated tilt, not a global clearance certificate. Opening clearance remains unknown rather than obstructed: robot occlusion and unmeasured bottle separation do not demonstrate contact. Compare fresh depths with the baseline before asserting metric pose or retention; closed fingers alone are not retention evidence. No descent or opening is authorized.\", \"opening_corridor\": \"unknown\", \"rim_camera\": \"robot0_eye_in_hand\", \"rim_pixels\": [[379, 159], [505, 195], [559, 279], [507, 364], [379, 400], [252, 364], [199, 279], [250, 195]], \"shape\": \"same_rigid_printed_face\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [280, 445], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [488, 443], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [304, 470], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [464, 470], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [307, 539], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p3\", \"pixel\": [464, 539], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p4\", \"pixel\": [307, 616], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p5\", \"pixel\": [464, 616], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d0\", \"pixel\": [379, 154], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d1\", \"pixel\": [562, 278], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d2\", \"pixel\": [379, 404], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d3\", \"pixel\": [195, 278], \"radius\": 1}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"printed_face_interior\", \"box\": [289, 456, 476, 634], \"stride\": 7}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"bowl_visible_surfaces\", \"box\": [191, 129, 568, 409], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"dark_bottle_visible_surface\", \"box\": [499, 432, 511, 525], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"local_surroundings\", \"box\": [173, 375, 607, 625], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 76819,
+    "output_tokens": 5199,
+    "output_tokens_details": {
+      "reasoning_tokens": 3334
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e8c-b92c-7ec1-a345-b6397bef4be8",
+    "turn_ids": [
+      "01a18e8c-b932-7713-8db3-5d2b9ab96791"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
