@@ -338,7 +338,7 @@ def main():
     p.add_argument("--max-repairs", type=int, default=2)
     p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
     p.add_argument("--skill-memory", type=Path, help="Explicit skills/lessons directory; frozen with provenance for Test")
-    p.add_argument("--knowledge-phase", choices=("playground", "test"), default="playground")
+    p.add_argument("--knowledge-phase", choices=("development", "playground", "test"), default="development")
     p.add_argument("--revise-archived", action="store_true", help="Ask GPT to revise the archived method using its adjacent summary.json")
     p.add_argument("--staged-design", action="store_true", help="Fresh generation: save a bounded design before materializing the complete method")
     p.add_argument("--method-request-seconds", type=int, choices=(900, 1800, 3600),
@@ -353,6 +353,8 @@ def main():
     p.add_argument("--unlimited-time", action="store_true", help="No logical model/episode time cutoff; retain call, step and revision limits")
     p.add_argument("--wall-seconds", type=int, default=3600)
     args = p.parse_args()
+    if args.skill_memory and args.knowledge_phase == "development":
+        p.error("Skill memory requires an explicit playground or test phase")
     if args.hierarchical and (args.staged_design or args.method_file):
         p.error("Hierarchical fresh generation is separate from staged design and archived-method reuse")
     if not (1 <= args.max_stage_updates <= 32 and 0 <= args.max_plan_revisions <= 8 and
