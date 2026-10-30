@@ -1,0 +1,291 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 234; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "5882e9b86ccf57a827c4b75f848a287786fca133a357eb94c7911ed3850819b3",
+            "characters": 112275
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 234; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "d39a1828010c12c9eb5b8ab824381474904c73748a1318ecda6b91a0bc628962",
+            "characters": 77855
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Assess an UPRIGHT pinch of the TWO PHYSICAL SHORT END WALLS, closing along the long axis, NOT the rejected long-side strips or near-horizontal routes. Request t0..t3 at the supplied SAME physical IDs; declare landmark_identity. Request c0..c2 on noncollinear counter. Request a0,a1 as upper/lower samples on one SHORT END wall and b0,b1 on the OPPOSITE end, with complementary views/radius 1 as needed. Occluded faces are unknown. Give four top-edge pixels in one camera, ordered A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1, delimiting aligned end-contact strips about 25 mm wide. No whole perimeter. Request s0..s3: fresh top interiors spanning both directions; declare sN_surface individually. These support the plane, not new t IDs. Upright orientation alone does not resolve the old height deficit; an infeasible interval prevents approach. Note any visible presentation alternative without authorizing it. Use a DIFFERENT camera or different depth-valid surface samples to replace failed measurements; do not repeat the same mixed-depth pixels.\",\"robot\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":4,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.00383387,-0.999993,-0.000184165,-0.00197396],[-0.938037,-0.00353252,-0.346516,0.206369],[0.346513,0.00150125,-0.938044,1.09188],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":73,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.16,0.0,0.0,0.0,-1.0],\"before\":[-0.0512711,0.172775,0.976831],\"after\":[-0.0514384,0.172944,0.982971],\"target_tcp\":[-0.0511904,0.172563,1.00191],\"acknowledged_steps\":3,\"native_steps\":222,\"frame_id\":222},{\"decision\":74,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.16,0.0,0.0,0.0,-1.0],\"before\":[-0.0514384,0.172944,0.982971],\"after\":[-0.05163,0.172941,0.989114],\"target_tcp\":[-0.0511898,0.17256,1.00191],\"acknowledged_steps\":3,\"native_steps\":225,\"frame_id\":225},{\"decision\":75,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.16,0.0,0.0,0.0,-1.0],\"before\":[-0.05163,0.172941,0.989114],\"after\":[-0.0518039,0.172916,0.995269],\"target_tcp\":[-0.0511899,0.172555,1.00191],\"acknowledged_steps\":3,\"native_steps\":228,\"frame_id\":228},{\"decision\":76,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0863648,0.0,0.0,0.0,-1.0],\"before\":[-0.0518039,0.172916,0.995269],\"after\":[-0.0519124,0.172762,0.999221],\"target_tcp\":[-0.0511903,0.17255,1.00191],\"acknowledged_steps\":3,\"native_steps\":231,\"frame_id\":231},{\"decision\":77,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0354898,0.0,0.0,0.0,-1.0],\"before\":[-0.0519124,0.172762,0.999221],\"after\":[-0.0519904,0.172582,1.00095],\"target_tcp\":[-0.0511909,0.172548,1.00195],\"acknowledged_steps\":3,\"native_steps\":234,\"frame_id\":234}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":6,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}}},\"frame_id\":234},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"alt.progress\",{\"phases\":[{\"phase\":\"new_contact_observation_authorization\",\"frame\":216,\"parameters\":{\"empty_open_hand\":true,\"retreat_clear\":\"clear\",\"new_view_useful\":\"yes\",\"notes\":\"Clear is scoped to this 30 mm vertical observation move, not arbitrary arm motion or hidden global geometry. Wrist-image end occlusion is robot self-occlusion, not an external obstruction. Complete end exposure must be checked in the resulting view. All rejected descents remain blocked. Earlier image frames are unavailable here; supplied historical records are not additional images.\"},\"excluded_route\":{\"frame\":216,\"family\":\"near-horizontal long-side entry at +/-88 and +/-90 degrees\",\"established_obstruction\":\"Palm intersects counter during descent; high alignment alone was clear.\",\"original_long_axis_world\":[-0.999991,-0.00421985,0.0],\"model_checkpoint\":\"alt.model\",\"guard_floor_m\":0.00174137,\"prior_plane_quality_passed\":true}},{\"phase\":\"end_wall_observation_retreat\",\"status\":\"reached\",\"lease_calls\":6,\"before\":{\"frame_id\":216,\"tcp_position_world_m\":[-0.0511868,0.172583,0.97198],\"tcp_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646],\"gripper_qpos_m\":[0.0397477,-0.0400146],\"last_gripper_command\":\"open\"},\"after\":{\"frame_id\":234,\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\"},\"position_gain_m\":0.0286924,\"rotation_gain_rad\":-0.00519505,\"position_error_m\":0.00130761,\"rotation_error_rad\":0.00519505,\"minimum_position_gain_m\":0.0003,\"minimum_rotation_gain_rad\":0.003,\"position_gain_margin_m\":0.0283924,\"rotation_gain_margin_rad\":-0.00819505,\"lease_number\":1,\"maximum_leases\":3}],\"target_pad_world_m\":[-0.0511778,0.173958,1.00531],\"target_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646]}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"alt.progress\",\"frame_id\":234,\"method_number\":7,\"source_sha256\":\"0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431\",\"bytes\":2281,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":234},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":6,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}}},\"frame_id\":234},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":6,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}}},\"frame_id\":234},{\"request\":{\"kind\":\"rpc\",\"method\":\"review\",\"args\":[\"Assess an UPRIGHT pinch of the TWO PHYSICAL SHORT END WALLS, closing along the long axis, NOT the rejected long-side strips or near-horizontal routes. Request t0..t3 at the supplied SAME physical IDs; declare landmark_identity. Request c0..c2 on noncollinear counter. Request a0,a1 as upper/lower samples on one SHORT END wall and b0,b1 on the OPPOSITE end, with complementary views/radius 1 as needed. Occluded faces are unknown. Give four top-edge pixels in one camera, ordered A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1, delimiting aligned end-contact strips about 25 mm wide. No whole perimeter. Request s0..s3: fresh top interiors spanning both directions; declare sN_surface individually. These support the plane, not new t IDs. Upright orientation alone does not resolve the old height deficit; an infeasible interval prevents approach. Note any visible presentation alternative without authorizing it.\"],\"kwargs\":{\"context\":{\"historical_failure\":{\"frame\":216,\"reference_frame\":0,\"trials\":[{\"position_tolerance_m\":0.002,\"lower_pad_z_m\":0.919552,\"upper_pad_z_m\":0.916658,\"required_nominal_overlap_m\":0.00874137,\"interval_width_m\":-0.00289441,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00309441},{\"position_tolerance_m\":0.001,\"lower_pad_z_m\":0.918552,\"upper_pad_z_m\":0.917658,\"required_nominal_overlap_m\":0.00774137,\"interval_width_m\":-0.000894407,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00109441},{\"position_tolerance_m\":0.0005,\"lower_pad_z_m\":0.918052,\"upper_pad_z_m\":0.918158,\"required_nominal_overlap_m\":0.00724137,\"interval_width_m\":0.000105593,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-9.4407e-05}],\"chosen\":null,\"top_floor_world_z_m\":0.917398,\"counter_ceiling_world_z_m\":0.899961,\"finger_bottom_offset_m\":-0.01285,\"half_pad_z_m\":0.00800089,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"preserved_nominal_overlap_floor_m\":0.007,\"guard_accounting\":\"Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.\",\"candidate_change\":\"Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold.\",\"reference_top_ids\":[\"t0: inner curl of the large initial capital C in the printed word Cream, toward the exposed short end.\",\"t1: inner curl of the large initial capital C in the printed word Cheese, below Cream in this view.\",\"t2: initial F of the smaller printed Fresh Taste line, left of the large lettering in this view.\",\"t3: terminal e of the smaller printed Fresh Taste line, toward the inward end of that line.\"],\"reference_top_landmarks\":{\"t0\":{\"world_m\":[-0.0220608,0.147146,0.917794],\"depth_m\":0.15654,\"frame_id\":216,\"pixel\":[400,450],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t1\":{\"world_m\":[-0.055649,0.143022,0.918105],\"depth_m\":0.157828,\"frame_id\":216,\"pixel\":[412,556],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t2\":{\"world_m\":[-0.0429136,0.155346,0.917804],\"depth_m\":0.153749,\"frame_id\":216,\"pixel\":[375,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t3\":{\"world_m\":[-0.0645429,0.1549,0.917743],\"depth_m\":0.154051,\"frame_id\":216,\"pixel\":[376,589],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"excluded_route\":{\"frame\":216,\"family\":\"near-horizontal long-side entry at +/-88 and +/-90 degrees\",\"established_obstruction\":\"Palm intersects counter during descent; high alignment alone was clear.\",\"original_long_axis_world\":[-0.999991,-0.00421985,0.0],\"model_checkpoint\":\"alt.model\",\"guard_floor_m\":0.00174137,\"prior_plane_quality_passed\":true}},\"start\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":6,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}},\"attempt\":0},\"fields\":{\"identity\":[\"same_package_on_counter\",\"changed\",\"unknown\"],\"empty_open_hand\":\"boolean\",\"local_walls\":[\"visible_opposed_short_end_walls\",\"other\",\"unknown\"],\"landmark_identity\":[\"same_reference_landmarks\",\"other\",\"unknown\"],\"top_boundary\":[\"visible_local_edges\",\"unknown\"],\"camera\":[\"agentview\",\"robot0_eye_in_hand\"],\"edge_pixels\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"type\":\"integer\",\"minimum\":0,\"maximum\":767},\"minItems\":2,\"maxItems\":2},\"minItems\":4,\"maxItems\":4},\"top_ids\":{\"type\":\"array\",\"items\":{\"type\":\"string\",\"minLength\":1,\"maxLength\":240},\"minItems\":4,\"maxItems\":4},\"notes\":{\"type\":\"string\",\"maxLength\":600},\"s0_surface\":[\"same_package_top\",\"other\",\"unknown\"],\"s1_surface\":[\"same_package_top\",\"other\",\"unknown\"],\"s2_surface\":[\"same_package_top\",\"other\",\"unknown\"],\"s3_surface\":[\"same_package_top\",\"other\",\"unknown\"]}}},\"response\":{\"result\":{\"status\":\"continue\",\"explanation\":\"Observation/model assessment only; no approach or closure is authorized. Current and earlier images show the same package flat on the counter and an empty open hand. The rise exposed the previously palm-masked far top edge, not the far vertical short-end wall. A is the short end at the upper wrist-image edge and lower agentview edge; its wall is visible in agentview. Opposite B's vertical wall is hidden behind the package in both views, so b0/b1 and a B-wall region cannot be supplied. This is unobserved geometry, not an observed external obstruction. Visible features support local short-end top-edge strips, not verified opposed-wall contacts. Upright orientation alone does not remove the supplied height deficit: all supplied guarded intervals fail their minimum-width test. A newly measured feasible interval is required before approach. No raised or overhanging end is visible. The exposed broad top could inform a separately assessed presentation change, but no such action is authorized. Rejected near-horizontal routes remain excluded.\",\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"edge_pixels\":[[342,415],[406,413],[406,623],[342,632]],\"empty_open_hand\":true,\"identity\":\"same_package_on_counter\",\"landmark_identity\":\"same_reference_landmarks\",\"local_walls\":\"unknown\",\"notes\":\"Edge order: A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1. Centered transverse spans are approximately 25 mm; verify metric widths with depth. These are short-end strips, not long-side strips or the whole perimeter. t0..t3 retain the supplied printed-feature identities. s0..s3 are fresh top-plane samples, not new t IDs. a0/a1 are upper/lower A-wall samples. b0/b1 are unavailable because B's vertical wall is object-occluded. The earlier wrist palm mask was robot self-occlusion. Continue means assessment only, not approach authorization.\",\"s0_surface\":\"same_package_top\",\"s1_surface\":\"same_package_top\",\"s2_surface\":\"same_package_top\",\"s3_surface\":\"same_package_top\",\"top_boundary\":\"visible_local_edges\",\"top_ids\":[\"t0\",\"t1\",\"t2\",\"t3\"]},\"points\":{\"t0\":{\"world_m\":[-0.0222305,0.147074,0.91781],\"depth_m\":0.183839,\"frame_id\":234,\"pixel\":[371,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t1\":{\"world_m\":[-0.0555926,0.14314,0.918113],\"depth_m\":0.184923,\"frame_id\":234,\"pixel\":[381,529],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t2\":{\"world_m\":[-0.0429163,0.155391,0.917812],\"depth_m\":0.180958,\"frame_id\":234,\"pixel\":[349,497],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t3\":{\"world_m\":[-0.0646893,0.154911,0.917751],\"depth_m\":0.181186,\"frame_id\":234,\"pixel\":[350,557],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0231642,0.184907,0.899967],\"depth_m\":0.187466,\"frame_id\":234,\"pixel\":[260,440],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0261811,0.0867768,0.899958],\"depth_m\":0.221479,\"frame_id\":234,\"pixel\":[487,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c2\":{\"world_m\":[-0.0969673,0.0900175,0.899959],\"depth_m\":0.220368,\"frame_id\":234,\"pixel\":[480,600],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"a0\":{\"world_m\":[-0.0124684,0.143882,0.914017],\"depth_m\":0.959617,\"frame_id\":234,\"pixel\":[523,500],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"a1\":{\"world_m\":[-0.0127534,0.144785,0.904784],\"depth_m\":0.96564,\"frame_id\":234,\"pixel\":[523,506],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"s0\":{\"world_m\":[-0.0238864,0.161058,0.91787],\"depth_m\":0.178937,\"frame_id\":234,\"pixel\":[334,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s1\":{\"world_m\":[-0.0249958,0.131268,0.918247],\"depth_m\":0.188905,\"frame_id\":234,\"pixel\":[411,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s2\":{\"world_m\":[-0.0806988,0.15966,0.917613],\"depth_m\":0.179673,\"frame_id\":234,\"pixel\":[337,603],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s3\":{\"world_m\":[-0.0828351,0.130629,0.918279],\"depth_m\":0.189108,\"frame_id\":234,\"pixel\":[412,598],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"regions\":{\"package_top_interior\":{\"visible_world_summary\":{\"count\":684,\"minimum\":[-0.0875688,0.129723,0.917443],\"median\":[-0.0510289,0.146743,0.917921],\"maximum\":[-0.0166922,0.162907,0.918481]},\"frame_id\":234,\"camera\":\"robot0_eye_in_hand\",\"box\":[329,425,418,614],\"stride\":5,\"source\":\"current_visible_depth_region_backprojection\"},\"a_short_end_wall\":{\"visible_world_summary\":{\"count\":14,\"minimum\":[-0.0127086,0.129442,0.906328],\"median\":[-0.0124507,0.142222,0.909658],\"maximum\":[-0.0120891,0.15504,0.91293]},\"frame_id\":234,\"camera\":\"agentview\",\"box\":[509,501,534,506],\"stride\":4,\"source\":\"current_visible_depth_region_backprojection\"},\"counter_beside_package\":{\"visible_world_summary\":{\"count\":476,\"minimum\":[-0.100237,0.070741,0.899957],\"median\":[-0.0612657,0.0878927,0.899959],\"maximum\":[-0.0242883,0.104172,0.89996]},\"frame_id\":234,\"camera\":\"robot0_eye_in_hand\",\"box\":[452,436,522,603],\"stride\":5,\"source\":\"current_visible_depth_region_backprojection\"}},\"measurement_errors\":[],\"frame_id\":234}},\"frame_id\":234},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"alt.model\",{\"phase\":\"partial_fresh_geometry\",\"observation\":{\"frame_id\":234,\"status\":\"continue\",\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"edge_pixels\":[[342,415],[406,413],[406,623],[342,632]],\"empty_open_hand\":true,\"identity\":\"same_package_on_counter\",\"landmark_identity\":\"same_reference_landmarks\",\"local_walls\":\"unknown\",\"notes\":\"Edge order: A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1. Centered transverse spans are approximately 25 mm; verify metric widths with depth. These are short-end strips, not long-side strips or the whole perimeter. t0..t3 retain the supplied printed-feature identities. s0..s3 are fresh top-plane samples, not new t IDs. a0/a1 are upper/lower A-wall samples. b0/b1 are unavailable because B's vertical wall is object-occluded. The earlier wrist palm mask was robot self-occlusion. Continue means assessment only, not approach authorization.\",\"s0_surface\":\"same_package_top\",\"s1_surface\":\"same_package_top\",\"s2_surface\":\"same_package_top\",\"s3_surface\":\"same_package_top\",\"top_boundary\":\"visible_local_edges\",\"top_ids\":[\"t0\",\"t1\",\"t2\",\"t3\"]},\"points\":{\"t0\":{\"world_m\":[-0.0222305,0.147074,0.91781],\"depth_m\":0.183839,\"frame_id\":234,\"pixel\":[371,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t1\":{\"world_m\":[-0.0555926,0.14314,0.918113],\"depth_m\":0.184923,\"frame_id\":234,\"pixel\":[381,529],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t2\":{\"world_m\":[-0.0429163,0.155391,0.917812],\"depth_m\":0.180958,\"frame_id\":234,\"pixel\":[349,497],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t3\":{\"world_m\":[-0.0646893,0.154911,0.917751],\"depth_m\":0.181186,\"frame_id\":234,\"pixel\":[350,557],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s0\":{\"world_m\":[-0.0238864,0.161058,0.91787],\"depth_m\":0.178937,\"frame_id\":234,\"pixel\":[334,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s1\":{\"world_m\":[-0.0249958,0.131268,0.918247],\"depth_m\":0.188905,\"frame_id\":234,\"pixel\":[411,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s2\":{\"world_m\":[-0.0806988,0.15966,0.917613],\"depth_m\":0.179673,\"frame_id\":234,\"pixel\":[337,603],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s3\":{\"world_m\":[-0.0828351,0.130629,0.918279],\"depth_m\":0.189108,\"frame_id\":234,\"pixel\":[412,598],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0231642,0.184907,0.899967],\"depth_m\":0.187466,\"frame_id\":234,\"pixel\":[260,440],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0261811,0.0867768,0.899958],\"depth_m\":0.221479,\"frame_id\":234,\"pixel\":[487,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c2\":{\"world_m\":[-0.0969673,0.0900175,0.899959],\"depth_m\":0.220368,\"frame_id\":234,\"pixel\":[480,600],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"a0\":{\"world_m\":[-0.0124684,0.143882,0.914017],\"depth_m\":0.959617,\"frame_id\":234,\"pixel\":[523,500],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"a1\":{\"world_m\":[-0.0127534,0.144785,0.904784],\"depth_m\":0.96564,\"frame_id\":234,\"pixel\":[523,506],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[],\"measurement_error_count\":0,\"omitted_region_names\":[\"package_top_interior\",\"a_short_end_wall\",\"counter_beside_package\"],\"provenance\":\"Current review interpretation with named depth receipts; unused region clouds omitted.\"},\"historical_guard_floor_m\":0.00174137}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"alt.model\",\"frame_id\":234,\"method_number\":7,\"source_sha256\":\"0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431\",\"bytes\":4448,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":234},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":5,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}}},\"frame_id\":234},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":5,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}}},\"frame_id\":234}],\"program_checkpoint_manifest\":[{\"key\":\"secure.partial\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2273,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.plane_check\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":985,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.geometry\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2275,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.failure\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":2056,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.repair_reference\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":4910,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.refinement\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":3420,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.candidate\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":1822,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.progress\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":1976,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.alignment\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1122,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.stall\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":4268,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.pose_gate\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1203,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.view\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":11145,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"alt.model\",\"frame_id\":234,\"method_number\":7,\"source_sha256\":\"0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431\",\"bytes\":4448,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"alt.failure\",\"frame_id\":216,\"method_number\":6,\"source_sha256\":\"3576fba664533ff5b6ac0a59bdf53870bd88acacbd3d247fc8c7fe185fa0e5ed\",\"bytes\":5677,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"alt.progress\",\"frame_id\":234,\"method_number\":7,\"source_sha256\":\"0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431\",\"bytes\":2281,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"historical_named_observations\":{\"initial\":{\"frame_id\":216,\"parameters\":{\"empty_open_hand\":true,\"retreat_clear\":\"clear\",\"new_view_useful\":\"yes\",\"notes\":\"Clear is scoped to this 30 mm vertical observation move, not arbitrary arm motion or hidden global geometry. Wrist-image end occlusion is robot self-occlusion, not an external obstruction. Complete end exposure must be checked in the resulting view. All rejected descents remain blocked. Earlier image frames are unavailable here; supplied historical records are not additional images.\"},\"points\":{\"package_end_visible_in_agentview_hidden_in_wrist_view\":{\"world_m\":[-0.0831327,0.142952,0.918709],\"depth_m\":1.01164,\"frame_id\":216,\"pixel\":[515,450],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"package_exposed_opposite_end\":{\"world_m\":[-0.0127847,0.146328,0.916521],\"depth_m\":0.15798,\"frame_id\":216,\"pixel\":[401,420],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"previous\":{\"frame_id\":234,\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"edge_pixels\":[[342,415],[406,413],[406,623],[342,632]],\"empty_open_hand\":true,\"identity\":\"same_package_on_counter\",\"landmark_identity\":\"same_reference_landmarks\",\"local_walls\":\"unknown\",\"notes\":\"Edge order: A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1. Centered transverse spans are approximately 25 mm; verify metric widths with depth. These are short-end strips, not long-side strips or the whole perimeter. t0..t3 retain the supplied printed-feature identities. s0..s3 are fresh top-plane samples, not new t IDs. a0/a1 are upper/lower A-wall samples. b0/b1 are unavailable because B's vertical wall is object-occluded. The earlier wrist palm mask was robot self-occlusion. Continue means assessment only, not approach authorization.\",\"s0_surface\":\"same_package_top\",\"s1_surface\":\"same_package_top\",\"s2_surface\":\"same_package_top\",\"s3_surface\":\"same_package_top\",\"top_boundary\":\"visible_local_edges\",\"top_ids\":[\"t0\",\"t1\",\"t2\",\"t3\"]},\"points\":{\"t0\":{\"world_m\":[-0.0222305,0.147074,0.91781],\"depth_m\":0.183839,\"frame_id\":234,\"pixel\":[371,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t1\":{\"world_m\":[-0.0555926,0.14314,0.918113],\"depth_m\":0.184923,\"frame_id\":234,\"pixel\":[381,529],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t2\":{\"world_m\":[-0.0429163,0.155391,0.917812],\"depth_m\":0.180958,\"frame_id\":234,\"pixel\":[349,497],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t3\":{\"world_m\":[-0.0646893,0.154911,0.917751],\"depth_m\":0.181186,\"frame_id\":234,\"pixel\":[350,557],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0231642,0.184907,0.899967],\"depth_m\":0.187466,\"frame_id\":234,\"pixel\":[260,440],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0261811,0.0867768,0.899958],\"depth_m\":0.221479,\"frame_id\":234,\"pixel\":[487,439],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c2\":{\"world_m\":[-0.0969673,0.0900175,0.899959],\"depth_m\":0.220368,\"frame_id\":234,\"pixel\":[480,600],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"a0\":{\"world_m\":[-0.0124684,0.143882,0.914017],\"depth_m\":0.959617,\"frame_id\":234,\"pixel\":[523,500],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"a1\":{\"world_m\":[-0.0127534,0.144785,0.904784],\"depth_m\":0.96564,\"frame_id\":234,\"pixel\":[523,506],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"s0\":{\"world_m\":[-0.0238864,0.161058,0.91787],\"depth_m\":0.178937,\"frame_id\":234,\"pixel\":[334,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s1\":{\"world_m\":[-0.0249958,0.131268,0.918247],\"depth_m\":0.188905,\"frame_id\":234,\"pixel\":[411,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s2\":{\"world_m\":[-0.0806988,0.15966,0.917613],\"depth_m\":0.179673,\"frame_id\":234,\"pixel\":[337,603],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s3\":{\"world_m\":[-0.0828351,0.130629,0.918279],\"depth_m\":0.189108,\"frame_id\":234,\"pixel\":[412,598],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"scope\":\"Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.\"},\"historical_point_projections_if_stationary\":{\"t0\":{\"agentview\":[525.317,490.645],\"robot0_eye_in_hand\":[371.0,439.0]},\"t1\":{\"agentview\":[517.96,468.032],\"robot0_eye_in_hand\":[381.0,529.0]},\"t2\":{\"agentview\":[530.859,476.61],\"robot0_eye_in_hand\":[349.0,497.0]},\"t3\":{\"agentview\":[527.914,462.368],\"robot0_eye_in_hand\":[350.0,557.0]},\"c0\":{\"agentview\":[559.497,501.958],\"robot0_eye_in_hand\":[260.0,440.0]},\"c1\":{\"agentview\":[466.163,499.886],\"robot0_eye_in_hand\":[487.0,439.0]},\"c2\":{\"agentview\":[464.693,453.844],\"robot0_eye_in_hand\":[480.0,600.0]},\"a0\":{\"agentview\":[523.0,500.0],\"robot0_eye_in_hand\":[375.882,411.738]},\"a1\":{\"agentview\":[523.0,506.0],\"robot0_eye_in_hand\":[365.936,411.243]},\"s0\":{\"agentview\":[538.552,489.463],\"robot0_eye_in_hand\":[334.0,445.0]},\"s1\":{\"agentview\":[509.885,488.445],\"robot0_eye_in_hand\":[411.0,445.0]},\"s2\":{\"agentview\":[530.486,452.265],\"robot0_eye_in_hand\":[337.0,603.0]},\"s3\":{\"agentview\":[503.702,450.476],\"robot0_eye_in_hand\":[412.0,598.0]}},\"program_supplied_review_context\":{\"historical_failure\":{\"frame\":216,\"reference_frame\":0,\"trials\":[{\"position_tolerance_m\":0.002,\"lower_pad_z_m\":0.919552,\"upper_pad_z_m\":0.916658,\"required_nominal_overlap_m\":0.00874137,\"interval_width_m\":-0.00289441,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00309441},{\"position_tolerance_m\":0.001,\"lower_pad_z_m\":0.918552,\"upper_pad_z_m\":0.917658,\"required_nominal_overlap_m\":0.00774137,\"interval_width_m\":-0.000894407,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00109441},{\"position_tolerance_m\":0.0005,\"lower_pad_z_m\":0.918052,\"upper_pad_z_m\":0.918158,\"required_nominal_overlap_m\":0.00724137,\"interval_width_m\":0.000105593,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-9.4407e-05}],\"chosen\":null,\"top_floor_world_z_m\":0.917398,\"counter_ceiling_world_z_m\":0.899961,\"finger_bottom_offset_m\":-0.01285,\"half_pad_z_m\":0.00800089,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"preserved_nominal_overlap_floor_m\":0.007,\"guard_accounting\":\"Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.\",\"candidate_change\":\"Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold.\",\"reference_top_ids\":[\"t0: inner curl of the large initial capital C in the printed word Cream, toward the exposed short end.\",\"t1: inner curl of the large initial capital C in the printed word Cheese, below Cream in this view.\",\"t2: initial F of the smaller printed Fresh Taste line, left of the large lettering in this view.\",\"t3: terminal e of the smaller printed Fresh Taste line, toward the inward end of that line.\"],\"reference_top_landmarks\":{\"t0\":{\"world_m\":[-0.0220608,0.147146,0.917794],\"depth_m\":0.15654,\"frame_id\":216,\"pixel\":[400,450],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t1\":{\"world_m\":[-0.055649,0.143022,0.918105],\"depth_m\":0.157828,\"frame_id\":216,\"pixel\":[412,556],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t2\":{\"world_m\":[-0.0429136,0.155346,0.917804],\"depth_m\":0.153749,\"frame_id\":216,\"pixel\":[375,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"t3\":{\"world_m\":[-0.0645429,0.1549,0.917743],\"depth_m\":0.154051,\"frame_id\":216,\"pixel\":[376,589],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"excluded_route\":{\"frame\":216,\"family\":\"near-horizontal long-side entry at +/-88 and +/-90 degrees\",\"established_obstruction\":\"Palm intersects counter during descent; high alignment alone was clear.\",\"original_long_axis_world\":[-0.999991,-0.00421985,0.0],\"model_checkpoint\":\"alt.model\",\"guard_floor_m\":0.00174137,\"prior_plane_quality_passed\":true}},\"start\":{\"frame_id\":234,\"native_steps\":234,\"budgets\":{\"gpt_remaining\":5,\"jev_remaining\":122,\"native_steps_remaining\":366,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0519904,0.172582,1.00095],\"tcp_quaternion_xyzw\":[0.984388,0.00187169,-0.000427584,0.176004],\"gripper_qpos_m\":[0.0396809,-0.0400143],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.08061e-06,-0.000159652,-0.00361484],\"pad_extent_in_tool_m\":[0.0160002,0.0946953,0.0160002],\"finger_low_offset_tool_m\":[-0.0104958,-0.0664107,-0.0444832],\"finger_high_offset_tool_m\":[0.0104937,0.0660913,0.0092343]}},\"attempt\":1}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_on_counter",
+                  "changed",
+                  "unknown"
+                ]
+              },
+              "empty_open_hand": {
+                "type": "boolean"
+              },
+              "local_walls": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_opposed_short_end_walls",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "landmark_identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_reference_landmarks",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "top_boundary": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_local_edges",
+                  "unknown"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "agentview",
+                  "robot0_eye_in_hand"
+                ]
+              },
+              "edge_pixels": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 767
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "top_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240
+                },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 600
+              },
+              "s0_surface": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_top",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "s1_surface": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_top",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "s2_surface": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_top",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "s3_surface": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_top",
+                  "other",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "identity",
+              "empty_open_hand",
+              "local_walls",
+              "landmark_identity",
+              "top_boundary",
+              "camera",
+              "edge_pixels",
+              "top_ids",
+              "notes",
+              "s0_surface",
+              "s1_surface",
+              "s2_surface",
+              "s3_surface"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

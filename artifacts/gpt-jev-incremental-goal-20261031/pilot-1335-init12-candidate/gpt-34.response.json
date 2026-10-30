@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-947a0b29-886d-4177-8ead-eeec104d0fb1",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-947a0b29-886d-4177-8ead-eeec104d0fb1",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Observation/model assessment only; no approach or closure is authorized. Current and earlier images show the same package flat on the counter and an empty open hand. The rise exposed the previously palm-masked far top edge, not the far vertical short-end wall. A is the short end at the upper wrist-image edge and lower agentview edge; its wall is visible in agentview. Opposite B's vertical wall is hidden behind the package in both views, so b0/b1 and a B-wall region cannot be supplied. This is unobserved geometry, not an observed external obstruction. Visible features support local short-end top-edge strips, not verified opposed-wall contacts. Upright orientation alone does not remove the supplied height deficit: all supplied guarded intervals fail their minimum-width test. A newly measured feasible interval is required before approach. No raised or overhanging end is visible. The exposed broad top could inform a separately assessed presentation change, but no such action is authorized. Rejected near-horizontal routes remain excluded.\", \"parameters\": {\"camera\": \"robot0_eye_in_hand\", \"edge_pixels\": [[342, 415], [406, 413], [406, 623], [342, 632]], \"empty_open_hand\": true, \"identity\": \"same_package_on_counter\", \"landmark_identity\": \"same_reference_landmarks\", \"local_walls\": \"unknown\", \"notes\": \"Edge order: A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1. Centered transverse spans are approximately 25 mm; verify metric widths with depth. These are short-end strips, not long-side strips or the whole perimeter. t0..t3 retain the supplied printed-feature identities. s0..s3 are fresh top-plane samples, not new t IDs. a0/a1 are upper/lower A-wall samples. b0/b1 are unavailable because B's vertical wall is object-occluded. The earlier wrist palm mask was robot self-occlusion. Continue means assessment only, not approach authorization.\", \"s0_surface\": \"same_package_top\", \"s1_surface\": \"same_package_top\", \"s2_surface\": \"same_package_top\", \"s3_surface\": \"same_package_top\", \"top_boundary\": \"visible_local_edges\", \"top_ids\": [\"t0\", \"t1\", \"t2\", \"t3\"]}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [371, 439], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t1\", \"pixel\": [381, 529], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t2\", \"pixel\": [349, 497], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t3\", \"pixel\": [350, 557], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [260, 440], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [487, 439], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c2\", \"pixel\": [480, 600], \"radius\": 3}, {\"camera\": \"agentview\", \"name\": \"a0\", \"pixel\": [523, 500], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"a1\", \"pixel\": [523, 506], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s0\", \"pixel\": [334, 445], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s1\", \"pixel\": [411, 445], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s2\", \"pixel\": [337, 603], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s3\", \"pixel\": [412, 598], \"radius\": 2}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"package_top_interior\", \"box\": [329, 425, 418, 614], \"stride\": 5}, {\"camera\": \"agentview\", \"name\": \"a_short_end_wall\", \"box\": [509, 501, 534, 506], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"counter_beside_package\", \"box\": [452, 436, 522, 603], \"stride\": 5}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 65304,
+    "output_tokens": 5982,
+    "output_tokens_details": {
+      "reasoning_tokens": 4142
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f29-5ef7-7760-9af3-f323415c50c6",
+    "turn_ids": [
+      "01a18f29-5efd-7272-a926-f943d559fb1b"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

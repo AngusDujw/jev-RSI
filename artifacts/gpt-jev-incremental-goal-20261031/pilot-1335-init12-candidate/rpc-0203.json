@@ -1,0 +1,274 @@
+{
+  "index": 203,
+  "method_number": 7,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "alt.model",
+      {
+        "phase": "partial_fresh_geometry",
+        "observation": {
+          "frame_id": 234,
+          "status": "continue",
+          "parameters": {
+            "camera": "robot0_eye_in_hand",
+            "edge_pixels": [
+              [
+                342,
+                415
+              ],
+              [
+                406,
+                413
+              ],
+              [
+                406,
+                623
+              ],
+              [
+                342,
+                632
+              ]
+            ],
+            "empty_open_hand": true,
+            "identity": "same_package_on_counter",
+            "landmark_identity": "same_reference_landmarks",
+            "local_walls": "unknown",
+            "notes": "Edge order: A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1. Centered transverse spans are approximately 25 mm; verify metric widths with depth. These are short-end strips, not long-side strips or the whole perimeter. t0..t3 retain the supplied printed-feature identities. s0..s3 are fresh top-plane samples, not new t IDs. a0/a1 are upper/lower A-wall samples. b0/b1 are unavailable because B's vertical wall is object-occluded. The earlier wrist palm mask was robot self-occlusion. Continue means assessment only, not approach authorization.",
+            "s0_surface": "same_package_top",
+            "s1_surface": "same_package_top",
+            "s2_surface": "same_package_top",
+            "s3_surface": "same_package_top",
+            "top_boundary": "visible_local_edges",
+            "top_ids": [
+              "t0",
+              "t1",
+              "t2",
+              "t3"
+            ]
+          },
+          "points": {
+            "t0": {
+              "world_m": [
+                -0.022230494963221648,
+                0.1470740493985169,
+                0.917809535463076
+              ],
+              "depth_m": 0.18383857607841492,
+              "frame_id": 234,
+              "pixel": [
+                371,
+                439
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t1": {
+              "world_m": [
+                -0.05559259690175432,
+                0.14314048467938006,
+                0.9181129097209435
+              ],
+              "depth_m": 0.1849231868982315,
+              "frame_id": 234,
+              "pixel": [
+                381,
+                529
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t2": {
+              "world_m": [
+                -0.04291626355897458,
+                0.1553911914061884,
+                0.9178116182033031
+              ],
+              "depth_m": 0.18095840513706207,
+              "frame_id": 234,
+              "pixel": [
+                349,
+                497
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t3": {
+              "world_m": [
+                -0.06468930790302482,
+                0.15491085557703385,
+                0.9177512218054508
+              ],
+              "depth_m": 0.1811855137348175,
+              "frame_id": 234,
+              "pixel": [
+                350,
+                557
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s0": {
+              "world_m": [
+                -0.023886414892737594,
+                0.1610575182912054,
+                0.9178701586671639
+              ],
+              "depth_m": 0.17893651127815247,
+              "frame_id": 234,
+              "pixel": [
+                334,
+                445
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s1": {
+              "world_m": [
+                -0.024995773637423706,
+                0.13126817786238443,
+                0.9182472579867956
+              ],
+              "depth_m": 0.1889054775238037,
+              "frame_id": 234,
+              "pixel": [
+                411,
+                445
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s2": {
+              "world_m": [
+                -0.08069883457087226,
+                0.1596603590817477,
+                0.917612627661466
+              ],
+              "depth_m": 0.17967268824577332,
+              "frame_id": 234,
+              "pixel": [
+                337,
+                603
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s3": {
+              "world_m": [
+                -0.08283507733403134,
+                0.1306288077350577,
+                0.9182785039479031
+              ],
+              "depth_m": 0.18910837173461914,
+              "frame_id": 234,
+              "pixel": [
+                412,
+                598
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c0": {
+              "world_m": [
+                -0.023164192599950416,
+                0.18490726871853694,
+                0.8999671102027406
+              ],
+              "depth_m": 0.18746589124202728,
+              "frame_id": 234,
+              "pixel": [
+                260,
+                440
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c1": {
+              "world_m": [
+                -0.026181087916411643,
+                0.0867768241539453,
+                0.8999583068829722
+              ],
+              "depth_m": 0.22147852182388306,
+              "frame_id": 234,
+              "pixel": [
+                487,
+                439
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c2": {
+              "world_m": [
+                -0.09696733786280087,
+                0.09001746015064993,
+                0.8999589271214897
+              ],
+              "depth_m": 0.22036804258823395,
+              "frame_id": 234,
+              "pixel": [
+                480,
+                600
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "a0": {
+              "world_m": [
+                -0.012468379691857878,
+                0.1438817721060785,
+                0.9140167805809173
+              ],
+              "depth_m": 0.9596168994903564,
+              "frame_id": 234,
+              "pixel": [
+                523,
+                500
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            "a1": {
+              "world_m": [
+                -0.01275335705898839,
+                0.1447848481305584,
+                0.9047840752022013
+              ],
+              "depth_m": 0.9656399488449097,
+              "frame_id": 234,
+              "pixel": [
+                523,
+                506
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": [],
+          "measurement_error_count": 0,
+          "omitted_region_names": [
+            "package_top_interior",
+            "a_short_end_wall",
+            "counter_beside_package"
+          ],
+          "provenance": "Current review interpretation with named depth receipts; unused region clouds omitted."
+        },
+        "historical_guard_floor_m": 0.001741372874978718
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "key": "alt.model",
+      "frame_id": 234,
+      "method_number": 7,
+      "source_sha256": "0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431",
+      "bytes": 4448,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 234
+}

@@ -322,3 +322,4 @@
 - 【Agent】【2026-10-31 07:18】[result] EXP-2026W44-054: supervisor31 requests materially different full-hand contact configuration; request32 submit_method_patch f7406a80373e4c219abfa369b31ba95d verified live. No budget-pressure replan yet.
 - 【Agent】【2026-10-31 07:33】[result] EXP-2026W44-054: patch32 delivered946.475s,18-to12 replacements corrected in original turn; exact replay to method07; new short-end upright candidate, review33 live.
 - 【Agent】【2026-10-31 07:34】[result] EXP-2026W44-054: real Jev6calls18steps moved empty open hand upward28.971mm for new short-end view; total78Jev234steps; review34 live. Review33 region-count correction succeeded.
+- 【Agent】【2026-10-31 07:37】[result] EXP-2026W44-054: review34 delivered after same-turn notes837-to600 correction; opposite short-end wall remains occluded, request35 measurement retry live, no descent/closure. Total78Jev234steps.
