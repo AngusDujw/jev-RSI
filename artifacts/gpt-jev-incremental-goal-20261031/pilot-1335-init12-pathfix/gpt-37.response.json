@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-d3b528ad-9397-4b80-ac39-e5f40a7c4077",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-d3b528ad-9397-4b80-ac39-e5f40a7c4077",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"The program returned blocked, not stage_complete; live continuation is unavailable.\", \"Current carton landmarks agree with the acknowledged transfer: reported attachment error is 0.30 mm against a 3.6 mm allowance.\", \"The revised inner-opening model passes the selected fit test narrowly, but this does not establish external separation or finger clearance.\", \"The neighboring bottle overlaps the carton in the wrist image. Its relevant separation and the opening and withdrawal clearances remain unmeasured, not demonstrably obstructed.\", \"Residual corrections stalled and their target is retired. No release occurred, and the bowl has no observed settled carton.\"], \"invalidated_assumptions\": [], \"plan_valid\": \"yes\", \"reason\": \"Restaging remains suitable; the new retention and opening evidence does not invalidate the overall plan. Revise local sensing to assess the relevant swept-volume separation, using different cross-camera surface measurements rather than repeating rim fitting or requiring a global height certificate. A changed viewpoint needs an independently supported route. Preserve the completed raise and transfer; do not replay stalled corrections, weaken margins, or authorize release from fit alone.\", \"recovery_available\": \"unknown\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 69624,
+    "output_tokens": 1356,
+    "output_tokens_details": {
+      "reasoning_tokens": 1034
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e9c-f0fc-7d32-ab7c-df7f0d628e99",
+    "turn_ids": [
+      "01a18e9c-f102-7a52-9520-9eea100865a0"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

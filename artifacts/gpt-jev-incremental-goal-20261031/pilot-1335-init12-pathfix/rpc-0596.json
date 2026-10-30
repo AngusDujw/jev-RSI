@@ -1,0 +1,488 @@
+{
+  "index": 596,
+  "method_number": 9,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "restage.progress",
+      {
+        "entry": {
+          "frame_id": 396,
+          "native_steps": 396,
+          "budgets": {
+            "gpt_remaining": 4,
+            "jev_remaining": 68,
+            "native_steps_remaining": 204,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.07837901739681576,
+            0.0059290049818064815,
+            1.0421218692481256
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8778969366996343,
+            -0.004386223863806938,
+            -0.478821345011136,
+            0.0028016308361273616
+          ],
+          "gripper_qpos_m": [
+            0.021016941263675867,
+            -0.02120052931954178
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -1.3262515994368757e-06,
+              -9.180311632590171e-05,
+              -0.0036016258435817338
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000053029658158,
+              0.0572174713220174,
+              0.01600005244279639
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010496217998763395,
+              -0.04760392078235169,
+              -0.044469962979924796
+            ],
+            "finger_high_offset_tool_m": [
+              0.010493420476072551,
+              0.0474203130826097,
+              0.00924742507745397
+            ]
+          }
+        },
+        "reviews": 1,
+        "actions": [],
+        "retention": [
+          {
+            "before_frame": 324,
+            "after_frame": 396,
+            "attachment_error_m": 0.00029845528294262206,
+            "allowance_m": 0.0036,
+            "predicted_landmark_motion_m": 0.13826632596966093,
+            "normal_error_rad": 0.00028955170951986005,
+            "actual_hand_translation_m": [
+              0.0032011384763829254,
+              -0.13701337124654966,
+              0.01908115145331757
+            ],
+            "supported": true
+          }
+        ],
+        "release_authorized": false,
+        "retired_target": {
+          "phase": "translate_to_central_bowl_workspace_without_tilt",
+          "before": {
+            "frame_id": 348,
+            "native_steps": 348,
+            "tcp_position_world_m": [
+              -0.08276587271111988,
+              0.1427279402801323,
+              1.0429817362244527
+            ],
+            "tcp_quaternion_xyzw": [
+              0.8824643568650514,
+              -0.007143340073525295,
+              -0.4703231477226258,
+              0.0013297637482669322
+            ],
+            "gripper_qpos_m": [
+              0.021167330977119092,
+              -0.021050295858852746
+            ],
+            "last_gripper_command": "close"
+          },
+          "target_tcp_world_m": [
+            -0.08153635197137837,
+            0.005806879241782997,
+            1.0429817362244527
+          ],
+          "quaternion_xyzw": [
+            0.8824643568650514,
+            -0.007143340073525295,
+            -0.4703231477226258,
+            0.0013297637482669322
+          ],
+          "gripper": "close"
+        },
+        "preserved_actions": [
+          {
+            "phase": "fixed_attitude_raise",
+            "before": {
+              "frame_id": 324,
+              "native_steps": 324,
+              "tcp_position_world_m": [
+                -0.08158015587319868,
+                0.14294237622835615,
+                1.023040717794808
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8815049180996555,
+                -0.006529392307856707,
+                -0.4721296446017755,
+                0.00021234502845446368
+              ],
+              "gripper_qpos_m": [
+                0.021174802827425204,
+                -0.02104295739246088
+              ],
+              "last_gripper_command": "close"
+            },
+            "after": {
+              "frame_id": 348,
+              "native_steps": 348,
+              "tcp_position_world_m": [
+                -0.08276587271111988,
+                0.1427279402801323,
+                1.0429817362244527
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8824643568650514,
+                -0.007143340073525295,
+                -0.4703231477226258,
+                0.0013297637482669322
+              ],
+              "gripper_qpos_m": [
+                0.021167330977119092,
+                -0.021050295858852746
+              ],
+              "last_gripper_command": "close"
+            },
+            "receipt": {
+              "decision": 115,
+              "choices": {
+                "x": "positive",
+                "y": "hold",
+                "z": "hold",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "close"
+              },
+              "action": [
+                0.02416583405994145,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "before": [
+                -0.08343906618550187,
+                0.14265562600068846,
+                1.042919646212204
+              ],
+              "after": [
+                -0.08276587271111988,
+                0.1427279402801323,
+                1.0429817362244527
+              ],
+              "target_tcp": [
+                -0.08158015587319868,
+                0.14294237622835615,
+                1.043040717794808
+              ],
+              "acknowledged_steps": 3,
+              "native_steps": 348,
+              "frame_id": 348,
+              "status": "reached",
+              "position_error_m": 0.00120639380853106,
+              "rotation_error_rad": 0.0048205862655137845,
+              "lease_calls": 8
+            },
+            "net_position_error_reduction_m": 0.018793606191468956,
+            "net_rotation_error_reduction_rad": -0.0048205862655137845,
+            "actual_hand_translation_m": [
+              -0.001185716837921194,
+              -0.0002144359482238456,
+              0.019941018429644686
+            ]
+          }
+        ],
+        "preserved_retention": [
+          {
+            "before_frame": 306,
+            "after_frame": 324,
+            "attachment_error_m": 0.00027413135943709147,
+            "allowance_m": 0.0036,
+            "normal_error_rad": 0.0005412206531102278,
+            "predicted_feature_motion_m": 0.012965055777190496,
+            "actual_hand_translation_m": [
+              -0.010938341528275844,
+              -0.0020176410229949537,
+              -0.0009678606237177867
+            ],
+            "supported": true
+          }
+        ],
+        "revision": "Preserve the completed raise and transfer. The old residual target remains retired. A different fitted radius alone does not establish bowl motion.",
+        "last_review": {
+          "frame_id": 396,
+          "parameters": {
+            "boundary": "inner_upper_lip",
+            "bowl": "same_upright",
+            "carton": "same_rigid_carton",
+            "carton_free": "unknown",
+            "end_camera": "robot0_eye_in_hand",
+            "end_ids": "matched",
+            "end_pixels": [
+              [
+                280,
+                445
+              ],
+              [
+                488,
+                443
+              ]
+            ],
+            "inner_pixels": [
+              [
+                379,
+                158
+              ],
+              [
+                508,
+                193
+              ],
+              [
+                560,
+                278
+              ],
+              [
+                508,
+                363
+              ],
+              [
+                379,
+                400
+              ],
+              [
+                250,
+                363
+              ],
+              [
+                198,
+                278
+              ],
+              [
+                250,
+                193
+              ]
+            ],
+            "lip_patches": [
+              [
+                [
+                  376,
+                  153
+                ],
+                [
+                  382,
+                  153
+                ],
+                [
+                  382,
+                  155
+                ],
+                [
+                  376,
+                  155
+                ]
+              ],
+              [
+                [
+                  561,
+                  275
+                ],
+                [
+                  563,
+                  275
+                ],
+                [
+                  563,
+                  281
+                ],
+                [
+                  561,
+                  281
+                ]
+              ],
+              [
+                [
+                  376,
+                  402
+                ],
+                [
+                  382,
+                  402
+                ],
+                [
+                  382,
+                  404
+                ],
+                [
+                  376,
+                  404
+                ]
+              ],
+              [
+                [
+                  194,
+                  275
+                ],
+                [
+                  196,
+                  275
+                ],
+                [
+                  196,
+                  281
+                ],
+                [
+                  194,
+                  281
+                ]
+              ]
+            ],
+            "notes": "c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown because the adjacent green bottle overlaps the carton in projection and their hidden separation cannot be established; finger contact is not the reason. The visible space above is open, but the bottle's h",
+            "opening": "unknown",
+            "outer_pixels": [
+              [
+                379,
+                151
+              ],
+              [
+                511,
+                189
+              ],
+              [
+                565,
+                278
+              ],
+              [
+                511,
+                367
+              ],
+              [
+                379,
+                405
+              ],
+              [
+                247,
+                367
+              ],
+              [
+                192,
+                278
+              ],
+              [
+                247,
+                189
+              ]
+            ],
+            "rim_camera": "robot0_eye_in_hand",
+            "tops_count": 0,
+            "up_route": "unknown"
+          },
+          "measurement_errors": []
+        },
+        "opening_model_discrepancy": {
+          "old_frame": 324,
+          "new_frame": 396,
+          "center_change_m": 0.0010786071152409623,
+          "radius_change_m": 0.0046866756805589715,
+          "interpretation": "Replace the old opening for this local action. Without matched landmark displacement this discrepancy is not evidence of bowl movement."
+        },
+        "effect_tests": [
+          {
+            "observation_frame": 396,
+            "fit_margin_m": 0.003521177220243566,
+            "required_margin_m": 0.0035,
+            "carton_above_rim_reserve_m": 0.039659452351552764,
+            "expanded_jaw_above_relevant_tops_reserve_m": null,
+            "local_external_height_bound_m": null,
+            "external_top_measurements": [],
+            "opening_relation_known": false,
+            "opening_mode": "unknown",
+            "position_tolerance_m": 0.0015,
+            "rotation_tolerance_rad": 0.015,
+            "additional_tool_y_excursion_each_side_m": 0.02,
+            "upward_withdrawal_envelope_m": 0.02,
+            "scope": "Above-rim prospective opening option only, without release authorization.",
+            "failed_relations": [
+              "finger_height_reserve",
+              "visible_local_opening_relation",
+              "carton_external_separation"
+            ]
+          }
+        ],
+        "actual_state": {
+          "frame_id": 396,
+          "native_steps": 396,
+          "budgets": {
+            "gpt_remaining": 3,
+            "jev_remaining": 68,
+            "native_steps_remaining": 204,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.07837901739681576,
+            0.0059290049818064815,
+            1.0421218692481256
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8778969366996343,
+            -0.004386223863806938,
+            -0.478821345011136,
+            0.0028016308361273616
+          ],
+          "gripper_qpos_m": [
+            0.021016941263675867,
+            -0.02120052931954178
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -1.3262515994368757e-06,
+              -9.180311632590171e-05,
+              -0.0036016258435817338
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000053029658158,
+              0.0572174713220174,
+              0.01600005244279639
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010496217998763395,
+              -0.04760392078235169,
+              -0.044469962979924796
+            ],
+            "finger_high_offset_tool_m": [
+              0.010493420476072551,
+              0.0474203130826097,
+              0.00924742507745397
+            ]
+          }
+        },
+        "reason": "Unsupported relations: ['finger_height_reserve', 'visible_local_opening_relation', 'carton_external_separation']; the separate closed-gripper route is not established. c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown beca"
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 396,
+  "response": {
+    "result": {
+      "key": "restage.progress",
+      "frame_id": 396,
+      "method_number": 9,
+      "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5",
+      "bytes": 8536,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 396
+}

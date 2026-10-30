@@ -1,0 +1,30 @@
+{
+  "method_index": 9,
+  "logical_builder_index": 35,
+  "builder_elapsed_s": 539.245862893993,
+  "source_lines": 192,
+  "frame": 396,
+  "jev_calls": 132,
+  "supervisor": {
+    "action": "revise",
+    "evidence": [
+      "The program returned blocked, not stage_complete; live continuation is unavailable.",
+      "Current carton landmarks agree with the acknowledged transfer: reported attachment error is 0.30 mm against a 3.6 mm allowance.",
+      "The revised inner-opening model passes the selected fit test narrowly, but this does not establish external separation or finger clearance.",
+      "The neighboring bottle overlaps the carton in the wrist image. Its relevant separation and the opening and withdrawal clearances remain unmeasured, not demonstrably obstructed.",
+      "Residual corrections stalled and their target is retired. No release occurred, and the bowl has no observed settled carton."
+    ],
+    "invalidated_assumptions": [],
+    "plan_valid": "yes",
+    "reason": "Restaging remains suitable; the new retention and opening evidence does not invalidate the overall plan. Revise local sensing to assess the relevant swept-volume separation, using different cross-camera surface measurements rather than repeating rim fitting or requiring a global height certificate. A changed viewpoint needs an independently supported route. Preserve the completed raise and transfer; do not replay stalled corrections, weaken margins, or authorize release from fit alone.",
+    "recovery_available": "unknown",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "next_request": {
+    "request_id": "c56308baea5d4f47b25bf2461c724204",
+    "reconnects": 0,
+    "elapsed_s": 69.00080778310075
+  },
+  "terminal_native_result": null
+}

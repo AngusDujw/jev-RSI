@@ -335,3 +335,16 @@ unsupported. Active next method job91f93c6767c8497396281cf70e1f059e / thread
 01a18e90-7499-7f11-93ad-2a9c1d6f8f63. Budget40 remains fixed; after supervisor34
 there are five logical calls left before the new method charge. Preserve
 bowl-measurement-disagreement.json. No terminal native result.
+
+## Current opening fit resolved; nearby separation remains unmeasured
+
+Method9 delivered192 lines in539.246 seconds, no reconnect. Review36 and
+supervisor37 support retained carton: attachment error0.30mm versus3.6mm
+allowance. The revised inner-opening fit passes narrowly. Nearby bottle
+separation and finger opening/withdrawal clearance remain unmeasured. No
+release or new motion: frame396/132Jev. Supervisor37 chose local sensing
+revision, preserving completed transfer and the plan; no global physical
+impossibility is established. Current method request c56308baea5d4f47b25bf2461c724204
+is live, generating with no recovery observed. Keep40 logicalGPT limit;
+only one call slot remains after charging builder38 (indices start at0).
+Save restage-clearance-gap.json. No terminal native result.

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-c72a034c-832e-4750-8fd2-6f0957f0a4f8",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-c72a034c-832e-4750-8fd2-6f0957f0a4f8",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Measure the achieved pose; the stalled target remains retired. The Cream/C end and printed face support the same rigid carton. The patterned bowl is upright. Its opening is bounded by the inner edge of the narrow upper lip, not the circular decoration on the sloping interior. The near-side outer wall visible beyond the lip is also not the opening boundary. A different fitted radius alone does not establish bowl movement; the earlier fit's physical boundary cannot be verified from its numerical record alone. No opening, release, tilt, or descent is supported by this review.\", \"parameters\": {\"boundary\": \"inner_upper_lip\", \"bowl\": \"same_upright\", \"carton\": \"same_rigid_carton\", \"carton_free\": \"unknown\", \"end_camera\": \"robot0_eye_in_hand\", \"end_ids\": \"matched\", \"end_pixels\": [[280, 445], [488, 443]], \"inner_pixels\": [[379, 158], [508, 193], [560, 278], [508, 363], [379, 400], [250, 363], [198, 278], [250, 193]], \"lip_patches\": [[[376, 153], [382, 153], [382, 155], [376, 155]], [[561, 275], [563, 275], [563, 281], [561, 281]], [[376, 402], [382, 402], [382, 404], [376, 404]], [[194, 275], [196, 275], [196, 281], [194, 281]]], \"notes\": \"c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown because the adjacent green bottle overlaps the carton in projection and their hidden separation cannot be established; finger contact is not the reason. The visible space above is open, but the bottle's hidden upper portion is not localized relative to the closed assembly's at-most-12-mm horizontal swept margin, so the combined up_route is unknown rather than obstructed. Opening is independently unknown: the bottle's highest cap/shoulder is not exposed sufficiently to bound its height relative to the fingers expanded by 20 mm on each tool-y side and the 20-mm upward withdrawal. No o samples can establish those missing local height bounds; tops_count is zero, not a claim that no nearby bodies exist. Closed fingers do not establish retention. Fresh selected depths must determine the achieved carton pose and support any retention comparison.\", \"opening\": \"unknown\", \"outer_pixels\": [[379, 151], [511, 189], [565, 278], [511, 367], [379, 405], [247, 367], [192, 278], [247, 189]], \"rim_camera\": \"robot0_eye_in_hand\", \"tops_count\": 0, \"up_route\": \"unknown\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [280, 445], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [488, 443], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [304, 470], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [464, 470], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [307, 539], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p3\", \"pixel\": [464, 539], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p4\", \"pixel\": [307, 616], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p5\", \"pixel\": [464, 616], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d0\", \"pixel\": [379, 154], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d1\", \"pixel\": [562, 278], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d2\", \"pixel\": [379, 403], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"d3\", \"pixel\": [195, 278], \"radius\": 1}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip_surface\", \"box\": [192, 150, 566, 406], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 51114,
+    "output_tokens": 8306,
+    "output_tokens_details": {
+      "reasoning_tokens": 7250
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e98-afcb-71d0-aed4-aabc516d1129",
+    "turn_ids": [
+      "01a18e98-afd1-7e13-a0f7-b20ea1290c97"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
