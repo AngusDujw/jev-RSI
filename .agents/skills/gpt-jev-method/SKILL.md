@@ -1,6 +1,6 @@
 ---
 name: gpt-jev-method
-description: Build, repair, validate, and freeze complete GPT-authored robot methods and Jev input/output protocols using this repository's LIBERO harness. Use for reusable method generation or execution, rather than handwritten task trajectories.
+description: Build, repair, validate, and freeze whole-task or incremental current-stage GPT-authored robot methods and Jev protocols using this repository's LIBERO harness, rather than handwritten task trajectories.
 ---
 
 # Complete GPT method with Jev
@@ -9,13 +9,29 @@ This project-local skill guides the outer orchestrator. It is not automatically
 loaded into a remote planner request. Do not append this skill, experiment
 management instructions, or benchmark outcome tables to either internal model.
 
+## Select the requested planning scope
+
+When incremental planning is allowed, use hierarchical mode: an overall plan,
+complete code for the current stage, and evidence-triggered method/plan revision.
+Read the [incremental protocol](../../../code/prompts/gpt_jev_hierarchical_v1.md)
+for contracts, trigger defaults, handoff and audit. Do not require all future
+programs up front or substitute design-then-whole-code. Preserve whole-method
+mode for requested historical reproductions. Each stage still supplies complete
+executable processing and Jev cooperation; confirm its effects before advancing.
+
 ## Construct the actual request
 
-Use the canonical files without making task-specific copies of shared knowledge:
+For whole-task mode, use the canonical files without making task-specific copies
+of shared knowledge:
 
 - [Builder instructions](../../../code/prompts/gpt_jev_method_v2.txt).
 - [Exact runtime API](../../../code/prompts/gpt_jev_program_api_v2.md).
 - [Generic lessons](../../../code/prompts/gpt_jev_method_lessons_v2.txt).
+
+Hierarchical mode instead uses the three English stage prompts listed in the
+incremental protocol. Only the current-stage builder also receives the exact
+runtime API. Check the actual serialized request rather than concatenating the
+whole-task builder into stage planning or supervision.
 
 For explicitly selected staged fresh synthesis, the host first uses the
 [bounded design contract](../../../code/prompts/gpt_jev_design_v1.txt) and saves
@@ -30,7 +46,8 @@ serialized request, including nested JSON text, for English-only content and
 scope. Record the actual fixed-file and implementation hashes.
 
 The required result remains four strings: `explanation`, complete `source` with
-`main(api)`, `interface`, and `jev_protocol`. The source owns task-specific
+`main(api)`, `interface`, and `jev_protocol` (current stage only in hierarchical
+mode). The source owns task-specific
 geometry, phase predicates, Jev questions/features, effect checks, and executable
 recovery. Retain that task-specific output as an artifact; do not insert its
 coordinates, trajectories, object names, or task dispatch into shared knowledge.

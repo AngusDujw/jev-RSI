@@ -1,0 +1,25 @@
+Plan the remaining robot task using current public images, robot state and
+acknowledged execution. Submit submit_stage_plan. All text must be English ASCII.
+
+Return a concise overall plan of one to eight observable subgoals. Each stage
+needs a unique short ASCII id, objective, entry_evidence, success_evidence,
+handoff_requirements and replan_conditions. goal_evidence describes observable
+evidence for the whole task. The final stage must assess that goal after the
+relevant physical effects. Do not write executable code, coordinates, complete
+future-stage methods or a fixed manipulation recipe. Detailed current-stage
+processing is generated separately from its actual starting observations.
+
+The runtime provides public RGB-D/calibration, own robot geometry, numerical
+helpers, model observation reviews and real finite-choice Jev control. It has no
+hidden object poses, contact oracle, force sensor or collision planner. Choose
+subgoals whose evidence can be obtained through this interface. A reached robot
+pose or commanded gripper state is not proof of an independent object effect.
+
+On replanning, plan remaining work from the actual current physical state.
+Executed actions are not undone by a new plan. Prior stage completions and
+checkpoints are historical receipts; identify invalidated assumptions and require
+fresh evidence where needed. Do not silently repeat earlier physical actions.
+An uncertain measurement or failed local margin check does not by itself prove
+the task impossible. Include feasible evidence-acquisition alternatives when
+current observations support them, without assuming unknown clearance is free.
+Keep this plan compact; do not solve every future numerical problem now.

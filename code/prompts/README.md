@@ -1,5 +1,12 @@
 # GPT/Jev complete-method framework
 
+Incremental planning is available through the host's explicit hierarchical mode:
+overall plan, current-stage executable methods, fresh stage confirmation and
+triggered local revision or replanning. See the [incremental protocol](gpt_jev_hierarchical_v1.md).
+This is distinct from staged-design generation, which still materializes a whole
+program. Incremental implementation/fixture checks are not native task scores;
+the historical evidence below belongs to its original configurations.
+
 Current evidence: the exact complete GPT method23567dfb passed native LIBERO
 5/5on fixed13,16,17,18,19with zero source repairs and actual Jev.13is a fresh
 development-state regression;16-19were unused at freeze. Program proposals4/5:

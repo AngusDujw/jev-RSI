@@ -23,6 +23,7 @@ from gpt_jev_contract import CAMERAS, english, parse_jev
 from gpt_jev_program_worker import validate_source
 from gpt_jev_review_contract import compile_fields, validate_value
 from run_gpt_jev_generic import save, scrub
+from gpt_jev_stage_protocol import KINDS as STAGE_KINDS, StageYield, run_stages
 
 
 def model_wire_numbers(value, *, preserve_tools=False):
@@ -326,8 +327,21 @@ def main():
     p.add_argument("--method-request-seconds", type=int, choices=(900, 1800, 3600),
         help="Override the complete-method request deadline; design/review limits stay unchanged")
     p.add_argument("--no-video", action="store_true", help="Keep observation evidence without recording full episode videos")
+    p.add_argument("--hierarchical", action="store_true", help="Overall plan plus current-stage methods and evidence-triggered GPT supervision")
+    p.add_argument("--max-stage-updates", type=int, default=12)
+    p.add_argument("--max-plan-revisions", type=int, default=2)
+    p.add_argument("--max-stage-revisions", type=int, default=3)
+    p.add_argument("--stage-control-calls", type=int, default=24)
+    p.add_argument("--stage-policy-steps", type=int, default=72)
+    p.add_argument("--unlimited-time", action="store_true", help="No logical model/episode time cutoff; retain call, step and revision limits")
     p.add_argument("--wall-seconds", type=int, default=3600)
     args = p.parse_args()
+    if args.hierarchical and (args.staged_design or args.method_file):
+        p.error("Hierarchical fresh generation is separate from staged design and archived-method reuse")
+    if not (1 <= args.max_stage_updates <= 32 and 0 <= args.max_plan_revisions <= 8 and
+            0 <= args.max_stage_revisions <= 8 and 1 <= args.stage_control_calls <= 80 and
+            1 <= args.stage_policy_steps <= 240):
+        p.error("Invalid hierarchical limits")
     repo = Path(__file__).resolve().parents[2]
     out = args.output.resolve()
     if args.bridge != "http://127.0.0.1:7921" or out.exists() or not out.is_relative_to(repo / "code/runs"):
@@ -382,19 +396,27 @@ def main():
     prompt += "\n\n"+lessons
     manual = (repo / "code/prompts/gpt_jev_program_api_v2.md").read_text()
     english([prompt, manual])
+    stage_prompts = {}
+    if args.hierarchical:
+        for name in ("gpt_jev_stage_plan_v1.txt", "gpt_jev_stage_method_v1.txt", "gpt_jev_stage_supervisor_v1.txt"):
+            stage_prompts[name] = (repo / "code/prompts" / name).read_text()
+        english(stage_prompts)
     if design_prompt is not None:
         english(design_prompt)
     save(out / "protocol.json", dict(arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(), manual_sha256=hashlib.sha256(manual.encode()).hexdigest(),
         implementation_sha256={name: hashlib.sha256((repo / "code/scripts" / name).read_bytes()).hexdigest()
-            for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "gpt_jev_review_contract.py", "jev_rgbd_tracking.py")},
+            for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "gpt_jev_review_contract.py", "jev_rgbd_tracking.py", "gpt_jev_stage_protocol.py")},
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
         native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
         model_wire_numeric_precision="data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
         pro_request_deadline="loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
         review_parameters="method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
         typed_reviews_required_for_generated_methods=True,
-        method_request_deadline_seconds=planner_request_timeout("method", args.staged_design, args.method_request_seconds),
+        method_request_deadline_seconds=None if args.unlimited_time else planner_request_timeout("method", args.staged_design, args.method_request_seconds),
+        hierarchical=dict(enabled=args.hierarchical,
+            prompt_sha256={name: hashlib.sha256(value.encode()).hexdigest() for name, value in stage_prompts.items()},
+            completion="Fresh stage evidence then final goal evidence; native score remains isolated"),
         staged_design=dict(enabled=args.staged_design,
             prompt_sha256=hashlib.sha256(design_prompt.encode()).hexdigest() if design_prompt else None,
             schema_sha256=hashlib.sha256(json.dumps(DESIGN_SCHEMA, sort_keys=True).encode()).hexdigest(),
@@ -413,6 +435,7 @@ def main():
     native_steps = jev_calls = gpt_calls = rpc_calls = 0
     last_grip = "open"
     history, methods, previous = [], [], None
+    previous_frame = None
     rpc_feedback = []
     annotation_initial = annotation_last = None
     trackers = {}
@@ -420,14 +443,16 @@ def main():
     termination, success, result = "not_started", None, None
     own_method_error = None
     method_design = None
+    stage_watchdog = None
+    active_stage_context = None
 
     def budgets():
         return dict(gpt_remaining=args.max_gpt-gpt_calls, jev_remaining=args.max_jev-jev_calls,
                     native_steps_remaining=args.max_native_steps-native_steps,
-                    wall_seconds_remaining=max(0, args.wall_seconds-(time.monotonic()-started)))
+                    wall_seconds_remaining=1e12 if args.unlimited_time else max(0, args.wall_seconds-(time.monotonic()-started)))
 
     def budget():
-        if time.monotonic()-started >= args.wall_seconds:
+        if not args.unlimited_time and time.monotonic()-started >= args.wall_seconds:
             raise RuntimeError("wall_budget")
         if native_steps >= args.max_native_steps:
             raise RuntimeError("native_step_budget")
@@ -510,8 +535,8 @@ def main():
         return dict(world_m=xyz.tolist(), rgb=data["rgb"][uv[:, 1], uv[:, 0]].tolist(), pixels=uv.tolist(), frame_id=native_steps,
                     camera=camera, box=box, stride=stride, source="current_visible_depth_region_backprojection")
 
-    def planner(kind, question, failed_method=None, review_context=None, parameter_schema=None):
-        nonlocal gpt_calls, previous
+    def planner(kind, question, failed_method=None, review_context=None, parameter_schema=None, hierarchical_context=None):
+        nonlocal gpt_calls, previous, previous_frame
         budget()
         if gpt_calls >= args.max_gpt:
             raise RuntimeError("gpt_budget")
@@ -529,7 +554,7 @@ def main():
             cameras[camera] = dict(K=data["K"].tolist(), camera_to_world_opencv=data["T"].tolist())
             content.extend([dict(type="input_text", text=f"Current {camera}; frame {native_steps}; 768x768"),
                 dict(type="input_image", image_url="data:image/jpeg;base64,"+base64.b64encode(encoded).decode(), detail="high")])
-        if previous:
+        if previous and (not args.hierarchical or previous_frame != native_steps):
             for camera, encoded in previous.items():
                 content.extend([dict(type="input_text", text=f"Earlier review {camera}"),
                     dict(type="input_image", image_url="data:image/jpeg;base64,"+base64.b64encode(encoded).decode(), detail="high")])
@@ -552,6 +577,8 @@ def main():
             payload_state["program_supplied_review_context"] = compact_feedback(review_context)
         if failed_method:
             payload_state["previous_method"] = failed_method
+        if hierarchical_context is not None:
+            payload_state["hierarchical_context"] = compact_feedback(hierarchical_context)
         if kind == "method" and method_design is not None:
             payload_state["method_design"] = dict(proposal=method_design,
                 scope="Earlier model design, not sensor truth or executed actions; implementation must acquire runtime evidence")
@@ -589,16 +616,27 @@ def main():
                 "parameters_json must encode an object with concise actionable numeric or boolean observations requested by the caller.",
                 "parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth.")
         tool = "submit_design" if kind == "design" else "submit_method_patch" if patching else "submit_method" if kind == "method" else "submit_review"
+        if kind in STAGE_KINDS:
+            tool, response_schema, prompt_name = STAGE_KINDS[kind]
+            instructions = stage_prompts[prompt_name]
+        elif kind == "stage_method":
+            tool, response_schema = "submit_method", METHOD_SCHEMA
+            instructions = stage_prompts["gpt_jev_stage_method_v1.txt"]+"\n\n"+manual
         tool_definition = dict(type="function", name=tool,
             description="Return a bounded implementation design proposal without executable source" if kind == "design" else
                 "Return the requested executable method, unique method patch, or observation review", parameters=response_schema)
-        if parameter_schema is not None or kind == "design":
+        if kind in STAGE_KINDS:
+            tool_definition["description"] = ("Return remaining observable subgoals without source code" if kind == "stage_plan" else
+                "Return an evidence-based current-stage transition or recovery decision")
+        elif kind == "stage_method":
+            tool_definition["description"] = "Return complete executable source and Jev cooperation for the current stage only"
+        if parameter_schema is not None or kind == "design" or kind in STAGE_KINDS or kind == "stage_method":
             tool_definition["strict"] = True
         payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
             input=[dict(role="user", content=content)], tools=[tool_definition],
             tool_choice=dict(type="function", name=tool), parallel_tool_calls=False, store=False)
         request_ceiling = planner_request_timeout(kind, args.staged_design, args.method_request_seconds)
-        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=max(1, min(request_ceiling, budgets()["wall_seconds_remaining"])))
+        raw = post(args.bridge+"/responses", payload, out / f"gpt-{index:02d}", timeout=None if args.unlimited_time else max(1, min(request_ceiling, budgets()["wall_seconds_remaining"])))
         if not raw.get("model", "").startswith("gpt-6-astra") or raw.get("status") != "completed":
             raise ValueError("Unexpected planner response")
         calls = [x for x in raw.get("output", []) if x.get("type") == "function_call"]
@@ -606,9 +644,10 @@ def main():
             raise ValueError("Expected one matching function call")
         answer = json.loads(calls[0]["arguments"])
         english(answer)
-        if parameter_schema is not None or kind == "design":
+        if parameter_schema is not None or kind == "design" or kind in STAGE_KINDS or kind == "stage_method":
             validate_value(answer, response_schema, tool)
         previous = current
+        previous_frame = native_steps
         save(out / f"gpt-{index:02d}.parsed.json", answer)
         print(json.dumps(dict(event="gpt", index=index, kind=kind, frame=native_steps)), flush=True)
         return apply_method_patch(failed_method, answer) if patching else answer
@@ -646,6 +685,8 @@ def main():
     def choose(questions, features):
         nonlocal jev_calls
         budget()
+        if stage_watchdog is not None:
+            stage_watchdog.before_control(state())
         validate_questions(questions)
         if jev_calls >= args.max_jev:
             raise RuntimeError("jev_budget")
@@ -653,13 +694,15 @@ def main():
             feature_source="GPT-authored program; not an independent sensor"), questions=questions)
         index = jev_calls
         jev_calls += 1
-        raw = post(args.bridge+"/systemone", request, out / f"jev-{index:03d}", timeout=max(1, min(900, budgets()["wall_seconds_remaining"])))
+        raw = post(args.bridge+"/systemone", request, out / f"jev-{index:03d}", timeout=900 if args.unlimited_time else max(1, min(900, budgets()["wall_seconds_remaining"])))
         return dict(choices=parse_jev(request, raw), frame_id=native_steps, decision=index)
 
     def control(target, quaternion, gripper, questions, features=None, tool_point="tcp",
                 translation_limit=.02, rotation_limit=.10, steps=3, position_tolerance=.006, rotation_tolerance=.06):
         nonlocal native_steps, last_grip
         budget()
+        if stage_watchdog is not None:
+            stage_watchdog.before_control(state())
         validate_questions(questions, control=True)
         questions = bind_control_questions(questions)
         target, quaternion = np.asarray(target, float), np.asarray(quaternion, float)
@@ -694,8 +737,12 @@ def main():
         grip = last_grip if choices["gripper"] == "keep" else choices["gripper"]
         action = np.r_[delta/.05, rotation/.5, -1. if grip == "open" else 1.]
         acknowledged = 0
+        dispatch_steps = min(steps, args.max_native_steps-native_steps)
+        if stage_watchdog is not None:
+            dispatch_steps = min(dispatch_steps, stage_watchdog.steps-
+                                 (native_steps-stage_watchdog.start["native_steps"]))
         try:
-            for _ in range(min(steps, args.max_native_steps-native_steps)):
+            for _ in range(dispatch_steps):
                 budget()
                 step_env(action)
                 native_steps += 1
@@ -714,7 +761,10 @@ def main():
         status = "reached" if reached else "stalled" if np.linalg.norm(after-before) < .0008 and pos_error > .015 else "moved"
         if jev_calls % 10 == 0:
             print(json.dumps(dict(event="control", jev_calls=jev_calls, native_steps=native_steps, position_error_m=pos_error, status=status)), flush=True)
-        return dict(**receipt, status=status, position_error_m=pos_error, rotation_error_rad=rot_error)
+        result = dict(**receipt, status=status, position_error_m=pos_error, rotation_error_rad=rot_error)
+        if stage_watchdog is not None:
+            stage_watchdog.after_control(result, gripper, state(), quaternion.tolist())
+        return result
 
     def step_env(action):
         nonlocal obs
@@ -730,6 +780,8 @@ def main():
         path.write_text(method["source"])
         save(out / f"method-{number:02d}.json", method)
         methods.append(dict(number=number, source_sha256=hashlib.sha256(method["source"].encode()).hexdigest()))
+        if active_stage_context is not None:
+            methods[-1]["stage_id"] = active_stage_context["current_stage"]["id"]
         child_env = {k: v for k, v in os.environ.items() if k in ("PATH", "LANG", "LC_ALL", "OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "LD_LIBRARY_PATH", "TMPDIR", "XDG_CACHE_HOME")}
         worker = subprocess.Popen([sys.executable, "-B", str(Path(__file__).with_name("gpt_jev_program_worker.py"))],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1,
@@ -746,6 +798,8 @@ def main():
             for _ in range(4000):
                 budget()
                 if not selector.select(timeout=5):
+                    if stage_watchdog is not None:
+                        stage_watchdog.waiting()
                     continue
                 line = worker.stdout.readline()
                 if not line:
@@ -767,16 +821,27 @@ def main():
                     raise ValueError("Invalid worker message")
                 rpc_calls += 1
                 record = dict(index=rpc_calls, method_number=number, request=message, frame_before=native_steps)
+                yielded = None
                 try:
+                    if stage_watchdog is not None:
+                        stage_watchdog.before_rpc()
                     if message["method"] not in allowed:
                         raise ValueError("Unknown RPC method")
                     english(message)
                     response = dict(result=allowed[message["method"]](*message["args"], **message["kwargs"]))
+                except StageYield as event:
+                    yielded = event
+                    response = dict(error="Stage supervision required", handoff=event.event,
+                        scope="Any acknowledged effects already persisted; do not replay this RPC")
                 except (ValueError, TypeError, KeyError) as error:
                     response = dict(error=type(error).__name__+": "+str(error)[:1000])
                 record.update(response=response, frame_after=native_steps)
                 save(out / f"rpc-{rpc_calls:04d}.json", record)
                 rpc_feedback.append(compact_feedback(dict(request=message, response=response, frame_id=native_steps)))
+                if yielded is not None:
+                    raise yielded
+                if stage_watchdog is not None:
+                    stage_watchdog.after_rpc(message, response, native_steps)
                 worker.stdin.write(json.dumps(response, allow_nan=False)+"\n")
                 worker.stdin.flush()
             raise RuntimeError("rpc_budget")
@@ -819,7 +884,38 @@ def main():
             method_design = planner("design", "Design a concise complete processing architecture and Jev cooperation before writing executable code.")
             save(out / "method-design.json", method_design)
             previous = None  # No physical action occurred; avoid duplicate same-frame images.
-        for revision in range(args.max_repairs+1):
+        if args.hierarchical:
+            def stage_plan_call(context):
+                return planner("stage_plan", "Plan the remaining subgoals from the current observations.",
+                               hierarchical_context=context)
+
+            def stage_method_call(context, previous_stage_method):
+                nonlocal active_stage_context
+                active_stage_context = context
+                prior = dict(previous_stage_method, incomplete_result=repair_result_context(
+                    context.get("latest_outcome"))) if previous_stage_method else None
+                return planner("stage_method", "Implement only the current stage, accounting for the latest execution and supervision.",
+                               failed_method=prior, hierarchical_context=context)
+
+            def stage_supervise(context):
+                return planner("stage_supervise", "Assess the current stage effect and select the next planning action.",
+                               hierarchical_context=context)
+
+            def stage_execute(method, watchdog):
+                nonlocal stage_watchdog
+                stage_watchdog = watchdog
+                try:
+                    return execute_method(method, len(methods))
+                finally:
+                    stage_watchdog = None
+
+            result = run_stages(stage_plan_call, stage_method_call, stage_supervise, stage_execute,
+                state, lambda journal: save(out / "stage-journal.json", journal),
+                max_updates=args.max_stage_updates, max_replans=args.max_plan_revisions,
+                max_revisions=args.max_stage_revisions, controls=args.stage_control_calls,
+                steps=args.stage_policy_steps)
+            termination = result["hierarchical_termination"]
+        for revision in range(0 if args.hierarchical else args.max_repairs+1):
             method = previous_method
             try:
                 method = archived_method if revision == 0 and archived_method and not args.revise_archived else planner("method", question, previous_method)
@@ -842,7 +938,8 @@ def main():
                 previous_method = method
                 question = "Repair your complete method for the actual current scene. Executed actions persist. Failure: "+own_method_error
         else:
-            termination = "repair_budget"
+            if not args.hierarchical:
+                termination = "repair_budget"
     except KeyboardInterrupt:
         termination = "agent_or_user_interrupted"
     except Exception as error:

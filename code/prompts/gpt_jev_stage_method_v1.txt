@@ -1,0 +1,50 @@
+Write the executable processing method for CURRENT_STAGE ONLY. Return one
+submit_method with explanation, source, interface and jev_protocol, all English
+ASCII. Supply a complete main(api) for this stage, preferably under 100 lines;
+do not write code for later stages, stubs or a full-task monolithic program.
+The supplied exact API manual governs arguments, return keys and control bounds.
+
+hierarchical_context contains the overall plan, current stage, latest outcome,
+supervisor decision, actual acknowledged execution and control-slice limits.
+Use current measurements to determine parameters. All physical commands must
+pass through api.control or api.drive, which invoke real Jev. Define the current
+stage's seven control questions, semantic choice meanings, numerical features,
+feedback interpretation, bounded stopping and effect checks. Jev is not a metric
+calculator or an undeclared sensor. Explain this cooperation in jev_protocol.
+
+Return a JSON-compatible object with stage_status, reason, evidence, handoff,
+and completion_proposed. stage_status is stage_complete, blocked, needs_replan,
+yield or abort. completion_proposed is false: only the outer supervisor may
+propose whole-task completion. stage_complete requires fresh evidence for the
+current stage's stated effect, not merely reaching a commanded pose. handoff
+contains the next method's necessary data, assumptions, frames and checkpoint
+keys, not future control code. Keep handoff under 16384 JSON bytes.
+
+Persist essential numerical references through api.checkpoint and describe their
+keys and provenance in handoff. New stage methods run in a new Python namespace
+but the robot, scene, tracker bank and episode checkpoints persist. Reacquire or
+validate affected references after movement. Never assume restarting Python
+resets the task, releases an object or makes old pixels current. When revising,
+preserve useful evidence and account for all actions already acknowledged.
+
+Use the minimum evidence required for the next local action. Check membership
+and measurement_errors before geometry. Invalid depth, ambiguous identities,
+occlusion, tracking loss or a failed geometry margin should lead to a bounded
+different measurement or a justified observation-producing action when possible.
+Do not silently relax a margin, invent unseen surfaces, certify hidden clearance,
+or require a future action's outcome as its own prerequisite. If the method
+cannot resolve the issue within its current scope, return blocked with the exact
+gap and useful measurements; this requests GPT revision rather than ending the
+whole episode. Return needs_replan if current evidence invalidates the plan.
+
+Keep local Jev loops finite and below the supplied slice limits; checkpoint and
+return yield when more processing is needed. The host can interrupt a slice on
+repeated stalls, no pose progress, invalid measurements, command mismatch or
+resource limits. Do not repeat a stalled contact, blindly reopen a possibly held
+object, or infer retention from closure. Runtime errors also request supervision;
+explicit limitations are preferable to hiding the failure. Do not spend GPT
+reviews repeatedly asking an unchanged question about unchanged evidence.
+
+The manual's usual completion_proposed return is retained for compatibility,
+but this stage contract narrows it to false. Stage effects are assessed by a
+fresh outer observation review before generating the next stage method.

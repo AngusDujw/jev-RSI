@@ -35,6 +35,8 @@ def digest(value):
 
 def ledger_index(path):
     result = {}
+    if not path.exists():
+        return result  # A run with requests still fails the exact-match/count checks.
     for number, line in enumerate(path.read_text().splitlines(), 1):
         try:
             item = json.loads(line)
@@ -105,6 +107,7 @@ def audit_run(run, ledgers):
         dispatches += 1
     require(steps == summary["native_steps"], "Acknowledged steps disagree with native summary")
     strict, designs, legacy, usage, purpose, origins = 0, 0, 0, {}, {}, set()
+    stage_plans, stage_decisions, rejected_sources = set(), set(), set()
     for kind in ("gpt", "jev"):
         totals = dict(attempts=0, unknown_usage=0, completed_input=0,
             completed_output=0, relay_seconds=0., matched_requests=0,
@@ -166,7 +169,10 @@ def audit_run(run, ledgers):
             definition = request["tools"][0]
             require(definition["name"] == tool, "Tool declaration mismatch")
             validate_value(answer, definition["parameters"], tool)
-            if tool == "submit_design":
+            if tool in ("submit_stage_plan", "submit_stage_decision"):
+                require(definition.get("strict") is True, "Hierarchical schema is not strict")
+                (stage_plans if tool == "submit_stage_plan" else stage_decisions).add(digest(answer))
+            elif tool == "submit_design":
                 require(definition.get("strict") is True, "Design schema is not strict")
                 designs += 1
             elif tool == "submit_review":
@@ -181,8 +187,14 @@ def audit_run(run, ledgers):
                 if tool == "submit_method_patch":
                     state = json.loads(request["input"][0]["content"][-1]["text"])
                     answer = apply_method_patch(state["previous_method"], answer)
-                validate_source(answer["source"])
-                origins.add(hashlib.sha256(answer["source"].encode("ascii")).hexdigest())
+                source_hash = hashlib.sha256(answer["source"].encode("ascii")).hexdigest()
+                try:
+                    validate_source(answer["source"])
+                except (ValueError, SyntaxError):
+                    if not protocol.get("hierarchical", {}).get("enabled"):
+                        raise
+                    rejected_sources.add(source_hash)
+                origins.add(source_hash)
             else:
                 raise ValueError("Unsupported program-host tool")
         require(totals["matched_requests"] == summary[kind+"_calls"], "Request count mismatch")
@@ -199,6 +211,39 @@ def audit_run(run, ledgers):
         require(source_hash in origins or reused, "Source is not an actual model output or declared archive")
         source_origins.append(dict(number=item["number"], source_sha256=source_hash,
             origin="declared exact-source reuse" if reused else "actual model output or assembled model patch"))
+    stage_audit = None
+    if protocol.get("hierarchical", {}).get("enabled"):
+        journal = read(run / "stage-journal.json")
+        require(all(digest(plan) in stage_plans for plan in journal["plans"]), "Plan is not an actual model return")
+        require(all(digest(event["decision"]) in stage_decisions for event in journal["events"]),
+                "Stage decision is not an actual model return")
+        event_hashes = {digest(event) for event in journal["events"]}
+        executed_hashes = {item["source_sha256"] for item in summary["methods"]}
+        for event in journal["events"]:
+            definition = journal["plans"][event["plan_revision"]]["stages"][event["stage_index"]]
+            require(event["stage"] == definition["id"], "Stage event differs from declared plan")
+            require(event["source_sha256"] in origins, "Stage event has no actual model source")
+            require(event["source_sha256"] in executed_hashes or
+                (event["source_sha256"] in rejected_sources and event["trigger"] == "execution_error"),
+                "Stage event has neither executed source nor recorded source rejection")
+        for event in journal["completed"]:
+            require(digest(event) in event_hashes, "Confirmed stage is not a recorded supervision event")
+            decision = event["decision"]
+            require(event["outcome"]["stage_status"] == "stage_complete" and
+                decision["action"] == "advance" and decision["stage_satisfied"] == "yes" and
+                decision["plan_valid"] != "no" and bool(decision["evidence"]),
+                "Stage advanced without a completion return and affirmative evidence")
+            require(event["source_sha256"] in origins, "Completed stage has no model-authored source")
+        if (summary.get("result") or {}).get("completion_proposed"):
+            require(bool(journal["completed"]), "Task proposal has no confirmed stage")
+            final = journal["completed"][-1]
+            require(final["decision"]["task_satisfied"] == "yes" and
+                final["stage_index"] == len(journal["plans"][final["plan_revision"]]["stages"])-1,
+                "Task proposed complete without final-stage goal evidence")
+        stage_audit = dict(plan_versions=len(journal["plans"]), updates=len(journal["events"]),
+            confirmed_stages=len(journal["completed"]), termination=journal.get("termination"),
+            rejected_source_returns=len(rejected_sources),
+            scope="Model-return provenance and transition rules, not observation truth")
     result = {k: summary[k] for k in ("native_success", "termination", "gpt_calls",
         "jev_calls", "native_steps", "elapsed_s", "methods")}
     program_result = summary.get("result")
@@ -211,6 +256,7 @@ def audit_run(run, ledgers):
         dispatches=dispatches, models=usage, strict_reviews_validated=strict,
         strict_designs_validated=designs, legacy_reviews_json_decoded=legacy,
         source_origins=source_origins, gpt_cost_by_purpose=purpose,
+        hierarchical=stage_audit,
         usage_scope="Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown.")
     return result
 
