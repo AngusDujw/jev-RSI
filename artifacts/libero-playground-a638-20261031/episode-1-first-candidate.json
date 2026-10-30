@@ -1,0 +1,30 @@
+{
+  "episode": 1,
+  "phase": "playground",
+  "knowledge_revision": 1,
+  "native_steps": 0,
+  "jev_dispatches": 0,
+  "stage_outcome": {
+    "stage_status": "blocked",
+    "reason": "Complementary measurement did not establish a robust local pinch: No robust pad-band interval at supported precision: slack=-0.00018336005549435264, overlap=0.002469439990750888, required=0.0025"
+  },
+  "supervisor": {
+    "action": "revise",
+    "evidence": [
+      "Current frame 0 views show the cream cheese package on the tabletop, separate from the bowl, with no finger retention or lifted separation.",
+      "Public state reports zero native steps and an open gripper; no robot execution is acknowledged.",
+      "The program returned blocked, and live continuation is unavailable.",
+      "The first geometry fit lacked adequate plane support or quality. The complementary candidate reported negative slack of about 0.183 mm and overlap of 2.469 mm below the required 2.5 mm.",
+      "Both views expose package surface and surrounding tabletop for different measurements; observation and control budgets remain."
+    ],
+    "invalidated_assumptions": [
+      "The selected measurements and tested candidate establish a robust pad-band pinch at supported precision."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains suitable; this local candidate rejection does not establish global infeasibility. Revise measurement selection using different, well-spread inset surface patches and check cross-view consistency before pooling measurements. Reassess a justified alternative candidate without reducing safety margins or forcing a fit. Any observation-producing motion needs its own clearance review. Preserve the actual open-gripper state and require independent retention evidence before advancing.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "scope": "Pre-action candidate rejection; not a failed physical pinch, not terminal task result. Revision proceeds in the same episode."
+}
