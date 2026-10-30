@@ -416,3 +416,16 @@ Job1dff1009e00548bab5c1784b0ac51bdc / native thread
 01a18ebc-47de-7652-ac75-98903c84ed5d generating, no recovery observed.
 Actual child971561 observed live. ZeroJev/zero steps; no native result.
 This proves request selection only, not successful patch delivery or speedup.
+
+## Candidate first patch delivered and assembled
+
+Request4 returned6 exact replacements in422.596s, no reconnect. Replaying
+all unique old/new replacements exactly reproduces saved method1,266 lines,
+SHA256bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29.
+It reuses acknowledged frame0 geometry, adds fresh top/support measurements
+and feasible-height search retaining original margins, with tighter pose
+tolerance candidates down to0.5mm and actual envelope checks before closing.
+This may be controller-limited; no physical feasibility follows from the
+interval alone. No source edits injected by outer agent. Review5 job
+63803e504bea47d4bf1fcaabbf31da33 is active. Still no control/terminal result.
+Patch delivery proves functioning assembly, not stable speedup or success.

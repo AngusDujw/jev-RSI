@@ -1,0 +1,10 @@
+{
+  "patch_elapsed_s": 422.59574744990095,
+  "replacement_count": 6,
+  "assembled_lines": 266,
+  "assembled_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+  "replayed_replacements_equal_saved_source": true,
+  "reconnects": 0,
+  "scope": "Successful actual patch delivery and assembly only; no physical grasp or speedup guarantee. Tighter pose tolerance must be achieved by real control.",
+  "review_request": "63803e504bea47d4bf1fcaabbf31da33"
+}

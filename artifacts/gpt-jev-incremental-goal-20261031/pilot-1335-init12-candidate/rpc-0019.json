@@ -1,0 +1,121 @@
+{
+  "index": 19,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "secure.failure"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.failure",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+      "bytes": 2105,
+      "value": {
+        "gate": "grasp_geometry",
+        "prevented_action": "descent and closure",
+        "operands_and_margins": {
+          "geometry": {
+            "frame": 0,
+            "top_plane": {
+              "coefficients": [
+                0.0013159665065336714,
+                0.025466123005968726,
+                0.9996748195344317,
+                -0.9212932421492191
+              ],
+              "center_world_m": [
+                -0.05247271198046069,
+                0.14203749674062818,
+                0.9180436799885064
+              ],
+              "rms_m": 8.913391855220807e-06,
+              "in_plane_spread_m": [
+                0.026847504859059537,
+                0.011092592813459843
+              ]
+            },
+            "counter_plane": {
+              "coefficients": [
+                3.075373226061315e-05,
+                -1.9603336791128971e-07,
+                0.9999999995270847,
+                -0.8999596780156999
+              ],
+              "center_world_m": [
+                -0.04508884299536059,
+                0.15066043095813744,
+                0.8999610946259823
+              ],
+              "rms_m": 0.0,
+              "in_plane_spread_m": [
+                0.0552985987630027,
+                0.028579200842378374
+              ]
+            },
+            "upper_corners_world_m": [
+              [
+                -0.01348537605800565,
+                0.16509900756325271,
+                0.9174048789633263
+              ],
+              [
+                -0.013207663758022181,
+                0.1239580198055842,
+                0.9184525556420551
+              ],
+              [
+                -0.09365736503233514,
+                0.12342873702331593,
+                0.9185719423570584
+              ],
+              [
+                -0.09277215079410261,
+                0.16504346203831227,
+                0.9175106666325441
+              ]
+            ],
+            "center_world_m": [
+              -0.05328063891061639,
+              0.14438230660761628,
+              0.917985010898746
+            ],
+            "width_m": 0.041141925061890246,
+            "length_m": 0.0804514423449934,
+            "height_m": 0.018023665575187087,
+            "quaternion_xyzw": [
+              0.9999945896700556,
+              0.0032894726958937305,
+              0.0,
+              0.0
+            ],
+            "grasp_pad_z_m": 0.9193104523328114,
+            "guard_m": 0.0015,
+            "grasp_tolerance_m": 0.002,
+            "finger_bottom_offset_m": -0.012849107009252606,
+            "side_overlap_m": 0.006674954485560214,
+            "nominal_usable_aperture_m": 0.061444240610917245,
+            "required_aperture_m": 0.05014756809120266,
+            "aperture_assumption": "Symmetric prismatic joint separation less one transverse pad-size allowance is a conservative screening model, not measured inner-face clearance; fresh visible straddling is also required.",
+            "p0_identity": "White curled capital C beginning Cream near the upper end of the printed blue logo."
+          },
+          "residual_margins_m": {
+            "positive_height_m": 0.013523665575187086,
+            "side_overlap_m": -0.0003250455144397863,
+            "aperture_screen_m": 0.011296672519714585
+          }
+        },
+        "observation_frame": 0,
+        "reason": "The measured package and own finger geometry do not support this grasp margin."
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

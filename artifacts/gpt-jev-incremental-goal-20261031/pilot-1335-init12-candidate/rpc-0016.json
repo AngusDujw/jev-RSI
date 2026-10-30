@@ -1,0 +1,162 @@
+{
+  "index": 16,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "secure.partial"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.partial",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+      "bytes": 2273,
+      "value": {
+        "frame": 0,
+        "parameters": {
+          "camera": "robot0_eye_in_hand",
+          "corners": [
+            [
+              145,
+              159
+            ],
+            [
+              203,
+              158
+            ],
+            [
+              206,
+              274
+            ],
+            [
+              148,
+              273
+            ]
+          ],
+          "empty_open_hand": true,
+          "identity": "cream_cheese_on_counter",
+          "notes": "Use the larger wrist-view face for this replacement sample. Corners follow clockwise order from upper left and refer to the printed upper face, not the dark sidewall. All supporting-counter samples avoid nearby objects. No hidden geometry is inferred.",
+          "p0_identity": "White curled capital C beginning Cream near the upper end of the printed blue logo.",
+          "same_counter_support": true,
+          "top_boundary": "four_visible_corners"
+        },
+        "points": {
+          "p0": {
+            "world_m": [
+              -0.023958838459977372,
+              0.1483027635781491,
+              0.917836496878051
+            ],
+            "depth_m": 0.3518899381160736,
+            "frame_id": 0,
+            "pixel": [
+              169,
+              174
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p1": {
+            "world_m": [
+              -0.02756845854578764,
+              0.1306242134890559,
+              0.9183122721999079
+            ],
+            "depth_m": 0.35162439942359924,
+            "frame_id": 0,
+            "pixel": [
+              194,
+              179
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p2": {
+            "world_m": [
+              -0.07959929448227085,
+              0.1317296199176668,
+              0.9183344733698312
+            ],
+            "depth_m": 0.3544940650463104,
+            "frame_id": 0,
+            "pixel": [
+              194,
+              254
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p3": {
+            "world_m": [
+              -0.07876425643380693,
+              0.15749338997764098,
+              0.9176914775062358
+            ],
+            "depth_m": 0.35507676005363464,
+            "frame_id": 0,
+            "pixel": [
+              158,
+              253
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t0": {
+            "world_m": [
+              -0.04006411811722774,
+              0.1948505838700932,
+              0.8999609487596831
+            ],
+            "depth_m": 0.370609849691391,
+            "frame_id": 0,
+            "pixel": [
+              117,
+              205
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t1": {
+            "world_m": [
+              0.016178653723229686,
+              0.14471078961637035,
+              0.8999592092554628
+            ],
+            "depth_m": 0.3675101399421692,
+            "frame_id": 0,
+            "pixel": [
+              183,
+              127
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t2": {
+            "world_m": [
+              -0.11138106459208372,
+              0.11241991938794876,
+              0.8999631258628009
+            ],
+            "depth_m": 0.3746134042739868,
+            "frame_id": 0,
+            "pixel": [
+              230,
+              302
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

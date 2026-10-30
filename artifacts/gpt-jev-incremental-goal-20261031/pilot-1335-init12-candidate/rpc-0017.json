@@ -1,0 +1,72 @@
+{
+  "index": 17,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "secure.plane_check"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.plane_check",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+      "bytes": 985,
+      "value": {
+        "frame": 0,
+        "top": {
+          "coefficients": [
+            0.0013159665065336714,
+            0.025466123005968726,
+            0.9996748195344317,
+            -0.9212932421492191
+          ],
+          "center_world_m": [
+            -0.05247271198046069,
+            0.14203749674062818,
+            0.9180436799885064
+          ],
+          "rms_m": 8.913391855220807e-06,
+          "in_plane_spread_m": [
+            0.026847504859059537,
+            0.011092592813459843
+          ]
+        },
+        "table": {
+          "coefficients": [
+            3.075373226061315e-05,
+            -1.9603336791128971e-07,
+            0.9999999995270847,
+            -0.8999596780156999
+          ],
+          "center_world_m": [
+            -0.04508884299536059,
+            0.15066043095813744,
+            0.8999610946259823
+          ],
+          "rms_m": 0.0,
+          "in_plane_spread_m": [
+            0.0552985987630027,
+            0.028579200842378374
+          ]
+        },
+        "guard_m": 0.0015,
+        "guard_provenance": "Design depth/landmark guard 0.0015 m or twice measured fit RMS, whichever is larger; not a calibrated confidence bound.",
+        "residual_margins": {
+          "top_horizontal": 0.014674819534431727,
+          "counter_horizontal": 0.004999999527084742,
+          "residual_guard_limit_m": 0.0015,
+          "top_spread_vs_guard_m": 0.005092592813459843,
+          "table_spread_vs_guard_m": 0.022579200842378376
+        }
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}
