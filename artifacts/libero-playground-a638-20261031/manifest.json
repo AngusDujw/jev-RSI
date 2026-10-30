@@ -1,0 +1,60 @@
+{
+  "status": "declared-before-first-run",
+  "commit": "7a57e644",
+  "server": "5880-jump",
+  "gpu": 0,
+  "remote_root": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031",
+  "python": "/home/user/ykj/project/gpt6/jev-RSI/.venv-libero-plus/bin/python",
+  "libero_root": "/home/user/ykj/project/gpt6/LIBERO-plus",
+  "planner": "gpt-6-astra/xhigh/local ChatGPT Pro native-session",
+  "jev": "jev-1.13.0 official systemone; authorized Zotero note credential retained locally",
+  "playground": [
+    {
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 0,
+      "seed": 0
+    },
+    {
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 1,
+      "seed": 0
+    },
+    {
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 2,
+      "seed": 0
+    }
+  ],
+  "test_same_task_initial_states": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "cross_task": "Declare separately after acquisition; do not claim task-general reliability from initial-state transfer",
+  "budgets": {
+    "max_gpt": 40,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_stage_updates": 24,
+    "max_plan_revisions": 3,
+    "max_stage_revisions": 3,
+    "wall_limit": null
+  },
+  "conditions": [
+    "empty skills baseline",
+    "frozen learned skills"
+  ],
+  "training": "Sequential episode, Pro refinement, next revision; all prior acquisition evidence retained",
+  "scoring": "terminal native LIBERO success; retain all failures and unknown usage",
+  "initial_skill_count": 0
+}
