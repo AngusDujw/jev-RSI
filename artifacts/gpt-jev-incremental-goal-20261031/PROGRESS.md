@@ -395,3 +395,12 @@ position, place_verify. Builder1 request a7c7ce1bad7e4d94a64dc54d3342bb41 /
 native thread01a18eaf-2bb9-7701-ba05-c09339adade5 is generating; actual
 child940522 observed live. No Jev dispatch or native completion yet.
 This is a fresh plan, not the preceding trial source or repaired episode.
+
+## Candidate secure method delivered
+
+Builder1 delivered204 lines in777.167s, no reconnect or native recovery.
+It implements only secure: measured alignment, one closure, differential
+lift and current retention evidence; no future positioning/release code.
+Review2 request44ed87643fc34447a292fbf8185b57b4 is active, actual native
+child968180 observed. No action or terminal result yet. The runtime finite
+lease loop and patch repairs still require actual execution validation.
