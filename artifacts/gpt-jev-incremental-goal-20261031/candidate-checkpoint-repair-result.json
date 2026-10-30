@@ -1,0 +1,48 @@
+{
+  "patch_index": 26,
+  "elapsed_s": 204.06487073097378,
+  "replacement_count": 7,
+  "exact_source_replay": true,
+  "reconnects": 0,
+  "checkpoint_receipt": {
+    "result": {
+      "key": "alt.model",
+      "frame_id": 216,
+      "method_number": 5,
+      "source_sha256": "6e099a4020a906d7c12b7e5168e03516e3a2596a149a0cf50b19e1028b392361",
+      "bytes": 3956,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "next_failure": {
+    "gate": "plane_quality",
+    "prevented_action": "side entry",
+    "observation_frame": 216,
+    "diagnostics": {
+      "frame": 216,
+      "guard_m": 0.001741372874978718,
+      "guard_provenance": "Never below inherited guard; increased by twice either fresh fit RMS. Operational allowance, not a calibrated confidence interval.",
+      "top_rms_m": 6.213389856321618e-05,
+      "counter_rms_m": 1.1102230246251565e-16,
+      "top_spread_m": 0.005080927164365157,
+      "counter_spread_m": 0.016950770482551995,
+      "normal_z": [
+        0.9996938239174114,
+        0.9999999935930465
+      ],
+      "rms_limit_m": 0.0015,
+      "spread_noise_ratio_min": 3.0,
+      "horizontal_normal_z_min": 0.98,
+      "rms_margin_m": 0.0014378661014367838,
+      "normal_margin": 0.01969382391741137,
+      "gate": "plane_quality",
+      "action": "side entry",
+      "residual_margin_m": -0.00014319146057099798
+    }
+  },
+  "same_episode_only": true,
+  "reuse_limitation": "Generated repair embeds frame216 semantics and pixels. Frame equality alone is not a fresh-episode identity check; do not freeze this source for independent reuse.",
+  "measurement_change": "Top point radii changed from2 in review24 to3 in repair; depths were actually reacquired, not exact reuse of prior measurements.",
+  "supervision_request": "73808c1c49444aabbbf91c75b435d57c",
+  "native_terminal_result": null
+}

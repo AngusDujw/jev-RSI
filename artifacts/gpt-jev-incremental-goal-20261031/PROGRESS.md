@@ -561,3 +561,13 @@ plan_valid=yes, requesting a bounded provenance-preserving summary.
 Builder26 patch48cb980c31344ec086c60c4c289f764b is live. This demonstrates
 error routing, not successful repair or robot completion. Frame216/72Jev,
 zero completed stages, no native terminal result.
+
+## Checkpoint repair executed; plane-quality gate now blocks
+
+Patch26 returned204.065s, seven replacements replay exactly to method05.
+alt.model saved successfully at3956bytes. Reacquired top points use radius3
+rather than review24 radius2; camera/pixels/identity match that review.
+Generated frame216 shortcut is valid only for this unchanged episode, not
+a portable frozen method. Fresh plane spread5.080927mm falls below
+3*guard=5.224119mm, margin-0.143191mm. Method blocks before action;
+supervisor27 live. Still72Jev216steps, zero completed stages.
