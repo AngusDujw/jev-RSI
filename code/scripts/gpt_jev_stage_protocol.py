@@ -53,7 +53,7 @@ class StageYield(RuntimeError):
 
 class StageWatchdog:
     """Bound a running worker slice; never turn missing evidence into motion."""
-    def __init__(self, state, controls=24, steps=72, rpcs=180, silence=90):
+    def __init__(self, state, controls=24, steps=72, rpcs=180, silence=90, review_floor=1):
         self.start = state
         self.controls, self.steps, self.rpcs, self.silence = controls, steps, rpcs, silence
         self.rpc_count = self.stalls = self.no_progress = self.measurement_failures = 0
@@ -63,10 +63,19 @@ class StageWatchdog:
         self.measurements = set()
         self.on_slice = None
         self.suspended_decision = None
+        self.review_floor = review_floor
 
     def event(self, trigger, **detail):
         if self.pending is None:
             self.pending = dict(trigger=trigger, **detail)
+
+    def before_review(self, state):
+        remaining = state["budgets"]["gpt_remaining"]
+        if remaining <= self.review_floor:
+            self.event("stage_model_budget_pressure", calls_remaining=remaining,
+                       reserved_calls=self.review_floor,
+                       scope="Preserve supervision and remaining physical stages; no evidence bypass.")
+            raise StageYield(self.pending)
 
     def before_control(self, state):
         if state["budgets"]["gpt_remaining"] <= 0:
@@ -179,6 +188,7 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
     outcome = method = None
     cursor = revisions = replans = no_new_evidence = 0
     prior_signature = None
+    stage_review_floor = None
     def obtain_plan(context):
         for _ in range(2):
             remaining = state()["budgets"]["gpt_remaining"] - 1
@@ -218,11 +228,12 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
         # plus two calls for reconsideration/repair. This is a planning signal,
         # never permission to skip evidence or extend the hard episode budget.
         reserve = 3*stages_left+2
-        if stages_left > 1 and 3 <= remaining_calls < reserve and replans < max_replans:
+        stage_allocation_spent = stage_review_floor is not None and remaining_calls <= stage_review_floor+1
+        if stages_left > 1 and 3 <= remaining_calls and (remaining_calls < reserve or stage_allocation_spent) and replans < max_replans:
             replans += 1
             budget_event = dict(trigger="remaining_plan_budget_pressure",
                 calls_remaining=remaining_calls, stages_remaining=stages_left,
-                operational_reserve=reserve, latest_outcome=outcome)
+                operational_reserve=reserve, stage_allocation_spent=stage_allocation_spent, latest_outcome=outcome)
             journal.setdefault("budget_replans", []).append(budget_event)
             persist(journal)
             plan = obtain_plan(dict(trigger="remaining_plan_budget_pressure",
@@ -234,21 +245,31 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
             cursor = revisions = no_new_evidence = 0
             prior_signature = None
             method = None
+            stage_review_floor = None
         stage = plan["stages"][cursor]
+        if stage_review_floor is None:
+            remaining_calls = state()["budgets"]["gpt_remaining"]
+            stages_left = len(plan["stages"])-cursor
+            allocation = max(2, (remaining_calls-2)//stages_left) if stages_left > 1 else remaining_calls
+            stage_review_floor = max(1, remaining_calls-allocation+1)
         journal["current_stage"] = dict(plan_revision=len(journal["plans"])-1, index=cursor, definition=stage)
         context = dict(overall_plan=plan, plan_revision=len(journal["plans"])-1, current_stage=stage, stage_index=cursor,
             final_stage=cursor == len(plan["stages"])-1, completed_stage_history=journal["completed"][-8:],
             latest_outcome=outcome, latest_decision=journal["events"][-1:] if journal["events"] else [],
             remaining_stage_updates=max_updates-update, method_revision=revisions,
             slice_limits=dict(jev_calls=controls, policy_steps=steps),
+            model_call_budget=dict(calls_remaining=state()["budgets"]["gpt_remaining"],
+                reserved_calls=stage_review_floor,
+                review_calls_after_builder=max(0, state()["budgets"]["gpt_remaining"]-1-stage_review_floor),
+                scope="Reserve includes current supervision and a fair share for remaining stages. Repairs and slice supervision consume this same allocation; it does not reset on revision."),
             historical_scope="Completed stages and handoffs are historical; revalidate affected dependencies after changes")
         persist(journal)
         method = method_call(context, method)
-        watch = StageWatchdog(state(), controls=controls, steps=steps)
+        watch = StageWatchdog(state(), controls=controls, steps=steps, review_floor=stage_review_floor)
         def review_live_slice(watch, now):
             # Called before the next control, inside the live worker/RPC stack.
             # Continuing does not re-invoke main or replay a partially executed drive.
-            if now["budgets"]["gpt_remaining"] < 2 or len(journal["events"]) >= max_updates:
+            if now["budgets"]["gpt_remaining"] <= watch.review_floor or len(journal["events"]) >= max_updates:
                 return False
             suspended = dict(stage_status="yield", completion_proposed=False,
                 reason="Control slice ended before the next unexecuted control; worker stack remains live.")
@@ -334,6 +355,7 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
                 method = outcome = None
                 revisions = no_new_evidence = 0
                 prior_signature = None
+                stage_review_floor = None
                 continue
         if action == "stop":
             return finish("planner_stop")
@@ -354,4 +376,5 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
             cursor = revisions = no_new_evidence = 0
             prior_signature = None
             method = None
+            stage_review_floor = None
     return finish("stage_update_budget")

@@ -58,6 +58,30 @@ Name the failed gate and the action it prevented. Keep these diagnostics small
 and available to the next repair; do not require reconstructing private locals
 from a generic failure message.
 
+Classify numerical gates by provenance: explicit runtime/user constraints,
+measured physical bounds, and model-selected operational heuristics. A threshold
+chosen by an earlier generated method is not an external constraint merely
+because it was checkpointed. On repair, reassess its units, geometry semantics,
+uncertainty accounting and relationship to the intended effect. A replacement
+criterion must state its physical rationale and fresh observable verification;
+do not lower a number just to accept a failed candidate. Preserve actual runtime
+limits and observed obstructions. Prefer a bounded, locally supported contact
+attempt followed by an independent effect test when that is sufficient; do not
+require proof of retention before the action that can establish retention.
+
+Use hierarchical_context.model_call_budget when designing the stage. Budget
+reviews for action admission and effect verification, not one review for every
+helper or numerical operation. Compute from existing valid depth receipts when
+possible; request new semantics only for changed or genuinely missing evidence.
+The host checks the stage allocation before each review and preserves calls for
+supervision and later work. Repairs do not reset the allocation. Do not generate
+a diagnostics-only substitute for an executable stage when resources run low;
+report the exact feasibility gap so the plan can be reconsidered early.
+
+Checkpoint compact consumed measurements and provenance, not whole review
+responses or unused dense clouds. Respect the manual per-value and total limits;
+reuse existing stage keys where appropriate. Keep failure records bounded too.
+
 Do not silently relax a margin, invent unseen surfaces, certify hidden clearance,
 or require a future action's outcome as its own prerequisite. If the method
 cannot resolve the issue within its current scope, return blocked with the exact

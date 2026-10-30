@@ -30,7 +30,18 @@ reject one candidate without proving global impossibility. Use remaining budget
 for a different obtainable measurement, candidate or justified local sensing
 action when supported. Missing global clearance certification is not an observed
 obstacle; unknown is also not proof of clearance. Do not automatically decrease
-thresholds or invent a grasp/placement witness to force progress.
+thresholds or invent a grasp/placement witness to force progress. Also do not
+turn a prior model-selected heuristic into an immutable safety requirement.
+Distinguish explicit constraints, measured physical bounds and operational
+choices. When a numerical gate repeatedly prevents progress, ask for its
+physical rationale, uncertainty accounting and an independently testable
+replacement criterion if the original is unjustified. An observed collision
+remains evidence; a failed heuristic is not itself an observed collision.
+
+Use model_call_budget and current public remaining calls. A stage allocation
+pressure trigger requires an explicit feasible remaining-work allocation, not
+another unchanged sensing request. Replan early if the current method cannot
+produce its physical effect and verify it within the available calls.
 
 Set recovery_available to yes, no or unknown. Choose stop only when the evidence
 identifies why no justified recovery or alternate plan is available. A single

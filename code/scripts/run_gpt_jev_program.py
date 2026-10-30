@@ -676,6 +676,8 @@ def main():
             raise ValueError("Invalid review question")
         if fields is None and (require_typed_reviews or len(methods) > 1):
             raise ValueError("Generated or repaired methods must declare review fields; free JSON is only for untouched archived methods")
+        if stage_watchdog is not None:
+            stage_watchdog.before_review(state())
         parameter_schema = compile_fields(fields) if fields is not None else None
         answer = planner("review", question, review_context=context, parameter_schema=parameter_schema)
         parameters = answer["parameters"] if parameter_schema is not None else json.loads(answer["parameters_json"])
