@@ -90,3 +90,5 @@ interactive shell's proxy settings automatically. The2026-10-30 live trial
 received Typesafe HTTP451 without that environment, while the same request
 through the configured proxy succeeded. Keep NO_PROXY for loopback. This is a
 deployment condition, not a task-prompt change or physical success evidence.
+
+Planning now constrains stage count by remaining calls after the plan request: at most floor(remaining/2), capped at eight. Each stage minimally needs a builder and supervisor. This is only a lower bound: reserve extra observation/repair calls. Actual tool schema and host validation both apply the bound; historical audit schemas remain unchanged.

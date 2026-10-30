@@ -23,3 +23,12 @@ An uncertain measurement or failed local margin check does not by itself prove
 the task impossible. Include feasible evidence-acquisition alternatives when
 current observations support them, without assuming unknown clearance is free.
 Keep this plan compact; do not solve every future numerical problem now.
+
+The supplied planning_budget and response schema bound the remaining stage count.
+Every stage costs at least one method-generation call and one supervision call;
+observation reviews, corrections and replanning require additional calls. This
+minimum is not an adequate execution reserve. Prefer a few meaningful physical
+subgoals and combine closely related evidence checks with their local action,
+while keeping each generated method limited to the current stage. Account for
+the actual remaining budget when replanning; do not add separate bookkeeping or
+observation-only stages that leave no room to perform and verify the task.

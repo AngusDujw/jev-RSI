@@ -23,7 +23,7 @@ from gpt_jev_contract import CAMERAS, english, parse_jev
 from gpt_jev_program_worker import validate_source
 from gpt_jev_review_contract import compile_fields, validate_value
 from run_gpt_jev_generic import save, scrub
-from gpt_jev_stage_protocol import KINDS as STAGE_KINDS, StageYield, run_stages
+from gpt_jev_stage_protocol import KINDS as STAGE_KINDS, StageYield, run_stages, budgeted_plan_schema
 
 
 class PlannerSubmissionFailure(RuntimeError):
@@ -632,6 +632,8 @@ def main():
         tool = "submit_design" if kind == "design" else "submit_method_patch" if patching else "submit_method" if kind == "method" else "submit_review"
         if kind in STAGE_KINDS:
             tool, response_schema, prompt_name = STAGE_KINDS[kind]
+            if kind == "stage_plan":
+                response_schema = budgeted_plan_schema(budgets()["gpt_remaining"])
             instructions = stage_prompts[prompt_name]
         elif kind == "stage_method":
             tool, response_schema = "submit_method", METHOD_SCHEMA

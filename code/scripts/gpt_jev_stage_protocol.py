@@ -126,9 +126,20 @@ class StageWatchdog:
             raise StageYield(self.pending)
 
 
-def validate_plan(plan):
+def budgeted_plan_schema(remaining_calls):
+    """remaining_calls excludes the plan request itself; this is a lower bound."""
+    maximum = min(8, int(remaining_calls) // 2)
+    if maximum < 1:
+        raise RuntimeError("gpt_budget")
+    schema = json.loads(json.dumps(PLAN_SCHEMA))
+    schema["properties"]["stages"]["maxItems"] = maximum
+    return schema
+
+
+def validate_plan(plan, remaining_calls=None):
     english(plan)
-    validate_value(plan, PLAN_SCHEMA, "submit_stage_plan")
+    schema = PLAN_SCHEMA if remaining_calls is None else budgeted_plan_schema(remaining_calls)
+    validate_value(plan, schema, "submit_stage_plan")
     ids = [s["id"] for s in plan["stages"]]
     if len(set(ids)) != len(ids) or any(not x.isascii() or not all(c.isalnum() or c in "_.-" for c in x) for x in ids):
         raise ValueError("Stage IDs must be unique ASCII identifiers")
@@ -161,9 +172,16 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
     prior_signature = None
     def obtain_plan(context):
         for _ in range(2):
+            remaining = state()["budgets"]["gpt_remaining"] - 1
+            schema = budgeted_plan_schema(remaining)
+            context = dict(context, planning_budget=dict(
+                calls_after_plan=remaining,
+                maximum_stages=schema["properties"]["stages"]["maxItems"],
+                minimum_calls_per_stage=2,
+                scope="One method and one supervisor per stage are mandatory; observations and repairs cost extra. Reserve room for them."))
             candidate = plan_call(context)
             try:
-                validate_plan(candidate)
+                validate_plan(candidate, state()["budgets"]["gpt_remaining"])
                 return candidate
             except ValueError as error:
                 journal.setdefault("invalid_plans", []).append(dict(proposal=candidate, error=str(error)))
