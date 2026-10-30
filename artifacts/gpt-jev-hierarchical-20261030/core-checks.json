@@ -1,0 +1,22 @@
+{
+  "scope": "Offline deterministic replay and watchdog checks; no model or physics calls",
+  "checks": {
+    "recorded_incomplete_requests_revision_known-1335-init12": true,
+    "recorded_incomplete_requests_revision_new-138-init0": true,
+    "generate_only_current_stage_after_confirmation": true,
+    "cannot_advance_legacy_incomplete_claim": true,
+    "stage_complete_not_whole_task_success": true,
+    "unchanged_evidence_forces_bounded_replanning": true,
+    "runtime_error_is_supervised_not_terminal": true,
+    "unsupported_stop_is_not_immediate_terminal": true,
+    "invalid_plan_cannot_be_local_revision": true,
+    "repeated_stall_yields_before_next_dispatch": true,
+    "rotation_progress_is_not_translation_stall": true,
+    "gripper_mismatch_requests_supervision": true,
+    "lease_interrupted_before_exceeding_slice": true,
+    "repeated_invalid_measurements_escalate": true,
+    "partial_measurements_retain_valid_witnesses": true,
+    "stage_cannot_claim_task_complete": true,
+    "duplicate_stage_ids_rejected": true
+  }
+}

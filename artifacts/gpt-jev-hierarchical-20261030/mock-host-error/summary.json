@@ -1,0 +1,277 @@
+{
+  "termination": "completion_proposed",
+  "native_success": false,
+  "result": {
+    "completion_proposed": true,
+    "evidence": [
+      {
+        "update": 0,
+        "stage": "a",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 0,
+        "trigger": "execution_error",
+        "source_sha256": "83268fbc69fbb92bfbe8ef83ca8c364d072a260400ba0d52c4ab657d57da7aaf",
+        "outcome": {
+          "stage_status": "blocked",
+          "completion_proposed": false,
+          "error": "RuntimeError: Synthetic execution error"
+        },
+        "decision": {
+          "action": "advance",
+          "stage_satisfied": "yes",
+          "task_satisfied": "yes",
+          "plan_valid": "yes",
+          "recovery_available": "yes",
+          "reason": "Synthetic receipt.",
+          "evidence": [
+            "Fixture only; not a physical observation."
+          ],
+          "invalidated_assumptions": []
+        },
+        "host_override": "Advancement requires a stage completion return and fresh affirmative evidence"
+      },
+      {
+        "update": 1,
+        "stage": "a",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 0,
+        "trigger": "stage_returned",
+        "source_sha256": "d087cbc2bbe4b6e3e2c141d1cac9127ebb0ee40985f59be2c6da4ea69a02512d",
+        "outcome": {
+          "stage_status": "stage_complete",
+          "completion_proposed": false,
+          "reason": "Checkpoint retained.",
+          "evidence": [
+            {
+              "frame": 0
+            }
+          ],
+          "handoff": {
+            "checkpoint": "fixture"
+          }
+        },
+        "decision": {
+          "action": "advance",
+          "stage_satisfied": "yes",
+          "task_satisfied": "yes",
+          "plan_valid": "yes",
+          "recovery_available": "yes",
+          "reason": "Synthetic receipt.",
+          "evidence": [
+            "Fixture only; not a physical observation."
+          ],
+          "invalidated_assumptions": []
+        }
+      },
+      {
+        "update": 2,
+        "stage": "b",
+        "plan_revision": 0,
+        "stage_index": 1,
+        "frame_id": 1,
+        "trigger": "stage_returned",
+        "source_sha256": "6bac5d55eb57a383c6989501f44c01dbd666274a6c746505dabd4c1a2579c645",
+        "outcome": {
+          "stage_status": "stage_complete",
+          "completion_proposed": false,
+          "reason": "Synthetic update acknowledged.",
+          "evidence": [
+            {
+              "decision": 0,
+              "choices": {
+                "x": "positive",
+                "y": "hold",
+                "z": "hold",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "keep"
+              },
+              "action": [
+                0.13,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -1.0
+              ],
+              "before": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "after": [
+                0.006500000000000001,
+                0.0,
+                0.0
+              ],
+              "target_tcp": [
+                0.01,
+                0.0,
+                0.0
+              ],
+              "acknowledged_steps": 1,
+              "native_steps": 1,
+              "frame_id": 1,
+              "status": "reached",
+              "position_error_m": 0.0034999999999999996,
+              "rotation_error_rad": 0.0
+            }
+          ],
+          "handoff": {
+            "checkpoint": "fixture"
+          }
+        },
+        "decision": {
+          "action": "advance",
+          "stage_satisfied": "yes",
+          "task_satisfied": "yes",
+          "plan_valid": "yes",
+          "recovery_available": "yes",
+          "reason": "Synthetic receipt.",
+          "evidence": [
+            "Fixture only; not a physical observation."
+          ],
+          "invalidated_assumptions": []
+        }
+      }
+    ],
+    "stage_history": [
+      {
+        "update": 1,
+        "stage": "a",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 0,
+        "trigger": "stage_returned",
+        "source_sha256": "d087cbc2bbe4b6e3e2c141d1cac9127ebb0ee40985f59be2c6da4ea69a02512d",
+        "outcome": {
+          "stage_status": "stage_complete",
+          "completion_proposed": false,
+          "reason": "Checkpoint retained.",
+          "evidence": [
+            {
+              "frame": 0
+            }
+          ],
+          "handoff": {
+            "checkpoint": "fixture"
+          }
+        },
+        "decision": {
+          "action": "advance",
+          "stage_satisfied": "yes",
+          "task_satisfied": "yes",
+          "plan_valid": "yes",
+          "recovery_available": "yes",
+          "reason": "Synthetic receipt.",
+          "evidence": [
+            "Fixture only; not a physical observation."
+          ],
+          "invalidated_assumptions": []
+        }
+      },
+      {
+        "update": 2,
+        "stage": "b",
+        "plan_revision": 0,
+        "stage_index": 1,
+        "frame_id": 1,
+        "trigger": "stage_returned",
+        "source_sha256": "6bac5d55eb57a383c6989501f44c01dbd666274a6c746505dabd4c1a2579c645",
+        "outcome": {
+          "stage_status": "stage_complete",
+          "completion_proposed": false,
+          "reason": "Synthetic update acknowledged.",
+          "evidence": [
+            {
+              "decision": 0,
+              "choices": {
+                "x": "positive",
+                "y": "hold",
+                "z": "hold",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "keep"
+              },
+              "action": [
+                0.13,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -1.0
+              ],
+              "before": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "after": [
+                0.006500000000000001,
+                0.0,
+                0.0
+              ],
+              "target_tcp": [
+                0.01,
+                0.0,
+                0.0
+              ],
+              "acknowledged_steps": 1,
+              "native_steps": 1,
+              "frame_id": 1,
+              "status": "reached",
+              "position_error_m": 0.0034999999999999996,
+              "rotation_error_rad": 0.0
+            }
+          ],
+          "handoff": {
+            "checkpoint": "fixture"
+          }
+        },
+        "decision": {
+          "action": "advance",
+          "stage_satisfied": "yes",
+          "task_satisfied": "yes",
+          "plan_valid": "yes",
+          "recovery_available": "yes",
+          "reason": "Synthetic receipt.",
+          "evidence": [
+            "Fixture only; not a physical observation."
+          ],
+          "invalidated_assumptions": []
+        }
+      }
+    ],
+    "hierarchical_termination": "completion_proposed"
+  },
+  "native_steps": 1,
+  "settling_steps": 10,
+  "jev_calls": 1,
+  "gpt_calls": 7,
+  "rpc_calls": 5,
+  "elapsed_s": 0.4752202829986345,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "83268fbc69fbb92bfbe8ef83ca8c364d072a260400ba0d52c4ab657d57da7aaf",
+      "stage_id": "a"
+    },
+    {
+      "number": 1,
+      "source_sha256": "d087cbc2bbe4b6e3e2c141d1cac9127ebb0ee40985f59be2c6da4ea69a02512d",
+      "stage_id": "a"
+    },
+    {
+      "number": 2,
+      "source_sha256": "6bac5d55eb57a383c6989501f44c01dbd666274a6c746505dabd4c1a2579c645",
+      "stage_id": "b"
+    }
+  ],
+  "last_method_error": null
+}

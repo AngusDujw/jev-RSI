@@ -1,0 +1,66 @@
+{
+  "arguments": {
+    "output": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI/code/runs/2026-10-30-gpt-jev-hierarchical/mock-host-watchdog",
+    "libero_root": "/home/ykj/project/gpt6/CVPR/jev-rsi/jev-RSI/code/runs/2026-10-30-gpt-jev-hierarchical/synthetic-libero",
+    "suite": "fixture",
+    "task_id": 0,
+    "init_index": 0,
+    "seed": 0,
+    "gpu": "4",
+    "bridge": "http://127.0.0.1:7921",
+    "max_gpt": 20,
+    "max_jev": 10,
+    "max_native_steps": 20,
+    "max_repairs": 2,
+    "method_file": null,
+    "revise_archived": false,
+    "staged_design": false,
+    "method_request_seconds": null,
+    "no_video": true,
+    "hierarchical": true,
+    "max_stage_updates": 12,
+    "max_plan_revisions": 2,
+    "max_stage_revisions": 3,
+    "stage_control_calls": 1,
+    "stage_policy_steps": 72,
+    "unlimited_time": true,
+    "wall_seconds": 3600
+  },
+  "prompt_sha256": "98b4ecd980d486dc513139506eca3577a0bee99e1c8e739fb80b6ff9b6526fc1",
+  "manual_sha256": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a",
+  "implementation_sha256": {
+    "run_gpt_jev_program.py": "c7c266bcc442ab82423214d992b77edfcc2ad5bbadd407c3597a3cf2ed798ec3",
+    "gpt_jev_program_worker.py": "1f70e1d39eea229942903604423593e2d1564d2c52c0e26f0f6a69ff37156b2f",
+    "gpt_jev_geometry.py": "847c011a62da67ad00f2302963dd7a68583c864bdba888067086a230730d997c",
+    "gpt_jev_review_contract.py": "e6bbb3c998f64d93220ac7a2aa9632e46d360eb888959c424d32b9648b5b082e",
+    "jev_rgbd_tracking.py": "0783afa7b104b2648710e668186670493a4812e5a5e77847bf476a449bda3d67",
+    "gpt_jev_stage_protocol.py": "ad551b022f5e8880e27bc5519ff8267fe5e7bbf29dab29b58493c48e48c9553d"
+  },
+  "planner": "gpt-6-astra/xhigh/local ChatGPT Pro",
+  "executor": "real jev-1.13.0/official systemone",
+  "native_evaluation": "terminal only; never in policy input",
+  "task_recipes": false,
+  "stage_templates": false,
+  "model_wire_numeric_precision": "data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
+  "pro_request_deadline": "loopback header bounds relay queue, SSE stream and retries; 2-second caller margin",
+  "review_parameters": "method-declared fields use strict structured tool data and host validation; legacy JSON remains supported; no coercion",
+  "typed_reviews_required_for_generated_methods": true,
+  "method_request_deadline_seconds": null,
+  "hierarchical": {
+    "enabled": true,
+    "prompt_sha256": {
+      "gpt_jev_stage_plan_v1.txt": "3448cb883a356aacc1e9a01639e62687ef6c01acb459d69d4f9e7ab294601f43",
+      "gpt_jev_stage_method_v1.txt": "2824a4209e12a7bac3fdc742c4bfee9230636475cf16796feed437d486984b3e",
+      "gpt_jev_stage_supervisor_v1.txt": "de70d77f8fecaa6f9ca63431fde39733db1816203ed6c7f6730e30d71a90e0cf"
+    },
+    "completion": "Fresh stage evidence then final goal evidence; native score remains isolated"
+  },
+  "staged_design": {
+    "enabled": false,
+    "prompt_sha256": null,
+    "schema_sha256": "ce9a6493bc9112f144a11fef1a937cdf346974552c61c7724ab8a0821437bbb7",
+    "planning_request_deadline_seconds": 1800,
+    "executable_output": "Complete four-string method; design alone is never executed"
+  },
+  "reused_method_sha256": null
+}

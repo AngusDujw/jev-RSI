@@ -1,0 +1,7 @@
+{
+  "scope": "Offline audit mutation checks; fixture files unchanged",
+  "checks": {
+    "forged_confirmation_rejected": true,
+    "forged_decision_rejected": true
+  }
+}

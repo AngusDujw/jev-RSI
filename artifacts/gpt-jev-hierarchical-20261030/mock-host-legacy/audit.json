@@ -1,0 +1,70 @@
+{
+  "native_success": false,
+  "termination": "completion_proposed",
+  "gpt_calls": 1,
+  "jev_calls": 0,
+  "native_steps": 0,
+  "elapsed_s": 0.11223771701043006,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "cda176db9c693708a764d66806f1bb32941b4eafc535da4bb34dab9f02556e8d"
+    }
+  ],
+  "completion_proposed": true,
+  "program_result_contract_valid": true,
+  "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+  "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+  "dispatches": 0,
+  "models": {
+    "gpt": {
+      "attempts": 1,
+      "unknown_usage": 0,
+      "completed_input": 0,
+      "completed_output": 0,
+      "relay_seconds": 0.0,
+      "matched_requests": 1,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": []
+    },
+    "jev": {
+      "attempts": 0,
+      "unknown_usage": 0,
+      "completed_input": 0,
+      "completed_output": 0,
+      "relay_seconds": 0.0,
+      "matched_requests": 0,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [],
+      "transport_source_hashes": []
+    }
+  },
+  "strict_reviews_validated": 0,
+  "strict_designs_validated": 0,
+  "legacy_reviews_json_decoded": 0,
+  "source_origins": [
+    {
+      "number": 0,
+      "source_sha256": "cda176db9c693708a764d66806f1bb32941b4eafc535da4bb34dab9f02556e8d",
+      "origin": "actual model output or assembled model patch"
+    }
+  ],
+  "gpt_cost_by_purpose": {
+    "submit_method": {
+      "calls": 1,
+      "upstream_attempts": 1,
+      "completed_returns": 1,
+      "input": 0,
+      "output": 0,
+      "unknown_usage": 0,
+      "native_accounting_records": 0
+    }
+  },
+  "hierarchical": null,
+  "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+}

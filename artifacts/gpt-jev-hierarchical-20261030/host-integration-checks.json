@@ -1,0 +1,13 @@
+{
+  "scope": "Offline mock model and mock environment; real restricted worker and host/auditor; no actual model, Jev or physics calls",
+  "checks": {
+    "real_restricted_worker_established": true,
+    "plan_then_stage_methods_in_order": true,
+    "cross_stage_checkpoint_preserved": true,
+    "bounded_mock_dispatch_acknowledged": true,
+    "proposal_does_not_replace_native_score": true,
+    "same_frame_images_not_duplicated": true,
+    "source_and_transition_auditor_passed": true,
+    "no_native_score_in_serialized_planner_state": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "scope": "Offline mock model/environment; actual legacy host, worker and auditor",
+  "checks": {
+    "legacy_single_method": true,
+    "legacy_completion_path": true,
+    "no_hierarchical_journal": true,
+    "no_stage_instructions": true,
+    "zero_dispatch_audit_without_fabricated_ledger": true
+  }
+}

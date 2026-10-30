@@ -1,0 +1,108 @@
+{
+  "native_success": false,
+  "termination": "completion_proposed",
+  "gpt_calls": 7,
+  "jev_calls": 1,
+  "native_steps": 1,
+  "elapsed_s": 0.36670030700042844,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "d087cbc2bbe4b6e3e2c141d1cac9127ebb0ee40985f59be2c6da4ea69a02512d",
+      "stage_id": "a"
+    },
+    {
+      "number": 1,
+      "source_sha256": "6bac5d55eb57a383c6989501f44c01dbd666274a6c746505dabd4c1a2579c645",
+      "stage_id": "b"
+    }
+  ],
+  "completion_proposed": true,
+  "program_result_contract_valid": true,
+  "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+  "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+  "dispatches": 1,
+  "models": {
+    "gpt": {
+      "attempts": 7,
+      "unknown_usage": 0,
+      "completed_input": 0,
+      "completed_output": 0,
+      "relay_seconds": 0.0,
+      "matched_requests": 7,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": []
+    },
+    "jev": {
+      "attempts": 1,
+      "unknown_usage": 0,
+      "completed_input": 0,
+      "completed_output": 0,
+      "relay_seconds": 0.0,
+      "matched_requests": 1,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "jev-1.13.0"
+      ],
+      "transport_source_hashes": []
+    }
+  },
+  "strict_reviews_validated": 0,
+  "strict_designs_validated": 0,
+  "legacy_reviews_json_decoded": 0,
+  "source_origins": [
+    {
+      "number": 0,
+      "source_sha256": "d087cbc2bbe4b6e3e2c141d1cac9127ebb0ee40985f59be2c6da4ea69a02512d",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 1,
+      "source_sha256": "6bac5d55eb57a383c6989501f44c01dbd666274a6c746505dabd4c1a2579c645",
+      "origin": "actual model output or assembled model patch"
+    }
+  ],
+  "gpt_cost_by_purpose": {
+    "submit_stage_plan": {
+      "calls": 1,
+      "upstream_attempts": 1,
+      "completed_returns": 1,
+      "input": 0,
+      "output": 0,
+      "unknown_usage": 0,
+      "native_accounting_records": 0
+    },
+    "submit_method": {
+      "calls": 3,
+      "upstream_attempts": 3,
+      "completed_returns": 3,
+      "input": 0,
+      "output": 0,
+      "unknown_usage": 0,
+      "native_accounting_records": 0
+    },
+    "submit_stage_decision": {
+      "calls": 3,
+      "upstream_attempts": 3,
+      "completed_returns": 3,
+      "input": 0,
+      "output": 0,
+      "unknown_usage": 0,
+      "native_accounting_records": 0
+    }
+  },
+  "hierarchical": {
+    "plan_versions": 1,
+    "updates": 3,
+    "confirmed_stages": 2,
+    "termination": "completion_proposed",
+    "rejected_source_returns": 1,
+    "scope": "Model-return provenance and transition rules, not observation truth"
+  },
+  "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+}

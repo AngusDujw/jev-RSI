@@ -1,0 +1,30 @@
+{
+  "termination": "completion_proposed",
+  "native_success": false,
+  "result": {
+    "stage_status": "stage_complete",
+    "completion_proposed": true,
+    "reason": "Checkpoint retained.",
+    "evidence": [
+      {
+        "frame": 0
+      }
+    ],
+    "handoff": {
+      "checkpoint": "fixture"
+    }
+  },
+  "native_steps": 0,
+  "settling_steps": 10,
+  "jev_calls": 0,
+  "gpt_calls": 1,
+  "rpc_calls": 2,
+  "elapsed_s": 0.11223771701043006,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "cda176db9c693708a764d66806f1bb32941b4eafc535da4bb34dab9f02556e8d"
+    }
+  ],
+  "last_method_error": null
+}
