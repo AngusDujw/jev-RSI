@@ -1,0 +1,27 @@
+{
+  "memory": {
+    "checks": [
+      "held-out initial state loads immutable text",
+      "overlap rejected",
+      "freeze cannot overwrite",
+      "added content rejected",
+      "loaded snapshot does not change after disk mutation",
+      "test evidence cannot train",
+      "symlink rejected",
+      "non-ASCII rejected",
+      "oversized context rejected",
+      "two changed modules parse"
+    ],
+    "count": 10,
+    "real_models": false,
+    "real_physics": false
+  },
+  "refinement": {
+    "mock_refinement": true,
+    "action_and_review_evidence": true,
+    "lineage_enforced": true,
+    "test_leakage_rejected": true,
+    "real_models": false
+  },
+  "temporary_test_scripts_deleted": true
+}
