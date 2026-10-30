@@ -128,3 +128,16 @@ repair limit. Eleven offline checks and two AST checks passed; report in
 numeric-correction-checks.json. Active incremental pilot/loaded relay remain frozen;
 apply this only after separately declaring a new version. Reference unit is now
 inactive; retain shared relay/tunnel for the still-active incremental trial.
+
+## First real live continuation confirmed
+
+Incremental repair1 delivered in1355.721 seconds,276 lines; it preserves table
+and overlap guards but seeks a closer calibrated observation before solving a
+robust pad-height interval. It then executed real controls. At frame72 supervisor
+returned continue with no invalidated assumptions, correctly treating the first
+method failure as historical. Same method1 drive rpc0042 spans frame45 to96,
+lease_calls17;32 unique contiguous dispatch IDs were recorded. No new source was
+generated for that slice. Save live-continuation-evidence.json; full terminal
+auditing still pending. Current next work is close-view observation/grasp; no
+stage or task success yet. The first repair used native-reported279665 input /
+33535 output tokens (24186 reasoning); no recovery recorded for that request.

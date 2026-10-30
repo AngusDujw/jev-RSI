@@ -198,6 +198,7 @@ graph LR
     T_2026W44_023["📊 libero-generic-vision<br/>分阶段整体计划/当前方法/触发监督已实现；…"]:::experiment
     T_2026W44_024["📊 libero-generic-vision<br/>分阶段实测原两例0/2且0派发，暴露rel…"]:::experiment
     T_2026W44_025["📊 libero-generic-vision<br/>分阶段四回合收口均未成功；追加两例各40J…"]:::experiment
+    T_2026W44_026["📊 libero-generic-vision<br/>真实分阶段修订后32Jev/96步，fra…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -349,6 +350,7 @@ graph LR
   T_2026W44_022 --> T_2026W44_023
   T_2026W44_023 --> T_2026W44_024
   T_2026W44_024 --> T_2026W44_025
+  T_2026W44_025 --> T_2026W44_026
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -529,6 +531,7 @@ graph LR
 | `T-2026W44-023` | 2026-10-30 | experiment | libero-generic-vision | 分阶段整体计划/当前方法/触发监督已实现；70离线检查通过，部分执行可保留状态修正；真实GPT-Jev/LIBERO未测，不宣称物理稳定成功 | `EXP-2026W44-041` | - |
 | `T-2026W44-024` | 2026-10-30 | experiment | libero-generic-vision | 分阶段实测原两例0/2且0派发，暴露relay代理与契约失败路由；修复20离线检查通过，追加旧例已5Jev/15步后从当前状态修订，尚无终局 | `EXP-2026W44-042`, `EXP-2026W44-044` | - |
 | `T-2026W44-025` | 2026-10-31 | experiment | libero-generic-vision | 分阶段四回合收口均未成功；追加两例各40Jev/120步，修复版两次契约错误转监督但24GPT耗尽，尚无稳定物理完成证据 | `EXP-2026W44-045` | - |
+| `T-2026W44-026` | 2026-10-31 | experiment | libero-generic-vision | 真实分阶段修订后32Jev/96步，frame72监督continue恢复同一drive无重生成；仍未终局，旧源对照因stride契约耗尽失败 | `EXP-2026W44-048` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
