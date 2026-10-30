@@ -1,0 +1,24 @@
+{
+  "frame": 45,
+  "jev_calls": 15,
+  "review_elapsed_s": 210.329057760071,
+  "transport_reconnects": 0,
+  "recoveries": [
+    {
+      "kind": "same_thread_continue",
+      "error": {},
+      "retry_delay_s": 0
+    }
+  ],
+  "invalid_submission_errors": [
+    "submit_review.regions[1].stride: numeric value outside schema; actual=3, minimum=4, maximum=32; value must be finite"
+  ],
+  "corrected_region_strides": [
+    4,
+    4,
+    5,
+    4,
+    6
+  ],
+  "scope": "Real initial high alignment and same-thread numeric format repair; no grasp or terminal native success established."
+}

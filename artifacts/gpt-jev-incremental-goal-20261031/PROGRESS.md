@@ -429,3 +429,13 @@ This may be controller-limited; no physical feasibility follows from the
 interval alone. No source edits injected by outer agent. Review5 job
 63803e504bea47d4bf1fcaabbf31da33 is active. Still no control/terminal result.
 Patch delivery proves functioning assembly, not stable speedup or success.
+
+## Candidate patch reached real control; numeric correction recovered
+
+Review6 high-alignment check returned after210.329s, zero network reconnect.
+One rejected submission used stride3 below minimum4; the explicit numeric
+feedback was followed by same-thread correction to4 and a valid submission.
+This is format recovery, not network recovery. Actual method1 then issued
+15Jev controls/45native steps and reached the high alignment. Review7 now
+checks the descent route. Gripper remains open, no grasp/terminal result.
+Save candidate-first-motion-and-format-repair.json.

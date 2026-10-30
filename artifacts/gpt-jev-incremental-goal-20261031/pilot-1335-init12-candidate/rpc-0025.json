@@ -1,0 +1,76 @@
+{
+  "index": 25,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.candidate",
+      {
+        "frame": 0,
+        "reference_frame": 0,
+        "trials": [
+          {
+            "position_tolerance_m": 0.002,
+            "lower_pad_z_m": 0.9193104523328114,
+            "upper_pad_z_m": 0.916905274882952,
+            "required_nominal_overlap_m": 0.0085,
+            "interval_width_m": -0.0024051774498593526,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -0.0026051774498593526
+          },
+          {
+            "position_tolerance_m": 0.001,
+            "lower_pad_z_m": 0.9183104523328114,
+            "upper_pad_z_m": 0.917905274882952,
+            "required_nominal_overlap_m": 0.007500000000000001,
+            "interval_width_m": -0.0004051774498593508,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -0.0006051774498593508
+          },
+          {
+            "position_tolerance_m": 0.0005,
+            "lower_pad_z_m": 0.9178104523328113,
+            "upper_pad_z_m": 0.918405274882952,
+            "required_nominal_overlap_m": 0.007000000000000001,
+            "interval_width_m": 0.0005948225501406501,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": 0.0003948225501406501
+          }
+        ],
+        "chosen": {
+          "position_tolerance_m": 0.0005,
+          "lower_pad_z_m": 0.9178104523328113,
+          "upper_pad_z_m": 0.918405274882952,
+          "required_nominal_overlap_m": 0.007000000000000001,
+          "interval_width_m": 0.0005948225501406501,
+          "minimum_interval_width_m": 0.0002,
+          "residual_margin_m": 0.0003948225501406501
+        },
+        "top_floor_world_z_m": 0.9174048789633263,
+        "counter_ceiling_world_z_m": 0.8999613453235589,
+        "finger_bottom_offset_m": -0.012849107009252606,
+        "half_pad_z_m": 0.008000395919625645,
+        "guard_m": 0.0015,
+        "required_guarded_counter_clearance_m": 0.003,
+        "required_guarded_overlap_m": 0.005,
+        "preserved_nominal_overlap_floor_m": 0.007,
+        "guard_accounting": "Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.",
+        "candidate_change": "Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.candidate",
+      "frame_id": 0,
+      "method_number": 1,
+      "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+      "bytes": 2066,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

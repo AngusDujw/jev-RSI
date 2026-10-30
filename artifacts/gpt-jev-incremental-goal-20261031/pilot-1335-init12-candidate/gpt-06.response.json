@@ -1,0 +1,30 @@
+{
+  "object": "response",
+  "id": "exec-e9d5308d-6545-4f55-b493-13947accf7ea",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-e9d5308d-6545-4f55-b493-13947accf7ea",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Clear for high_alignment only. Including the open fingers and the small orientation change, the supplied geometry puts the lowest swept finger surface at approximately 1.173 m. The visible bowl, bottle and stove are below this high sweep; the cabinet is laterally outside it. No external obstruction is visible in this local swept path. The package matches the recorded frame-0 location and orientation, and no native steps have occurred.\", \"parameters\": {\"clear\": \"clear\", \"package_state\": \"unchanged\", \"notes\": \"Authorization applies only to the stated constant-altitude high_alignment target and orientation. It does not authorize vertical_pregrasp, lower descent, closure or transfer. Package agreement is same-frame evidence, not an independent later observation. Returned regions provide visible obstacle geometry, not hidden surfaces or a full-scene clearance certificate.\"}, \"points\": [{\"name\": \"u0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [176, 216], \"radius\": 3}, {\"name\": \"c0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [132, 216], \"radius\": 3}, {\"name\": \"c1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [228, 216], \"radius\": 3}, {\"name\": \"bottle_cap\", \"camera\": \"agentview\", \"pixel\": [349, 293], \"radius\": 3}, {\"name\": \"cabinet_top\", \"camera\": \"agentview\", \"pixel\": [207, 307], \"radius\": 3}], \"regions\": [{\"name\": \"bowl_visible_surface_and_rim\", \"camera\": \"robot0_eye_in_hand\", \"box\": [281, 172, 457, 347], \"stride\": 4}, {\"name\": \"bottle_visible_surfaces\", \"camera\": \"agentview\", \"box\": [331, 286, 372, 412], \"stride\": 4}, {\"name\": \"stove_visible_surfaces\", \"camera\": \"agentview\", \"box\": [465, 307, 644, 419], \"stride\": 5}, {\"name\": \"stove_rear_fixture\", \"camera\": \"agentview\", \"box\": [496, 245, 567, 309], \"stride\": 4}, {\"name\": \"cabinet_top_inner_side_and_handles\", \"camera\": \"agentview\", \"box\": [1, 285, 260, 642], \"stride\": 6}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 71982,
+    "output_tokens": 6026,
+    "output_tokens_details": {
+      "reasoning_tokens": 4934
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ec3-a054-7ba0-9cae-dc8508d6f70f",
+    "turn_ids": [
+      "01a18ec3-a05a-7383-8c3a-b382b49755ca",
+      "01a18ec6-a8f5-74a3-9645-4a890b4d78fd"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

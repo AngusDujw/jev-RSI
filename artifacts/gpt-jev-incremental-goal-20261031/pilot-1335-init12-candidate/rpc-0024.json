@@ -1,0 +1,90 @@
+{
+  "index": 24,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.refinement",
+      {
+        "frame": 0,
+        "parameters": {
+          "empty_open_hand": true,
+          "identity": "same_package_unchanged",
+          "notes": "u0 selects an interior top patch near the geometric center. c0 and c1 select clean counter patches immediately outside the opposing long sides, distinct from the earlier distributed plane samples. Use these measurements to refine a different, lower candidate rather than reuse the rejected pad height of 0.91931 m. Lower-height feasibility, hidden sidewall geometry, and descent clearance remain for the later gate.",
+          "sidewall_evidence": "consistent",
+          "support": "same_support"
+        },
+        "points": {
+          "u0": {
+            "world_m": [
+              -0.05305896410160106,
+              0.1439669740063911,
+              0.9180676078323028
+            ],
+            "depth_m": 0.3532790243625641,
+            "frame_id": 0,
+            "pixel": [
+              176,
+              216
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c0": {
+            "world_m": [
+              -0.04807518237827728,
+              0.18397127830357254,
+              0.8999613223099551
+            ],
+            "depth_m": 0.37106025218963623,
+            "frame_id": 0,
+            "pixel": [
+              132,
+              216
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c1": {
+            "world_m": [
+              -0.04808673428898037,
+              0.11280146650435849,
+              0.8999612041684817
+            ],
+            "depth_m": 0.3710966110229492,
+            "frame_id": 0,
+            "pixel": [
+              228,
+              216
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": [],
+        "reference_frame": 0,
+        "model_check": {
+          "top_residual_m": 7.228488016031154e-05,
+          "support_residual_m": 1.2931285320316732e-07,
+          "threshold_m": 0.0015,
+          "guard_provenance": "Unchanged design floor or twice measured fit RMS; not a calibrated confidence bound.",
+          "residual_margin_m": 0.0014277151198396885
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.refinement",
+      "frame_id": 0,
+      "method_number": 1,
+      "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+      "bytes": 1613,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

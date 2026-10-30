@@ -204,9 +204,9 @@
   "secure.geometry": {
     "key": "secure.geometry",
     "frame_id": 0,
-    "method_number": 0,
-    "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
-    "bytes": 1728,
+    "method_number": 1,
+    "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+    "bytes": 2156,
     "value": {
       "frame": 0,
       "top_plane": {
@@ -274,22 +274,28 @@
       ],
       "width_m": 0.041141925061890246,
       "length_m": 0.0804514423449934,
-      "height_m": 0.018023665575187087,
+      "height_m": 0.017443533639767472,
       "quaternion_xyzw": [
         0.9999945896700556,
         0.0032894726958937305,
         0.0,
         0.0
       ],
-      "grasp_pad_z_m": 0.9193104523328114,
+      "grasp_pad_z_m": 0.9181078636078817,
       "guard_m": 0.0015,
-      "grasp_tolerance_m": 0.002,
+      "grasp_tolerance_m": 0.0005,
       "finger_bottom_offset_m": -0.012849107009252606,
-      "side_overlap_m": 0.006674954485560214,
+      "side_overlap_m": 0.007297411275070331,
       "nominal_usable_aperture_m": 0.061444240610917245,
-      "required_aperture_m": 0.05014756809120266,
+      "required_aperture_m": 0.04714756809120266,
       "aperture_assumption": "Symmetric prismatic joint separation less one transverse pad-size allowance is a conservative screening model, not measured inner-face clearance; fresh visible straddling is also required.",
-      "p0_identity": "White curled capital C beginning Cream near the upper end of the printed blue logo."
+      "p0_identity": "White curled capital C beginning Cream near the upper end of the printed blue logo.",
+      "top_floor_world_z_m": 0.9174048789633263,
+      "counter_ceiling_world_z_m": 0.8999613453235589,
+      "required_nominal_overlap_m": 0.007000000000000001,
+      "candidate_checkpoint": "secure.candidate",
+      "refinement_checkpoint": "secure.refinement",
+      "geometry_scope": "Original same-frame upper boundary and planes, independently checked local top/support samples, and a new lower grasp target; actual pose margins must pass before closure."
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
@@ -635,6 +641,252 @@
         }
       },
       "reuse_basis": "Same observation frame and zero native steps; no prior action to undo. A different local support observation follows before any motion."
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "secure.refinement": {
+    "key": "secure.refinement",
+    "frame_id": 0,
+    "method_number": 1,
+    "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+    "bytes": 1613,
+    "value": {
+      "frame": 0,
+      "parameters": {
+        "empty_open_hand": true,
+        "identity": "same_package_unchanged",
+        "notes": "u0 selects an interior top patch near the geometric center. c0 and c1 select clean counter patches immediately outside the opposing long sides, distinct from the earlier distributed plane samples. Use these measurements to refine a different, lower candidate rather than reuse the rejected pad height of 0.91931 m. Lower-height feasibility, hidden sidewall geometry, and descent clearance remain for the later gate.",
+        "sidewall_evidence": "consistent",
+        "support": "same_support"
+      },
+      "points": {
+        "u0": {
+          "world_m": [
+            -0.05305896410160106,
+            0.1439669740063911,
+            0.9180676078323028
+          ],
+          "depth_m": 0.3532790243625641,
+          "frame_id": 0,
+          "pixel": [
+            176,
+            216
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c0": {
+          "world_m": [
+            -0.04807518237827728,
+            0.18397127830357254,
+            0.8999613223099551
+          ],
+          "depth_m": 0.37106025218963623,
+          "frame_id": 0,
+          "pixel": [
+            132,
+            216
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c1": {
+          "world_m": [
+            -0.04808673428898037,
+            0.11280146650435849,
+            0.8999612041684817
+          ],
+          "depth_m": 0.3710966110229492,
+          "frame_id": 0,
+          "pixel": [
+            228,
+            216
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "measurement_errors": [],
+      "reference_frame": 0,
+      "model_check": {
+        "top_residual_m": 7.228488016031154e-05,
+        "support_residual_m": 1.2931285320316732e-07,
+        "threshold_m": 0.0015,
+        "guard_provenance": "Unchanged design floor or twice measured fit RMS; not a calibrated confidence bound.",
+        "residual_margin_m": 0.0014277151198396885
+      }
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "secure.candidate": {
+    "key": "secure.candidate",
+    "frame_id": 0,
+    "method_number": 1,
+    "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+    "bytes": 2066,
+    "value": {
+      "frame": 0,
+      "reference_frame": 0,
+      "trials": [
+        {
+          "position_tolerance_m": 0.002,
+          "lower_pad_z_m": 0.9193104523328114,
+          "upper_pad_z_m": 0.916905274882952,
+          "required_nominal_overlap_m": 0.0085,
+          "interval_width_m": -0.0024051774498593526,
+          "minimum_interval_width_m": 0.0002,
+          "residual_margin_m": -0.0026051774498593526
+        },
+        {
+          "position_tolerance_m": 0.001,
+          "lower_pad_z_m": 0.9183104523328114,
+          "upper_pad_z_m": 0.917905274882952,
+          "required_nominal_overlap_m": 0.007500000000000001,
+          "interval_width_m": -0.0004051774498593508,
+          "minimum_interval_width_m": 0.0002,
+          "residual_margin_m": -0.0006051774498593508
+        },
+        {
+          "position_tolerance_m": 0.0005,
+          "lower_pad_z_m": 0.9178104523328113,
+          "upper_pad_z_m": 0.918405274882952,
+          "required_nominal_overlap_m": 0.007000000000000001,
+          "interval_width_m": 0.0005948225501406501,
+          "minimum_interval_width_m": 0.0002,
+          "residual_margin_m": 0.0003948225501406501
+        }
+      ],
+      "chosen": {
+        "position_tolerance_m": 0.0005,
+        "lower_pad_z_m": 0.9178104523328113,
+        "upper_pad_z_m": 0.918405274882952,
+        "required_nominal_overlap_m": 0.007000000000000001,
+        "interval_width_m": 0.0005948225501406501,
+        "minimum_interval_width_m": 0.0002,
+        "residual_margin_m": 0.0003948225501406501
+      },
+      "top_floor_world_z_m": 0.9174048789633263,
+      "counter_ceiling_world_z_m": 0.8999613453235589,
+      "finger_bottom_offset_m": -0.012849107009252606,
+      "half_pad_z_m": 0.008000395919625645,
+      "guard_m": 0.0015,
+      "required_guarded_counter_clearance_m": 0.003,
+      "required_guarded_overlap_m": 0.005,
+      "preserved_nominal_overlap_floor_m": 0.007,
+      "guard_accounting": "Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.",
+      "candidate_change": "Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold."
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "secure.progress": {
+    "key": "secure.progress",
+    "frame_id": 45,
+    "method_number": 1,
+    "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+    "bytes": 1970,
+    "value": {
+      "phase": "high_alignment",
+      "receipt_status": "reached",
+      "lease_calls": 15,
+      "before_state": {
+        "frame_id": 0,
+        "native_steps": 0,
+        "budgets": {
+          "gpt_remaining": 33,
+          "jev_remaining": 200,
+          "native_steps_remaining": 600,
+          "wall_seconds_remaining": 1000000000000.0
+        },
+        "tcp_position_world_m": [
+          -0.2071984982582204,
+          -0.002684108235936964,
+          1.1833957456431763
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9996138089570381,
+          -0.0001637781149644857,
+          -0.027787418789059465,
+          0.00025588312349679454
+        ],
+        "gripper_qpos_m": [
+          0.03872178294129007,
+          -0.03872379800220578
+        ],
+        "last_gripper_command": "open",
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            4.177684213122965e-06,
+            -1.233369511719623e-06,
+            -0.003603143886142522
+          ],
+          "pad_extent_in_tool_m": [
+            0.016001340332578606,
+            0.09244574820685311,
+            0.01600079183925129
+          ],
+          "finger_low_offset_tool_m": [
+            -0.010490259555384143,
+            -0.06512722856056685,
+            -0.044471733171043505
+          ],
+          "finger_high_offset_tool_m": [
+            0.010500258927625426,
+            0.06512494646865309,
+            0.009245963123110084
+          ]
+        }
+      },
+      "after_state": {
+        "frame_id": 45,
+        "native_steps": 45,
+        "budgets": {
+          "gpt_remaining": 33,
+          "jev_remaining": 185,
+          "native_steps_remaining": 555,
+          "wall_seconds_remaining": 1000000000000.0
+        },
+        "tcp_position_world_m": [
+          -0.0551089902354821,
+          0.14370656128283332,
+          1.183332532112167
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999850031993129,
+          0.004904326548684113,
+          -0.0020315036307929496,
+          -0.0013468298231096223
+        ],
+        "gripper_qpos_m": [
+          0.03985538957409077,
+          -0.03981523068814266
+        ],
+        "last_gripper_command": "open",
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            8.329994928981104e-05,
+            -1.279197702260329e-05,
+            -0.0036210322585196663
+          ],
+          "pad_extent_in_tool_m": [
+            0.016001632578107168,
+            0.09467085347211118,
+            0.016002181096092388
+          ],
+          "finger_low_offset_tool_m": [
+            -0.010410043311054178,
+            -0.06625185458387606,
+            -0.04449055787544081
+          ],
+          "finger_high_offset_tool_m": [
+            0.010580075549900514,
+            0.06622543856667946,
+            0.009228955028892875
+          ]
+        }
+      },
+      "position_gain_m": 0.21087667135497318,
+      "rotation_gain_rad": 0.05016401955485091,
+      "remaining_position_error_m": 0.0018566874215054845
     },
     "source": "program-supplied historical data; not a fresh measurement"
   }

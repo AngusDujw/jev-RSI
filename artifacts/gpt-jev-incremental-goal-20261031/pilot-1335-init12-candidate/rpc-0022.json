@@ -1,0 +1,148 @@
+{
+  "index": 22,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Refine a DIFFERENT lower side-grasp candidate, not the rejected height. Request u0 as a valid depth point on the package top near its geometric center, and c0,c1 on the supporting counter immediately outside the two opposing long sidewalls where the open fingers will descend. Use safely interior surface patches, not mixed-depth boundaries. Check the same package remains stationary and the hand is empty/open. Describe any actually visible sidewall evidence; unknown hidden sidewalls are allowed here and remain unresolved for the later descent gate. Do not claim hidden clearance. These local support samples supplement, rather than repeat, the earlier distributed plane samples. On a depth failure use the other useful view or a different patch on that same surface."
+    ],
+    "kwargs": {
+      "context": {
+        "attempt": 0,
+        "center_world_m": [
+          -0.05328063891061639,
+          0.14438230660761628,
+          0.917985010898746
+        ],
+        "top_plane": {
+          "coefficients": [
+            0.0013159665065336714,
+            0.025466123005968726,
+            0.9996748195344317,
+            -0.9212932421492191
+          ],
+          "center_world_m": [
+            -0.05247271198046069,
+            0.14203749674062818,
+            0.9180436799885064
+          ],
+          "rms_m": 8.913391855220807e-06,
+          "in_plane_spread_m": [
+            0.026847504859059537,
+            0.011092592813459843
+          ]
+        },
+        "counter_plane": {
+          "coefficients": [
+            3.075373226061315e-05,
+            -1.9603336791128971e-07,
+            0.9999999995270847,
+            -0.8999596780156999
+          ],
+          "center_world_m": [
+            -0.04508884299536059,
+            0.15066043095813744,
+            0.8999610946259823
+          ],
+          "rms_m": 0.0,
+          "in_plane_spread_m": [
+            0.0552985987630027,
+            0.028579200842378374
+          ]
+        },
+        "quaternion_xyzw": [
+          0.9999945896700556,
+          0.0032894726958937305,
+          0.0,
+          0.0
+        ],
+        "prior_rejection_checkpoint": "secure.repair_reference"
+      },
+      "fields": {
+        "identity": [
+          "same_package_unchanged",
+          "changed",
+          "unknown"
+        ],
+        "support": [
+          "same_support",
+          "different_surface",
+          "unknown"
+        ],
+        "sidewall_evidence": [
+          "consistent",
+          "contradicts",
+          "unknown"
+        ],
+        "empty_open_hand": "boolean",
+        "notes": "string"
+      }
+    }
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The cream-cheese package remains on the same counter, consistent with the earlier recorded landmarks. The unchanged frame and zero native steps support stationarity; no separate temporal observation is available. The visible fingers are separated and empty. A narrow dark long sidewall is visible along the wrist-view right edge, consistent with a shallow rectangular package. Hidden sidewalls remain unresolved. No external obstruction is visible at the selected local counter patches; this is not clearance approval for descent.",
+      "parameters": {
+        "empty_open_hand": true,
+        "identity": "same_package_unchanged",
+        "notes": "u0 selects an interior top patch near the geometric center. c0 and c1 select clean counter patches immediately outside the opposing long sides, distinct from the earlier distributed plane samples. Use these measurements to refine a different, lower candidate rather than reuse the rejected pad height of 0.91931 m. Lower-height feasibility, hidden sidewall geometry, and descent clearance remain for the later gate.",
+        "sidewall_evidence": "consistent",
+        "support": "same_support"
+      },
+      "points": {
+        "u0": {
+          "world_m": [
+            -0.05305896410160106,
+            0.1439669740063911,
+            0.9180676078323028
+          ],
+          "depth_m": 0.3532790243625641,
+          "frame_id": 0,
+          "pixel": [
+            176,
+            216
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c0": {
+          "world_m": [
+            -0.04807518237827728,
+            0.18397127830357254,
+            0.8999613223099551
+          ],
+          "depth_m": 0.37106025218963623,
+          "frame_id": 0,
+          "pixel": [
+            132,
+            216
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c1": {
+          "world_m": [
+            -0.04808673428898037,
+            0.11280146650435849,
+            0.8999612041684817
+          ],
+          "depth_m": 0.3710966110229492,
+          "frame_id": 0,
+          "pixel": [
+            228,
+            216
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 0
+    }
+  },
+  "frame_after": 0
+}

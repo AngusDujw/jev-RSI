@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-66be2c94-f9e4-4f2c-ae24-e981e85fcb53",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-66be2c94-f9e4-4f2c-ae24-e981e85fcb53",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The cream-cheese package remains on the same counter, consistent with the earlier recorded landmarks. The unchanged frame and zero native steps support stationarity; no separate temporal observation is available. The visible fingers are separated and empty. A narrow dark long sidewall is visible along the wrist-view right edge, consistent with a shallow rectangular package. Hidden sidewalls remain unresolved. No external obstruction is visible at the selected local counter patches; this is not clearance approval for descent.\", \"parameters\": {\"empty_open_hand\": true, \"identity\": \"same_package_unchanged\", \"notes\": \"u0 selects an interior top patch near the geometric center. c0 and c1 select clean counter patches immediately outside the opposing long sides, distinct from the earlier distributed plane samples. Use these measurements to refine a different, lower candidate rather than reuse the rejected pad height of 0.91931 m. Lower-height feasibility, hidden sidewall geometry, and descent clearance remain for the later gate.\", \"sidewall_evidence\": \"consistent\", \"support\": \"same_support\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"u0\", \"pixel\": [176, 216], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [132, 216], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [228, 216], \"radius\": 4}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 27075,
+    "output_tokens": 1381,
+    "output_tokens_details": {
+      "reasoning_tokens": 1034
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ec2-bc70-7ca1-844a-1175dfd48bf7",
+    "turn_ids": [
+      "01a18ec2-bc76-7ee2-ad38-72d9be10aef8"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
