@@ -1,0 +1,13 @@
+{
+  "elapsed_s": 1014.9028789389413,
+  "replacements": 12,
+  "assembled_lines": 354,
+  "assembled_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+  "assembly_replay_matches": true,
+  "initial_rejection": "Missing replacements field; corrected in original native turn",
+  "network_reconnects": 0,
+  "frame": 144,
+  "jev_calls": 48,
+  "next_review": "1b52599caa8e4b6f9073fc5fc2bffc99",
+  "scope": "Model patch delivery and assembly, not grasp or terminal success"
+}

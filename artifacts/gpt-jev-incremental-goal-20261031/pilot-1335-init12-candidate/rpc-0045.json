@@ -1,0 +1,88 @@
+{
+  "index": 45,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": [
+      {
+        "key": "secure.partial",
+        "frame_id": 0,
+        "method_number": 0,
+        "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+        "bytes": 2273,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.plane_check",
+        "frame_id": 0,
+        "method_number": 0,
+        "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+        "bytes": 985,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.geometry",
+        "frame_id": 0,
+        "method_number": 1,
+        "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+        "bytes": 2156,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.failure",
+        "frame_id": 0,
+        "method_number": 0,
+        "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+        "bytes": 2105,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.repair_reference",
+        "frame_id": 0,
+        "method_number": 1,
+        "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+        "bytes": 4910,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.refinement",
+        "frame_id": 0,
+        "method_number": 1,
+        "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+        "bytes": 1613,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.candidate",
+        "frame_id": 0,
+        "method_number": 1,
+        "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+        "bytes": 2066,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.progress",
+        "frame_id": 90,
+        "method_number": 1,
+        "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+        "bytes": 1972,
+        "source": "program-supplied historical data; not a fresh measurement"
+      },
+      {
+        "key": "secure.alignment",
+        "frame_id": 90,
+        "method_number": 1,
+        "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+        "bytes": 268,
+        "source": "program-supplied historical data; not a fresh measurement"
+      }
+    ]
+  },
+  "frame_after": 144
+}

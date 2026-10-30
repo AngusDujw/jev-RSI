@@ -461,3 +461,16 @@ The geometry candidate does not imply achievable0.5mm tolerance. The cause
 local revision must assess actual pose and fresh clearance without forced
 closure. Gripper open, no grasp. Next request11 is a patch.
 Save candidate-descent-stall.json; full failure and cost remain retained.
+
+## Candidate second patch delivered after original-turn field correction
+
+Builder11 returned in1014.903s, zero network reconnect. Initial submission
+omitted replacements and was rejected; model corrected in the same native
+turn (no same-thread continuation needed). Twelve exact replacements replay
+to method2,354 lines. It resumes actual frame144 without replaying descent,
+rechecks current finger/object/support geometry and may close only on current
+evidence. Otherwise a separately reviewed one-shot12mm upward open-hand
+diagnostic retreat can gather evidence, with checkpointed no-repeat state;
+it must not infer contact cause from retreat response. Review12 job
+1b52599caa8e4b6f9073fc5fc2bffc99 active. Still48Jev144steps, no grasp.
+Longer patch latency retained; patch format is not a speed guarantee.
