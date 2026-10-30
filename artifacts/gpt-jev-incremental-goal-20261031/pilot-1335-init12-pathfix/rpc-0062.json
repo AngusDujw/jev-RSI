@@ -1,0 +1,240 @@
+{
+  "index": 62,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.geometry",
+      {
+        "coarse": {
+          "frame_id": 0,
+          "camera": "robot0_eye_in_hand",
+          "corners_uv": [
+            [
+              145,
+              159
+            ],
+            [
+              203,
+              157
+            ],
+            [
+              207,
+              274
+            ],
+            [
+              149,
+              273
+            ]
+          ],
+          "corners_world_m": [
+            [
+              -0.013576010239943315,
+              0.16498914747744978,
+              0.9176406849228549
+            ],
+            [
+              -0.012533690905111139,
+              0.12393443245107862,
+              0.918479829580549
+            ],
+            [
+              -0.09363931821090762,
+              0.12275860132695902,
+              0.9184597292092955
+            ],
+            [
+              -0.09278894284118719,
+              0.16428519562482707,
+              0.917611975552507
+            ]
+          ],
+          "center_world_m": [
+            -0.053134490549287317,
+            0.14399184422007863,
+            0.9180480548163017
+          ],
+          "long_axis": [
+            -0.9998949273998353,
+            -0.01449600496958366,
+            0.0
+          ],
+          "top_plane": [
+            -0.0005438404536612068,
+            0.020421592996372657,
+            0.9997913096126868,
+            -0.9208259065350748
+          ],
+          "table_plane": [
+            3.2532570638058466e-05,
+            -1.8651579663025042e-06,
+            0.9999999994690766,
+            -0.8999597105618159
+          ],
+          "uncertainty_m": 0.0014987111309336392,
+          "uncertainty_rule": "max(1 mm working depth floor, two calibrated pixels at measured depth, three plane RMS); heuristic, not calibrated confidence",
+          "top_rms_m": 6.278420328166158e-05,
+          "table_rms_m": 0.0,
+          "top_spread_m": [
+            0.026374702521427724,
+            0.012098221152652347
+          ],
+          "sidewall_points_world_m": {},
+          "landmarks_world_m": [
+            [
+              -0.026032889437132056,
+              0.15677892448260636,
+              0.9178648062243961
+            ],
+            [
+              -0.026163476650383016,
+              0.13273298460365524,
+              0.9182294998254511
+            ]
+          ],
+          "mark_ids": []
+        },
+        "precontact": {
+          "frame_id": 96,
+          "camera": "robot0_eye_in_hand",
+          "corners_uv": [
+            [
+              326,
+              408
+            ],
+            [
+              436,
+              407
+            ],
+            [
+              434,
+              624
+            ],
+            [
+              322,
+              620
+            ]
+          ],
+          "corners_world_m": [
+            [
+              -0.013445658288917892,
+              0.16491364032726827,
+              0.9174083168692055
+            ],
+            [
+              -0.012384888064361405,
+              0.12424753601852344,
+              0.9183968597499659
+            ],
+            [
+              -0.09223861275042228,
+              0.12374819206729754,
+              0.918560264373429
+            ],
+            [
+              -0.09187508714219986,
+              0.1650988413340849,
+              0.9175523496382086
+            ]
+          ],
+          "center_world_m": [
+            -0.05248606156147536,
+            0.14450205243679354,
+            0.9179794476577023
+          ],
+          "long_axis": [
+            -0.9999804491115152,
+            -0.006253110804425129,
+            0.0
+          ],
+          "top_plane": [
+            0.0018934169924460008,
+            0.024350905392696482,
+            0.9997016796918211,
+            -0.921124973553087
+          ],
+          "table_plane": [
+            5.197711980016663e-06,
+            3.0800782124453412e-06,
+            0.9999999999817485,
+            -0.8999732526909068
+          ],
+          "uncertainty_m": 0.001,
+          "uncertainty_rule": "max(1 mm working depth floor, two calibrated pixels at measured depth, three plane RMS); heuristic, not calibrated confidence",
+          "top_rms_m": 2.0354236065966598e-05,
+          "table_rms_m": 0.0,
+          "top_spread_m": [
+            0.02568891504398941,
+            0.011440752763440379
+          ],
+          "sidewall_points_world_m": {
+            "s0": [
+              -0.012228230582777,
+              0.1329635163289636,
+              0.9083242491325038
+            ],
+            "s1": [
+              -0.012584102319729396,
+              0.15485995226354302,
+              0.9079518007089834
+            ]
+          },
+          "landmarks_world_m": [
+            [
+              -0.022426618426999244,
+              0.149187405934526,
+              0.917784281784079
+            ],
+            [
+              -0.03328951108446072,
+              0.1379251440759481,
+              0.9181326049200422
+            ]
+          ],
+          "mark_ids": [
+            "f0: curved inner loop of the large initial capital C in Cream, near the upper short end.",
+            "f1: dark-blue upper-right scalloped logo lobe beside the beginning of Cream, below and right of f0."
+          ]
+        },
+        "plan": {
+          "target": [
+            -0.05248606156147536,
+            0.14450205243679354,
+            0.9187648031870006
+          ],
+          "quaternion": [
+            0.999973731504942,
+            0.007248192883910781,
+            0.0,
+            0.0
+          ],
+          "lower_pad_z_m": 0.9183591935374911,
+          "upper_pad_z_m": 0.9191704128365102,
+          "feasible_height_interval_m": 0.0008112192990191724,
+          "required_table_gap_m": 0.004,
+          "required_side_overlap_m": 0.005,
+          "finger_pose_budget_m": 0.0015366047205385605,
+          "pad_pose_budget_m": 0.0012381173687868894,
+          "width_along_closure_m": 0.04199930328355739,
+          "open_joint_span_proxy_m": 0.07996479373014413,
+          "supported": true,
+          "scope": "Local observed carton/top/table model and own finger envelope; aperture proxy is not a contact sensor or hidden-clearance certificate."
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 96,
+  "response": {
+    "result": {
+      "key": "secure.geometry",
+      "frame_id": 96,
+      "method_number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "bytes": 3544,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 96
+}

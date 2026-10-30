@@ -1,0 +1,115 @@
+{
+  "index": 34,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.geometry",
+      {
+        "coarse": {
+          "frame_id": 0,
+          "camera": "robot0_eye_in_hand",
+          "corners_uv": [
+            [
+              145,
+              159
+            ],
+            [
+              203,
+              157
+            ],
+            [
+              207,
+              274
+            ],
+            [
+              149,
+              273
+            ]
+          ],
+          "corners_world_m": [
+            [
+              -0.013576010239943315,
+              0.16498914747744978,
+              0.9176406849228549
+            ],
+            [
+              -0.012533690905111139,
+              0.12393443245107862,
+              0.918479829580549
+            ],
+            [
+              -0.09363931821090762,
+              0.12275860132695902,
+              0.9184597292092955
+            ],
+            [
+              -0.09278894284118719,
+              0.16428519562482707,
+              0.917611975552507
+            ]
+          ],
+          "center_world_m": [
+            -0.053134490549287317,
+            0.14399184422007863,
+            0.9180480548163017
+          ],
+          "long_axis": [
+            -0.9998949273998353,
+            -0.01449600496958366,
+            0.0
+          ],
+          "top_plane": [
+            -0.0005438404536612068,
+            0.020421592996372657,
+            0.9997913096126868,
+            -0.9208259065350748
+          ],
+          "table_plane": [
+            3.2532570638058466e-05,
+            -1.8651579663025042e-06,
+            0.9999999994690766,
+            -0.8999597105618159
+          ],
+          "uncertainty_m": 0.0014987111309336392,
+          "uncertainty_rule": "max(1 mm working depth floor, two calibrated pixels at measured depth, three plane RMS); heuristic, not calibrated confidence",
+          "top_rms_m": 6.278420328166158e-05,
+          "table_rms_m": 0.0,
+          "top_spread_m": [
+            0.026374702521427724,
+            0.012098221152652347
+          ],
+          "sidewall_points_world_m": {},
+          "landmarks_world_m": [
+            [
+              -0.026032889437132056,
+              0.15677892448260636,
+              0.9178648062243961
+            ],
+            [
+              -0.026163476650383016,
+              0.13273298460365524,
+              0.9182294998254511
+            ]
+          ],
+          "mark_ids": []
+        },
+        "revision": "The rejected pinch is not executed. Move only to a clear noncontact observation hover before reassessing contact geometry."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.geometry",
+      "frame_id": 0,
+      "method_number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "bytes": 1407,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

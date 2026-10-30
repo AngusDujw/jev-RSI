@@ -1,0 +1,175 @@
+{
+  "index": 4,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.measurements",
+      {
+        "frame_id": 0,
+        "parameters": {
+          "approach": "clear",
+          "camera": "robot0_eye_in_hand",
+          "corners_uv": [
+            [
+              145,
+              159
+            ],
+            [
+              203,
+              157
+            ],
+            [
+              207,
+              274
+            ],
+            [
+              149,
+              273
+            ]
+          ],
+          "notes": "Corners are cyclic top-face boundary ray/plane landmarks, not depth samples. f0-f3 are spread inside the label face; t0-t2 are noncollinear bare-table samples. bowl selects the visible interior center. Regions provide visible local support and neighboring-object geometry. Hidden undersides and unseen clearance are not certified; robot self-occlusion at the bottom of the wrist image does not obscure the carton descent lane.",
+          "scene": "flat_carton_on_table",
+          "top_outline": "clear"
+        },
+        "valid_points": {
+          "f0": {
+            "world_m": [
+              -0.026032889437132056,
+              0.15677892448260636,
+              0.9178648062243961
+            ],
+            "depth_m": 0.3519727289676666,
+            "frame_id": 0,
+            "pixel": [
+              157,
+              177
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "f1": {
+            "world_m": [
+              -0.026163476650383016,
+              0.13273298460365524,
+              0.9182294998254511
+            ],
+            "depth_m": 0.3516278862953186,
+            "frame_id": 0,
+            "pixel": [
+              191,
+              177
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "f2": {
+            "world_m": [
+              -0.07890263226771263,
+              0.13170985040795335,
+              0.9183473039807548
+            ],
+            "depth_m": 0.3544425368309021,
+            "frame_id": 0,
+            "pixel": [
+              194,
+              253
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "f3": {
+            "world_m": [
+              -0.07877139684264431,
+              0.15605976663734855,
+              0.9177252176453252
+            ],
+            "depth_m": 0.3550441861152649,
+            "frame_id": 0,
+            "pixel": [
+              160,
+              253
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t0": {
+            "world_m": [
+              -0.03497767709743328,
+              0.19321845727926204,
+              0.8999612093363222
+            ],
+            "depth_m": 0.3703276515007019,
+            "frame_id": 0,
+            "pixel": [
+              119,
+              198
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t1": {
+            "world_m": [
+              -0.048088375691016205,
+              0.1031627371708242,
+              0.8999614678929067
+            ],
+            "depth_m": 0.3711012601852417,
+            "frame_id": 0,
+            "pixel": [
+              241,
+              216
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t2": {
+            "world_m": [
+              -0.11880888405132792,
+              0.150760266078669,
+              0.8999638573897519
+            ],
+            "depth_m": 0.37500640749931335,
+            "frame_id": 0,
+            "pixel": [
+              179,
+              312
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "bowl": {
+            "world_m": [
+              -0.08588048565662317,
+              0.00813503036303026,
+              0.9062501543075401
+            ],
+            "depth_m": 0.3669706881046295,
+            "frame_id": 0,
+            "pixel": [
+              369,
+              266
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.measurements",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a",
+      "bytes": 2539,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

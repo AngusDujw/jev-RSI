@@ -1,0 +1,30 @@
+{
+  "explanation": "The initial images show the cream cheese package on the table beside an upright, apparently empty bowl. The gripper is open, and no actions have been acknowledged. Three stages leave substantial room within the 39-call budget for fresh observations, supervision, and corrections.",
+  "goal_evidence": "After release, gripper withdrawal, and settling, public images and depth show the cream cheese package supported inside the upright bowl, not on the table or balanced on its rim, with no gripper support.",
+  "stages": [
+    {
+      "id": "secure",
+      "objective": "Acquire the cream cheese package and establish a retained grasp clear of the table.",
+      "entry_evidence": "Frame 0 shows the blue cream cheese package separate from the patterned bowl; the robot reports an open gripper and no prior execution.",
+      "success_evidence": "Fresh images and depth show the package separated from the table and moving with the gripper rather than remaining at its original location.",
+      "handoff_requirements": "Provide current evidence of package retention, its visible extent relative to the fingers, and the bowl location. Resolve uncertain grasp clearance with another attainable view or depth observation rather than assuming free space.",
+      "replan_conditions": "The package shifts, slips, remains on the table, or lacks a supported grasp approach. Use the actual resulting state for any recovery."
+    },
+    {
+      "id": "place",
+      "objective": "Transfer the retained package into the bowl and release it without displacing or overturning the bowl.",
+      "entry_evidence": "Fresh evidence confirms the package is held clear of the table. Current observations establish the bowl opening and relevant surrounding obstacles.",
+      "success_evidence": "Images show the released package inside the bowl and no longer retained by the fingers, while the bowl remains upright.",
+      "handoff_requirements": "Establish package-to-opening fit and relevant motion clearance from current RGB-D evidence; obtain an alternate attainable view if occlusion prevents assessment. Provide post-release observations and the actual gripper and object state.",
+      "replan_conditions": "Retention is lost, fit or clearance remains unresolved, the bowl moves, or the package lands outside or on the rim. Reassess from fresh observations without repeating a completed pickup or release."
+    },
+    {
+      "id": "verify",
+      "objective": "Leave the gripper clear and assess the final placement after the package has settled.",
+      "entry_evidence": "Release has been acknowledged and fresh observations locate the package relative to the bowl and gripper.",
+      "success_evidence": "Successive observations after gripper separation show the package resting stably inside the upright bowl without robot support.",
+      "handoff_requirements": "Report final observable goal evidence. If the gripper or rim obscures support, use a safely attainable view and depth evidence before declaring success.",
+      "replan_conditions": "The package follows the gripper, falls out, rests on the rim, or remains unobservable enough to judge containment. Preserve the actual physical state and plan only the necessary remaining correction or evidence acquisition."
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "index": 118,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.05136432922332046,
+        0.14558201959995187,
+        0.971903782196332
+      ],
+      [
+        0.999966122008228,
+        0.00806063490261616,
+        0.001470482442732167,
+        0.0007865635246013741
+      ],
+      "close",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world translation x, use state.processed_features.axes.x.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world translation y, use state.processed_features.axes.y.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world translation z, use state.processed_features.axes.z.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component x, use state.processed_features.axes.rx.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component y, use state.processed_features.axes.ry.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component z, use state.processed_features.axes.rz.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper literally. A close choice actuates fingers; it does not establish retention.",
+          "criteria": {
+            "open": "The objective requests opening.",
+            "close": "The objective requests closure.",
+            "keep": "The objective requests unchanged actuation."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "phase": "single_vertical_retention_test",
+        "baseline_frame": 204,
+        "requested_rise_m": 0.055,
+        "baseline_uncertainty_m": 0.0015,
+        "retention_not_yet_established": true
+      },
+      "tool_point": "tcp",
+      "max_calls": 26,
+      "translation_limit": 0.008,
+      "rotation_limit": 0.02,
+      "steps": 3,
+      "position_tolerance": 0.0015,
+      "rotation_tolerance": 0.01
+    }
+  },
+  "frame_before": 204,
+  "response": {
+    "result": {
+      "decision": 77,
+      "choices": {
+        "x": "hold",
+        "y": "negative",
+        "z": "positive",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "close"
+      },
+      "action": [
+        0.0,
+        -0.01206903055219083,
+        0.03264461573677402,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "before": [
+        -0.05205914320698372,
+        0.146510406565505,
+        0.9693926579088878
+      ],
+      "after": [
+        -0.052079271964960185,
+        0.14630321205232666,
+        0.9710701462042386
+      ],
+      "target_tcp": [
+        -0.05136432922332046,
+        0.14558201959995187,
+        0.971903782196332
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 234,
+      "frame_id": 234,
+      "status": "reached",
+      "position_error_m": 0.0013138533573040954,
+      "rotation_error_rad": 0.0013924879005699931,
+      "lease_calls": 10
+    }
+  },
+  "frame_after": 234
+}

@@ -172,3 +172,18 @@ patch-branch equivalence to the previously tested implementation, and numeric
 range rejection passed. Branch pushed via SSH. No candidate episode is admitted
 yet and no active service has been changed. Current repair job4d53c77b remains
 live in Codex PID591417; the running remote episode is still c8dedfa8.
+
+## Secure stage completed; placement generation active
+
+Second repair delivered207 lines in660.627 seconds, no reconnect/recovery.
+Its current-pose measurement gates allowed four close controls, then a measured
+lift from frame204 to234. Hand translation z54.166mm and tracked surface
+z54.197mm, attachment error3.116mm below allowance9.243mm, plus fresh visible
+table gap supported stage_complete. Supervisor13 explicitly advanced secure
+to place, task_satisfied=no. Total78 real Jev/234 steps; physical grasp persists.
+Current placement generation job2b1ba6c8881e4fabab15c9a576395a61, native thread
+01a18e28-1339-7b00-8e9e-6f21961f0f0e, is active. No terminal score yet.
+Save secure-stage-evidence.json and the full running JSON/source snapshot.
+Repair2 native aggregate182185 input/19550 output/12107 reasoning tokens;
+these are not the one-request prompt length. Still remote c8dedfa8 and original
+loaded relay, no candidate fixes injected.

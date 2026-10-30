@@ -1,0 +1,41 @@
+{
+  "status": "continue",
+  "explanation": "The same Cream carton has risen with the gripper relative to the stationary bowl and table. Its visible lower edge is above the tabletop, and its label remains similarly positioned between the fingers in both wrist images; this supports retention, not merely commanded closure. m0 and m1 identify the same two pale oval centers inside the initial capital C, independently recognizable in the current image. The bowl point selects visible patterned interior surface for current depth sampling, not an opening-fit certificate. Placement is not complete.",
+  "parameters": {
+    "identity": "same_carton",
+    "effect": "held_with_table_gap",
+    "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+    "marks_clear": true,
+    "bowl_identity": "same_upright_bowl"
+  },
+  "points": [
+    {
+      "name": "m0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        350,
+        497
+      ],
+      "radius": 2
+    },
+    {
+      "name": "m1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        396,
+        500
+      ],
+      "radius": 2
+    },
+    {
+      "name": "bowl",
+      "camera": "agentview",
+      "pixel": [
+        389,
+        431
+      ],
+      "radius": 3
+    }
+  ],
+  "regions": []
+}

@@ -1,0 +1,99 @@
+{
+  "status": "continue",
+  "explanation": "Frame 192 shows the Cream cheese carton straddled by open fingers outside its width. Agentview supports approximate centering along its length; the exact midpoint is partly robot-occluded. The wrist view shows the labeled top, parallel long top boundaries, and an exposed short-end wall extending to the table. No external obstruction is visible in the local 75 mm upward withdrawal/test lane. This supports fresh assessment of the stopped pose, not an already usable pinch or retained grasp.",
+  "parameters": {
+    "boundary": "parallel_long_sides_cross_section",
+    "camera": "robot0_eye_in_hand",
+    "configuration": "same_carton_open_straddle",
+    "edge_pixels": [
+      [
+        286,
+        540
+      ],
+      [
+        497,
+        540
+      ]
+    ],
+    "lane": "clear_75mm_upward",
+    "notes": "All picks are current frame 192. Edge pixels intersect the two long top boundaries at one transverse section: use boundary rays, not edge depths. a0-a3 sample top interior; t0-t2 sample bare table. The side region samples the exposed short-end wall. Lower wrist visibility is limited by robot self-occlusion, not observed external obstruction. Obtain current depths at these selections to evaluate the top/table model and actual finger clearance and side overlap. Neither visual proximity nor agreement with an old target proves pinch feasibility. The lane assessment is local, not a hidden-geometry or full-scene clearance certificate."
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a0",
+      "pixel": [
+        315,
+        470
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a1",
+      "pixel": [
+        465,
+        470
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a2",
+      "pixel": [
+        315,
+        615
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a3",
+      "pixel": [
+        465,
+        615
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        240,
+        500
+      ],
+      "radius": 6
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        543,
+        500
+      ],
+      "radius": 6
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        389,
+        365
+      ],
+      "radius": 6
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "visible_short_end_side",
+      "box": [
+        310,
+        436,
+        475,
+        441
+      ],
+      "stride": 4
+    }
+  ]
+}

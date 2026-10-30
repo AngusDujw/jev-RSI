@@ -1,0 +1,156 @@
+{
+  "index": 77,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.local",
+      {
+        "attempts": [
+          {
+            "frame_id": 192,
+            "parameters": {
+              "boundary": "parallel_long_sides_cross_section",
+              "camera": "robot0_eye_in_hand",
+              "configuration": "same_carton_open_straddle",
+              "edge_pixels": [
+                [
+                  286,
+                  540
+                ],
+                [
+                  497,
+                  540
+                ]
+              ],
+              "lane": "clear_75mm_upward",
+              "notes": "All picks are current frame 192. Edge pixels intersect the two long top boundaries at one transverse section: use boundary rays, not edge depths. a0-a3 sample top interior; t0-t2 sample bare table. The side region samples the exposed short-end wall. Lower wrist visibility is limited by robot self-occlusion, not observed external obstruction. Obtain current depths at these selections to evaluate the top/table model and actual finger clearance and side overlap. Neither visual proximity nor agreement with an old target proves pinch feasibility. The lane assessment is local, not a hidden-geometry or full-scene clearance certificate."
+            },
+            "points": {
+              "a0": {
+                "world_m": [
+                  -0.0183370497438249,
+                  0.1591801352766819,
+                  0.917836419084292
+                ],
+                "depth_m": 0.09556421637535095,
+                "frame_id": 192,
+                "pixel": [
+                  315,
+                  470
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "a1": {
+                "world_m": [
+                  -0.017840771444773498,
+                  0.13057315645766535,
+                  0.9180872856320651
+                ],
+                "depth_m": 0.09536352753639221,
+                "frame_id": 192,
+                "pixel": [
+                  465,
+                  470
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "a2": {
+                "world_m": [
+                  -0.04598919904140574,
+                  0.1587233897304802,
+                  0.917853108572575
+                ],
+                "depth_m": 0.09549162536859512,
+                "frame_id": 192,
+                "pixel": [
+                  315,
+                  615
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "a3": {
+                "world_m": [
+                  -0.045264246538779286,
+                  0.13020307071965492,
+                  0.9184783303654284
+                ],
+                "depth_m": 0.09491690248250961,
+                "frame_id": 192,
+                "pixel": [
+                  465,
+                  615
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t0": {
+                "world_m": [
+                  -0.028464047994407368,
+                  0.1784267603056864,
+                  0.9000001083960004
+                ],
+                "depth_m": 0.113346628844738,
+                "frame_id": 192,
+                "pixel": [
+                  240,
+                  500
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t1": {
+                "world_m": [
+                  -0.02738238645128309,
+                  0.10976912899270468,
+                  0.9000001544645245
+                ],
+                "depth_m": 0.1134667843580246,
+                "frame_id": 192,
+                "pixel": [
+                  543,
+                  500
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t2": {
+                "world_m": [
+                  0.0026587040754877337,
+                  0.14517623756620895,
+                  0.9000000959324358
+                ],
+                "depth_m": 0.11346758157014847,
+                "frame_id": 192,
+                "pixel": [
+                  389,
+                  365
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              }
+            },
+            "measurement_errors": []
+          }
+        ]
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 192,
+  "response": {
+    "result": {
+      "key": "secure.local",
+      "frame_id": 192,
+      "method_number": 2,
+      "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+      "bytes": 2566,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 192
+}

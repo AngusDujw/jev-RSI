@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-b8f8927d-546b-46d7-bfb4-9d91afd1fb34",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-b8f8927d-546b-46d7-bfb4-9d91afd1fb34",
+      "arguments": "{\"action\": \"continue\", \"evidence\": [\"Current images show the carton still on the table outside the upright bowl, beneath the open gripper.\", \"Recent acknowledged controls show steady downward approach with nearly unchanged lateral position and no stalled motion.\", \"The stage yielded at a normal control_slice_limit with live continuation available; it did not return completion or an error.\", \"No package lift or retained motion is observed.\"], \"invalidated_assumptions\": [], \"plan_valid\": \"yes\", \"reason\": \"Acknowledged progress and current alignment support the unchanged local approach. No new obstruction or carton displacement is evident. The earlier rejected candidate was reassessed before this descent; the historical blocked outcome is not the current yield. Stage and task completion remain unsupported.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 36633,
+    "output_tokens": 683,
+    "output_tokens_details": {
+      "reasoning_tokens": 452
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e17-a9f5-7e71-9237-e439b61e7598",
+    "turn_ids": [
+      "01a18e17-a9fc-7663-9c08-c4296ac25ddf"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

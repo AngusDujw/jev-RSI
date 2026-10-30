@@ -1,0 +1,268 @@
+{
+  "index": 91,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "control",
+    "args": [
+      [
+        -0.0516940761071097,
+        0.1454607053600719,
+        0.9163560621132343
+      ],
+      [
+        0.9999664735984628,
+        0.008078528600004131,
+        0.0010181793672277505,
+        0.0008673900448293228
+      ],
+      "close",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world translation x, use state.processed_features.axes.x.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world translation y, use state.processed_features.axes.y.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world translation z, use state.processed_features.axes.z.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component x, use state.processed_features.axes.rx.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component y, use state.processed_features.axes.ry.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component z, use state.processed_features.axes.rz.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Program geometry is context, not a contact sensor.",
+          "criteria": {
+            "negative": "Decrease this world component toward its target.",
+            "hold": "This component is within its declared tolerance.",
+            "positive": "Increase this world component toward its target."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper literally. A close choice actuates fingers; it does not establish retention.",
+          "criteria": {
+            "open": "The objective requests opening.",
+            "close": "The objective requests closure.",
+            "keep": "The objective requests unchanged actuation."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "phase": "one_closure_zero_requested_pose_change",
+        "hold_index": 0,
+        "preclosure_geometry": {
+          "frame_id": 192,
+          "state": {
+            "frame_id": 192,
+            "native_steps": 192,
+            "budgets": {
+              "gpt_remaining": 30,
+              "jev_remaining": 136,
+              "native_steps_remaining": 408,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.0516940761071097,
+              0.1454607053600719,
+              0.9163560621132343
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999664735984628,
+              0.008078528600004131,
+              0.0010181793672277505,
+              0.0008673900448293228
+            ],
+            "gripper_qpos_m": [
+              0.039998091171475084,
+              -0.04000007278503834
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -8.251815934636614e-08,
+                -8.473634581021572e-07,
+                -0.0035997627245979848
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000032094301286,
+                0.09499817114892152,
+                0.016000020960570734
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010494877821424574,
+                -0.06640332099752026,
+                -0.04446807733430203
+              ],
+              "finger_high_offset_tool_m": [
+                0.01049472738250715,
+                0.06640161269661489,
+                0.0092492826004915
+              ]
+            }
+          },
+          "top_plane": [
+            0.007141428196960903,
+            0.015477210490316272,
+            0.9998547174258597,
+            -0.9199419840158891
+          ],
+          "table_plane": [
+            1.1364556705583452e-06,
+            6.888933334338138e-07,
+            0.9999999999991169,
+            -0.9000001989640826
+          ],
+          "top_rms_m": 9.431968475454117e-05,
+          "table_rms_m": 0.0,
+          "boundary_records": [
+            {
+              "world_m": [
+                -0.031805562316829614,
+                0.16450947711568198,
+                0.9177563073492325
+              ],
+              "pixel": [
+                286,
+                540
+              ],
+              "camera": "robot0_eye_in_hand",
+              "plane": [
+                0.007141428196960903,
+                0.015477210490316272,
+                0.9998547174258597,
+                -0.9199419840158891
+              ],
+              "frame_id": 192,
+              "source": "calibrated_ray_intersection_with_program_supplied_plane"
+            },
+            {
+              "world_m": [
+                -0.030987479591044018,
+                0.12433058123427256,
+                0.918372411808254
+              ],
+              "pixel": [
+                497,
+                540
+              ],
+              "camera": "robot0_eye_in_hand",
+              "plane": [
+                0.007141428196960903,
+                0.015477210490316272,
+                0.9998547174258597,
+                -0.9199419840158891
+              ],
+              "frame_id": 192,
+              "source": "calibrated_ray_intersection_with_program_supplied_plane"
+            }
+          ],
+          "contact_side_heights_m": [
+            0.9179075132586437,
+            0.9185236177176652
+          ],
+          "width_m": 0.0401872235118995,
+          "open_joint_span_proxy_m": 0.07999816395651342,
+          "centering_error_m": 0.0014608355637614199,
+          "finger_table_gap_m": 0.006969180366635519,
+          "side_overlap_m": 0.005852327464438978,
+          "required_table_gap_m": 0.004,
+          "required_side_overlap_m": 0.005,
+          "remaining_margin_m": 0.0008523274644389777,
+          "uncertainty_m": 0.001,
+          "uncertainty_rule": "max(1 mm working floor, two calibrated pixels, three plane RMS); heuristic, not a calibrated confidence bound",
+          "scope": "Current visible planar top, identified parallel side boundaries and own finger envelope. No hidden clearance claim."
+        },
+        "not_live_contact_feedback": true
+      },
+      "tool_point": "tcp",
+      "translation_limit": 0.001,
+      "rotation_limit": 0.01,
+      "steps": 3,
+      "position_tolerance": 0.0005,
+      "rotation_tolerance": 0.01
+    }
+  },
+  "frame_before": 192,
+  "response": {
+    "result": {
+      "decision": 64,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "close"
+      },
+      "action": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "before": [
+        -0.0516940761071097,
+        0.1454607053600719,
+        0.9163560621132343
+      ],
+      "after": [
+        -0.051562545639127336,
+        0.145567658370995,
+        0.9165519386103849
+      ],
+      "target_tcp": [
+        -0.0516940761071097,
+        0.1454607053600719,
+        0.9163560621132343
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 195,
+      "frame_id": 195,
+      "status": "reached",
+      "position_error_m": 0.00025904982665339994,
+      "rotation_error_rad": 0.0003920243184360163
+    }
+  },
+  "frame_after": 195
+}

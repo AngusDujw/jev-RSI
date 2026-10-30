@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-e13e60d5-22a1-4da8-8fbe-e22829491ddd",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-e13e60d5-22a1-4da8-8fbe-e22829491ddd",
+      "arguments": "{\"action\": \"advance\", \"evidence\": [\"The current stage returned stage_complete at frame 234.\", \"Current images show the cream cheese carton between the fingers, visibly separated from the table; its near portion is occluded by the gripper.\", \"The same identified carton landmarks rose approximately 54 mm from frame 204 to frame 234, matching the acknowledged hand lift.\", \"The upright bowl has a current interior depth measurement, but opening fit and transfer clearance are not established.\", \"The carton remains outside the bowl and held by the gripper; no transfer or release was acknowledged.\"], \"invalidated_assumptions\": [], \"plan_valid\": \"yes\", \"reason\": \"Independent object motion and visible table separation support successful acquisition. The placement stage remains appropriate, with fresh package extent, bowl opening and relevant clearance assessment still required before transfer. Overall placement is not complete.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"yes\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 44788,
+    "output_tokens": 584,
+    "output_tokens_details": {
+      "reasoning_tokens": 330
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e27-a3f3-7302-bc14-2fb67acb2af0",
+    "turn_ids": [
+      "01a18e27-a3f9-7350-8d1d-b36d0f136c81"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "index": 124,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.effect",
+      {
+        "frame_id": 234,
+        "parameters": {
+          "identity": "same_carton",
+          "effect": "held_with_table_gap",
+          "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+          "marks_clear": true,
+          "bowl_identity": "same_upright_bowl"
+        },
+        "points": {
+          "m0": {
+            "world_m": [
+              -0.02388344034935627,
+              0.15324916499687996,
+              0.9720418962709287
+            ],
+            "depth_m": 0.0961100310087204,
+            "frame_id": 234,
+            "pixel": [
+              350,
+              497
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "m1": {
+            "world_m": [
+              -0.024295033657067682,
+              0.1444115917643187,
+              0.9722059651984021
+            ],
+            "depth_m": 0.09596215188503265,
+            "frame_id": 234,
+            "pixel": [
+              396,
+              500
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "bowl": {
+            "world_m": [
+              -0.12172726021026437,
+              0.005641009307502743,
+              0.9119547217558058
+            ],
+            "depth_m": 1.0459085702896118,
+            "frame_id": 234,
+            "pixel": [
+              389,
+              431
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "key": "secure.effect",
+      "frame_id": 234,
+      "method_number": 2,
+      "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+      "bytes": 1165,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 234
+}

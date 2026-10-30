@@ -1,0 +1,189 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 105,
+      "native_steps": 105,
+      "budgets": {
+        "gpt_remaining": 33,
+        "jev_remaining": 165,
+        "native_steps_remaining": 495,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0528911,
+        0.143894,
+        0.992293
+      ],
+      "tcp_quaternion_xyzw": [
+        0.999967,
+        0.00804182,
+        0.000980485,
+        0.000485054
+      ],
+      "gripper_qpos_m": [
+        0.0399885,
+        -0.0399878
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          6.58054e-06,
+          -3.54669e-06,
+          -0.0035398
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160002,
+          0.0949763,
+          0.0160004
+        ],
+        "finger_low_offset_tool_m": [
+          -0.010488,
+          -0.0663952,
+          -0.0444083
+        ],
+        "finger_high_offset_tool_m": [
+          0.0105015,
+          0.0663879,
+          0.00930943
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "phase": "single_open_finger_descent",
+        "pre_action_pinch_model": {
+          "target": [
+            -0.0524861,
+            0.144502,
+            0.918765
+          ],
+          "quaternion": [
+            0.999974,
+            0.00724819,
+            0.0,
+            0.0
+          ],
+          "lower_pad_z_m": 0.918359,
+          "upper_pad_z_m": 0.91917,
+          "feasible_height_interval_m": 0.000811219,
+          "required_table_gap_m": 0.004,
+          "required_side_overlap_m": 0.005,
+          "finger_pose_budget_m": 0.0015366,
+          "pad_pose_budget_m": 0.00123812,
+          "width_along_closure_m": 0.0419993,
+          "open_joint_span_proxy_m": 0.0799648,
+          "supported": true,
+          "scope": "Local observed carton/top/table model and own finger envelope; aperture proxy is not a contact sensor or hidden-clearance certificate."
+        },
+        "model_is_not_live_contact_feedback": true
+      },
+      "objective": {
+        "gripper": "keep",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        0.000398545,
+        0.000604138,
+        -0.0770685
+      ],
+      "rotation_error_world_rad": [
+        0.000955869,
+        0.00196795,
+        -0.00158731
+      ],
+      "axes": {
+        "x": {
+          "error": 0.000398545,
+          "goal_relation": "within_tolerance"
+        },
+        "y": {
+          "error": 0.000604138,
+          "goal_relation": "increase"
+        },
+        "z": {
+          "error": -0.0770685,
+          "goal_relation": "decrease"
+        },
+        "rx": {
+          "error": 0.000955869,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": 0.00196795,
+          "goal_relation": "within_tolerance"
+        },
+        "rz": {
+          "error": -0.00158731,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world position x, read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. Geometry is program-supplied context, not a contact sensor.",
+      "criteria": {
+        "negative": "Decrease this world component toward its target.",
+        "hold": "This component is within its specified tolerance.",
+        "positive": "Increase this world component toward its target."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world position y, read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. Geometry is program-supplied context, not a contact sensor.",
+      "criteria": {
+        "negative": "Decrease this world component toward its target.",
+        "hold": "This component is within its specified tolerance.",
+        "positive": "Increase this world component toward its target."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world position z, read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. Geometry is program-supplied context, not a contact sensor.",
+      "criteria": {
+        "negative": "Decrease this world component toward its target.",
+        "hold": "This component is within its specified tolerance.",
+        "positive": "Increase this world component toward its target."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world rotation-vector component x, read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. Geometry is program-supplied context, not a contact sensor.",
+      "criteria": {
+        "negative": "Decrease this world component toward its target.",
+        "hold": "This component is within its specified tolerance.",
+        "positive": "Increase this world component toward its target."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world rotation-vector component y, read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. Geometry is program-supplied context, not a contact sensor.",
+      "criteria": {
+        "negative": "Decrease this world component toward its target.",
+        "hold": "This component is within its specified tolerance.",
+        "positive": "Increase this world component toward its target."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world rotation-vector component z, read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. Geometry is program-supplied context, not a contact sensor.",
+      "criteria": {
+        "negative": "Decrease this world component toward its target.",
+        "hold": "This component is within its specified tolerance.",
+        "positive": "Increase this world component toward its target."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Use state.processed_features.objective.gripper literally. Closing actuates fingers and does not establish retention.",
+      "criteria": {
+        "open": "The objective requests open.",
+        "close": "The objective requests close.",
+        "keep": "The objective requests keep, preserving the current actuation."
+      }
+    }
+  }
+}

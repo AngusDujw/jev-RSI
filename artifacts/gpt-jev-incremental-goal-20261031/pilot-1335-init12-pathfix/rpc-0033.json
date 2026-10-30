@@ -1,0 +1,32 @@
+{
+  "index": 33,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "compose",
+    "args": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.014496512701901276
+      ]
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": [
+      0.999973731504942,
+      0.007248192883910781,
+      0.0,
+      0.0
+    ]
+  },
+  "frame_after": 0
+}

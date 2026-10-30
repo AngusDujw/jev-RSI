@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-0b3b2d09-2b59-42f5-b456-7ca38ffaa1dd",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-0b3b2d09-2b59-42f5-b456-7ca38ffaa1dd",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The current close wrist view resolves the blue cream cheese carton lying flat on the table, with its top unobscured. The earlier and current agent views show a short-end box wall extending down toward the table. No neighboring object visibly obstructs the local open-finger descent lane or the 75 mm upward test lane at this location. This is a local visual assessment, not approval of the previously rejected pinch or a hidden-clearance certificate.\", \"parameters\": {\"approach\": \"clear\", \"camera\": \"robot0_eye_in_hand\", \"corners_uv\": [[326, 408], [436, 407], [434, 624], [322, 620]], \"mark_ids\": [\"f0: curved inner loop of the large initial capital C in Cream, near the upper short end.\", \"f1: dark-blue upper-right scalloped logo lobe beside the beginning of Cream, below and right of f0.\"], \"notes\": \"All selections use frame 96. f0/f1 are printed features near an exposed long-axis end, outside the central pinch. f2/f3 are separated lower top-interior patches; t0/t1/t2 are bare table. Corners are cyclic boundary pixels, not depth samples. s0/s1 are agentview short-end wall candidates; caller must check depth validity. The wrist wall is too thin for robust samples. Bowl, plate and rear platform appear separate from the local lane. Robot self-occlusion hides parts of bowl/platform; this is not observed external obstruction. Fresh depths must establish dimensions and finger/table margins. Hidden clearance and retention are not established.\", \"scene\": \"flat_carton_on_table\", \"sidewall\": \"visible_box_profile\", \"top_outline\": \"clear\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"f0\", \"pixel\": [368, 433], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"f1\", \"pixel\": [398, 463], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"f2\", \"pixel\": [337, 581], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"f3\", \"pixel\": [419, 590], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [281, 432], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t1\", \"pixel\": [480, 434], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t2\", \"pixel\": [469, 603], \"radius\": 4}, {\"camera\": \"agentview\", \"name\": \"s0\", \"pixel\": [512, 504], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"s1\", \"pixel\": [533, 504], \"radius\": 1}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"carton_top_interior\", \"box\": [333, 418, 424, 611], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"bare_table_left\", \"box\": [248, 395, 306, 575], \"stride\": 6}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"bare_table_right\", \"box\": [455, 397, 541, 616], \"stride\": 6}, {\"camera\": \"agentview\", \"name\": \"carton_visible_short_end_wall\", \"box\": [507, 502, 538, 507], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"neighbor_bowl_and_immediate_table\", \"box\": [337, 391, 443, 475], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"neighbor_plate_and_immediate_table\", \"box\": [290, 498, 433, 608], \"stride\": 5}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 52537,
+    "output_tokens": 4742,
+    "output_tokens_details": {
+      "reasoning_tokens": 3126
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e15-4f3a-75e2-b471-95d870ce20e8",
+    "turn_ids": [
+      "01a18e15-4f40-7141-902c-3c48e0360445"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

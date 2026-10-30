@@ -1,0 +1,197 @@
+{
+  "index": 47,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.observations",
+      [
+        {
+          "frame_id": 96,
+          "parameters": {
+            "approach": "clear",
+            "camera": "robot0_eye_in_hand",
+            "corners_uv": [
+              [
+                326,
+                408
+              ],
+              [
+                436,
+                407
+              ],
+              [
+                434,
+                624
+              ],
+              [
+                322,
+                620
+              ]
+            ],
+            "mark_ids": [
+              "f0: curved inner loop of the large initial capital C in Cream, near the upper short end.",
+              "f1: dark-blue upper-right scalloped logo lobe beside the beginning of Cream, below and right of f0."
+            ],
+            "notes": "All selections use frame 96. f0/f1 are printed features near an exposed long-axis end, outside the central pinch. f2/f3 are separated lower top-interior patches; t0/t1/t2 are bare table. Corners are cyclic boundary pixels, not depth samples. s0/s1 are agentview short-end wall candidates; caller must check depth validity. The wrist wall is too thin for robust samples. Bowl, plate and rear platform appear separate from the local lane. Robot self-occlusion hides parts of bowl/platform; this is not observed external obstruction. Fresh depths must establish dimensions and finger/table margins. Hidden clearance and retention are not established.",
+            "scene": "flat_carton_on_table",
+            "sidewall": "visible_box_profile",
+            "top_outline": "clear"
+          },
+          "points": {
+            "f0": {
+              "world_m": [
+                -0.022426618426999244,
+                0.149187405934526,
+                0.917784281784079
+              ],
+              "depth_m": 0.18512780964374542,
+              "frame_id": 96,
+              "pixel": [
+                368,
+                433
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "f1": {
+              "world_m": [
+                -0.03328951108446072,
+                0.1379251440759481,
+                0.9181326049200422
+              ],
+              "depth_m": 0.18476366996765137,
+              "frame_id": 96,
+              "pixel": [
+                398,
+                463
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "f2": {
+              "world_m": [
+                -0.07733513166045713,
+                0.15977519865267514,
+                0.9176619857357236
+              ],
+              "depth_m": 0.18508373200893402,
+              "frame_id": 96,
+              "pixel": [
+                337,
+                581
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "f3": {
+              "world_m": [
+                -0.07989688389585795,
+                0.1294525726249503,
+                0.9183852342351266
+              ],
+              "depth_m": 0.18439216911792755,
+              "frame_id": 96,
+              "pixel": [
+                419,
+                590
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t0": {
+              "world_m": [
+                -0.024283101127603225,
+                0.18497820995495837,
+                0.899972809176544
+              ],
+              "depth_m": 0.20288822054862976,
+              "frame_id": 96,
+              "pixel": [
+                281,
+                432
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t1": {
+              "world_m": [
+                -0.023814854289900548,
+                0.10427655427690212,
+                0.8999730553101432
+              ],
+              "depth_m": 0.20299257338047028,
+              "frame_id": 96,
+              "pixel": [
+                480,
+                434
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t2": {
+              "world_m": [
+                -0.09234404527283424,
+                0.10767739425254899,
+                0.899973401030287
+              ],
+              "depth_m": 0.20279714465141296,
+              "frame_id": 96,
+              "pixel": [
+                469,
+                603
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s0": {
+              "world_m": [
+                -0.012228230582777,
+                0.1329635163289636,
+                0.9083242491325038
+              ],
+              "depth_m": 0.9630069732666016,
+              "frame_id": 96,
+              "pixel": [
+                512,
+                504
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s1": {
+              "world_m": [
+                -0.012584102319729396,
+                0.15485995226354302,
+                0.9079518007089834
+              ],
+              "depth_m": 0.9635178446769714,
+              "frame_id": 96,
+              "pixel": [
+                533,
+                504
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": []
+        }
+      ]
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 96,
+  "response": {
+    "result": {
+      "key": "secure.observations",
+      "frame_id": 96,
+      "method_number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "bytes": 3221,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 96
+}

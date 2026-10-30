@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-c9f209be-321b-4e4a-8731-28406d54e43b",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-c9f209be-321b-4e4a-8731-28406d54e43b",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The same Cream carton remains aligned between the fingers. Comparison with the earlier images shows no appreciable slip or rotation, unintended external contact, or newly obstructed checked upward-only lane. This supports a plausible pinch candidate for that local test, not retention. Lower-face and contact visibility are limited by robot self-occlusion. Both selected printed landmarks are currently exposed, well inside the rigid face; sample current depth at these points.\", \"parameters\": {\"candidate\": \"supported_vertical_test\", \"identity\": \"same_carton\", \"mark_ids\": [\"m0: Center of the pale oval enclosed by the left inward curl of the decorative initial capital C in the Cream logo.\", \"m1: Center of the pale oval enclosed by the distinct right terminal curl of the same initial capital C.\"], \"marks_clear\": true}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"m0\", \"pixel\": [354, 497], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"m1\", \"pixel\": [400, 500], \"radius\": 3}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 43801,
+    "output_tokens": 1800,
+    "output_tokens_details": {
+      "reasoning_tokens": 1500
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e25-afd6-7951-8acc-49c7235cb07a",
+    "turn_ids": [
+      "01a18e25-afdd-7972-8726-6d64ee0f4819"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-6098c985-50e4-4be4-817a-27d757f2ee0c",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-6098c985-50e4-4be4-817a-27d757f2ee0c",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Both current views identify the blue Cream Cheese carton, not the bowl or stove. The wrist view clearly shows its flat rectangular top-label face and its placement flat on the bare table. For fingers spanning the short dimension, the visible table strips beside the carton support a local overhead, open-finger descent with the supplied finger envelope. The nearby bowl, stove, plate and bottle are outside that visible local footprint. This is not a certificate for hidden geometry or the full lateral transit.\", \"parameters\": {\"approach\": \"clear\", \"camera\": \"robot0_eye_in_hand\", \"corners_uv\": [[145, 159], [203, 157], [207, 274], [149, 273]], \"notes\": \"Corners are cyclic top-face boundary ray/plane landmarks, not depth samples. f0-f3 are spread inside the label face; t0-t2 are noncollinear bare-table samples. bowl selects the visible interior center. Regions provide visible local support and neighboring-object geometry. Hidden undersides and unseen clearance are not certified; robot self-occlusion at the bottom of the wrist image does not obscure the carton descent lane.\", \"scene\": \"flat_carton_on_table\", \"top_outline\": \"clear\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"f0\", \"pixel\": [157, 177], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"f1\", \"pixel\": [191, 177], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"f2\", \"pixel\": [194, 253], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"f3\", \"pixel\": [160, 253], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [119, 198], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t1\", \"pixel\": [241, 216], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t2\", \"pixel\": [179, 312], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"bowl\", \"pixel\": [369, 266], \"radius\": 4}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"carton_top_interior\", \"box\": [152, 166, 199, 266], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"left_descent_support_table\", \"box\": [91, 168, 137, 279], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"right_descent_support_table\", \"box\": [219, 165, 272, 280], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"bowl_visible_geometry\", \"box\": [283, 172, 456, 346], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"stove_visible_geometry\", \"box\": [0, 366, 242, 632], \"stride\": 6}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"plate_visible_geometry\", \"box\": [313, 0, 510, 158], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"bottle_visible_geometry\", \"box\": [401, 375, 482, 457], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 19406,
+    "output_tokens": 2246,
+    "output_tokens_details": {
+      "reasoning_tokens": 1538
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18dfd-f2ec-7ec0-b532-e2f7fc1011cb",
+    "turn_ids": [
+      "01a18dfd-f2f2-72e1-9e84-3c69f61b6625"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

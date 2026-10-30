@@ -1,0 +1,107 @@
+{
+  "index": 39,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.progress",
+      {
+        "phase": "high_observation_alignment",
+        "prior_outcome": "Measured width, finger/table clearance and side-overlap margins do not support this pinch.",
+        "entry_frame": 0,
+        "actions": [
+          {
+            "phase": "high_observation_alignment",
+            "before_frame": 0,
+            "after_frame": 45,
+            "actual_native_steps": 45,
+            "before_tcp": [
+              -0.2071984982582204,
+              -0.002684108235936964,
+              1.1833957456431763
+            ],
+            "after_tcp": [
+              -0.054976695117082267,
+              0.14336463488325185,
+              1.1839033316440388
+            ],
+            "status": "reached",
+            "lease_calls": 15
+          }
+        ],
+        "bowl": {
+          "world_m": [
+            -0.08588048565662317,
+            0.00813503036303026,
+            0.9062501543075401
+          ],
+          "depth_m": 0.3669706881046295,
+          "frame_id": 0,
+          "pixel": [
+            369,
+            266
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "last_receipt": {
+          "decision": 14,
+          "choices": {
+            "x": "positive",
+            "y": "positive",
+            "z": "positive",
+            "rx": "hold",
+            "ry": "hold",
+            "rz": "hold",
+            "gripper": "keep"
+          },
+          "action": [
+            0.11373926756279569,
+            0.04762800072816978,
+            0.017432599264370685,
+            0.0,
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "before": [
+            -0.06201423479142988,
+            0.14028776863937703,
+            1.182040269495023
+          ],
+          "after": [
+            -0.054976695117082267,
+            0.14336463488325185,
+            1.1839033316440388
+          ],
+          "target_tcp": [
+            -0.05326506036352252,
+            0.1439514610030824,
+            1.1833812386692053
+          ],
+          "acknowledged_steps": 3,
+          "native_steps": 45,
+          "frame_id": 45,
+          "status": "reached",
+          "position_error_m": 0.0018832523725936,
+          "rotation_error_rad": 0.0053096266095272494,
+          "lease_calls": 15
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 45,
+  "response": {
+    "result": {
+      "key": "secure.progress",
+      "frame_id": 45,
+      "method_number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "bytes": 1388,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 45
+}

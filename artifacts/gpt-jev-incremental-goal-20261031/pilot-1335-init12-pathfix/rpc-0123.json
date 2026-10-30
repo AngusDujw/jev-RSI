@@ -1,0 +1,318 @@
+{
+  "index": 123,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Assess the fresh vertical-test EFFECT. Identify the SAME cream cheese carton as between the fingers with a visible table gap, left on the table, slipped, or unknown. Describe its visible extent relative to the fingers. Request m0,m1 at EXACTLY the baseline physical print identities if independently recognizable in either camera; never substitute stationary projections or different marks. A quality-checked same-surface patch is the alternative, so no full perimeter is required. Request bowl at the currently visible interior center of the same patterned upright bowl if depth-valid; this is only a location, not an opening-fit certificate."
+    ],
+    "kwargs": {
+      "context": {
+        "baseline": {
+          "state": {
+            "frame_id": 204,
+            "native_steps": 204,
+            "budgets": {
+              "gpt_remaining": 28,
+              "jev_remaining": 132,
+              "native_steps_remaining": 396,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.05136432922332046,
+              0.14558201959995187,
+              0.916903782196332
+            ],
+            "tcp_quaternion_xyzw": [
+              0.999966122008228,
+              0.00806063490261616,
+              0.001470482442732167,
+              0.0007865635246013741
+            ],
+            "gripper_qpos_m": [
+              0.021101575103749465,
+              -0.02094458353054345
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                1.2619670001611655e-07,
+                7.844719492198018e-05,
+                -0.003600266784950618
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000018470121093,
+                0.057046164227753215,
+                0.016000011610542982
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010494690680985751,
+                -0.047348011805315816,
+                -0.04446857695944974
+              ],
+              "finger_high_offset_tool_m": [
+                0.010494928777267293,
+                0.0475049155628488,
+                0.009248773533456503
+              ]
+            }
+          },
+          "observation": {
+            "frame_id": 204,
+            "parameters": {
+              "candidate": "supported_vertical_test",
+              "identity": "same_carton",
+              "mark_ids": [
+                "m0: Center of the pale oval enclosed by the left inward curl of the decorative initial capital C in the Cream logo.",
+                "m1: Center of the pale oval enclosed by the distinct right terminal curl of the same initial capital C."
+              ],
+              "marks_clear": true
+            },
+            "points": {
+              "m0": {
+                "world_m": [
+                  -0.023174193642742674,
+                  0.1518026567791886,
+                  0.9178280482571153
+                ],
+                "depth_m": 0.09614963829517365,
+                "frame_id": 204,
+                "pixel": [
+                  354,
+                  497
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "m1": {
+                "world_m": [
+                  -0.023560400602223405,
+                  0.1429642846349667,
+                  0.9180493444330874
+                ],
+                "depth_m": 0.09594089537858963,
+                "frame_id": 204,
+                "pixel": [
+                  400,
+                  500
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              }
+            },
+            "measurement_errors": []
+          },
+          "mark_ids": [
+            "m0: Center of the pale oval enclosed by the left inward curl of the decorative initial capital C in the Cream logo.",
+            "m1: Center of the pale oval enclosed by the distinct right terminal curl of the same initial capital C."
+          ],
+          "landmarks_world_m": [
+            [
+              -0.023174193642742674,
+              0.1518026567791886,
+              0.9178280482571153
+            ],
+            [
+              -0.023560400602223405,
+              0.1429642846349667,
+              0.9180493444330874
+            ]
+          ],
+          "landmark_uncertainty_m": 0.001,
+          "tracker_identity": {
+            "handle": "patch_0",
+            "identity": "Cream cheese carton top-label surface only",
+            "camera": "robot0_eye_in_hand",
+            "polygon": [
+              [
+                340.98,
+                437.89
+              ],
+              [
+                420.18,
+                437.16999999999996
+              ],
+              [
+                418.73999999999995,
+                593.41
+              ],
+              [
+                338.1,
+                590.53
+              ]
+            ],
+            "reference_frame_id": 96,
+            "geometry_key": "secure.geometry/precontact"
+          },
+          "transform_initial_to_baseline": [
+            [
+              0.9999911642194603,
+              -0.004202720242824982,
+              -9.287394134573669e-05,
+              0.0007664474439546959
+            ],
+            [
+              0.0042033495577156466,
+              0.9999562573286993,
+              0.00835555394192677,
+              -0.006576780526061643
+            ],
+            [
+              5.775382309969804e-05,
+              -0.008355870495726123,
+              0.9999650874369338,
+              0.0013286917400113785
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "tracking_uncertainty_m": 0.0015
+        },
+        "actual_after_state": {
+          "frame_id": 234,
+          "native_steps": 234,
+          "budgets": {
+            "gpt_remaining": 28,
+            "jev_remaining": 122,
+            "native_steps_remaining": 366,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.052079271964960185,
+            0.14630321205232666,
+            0.9710701462042386
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999711545227261,
+            0.007398647746313991,
+            0.0014026799739744358,
+            0.0009912733744994022
+          ],
+          "gripper_qpos_m": [
+            0.02118506207827258,
+            -0.02103588604034721
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -2.292144540231439e-08,
+              7.82225649129508e-05,
+              -0.0036159517280184537
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600006253476978,
+              0.05722097822546397,
+              0.016000104394923907
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010494778527086817,
+              -0.04743569275439586,
+              -0.04448430604001023
+            ],
+            "finger_high_offset_tool_m": [
+              0.010494816254676454,
+              0.0475920311458213,
+              0.009233138901146937
+            ]
+          }
+        },
+        "tracking_quality": {
+          "status": "tracked",
+          "frame_id": 234,
+          "reason": ""
+        }
+      },
+      "fields": {
+        "identity": [
+          "same_carton",
+          "unknown"
+        ],
+        "effect": [
+          "held_with_table_gap",
+          "on_table",
+          "slipped",
+          "unknown"
+        ],
+        "marks_clear": "boolean",
+        "visible_extent": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "bowl_identity": [
+          "same_upright_bowl",
+          "unknown"
+        ]
+      }
+    }
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The same Cream carton has risen with the gripper relative to the stationary bowl and table. Its visible lower edge is above the tabletop, and its label remains similarly positioned between the fingers in both wrist images; this supports retention, not merely commanded closure. m0 and m1 identify the same two pale oval centers inside the initial capital C, independently recognizable in the current image. The bowl point selects visible patterned interior surface for current depth sampling, not an opening-fit certificate. Placement is not complete.",
+      "parameters": {
+        "identity": "same_carton",
+        "effect": "held_with_table_gap",
+        "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+        "marks_clear": true,
+        "bowl_identity": "same_upright_bowl"
+      },
+      "points": {
+        "m0": {
+          "world_m": [
+            -0.02388344034935627,
+            0.15324916499687996,
+            0.9720418962709287
+          ],
+          "depth_m": 0.0961100310087204,
+          "frame_id": 234,
+          "pixel": [
+            350,
+            497
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "m1": {
+          "world_m": [
+            -0.024295033657067682,
+            0.1444115917643187,
+            0.9722059651984021
+          ],
+          "depth_m": 0.09596215188503265,
+          "frame_id": 234,
+          "pixel": [
+            396,
+            500
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "bowl": {
+          "world_m": [
+            -0.12172726021026437,
+            0.005641009307502743,
+            0.9119547217558058
+          ],
+          "depth_m": 1.0459085702896118,
+          "frame_id": 234,
+          "pixel": [
+            389,
+            431
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 234
+    }
+  },
+  "frame_after": 234
+}

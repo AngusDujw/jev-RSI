@@ -1,0 +1,16 @@
+{
+  "action": "advance",
+  "evidence": [
+    "The current stage returned stage_complete at frame 234.",
+    "Current images show the cream cheese carton between the fingers, visibly separated from the table; its near portion is occluded by the gripper.",
+    "The same identified carton landmarks rose approximately 54 mm from frame 204 to frame 234, matching the acknowledged hand lift.",
+    "The upright bowl has a current interior depth measurement, but opening fit and transfer clearance are not established.",
+    "The carton remains outside the bowl and held by the gripper; no transfer or release was acknowledged."
+  ],
+  "invalidated_assumptions": [],
+  "plan_valid": "yes",
+  "reason": "Independent object motion and visible table separation support successful acquisition. The placement stage remains appropriate, with fresh package extent, bowl opening and relevant clearance assessment still required before transfer. Overall placement is not complete.",
+  "recovery_available": "yes",
+  "stage_satisfied": "yes",
+  "task_satisfied": "no"
+}

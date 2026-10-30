@@ -450,19 +450,570 @@
         "stage_satisfied": "no",
         "task_satisfied": "no"
       }
+    },
+    {
+      "update": 2,
+      "stage": "secure",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 234,
+      "trigger": "stage_returned",
+      "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+      "outcome": {
+        "stage_status": "stage_complete",
+        "reason": "Fresh carton surface motion follows the actual hand lift, and images show table separation. Gripper remains closed.",
+        "evidence": {
+          "baseline_frame": 204,
+          "current_frame": 234,
+          "measurement_method": "quality_checked_same_top_patch",
+          "actual_hand_translation_m": [
+            -0.000714942741639725,
+            0.0007211924523747859,
+            0.05416636400790664
+          ],
+          "observed_surface_translation_m": [
+            -0.0007165439435913546,
+            0.001022067293146609,
+            0.0541973115422472
+          ],
+          "attachment_error_m": 0.0031158174404211448,
+          "combined_uncertainty_m": 0.0030811388300841895,
+          "attachment_allowance_m": 0.009243416490252569,
+          "actual_lease_status": "reached",
+          "last_receipt": {
+            "decision": 77,
+            "choices": {
+              "x": "hold",
+              "y": "negative",
+              "z": "positive",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "close"
+            },
+            "action": [
+              0.0,
+              -0.01206903055219083,
+              0.03264461573677402,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "before": [
+              -0.05205914320698372,
+              0.146510406565505,
+              0.9693926579088878
+            ],
+            "after": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "target_tcp": [
+              -0.05136432922332046,
+              0.14558201959995187,
+              0.971903782196332
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 234,
+            "frame_id": 234,
+            "status": "reached",
+            "position_error_m": 0.0013138533573040954,
+            "rotation_error_rad": 0.0013924879005699931,
+            "lease_calls": 10
+          },
+          "fresh_effect": {
+            "identity": "same_carton",
+            "effect": "held_with_table_gap",
+            "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+            "marks_clear": true,
+            "bowl_identity": "same_upright_bowl"
+          },
+          "current_surface_samples_world_m": [
+            [
+              -0.03351960684557449,
+              0.14841205603380703,
+              0.9722079534138893
+            ],
+            [
+              -0.03351960684557449,
+              0.14841205603380703,
+              0.9722079534138893
+            ],
+            [
+              -0.05106160834645084,
+              0.1473227081098403,
+              0.9723136845999305
+            ],
+            [
+              -0.03558423843212699,
+              0.1592543972730769,
+              0.9720861531986544
+            ],
+            [
+              -0.03370288979144458,
+              0.14489856628464687,
+              0.9722953224456297
+            ],
+            [
+              -0.030452965701230298,
+              0.1423002513357016,
+              0.9723224863387726
+            ]
+          ],
+          "current_state": {
+            "frame_id": 234,
+            "native_steps": 234,
+            "budgets": {
+              "gpt_remaining": 28,
+              "jev_remaining": 122,
+              "native_steps_remaining": 366,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999711545227261,
+              0.007398647746313991,
+              0.0014026799739744358,
+              0.0009912733744994022
+            ],
+            "gripper_qpos_m": [
+              0.02118506207827258,
+              -0.02103588604034721
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -2.292144540231439e-08,
+                7.82225649129508e-05,
+                -0.0036159517280184537
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600006253476978,
+                0.05722097822546397,
+                0.016000104394923907
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010494778527086817,
+                -0.04743569275439586,
+                -0.04448430604001023
+              ],
+              "finger_high_offset_tool_m": [
+                0.010494816254676454,
+                0.0475920311458213,
+                0.009233138901146937
+              ]
+            }
+          }
+        },
+        "completion_proposed": false,
+        "handoff": {
+          "checkpoint_keys": [
+            "secure.measurements",
+            "secure.progress",
+            "secure.geometry",
+            "secure.observations",
+            "secure.tracker",
+            "secure.local",
+            "secure.resume",
+            "secure.baseline",
+            "secure.effect",
+            "secure.retention"
+          ],
+          "references": {
+            "secure.local": "Fresh actual-pose depth, boundary selections, uncertainty and closure margins.",
+            "secure.baseline": "Postclosure surface identities, hand state and optional persistent patch transform.",
+            "secure.effect": "Fresh postlift review and valid depth samples.",
+            "secure.retention": "Object motion compared with actual whole-lift hand motion.",
+            "secure.resume": "Acknowledged repair actions and terminal state.",
+            "secure.tracker": "Historical same-carton top patch, creation ROI and reference frame; not a current detection."
+          },
+          "current_state": {
+            "frame_id": 234,
+            "native_steps": 234,
+            "budgets": {
+              "gpt_remaining": 27,
+              "jev_remaining": 122,
+              "native_steps_remaining": 366,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999711545227261,
+              0.007398647746313991,
+              0.0014026799739744358,
+              0.0009912733744994022
+            ],
+            "gripper_qpos_m": [
+              0.02118506207827258,
+              -0.02103588604034721
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -2.292144540231439e-08,
+                7.82225649129508e-05,
+                -0.0036159517280184537
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600006253476978,
+                0.05722097822546397,
+                0.016000104394923907
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010494778527086817,
+                -0.04743569275439586,
+                -0.04448430604001023
+              ],
+              "finger_high_offset_tool_m": [
+                0.010494816254676454,
+                0.0475920311458213,
+                0.009233138901146937
+              ]
+            }
+          },
+          "retention_established": true,
+          "bowl_reference": {
+            "world_m": [
+              -0.12172726021026437,
+              0.005641009307502743,
+              0.9119547217558058
+            ],
+            "depth_m": 1.0459085702896118,
+            "frame_id": 234,
+            "pixel": [
+              389,
+              431
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "bowl_reference_is_current": true,
+          "bowl_measurement_gap": null,
+          "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+          "frames": "World metres; tool-to-world xyzw quaternions. All observations retain camera and frame IDs; checkpoint receipts supply source/method provenance.",
+          "assumptions": [
+            "No transfer, opening or release was commanded by this repair. Preserve actual gripper state.",
+            "Original frame-96 geometry and frame-0 bowl reference remain historical. Use the bowl reference frame, not its presence, to determine freshness.",
+            "Local carton top and parallel sides were checked only for this pinch, not hidden clearance or full reconstruction.",
+            "Reobserve bowl opening, package extent and transfer corridor before the next stage; a top patch does not measure hidden faces."
+          ]
+        }
+      },
+      "decision": {
+        "action": "advance",
+        "evidence": [
+          "The current stage returned stage_complete at frame 234.",
+          "Current images show the cream cheese carton between the fingers, visibly separated from the table; its near portion is occluded by the gripper.",
+          "The same identified carton landmarks rose approximately 54 mm from frame 204 to frame 234, matching the acknowledged hand lift.",
+          "The upright bowl has a current interior depth measurement, but opening fit and transfer clearance are not established.",
+          "The carton remains outside the bowl and held by the gripper; no transfer or release was acknowledged."
+        ],
+        "invalidated_assumptions": [],
+        "plan_valid": "yes",
+        "reason": "Independent object motion and visible table separation support successful acquisition. The placement stage remains appropriate, with fresh package extent, bowl opening and relevant clearance assessment still required before transfer. Overall placement is not complete.",
+        "recovery_available": "yes",
+        "stage_satisfied": "yes",
+        "task_satisfied": "no"
+      }
     }
   ],
-  "completed": [],
+  "completed": [
+    {
+      "update": 2,
+      "stage": "secure",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 234,
+      "trigger": "stage_returned",
+      "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+      "outcome": {
+        "stage_status": "stage_complete",
+        "reason": "Fresh carton surface motion follows the actual hand lift, and images show table separation. Gripper remains closed.",
+        "evidence": {
+          "baseline_frame": 204,
+          "current_frame": 234,
+          "measurement_method": "quality_checked_same_top_patch",
+          "actual_hand_translation_m": [
+            -0.000714942741639725,
+            0.0007211924523747859,
+            0.05416636400790664
+          ],
+          "observed_surface_translation_m": [
+            -0.0007165439435913546,
+            0.001022067293146609,
+            0.0541973115422472
+          ],
+          "attachment_error_m": 0.0031158174404211448,
+          "combined_uncertainty_m": 0.0030811388300841895,
+          "attachment_allowance_m": 0.009243416490252569,
+          "actual_lease_status": "reached",
+          "last_receipt": {
+            "decision": 77,
+            "choices": {
+              "x": "hold",
+              "y": "negative",
+              "z": "positive",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "close"
+            },
+            "action": [
+              0.0,
+              -0.01206903055219083,
+              0.03264461573677402,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "before": [
+              -0.05205914320698372,
+              0.146510406565505,
+              0.9693926579088878
+            ],
+            "after": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "target_tcp": [
+              -0.05136432922332046,
+              0.14558201959995187,
+              0.971903782196332
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 234,
+            "frame_id": 234,
+            "status": "reached",
+            "position_error_m": 0.0013138533573040954,
+            "rotation_error_rad": 0.0013924879005699931,
+            "lease_calls": 10
+          },
+          "fresh_effect": {
+            "identity": "same_carton",
+            "effect": "held_with_table_gap",
+            "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+            "marks_clear": true,
+            "bowl_identity": "same_upright_bowl"
+          },
+          "current_surface_samples_world_m": [
+            [
+              -0.03351960684557449,
+              0.14841205603380703,
+              0.9722079534138893
+            ],
+            [
+              -0.03351960684557449,
+              0.14841205603380703,
+              0.9722079534138893
+            ],
+            [
+              -0.05106160834645084,
+              0.1473227081098403,
+              0.9723136845999305
+            ],
+            [
+              -0.03558423843212699,
+              0.1592543972730769,
+              0.9720861531986544
+            ],
+            [
+              -0.03370288979144458,
+              0.14489856628464687,
+              0.9722953224456297
+            ],
+            [
+              -0.030452965701230298,
+              0.1423002513357016,
+              0.9723224863387726
+            ]
+          ],
+          "current_state": {
+            "frame_id": 234,
+            "native_steps": 234,
+            "budgets": {
+              "gpt_remaining": 28,
+              "jev_remaining": 122,
+              "native_steps_remaining": 366,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999711545227261,
+              0.007398647746313991,
+              0.0014026799739744358,
+              0.0009912733744994022
+            ],
+            "gripper_qpos_m": [
+              0.02118506207827258,
+              -0.02103588604034721
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -2.292144540231439e-08,
+                7.82225649129508e-05,
+                -0.0036159517280184537
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600006253476978,
+                0.05722097822546397,
+                0.016000104394923907
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010494778527086817,
+                -0.04743569275439586,
+                -0.04448430604001023
+              ],
+              "finger_high_offset_tool_m": [
+                0.010494816254676454,
+                0.0475920311458213,
+                0.009233138901146937
+              ]
+            }
+          }
+        },
+        "completion_proposed": false,
+        "handoff": {
+          "checkpoint_keys": [
+            "secure.measurements",
+            "secure.progress",
+            "secure.geometry",
+            "secure.observations",
+            "secure.tracker",
+            "secure.local",
+            "secure.resume",
+            "secure.baseline",
+            "secure.effect",
+            "secure.retention"
+          ],
+          "references": {
+            "secure.local": "Fresh actual-pose depth, boundary selections, uncertainty and closure margins.",
+            "secure.baseline": "Postclosure surface identities, hand state and optional persistent patch transform.",
+            "secure.effect": "Fresh postlift review and valid depth samples.",
+            "secure.retention": "Object motion compared with actual whole-lift hand motion.",
+            "secure.resume": "Acknowledged repair actions and terminal state.",
+            "secure.tracker": "Historical same-carton top patch, creation ROI and reference frame; not a current detection."
+          },
+          "current_state": {
+            "frame_id": 234,
+            "native_steps": 234,
+            "budgets": {
+              "gpt_remaining": 27,
+              "jev_remaining": 122,
+              "native_steps_remaining": 366,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999711545227261,
+              0.007398647746313991,
+              0.0014026799739744358,
+              0.0009912733744994022
+            ],
+            "gripper_qpos_m": [
+              0.02118506207827258,
+              -0.02103588604034721
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -2.292144540231439e-08,
+                7.82225649129508e-05,
+                -0.0036159517280184537
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600006253476978,
+                0.05722097822546397,
+                0.016000104394923907
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010494778527086817,
+                -0.04743569275439586,
+                -0.04448430604001023
+              ],
+              "finger_high_offset_tool_m": [
+                0.010494816254676454,
+                0.0475920311458213,
+                0.009233138901146937
+              ]
+            }
+          },
+          "retention_established": true,
+          "bowl_reference": {
+            "world_m": [
+              -0.12172726021026437,
+              0.005641009307502743,
+              0.9119547217558058
+            ],
+            "depth_m": 1.0459085702896118,
+            "frame_id": 234,
+            "pixel": [
+              389,
+              431
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "bowl_reference_is_current": true,
+          "bowl_measurement_gap": null,
+          "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+          "frames": "World metres; tool-to-world xyzw quaternions. All observations retain camera and frame IDs; checkpoint receipts supply source/method provenance.",
+          "assumptions": [
+            "No transfer, opening or release was commanded by this repair. Preserve actual gripper state.",
+            "Original frame-96 geometry and frame-0 bowl reference remain historical. Use the bowl reference frame, not its presence, to determine freshness.",
+            "Local carton top and parallel sides were checked only for this pinch, not hidden clearance or full reconstruction.",
+            "Reobserve bowl opening, package extent and transfer corridor before the next stage; a top patch does not measure hidden faces."
+          ]
+        }
+      },
+      "decision": {
+        "action": "advance",
+        "evidence": [
+          "The current stage returned stage_complete at frame 234.",
+          "Current images show the cream cheese carton between the fingers, visibly separated from the table; its near portion is occluded by the gripper.",
+          "The same identified carton landmarks rose approximately 54 mm from frame 204 to frame 234, matching the acknowledged hand lift.",
+          "The upright bowl has a current interior depth measurement, but opening fit and transfer clearance are not established.",
+          "The carton remains outside the bowl and held by the gripper; no transfer or release was acknowledged."
+        ],
+        "invalidated_assumptions": [],
+        "plan_valid": "yes",
+        "reason": "Independent object motion and visible table separation support successful acquisition. The placement stage remains appropriate, with fresh package extent, bowl opening and relevant clearance assessment still required before transfer. Overall placement is not complete.",
+        "recovery_available": "yes",
+        "stage_satisfied": "yes",
+        "task_satisfied": "no"
+      }
+    }
+  ],
   "current_stage": {
     "plan_revision": 0,
-    "index": 0,
+    "index": 1,
     "definition": {
-      "id": "secure",
-      "objective": "Acquire the cream cheese package and establish a retained grasp clear of the table.",
-      "entry_evidence": "Frame 0 shows the blue cream cheese package separate from the patterned bowl; the robot reports an open gripper and no prior execution.",
-      "success_evidence": "Fresh images and depth show the package separated from the table and moving with the gripper rather than remaining at its original location.",
-      "handoff_requirements": "Provide current evidence of package retention, its visible extent relative to the fingers, and the bowl location. Resolve uncertain grasp clearance with another attainable view or depth observation rather than assuming free space.",
-      "replan_conditions": "The package shifts, slips, remains on the table, or lacks a supported grasp approach. Use the actual resulting state for any recovery."
+      "id": "place",
+      "objective": "Transfer the retained package into the bowl and release it without displacing or overturning the bowl.",
+      "entry_evidence": "Fresh evidence confirms the package is held clear of the table. Current observations establish the bowl opening and relevant surrounding obstacles.",
+      "success_evidence": "Images show the released package inside the bowl and no longer retained by the fingers, while the bowl remains upright.",
+      "handoff_requirements": "Establish package-to-opening fit and relevant motion clearance from current RGB-D evidence; obtain an alternate attainable view if occlusion prevents assessment. Provide post-release observations and the actual gripper and object state.",
+      "replan_conditions": "Retention is lost, fit or clearance remains unresolved, the bowl moves, or the package lands outside or on the rim. Reassess from fresh observations without repeating a completed pickup or release."
     }
   }
 }

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-f387a8e0-f581-40c2-b13b-a831512d6722",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-f387a8e0-f581-40c2-b13b-a831512d6722",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Current images show the cream cheese package lying on the table outside the upright bowl.\", \"Public state reports an open gripper, zero native steps, and no acknowledged motion; retention is not established.\", \"The stage returned blocked after rejecting one pinch candidate using estimated dimensions and clearance margins.\"], \"invalidated_assumptions\": [\"The selected pinch geometry has sufficient finger/table clearance and side overlap.\"], \"plan_valid\": \"yes\", \"reason\": \"The secure subgoal remains appropriate, but the local grasp method needs correction. One rejected candidate does not establish global infeasibility. Additional sidewall and table measurements or an alternate attainable view can support reassessing grasp geometry without arbitrarily reducing margins. No physical actions require undoing.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 26541,
+    "output_tokens": 494,
+    "output_tokens_details": {
+      "reasoning_tokens": 240
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18dff-70d6-73a1-a05e-23a39ba4f4fc",
+    "turn_ids": [
+      "01a18dff-70de-7ab1-84b6-c412a7cd2aba"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

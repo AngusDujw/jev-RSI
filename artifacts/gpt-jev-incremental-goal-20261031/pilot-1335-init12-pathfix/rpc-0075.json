@@ -1,0 +1,49 @@
+{
+  "index": 75,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "secure.tracker"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 192,
+  "response": {
+    "result": {
+      "key": "secure.tracker",
+      "frame_id": 96,
+      "method_number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "bytes": 291,
+      "value": {
+        "handle": "patch_0",
+        "identity": "Cream cheese carton top-label surface only",
+        "camera": "robot0_eye_in_hand",
+        "polygon": [
+          [
+            340.98,
+            437.89
+          ],
+          [
+            420.18,
+            437.16999999999996
+          ],
+          [
+            418.73999999999995,
+            593.41
+          ],
+          [
+            338.1,
+            590.53
+          ]
+        ],
+        "reference_frame_id": 96,
+        "geometry_key": "secure.geometry/precontact"
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 192
+}

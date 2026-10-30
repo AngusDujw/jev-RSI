@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-6f3106b9-a775-4927-93f5-7f8ac867e347",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-6f3106b9-a775-4927-93f5-7f8ac867e347",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 192 shows the cream cheese carton on the table outside the bowl, with open fingers beside it; no retained lift is visible.\", \"Acknowledged execution shows alignment and open-finger descent, not closure or a retention test.\", \"The descent exhausted its lease with 1.72 mm position error against a 0.75 mm tolerance. The last five acknowledged controls moved the TCP only about 0.12 mm in total.\", \"The stage returned blocked, and live continuation is unavailable.\", \"The grasp measurements are from frame 96 and the bowl reference is from frame 0; neither establishes current clearance or retention.\"], \"invalidated_assumptions\": [\"The unchanged descent method reaches the modeled pinch pose within the required tolerance.\"], \"plan_valid\": \"yes\", \"reason\": \"Acquisition remains the appropriate subgoal, but the near-stalled approach needs local correction. Fresh measurements of carton side overlap and finger/table clearance at the actual pose can distinguish a usable pose from a candidate needing adjustment. The cause of slow motion is unresolved, not confirmed contact. Do not repeat the same descent or relax margins merely to force progress; preserve the executed approach and current open-gripper state.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 41630,
+    "output_tokens": 845,
+    "output_tokens_details": {
+      "reasoning_tokens": 501
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e18-7c7d-71a2-9b4e-3dc8a9330354",
+    "turn_ids": [
+      "01a18e18-7c83-79b3-9477-c3bf7f4820cc"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

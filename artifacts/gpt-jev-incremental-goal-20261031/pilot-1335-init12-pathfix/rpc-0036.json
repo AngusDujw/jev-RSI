@@ -1,0 +1,45 @@
+{
+  "index": 36,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.progress",
+      {
+        "phase": "high_observation_alignment",
+        "prior_outcome": "Measured width, finger/table clearance and side-overlap margins do not support this pinch.",
+        "entry_frame": 0,
+        "actions": [],
+        "bowl": {
+          "world_m": [
+            -0.08588048565662317,
+            0.00813503036303026,
+            0.9062501543075401
+          ],
+          "depth_m": 0.3669706881046295,
+          "frame_id": 0,
+          "pixel": [
+            369,
+            266
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "secure.progress",
+      "frame_id": 0,
+      "method_number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "bytes": 416,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

@@ -1,0 +1,16 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Current images show the cream cheese package lying on the table outside the upright bowl.",
+    "Public state reports an open gripper, zero native steps, and no acknowledged motion; retention is not established.",
+    "The stage returned blocked after rejecting one pinch candidate using estimated dimensions and clearance margins."
+  ],
+  "invalidated_assumptions": [
+    "The selected pinch geometry has sufficient finger/table clearance and side overlap."
+  ],
+  "plan_valid": "yes",
+  "reason": "The secure subgoal remains appropriate, but the local grasp method needs correction. One rejected candidate does not establish global infeasibility. Additional sidewall and table measurements or an alternate attainable view can support reassessing grasp geometry without arbitrarily reducing margins. No physical actions require undoing.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

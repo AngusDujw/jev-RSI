@@ -699,3 +699,5 @@
 【Agent @Codex】【2026-10-31】[EXP047](LOGS/2026-W44.md#exp-2026w44-047)实现正常切片live继续：实际host+受限worker替身试验1builder/1worker/2次监督continue/5独立控制，6个负向/预算场景通过；[EXP046](LOGS/2026-W44.md#exp-2026w44-046)限制剩余计划的最低调用成本。尚无新版真实物理结果，goal保持active；后续固定版本实测，保留旧负例，成功后按预声明重复和跨初态验证。
 
 【Agent @Codex】【2026-10-31】[EXP050](LOGS/2026-W44.md#exp-2026w44-050)原样旧成功源当前复用79Jev/237步，程序通过抬升保持后因搬运观测连续stride3非法而退出，828.980秒/nativefalse；来源/派发审计通过，0源码修订。它支持旧方法可执行抓取，不支持新版冷生成可靠性。[EXP051](LOGS/2026-W44.md#exp-2026w44-051)补数值边界反馈和续接最近错误，11项离线检查通过但尚无真实效果；当前分阶段pilot继续冻结运行，负例不覆盖。
+
+【Agent @Codex】【2026-10-31】[EXP048](LOGS/2026-W44.md#exp-2026w44-048)冻结c8冷pilot经两次局部修订，在78真实Jev/234步后secure返回完成，随后监督advance到place；手与物体上升54.166/54.197mm并有当前离桌证据。放置方法此时才生成，物理状态保持；两次切片continue未重生成。仍无LIBERO终局，不能声称可靠成功或提速。保留CIRCLE-1/3收敛约束：本pilot终局后，单独声明下一冻结版本及六例独立冷验证，不覆盖失败。证据见artifacts/gpt-jev-incremental-goal-20261031/secure-stage-evidence.json。

@@ -1,0 +1,217 @@
+{
+  "index": 73,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "secure.progress"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 192,
+  "response": {
+    "result": {
+      "key": "secure.progress",
+      "frame_id": 192,
+      "method_number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "bytes": 3675,
+      "value": {
+        "phase": "single_open_finger_descent",
+        "prior_outcome": "Measured width, finger/table clearance and side-overlap margins do not support this pinch.",
+        "entry_frame": 0,
+        "actions": [
+          {
+            "phase": "high_observation_alignment",
+            "before_frame": 0,
+            "after_frame": 45,
+            "actual_native_steps": 45,
+            "before_tcp": [
+              -0.2071984982582204,
+              -0.002684108235936964,
+              1.1833957456431763
+            ],
+            "after_tcp": [
+              -0.054976695117082267,
+              0.14336463488325185,
+              1.1839033316440388
+            ],
+            "status": "reached",
+            "lease_calls": 15
+          },
+          {
+            "phase": "noncontact_close_view",
+            "before_frame": 45,
+            "after_frame": 96,
+            "actual_native_steps": 51,
+            "before_tcp": [
+              -0.054976695117082267,
+              0.14336463488325185,
+              1.1839033316440388
+            ],
+            "after_tcp": [
+              -0.05444439442004571,
+              0.1428734514285779,
+              1.0058592587817903
+            ],
+            "status": "reached",
+            "lease_calls": 17
+          },
+          {
+            "phase": "single_open_finger_descent",
+            "before_frame": 96,
+            "after_frame": 192,
+            "actual_native_steps": 96,
+            "before_tcp": [
+              -0.05444439442004571,
+              0.1428734514285779,
+              1.0058592587817903
+            ],
+            "after_tcp": [
+              -0.0516940761071097,
+              0.1454607053600719,
+              0.9163560621132343
+            ],
+            "status": "lease_exhausted",
+            "lease_calls": 32
+          }
+        ],
+        "bowl": {
+          "world_m": [
+            -0.08588048565662317,
+            0.00813503036303026,
+            0.9062501543075401
+          ],
+          "depth_m": 0.3669706881046295,
+          "frame_id": 0,
+          "pixel": [
+            369,
+            266
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "last_receipt": {
+          "decision": 63,
+          "choices": {
+            "x": "negative",
+            "y": "negative",
+            "z": "negative",
+            "rx": "hold",
+            "ry": "hold",
+            "rz": "hold",
+            "gripper": "keep"
+          },
+          "action": [
+            -0.010366387453175807,
+            -0.012608840627597095,
+            -0.01569857631075844,
+            0.0,
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "before": [
+            -0.05168854607827787,
+            0.1454711337664037,
+            0.9163726445470974
+          ],
+          "after": [
+            -0.0516940761071097,
+            0.1454607053600719,
+            0.9163560621132343
+          ],
+          "target_tcp": [
+            -0.052485960497752934,
+            0.14450122294889622,
+            0.9151650617539622
+          ],
+          "acknowledged_steps": 3,
+          "native_steps": 192,
+          "frame_id": 192,
+          "status": "lease_exhausted",
+          "position_error_m": 0.0017222570195200863,
+          "rotation_error_rad": 0.0031486919851166704,
+          "lease_calls": 32
+        },
+        "plan": {
+          "target": [
+            -0.05248606156147536,
+            0.14450205243679354,
+            0.9187648031870006
+          ],
+          "quaternion": [
+            0.999973731504942,
+            0.007248192883910781,
+            0.0,
+            0.0
+          ],
+          "lower_pad_z_m": 0.9183591935374911,
+          "upper_pad_z_m": 0.9191704128365102,
+          "feasible_height_interval_m": 0.0008112192990191724,
+          "required_table_gap_m": 0.004,
+          "required_side_overlap_m": 0.005,
+          "finger_pose_budget_m": 0.0015366047205385605,
+          "pad_pose_budget_m": 0.0012381173687868894,
+          "width_along_closure_m": 0.04199930328355739,
+          "open_joint_span_proxy_m": 0.07996479373014413,
+          "supported": true,
+          "scope": "Local observed carton/top/table model and own finger envelope; aperture proxy is not a contact sensor or hidden-clearance certificate."
+        },
+        "terminal_status": "blocked",
+        "reason": "Descent stopped without a contact retry or closure.",
+        "state": {
+          "frame_id": 192,
+          "native_steps": 192,
+          "budgets": {
+            "gpt_remaining": 32,
+            "jev_remaining": 136,
+            "native_steps_remaining": 408,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.0516940761071097,
+            0.1454607053600719,
+            0.9163560621132343
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999664735984628,
+            0.008078528600004131,
+            0.0010181793672277505,
+            0.0008673900448293228
+          ],
+          "gripper_qpos_m": [
+            0.039998091171475084,
+            -0.04000007278503834
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -8.251815934636614e-08,
+              -8.473634581021572e-07,
+              -0.0035997627245979848
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000032094301286,
+              0.09499817114892152,
+              0.016000020960570734
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010494877821424574,
+              -0.06640332099752026,
+              -0.04446807733430203
+            ],
+            "finger_high_offset_tool_m": [
+              0.01049472738250715,
+              0.06640161269661489,
+              0.0092492826004915
+            ]
+          }
+        }
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 192
+}
