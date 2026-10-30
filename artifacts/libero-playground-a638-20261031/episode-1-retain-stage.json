@@ -1,0 +1,70 @@
+{
+  "episode": 1,
+  "phase": "playground",
+  "frame": 195,
+  "method_number": 6,
+  "method_source_sha256": "a931af89dbae7c6522f36af3dee62973675299e61cba8d10ee58cfa858b85e91",
+  "stage": "retain",
+  "supervisor": {
+    "action": "advance",
+    "evidence": [
+      "The current trigger is stage_returned with stage_complete; no live continuation is available.",
+      "Frame 195 views show the cream-cheese package retained between opposed fingers above the table, outside the bowl, with no visible slip or surrounding disturbance.",
+      "From frames 174 to 195, actual hand rise was 49.26 mm and independently reidentified package landmarks rose at least 49.24 mm. Their attachment residual was 0.052 mm against an 8 mm allowance.",
+      "The separate shared-surface-feature comparison agrees, with a 0.212 mm attachment residual and at least 49.24 mm material rise.",
+      "The frame 174 post-close conditional geometry check reported 5.61 mm finger clearance and 3.21 mm pad overlap, exceeding the unchanged 4 mm and 2.5 mm requirements.",
+      "Closure and the differential lift are acknowledged. No bowl placement, release, withdrawal, or settled interior support is established."
+    ],
+    "invalidated_assumptions": [],
+    "plan_valid": "yes",
+    "reason": "Retention success is supported by visible support separation and measured package motion consistent with actual hand motion, not closure or pose convergence alone. Advance to containment planning from the acknowledged held state without replaying acquisition. Preserve the actual gripper command and measurement provenance; current envelope, bowl geometry, attachment, and relevant clearances still require validation before placement actions.",
+    "recovery_available": "yes",
+    "stage_satisfied": "yes",
+    "task_satisfied": "no"
+  },
+  "effect_channels": [
+    {
+      "channel": "shared_direct_surface_features",
+      "count": 32,
+      "attachment_error_m": 0.00021179411556897075,
+      "allowance_m": 0.008,
+      "actual_hand_rise_m": 0.04925859306674274,
+      "minimum_material_rise_m": 0.04923595212448517,
+      "actual_hand_rotation_rad": 0.0016138902818297616,
+      "support_observable": true,
+      "effect_margin_sufficient": true,
+      "contradiction": false,
+      "accepted": true
+    },
+    {
+      "channel": "independently_reidentified_printed_details",
+      "count": 4,
+      "attachment_error_m": 5.1548130737765146e-05,
+      "allowance_m": 0.008,
+      "actual_hand_rise_m": 0.04925859306674274,
+      "minimum_material_rise_m": 0.049243037344503526,
+      "actual_hand_rotation_rad": 0.0016138902818297616,
+      "support_observable": true,
+      "effect_margin_sufficient": true,
+      "contradiction": false,
+      "accepted": true
+    }
+  ],
+  "review": {
+    "identity": "yes",
+    "retained": "yes",
+    "table_gap": "yes",
+    "same_landmarks": "yes",
+    "patch_identity": "yes",
+    "disturbance": "none_observed",
+    "other_view_available": "yes",
+    "expose_up_clear": "yes",
+    "note": "All four baseline details remain visible and depth-safe: n0 outer C uppermost turn, n1 left badge reentrant turn, n2 upper-right badge lobe crown, n3 right badge reentrant turn. Nearly unchanged wrist pixels reflect observed package-hand co-motion, not stationary-world projections. Agentview independently shows the table gap. The local 12 mm upward keep-gripper exposure plus 2 mm reserve appears clear of external obstruction; later transfer is not certified."
+  },
+  "dispatch_audit": {
+    "count": 65,
+    "acknowledged_steps": 195,
+    "passed": true
+  },
+  "scope": "Saved public observation, computed effect and supervisor evidence for retention only; no independent simulator replay, native task success, placement or causal skill benefit established."
+}
