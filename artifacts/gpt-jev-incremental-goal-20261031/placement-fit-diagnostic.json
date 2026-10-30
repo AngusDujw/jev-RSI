@@ -1,0 +1,15 @@
+{
+  "bowl_radius_m": 0.05140323335609669,
+  "carton_horizontal_radius_m": 0.04454805243230864,
+  "carton_uncertainty_m": 0.0036348142724651916,
+  "edge_uncertainty_m": 0.0004,
+  "historical_extent_uncertainty_m": 0.0015,
+  "bowl_uncertainty_m": 0.0024313719624184517,
+  "clearance_m": 0.0007889946889044121,
+  "required_clearance_m": 0.0035,
+  "carton_length_m": 0.07914261644195739,
+  "carton_width_m": 0.041028237497574255,
+  "scope": "Read-only exact saved RPC replay; no model, network or robot call; not fed into active method repair",
+  "rpc_count": 30,
+  "result_reason": "Measured carton-to-inner-opening fit margin is insufficient at the declared uncertainty and 1.5 mm controller tolerance."
+}

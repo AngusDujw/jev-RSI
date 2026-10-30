@@ -220,3 +220,17 @@ revise with valid overall plan and no transfer/release. Current placement repair
 job09522dc0d3f846b6900a4b5c2185cd2e / thread01a18e40-23ff-76d3-b936-1a6bdea87585
 is active. Native task success remains unproven. Preserve
 placement-review-recovery.json and the actual review/decision receipts.
+
+## Placement entry fit diagnosis
+
+An outer-only read-only replay of all30 saved method3 RPCs reproduced the
+entry rejection without model, network or robot calls. Bowl radius51.403mm,
+carton horizontal radius44.548mm, carton uncertainty3.635mm and bowl
+uncertainty2.431mm yield clearance0.789mm, below the source gate3.5mm.
+This rejects the measured candidate, not all feasible placements. No threshold
+was changed and no replay diagnostic was injected into the active repair.
+See placement-fit-diagnostic.json. The computed current carton geometry was
+not checkpointed before this gate failed, so the rejection itself carries less
+numeric detail than the saved measurements; consider preserving numerical gate
+operands before blocked returns in a future generic prompt, without hand-fixing
+this task. Active placement repair09522dc0 remains generating.
