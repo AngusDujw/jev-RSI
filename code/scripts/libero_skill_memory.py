@@ -134,6 +134,89 @@ def load(root, phase, *, suite=None, task_id=None, init_index=None):
     return context, metadata
 
 
+def pack_episode_evidence(directory, summary):
+    """Avoid duplicating full stage histories and per-action robot geometry."""
+    directory = Path(directory)
+    record = dict(episode_id=directory.name,
+        summary={k: v for k, v in summary.items() if k != "result"}, methods=[], events=[])
+    if isinstance(summary.get("result"), dict):
+        record["terminal_program_result"] = {k: summary["result"][k] for k in
+            ("completion_proposed", "hierarchical_termination", "stage_status", "reason")
+            if k in summary["result"]}
+    journal_path = directory / "stage-journal.json"
+    successful_hashes = set()
+    if journal_path.exists():
+        journal = json.loads(journal_path.read_text())
+        events = []
+        for event in journal.get("events", []):
+            event = dict(event)
+            outcome = dict(event.get("outcome") or {})
+            if outcome.get("stage_status") == "stage_complete":
+                successful_hashes.add(event.get("source_sha256"))
+            handoff = outcome.pop("handoff", None)
+            if handoff is not None:
+                outcome["handoff_scope"] = "Omitted duplicate handoff; consult checkpoint/source references."
+            effect = outcome.get("evidence")
+            if isinstance(effect, dict) and isinstance(effect.get("execution"), list):
+                effect = dict(effect)
+                # Keep every authored phase and receipt, but not repeated copies
+                # of the complete robot geometry and budget at each action.
+                effect["execution"] = [{k: v for k, v in item.items() if k not in
+                    ("before_state", "after_state")} if isinstance(item, dict) else item
+                    for item in effect["execution"]]
+                effect["execution_scope"] = "Repeated before_state/after_state omitted; effect measurements retained."
+                outcome["evidence"] = effect
+            event["outcome"] = outcome
+            events.append(event)
+        compact = dict(events=events, plans=journal.get("plans", []),
+            completed=[{k: item.get(k) for k in ("stage", "frame_id", "source_sha256")}
+                       for item in journal.get("completed", [])], termination=journal.get("termination"))
+        record["events"].append(dict(id=journal_path.name, sha256=digest(journal_path.read_bytes()), data=compact))
+    methods = []
+    for path in sorted(directory.glob("method-*.json")):
+        data = json.loads(path.read_text())
+        methods.append(dict(id=path.name, sha256=digest(path.read_bytes()), data=data))
+    source_budget = 90000
+    # Prefer complete demonstrated stage methods, then the latest revision.
+    priority = sorted(range(len(methods)), key=lambda i: (
+        digest(methods[i]["data"].get("source", "").encode()) in successful_hashes, i), reverse=True)
+    for index in priority:
+        data = methods[index]["data"]
+        if "source" not in data:
+            continue
+        source = data["source"]
+        if len(source) <= source_budget:
+            source_budget -= len(source)
+        else:
+            data.pop("source")
+            data["source_omitted"] = dict(sha256=digest(source.encode()), characters=len(source),
+                reason="Complete source exceeds remaining source budget; no truncated code is supplied.")
+    record["methods"] = methods
+    checkpoints = directory / "program-checkpoints.json"
+    if checkpoints.exists():
+        values = json.loads(checkpoints.read_text())
+        compact = {}
+        for key, value in values.items():
+            wire = json.dumps(value, separators=(",", ":"))
+            compact[key] = value if len(wire) <= 8000 else dict(
+                omitted=True, sha256=digest(wire.encode()), characters=len(wire),
+                reason="Large checkpoint; its outcomes and effect evidence remain in the stage journal.")
+        record["events"].append(dict(id=checkpoints.name, sha256=digest(checkpoints.read_bytes()), data=compact))
+    dispatches = sorted(directory.glob("dispatch-*.json"))
+    selected = sorted(set(dispatches[:4] + dispatches[-8:]))
+    record["dispatch_sample"] = [dict(id=p.name, data=json.loads(p.read_text())) for p in selected]
+    record["dispatch_sample_scope"] = dict(total=len(dispatches), included=len(selected),
+        selection="first four and last eight actual dispatch receipts; not a complete trajectory")
+    reviews = []
+    for path in sorted(directory.glob("gpt-*.parsed.json")):
+        data = json.loads(path.read_text())
+        if "source" not in data and path.stat().st_size <= 12000:
+            reviews.append(dict(id=path.name, data=data))
+    record["recent_plans_and_reviews"] = reviews[-12:]
+    record["scope"] = "Selected source and public evidence, with explicit omissions. Full immutable receipts remain archived."
+    return record
+
+
 def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:7921"):
     """Ask local Pro to distill actual Playground receipts into a new revision."""
     # Deferred import avoids a cycle with the episode host's knowledge loader.
@@ -164,32 +247,12 @@ def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:792
             summary_sha256=digest((directory / "summary.json").read_bytes()))
         if entry not in lineage:
             lineage.append(entry)
-        # Preserve program declarations and their actual outcomes, including failures.
-        # Raw credentials, infrastructure paths and evaluator internals are excluded.
-        record = dict(episode_id=directory.name, summary=summary, methods=[], events=[])
-        for path in sorted(directory.glob("method-*.json")):
-            record["methods"].append(dict(id=path.name, data=json.loads(path.read_text())))
-        for name in ("stage-journal.json", "program-checkpoints.json"):
-            path = directory / name
-            if path.exists():
-                record["events"].append(dict(id=name, data=json.loads(path.read_text())))
-        dispatches = sorted(directory.glob("dispatch-*.json"))
-        selected = sorted(set(dispatches[:4] + dispatches[-8:]))
-        record["dispatch_sample"] = [dict(id=p.name, data=json.loads(p.read_text())) for p in selected]
-        record["dispatch_sample_scope"] = dict(total=len(dispatches), included=len(selected),
-            selection="first four and last eight actual dispatch receipts; not a complete trajectory")
-        reviews = []
-        for path in sorted(directory.glob("gpt-*.parsed.json")):
-            data = json.loads(path.read_text())
-            if "source" not in data and path.stat().st_size <= 12000:
-                reviews.append(dict(id=path.name, data=data))
-        record["recent_plans_and_reviews"] = reviews[-12:]
-        evidence.append(record)
+        evidence.append(pack_episode_evidence(directory, summary))
     if not evidence:
         raise ValueError("At least one terminal Playground episode is required")
-    text = json.dumps(dict(previous=previous, playground_evidence=evidence))
+    text = json.dumps(dict(previous=previous, playground_evidence=evidence), separators=(",", ":"))
     english(text)
-    if len(text) > 200000:
+    if len(text) > 300000:
         raise ValueError("Evidence exceeds refinement budget; select a smaller episode batch")
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     with opener.open(bridge+"/", timeout=10) as response:
@@ -212,6 +275,7 @@ def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:792
         "failure/stopping conditions, evidence IDs, and status: hypothesis, scene-specific, or verified. "
         "Verified requires repeated supporting observations; native success alone does not isolate a cause. "
         "Failures must remain visible. Do not present guesses as learned successes. "
+        "Evidence packets explicitly mark omitted or sampled material. Do not infer missing details or treat a sample as a complete trajectory. "
         "Parameterize scene-specific measurements; exclude fixed task IDs, stored coordinates and "
         "hidden evaluation state. A skill guides future fresh synthesis and is not a current observation. "
         "For each skills/<name>.md use YAML frontmatter with name and description. "
