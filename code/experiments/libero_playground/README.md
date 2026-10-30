@@ -72,6 +72,11 @@ receives method files, terminal summaries, stage journals and public checkpoints
    sampled actual dispatches and recent parsed observations, not raw camera images.
    Add selected public observation receipts if diagnosing
 perception failures requires them; never substitute hidden object states.
+When the refinement packet exceeds its character budget, whole method sources
+are selected again with a smaller source allowance, preferring demonstrated
+stage methods. Omitted sources retain hashes and lengths. Observations, failure
+events and prior skills are unchanged; oversized non-source evidence still fails
+explicitly instead of being silently dropped.
 
 The local software check verified10 assertions without real model or physics
 calls. Local `libero` Conda has MuJoCo/robosuite but no importable LIBERO package.

@@ -134,7 +134,7 @@ def load(root, phase, *, suite=None, task_id=None, init_index=None):
     return context, metadata
 
 
-def pack_episode_evidence(directory, summary):
+def pack_episode_evidence(directory, summary, *, source_budget=90000):
     """Avoid duplicating full stage histories and per-action robot geometry."""
     directory = Path(directory)
     record = dict(episode_id=directory.name,
@@ -176,7 +176,6 @@ def pack_episode_evidence(directory, summary):
     for path in sorted(directory.glob("method-*.json")):
         data = json.loads(path.read_text())
         methods.append(dict(id=path.name, sha256=digest(path.read_bytes()), data=data))
-    source_budget = 90000
     # Prefer complete demonstrated stage methods, then the latest revision.
     priority = sorted(range(len(methods)), key=lambda i: (
         digest(methods[i]["data"].get("source", "").encode()) in successful_hashes
@@ -218,6 +217,22 @@ def pack_episode_evidence(directory, summary):
     return record
 
 
+def pack_refinement_evidence(previous, episodes, *, limit=300000):
+    """Fit whole source files around retained observations and failure evidence."""
+    source_budget = 90000
+    while True:
+        evidence = [pack_episode_evidence(directory, summary, source_budget=source_budget)
+                    for directory, summary in episodes]
+        text = json.dumps(dict(previous=previous, playground_evidence=evidence), separators=(",", ":"))
+        if len(text) <= limit:
+            return text
+        if source_budget == 0:
+            raise ValueError("Non-source evidence exceeds refinement budget; select a smaller episode batch")
+        # Repack from immutable receipts: never truncate code or discard outcomes.
+        # The episode packer retains demonstrated methods before other revisions.
+        source_budget = max(0, source_budget - max(1000, (len(text)-limit)//max(1, len(episodes))+1000))
+
+
 def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:7921"):
     """Ask local Pro to distill actual Playground receipts into a new revision."""
     # Deferred import avoids a cycle with the episode host's knowledge loader.
@@ -232,7 +247,7 @@ def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:792
         raise ValueError("Use a new revision directory")
     previous = read_files(source)
     lineage = json.loads((source / "lineage.json").read_text())["episodes"] if (source / "lineage.json").exists() else []
-    evidence = []
+    episode_summaries = []
     for directory in episodes:
         directory = Path(directory)
         protocol = json.loads((directory / "protocol.json").read_text())
@@ -248,13 +263,11 @@ def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:792
             summary_sha256=digest((directory / "summary.json").read_bytes()))
         if entry not in lineage:
             lineage.append(entry)
-        evidence.append(pack_episode_evidence(directory, summary))
-    if not evidence:
+        episode_summaries.append((directory, summary))
+    if not episode_summaries:
         raise ValueError("At least one terminal Playground episode is required")
-    text = json.dumps(dict(previous=previous, playground_evidence=evidence), separators=(",", ":"))
+    text = pack_refinement_evidence(previous, episode_summaries)
     english(text)
-    if len(text) > 300000:
-        raise ValueError("Evidence exceeds refinement budget; select a smaller episode batch")
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     with opener.open(bridge+"/", timeout=10) as response:
         health = json.load(response)
