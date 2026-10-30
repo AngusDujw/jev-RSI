@@ -1,0 +1,30 @@
+{
+  "declared_epoch": 1793383934.132453,
+  "condition": "Frozen reuse diagnostic, not cold generation or staged qualification",
+  "implementation_commit": "c8dedfa8",
+  "server": "company-server-2-ykj",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-incremental-20261031",
+  "case": {
+    "slug": "reference-reuse-1335-init12",
+    "task_id": 1335,
+    "init_index": 12,
+    "seed": 0,
+    "gpu": 5
+  },
+  "source_file": "artifacts/gpt-jev-cold-repro-20261027/method.json",
+  "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54",
+  "source_lines": 197,
+  "source_repairs": 0,
+  "budgets": {
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "wall_limit": null
+  },
+  "model": "local ChatGPT Pro gpt-6-astra/xhigh native-session",
+  "executor": "real authorized jev-1.13.0/official systemone",
+  "evaluation": "Isolated terminal LIBERO; preserve failure and all usage. Run separately from incremental pilot.",
+  "scope": "Exact previously successful source, current frozen runtime and visual review prompt/transport. Not exact historical full-stack reproduction. No stage watchdog in legacy reuse mode. Initial memory empty and observations freshly acquired. No coordinates or previous episode state injected.",
+  "source_acquisition": "Historical 721.191-second generation and original episode costs remain in original success report; not treated as free cold generation.",
+  "purpose": "Determine whether the previously successful operational geometry and feedback remain executable under current observations; do not use this as staged framework success."
+}
