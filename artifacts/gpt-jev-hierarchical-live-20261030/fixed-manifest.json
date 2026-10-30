@@ -1,0 +1,57 @@
+{
+  "implementation_commit": "f4eeb469",
+  "server": "company-server-2-ykj",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-hierarchical-contractfix-20261030",
+  "remote_python": "/home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python",
+  "libero_root": "/home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "account": "Local signed-in ChatGPT Pro; no Platform or caz/z key",
+  "jev": {
+    "model": "jev-1.13.0",
+    "endpoint": "https://api.typesafe.ai/v1/systemone",
+    "authorization": "Previously authorized Jev credential resolved from local OS keyring; no credential transfer to server"
+  },
+  "cases": [
+    {
+      "slug": "comparison-138-init0-contractfix",
+      "task_id": 138,
+      "init_index": 0,
+      "seed": 0,
+      "gpu": 4
+    }
+  ],
+  "condition": "Additional independent cold task138 trial on the contract-failure-routing repair. Same stage prompts, API, account, inference settings and count budgets; no archived source/feedback. Original failed episodes retained and not replaced.",
+  "novelty": "Repeated task138/init0, previously evaluated; no unseen-task claim",
+  "budgets": {
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_stage_updates": 12,
+    "max_plan_revisions": 2,
+    "max_stage_revisions": 3,
+    "stage_control_calls": 24,
+    "stage_policy_steps": 72,
+    "wall_limit": null,
+    "gpt_request_limit": null,
+    "jev_network_budget_s": 900
+  },
+  "evaluation": "Terminal isolated LIBERO native score; keep every admitted failure and separate program proposal; all GPT/Jev requests, retries and usage accounted",
+  "order": "After proxy-only known-task retry terminates, one corrected-version comparison case; no further cases in this batch",
+  "transport": "Persistent native-session Pro adapter and same-job async reconnection; no application total time cutoff",
+  "network": "Explicit existing HTTP(S)_PROXY=http://127.0.0.1:7897; NO_PROXY=127.0.0.1,localhost; separate fixed-relay ledger",
+  "change_scope": "Native schema-exhaustion classification to stage supervision, bounded validation-error metadata and exact length diagnostics. No valid observation coercion or schema relaxation.",
+  "declared_epoch": 1793339126.2685504,
+  "source_sha256": {
+    "code/scripts/run_gpt_jev_program.py": "ae1734ab2bbb149d94c2634e735b8f784b147b9f1c98b0f4ae867eb4318e9bfc",
+    "code/scripts/gpt_jev_stage_protocol.py": "ad551b022f5e8880e27bc5519ff8267fe5e7bbf29dab29b58493c48e48c9553d",
+    "code/prompts/gpt_jev_stage_plan_v1.txt": "3448cb883a356aacc1e9a01639e62687ef6c01acb459d69d4f9e7ab294601f43",
+    "code/prompts/gpt_jev_stage_method_v1.txt": "2824a4209e12a7bac3fdc742c4bfee9230636475cf16796feed437d486984b3e",
+    "code/prompts/gpt_jev_stage_supervisor_v1.txt": "de70d77f8fecaa6f9ca63431fde39733db1816203ed6c7f6730e30d71a90e0cf",
+    "code/prompts/gpt_jev_program_api_v2.md": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a",
+    "baseline/roboicl/reproduction/pro_oauth_bridge.py": "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470",
+    "baseline/roboicl/reproduction/pro_session_client.py": "031effa60a13cab246c0e91cd783fb0d4872e1990a25348dc10f0bec74975040",
+    "baseline/roboicl/reproduction/pro_session_jobs.py": "fa6c7c5a7f5132ca133347ce632496d343b7211e29b65260d282ac77befc3fe3",
+    "code/scripts/gpt_jev_review_contract.py": "69789174cb94a97a7faaa736db1c5d97f011647af8cb2533b47990dcae9f40bf"
+  }
+}
