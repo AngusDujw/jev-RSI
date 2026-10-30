@@ -26,9 +26,9 @@ authorized Jev service; local ChatGPT Pro handles planning and distillation.
    Count refinement requests and their usage separately from episode requests.
 4. Freeze only the resulting skills and lessons with `freeze --source ...
    --output ... --evidence ...`. Supply **all** contributing Playground episodes,
-   including those contributing to earlier revisions. Inspect provenance before
-   admitting the frozen revision. This initial implementation records supplied
-   provenance; it does not automatically prove completeness of that lineage.
+   including those contributing to earlier revisions. Refinement carries a
+   cumulative lineage file, and freeze rejects omitted or changed contributing
+   receipts. This checks recorded provenance, not the scientific validity of a claim.
 5. Run fresh episodes with `--knowledge-phase test --skill-memory <frozen>`.
    Hash verification and an in-memory snapshot prevent later knowledge edits
    from altering a running episode. Overlapping Playground initial states and
@@ -68,12 +68,16 @@ The first implementation supplies file-level integrity and phase separation,
 not an OS sandbox for the outer agent. Skill claims still need evidence review;
 format validation cannot establish physical correctness. Distillation currently
 receives method files, terminal summaries, stage journals and public checkpoints,
-not raw camera images. Add selected public observation receipts if diagnosing
+   sampled actual dispatches and recent parsed observations, not raw camera images.
+   Add selected public observation receipts if diagnosing
 perception failures requires them; never substitute hidden object states.
 
 The local software check verified10 assertions without real model or physics
 calls. Local `libero` Conda has MuJoCo/robosuite but no importable LIBERO package.
-The recorded remote installation is company-server-2-ykj; confirmation of the
-execution server is pending. The reference chat route was denied403. Zotero's
-token note was located without printing credentials. No physical success claim
-is made and no real Playground run has been admitted for this campaign yet.
+The user authorized v4090-t and5880-jump. The latter had an idle GPU and its
+existing LIBERO-plus environment passed actual rendering, so acquisition runs
+there in an independent snapshot. No reboot or driver changes were needed.
+The reference chat route was denied403. Zotero's token note supplied the Jev
+credential without printing it or transferring it to the server. Episode0 was
+admitted with empty learned knowledge and has begun real Pro synthesis.
+No physical success claim is made. See the campaign manifest and EXP-2026W44-049.
