@@ -24,6 +24,7 @@ from gpt_jev_program_worker import validate_source
 from gpt_jev_review_contract import compile_fields, validate_value
 from run_gpt_jev_generic import save, scrub
 from gpt_jev_stage_protocol import KINDS as STAGE_KINDS, StageYield, run_stages, budgeted_plan_schema
+from libero_skill_memory import load as load_skill_memory
 
 
 class PlannerSubmissionFailure(RuntimeError):
@@ -336,6 +337,8 @@ def main():
     p.add_argument("--max-native-steps", type=int, default=600)
     p.add_argument("--max-repairs", type=int, default=2)
     p.add_argument("--method-file", type=Path, help="Reuse an archived GPT-generated method; acquisition cost remains in its original run")
+    p.add_argument("--skill-memory", type=Path, help="Explicit skills/lessons directory; frozen with provenance for Test")
+    p.add_argument("--knowledge-phase", choices=("playground", "test"), default="playground")
     p.add_argument("--revise-archived", action="store_true", help="Ask GPT to revise the archived method using its adjacent summary.json")
     p.add_argument("--staged-design", action="store_true", help="Fresh generation: save a bounded design before materializing the complete method")
     p.add_argument("--method-request-seconds", type=int, choices=(900, 1800, 3600),
@@ -357,6 +360,12 @@ def main():
             1 <= args.stage_policy_steps <= 240):
         p.error("Invalid hierarchical limits")
     repo = Path(__file__).resolve().parents[2]
+    skill_context, skill_metadata = "", None
+    if args.skill_memory:
+        skill_context, skill_metadata = load_skill_memory(args.skill_memory, args.knowledge_phase,
+            suite=args.suite, task_id=args.task_id, init_index=args.init_index)
+    if args.knowledge_phase == "test" and args.method_file:
+        p.error("Test transfers skills/lessons only, not an archived episode method")
     out = args.output.resolve()
     if args.bridge != "http://127.0.0.1:7921" or out.exists() or not out.is_relative_to(repo / "code/runs"):
         p.error("Use a new project code/runs directory and the explicit loopback relay")
@@ -378,6 +387,8 @@ def main():
         p.error("--staged-design is a fresh-generation condition, not archived-method reuse")
     require_typed_reviews = archived_method is None or args.revise_archived
     out.mkdir(parents=True)
+    if skill_metadata is not None:
+        save(out / "skill-memory.json", skill_metadata)
     cache = out / "runtime"
     config = cache / "libero-config"
     config.mkdir(parents=True)
@@ -638,6 +649,8 @@ def main():
         elif kind == "stage_method":
             tool, response_schema = "submit_method", METHOD_SCHEMA
             instructions = stage_prompts["gpt_jev_stage_method_v1.txt"]+"\n\n"+manual
+        if kind in {"method", "design", "stage_plan", "stage_method", "stage_supervisor"}:
+            instructions += skill_context
         tool_definition = dict(type="function", name=tool,
             description="Return a bounded implementation design proposal without executable source" if kind == "design" else
                 "Return the requested executable method, unique method patch, or observation review", parameters=response_schema)
