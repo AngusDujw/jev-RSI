@@ -387,3 +387,11 @@ bridge gpt-jev-incremental-bridge-candidate-20261031, PID937525, candidate-relay
 Existing7921 SSH tunnel retained. Actual native child938713 observed live.
 Candidate manifest/preflight and pilot-1335-init12-candidate preserve evidence.
 Previous pathfix failure remains unchanged; candidate still pending.
+
+## Candidate initial plan delivered
+
+Plan0 delivered in46.490s without reconnect, with three stages: secure,
+position, place_verify. Builder1 request a7c7ce1bad7e4d94a64dc54d3342bb41 /
+native thread01a18eaf-2bb9-7701-ba05-c09339adade5 is generating; actual
+child940522 observed live. No Jev dispatch or native completion yet.
+This is a fresh plan, not the preceding trial source or repaired episode.

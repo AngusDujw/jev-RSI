@@ -1,0 +1,30 @@
+{
+  "explanation": "Plan from frame 0: the cream cheese package is on the counter beside an apparently empty bowl, the gripper is open, and no execution is acknowledged. Three physical subgoals leave budget for observation, verification, and local corrections.",
+  "goal_evidence": "Fresh observations after release, withdrawal, and settling show the cream cheese package resting inside the bowl, with no gripper support and no package portion resting on the counter outside the bowl. Use another view or depth evidence if rim occlusion makes containment ambiguous.",
+  "stages": [
+    {
+      "id": "secure",
+      "objective": "Establish a stable grasp of the cream cheese package clear of the counter.",
+      "entry_evidence": "Frame 0 shows the labeled package separate from the bowl; robot state reports an open gripper and no prior actions.",
+      "success_evidence": "Fresh images show the package lifted from its original support and retained between the fingers, with observed package motion consistent with the gripper rather than merely a closed-gripper command.",
+      "handoff_requirements": "Provide current package, gripper, and bowl observations, evidence of retention, and observed clearance from nearby objects.",
+      "replan_conditions": "If the package shifts, slips, or remains on the counter, use its actual observed state rather than assuming a grasp. If grasp geometry or clearance is uncertain, obtain useful depth or another safe view before contact."
+    },
+    {
+      "id": "position",
+      "objective": "Bring the retained package to a release-ready position over the bowl interior.",
+      "entry_evidence": "Fresh evidence confirms the package is held clear of the counter; the bowl opening and nearby obstacles are observable.",
+      "success_evidence": "Images and depth support that the package remains held and its intended placement fits within the bowl opening, with adequate clearance for the package and fingers from the rim and surrounding objects.",
+      "handoff_requirements": "Provide fresh placement alignment, retention, and rim-clearance evidence sufficient to release without assuming unseen space is free.",
+      "replan_conditions": "If retention, fit, or clearance is doubtful, update the view or local geometry assessment before proceeding. If the package is lost or the bowl moves, replan from their actual locations."
+    },
+    {
+      "id": "place_verify",
+      "objective": "Leave the cream cheese package inside the bowl and assess the completed task after physical settling.",
+      "entry_evidence": "The package is visibly retained at a release-ready position, with current evidence supporting placement inside the bowl.",
+      "success_evidence": "After release and gripper withdrawal, fresh observations show the package settled inside the bowl and independent of the gripper, not perched on the rim or resting outside.",
+      "handoff_requirements": "Report final containment and stability evidence, or explicitly identify unresolved uncertainty or required recovery.",
+      "replan_conditions": "If the package catches on the fingers or rim, falls outside, or destabilizes the bowl, assess the resulting state before recovery. If containment is obscured, obtain a safe alternate view or depth evidence and allow further settling rather than declaring success from gripper opening alone."
+    }
+  ]
+}
