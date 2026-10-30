@@ -1,0 +1,43 @@
+{
+  "scope": "Acknowledged transfer progress; not stage or task success",
+  "method_number": 7,
+  "generation_seconds": 775.2295413829852,
+  "source_lines": 317,
+  "dispatches": 132,
+  "native_steps": 396,
+  "last_event": {
+    "update": 7,
+    "stage": "restage",
+    "plan_revision": 1,
+    "stage_index": 0,
+    "frame_id": 396,
+    "trigger": "control_slice_limit",
+    "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+    "outcome": {
+      "stage_status": "yield",
+      "completion_proposed": false,
+      "evidence": {
+        "trigger": "control_slice_limit"
+      }
+    },
+    "decision": {
+      "action": "revise",
+      "evidence": [
+        "The stage yielded at control_slice_limit with a live program, not stage_complete.",
+        "Acknowledged motion raised the hand and translated it about 137 mm toward the central bowl workspace.",
+        "The five latest corrections show no sustained position convergence; the TCP remains about 3.3 mm from its target.",
+        "The carton remains visible between the fingers in a similar wrist-image position, while the upright bowl interior remains visibly empty.",
+        "Metric retention and bowl geometry observations are from frame 324, before the transfer. Current placement fit and finger clearance are not established."
+      ],
+      "invalidated_assumptions": [
+        "Repeating the current residual pose corrections will converge to the staging target."
+      ],
+      "plan_valid": "yes",
+      "reason": "Restaging remains suitable and substantial transfer progress occurred, but stalled corrections rule out unchanged continuation. Revise the local method from the actual resulting pose, preserving the completed raise and transfer. Fresh measurements of visible carton and bowl features can assess retention and a reachable approach with supported fit and finger clearance. Do not replay the failed tilt or relax margins merely to proceed.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    }
+  },
+  "active_repair_job": "3973288fe18f4373b98834939aa9a00c"
+}

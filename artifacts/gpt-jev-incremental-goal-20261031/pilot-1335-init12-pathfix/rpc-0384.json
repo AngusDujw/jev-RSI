@@ -1,0 +1,95 @@
+{
+  "index": 384,
+  "method_number": 7,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "restage.reference",
+      {
+        "historical_keys": [
+          "place.geometry",
+          "place.progress",
+          "secure.geometry"
+        ],
+        "historical_geometry_frame": 306,
+        "dimensions_m": [
+          0.07914261644195739,
+          0.041028237497574255,
+          0.020587455196884985
+        ],
+        "extent_uncertainty_m": 0.0015,
+        "corner_ids": [
+          "c0_Cream_initial_C_end_side_A",
+          "c1_Cream_initial_C_end_side_B",
+          "c2_opposite_short_end_side_B",
+          "c3_opposite_short_end_side_A"
+        ],
+        "end_identity_reference": {
+          "frame_id": 234,
+          "observed_end_corners": {
+            "c0_Cream_initial_C_end_side_A": {
+              "world_m": [
+                -0.014370465378092072,
+                0.16697044349904783,
+                0.9713838566313399
+              ],
+              "depth_m": 0.09676793962717056,
+              "frame_id": 234,
+              "pixel": [
+                280,
+                446
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c1_Cream_initial_C_end_side_B": {
+              "world_m": [
+                -0.013587108980472946,
+                0.12635100313874031,
+                0.9713734454671944
+              ],
+              "depth_m": 0.09686029702425003,
+              "frame_id": 234,
+              "pixel": [
+                490,
+                445
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "scope": "Physical identity reference only; after movement these pixels are not current measurements."
+        },
+        "source_records": [
+          {
+            "key": "place.geometry",
+            "frame_id": 315,
+            "method_number": 6,
+            "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+          },
+          {
+            "key": "place.progress",
+            "frame_id": 315,
+            "method_number": 6,
+            "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+          }
+        ],
+        "uncertainty_scope": "The 0.4 mm measurement floor is a conservative operational floor, not calibrated confidence. Historical carton dimensions bound unseen extent; current short-edge width, plane residual, feature spread and identities revalidate their use."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 324,
+  "response": {
+    "result": {
+      "key": "restage.reference",
+      "frame_id": 324,
+      "method_number": 7,
+      "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+      "bytes": 1649,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 324
+}

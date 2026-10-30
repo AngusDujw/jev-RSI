@@ -1,0 +1,113 @@
+{
+  "index": 453,
+  "method_number": 7,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.08153635197137837,
+        0.005806879241782997,
+        1.0429817362244527
+      ],
+      [
+        0.8824643568650514,
+        -0.007143340073525295,
+        -0.4703231477226258,
+        0.0013297637482669322
+      ],
+      "close",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world axis x, use state.processed_features.axes.x.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Follow measured hand residuals, not an imagined object pose.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world axis y, use state.processed_features.axes.y.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Follow measured hand residuals, not an imagined object pose.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world axis z, use state.processed_features.axes.z.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Follow measured hand residuals, not an imagined object pose.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world axis rx, use state.processed_features.axes.rx.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Follow measured hand residuals, not an imagined object pose.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world axis ry, use state.processed_features.axes.ry.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Follow measured hand residuals, not an imagined object pose.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world axis rz, use state.processed_features.axes.rz.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Follow measured hand residuals, not an imagined object pose.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper and deliver that command unchanged. This stage requests close throughout, never release; closure is not retention evidence.",
+          "criteria": {
+            "open": "Objective requests opening.",
+            "close": "Objective requests continued closure.",
+            "keep": "Objective requests preserving the previous command."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "phase": "translate_to_central_bowl_workspace_without_tilt",
+        "geometry_frame": 324,
+        "release_authorized": false,
+        "carton_u_m": 0.0069993395734219335,
+        "required_fit_margin_m": 0.0035,
+        "strategy": "Translate with actual attitude to the central bowl workspace before considering one object-centered attitude change."
+      },
+      "max_calls": 28,
+      "tool_point": "tcp",
+      "translation_limit": 0.02,
+      "rotation_limit": 0.05,
+      "steps": 3,
+      "position_tolerance": 0.0015,
+      "rotation_tolerance": 0.015
+    }
+  },
+  "frame_before": 348,
+  "response": {
+    "error": "Stage supervision required",
+    "handoff": {
+      "trigger": "control_slice_limit"
+    },
+    "scope": "Any acknowledged effects already persisted; do not replay this RPC"
+  },
+  "frame_after": 396
+}

@@ -1,0 +1,284 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 324; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "afb9f1ef587eb66a8ed0e18b1db0924415dd64a284666e4f0287670590136e3d",
+            "characters": 109731
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 324; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "deedc656317bec9db17d5d52d98a90e5bf3890fd9810dba8db161dfad6c4a206",
+            "characters": 76807
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Restage only; no release. Identify the SAME cream-cheese carton printed face and the two physical Cream/C short-end corners c0/c1 using supplied identities, NOT stationary projections. Return end_pixels in physical c0,c1 order and end_camera. Request p0..p5 as six spread-out actual depth samples wholly on that face, away from seams/fingers; these are plane samples, not correspondences. Identify b0, the bowl interior large pale floor medallion center, and b1, the separate bottle-side rear inner-wall rosette. Request their depth only if unambiguous. Initially use bowl_mode rim: request d0..d3 as spread-out valid upper-lip surface depths and select eight well-distributed INNER opening boundary rim_pixels in rim_camera. Do not sample the sloping interior as the lip plane. After motion, same upright bowl plus current known marks can validate the existing opening; if marks are obscured, substitute a fresh rim measurement instead of repeating obscured marks. Assess the visible closed-assembly route: initial vertical rise of 20 to 60 mm followed by fixed-attitude translation over the bowl; at the raised approach assess one additional tilt of at most 0.32 rad. opening_corridor asks whether fingers and outward jaw corridors of 20 mm per side are visibly free above the rim and away from the bottle/other bodies, including a short upward withdrawal corridor, not whether release has succeeded. Do not infer hidden clearance or hidden carton corners. Unknown is allowed. Current observation purpose: fresh pre-translation validation\",\"robot\":{\"frame_id\":324,\"native_steps\":324,\"budgets\":{\"gpt_remaining\":9,\"jev_remaining\":92,\"native_steps_remaining\":276,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0815802,0.142942,1.02304],\"tcp_quaternion_xyzw\":[0.881505,-0.00652939,-0.47213,0.000212345],\"gripper_qpos_m\":[0.0211748,-0.021043],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.248e-05,6.98511e-05,-0.00358508],\"pad_extent_in_tool_m\":[0.016002,0.057218,0.0160019],\"finger_low_offset_tool_m\":[-0.010509,-0.0474421,-0.0444545],\"finger_high_offset_tool_m\":[0.01048,0.0475826,0.00926474]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.0113234,-0.554176,-0.832322,0.0268447],[-0.999914,0.0117216,0.00579891,0.14179],[0.00654255,0.832317,-0.554262,1.03519],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":103,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"negative\",\"ry\":\"positive\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,-0.0116201,0.0690288,0.0,1.0],\"before\":[-0.07149,0.144211,1.02396],\"after\":[-0.07331,0.143599,1.02379],\"target_tcp\":[-0.0706418,0.14496,1.02401],\"acknowledged_steps\":3,\"native_steps\":312,\"frame_id\":312},{\"decision\":104,\"choices\":{\"x\":\"positive\",\"y\":\"positive\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"positive\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.034687,0.0176954,0.0,0.0,0.07,0.0,1.0],\"before\":[-0.07331,0.143599,1.02379],\"after\":[-0.0755831,0.143469,1.02349],\"target_tcp\":[-0.0706418,0.14496,1.02401],\"acknowledged_steps\":3,\"native_steps\":315,\"frame_id\":315},{\"decision\":105,\"choices\":{\"x\":\"positive\",\"y\":\"positive\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"positive\",\"rz\":\"positive\",\"gripper\":\"close\"},\"action\":[0.0642363,0.0193865,0.0,0.0,0.0683084,0.015296,1.0],\"before\":[-0.0755831,0.143469,1.02349],\"after\":[-0.0779008,0.143494,1.02328],\"target_tcp\":[-0.0706418,0.14496,1.02401],\"acknowledged_steps\":3,\"native_steps\":318,\"frame_id\":318},{\"decision\":106,\"choices\":{\"x\":\"positive\",\"y\":\"positive\",\"z\":\"hold\",\"rx\":\"negative\",\"ry\":\"positive\",\"rz\":\"positive\",\"gripper\":\"close\"},\"action\":[0.0943663,0.0190532,0.0,-0.013961,0.0669484,0.0149331,1.0],\"before\":[-0.0779008,0.143494,1.02328],\"after\":[-0.0799821,0.14321,1.02299],\"target_tcp\":[-0.0706418,0.14496,1.02401],\"acknowledged_steps\":3,\"native_steps\":321,\"frame_id\":321},{\"decision\":107,\"choices\":{\"x\":\"positive\",\"y\":\"positive\",\"z\":\"positive\",\"rx\":\"negative\",\"ry\":\"positive\",\"rz\":\"positive\",\"gripper\":\"close\"},\"action\":[0.121424,0.0227558,0.0132955,-0.0145992,0.0669514,0.0142961,1.0],\"before\":[-0.0799821,0.14321,1.02299],\"after\":[-0.0815802,0.142942,1.02304],\"target_tcp\":[-0.0706418,0.14496,1.02401],\"acknowledged_steps\":3,\"native_steps\":324,\"frame_id\":324}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"drive\",\"args\":[[-0.0706418,0.14496,1.02401],[0.808828,-0.00380967,-0.587964,0.00894185],\"close\",{\"x\":{\"type\":\"choice\",\"instructions\":\"For world axis x, read state.processed_features.axes.x.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. These are measured hand residuals, not object observations.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"This axis is within its declared deadband.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"For world axis y, read state.processed_features.axes.y.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. These are measured hand residuals, not object observations.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"This axis is within its declared deadband.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"For world axis z, read state.processed_features.axes.z.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. These are measured hand residuals, not object observations.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"This axis is within its declared deadband.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"For world axis rx, read state.processed_features.axes.rx.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. These are measured hand residuals, not object observations.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"This axis is within its declared deadband.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"For world axis ry, read state.processed_features.axes.ry.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. These are measured hand residuals, not object observations.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"This axis is within its declared deadband.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"For world axis rz, read state.processed_features.axes.rz.goal_relation. Choose positive for increase, negative for decrease, hold for within_tolerance. These are measured hand residuals, not object observations.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"This axis is within its declared deadband.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Read state.processed_features.objective.gripper. Select the requested command unchanged. Close maintains the existing grasp command; only an authorized release requests open. Closure is not evidence of retention.\",\"criteria\":{\"open\":\"The objective requests authorized opening.\",\"close\":\"The objective requests continued closure.\",\"keep\":\"The objective requests preservation of the last command.\"}}}],\"kwargs\":{\"features\":{\"phase\":\"remaining_tilt_reduced_rate\",\"geometry_frame\":306,\"carton_u_m\":0.00683811,\"bowl_u_m\":0.00544416,\"required_margin_m\":0.0035,\"release_authorized\":false,\"tilt_drift_limit_m\":0.008},\"max_calls\":3,\"tool_point\":\"tcp\",\"translation_limit\":0.016,\"rotation_limit\":0.035,\"steps\":3,\"position_tolerance\":0.0015,\"rotation_tolerance\":0.015}},\"response\":{\"result\":{\"decision\":107,\"choices\":{\"x\":\"positive\",\"y\":\"positive\",\"z\":\"positive\",\"rx\":\"negative\",\"ry\":\"positive\",\"rz\":\"positive\",\"gripper\":\"close\"},\"action\":[0.121424,0.0227558,0.0132955,-0.0145992,0.0669514,0.0142961,1.0],\"before\":[-0.0799821,0.14321,1.02299],\"after\":[-0.0815802,0.142942,1.02304],\"target_tcp\":[-0.0706418,0.14496,1.02401],\"acknowledged_steps\":3,\"native_steps\":324,\"frame_id\":324,\"status\":\"lease_exhausted\",\"position_error_m\":0.0111649,\"rotation_error_rad\":0.274318,\"lease_calls\":3}},\"frame_id\":324},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"error\":\"Stage supervision required\",\"handoff\":{\"trigger\":\"no_pose_progress\",\"position_error_m\":0.0111649,\"rotation_error_rad\":0.274318},\"scope\":\"Any acknowledged effects already persisted; do not replay this RPC\"},\"frame_id\":324},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[\"place.geometry\"],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"place.geometry\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\",\"bytes\":9957,\"value\":{\"position_tolerance_m\":0.0015,\"rotation_tolerance_rad\":0.015,\"required_margin_m\":0.0035,\"length_m\":0.0791426,\"width_m\":0.0410282,\"thickness_upper_m\":0.0205875,\"historical_extent_u_m\":0.0015,\"historical_corners_world_m\":[[-0.0134457,0.164914,0.917408],[-0.0123849,0.124248,0.918397],[-0.0922386,0.123748,0.91856],[-0.0918751,0.165099,0.917552]],\"support_world_m\":[-0.0242831,0.184978,0.899973],\"historical_paths\":[[\"secure.geometry\",\"precontact\",\"corners_world_m\",\"0\"],[\"secure.geometry\",\"precontact\",\"corners_world_m\",\"1\"],[\"secure.geometry\",\"precontact\",\"corners_world_m\",\"2\"],[\"secure.geometry\",\"precontact\",\"corners_world_m\",\"3\"]],\"uncertainty_path\":[\"secure.geometry\",\"coarse\",\"uncertainty_m\"],\"corner_ids\":[\"c0_Cream_initial_C_end_side_A\",\"c1_Cream_initial_C_end_side_B\",\"c2_opposite_short_end_side_B\",\"c3_opposite_short_end_side_A\"],\"bowl_mark_ids\":[\"b0: center of the large pale radial flower/star medallion on the visible interior floor.\",\"b1: center of the separate smaller pale floral rosette on the bottle-side rear inner wall, above and beside the floor medallion.\"],\"historical_provenance\":[{\"key\":\"secure.geometry\",\"frame_id\":96,\"method_number\":1,\"source_sha256\":\"8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055\"},{\"key\":\"secure.observations\",\"frame_id\":96,\"method_number\":1,\"source_sha256\":\"8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055\"},{\"key\":\"secure.local\",\"frame_id\":192,\"method_number\":2,\"source_sha256\":\"ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675\"}],\"rim_fit\":{\"radius_m\":0.0488069,\"rms_m\":0.000813946,\"max_radial_error_m\":0.001534,\"largest_angular_gap_rad\":0.839883,\"center_xy_m\":[-0.0893725,0.00556841]},\"bowl_center_xy_m\":[-0.0893725,0.00556841],\"bowl_radius_m\":0.0488069,\"rim_plane\":{\"coefficients\":[-0.0143936,0.00387716,0.999889,-0.950139],\"center_world_m\":[-0.0883411,0.0053838,0.948952],\"rms_m\":0.000343101,\"in_plane_spread_m\":[0.0379218,0.0371877]},\"rim_high_m\":0.949636,\"rim_world_m\":[[-0.138081,0.00558667,0.948236],[-0.122425,0.0397488,0.948329],[-0.0870235,0.0558544,0.948776],[-0.0549219,0.0397796,0.9493],[-0.0408872,0.00517413,0.949636],[-0.0561904,-0.0293363,0.94955],[-0.0865799,-0.0440129,0.949169],[-0.122096,-0.0309027,0.948607]],\"rim_depth_samples\":[{\"world_m\":[-0.143034,0.00560658,0.948493],\"depth_m\":1.03953,\"frame_id\":234,\"pixel\":[389,394],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},{\"world_m\":[-0.0874259,0.058034,0.948419],\"depth_m\":0.996312,\"frame_id\":234,\"pixel\":[438,427],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},{\"world_m\":[-0.0359453,0.00515194,0.950065],\"depth_m\":0.955229,\"frame_id\":234,\"pixel\":[389,459],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},{\"world_m\":[-0.0869586,-0.0472573,0.948833],\"depth_m\":0.995688,\"frame_id\":234,\"pixel\":[340,427],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"}],\"bowl_base_u_m\":0.00544416,\"bowl_marks_world_m\":[[-0.120693,0.00676639,0.911369],[-0.126911,-0.0190132,0.932799]],\"floor_world_m\":[-0.11467,0.00562063,0.909231],\"reference_frame\":234,\"bowl_u_m\":0.00544416,\"current_carton\":{\"box_world_m\":[[-0.0473111,0.164596,0.993711],[-0.0469003,0.12451,0.994168],[-0.0935141,0.12476,1.05813],[-0.0939248,0.164847,1.05767],[-0.0639474,0.164287,0.981588],[-0.0635367,0.124201,0.982044],[-0.11015,0.124452,1.046],[-0.110561,0.164538,1.04555]],\"anchors_world_m\":[[-0.0473111,0.164596,0.993711],[-0.0469003,0.12451,0.994168]],\"center_world_m\":[-0.0787307,0.144524,1.01986],\"normal_world\":[0.80808,0.0149861,0.588883],\"short_axis_world\":[0.0102453,-0.999883,0.0113865],\"normal_u_rad\":0.0310313,\"edge_u_m\":0.0004,\"u_m\":0.00683811,\"frame_id\":306,\"plane_rms_m\":7.90927e-05,\"plane_spread_m\":0.0128902},\"candidate_tests\":[{\"angle_rad\":0.0,\"quaternion_xyzw\":[0.999971,0.00739865,0.00140268,0.000991273],\"predicted_margin_m\":-0.00802236,\"visible_end_mean_z_m\":0.972192},{\"angle_rad\":-0.45,\"quaternion_xyzw\":[0.975104,0.00339933,-0.221684,0.00411492],\"predicted_margin_m\":-0.00837347,\"visible_end_mean_z_m\":0.95547},{\"angle_rad\":0.45,\"quaternion_xyzw\":[0.974428,0.011025,0.224419,-0.00218234],\"predicted_margin_m\":-0.00846787,\"visible_end_mean_z_m\":0.988693},{\"angle_rad\":-0.7,\"quaternion_xyzw\":[0.939865,0.00109006,-0.341496,0.00577038],\"predicted_margin_m\":-0.0055588,\"visible_end_mean_z_m\":0.947327},{\"angle_rad\":0.7,\"quaternion_xyzw\":[0.938826,0.0128101,0.344131,-0.00390803],\"predicted_margin_m\":-0.00576944,\"visible_end_mean_z_m\":0.996533},{\"angle_rad\":-0.9,\"quaternion_xyzw\":[0.90108,-0.000771355,-0.433595,0.00703112],\"predicted_margin_m\":-0.00193877,\"visible_end_mean_z_m\":0.941854},{\"angle_rad\":0.9,\"quaternion_xyzw\":[0.899762,0.0140955,0.436121,-0.00524594],\"predicted_margin_m\":-0.00222494,\"visible_end_mean_z_m\":1.00169},{\"angle_rad\":-1.05,\"quaternion_xyzw\":[0.866058,-0.00216337,-0.499876,0.00793123],\"predicted_margin_m\":0.00138639,\"visible_end_mean_z_m\":0.938504},{\"angle_rad\":1.05,\"quaternion_xyzw\":[0.86454,0.0149678,0.502303,-0.00621569],\"predicted_margin_m\":0.00106005,\"visible_end_mean_z_m\":1.00476},{\"angle_rad\":-1.2,\"quaternion_xyzw\":[0.826167,-0.00354322,-0.563345,0.00878675],\"predicted_margin_m\":0.00502814,\"visible_end_mean_z_m\":0.935886},{\"angle_rad\":1.2,\"quaternion_xyzw\":[0.824456,0.015756,0.565661,-0.00715048],\"predicted_margin_m\":0.00468228,\"visible_end_mean_z_m\":1.00708}],\"chosen_candidate\":{\"angle_rad\":-1.2,\"quaternion_xyzw\":[0.826167,-0.00354322,-0.563345,0.00878675],\"predicted_margin_m\":0.00502814,\"visible_end_mean_z_m\":0.935886},\"end_identity_reference\":{\"frame_id\":234,\"observed_end_corners\":{\"c0_Cream_initial_C_end_side_A\":{\"world_m\":[-0.0143705,0.16697,0.971384],\"depth_m\":0.0967679,\"frame_id\":234,\"pixel\":[280,446],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1_Cream_initial_C_end_side_B\":{\"world_m\":[-0.0135871,0.126351,0.971373],\"depth_m\":0.0968603,\"frame_id\":234,\"pixel\":[490,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"scope\":\"Physical identity reference only; after movement these pixels are not current measurements.\"},\"preparation\":{\"rise_m\":0.0538439,\"sampled_low_z_m\":0.928022,\"inter_sample_reserve_m\":0.00494886,\"closed_route_review_frame\":234,\"release_not_authorized\":true},\"executed_tilt_target\":{\"start_frame\":255,\"axis_world\":[0.021681,-0.999598,0.0182587],\"angle_rad\":-1.2,\"quaternion_xyzw\":[0.826103,-0.0036192,-0.563439,0.00877582]},\"pretilt_checks\":{\"final_centered_fit_m\":0.00372229,\"sweep_vertical_margin_m\":0.0153609,\"fraction\":1.0},\"repair_tilt_check\":{\"frame_id\":306,\"candidates\":[{\"extra_tilt_rad\":0.0,\"remaining_angle_rad\":0.265741,\"predicted_centered_fit_m\":0.00508332,\"sweep_margin_m\":0.00893584},{\"extra_tilt_rad\":0.06,\"remaining_angle_rad\":0.32568,\"predicted_centered_fit_m\":0.00659116,\"sweep_margin_m\":0.00870751}],\"selected_quaternion_xyzw\":[0.808828,-0.00380967,-0.587964,0.00894185],\"predicted_fit_requirement_m\":0.0065,\"drift_reserve_m\":0.008,\"new_pivot_world_m\":[-0.0706418,0.14496,1.02401]}},\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":324},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[\"place.progress\"],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"place.progress\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\",\"bytes\":5960,\"value\":{\"phase\":\"remaining_tilt_reduced_rate\",\"actions\":[{\"phase\":\"remaining_tilt_reduced_rate\",\"before\":{\"frame_id\":306,\"native_steps\":306,\"tcp_position_world_m\":[-0.0706418,0.14496,1.02401],\"tcp_quaternion_xyzw\":[0.893409,-0.00467196,-0.449217,0.00166569],\"gripper_qpos_m\":[0.0211912,-0.0210258],\"last_gripper_command\":\"close\"},\"after\":{\"frame_id\":315,\"native_steps\":315,\"tcp_position_world_m\":[-0.0755831,0.143469,1.02349],\"tcp_quaternion_xyzw\":[0.880065,-0.00759861,-0.474788,0.00174837],\"gripper_qpos_m\":[0.0211815,-0.021037],\"last_gripper_command\":\"close\"},\"receipt\":{\"frame_id\":315,\"status\":\"lease_exhausted\",\"lease_calls\":3,\"acknowledged_steps\":3,\"position_error_m\":0.00518755,\"rotation_error_rad\":0.268153},\"gripper_choice\":\"close\"}],\"retention_tests\":[{\"phase\":\"interrupted_tilt\",\"before_frame\":288,\"after_frame\":306,\"actual_hand_translation_m\":[-0.0176379,-0.00195562,-0.00116816],\"observed_edge_translation_m\":[-0.0261426,-0.00238037,-0.0103259],\"attachment_error_m\":0.000212667,\"allowance_m\":0.0036,\"normal_error_rad\":0.000421761,\"predicted_feature_motion_m\":0.028405,\"resolvable_differential\":true}],\"release_started\":false,\"entry\":{\"frame_id\":306,\"native_steps\":306,\"tcp_position_world_m\":[-0.0706418,0.14496,1.02401],\"tcp_quaternion_xyzw\":[0.893409,-0.00467196,-0.449217,0.00166569],\"gripper_qpos_m\":[0.0211912,-0.0210258],\"last_gripper_command\":\"close\"},\"preserved_history\":{\"checkpoint\":\"place.revision\",\"previous_phase\":\"tilt_1.0\",\"previous_pending\":{\"target_tcp_world_m\":[-0.0530039,0.146916,1.02518],\"quaternion_xyzw\":[0.826103,-0.0036192,-0.563439,0.00877582],\"gripper\":\"close\"},\"previous_retention_tests\":[{\"phase\":\"raise\",\"before_frame\":234,\"after_frame\":255,\"actual_hand_translation_m\":[-0.000651435,0.00063713,0.0529154],\"observed_end_translation_m\":[-0.00065002,0.000648158,0.0529174],\"attachment_error_m\":1.91702e-05,\"allowance_m\":0.0036,\"normal_error_rad\":0.000351356,\"predicted_anchor_motion_m\":0.0529183,\"differential_motion_observable\":true},{\"phase\":\"tilt_0.5\",\"before_frame\":255,\"after_frame\":288,\"actual_hand_translation_m\":[-0.000273179,-2.47019e-05,0.00119115],\"observed_end_translation_m\":[-0.00643045,-0.000458194,-0.0208444],\"attachment_error_m\":5.30307e-05,\"allowance_m\":0.0036,\"normal_error_rad\":0.000216164,\"predicted_anchor_motion_m\":0.0218457,\"differential_motion_observable\":true}]},\"interrupted_tilt\":{\"reference_hand\":{\"frame_id\":288,\"native_steps\":288,\"tcp_position_world_m\":[-0.0530039,0.146916,1.02518],\"tcp_quaternion_xyzw\":[0.954666,0.00282839,-0.297643,0.00354704]},\"actual_entry\":{\"frame_id\":306,\"native_steps\":306,\"tcp_position_world_m\":[-0.0706418,0.14496,1.02401],\"tcp_quaternion_xyzw\":[0.893409,-0.00467196,-0.449217,0.00166569],\"gripper_qpos_m\":[0.0211912,-0.0210258],\"last_gripper_command\":\"close\"},\"acknowledged_native_step_delta\":18,\"pending_command_retired\":{\"target_tcp_world_m\":[-0.0530039,0.146916,1.02518],\"quaternion_xyzw\":[0.826103,-0.0036192,-0.563439,0.00877582],\"gripper\":\"close\"},\"note\":\"Partial action is real; no receipt or reference reset is invented.\"},\"last_review\":{\"frame_id\":306,\"parameters\":{\"bowl\":\"same_upright_unchanged\",\"bowl_mode\":\"landmarks\",\"closed_space\":\"clear\",\"end_camera\":\"robot0_eye_in_hand\",\"end_ids_match\":true,\"end_pixels\":[[280,446],[489,445]],\"identity\":\"same_carton\",\"notes\":\"Fresh frame-306 selections, not historical projections. p0-p3 sample the same printed face interior, away from seams and fingers; they are not texture correspondences. c0/c1 mark visible physical corners; validate boundary depth, especially c1 after its earlier depth failure. b0 is the large floor medallion center; b1 is the smaller bottle-side rear inner-wall rosette, not another repeated motif. The bowl appears same, upright and unchanged; returned landmarks permit metric stationarity revalidation. Regions include silhouettes and background and require segmentation. Table samples measure surfaces, not free space. Opposite carton corners are self-occluded and are not inferred. Placement and release are not established.\"},\"measurement_errors\":[]},\"bowl_validation\":{\"frame_id\":306,\"discrepancy_m\":0.0,\"mode\":\"landmarks\"},\"closed_space\":\"clear\",\"objective_reference\":{\"phase\":\"remaining_tilt_reduced_rate\",\"state\":{\"frame_id\":306,\"native_steps\":306,\"tcp_position_world_m\":[-0.0706418,0.14496,1.02401],\"tcp_quaternion_xyzw\":[0.893409,-0.00467196,-0.449217,0.00166569],\"gripper_qpos_m\":[0.0211912,-0.0210258],\"last_gripper_command\":\"close\"},\"carton_frame\":306},\"pending\":{\"target_tcp_world_m\":[-0.0706418,0.14496,1.02401],\"quaternion_xyzw\":[0.808828,-0.00380967,-0.587964,0.00894185],\"gripper\":\"close\",\"chunk\":1}},\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":324},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":324,\"native_steps\":324,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":92,\"native_steps_remaining\":276,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0815802,0.142942,1.02304],\"tcp_quaternion_xyzw\":[0.881505,-0.00652939,-0.47213,0.000212345],\"gripper_qpos_m\":[0.0211748,-0.021043],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.248e-05,6.98511e-05,-0.00358508],\"pad_extent_in_tool_m\":[0.016002,0.057218,0.0160019],\"finger_low_offset_tool_m\":[-0.010509,-0.0474421,-0.0444545],\"finger_high_offset_tool_m\":[0.01048,0.0475826,0.00926474]}}},\"frame_id\":324},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"restage.reference\",{\"historical_keys\":[\"place.geometry\",\"place.progress\",\"secure.geometry\"],\"historical_geometry_frame\":306,\"dimensions_m\":[0.0791426,0.0410282,0.0205875],\"extent_uncertainty_m\":0.0015,\"corner_ids\":[\"c0_Cream_initial_C_end_side_A\",\"c1_Cream_initial_C_end_side_B\",\"c2_opposite_short_end_side_B\",\"c3_opposite_short_end_side_A\"],\"end_identity_reference\":{\"frame_id\":234,\"observed_end_corners\":{\"c0_Cream_initial_C_end_side_A\":{\"world_m\":[-0.0143705,0.16697,0.971384],\"depth_m\":0.0967679,\"frame_id\":234,\"pixel\":[280,446],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1_Cream_initial_C_end_side_B\":{\"world_m\":[-0.0135871,0.126351,0.971373],\"depth_m\":0.0968603,\"frame_id\":234,\"pixel\":[490,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"scope\":\"Physical identity reference only; after movement these pixels are not current measurements.\"},\"source_records\":[{\"key\":\"place.geometry\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\"},{\"key\":\"place.progress\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\"}],\"uncertainty_scope\":\"The 0.4 mm measurement floor is a conservative operational floor, not calibrated confidence. Historical carton dimensions bound unseen extent; current short-edge width, plane residual, feature spread and identities revalidate their use.\"}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"restage.reference\",\"frame_id\":324,\"method_number\":7,\"source_sha256\":\"fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e\",\"bytes\":1649,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":324},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"restage.progress\",{\"stage\":\"restage\",\"entry\":{\"frame_id\":324,\"native_steps\":324,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":92,\"native_steps_remaining\":276,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0815802,0.142942,1.02304],\"tcp_quaternion_xyzw\":[0.881505,-0.00652939,-0.47213,0.000212345],\"gripper_qpos_m\":[0.0211748,-0.021043],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.248e-05,6.98511e-05,-0.00358508],\"pad_extent_in_tool_m\":[0.016002,0.057218,0.0160019],\"finger_low_offset_tool_m\":[-0.010509,-0.0474421,-0.0444545],\"finger_high_offset_tool_m\":[0.01048,0.0475826,0.00926474]}},\"actions\":[],\"retention\":[],\"reviews\":0,\"release_started\":false,\"retired_pending\":{\"target_tcp_world_m\":[-0.0706418,0.14496,1.02401],\"quaternion_xyzw\":[0.808828,-0.00380967,-0.587964,0.00894185],\"gripper\":\"close\",\"chunk\":1},\"acknowledged_since_old_checkpoint_steps\":9,\"strategy\":\"Translate with actual attitude to the central bowl workspace before considering one object-centered attitude change.\"}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"restage.progress\",\"frame_id\":324,\"method_number\":7,\"source_sha256\":\"fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e\",\"bytes\":1391,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":324},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":324,\"native_steps\":324,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":92,\"native_steps_remaining\":276,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0815802,0.142942,1.02304],\"tcp_quaternion_xyzw\":[0.881505,-0.00652939,-0.47213,0.000212345],\"gripper_qpos_m\":[0.0211748,-0.021043],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.248e-05,6.98511e-05,-0.00358508],\"pad_extent_in_tool_m\":[0.016002,0.057218,0.0160019],\"finger_low_offset_tool_m\":[-0.010509,-0.0474421,-0.0444545],\"finger_high_offset_tool_m\":[0.01048,0.0475826,0.00926474]}}},\"frame_id\":324}],\"program_checkpoint_manifest\":[{\"key\":\"secure.measurements\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a\",\"bytes\":2539,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.progress\",\"frame_id\":192,\"method_number\":1,\"source_sha256\":\"8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055\",\"bytes\":3675,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.geometry\",\"frame_id\":96,\"method_number\":1,\"source_sha256\":\"8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055\",\"bytes\":3544,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.observations\",\"frame_id\":96,\"method_number\":1,\"source_sha256\":\"8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055\",\"bytes\":3221,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.tracker\",\"frame_id\":96,\"method_number\":1,\"source_sha256\":\"8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055\",\"bytes\":291,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.local\",\"frame_id\":192,\"method_number\":2,\"source_sha256\":\"ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675\",\"bytes\":5049,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.resume\",\"frame_id\":234,\"method_number\":2,\"source_sha256\":\"ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675\",\"bytes\":14106,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.baseline\",\"frame_id\":204,\"method_number\":2,\"source_sha256\":\"ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675\",\"bytes\":2859,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.effect\",\"frame_id\":234,\"method_number\":2,\"source_sha256\":\"ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675\",\"bytes\":1165,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.retention\",\"frame_id\":234,\"method_number\":2,\"source_sha256\":\"ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675\",\"bytes\":2855,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"place.effect\",\"frame_id\":306,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\",\"bytes\":2874,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"place.progress\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\",\"bytes\":5960,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"place.revision\",\"frame_id\":306,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\",\"bytes\":8751,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"place.geometry\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\",\"bytes\":9957,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"restage.reference\",\"frame_id\":324,\"method_number\":7,\"source_sha256\":\"fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e\",\"bytes\":1649,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"restage.progress\",\"frame_id\":324,\"method_number\":7,\"source_sha256\":\"fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e\",\"bytes\":1391,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"program_supplied_review_context\":{\"reference\":{\"historical_keys\":[\"place.geometry\",\"place.progress\",\"secure.geometry\"],\"historical_geometry_frame\":306,\"dimensions_m\":[0.0791426,0.0410282,0.0205875],\"extent_uncertainty_m\":0.0015,\"corner_ids\":[\"c0_Cream_initial_C_end_side_A\",\"c1_Cream_initial_C_end_side_B\",\"c2_opposite_short_end_side_B\",\"c3_opposite_short_end_side_A\"],\"end_identity_reference\":{\"frame_id\":234,\"observed_end_corners\":{\"c0_Cream_initial_C_end_side_A\":{\"world_m\":[-0.0143705,0.16697,0.971384],\"depth_m\":0.0967679,\"frame_id\":234,\"pixel\":[280,446],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1_Cream_initial_C_end_side_B\":{\"world_m\":[-0.0135871,0.126351,0.971373],\"depth_m\":0.0968603,\"frame_id\":234,\"pixel\":[490,445],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"scope\":\"Physical identity reference only; after movement these pixels are not current measurements.\"},\"source_records\":[{\"key\":\"place.geometry\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\"},{\"key\":\"place.progress\",\"frame_id\":315,\"method_number\":6,\"source_sha256\":\"90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28\"}],\"uncertainty_scope\":\"The 0.4 mm measurement floor is a conservative operational floor, not calibrated confidence. Historical carton dimensions bound unseen extent; current short-edge width, plane residual, feature spread and identities revalidate their use.\"},\"bowl_reference\":null,\"actual_state\":{\"frame_id\":324,\"native_steps\":324,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":92,\"native_steps_remaining\":276,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0815802,0.142942,1.02304],\"tcp_quaternion_xyzw\":[0.881505,-0.00652939,-0.47213,0.000212345],\"gripper_qpos_m\":[0.0211748,-0.021043],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.248e-05,6.98511e-05,-0.00358508],\"pad_extent_in_tool_m\":[0.016002,0.057218,0.0160019],\"finger_low_offset_tool_m\":[-0.010509,-0.0474421,-0.0444545],\"finger_high_offset_tool_m\":[0.01048,0.0475826,0.00926474]}}}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_carton",
+                  "lost_or_changed",
+                  "unknown"
+                ]
+              },
+              "patch": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_printed_face",
+                  "unknown"
+                ]
+              },
+              "end_ids_match": {
+                "type": "boolean"
+              },
+              "end_camera": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "agentview",
+                  "robot0_eye_in_hand"
+                ]
+              },
+              "end_pixels": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 767
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 0,
+                "maxItems": 2
+              },
+              "bowl": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_upright",
+                  "moved_or_tipped",
+                  "unknown"
+                ]
+              },
+              "bowl_mode": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "rim",
+                  "landmarks",
+                  "unknown"
+                ]
+              },
+              "rim_camera": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "agentview",
+                  "robot0_eye_in_hand"
+                ]
+              },
+              "rim_pixels": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 767
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 0,
+                "maxItems": 8
+              },
+              "closed_route": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "clear",
+                  "obstructed",
+                  "unknown"
+                ]
+              },
+              "opening_corridor": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "clear",
+                  "obstructed",
+                  "unknown"
+                ]
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 6000
+              }
+            },
+            "required": [
+              "identity",
+              "patch",
+              "end_ids_match",
+              "end_camera",
+              "end_pixels",
+              "bowl",
+              "bowl_mode",
+              "rim_camera",
+              "rim_pixels",
+              "closed_route",
+              "opening_corridor",
+              "notes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

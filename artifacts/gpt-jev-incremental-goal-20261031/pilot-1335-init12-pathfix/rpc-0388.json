@@ -1,0 +1,307 @@
+{
+  "index": 388,
+  "method_number": 7,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "restage.reference",
+      {
+        "historical_keys": [
+          "place.geometry",
+          "place.progress",
+          "secure.geometry"
+        ],
+        "historical_geometry_frame": 306,
+        "dimensions_m": [
+          0.07914261644195739,
+          0.041028237497574255,
+          0.020587455196884985
+        ],
+        "extent_uncertainty_m": 0.0015,
+        "corner_ids": [
+          "c0_Cream_initial_C_end_side_A",
+          "c1_Cream_initial_C_end_side_B",
+          "c2_opposite_short_end_side_B",
+          "c3_opposite_short_end_side_A"
+        ],
+        "end_identity_reference": {
+          "frame_id": 234,
+          "observed_end_corners": {
+            "c0_Cream_initial_C_end_side_A": {
+              "world_m": [
+                -0.014370465378092072,
+                0.16697044349904783,
+                0.9713838566313399
+              ],
+              "depth_m": 0.09676793962717056,
+              "frame_id": 234,
+              "pixel": [
+                280,
+                446
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c1_Cream_initial_C_end_side_B": {
+              "world_m": [
+                -0.013587108980472946,
+                0.12635100313874031,
+                0.9713734454671944
+              ],
+              "depth_m": 0.09686029702425003,
+              "frame_id": 234,
+              "pixel": [
+                490,
+                445
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "scope": "Physical identity reference only; after movement these pixels are not current measurements."
+        },
+        "source_records": [
+          {
+            "key": "place.geometry",
+            "frame_id": 315,
+            "method_number": 6,
+            "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+          },
+          {
+            "key": "place.progress",
+            "frame_id": 315,
+            "method_number": 6,
+            "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+          }
+        ],
+        "uncertainty_scope": "The 0.4 mm measurement floor is a conservative operational floor, not calibrated confidence. Historical carton dimensions bound unseen extent; current short-edge width, plane residual, feature spread and identities revalidate their use.",
+        "partial_valid_measurements": {
+          "c0": {
+            "world_m": [
+              -0.05976211331572566,
+              0.16253939523093774,
+              0.9913648711763232
+            ],
+            "depth_m": 0.09649578481912613,
+            "frame_id": 324,
+            "pixel": [
+              280,
+              445
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c1": {
+            "world_m": [
+              -0.05989303851228632,
+              0.12228982355523738,
+              0.9915779329983836
+            ],
+            "depth_m": 0.09625326097011566,
+            "frame_id": 324,
+            "pixel": [
+              489,
+              444
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p0": {
+            "world_m": [
+              -0.06183191045923914,
+              0.15826863490684076,
+              0.9952800913313553
+            ],
+            "depth_m": 0.09602370113134384,
+            "frame_id": 324,
+            "pixel": [
+              302,
+              468
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p1": {
+            "world_m": [
+              -0.06209872783141407,
+              0.12685837999703828,
+              0.9959387353661558
+            ],
+            "depth_m": 0.09569857269525528,
+            "frame_id": 324,
+            "pixel": [
+              466,
+              470
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p2": {
+            "world_m": [
+              -0.06909391819431249,
+              0.15706640693650195,
+              1.006335629525652
+            ],
+            "depth_m": 0.09593340009450912,
+            "frame_id": 324,
+            "pixel": [
+              309,
+              537
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p3": {
+            "world_m": [
+              -0.06889114337676285,
+              0.12724622067588018,
+              1.0066924430222373
+            ],
+            "depth_m": 0.09539393335580826,
+            "frame_id": 324,
+            "pixel": [
+              465,
+              537
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p4": {
+            "world_m": [
+              -0.07727663482576091,
+              0.15781588182198802,
+              1.0186160706350775
+            ],
+            "depth_m": 0.09594182670116425,
+            "frame_id": 324,
+            "pixel": [
+              306,
+              614
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p5": {
+            "world_m": [
+              -0.0769995710349509,
+              0.127248585902391,
+              1.0190896109634244
+            ],
+            "depth_m": 0.09527149796485901,
+            "frame_id": 324,
+            "pixel": [
+              466,
+              615
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b0": {
+            "world_m": [
+              -0.12069322344689914,
+              0.006766388130185493,
+              0.9113687037892098
+            ],
+            "depth_m": 1.0454723834991455,
+            "frame_id": 324,
+            "pixel": [
+              390,
+              432
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b1": {
+            "world_m": [
+              -0.12691070243057512,
+              -0.019013194341648897,
+              0.9327994531859265
+            ],
+            "depth_m": 1.036843180656433,
+            "frame_id": 324,
+            "pixel": [
+              367,
+              414
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "d0": {
+            "world_m": [
+              -0.14303447301790928,
+              0.0056065835102766725,
+              0.9484925757784247
+            ],
+            "depth_m": 1.0395256280899048,
+            "frame_id": 324,
+            "pixel": [
+              389,
+              394
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "d1": {
+            "world_m": [
+              -0.08742593144210342,
+              0.0580339862968735,
+              0.9484186116668333
+            ],
+            "depth_m": 0.9963124394416809,
+            "frame_id": 324,
+            "pixel": [
+              438,
+              427
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "d2": {
+            "world_m": [
+              -0.03594527180410523,
+              0.00515193943523978,
+              0.9500652218845044
+            ],
+            "depth_m": 0.9552293419837952,
+            "frame_id": 324,
+            "pixel": [
+              389,
+              459
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "d3": {
+            "world_m": [
+              -0.08695855361146032,
+              -0.04725732699217783,
+              0.9488333364266109
+            ],
+            "depth_m": 0.995688259601593,
+            "frame_id": 324,
+            "pixel": [
+              340,
+              427
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 324,
+  "response": {
+    "result": {
+      "key": "restage.reference",
+      "frame_id": 324,
+      "method_number": 7,
+      "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+      "bytes": 4896,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 324
+}

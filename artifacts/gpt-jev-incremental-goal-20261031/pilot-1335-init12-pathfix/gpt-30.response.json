@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-44d9bd9d-4b41-4e0d-a66c-f8663d286a4d",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-44d9bd9d-4b41-4e0d-a66c-f8663d286a4d",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The current wrist image shows the Cream printed face and its visible C-end short edge. c0 is the left physical corner and c1 the right physical corner, consistent with the supplied identities; these are current boundary selections, not projected historical positions. The bowl is upright and its two specified marks are distinguishable. No external obstruction is visible in the local upward-rise and raised fixed-attitude translation route toward the bowl. Robot self-occlusion limits the finger-corridor assessment. This is pre-translation validation only, not approval of release or of a later tilt.\", \"parameters\": {\"bowl\": \"same_upright\", \"bowl_mode\": \"rim\", \"closed_route\": \"clear\", \"end_camera\": \"robot0_eye_in_hand\", \"end_ids_match\": true, \"end_pixels\": [[280, 445], [489, 444]], \"identity\": \"same_carton\", \"notes\": \"p0..p5 are six current printed-face plane samples, not correspondences. c0/c1 identify the visible Cream/C short end; the opposite end is self-occluded and is not inferred. Check corner depth patches for boundary mixing. b0 is the large pale floor medallion center; b1 is the separate bottle-side rear inner-wall rosette. Fresh d0..d3 and eight inner-boundary pixels are supplied for the initial rim model. Use only upper-lip surface depths in the narrow d patches, excluding background and sloping interior. Bowl identity and upright appearance agree with the supplied reference; metric stationarity remains a depth check. Closed-route clear describes the visible local raised route, not hidden geometry or a full-scene certificate. The 20 mm outward jaw corridors and short withdrawal cannot be fully seen because of robot self-occlusion, so opening_corridor is unknown, not an observed obstruction. Assess any additional tilt of at most 0.32 rad at the raised approach using its then-current evidence. Regions contain silhouettes and require object segmentation; bowl_visible_surfaces is not a lip-plane sample region. Closure alone does not establish retention. No release is authorized.\", \"opening_corridor\": \"unknown\", \"patch\": \"same_printed_face\", \"rim_camera\": \"agentview\", \"rim_pixels\": [[389, 397], [420, 406], [436, 426], [422, 446], [389, 456], [356, 446], [343, 426], [356, 406]]}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [280, 445], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [489, 444], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [302, 468], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [466, 470], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [309, 537], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p3\", \"pixel\": [465, 537], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p4\", \"pixel\": [306, 614], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p5\", \"pixel\": [466, 615], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"b0\", \"pixel\": [390, 432], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"b1\", \"pixel\": [367, 414], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"d0\", \"pixel\": [389, 394], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"d1\", \"pixel\": [438, 427], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"d2\", \"pixel\": [389, 459], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"d3\", \"pixel\": [340, 427], \"radius\": 1}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"printed_face_interior\", \"box\": [293, 457, 479, 634], \"stride\": 5}, {\"camera\": \"agentview\", \"name\": \"bowl_visible_surfaces\", \"box\": [338, 391, 442, 476], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"bottle_visible_surfaces\", \"box\": [331, 285, 373, 412], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"closed_assembly_visible_surfaces\", \"box\": [424, 341, 658, 460], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 62690,
+    "output_tokens": 4536,
+    "output_tokens_details": {
+      "reasoning_tokens": 2588
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e83-6c20-75c2-a352-599db1f9815e",
+    "turn_ids": [
+      "01a18e83-6c27-78f1-9f9b-bfe00e2169bc"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

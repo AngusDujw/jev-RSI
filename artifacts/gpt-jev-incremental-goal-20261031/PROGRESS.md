@@ -308,3 +308,16 @@ jobc40079c89aad4c50a8b9a5cea14474d1 / thread01a18e77-9405-77d3-bd7e-d1f2b554e5ff
 is active. No release or terminal native result. Preserve
 remaining-plan-revision.json. Still the frozen c8 pilot; candidate branch is
 not deployed.
+
+## Restage made transfer progress; endpoint correction stopped
+
+Method7 delivered317 lines in775.230 seconds, no reconnect. It moved with the
+achieved orientation, raising then translating to the bowl workspace before
+any further attitude change. Actual motion advanced324→396/132Jev; supervisor31
+recognized about137mm transfer. At the normal slice it rejected unchanged
+continuation because the final corrections stayed near3.3mm residual without
+sustained convergence. Current metric retention/fit remained frame324 historical.
+No release. It requested actual-pose measurement and local revision, preserving
+completed transfer. Active repair3973288fe18f4373b98834939aa9a00c / thread
+01a18e86-30c1-7b50-a795-1c0c3f6b9527. Save restage-transfer-evidence.json.
+No terminal native result; do not interpret transfer as completed placement.

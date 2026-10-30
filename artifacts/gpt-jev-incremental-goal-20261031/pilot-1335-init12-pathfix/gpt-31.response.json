@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-371d9db6-b12c-4f55-9d1c-9129c30546d9",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-371d9db6-b12c-4f55-9d1c-9129c30546d9",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"The stage yielded at control_slice_limit with a live program, not stage_complete.\", \"Acknowledged motion raised the hand and translated it about 137 mm toward the central bowl workspace.\", \"The five latest corrections show no sustained position convergence; the TCP remains about 3.3 mm from its target.\", \"The carton remains visible between the fingers in a similar wrist-image position, while the upright bowl interior remains visibly empty.\", \"Metric retention and bowl geometry observations are from frame 324, before the transfer. Current placement fit and finger clearance are not established.\"], \"invalidated_assumptions\": [\"Repeating the current residual pose corrections will converge to the staging target.\"], \"plan_valid\": \"yes\", \"reason\": \"Restaging remains suitable and substantial transfer progress occurred, but stalled corrections rule out unchanged continuation. Revise the local method from the actual resulting pose, preserving the completed raise and transfer. Fresh measurements of visible carton and bowl features can assess retention and a reachable approach with supported fit and finger clearance. Do not replay the failed tilt or relax margins merely to proceed.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 62326,
+    "output_tokens": 838,
+    "output_tokens_details": {
+      "reasoning_tokens": 516
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e85-973b-7a43-b3b0-b89ac65b199e",
+    "turn_ids": [
+      "01a18e85-9742-7c93-bc87-3de02c88f6b8"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

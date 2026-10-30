@@ -1,0 +1,96 @@
+{
+  "index": 385,
+  "method_number": 7,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "restage.progress",
+      {
+        "stage": "restage",
+        "entry": {
+          "frame_id": 324,
+          "native_steps": 324,
+          "budgets": {
+            "gpt_remaining": 10,
+            "jev_remaining": 92,
+            "native_steps_remaining": 276,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.08158015587319868,
+            0.14294237622835615,
+            1.023040717794808
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8815049180996555,
+            -0.006529392307856707,
+            -0.4721296446017755,
+            0.00021234502845446368
+          ],
+          "gripper_qpos_m": [
+            0.021174802827425204,
+            -0.02104295739246088
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -1.247999211467267e-05,
+              6.985110512411699e-05,
+              -0.003585079286736884
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600195840638054,
+              0.057218049909055414,
+              0.016001939835296772
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010508982850169922,
+              -0.04744214330246539,
+              -0.044454522637541335
+            ],
+            "finger_high_offset_tool_m": [
+              0.01047998610208124,
+              0.04758257173115936,
+              0.009264742113884214
+            ]
+          }
+        },
+        "actions": [],
+        "retention": [],
+        "reviews": 0,
+        "release_started": false,
+        "retired_pending": {
+          "target_tcp_world_m": [
+            -0.07064181434492284,
+            0.1449600172513511,
+            1.0240085784185258
+          ],
+          "quaternion_xyzw": [
+            0.8088284936287635,
+            -0.0038096661131060113,
+            -0.5879642826816197,
+            0.008941847069848267
+          ],
+          "gripper": "close",
+          "chunk": 1
+        },
+        "acknowledged_since_old_checkpoint_steps": 9,
+        "strategy": "Translate with actual attitude to the central bowl workspace before considering one object-centered attitude change."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 324,
+  "response": {
+    "result": {
+      "key": "restage.progress",
+      "frame_id": 324,
+      "method_number": 7,
+      "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+      "bytes": 1391,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 324
+}
