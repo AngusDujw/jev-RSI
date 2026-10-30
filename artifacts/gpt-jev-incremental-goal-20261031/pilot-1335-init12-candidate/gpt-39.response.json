@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-fa5485d6-cc6b-4113-afb8-88691d6ef126",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-fa5485d6-cc6b-4113-afb8-88691d6ef126",
+      "arguments": "{\"action\": \"stop\", \"evidence\": [\"Frame 234 shows the cream cheese package on the counter outside the bowl; the raised gripper is open and empty.\", \"The observation retreat was executed. The current stage returned blocked with zero additional control calls and no acquisition or containment effect.\", \"Opposed short-end wall measurements remain missing. No replacement contact configuration or complementary sensing route has been established.\", \"Historical height-interval and palm-counter failures reject the tested configurations only, not every possible grasp.\", \"The current robot budget reports zero remaining model calls, superseding the earlier one-call snapshot. Live continuation is unavailable.\"], \"invalidated_assumptions\": [\"Further candidate validation and recovery can be completed within the remaining model-call budget.\"], \"plan_valid\": \"no\", \"reason\": \"Stop incomplete: acquisition still requires new contact and clearance evidence, but no validated executable recovery or remaining model-call budget is available to establish it. Preserve the actual raised, empty-hand state. This is a budget-limited stop, not proof of physical impossibility; do not relax margins or repeat rejected approaches.\", \"recovery_available\": \"no\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 44212,
+    "output_tokens": 1098,
+    "output_tokens_details": {
+      "reasoning_tokens": 782
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f34-eb43-74d1-9d8e-3d395745e60d",
+    "turn_ids": [
+      "01a18f34-eb49-7d91-b582-d4f37341745f"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

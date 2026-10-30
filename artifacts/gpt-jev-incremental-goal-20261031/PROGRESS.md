@@ -616,3 +616,27 @@ heuristic. Plan37 returns55.163s and consolidates acquire/place/verify
 into one stage with only2calls after planning. Builder38 live. This exposes
 insufficient reserve during within-stage review consumption; no new
 actions beyond78Jev234steps, zero completed stages or native success.
+
+## Candidate68799bb5 terminal failure
+
+Native LIBERO success=false; planner_stop after all40GPT calls,78Jev,
+234native+10settling steps,8867.413s,9methods,3plans,0confirmed stages.
+All40requests delivered and78dispatches audited. Known GPT usage
+4060185input/250253output,6unknown native accounting records retained;
+Jev181371input/19422output. Method38 took363.886s and produced only a
+blocked admission diagnostic, not an executable completion branch; final
+supervisor39 stopped with exhausted budget. No network exit explains failure.
+
+Validated mechanisms: live control-slice continuation, exact model patch
+application, structured-submission correction and checkpoint-error repair.
+Unmet outcome: acquisition, placement, stable cold-generation success and
+latency/token reduction. Six-case qualification remains unstarted.
+
+Next framework work must address early budget allocation across internal
+reviews, excessive serialization/whole-source repair context, and distinction
+between model-selected operational heuristics and externally justified hard
+constraints. Current frozen run repeatedly preserves initial model-chosen
+thresholds without establishing their necessity for task success. Do not
+hand-edit a task trajectory or lower thresholds solely to pass this episode.
+Reconcile public robot geometry/contact semantics and prior successful-source
+behavior before declaring a next frozen candidate. Preserve both failed pilots.

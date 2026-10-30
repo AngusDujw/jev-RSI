@@ -2209,5 +2209,325 @@
       ]
     },
     "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "place_verify.audit": {
+    "key": "place_verify.audit",
+    "frame_id": 234,
+    "method_number": 8,
+    "source_sha256": "74e96c599141a802c217119bcc395a8d46072a72e70e1ed4831dfabadecb6946",
+    "bytes": 8981,
+    "value": {
+      "state": {
+        "frame_id": 234,
+        "native_steps": 234,
+        "budgets": {
+          "gpt_remaining": 1,
+          "jev_remaining": 122,
+          "native_steps_remaining": 366,
+          "wall_seconds_remaining": 1000000000000.0
+        },
+        "tcp_position_world_m": [
+          -0.051990396159004734,
+          0.17258159548697466,
+          1.0009510927216922
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9843875040478433,
+          0.0018716946504550025,
+          -0.0004275838155919573,
+          0.17600441984698514
+        ],
+        "gripper_qpos_m": [
+          0.03968088783158064,
+          -0.04001434586701341
+        ],
+        "last_gripper_command": "open",
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            -1.0806074065301124e-06,
+            -0.0001596523551909354,
+            -0.0036148436588768645
+          ],
+          "pad_extent_in_tool_m": [
+            0.01600017024157804,
+            0.09469528956450157,
+            0.01600019910280966
+          ],
+          "finger_low_offset_tool_m": [
+            -0.010495783972798187,
+            -0.0664107451783185,
+            -0.04448324085366557
+          ],
+          "finger_high_offset_tool_m": [
+            0.010493677340057362,
+            0.06609128540200097,
+            0.009234300091512384
+          ]
+        }
+      },
+      "action_authorized": false,
+      "control_calls": 0,
+      "control_questions_defined": [
+        "x",
+        "y",
+        "z",
+        "rx",
+        "ry",
+        "rz",
+        "gripper"
+      ],
+      "gates": [
+        {
+          "gate": "previous_candidate_guarded_height_interval",
+          "prevented_action": "Repeat descent and closure using the rejected flat-package configuration.",
+          "observation_frame": 216,
+          "reference_frame": 0,
+          "minimum_interval_width_m": 0.0002,
+          "top_floor_world_z_m": 0.917398,
+          "counter_ceiling_world_z_m": 0.899961,
+          "finger_bottom_offset_m": -0.01285,
+          "half_pad_z_m": 0.00800089,
+          "guard_m": 0.00174137,
+          "guarded_counter_clearance_m": 0.003,
+          "guarded_overlap_m": 0.005,
+          "nominal_overlap_floor_m": 0.007,
+          "trials": [
+            {
+              "position_tolerance_m": 0.002,
+              "lower_pad_z_m": 0.919552,
+              "upper_pad_z_m": 0.916658,
+              "required_nominal_overlap_m": 0.00874137,
+              "interval_width_m": -0.00289441,
+              "residual_margin_m": -0.00309441
+            },
+            {
+              "position_tolerance_m": 0.001,
+              "lower_pad_z_m": 0.918552,
+              "upper_pad_z_m": 0.917658,
+              "required_nominal_overlap_m": 0.00774137,
+              "interval_width_m": -0.000894407,
+              "residual_margin_m": -0.00109441
+            },
+            {
+              "position_tolerance_m": 0.0005,
+              "lower_pad_z_m": 0.918052,
+              "upper_pad_z_m": 0.918158,
+              "required_nominal_overlap_m": 0.00724137,
+              "interval_width_m": 0.000105593,
+              "residual_margin_m": -9.4407e-05
+            }
+          ],
+          "uncertainty_accounting": "Historical guard plus each trial's pose tolerance, on both clearance and overlap bounds.",
+          "provenance": "Acknowledged frame-216 diagnostics supplied with this request; secure.failure retained separately.",
+          "scope": "Rejected candidate only. Not a new fit, current collision certificate, or rejection of every possible grasp."
+        },
+        {
+          "gate": "opposed_short_end_contact_evidence",
+          "prevented_action": "Short-end pinch acquisition.",
+          "observation_frame": 234,
+          "missing": [
+            "b0",
+            "b1"
+          ],
+          "measurement_errors": [],
+          "interpretation": "unknown",
+          "same_physical_frame": true
+        },
+        {
+          "gate": "replacement_configuration_and_sensing_route",
+          "prevented_action": "New contact or complementary camera motion.",
+          "status": "Not established by the supplied observations.",
+          "scope": "The previous 30 mm retreat was already executed. Its clearance does not authorize a new lateral or rotational route. Hidden-wall visibility alone would not repair the rejected height interval."
+        }
+      ],
+      "checkpoint_read_errors": [],
+      "package_on_counter_at_current_frame": true,
+      "empty_hand_at_current_frame": true,
+      "acquisition_or_containment_effect_established": false,
+      "source_observation": {
+        "frame_id": 234,
+        "parameters": {
+          "camera": "robot0_eye_in_hand",
+          "edge_pixels": [
+            [
+              342,
+              417
+            ],
+            [
+              408,
+              415
+            ],
+            [
+              408,
+              622
+            ],
+            [
+              342,
+              631
+            ]
+          ],
+          "empty_open_hand": true,
+          "identity": "same_package_on_counter",
+          "landmark_identity": "same_reference_landmarks",
+          "local_walls": "unknown",
+          "notes": "A is upper in wrist view; B is lower. Edge order is A-strip-end1,A-strip-end2,B-strip-end2,B-strip-end1. New top-side lip pixels sit just inside the boundaries to reduce mixed depth; transverse spans are about 25 mm, subject to depth verification. These are short-end strips, not a perimeter. t IDs retain their printed features. New s/c/a samples replace previous sample locations; depth validity still needs checking. b0/b1 are unavailable through object occlusion. Continue permits assessment only, not approach.",
+          "s0_surface": "same_package_top",
+          "s1_surface": "same_package_top",
+          "s2_surface": "same_package_top",
+          "s3_surface": "same_package_top",
+          "top_boundary": "visible_local_edges",
+          "top_ids": [
+            "t0",
+            "t1",
+            "t2",
+            "t3"
+          ]
+        }
+      },
+      "preserved_failure": {
+        "gate": "lower_grasp_feasible_interval",
+        "prevented_action": "approach for lower grasp",
+        "operands_and_margins": {
+          "frame": 216,
+          "reference_frame": 0,
+          "trials": [
+            {
+              "position_tolerance_m": 0.002,
+              "lower_pad_z_m": 0.9195521192849956,
+              "upper_pad_z_m": 0.9166577122808268,
+              "required_nominal_overlap_m": 0.008741372874978719,
+              "interval_width_m": -0.002894407004168764,
+              "minimum_interval_width_m": 0.0002,
+              "residual_margin_m": -0.0030944070041687643
+            },
+            {
+              "position_tolerance_m": 0.001,
+              "lower_pad_z_m": 0.9185521192849956,
+              "upper_pad_z_m": 0.9176577122808268,
+              "required_nominal_overlap_m": 0.007741372874978719,
+              "interval_width_m": -0.0008944070041687624,
+              "minimum_interval_width_m": 0.0002,
+              "residual_margin_m": -0.0010944070041687625
+            },
+            {
+              "position_tolerance_m": 0.0005,
+              "lower_pad_z_m": 0.9180521192849955,
+              "upper_pad_z_m": 0.9181577122808268,
+              "required_nominal_overlap_m": 0.007241372874978719,
+              "interval_width_m": 0.00010559299583123849,
+              "minimum_interval_width_m": 0.0002,
+              "residual_margin_m": -9.440700416876152e-05
+            }
+          ],
+          "chosen": null,
+          "top_floor_world_z_m": 0.9173981955851098,
+          "counter_ceiling_world_z_m": 0.89996073026739,
+          "finger_bottom_offset_m": -0.012850016142626902,
+          "half_pad_z_m": 0.008000889570695686,
+          "guard_m": 0.001741372874978718,
+          "required_guarded_counter_clearance_m": 0.003,
+          "required_guarded_overlap_m": 0.005,
+          "preserved_nominal_overlap_floor_m": 0.007,
+          "guard_accounting": "Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.",
+          "candidate_change": "Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold."
+        },
+        "observation_frame": 216,
+        "reason": "No alternate height meets the preserved margins within allowed pose tolerances."
+      },
+      "already_acknowledged_progress": {
+        "phases": [
+          {
+            "phase": "new_contact_observation_authorization",
+            "frame": 216,
+            "parameters": {
+              "empty_open_hand": true,
+              "retreat_clear": "clear",
+              "new_view_useful": "yes",
+              "notes": "Clear is scoped to this 30 mm vertical observation move, not arbitrary arm motion or hidden global geometry. Wrist-image end occlusion is robot self-occlusion, not an external obstruction. Complete end exposure must be checked in the resulting view. All rejected descents remain blocked. Earlier image frames are unavailable here; supplied historical records are not additional images."
+            },
+            "excluded_route": {
+              "frame": 216,
+              "family": "near-horizontal long-side entry at +/-88 and +/-90 degrees",
+              "established_obstruction": "Palm intersects counter during descent; high alignment alone was clear.",
+              "original_long_axis_world": [
+                -0.9999910963969977,
+                -0.004219849135968157,
+                0.0
+              ],
+              "model_checkpoint": "alt.model",
+              "guard_floor_m": 0.001741372874978718,
+              "prior_plane_quality_passed": true
+            }
+          },
+          {
+            "phase": "end_wall_observation_retreat",
+            "status": "reached",
+            "lease_calls": 6,
+            "before": {
+              "frame_id": 216,
+              "tcp_position_world_m": [
+                -0.051186833667093146,
+                0.17258251451771828,
+                0.9719803645112318
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9840897958324522,
+                0.0017826528425609056,
+                -0.002416137972240079,
+                0.17764644146333114
+              ],
+              "gripper_qpos_m": [
+                0.03974770365249626,
+                -0.0400145659407872
+              ],
+              "last_gripper_command": "open"
+            },
+            "after": {
+              "frame_id": 234,
+              "tcp_position_world_m": [
+                -0.051990396159004734,
+                0.17258159548697466,
+                1.0009510927216922
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9843875040478433,
+                0.0018716946504550025,
+                -0.0004275838155919573,
+                0.17600441984698514
+              ],
+              "gripper_qpos_m": [
+                0.03968088783158064,
+                -0.04001434586701341
+              ],
+              "last_gripper_command": "open"
+            },
+            "position_gain_m": 0.028692391672726504,
+            "rotation_gain_rad": -0.0051950534321751705,
+            "position_error_m": 0.001307608327273521,
+            "rotation_error_rad": 0.0051950534321751705,
+            "minimum_position_gain_m": 0.0003,
+            "minimum_rotation_gain_rad": 0.003,
+            "position_gain_margin_m": 0.028392391672726502,
+            "rotation_gain_margin_rad": -0.008195053432175171,
+            "lease_number": 1,
+            "maximum_leases": 3
+          }
+        ],
+        "target_pad_world_m": [
+          -0.05117782608344875,
+          0.17395806926763802,
+          1.005309996016187
+        ],
+        "target_quaternion_xyzw": [
+          0.9840897958324522,
+          0.0017826528425609056,
+          -0.002416137972240079,
+          0.17764644146333114
+        ]
+      },
+      "excluded_route": "Near-horizontal +/-88 and +/-90 degree long-side descents: observed palm-counter interference at frame 216.",
+      "budget_interpretation": "Do not spend the remaining review repeating unchanged questions. This is an unresolved local admission gate, not proof of global impossibility."
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
   }
 }

@@ -703,3 +703,5 @@
 【Agent @Codex】【2026-10-31】[EXP048](LOGS/2026-W44.md#exp-2026w44-048)冻结c8冷pilot经两次局部修订，在78真实Jev/234步后secure返回完成，随后监督advance到place；手与物体上升54.166/54.197mm并有当前离桌证据。放置方法此时才生成，物理状态保持；两次切片continue未重生成。仍无LIBERO终局，不能声称可靠成功或提速。保留CIRCLE-1/3收敛约束：本pilot终局后，单独声明下一冻结版本及六例独立冷验证，不覆盖失败。证据见artifacts/gpt-jev-incremental-goal-20261031/secure-stage-evidence.json。
 
 【Agent】【2026-10-31】分阶段pilot终局：见 [EXP-2026W44-048](LOGS/2026-W44.md#exp-2026w44-048)。LIBERO native_success=false，gpt_budget，40GPT/132Jev/396步，12504.060秒，仅1个确认完成阶段。40请求均交付、来源派发审计通过；机制可继续不等于任务可靠成功。保留失败，下一候选独立冻结测试，不延长当前预算、不合并失败与验证成功。
+
+【Agent】【2026-10-31】[EXP054](LOGS/2026-W44.md#exp-2026w44-054)候选68799bb5终局nativefalse/planner_stop，8867.413秒、40GPT/78Jev/234步、零完成阶段。40请求均交付，补丁/格式/检查点修正实际恢复，但反复几何门槛与观测耗尽预算，末阶段仅生成blocked诊断，不符合完整执行目标。阶段边界预算启发式未防止阶段内部耗尽；六例资格验证未开始。保留两次失败pilot，下一轮先核对模型自选门槛依据与公开几何、提前分配观测预算，不改本轮分数或注入任务轨迹。证据：artifacts/gpt-jev-incremental-goal-20261031/candidate-final-result.json。

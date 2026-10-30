@@ -1,0 +1,200 @@
+{
+  "native_success": false,
+  "termination": "planner_stop",
+  "gpt_calls": 40,
+  "jev_calls": 78,
+  "native_steps": 234,
+  "elapsed_s": 8867.413257596083,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+      "stage_id": "secure"
+    },
+    {
+      "number": 1,
+      "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+      "stage_id": "secure"
+    },
+    {
+      "number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "stage_id": "secure"
+    },
+    {
+      "number": 3,
+      "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
+      "stage_id": "secure"
+    },
+    {
+      "number": 4,
+      "source_sha256": "83ea0f277126a4a53c5e399c4435d5b7cd9ba528024e510c9f0ff53543461edc",
+      "stage_id": "alternate_pickup"
+    },
+    {
+      "number": 5,
+      "source_sha256": "6e099a4020a906d7c12b7e5168e03516e3a2596a149a0cf50b19e1028b392361",
+      "stage_id": "alternate_pickup"
+    },
+    {
+      "number": 6,
+      "source_sha256": "3576fba664533ff5b6ac0a59bdf53870bd88acacbd3d247fc8c7fe185fa0e5ed",
+      "stage_id": "alternate_pickup"
+    },
+    {
+      "number": 7,
+      "source_sha256": "0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431",
+      "stage_id": "alternate_pickup"
+    },
+    {
+      "number": 8,
+      "source_sha256": "74e96c599141a802c217119bcc395a8d46072a72e70e1ed4831dfabadecb6946",
+      "stage_id": "place_verify"
+    }
+  ],
+  "completion_proposed": false,
+  "program_result_contract_valid": true,
+  "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+  "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+  "dispatches": 78,
+  "models": {
+    "gpt": {
+      "attempts": 0,
+      "unknown_usage": 6,
+      "completed_input": 4060185,
+      "completed_output": 250253,
+      "relay_seconds": 8708.501933574677,
+      "matched_requests": 40,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 46,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": [
+        "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+      ]
+    },
+    "jev": {
+      "attempts": 78,
+      "unknown_usage": 0,
+      "completed_input": 181371,
+      "completed_output": 19422,
+      "relay_seconds": 36.30776278304984,
+      "matched_requests": 78,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "jev-1.13.0"
+      ],
+      "transport_source_hashes": [
+        "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+      ]
+    }
+  },
+  "strict_reviews_validated": 18,
+  "strict_designs_validated": 0,
+  "legacy_reviews_json_decoded": 0,
+  "source_origins": [
+    {
+      "number": 0,
+      "source_sha256": "8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 1,
+      "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 3,
+      "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 4,
+      "source_sha256": "83ea0f277126a4a53c5e399c4435d5b7cd9ba528024e510c9f0ff53543461edc",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 5,
+      "source_sha256": "6e099a4020a906d7c12b7e5168e03516e3a2596a149a0cf50b19e1028b392361",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 6,
+      "source_sha256": "3576fba664533ff5b6ac0a59bdf53870bd88acacbd3d247fc8c7fe185fa0e5ed",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 7,
+      "source_sha256": "0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 8,
+      "source_sha256": "74e96c599141a802c217119bcc395a8d46072a72e70e1ed4831dfabadecb6946",
+      "origin": "actual model output or assembled model patch"
+    }
+  ],
+  "gpt_cost_by_purpose": {
+    "submit_stage_plan": {
+      "calls": 3,
+      "upstream_attempts": 0,
+      "completed_returns": 3,
+      "input": 98791,
+      "output": 3667,
+      "unknown_usage": 0,
+      "native_accounting_records": 3
+    },
+    "submit_method": {
+      "calls": 3,
+      "upstream_attempts": 0,
+      "completed_returns": 3,
+      "input": 442050,
+      "output": 65036,
+      "unknown_usage": 0,
+      "native_accounting_records": 3
+    },
+    "submit_review": {
+      "calls": 18,
+      "upstream_attempts": 0,
+      "completed_returns": 18,
+      "input": 1118396,
+      "output": 64719,
+      "unknown_usage": 6,
+      "native_accounting_records": 24
+    },
+    "submit_stage_decision": {
+      "calls": 10,
+      "upstream_attempts": 0,
+      "completed_returns": 10,
+      "input": 436083,
+      "output": 7901,
+      "unknown_usage": 0,
+      "native_accounting_records": 10
+    },
+    "submit_method_patch": {
+      "calls": 6,
+      "upstream_attempts": 0,
+      "completed_returns": 6,
+      "input": 1964865,
+      "output": 108930,
+      "unknown_usage": 0,
+      "native_accounting_records": 6
+    }
+  },
+  "hierarchical": {
+    "plan_versions": 3,
+    "updates": 10,
+    "confirmed_stages": 0,
+    "termination": "planner_stop",
+    "rejected_source_returns": 0,
+    "scope": "Model-return provenance and transition rules, not observation truth"
+  },
+  "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+}
