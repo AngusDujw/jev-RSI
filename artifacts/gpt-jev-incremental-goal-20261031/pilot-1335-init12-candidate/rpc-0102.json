@@ -1,0 +1,155 @@
+{
+  "index": 102,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.05273411797848702,
+        0.17266076502307312,
+        0.9741996063265204
+      ],
+      [
+        0.9844291601604913,
+        0.0035368516003535157,
+        0.00020840747366141334,
+        0.17574605507035387
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "Control world translation x using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+          "criteria": {
+            "negative": "Decrease this world component when its goal_relation is decrease.",
+            "hold": "Zero this component when its goal_relation is within_tolerance.",
+            "positive": "Increase this world component when its goal_relation is increase."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "Control world translation y using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+          "criteria": {
+            "negative": "Decrease this world component when its goal_relation is decrease.",
+            "hold": "Zero this component when its goal_relation is within_tolerance.",
+            "positive": "Increase this world component when its goal_relation is increase."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "Control world translation z using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+          "criteria": {
+            "negative": "Decrease this world component when its goal_relation is decrease.",
+            "hold": "Zero this component when its goal_relation is within_tolerance.",
+            "positive": "Increase this world component when its goal_relation is increase."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "Control world rotation-vector x using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+          "criteria": {
+            "negative": "Decrease this world component when its goal_relation is decrease.",
+            "hold": "Zero this component when its goal_relation is within_tolerance.",
+            "positive": "Increase this world component when its goal_relation is increase."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "Control world rotation-vector y using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+          "criteria": {
+            "negative": "Decrease this world component when its goal_relation is decrease.",
+            "hold": "Zero this component when its goal_relation is within_tolerance.",
+            "positive": "Increase this world component when its goal_relation is increase."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "Control world rotation-vector z using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+          "criteria": {
+            "negative": "Decrease this world component when its goal_relation is decrease.",
+            "hold": "Zero this component when its goal_relation is within_tolerance.",
+            "positive": "Increase this world component when its goal_relation is increase."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Use state.processed_features.objective.gripper exactly. This is a commanded actuator choice, not a grasp assessment.",
+          "criteria": {
+            "open": "Open only for objective gripper open.",
+            "close": "Close only for objective gripper close.",
+            "keep": "Preserve the previous gripper actuation for objective gripper keep."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "source": "program_measured_geometry_and_proprioception",
+        "phase": "alternate_oblique_view",
+        "authorized_local_target_world_m": [
+          -0.05273411797848702,
+          0.17266076502307312,
+          0.9741996063265204
+        ],
+        "geometry_checkpoint": "secure.geometry",
+        "guard_m": 0.001741372874978718,
+        "no_object_effect_inferred_from_pose": true
+      },
+      "max_calls": 24,
+      "tool_point": "pad_center",
+      "translation_limit": 0.008,
+      "rotation_limit": 0.08,
+      "steps": 3,
+      "position_tolerance": 0.0025,
+      "rotation_tolerance": 0.01
+    }
+  },
+  "frame_before": 180,
+  "response": {
+    "result": {
+      "decision": 71,
+      "choices": {
+        "x": "negative",
+        "y": "negative",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "action": [
+        -0.02168567049028356,
+        -0.02579789225639581,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        -0.05106585993907833,
+        0.17329479037633866,
+        0.9716688459093961
+      ],
+      "after": [
+        -0.051186833667093146,
+        0.17258251451771828,
+        0.9719803645112318
+      ],
+      "target_tcp": [
+        -0.05273398843833091,
+        0.17131033712584667,
+        0.9708610564536074
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 216,
+      "frame_id": 216,
+      "status": "reached",
+      "position_error_m": 0.002294553056788162,
+      "rotation_error_rad": 0.007400568705715762,
+      "lease_calls": 12
+    }
+  },
+  "frame_after": 216
+}

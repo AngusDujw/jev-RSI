@@ -1,0 +1,173 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 198,
+      "native_steps": 198,
+      "budgets": {
+        "gpt_remaining": 21,
+        "jev_remaining": 134,
+        "native_steps_remaining": 402,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0566867,
+        0.169205,
+        0.968339
+      ],
+      "tcp_quaternion_xyzw": [
+        0.987287,
+        0.00416824,
+        0.00759647,
+        0.15871
+      ],
+      "gripper_qpos_m": [
+        0.0398991,
+        -0.0400122
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          8.19065e-06,
+          -0.00012235,
+          -0.00362519
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160017,
+          0.0949199,
+          0.0160508
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0104861,
+          -0.0665028,
+          -0.0445164
+        ],
+        "finger_high_offset_tool_m": [
+          0.0105046,
+          0.066215,
+          0.00925269
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "source": "program_measured_geometry_and_proprioception",
+        "phase": "alternate_oblique_view",
+        "authorized_local_target_world_m": [
+          -0.0527341,
+          0.172661,
+          0.9742
+        ],
+        "geometry_checkpoint": "secure.geometry",
+        "guard_m": 0.00174137,
+        "no_object_effect_inferred_from_pose": true
+      },
+      "objective": {
+        "gripper": "keep",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        0.00395127,
+        0.00208678,
+        0.0025018
+      ],
+      "rotation_error_world_rad": [
+        -0.0345996,
+        0.0142033,
+        -0.00382706
+      ],
+      "axes": {
+        "x": {
+          "error": 0.00395127,
+          "goal_relation": "increase"
+        },
+        "y": {
+          "error": 0.00208678,
+          "goal_relation": "increase"
+        },
+        "z": {
+          "error": 0.0025018,
+          "goal_relation": "increase"
+        },
+        "rx": {
+          "error": -0.0345996,
+          "goal_relation": "decrease"
+        },
+        "ry": {
+          "error": 0.0142033,
+          "goal_relation": "increase"
+        },
+        "rz": {
+          "error": -0.00382706,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world translation x using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+      "criteria": {
+        "negative": "Decrease this world component when its goal_relation is decrease.",
+        "hold": "Zero this component when its goal_relation is within_tolerance.",
+        "positive": "Increase this world component when its goal_relation is increase."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world translation y using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+      "criteria": {
+        "negative": "Decrease this world component when its goal_relation is decrease.",
+        "hold": "Zero this component when its goal_relation is within_tolerance.",
+        "positive": "Increase this world component when its goal_relation is increase."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world translation z using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+      "criteria": {
+        "negative": "Decrease this world component when its goal_relation is decrease.",
+        "hold": "Zero this component when its goal_relation is within_tolerance.",
+        "positive": "Increase this world component when its goal_relation is increase."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world rotation-vector x using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+      "criteria": {
+        "negative": "Decrease this world component when its goal_relation is decrease.",
+        "hold": "Zero this component when its goal_relation is within_tolerance.",
+        "positive": "Increase this world component when its goal_relation is increase."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world rotation-vector y using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+      "criteria": {
+        "negative": "Decrease this world component when its goal_relation is decrease.",
+        "hold": "Zero this component when its goal_relation is within_tolerance.",
+        "positive": "Increase this world component when its goal_relation is increase."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world rotation-vector z using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.",
+      "criteria": {
+        "negative": "Decrease this world component when its goal_relation is decrease.",
+        "hold": "Zero this component when its goal_relation is within_tolerance.",
+        "positive": "Increase this world component when its goal_relation is increase."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Use state.processed_features.objective.gripper exactly. This is a commanded actuator choice, not a grasp assessment.",
+      "criteria": {
+        "open": "Open only for objective gripper open.",
+        "close": "Close only for objective gripper close.",
+        "keep": "Preserve the previous gripper actuation for objective gripper keep."
+      }
+    }
+  }
+}

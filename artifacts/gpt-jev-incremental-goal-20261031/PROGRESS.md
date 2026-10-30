@@ -506,3 +506,13 @@ height bounds only at the new segment. Existing uncertainty/overlap/counter
 margins remain. No task-specific edits from the outer agent. Review17 job
 1880f19308f54ab7ac1de82905cea169 is active; actual child1090064 observed.
 Still52Jev156steps; proposed moves and grasp remain unvalidated.
+
+## Candidate alternate view physically reached
+
+Review17 supported raise; method3 moved156→180/60Jev. Review18 supported
+only the specified elevated open-hand lateral/tilted observation sweep.
+Actual move reachedframe216/72Jev, open gripper, hand approximately
+[-0.051187,0.172583,0.971980] worldm. Review19 now checks actual sidewall
+and local contact geometry from the changed view. This is physical evidence
+acquisition, not grasp success; observed surfaces must still support a new
+candidate. Save candidate-alternate-view.json.

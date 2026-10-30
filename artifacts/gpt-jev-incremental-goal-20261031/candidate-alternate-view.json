@@ -1,0 +1,153 @@
+{
+  "frame": 216,
+  "jev_calls": 72,
+  "raised_view_authorization": {
+    "status": "continue",
+    "explanation": "Authorize only the specified elevated observation move with OPEN actuation. Compared with the earlier images, the hand is raised and the same package remains on the counter. Positive world y moves the hand rightward in agentview, away from the bowl, bottle, and cabinet. The negative-x tilt raises the bowl-facing side and swings the upper housing away from these obstacles; no external obstruction is visible in this local sweep. The wrist displacement and tilt should improve the positive-y side view, complementary to agentview. Actual side exposure must be checked afterward.",
+    "parameters": {
+      "clear": "clear",
+      "empty_open_hand": true,
+      "identity": "same_package_on_counter",
+      "notes": "Clear applies only to the proposed 25 mm positive-y translation and -0.35 rad world-x tilt at this elevated pose. The wrist image's lower occlusion is the robot itself, not an external obstacle. Hidden package surfaces remain unobserved. No hidden-clearance certificate, descent, closure, grasp, retention, or task completion is authorized. Historical u0, u1, u2, c0, and c1 are reselected on currently visible surfaces."
+    },
+    "points": [
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "u0",
+        "pixel": [
+          349,
+          535
+        ],
+        "radius": 3
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "u1",
+        "pixel": [
+          356,
+          443
+        ],
+        "radius": 3
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "u2",
+        "pixel": [
+          445,
+          464
+        ],
+        "radius": 3
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "c0",
+        "pixel": [
+          288,
+          461
+        ],
+        "radius": 3
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "c1",
+        "pixel": [
+          499,
+          490
+        ],
+        "radius": 3
+      },
+      {
+        "camera": "agentview",
+        "name": "bowl_hand_facing_rim",
+        "pixel": [
+          436,
+          435
+        ],
+        "radius": 2
+      },
+      {
+        "camera": "agentview",
+        "name": "bottle_top",
+        "pixel": [
+          349,
+          294
+        ],
+        "radius": 2
+      }
+    ],
+    "regions": [
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "package_visible_top",
+        "box": [
+          333,
+          424,
+          456,
+          636
+        ],
+        "stride": 4
+      },
+      {
+        "camera": "agentview",
+        "name": "bowl_visible_interior",
+        "box": [
+          348,
+          408,
+          425,
+          447
+        ],
+        "stride": 4
+      },
+      {
+        "camera": "agentview",
+        "name": "bottle_visible_body",
+        "box": [
+          338,
+          348,
+          365,
+          395
+        ],
+        "stride": 4
+      },
+      {
+        "camera": "agentview",
+        "name": "cabinet_visible_near_face",
+        "box": [
+          178,
+          403,
+          202,
+          625
+        ],
+        "stride": 5
+      },
+      {
+        "camera": "agentview",
+        "name": "cabinet_handles_and_adjacent_visible_surfaces",
+        "box": [
+          207,
+          366,
+          253,
+          560
+        ],
+        "stride": 4
+      },
+      {
+        "camera": "agentview",
+        "name": "positive_y_visible_counter",
+        "box": [
+          590,
+          449,
+          668,
+          530
+        ],
+        "stride": 5
+      }
+    ]
+  },
+  "next_review": {
+    "request_id": "5f60a381e0934de18de96aceee992d31",
+    "reconnects": 0,
+    "elapsed_s": 17.140712259104475
+  },
+  "scope": "Real raised and lateral/oblique viewpoint change; no grasp or terminal success"
+}
