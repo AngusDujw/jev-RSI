@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-7ad7453c-794e-456b-bab0-c855e2b70408",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-7ad7453c-794e-456b-bab0-c855e2b70408",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"The placement program returned blocked at entry; no transfer or release actions were executed.\", \"Frame 234 shows the carton between the fingers, outside the upright bowl.\", \"The wrist image shows the carton surface and far edge, but the gripper occludes part of its perimeter.\", \"The selected geometry failed the declared fit margin; this rejects that candidate assessment, not every possible placement.\", \"Observation and control budget remain, and no placement-stage revision has yet been attempted.\"], \"invalidated_assumptions\": [\"The selected geometry and uncertainty are sufficient to establish acceptable clearance for the proposed placement.\"], \"plan_valid\": \"yes\", \"reason\": \"The placement subgoal remains appropriate. Revise the local fit assessment using better-supported inner-rim and carton-boundary measurements, an attainable alternate view, or another justified candidate. Do not reduce safety margins merely to pass the check. Preserve the actual retained grasp rather than repeating pickup.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 38742,
+    "output_tokens": 717,
+    "output_tokens_details": {
+      "reasoning_tokens": 425
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e3f-0e0b-7a73-af2b-a21d406091b8",
+    "turn_ids": [
+      "01a18e3f-0e11-7a22-9492-b0aa5685f322"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "object": "response",
+  "id": "exec-0ed1b6c4-cea0-4403-8bb2-d2bf55e3fa61",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-0ed1b6c4-cea0-4403-8bb2-d2bf55e3fa61",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Preparation only; no motion or placement success is asserted. The visible Cream print, carton/table separation, and documented surface translation matching the lift support retained identity, not merely closed fingers. The selected precontact records contain four full top-boundary corners, supported by planar top, sidewall and bare-table measurements; they are not the later transverse cross section. Side A is the physical long edge joining historical corners 0 and 3; side B joins 1 and 2. The current visible logo-start end matches c0,c1. Its boundary is the printed top/end-wall junction, not the farther end-wall silhouette. The opposite end is currently robot-occluded; no current location is assigned to it. The selected 0.00149871 m uncertainty is the largest documented prelift boundary uncertainty and is heuristic, not a confidence bound. The upright bowl and visible oval inner opening support the circular horizontal inner-lip hypothesis locally. Lip samples target the narrow upper rim surface; rim_pixels target the inner opening boundary. Fresh depth validity and model residuals still require measurement, especially at the thin lip. Historical images are not supplied here, so historical geometry is supported by the supplied measurement records rather than independent rereading of those images. No hidden-clearance certificate is claimed.\", \"parameters\": {\"bowl\": \"same_upright_unchanged\", \"bowl_mark_ids\": [\"b0: center of the large pale radial flower/star medallion on the visible interior floor.\", \"b1: center of the separate smaller pale floral rosette on the bottle-side rear inner wall, above and beside the floor medallion.\"], \"bowl_reference_mode\": \"landmarks\", \"corner_ids\": [\"c0_Cream_initial_C_end_side_A\", \"c1_Cream_initial_C_end_side_B\", \"c2_opposite_short_end_side_B\", \"c3_opposite_short_end_side_A\"], \"corner_paths\": [[\"secure.geometry\", \"precontact\", \"corners_world_m\", \"0\"], [\"secure.geometry\", \"precontact\", \"corners_world_m\", \"1\"], [\"secure.geometry\", \"precontact\", \"corners_world_m\", \"2\"], [\"secure.geometry\", \"precontact\", \"corners_world_m\", \"3\"]], \"end_camera\": \"robot0_eye_in_hand\", \"end_ids_match\": true, \"end_pixels\": [[280, 446], [490, 445]], \"extent_uncertainty_path\": [\"secure.geometry\", \"coarse\", \"uncertainty_m\"], \"history_quality\": \"metric_rectangle_supported\", \"identity\": \"same_retained_carton\", \"rim_camera\": \"agentview\", \"rim_model\": \"circular_horizontal_inner_lip\", \"rim_pixels\": [[389, 395], [422, 404], [437, 426], [424, 448], [389, 457], [355, 448], [341, 426], [354, 405]], \"table_path\": [\"secure.observations\", \"0\", \"points\", \"t0\", \"world_m\"]}, \"points\": [{\"name\": \"p0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [310, 475], \"radius\": 3}, {\"name\": \"p1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [458, 475], \"radius\": 3}, {\"name\": \"p2\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [310, 610], \"radius\": 3}, {\"name\": \"p3\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [458, 610], \"radius\": 3}, {\"name\": \"s0\", \"camera\": \"agentview\", \"pixel\": [389, 394], \"radius\": 1}, {\"name\": \"s1\", \"camera\": \"agentview\", \"pixel\": [438, 427], \"radius\": 1}, {\"name\": \"s2\", \"camera\": \"agentview\", \"pixel\": [389, 459], \"radius\": 1}, {\"name\": \"s3\", \"camera\": \"agentview\", \"pixel\": [340, 427], \"radius\": 1}, {\"name\": \"floor\", \"camera\": \"agentview\", \"pixel\": [389, 437], \"radius\": 2}, {\"name\": \"b0\", \"camera\": \"agentview\", \"pixel\": [390, 432], \"radius\": 1}, {\"name\": \"b1\", \"camera\": \"agentview\", \"pixel\": [367, 414], \"radius\": 1}], \"regions\": [{\"name\": \"b0_pattern_patch\", \"camera\": \"agentview\", \"box\": [380, 422, 401, 444], \"stride\": 4}, {\"name\": \"b1_pattern_patch\", \"camera\": \"agentview\", \"box\": [359, 406, 376, 422], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 112650,
+    "output_tokens": 2719,
+    "output_tokens_details": {
+      "reasoning_tokens": 727
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e36-a783-78a0-9445-cf80ce4b200d",
+    "turn_ids": [
+      "01a18e36-a789-71a2-8186-d9f558ddfa55",
+      "01a18e3c-5cda-76e3-98b0-299fd48e0ee8"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

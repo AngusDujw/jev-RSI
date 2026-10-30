@@ -200,3 +200,23 @@ Last confirmed frame remains234/78Jev; placement has no acknowledged action yet.
 Placement generation native aggregate320627 input/31076 output/21677 reasoning
 tokens; includes native internal usage, not a one-shot prompt size. Long source
 and review latency remain unresolved; stage support alone is not a speedup.
+
+## Actual dual transport recovery and placement repair
+
+Review15 suffered native TLS handshake EOF / connection failures, then one
+same-thread continuation. Native job5ccd985b completed with two turns. Separately,
+the SSH reverse tunnel exited255 at03:12:30 with Restart=no. The remote host
+remained alive, polling the same job. Restarting that owned tunnel restored
+delivery of the saved result, without regenerating source or resetting physics.
+Host recorded27 reconnects and551.143 seconds for the review; frame234 retained.
+Runtime-only drop-in now sets Restart=on-failure/RestartSec=5s and disables
+start-rate limiting for this owned tunnel; systemctl confirmed the active
+configuration and PID679485. No live fault injection performed. Cleanup must
+also remove our recovery.conf drop-in after the goal experiments end.
+
+The valid review then led method3 to block on insufficient carton-to-opening
+fit margin at declared uncertainty/controller tolerance. Supervisor16 chose
+revise with valid overall plan and no transfer/release. Current placement repair
+job09522dc0d3f846b6900a4b5c2185cd2e / thread01a18e40-23ff-76d3-b936-1a6bdea87585
+is active. Native task success remains unproven. Preserve
+placement-review-recovery.json and the actual review/decision receipts.

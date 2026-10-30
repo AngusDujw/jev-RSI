@@ -1,0 +1,18 @@
+{
+  "action": "revise",
+  "evidence": [
+    "The placement program returned blocked at entry; no transfer or release actions were executed.",
+    "Frame 234 shows the carton between the fingers, outside the upright bowl.",
+    "The wrist image shows the carton surface and far edge, but the gripper occludes part of its perimeter.",
+    "The selected geometry failed the declared fit margin; this rejects that candidate assessment, not every possible placement.",
+    "Observation and control budget remain, and no placement-stage revision has yet been attempted."
+  ],
+  "invalidated_assumptions": [
+    "The selected geometry and uncertainty are sufficient to establish acceptable clearance for the proposed placement."
+  ],
+  "plan_valid": "yes",
+  "reason": "The placement subgoal remains appropriate. Revise the local fit assessment using better-supported inner-rim and carton-boundary measurements, an attainable alternate view, or another justified candidate. Do not reduce safety margins merely to pass the check. Preserve the actual retained grasp rather than repeating pickup.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

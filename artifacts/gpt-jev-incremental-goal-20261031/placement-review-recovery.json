@@ -1,0 +1,206 @@
+{
+  "thread_id": "01a18e36-a783-78a0-9445-cf80ce4b200d",
+  "turns": [
+    {
+      "id": "01a18e36-a789-71a2-8186-d9f558ddfa55",
+      "continuation": false
+    },
+    {
+      "id": "01a18e3c-5cda-76e3-98b0-299fd48e0ee8",
+      "continuation": true
+    }
+  ],
+  "recoveries": [
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 2/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "stream disconnected before completion: tls handshake eof",
+        "misalignment": null
+      },
+      "at": 1793387482.5357742
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 3/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "stream disconnected before completion: tls handshake eof",
+        "misalignment": null
+      },
+      "at": 1793387487.9395604
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 4/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "stream disconnected before completion: tls handshake eof",
+        "misalignment": null
+      },
+      "at": 1793387493.6802871
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 5/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "stream disconnected before completion: tls handshake eof",
+        "misalignment": null
+      },
+      "at": 1793387500.193481
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 1/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "Connection failed: error sending request",
+        "misalignment": null
+      },
+      "at": 1793387536.6776693
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 2/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "Connection failed: error sending request",
+        "misalignment": null
+      },
+      "at": 1793387564.807402
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 3/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "Connection failed: error sending request",
+        "misalignment": null
+      },
+      "at": 1793387593.21355
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 4/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "Connection failed: error sending request",
+        "misalignment": null
+      },
+      "at": 1793387622.0419972
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 5/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "Connection failed: error sending request",
+        "misalignment": null
+      },
+      "at": 1793387651.6778252
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": false,
+      "error": {
+        "message": "Connection failed: error sending request",
+        "codexErrorInfo": {
+          "httpConnectionFailed": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": null,
+        "misalignment": null
+      },
+      "at": 1793387683.0280774
+    },
+    {
+      "kind": "same_thread_continue",
+      "error": {
+        "message": "Connection failed: error sending request",
+        "codexErrorInfo": {
+          "httpConnectionFailed": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": null,
+        "misalignment": null
+      },
+      "retry_delay_s": 0
+    },
+    {
+      "kind": "native_stream_error",
+      "will_retry": true,
+      "error": {
+        "message": "Reconnecting... 1/5",
+        "codexErrorInfo": {
+          "responseStreamDisconnected": {
+            "httpStatusCode": null
+          }
+        },
+        "additionalDetails": "Connection failed: error sending request",
+        "misalignment": null
+      },
+      "at": 1793387711.1448257
+    }
+  ],
+  "status": "completed",
+  "updated_at": 1793387765.2964463,
+  "payload_sha256": "5e2742b985839c9a79cf1d3391b063de7825cae9d3041af8bef01ec8edccb3e6",
+  "server_received": true,
+  "transport_reconnects": 27,
+  "host_elapsed_s": 551.1429527879227,
+  "robot_state_preserved_frame": 234,
+  "tunnel_exit_code": 255,
+  "tunnel_restarted_pid": 679485,
+  "tunnel_restart_policy": "on-failure / 5 seconds",
+  "runtime_dropin": "/run/user/1000/systemd/user/gpt-jev-incremental-tunnel-20261031.service.d/recovery.conf",
+  "auto_restart_fault_injection_tested": false
+}

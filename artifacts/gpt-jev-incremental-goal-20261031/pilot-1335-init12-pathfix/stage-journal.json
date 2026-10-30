@@ -725,6 +725,129 @@
         "stage_satisfied": "yes",
         "task_satisfied": "no"
       }
+    },
+    {
+      "update": 3,
+      "stage": "place",
+      "plan_revision": 0,
+      "stage_index": 1,
+      "frame_id": 234,
+      "trigger": "stage_returned",
+      "source_sha256": "5d3c1672e734d486c50315fa93512d93c1f2b11647dba0e5fc010e34f583edc5",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "Measured carton-to-inner-opening fit margin is insufficient at the declared uncertainty and 1.5 mm controller tolerance.",
+        "evidence": {
+          "phase": "entry",
+          "actions": [],
+          "release_started": false,
+          "entry": {
+            "frame_id": 234,
+            "native_steps": 234,
+            "tcp_position_world_m": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999711545227261,
+              0.007398647746313991,
+              0.0014026799739744358,
+              0.0009912733744994022
+            ],
+            "gripper_qpos_m": [
+              0.02118506207827258,
+              -0.02103588604034721
+            ],
+            "last_gripper_command": "close"
+          },
+          "failure_status": "blocked",
+          "state": {
+            "frame_id": 234,
+            "native_steps": 234,
+            "tcp_position_world_m": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999711545227261,
+              0.007398647746313991,
+              0.0014026799739744358,
+              0.0009912733744994022
+            ],
+            "gripper_qpos_m": [
+              0.02118506207827258,
+              -0.02103588604034721
+            ],
+            "last_gripper_command": "close"
+          },
+          "stage_status": "blocked",
+          "reason": "Measured carton-to-inner-opening fit margin is insufficient at the declared uncertainty and 1.5 mm controller tolerance."
+        },
+        "completion_proposed": false,
+        "handoff": {
+          "checkpoint_keys": [
+            "secure.geometry",
+            "secure.observations",
+            "secure.local",
+            "secure.retention",
+            "place.effect",
+            "place.progress"
+          ],
+          "frames": "World metres, tool-to-world xyzw. Every measurement retains its observation frame. Checkpoint receipts identify method and source.",
+          "references": {
+            "place.geometry": "Measured historical rectangle references and their selected paths; current observed short-end anchors; measured inner-rim model, uncertainty and physical bowl landmark identities.",
+            "place.progress": "Acknowledged local leases, actual before/after states, pending action if interrupted, and whether opening has started.",
+            "place.effect": "Latest fresh review, including failed or partial measurements. Not necessarily successful placement."
+          },
+          "actual_state": {
+            "frame_id": 234,
+            "native_steps": 234,
+            "tcp_position_world_m": [
+              -0.052079271964960185,
+              0.14630321205232666,
+              0.9710701462042386
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999711545227261,
+              0.007398647746313991,
+              0.0014026799739744358,
+              0.0009912733744994022
+            ],
+            "gripper_qpos_m": [
+              0.02118506207827258,
+              -0.02103588604034721
+            ],
+            "last_gripper_command": "close"
+          },
+          "release_started": false,
+          "assumptions": [
+            "No pickup is repeated. No withdrawal or final stability verification is implemented here.",
+            "The rectangle model is supported by precontact metric boundary measurements, not an inferred hidden perimeter.",
+            "Bowl geometry is local and conditional on fresh stationarity checks; it is not a collision certificate.",
+            "Reobserve after movement. If opening has started, do not repeat release without auditing the actual object state."
+          ]
+        }
+      },
+      "decision": {
+        "action": "revise",
+        "evidence": [
+          "The placement program returned blocked at entry; no transfer or release actions were executed.",
+          "Frame 234 shows the carton between the fingers, outside the upright bowl.",
+          "The wrist image shows the carton surface and far edge, but the gripper occludes part of its perimeter.",
+          "The selected geometry failed the declared fit margin; this rejects that candidate assessment, not every possible placement.",
+          "Observation and control budget remain, and no placement-stage revision has yet been attempted."
+        ],
+        "invalidated_assumptions": [
+          "The selected geometry and uncertainty are sufficient to establish acceptable clearance for the proposed placement."
+        ],
+        "plan_valid": "yes",
+        "reason": "The placement subgoal remains appropriate. Revise the local fit assessment using better-supported inner-rim and carton-boundary measurements, an attainable alternate view, or another justified candidate. Do not reduce safety margins merely to pass the check. Preserve the actual retained grasp rather than repeating pickup.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      }
     }
   ],
   "completed": [
