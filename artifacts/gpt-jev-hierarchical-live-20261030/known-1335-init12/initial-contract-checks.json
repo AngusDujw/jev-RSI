@@ -1,0 +1,9 @@
+{
+  "english": true,
+  "overall_plan_first": true,
+  "strict_plan_schema": true,
+  "plan_prompt_exact": true,
+  "no_native_score_in_request": true,
+  "two_initial_images": true,
+  "no_archived_method": true
+}

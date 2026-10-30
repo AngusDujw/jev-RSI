@@ -1,0 +1,105 @@
+{
+  "status": "completed",
+  "elapsed_s": 0.6273519992828369,
+  "choices": {
+    "x": "positive",
+    "y": "positive",
+    "z": "hold",
+    "rx": "hold",
+    "ry": "negative",
+    "rz": "hold",
+    "gripper": "open"
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "x": {
+        "type": "choice",
+        "choice": "positive",
+        "confidence": 1.0,
+        "probabilities": {
+          "negative": 0.0,
+          "hold": 0.0,
+          "positive": 1.0
+        }
+      },
+      "y": {
+        "type": "choice",
+        "choice": "positive",
+        "confidence": 1.0,
+        "probabilities": {
+          "negative": 0.0,
+          "hold": 0.0,
+          "positive": 1.0
+        }
+      },
+      "z": {
+        "type": "choice",
+        "choice": "hold",
+        "confidence": 1.0,
+        "probabilities": {
+          "negative": 0.0,
+          "hold": 1.0,
+          "positive": 0.0
+        }
+      },
+      "rx": {
+        "type": "choice",
+        "choice": "hold",
+        "confidence": 1.0,
+        "probabilities": {
+          "negative": 0.0,
+          "hold": 1.0,
+          "positive": 0.0
+        }
+      },
+      "ry": {
+        "type": "choice",
+        "choice": "negative",
+        "confidence": 1.0,
+        "probabilities": {
+          "negative": 1.0,
+          "hold": 0.0,
+          "positive": 0.0
+        }
+      },
+      "rz": {
+        "type": "choice",
+        "choice": "hold",
+        "confidence": 1.0,
+        "probabilities": {
+          "negative": 0.0,
+          "hold": 1.0,
+          "positive": 0.0
+        }
+      },
+      "gripper": {
+        "type": "choice",
+        "choice": "open",
+        "confidence": 1.0,
+        "probabilities": {
+          "open": 1.0,
+          "close": 0.0,
+          "keep": 0.0
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 2278,
+      "output_tokens": 249
+    }
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "request_sent": true,
+      "model": "jev-1.13.0",
+      "usage": {
+        "input_tokens": 2278,
+        "output_tokens": 249
+      },
+      "elapsed_s": 0.6266833289992064
+    }
+  ],
+  "scope": "Authorized Jev connectivity replay through existing shell proxy; no physical dispatch"
+}

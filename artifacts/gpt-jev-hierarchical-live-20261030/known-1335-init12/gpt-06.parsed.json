@@ -1,0 +1,126 @@
+{
+  "status": "continue",
+  "explanation": "The labeled cream-cheese package matches the saved frame-0 outline and remains on the tabletop; no execution intervened. The elevated straight open-hand sweep to the specified hover, including the small orientation change, is visibly clear of external objects. The bottle, bowl and cooktop are below or outside that sweep. Robot geometry at the starting pose is self-occlusion, not an external obstacle. table_check selects exposed tabletop inside the saved polygon, between the package and bowl.",
+  "parameters": {
+    "identity": "same_package",
+    "support": "on_table",
+    "corridor": "visible_clear",
+    "detail": "Clearance assessment applies only to the elevated approach to hover, not descent, closure, lift or transport. The open fingers are not yet straddling the package. top_check is on the same labeled top face; table_check avoids the bowl rim and package."
+  },
+  "points": [
+    {
+      "name": "table_check",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        240,
+        220
+      ],
+      "radius": 3
+    },
+    {
+      "name": "top_check",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        176,
+        214
+      ],
+      "radius": 3
+    },
+    {
+      "name": "a0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        219,
+        291
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a1",
+      "camera": "agentview",
+      "pixel": [
+        447,
+        472
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        287,
+        200
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a3",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        216,
+        153
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a4",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        152,
+        154
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a5",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        84,
+        201
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a6",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        85,
+        245
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a7",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        156,
+        290
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "name": "bottle_upper_surface",
+      "camera": "agentview",
+      "box": [
+        340,
+        286,
+        360,
+        330
+      ],
+      "stride": 4
+    },
+    {
+      "name": "bowl_visible_surface",
+      "camera": "agentview",
+      "box": [
+        337,
+        392,
+        442,
+        475
+      ],
+      "stride": 4
+    }
+  ]
+}

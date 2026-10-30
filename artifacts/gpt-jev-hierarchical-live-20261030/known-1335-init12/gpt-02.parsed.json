@@ -1,0 +1,121 @@
+{
+  "status": "continue",
+  "explanation": "The labeled top face and visible narrow side faces support a rectangular cream cheese package resting on the tabletop. The selected tabletop quadrilateral is fully visible and clear except for the package, with surrounding margin for the supplied open-finger footprint. It excludes the bowl, stove, and other objects. This supports local access only, not unseen geometry or a complete motion-path clearance claim.",
+  "parameters": {
+    "camera": "robot0_eye_in_hand",
+    "identity": "cream_cheese_on_table",
+    "box_model": "visible_rectangular_box",
+    "free_area": "visible_clear_except_package",
+    "outline": [
+      [
+        145,
+        158
+      ],
+      [
+        203,
+        157
+      ],
+      [
+        206,
+        273
+      ],
+      [
+        149,
+        273
+      ]
+    ],
+    "patch": [
+      [
+        155,
+        168
+      ],
+      [
+        194,
+        166
+      ],
+      [
+        198,
+        263
+      ],
+      [
+        158,
+        265
+      ]
+    ]
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p0",
+      "pixel": [
+        156,
+        171
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p1",
+      "pixel": [
+        193,
+        170
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p2",
+      "pixel": [
+        195,
+        260
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p3",
+      "pixel": [
+        159,
+        260
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        65,
+        95
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        262,
+        95
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        262,
+        342
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t3",
+      "pixel": [
+        65,
+        342
+      ],
+      "radius": 3
+    }
+  ],
+  "regions": []
+}

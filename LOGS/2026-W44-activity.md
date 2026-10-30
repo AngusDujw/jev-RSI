@@ -222,3 +222,10 @@
 - 【User】【2026-10-30 12:02】[intent] 用户要求实际跑新版分阶段框架。固定旧1335/init12和新框架比较任务138/init0各一例，空记忆冷生成、自动阶段修正；本机Pro gpt-6-astra/xhigh + 官方Jev，远端company-server-2-ykj原项目环境，最终以隔离LIBERO判定。
 - 【Agent】【2026-10-30 12:04】[op] 新建实验块 EXP-2026W44-042：实际验证分阶段GPT6+Jev：旧1335/init12和task138/init0各一例，自动方法修正与剩余计划重排，以LIBERO判定  ↪ `EXP-2026W44-042`
 - 【Agent】【2026-10-30 12:06】[run] 已在远端独立a3f3ac3a工作树启动固定两例顺序批次，本机Pro原生持久桥与SSH反向隧道就绪；24GPT/200Jev/600步，12阶段更新/3局部修订/2重规划，无整体时间截止，关闭视频。授权Jev凭据由本机OS keyring解析，仅本机临时受限文件供relay使用，未传服务器；无Platform/caz key。远端Git SSH无读取权限，改用120KiB Git bundle部署。
+- 【Agent】【2026-10-30 12:13】[result] 旧1335整体阶段计划81.47秒完整交付，4阶段grasp/align/release/verify；实际首请求7项契约检查通过（英文、首工具stage_plan、strict、提示词精确一致、2图、无隐藏分数、无旧源）。native instruction_sources空；第一个阶段方法仍生成，Jev0/策略步0，无恢复事件。
+- 【Agent】【2026-10-30 12:27】[result] 旧任务第一抓取阶段完整方法1106.957秒交付，Pro原生1轮/0恢复/0非法提交；真实受限worker已开始执行并发起首轮观测review，尚无Jev派发。阶段计划81.47秒，继续等待固定批次，不手工改源码。
+- 【Agent】【2026-10-30 12:29】[result] 旧1335实际首抓取方法278行/25047字符，首review58.4秒后因候选minimum_footprint_margin=-8.784mm返回blocked，Jev0/步0；监督39.1秒完整返回revise、plan_valid=yes、recovery_available=yes，正在自动生成当前阶段修正版。不是整任务退出或物理不可行证明；不改共享阈值或手工源码。
+- 【Agent】【2026-10-30 12:48】[result] 旧任务第一次抓取修订在约40.8分钟提交了包含While的非法源，native严格源码检查拒绝，未执行；适配器将Unsupported source construct: While反馈同一原生会话，自动纠正中。非网络恢复，不计为外层手工修补，拒绝候选原样保留。
+- 【Agent】【2026-10-30 12:57】[result] 首例2824.613秒因relay转发的Jev451区域拒绝终止（host502），7GPT/1Jev尝试/0派发/0策略步/nativefalse。定位systemd未继承shell代理，相同授权Jev请求经既有7897代理0.627秒正常返回（诊断重放不派发）。仅重启自有relay并显式继承HTTP(S)_PROXY/NO_PROXY，同输出持久job支持第二例同ID重附；保留原失败，后续单列修复网络后的旧例冷重试，不替换或隐去原例。
+- 【Agent】【2026-10-30 13:00】[op] 新建实验块 EXP-2026W44-043：修复relay未继承既有代理后追加一次旧1335/init12独立冷重试，原451失败保留、不替换，方法和预算不变  ↪ `EXP-2026W44-043`
+- 【Agent】【2026-10-30 13:00】[result] 首例来源/阶段决策/strict审查/零派发/用量审计通过：7/7GPT交付，924071输入/68408输出，Jev区域拒绝1未知用量；仅说明程序已从初态阻塞修订至Jev请求，未验证物理控制。第二例因修relay受控重启同job/thread继续；追加旧例冷重试retry-manifest已预声明并排队，使用独立账本，原失败不替换。

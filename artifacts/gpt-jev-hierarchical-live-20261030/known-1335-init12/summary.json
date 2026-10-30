@@ -1,0 +1,24 @@
+{
+  "termination": "HTTP Error 502: Bad Gateway",
+  "native_success": false,
+  "result": null,
+  "native_steps": 0,
+  "settling_steps": 10,
+  "jev_calls": 1,
+  "gpt_calls": 7,
+  "rpc_calls": 35,
+  "elapsed_s": 2824.6126168810297,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "ffb6dbfccd8b6ff6ba83296f512977ba12902e85c19830bdf4ff076ce1af9297",
+      "stage_id": "grasp"
+    },
+    {
+      "number": 1,
+      "source_sha256": "156a0e6746213289a7eae2d933b9e97b90d0942f7e44482db62cc110186629d5",
+      "stage_id": "grasp"
+    }
+  ],
+  "last_method_error": null
+}

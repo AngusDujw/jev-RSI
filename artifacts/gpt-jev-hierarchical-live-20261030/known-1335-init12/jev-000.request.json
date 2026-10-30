@@ -1,0 +1,174 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 0,
+      "native_steps": 0,
+      "budgets": {
+        "gpt_remaining": 17,
+        "jev_remaining": 200,
+        "native_steps_remaining": 600,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.207198,
+        -0.00268411,
+        1.1834
+      ],
+      "tcp_quaternion_xyzw": [
+        0.999614,
+        -0.000163778,
+        -0.0277874,
+        0.000255883
+      ],
+      "gripper_qpos_m": [
+        0.0387218,
+        -0.0387238
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          4.17768e-06,
+          -1.23337e-06,
+          -0.00360314
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160013,
+          0.0924457,
+          0.0160008
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0104903,
+          -0.0651272,
+          -0.0444717
+        ],
+        "finger_high_offset_tool_m": [
+          0.0105003,
+          0.0651249,
+          0.00924596
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "phase": "approach",
+        "review_frame": 0,
+        "tracker_frame": 0,
+        "tracker_uncertainty_m": 0.0015,
+        "access_frame": 0,
+        "planned_footprint_margin_m": 0.00952493,
+        "actual_floor_margin_m": 0.272892,
+        "actual_footprint_margin_m": -0.201754,
+        "local_table_margin_applicable": false,
+        "grasp_overlap_m": 0.00745504,
+        "observation_test_not_grasp_certification": false
+      },
+      "objective": {
+        "gripper": "open",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        0.154429,
+        0.146879,
+        -5.79747e-06
+      ],
+      "rotation_error_world_rad": [
+        0.000668731,
+        -0.0555804,
+        0.00597188
+      ],
+      "axes": {
+        "x": {
+          "error": 0.154429,
+          "goal_relation": "increase"
+        },
+        "y": {
+          "error": 0.146879,
+          "goal_relation": "increase"
+        },
+        "z": {
+          "error": -5.79747e-06,
+          "goal_relation": "within_tolerance"
+        },
+        "rx": {
+          "error": 0.000668731,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": -0.0555804,
+          "goal_relation": "decrease"
+        },
+        "rz": {
+          "error": 0.00597188,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the x world component, read state.processed_features.axes.x.goal_relation. Decrease means negative, increase means positive, within_tolerance means hold. Rotations are world rotation-vector components. Do not infer obstacles or change the objective.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance; zero motion.",
+        "positive": "Increase this world component."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the y world component, read state.processed_features.axes.y.goal_relation. Decrease means negative, increase means positive, within_tolerance means hold. Rotations are world rotation-vector components. Do not infer obstacles or change the objective.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance; zero motion.",
+        "positive": "Increase this world component."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the z world component, read state.processed_features.axes.z.goal_relation. Decrease means negative, increase means positive, within_tolerance means hold. Rotations are world rotation-vector components. Do not infer obstacles or change the objective.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance; zero motion.",
+        "positive": "Increase this world component."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the rx world component, read state.processed_features.axes.rx.goal_relation. Decrease means negative, increase means positive, within_tolerance means hold. Rotations are world rotation-vector components. Do not infer obstacles or change the objective.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance; zero motion.",
+        "positive": "Increase this world component."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the ry world component, read state.processed_features.axes.ry.goal_relation. Decrease means negative, increase means positive, within_tolerance means hold. Rotations are world rotation-vector components. Do not infer obstacles or change the objective.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance; zero motion.",
+        "positive": "Increase this world component."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the rz world component, read state.processed_features.axes.rz.goal_relation. Decrease means negative, increase means positive, within_tolerance means hold. Rotations are world rotation-vector components. Do not infer obstacles or change the objective.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance; zero motion.",
+        "positive": "Increase this world component."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read state.processed_features.objective.gripper exactly. Open is only for the confirmed empty pre-grasp hand; close is one acquisition attempt; keep preserves the delivered command. No choice certifies retention.",
+      "criteria": {
+        "open": "The objective requests open.",
+        "close": "The objective requests close.",
+        "keep": "The objective requests keep."
+      }
+    }
+  }
+}

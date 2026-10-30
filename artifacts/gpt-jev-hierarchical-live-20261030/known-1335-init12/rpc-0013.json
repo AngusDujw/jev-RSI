@@ -1,0 +1,24 @@
+{
+  "index": 13,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": [
+      {
+        "key": "grasp_stage_v1",
+        "frame_id": 0,
+        "method_number": 0,
+        "source_sha256": "ffb6dbfccd8b6ff6ba83296f512977ba12902e85c19830bdf4ff076ce1af9297",
+        "bytes": 3418,
+        "source": "program-supplied historical data; not a fresh measurement"
+      }
+    ]
+  },
+  "frame_after": 0
+}

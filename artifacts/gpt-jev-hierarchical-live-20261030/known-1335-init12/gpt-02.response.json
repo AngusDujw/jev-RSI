@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-a4f453d1-421d-416d-b3d4-9198031459b9",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-a4f453d1-421d-416d-b3d4-9198031459b9",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The labeled top face and visible narrow side faces support a rectangular cream cheese package resting on the tabletop. The selected tabletop quadrilateral is fully visible and clear except for the package, with surrounding margin for the supplied open-finger footprint. It excludes the bowl, stove, and other objects. This supports local access only, not unseen geometry or a complete motion-path clearance claim.\", \"parameters\": {\"camera\": \"robot0_eye_in_hand\", \"identity\": \"cream_cheese_on_table\", \"box_model\": \"visible_rectangular_box\", \"free_area\": \"visible_clear_except_package\", \"outline\": [[145, 158], [203, 157], [206, 273], [149, 273]], \"patch\": [[155, 168], [194, 166], [198, 263], [158, 265]]}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [156, 171], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [193, 170], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [195, 260], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p3\", \"pixel\": [159, 260], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [65, 95], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t1\", \"pixel\": [262, 95], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t2\", \"pixel\": [262, 342], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t3\", \"pixel\": [65, 342], \"radius\": 3}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 18455,
+    "output_tokens": 1417,
+    "output_tokens_details": {
+      "reasoning_tokens": 1014
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b0f-4a36-7da2-8457-70983d1870bc",
+    "turn_ids": [
+      "01a18b0f-4a3c-73b0-a538-f686625545dc"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

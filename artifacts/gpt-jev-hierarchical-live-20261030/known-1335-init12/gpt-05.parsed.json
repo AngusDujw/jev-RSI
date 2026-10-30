@@ -1,0 +1,105 @@
+{
+  "status": "continue",
+  "explanation": "The same frame-0 cream-cheese package remains on the table. The narrow cyclic polygon uses new access measurements around the package and open-finger footprint. The proposed wrist-view a1 is obscured by the bowl rim, so a1 is selected on visible tabletop in agentview instead. The complementary views show the bowl outside this local approach corridor, without an observed external obstruction. The previous polygon failure was inadequate coverage, not evidence of collision. Check the fixed 7 mm margin numerically using the returned depths.",
+  "parameters": {
+    "identity": "same_rectangular_package_on_table",
+    "access": "visible_clear_except_package",
+    "detail": "Local vertical open-hand access only, not global clearance. Preserve the original physical top corners at wrist pixels [145,158], [203,157], [206,273], [149,273]. top_check is an interior check, not a replacement corner. a0 through a7 are cyclic tabletop selections; a1 uses agentview to avoid bowl-rim occlusion."
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "top_check",
+      "pixel": [
+        176,
+        214
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a0",
+      "pixel": [
+        219,
+        291
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "a1",
+      "pixel": [
+        447,
+        472
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a2",
+      "pixel": [
+        287,
+        200
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a3",
+      "pixel": [
+        216,
+        153
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a4",
+      "pixel": [
+        152,
+        154
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a5",
+      "pixel": [
+        84,
+        201
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a6",
+      "pixel": [
+        85,
+        245
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "a7",
+      "pixel": [
+        156,
+        290
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "camera": "agentview",
+      "name": "bowl_side_tabletop",
+      "box": [
+        444,
+        461,
+        478,
+        500
+      ],
+      "stride": 4
+    }
+  ]
+}

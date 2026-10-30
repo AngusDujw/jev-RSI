@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "plans": [
+    {
+      "explanation": "Initial plan from frame 0: the cream cheese package and upright bowl are visible on the table, the gripper is open, and no physical actions have been acknowledged.",
+      "goal_evidence": "After release and settling, fresh observations show the cream cheese package contained in the upright bowl, remaining there independently of the visibly separated gripper.",
+      "stages": [
+        {
+          "id": "grasp",
+          "objective": "Acquire a secure grasp of the cream cheese package.",
+          "entry_evidence": "Frame 0 shows the package beside the bowl on the table; the robot reports an open gripper and no executed actions.",
+          "success_evidence": "Fresh images show the package held between the fingers and lifted clear of the table, with its position relative to the gripper maintained across observations.",
+          "handoff_requirements": "Use current RGB-D and robot geometry to establish grasp access and clearance from the table and nearby objects. Preserve the observed package extent and grasp relationship.",
+          "replan_conditions": "If access or depth is uncertain, obtain another usable public view from a clearance-checked pose. If the package slips, moves unexpectedly, or is not visibly held, reassess its actual location before another attempt."
+        },
+        {
+          "id": "align",
+          "objective": "Bring the held package to a placement-ready position over the bowl.",
+          "entry_evidence": "The package is visibly held clear of the table; fresh observations locate the bowl and surrounding obstacles.",
+          "success_evidence": "RGB-D observations show the held package aligned with the bowl opening, with evidence of sufficient package and finger clearance for placement.",
+          "handoff_requirements": "Confirm bowl opening, package orientation, and relevant motion clearance using current observations rather than assuming unseen space is free.",
+          "replan_conditions": "If fit, rim clearance, or grasp stability is uncertain, reassess using another safely available view or supported orientation. If the bowl or package moves, refresh their observed geometry."
+        },
+        {
+          "id": "release",
+          "objective": "Place and release the package into the bowl without tipping it.",
+          "entry_evidence": "The package remains securely held at a placement-ready alignment with observed clearance.",
+          "success_evidence": "Fresh images show the package inside the bowl and no longer retained by the fingers; the bowl remains upright.",
+          "handoff_requirements": "Maintain observation of the package, fingers, and rim where possible, and leave clearance for safe gripper separation and subsequent settling.",
+          "replan_conditions": "If the package catches on the rim, remains attached to the gripper, falls outside, or shifts the bowl, reassess the resulting physical state before any corrective action."
+        },
+        {
+          "id": "verify",
+          "objective": "Assess the completed placement after gripper separation and settling.",
+          "entry_evidence": "Release has been attempted, but containment and independent support still require confirmation.",
+          "success_evidence": "Observations after settling show the package remaining inside the upright bowl while the gripper is visibly clear and not supporting it.",
+          "handoff_requirements": "Use fresh images and depth to assess containment and stability; if occluded, obtain another view only through observed clearance.",
+          "replan_conditions": "If containment or stability is ambiguous, gather additional evidence. If the package is outside, precariously balanced on the rim, or still held, plan remaining recovery from that observed state."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "update": 0,
+      "stage": "grasp",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 0,
+      "trigger": "stage_returned",
+      "source_sha256": "ffb6dbfccd8b6ff6ba83296f512977ba12902e85c19830bdf4ff076ce1af9297",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "The measured finger/table/obstacle margins do not permit this pinch; margins were not relaxed.",
+        "evidence": [
+          {
+            "review_frame": 0,
+            "parameters": {
+              "camera": "robot0_eye_in_hand",
+              "identity": "cream_cheese_on_table",
+              "box_model": "visible_rectangular_box",
+              "free_area": "visible_clear_except_package",
+              "outline": [
+                [
+                  145,
+                  158
+                ],
+                [
+                  203,
+                  157
+                ],
+                [
+                  206,
+                  273
+                ],
+                [
+                  149,
+                  273
+                ]
+              ],
+              "patch": [
+                [
+                  155,
+                  168
+                ],
+                [
+                  194,
+                  166
+                ],
+                [
+                  198,
+                  263
+                ],
+                [
+                  158,
+                  265
+                ]
+              ]
+            },
+            "points": {
+              "p0": {
+                "world_m": [
+                  -0.021888365314880337,
+                  0.15739572346648603,
+                  0.9178211357560824
+                ],
+                "depth_m": 0.3517856299877167,
+                "frame_id": 0,
+                "pixel": [
+                  156,
+                  171
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p1": {
+                "world_m": [
+                  -0.021329116511287938,
+                  0.13124803169728055,
+                  0.9181662050047095
+                ],
+                "depth_m": 0.35142308473587036,
+                "frame_id": 0,
+                "pixel": [
+                  193,
+                  170
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p2": {
+                "world_m": [
+                  -0.08377844826766676,
+                  0.13114977271843586,
+                  0.9182298558080835
+                ],
+                "depth_m": 0.35483112931251526,
+                "frame_id": 0,
+                "pixel": [
+                  195,
+                  260
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p3": {
+                "world_m": [
+                  -0.08365478539049234,
+                  0.15694628557841656,
+                  0.9176054366850726
+                ],
+                "depth_m": 0.3554348051548004,
+                "frame_id": 0,
+                "pixel": [
+                  159,
+                  260
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t0": {
+                "world_m": [
+                  0.03898588136727468,
+                  0.23052502028737196,
+                  0.8999586938767103
+                ],
+                "depth_m": 0.36619988083839417,
+                "frame_id": 0,
+                "pixel": [
+                  65,
+                  95
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t1": {
+                "world_m": [
+                  0.03897958176144797,
+                  0.08638631382178319,
+                  0.8999588113177385
+                ],
+                "depth_m": 0.3662722110748291,
+                "frame_id": 0,
+                "pixel": [
+                  262,
+                  95
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t2": {
+                "world_m": [
+                  -0.1412376497933311,
+                  0.08888192420595398,
+                  0.8999645317804577
+                ],
+                "depth_m": 0.3762834966182709,
+                "frame_id": 0,
+                "pixel": [
+                  262,
+                  342
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t3": {
+                "world_m": [
+                  -0.14119463923453685,
+                  0.23695855195262164,
+                  0.8999652032534604
+                ],
+                "depth_m": 0.3762063682079315,
+                "frame_id": 0,
+                "pixel": [
+                  65,
+                  342
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              }
+            },
+            "measurement_errors": []
+          },
+          {
+            "pad_package_overlap_m": 0.007717826640580516,
+            "minimum_footprint_margin_m": -0.00878391302423626
+          }
+        ],
+        "handoff": {
+          "checkpoint_key": "grasp_stage_v1",
+          "phase": "measurement",
+          "possibly_holding": false,
+          "tracker_handle": null,
+          "identity": "cream cheese package, not bowl",
+          "frames": "Metric world frame; quaternions xyzw; tracker maps its initial world frame to current world.",
+          "provenance": "Checkpoint contains RGB-D fitted table/top planes, projected visible top boundary, conservative package prism, measured own-finger envelope, acknowledged receipts, and retention observations with frame IDs.",
+          "requirements": "Revalidate identity, tracker quality, table stationarity and visible clearance after movement. Never reopen on restart. Initial boundary and free-table polygon are historical, not current detections.",
+          "package_dimensions_m": null,
+          "package_in_tool_m": null
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "stage_satisfied": "no",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [],
+        "evidence": [
+          "Current images show the cream cheese package on the table outside the upright, empty bowl.",
+          "No physical actions are acknowledged; native steps remain zero and the gripper is open.",
+          "The stage returned blocked, not stage_complete; no grasp or lift is observed.",
+          "The selected candidate's reported footprint margin is negative. This does not establish an actual obstacle or rule out other candidates."
+        ],
+        "reason": "Retain the grasp subgoal and revise its local clearance assessment. Use remaining budget for fresh measurements of the relevant finger footprint and nearby boundaries, or another supported grasp candidate. Distinguish insufficient sampled coverage from observed collision, preserve safety margins, and do not treat checkpoint assertions as fresh clearance evidence."
+      }
+    }
+  ],
+  "completed": [],
+  "current_stage": {
+    "plan_revision": 0,
+    "index": 0,
+    "definition": {
+      "id": "grasp",
+      "objective": "Acquire a secure grasp of the cream cheese package.",
+      "entry_evidence": "Frame 0 shows the package beside the bowl on the table; the robot reports an open gripper and no executed actions.",
+      "success_evidence": "Fresh images show the package held between the fingers and lifted clear of the table, with its position relative to the gripper maintained across observations.",
+      "handoff_requirements": "Use current RGB-D and robot geometry to establish grasp access and clearance from the table and nearby objects. Preserve the observed package extent and grasp relationship.",
+      "replan_conditions": "If access or depth is uncertain, obtain another usable public view from a clearance-checked pose. If the package slips, moves unexpectedly, or is not visibly held, reassess its actual location before another attempt."
+    }
+  }
+}

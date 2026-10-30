@@ -1,0 +1,44 @@
+{
+  "implementation_commit": "a3f3ac3a",
+  "server": "company-server-2-ykj",
+  "remote_worktree": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-hierarchical-20261030",
+  "remote_python": "/home/ykj/yekangjie/project/embodied-jev/.venv-libero-plus/bin/python",
+  "libero_root": "/home/ykj/yekangjie/project/embodied-jev/.sim/LIBERO-plus",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "account": "Local signed-in ChatGPT Pro; no Platform or caz/z key",
+  "jev": {
+    "model": "jev-1.13.0",
+    "endpoint": "https://api.typesafe.ai/v1/systemone",
+    "authorization": "Previously authorized Jev credential resolved from local OS keyring; no credential transfer to server"
+  },
+  "cases": [
+    {
+      "slug": "known-1335-init12-proxy-retry",
+      "task_id": 1335,
+      "init_index": 12,
+      "seed": 0,
+      "gpu": 4
+    }
+  ],
+  "condition": "Additional independent cold retry after fixing local relay proxy environment. Original admitted task1335 infrastructure failure remains a failure; this is not a replacement. No archived source or prior feedback enters the planner.",
+  "novelty": "Same known task1335/init12; no unseen-task claim",
+  "budgets": {
+    "max_gpt": 24,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_stage_updates": 12,
+    "max_plan_revisions": 2,
+    "max_stage_revisions": 3,
+    "stage_control_calls": 24,
+    "stage_policy_steps": 72,
+    "wall_limit": null,
+    "gpt_request_limit": null,
+    "jev_network_budget_s": 900
+  },
+  "evaluation": "Terminal isolated LIBERO native score; keep every admitted failure and separate program proposal; all GPT/Jev requests, retries and usage accounted",
+  "order": "After both originally declared episodes terminate, one additional known-task cold retry; no further replacement cases",
+  "transport": "Persistent native-session Pro adapter and same-job async reconnection; no application total time cutoff",
+  "network": "Relay explicitly inherits existing HTTP_PROXY/HTTPS_PROXY=http://127.0.0.1:7897 and NO_PROXY=127.0.0.1,localhost. Separate retry ledger to avoid duplicate-payload audit ambiguity.",
+  "declared_epoch": 1793336389.3194814
+}

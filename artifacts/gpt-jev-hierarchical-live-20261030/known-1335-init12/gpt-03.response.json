@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-1da87763-8145-4496-869c-b5717ba0aea0",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-1da87763-8145-4496-869c-b5717ba0aea0",
+      "arguments": "{\"action\": \"revise\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\", \"plan_valid\": \"yes\", \"recovery_available\": \"yes\", \"invalidated_assumptions\": [], \"evidence\": [\"Current images show the cream cheese package on the table outside the upright, empty bowl.\", \"No physical actions are acknowledged; native steps remain zero and the gripper is open.\", \"The stage returned blocked, not stage_complete; no grasp or lift is observed.\", \"The selected candidate's reported footprint margin is negative. This does not establish an actual obstacle or rule out other candidates.\"], \"reason\": \"Retain the grasp subgoal and revise its local clearance assessment. Use remaining budget for fresh measurements of the relevant finger footprint and nearby boundaries, or another supported grasp candidate. Distinguish insufficient sampled coverage from observed collision, preserve safety margins, and do not treat checkpoint assertions as fresh clearance evidence.\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 29714,
+    "output_tokens": 677,
+    "output_tokens_details": {
+      "reasoning_tokens": 416
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b10-3385-7383-9b20-a41ec7e9c82f",
+    "turn_ids": [
+      "01a18b10-338c-7563-9cb6-bd5124ee07f3"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

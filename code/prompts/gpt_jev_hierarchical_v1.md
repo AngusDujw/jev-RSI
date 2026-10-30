@@ -75,3 +75,10 @@ triggers, decisions, host overrides and confirmed stages. The auditor matches
 plans/decisions to actual tool returns, validates transitions, source provenance,
 dispatch consistency and costs. Native scoring remains terminal and isolated.
 Offline transitions and schema checks do not establish physical task success.
+
+When launching the local relay with systemd-run, explicitly pass the existing
+proxy environment needed by the provider; a transient unit does not inherit the
+interactive shell's proxy settings automatically. The2026-10-30 live trial
+received Typesafe HTTP451 without that environment, while the same request
+through the configured proxy succeeded. Keep NO_PROXY for loopback. This is a
+deployment condition, not a task-prompt change or physical success evidence.

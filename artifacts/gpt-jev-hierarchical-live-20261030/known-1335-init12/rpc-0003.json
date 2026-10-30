@@ -1,0 +1,289 @@
+{
+  "index": 3,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Measure ONLY the cream cheese package and local access. Return identity and box_model only if its visible faces support a rectangular package resting on the tabletop. In the chosen camera return outline: four actual top-face boundary corners in cyclic physical order, and patch: an inset textured logo polygon on that same top face. Request named depth points p0,p1,p2,p3 well INSIDE that top face, distributed near its four corners, not on mixed-depth edges. Request t0,t1,t2,t3 in cyclic order on visible tabletop corners of a convex local area enclosing the package and the open fingers' eventual footprint. Except for the package, this whole area must be visibly free of bowl, stove and other obstacles; do not bridge occluded space. Own finger dimensions are in context. These four table samples must be spread around the package, not collinear. Do not substitute bowl or cheese graphics for the package boundary."
+    ],
+    "kwargs": {
+      "context": {
+        "robot": {
+          "frame_id": 0,
+          "native_steps": 0,
+          "budgets": {
+            "gpt_remaining": 22,
+            "jev_remaining": 200,
+            "native_steps_remaining": 600,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.2071984982582204,
+            -0.002684108235936964,
+            1.1833957456431763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9996138089570381,
+            -0.0001637781149644857,
+            -0.027787418789059465,
+            0.00025588312349679454
+          ],
+          "gripper_qpos_m": [
+            0.03872178294129007,
+            -0.03872379800220578
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              4.177684213122965e-06,
+              -1.233369511719623e-06,
+              -0.003603143886142522
+            ],
+            "pad_extent_in_tool_m": [
+              0.016001340332578606,
+              0.09244574820685311,
+              0.01600079183925129
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010490259555384143,
+              -0.06512722856056685,
+              -0.044471733171043505
+            ],
+            "finger_high_offset_tool_m": [
+              0.010500258927625426,
+              0.06512494646865309,
+              0.009245963123110084
+            ]
+          }
+        }
+      },
+      "fields": {
+        "identity": [
+          "cream_cheese_on_table",
+          "different",
+          "unknown"
+        ],
+        "box_model": [
+          "visible_rectangular_box",
+          "unsupported",
+          "unknown"
+        ],
+        "free_area": [
+          "visible_clear_except_package",
+          "blocked",
+          "unknown"
+        ],
+        "camera": [
+          "agentview",
+          "robot0_eye_in_hand"
+        ],
+        "outline": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 767
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "patch": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 767
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "minItems": 4,
+          "maxItems": 4
+        }
+      }
+    }
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The labeled top face and visible narrow side faces support a rectangular cream cheese package resting on the tabletop. The selected tabletop quadrilateral is fully visible and clear except for the package, with surrounding margin for the supplied open-finger footprint. It excludes the bowl, stove, and other objects. This supports local access only, not unseen geometry or a complete motion-path clearance claim.",
+      "parameters": {
+        "camera": "robot0_eye_in_hand",
+        "identity": "cream_cheese_on_table",
+        "box_model": "visible_rectangular_box",
+        "free_area": "visible_clear_except_package",
+        "outline": [
+          [
+            145,
+            158
+          ],
+          [
+            203,
+            157
+          ],
+          [
+            206,
+            273
+          ],
+          [
+            149,
+            273
+          ]
+        ],
+        "patch": [
+          [
+            155,
+            168
+          ],
+          [
+            194,
+            166
+          ],
+          [
+            198,
+            263
+          ],
+          [
+            158,
+            265
+          ]
+        ]
+      },
+      "points": {
+        "p0": {
+          "world_m": [
+            -0.021888365314880337,
+            0.15739572346648603,
+            0.9178211357560824
+          ],
+          "depth_m": 0.3517856299877167,
+          "frame_id": 0,
+          "pixel": [
+            156,
+            171
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p1": {
+          "world_m": [
+            -0.021329116511287938,
+            0.13124803169728055,
+            0.9181662050047095
+          ],
+          "depth_m": 0.35142308473587036,
+          "frame_id": 0,
+          "pixel": [
+            193,
+            170
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p2": {
+          "world_m": [
+            -0.08377844826766676,
+            0.13114977271843586,
+            0.9182298558080835
+          ],
+          "depth_m": 0.35483112931251526,
+          "frame_id": 0,
+          "pixel": [
+            195,
+            260
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p3": {
+          "world_m": [
+            -0.08365478539049234,
+            0.15694628557841656,
+            0.9176054366850726
+          ],
+          "depth_m": 0.3554348051548004,
+          "frame_id": 0,
+          "pixel": [
+            159,
+            260
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t0": {
+          "world_m": [
+            0.03898588136727468,
+            0.23052502028737196,
+            0.8999586938767103
+          ],
+          "depth_m": 0.36619988083839417,
+          "frame_id": 0,
+          "pixel": [
+            65,
+            95
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t1": {
+          "world_m": [
+            0.03897958176144797,
+            0.08638631382178319,
+            0.8999588113177385
+          ],
+          "depth_m": 0.3662722110748291,
+          "frame_id": 0,
+          "pixel": [
+            262,
+            95
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t2": {
+          "world_m": [
+            -0.1412376497933311,
+            0.08888192420595398,
+            0.8999645317804577
+          ],
+          "depth_m": 0.3762834966182709,
+          "frame_id": 0,
+          "pixel": [
+            262,
+            342
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t3": {
+          "world_m": [
+            -0.14119463923453685,
+            0.23695855195262164,
+            0.8999652032534604
+          ],
+          "depth_m": 0.3762063682079315,
+          "frame_id": 0,
+          "pixel": [
+            65,
+            342
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 0
+    }
+  },
+  "frame_after": 0
+}
