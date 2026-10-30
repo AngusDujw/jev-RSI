@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-c04e5946-c444-4011-82c3-0ffc810b0336",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-c04e5946-c444-4011-82c3-0ffc810b0336",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 234 shows the carton between the fingers, clear of the table and outside the upright bowl.\", \"The placement program returned blocked at entry_audit with no placement actions and no release. Live continuation is unavailable.\", \"The review reports parameters.corridor as clear and parameters.tilt_grasp as supported; parameters.opening_sweep is unknown.\", \"The alternative tilted candidate passes the reported model margin without lowering the requirement, but no tilt or transfer has been executed.\", \"The full opening envelope and final lowering endpoint remain unspecified, and part of the opening zone is occluded.\"], \"invalidated_assumptions\": [\"The review rejected the local transfer corridor or tilted pinch.\", \"Unknown release-opening clearance establishes an obstruction to the separately assessed closed-gripper route.\"], \"plan_valid\": \"yes\", \"reason\": \"The placement subgoal remains suitable. Correct handling of the returned review parameters and separate closed-gripper route assessment from release authorization. Preserve the already established grasp rather than repeating pickup. A revised method can use supported local progress or sensing with fresh retention checks, then assess the explicit lowering and finger-opening envelopes before release. Missing clearance evidence is neither an obstacle nor permission to release.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 67012,
+    "output_tokens": 1226,
+    "output_tokens_details": {
+      "reasoning_tokens": 893
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e54-22d6-7ec3-9b10-ddbc3c6a7b98",
+    "turn_ids": [
+      "01a18e54-22dc-7bf3-94a4-08fef04ec657"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

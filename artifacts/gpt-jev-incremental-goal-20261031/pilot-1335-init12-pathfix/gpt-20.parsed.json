@@ -1,0 +1,19 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Frame 234 shows the carton between the fingers, clear of the table and outside the upright bowl.",
+    "The placement program returned blocked at entry_audit with no placement actions and no release. Live continuation is unavailable.",
+    "The review reports parameters.corridor as clear and parameters.tilt_grasp as supported; parameters.opening_sweep is unknown.",
+    "The alternative tilted candidate passes the reported model margin without lowering the requirement, but no tilt or transfer has been executed.",
+    "The full opening envelope and final lowering endpoint remain unspecified, and part of the opening zone is occluded."
+  ],
+  "invalidated_assumptions": [
+    "The review rejected the local transfer corridor or tilted pinch.",
+    "Unknown release-opening clearance establishes an obstruction to the separately assessed closed-gripper route."
+  ],
+  "plan_valid": "yes",
+  "reason": "The placement subgoal remains suitable. Correct handling of the returned review parameters and separate closed-gripper route assessment from release authorization. Preserve the already established grasp rather than repeating pickup. A revised method can use supported local progress or sensing with fresh retention checks, then assess the explicit lowering and finger-opening envelopes before release. Missing clearance evidence is neither an obstacle nor permission to release.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

@@ -246,3 +246,16 @@ planned raise53.844mm. Review19 joba59d60f256f84d219c467f0e0a1ad0d7 is active
 under bridge child719387, checking local route, rotation sweep and opening.
 No new controls yet: frame234/78Jev, no release or terminal native score.
 Candidate computation is not measured physical success.
+
+## Release prerequisite incorrectly blocked closed transfer
+
+Review19 returned corridor=clear and tilt_grasp=supported, opening_sweep=unknown.
+Generated method4 line279 required all three before any raise/tilt/transfer, so
+it returned blocked with no action. Supervisor20 identified the scope mismatch
+and chose revise: separate supported closed-gripper progress from later release
+authorization. The original thresholds and physical state remain unchanged.
+Active placement second repair jobf6e5f94c27c242fbb54bc17a8ad139ad / thread
+01a18e55-01af-79d0-8e08-87f18e1f5b59. Review19 took255.014s, no transport
+reconnect; two region-count10 submissions violated max8, followed by one native
+same-thread continuation and a valid result. This continuation was formatting
+correction, not a network drop. See placement-gate-diagnostic.json.

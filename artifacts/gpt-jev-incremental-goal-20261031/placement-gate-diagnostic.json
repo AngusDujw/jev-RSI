@@ -1,0 +1,41 @@
+{
+  "scope": "Actual returned observation and generated-source gate; no manual source edits",
+  "frame": 234,
+  "method_number": 4,
+  "review_parameters": {
+    "corridor": "clear",
+    "opening_sweep": "unknown",
+    "tilt_grasp": "supported",
+    "notes": "Clear applies to the supplied local carton/finger envelope against visible external obstacles, not hidden geometry or whole-arm clearance. Visible lateral space has no observed external obstruction, but the robot self-occludes part of the bowl-side opening zone. The exact full-opening envelope and final lowering endpoint are not supplied. Complete opening clearance is therefore unobserved, not obstructed, and needs a fresh check before release. Opposing fingers visibly flank the carton; hidden contact areas, friction and future slip remain unknown. Closed fingers alone do not prove retention. The opposite short end and its corners are self-occluded and cannot be returned as current visible measurements. No earlier actual images are available here to independently verify retention during the logged lift. All returned pixels are selected on the current images, not inferred from historical projections. Bounding regions include multiple surfaces and require segmentation. Table regions measure visible surfaces, not free-space volumes."
+  },
+  "generated_gate": "corridor != clear OR tilt_grasp != supported OR opening_sweep != clear",
+  "stage_decision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 234 shows the carton between the fingers, clear of the table and outside the upright bowl.",
+      "The placement program returned blocked at entry_audit with no placement actions and no release. Live continuation is unavailable.",
+      "The review reports parameters.corridor as clear and parameters.tilt_grasp as supported; parameters.opening_sweep is unknown.",
+      "The alternative tilted candidate passes the reported model margin without lowering the requirement, but no tilt or transfer has been executed.",
+      "The full opening envelope and final lowering endpoint remain unspecified, and part of the opening zone is occluded."
+    ],
+    "invalidated_assumptions": [
+      "The review rejected the local transfer corridor or tilted pinch.",
+      "Unknown release-opening clearance establishes an obstruction to the separately assessed closed-gripper route."
+    ],
+    "plan_valid": "yes",
+    "reason": "The placement subgoal remains suitable. Correct handling of the returned review parameters and separate closed-gripper route assessment from release authorization. Preserve the already established grasp rather than repeating pickup. A revised method can use supported local progress or sensing with fresh retention checks, then assess the explicit lowering and finger-opening envelopes before release. Missing clearance evidence is neither an obstacle nor permission to release.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "physical_actions_since_stage_entry": 0,
+  "review_host_seconds": 255.01427845610306,
+  "review_transport_reconnects": 0,
+  "review_invalid_regions_counts": [
+    10,
+    10
+  ],
+  "schema_max_regions": 8,
+  "same_thread_continuations": 1,
+  "active_repair_job": "f6e5f94c27c242fbb54bc17a8ad139ad"
+}
