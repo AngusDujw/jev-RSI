@@ -92,3 +92,20 @@ through the configured proxy succeeded. Keep NO_PROXY for loopback. This is a
 deployment condition, not a task-prompt change or physical success evidence.
 
 Planning now constrains stage count by remaining calls after the plan request: at most floor(remaining/2), capped at eight. Each stage minimally needs a builder and supervisor. This is only a lower bound: reserve extra observation/repair calls. Actual tool schema and host validation both apply the bound; historical audit schemas remain unchanged.
+
+## Live continuation (2026-10-31)
+
+The supervisor can additionally return continue at a normal control_slice_limit.
+The host pauses inside the live control/drive call before the next unexecuted
+control, preserving worker locals and the partial drive stack. It requires an
+unchanged valid plan, explicit evidence, no invalidated assumptions and actual
+frame progress. The acknowledged commands are never reissued by the host.
+A continuation consumes a supervision call and stage-update slot, not a new
+source-generation call or method revision. Slice quotas reset; stall/progress
+counters remain. Errors, stalls, missing measurements and returned programs are
+not eligible. A refused continuation passes its existing supervision decision
+back to the stage loop, which may revise/replan/stop without another review.
+Global call/step/update bounds remain authoritative. Generated methods should
+not return yield solely for a normal slice; a returned Python stack cannot be
+resumed through this mechanism. The auditor validates live-continuation evidence
+and source provenance. Software checks do not establish physical success.

@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "revise",
+    "stop",
+    "invalid_continue",
+    "budget",
+    "updates",
+    "stall_never_continues"
+  ],
+  "scope": "mock callbacks; no robot or API calls"
+}

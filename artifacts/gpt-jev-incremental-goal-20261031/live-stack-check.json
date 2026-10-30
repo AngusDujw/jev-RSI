@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "scope": "actual host execute_method and restricted subprocess worker; mock models/controller/physics",
+  "controls": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "worker_starts": 1,
+  "continuations": 2,
+  "lease_calls": 5
+}

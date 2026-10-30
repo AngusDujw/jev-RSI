@@ -3,6 +3,14 @@ acknowledged execution, the stage outcome and the trigger. Submit one
 submit_stage_decision; all text must be English ASCII. This is an evidence and
 planning decision, not an action command or a native success evaluation.
 
+Choose continue only when live_continuation_available=true, the trigger is a
+normal control_slice_limit, acknowledged progress supports the unchanged local
+method, the plan remains valid, and no assumption needs correction. This resumes
+the suspended live program before its next unexecuted control, without repeating
+earlier commands or generating source. It is not stage completion. Do not choose
+continue for a returned program, runtime error, stalled motion, invalid geometry,
+lost retention or a method requiring new logic; choose revise or replan instead.
+
 Choose advance only if the stage returned stage_complete AND current evidence
 supports its success_evidence. Set stage_satisfied to yes, no or unknown. Assess
 task_satisfied separately against the overall goal; only affirmative final-stage

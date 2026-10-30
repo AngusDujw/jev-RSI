@@ -30,7 +30,7 @@ STAGE_SCHEMA = obj(dict(id=text(40), objective=text(), entry_evidence=text(),
     success_evidence=text(), handoff_requirements=text(), replan_conditions=text()))
 PLAN_SCHEMA = obj(dict(explanation=text(), goal_evidence=text(),
     stages=dict(type="array", items=STAGE_SCHEMA, minItems=1, maxItems=8)))
-DECISION_SCHEMA = obj(dict(action=dict(type="string", enum=["advance", "revise", "replan", "stop"]),
+DECISION_SCHEMA = obj(dict(action=dict(type="string", enum=["continue", "advance", "revise", "replan", "stop"]),
     stage_satisfied=dict(type="string", enum=["yes", "no", "unknown"]),
     task_satisfied=dict(type="string", enum=["yes", "no", "unknown"]),
     plan_valid=dict(type="string", enum=["yes", "no", "unknown"]),
@@ -61,6 +61,8 @@ class StageWatchdog:
         self.target = self.error = None
         self.last_rpc = time.monotonic()
         self.measurements = set()
+        self.on_slice = None
+        self.suspended_decision = None
 
     def event(self, trigger, **detail):
         if self.pending is None:
@@ -73,6 +75,13 @@ class StageWatchdog:
                 self.start["budgets"]["jev_remaining"]-state["budgets"]["jev_remaining"] >= self.controls):
             self.event("control_slice_limit")
         if self.pending:
+            if self.pending["trigger"] == "control_slice_limit" and self.on_slice is not None:
+                if self.on_slice(self, state):
+                    self.start = state
+                    self.pending = None
+                    self.rpc_count = 0
+                    self.last_rpc = time.monotonic()
+                    return
             raise StageYield(self.pending)
 
     def after_control(self, receipt, requested_gripper, state, quaternion=None):
@@ -199,6 +208,8 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
                     stage_history=journal["completed"], hierarchical_termination=reason)
 
     for update in range(max_updates):
+        if len(journal["events"]) >= max_updates:
+            return finish("stage_update_budget")
         if state()["budgets"]["gpt_remaining"] < 2:
             return finish("gpt_budget")
         stage = plan["stages"][cursor]
@@ -212,6 +223,32 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
         persist(journal)
         method = method_call(context, method)
         watch = StageWatchdog(state(), controls=controls, steps=steps)
+        def review_live_slice(watch, now):
+            # Called before the next control, inside the live worker/RPC stack.
+            # Continuing does not re-invoke main or replay a partially executed drive.
+            if now["budgets"]["gpt_remaining"] < 2 or len(journal["events"]) >= max_updates:
+                return False
+            suspended = dict(stage_status="yield", completion_proposed=False,
+                reason="Control slice ended before the next unexecuted control; worker stack remains live.")
+            decision = supervise(dict(context, trigger="control_slice_limit", stage_outcome=suspended,
+                public_state=now, watchdog_event=watch.pending, live_continuation_available=True,
+                no_new_evidence_count=no_new_evidence))
+            english(decision)
+            validate_value(decision, DECISION_SCHEMA, "submit_stage_decision")
+            permitted = (decision["action"] == "continue" and decision["plan_valid"] == "yes"
+                and bool(decision["evidence"]) and not decision["invalidated_assumptions"]
+                and now["frame_id"] > watch.start["frame_id"])
+            if not permitted:
+                watch.suspended_decision = decision
+                return False
+            event = dict(update=update, stage=stage["id"], plan_revision=len(journal["plans"])-1,
+                stage_index=cursor, frame_id=now["frame_id"], trigger="control_slice_limit",
+                source_sha256=hashlib.sha256(method["source"].encode()).hexdigest(),
+                outcome=suspended, decision=decision, live_continuation=True)
+            journal["events"].append(event)
+            persist(journal)
+            return True
+        watch.on_slice = review_live_slice
         trigger = "stage_returned"
         try:
             validate_source(method["source"])
@@ -235,9 +272,11 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
             trigger = "no_new_evidence"
         if now["budgets"]["gpt_remaining"] <= 0:
             return finish("gpt_budget")
-        decision = supervise(dict(context, trigger=trigger, stage_outcome=outcome,
+        if len(journal["events"]) >= max_updates:
+            return finish("stage_update_budget")
+        decision = watch.suspended_decision or supervise(dict(context, trigger=trigger, stage_outcome=outcome,
             public_state=now, watchdog_event=watch.pending,
-            no_new_evidence_count=no_new_evidence))
+            no_new_evidence_count=no_new_evidence, live_continuation_available=False))
         english(decision)
         validate_value(decision, DECISION_SCHEMA, "submit_stage_decision")
         event = dict(update=update, stage=stage["id"], plan_revision=len(journal["plans"])-1,
@@ -247,6 +286,9 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
         journal["events"].append(event)
         persist(journal)
         action = decision["action"]
+        if action == "continue":
+            action = "revise"
+            event["host_override"] = "No eligible live continuation; revise without replaying the terminated worker"
         if decision["plan_valid"] == "no" and action in ("advance", "revise"):
             action = "replan"
             event["host_override"] = "Invalidated overall plan requires plan-level reconsideration"

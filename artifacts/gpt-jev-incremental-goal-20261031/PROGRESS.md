@@ -13,3 +13,16 @@ Then compare generic prompt instructions to the successful source and exact hist
 Before live execution: finish software regression checks, commit and SSH push; read server skill, deploy isolated frozen worktree, explicitly pass existing proxy to relay, use native session delivery and owned systemd units. Recreate temporary authorized Jev relay key from its established keyring only; delete own copy after experiments. Prior services are stopped. Declare tasks, initial states, repeats, source repair policy and budgets before admission. Separate archive-assisted decomposition from cold generation. Keep all failures and costs. Stable completion is not yet established; select a concrete repeated/cross-initial-state criterion before claiming it.
 
 Existing long-unresolved CIRCLE-1/3 warnings remain; no CIRCLE-2. Do not rewrite old failures or formal method/idea definitions. No subagents authorized. Do not write to /tmp or modify environments/drivers. All model input and experience text must be English.
+
+## Continuation implementation checkpoint
+
+Implemented normal control-slice live-stack continuation in StageWatchdog and
+run_stages. The actual host execute_method and restricted worker were exercised
+with a mock controller: one five-call drive survived two supervised continuations,
+with one worker/source invocation and no repeated control. Six boundary scenarios
+passed (revise, stop, invalid continue, GPT budget, update budget, stall). Saved
+reports are live-stack-check.json and continuation-boundaries.json. Temporary mock
+source was removed. Added generic local-observation/optional-tracker principles
+from the historical successful builder to the current-stage prompt. No actual
+model or robot trial yet. Next: freeze a declared live pilot, deploy and run with
+real Pro/Jev; follow with declared repeated/cross-init validation if it completes.

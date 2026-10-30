@@ -12,6 +12,19 @@ stage's seven control questions, semantic choice meanings, numerical features,
 feedback interpretation, bounded stopping and effect checks. Jev is not a metric
 calculator or an undeclared sensor. Explain this cooperation in jev_protocol.
 
+Construct an operational method for this bounded simulator, not a full exact
+scene reconstruction or collision certificate. Use api.drive for ordinary local
+pose feedback and supplied geo helpers instead of duplicating their internals.
+Use the smallest observable relation needed for the current action. Contact can
+occlude the perimeter: a quality-checked current surface patch or independently
+identified landmarks can support a differential motion test without recovering
+every historical corner. Compare object motion with actual hand motion; tracking
+alone is not retention. Make optional tracking replaceable by another obtainable
+measurement, rather than repeatedly requesting the same occluded evidence.
+Choose geometric acceptance and control stopping tolerances consistently with
+the measured effect margin and uncertainty. Feature spread constrains observable
+motion relative to residuals/noise; it is not a universal absolute size gate.
+
 Return a JSON-compatible object with stage_status, reason, evidence, handoff,
 and completion_proposed. stage_status is stage_complete, blocked, needs_replan,
 yield or abort. completion_proposed is false: only the outer supervisor may
@@ -37,8 +50,11 @@ cannot resolve the issue within its current scope, return blocked with the exact
 gap and useful measurements; this requests GPT revision rather than ending the
 whole episode. Return needs_replan if current evidence invalidates the plan.
 
-Keep local Jev loops finite and below the supplied slice limits; checkpoint and
-return yield when more processing is needed. The host can interrupt a slice on
+Keep local Jev loops finite and checkpoint progress. The host pauses at control
+slice boundaries and can supervise then continue the same live program stack;
+do not return yield merely because a control slice has elapsed. Use yield only
+when the program must hand control back and cannot continue its current method.
+The host can interrupt a slice on
 repeated stalls, no pose progress, invalid measurements, command mismatch or
 resource limits. Do not repeat a stalled contact, blindly reopen a possibly held
 object, or infer retention from closure. Runtime errors also request supervision;

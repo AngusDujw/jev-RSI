@@ -220,6 +220,13 @@ def audit_run(run, ledgers):
         event_hashes = {digest(event) for event in journal["events"]}
         executed_hashes = {item["source_sha256"] for item in summary["methods"]}
         for event in journal["events"]:
+            if event.get("live_continuation"):
+                decision = event["decision"]
+                require(event["trigger"] == "control_slice_limit" and decision["action"] == "continue"
+                    and decision["plan_valid"] == "yes" and bool(decision["evidence"])
+                    and not decision["invalidated_assumptions"]
+                    and event["outcome"]["stage_status"] == "yield",
+                    "Live continuation lacks affirmative unchanged-method evidence")
             definition = journal["plans"][event["plan_revision"]]["stages"][event["stage_index"]]
             require(event["stage"] == definition["id"], "Stage event differs from declared plan")
             require(event["source_sha256"] in origins, "Stage event has no actual model source")
