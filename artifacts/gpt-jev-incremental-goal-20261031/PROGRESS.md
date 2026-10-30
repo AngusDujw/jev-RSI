@@ -68,3 +68,26 @@ not injected into the frozen model. The generated method includes only secure,
 with current-stage Jev protocol and explicit live-slice continuation semantics.
 There is still no actual Jev dispatch or terminal score for this running case.
 See initial-grasp-diagnostic.json and the current case source/stage journal.
+
+## Frozen-source diagnostic (EXP050)
+
+A separately declared frozen reuse diagnostic is now running on GPU5, using exact
+197-line source6ddc1bca from 20261027 with no repair, not cold generation. Runtime
+is c8dedfa8 legacy mode (current review prompt/native transport, no stage watchdog),
+24 GPT/200 Jev/600 steps/unlimited wall time. Original source acquisition cost stays
+in the historical record. Do not pool this result into incremental qualification.
+
+Remote unit: gpt-jev-reference-reuse-pathfix-20261031.service, PID571826 confirmed
+active. Output: same remote worktree/code/runs/2026-10-31-incremental-goal/reference-reuse-1335-init12.
+It shares the local pathfix-relay with the incremental case; audit requests by
+exact digest, never by total ledger row count. First attempted unit
+(gpt-jev-reference-reuse-20261031) was rejected by CLI before admission because
+method-file must live under code/runs. The exact method JSON was copied to
+code/runs/2026-10-31-incremental-goal/reference-archive/method.json, verified with
+remote cmp, and the corrected unit launched. Keep reference-reuse-launch.json.
+
+At latest read, its first review completed and program passed its initial geometry
+gates, then asked the local-motion evidence review (gpt-01); 0 controls dispatched
+at that observation. Incremental first repair remains generating in job27e2b2c9.
+Neither has a terminal LIBERO result. Do not stop shared relay/tunnel until both
+cases finish. Preserve all admitted failures separately.

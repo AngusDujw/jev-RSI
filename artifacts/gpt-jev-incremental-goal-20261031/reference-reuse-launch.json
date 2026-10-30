@@ -1,0 +1,12 @@
+{
+  "original_unit": "gpt-jev-reference-reuse-20261031",
+  "original_exit": 2,
+  "original_error": "Archived method must be a project run artifact",
+  "original_admitted": false,
+  "original_model_calls": 0,
+  "original_physical_steps": 0,
+  "corrected_unit": "gpt-jev-reference-reuse-pathfix-20261031",
+  "corrected_method_file": "code/runs/2026-10-31-incremental-goal/reference-archive/method.json",
+  "content_check": "Remote cmp verified byte-identical to declared historical artifact",
+  "updated_epoch": 1793384080.7159817
+}
