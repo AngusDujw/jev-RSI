@@ -1,0 +1,27 @@
+{
+  "episode": 1,
+  "knowledge_revision": 1,
+  "native_steps": 108,
+  "jev_dispatches": 36,
+  "supervisor": {
+    "action": "revise",
+    "evidence": [
+      "Frame 108 images show the identifiable cream cheese package on the tabletop outside the bowl, without finger retention or lifted separation.",
+      "Acknowledged execution reached high alignment and then the observation standoff. Current state reports 108 native steps and an open gripper; these movements must not be replayed.",
+      "The current stage returned blocked, live continuation is unavailable, and attachment evidence is absent.",
+      "Two frame-108 sample sets yielded reported local slack near 0.76 mm and selected tolerances near 0.34 mm, rejected at supported precision. No contact descent, closure, or retention-test lift followed.",
+      "The current review supports visible bracketing and a local descent corridor, not contact feasibility. Near-end geometry is partly self-occluded; the original footprint remains a frame-0 measurement.",
+      "Observation and control budgets remain. The rejected local candidate does not establish global grasp infeasibility."
+    ],
+    "invalidated_assumptions": [
+      "The tested pinch geometry provides a robust contact interval at supported control precision."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains appropriate, but its local method needs revision from the actual open-gripper standoff. Check the full clearance and overlap interval at documented supported precision, then evaluate a genuinely different contact or orientation candidate, or complementary measurements that resolve a specific limiting constraint. Any observation movement requires its own clearance review. Preserve safety margins and uncertainty; do not clamp the rejected tolerance, repeat equivalent sampling indefinitely, or authorize contact from noncontact clearance. No overall object relation or stage ordering is contradicted. Reconsider the grasp strategy at plan level if distinct evidence-backed local alternatives are exhausted.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "source_job": "cf2980d0120e41a092fa8e7751f4792b",
+  "scope": "Model supervision report and previously audited control prefix. No grasp or task-success evidence; current revision remains in the same physical episode."
+}
