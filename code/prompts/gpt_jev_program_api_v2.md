@@ -11,6 +11,13 @@ reversed, round, set, sorted, str, sum, tuple, zip, isinstance, type, Exception,
 RuntimeError, ValueError and RPC-backed print. Other builtin names are unavailable;
 for example, use Exception rather than an undeclared exception class.
 The complete source limit is 120000 ASCII characters; all helpers must resolve.
+The source validator rejects import statements, class definitions, with blocks,
+async functions or async with blocks, while loops, global and nonlocal statements.
+Use bounded for loops. Nested helpers can mutate an enclosing local dictionary
+or list without rebinding it; they cannot use nonlocal to replace enclosing names.
+Names starting with two underscores and attributes starting with an underscore
+are unavailable. Do not use open, eval, exec, compile, getattr, setattr, delattr,
+globals, locals, vars, dir, input, breakpoint or help.
 Return completion_proposed as a boolean and evidence as a JSON-compatible object
 or list. A list of diagnostic log entries is supported by the repair interface.
 On repair, previous_method.incomplete_result.program_result contains the actual
