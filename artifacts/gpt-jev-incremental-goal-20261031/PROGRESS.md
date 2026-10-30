@@ -108,3 +108,5 @@ active remote c8dedfa8 trial receives this change. Any future deployment must
 freeze a new condition and preserve both current outcomes. Root has concurrent
 skill-memory changes from another session; do not silently include them in a
 future pilot. Prefer a c8-based isolated branch/worktree plus intended changes.
+
+Reference reuse milestone: at saved rpc-0067/frame237 the generated program phase checkpoint is stage3/action retained, after its differential lift check; it is preparing transport, not terminal success. Review job95ce41bc had one out-of-schema regions[3].stride, corrected inside the same native request before control continued. The incremental first repair remains generating; both services were confirmed active. This supports current executability of the old grasp method, not reliability of the staged generator.
