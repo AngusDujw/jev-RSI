@@ -1,0 +1,18 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Frame 144 shows the package still on the counter, separate from the bowl, with open fingers and no observed lift or retention.",
+    "The last five acknowledged controls produced only about 0.11 mm of total TCP displacement over 15 steps, leaving approximately 2.3 mm of target error.",
+    "The trigger is control_slice_limit and live continuation is available, but recent motion is effectively stalled.",
+    "The current stage yielded without stage_complete. Earlier clearance measurements predate the current descended pose."
+  ],
+  "invalidated_assumptions": [
+    "Repeating the unchanged local descent controls provides sufficient progress toward the required grasp pose.",
+    "Earlier descent authorization alone establishes current grasp clearance and side overlap."
+  ],
+  "plan_valid": "yes",
+  "reason": "The secure subgoal and overall ordering remain suitable, but stalled convergence requires a local method revision rather than continuation. Recovery should assess controller convergence versus possible contact and refresh package, support, and finger-clearance evidence from the actual descended state. The cause is not established; neither an obstruction nor adequate grasp margins can be assumed. Preserve justified tolerances rather than weakening them to force closure.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

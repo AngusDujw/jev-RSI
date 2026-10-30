@@ -449,3 +449,15 @@ The same method1 worker continued to30Jev/90steps, no source regeneration.
 Current review9 assesses subsequent geometry; gripper is still open.
 Candidate-live-continuation.json records the real journal event. No
 confirmed grasp or native success.
+
+## Candidate descent stalled; evidence-triggered patch requested
+
+Review9 corrected one stride3 contract error within its original turn and
+returned in156.367s, no continuation/recovery or network reconnect. Method1
+then descended toframe144/48Jev. Supervisor10 rejected unchanged continuation:
+last5 controls/15steps moved about0.11mm total, target error remains2.3mm.
+The geometry candidate does not imply achievable0.5mm tolerance. The cause
+(controller convergence versus contact) remains unproven. Plan remainsvalid;
+local revision must assess actual pose and fresh clearance without forced
+closure. Gripper open, no grasp. Next request11 is a patch.
+Save candidate-descent-stall.json; full failure and cost remain retained.

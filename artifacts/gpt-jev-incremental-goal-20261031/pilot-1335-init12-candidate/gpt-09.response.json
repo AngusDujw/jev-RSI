@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-33261039-732f-44bc-943d-03d7c8c4212d",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-33261039-732f-44bc-943d-03d7c8c4212d",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Clear for the straight vertical descent only, keeping the gripper open. The visible fingers align outside the package's opposing width sides, with exposed counter in both side gaps. The package matches the earlier fixed-camera view. Using the supplied finger envelope and unchanged local geometry, the endpoint leaves approximately 5 mm above the counter and 8 mm lateral separation from the bowl; the stove is outside this sweep. The geometric top center is visible in the wrist view, not covered by the hand.\", \"parameters\": {\"clear\": \"clear\", \"package_state\": \"unchanged\", \"straddling\": \"yes\", \"notes\": \"Authorize only descent to pad height 0.918108 m at the current horizontal position and orientation, with fingers open. No closure, lateral motion, lift or transfer is authorized. Numerical margins use the supplied geometry, not new depth measurements. Current visible surface selections are returned for measurement. The stove is partly self-occluded by the robot; this is not an observed external obstruction. top_center selects the actual visible package top, so the p0 fallback is unnecessary. Package agreement is within image resolution.\"}, \"points\": [{\"name\": \"top_center\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [382, 537], \"radius\": 3}, {\"name\": \"c0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [270, 507], \"radius\": 3}, {\"name\": \"c1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [472, 509], \"radius\": 3}], \"regions\": [{\"name\": \"package_visible_top\", \"camera\": \"robot0_eye_in_hand\", \"box\": [321, 413, 442, 639], \"stride\": 4}, {\"name\": \"left_side_gap_and_support\", \"camera\": \"robot0_eye_in_hand\", \"box\": [205, 482, 312, 578], \"stride\": 4}, {\"name\": \"right_side_gap_and_support\", \"camera\": \"robot0_eye_in_hand\", \"box\": [453, 482, 568, 578], \"stride\": 4}, {\"name\": \"bowl_visible_surface_and_rim\", \"camera\": \"agentview\", \"box\": [338, 393, 441, 474], \"stride\": 4}, {\"name\": \"stove_front_right_visible_edge\", \"camera\": \"agentview\", \"box\": [587, 413, 638, 416], \"stride\": 4}, {\"name\": \"left_open_finger_visible\", \"camera\": \"agentview\", \"box\": [469, 410, 487, 436], \"stride\": 4}, {\"name\": \"right_open_finger_visible\", \"camera\": \"agentview\", \"box\": [560, 410, 582, 436], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 61662,
+    "output_tokens": 4266,
+    "output_tokens_details": {
+      "reasoning_tokens": 3066
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ec9-a491-7b42-971a-20b3dbadea9a",
+    "turn_ids": [
+      "01a18ec9-a499-7f71-abd0-d6ab403705c6"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -889,5 +889,26 @@
       "remaining_position_error_m": 0.0016940684824763516
     },
     "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "secure.alignment": {
+    "key": "secure.alignment",
+    "frame_id": 90,
+    "method_number": 1,
+    "source_sha256": "bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29",
+    "bytes": 268,
+    "value": {
+      "sample": "top_center",
+      "delta_world_m": [
+        5.04896848165029e-05,
+        -2.1989442771930268e-06,
+        8.185356137113686e-05
+      ],
+      "threshold_m": 0.0045000000000000005,
+      "residual_margin_m": 0.004403802031529027,
+      "reference_frame": 0,
+      "current_frame": 90,
+      "uncertainty_guard_m": 0.0015
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
   }
 }
