@@ -1,0 +1,14 @@
+{
+  "scope": "Outer read-only numerical replay of saved generated-source gate; not fed into the frozen model or used to change controls",
+  "source_sha256": "f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a",
+  "table_margin_m": 0.008052008841716984,
+  "computed_side_overlap_m": 0.005185626676228683,
+  "required_side_overlap_m": 0.006,
+  "overlap_deficit_m": 0.0008143733237713172,
+  "required_width_proxy_m": 0.052076516639667086,
+  "available_joint_span_proxy_m": 0.07744558094349585,
+  "width_gate_passed": true,
+  "overlap_gate_passed": false,
+  "native_steps_at_rejection": 0,
+  "conclusion": "The program rejects side overlap, not width. This is a model-selected margin/tolerance feasibility failure, not proof of global physical impossibility."
+}

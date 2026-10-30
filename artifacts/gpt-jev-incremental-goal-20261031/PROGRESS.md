@@ -50,3 +50,21 @@ after all active trials finish. No key transferred to server. Inspect authoritat
 service/job state before waiting or restarting. Record all outcomes separately.
 
 Live update: pathfix plan completed in 54.981 seconds, three stages secure/place/verify. First current-stage method is generating in job d11e684483464b2fbebac14b3981175a, native thread 01a18dec-24a7-7991-b529-b6a8f9003bc7; remote service PID351385 confirmed active. No recoveries recorded. Actual first-method wire input is ASCII throughout, model/effort matches, 23672 instruction characters plus 5773 user-text characters. No physical result yet. Unrelated concurrent commits 4557be96/c17dabdd modify skill-memory plumbing in the root worktree; frozen remote c8dedfa8 is unaffected and remains the pilot implementation.
+
+## First method and first recovery
+
+The first secure method delivered in 1163.821 seconds (239 lines, source
+f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a), with no native
+recovery or invalid submission. First observation took 96.409 seconds. It returned
+blocked before any Jev control. The 24.925-second supervisor chose revise; first
+repair is generating in job 27e2b2c9874c4b2f9513d237765f8a1f, native thread
+01a18dff-d6cb-7b00-988a-8e01438f72d9. Remote service remains the same.
+
+Outer-only numerical replay of its exact saved gate found width passed, but the
+8.052 mm table margin left 5.186 mm side overlap against a required 6.000 mm,
+a deficit of 0.814 mm. This diagnoses the generated candidate, not global physical
+infeasibility. No margins/source were hand-edited, and this outer diagnosis was
+not injected into the frozen model. The generated method includes only secure,
+with current-stage Jev protocol and explicit live-slice continuation semantics.
+There is still no actual Jev dispatch or terminal score for this running case.
+See initial-grasp-diagnostic.json and the current case source/stage journal.
