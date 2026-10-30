@@ -44,6 +44,20 @@ Use the minimum evidence required for the next local action. Check membership
 and measurement_errors before geometry. Invalid depth, ambiguous identities,
 occlusion, tracking loss or a failed geometry margin should lead to a bounded
 different measurement or a justified observation-producing action when possible.
+
+Associate each gate with the specific action it authorizes. A review can support
+one action while leaving a later action unresolved. Read its named parameters
+individually; do not collapse all unknown fields into rejection of every action.
+A missing later-action condition must not block a separately supported action
+that preserves feasible recovery and can obtain the missing evidence. Preserve
+that later gate and recheck it before its action; never treat unknown as clear.
+Do not advance merely to postpone an already established obstruction.
+Before returning blocked for a numerical gate, checkpoint its measured operands,
+uncertainty contributions, threshold, residual margin and observation frames.
+Name the failed gate and the action it prevented. Keep these diagnostics small
+and available to the next repair; do not require reconstructing private locals
+from a generic failure message.
+
 Do not silently relax a margin, invent unseen surfaces, certify hidden clearance,
 or require a future action's outcome as its own prerequisite. If the method
 cannot resolve the issue within its current scope, return blocked with the exact
