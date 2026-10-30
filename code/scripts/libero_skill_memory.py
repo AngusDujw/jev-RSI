@@ -79,6 +79,13 @@ def freeze(source, destination, evidence):
             suite=args["suite"], task_id=args["task_id"], init_index=args["init_index"],
             seed=args["seed"], protocol_sha256=digest(protocol_bytes),
             summary_sha256=digest(summary_bytes)))
+    lineage = source / "lineage.json"
+    if lineage.exists():
+        required = json.loads(lineage.read_text())["episodes"]
+        supplied = {entry["episode"]: entry for entry in records}
+        for entry in required:
+            if supplied.get(entry["episode"]) != entry:
+                raise ValueError("Freeze omits or changes contributing Playground evidence")
     manifest = dict(version=VERSION, files=file_hashes(files), playground=records,
         transfer="Only skills and lessons; no episode source, state, images, or evaluator inputs")
     destination.mkdir(parents=True)
@@ -127,7 +134,7 @@ def load(root, phase, *, suite=None, task_id=None, init_index=None):
     return context, metadata
 
 
-def refine(source, destination, episodes, receipts):
+def refine(source, destination, episodes, receipts, bridge="http://127.0.0.1:7921"):
     """Ask local Pro to distill actual Playground receipts into a new revision."""
     # Deferred import avoids a cycle with the episode host's knowledge loader.
     from run_gpt_jev_program import post
@@ -135,9 +142,12 @@ def refine(source, destination, episodes, receipts):
     import urllib.request
 
     source, destination, receipts = Path(source), Path(destination), Path(receipts)
+    if not re.fullmatch(r"http://127\.0\.0\.1:(7921|7941)", bridge):
+        raise ValueError("Use the declared local Pro bridge")
     if destination.exists() or receipts.exists():
         raise ValueError("Use new revision and receipt directories")
     previous = read_files(source)
+    lineage = json.loads((source / "lineage.json").read_text())["episodes"] if (source / "lineage.json").exists() else []
     evidence = []
     for directory in episodes:
         directory = Path(directory)
@@ -147,6 +157,13 @@ def refine(source, destination, episodes, receipts):
         summary = json.loads((directory / "summary.json").read_text())
         if not {"termination", "native_success", "gpt_calls", "jev_calls", "native_steps"} <= summary.keys():
             raise ValueError("Episode is not terminal")
+        args = protocol["arguments"]
+        entry = dict(episode=str(directory.resolve()), suite=args["suite"], task_id=args["task_id"],
+            init_index=args["init_index"], seed=args["seed"],
+            protocol_sha256=digest((directory / "protocol.json").read_bytes()),
+            summary_sha256=digest((directory / "summary.json").read_bytes()))
+        if entry not in lineage:
+            lineage.append(entry)
         # Preserve program declarations and their actual outcomes, including failures.
         # Raw credentials, infrastructure paths and evaluator internals are excluded.
         record = dict(episode_id=directory.name, summary=summary, methods=[], events=[])
@@ -156,6 +173,17 @@ def refine(source, destination, episodes, receipts):
             path = directory / name
             if path.exists():
                 record["events"].append(dict(id=name, data=json.loads(path.read_text())))
+        dispatches = sorted(directory.glob("dispatch-*.json"))
+        selected = sorted(set(dispatches[:4] + dispatches[-8:]))
+        record["dispatch_sample"] = [dict(id=p.name, data=json.loads(p.read_text())) for p in selected]
+        record["dispatch_sample_scope"] = dict(total=len(dispatches), included=len(selected),
+            selection="first four and last eight actual dispatch receipts; not a complete trajectory")
+        reviews = []
+        for path in sorted(directory.glob("gpt-*.parsed.json")):
+            data = json.loads(path.read_text())
+            if "source" not in data and path.stat().st_size <= 12000:
+                reviews.append(dict(id=path.name, data=data))
+        record["recent_plans_and_reviews"] = reviews[-12:]
         evidence.append(record)
     if not evidence:
         raise ValueError("At least one terminal Playground episode is required")
@@ -164,7 +192,7 @@ def refine(source, destination, episodes, receipts):
     if len(text) > 200000:
         raise ValueError("Evidence exceeds refinement budget; select a smaller episode batch")
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
-    with opener.open("http://127.0.0.1:7921/", timeout=10) as response:
+    with opener.open(bridge+"/", timeout=10) as response:
         health = json.load(response)
     if (health.get("transport"), health.get("auth"), health.get("model"), health.get("effort")) != (
             "native-session", "ChatGPT", "gpt-6-astra", "xhigh"):
@@ -195,7 +223,7 @@ def refine(source, destination, episodes, receipts):
         tools=[dict(type="function", name="submit_skill_revision", description="Submit reusable knowledge",
                     parameters=schema, strict=True)],
         tool_choice=dict(type="function", name="submit_skill_revision"), parallel_tool_calls=False, store=False)
-    result = post("http://127.0.0.1:7921/responses", payload, receipts / "refinement", timeout=None)
+    result = post(bridge+"/responses", payload, receipts / "refinement", timeout=None)
     calls = [item for item in result.get("output", []) if item.get("type") == "function_call"]
     if result.get("status") != "completed" or len(calls) != 1 or calls[0].get("name") != "submit_skill_revision":
         raise ValueError("Refinement did not complete exactly one valid submission")
@@ -213,6 +241,7 @@ def refine(source, destination, episodes, receipts):
         (destination / component).mkdir()
     for name, content in files.items():
         (destination / name).write_text(content)
+    (destination / "lineage.json").write_text(json.dumps(dict(episodes=lineage), indent=2)+"\n")
     (receipts / "revision.json").write_text(json.dumps(dict(files=file_hashes(files),
         episodes=[str(Path(p).resolve()) for p in episodes], usage=result.get("usage")), indent=2)+"\n")
     return dict(files=len(files), usage=result.get("usage"))
@@ -230,9 +259,10 @@ def main():
     command.add_argument("--output", type=Path, required=True)
     command.add_argument("--evidence", type=Path, nargs="+", required=True)
     command.add_argument("--receipts", type=Path, required=True)
+    command.add_argument("--bridge", default="http://127.0.0.1:7921")
     args = parser.parse_args()
     if args.command == "refine":
-        print(json.dumps(refine(args.source, args.output, args.evidence, args.receipts)))
+        print(json.dumps(refine(args.source, args.output, args.evidence, args.receipts, args.bridge)))
         return
     manifest = freeze(args.source, args.output, args.evidence)
     print(json.dumps(dict(files=len(manifest["files"]), episodes=len(manifest["playground"]))))
