@@ -1,0 +1,45 @@
+{
+  "episode": 2,
+  "task_id": 1335,
+  "init_index": 2,
+  "status": "partial_not_success",
+  "frame_id": 75,
+  "jev_calls": 25,
+  "native_steps": 75,
+  "contact_or_closure_executed": false,
+  "source_sha256": "3a54ea30a800cd7318aa0c3971e8c1d806f48098584b9759b5c2d58df1f7762f",
+  "method_lines": {
+    "160": "            r = ask(purpose + \" Check only this stated action, including full visible fingers/wrist. Verify identified package remains in the same supported pose as the measured shape, including in-plane pose, and that tool-y opposing jaws bracket its short sides. Select three depth-safe visible top patches and three adjacent table patches in camera; no perimeter recovery or new plane fit is requested. face_membership must be explicit. disturbance concerns observed surrounding-object disturbance. On retry use different exposed patches or the other camera, not the same failed evidence. Gap: \" + gap, local_fields, {\"geometry\": g, \"target_pad_world_m\": target, \"corridor_endpoint_allowance_m\": 0.002, \"actual_state\": compact(api.state())})",
+    "162": "            if p[\"scoped_route\"] == \"blocked\" or p[\"bracketed\"] == \"no\":",
+    "163": "                raise RuntimeError(\"Current local candidate is visibly obstructed or not bracketed; do not repeat it.\")",
+    "219": "        r = ask(\"Assess ONLY the direct open-hand segment to the supplied high pad standoff, with leveling and yaw alignment so tool x follows the long package side and tool y closes across the short side. Include whole fingers and wrist in the visible swept corridor. This authorizes no descent, contact, closure, or lift. No temporal stationarity judgment is required at this initial view.\", {\"identity\": yn, \"route\": [\"clear\", \"blocked\", \"unknown\"]}, {\"geometry\": g, \"target_pad_world_m\": high, \"quaternion_xyzw\": g[\"quaternion_xyzw\"], \"pose_tolerance_m\": 0.003})",
+    "223": "        local_check(g, \"At achieved standoff, assess one open-hand straight descent to the supplied candidate contact target. Both fingers must pass outside opposing short sides; this is NOT closure permission.\", candidate[\"target_pad_world_m\"])"
+  },
+  "supervisor_decision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 75 shows the cream cheese still on the tabletop outside the bowl, with the gripper open above it.",
+      "Acknowledged execution reached the open standoff after 75 native steps; no contact descent, closure or retention lift is recorded.",
+      "The frame-75 review reports unchanged package pose, a clear scoped descent route and no observed surrounding disturbance.",
+      "Bracketing was rejected because the jaws oppose the long edges rather than the requested short end edges.",
+      "The stage returned blocked and live_continuation_available is false."
+    ],
+    "invalidated_assumptions": [
+      "Bracketing the short end faces is equivalent to closing across the package's short dimension."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains appropriate. Correct the edge-versus-dimension ambiguity in the local candidate and review gate; do not reinterpret the negative response as approval or an observed obstruction. Explicitly validate the intended opposing contact faces, current geometry and full-finger clearance before contact. Preserve the achieved open standoff and actual open command without replaying the approach, and retain effect-verification reserves.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "trigger": "stage_returned",
+  "reported_outcome_reason": "Current local candidate is visibly obstructed or not bracketed; do not repeat it.",
+  "interpretation": "An edge-versus-dimension ambiguity caused a negative bracketing review. Supervisor requests correction while preserving the actual achieved open standoff. This is not evidence of physical obstruction, grasp success, or goal completion.",
+  "remaining_budgets": {
+    "gpt_remaining": 31,
+    "jev_remaining": 175,
+    "native_steps_remaining": 525,
+    "wall_seconds_remaining": 1000000000000.0
+  }
+}
