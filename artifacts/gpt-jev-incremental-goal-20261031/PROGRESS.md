@@ -653,3 +653,18 @@ physical evidence and model-chosen heuristics, require justified replacement
 criteria and compact checkpoints. No task coordinates or recipes added.
 Physical validation of this candidate remains pending; prior candidate
 failure unchanged. Branch pushed over SSH.
+
+## Evidence-budget pilot admitted and live
+
+Candidatea0fd40ad independently deployed to remote
+/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-evidence-budget-20261031.
+Cold task1335/init12/seed0GPU4, same40GPT200Jev600steps, no wall deadline.
+Remoteunit gpt-jev-evidence-budget-pilot-20261031 PID3157041; localbridge
+gpt-jev-evidence-budget-bridge-20261031 PID1271823; nativechild1272655.
+Firstplan b14212006e8542bea922e9b85f725ae4 actualEnglish request verified
+gpt-6-astra/xhigh; remote health confirms ChatGPT/native-session.
+New relay evidence-budget-relay; case pilot-1335-init12-evidence-budget.
+Oldcandidate bridge stopped only after its terminal failure. Existing reverse
+tunnel remains. Remote GitHubSSH auth failed, so committed bundle transferred
+to the same authorized project mount; worktreeHEAD and hashes checked.
+No new physical result yet.

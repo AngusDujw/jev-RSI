@@ -327,3 +327,4 @@
 - 【Agent】【2026-10-31 07:48】[result] EXP-2026W44-054 terminal: nativefalse planner_stop,40GPT78Jev234steps8867.413s,0stages; all requests delivered; full provenance/dispatch audit passes, qualification unstarted. Saved failure and next framework gaps.
 - 【Agent】【2026-10-31 07:51】[op] 新建实验块 EXP-2026W44-055：阶段内部观测预算保护与模型自选门槛来源区分  ↪ `EXP-2026W44-055`
 - 【Agent】【2026-10-31 07:52】[op] EXP055 candidatea0fd40ad isolated and SSHpushed: per-review reserve shared across repairs, heuristic provenance prompts; offline real orchestration checks pass, physical validation pending.
+- 【Agent】【2026-10-31 07:53】[run] EXP055: frozen a0fd40ad deployed via committed Git bundle after remote SSH GitHub auth failure; new isolated Pro native bridge and task1335/init12/seed0 GPU4 cold pilot launched, fixed40GPT200Jev600steps.

@@ -1,0 +1,18 @@
+{
+  "commit": "a0fd40ad",
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_stage_plan"
+  },
+  "actual_request_ascii": true,
+  "account": "ChatGPT Pro native-session, remote health verified",
+  "remote_pid": 3157041,
+  "bridge_pid": 1271823,
+  "native_child_pid": 1272655,
+  "first_request_id": "b14212006e8542bea922e9b85f725ae4",
+  "physical_success": null
+}
