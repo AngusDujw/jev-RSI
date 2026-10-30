@@ -20,9 +20,10 @@ def write(path, value):
     pending.replace(path)
 
 
-def episode(args, root, name, initial, phase, memory):
+def episode(args, root, name, initial, phase, memory, task_id=None):
     output = root / name
-    expected = dict(suite=args.suite, task_id=args.task_id, init_index=initial,
+    task_id = args.task_id if task_id is None else task_id
+    expected = dict(suite=args.suite, task_id=task_id, init_index=initial,
         seed=0, gpu=args.gpu, max_gpt=40, max_jev=200, max_native_steps=600,
         hierarchical=True, max_stage_updates=24, max_plan_revisions=3,
         max_stage_revisions=3, stage_control_calls=24, stage_policy_steps=72,
@@ -34,7 +35,7 @@ def episode(args, root, name, initial, phase, memory):
         if any(recorded.get(key) != value for key, value in expected.items()):
             raise ValueError("Episode arguments changed: " + name)
         if memory is not None:
-            _, metadata = load(memory, phase, suite=args.suite, task_id=args.task_id, init_index=initial)
+            _, metadata = load(memory, phase, suite=args.suite, task_id=task_id, init_index=initial)
             previous = json.loads((output / "skill-memory.json").read_text())
             if previous["snapshot_sha256"] != metadata["snapshot_sha256"]:
                 raise ValueError("Episode knowledge changed: " + name)
@@ -67,8 +68,15 @@ def main():
     parser.add_argument("--task-id", type=int, default=1335)
     parser.add_argument("--gpu", default="0")
     parser.add_argument("--phase", choices=("acquire", "test"), required=True)
+    parser.add_argument("--test-tasks", type=int, nargs="+", help="Explicit task IDs for separate cross-task Test cases")
+    parser.add_argument("--test-inits", type=int, nargs="+", help="Explicit initial-state IDs; default3..12")
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
+    if args.phase != "test" and (args.test_tasks is not None or args.test_inits is not None):
+        parser.error("Test selections cannot alter Playground acquisition")
+    for values in (args.test_tasks, args.test_inits):
+        if values is not None and (any(v < 0 for v in values) or len(set(values)) != len(values)):
+            parser.error("Test selections must contain distinct nonnegative IDs")
     root = args.root.resolve()
     repo = Path(__file__).resolve().parents[2]
     if not root.is_relative_to(repo / "code/runs"):
@@ -107,16 +115,33 @@ def main():
                 raise ValueError("Finish acquisition before matched Test")
             load(root / "frozen", "test")
             results = []
-            for initial in range(3, 13):
+            tasks = args.test_tasks if args.test_tasks is not None else [args.task_id]
+            initials = args.test_inits if args.test_inits is not None else list(range(3, 13))
+            selection = dict(suite=args.suite, tasks=tasks, initial_states=initials,
+                knowledge_sha256=load(root / "frozen", "test")[1]["snapshot_sha256"])
+            # Each selection has its own report; previous task groups stay intact.
+            import hashlib
+            selection_id = hashlib.sha256(json.dumps(selection, sort_keys=True).encode()).hexdigest()[:12]
+            selection_file = root / f"test-selection-{selection_id}.json"
+            if not selection_file.exists():
+                write(selection_file, selection)
+            for task_id, initial in [(task, initial) for task in tasks for initial in initials]:
                 # Alternate order to reduce a systematic service-time confound.
                 conditions = ["empty", "learned"] if initial % 2 else ["learned", "empty"]
                 for condition in conditions:
-                    summary = episode(args, root, f"test-{initial:02d}-{condition}", initial,
-                        "test", root / "frozen" if condition == "learned" else None)
-                    results.append(dict(initial=initial, condition=condition, summary=summary))
-                    write(root / "evaluation.json", dict(episodes=results,
+                    name = (f"test-{initial:02d}-{condition}" if args.test_tasks is None else
+                            f"test-task{task_id}-init{initial:02d}-{condition}")
+                    summary = episode(args, root, name, initial,
+                        "test", root / "frozen" if condition == "learned" else None, task_id=task_id)
+                    results.append(dict(task_id=task_id, initial=initial, condition=condition, summary=summary))
+                    report = dict(selection=selection, episodes=results,
                         successes={c:sum(r["condition"] == c and r["summary"]["native_success"] is True for r in results)
-                                   for c in ("empty", "learned")}))
+                                   for c in ("empty", "learned")},
+                        by_task={str(task): {c: dict(
+                            successes=sum(r["task_id"] == task and r["condition"] == c and r["summary"]["native_success"] is True for r in results),
+                            completed=sum(r["task_id"] == task and r["condition"] == c for r in results))
+                            for c in ("empty", "learned")} for task in tasks})
+                    write(root / f"evaluation-{selection_id}.json", report)
 
 
 if __name__ == "__main__":
