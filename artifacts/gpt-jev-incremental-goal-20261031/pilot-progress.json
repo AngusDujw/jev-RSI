@@ -1,0 +1,64 @@
+{
+  "observed_epoch": 1793382608.7942376,
+  "status": "running_not_success",
+  "remote_unit": "gpt-jev-incremental-pilot-pathfix-20261031.service",
+  "remote_pid": 351385,
+  "plan_seconds": 54.9806182384491,
+  "plan_stage_ids": [
+    "secure",
+    "place",
+    "verify"
+  ],
+  "current_request": "submit_method for secure",
+  "sessions": [
+    {
+      "job": "df5fba30757540f7ac955e4d6c43d323",
+      "status": "completed",
+      "thread_id": "01a18deb-4a83-77f0-b43d-16127321fce2",
+      "turns": 1,
+      "events": {
+        "remoteControl/status/changed": 1,
+        "account/updated": 1,
+        "thread/started": 1,
+        "warning": 1,
+        "thread/status/changed": 2,
+        "turn/started": 1,
+        "item/started": 4,
+        "item/completed": 4,
+        "turn/moderationMetadata": 2,
+        "item/tool/call": 1,
+        "thread/tokenUsage/updated": 2,
+        "account/rateLimits/updated": 2,
+        "item/agentMessage/delta": 25,
+        "thread/readState/changed": 1,
+        "turn/completed": 1
+      },
+      "recoveries": []
+    },
+    {
+      "job": "d11e684483464b2fbebac14b3981175a",
+      "status": "generating",
+      "thread_id": "01a18dec-24a7-7991-b529-b6a8f9003bc7",
+      "turns": 1,
+      "events": {
+        "remoteControl/status/changed": 1,
+        "account/updated": 1,
+        "thread/started": 1,
+        "warning": 1,
+        "thread/status/changed": 1,
+        "turn/started": 1,
+        "item/started": 8,
+        "item/completed": 7
+      },
+      "recoveries": []
+    }
+  ],
+  "wire_check": {
+    "model": "gpt-6-astra",
+    "effort": "xhigh",
+    "instructions_ascii": true,
+    "all_text_ascii": true,
+    "instruction_chars": 23672,
+    "user_text_chars": 5773
+  }
+}
