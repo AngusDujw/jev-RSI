@@ -1134,6 +1134,132 @@
         "stage_satisfied": "no",
         "task_satisfied": "no"
       }
+    },
+    {
+      "update": 5,
+      "stage": "alternate_pickup",
+      "plan_revision": 1,
+      "stage_index": 0,
+      "frame_id": 216,
+      "trigger": "stage_returned",
+      "source_sha256": "6e099a4020a906d7c12b7e5168e03516e3a2596a149a0cf50b19e1028b392361",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "The measured local plane model is inadequate at the preserved uncertainty.",
+        "evidence": {
+          "observations": [
+            {
+              "frame": 216,
+              "source": "Recovered frame-216 semantic review from the supplied execution record; depths freshly reacquired at that same physical frame. No approach or closure authorization.",
+              "fresh_depth_count": 11,
+              "measurement_errors": []
+            }
+          ],
+          "detail": {
+            "frame": 216,
+            "guard_m": 0.001741372874978718,
+            "guard_provenance": "Never below inherited guard; increased by twice either fresh fit RMS. Operational allowance, not a calibrated confidence interval.",
+            "top_rms_m": 6.213389856321618e-05,
+            "counter_rms_m": 1.1102230246251565e-16,
+            "top_spread_m": 0.005080927164365157,
+            "counter_spread_m": 0.016950770482551995,
+            "normal_z": [
+              0.9996938239174114,
+              0.9999999935930465
+            ],
+            "rms_limit_m": 0.0015,
+            "spread_noise_ratio_min": 3.0,
+            "horizontal_normal_z_min": 0.98,
+            "rms_margin_m": 0.0014378661014367838,
+            "normal_margin": 0.01969382391741137,
+            "gate": "plane_quality",
+            "action": "side entry",
+            "residual_margin_m": -0.00014319146057099798
+          }
+        },
+        "handoff": {
+          "stage": "alternate_pickup",
+          "checkpoint_keys": [
+            "alt.model",
+            "alt.progress",
+            "alt.effect",
+            "alt.failure",
+            "secure.candidate",
+            "secure.failure"
+          ],
+          "state": {
+            "frame_id": 216,
+            "native_steps": 216,
+            "budgets": {
+              "gpt_remaining": 13,
+              "jev_remaining": 128,
+              "native_steps_remaining": 384,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.051186833667093146,
+              0.17258251451771828,
+              0.9719803645112318
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9840897958324522,
+              0.0017826528425609056,
+              -0.002416137972240079,
+              0.17764644146333114
+            ],
+            "gripper_qpos_m": [
+              0.03974770365249626,
+              -0.0400145659407872
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -5.289736297596145e-06,
+                -0.00012454243511837368,
+                -0.0036004359688688687
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600070816006704,
+                0.09476263988188754,
+                0.01600177914139137
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010499989796687845,
+                -0.06640841702551084,
+                -0.04446956613236933
+              ],
+              "finger_high_offset_tool_m": [
+                0.010488995509738905,
+                0.06616073909922433,
+                0.009249580173758033
+              ]
+            }
+          },
+          "frames": "World meters; tool-to-world xyzw; image pixels top-left. Each measurement retains its observation frame.",
+          "provenance": "alt.model holds fresh local contact geometry and orientation screens; alt.progress holds acknowledged whole-lease motion; alt.effect holds post-closure reference and differential lift evidence; alt.failure names any failed action gate. secure.* is preserved historical evidence, not authorization.",
+          "assumptions": "Never reopen automatically. Revalidate retention and bowl geometry before transport. Local wall strips and a surface patch do not establish hidden clearance or a complete object model."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "evidence": [
+          "Frame 216 shows the package supported by the counter outside the bowl and open, empty fingers. No lift or retention is observed.",
+          "The acknowledged raised, oblique observation pose is the current starting state; the latest measurement pass reports no further physical motion.",
+          "Eleven frame-216 depth samples were acquired without measurement errors, and the bounded alt.model checkpoint was saved.",
+          "The plane-quality screen failed on sample spread: top spread was 0.005081 m versus approximately 0.005224 m required by the preserved guard. Reported fit residual and normal checks passed.",
+          "This measurement-quality failure does not establish a physical obstacle or rule out other contact configurations.",
+          "The stage returned blocked, not stage_complete, and live continuation is unavailable."
+        ],
+        "invalidated_assumptions": [
+          "The selected local top samples have sufficient spatial spread to support the plane model at the preserved uncertainty."
+        ],
+        "plan_valid": "yes",
+        "reason": "The alternate-pickup subgoal remains suitable. Correct measurement selection using more widely distributed, non-collinear samples on the visible package top, with verified surface identity, or a justified complementary observation if needed. Preserve the uncertainty and clearance requirements rather than relaxing them to pass this screen. Reassess the different contact configuration and actual finger envelope before contact; passing a plane-quality check alone would not authorize entry. Start from the current physical pose without replaying executed moves.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      }
     }
   ],
   "completed": [],

@@ -1,0 +1,19 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Frame 216 shows the package supported by the counter outside the bowl and open, empty fingers. No lift or retention is observed.",
+    "The acknowledged raised, oblique observation pose is the current starting state; the latest measurement pass reports no further physical motion.",
+    "Eleven frame-216 depth samples were acquired without measurement errors, and the bounded alt.model checkpoint was saved.",
+    "The plane-quality screen failed on sample spread: top spread was 0.005081 m versus approximately 0.005224 m required by the preserved guard. Reported fit residual and normal checks passed.",
+    "This measurement-quality failure does not establish a physical obstacle or rule out other contact configurations.",
+    "The stage returned blocked, not stage_complete, and live continuation is unavailable."
+  ],
+  "invalidated_assumptions": [
+    "The selected local top samples have sufficient spatial spread to support the plane model at the preserved uncertainty."
+  ],
+  "plan_valid": "yes",
+  "reason": "The alternate-pickup subgoal remains suitable. Correct measurement selection using more widely distributed, non-collinear samples on the visible package top, with verified surface identity, or a justified complementary observation if needed. Preserve the uncertainty and clearance requirements rather than relaxing them to pass this screen. Reassess the different contact configuration and actual finger envelope before contact; passing a plane-quality check alone would not authorize entry. Start from the current physical pose without replaying executed moves.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}
