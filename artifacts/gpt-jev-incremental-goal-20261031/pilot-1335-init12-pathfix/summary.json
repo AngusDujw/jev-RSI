@@ -1,0 +1,2852 @@
+{
+  "termination": "gpt_budget",
+  "native_success": false,
+  "result": {
+    "completion_proposed": false,
+    "evidence": [
+      {
+        "update": 0,
+        "stage": "secure",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 0,
+        "trigger": "stage_returned",
+        "source_sha256": "f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a",
+        "outcome": {
+          "stage_status": "blocked",
+          "reason": "Measured width, finger/table clearance and side-overlap margins do not support this pinch.",
+          "evidence": {
+            "frame_id": 0,
+            "camera": "robot0_eye_in_hand",
+            "corners_uv": [
+              [
+                145,
+                159
+              ],
+              [
+                203,
+                157
+              ],
+              [
+                207,
+                274
+              ],
+              [
+                149,
+                273
+              ]
+            ],
+            "corners_world_m": [
+              [
+                -0.013576010239943315,
+                0.16498914747744978,
+                0.9176406849228549
+              ],
+              [
+                -0.012533690905111139,
+                0.12393443245107862,
+                0.918479829580549
+              ],
+              [
+                -0.09363931821090762,
+                0.12275860132695902,
+                0.9184597292092955
+              ],
+              [
+                -0.09278894284118719,
+                0.16428519562482707,
+                0.917611975552507
+              ]
+            ],
+            "center_world_m": [
+              -0.053134490549287317,
+              0.14399184422007863,
+              0.9180480548163017
+            ],
+            "long_axis": [
+              -0.9998949273998353,
+              -0.01449600496958366,
+              0.0
+            ],
+            "length_m": 0.08111415267093736,
+            "width_m": 0.04107651663966709,
+            "height_m": 0.01808634660757258,
+            "table_z_m": 0.8999617082087291,
+            "top_plane": [
+              -0.0005438404536612068,
+              0.020421592996372657,
+              0.9997913096126868,
+              -0.9208259065350748
+            ],
+            "table_plane": [
+              3.2532570638058466e-05,
+              -1.8651579663025042e-06,
+              0.9999999994690766,
+              -0.8999597105618159
+            ],
+            "uncertainty_m": 0.0015,
+            "bowl": {
+              "world_m": [
+                -0.08588048565662317,
+                0.00813503036303026,
+                0.9062501543075401
+              ],
+              "depth_m": 0.3669706881046295,
+              "frame_id": 0,
+              "pixel": [
+                369,
+                266
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "handoff": {
+            "checkpoint_keys": [
+              "secure.measurements",
+              "secure.progress"
+            ],
+            "state": {
+              "frame_id": 0,
+              "native_steps": 0,
+              "budgets": {
+                "gpt_remaining": 37,
+                "jev_remaining": 200,
+                "native_steps_remaining": 600,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.2071984982582204,
+                -0.002684108235936964,
+                1.1833957456431763
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9996138089570381,
+                -0.0001637781149644857,
+                -0.027787418789059465,
+                0.00025588312349679454
+              ],
+              "gripper_qpos_m": [
+                0.03872178294129007,
+                -0.03872379800220578
+              ],
+              "last_gripper_command": "open",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  4.177684213122965e-06,
+                  -1.233369511719623e-06,
+                  -0.003603143886142522
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016001340332578606,
+                  0.09244574820685311,
+                  0.01600079183925129
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010490259555384143,
+                  -0.06512722856056685,
+                  -0.044471733171043505
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010500258927625426,
+                  0.06512494646865309,
+                  0.009245963123110084
+                ]
+              }
+            },
+            "retention_established": false,
+            "bowl_reference": null,
+            "visible_package_extent": null,
+            "frames_and_provenance": "All metric points are world metres; poses use xyzw tool-to-world quaternions. Each checkpoint contains observation frames; checkpoint receipts add method/source provenance.",
+            "assumptions": [
+              "The identified carton is rigid. Historical top dimensions and bowl anchors are not current detections.",
+              "No release or transfer has been performed. Preserve the actual gripper command; do not reopen automatically.",
+              "Reobserve the bowl opening, package fit and transfer corridor in the next stage."
+            ]
+          },
+          "completion_proposed": false
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "Current images show the cream cheese package lying on the table outside the upright bowl.",
+            "Public state reports an open gripper, zero native steps, and no acknowledged motion; retention is not established.",
+            "The stage returned blocked after rejecting one pinch candidate using estimated dimensions and clearance margins."
+          ],
+          "invalidated_assumptions": [
+            "The selected pinch geometry has sufficient finger/table clearance and side overlap."
+          ],
+          "plan_valid": "yes",
+          "reason": "The secure subgoal remains appropriate, but the local grasp method needs correction. One rejected candidate does not establish global infeasibility. Additional sidewall and table measurements or an alternate attainable view can support reassessing grasp geometry without arbitrarily reducing margins. No physical actions require undoing.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 1,
+        "stage": "secure",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 72,
+        "trigger": "control_slice_limit",
+        "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+        "outcome": {
+          "stage_status": "yield",
+          "completion_proposed": false,
+          "reason": "Control slice ended before the next unexecuted control; worker stack remains live."
+        },
+        "decision": {
+          "action": "continue",
+          "evidence": [
+            "Frame 72 shows the cream cheese package still on the table outside the upright bowl; no retained grasp or placement is visible.",
+            "Public state reports an open gripper. Acknowledged motion reached the high observation alignment and continues descending toward the noncontact close-view target without a reported stall.",
+            "The current program yielded at a normal control_slice_limit with live continuation available; the blocked pinch outcome belongs to the earlier method."
+          ],
+          "invalidated_assumptions": [],
+          "plan_valid": "yes",
+          "reason": "Acknowledged progress supports the unchanged revised observation method, with no new evidence requiring correction. Resume the suspended live program without repeating executed motion. Grasp clearance and retention remain unestablished.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        },
+        "live_continuation": true
+      },
+      {
+        "update": 1,
+        "stage": "secure",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 144,
+        "trigger": "control_slice_limit",
+        "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+        "outcome": {
+          "stage_status": "yield",
+          "completion_proposed": false,
+          "reason": "Control slice ended before the next unexecuted control; worker stack remains live."
+        },
+        "decision": {
+          "action": "continue",
+          "evidence": [
+            "Current images show the carton still on the table outside the upright bowl, beneath the open gripper.",
+            "Recent acknowledged controls show steady downward approach with nearly unchanged lateral position and no stalled motion.",
+            "The stage yielded at a normal control_slice_limit with live continuation available; it did not return completion or an error.",
+            "No package lift or retained motion is observed."
+          ],
+          "invalidated_assumptions": [],
+          "plan_valid": "yes",
+          "reason": "Acknowledged progress and current alignment support the unchanged local approach. No new obstruction or carton displacement is evident. The earlier rejected candidate was reassessed before this descent; the historical blocked outcome is not the current yield. Stage and task completion remain unsupported.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        },
+        "live_continuation": true
+      },
+      {
+        "update": 1,
+        "stage": "secure",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 192,
+        "trigger": "stage_returned",
+        "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+        "outcome": {
+          "stage_status": "blocked",
+          "reason": "Descent stopped without a contact retry or closure.",
+          "evidence": [
+            {
+              "phase": "high_observation_alignment",
+              "before_frame": 0,
+              "after_frame": 45,
+              "actual_native_steps": 45,
+              "before_tcp": [
+                -0.2071984982582204,
+                -0.002684108235936964,
+                1.1833957456431763
+              ],
+              "after_tcp": [
+                -0.054976695117082267,
+                0.14336463488325185,
+                1.1839033316440388
+              ],
+              "status": "reached",
+              "lease_calls": 15
+            },
+            {
+              "phase": "noncontact_close_view",
+              "before_frame": 45,
+              "after_frame": 96,
+              "actual_native_steps": 51,
+              "before_tcp": [
+                -0.054976695117082267,
+                0.14336463488325185,
+                1.1839033316440388
+              ],
+              "after_tcp": [
+                -0.05444439442004571,
+                0.1428734514285779,
+                1.0058592587817903
+              ],
+              "status": "reached",
+              "lease_calls": 17
+            },
+            {
+              "phase": "single_open_finger_descent",
+              "before_frame": 96,
+              "after_frame": 192,
+              "actual_native_steps": 96,
+              "before_tcp": [
+                -0.05444439442004571,
+                0.1428734514285779,
+                1.0058592587817903
+              ],
+              "after_tcp": [
+                -0.0516940761071097,
+                0.1454607053600719,
+                0.9163560621132343
+              ],
+              "status": "lease_exhausted",
+              "lease_calls": 32
+            }
+          ],
+          "handoff": {
+            "checkpoint_keys": [
+              "secure.measurements",
+              "secure.progress",
+              "secure.geometry",
+              "secure.observations",
+              "secure.tracker"
+            ],
+            "state": {
+              "frame_id": 192,
+              "native_steps": 192,
+              "budgets": {
+                "gpt_remaining": 32,
+                "jev_remaining": 136,
+                "native_steps_remaining": 408,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.0516940761071097,
+                0.1454607053600719,
+                0.9163560621132343
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999664735984628,
+                0.008078528600004131,
+                0.0010181793672277505,
+                0.0008673900448293228
+              ],
+              "gripper_qpos_m": [
+                0.039998091171475084,
+                -0.04000007278503834
+              ],
+              "last_gripper_command": "open",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -8.251815934636614e-08,
+                  -8.473634581021572e-07,
+                  -0.0035997627245979848
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000032094301286,
+                  0.09499817114892152,
+                  0.016000020960570734
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010494877821424574,
+                  -0.06640332099752026,
+                  -0.04446807733430203
+                ],
+                "finger_high_offset_tool_m": [
+                  0.01049472738250715,
+                  0.06640161269661489,
+                  0.0092492826004915
+                ]
+              }
+            },
+            "retention_established": false,
+            "bowl_reference": {
+              "world_m": [
+                -0.08588048565662317,
+                0.00813503036303026,
+                0.9062501543075401
+              ],
+              "depth_m": 0.3669706881046295,
+              "frame_id": 0,
+              "pixel": [
+                369,
+                266
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "bowl_reference_is_current": false,
+            "visible_extent": null,
+            "frames": "World metres; xyzw tool-to-world quaternions. Pixels and observations carry camera/frame IDs. Checkpoint receipts carry method/source provenance.",
+            "assumptions": [
+              "Only acquisition and a vertical retention test were attempted; no transfer or release.",
+              "Preserve the actual gripper state. Checkpoint geometry is historical, not a current detection.",
+              "The carton top is treated as a rigid surface. Reobserve the bowl opening, object extent and relevant corridor before transfer."
+            ],
+            "references": {
+              "secure.measurements": "Original frame-0 partial measurements, preserved unchanged.",
+              "secure.geometry": "Coarse and close-view top/table geometry, uncertainty derivation and revised pinch interval.",
+              "secure.observations": "Bounded close-view measurement attempts, including valid partial results.",
+              "secure.tracker": "Optional top-surface tracker identity, ROI and reference frame.",
+              "secure.preclosure": "Fresh open-pinch review, valid partial landmarks and measured own-geometry margins.",
+              "secure.baseline": "Postclosure differential reference, partial measurements and actual hand state.",
+              "secure.effect_observation": "Fresh post-test named measurements, identity and separation review.",
+              "secure.retention": "Fresh motion comparison and separation evidence.",
+              "secure.progress": "Acknowledged phases, actual states and terminal gap."
+            }
+          },
+          "completion_proposed": false
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "Frame 192 shows the cream cheese carton on the table outside the bowl, with open fingers beside it; no retained lift is visible.",
+            "Acknowledged execution shows alignment and open-finger descent, not closure or a retention test.",
+            "The descent exhausted its lease with 1.72 mm position error against a 0.75 mm tolerance. The last five acknowledged controls moved the TCP only about 0.12 mm in total.",
+            "The stage returned blocked, and live continuation is unavailable.",
+            "The grasp measurements are from frame 96 and the bowl reference is from frame 0; neither establishes current clearance or retention."
+          ],
+          "invalidated_assumptions": [
+            "The unchanged descent method reaches the modeled pinch pose within the required tolerance."
+          ],
+          "plan_valid": "yes",
+          "reason": "Acquisition remains the appropriate subgoal, but the near-stalled approach needs local correction. Fresh measurements of carton side overlap and finger/table clearance at the actual pose can distinguish a usable pose from a candidate needing adjustment. The cause of slow motion is unresolved, not confirmed contact. Do not repeat the same descent or relax margins merely to force progress; preserve the executed approach and current open-gripper state.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 2,
+        "stage": "secure",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 234,
+        "trigger": "stage_returned",
+        "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+        "outcome": {
+          "stage_status": "stage_complete",
+          "reason": "Fresh carton surface motion follows the actual hand lift, and images show table separation. Gripper remains closed.",
+          "evidence": {
+            "baseline_frame": 204,
+            "current_frame": 234,
+            "measurement_method": "quality_checked_same_top_patch",
+            "actual_hand_translation_m": [
+              -0.000714942741639725,
+              0.0007211924523747859,
+              0.05416636400790664
+            ],
+            "observed_surface_translation_m": [
+              -0.0007165439435913546,
+              0.001022067293146609,
+              0.0541973115422472
+            ],
+            "attachment_error_m": 0.0031158174404211448,
+            "combined_uncertainty_m": 0.0030811388300841895,
+            "attachment_allowance_m": 0.009243416490252569,
+            "actual_lease_status": "reached",
+            "last_receipt": {
+              "decision": 77,
+              "choices": {
+                "x": "hold",
+                "y": "negative",
+                "z": "positive",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "close"
+              },
+              "action": [
+                0.0,
+                -0.01206903055219083,
+                0.03264461573677402,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "before": [
+                -0.05205914320698372,
+                0.146510406565505,
+                0.9693926579088878
+              ],
+              "after": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "target_tcp": [
+                -0.05136432922332046,
+                0.14558201959995187,
+                0.971903782196332
+              ],
+              "acknowledged_steps": 3,
+              "native_steps": 234,
+              "frame_id": 234,
+              "status": "reached",
+              "position_error_m": 0.0013138533573040954,
+              "rotation_error_rad": 0.0013924879005699931,
+              "lease_calls": 10
+            },
+            "fresh_effect": {
+              "identity": "same_carton",
+              "effect": "held_with_table_gap",
+              "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+              "marks_clear": true,
+              "bowl_identity": "same_upright_bowl"
+            },
+            "current_surface_samples_world_m": [
+              [
+                -0.03351960684557449,
+                0.14841205603380703,
+                0.9722079534138893
+              ],
+              [
+                -0.03351960684557449,
+                0.14841205603380703,
+                0.9722079534138893
+              ],
+              [
+                -0.05106160834645084,
+                0.1473227081098403,
+                0.9723136845999305
+              ],
+              [
+                -0.03558423843212699,
+                0.1592543972730769,
+                0.9720861531986544
+              ],
+              [
+                -0.03370288979144458,
+                0.14489856628464687,
+                0.9722953224456297
+              ],
+              [
+                -0.030452965701230298,
+                0.1423002513357016,
+                0.9723224863387726
+              ]
+            ],
+            "current_state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "budgets": {
+                "gpt_remaining": 28,
+                "jev_remaining": 122,
+                "native_steps_remaining": 366,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -2.292144540231439e-08,
+                  7.82225649129508e-05,
+                  -0.0036159517280184537
+                ],
+                "pad_extent_in_tool_m": [
+                  0.01600006253476978,
+                  0.05722097822546397,
+                  0.016000104394923907
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010494778527086817,
+                  -0.04743569275439586,
+                  -0.04448430604001023
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010494816254676454,
+                  0.0475920311458213,
+                  0.009233138901146937
+                ]
+              }
+            }
+          },
+          "completion_proposed": false,
+          "handoff": {
+            "checkpoint_keys": [
+              "secure.measurements",
+              "secure.progress",
+              "secure.geometry",
+              "secure.observations",
+              "secure.tracker",
+              "secure.local",
+              "secure.resume",
+              "secure.baseline",
+              "secure.effect",
+              "secure.retention"
+            ],
+            "references": {
+              "secure.local": "Fresh actual-pose depth, boundary selections, uncertainty and closure margins.",
+              "secure.baseline": "Postclosure surface identities, hand state and optional persistent patch transform.",
+              "secure.effect": "Fresh postlift review and valid depth samples.",
+              "secure.retention": "Object motion compared with actual whole-lift hand motion.",
+              "secure.resume": "Acknowledged repair actions and terminal state.",
+              "secure.tracker": "Historical same-carton top patch, creation ROI and reference frame; not a current detection."
+            },
+            "current_state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "budgets": {
+                "gpt_remaining": 27,
+                "jev_remaining": 122,
+                "native_steps_remaining": 366,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -2.292144540231439e-08,
+                  7.82225649129508e-05,
+                  -0.0036159517280184537
+                ],
+                "pad_extent_in_tool_m": [
+                  0.01600006253476978,
+                  0.05722097822546397,
+                  0.016000104394923907
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010494778527086817,
+                  -0.04743569275439586,
+                  -0.04448430604001023
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010494816254676454,
+                  0.0475920311458213,
+                  0.009233138901146937
+                ]
+              }
+            },
+            "retention_established": true,
+            "bowl_reference": {
+              "world_m": [
+                -0.12172726021026437,
+                0.005641009307502743,
+                0.9119547217558058
+              ],
+              "depth_m": 1.0459085702896118,
+              "frame_id": 234,
+              "pixel": [
+                389,
+                431
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            "bowl_reference_is_current": true,
+            "bowl_measurement_gap": null,
+            "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+            "frames": "World metres; tool-to-world xyzw quaternions. All observations retain camera and frame IDs; checkpoint receipts supply source/method provenance.",
+            "assumptions": [
+              "No transfer, opening or release was commanded by this repair. Preserve actual gripper state.",
+              "Original frame-96 geometry and frame-0 bowl reference remain historical. Use the bowl reference frame, not its presence, to determine freshness.",
+              "Local carton top and parallel sides were checked only for this pinch, not hidden clearance or full reconstruction.",
+              "Reobserve bowl opening, package extent and transfer corridor before the next stage; a top patch does not measure hidden faces."
+            ]
+          }
+        },
+        "decision": {
+          "action": "advance",
+          "evidence": [
+            "The current stage returned stage_complete at frame 234.",
+            "Current images show the cream cheese carton between the fingers, visibly separated from the table; its near portion is occluded by the gripper.",
+            "The same identified carton landmarks rose approximately 54 mm from frame 204 to frame 234, matching the acknowledged hand lift.",
+            "The upright bowl has a current interior depth measurement, but opening fit and transfer clearance are not established.",
+            "The carton remains outside the bowl and held by the gripper; no transfer or release was acknowledged."
+          ],
+          "invalidated_assumptions": [],
+          "plan_valid": "yes",
+          "reason": "Independent object motion and visible table separation support successful acquisition. The placement stage remains appropriate, with fresh package extent, bowl opening and relevant clearance assessment still required before transfer. Overall placement is not complete.",
+          "recovery_available": "yes",
+          "stage_satisfied": "yes",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 3,
+        "stage": "place",
+        "plan_revision": 0,
+        "stage_index": 1,
+        "frame_id": 234,
+        "trigger": "stage_returned",
+        "source_sha256": "5d3c1672e734d486c50315fa93512d93c1f2b11647dba0e5fc010e34f583edc5",
+        "outcome": {
+          "stage_status": "blocked",
+          "reason": "Measured carton-to-inner-opening fit margin is insufficient at the declared uncertainty and 1.5 mm controller tolerance.",
+          "evidence": {
+            "phase": "entry",
+            "actions": [],
+            "release_started": false,
+            "entry": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "failure_status": "blocked",
+            "state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "stage_status": "blocked",
+            "reason": "Measured carton-to-inner-opening fit margin is insufficient at the declared uncertainty and 1.5 mm controller tolerance."
+          },
+          "completion_proposed": false,
+          "handoff": {
+            "checkpoint_keys": [
+              "secure.geometry",
+              "secure.observations",
+              "secure.local",
+              "secure.retention",
+              "place.effect",
+              "place.progress"
+            ],
+            "frames": "World metres, tool-to-world xyzw. Every measurement retains its observation frame. Checkpoint receipts identify method and source.",
+            "references": {
+              "place.geometry": "Measured historical rectangle references and their selected paths; current observed short-end anchors; measured inner-rim model, uncertainty and physical bowl landmark identities.",
+              "place.progress": "Acknowledged local leases, actual before/after states, pending action if interrupted, and whether opening has started.",
+              "place.effect": "Latest fresh review, including failed or partial measurements. Not necessarily successful placement."
+            },
+            "actual_state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "release_started": false,
+            "assumptions": [
+              "No pickup is repeated. No withdrawal or final stability verification is implemented here.",
+              "The rectangle model is supported by precontact metric boundary measurements, not an inferred hidden perimeter.",
+              "Bowl geometry is local and conditional on fresh stationarity checks; it is not a collision certificate.",
+              "Reobserve after movement. If opening has started, do not repeat release without auditing the actual object state."
+            ]
+          }
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "The placement program returned blocked at entry; no transfer or release actions were executed.",
+            "Frame 234 shows the carton between the fingers, outside the upright bowl.",
+            "The wrist image shows the carton surface and far edge, but the gripper occludes part of its perimeter.",
+            "The selected geometry failed the declared fit margin; this rejects that candidate assessment, not every possible placement.",
+            "Observation and control budget remain, and no placement-stage revision has yet been attempted."
+          ],
+          "invalidated_assumptions": [
+            "The selected geometry and uncertainty are sufficient to establish acceptable clearance for the proposed placement."
+          ],
+          "plan_valid": "yes",
+          "reason": "The placement subgoal remains appropriate. Revise the local fit assessment using better-supported inner-rim and carton-boundary measurements, an attainable alternate view, or another justified candidate. Do not reduce safety margins merely to pass the check. Preserve the actual retained grasp rather than repeating pickup.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 4,
+        "stage": "place",
+        "plan_revision": 0,
+        "stage_index": 1,
+        "frame_id": 234,
+        "trigger": "stage_returned",
+        "source_sha256": "5a116a66873f7f9c88a78dccb47e89c9f5aa9d718341f202e6984cfe6fb67530",
+        "outcome": {
+          "stage_status": "blocked",
+          "reason": "The new candidate route or tilted pinch is not supported: Clear applies to the supplied local carton/finger envelope against visible external obstacles, not hidden geometry or whole-arm clearance. Visible lateral space has no observed external obstruction, but the robot self-occludes part of the bowl-side opening zone. The exact full-opening envelope and final lowering endpoint are not supplied. Complete opening clearance is therefore unobserved, not obstructed, and needs a fresh check before release. Opposing fingers visibly flank the carton; hidden contact areas, friction and future slip remain unknown. Closed fingers alone do not prove retention. The opposite short end and its corners are self-occluded and cannot be returned as current visible measurements. No earlier actual images are available here to independently verify retention during the logged lift. All returned pixels are selected on the current images, not inferred from historical projections. Bounding regions include multiple surfaces and require segmentation. Table regions measure visible surfaces, not free-space volumes.",
+          "completion_proposed": false,
+          "evidence": {
+            "progress": {
+              "phase": "entry_audit",
+              "actions": [],
+              "release_started": false,
+              "entry": {
+                "frame_id": 234,
+                "native_steps": 234,
+                "tcp_position_world_m": [
+                  -0.052079271964960185,
+                  0.14630321205232666,
+                  0.9710701462042386
+                ],
+                "tcp_quaternion_xyzw": [
+                  0.9999711545227261,
+                  0.007398647746313991,
+                  0.0014026799739744358,
+                  0.0009912733744994022
+                ],
+                "gripper_qpos_m": [
+                  0.02118506207827258,
+                  -0.02103588604034721
+                ],
+                "last_gripper_command": "close"
+              },
+              "failure_status": "blocked",
+              "state": {
+                "frame_id": 234,
+                "native_steps": 234,
+                "tcp_position_world_m": [
+                  -0.052079271964960185,
+                  0.14630321205232666,
+                  0.9710701462042386
+                ],
+                "tcp_quaternion_xyzw": [
+                  0.9999711545227261,
+                  0.007398647746313991,
+                  0.0014026799739744358,
+                  0.0009912733744994022
+                ],
+                "gripper_qpos_m": [
+                  0.02118506207827258,
+                  -0.02103588604034721
+                ],
+                "last_gripper_command": "close"
+              },
+              "stage_status": "blocked",
+              "reason": "The new candidate route or tilted pinch is not supported: Clear applies to the supplied local carton/finger envelope against visible external obstacles, not hidden geometry or whole-arm clearance. Visible lateral space has no observed external obstruction, but the robot self-occludes part of the bowl-side opening zone. The exact full-opening envelope and final lowering endpoint are not supplied. Complete opening clearance is therefore unobserved, not obstructed, and needs a fresh check before release. Opposing fingers visibly flank the carton; hidden contact areas, friction and future slip remain unknown. Closed fingers alone do not prove retention. The opposite short end and its corners are self-occluded and cannot be returned as current visible measurements. No earlier actual images are available here to independently verify retention during the logged lift. All returned pixels are selected on the current images, not inferred from historical projections. Bounding regions include multiple surfaces and require segmentation. Table regions measure visible surfaces, not free-space volumes."
+            },
+            "geometry": {
+              "position_tolerance_m": 0.0015,
+              "rotation_tolerance_rad": 0.015,
+              "required_margin_m": 0.0035,
+              "length_m": 0.07914261644195739,
+              "width_m": 0.041028237497574255,
+              "thickness_upper_m": 0.020587455196884985,
+              "historical_extent_u_m": 0.0015,
+              "historical_corners_world_m": [
+                [
+                  -0.013445658288917892,
+                  0.16491364032726827,
+                  0.9174083168692055
+                ],
+                [
+                  -0.012384888064361405,
+                  0.12424753601852344,
+                  0.9183968597499659
+                ],
+                [
+                  -0.09223861275042228,
+                  0.12374819206729754,
+                  0.918560264373429
+                ],
+                [
+                  -0.09187508714219986,
+                  0.1650988413340849,
+                  0.9175523496382086
+                ]
+              ],
+              "support_world_m": [
+                -0.024283101127603225,
+                0.18497820995495837,
+                0.899972809176544
+              ],
+              "historical_paths": [
+                [
+                  "secure.geometry",
+                  "precontact",
+                  "corners_world_m",
+                  "0"
+                ],
+                [
+                  "secure.geometry",
+                  "precontact",
+                  "corners_world_m",
+                  "1"
+                ],
+                [
+                  "secure.geometry",
+                  "precontact",
+                  "corners_world_m",
+                  "2"
+                ],
+                [
+                  "secure.geometry",
+                  "precontact",
+                  "corners_world_m",
+                  "3"
+                ]
+              ],
+              "uncertainty_path": [
+                "secure.geometry",
+                "coarse",
+                "uncertainty_m"
+              ],
+              "corner_ids": [
+                "c0_Cream_initial_C_end_side_A",
+                "c1_Cream_initial_C_end_side_B",
+                "c2_opposite_short_end_side_B",
+                "c3_opposite_short_end_side_A"
+              ],
+              "bowl_mark_ids": [
+                "b0: center of the large pale radial flower/star medallion on the visible interior floor.",
+                "b1: center of the separate smaller pale floral rosette on the bottle-side rear inner wall, above and beside the floor medallion."
+              ],
+              "historical_provenance": [
+                {
+                  "key": "secure.geometry",
+                  "frame_id": 96,
+                  "method_number": 1,
+                  "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055"
+                },
+                {
+                  "key": "secure.observations",
+                  "frame_id": 96,
+                  "method_number": 1,
+                  "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055"
+                },
+                {
+                  "key": "secure.local",
+                  "frame_id": 192,
+                  "method_number": 2,
+                  "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675"
+                }
+              ],
+              "rim_fit": {
+                "radius_m": 0.04880685600860314,
+                "rms_m": 0.0008139462251439273,
+                "max_radial_error_m": 0.0015339976729427107,
+                "largest_angular_gap_rad": 0.8398826717333918,
+                "center_xy_m": [
+                  -0.08937249109243209,
+                  0.005568413805384537
+                ]
+              },
+              "bowl_center_xy_m": [
+                -0.08937249109243209,
+                0.005568413805384537
+              ],
+              "bowl_radius_m": 0.04880685600860314,
+              "rim_plane": {
+                "coefficients": [
+                  -0.014393628100988107,
+                  0.0038771553915448132,
+                  0.9998888893952969,
+                  -0.9501394198992936
+                ],
+                "center_world_m": [
+                  -0.08834105746889456,
+                  0.005383795562553032,
+                  0.9489524364390933
+                ],
+                "rms_m": 0.0003431006584775917,
+                "in_plane_spread_m": [
+                  0.037921755789139554,
+                  0.03718773449851333
+                ]
+              },
+              "rim_high_m": 0.9496363579627182,
+              "rim_world_m": [
+                [
+                  -0.1380813414681068,
+                  0.005586672425111143,
+                  0.9482356270593258
+                ],
+                [
+                  -0.12242463643519352,
+                  0.039748799937990256,
+                  0.9483285422958513
+                ],
+                [
+                  -0.0870235090888618,
+                  0.05585443405886763,
+                  0.948775698594871
+                ],
+                [
+                  -0.05492192320271594,
+                  0.03977956008267191,
+                  0.9493001399388681
+                ],
+                [
+                  -0.04088723876444422,
+                  0.005174127853818073,
+                  0.9496363579627182
+                ],
+                [
+                  -0.05619040357160532,
+                  -0.029336319300884775,
+                  0.9495498826576428
+                ],
+                [
+                  -0.08657990432054719,
+                  -0.04401287219408365,
+                  0.949169328478262
+                ],
+                [
+                  -0.12209587475624262,
+                  -0.03090271972841575,
+                  0.9486072322549974
+                ]
+              ],
+              "rim_depth_samples": [
+                {
+                  "world_m": [
+                    -0.14303447301790928,
+                    0.0056065835102766725,
+                    0.9484925757784247
+                  ],
+                  "depth_m": 1.0395256280899048,
+                  "frame_id": 234,
+                  "pixel": [
+                    389,
+                    394
+                  ],
+                  "camera": "agentview",
+                  "source": "current_depth_patch_backprojection"
+                },
+                {
+                  "world_m": [
+                    -0.08742593144210342,
+                    0.0580339862968735,
+                    0.9484186116668333
+                  ],
+                  "depth_m": 0.9963124394416809,
+                  "frame_id": 234,
+                  "pixel": [
+                    438,
+                    427
+                  ],
+                  "camera": "agentview",
+                  "source": "current_depth_patch_backprojection"
+                },
+                {
+                  "world_m": [
+                    -0.03594527180410523,
+                    0.00515193943523978,
+                    0.9500652218845044
+                  ],
+                  "depth_m": 0.9552293419837952,
+                  "frame_id": 234,
+                  "pixel": [
+                    389,
+                    459
+                  ],
+                  "camera": "agentview",
+                  "source": "current_depth_patch_backprojection"
+                },
+                {
+                  "world_m": [
+                    -0.08695855361146032,
+                    -0.04725732699217783,
+                    0.9488333364266109
+                  ],
+                  "depth_m": 0.995688259601593,
+                  "frame_id": 234,
+                  "pixel": [
+                    340,
+                    427
+                  ],
+                  "camera": "agentview",
+                  "source": "current_depth_patch_backprojection"
+                }
+              ],
+              "bowl_base_u_m": 0.005444156788191893,
+              "bowl_marks_world_m": [
+                [
+                  -0.12069322344689914,
+                  0.006766388130185493,
+                  0.9113687037892098
+                ],
+                [
+                  -0.12691070243057512,
+                  -0.019013194341648897,
+                  0.9327994531859265
+                ]
+              ],
+              "floor_world_m": [
+                -0.11467045152945066,
+                0.0056206324811265695,
+                0.9092307280870592
+              ],
+              "reference_frame": 234,
+              "bowl_u_m": 0.005444156788191893,
+              "current_carton": {
+                "box_world_m": [
+                  [
+                    -0.014315439385119753,
+                    0.16688001511801476,
+                    0.9718274725086236
+                  ],
+                  [
+                    -0.013449870008046089,
+                    0.12660618725834383,
+                    0.9725571709502357
+                  ],
+                  [
+                    -0.09257250082824646,
+                    0.12491568533414837,
+                    0.973109649559193
+                  ],
+                  [
+                    -0.09343807020532012,
+                    0.1651895131938193,
+                    0.9723799511175808
+                  ],
+                  [
+                    -0.01445113502987106,
+                    0.16650415668539081,
+                    0.9512438958365685
+                  ],
+                  [
+                    -0.013585565652797397,
+                    0.12623032882571988,
+                    0.9519735942781807
+                  ],
+                  [
+                    -0.09270819647299777,
+                    0.12453982690152442,
+                    0.952526072887138
+                  ],
+                  [
+                    -0.09357376585007143,
+                    0.16481365476119536,
+                    0.9517963744455258
+                  ]
+                ],
+                "center_world_m": [
+                  -0.05351181792905876,
+                  0.14570992100976957,
+                  0.9621767726978808
+                ],
+                "anchors_world_m": [
+                  [
+                    -0.014315439385119753,
+                    0.16688001511801476,
+                    0.9718274725086236
+                  ],
+                  [
+                    -0.013449870008046089,
+                    0.12660618725834383,
+                    0.9725571709502357
+                  ]
+                ],
+                "short_axis_world": [
+                  0.021483619618680075,
+                  -0.9996051399722007,
+                  0.01811127353989768
+                ],
+                "plane": {
+                  "coefficients": [
+                    0.006591181059222867,
+                    0.01825667276647301,
+                    0.9998116073699796,
+                    -0.9745967055494957
+                  ],
+                  "center_world_m": [
+                    -0.03241820472504717,
+                    0.14662671016970413,
+                    0.9723166412293145
+                  ],
+                  "rms_m": 8.167237606141775e-05,
+                  "in_plane_spread_m": [
+                    0.01417313904287979,
+                    0.01288459040984515
+                  ]
+                },
+                "normal_u_rad": 0.031044836294862654,
+                "u_m": 0.006837004177979309,
+                "edge_u_m": 0.0004,
+                "frame_id": 234
+              },
+              "candidate_tests": [
+                {
+                  "angle_rad": 0.0,
+                  "quaternion_xyzw": [
+                    0.9999711545227261,
+                    0.007398647746313991,
+                    0.0014026799739744358,
+                    0.0009912733744994022
+                  ],
+                  "predicted_margin_m": -0.008022357389876705,
+                  "visible_end_mean_z_m": 0.9721923217294297
+                },
+                {
+                  "angle_rad": -0.45,
+                  "quaternion_xyzw": [
+                    0.9751039566338748,
+                    0.0033993297274430593,
+                    -0.22168397728153616,
+                    0.004114915674191071
+                  ],
+                  "predicted_margin_m": -0.008373469032154735,
+                  "visible_end_mean_z_m": 0.9554695669519595
+                },
+                {
+                  "angle_rad": 0.45,
+                  "quaternion_xyzw": [
+                    0.9744280207014873,
+                    0.011024986719328533,
+                    0.22441862562700401,
+                    -0.0021823407862783463
+                  ],
+                  "predicted_margin_m": -0.008467869523277358,
+                  "visible_end_mean_z_m": 0.9886930916442966
+                },
+                {
+                  "angle_rad": -0.7,
+                  "quaternion_xyzw": [
+                    0.9398650477032524,
+                    0.0010900553119674835,
+                    -0.3414955440160529,
+                    0.005770381474403584
+                  ],
+                  "predicted_margin_m": -0.005558799762290634,
+                  "visible_end_mean_z_m": 0.9473268338814436
+                },
+                {
+                  "angle_rad": 0.7,
+                  "quaternion_xyzw": [
+                    0.938826184683025,
+                    0.012810120297746756,
+                    0.344130822600871,
+                    -0.003908031156449825
+                  ],
+                  "predicted_margin_m": -0.005769440579961688,
+                  "visible_end_mean_z_m": 0.9965334504077741
+                },
+                {
+                  "angle_rad": -0.9,
+                  "quaternion_xyzw": [
+                    0.9010800268898974,
+                    -0.0007713545737224456,
+                    -0.4335951493452684,
+                    0.007031117726074768
+                  ],
+                  "predicted_margin_m": -0.00193876889780997,
+                  "visible_end_mean_z_m": 0.9418544247013714
+                },
+                {
+                  "angle_rad": 0.9,
+                  "quaternion_xyzw": [
+                    0.8997622301626019,
+                    0.014095536422715639,
+                    0.4361212275814552,
+                    -0.005245939250660076
+                  ],
+                  "predicted_margin_m": -0.002224944927129155,
+                  "visible_end_mean_z_m": 1.0016864777796866
+                },
+                {
+                  "angle_rad": -1.05,
+                  "quaternion_xyzw": [
+                    0.8660582328877721,
+                    -0.002163370151459204,
+                    -0.49987553717203737,
+                    0.007931230286950598
+                  ],
+                  "predicted_margin_m": 0.0013863898315319865,
+                  "visible_end_mean_z_m": 0.9385044114084898
+                },
+                {
+                  "angle_rad": 1.05,
+                  "quaternion_xyzw": [
+                    0.8645397289939251,
+                    0.014967824212499429,
+                    0.5023030822998675,
+                    -0.006215685119655202
+                  ],
+                  "predicted_margin_m": 0.0010600535486460878,
+                  "visible_end_mean_z_m": 1.0047599068309387
+                },
+                {
+                  "angle_rad": -1.2,
+                  "quaternion_xyzw": [
+                    0.8261671444495111,
+                    -0.0035432224752232153,
+                    -0.5633454428863091,
+                    0.00878675058596525
+                  ],
+                  "predicted_margin_m": 0.005028137032362562,
+                  "visible_end_mean_z_m": 0.9358859174998556
+                },
+                {
+                  "angle_rad": 1.2,
+                  "quaternion_xyzw": [
+                    0.8244564709703988,
+                    0.01575595744963154,
+                    0.5656608063639924,
+                    -0.007150484145793138
+                  ],
+                  "predicted_margin_m": 0.004682276818015095,
+                  "visible_end_mean_z_m": 1.0070768996776227
+                }
+              ],
+              "chosen_candidate": {
+                "angle_rad": -1.2,
+                "quaternion_xyzw": [
+                  0.8261671444495111,
+                  -0.0035432224752232153,
+                  -0.5633454428863091,
+                  0.00878675058596525
+                ],
+                "predicted_margin_m": 0.005028137032362562,
+                "visible_end_mean_z_m": 0.9358859174998556
+              }
+            }
+          },
+          "handoff": {
+            "checkpoint_keys": [
+              "place.revision",
+              "place.geometry",
+              "place.progress",
+              "place.effect",
+              "secure.geometry",
+              "secure.observations",
+              "secure.retention"
+            ],
+            "frames": "World metres; tool-to-world xyzw. Observation frame IDs and checkpoint receipt provenance remain authoritative.",
+            "references": {
+              "place.revision": "Original no-action placement rejection, entry audit, and historical reference provenance.",
+              "place.geometry": "Measured historical carton dimensions and conservative uncertainty; current end anchors and top plane; inner-lip geometry; tested tilt candidates; latest observed fit margins.",
+              "place.progress": "Pending phase, acknowledged whole-lease hand states and compact receipts, release flag, attachment tests, and actual terminal state.",
+              "place.effect": "Latest raw or partial current review measurements, not automatically a successful effect."
+            },
+            "actual_state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "release_started": false,
+            "assumptions": [
+              "Pickup was not repeated. No withdrawal or settled-verification stage is implemented.",
+              "The same measured rigid rectangular carton is used; a short-edge tilt is an alternative projected-footprint candidate, not a reduced safety margin.",
+              "Geometry is an operational visible-evidence model, not a hidden-clearance certificate. Revalidate it after motion.",
+              "If release_started is true, audit actual support and separation before any further opening or transport."
+            ]
+          }
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "Frame 234 shows the carton between the fingers, clear of the table and outside the upright bowl.",
+            "The placement program returned blocked at entry_audit with no placement actions and no release. Live continuation is unavailable.",
+            "The review reports parameters.corridor as clear and parameters.tilt_grasp as supported; parameters.opening_sweep is unknown.",
+            "The alternative tilted candidate passes the reported model margin without lowering the requirement, but no tilt or transfer has been executed.",
+            "The full opening envelope and final lowering endpoint remain unspecified, and part of the opening zone is occluded."
+          ],
+          "invalidated_assumptions": [
+            "The review rejected the local transfer corridor or tilted pinch.",
+            "Unknown release-opening clearance establishes an obstruction to the separately assessed closed-gripper route."
+          ],
+          "plan_valid": "yes",
+          "reason": "The placement subgoal remains suitable. Correct handling of the returned review parameters and separate closed-gripper route assessment from release authorization. Preserve the already established grasp rather than repeating pickup. A revised method can use supported local progress or sensing with fresh retention checks, then assess the explicit lowering and finger-opening envelopes before release. Missing clearance evidence is neither an obstacle nor permission to release.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 5,
+        "stage": "place",
+        "plan_revision": 0,
+        "stage_index": 1,
+        "frame_id": 306,
+        "trigger": "control_slice_limit",
+        "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+        "outcome": {
+          "stage_status": "yield",
+          "completion_proposed": false,
+          "evidence": {
+            "trigger": "control_slice_limit"
+          }
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "The current run yielded at control_slice_limit with a live continuation; it did not return stage_complete.",
+            "During the five shown controls, TCP x moved from -0.0564 to -0.0706 m despite positive x corrections toward the unchanged -0.0530 m target.",
+            "Current position error is approximately 17.8 mm, exceeding the recorded 1.5 mm tolerance, although orientation has progressed toward the tilt target.",
+            "The current wrist image shows the carton still between the fingers in a similar image-relative position. The bowl remains upright and visibly separate from the carton.",
+            "No release is acknowledged. The last depth-based retention and geometry checks are from frame 288, before the subsequent tilt and translation drift."
+          ],
+          "invalidated_assumptions": [
+            "The ongoing tilt maintains the fixed TCP pivot within the positional tolerance used by the local geometry assessment."
+          ],
+          "plan_valid": "yes",
+          "reason": "Placement remains appropriate, but systematic position divergence does not support resuming the unchanged local method. Revision should account for the already executed raise and partial tilt, reassess retention and affected clearance from the actual pose, and correct coupled pose tracking or assess an alternative reachable tilt candidate. The drift does not establish an obstacle or global infeasibility.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 6,
+        "stage": "place",
+        "plan_revision": 0,
+        "stage_index": 1,
+        "frame_id": 324,
+        "trigger": "no_pose_progress",
+        "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+        "outcome": {
+          "stage_status": "yield",
+          "completion_proposed": false,
+          "evidence": {
+            "trigger": "no_pose_progress",
+            "position_error_m": 0.011164897889090586,
+            "rotation_error_rad": 0.2743180745950304
+          }
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "The stage yielded on no_pose_progress, with no live continuation and no stage_complete result.",
+            "Despite positive x corrections, acknowledged TCP x continued decreasing away from the revised pivot.",
+            "From frame 315 to 324, position error increased from 5.19 to 11.16 mm and rotation error increased from 0.268 to 0.274 rad. Position drift exceeds the recorded 8 mm reserve.",
+            "Current wrist images show the carton remaining between the fingers in a similar relative position; the upright bowl remains visibly separate and empty. No release is acknowledged.",
+            "The latest metric carton and retention observations are from frame 306, before the subsequent drift; later checkpoint writes do not refresh those measurements."
+          ],
+          "invalidated_assumptions": [
+            "The reduced-rate fixed-pivot tilt converges while keeping drift within the reserve used by the local clearance assessment."
+          ],
+          "plan_valid": "yes",
+          "reason": "The placement subgoal remains appropriate, but the revised local controller has again diverged. Preserve the executed lift and partial tilt, reassess retention and affected clearance from the actual pose, and reconsider local reachability using a materially different motion strategy or candidate rather than another rate-only fixed-pivot retry. This failure does not establish an obstacle or global infeasibility.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        },
+        "host_override": "Repeated unproductive revisions require a plan-level reconsideration"
+      },
+      {
+        "update": 7,
+        "stage": "restage",
+        "plan_revision": 1,
+        "stage_index": 0,
+        "frame_id": 396,
+        "trigger": "control_slice_limit",
+        "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+        "outcome": {
+          "stage_status": "yield",
+          "completion_proposed": false,
+          "evidence": {
+            "trigger": "control_slice_limit"
+          }
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "The stage yielded at control_slice_limit with a live program, not stage_complete.",
+            "Acknowledged motion raised the hand and translated it about 137 mm toward the central bowl workspace.",
+            "The five latest corrections show no sustained position convergence; the TCP remains about 3.3 mm from its target.",
+            "The carton remains visible between the fingers in a similar wrist-image position, while the upright bowl interior remains visibly empty.",
+            "Metric retention and bowl geometry observations are from frame 324, before the transfer. Current placement fit and finger clearance are not established."
+          ],
+          "invalidated_assumptions": [
+            "Repeating the current residual pose corrections will converge to the staging target."
+          ],
+          "plan_valid": "yes",
+          "reason": "Restaging remains suitable and substantial transfer progress occurred, but stalled corrections rule out unchanged continuation. Revise the local method from the actual resulting pose, preserving the completed raise and transfer. Fresh measurements of visible carton and bowl features can assess retention and a reachable approach with supported fit and finger clearance. Do not replay the failed tilt or relax margins merely to proceed.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 8,
+        "stage": "restage",
+        "plan_revision": 1,
+        "stage_index": 0,
+        "frame_id": 396,
+        "trigger": "stage_returned",
+        "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3",
+        "outcome": {
+          "stage_status": "needs_replan",
+          "reason": "Fresh bowl opening differs materially from the preserved opening; reassess bowl stationarity.",
+          "evidence": {
+            "entry": {
+              "frame_id": 396,
+              "native_steps": 396,
+              "budgets": {
+                "gpt_remaining": 7,
+                "jev_remaining": 68,
+                "native_steps_remaining": 204,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.07837901739681576,
+                0.0059290049818064815,
+                1.0421218692481256
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8778969366996343,
+                -0.004386223863806938,
+                -0.478821345011136,
+                0.0028016308361273616
+              ],
+              "gripper_qpos_m": [
+                0.021016941263675867,
+                -0.02120052931954178
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -1.3262515994368757e-06,
+                  -9.180311632590171e-05,
+                  -0.0036016258435817338
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000053029658158,
+                  0.0572174713220174,
+                  0.01600005244279639
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010496217998763395,
+                  -0.04760392078235169,
+                  -0.044469962979924796
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010493420476072551,
+                  0.0474203130826097,
+                  0.00924742507745397
+                ]
+              }
+            },
+            "retired_pending": {
+              "phase": "translate_to_central_bowl_workspace_without_tilt",
+              "before": {
+                "frame_id": 348,
+                "native_steps": 348,
+                "tcp_position_world_m": [
+                  -0.08276587271111988,
+                  0.1427279402801323,
+                  1.0429817362244527
+                ],
+                "tcp_quaternion_xyzw": [
+                  0.8824643568650514,
+                  -0.007143340073525295,
+                  -0.4703231477226258,
+                  0.0013297637482669322
+                ],
+                "gripper_qpos_m": [
+                  0.021167330977119092,
+                  -0.021050295858852746
+                ],
+                "last_gripper_command": "close"
+              },
+              "target_tcp_world_m": [
+                -0.08153635197137837,
+                0.005806879241782997,
+                1.0429817362244527
+              ],
+              "quaternion_xyzw": [
+                0.8824643568650514,
+                -0.007143340073525295,
+                -0.4703231477226258,
+                0.0013297637482669322
+              ],
+              "gripper": "close"
+            },
+            "preserved_actions": [
+              {
+                "phase": "fixed_attitude_raise",
+                "before": {
+                  "frame_id": 324,
+                  "native_steps": 324,
+                  "tcp_position_world_m": [
+                    -0.08158015587319868,
+                    0.14294237622835615,
+                    1.023040717794808
+                  ],
+                  "tcp_quaternion_xyzw": [
+                    0.8815049180996555,
+                    -0.006529392307856707,
+                    -0.4721296446017755,
+                    0.00021234502845446368
+                  ],
+                  "gripper_qpos_m": [
+                    0.021174802827425204,
+                    -0.02104295739246088
+                  ],
+                  "last_gripper_command": "close"
+                },
+                "after": {
+                  "frame_id": 348,
+                  "native_steps": 348,
+                  "tcp_position_world_m": [
+                    -0.08276587271111988,
+                    0.1427279402801323,
+                    1.0429817362244527
+                  ],
+                  "tcp_quaternion_xyzw": [
+                    0.8824643568650514,
+                    -0.007143340073525295,
+                    -0.4703231477226258,
+                    0.0013297637482669322
+                  ],
+                  "gripper_qpos_m": [
+                    0.021167330977119092,
+                    -0.021050295858852746
+                  ],
+                  "last_gripper_command": "close"
+                },
+                "receipt": {
+                  "decision": 115,
+                  "choices": {
+                    "x": "positive",
+                    "y": "hold",
+                    "z": "hold",
+                    "rx": "hold",
+                    "ry": "hold",
+                    "rz": "hold",
+                    "gripper": "close"
+                  },
+                  "action": [
+                    0.02416583405994145,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                  ],
+                  "before": [
+                    -0.08343906618550187,
+                    0.14265562600068846,
+                    1.042919646212204
+                  ],
+                  "after": [
+                    -0.08276587271111988,
+                    0.1427279402801323,
+                    1.0429817362244527
+                  ],
+                  "target_tcp": [
+                    -0.08158015587319868,
+                    0.14294237622835615,
+                    1.043040717794808
+                  ],
+                  "acknowledged_steps": 3,
+                  "native_steps": 348,
+                  "frame_id": 348,
+                  "status": "reached",
+                  "position_error_m": 0.00120639380853106,
+                  "rotation_error_rad": 0.0048205862655137845,
+                  "lease_calls": 8
+                },
+                "net_position_error_reduction_m": 0.018793606191468956,
+                "net_rotation_error_reduction_rad": -0.0048205862655137845,
+                "actual_hand_translation_m": [
+                  -0.001185716837921194,
+                  -0.0002144359482238456,
+                  0.019941018429644686
+                ]
+              }
+            ],
+            "preserved_retention": [
+              {
+                "before_frame": 306,
+                "after_frame": 324,
+                "attachment_error_m": 0.00027413135943709147,
+                "allowance_m": 0.0036,
+                "normal_error_rad": 0.0005412206531102278,
+                "predicted_feature_motion_m": 0.012965055777190496,
+                "actual_hand_translation_m": [
+                  -0.010938341528275844,
+                  -0.0020176410229949537,
+                  -0.0009678606237177867
+                ],
+                "supported": true
+              }
+            ],
+            "reviews": 1,
+            "actions": [],
+            "retention": [],
+            "release_authorized": false,
+            "acknowledged_since_pending_steps": 48,
+            "actual_since_pending_translation_m": [
+              0.0043868553143041195,
+              -0.13679893529832582,
+              -0.0008598669763271172
+            ],
+            "retired_target_residual_m": 0.0032746064693460076,
+            "revision": "The raise and transfer already happened. Retire the stalled residual target; assess the achieved object pose before any new action.",
+            "last_review": {
+              "frame_id": 396,
+              "parameters": {
+                "bowl": "same_upright",
+                "bowl_mode": "rim",
+                "closed_route": "clear",
+                "end_camera": "robot0_eye_in_hand",
+                "end_ids": "matched",
+                "end_pixels": [
+                  [
+                    280,
+                    445
+                  ],
+                  [
+                    488,
+                    443
+                  ]
+                ],
+                "identity": "same_carton",
+                "notes": "c0 is the visible left Cream/C short-end corner; c1 is its right counterpart, in reference identity order. p0..p5 are current interior printed-face plane samples, not historical correspondences. d0..d3 target the narrow upper-lip surface, not the patterned sloping interior. Use only lip-surface depth returns; reject boundary mixing and test horizontal coplanarity. Eight inner opening boundary pixels are supplied separately. If lip returns fail, a landmark fallback has not been independently established here; do not substitute arbitrary rosettes. Regions require surface segmentation, especially local_surroundings; robot pixels are not external obstacles. Closed-route clear is limited to the visible local 15 mm raise, at most 12 mm recentering and at most 0.32 rad center-compensated tilt, not a global clearance certificate. Opening clearance remains unknown rather than obstructed: robot occlusion and unmeasured bottle separation do not demonstrate contact. Compare fresh depths with the baseline before asserting metric pose or retention; closed fingers alone are not retention evidence. No descent or opening is authorized.",
+                "opening_corridor": "unknown",
+                "rim_camera": "robot0_eye_in_hand",
+                "rim_pixels": [
+                  [
+                    379,
+                    159
+                  ],
+                  [
+                    505,
+                    195
+                  ],
+                  [
+                    559,
+                    279
+                  ],
+                  [
+                    507,
+                    364
+                  ],
+                  [
+                    379,
+                    400
+                  ],
+                  [
+                    252,
+                    364
+                  ],
+                  [
+                    199,
+                    279
+                  ],
+                  [
+                    250,
+                    195
+                  ]
+                ],
+                "shape": "same_rigid_printed_face"
+              },
+              "measurement_errors": []
+            },
+            "invalidated": "Fresh bowl opening differs materially from the preserved opening; reassess bowl stationarity.",
+            "measurement_gap": "Fresh bowl opening differs materially from the preserved opening; reassess bowl stationarity.",
+            "actual_state": {
+              "frame_id": 396,
+              "native_steps": 396,
+              "budgets": {
+                "gpt_remaining": 6,
+                "jev_remaining": 68,
+                "native_steps_remaining": 204,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.07837901739681576,
+                0.0059290049818064815,
+                1.0421218692481256
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8778969366996343,
+                -0.004386223863806938,
+                -0.478821345011136,
+                0.0028016308361273616
+              ],
+              "gripper_qpos_m": [
+                0.021016941263675867,
+                -0.02120052931954178
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -1.3262515994368757e-06,
+                  -9.180311632590171e-05,
+                  -0.0036016258435817338
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000053029658158,
+                  0.0572174713220174,
+                  0.01600005244279639
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010496217998763395,
+                  -0.04760392078235169,
+                  -0.044469962979924796
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010493420476072551,
+                  0.0474203130826097,
+                  0.00924742507745397
+                ]
+              }
+            },
+            "reason": "Fresh bowl opening differs materially from the preserved opening; reassess bowl stationarity."
+          },
+          "completion_proposed": false,
+          "handoff": {
+            "checkpoint_keys": [
+              "restage.reference",
+              "restage.progress"
+            ],
+            "actual_state": {
+              "frame_id": 396,
+              "native_steps": 396,
+              "budgets": {
+                "gpt_remaining": 6,
+                "jev_remaining": 68,
+                "native_steps_remaining": 204,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.07837901739681576,
+                0.0059290049818064815,
+                1.0421218692481256
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8778969366996343,
+                -0.004386223863806938,
+                -0.478821345011136,
+                0.0028016308361273616
+              ],
+              "gripper_qpos_m": [
+                0.021016941263675867,
+                -0.02120052931954178
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -1.3262515994368757e-06,
+                  -9.180311632590171e-05,
+                  -0.0036016258435817338
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000053029658158,
+                  0.0572174713220174,
+                  0.01600005244279639
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010496217998763395,
+                  -0.04760392078235169,
+                  -0.044469962979924796
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010493420476072551,
+                  0.0474203130826097,
+                  0.00924742507745397
+                ]
+              }
+            },
+            "reference_contents": "Dimension provenance, frame-324 baseline face/end/bowl measurements and hand state, latest valid partial measurements, current models with observation frames.",
+            "progress_contents": "Retired interrupted command, acknowledged transfer inferred from actual states, preserved earlier receipts, new pending/actual action and differential evidence.",
+            "frames": "World metres; active tool-to-world xyzw quaternions. All geometry is valid only at its recorded observation frame.",
+            "placement_option": null,
+            "release_authorized": false,
+            "assumptions": [
+              "No pickup, release or failed old tilt is replayed.",
+              "Hidden carton extent uses the preserved rigid-package dimensions, revalidated by current identity, face and short-edge width.",
+              "The 20 mm per-side opening envelope is a tested prospective corridor, not a measured open state or a hardware travel limit.",
+              "Revalidate retention, fit, actual opening travel and local clearance before placement. No below-rim clearance or stable containment is certified."
+            ]
+          }
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "The program returned needs_replan, not stage_complete; no live continuation is available.",
+            "The completed raise and transfer are acknowledged. The latest residual corrections stalled and their target has been retired.",
+            "Current images show the carton between the fingers and the upright bowl interior empty. Fresh carton end landmarks show displacement consistent with the completed transfer.",
+            "Fresh rim measurements disagree with the historical opening model, but no matched bowl landmark displacement establishes that the bowl moved. Plane intersections depend on the supplied plane and selected boundary.",
+            "No supported placement option or finger-opening clearance was established, and no release was acknowledged."
+          ],
+          "invalidated_assumptions": [
+            "The frame-324 opening model can be reused unchanged without resolving its disagreement with current measurements."
+          ],
+          "plan_valid": "yes",
+          "reason": "Restaging remains appropriate. The discrepancy requires local measurement correction, not an unsupported conclusion of bowl motion or placement impossibility. Distinguish inner opening from outer lip using fresh segmented depth and consistent physical features, then reassess retention, fit and finger clearance at the achieved pose. Preserve the completed raise and transfer; do not repeat stalled corrections or reduce margins merely to proceed.",
+          "recovery_available": "yes",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      },
+      {
+        "update": 9,
+        "stage": "restage",
+        "plan_revision": 1,
+        "stage_index": 0,
+        "frame_id": 396,
+        "trigger": "stage_returned",
+        "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5",
+        "outcome": {
+          "stage_status": "blocked",
+          "reason": "Unsupported relations: ['finger_height_reserve', 'visible_local_opening_relation', 'carton_external_separation']; the separate closed-gripper route is not established. c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown beca",
+          "evidence": {
+            "entry": {
+              "frame_id": 396,
+              "native_steps": 396,
+              "budgets": {
+                "gpt_remaining": 4,
+                "jev_remaining": 68,
+                "native_steps_remaining": 204,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.07837901739681576,
+                0.0059290049818064815,
+                1.0421218692481256
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8778969366996343,
+                -0.004386223863806938,
+                -0.478821345011136,
+                0.0028016308361273616
+              ],
+              "gripper_qpos_m": [
+                0.021016941263675867,
+                -0.02120052931954178
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -1.3262515994368757e-06,
+                  -9.180311632590171e-05,
+                  -0.0036016258435817338
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000053029658158,
+                  0.0572174713220174,
+                  0.01600005244279639
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010496217998763395,
+                  -0.04760392078235169,
+                  -0.044469962979924796
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010493420476072551,
+                  0.0474203130826097,
+                  0.00924742507745397
+                ]
+              }
+            },
+            "reviews": 1,
+            "actions": [],
+            "retention": [
+              {
+                "before_frame": 324,
+                "after_frame": 396,
+                "attachment_error_m": 0.00029845528294262206,
+                "allowance_m": 0.0036,
+                "predicted_landmark_motion_m": 0.13826632596966093,
+                "normal_error_rad": 0.00028955170951986005,
+                "actual_hand_translation_m": [
+                  0.0032011384763829254,
+                  -0.13701337124654966,
+                  0.01908115145331757
+                ],
+                "supported": true
+              }
+            ],
+            "release_authorized": false,
+            "retired_target": {
+              "phase": "translate_to_central_bowl_workspace_without_tilt",
+              "before": {
+                "frame_id": 348,
+                "native_steps": 348,
+                "tcp_position_world_m": [
+                  -0.08276587271111988,
+                  0.1427279402801323,
+                  1.0429817362244527
+                ],
+                "tcp_quaternion_xyzw": [
+                  0.8824643568650514,
+                  -0.007143340073525295,
+                  -0.4703231477226258,
+                  0.0013297637482669322
+                ],
+                "gripper_qpos_m": [
+                  0.021167330977119092,
+                  -0.021050295858852746
+                ],
+                "last_gripper_command": "close"
+              },
+              "target_tcp_world_m": [
+                -0.08153635197137837,
+                0.005806879241782997,
+                1.0429817362244527
+              ],
+              "quaternion_xyzw": [
+                0.8824643568650514,
+                -0.007143340073525295,
+                -0.4703231477226258,
+                0.0013297637482669322
+              ],
+              "gripper": "close"
+            },
+            "preserved_actions": [
+              {
+                "phase": "fixed_attitude_raise",
+                "before": {
+                  "frame_id": 324,
+                  "native_steps": 324,
+                  "tcp_position_world_m": [
+                    -0.08158015587319868,
+                    0.14294237622835615,
+                    1.023040717794808
+                  ],
+                  "tcp_quaternion_xyzw": [
+                    0.8815049180996555,
+                    -0.006529392307856707,
+                    -0.4721296446017755,
+                    0.00021234502845446368
+                  ],
+                  "gripper_qpos_m": [
+                    0.021174802827425204,
+                    -0.02104295739246088
+                  ],
+                  "last_gripper_command": "close"
+                },
+                "after": {
+                  "frame_id": 348,
+                  "native_steps": 348,
+                  "tcp_position_world_m": [
+                    -0.08276587271111988,
+                    0.1427279402801323,
+                    1.0429817362244527
+                  ],
+                  "tcp_quaternion_xyzw": [
+                    0.8824643568650514,
+                    -0.007143340073525295,
+                    -0.4703231477226258,
+                    0.0013297637482669322
+                  ],
+                  "gripper_qpos_m": [
+                    0.021167330977119092,
+                    -0.021050295858852746
+                  ],
+                  "last_gripper_command": "close"
+                },
+                "receipt": {
+                  "decision": 115,
+                  "choices": {
+                    "x": "positive",
+                    "y": "hold",
+                    "z": "hold",
+                    "rx": "hold",
+                    "ry": "hold",
+                    "rz": "hold",
+                    "gripper": "close"
+                  },
+                  "action": [
+                    0.02416583405994145,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                  ],
+                  "before": [
+                    -0.08343906618550187,
+                    0.14265562600068846,
+                    1.042919646212204
+                  ],
+                  "after": [
+                    -0.08276587271111988,
+                    0.1427279402801323,
+                    1.0429817362244527
+                  ],
+                  "target_tcp": [
+                    -0.08158015587319868,
+                    0.14294237622835615,
+                    1.043040717794808
+                  ],
+                  "acknowledged_steps": 3,
+                  "native_steps": 348,
+                  "frame_id": 348,
+                  "status": "reached",
+                  "position_error_m": 0.00120639380853106,
+                  "rotation_error_rad": 0.0048205862655137845,
+                  "lease_calls": 8
+                },
+                "net_position_error_reduction_m": 0.018793606191468956,
+                "net_rotation_error_reduction_rad": -0.0048205862655137845,
+                "actual_hand_translation_m": [
+                  -0.001185716837921194,
+                  -0.0002144359482238456,
+                  0.019941018429644686
+                ]
+              }
+            ],
+            "preserved_retention": [
+              {
+                "before_frame": 306,
+                "after_frame": 324,
+                "attachment_error_m": 0.00027413135943709147,
+                "allowance_m": 0.0036,
+                "normal_error_rad": 0.0005412206531102278,
+                "predicted_feature_motion_m": 0.012965055777190496,
+                "actual_hand_translation_m": [
+                  -0.010938341528275844,
+                  -0.0020176410229949537,
+                  -0.0009678606237177867
+                ],
+                "supported": true
+              }
+            ],
+            "revision": "Preserve the completed raise and transfer. The old residual target remains retired. A different fitted radius alone does not establish bowl motion.",
+            "last_review": {
+              "frame_id": 396,
+              "parameters": {
+                "boundary": "inner_upper_lip",
+                "bowl": "same_upright",
+                "carton": "same_rigid_carton",
+                "carton_free": "unknown",
+                "end_camera": "robot0_eye_in_hand",
+                "end_ids": "matched",
+                "end_pixels": [
+                  [
+                    280,
+                    445
+                  ],
+                  [
+                    488,
+                    443
+                  ]
+                ],
+                "inner_pixels": [
+                  [
+                    379,
+                    158
+                  ],
+                  [
+                    508,
+                    193
+                  ],
+                  [
+                    560,
+                    278
+                  ],
+                  [
+                    508,
+                    363
+                  ],
+                  [
+                    379,
+                    400
+                  ],
+                  [
+                    250,
+                    363
+                  ],
+                  [
+                    198,
+                    278
+                  ],
+                  [
+                    250,
+                    193
+                  ]
+                ],
+                "lip_patches": [
+                  [
+                    [
+                      376,
+                      153
+                    ],
+                    [
+                      382,
+                      153
+                    ],
+                    [
+                      382,
+                      155
+                    ],
+                    [
+                      376,
+                      155
+                    ]
+                  ],
+                  [
+                    [
+                      561,
+                      275
+                    ],
+                    [
+                      563,
+                      275
+                    ],
+                    [
+                      563,
+                      281
+                    ],
+                    [
+                      561,
+                      281
+                    ]
+                  ],
+                  [
+                    [
+                      376,
+                      402
+                    ],
+                    [
+                      382,
+                      402
+                    ],
+                    [
+                      382,
+                      404
+                    ],
+                    [
+                      376,
+                      404
+                    ]
+                  ],
+                  [
+                    [
+                      194,
+                      275
+                    ],
+                    [
+                      196,
+                      275
+                    ],
+                    [
+                      196,
+                      281
+                    ],
+                    [
+                      194,
+                      281
+                    ]
+                  ]
+                ],
+                "notes": "c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown because the adjacent green bottle overlaps the carton in projection and their hidden separation cannot be established; finger contact is not the reason. The visible space above is open, but the bottle's h",
+                "opening": "unknown",
+                "outer_pixels": [
+                  [
+                    379,
+                    151
+                  ],
+                  [
+                    511,
+                    189
+                  ],
+                  [
+                    565,
+                    278
+                  ],
+                  [
+                    511,
+                    367
+                  ],
+                  [
+                    379,
+                    405
+                  ],
+                  [
+                    247,
+                    367
+                  ],
+                  [
+                    192,
+                    278
+                  ],
+                  [
+                    247,
+                    189
+                  ]
+                ],
+                "rim_camera": "robot0_eye_in_hand",
+                "tops_count": 0,
+                "up_route": "unknown"
+              },
+              "measurement_errors": []
+            },
+            "opening_model_discrepancy": {
+              "old_frame": 324,
+              "new_frame": 396,
+              "center_change_m": 0.0010786071152409623,
+              "radius_change_m": 0.0046866756805589715,
+              "interpretation": "Replace the old opening for this local action. Without matched landmark displacement this discrepancy is not evidence of bowl movement."
+            },
+            "effect_tests": [
+              {
+                "observation_frame": 396,
+                "fit_margin_m": 0.003521177220243566,
+                "required_margin_m": 0.0035,
+                "carton_above_rim_reserve_m": 0.039659452351552764,
+                "expanded_jaw_above_relevant_tops_reserve_m": null,
+                "local_external_height_bound_m": null,
+                "external_top_measurements": [],
+                "opening_relation_known": false,
+                "opening_mode": "unknown",
+                "position_tolerance_m": 0.0015,
+                "rotation_tolerance_rad": 0.015,
+                "additional_tool_y_excursion_each_side_m": 0.02,
+                "upward_withdrawal_envelope_m": 0.02,
+                "scope": "Above-rim prospective opening option only, without release authorization.",
+                "failed_relations": [
+                  "finger_height_reserve",
+                  "visible_local_opening_relation",
+                  "carton_external_separation"
+                ]
+              }
+            ],
+            "actual_state": {
+              "frame_id": 396,
+              "native_steps": 396,
+              "budgets": {
+                "gpt_remaining": 3,
+                "jev_remaining": 68,
+                "native_steps_remaining": 204,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.07837901739681576,
+                0.0059290049818064815,
+                1.0421218692481256
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8778969366996343,
+                -0.004386223863806938,
+                -0.478821345011136,
+                0.0028016308361273616
+              ],
+              "gripper_qpos_m": [
+                0.021016941263675867,
+                -0.02120052931954178
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -1.3262515994368757e-06,
+                  -9.180311632590171e-05,
+                  -0.0036016258435817338
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000053029658158,
+                  0.0572174713220174,
+                  0.01600005244279639
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010496217998763395,
+                  -0.04760392078235169,
+                  -0.044469962979924796
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010493420476072551,
+                  0.0474203130826097,
+                  0.00924742507745397
+                ]
+              }
+            },
+            "reason": "Unsupported relations: ['finger_height_reserve', 'visible_local_opening_relation', 'carton_external_separation']; the separate closed-gripper route is not established. c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown beca"
+          },
+          "completion_proposed": false,
+          "handoff": {
+            "checkpoint_keys": [
+              "restage.reference",
+              "restage.progress"
+            ],
+            "reference_contents": "Historical dimensions, physical end identities and frame-324 object/hand baseline; fresh segmented lip and boundary models, current carton envelope, valid partial samples, and any pre-action reference.",
+            "progress_contents": "Retired target, preserved acknowledged actions, actual states, differential retention, measurement-model discrepancy, pending/acknowledged new action and effect tests.",
+            "frames": "World metres; tool-to-world xyzw quaternions. Observation frame IDs determine freshness; checkpoint metadata records method/source provenance.",
+            "actual_state": {
+              "frame_id": 396,
+              "native_steps": 396,
+              "budgets": {
+                "gpt_remaining": 3,
+                "jev_remaining": 68,
+                "native_steps_remaining": 204,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.07837901739681576,
+                0.0059290049818064815,
+                1.0421218692481256
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8778969366996343,
+                -0.004386223863806938,
+                -0.478821345011136,
+                0.0028016308361273616
+              ],
+              "gripper_qpos_m": [
+                0.021016941263675867,
+                -0.02120052931954178
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -1.3262515994368757e-06,
+                  -9.180311632590171e-05,
+                  -0.0036016258435817338
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000053029658158,
+                  0.0572174713220174,
+                  0.01600005244279639
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010496217998763395,
+                  -0.04760392078235169,
+                  -0.044469962979924796
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010493420476072551,
+                  0.0474203130826097,
+                  0.00924742507745397
+                ]
+              }
+            },
+            "placement_option": null,
+            "release_authorized": false,
+            "assumptions": [
+              "The old opening is not reused as current geometry or as a bowl-motion detector.",
+              "The carton envelope uses historical rigid-package dimensions anchored to a current identified face and end, not observed hidden corners.",
+              "The supported option, if present, is above-rim opening and upward withdrawal within the tested additional 20 mm per tool-y side envelope, not an actuator travel specification.",
+              "No descent, opening, release, hidden clearance or stable containment has been tested. Revalidate geometry and actual opening travel before placement."
+            ]
+          }
+        },
+        "decision": {
+          "action": "revise",
+          "evidence": [
+            "The program returned blocked, not stage_complete; live continuation is unavailable.",
+            "Current carton landmarks agree with the acknowledged transfer: reported attachment error is 0.30 mm against a 3.6 mm allowance.",
+            "The revised inner-opening model passes the selected fit test narrowly, but this does not establish external separation or finger clearance.",
+            "The neighboring bottle overlaps the carton in the wrist image. Its relevant separation and the opening and withdrawal clearances remain unmeasured, not demonstrably obstructed.",
+            "Residual corrections stalled and their target is retired. No release occurred, and the bowl has no observed settled carton."
+          ],
+          "invalidated_assumptions": [],
+          "plan_valid": "yes",
+          "reason": "Restaging remains suitable; the new retention and opening evidence does not invalidate the overall plan. Revise local sensing to assess the relevant swept-volume separation, using different cross-camera surface measurements rather than repeating rim fitting or requiring a global height certificate. A changed viewpoint needs an independently supported route. Preserve the completed raise and transfer; do not replay stalled corrections, weaken margins, or authorize release from fit alone.",
+          "recovery_available": "unknown",
+          "stage_satisfied": "no",
+          "task_satisfied": "no"
+        }
+      }
+    ],
+    "stage_history": [
+      {
+        "update": 2,
+        "stage": "secure",
+        "plan_revision": 0,
+        "stage_index": 0,
+        "frame_id": 234,
+        "trigger": "stage_returned",
+        "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+        "outcome": {
+          "stage_status": "stage_complete",
+          "reason": "Fresh carton surface motion follows the actual hand lift, and images show table separation. Gripper remains closed.",
+          "evidence": {
+            "baseline_frame": 204,
+            "current_frame": 234,
+            "measurement_method": "quality_checked_same_top_patch",
+            "actual_hand_translation_m": [
+              -0.000714942741639725,
+              0.0007211924523747859,
+              0.05416636400790664
+            ],
+            "observed_surface_translation_m": [
+              -0.0007165439435913546,
+              0.001022067293146609,
+              0.0541973115422472
+            ],
+            "attachment_error_m": 0.0031158174404211448,
+            "combined_uncertainty_m": 0.0030811388300841895,
+            "attachment_allowance_m": 0.009243416490252569,
+            "actual_lease_status": "reached",
+            "last_receipt": {
+              "decision": 77,
+              "choices": {
+                "x": "hold",
+                "y": "negative",
+                "z": "positive",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "close"
+              },
+              "action": [
+                0.0,
+                -0.01206903055219083,
+                0.03264461573677402,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "before": [
+                -0.05205914320698372,
+                0.146510406565505,
+                0.9693926579088878
+              ],
+              "after": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "target_tcp": [
+                -0.05136432922332046,
+                0.14558201959995187,
+                0.971903782196332
+              ],
+              "acknowledged_steps": 3,
+              "native_steps": 234,
+              "frame_id": 234,
+              "status": "reached",
+              "position_error_m": 0.0013138533573040954,
+              "rotation_error_rad": 0.0013924879005699931,
+              "lease_calls": 10
+            },
+            "fresh_effect": {
+              "identity": "same_carton",
+              "effect": "held_with_table_gap",
+              "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+              "marks_clear": true,
+              "bowl_identity": "same_upright_bowl"
+            },
+            "current_surface_samples_world_m": [
+              [
+                -0.03351960684557449,
+                0.14841205603380703,
+                0.9722079534138893
+              ],
+              [
+                -0.03351960684557449,
+                0.14841205603380703,
+                0.9722079534138893
+              ],
+              [
+                -0.05106160834645084,
+                0.1473227081098403,
+                0.9723136845999305
+              ],
+              [
+                -0.03558423843212699,
+                0.1592543972730769,
+                0.9720861531986544
+              ],
+              [
+                -0.03370288979144458,
+                0.14489856628464687,
+                0.9722953224456297
+              ],
+              [
+                -0.030452965701230298,
+                0.1423002513357016,
+                0.9723224863387726
+              ]
+            ],
+            "current_state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "budgets": {
+                "gpt_remaining": 28,
+                "jev_remaining": 122,
+                "native_steps_remaining": 366,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -2.292144540231439e-08,
+                  7.82225649129508e-05,
+                  -0.0036159517280184537
+                ],
+                "pad_extent_in_tool_m": [
+                  0.01600006253476978,
+                  0.05722097822546397,
+                  0.016000104394923907
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010494778527086817,
+                  -0.04743569275439586,
+                  -0.04448430604001023
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010494816254676454,
+                  0.0475920311458213,
+                  0.009233138901146937
+                ]
+              }
+            }
+          },
+          "completion_proposed": false,
+          "handoff": {
+            "checkpoint_keys": [
+              "secure.measurements",
+              "secure.progress",
+              "secure.geometry",
+              "secure.observations",
+              "secure.tracker",
+              "secure.local",
+              "secure.resume",
+              "secure.baseline",
+              "secure.effect",
+              "secure.retention"
+            ],
+            "references": {
+              "secure.local": "Fresh actual-pose depth, boundary selections, uncertainty and closure margins.",
+              "secure.baseline": "Postclosure surface identities, hand state and optional persistent patch transform.",
+              "secure.effect": "Fresh postlift review and valid depth samples.",
+              "secure.retention": "Object motion compared with actual whole-lift hand motion.",
+              "secure.resume": "Acknowledged repair actions and terminal state.",
+              "secure.tracker": "Historical same-carton top patch, creation ROI and reference frame; not a current detection."
+            },
+            "current_state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "budgets": {
+                "gpt_remaining": 27,
+                "jev_remaining": 122,
+                "native_steps_remaining": 366,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -2.292144540231439e-08,
+                  7.82225649129508e-05,
+                  -0.0036159517280184537
+                ],
+                "pad_extent_in_tool_m": [
+                  0.01600006253476978,
+                  0.05722097822546397,
+                  0.016000104394923907
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010494778527086817,
+                  -0.04743569275439586,
+                  -0.04448430604001023
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010494816254676454,
+                  0.0475920311458213,
+                  0.009233138901146937
+                ]
+              }
+            },
+            "retention_established": true,
+            "bowl_reference": {
+              "world_m": [
+                -0.12172726021026437,
+                0.005641009307502743,
+                0.9119547217558058
+              ],
+              "depth_m": 1.0459085702896118,
+              "frame_id": 234,
+              "pixel": [
+                389,
+                431
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            "bowl_reference_is_current": true,
+            "bowl_measurement_gap": null,
+            "visible_extent": "Agentview shows a labeled carton portion projecting below the fingers with a table gap. The wrist view shows the broad printed surface and far short edge between the fingers; the near portion is hidden by robot self-occlusion. A full perimeter is not visible.",
+            "frames": "World metres; tool-to-world xyzw quaternions. All observations retain camera and frame IDs; checkpoint receipts supply source/method provenance.",
+            "assumptions": [
+              "No transfer, opening or release was commanded by this repair. Preserve actual gripper state.",
+              "Original frame-96 geometry and frame-0 bowl reference remain historical. Use the bowl reference frame, not its presence, to determine freshness.",
+              "Local carton top and parallel sides were checked only for this pinch, not hidden clearance or full reconstruction.",
+              "Reobserve bowl opening, package extent and transfer corridor before the next stage; a top patch does not measure hidden faces."
+            ]
+          }
+        },
+        "decision": {
+          "action": "advance",
+          "evidence": [
+            "The current stage returned stage_complete at frame 234.",
+            "Current images show the cream cheese carton between the fingers, visibly separated from the table; its near portion is occluded by the gripper.",
+            "The same identified carton landmarks rose approximately 54 mm from frame 204 to frame 234, matching the acknowledged hand lift.",
+            "The upright bowl has a current interior depth measurement, but opening fit and transfer clearance are not established.",
+            "The carton remains outside the bowl and held by the gripper; no transfer or release was acknowledged."
+          ],
+          "invalidated_assumptions": [],
+          "plan_valid": "yes",
+          "reason": "Independent object motion and visible table separation support successful acquisition. The placement stage remains appropriate, with fresh package extent, bowl opening and relevant clearance assessment still required before transfer. Overall placement is not complete.",
+          "recovery_available": "yes",
+          "stage_satisfied": "yes",
+          "task_satisfied": "no"
+        }
+      }
+    ],
+    "hierarchical_termination": "gpt_budget"
+  },
+  "native_steps": 396,
+  "settling_steps": 10,
+  "jev_calls": 132,
+  "gpt_calls": 40,
+  "rpc_calls": 611,
+  "elapsed_s": 12504.060009883018,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a",
+      "stage_id": "secure"
+    },
+    {
+      "number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "stage_id": "secure"
+    },
+    {
+      "number": 2,
+      "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+      "stage_id": "secure"
+    },
+    {
+      "number": 3,
+      "source_sha256": "5d3c1672e734d486c50315fa93512d93c1f2b11647dba0e5fc010e34f583edc5",
+      "stage_id": "place"
+    },
+    {
+      "number": 4,
+      "source_sha256": "5a116a66873f7f9c88a78dccb47e89c9f5aa9d718341f202e6984cfe6fb67530",
+      "stage_id": "place"
+    },
+    {
+      "number": 5,
+      "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+      "stage_id": "place"
+    },
+    {
+      "number": 6,
+      "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+      "stage_id": "place"
+    },
+    {
+      "number": 7,
+      "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+      "stage_id": "restage"
+    },
+    {
+      "number": 8,
+      "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3",
+      "stage_id": "restage"
+    },
+    {
+      "number": 9,
+      "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5",
+      "stage_id": "restage"
+    },
+    {
+      "number": 10,
+      "source_sha256": "23a985f18ac95aa030c7310bf5bedfa5c8447781794d5bb776578ebaa33c357f",
+      "stage_id": "restage"
+    }
+  ],
+  "last_method_error": null
+}

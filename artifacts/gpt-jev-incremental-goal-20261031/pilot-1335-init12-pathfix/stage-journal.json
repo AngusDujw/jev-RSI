@@ -2845,5 +2845,6 @@
       "handoff_requirements": "Preserve completed pickup and partial motion. Provide fresh carton-to-hand retention evidence, bowl opening evidence, actual robot state and relevant clearance bounds. Where occlusion or uncertain depth prevents assessment, use another visible feature, camera, or safely attainable view within observed clearance. Identify a supported placement and finger-clearance option before handing off; historical targets and clearance claims are not authorization.",
       "replan_conditions": "Retention changes, the bowl moves, motion again diverges, or the chosen fit or clearance cannot be supported. Reassess the actual resulting state and consider a different reachable staging or attitude; one failed margin check is not global infeasibility. Do not replay the pickup or failed tilt."
     }
-  }
+  },
+  "termination": "gpt_budget"
 }

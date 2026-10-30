@@ -357,3 +357,20 @@ method generations8679.86s (74.84%), 14 reviews2226.15s, two plans107.84s,
 pure inference or network attribution. Pending builder38 excluded. This
 supports testing the isolated exact-patch candidate; it does not establish
 that candidate speed or robot success. Save request-timing-checkpoint.json.
+
+## Pilot terminal: native failure from exhausted GPT budget
+
+Builder38 delivered method10 (141 lines) in635.705s without reconnect. It
+performs only bounded local separation sensing. Review39 returned; the
+40-call budget was exhausted before final supervision or later placement.
+Terminal isolated native_success=false, termination=gpt_budget,396 native
+steps plus10 settling steps,132Jev,40GPT,611RPC,12504.060s elapsed.
+One confirmed stage, two plan versions,11 generated sources. Full source/
+dispatch audit passed; this verifies provenance, not physical success.
+Known native aggregates:4438794 input/347003 output tokens, with3 unknown
+usage records retained. Jev301056 input/32868 output,55.439s relay time.
+All40 model results delivered; primary terminal cause is budget allocation,
+not an unrecovered stream. Earlier recoveries and all failed intermediate
+methods remain included. audit.json and summary.json are authoritative.
+Candidate4712d43b remains untested on physics and must be separately admitted.
+The declared six-case qualification has not begun; no stable-success claim.

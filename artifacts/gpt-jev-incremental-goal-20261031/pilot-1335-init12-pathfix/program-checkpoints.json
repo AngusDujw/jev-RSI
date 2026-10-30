@@ -3638,9 +3638,9 @@
   "restage.reference": {
     "key": "restage.reference",
     "frame_id": 396,
-    "method_number": 9,
-    "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5",
-    "bytes": 12215,
+    "method_number": 10,
+    "source_sha256": "23a985f18ac95aa030c7310bf5bedfa5c8447781794d5bb776578ebaa33c357f",
+    "bytes": 11544,
     "value": {
       "dimensions_m": [
         0.07914261644195739,
@@ -3939,216 +3939,6 @@
           ]
         }
       },
-      "provenance": [
-        {
-          "key": "restage.reference",
-          "frame_id": 396,
-          "method_number": 8,
-          "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3"
-        },
-        {
-          "key": "restage.progress",
-          "frame_id": 396,
-          "method_number": 8,
-          "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3"
-        }
-      ],
-      "dimension_source_records": [
-        {
-          "key": "place.geometry",
-          "frame_id": 315,
-          "method_number": 6,
-          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
-        },
-        {
-          "key": "place.progress",
-          "frame_id": 315,
-          "method_number": 6,
-          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
-        }
-      ],
-      "partial_valid_measurements": {
-        "c0": {
-          "world_m": [
-            -0.05686353312247086,
-            0.025518655462462604,
-            1.0102078946309754
-          ],
-          "depth_m": 0.09617847204208374,
-          "frame_id": 396,
-          "pixel": [
-            280,
-            445
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "c1": {
-          "world_m": [
-            -0.05689110268352213,
-            -0.014466381361086956,
-            1.0102322513928592
-          ],
-          "depth_m": 0.09621720016002655,
-          "frame_id": 396,
-          "pixel": [
-            488,
-            443
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p0": {
-          "world_m": [
-            -0.05929793099261621,
-            0.020923483319554126,
-            1.0143704061397716
-          ],
-          "depth_m": 0.09597467631101608,
-          "frame_id": 396,
-          "pixel": [
-            304,
-            470
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p1": {
-          "world_m": [
-            -0.05915081671514559,
-            -0.00970868019974143,
-            1.014777665352494
-          ],
-          "depth_m": 0.0956524983048439,
-          "frame_id": 396,
-          "pixel": [
-            464,
-            470
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p2": {
-          "world_m": [
-            -0.06638056721926987,
-            0.020472416227213255,
-            1.0255241458684856
-          ],
-          "depth_m": 0.09589045494794846,
-          "frame_id": 396,
-          "pixel": [
-            307,
-            539
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p3": {
-          "world_m": [
-            -0.06597757560487832,
-            -0.009522801206680327,
-            1.0259519630537008
-          ],
-          "depth_m": 0.09534156322479248,
-          "frame_id": 396,
-          "pixel": [
-            464,
-            539
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p4": {
-          "world_m": [
-            -0.07437498314565578,
-            0.020626515718083403,
-            1.0379269141997136
-          ],
-          "depth_m": 0.09589608013629913,
-          "frame_id": 396,
-          "pixel": [
-            307,
-            616
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "p5": {
-          "world_m": [
-            -0.07380125954001752,
-            -0.009353520872612058,
-            1.03830094007654
-          ],
-          "depth_m": 0.0952327623963356,
-          "frame_id": 396,
-          "pixel": [
-            464,
-            616
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d0": {
-          "world_m": [
-            -0.03511738900389587,
-            0.005976432136756824,
-            0.9501344064189193
-          ],
-          "depth_m": 0.11043640971183777,
-          "frame_id": 396,
-          "pixel": [
-            379,
-            154
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d1": {
-          "world_m": [
-            -0.07491985608919438,
-            -0.046332036720309985,
-            0.9491170720804798
-          ],
-          "depth_m": 0.1444881409406662,
-          "frame_id": 396,
-          "pixel": [
-            562,
-            278
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d2": {
-          "world_m": [
-            -0.143825383990657,
-            0.007433223646449927,
-            0.9496081331667139
-          ],
-          "depth_m": 0.20211486518383026,
-          "frame_id": 396,
-          "pixel": [
-            379,
-            403
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        "d3": {
-          "world_m": [
-            -0.07212339142335027,
-            0.0584516571697017,
-            0.9504117297302106
-          ],
-          "depth_m": 0.14136075973510742,
-          "frame_id": 396,
-          "pixel": [
-            195,
-            278
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        }
-      },
       "current_carton": {
         "frame_id": 396,
         "anchors_world_m": [
@@ -4232,68 +4022,6 @@
           ]
         }
       },
-      "lip_replacement_samples": [
-        {
-          "world_m": [
-            -0.03511738900389587,
-            0.005976432136756824,
-            0.9501344064189193
-          ],
-          "depth_m": 0.11043640971183777,
-          "frame_id": 396,
-          "pixel": [
-            379,
-            154
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        {
-          "world_m": [
-            -0.07491985608919438,
-            -0.046332036720309985,
-            0.9491170720804798
-          ],
-          "depth_m": 0.1444881409406662,
-          "frame_id": 396,
-          "pixel": [
-            562,
-            278
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        {
-          "world_m": [
-            -0.143825383990657,
-            0.007433223646449927,
-            0.9496081331667139
-          ],
-          "depth_m": 0.20211486518383026,
-          "frame_id": 396,
-          "pixel": [
-            379,
-            403
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        },
-        {
-          "world_m": [
-            -0.07212339142335027,
-            0.0584516571697017,
-            0.9504117297302106
-          ],
-          "depth_m": 0.14136075973510742,
-          "frame_id": 396,
-          "pixel": [
-            195,
-            278
-          ],
-          "camera": "robot0_eye_in_hand",
-          "source": "current_depth_patch_backprojection"
-        }
-      ],
       "current_bowl": {
         "frame_id": 396,
         "center_xy_m": [
@@ -4388,22 +4116,313 @@
         ],
         "source": "Fresh identified inner upper edge, distinct outer lip, depth-supported horizontal plane; not historical stationarity."
       },
-      "models_stale": false
+      "dimension_source_records": [
+        {
+          "key": "place.geometry",
+          "frame_id": 315,
+          "method_number": 6,
+          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+        },
+        {
+          "key": "place.progress",
+          "frame_id": 315,
+          "method_number": 6,
+          "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28"
+        }
+      ],
+      "source_records": [
+        {
+          "key": "restage.reference",
+          "frame_id": 396,
+          "method_number": 9,
+          "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5"
+        },
+        {
+          "key": "restage.progress",
+          "frame_id": 396,
+          "method_number": 9,
+          "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5"
+        }
+      ],
+      "models_stale": false,
+      "local_envelope_world_m": [
+        [
+          -0.1257526960780949,
+          -0.024001685580062597,
+          0.9899850327631797
+        ],
+        [
+          -0.1257526960780949,
+          -0.024001685580062597,
+          1.0867021280048592
+        ],
+        [
+          -0.1257526960780949,
+          0.03475262110657456,
+          0.9899850327631797
+        ],
+        [
+          -0.1257526960780949,
+          0.03475262110657456,
+          1.0867021280048592
+        ],
+        [
+          -0.04699973516307777,
+          -0.024001685580062597,
+          0.9899850327631797
+        ],
+        [
+          -0.04699973516307777,
+          -0.024001685580062597,
+          1.0867021280048592
+        ],
+        [
+          -0.04699973516307777,
+          0.03475262110657456,
+          0.9899850327631797
+        ],
+        [
+          -0.04699973516307777,
+          0.03475262110657456,
+          1.0867021280048592
+        ],
+        [
+          -0.04428881378275574,
+          0.08046846040360034,
+          1.0836394736480726
+        ],
+        [
+          -0.10075710367446625,
+          0.08042019199670043,
+          1.0472731928756098
+        ],
+        [
+          -0.04503389800049431,
+          -0.06799563390484739,
+          1.0849934684990497
+        ],
+        [
+          -0.10150218789220482,
+          -0.0680439023117473,
+          1.0486271877265871
+        ],
+        [
+          -0.025643578831285707,
+          0.08011085179156843,
+          1.054688279058553
+        ],
+        [
+          -0.08211186872299621,
+          0.08006258338466853,
+          1.0183219982860903
+        ],
+        [
+          -0.026388663049024277,
+          -0.06835324251687928,
+          1.05604227390953
+        ],
+        [
+          -0.08285695294073478,
+          -0.06840151092377919,
+          1.0196759931370676
+        ],
+        [
+          -0.04428881378275574,
+          0.08046846040360034,
+          1.1036394736480726
+        ],
+        [
+          -0.10075710367446625,
+          0.08042019199670043,
+          1.0672731928756098
+        ],
+        [
+          -0.04503389800049431,
+          -0.06799563390484739,
+          1.1049934684990497
+        ],
+        [
+          -0.10150218789220482,
+          -0.0680439023117473,
+          1.0686271877265872
+        ],
+        [
+          -0.025643578831285707,
+          0.08011085179156843,
+          1.074688279058553
+        ],
+        [
+          -0.08211186872299621,
+          0.08006258338466853,
+          1.0383219982860903
+        ],
+        [
+          -0.026388663049024277,
+          -0.06835324251687928,
+          1.0760422739095301
+        ],
+        [
+          -0.08285695294073478,
+          -0.06840151092377919,
+          1.0396759931370676
+        ]
+      ],
+      "local_cameras": {
+        "agentview": {
+          "K": [
+            [
+              927.0580079512686,
+              0.0,
+              384.0
+            ],
+            [
+              0.0,
+              927.0580079512686,
+              384.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "camera_to_world_opencv": [
+            [
+              0.0,
+              0.628348474670437,
+              -0.7779319985572871,
+              0.6586
+            ],
+            [
+              0.9999999999999999,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              -0.7779319985572871,
+              -0.628348474670437,
+              1.6104
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "frame_id": 396
+        },
+        "robot0_eye_in_hand": {
+          "K": [
+            [
+              500.438543171023,
+              0.0,
+              384.0
+            ],
+            [
+              0.0,
+              500.438543171023,
+              384.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "camera_to_world_opencv": [
+            [
+              -0.0050183133214740105,
+              -0.5414244630116082,
+              -0.8407344214340218,
+              0.03024409978837438
+            ],
+            [
+              -0.9999458240898434,
+              0.010384235753998439,
+              -0.0007187023651078484,
+              0.005479531167181872
+            ],
+            [
+              0.00911950748076601,
+              0.8406852672078876,
+              -0.541447242197161,
+              1.0526099738384687
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "frame_id": 396
+        }
+      },
+      "local_obstacle_samples": {
+        "b3": {
+          "world_m": [
+            -0.17112266515613764,
+            -0.02530610782183243,
+            0.9407883083218597
+          ],
+          "depth_m": 0.22986362874507904,
+          "frame_id": 396,
+          "pixel": [
+            451,
+            416
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b4": {
+          "world_m": [
+            -0.16889758206052527,
+            -0.04533528123887402,
+            0.9625072698256906
+          ],
+          "depth_m": 0.21624764800071716,
+          "frame_id": 396,
+          "pixel": [
+            502,
+            457
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b5": {
+          "world_m": [
+            -0.17646243217501925,
+            -0.04312748911196157,
+            0.9893294937238486
+          ],
+          "depth_m": 0.20808327198028564,
+          "frame_id": 396,
+          "pixel": [
+            502,
+            524
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      }
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "restage.progress": {
     "key": "restage.progress",
     "frame_id": 396,
-    "method_number": 9,
-    "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5",
-    "bytes": 8536,
+    "method_number": 10,
+    "source_sha256": "23a985f18ac95aa030c7310bf5bedfa5c8447781794d5bb776578ebaa33c357f",
+    "bytes": 9322,
     "value": {
       "entry": {
         "frame_id": 396,
         "native_steps": 396,
         "budgets": {
-          "gpt_remaining": 4,
+          "gpt_remaining": 1,
           "jev_remaining": 68,
           "native_steps_remaining": 204,
           "wall_seconds_remaining": 1000000000000.0
@@ -4447,24 +4466,7 @@
           ]
         }
       },
-      "reviews": 1,
       "actions": [],
-      "retention": [
-        {
-          "before_frame": 324,
-          "after_frame": 396,
-          "attachment_error_m": 0.00029845528294262206,
-          "allowance_m": 0.0036,
-          "predicted_landmark_motion_m": 0.13826632596966093,
-          "normal_error_rad": 0.00028955170951986005,
-          "actual_hand_translation_m": [
-            0.0032011384763829254,
-            -0.13701337124654966,
-            0.01908115145331757
-          ],
-          "supported": true
-        }
-      ],
       "release_authorized": false,
       "retired_target": {
         "phase": "translate_to_central_bowl_workspace_without_tilt",
@@ -4598,198 +4600,21 @@
       ],
       "preserved_retention": [
         {
-          "before_frame": 306,
-          "after_frame": 324,
-          "attachment_error_m": 0.00027413135943709147,
+          "before_frame": 324,
+          "after_frame": 396,
+          "attachment_error_m": 0.00029845528294262206,
           "allowance_m": 0.0036,
-          "normal_error_rad": 0.0005412206531102278,
-          "predicted_feature_motion_m": 0.012965055777190496,
+          "predicted_landmark_motion_m": 0.13826632596966093,
+          "normal_error_rad": 0.00028955170951986005,
           "actual_hand_translation_m": [
-            -0.010938341528275844,
-            -0.0020176410229949537,
-            -0.0009678606237177867
+            0.0032011384763829254,
+            -0.13701337124654966,
+            0.01908115145331757
           ],
           "supported": true
         }
       ],
-      "revision": "Preserve the completed raise and transfer. The old residual target remains retired. A different fitted radius alone does not establish bowl motion.",
-      "last_review": {
-        "frame_id": 396,
-        "parameters": {
-          "boundary": "inner_upper_lip",
-          "bowl": "same_upright",
-          "carton": "same_rigid_carton",
-          "carton_free": "unknown",
-          "end_camera": "robot0_eye_in_hand",
-          "end_ids": "matched",
-          "end_pixels": [
-            [
-              280,
-              445
-            ],
-            [
-              488,
-              443
-            ]
-          ],
-          "inner_pixels": [
-            [
-              379,
-              158
-            ],
-            [
-              508,
-              193
-            ],
-            [
-              560,
-              278
-            ],
-            [
-              508,
-              363
-            ],
-            [
-              379,
-              400
-            ],
-            [
-              250,
-              363
-            ],
-            [
-              198,
-              278
-            ],
-            [
-              250,
-              193
-            ]
-          ],
-          "lip_patches": [
-            [
-              [
-                376,
-                153
-              ],
-              [
-                382,
-                153
-              ],
-              [
-                382,
-                155
-              ],
-              [
-                376,
-                155
-              ]
-            ],
-            [
-              [
-                561,
-                275
-              ],
-              [
-                563,
-                275
-              ],
-              [
-                563,
-                281
-              ],
-              [
-                561,
-                281
-              ]
-            ],
-            [
-              [
-                376,
-                402
-              ],
-              [
-                382,
-                402
-              ],
-              [
-                382,
-                404
-              ],
-              [
-                376,
-                404
-              ]
-            ],
-            [
-              [
-                194,
-                275
-              ],
-              [
-                196,
-                275
-              ],
-              [
-                196,
-                281
-              ],
-              [
-                194,
-                281
-              ]
-            ]
-          ],
-          "notes": "c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown because the adjacent green bottle overlaps the carton in projection and their hidden separation cannot be established; finger contact is not the reason. The visible space above is open, but the bottle's h",
-          "opening": "unknown",
-          "outer_pixels": [
-            [
-              379,
-              151
-            ],
-            [
-              511,
-              189
-            ],
-            [
-              565,
-              278
-            ],
-            [
-              511,
-              367
-            ],
-            [
-              379,
-              405
-            ],
-            [
-              247,
-              367
-            ],
-            [
-              192,
-              278
-            ],
-            [
-              247,
-              189
-            ]
-          ],
-          "rim_camera": "robot0_eye_in_hand",
-          "tops_count": 0,
-          "up_route": "unknown"
-        },
-        "measurement_errors": []
-      },
-      "opening_model_discrepancy": {
-        "old_frame": 324,
-        "new_frame": 396,
-        "center_change_m": 0.0010786071152409623,
-        "radius_change_m": 0.0046866756805589715,
-        "interpretation": "Replace the old opening for this local action. Without matched landmark displacement this discrepancy is not evidence of bowl movement."
-      },
-      "effect_tests": [
+      "previous_failed_relations": [
         {
           "observation_frame": 396,
           "fit_margin_m": 0.003521177220243566,
@@ -4812,11 +4637,69 @@
           ]
         }
       ],
+      "measurement_errors": [],
+      "retention": {
+        "before_frame": 324,
+        "after_frame": 396,
+        "attachment_error_m": 0.00029845528294262206,
+        "allowance_m": 0.0036,
+        "normal_error_rad": 0.00028955170951986005,
+        "observed_carton_displacement_m": 0.13853586973857046,
+        "actual_hand_translation_m": [
+          0.0032011384763829254,
+          -0.13701337124654966,
+          0.01908115145331757
+        ]
+      },
+      "envelope": {
+        "fit_margin_m": 0.003521177220243566,
+        "required_margin_m": 0.0035,
+        "carton_above_rim_reserve_m": 0.039659452351552764,
+        "expanded_finger_above_rim_reserve_m": 0.06575712579899606,
+        "position_tolerance_m": 0.0015,
+        "rotation_tolerance_rad": 0.015,
+        "finger_padding_m": 0.006723952049139787,
+        "additional_opening_each_side_m": 0.02,
+        "withdrawal_world_z_m": 0.02
+      },
+      "review": {
+        "frame_id": 396,
+        "parameters": {
+          "agent_coverage": "unknown",
+          "agent_outline": [],
+          "agent_spares": [],
+          "agent_support_edges": [],
+          "bottle": "same_neighboring_bottle",
+          "bowl": "same_upright",
+          "carton": "same_retained_carton",
+          "contact": "none_visible",
+          "notes": "b0,b1,b2 are unavailable: the robot wrist/gripper obscures the bottle in agentview across the relevant projected envelope band, approximately y=300..423. No agentview spare is identifiable without risking a robot measurement. b3 samples exposed green surface above the carton; b4 and b5 sample the bottle strip immediately right of the carton. Interior patches require depth validation. Wrist spares are different interior pixels. In the wrist view, the envelope-facing bottle contour disappears behind the carton at its top edge near y=432 and remains hidden beside the carton below that edge; the visible right-hand strip does not reveal this hidden contour. The bowl hides the upper continuation near its lower-right arc, and the gripper hides the lower continuation. Thus no complete local polygon or supporting edge is supplied. Sparse exposed surfaces do not establish hidden separation. Other visible nearby bodies show local separation, not global clearance. The visible carton and upright patterned bowl are consistent with the supplied identities. Retention is supported by the supplied carton-hand co-motion record, not closed fingers. Earlier images are not present for independent visual comparison. No rim reconstruction or global bottle-top certificate is requested.",
+          "other_external": "visible_local_separation",
+          "wrist_coverage": "surface_only",
+          "wrist_outline": [],
+          "wrist_spares": [
+            [
+              478,
+              420
+            ],
+            [
+              506,
+              494
+            ]
+          ],
+          "wrist_support_edges": []
+        }
+      },
+      "local_gaps": [
+        "agent: fewer than two valid current bottle surfaces",
+        "wrist: local envelope-facing boundary unresolved; surface depths alone are not a clearance bound"
+      ],
+      "separation_tests": [],
       "actual_state": {
         "frame_id": 396,
         "native_steps": 396,
         "budgets": {
-          "gpt_remaining": 3,
+          "gpt_remaining": 0,
           "jev_remaining": 68,
           "native_steps_remaining": 204,
           "wall_seconds_remaining": 1000000000000.0
@@ -4860,7 +4743,7 @@
           ]
         }
       },
-      "reason": "Unsupported relations: ['finger_height_reserve', 'visible_local_opening_relation', 'carton_external_separation']; the separate closed-gripper route is not established. c0 is the image-left Cream/C short-end corner, side A; c1 is the image-right counterpart, side B, preserving physical order. p0..p5 are spread-out current printed-face plane samples, not correspondences. Inner and outer boundary lists have matching clockwise angular order, starting at the upper image arc. d0..d3 use radius 1 on the narrow upper-lip patches. Test the segmented lip returns for horizontal coplanarity; reject edge mixing and sloping-wall returns. lip_surface is a mixed bounding-box cloud, not an isolated lip surface. The supplied earlier record is not an earlier image available for direct visual comparison, so stationarity is not independently proven. Carton-free is unknown beca"
+      "reason": "Cross-camera local evidence remains insufficient: ['agent: fewer than two valid current bottle surfaces', 'wrist: local envelope-facing boundary unresolved; surface depths alone are not a clearance bound']; no supporting ray-plane gap, identity, or other-body relation is silently assumed. b0,b1,b2 are unavailable: the robot wrist/gripper obscures the bottle in agentview across the relevant projected envelope band, approximately y=300..423. No agentview spare is identifiable without risking a robot measurement. b3 samples exposed green surface above the carton; b4 and b5 sample the bottle strip immediately right of the carton. Interior patches require depth validation. Wrist spares are different interior pixels. In the wrist view, the envelope-facing bottle contour disappears behind the carton at its top edge near y=432 and remains hidden beside the carton below that edge; the visible right-hand strip does not reveal this hidden contour. The bowl hides the upper continuation near its lower-right arc, and the gripper hides the lower continuation. Thus no complete local polygon or supporting edge is supplied. Sparse exposed surfaces do not establish hidden separation. Other visible nearby bodies show local separation, not global clearance. The visible carton and upright patterned bowl are consistent with the supplied identities. Retention is supported by the supplied carton-hand co-motion record, not closed fingers. Earlier images are not present for independent visual comparison. No rim reconstruction or global bottle-top certificate is requested."
     },
     "source": "program-supplied historical data; not a fresh measurement"
   }

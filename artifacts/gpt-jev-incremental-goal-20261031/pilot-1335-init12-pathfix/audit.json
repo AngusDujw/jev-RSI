@@ -1,0 +1,211 @@
+{
+  "native_success": false,
+  "termination": "gpt_budget",
+  "gpt_calls": 40,
+  "jev_calls": 132,
+  "native_steps": 396,
+  "elapsed_s": 12504.060009883018,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a",
+      "stage_id": "secure"
+    },
+    {
+      "number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "stage_id": "secure"
+    },
+    {
+      "number": 2,
+      "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+      "stage_id": "secure"
+    },
+    {
+      "number": 3,
+      "source_sha256": "5d3c1672e734d486c50315fa93512d93c1f2b11647dba0e5fc010e34f583edc5",
+      "stage_id": "place"
+    },
+    {
+      "number": 4,
+      "source_sha256": "5a116a66873f7f9c88a78dccb47e89c9f5aa9d718341f202e6984cfe6fb67530",
+      "stage_id": "place"
+    },
+    {
+      "number": 5,
+      "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+      "stage_id": "place"
+    },
+    {
+      "number": 6,
+      "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+      "stage_id": "place"
+    },
+    {
+      "number": 7,
+      "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+      "stage_id": "restage"
+    },
+    {
+      "number": 8,
+      "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3",
+      "stage_id": "restage"
+    },
+    {
+      "number": 9,
+      "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5",
+      "stage_id": "restage"
+    },
+    {
+      "number": 10,
+      "source_sha256": "23a985f18ac95aa030c7310bf5bedfa5c8447781794d5bb776578ebaa33c357f",
+      "stage_id": "restage"
+    }
+  ],
+  "completion_proposed": false,
+  "program_result_contract_valid": true,
+  "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+  "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+  "dispatches": 132,
+  "models": {
+    "gpt": {
+      "attempts": 0,
+      "unknown_usage": 3,
+      "completed_input": 4438794,
+      "completed_output": 347003,
+      "relay_seconds": 12218.00106549263,
+      "matched_requests": 40,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 43,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": [
+        "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+      ]
+    },
+    "jev": {
+      "attempts": 132,
+      "unknown_usage": 0,
+      "completed_input": 301056,
+      "completed_output": 32868,
+      "relay_seconds": 55.439103085169336,
+      "matched_requests": 132,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "jev-1.13.0"
+      ],
+      "transport_source_hashes": [
+        "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+      ]
+    }
+  },
+  "strict_reviews_validated": 15,
+  "strict_designs_validated": 0,
+  "legacy_reviews_json_decoded": 0,
+  "source_origins": [
+    {
+      "number": 0,
+      "source_sha256": "f06f24ac36f64721c21597c672cc07964e9f72886fbdf01af3f52ace29154b7a",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 1,
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 2,
+      "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 3,
+      "source_sha256": "5d3c1672e734d486c50315fa93512d93c1f2b11647dba0e5fc010e34f583edc5",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 4,
+      "source_sha256": "5a116a66873f7f9c88a78dccb47e89c9f5aa9d718341f202e6984cfe6fb67530",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 5,
+      "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 6,
+      "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 7,
+      "source_sha256": "fce86b32c9f530791da04c7adf2a7ab357e0f0289d72d34800e78992c16ff54e",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 8,
+      "source_sha256": "e32d835438f0f2b50d5a1d7b1533092320bdbf86422f790fff68bd0d419096d3",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 9,
+      "source_sha256": "1bbf614b92426d5975e2fb172c848474d4f7e8d47cffd59c1914b562a5a6f8e5",
+      "origin": "actual model output or assembled model patch"
+    },
+    {
+      "number": 10,
+      "source_sha256": "23a985f18ac95aa030c7310bf5bedfa5c8447781794d5bb776578ebaa33c357f",
+      "origin": "actual model output or assembled model patch"
+    }
+  ],
+  "gpt_cost_by_purpose": {
+    "submit_stage_plan": {
+      "calls": 2,
+      "upstream_attempts": 0,
+      "completed_returns": 2,
+      "input": 67290,
+      "output": 2530,
+      "unknown_usage": 0,
+      "native_accounting_records": 2
+    },
+    "submit_method": {
+      "calls": 11,
+      "upstream_attempts": 0,
+      "completed_returns": 11,
+      "input": 2774966,
+      "output": 273091,
+      "unknown_usage": 0,
+      "native_accounting_records": 11
+    },
+    "submit_review": {
+      "calls": 15,
+      "upstream_attempts": 0,
+      "completed_returns": 15,
+      "input": 989793,
+      "output": 59682,
+      "unknown_usage": 3,
+      "native_accounting_records": 18
+    },
+    "submit_stage_decision": {
+      "calls": 12,
+      "upstream_attempts": 0,
+      "completed_returns": 12,
+      "input": 606745,
+      "output": 11700,
+      "unknown_usage": 0,
+      "native_accounting_records": 12
+    }
+  },
+  "hierarchical": {
+    "plan_versions": 2,
+    "updates": 12,
+    "confirmed_stages": 1,
+    "termination": "gpt_budget",
+    "rejected_source_returns": 0,
+    "scope": "Model-return provenance and transition rules, not observation truth"
+  },
+  "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+}

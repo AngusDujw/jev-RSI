@@ -201,6 +201,7 @@ graph LR
     T_2026W44_026["📊 libero-generic-vision<br/>真实分阶段修订后32Jev/96步，fra…"]:::experiment
     T_2026W44_027["📊 gpt-jev-method<br/>分阶段冷pilot经两次修订完成secur…"]:::experiment
     T_2026W44_028["📝 libero-generic-vision<br/>T-2026W44-027主题键误写gpt…"]:::note
+    T_2026W44_029["📊 libero-generic-vision<br/>分阶段pilot成功交付40请求但预算耗尽…"]:::experiment
   end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
@@ -354,6 +355,7 @@ graph LR
   T_2026W44_024 --> T_2026W44_025
   T_2026W44_025 --> T_2026W44_026
   T_2026W44_026 --> T_2026W44_028
+  T_2026W44_028 --> T_2026W44_029
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -537,6 +539,7 @@ graph LR
 | `T-2026W44-026` | 2026-10-31 | experiment | libero-generic-vision | 真实分阶段修订后32Jev/96步，frame72监督continue恢复同一drive无重生成；仍未终局，旧源对照因stride契约耗尽失败 | `EXP-2026W44-048` | - |
 | `T-2026W44-027` | 2026-10-31 | experiment | gpt-jev-method | 分阶段冷pilot经两次修订完成secure并监督advance至place；78Jev/234步，终局未定 | `EXP-2026W44-048` | - |
 | `T-2026W44-028` | 2026-10-31 | note | libero-generic-vision | T-2026W44-027主题键误写gpt-jev-method；该secure完成与place生成证据属于既有libero-generic-vision，后续继续使用此主题，不是新议题 | `EXP-2026W44-048` | - |
+| `T-2026W44-029` | 2026-10-31 | experiment | libero-generic-vision | 分阶段pilot成功交付40请求但预算耗尽，nativefalse，仅抓取阶段完成；需修订耗时与预算配合 | `EXP-2026W44-048` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---

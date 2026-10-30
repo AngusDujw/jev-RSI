@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-dc0e15d2-1532-492f-8ca6-2e832747c5ad",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-dc0e15d2-1532-492f-8ca6-2e832747c5ad",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The wrist view exposes the neighboring dark green bottle behind and to the right of the Cream carton. Agentview provides no unambiguous exposed bottle patch. Neither view establishes the complete envelope-facing bottle boundary. No external contact is visible. This measurement-only review authorizes no motion or release.\", \"parameters\": {\"agent_coverage\": \"unknown\", \"agent_outline\": [], \"agent_spares\": [], \"agent_support_edges\": [], \"bottle\": \"same_neighboring_bottle\", \"bowl\": \"same_upright\", \"carton\": \"same_retained_carton\", \"contact\": \"none_visible\", \"notes\": \"b0,b1,b2 are unavailable: the robot wrist/gripper obscures the bottle in agentview across the relevant projected envelope band, approximately y=300..423. No agentview spare is identifiable without risking a robot measurement. b3 samples exposed green surface above the carton; b4 and b5 sample the bottle strip immediately right of the carton. Interior patches require depth validation. Wrist spares are different interior pixels. In the wrist view, the envelope-facing bottle contour disappears behind the carton at its top edge near y=432 and remains hidden beside the carton below that edge; the visible right-hand strip does not reveal this hidden contour. The bowl hides the upper continuation near its lower-right arc, and the gripper hides the lower continuation. Thus no complete local polygon or supporting edge is supplied. Sparse exposed surfaces do not establish hidden separation. Other visible nearby bodies show local separation, not global clearance. The visible carton and upright patterned bowl are consistent with the supplied identities. Retention is supported by the supplied carton-hand co-motion record, not closed fingers. Earlier images are not present for independent visual comparison. No rim reconstruction or global bottle-top certificate is requested.\", \"other_external\": \"visible_local_separation\", \"wrist_coverage\": \"surface_only\", \"wrist_outline\": [], \"wrist_spares\": [[478, 420], [506, 494]], \"wrist_support_edges\": []}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"b3\", \"pixel\": [451, 416], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"b4\", \"pixel\": [502, 457], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"b5\", \"pixel\": [502, 524], \"radius\": 2}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"bottle_exposed_above_carton\", \"box\": [444, 408, 488, 427], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"bottle_exposed_beside_carton\", \"box\": [495, 447, 510, 529], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 76077,
+    "output_tokens": 4192,
+    "output_tokens_details": {
+      "reasoning_tokens": 2938
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ea7-9d21-7332-90c3-b080595be94d",
+    "turn_ids": [
+      "01a18ea7-9d27-76c2-aed5-e4a720e5ad50"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

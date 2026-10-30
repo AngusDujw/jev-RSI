@@ -1,0 +1,352 @@
+{
+  "index": 611,
+  "method_number": 10,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "restage.progress",
+      {
+        "entry": {
+          "frame_id": 396,
+          "native_steps": 396,
+          "budgets": {
+            "gpt_remaining": 1,
+            "jev_remaining": 68,
+            "native_steps_remaining": 204,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.07837901739681576,
+            0.0059290049818064815,
+            1.0421218692481256
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8778969366996343,
+            -0.004386223863806938,
+            -0.478821345011136,
+            0.0028016308361273616
+          ],
+          "gripper_qpos_m": [
+            0.021016941263675867,
+            -0.02120052931954178
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -1.3262515994368757e-06,
+              -9.180311632590171e-05,
+              -0.0036016258435817338
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000053029658158,
+              0.0572174713220174,
+              0.01600005244279639
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010496217998763395,
+              -0.04760392078235169,
+              -0.044469962979924796
+            ],
+            "finger_high_offset_tool_m": [
+              0.010493420476072551,
+              0.0474203130826097,
+              0.00924742507745397
+            ]
+          }
+        },
+        "actions": [],
+        "release_authorized": false,
+        "retired_target": {
+          "phase": "translate_to_central_bowl_workspace_without_tilt",
+          "before": {
+            "frame_id": 348,
+            "native_steps": 348,
+            "tcp_position_world_m": [
+              -0.08276587271111988,
+              0.1427279402801323,
+              1.0429817362244527
+            ],
+            "tcp_quaternion_xyzw": [
+              0.8824643568650514,
+              -0.007143340073525295,
+              -0.4703231477226258,
+              0.0013297637482669322
+            ],
+            "gripper_qpos_m": [
+              0.021167330977119092,
+              -0.021050295858852746
+            ],
+            "last_gripper_command": "close"
+          },
+          "target_tcp_world_m": [
+            -0.08153635197137837,
+            0.005806879241782997,
+            1.0429817362244527
+          ],
+          "quaternion_xyzw": [
+            0.8824643568650514,
+            -0.007143340073525295,
+            -0.4703231477226258,
+            0.0013297637482669322
+          ],
+          "gripper": "close"
+        },
+        "preserved_actions": [
+          {
+            "phase": "fixed_attitude_raise",
+            "before": {
+              "frame_id": 324,
+              "native_steps": 324,
+              "tcp_position_world_m": [
+                -0.08158015587319868,
+                0.14294237622835615,
+                1.023040717794808
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8815049180996555,
+                -0.006529392307856707,
+                -0.4721296446017755,
+                0.00021234502845446368
+              ],
+              "gripper_qpos_m": [
+                0.021174802827425204,
+                -0.02104295739246088
+              ],
+              "last_gripper_command": "close"
+            },
+            "after": {
+              "frame_id": 348,
+              "native_steps": 348,
+              "tcp_position_world_m": [
+                -0.08276587271111988,
+                0.1427279402801323,
+                1.0429817362244527
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8824643568650514,
+                -0.007143340073525295,
+                -0.4703231477226258,
+                0.0013297637482669322
+              ],
+              "gripper_qpos_m": [
+                0.021167330977119092,
+                -0.021050295858852746
+              ],
+              "last_gripper_command": "close"
+            },
+            "receipt": {
+              "decision": 115,
+              "choices": {
+                "x": "positive",
+                "y": "hold",
+                "z": "hold",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "close"
+              },
+              "action": [
+                0.02416583405994145,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "before": [
+                -0.08343906618550187,
+                0.14265562600068846,
+                1.042919646212204
+              ],
+              "after": [
+                -0.08276587271111988,
+                0.1427279402801323,
+                1.0429817362244527
+              ],
+              "target_tcp": [
+                -0.08158015587319868,
+                0.14294237622835615,
+                1.043040717794808
+              ],
+              "acknowledged_steps": 3,
+              "native_steps": 348,
+              "frame_id": 348,
+              "status": "reached",
+              "position_error_m": 0.00120639380853106,
+              "rotation_error_rad": 0.0048205862655137845,
+              "lease_calls": 8
+            },
+            "net_position_error_reduction_m": 0.018793606191468956,
+            "net_rotation_error_reduction_rad": -0.0048205862655137845,
+            "actual_hand_translation_m": [
+              -0.001185716837921194,
+              -0.0002144359482238456,
+              0.019941018429644686
+            ]
+          }
+        ],
+        "preserved_retention": [
+          {
+            "before_frame": 324,
+            "after_frame": 396,
+            "attachment_error_m": 0.00029845528294262206,
+            "allowance_m": 0.0036,
+            "predicted_landmark_motion_m": 0.13826632596966093,
+            "normal_error_rad": 0.00028955170951986005,
+            "actual_hand_translation_m": [
+              0.0032011384763829254,
+              -0.13701337124654966,
+              0.01908115145331757
+            ],
+            "supported": true
+          }
+        ],
+        "previous_failed_relations": [
+          {
+            "observation_frame": 396,
+            "fit_margin_m": 0.003521177220243566,
+            "required_margin_m": 0.0035,
+            "carton_above_rim_reserve_m": 0.039659452351552764,
+            "expanded_jaw_above_relevant_tops_reserve_m": null,
+            "local_external_height_bound_m": null,
+            "external_top_measurements": [],
+            "opening_relation_known": false,
+            "opening_mode": "unknown",
+            "position_tolerance_m": 0.0015,
+            "rotation_tolerance_rad": 0.015,
+            "additional_tool_y_excursion_each_side_m": 0.02,
+            "upward_withdrawal_envelope_m": 0.02,
+            "scope": "Above-rim prospective opening option only, without release authorization.",
+            "failed_relations": [
+              "finger_height_reserve",
+              "visible_local_opening_relation",
+              "carton_external_separation"
+            ]
+          }
+        ],
+        "measurement_errors": [],
+        "retention": {
+          "before_frame": 324,
+          "after_frame": 396,
+          "attachment_error_m": 0.00029845528294262206,
+          "allowance_m": 0.0036,
+          "normal_error_rad": 0.00028955170951986005,
+          "observed_carton_displacement_m": 0.13853586973857046,
+          "actual_hand_translation_m": [
+            0.0032011384763829254,
+            -0.13701337124654966,
+            0.01908115145331757
+          ]
+        },
+        "envelope": {
+          "fit_margin_m": 0.003521177220243566,
+          "required_margin_m": 0.0035,
+          "carton_above_rim_reserve_m": 0.039659452351552764,
+          "expanded_finger_above_rim_reserve_m": 0.06575712579899606,
+          "position_tolerance_m": 0.0015,
+          "rotation_tolerance_rad": 0.015,
+          "finger_padding_m": 0.006723952049139787,
+          "additional_opening_each_side_m": 0.02,
+          "withdrawal_world_z_m": 0.02
+        },
+        "review": {
+          "frame_id": 396,
+          "parameters": {
+            "agent_coverage": "unknown",
+            "agent_outline": [],
+            "agent_spares": [],
+            "agent_support_edges": [],
+            "bottle": "same_neighboring_bottle",
+            "bowl": "same_upright",
+            "carton": "same_retained_carton",
+            "contact": "none_visible",
+            "notes": "b0,b1,b2 are unavailable: the robot wrist/gripper obscures the bottle in agentview across the relevant projected envelope band, approximately y=300..423. No agentview spare is identifiable without risking a robot measurement. b3 samples exposed green surface above the carton; b4 and b5 sample the bottle strip immediately right of the carton. Interior patches require depth validation. Wrist spares are different interior pixels. In the wrist view, the envelope-facing bottle contour disappears behind the carton at its top edge near y=432 and remains hidden beside the carton below that edge; the visible right-hand strip does not reveal this hidden contour. The bowl hides the upper continuation near its lower-right arc, and the gripper hides the lower continuation. Thus no complete local polygon or supporting edge is supplied. Sparse exposed surfaces do not establish hidden separation. Other visible nearby bodies show local separation, not global clearance. The visible carton and upright patterned bowl are consistent with the supplied identities. Retention is supported by the supplied carton-hand co-motion record, not closed fingers. Earlier images are not present for independent visual comparison. No rim reconstruction or global bottle-top certificate is requested.",
+            "other_external": "visible_local_separation",
+            "wrist_coverage": "surface_only",
+            "wrist_outline": [],
+            "wrist_spares": [
+              [
+                478,
+                420
+              ],
+              [
+                506,
+                494
+              ]
+            ],
+            "wrist_support_edges": []
+          }
+        },
+        "local_gaps": [
+          "agent: fewer than two valid current bottle surfaces",
+          "wrist: local envelope-facing boundary unresolved; surface depths alone are not a clearance bound"
+        ],
+        "separation_tests": [],
+        "actual_state": {
+          "frame_id": 396,
+          "native_steps": 396,
+          "budgets": {
+            "gpt_remaining": 0,
+            "jev_remaining": 68,
+            "native_steps_remaining": 204,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.07837901739681576,
+            0.0059290049818064815,
+            1.0421218692481256
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8778969366996343,
+            -0.004386223863806938,
+            -0.478821345011136,
+            0.0028016308361273616
+          ],
+          "gripper_qpos_m": [
+            0.021016941263675867,
+            -0.02120052931954178
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -1.3262515994368757e-06,
+              -9.180311632590171e-05,
+              -0.0036016258435817338
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000053029658158,
+              0.0572174713220174,
+              0.01600005244279639
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010496217998763395,
+              -0.04760392078235169,
+              -0.044469962979924796
+            ],
+            "finger_high_offset_tool_m": [
+              0.010493420476072551,
+              0.0474203130826097,
+              0.00924742507745397
+            ]
+          }
+        },
+        "reason": "Cross-camera local evidence remains insufficient: ['agent: fewer than two valid current bottle surfaces', 'wrist: local envelope-facing boundary unresolved; surface depths alone are not a clearance bound']; no supporting ray-plane gap, identity, or other-body relation is silently assumed. b0,b1,b2 are unavailable: the robot wrist/gripper obscures the bottle in agentview across the relevant projected envelope band, approximately y=300..423. No agentview spare is identifiable without risking a robot measurement. b3 samples exposed green surface above the carton; b4 and b5 sample the bottle strip immediately right of the carton. Interior patches require depth validation. Wrist spares are different interior pixels. In the wrist view, the envelope-facing bottle contour disappears behind the carton at its top edge near y=432 and remains hidden beside the carton below that edge; the visible right-hand strip does not reveal this hidden contour. The bowl hides the upper continuation near its lower-right arc, and the gripper hides the lower continuation. Thus no complete local polygon or supporting edge is supplied. Sparse exposed surfaces do not establish hidden separation. Other visible nearby bodies show local separation, not global clearance. The visible carton and upright patterned bowl are consistent with the supplied identities. Retention is supported by the supplied carton-hand co-motion record, not closed fingers. Earlier images are not present for independent visual comparison. No rim reconstruction or global bottle-top certificate is requested."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 396,
+  "response": {
+    "result": {
+      "key": "restage.progress",
+      "frame_id": 396,
+      "method_number": 10,
+      "source_sha256": "23a985f18ac95aa030c7310bf5bedfa5c8447781794d5bb776578ebaa33c357f",
+      "bytes": 9322,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 396
+}
