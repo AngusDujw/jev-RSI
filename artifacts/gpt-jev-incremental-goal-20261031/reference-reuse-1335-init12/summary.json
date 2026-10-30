@@ -1,0 +1,18 @@
+{
+  "termination": "repair_budget",
+  "native_success": false,
+  "result": null,
+  "native_steps": 237,
+  "settling_steps": 10,
+  "jev_calls": 79,
+  "gpt_calls": 8,
+  "rpc_calls": 69,
+  "elapsed_s": 828.9801407759078,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54"
+    }
+  ],
+  "last_method_error": "Planner output contract repair exhausted; no valid observation was delivered. Review the method-declared fields and question before retrying. {\"error\": {\"type\": \"ValueError\", \"message\": \"Native submission validation repair budget exhausted\"}, \"validation_errors\": [\"submit_review.regions[1].stride: numeric value outside schema\", \"submit_review.regions[1].stride: numeric value outside schema\", \"submit_review.regions[1].stride: numeric value outside schema\"]}"
+}

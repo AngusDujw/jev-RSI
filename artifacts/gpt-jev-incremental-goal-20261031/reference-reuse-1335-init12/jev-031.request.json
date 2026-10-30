@@ -1,0 +1,166 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 93,
+      "native_steps": 93,
+      "budgets": {
+        "gpt_remaining": 21,
+        "jev_remaining": 169,
+        "native_steps_remaining": 507,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0545567,
+        0.143015,
+        0.956008
+      ],
+      "tcp_quaternion_xyzw": [
+        0.999603,
+        0.000470843,
+        -0.0281553,
+        -0.000128516
+      ],
+      "gripper_qpos_m": [
+        0.0399823,
+        -0.0399775
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          8.7148e-06,
+          2.06272e-06,
+          -0.00355053
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160003,
+          0.0949599,
+          0.0160004
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0104859,
+          -0.0663814,
+          -0.044419
+        ],
+        "finger_high_offset_tool_m": [
+          0.0105035,
+          0.0663852,
+          0.00929872
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "phase": "open-finger pregrasp",
+        "geometry_uncertainty_m": 0.001,
+        "direction_meaning": "world residual toward the current pad target"
+      },
+      "objective": {
+        "gripper": "open",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        0.00105132,
+        0.000814468,
+        -0.00214467
+      ],
+      "rotation_error_world_rad": [
+        -0.000803885,
+        -0.000736258,
+        -0.0012472
+      ],
+      "axes": {
+        "x": {
+          "error": 0.00105132,
+          "goal_relation": "within_tolerance"
+        },
+        "y": {
+          "error": 0.000814468,
+          "goal_relation": "within_tolerance"
+        },
+        "z": {
+          "error": -0.00214467,
+          "goal_relation": "decrease"
+        },
+        "rx": {
+          "error": -0.000803885,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": -0.000736258,
+          "goal_relation": "within_tolerance"
+        },
+        "rz": {
+          "error": -0.0012472,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world axis x. Read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+      "criteria": {
+        "negative": "The selected axis requires decrease.",
+        "hold": "The selected axis is within_tolerance.",
+        "positive": "The selected axis requires increase."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world axis y. Read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+      "criteria": {
+        "negative": "The selected axis requires decrease.",
+        "hold": "The selected axis is within_tolerance.",
+        "positive": "The selected axis requires increase."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world axis z. Read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+      "criteria": {
+        "negative": "The selected axis requires decrease.",
+        "hold": "The selected axis is within_tolerance.",
+        "positive": "The selected axis requires increase."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world axis rx. Read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+      "criteria": {
+        "negative": "The selected axis requires decrease.",
+        "hold": "The selected axis is within_tolerance.",
+        "positive": "The selected axis requires increase."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world axis ry. Read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+      "criteria": {
+        "negative": "The selected axis requires decrease.",
+        "hold": "The selected axis is within_tolerance.",
+        "positive": "The selected axis requires increase."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: Control world axis rz. Read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+      "criteria": {
+        "negative": "The selected axis requires decrease.",
+        "hold": "The selected axis is within_tolerance.",
+        "positive": "The selected axis requires increase."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read state.processed_features.objective.gripper and deliver that exact requirement. Pose arrival is not contact evidence.",
+      "criteria": {
+        "open": "The objective requests open.",
+        "close": "The objective requests close.",
+        "keep": "The objective requests keep."
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "index": 28,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "phase",
+      {
+        "stage": 0,
+        "action": "initialized",
+        "pending": {
+          "label": "final side-engagement approach",
+          "target_pad": [
+            -0.053299473011535536,
+            0.14382940768976588,
+            0.9174076280707836
+          ],
+          "gripper": "open"
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 96,
+  "response": {
+    "result": {
+      "key": "phase",
+      "frame_id": 96,
+      "method_number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54",
+      "bytes": 192,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 96
+}

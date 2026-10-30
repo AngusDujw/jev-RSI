@@ -1,0 +1,28 @@
+{
+  "index": 10,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "phase",
+      {
+        "stage": 0,
+        "action": "initialized"
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "phase",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54",
+      "bytes": 37,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

@@ -1,0 +1,76 @@
+{
+  "native_success": false,
+  "termination": "repair_budget",
+  "gpt_calls": 8,
+  "jev_calls": 79,
+  "native_steps": 237,
+  "elapsed_s": 828.9801407759078,
+  "methods": [
+    {
+      "number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54"
+    }
+  ],
+  "completion_proposed": null,
+  "program_result_contract_valid": false,
+  "audit": "Saved responses, raw choices, semantic labels, action bounds, source origins and costs checked",
+  "native_result_source": "Saved terminal summary; no evaluator or observation-truth recheck",
+  "dispatches": 79,
+  "models": {
+    "gpt": {
+      "attempts": 0,
+      "unknown_usage": 1,
+      "completed_input": 253833,
+      "completed_output": 15429,
+      "relay_seconds": 720.3124673366547,
+      "matched_requests": 8,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 8,
+      "request_models": [
+        "gpt-6-astra"
+      ],
+      "transport_source_hashes": [
+        "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+      ]
+    },
+    "jev": {
+      "attempts": 79,
+      "unknown_usage": 0,
+      "completed_input": 166214,
+      "completed_output": 19671,
+      "relay_seconds": 35.093123500962975,
+      "matched_requests": 79,
+      "undelivered_or_missing_responses": 0,
+      "native_accounting_records": 0,
+      "request_models": [
+        "jev-1.13.0"
+      ],
+      "transport_source_hashes": [
+        "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+      ]
+    }
+  },
+  "strict_reviews_validated": 7,
+  "strict_designs_validated": 0,
+  "legacy_reviews_json_decoded": 0,
+  "source_origins": [
+    {
+      "number": 0,
+      "source_sha256": "6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54",
+      "origin": "declared exact-source reuse"
+    }
+  ],
+  "gpt_cost_by_purpose": {
+    "submit_review": {
+      "calls": 8,
+      "upstream_attempts": 0,
+      "completed_returns": 7,
+      "input": 253833,
+      "output": 15429,
+      "unknown_usage": 1,
+      "native_accounting_records": 8
+    }
+  },
+  "hierarchical": null,
+  "usage_scope": "Known totals include reported native thread aggregates; native accounting records are not provider HTTP attempts. Internal native attempt counts and missing retry usage remain unknown."
+}

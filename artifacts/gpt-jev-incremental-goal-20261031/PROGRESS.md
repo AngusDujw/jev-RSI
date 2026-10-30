@@ -110,3 +110,21 @@ skill-memory changes from another session; do not silently include them in a
 future pilot. Prefer a c8-based isolated branch/worktree plus intended changes.
 
 Reference reuse milestone: at saved rpc-0067/frame237 the generated program phase checkpoint is stage3/action retained, after its differential lift check; it is preparing transport, not terminal success. Review job95ce41bc had one out-of-schema regions[3].stride, corrected inside the same native request before control continued. The incremental first repair remains generating; both services were confirmed active. This supports current executability of the old grasp method, not reliability of the staged generator.
+
+## Reference diagnostic final and next transport fix
+
+EXP050 reference reuse is terminal: native false, repair_budget, 828.980 seconds,
+79 Jev dispatches / 237 steps, 8 GPT requests (7 valid, 1 failed), unchanged source.
+The phase3 retained checkpoint preceded transfer. Its transfer review failed three
+times because regions[1].stride was 3 while schema requires 4..32. Same-thread
+continuations here followed rejected tool submissions, not communication failure.
+Full saved audit passed; known GPT253833/15429 input/output plus one unknown-usage
+record, Jev166214/19671 and35.093 seconds. No replacement success trial declared.
+
+Future-only fix EXP051: numeric validation feedback includes actual/min/max, and
+same-thread continuation includes up to three recent errors plus original schema
+when an unaccepted submission exists. No coercion, schema relaxation or increased
+repair limit. Eleven offline checks and two AST checks passed; report in
+numeric-correction-checks.json. Active incremental pilot/loaded relay remain frozen;
+apply this only after separately declaring a new version. Reference unit is now
+inactive; retain shared relay/tunnel for the still-active incremental trial.

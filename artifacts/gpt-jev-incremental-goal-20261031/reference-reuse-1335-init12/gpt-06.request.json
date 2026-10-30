@@ -1,0 +1,226 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 219; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "982c91e38602bbf87a31f70f4cd73c98667a7fab4b30a0d5b90648cfd2d4c495",
+            "characters": 108351
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 219; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "4ba2785004053cc267b77c7c4866098746816b0d6efd9255603fb8be27f0b901",
+            "characters": 48703
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review agentview"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "c6faf4d373675f28ee9d289b2d4dd52540497be559aad5fdc83672a7b07667e7",
+            "characters": 108427
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review robot0_eye_in_hand"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "4cbc211144dbac1fe195a41fbc27f8838089ebea399cbc6ffb40d8c8f5c2162c",
+            "characters": 45795
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Assess the proposed local motion, not the entire later task route. external=observed means a visible external obstruction to this motion; none_seen means no such obstruction is observed, NOT certified clearance; uncertain means an apparent external obstruction cannot be identified. visibility distinguishes observed, partial, occlusion by the hand/held item, and unobserved space. entry=supported requires positive local evidence from visible space, measured surfaces and the known robot envelope for bounded progress toward the supplied target. Self-occlusion alone is not an external obstacle. Do not demand every perimeter corner or a global swept-volume certificate. Explain the specific evidence or gap in reason.\",\"robot\":{\"frame_id\":219,\"native_steps\":219,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":127,\"native_steps_remaining\":381,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.052322,0.146173,0.949234],\"tcp_quaternion_xyzw\":[0.999615,-6.53199e-06,-0.0277631,2.36512e-05],\"gripper_qpos_m\":[0.0210984,-0.0209515],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-3.91856e-06,7.31878e-05,-0.00362068],\"pad_extent_in_tool_m\":[0.0160002,0.05705,0.016],\"finger_low_offset_tool_m\":[-0.0104989,-0.0473551,-0.044489],\"finger_high_offset_tool_m\":[0.0104909,0.0475015,0.00922838]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-9.40385e-06,-0.998459,-0.0555027,0.00298188],[-1.0,1.20166e-05,-4.67409e-05,0.146177],[4.73358e-05,0.0555027,-0.998459,1.04333],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":68,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"before\":[-0.0522482,0.145317,0.915269],\"after\":[-0.0521783,0.145388,0.915431],\"target_tcp\":[-0.052395,0.145079,0.914937],\"acknowledged_steps\":3,\"native_steps\":207,\"frame_id\":207},{\"decision\":69,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.4,0.0,0.0,0.0,1.0],\"before\":[-0.0521783,0.145388,0.915431],\"after\":[-0.0519771,0.145803,0.927761],\"target_tcp\":[-0.0521756,0.145387,0.95043],\"acknowledged_steps\":3,\"native_steps\":210,\"frame_id\":210},{\"decision\":70,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.292029,0.0,0.0,0.0,1.0],\"before\":[-0.0519771,0.145803,0.927761],\"after\":[-0.0519226,0.146141,0.940395],\"target_tcp\":[-0.0521776,0.145382,0.950224],\"acknowledged_steps\":3,\"native_steps\":213,\"frame_id\":213},{\"decision\":71,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.128511,0.0,0.0,0.0,1.0],\"before\":[-0.0519226,0.146141,0.940395],\"after\":[-0.052091,0.146183,0.946878],\"target_tcp\":[-0.0521741,0.145386,0.950281],\"acknowledged_steps\":3,\"native_steps\":216,\"frame_id\":216},{\"decision\":72,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0453597,0.0,0.0,0.0,1.0],\"before\":[-0.052091,0.146183,0.946878],\"after\":[-0.052322,0.146173,0.949234],\"target_tcp\":[-0.0521723,0.145388,0.950367],\"acknowledged_steps\":3,\"native_steps\":219,\"frame_id\":219}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"phase\",{\"stage\":2,\"action\":\"probe\",\"probe_before\":{\"T\":[[0.999998,0.00200653,-0.000239019,-0.000110589],[-0.00200346,0.999923,0.0122324,-0.0107262],[0.000263545,-0.0122319,0.999925,0.00177246],[0.0,0.0,0.0,1.0]],\"u\":0.0015,\"state\":{\"frame_id\":207,\"native_steps\":207,\"budgets\":{\"gpt_remaining\":19,\"jev_remaining\":131,\"native_steps_remaining\":393,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0521783,0.145388,0.915431],\"tcp_quaternion_xyzw\":[0.999603,0.000316094,-0.0281573,0.000148787],\"gripper_qpos_m\":[0.021104,-0.0209584],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[3.03989e-07,7.24665e-05,-0.00360091],\"pad_extent_in_tool_m\":[0.016,0.0570625,0.0160001],\"finger_low_offset_tool_m\":[-0.0104945,-0.0473621,-0.0444692],\"finger_high_offset_tool_m\":[0.0104951,0.0475071,0.00924815]}},\"frame\":207,\"source\":\"RGB-D rigid patch registration\"},\"probe_target\":[-0.0519753,0.145316,0.954026]}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"phase\",\"frame_id\":219,\"method_number\":0,\"source_sha256\":\"6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54\",\"bytes\":1377,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":219},{\"request\":{\"kind\":\"rpc\",\"method\":\"track_update\",\"args\":[\"patch_0\"],\"kwargs\":{}},\"response\":{\"result\":{\"status\":\"tracked\",\"camera\":\"robot0_eye_in_hand\",\"frame_id\":219,\"reference_frame_id\":0,\"transform_initial_world_to_current_world\":[[0.999988,0.00475123,-0.000998589,5.25753e-05],[-0.00474408,0.999964,0.00703651,-0.00533548],[0.00103199,-0.00703169,0.999975,0.0348307],[0.0,0.0,0.0,1.0]],\"reference_patch_centroid_world_m\":[-0.0542244,0.145809,0.917987],\"current_patch_centroid_world_m\":[-0.0543951,0.147184,0.951713],\"matches\":120,\"inliers\":120,\"rms_m\":2.52323e-05,\"inlier_spread_m\":[0.0082561,0.00545096,2.25193e-05],\"uncertainty_floor_m\":0.00158114,\"reference_inlier_world_m\":[[-0.0469691,0.151676,0.91786],[-0.0452782,0.1565,0.917812],[-0.0448307,0.144532,0.918049],[-0.0389278,0.156218,0.917791],[-0.0495397,0.131847,0.918438],[-0.0415754,0.157321,0.917804],[-0.0438707,0.15373,0.917814],[-0.0350996,0.145029,0.917996],[-0.0469496,0.154264,0.917816],[-0.0499438,0.149116,0.91794],[-0.0505192,0.147642,0.917994],[-0.0434105,0.146479,0.918006],[-0.0482175,0.14541,0.918049],[-0.0367224,0.15477,0.917794],[-0.0503574,0.153867,0.917845],[-0.0485918,0.154327,0.917828],[-0.0463749,0.142874,0.9181],[-0.0489898,0.152937,0.917843],[-0.0448903,0.14553,0.918029],[-0.0463749,0.142874,0.9181],[-0.0407952,0.147256,0.917965],[-0.0304231,0.151895,0.917835],[-0.0448903,0.14553,0.918029],[-0.0499438,0.149116,0.91794],[-0.0495862,0.15408,0.917843],[-0.0350996,0.145029,0.917996],[-0.0482688,0.15591,0.917812],[-0.0429738,0.140469,0.918147],[-0.0480039,0.153375,0.917831],[-0.0297626,0.140374,0.918053],[-0.0382281,0.147606,0.917952],[-0.049363,0.154777,0.917832],[-0.0447124,0.1414,0.918128],[-0.0447124,0.1414,0.918128],[-0.0450642,0.155101,0.917802],[-0.0445888,0.147207,0.917986],[-0.0383698,0.141824,0.918083],[-0.0355132,0.148053,0.917935],[-0.0436901,0.154007,0.917808],[-0.0462961,0.139008,0.9182]],\"current_inlier_world_m\":[[-0.0471218,0.153017,0.951552],[-0.0454079,0.157836,0.951473],[-0.0450042,0.145873,0.951799],[-0.0390277,0.157497,0.95146],[-0.0498042,0.133203,0.952268],[-0.0416846,0.158638,0.951462],[-0.0440005,0.155057,0.951494],[-0.0353207,0.146309,0.951749],[-0.0470712,0.155606,0.951489],[-0.0501078,0.15047,0.951647],[-0.0506922,0.148996,0.95171],[-0.0435797,0.147789,0.951738],[-0.048388,0.146756,0.951783],[-0.0368771,0.156073,0.951476],[-0.0504924,0.155233,0.951518],[-0.0487176,0.155681,0.951499],[-0.0465594,0.144201,0.951854],[-0.0491217,0.154289,0.951524],[-0.0450612,0.146868,0.951765],[-0.0465594,0.144201,0.951854],[-0.0409409,0.148565,0.951693],[-0.0305553,0.153146,0.951545],[-0.0450612,0.146868,0.951765],[-0.0501078,0.15047,0.951647],[-0.0497271,0.155453,0.951516],[-0.0353207,0.146309,0.951749],[-0.0483803,0.157257,0.951483],[-0.0431798,0.141793,0.951922],[-0.0481398,0.154723,0.95151],[-0.0299479,0.141641,0.95184],[-0.0383894,0.148911,0.95168],[-0.0494765,0.156123,0.951499],[-0.0449042,0.142731,0.951894],[-0.0449042,0.142731,0.951894],[-0.0451846,0.156436,0.951473],[-0.0447445,0.14854,0.951711],[-0.0385672,0.143121,0.951852],[-0.0356707,0.14934,0.951663],[-0.043823,0.155323,0.951487],[-0.0465012,0.14035,0.951981]],\"source\":\"RGB-D feature correspondence and rigid registration; not object truth\",\"feature_search\":{\"raw_features\":218,\"selected_features\":218,\"grid\":[4,4],\"per_cell_limit\":128},\"candidates\":[{\"camera\":\"agentview\",\"matches\":4,\"rigid_consensus\":false,\"feature_search\":{\"raw_features\":572,\"selected_features\":572,\"grid\":[4,4],\"per_cell_limit\":128}},{\"camera\":\"robot0_eye_in_hand\",\"matches\":120,\"rigid_consensus\":true,\"feature_search\":{\"raw_features\":218,\"selected_features\":218,\"grid\":[4,4],\"per_cell_limit\":128}}],\"appearance_reference\":{\"keyframes\":3,\"features\":374,\"added_features\":145,\"last_keyframe_frame_id\":219,\"support\":\"original RGB-D polygon and depth consistency; historical appearance, not object truth\"}}},\"frame_id\":219},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":219,\"native_steps\":219,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":127,\"native_steps_remaining\":381,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.052322,0.146173,0.949234],\"tcp_quaternion_xyzw\":[0.999615,-6.53199e-06,-0.0277631,2.36512e-05],\"gripper_qpos_m\":[0.0210984,-0.0209515],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-3.91856e-06,7.31878e-05,-0.00362068],\"pad_extent_in_tool_m\":[0.0160002,0.05705,0.016],\"finger_low_offset_tool_m\":[-0.0104989,-0.0473551,-0.044489],\"finger_high_offset_tool_m\":[0.0104909,0.0475015,0.00922838]}}},\"frame_id\":219},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"phase\",{\"stage\":3,\"action\":\"retained\",\"probe_before\":{\"T\":[[0.999998,0.00200653,-0.000239019,-0.000110589],[-0.00200346,0.999923,0.0122324,-0.0107262],[0.000263545,-0.0122319,0.999925,0.00177246],[0.0,0.0,0.0,1.0]],\"u\":0.0015,\"state\":{\"frame_id\":207,\"native_steps\":207,\"budgets\":{\"gpt_remaining\":19,\"jev_remaining\":131,\"native_steps_remaining\":393,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0521783,0.145388,0.915431],\"tcp_quaternion_xyzw\":[0.999603,0.000316094,-0.0281573,0.000148787],\"gripper_qpos_m\":[0.021104,-0.0209584],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[3.03989e-07,7.24665e-05,-0.00360091],\"pad_extent_in_tool_m\":[0.016,0.0570625,0.0160001],\"finger_low_offset_tool_m\":[-0.0104945,-0.0473621,-0.0444692],\"finger_high_offset_tool_m\":[0.0104951,0.0475071,0.00924815]}},\"frame\":207,\"source\":\"RGB-D rigid patch registration\"},\"probe_target\":[-0.0519753,0.145316,0.954026],\"hold\":{\"T\":[[0.999988,0.00475123,-0.000998589,5.25753e-05],[-0.00474408,0.999964,0.00703651,-0.00533548],[0.00103199,-0.00703169,0.999975,0.0348307],[0.0,0.0,0.0,1.0]],\"u\":0.00158114,\"state\":{\"frame_id\":219,\"native_steps\":219,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":127,\"native_steps_remaining\":381,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.052322,0.146173,0.949234],\"tcp_quaternion_xyzw\":[0.999615,-6.53199e-06,-0.0277631,2.36512e-05],\"gripper_qpos_m\":[0.0210984,-0.0209515],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-3.91856e-06,7.31878e-05,-0.00362068],\"pad_extent_in_tool_m\":[0.0160002,0.05705,0.016],\"finger_low_offset_tool_m\":[-0.0104989,-0.0473551,-0.044489],\"finger_high_offset_tool_m\":[0.0104909,0.0475015,0.00922838]}},\"frame\":219,\"source\":\"RGB-D rigid patch registration\"}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"phase\",\"frame_id\":219,\"method_number\":0,\"source_sha256\":\"6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54\",\"bytes\":2649,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":219},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":219,\"native_steps\":219,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":127,\"native_steps_remaining\":381,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.052322,0.146173,0.949234],\"tcp_quaternion_xyzw\":[0.999615,-6.53199e-06,-0.0277631,2.36512e-05],\"gripper_qpos_m\":[0.0210984,-0.0209515],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-3.91856e-06,7.31878e-05,-0.00362068],\"pad_extent_in_tool_m\":[0.0160002,0.05705,0.016],\"finger_low_offset_tool_m\":[-0.0104989,-0.0473551,-0.044489],\"finger_high_offset_tool_m\":[0.0104909,0.0475015,0.00922838]}}},\"frame_id\":219},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"phase\",{\"stage\":3,\"action\":\"retained\",\"probe_before\":{\"T\":[[0.999998,0.00200653,-0.000239019,-0.000110589],[-0.00200346,0.999923,0.0122324,-0.0107262],[0.000263545,-0.0122319,0.999925,0.00177246],[0.0,0.0,0.0,1.0]],\"u\":0.0015,\"state\":{\"frame_id\":207,\"native_steps\":207,\"budgets\":{\"gpt_remaining\":19,\"jev_remaining\":131,\"native_steps_remaining\":393,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0521783,0.145388,0.915431],\"tcp_quaternion_xyzw\":[0.999603,0.000316094,-0.0281573,0.000148787],\"gripper_qpos_m\":[0.021104,-0.0209584],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[3.03989e-07,7.24665e-05,-0.00360091],\"pad_extent_in_tool_m\":[0.016,0.0570625,0.0160001],\"finger_low_offset_tool_m\":[-0.0104945,-0.0473621,-0.0444692],\"finger_high_offset_tool_m\":[0.0104951,0.0475071,0.00924815]}},\"frame\":207,\"source\":\"RGB-D rigid patch registration\"},\"probe_target\":[-0.0519753,0.145316,0.954026],\"hold\":{\"T\":[[0.999988,0.00475123,-0.000998589,5.25753e-05],[-0.00474408,0.999964,0.00703651,-0.00533548],[0.00103199,-0.00703169,0.999975,0.0348307],[0.0,0.0,0.0,1.0]],\"u\":0.00158114,\"state\":{\"frame_id\":219,\"native_steps\":219,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":127,\"native_steps_remaining\":381,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.052322,0.146173,0.949234],\"tcp_quaternion_xyzw\":[0.999615,-6.53199e-06,-0.0277631,2.36512e-05],\"gripper_qpos_m\":[0.0210984,-0.0209515],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-3.91856e-06,7.31878e-05,-0.00362068],\"pad_extent_in_tool_m\":[0.0160002,0.05705,0.016],\"finger_low_offset_tool_m\":[-0.0104989,-0.0473551,-0.044489],\"finger_high_offset_tool_m\":[0.0104909,0.0475015,0.00922838]}},\"frame\":219,\"source\":\"RGB-D rigid patch registration\"}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"phase\",\"frame_id\":219,\"method_number\":0,\"source_sha256\":\"6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54\",\"bytes\":2649,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":219},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":219,\"native_steps\":219,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":127,\"native_steps_remaining\":381,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.052322,0.146173,0.949234],\"tcp_quaternion_xyzw\":[0.999615,-6.53199e-06,-0.0277631,2.36512e-05],\"gripper_qpos_m\":[0.0210984,-0.0209515],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-3.91856e-06,7.31878e-05,-0.00362068],\"pad_extent_in_tool_m\":[0.0160002,0.05705,0.016],\"finger_low_offset_tool_m\":[-0.0104989,-0.0473551,-0.044489],\"finger_high_offset_tool_m\":[0.0104909,0.0475015,0.00922838]}}},\"frame_id\":219},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":219,\"native_steps\":219,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":127,\"native_steps_remaining\":381,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.052322,0.146173,0.949234],\"tcp_quaternion_xyzw\":[0.999615,-6.53199e-06,-0.0277631,2.36512e-05],\"gripper_qpos_m\":[0.0210984,-0.0209515],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[-3.91856e-06,7.31878e-05,-0.00362068],\"pad_extent_in_tool_m\":[0.0160002,0.05705,0.016],\"finger_low_offset_tool_m\":[-0.0104989,-0.0473551,-0.044489],\"finger_high_offset_tool_m\":[0.0104909,0.0475015,0.00922838]}}},\"frame_id\":219}],\"program_checkpoint_manifest\":[{\"key\":\"model\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54\",\"bytes\":2422,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"phase\",\"frame_id\":219,\"method_number\":0,\"source_sha256\":\"6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54\",\"bytes\":2649,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"historical_named_observations\":{\"initial\":{\"frame_id\":0,\"parameters\":{\"applicability\":\"supported_rectangular_package_into_open_round_receiver\",\"camera\":\"robot0_eye_in_hand\",\"corners\":[[146,159],[204,158],[206,274],[149,273]],\"definitions\":[\"l0: Center of the curled stroke of the initial capital C in the printed word Cream.\",\"l1: Center of the curled stroke of the initial capital C in the printed word Cheese.\",\"l2: Apex of the broad dark-blue outer oval arc opposite the smaller inset oval emblem.\"],\"geometry\":\"adequate\",\"object\":\"cream cheese package\",\"patch_camera\":\"robot0_eye_in_hand\",\"patch_polygon\":[[155,166],[198,166],[200,266],[155,266]],\"receiver\":\"patterned bowl\"},\"points\":{\"r0\":{\"world_m\":[-0.0366319,0.0068071,0.948103],\"depth_m\":0.322446,\"frame_id\":0,\"pixel\":[369,177],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r1\":{\"world_m\":[-0.0625787,-0.0391124,0.947958],\"depth_m\":0.324056,\"frame_id\":0,\"pixel\":[440,218],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r2\":{\"world_m\":[-0.115276,-0.0394152,0.948037],\"depth_m\":0.326906,\"frame_id\":0,\"pixel\":[440,300],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r3\":{\"world_m\":[-0.142661,0.00696782,0.949745],\"depth_m\":0.3267,\"frame_id\":0,\"pixel\":[369,342],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r4\":{\"world_m\":[-0.11544,0.0530503,0.949722],\"depth_m\":0.325187,\"frame_id\":0,\"pixel\":[298,300],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r5\":{\"world_m\":[-0.0627958,0.0533321,0.948815],\"depth_m\":0.323166,\"frame_id\":0,\"pixel\":[297,218],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l0\":{\"world_m\":[-0.0239781,0.144766,0.917889],\"depth_m\":0.35184,\"frame_id\":0,\"pixel\":[174,174],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l1\":{\"world_m\":[-0.0586127,0.144809,0.918054],\"depth_m\":0.3536,\"frame_id\":0,\"pixel\":[175,224],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l2\":{\"world_m\":[-0.0496976,0.131051,0.918437],\"depth_m\":0.35273,\"frame_id\":0,\"pixel\":[194,211],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"previous\":{\"frame_id\":207,\"parameters\":{\"entry\":\"supported\",\"external\":\"none_seen\",\"visibility\":\"self_occluded\",\"reason\":\"The target raises the pad approximately 35 mm with negligible lateral motion. Visible package surface samples are near z=0.918 m; the known finger envelope puts its lowest extent approximately 6 mm above the supplied support height, and upward motion increases that separation. The visible bowl is lateral to this local lift column. No external obstruction to this lift is observed. The hand hides contact patches and part of the package, not an identified external obstacle. Retention must be checked from package motion relative to the hand after the lift.\"},\"points\":{\"cream_cheese_exposed_printed_face\":{\"world_m\":[-0.0224606,0.143582,0.918526],\"depth_m\":0.964557,\"frame_id\":207,\"pixel\":[522,490],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"}}},\"scope\":\"Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.\"},\"historical_point_projections_if_stationary\":{\"cream_cheese_exposed_printed_face\":{\"agentview\":[522.0,490.0],\"robot0_eye_in_hand\":[394.282,457.368]}},\"program_supplied_review_context\":{\"phase\":\"raise load above receiver lip\",\"target_pad_world_m\":[-0.052125,0.1461,1.02306],\"quaternion_xyzw\":[0.999614,-0.000163778,-0.0277874,0.000255883],\"gripper\":\"keep\",\"source_top_m\":0.918037,\"support_m\":0.899961,\"receiver\":{\"center\":[-0.0894424,0.00695634,0.94873],\"radius\":0.0531411,\"floor_z\":0.906922},\"finger_low_relative_pad_m\":-0.0134463,\"held_evidence\":true}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "external": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "none_seen",
+                  "observed",
+                  "uncertain"
+                ]
+              },
+              "visibility": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "observed",
+                  "partial",
+                  "self_occluded",
+                  "unobserved"
+                ]
+              },
+              "entry": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "supported",
+                  "unsupported",
+                  "unknown"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 6000
+              }
+            },
+            "required": [
+              "external",
+              "visibility",
+              "entry",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

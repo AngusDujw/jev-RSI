@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-a49d4e7c-45ad-494a-909a-238d5e32c413",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-a49d4e7c-45ad-494a-909a-238d5e32c413",
+      "arguments": "{\"status\": \"continue\", \"parameters\": {\"entry\": \"supported\", \"external\": \"none_seen\", \"visibility\": \"self_occluded\", \"reason\": \"The target raises the pad about 70 mm with negligible lateral displacement. The known finger envelope currently bottoms near z=0.939 m, above the supplied support at z=0.900 m; this lift increases that separation. Its nearest lateral extent is near y=0.099 m, while the measured bowl rim reaches about y=0.060 m. The visible bowl is beside, not across, this lift column. No external obstruction to this bounded upward motion is observed. The hand and package obscure contact surfaces and part of the column; this is self-occlusion, not an observed obstacle. This supports the local raise only, not subsequent transport or insertion.\"}, \"explanation\": \"The package rises with the hand in agentview while remaining stable in the wrist view. The registered surface displacement agrees with the approximately 34 mm TCP lift, supporting retention beyond merely closed fingers. Placement in the bowl is not complete.\", \"points\": [{\"camera\": \"agentview\", \"name\": \"cream_cheese_visible_face_current\", \"pixel\": [526, 465], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"receiver_far_rim\", \"pixel\": [385, 394], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"receiver_left_rim\", \"pixel\": [341, 419], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"receiver_near_rim\", \"pixel\": [386, 458], \"radius\": 2}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"cream_cheese_exposed_printed_surface\", \"box\": [286, 453, 484, 630], \"stride\": 6}, {\"camera\": \"agentview\", \"name\": \"receiver_visible_inner_surface\", \"box\": [356, 409, 416, 440], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"visible_table_below_load\", \"box\": [493, 493, 567, 549], \"stride\": 6}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 34724,
+    "output_tokens": 2335,
+    "output_tokens_details": {
+      "reasoning_tokens": 1805
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e0e-4923-7120-aed1-7b3d4c1d388d",
+    "turn_ids": [
+      "01a18e0e-4929-7cd3-878d-d59785bea280"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

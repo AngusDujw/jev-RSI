@@ -1,0 +1,4 @@
+{
+  "error": "Planner output contract repair exhausted; no valid observation was delivered. Review the method-declared fields and question before retrying. {\"error\": {\"type\": \"ValueError\", \"message\": \"Native submission validation repair budget exhausted\"}, \"validation_errors\": [\"submit_review.regions[1].stride: numeric value outside schema\", \"submit_review.regions[1].stride: numeric value outside schema\", \"submit_review.regions[1].stride: numeric value outside schema\"]}",
+  "native_steps": 237
+}

@@ -1,0 +1,210 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 207; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "c6faf4d373675f28ee9d289b2d4dd52540497be559aad5fdc83672a7b07667e7",
+            "characters": 108427
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 207; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "4cbc211144dbac1fe195a41fbc27f8838089ebea399cbc6ffb40d8c8f5c2162c",
+            "characters": 45795
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review agentview"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "e55f107401c9d94cf0a5f6ae78d855c0f23aebfe474195cddadf5fdeb9241b56",
+            "characters": 108675
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review robot0_eye_in_hand"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "f262e375093c81d1dd3bc9ab8e83c0638e3aa44d0e270b59c69e0fd25adc7e30",
+            "characters": 51311
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Observe the actual closure effect. contact=candidate means the intended object is plausibly between opposing pads at the measured side-engagement height, allowing a small retention-measurement lift; it does NOT certify retention. Contact may hide the perimeter. miss means visibly missed or pushed outside the grasp. unknown means even this local lift is unjustified. external=observed means a visible obstruction to a small upward lift, not self-occlusion.\",\"robot\":{\"frame_id\":207,\"native_steps\":207,\"budgets\":{\"gpt_remaining\":19,\"jev_remaining\":131,\"native_steps_remaining\":393,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0521783,0.145388,0.915431],\"tcp_quaternion_xyzw\":[0.999603,0.000316094,-0.0281573,0.000148787],\"gripper_qpos_m\":[0.021104,-0.0209584],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[3.03989e-07,7.24665e-05,-0.00360091],\"pad_extent_in_tool_m\":[0.016,0.0570625,0.0160001],\"finger_low_offset_tool_m\":[-0.0104945,-0.0473621,-0.0444692],\"finger_high_offset_tool_m\":[0.0104951,0.0475071,0.00924815]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.000639987,-0.998414,-0.0562911,0.00320299],[-1.0,-0.000623266,-0.000314589,0.14545],[0.000279006,0.0562913,-0.998414,1.00946],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":64,\"choices\":{\"x\":\"hold\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"open\"},\"action\":[0.0,-0.0156574,-0.0188443,0.0,0.0,0.0,-1.0],\"before\":[-0.0523482,0.145032,0.915258],\"after\":[-0.052315,0.144988,0.915064],\"target_tcp\":[-0.053497,0.143828,0.913808],\"acknowledged_steps\":3,\"native_steps\":195,\"frame_id\":195},{\"decision\":65,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"open\"},\"action\":[-0.0154141,-0.0150909,-0.016212,0.0,0.0,0.0,-1.0],\"before\":[-0.052315,0.144988,0.915064],\"after\":[-0.0523955,0.144978,0.914944],\"target_tcp\":[-0.0535007,0.143827,0.913817],\"acknowledged_steps\":3,\"native_steps\":198,\"frame_id\":198},{\"decision\":66,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"before\":[-0.0523955,0.144978,0.914944],\"after\":[-0.0523075,0.145199,0.91513],\"target_tcp\":[-0.0523902,0.144979,0.914944],\"acknowledged_steps\":3,\"native_steps\":201,\"frame_id\":201},{\"decision\":67,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"before\":[-0.0523075,0.145199,0.91513],\"after\":[-0.0522482,0.145317,0.915269],\"target_tcp\":[-0.0523922,0.144976,0.914941],\"acknowledged_steps\":3,\"native_steps\":204,\"frame_id\":204},{\"decision\":68,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"before\":[-0.0522482,0.145317,0.915269],\"after\":[-0.0521783,0.145388,0.915431],\"target_tcp\":[-0.052395,0.145079,0.914937],\"acknowledged_steps\":3,\"native_steps\":207,\"frame_id\":207}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":198,\"native_steps\":198,\"budgets\":{\"gpt_remaining\":20,\"jev_remaining\":134,\"native_steps_remaining\":402,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0523955,0.144978,0.914944],\"tcp_quaternion_xyzw\":[0.999593,0.000162387,-0.0285295,0.000343391],\"gripper_qpos_m\":[0.0399991,-0.04],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.10125e-06,-3.36533e-07,-0.00359914],\"pad_extent_in_tool_m\":[0.0160001,0.0949992,0.0160001],\"finger_low_offset_tool_m\":[-0.0104959,-0.0664033,-0.0444675],\"finger_high_offset_tool_m\":[0.0104938,0.0664026,0.00924992]}}},\"frame_id\":198},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":198,\"native_steps\":198,\"budgets\":{\"gpt_remaining\":20,\"jev_remaining\":134,\"native_steps_remaining\":402,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0523955,0.144978,0.914944],\"tcp_quaternion_xyzw\":[0.999593,0.000162387,-0.0285295,0.000343391],\"gripper_qpos_m\":[0.0399991,-0.04],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-1.10125e-06,-3.36533e-07,-0.00359914],\"pad_extent_in_tool_m\":[0.0160001,0.0949992,0.0160001],\"finger_low_offset_tool_m\":[-0.0104959,-0.0664033,-0.0444675],\"finger_high_offset_tool_m\":[0.0104938,0.0664026,0.00924992]}}},\"frame_id\":198},{\"request\":{\"kind\":\"rpc\",\"method\":\"control\",\"args\":[[-0.0521914,0.144981,0.918538],[0.999614,-0.000163778,-0.0277874,0.000255883],\"close\",{\"x\":{\"type\":\"choice\",\"instructions\":\"Control world axis x. Read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"Control world axis y. Read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"Control world axis z. Read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"Control world axis rx. Read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"Control world axis ry. Read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"Control world axis rz. Read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Read state.processed_features.objective.gripper and deliver that exact requirement. Pose arrival is not contact evidence.\",\"criteria\":{\"open\":\"The objective requests open.\",\"close\":\"The objective requests close.\",\"keep\":\"The objective requests keep.\"}}}],\"kwargs\":{\"features\":{\"phase\":\"opposing-finger closure\"},\"tool_point\":\"pad_center\",\"translation_limit\":0.005,\"rotation_limit\":0.05,\"steps\":3,\"position_tolerance\":0.002,\"rotation_tolerance\":0.035}},\"response\":{\"result\":{\"decision\":66,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"before\":[-0.0523955,0.144978,0.914944],\"after\":[-0.0523075,0.145199,0.91513],\"target_tcp\":[-0.0523902,0.144979,0.914944],\"acknowledged_steps\":3,\"native_steps\":201,\"frame_id\":201,\"status\":\"reached\",\"position_error_m\":0.000300309,\"rotation_error_rad\":0.00147299}},\"frame_id\":201},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":201,\"native_steps\":201,\"budgets\":{\"gpt_remaining\":20,\"jev_remaining\":133,\"native_steps_remaining\":399,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0523075,0.145199,0.91513],\"tcp_quaternion_xyzw\":[0.999597,0.000284696,-0.0283713,0.000247422],\"gripper_qpos_m\":[0.0339922,-0.0339923],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[7.24022e-07,-2.65519e-06,-0.00360213],\"pad_extent_in_tool_m\":[0.0160003,0.0829846,0.0160002],\"finger_low_offset_tool_m\":[-0.0104943,-0.0603982,-0.0444705],\"finger_high_offset_tool_m\":[0.0104956,0.060393,0.009247]}}},\"frame_id\":201},{\"request\":{\"kind\":\"rpc\",\"method\":\"control\",\"args\":[[-0.0521914,0.144981,0.918538],[0.999614,-0.000163778,-0.0277874,0.000255883],\"close\",{\"x\":{\"type\":\"choice\",\"instructions\":\"Control world axis x. Read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"Control world axis y. Read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"Control world axis z. Read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"Control world axis rx. Read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"Control world axis ry. Read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"Control world axis rz. Read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Read state.processed_features.objective.gripper and deliver that exact requirement. Pose arrival is not contact evidence.\",\"criteria\":{\"open\":\"The objective requests open.\",\"close\":\"The objective requests close.\",\"keep\":\"The objective requests keep.\"}}}],\"kwargs\":{\"features\":{\"phase\":\"opposing-finger closure\"},\"tool_point\":\"pad_center\",\"translation_limit\":0.005,\"rotation_limit\":0.05,\"steps\":3,\"position_tolerance\":0.002,\"rotation_tolerance\":0.035}},\"response\":{\"result\":{\"decision\":67,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"before\":[-0.0523075,0.145199,0.91513],\"after\":[-0.0522482,0.145317,0.915269],\"target_tcp\":[-0.0523922,0.144976,0.914941],\"acknowledged_steps\":3,\"native_steps\":204,\"frame_id\":204,\"status\":\"reached\",\"position_error_m\":0.000494354,\"rotation_error_rad\":0.00138728}},\"frame_id\":204},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":204,\"native_steps\":204,\"budgets\":{\"gpt_remaining\":20,\"jev_remaining\":132,\"native_steps_remaining\":396,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522482,0.145317,0.915269],\"tcp_quaternion_xyzw\":[0.9996,0.000340339,-0.0282615,0.000209925],\"gripper_qpos_m\":[0.0213492,-0.0211468],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[3.37212e-06,0.000100103,-0.00360609],\"pad_extent_in_tool_m\":[0.0160003,0.0574961,0.0160003],\"finger_low_offset_tool_m\":[-0.0104916,-0.0475512,-0.0444746],\"finger_high_offset_tool_m\":[0.0104979,0.0477516,0.0092431]}}},\"frame_id\":204},{\"request\":{\"kind\":\"rpc\",\"method\":\"control\",\"args\":[[-0.0521914,0.144981,0.918538],[0.999614,-0.000163778,-0.0277874,0.000255883],\"close\",{\"x\":{\"type\":\"choice\",\"instructions\":\"Control world axis x. Read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"Control world axis y. Read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"Control world axis z. Read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"Control world axis rx. Read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"Control world axis ry. Read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"Control world axis rz. Read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.\",\"criteria\":{\"negative\":\"The selected axis requires decrease.\",\"hold\":\"The selected axis is within_tolerance.\",\"positive\":\"The selected axis requires increase.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Read state.processed_features.objective.gripper and deliver that exact requirement. Pose arrival is not contact evidence.\",\"criteria\":{\"open\":\"The objective requests open.\",\"close\":\"The objective requests close.\",\"keep\":\"The objective requests keep.\"}}}],\"kwargs\":{\"features\":{\"phase\":\"opposing-finger closure\"},\"tool_point\":\"pad_center\",\"translation_limit\":0.005,\"rotation_limit\":0.05,\"steps\":3,\"position_tolerance\":0.002,\"rotation_tolerance\":0.035}},\"response\":{\"result\":{\"decision\":68,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"close\"},\"action\":[0.0,0.0,0.0,0.0,0.0,0.0,1.0],\"before\":[-0.0522482,0.145317,0.915269],\"after\":[-0.0521783,0.145388,0.915431],\"target_tcp\":[-0.052395,0.145079,0.914937],\"acknowledged_steps\":3,\"native_steps\":207,\"frame_id\":207,\"status\":\"reached\",\"position_error_m\":0.000621027,\"rotation_error_rad\":0.00123075}},\"frame_id\":207},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":207,\"native_steps\":207,\"budgets\":{\"gpt_remaining\":20,\"jev_remaining\":131,\"native_steps_remaining\":393,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0521783,0.145388,0.915431],\"tcp_quaternion_xyzw\":[0.999603,0.000316094,-0.0281573,0.000148787],\"gripper_qpos_m\":[0.021104,-0.0209584],\"last_gripper_command\":\"close\",\"own_geometry\":{\"pad_center_in_tool_m\":[3.03989e-07,7.24665e-05,-0.00360091],\"pad_extent_in_tool_m\":[0.016,0.0570625,0.0160001],\"finger_low_offset_tool_m\":[-0.0104945,-0.0473621,-0.0444692],\"finger_high_offset_tool_m\":[0.0104951,0.0475071,0.00924815]}}},\"frame_id\":207}],\"program_checkpoint_manifest\":[{\"key\":\"model\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54\",\"bytes\":2422,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"phase\",\"frame_id\":198,\"method_number\":0,\"source_sha256\":\"6ddc1bcad350da2e90d8d3977d2c44d9f6bf27f32247173ec53ca20fec736d54\",\"bytes\":33,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"historical_named_observations\":{\"initial\":{\"frame_id\":0,\"parameters\":{\"applicability\":\"supported_rectangular_package_into_open_round_receiver\",\"camera\":\"robot0_eye_in_hand\",\"corners\":[[146,159],[204,158],[206,274],[149,273]],\"definitions\":[\"l0: Center of the curled stroke of the initial capital C in the printed word Cream.\",\"l1: Center of the curled stroke of the initial capital C in the printed word Cheese.\",\"l2: Apex of the broad dark-blue outer oval arc opposite the smaller inset oval emblem.\"],\"geometry\":\"adequate\",\"object\":\"cream cheese package\",\"patch_camera\":\"robot0_eye_in_hand\",\"patch_polygon\":[[155,166],[198,166],[200,266],[155,266]],\"receiver\":\"patterned bowl\"},\"points\":{\"r0\":{\"world_m\":[-0.0366319,0.0068071,0.948103],\"depth_m\":0.322446,\"frame_id\":0,\"pixel\":[369,177],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r1\":{\"world_m\":[-0.0625787,-0.0391124,0.947958],\"depth_m\":0.324056,\"frame_id\":0,\"pixel\":[440,218],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r2\":{\"world_m\":[-0.115276,-0.0394152,0.948037],\"depth_m\":0.326906,\"frame_id\":0,\"pixel\":[440,300],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r3\":{\"world_m\":[-0.142661,0.00696782,0.949745],\"depth_m\":0.3267,\"frame_id\":0,\"pixel\":[369,342],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r4\":{\"world_m\":[-0.11544,0.0530503,0.949722],\"depth_m\":0.325187,\"frame_id\":0,\"pixel\":[298,300],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r5\":{\"world_m\":[-0.0627958,0.0533321,0.948815],\"depth_m\":0.323166,\"frame_id\":0,\"pixel\":[297,218],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l0\":{\"world_m\":[-0.0239781,0.144766,0.917889],\"depth_m\":0.35184,\"frame_id\":0,\"pixel\":[174,174],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l1\":{\"world_m\":[-0.0586127,0.144809,0.918054],\"depth_m\":0.3536,\"frame_id\":0,\"pixel\":[175,224],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l2\":{\"world_m\":[-0.0496976,0.131051,0.918437],\"depth_m\":0.35273,\"frame_id\":0,\"pixel\":[194,211],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"previous\":{\"frame_id\":96,\"parameters\":{\"entry\":\"supported\",\"external\":\"none_seen\",\"visibility\":\"partial\",\"reason\":\"The current views show the package between the open fingers and exposed tabletop beside both finger paths, consistent with the earlier arrangement. Using the supplied surface heights and finger envelope, the approximately 40 mm descent to pad z=0.917408 m leaves the lowest finger near z=0.904 m, approximately 4 mm above the measured tabletop. The package's measured approximately 32 mm width fits between the open fingers. The bowl's measured nearest extent at y=0.061 m remains approximately 17 mm outside the finger envelope at y=0.077 m. These are positive local evidence for this fixed-orientation, open-finger descent, with a small tabletop margin, not certified clearance. The hand hides the lower wrist-view strip and bowl landmark r4; this is self-occlusion, not an observed external obstruction. No grasp, retention, or later transfer clearance is established.\"},\"points\":{\"l0\":{\"world_m\":[-0.0238095,0.144979,0.917884],\"depth_m\":0.131645,\"frame_id\":96,\"pixel\":[377,450],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l1\":{\"world_m\":[-0.0587727,0.144971,0.91805],\"depth_m\":0.133478,\"frame_id\":96,\"pixel\":[377,580],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"l2\":{\"world_m\":[-0.0498972,0.13119,0.918435],\"depth_m\":0.13259,\"frame_id\":96,\"pixel\":[429,548],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"r2\":{\"world_m\":[-0.116014,-0.0395631,0.948001],\"depth_m\":1.01881,\"frame_id\":96,\"pixel\":[348,410],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"r3\":{\"world_m\":[-0.142585,0.00672413,0.948863],\"depth_m\":1.03894,\"frame_id\":96,\"pixel\":[390,394],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"bottle_cap_visible_top\":{\"world_m\":[-0.182846,-0.0378363,1.05721],\"depth_m\":1.00219,\"frame_id\":96,\"pixel\":[349,293],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"}}},\"scope\":\"Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.\"},\"historical_point_projections_if_stationary\":{\"l0\":{\"agentview\":[523.133,489.506],\"robot0_eye_in_hand\":[386.302,501.445]},\"l1\":{\"agentview\":[519.33,466.0],\"robot0_eye_in_hand\":[386.182,683.616]},\"l2\":{\"agentview\":[507.353,471.556],\"robot0_eye_in_hand\":[459.697,639.348]},\"r2\":{\"agentview\":[348.0,410.0],\"robot0_eye_in_hand\":[1742.23,1233.7]},\"r3\":{\"agentview\":[390.0,394.0],\"robot0_eye_in_hand\":[1392.94,1419.27]},\"bottle_cap_visible_top\":{\"agentview\":[349.0,293.0]}},\"program_supplied_review_context\":{\"object\":\"cream cheese package\",\"grasp_pad\":[-0.0532995,0.143829,0.917408]}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "contact": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "candidate",
+                  "miss",
+                  "unknown"
+                ]
+              },
+              "external": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "none_seen",
+                  "observed",
+                  "uncertain"
+                ]
+              }
+            },
+            "required": [
+              "contact",
+              "external"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

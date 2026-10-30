@@ -1,0 +1,148 @@
+{
+  "status": "continue",
+  "parameters": {
+    "entry": "supported",
+    "external": "none_seen",
+    "visibility": "partial",
+    "reason": "The proposed action is an open-hand, fixed-orientation lateral move at essentially unchanged height, not a descent or transfer. The supplied envelope places the lowest finger near z=1.174 m, about 0.255 m above the measured package top and 0.225 m above the bowl rim. Both views show the package, bowl and surrounding tabletop below this elevated approach; no external obstruction to this bounded move is visible. The robot partly masks the starting space, but that self-occlusion is not an observed external obstacle. This supports local progress, not certified clearance of unseen geometry."
+  },
+  "explanation": "Current and earlier images show the same arrangement. Evidence supports moving above the cream cheese at the supplied conservative height only. It does not establish a safe subsequent descent, retention, placement, or task completion. Visible surface selections are returned for local geometric checking.",
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "l0",
+      "pixel": [
+        174,
+        174
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "l1",
+      "pixel": [
+        175,
+        224
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "l2",
+      "pixel": [
+        194,
+        211
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "r0",
+      "pixel": [
+        369,
+        177
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "r1",
+      "pixel": [
+        440,
+        218
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "r2",
+      "pixel": [
+        440,
+        300
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "r3",
+      "pixel": [
+        369,
+        342
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "r4",
+      "pixel": [
+        298,
+        300
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "r5",
+      "pixel": [
+        297,
+        218
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "bottle_cap_visible_top",
+      "pixel": [
+        349,
+        293
+      ],
+      "radius": 2
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "cream_cheese_visible_top",
+      "box": [
+        155,
+        166,
+        198,
+        266
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "bowl_visible_surface_and_rim_neighborhood",
+      "box": [
+        282,
+        173,
+        456,
+        346
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "tabletop_between_package_and_bowl",
+      "box": [
+        220,
+        180,
+        272,
+        330
+      ],
+      "stride": 5
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "tabletop_below_elevated_approach",
+      "box": [
+        248,
+        360,
+        390,
+        530
+      ],
+      "stride": 6
+    }
+  ]
+}

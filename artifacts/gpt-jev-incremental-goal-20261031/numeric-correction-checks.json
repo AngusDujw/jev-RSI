@@ -1,0 +1,13 @@
+{
+  "scope": "Offline actual rejected candidates and actual start_turn with mock RPC; no API/robot calls",
+  "rejected_candidates": 3,
+  "numeric_boundary_cases": 5,
+  "continuation_cases": 3,
+  "errors": [
+    "submit_review.regions[1].stride: numeric value outside schema; actual=3, minimum=4, maximum=32; value must be finite",
+    "submit_review.regions[1].stride: numeric value outside schema; actual=3, minimum=4, maximum=32; value must be finite",
+    "submit_review.regions[1].stride: numeric value outside schema; actual=3, minimum=4, maximum=32; value must be finite"
+  ],
+  "schema_unchanged": true,
+  "coercion": false
+}

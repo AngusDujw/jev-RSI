@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-096cb8c3-9613-4b18-8d13-227488745def",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-096cb8c3-9613-4b18-8d13-227488745def",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Visible evidence supports the bounded open-finger side-engagement descent only. Current surface selections are returned; bowl landmark r4 is hidden by the hand and cannot be measured in either current view.\", \"parameters\": {\"entry\": \"supported\", \"external\": \"none_seen\", \"visibility\": \"partial\", \"reason\": \"The current views show the package between the open fingers and exposed tabletop beside both finger paths, consistent with the earlier arrangement. Using the supplied surface heights and finger envelope, the approximately 40 mm descent to pad z=0.917408 m leaves the lowest finger near z=0.904 m, approximately 4 mm above the measured tabletop. The package's measured approximately 32 mm width fits between the open fingers. The bowl's measured nearest extent at y=0.061 m remains approximately 17 mm outside the finger envelope at y=0.077 m. These are positive local evidence for this fixed-orientation, open-finger descent, with a small tabletop margin, not certified clearance. The hand hides the lower wrist-view strip and bowl landmark r4; this is self-occlusion, not an observed external obstruction. No grasp, retention, or later transfer clearance is established.\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"l0\", \"pixel\": [377, 450], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"l1\", \"pixel\": [377, 580], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"l2\", \"pixel\": [429, 548], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"r0\", \"pixel\": [391, 460], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"r1\", \"pixel\": [347, 443], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"r2\", \"pixel\": [348, 410], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"r3\", \"pixel\": [390, 394], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"r5\", \"pixel\": [434, 443], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"bottle_cap_visible_top\", \"pixel\": [349, 293], \"radius\": 2}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"cream_cheese_visible_top\", \"box\": [310, 416, 448, 633], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"pregrasp_visible_tabletop_left_of_package\", \"box\": [190, 445, 278, 573], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"tabletop_between_package_and_bowl\", \"box\": [488, 445, 573, 573], \"stride\": 5}, {\"camera\": \"agentview\", \"name\": \"bowl_visible_interior\", \"box\": [356, 410, 417, 448], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"tabletop_forward_of_package\", \"box\": [495, 517, 551, 557], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 54863,
+    "output_tokens": 3498,
+    "output_tokens_details": {
+      "reasoning_tokens": 2070
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e0a-3f06-7531-bb3a-4599411c851b",
+    "turn_ids": [
+      "01a18e0a-3f0d-7313-a049-bb94086c5db7"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

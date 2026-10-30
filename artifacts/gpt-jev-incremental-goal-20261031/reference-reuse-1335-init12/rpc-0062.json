@@ -1,0 +1,148 @@
+{
+  "index": 62,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.05212499468742748,
+        0.1460997957188681,
+        1.0230601975100404
+      ],
+      [
+        0.9996138089570381,
+        -0.0001637781149644857,
+        -0.027787418789059465,
+        0.00025588312349679454
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "Control world axis x. Read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+          "criteria": {
+            "negative": "The selected axis requires decrease.",
+            "hold": "The selected axis is within_tolerance.",
+            "positive": "The selected axis requires increase."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "Control world axis y. Read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+          "criteria": {
+            "negative": "The selected axis requires decrease.",
+            "hold": "The selected axis is within_tolerance.",
+            "positive": "The selected axis requires increase."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "Control world axis z. Read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+          "criteria": {
+            "negative": "The selected axis requires decrease.",
+            "hold": "The selected axis is within_tolerance.",
+            "positive": "The selected axis requires increase."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "Control world axis rx. Read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+          "criteria": {
+            "negative": "The selected axis requires decrease.",
+            "hold": "The selected axis is within_tolerance.",
+            "positive": "The selected axis requires increase."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "Control world axis ry. Read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+          "criteria": {
+            "negative": "The selected axis requires decrease.",
+            "hold": "The selected axis is within_tolerance.",
+            "positive": "The selected axis requires increase."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "Control world axis rz. Read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Rotation signs are world rotation-vector signs.",
+          "criteria": {
+            "negative": "The selected axis requires decrease.",
+            "hold": "The selected axis is within_tolerance.",
+            "positive": "The selected axis requires increase."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper and deliver that exact requirement. Pose arrival is not contact evidence.",
+          "criteria": {
+            "open": "The objective requests open.",
+            "close": "The objective requests close.",
+            "keep": "The objective requests keep."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "phase": "raise load above receiver lip",
+        "geometry_uncertainty_m": 0.001,
+        "direction_meaning": "world residual toward the current pad target"
+      },
+      "max_calls": 40,
+      "tool_point": "pad_center",
+      "translation_limit": 0.02,
+      "rotation_limit": 0.1,
+      "steps": 3,
+      "position_tolerance": 0.002,
+      "rotation_tolerance": 0.035
+    }
+  },
+  "frame_before": 219,
+  "response": {
+    "result": {
+      "decision": 78,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "positive",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "action": [
+        0.0,
+        0.0,
+        0.058460184941279573,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "before": [
+        -0.05337320203081797,
+        0.1470353919034569,
+        1.0148886136744177
+      ],
+      "after": [
+        -0.05345844656223779,
+        0.1470235485904654,
+        1.0180034536708165
+      ],
+      "target_tcp": [
+        -0.052322960651798325,
+        0.14617127809471372,
+        1.019385550977593
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 237,
+      "frame_id": 237,
+      "status": "reached",
+      "position_error_m": 0.00198138492376786,
+      "rotation_error_rad": 0.0006738657082856704,
+      "lease_calls": 6
+    }
+  },
+  "frame_after": 237
+}

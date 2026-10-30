@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-cb80005e-b673-4524-9a88-5ce79f2ffe7a",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-cb80005e-b673-4524-9a88-5ce79f2ffe7a",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"Compared with the earlier open grasp, the opposing fingers have closed against the package's sides while the package remains between them, with no visible ejection. This supports a small upward retention-measurement lift, not confirmed retention. The lower perimeter and contact patches are partly hidden by the hand. No external obstruction to this small upward lift is visible; the hand's occlusion is not an external obstruction.\", \"parameters\": {\"contact\": \"candidate\", \"external\": \"none_seen\"}, \"points\": [{\"camera\": \"agentview\", \"name\": \"cream_cheese_exposed_printed_face\", \"pixel\": [522, 490], \"radius\": 3}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"cream_cheese_visible_printed_face\", \"box\": [284, 450, 487, 580], \"stride\": 8}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 31660,
+    "output_tokens": 1124,
+    "output_tokens_details": {
+      "reasoning_tokens": 894
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e0c-a7f3-7190-bb4f-8ceaf838c17f",
+    "turn_ids": [
+      "01a18e0c-a7fa-7292-952f-33c80fc27382"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

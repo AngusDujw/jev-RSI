@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-33d229f6-abbc-40c9-a56c-cf127241c9bf",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-33d229f6-abbc-40c9-a56c-cf127241c9bf",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The current and earlier review images show the package between the fingers, but no demonstrated lift or retention. The proposed upward motion is supported as a bounded retention-measurement action, not as confirmed transport or task completion.\", \"parameters\": {\"entry\": \"supported\", \"external\": \"none_seen\", \"visibility\": \"self_occluded\", \"reason\": \"The target raises the pad approximately 35 mm with negligible lateral motion. Visible package surface samples are near z=0.918 m; the known finger envelope puts its lowest extent approximately 6 mm above the supplied support height, and upward motion increases that separation. The visible bowl is lateral to this local lift column. No external obstruction to this lift is observed. The hand hides contact patches and part of the package, not an identified external obstacle. Retention must be checked from package motion relative to the hand after the lift.\"}, \"points\": [{\"camera\": \"agentview\", \"name\": \"cream_cheese_exposed_printed_face\", \"pixel\": [522, 490], \"radius\": 3}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"cream_cheese_visible_printed_face\", \"box\": [284, 450, 487, 580], \"stride\": 8}, {\"camera\": \"agentview\", \"name\": \"source_support_visible_beside_package\", \"box\": [565, 489, 621, 543], \"stride\": 6}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 31138,
+    "output_tokens": 1380,
+    "output_tokens_details": {
+      "reasoning_tokens": 1026
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e0d-4bd2-77c2-a1b6-b63e77512d10",
+    "turn_ids": [
+      "01a18e0d-4bd9-7343-8208-24bee13df944"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
