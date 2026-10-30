@@ -166,7 +166,8 @@ def refine(source, destination, episodes, receipts):
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     with opener.open("http://127.0.0.1:7921/", timeout=10) as response:
         health = json.load(response)
-    if health.get("transport") != "native-session":
+    if (health.get("transport"), health.get("auth"), health.get("model"), health.get("effort")) != (
+            "native-session", "ChatGPT", "gpt-6-astra", "xhigh"):
         raise ValueError("Refinement requires the local signed-in Pro native-session bridge")
     schema = dict(type="object", additionalProperties=False, required=["files"], properties=dict(
         files=dict(type="array", minItems=1, maxItems=12, items=dict(type="object",
