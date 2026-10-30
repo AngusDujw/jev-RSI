@@ -1,0 +1,22 @@
+{
+  "scope": "Prompt-only candidate; no live efficacy validation",
+  "candidate_commit": "4712d43b",
+  "active_remote_commit": "c8dedfa8",
+  "prompt_sha256": "c54a440391971d14e6aff8ba8b4d1c437ea1eeb7d6e42e02fafa1c39976ac863",
+  "checks": [
+    "English ASCII",
+    "root and isolated candidate prompt equality",
+    "git diff whitespace check"
+  ],
+  "evidence": [
+    "placement-gate-diagnostic.json",
+    "placement-fit-diagnostic.json"
+  ],
+  "changes": [
+    "Gate scope follows its own action and named review field",
+    "Retain later-action checks before those actions",
+    "Preserve numerical operands before blocked return"
+  ],
+  "new_model_calls": 0,
+  "new_robot_calls": 0
+}

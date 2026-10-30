@@ -259,3 +259,12 @@ Active placement second repair jobf6e5f94c27c242fbb54bc17a8ad139ad / thread
 reconnect; two region-count10 submissions violated max8, followed by one native
 same-thread continuation and a valid result. This continuation was formatting
 correction, not a network drop. See placement-gate-diagnostic.json.
+
+## Generic gate-scope candidate (not active)
+
+EXP053 adds action-specific gate scope and pre-failure numerical operands to
+the English stage prompt. Preserve every later gate before its own action;
+unknown is never clear, and an established obstruction cannot be postponed.
+No task coordinates or trajectories. Candidate branch now4712d43b; live remote
+stillc8dedfa8. ASCII, root/candidate byte equality and whitespace checks pass;
+no empirical efficacy claim. See gate-scope-candidate.json.
