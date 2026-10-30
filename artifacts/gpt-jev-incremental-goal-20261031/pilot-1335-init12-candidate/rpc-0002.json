@@ -1,0 +1,243 @@
+{
+  "index": 2,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Measure only the cream cheese package grasp geometry. Request p0,p1,p2,p3 as named depth points well distributed on the flat upper face, safely inside its edges. Make p0 a distinctive printed physical landmark and describe it in p0_identity. Request t0,t1,t2 as named depth points on the counter supporting this package, distributed around it, not on nearby objects. Identify the four actual upper-face corners in clockwise order as corners pixel pairs in camera; mixed-depth corner pixels will be ray-intersected with the measured face plane. Do not invent hidden corners. Check the hand is empty and open. On this replacement attempt use the other useful view or different valid interior depth patches rather than repeating a failed sample."
+    ],
+    "kwargs": {
+      "context": {
+        "attempt": 0,
+        "state": {
+          "frame_id": 0,
+          "native_steps": 0,
+          "budgets": {
+            "gpt_remaining": 38,
+            "jev_remaining": 200,
+            "native_steps_remaining": 600,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.2071984982582204,
+            -0.002684108235936964,
+            1.1833957456431763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9996138089570381,
+            -0.0001637781149644857,
+            -0.027787418789059465,
+            0.00025588312349679454
+          ],
+          "gripper_qpos_m": [
+            0.03872178294129007,
+            -0.03872379800220578
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              4.177684213122965e-06,
+              -1.233369511719623e-06,
+              -0.003603143886142522
+            ],
+            "pad_extent_in_tool_m": [
+              0.016001340332578606,
+              0.09244574820685311,
+              0.01600079183925129
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010490259555384143,
+              -0.06512722856056685,
+              -0.044471733171043505
+            ],
+            "finger_high_offset_tool_m": [
+              0.010500258927625426,
+              0.06512494646865309,
+              0.009245963123110084
+            ]
+          }
+        }
+      },
+      "fields": {
+        "identity": [
+          "cream_cheese_on_counter",
+          "different_state",
+          "unknown"
+        ],
+        "top_boundary": [
+          "four_visible_corners",
+          "unknown"
+        ],
+        "camera": [
+          "agentview",
+          "robot0_eye_in_hand"
+        ],
+        "corners": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 767
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "p0_identity": "string",
+        "same_counter_support": "boolean",
+        "empty_open_hand": "boolean",
+        "notes": "string"
+      }
+    }
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The wrist view shows the labeled cream cheese package resting on the counter, with a flat upper face and all four upper-face corners visible. Selected interior face patches and three surrounding counter patches. The visible fingers are separated with no object between them, consistent with the reported open gripper.",
+      "parameters": {
+        "camera": "robot0_eye_in_hand",
+        "corners": [
+          [
+            145,
+            159
+          ],
+          [
+            203,
+            158
+          ],
+          [
+            206,
+            274
+          ],
+          [
+            148,
+            273
+          ]
+        ],
+        "empty_open_hand": true,
+        "identity": "cream_cheese_on_counter",
+        "notes": "Use the larger wrist-view face for this replacement sample. Corners follow clockwise order from upper left and refer to the printed upper face, not the dark sidewall. All supporting-counter samples avoid nearby objects. No hidden geometry is inferred.",
+        "p0_identity": "White curled capital C beginning Cream near the upper end of the printed blue logo.",
+        "same_counter_support": true,
+        "top_boundary": "four_visible_corners"
+      },
+      "points": {
+        "p0": {
+          "world_m": [
+            -0.023958838459977372,
+            0.1483027635781491,
+            0.917836496878051
+          ],
+          "depth_m": 0.3518899381160736,
+          "frame_id": 0,
+          "pixel": [
+            169,
+            174
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p1": {
+          "world_m": [
+            -0.02756845854578764,
+            0.1306242134890559,
+            0.9183122721999079
+          ],
+          "depth_m": 0.35162439942359924,
+          "frame_id": 0,
+          "pixel": [
+            194,
+            179
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p2": {
+          "world_m": [
+            -0.07959929448227085,
+            0.1317296199176668,
+            0.9183344733698312
+          ],
+          "depth_m": 0.3544940650463104,
+          "frame_id": 0,
+          "pixel": [
+            194,
+            254
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p3": {
+          "world_m": [
+            -0.07876425643380693,
+            0.15749338997764098,
+            0.9176914775062358
+          ],
+          "depth_m": 0.35507676005363464,
+          "frame_id": 0,
+          "pixel": [
+            158,
+            253
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t0": {
+          "world_m": [
+            -0.04006411811722774,
+            0.1948505838700932,
+            0.8999609487596831
+          ],
+          "depth_m": 0.370609849691391,
+          "frame_id": 0,
+          "pixel": [
+            117,
+            205
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t1": {
+          "world_m": [
+            0.016178653723229686,
+            0.14471078961637035,
+            0.8999592092554628
+          ],
+          "depth_m": 0.3675101399421692,
+          "frame_id": 0,
+          "pixel": [
+            183,
+            127
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t2": {
+          "world_m": [
+            -0.11138106459208372,
+            0.11241991938794876,
+            0.8999631258628009
+          ],
+          "depth_m": 0.3746134042739868,
+          "frame_id": 0,
+          "pixel": [
+            230,
+            302
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 0
+    }
+  },
+  "frame_after": 0
+}

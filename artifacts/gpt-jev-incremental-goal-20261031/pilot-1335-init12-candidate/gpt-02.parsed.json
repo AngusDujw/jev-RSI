@@ -1,0 +1,97 @@
+{
+  "status": "continue",
+  "explanation": "The wrist view shows the labeled cream cheese package resting on the counter, with a flat upper face and all four upper-face corners visible. Selected interior face patches and three surrounding counter patches. The visible fingers are separated with no object between them, consistent with the reported open gripper.",
+  "parameters": {
+    "camera": "robot0_eye_in_hand",
+    "corners": [
+      [
+        145,
+        159
+      ],
+      [
+        203,
+        158
+      ],
+      [
+        206,
+        274
+      ],
+      [
+        148,
+        273
+      ]
+    ],
+    "empty_open_hand": true,
+    "identity": "cream_cheese_on_counter",
+    "notes": "Use the larger wrist-view face for this replacement sample. Corners follow clockwise order from upper left and refer to the printed upper face, not the dark sidewall. All supporting-counter samples avoid nearby objects. No hidden geometry is inferred.",
+    "p0_identity": "White curled capital C beginning Cream near the upper end of the printed blue logo.",
+    "same_counter_support": true,
+    "top_boundary": "four_visible_corners"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p0",
+      "pixel": [
+        169,
+        174
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p1",
+      "pixel": [
+        194,
+        179
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p2",
+      "pixel": [
+        194,
+        254
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p3",
+      "pixel": [
+        158,
+        253
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        117,
+        205
+      ],
+      "radius": 5
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        183,
+        127
+      ],
+      "radius": 5
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        230,
+        302
+      ],
+      "radius": 5
+    }
+  ],
+  "regions": []
+}

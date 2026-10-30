@@ -404,3 +404,15 @@ lift and current retention evidence; no future positioning/release code.
 Review2 request44ed87643fc34447a292fbf8185b57b4 is active, actual native
 child968180 observed. No action or terminal result yet. The runtime finite
 lease loop and patch repairs still require actual execution validation.
+
+## Candidate actual first patch repair requested
+
+Review2 returned at frame0. Secure candidate rejected by side-overlap
+margin -0.325046mm, before any action. Supervisor3 selected local revise,
+kept the plan and required fresh geometry/alternate candidate without
+weakening thresholds. Actual request4 selects submit_method_patch and
+contains repair override plus previous source; full request ASCII passes.
+Job1dff1009e00548bab5c1784b0ac51bdc / native thread
+01a18ebc-47de-7652-ac75-98903c84ed5d generating, no recovery observed.
+Actual child971561 observed live. ZeroJev/zero steps; no native result.
+This proves request selection only, not successful patch delivery or speedup.

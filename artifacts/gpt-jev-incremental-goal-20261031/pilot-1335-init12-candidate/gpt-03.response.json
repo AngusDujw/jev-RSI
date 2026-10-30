@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-1b15cd40-d469-4138-90a3-e7ebce6860bc",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-1b15cd40-d469-4138-90a3-e7ebce6860bc",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Current images show the cream cheese package on the counter, separate from the bowl; no lifted or retained package is visible.\", \"Public state reports an open gripper, zero native steps, and no acknowledged execution.\", \"The stage returned blocked before descent and closure; live continuation is unavailable.\", \"The returned geometry screen reports a side-overlap margin of -0.000325046 m for the selected candidate. This rejects that candidate, not all possible grasps.\"], \"invalidated_assumptions\": [\"The selected grasp candidate provides the required side-overlap margin.\"], \"plan_valid\": \"yes\", \"reason\": \"The secure subgoal and overall ordering remain suitable. Revise local measurement or grasp geometry using additional visible sidewall/support measurements or a justified alternate view, then assess a different candidate. Preserve justified clearance margins rather than lowering thresholds to pass the failed screen. No physical action needs undoing.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 28592,
+    "output_tokens": 643,
+    "output_tokens_details": {
+      "reasoning_tokens": 352
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ebb-d6df-7200-8d9b-3d3432b91d38",
+    "turn_ids": [
+      "01a18ebb-d6e5-70e1-ac30-9f325462dd12"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

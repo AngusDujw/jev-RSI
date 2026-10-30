@@ -1,0 +1,29 @@
+{
+  "supervisor": {
+    "action": "revise",
+    "evidence": [
+      "Current images show the cream cheese package on the counter, separate from the bowl; no lifted or retained package is visible.",
+      "Public state reports an open gripper, zero native steps, and no acknowledged execution.",
+      "The stage returned blocked before descent and closure; live continuation is unavailable.",
+      "The returned geometry screen reports a side-overlap margin of -0.000325046 m for the selected candidate. This rejects that candidate, not all possible grasps."
+    ],
+    "invalidated_assumptions": [
+      "The selected grasp candidate provides the required side-overlap margin."
+    ],
+    "plan_valid": "yes",
+    "reason": "The secure subgoal and overall ordering remain suitable. Revise local measurement or grasp geometry using additional visible sidewall/support measurements or a justified alternate view, then assess a different candidate. Preserve justified clearance margins rather than lowering thresholds to pass the failed screen. No physical action needs undoing.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "actual_tool_choice": {
+    "type": "function",
+    "name": "submit_method_patch"
+  },
+  "repair_override_present": true,
+  "complete_request_ascii": true,
+  "request_id": "1dff1009e00548bab5c1784b0ac51bdc",
+  "frame": 0,
+  "jev_calls": 0,
+  "scope": "Actual patch request admitted; patch delivery, execution and terminal success remain unproven."
+}
