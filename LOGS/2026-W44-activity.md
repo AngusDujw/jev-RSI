@@ -271,3 +271,4 @@
 - 【Agent】【2026-10-31 02:31】[result] 首轮真实控制已进入45次Jev/135物理步的已保存前缀；逐条check_dispatch验证Jev原响应与方向、夹爪、限幅和确认步数一致。正常切片监督选择continue，同一源码/worker继续，不重生成或重放动作。仍处于接近阶段；非终局成功证据，完整来源/成本审计待回合结束。
 - 【Agent】【2026-10-31 02:31】[result] EXP050终局nativefalse/828.980秒/79Jev237步，严格审计通过；搬运前同线程纠正3次stride3失败，非网络断流。EXP051明确actual/min/max并续接注入最近错误，11离线检查+2AST通过；保留schema/上限/原候选，未应用到当前冻结pilot。
 - 【Agent】【2026-10-31 02:35】[result] 新版首修订1355.721秒/276行已实际执行32Jev/96步；frame72监督continue且无失效假设，method1同一drive rpc0042跨45→96帧/17calls，32派发ID唯一连续，未重新生成源。这是实际live续执行证据，不是抓取或LIBERO成功。
+- 【Agent】【2026-10-31 02:39】[result] 首轮acquire在frame225/75次Jev后返回stage_complete，监督advance至place_verify：记录物体上升53.88mm、手上升53.87mm，对应点运动误差0.43mm，并有当前视觉桌面分离/夹持证据。不是native任务成功，也不是跨场景泛化；持物物理状态保持，放置阶段方法生成中。
