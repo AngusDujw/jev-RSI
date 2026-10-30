@@ -161,3 +161,14 @@ all four fields, original source remains archived, and validate_source rejects
 invalid output. Eight offline checks passed; no live latency or success evidence
 yet. Current c8 pilot and loaded bridge remain unchanged. Root also contains
 other-session changes; future deployment must isolate intended candidate edits.
+
+## Isolated candidate prepared (not admitted)
+
+Branch gpt-jev-incremental-candidate-20261031, commit88d7e9f8, is based strictly
+on c8dedfa8. Its four changed code/prompt files contain only the lease semantics
+clarification, numeric rejection/continuation feedback, and stage source patches.
+It excludes concurrent skill-memory and other root changes. Three AST checks,
+patch-branch equivalence to the previously tested implementation, and numeric
+range rejection passed. Branch pushed via SSH. No candidate episode is admitted
+yet and no active service has been changed. Current repair job4d53c77b remains
+live in Codex PID591417; the running remote episode is still c8dedfa8.
