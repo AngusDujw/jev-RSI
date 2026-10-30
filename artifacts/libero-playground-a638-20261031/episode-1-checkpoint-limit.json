@@ -1,0 +1,25 @@
+{
+  "episode": 1,
+  "native_steps": 120,
+  "jev_dispatches": 40,
+  "supervisor": {
+    "action": "revise",
+    "evidence": [
+      "Frame 120 images show the cream cheese on the tabletop outside the bowl, with open fingers above it. Retained separation is not observed.",
+      "The standoff offset was acknowledged across frames 108 to 120 with 12 native steps and a reached receipt. No subsequent descent, closure or lift was acknowledged.",
+      "Frame 120 review supplies fresh inset top-strip and bilateral tabletop measurements and visible boundary crossings. It supports only the scoped local geometry and descent review, not contact or retention.",
+      "Execution yielded on api_contract_error because the retain.observation checkpoint exceeded 16384 bytes. Live continuation is unavailable; the stage did not return stage_complete.",
+      "The acknowledged offset is persisted in retain.progress. The failed observation checkpoint is absent from the manifest, although its review measurements remain available in the supplied feedback."
+    ],
+    "invalidated_assumptions": [
+      "The complete review response can be stored within one checkpoint's payload limit."
+    ],
+    "plan_valid": "yes",
+    "reason": "The acquisition subgoal and stage ordering remain suitable. Revise checkpoint serialization to bounded essential fields, splitting records if necessary while preserving measurement provenance. Reconcile from the acknowledged post-offset state and actual open gripper command, without replaying the approach or offset. Use the frame-tagged current measurements only while their dependencies remain unchanged, and complete applicable full-hand clearance and contact-overlap checks without reducing margins before acquisition. This is a recoverable API-contract failure, not evidence of geometric infeasibility or manipulation success.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "source_job": "d821b17a2cbf4299aea16575932e37c7",
+  "scope": "API checkpoint capacity failure after acknowledged observation offset; no descent, close or lift. Not terminal."
+}
