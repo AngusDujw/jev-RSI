@@ -1,0 +1,33 @@
+{
+  "phase": "playground",
+  "episode": 1,
+  "revision": 1,
+  "knowledge_files": 9,
+  "all_file_hashes_match": true,
+  "complete_contents_in_actual_plan_request": true,
+  "snapshot_sha256": "96297cbcff284c57f17d17dbf885da06231acb0471bc767a8031a081b26cce89",
+  "plan_source_job": "a00d1184e9e34e70a2fc0f9190033ea7",
+  "plan": {
+    "explanation": "Frame 0 shows the cream cheese package on the tabletop beside the patterned bowl, whose interior is visible. The gripper is open and no execution is acknowledged. Use two physical stages, leaving most of the 39 remaining calls for fresh geometry, effect checks, and bounded corrections rather than separate observation stages. Transferred experience guides checks but supplies no current geometry or success evidence.",
+    "goal_evidence": "Fresh public RGB-D observations after release, hand withdrawal, and acknowledged settling steps show the identifiable cream cheese package resting stably inside the bowl, supported by its interior rather than bridging the rim, with no hand support. Object containment and stability must be observed independently of robot pose or gripper commands.",
+    "stages": [
+      {
+        "id": "acquire",
+        "objective": "Acquire the cream cheese package from the tabletop and establish retained separation from its original support.",
+        "entry_evidence": "Frame 0 identifies the package and nearby bowl in both public views. The package appears table-supported; robot state reports an open gripper and no prior actions. Current package, support, and local hand-clearance geometry remain to be measured.",
+        "success_evidence": "Fresh observations show the package retained between the fingers and separated from the table. Corresponding physical surface landmarks or validated tracking demonstrate package motion consistent with actual measured hand motion over an acknowledged bounded lift. No slip or surrounding-object disturbance is observed.",
+        "handoff_requirements": "Preserve the actual robot state and gripper command, acknowledged progress, attachment evidence, and frame-tagged package envelope and uncertainty. Distinguish original shape measurements from later validation. Carry forward only clearance evidence for the regions actually reviewed; bowl fit and transport remain unverified.",
+        "replan_conditions": "Reassess if identity, support geometry, grasp clearance, or retention is unresolved, or if slip, disturbance, stall, or uncertain acknowledgement occurs. A rejected local grasp margin is not global infeasibility: consider complementary inset depth patches, the other public view, or a separately clearance-checked observation movement. Do not repeat closure or lift without reconciling current physical state."
+      },
+      {
+        "id": "place",
+        "objective": "Place the retained package into the bowl, release it, clear the hand, and assess the settled task outcome.",
+        "entry_evidence": "Acquisition has independent retention evidence and an acknowledged actual state. Fresh observations must revalidate attachment and bowl stationarity and establish the visible opening, interior support region, carried package envelope, and relevant hand clearance before the corresponding transport or release action.",
+        "success_evidence": "Acknowledged release and withdrawal are corroborated by actual finger separation and fresh observations of the package independent of the hand. After acknowledged settling steps, repeated surface measurements and public views show stable containment inside the bowl, interior support, no rim bridging, and no hand support. These observations satisfy the whole-task goal evidence.",
+        "handoff_requirements": "Return final public frames, actual robot and gripper state, acknowledged release, withdrawal and settling progress, and the measured containment, support, separation, and stability evidence. Explicitly report any occluded or unresolved relation instead of declaring success.",
+        "replan_conditions": "Reassess from the actual state after attachment change, bowl movement, inadequate fit or swept clearance, uncertain release, rim contact, outside placement, or persistent motion. For uncertain geometry, use complementary public views or a bounded observation movement only within independently checked clearance; unknown space is not free. Preserve the actual gripper command while reconciling execution, and never blindly repeat release, regrasp, or push an occluded package."
+      }
+    ]
+  },
+  "scope": "Knowledge injection and returned plan only. Does not prove physical success or a causal improvement."
+}
