@@ -1,0 +1,31 @@
+{
+  "request_index": 32,
+  "method_index": 7,
+  "transport": {
+    "request_id": "f7406a80373e4c219abfa369b31ba95d",
+    "reconnects": 0,
+    "elapsed_s": 946.4748966190964
+  },
+  "replacement_count": 12,
+  "exact_replay": true,
+  "invalid_submissions": [
+    {
+      "call_id": "exec-50903628-29ef-4727-9b37-cbe70849c2b1",
+      "turn_id": "01a18f19-8dec-7ed0-be8f-2bfc9ce044f6",
+      "error": "submit_method_patch.replacements: length outside schema (actual=18, min=1, max=12)"
+    }
+  ],
+  "recoveries": [],
+  "turns": [
+    {
+      "id": "01a18f19-8dec-7ed0-be8f-2bfc9ce044f6",
+      "continuation": false
+    }
+  ],
+  "explanation": "Retire the established palm-obstructed near-horizontal long-side family, rather than replaying its clear high alignments. Preserve the frame-216 rejection and uncertainty floor. Assess a different contact topology: opposing physical short end walls, closing along the package's long axis with an upright tool. A separately reviewed 30 mm observation rise may expose the occluded end; execute it only when clear and useful, never replay it after acknowledged motion, and otherwise allow stationary measurement. Reacquire the printed landmarks, counter, end strips and broad top-plane support; old pixels are not reused. Independent landmark validation and an axis check prevent relabelling the old long-side contact as an end pinch. Only upright 0, +/-5, +/-10 and +/-20 degree candidates are screened, with existing clearance, overlap and uncertainty requirements unchanged. An infeasible new interval stops approach with recorded operands and requests supported presentation change or genuinely different contact geometry, not another height search. Finger-only screens remain necessary but insufficient: separate full-hand reviews and measured inner-pad aperture authorize descent and closure. Unknown aperture may permit separately clear observation alignment, never contact. Preserve the differential retained-lift verifier and recheck observation reserves before descent and closure.",
+  "review33_pending": "87682f199db449e7bbd38fb3eba78e61",
+  "frame": 216,
+  "jev_calls": 72,
+  "completed_stages": 0,
+  "terminal_result": null
+}

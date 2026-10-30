@@ -320,3 +320,4 @@
 - 【Agent】【2026-10-31 07:13】[result] EXP-2026W44-054: patch28 exact replay; four real depth samples improve spread to12.301492mm and pass unchanged plane gate; review30 live, no new physical action.
 - 【Agent】【2026-10-31 07:16】[result] EXP-2026W44-054: review30 rejects all four side-entry descents for assessed palm/counter obstruction; no action; supervisor31 live. One same-thread continuation, zero host reconnects.
 - 【Agent】【2026-10-31 07:18】[result] EXP-2026W44-054: supervisor31 requests materially different full-hand contact configuration; request32 submit_method_patch f7406a80373e4c219abfa369b31ba95d verified live. No budget-pressure replan yet.
+- 【Agent】【2026-10-31 07:33】[result] EXP-2026W44-054: patch32 delivered946.475s,18-to12 replacements corrected in original turn; exact replay to method07; new short-end upright candidate, review33 live.

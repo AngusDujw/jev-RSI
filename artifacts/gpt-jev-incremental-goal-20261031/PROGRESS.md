@@ -589,3 +589,13 @@ high alignments clear but descents blocked by predicted palm/counter
 intersection. Method06 returns new_orientation_path blocked without
 physical actions; supervisor31 is live. This is a VLM assessment, not an
 executed collision test. Still72Jev216steps, zero completed stages.
+
+## Short-end alternative patch delivered
+
+Builder32 delivered946.475s. First18 replacements exceeded max12; it
+corrected to12 within the same native turn, no recoveries/reconnects.
+Exact replay matches method07. New source assesses opposing short ends
+with upright tool, reacquires geometry and optionally independently reviews
+an observation rise. It removes the previous recovered-pixel approach.
+Review33 live, still72Jev216steps and zero completed stages; new contact
+feasibility and native success remain unproven.
