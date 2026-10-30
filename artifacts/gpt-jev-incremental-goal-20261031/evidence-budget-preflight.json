@@ -14,5 +14,17 @@
   "bridge_pid": 1271823,
   "native_child_pid": 1272655,
   "first_request_id": "b14212006e8542bea922e9b85f725ae4",
-  "physical_success": null
+  "physical_success": null,
+  "first_method_request": {
+    "id": "2f7a68b7774c40ae899587e912a96fbc",
+    "native_child_pid": 1274430,
+    "english_ascii": true,
+    "gate_provenance_instruction_present": true,
+    "model_call_budget": {
+      "calls_remaining": 39,
+      "reserved_calls": 28,
+      "review_calls_after_builder": 10
+    }
+  },
+  "initial_plan_elapsed_s": 48.65010536997579
 }

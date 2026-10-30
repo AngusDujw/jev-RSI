@@ -1,7 +1,49 @@
 {
   "version": 1,
-  "plans": [],
+  "plans": [
+    {
+      "explanation": "Initial plan from frame 0: the labeled cream cheese package is on the tabletop beside the empty patterned bowl, and the gripper is open. No execution is acknowledged. Three physical stages leave substantial budget for observation, supervision, and corrections.",
+      "goal_evidence": "Fresh observations after release, settling, and gripper withdrawal show the cream cheese package resting inside the upright patterned bowl, separated from the gripper and remaining in the bowl.",
+      "stages": [
+        {
+          "id": "pick",
+          "objective": "Secure the cream cheese package and lift it clear of the tabletop.",
+          "entry_evidence": "Frame 0 shows the cream cheese package separate from the bowl on the tabletop; the robot reports an open gripper and no prior execution.",
+          "success_evidence": "Observed package motion with the gripper and visible separation from the tabletop establish a retained grasp, rather than merely a closed-gripper command.",
+          "handoff_requirements": "Provide fresh package and gripper observations, lift evidence, and observed nearby obstacle bounds for carrying the package.",
+          "replan_conditions": "If grasp geometry or approach clearance is uncertain, obtain additional RGB-D or an alternative safe view before contact. Reassess from actual observations if the package shifts, remains on the table, slips, or nearby objects move."
+        },
+        {
+          "id": "transfer",
+          "objective": "Carry the retained package to a verified placement position above the bowl interior.",
+          "entry_evidence": "The package is observably retained clear of the tabletop; current observations identify the bowl opening and surrounding obstacles.",
+          "success_evidence": "Fresh observations show the package still retained above the bowl opening, with its placement footprint inside the opening and sufficient observed clearance for the package and fingers.",
+          "handoff_requirements": "Provide current bowl rim, package, and gripper geometry evidence supporting placement and subsequent withdrawal.",
+          "replan_conditions": "If the bowl opening, fit, or travel clearance cannot be bounded, acquire another safe view or reconsider the placement orientation without assuming unseen space is free. Reassess if retention is lost or the bowl moves."
+        },
+        {
+          "id": "place_verify",
+          "objective": "Place and release the cream cheese into the bowl, withdraw the gripper, and assess the settled outcome.",
+          "entry_evidence": "The package remains held above the bowl with observed fit and clearance supporting placement and release.",
+          "success_evidence": "After release, settling, and withdrawal, fresh observations show the package resting inside the upright bowl, no longer attached to or supported by the gripper.",
+          "handoff_requirements": "Report final visual evidence of the package in the bowl and gripper separation; report any unresolved occlusion rather than declaring success.",
+          "replan_conditions": "If the package catches on the rim, follows the gripper, falls outside, or the bowl tips, reassess the resulting physical state before recovery. If the result is occluded, obtain an alternative safe view and recheck after settling."
+        }
+      ]
+    }
+  ],
   "events": [],
   "completed": [],
-  "current_stage": null
+  "current_stage": {
+    "plan_revision": 0,
+    "index": 0,
+    "definition": {
+      "id": "pick",
+      "objective": "Secure the cream cheese package and lift it clear of the tabletop.",
+      "entry_evidence": "Frame 0 shows the cream cheese package separate from the bowl on the tabletop; the robot reports an open gripper and no prior execution.",
+      "success_evidence": "Observed package motion with the gripper and visible separation from the tabletop establish a retained grasp, rather than merely a closed-gripper command.",
+      "handoff_requirements": "Provide fresh package and gripper observations, lift evidence, and observed nearby obstacle bounds for carrying the package.",
+      "replan_conditions": "If grasp geometry or approach clearance is uncertain, obtain additional RGB-D or an alternative safe view before contact. Reassess from actual observations if the package shifts, remains on the table, slips, or nearby objects move."
+    }
+  }
 }

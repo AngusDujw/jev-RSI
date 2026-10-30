@@ -668,3 +668,11 @@ Oldcandidate bridge stopped only after its terminal failure. Existing reverse
 tunnel remains. Remote GitHubSSH auth failed, so committed bundle transferred
 to the same authorized project mount; worktreeHEAD and hashes checked.
 No new physical result yet.
+
+## Evidence-budget actual stage input verified
+
+Plan0 delivered48.650s, three stages pick/transfer/place_verify. Builder1
+2f7a68b7774c40ae899587e912a96fbc live(nativechild1274430). Its actual
+ASCII request contains new gate-provenance guidance and model_call_budget:
+39remaining,28reserved,10reviews after builder. This allocation persists
+across same-stage repairs. Zero physical actions or success so far.
