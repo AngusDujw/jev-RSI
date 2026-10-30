@@ -1,0 +1,31 @@
+{
+  "scope": "Actual serialized stage-transition request, not completion proof or pure model compute timing",
+  "request_sha256": "a9d22f0e44b46e9e096158c2b6e2e15a9f0449713654be75807d4dca9d678247",
+  "frame": 234,
+  "stage": "place",
+  "completed_stage_count": 1,
+  "previous_method_present": false,
+  "budgets": {
+    "gpt_remaining": 25,
+    "jev_remaining": 122,
+    "native_steps_remaining": 366,
+    "wall_seconds_remaining": 1000000000000.0
+  },
+  "instructions_chars": 23672,
+  "state_text_chars": 46894,
+  "all_ascii": true,
+  "duplicate_latest_completed_event": true,
+  "top_field_json_chars": {
+    "instruction": 46,
+    "question": 88,
+    "robot": 602,
+    "cameras": 462,
+    "recent_acknowledged_execution": 1726,
+    "recent_program_feedback": 21547,
+    "program_checkpoint_manifest": 2237,
+    "historical_named_observations": 3210,
+    "historical_point_projections_if_stationary": 214,
+    "hierarchical_context": 16520
+  },
+  "note": "Recorded costs only; frozen active payload unchanged. Image encoding and native aggregate token usage are separate."
+}
