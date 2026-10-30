@@ -26,3 +26,25 @@ source was removed. Added generic local-observation/optional-tracker principles
 from the historical successful builder to the current-stage prompt. No actual
 model or robot trial yet. Next: freeze a declared live pilot, deploy and run with
 real Pro/Jev; follow with declared repeated/cross-init validation if it completes.
+
+## Live pilot handles
+
+Frozen remote implementation: c8dedfa8, worktree
+/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-incremental-20261031.
+Original pilot-1335-init12 finished native false in 15.728 seconds before Codex
+launch because the new systemd bridge lacked the Codex/node PATH. Zero-source,
+zero-dispatch audit saved in this artifact directory; do not replace that failure.
+The deployment correction explicitly sets the existing Codex bin PATH and uses
+absolute relay paths. Its actual service environment ran codex --version 0.165.0.
+
+Current trial: pilot-1335-init12-pathfix, remote unit
+gpt-jev-incremental-pilot-pathfix-20261031.service. Same code/prompts and declared
+40 GPT/200 Jev/600 steps, 24 updates, 3 plan/3 local repairs, no wall cutoff.
+Remote output: worktree/code/runs/2026-10-31-incremental-goal/pilot-1335-init12-pathfix.
+Local relay: code/runs/2026-10-31-incremental-goal/pathfix-relay.
+Owned local units: gpt-jev-incremental-bridge-pathfix-20261031.service and
+gpt-jev-incremental-tunnel-20261031.service. Original bridge is stopped.
+Temporary owned Jev key/config and deploy.bundle remain in that local run root;
+remote incremental-deploy-20261031.bundle remains in repository root. Clean only
+after all active trials finish. No key transferred to server. Inspect authoritative
+service/job state before waiting or restarting. Record all outcomes separately.

@@ -249,3 +249,4 @@
 - 【Agent】【2026-10-31 01:43】[op] 新建实验块 EXP-2026W44-048：新版分阶段live继续框架旧任务1335/init12独立冷pilot，实际Pro与Jev及LIBERO判定  ↪ `EXP-2026W44-048`
 - 【Agent】【2026-10-31 01:44】[run] 冻结c8dedfa8并部署company-server-2-ykj独立工作树，预声明1335/init12冷pilot及后续6例重复/跨初态验证标准；授权Jev仅本机临时副本，原生Pro health通过，GPU4空闲；首Git bundle短sha调用失败无文件，改HEAD成功，无实验失败混记。
 - 【User】【2026-10-31 01:45】[intent] 本会话sess_a638580288974596第1轮：参考EmbodiedEvo，以少量LIBERO playground交互迭代形成方案/Jev协作/代码skills，冻结后验证任务成功率；Pro用本机账号，Jev凭据来自Zotero各种token。跨会话provider返回403，先核对仓库已有记录。
+- 【Agent】【2026-10-31 01:45】[result] pilot048在15.728秒因自建systemd缺Codex PATH于原生进程启动前失败：0源/0Jev/0步，nativefalse并完成审计。保留原例，显式现有Codex/node PATH及绝对relay路径重建服务，实际服务环境codex版本核验通过；另预声明pathfix冷试跑，提示词/代码不变。

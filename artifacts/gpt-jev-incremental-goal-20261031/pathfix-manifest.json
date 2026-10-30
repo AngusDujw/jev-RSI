@@ -1,0 +1,39 @@
+{
+  "commit": "c8dedfa8588ef348fd246b23c1c61f4a2638afd0",
+  "declared_epoch": 1793382351.3075721,
+  "server": "company-server-2-ykj",
+  "condition": "Independent cold incremental generation, live-stack continuation; no archived source or task feedback in model input",
+  "model": "gpt-6-astra/xhigh/local ChatGPT Pro native-session",
+  "jev": "jev-1.13.0/official systemone via authorized existing Jev key",
+  "pilot": {
+    "task_id": 1335,
+    "init_index": 12,
+    "seed": 0,
+    "gpu": 4,
+    "slug": "pilot-1335-init12-pathfix"
+  },
+  "budgets": {
+    "max_gpt": 40,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_stage_updates": 24,
+    "max_plan_revisions": 3,
+    "max_stage_revisions": 3,
+    "stage_control_calls": 24,
+    "stage_policy_steps": 72,
+    "wall_limit": null
+  },
+  "hashes": {
+    "code/scripts/gpt_jev_stage_protocol.py": "103b155ed52ffc4a12b3f4f008133e806351ee31909cb4e5c90f2229732530fc",
+    "code/scripts/run_gpt_jev_program.py": "d0942eeff81b9c66f4e91a867a15f243c941e6d0104353eb3f22778a3e94ee2d",
+    "code/scripts/audit_gpt_jev_run.py": "dddd916f103905103280d06afe9c8c9ae8de822e2dc5cf4ec4c81446bdd7d0a1",
+    "code/prompts/gpt_jev_stage_method_v1.txt": "badb66f76289bc62899671990f98416e8ca9fe792c043ce1c2027628dedfff6b",
+    "code/prompts/gpt_jev_stage_plan_v1.txt": "3bd19c9f9a6072e9b24640a06c19d77fda4fa9c318a98eefcaa6b3b1a3fcc765",
+    "code/prompts/gpt_jev_stage_supervisor_v1.txt": "d3ec3d3dfdaf6528aa97325cff1dae679a52e8c15f97e4eda1d64937a155f9fa",
+    "code/prompts/gpt_jev_program_api_v2.md": "29ed69517c826ab8558f09dcd5dae8c26562598aa3069a2a05f6d99f0ad1635a"
+  },
+  "evaluation": "Terminal isolated native LIBERO, keep every admitted failure and all source/decision/dispatch costs",
+  "qualification": "Pilot success is insufficient. Before a reliability claim, freeze one framework version and complete six independent cold episodes: task1335 init12,0,1 and task183 init0,1,2, seed0. All six must pass native scoring; report this bounded scope, not a universal guarantee. Pilot is separate. On pilot failure, retain it, diagnose and declare a separately versioned next trial before admission.",
+  "deployment_change": "Explicit existing Codex/node PATH for systemd bridge; absolute relay paths. Original pilot retained as 15.728-second pre-inference deployment failure. No model/task prompt or code change.",
+  "original_failure_retained": "pilot-1335-init12"
+}
