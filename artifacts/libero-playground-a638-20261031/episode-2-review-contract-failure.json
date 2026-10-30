@@ -1,0 +1,56 @@
+{
+  "episode": 2,
+  "request_index": 2,
+  "request_id": "3bc5307e0dc5499d9d69e671c8e7d066",
+  "status": "failed",
+  "stride_schema": {
+    "type": "integer",
+    "minimum": 4,
+    "maximum": 32
+  },
+  "invalid_attempts": [
+    {
+      "strides": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "error": "submit_review.regions[0].stride: numeric value outside schema"
+    },
+    {
+      "strides": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "error": "submit_review.regions[0].stride: numeric value outside schema"
+    },
+    {
+      "strides": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "error": "submit_review.regions[0].stride: numeric value outside schema"
+    }
+  ],
+  "native_steps_at_failure": 0,
+  "valid_observation_delivered": false,
+  "main_branch_feedback_fix": "1f6bccab",
+  "runtime_scope": "Active frozen bridge/host kept unchanged. Main branch has actual/minimum/maximum feedback; this evidence does not establish that deploying it alone resolves failures."
+}
