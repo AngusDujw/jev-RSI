@@ -649,7 +649,7 @@ def main():
         elif kind == "stage_method":
             tool, response_schema = "submit_method", METHOD_SCHEMA
             instructions = stage_prompts["gpt_jev_stage_method_v1.txt"]+"\n\n"+manual
-        if kind in {"method", "design", "stage_plan", "stage_method", "stage_supervisor"}:
+        if kind in {"method", "design", "stage_plan", "stage_method", "stage_supervise"}:
             instructions += skill_context
         tool_definition = dict(type="function", name=tool,
             description="Return a bounded implementation design proposal without executable source" if kind == "design" else

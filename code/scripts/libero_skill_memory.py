@@ -72,7 +72,7 @@ def freeze(source, destination, evidence):
         if protocol.get("arguments", {}).get("knowledge_phase") != "playground":
             raise ValueError("Only explicitly declared Playground episodes may train memory")
         summary = json.loads(summary_bytes)
-        if not isinstance(summary, dict) or not summary:
+        if not isinstance(summary, dict) or not {"termination", "native_success", "gpt_calls", "jev_calls", "native_steps"} <= summary.keys():
             raise ValueError("Missing terminal episode evidence")
         args = protocol["arguments"]
         records.append(dict(episode=str(episode.resolve()),
@@ -127,6 +127,96 @@ def load(root, phase, *, suite=None, task_id=None, init_index=None):
     return context, metadata
 
 
+def refine(source, destination, episodes, receipts):
+    """Ask local Pro to distill actual Playground receipts into a new revision."""
+    # Deferred import avoids a cycle with the episode host's knowledge loader.
+    from run_gpt_jev_program import post
+    from gpt_jev_review_contract import validate_value
+    import urllib.request
+
+    source, destination, receipts = Path(source), Path(destination), Path(receipts)
+    if destination.exists() or receipts.exists():
+        raise ValueError("Use new revision and receipt directories")
+    previous = read_files(source)
+    evidence = []
+    for directory in episodes:
+        directory = Path(directory)
+        protocol = json.loads((directory / "protocol.json").read_text())
+        if protocol.get("arguments", {}).get("knowledge_phase") != "playground":
+            raise ValueError("Test episodes cannot update transferable knowledge")
+        summary = json.loads((directory / "summary.json").read_text())
+        if not {"termination", "native_success", "gpt_calls", "jev_calls", "native_steps"} <= summary.keys():
+            raise ValueError("Episode is not terminal")
+        # Preserve program declarations and their actual outcomes, including failures.
+        # Raw credentials, infrastructure paths and evaluator internals are excluded.
+        record = dict(episode_id=directory.name, summary=summary, methods=[], events=[])
+        for path in sorted(directory.glob("method-*.json")):
+            record["methods"].append(dict(id=path.name, data=json.loads(path.read_text())))
+        for name in ("stage-journal.json", "program-checkpoints.json"):
+            path = directory / name
+            if path.exists():
+                record["events"].append(dict(id=name, data=json.loads(path.read_text())))
+        evidence.append(record)
+    if not evidence:
+        raise ValueError("At least one terminal Playground episode is required")
+    text = json.dumps(dict(previous=previous, playground_evidence=evidence))
+    english(text)
+    if len(text) > 200000:
+        raise ValueError("Evidence exceeds refinement budget; select a smaller episode batch")
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    with opener.open("http://127.0.0.1:7921/", timeout=10) as response:
+        health = json.load(response)
+    if health.get("transport") != "native-session":
+        raise ValueError("Refinement requires the local signed-in Pro native-session bridge")
+    schema = dict(type="object", additionalProperties=False, required=["files"], properties=dict(
+        files=dict(type="array", minItems=1, maxItems=12, items=dict(type="object",
+            additionalProperties=False, required=["path", "content"], properties=dict(
+                path=dict(type="string", pattern=r"^(skills|lessons)/[a-z0-9-]+\.md$"),
+                content=dict(type="string", minLength=1, maxLength=12000))))))
+    instructions = (
+        "Distill reusable LIBERO skills and lessons from the supplied Playground experience. "
+        "Return the complete next knowledge revision, retaining relevant previous findings. "
+        "Skills may teach planning, observable subgoal decomposition, measurement processing, "
+        "Jev state/question/candidate design, numerical execution, feedback verification and recovery. "
+        "Include code examples only when useful. Do not copy an entire episode solution. "
+        "For each finding state applicability, inputs and frames/units, Jev versus program responsibilities, "
+        "failure/stopping conditions, evidence IDs, and status: hypothesis, scene-specific, or verified. "
+        "Verified requires repeated supporting observations; native success alone does not isolate a cause. "
+        "Failures must remain visible. Do not present guesses as learned successes. "
+        "Parameterize scene-specific measurements; exclude fixed task IDs, stored coordinates and "
+        "hidden evaluation state. A skill guides future fresh synthesis and is not a current observation. "
+        "For each skills/<name>.md use YAML frontmatter with name and description. "
+        "Use concise English ASCII throughout. Return submit_skill_revision only."
+    )
+    receipts.mkdir(parents=True)
+    payload = dict(model="gpt-6-astra", reasoning=dict(effort="xhigh"), instructions=instructions,
+        input=[dict(role="user", content=[dict(type="input_text", text=text)])],
+        tools=[dict(type="function", name="submit_skill_revision", description="Submit reusable knowledge",
+                    parameters=schema, strict=True)],
+        tool_choice=dict(type="function", name="submit_skill_revision"), parallel_tool_calls=False, store=False)
+    result = post("http://127.0.0.1:7921/responses", payload, receipts / "refinement", timeout=None)
+    calls = [item for item in result.get("output", []) if item.get("type") == "function_call"]
+    if result.get("status") != "completed" or len(calls) != 1 or calls[0].get("name") != "submit_skill_revision":
+        raise ValueError("Refinement did not complete exactly one valid submission")
+    answer = json.loads(calls[0]["arguments"])
+    validate_value(answer, schema, "skill revision")
+    english(answer)
+    files = {item["path"]: item["content"] for item in answer["files"]}
+    if len(files) != len(answer["files"]) or sum(map(len, files.values())) > LIMIT:
+        raise ValueError("Duplicate paths or oversized knowledge revision")
+    for name in files:
+        if not re.fullmatch(r"(skills|lessons)/[a-z0-9-]+\.md", name):
+            raise ValueError("Invalid knowledge output path")
+    destination.mkdir(parents=True)
+    for component in ("skills", "lessons"):
+        (destination / component).mkdir()
+    for name, content in files.items():
+        (destination / name).write_text(content)
+    (receipts / "revision.json").write_text(json.dumps(dict(files=file_hashes(files),
+        episodes=[str(Path(p).resolve()) for p in episodes], usage=result.get("usage")), indent=2)+"\n")
+    return dict(files=len(files), usage=result.get("usage"))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -134,7 +224,15 @@ def main():
     command.add_argument("--source", type=Path, required=True)
     command.add_argument("--output", type=Path, required=True)
     command.add_argument("--evidence", type=Path, nargs="+", required=True)
+    command = sub.add_parser("refine")
+    command.add_argument("--source", type=Path, required=True)
+    command.add_argument("--output", type=Path, required=True)
+    command.add_argument("--evidence", type=Path, nargs="+", required=True)
+    command.add_argument("--receipts", type=Path, required=True)
     args = parser.parse_args()
+    if args.command == "refine":
+        print(json.dumps(refine(args.source, args.output, args.evidence, args.receipts)))
+        return
     manifest = freeze(args.source, args.output, args.evidence)
     print(json.dumps(dict(files=len(manifest["files"]), episodes=len(manifest["playground"]))))
 
