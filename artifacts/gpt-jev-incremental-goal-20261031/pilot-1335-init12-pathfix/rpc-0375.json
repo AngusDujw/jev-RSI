@@ -1,0 +1,291 @@
+{
+  "index": 375,
+  "method_number": 6,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "place.progress",
+      {
+        "phase": "remaining_tilt_reduced_rate",
+        "actions": [
+          {
+            "phase": "remaining_tilt_reduced_rate",
+            "before": {
+              "frame_id": 306,
+              "native_steps": 306,
+              "tcp_position_world_m": [
+                -0.07064181434492284,
+                0.1449600172513511,
+                1.0240085784185258
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8934089247345971,
+                -0.004671958463448145,
+                -0.44921697595251636,
+                0.0016656904764472402
+              ],
+              "gripper_qpos_m": [
+                0.021191188758312524,
+                -0.021025786533994232
+              ],
+              "last_gripper_command": "close"
+            },
+            "after": {
+              "frame_id": 315,
+              "native_steps": 315,
+              "tcp_position_world_m": [
+                -0.07558306981304092,
+                0.14346874827449035,
+                1.0234882481590277
+              ],
+              "tcp_quaternion_xyzw": [
+                0.8800654163768958,
+                -0.00759861020746805,
+                -0.47478844469469145,
+                0.001748372006243421
+              ],
+              "gripper_qpos_m": [
+                0.02118145736133868,
+                -0.021036996287407454
+              ],
+              "last_gripper_command": "close"
+            },
+            "receipt": {
+              "frame_id": 315,
+              "status": "lease_exhausted",
+              "lease_calls": 3,
+              "acknowledged_steps": 3,
+              "position_error_m": 0.005187545888134718,
+              "rotation_error_rad": 0.26815282968654586
+            },
+            "gripper_choice": "close"
+          }
+        ],
+        "retention_tests": [
+          {
+            "phase": "interrupted_tilt",
+            "before_frame": 288,
+            "after_frame": 306,
+            "actual_hand_translation_m": [
+              -0.017637928887305462,
+              -0.0019556227813417038,
+              -0.0011681613802714264
+            ],
+            "observed_edge_translation_m": [
+              -0.02614259036339177,
+              -0.002380371646602375,
+              -0.010325928873075152
+            ],
+            "attachment_error_m": 0.00021266650144526292,
+            "allowance_m": 0.0036,
+            "normal_error_rad": 0.00042176081854856354,
+            "predicted_feature_motion_m": 0.02840495265919307,
+            "resolvable_differential": true
+          }
+        ],
+        "release_started": false,
+        "entry": {
+          "frame_id": 306,
+          "native_steps": 306,
+          "tcp_position_world_m": [
+            -0.07064181434492284,
+            0.1449600172513511,
+            1.0240085784185258
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8934089247345971,
+            -0.004671958463448145,
+            -0.44921697595251636,
+            0.0016656904764472402
+          ],
+          "gripper_qpos_m": [
+            0.021191188758312524,
+            -0.021025786533994232
+          ],
+          "last_gripper_command": "close"
+        },
+        "preserved_history": {
+          "checkpoint": "place.revision",
+          "previous_phase": "tilt_1.0",
+          "previous_pending": {
+            "target_tcp_world_m": [
+              -0.053003885457617375,
+              0.1469156400326928,
+              1.0251767397987972
+            ],
+            "quaternion_xyzw": [
+              0.8261028109504303,
+              -0.0036191967776047886,
+              -0.5634394662961949,
+              0.008775817588225864
+            ],
+            "gripper": "close"
+          },
+          "previous_retention_tests": [
+            {
+              "phase": "raise",
+              "before_frame": 234,
+              "after_frame": 255,
+              "actual_hand_translation_m": [
+                -0.0006514345917577116,
+                0.0006371298438403172,
+                0.0529154426660019
+              ],
+              "observed_end_translation_m": [
+                -0.000650019625129443,
+                0.0006481577983250553,
+                0.05291743944895022
+              ],
+              "attachment_error_m": 1.9170249374424764e-05,
+              "allowance_m": 0.0036,
+              "normal_error_rad": 0.00035135647924056703,
+              "predicted_anchor_motion_m": 0.052918315089732694,
+              "differential_motion_observable": true
+            },
+            {
+              "phase": "tilt_0.5",
+              "before_frame": 255,
+              "after_frame": 288,
+              "actual_hand_translation_m": [
+                -0.00027317890089947894,
+                -2.470186347416914e-05,
+                0.0011911509285567057
+              ],
+              "observed_end_translation_m": [
+                -0.006430452391799773,
+                -0.00045819424212484305,
+                -0.020844448644136815
+              ],
+              "attachment_error_m": 5.3030739673163226e-05,
+              "allowance_m": 0.0036,
+              "normal_error_rad": 0.00021616400382613952,
+              "predicted_anchor_motion_m": 0.02184571332945452,
+              "differential_motion_observable": true
+            }
+          ]
+        },
+        "interrupted_tilt": {
+          "reference_hand": {
+            "frame_id": 288,
+            "native_steps": 288,
+            "tcp_position_world_m": [
+              -0.053003885457617375,
+              0.1469156400326928,
+              1.0251767397987972
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9546664211259903,
+              0.002828390876466414,
+              -0.297643147181648,
+              0.0035470431837541375
+            ]
+          },
+          "actual_entry": {
+            "frame_id": 306,
+            "native_steps": 306,
+            "tcp_position_world_m": [
+              -0.07064181434492284,
+              0.1449600172513511,
+              1.0240085784185258
+            ],
+            "tcp_quaternion_xyzw": [
+              0.8934089247345971,
+              -0.004671958463448145,
+              -0.44921697595251636,
+              0.0016656904764472402
+            ],
+            "gripper_qpos_m": [
+              0.021191188758312524,
+              -0.021025786533994232
+            ],
+            "last_gripper_command": "close"
+          },
+          "acknowledged_native_step_delta": 18,
+          "pending_command_retired": {
+            "target_tcp_world_m": [
+              -0.053003885457617375,
+              0.1469156400326928,
+              1.0251767397987972
+            ],
+            "quaternion_xyzw": [
+              0.8261028109504303,
+              -0.0036191967776047886,
+              -0.5634394662961949,
+              0.008775817588225864
+            ],
+            "gripper": "close"
+          },
+          "note": "Partial action is real; no receipt or reference reset is invented."
+        },
+        "last_review": {
+          "frame_id": 306,
+          "parameters": {
+            "bowl": "same_upright_unchanged",
+            "bowl_mode": "landmarks",
+            "closed_space": "clear",
+            "end_camera": "robot0_eye_in_hand",
+            "end_ids_match": true,
+            "end_pixels": [
+              [
+                280,
+                446
+              ],
+              [
+                489,
+                445
+              ]
+            ],
+            "identity": "same_carton",
+            "notes": "Fresh frame-306 selections, not historical projections. p0-p3 sample the same printed face interior, away from seams and fingers; they are not texture correspondences. c0/c1 mark visible physical corners; validate boundary depth, especially c1 after its earlier depth failure. b0 is the large floor medallion center; b1 is the smaller bottle-side rear inner-wall rosette, not another repeated motif. The bowl appears same, upright and unchanged; returned landmarks permit metric stationarity revalidation. Regions include silhouettes and background and require segmentation. Table samples measure surfaces, not free space. Opposite carton corners are self-occluded and are not inferred. Placement and release are not established."
+          },
+          "measurement_errors": []
+        },
+        "bowl_validation": {
+          "frame_id": 306,
+          "discrepancy_m": 0.0,
+          "mode": "landmarks"
+        },
+        "closed_space": "clear",
+        "objective_reference": {
+          "phase": "remaining_tilt_reduced_rate",
+          "state": {
+            "frame_id": 306,
+            "native_steps": 306,
+            "tcp_position_world_m": [
+              -0.07064181434492284,
+              0.1449600172513511,
+              1.0240085784185258
+            ],
+            "tcp_quaternion_xyzw": [
+              0.8934089247345971,
+              -0.004671958463448145,
+              -0.44921697595251636,
+              0.0016656904764472402
+            ],
+            "gripper_qpos_m": [
+              0.021191188758312524,
+              -0.021025786533994232
+            ],
+            "last_gripper_command": "close"
+          },
+          "carton_frame": 306
+        },
+        "pending": null
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 315,
+  "response": {
+    "result": {
+      "key": "place.progress",
+      "frame_id": 315,
+      "method_number": 6,
+      "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+      "bytes": 5738,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 315
+}

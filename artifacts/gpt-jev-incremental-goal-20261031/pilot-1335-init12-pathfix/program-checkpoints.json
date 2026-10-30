@@ -2262,16 +2262,16 @@
   },
   "place.effect": {
     "key": "place.effect",
-    "frame_id": 288,
-    "method_number": 5,
-    "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
-    "bytes": 2516,
+    "frame_id": 306,
+    "method_number": 6,
+    "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+    "bytes": 2874,
     "value": {
-      "frame_id": 288,
-      "status": "continue",
+      "frame_id": 306,
       "parameters": {
         "bowl": "same_upright_unchanged",
         "bowl_mode": "landmarks",
+        "closed_space": "clear",
         "end_camera": "robot0_eye_in_hand",
         "end_ids_match": true,
         "end_pixels": [
@@ -2280,82 +2280,82 @@
             446
           ],
           [
-            490,
+            489,
             445
           ]
         ],
         "identity": "same_carton",
-        "notes": "Current frame 288 visual detections. c0 is the left and c1 the right physical corner of the Cream-initial-C short end. p0-p3 are distributed interior plane samples on the same printed broad face, not texture correspondences. b0 identifies the large floor medallion; b1 identifies the smaller bottle-side rear inner-wall rosette. These marks and the unchanged upright bowl support stationarity for the stated above-lip noncontact scope. The opposite carton end is robot-occluded and is not inferred. Placement and release are not established."
+        "notes": "Fresh frame-306 selections, not historical projections. p0-p3 sample the same printed face interior, away from seams and fingers; they are not texture correspondences. c0/c1 mark visible physical corners; validate boundary depth, especially c1 after its earlier depth failure. b0 is the large floor medallion center; b1 is the smaller bottle-side rear inner-wall rosette, not another repeated motif. The bowl appears same, upright and unchanged; returned landmarks permit metric stationarity revalidation. Regions include silhouettes and background and require segmentation. Table samples measure surfaces, not free space. Opposite carton corners are self-occluded and are not inferred. Placement and release are not established."
       },
       "points": {
         "p0": {
           "world_m": [
-            -0.025805081797269938,
-            0.16125158315580948,
-            1.0073330239696698
+            -0.050590285008307964,
+            0.15903836130516594,
+            0.998485494436366
           ],
-          "depth_m": 0.09614252299070358,
-          "frame_id": 288,
+          "depth_m": 0.0960904136300087,
+          "frame_id": 306,
           "pixel": [
-            310,
-            475
+            309,
+            476
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "p1": {
           "world_m": [
-            -0.02535950539155339,
-            0.13248661573835865,
-            1.007709478803616
+            -0.0505032649434998,
+            0.1302838189148505,
+            0.9988304052493919
           ],
-          "depth_m": 0.09582365304231644,
-          "frame_id": 288,
+          "depth_m": 0.09577761590480804,
+          "frame_id": 306,
           "pixel": [
-            460,
-            475
+            459,
+            476
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "p2": {
           "world_m": [
-            -0.04706610720960733,
-            0.16115522813185718,
-            1.0221230814976012
+            -0.06596766855288991,
+            0.15909120480617667,
+            1.0193179429323378
           ],
-          "depth_m": 0.09606210142374039,
-          "frame_id": 288,
+          "depth_m": 0.09602572023868561,
+          "frame_id": 306,
           "pixel": [
             310,
-            610
+            611
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "p3": {
           "world_m": [
-            -0.046256775552347376,
-            0.13246518287561368,
-            1.022626990644928
+            -0.06549553804749894,
+            0.13059181099392883,
+            1.0196651309084255
           ],
-          "depth_m": 0.09543096274137497,
-          "frame_id": 288,
+          "depth_m": 0.09540262818336487,
+          "frame_id": 306,
           "pixel": [
-            460,
-            610
+            459,
+            611
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
         "c0": {
           "world_m": [
-            -0.021579266959363158,
-            0.1671261783238766,
-            1.0037839477269284
+            -0.04743473879939575,
+            0.16462555478952864,
+            0.9936408139746115
           ],
-          "depth_m": 0.0966101661324501,
-          "frame_id": 288,
+          "depth_m": 0.09645045548677444,
+          "frame_id": 306,
           "pixel": [
             280,
             446
@@ -2363,180 +2363,280 @@
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
+        "c1": {
+          "world_m": [
+            -0.04746218506402755,
+            0.1243767510230243,
+            0.9938496010072086
+          ],
+          "depth_m": 0.09629575163125992,
+          "frame_id": 306,
+          "pixel": [
+            489,
+            445
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
         "b0": {
           "world_m": [
-            -0.11960979618429546,
-            0.006763130718354734,
-            0.9108283489878657
+            -0.12069322344689914,
+            0.006766388130185493,
+            0.9113687037892098
           ],
-          "depth_m": 1.044969081878662,
-          "frame_id": 288,
+          "depth_m": 1.0454723834991455,
+          "frame_id": 306,
           "pixel": [
             390,
-            433
+            432
           ],
           "camera": "agentview",
           "source": "current_depth_patch_backprojection"
         },
         "b1": {
           "world_m": [
-            -0.12668824766924336,
-            -0.019024830471996965,
-            0.9315141700064395
+            -0.12691070243057512,
+            -0.019013194341648897,
+            0.9327994531859265
           ],
-          "depth_m": 1.037477731704712,
-          "frame_id": 288,
+          "depth_m": 1.036843180656433,
+          "frame_id": 306,
           "pixel": [
             367,
-            415
+            414
           ],
           "camera": "agentview",
           "source": "current_depth_patch_backprojection"
         }
       },
-      "measurement_errors": [
-        {
-          "name": "c1",
-          "error": "Invalid or discontinuous surface depth"
-        }
-      ]
+      "measurement_errors": []
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "place.progress": {
     "key": "place.progress",
-    "frame_id": 288,
-    "method_number": 5,
-    "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
-    "bytes": 4067,
+    "frame_id": 315,
+    "method_number": 6,
+    "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+    "bytes": 5960,
     "value": {
-      "phase": "tilt_1.0",
+      "phase": "remaining_tilt_reduced_rate",
       "actions": [
         {
-          "phase": "raise",
+          "phase": "remaining_tilt_reduced_rate",
           "before": {
-            "frame_id": 234,
-            "native_steps": 234,
+            "frame_id": 306,
+            "native_steps": 306,
             "tcp_position_world_m": [
-              -0.052079271964960185,
-              0.14630321205232666,
-              0.9710701462042386
+              -0.07064181434492284,
+              0.1449600172513511,
+              1.0240085784185258
             ],
             "tcp_quaternion_xyzw": [
-              0.9999711545227261,
-              0.007398647746313991,
-              0.0014026799739744358,
-              0.0009912733744994022
-            ]
+              0.8934089247345971,
+              -0.004671958463448145,
+              -0.44921697595251636,
+              0.0016656904764472402
+            ],
+            "gripper_qpos_m": [
+              0.021191188758312524,
+              -0.021025786533994232
+            ],
+            "last_gripper_command": "close"
           },
           "after": {
-            "frame_id": 255,
-            "native_steps": 255,
+            "frame_id": 315,
+            "native_steps": 315,
             "tcp_position_world_m": [
-              -0.052730706556717896,
-              0.14694034189616698,
-              1.0239855888702405
+              -0.07558306981304092,
+              0.14346874827449035,
+              1.0234882481590277
             ],
             "tcp_quaternion_xyzw": [
-              0.9999708408503525,
-              0.007474219191384801,
-              0.0012848223463617135,
-              0.0008959509230666211
-            ]
+              0.8800654163768958,
+              -0.00759861020746805,
+              -0.47478844469469145,
+              0.001748372006243421
+            ],
+            "gripper_qpos_m": [
+              0.02118145736133868,
+              -0.021036996287407454
+            ],
+            "last_gripper_command": "close"
           },
           "receipt": {
-            "frame_id": 255,
-            "status": "reached",
-            "lease_calls": 7,
+            "frame_id": 315,
+            "status": "lease_exhausted",
+            "lease_calls": 3,
             "acknowledged_steps": 3,
-            "position_error_m": 0.0013009307489144535,
-            "rotation_error_rad": 0.00033875024370580507
-          },
-          "gripper_choice": "close"
-        },
-        {
-          "phase": "tilt_0.5",
-          "before": {
-            "frame_id": 255,
-            "native_steps": 255,
-            "tcp_position_world_m": [
-              -0.052730706556717896,
-              0.14694034189616698,
-              1.0239855888702405
-            ],
-            "tcp_quaternion_xyzw": [
-              0.9999708408503525,
-              0.007474219191384801,
-              0.0012848223463617135,
-              0.0008959509230666211
-            ]
-          },
-          "after": {
-            "frame_id": 288,
-            "native_steps": 288,
-            "tcp_position_world_m": [
-              -0.053003885457617375,
-              0.1469156400326928,
-              1.0251767397987972
-            ],
-            "tcp_quaternion_xyzw": [
-              0.9546664211259903,
-              0.002828390876466414,
-              -0.297643147181648,
-              0.0035470431837541375
-            ]
-          },
-          "receipt": {
-            "frame_id": 288,
-            "status": "reached",
-            "lease_calls": 11,
-            "acknowledged_steps": 3,
-            "position_error_m": 0.001222324600324008,
-            "rotation_error_rad": 0.007949568527987895
+            "position_error_m": 0.005187545888134718,
+            "rotation_error_rad": 0.26815282968654586
           },
           "gripper_choice": "close"
         }
       ],
+      "retention_tests": [
+        {
+          "phase": "interrupted_tilt",
+          "before_frame": 288,
+          "after_frame": 306,
+          "actual_hand_translation_m": [
+            -0.017637928887305462,
+            -0.0019556227813417038,
+            -0.0011681613802714264
+          ],
+          "observed_edge_translation_m": [
+            -0.02614259036339177,
+            -0.002380371646602375,
+            -0.010325928873075152
+          ],
+          "attachment_error_m": 0.00021266650144526292,
+          "allowance_m": 0.0036,
+          "normal_error_rad": 0.00042176081854856354,
+          "predicted_feature_motion_m": 0.02840495265919307,
+          "resolvable_differential": true
+        }
+      ],
       "release_started": false,
       "entry": {
-        "frame_id": 234,
-        "native_steps": 234,
+        "frame_id": 306,
+        "native_steps": 306,
         "tcp_position_world_m": [
-          -0.052079271964960185,
-          0.14630321205232666,
-          0.9710701462042386
+          -0.07064181434492284,
+          0.1449600172513511,
+          1.0240085784185258
         ],
         "tcp_quaternion_xyzw": [
-          0.9999711545227261,
-          0.007398647746313991,
-          0.0014026799739744358,
-          0.0009912733744994022
+          0.8934089247345971,
+          -0.004671958463448145,
+          -0.44921697595251636,
+          0.0016656904764472402
         ],
         "gripper_qpos_m": [
-          0.02118506207827258,
-          -0.02103588604034721
+          0.021191188758312524,
+          -0.021025786533994232
         ],
         "last_gripper_command": "close"
       },
-      "pending": {
-        "target_tcp_world_m": [
-          -0.053003885457617375,
-          0.1469156400326928,
-          1.0251767397987972
-        ],
-        "quaternion_xyzw": [
-          0.8261028109504303,
-          -0.0036191967776047886,
-          -0.5634394662961949,
-          0.008775817588225864
-        ],
-        "gripper": "close"
+      "preserved_history": {
+        "checkpoint": "place.revision",
+        "previous_phase": "tilt_1.0",
+        "previous_pending": {
+          "target_tcp_world_m": [
+            -0.053003885457617375,
+            0.1469156400326928,
+            1.0251767397987972
+          ],
+          "quaternion_xyzw": [
+            0.8261028109504303,
+            -0.0036191967776047886,
+            -0.5634394662961949,
+            0.008775817588225864
+          ],
+          "gripper": "close"
+        },
+        "previous_retention_tests": [
+          {
+            "phase": "raise",
+            "before_frame": 234,
+            "after_frame": 255,
+            "actual_hand_translation_m": [
+              -0.0006514345917577116,
+              0.0006371298438403172,
+              0.0529154426660019
+            ],
+            "observed_end_translation_m": [
+              -0.000650019625129443,
+              0.0006481577983250553,
+              0.05291743944895022
+            ],
+            "attachment_error_m": 1.9170249374424764e-05,
+            "allowance_m": 0.0036,
+            "normal_error_rad": 0.00035135647924056703,
+            "predicted_anchor_motion_m": 0.052918315089732694,
+            "differential_motion_observable": true
+          },
+          {
+            "phase": "tilt_0.5",
+            "before_frame": 255,
+            "after_frame": 288,
+            "actual_hand_translation_m": [
+              -0.00027317890089947894,
+              -2.470186347416914e-05,
+              0.0011911509285567057
+            ],
+            "observed_end_translation_m": [
+              -0.006430452391799773,
+              -0.00045819424212484305,
+              -0.020844448644136815
+            ],
+            "attachment_error_m": 5.3030739673163226e-05,
+            "allowance_m": 0.0036,
+            "normal_error_rad": 0.00021616400382613952,
+            "predicted_anchor_motion_m": 0.02184571332945452,
+            "differential_motion_observable": true
+          }
+        ]
+      },
+      "interrupted_tilt": {
+        "reference_hand": {
+          "frame_id": 288,
+          "native_steps": 288,
+          "tcp_position_world_m": [
+            -0.053003885457617375,
+            0.1469156400326928,
+            1.0251767397987972
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9546664211259903,
+            0.002828390876466414,
+            -0.297643147181648,
+            0.0035470431837541375
+          ]
+        },
+        "actual_entry": {
+          "frame_id": 306,
+          "native_steps": 306,
+          "tcp_position_world_m": [
+            -0.07064181434492284,
+            0.1449600172513511,
+            1.0240085784185258
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8934089247345971,
+            -0.004671958463448145,
+            -0.44921697595251636,
+            0.0016656904764472402
+          ],
+          "gripper_qpos_m": [
+            0.021191188758312524,
+            -0.021025786533994232
+          ],
+          "last_gripper_command": "close"
+        },
+        "acknowledged_native_step_delta": 18,
+        "pending_command_retired": {
+          "target_tcp_world_m": [
+            -0.053003885457617375,
+            0.1469156400326928,
+            1.0251767397987972
+          ],
+          "quaternion_xyzw": [
+            0.8261028109504303,
+            -0.0036191967776047886,
+            -0.5634394662961949,
+            0.008775817588225864
+          ],
+          "gripper": "close"
+        },
+        "note": "Partial action is real; no receipt or reference reset is invented."
       },
       "last_review": {
-        "frame_id": 288,
+        "frame_id": 306,
         "parameters": {
           "bowl": "same_upright_unchanged",
           "bowl_mode": "landmarks",
+          "closed_space": "clear",
           "end_camera": "robot0_eye_in_hand",
           "end_ids_match": true,
           "end_pixels": [
@@ -2545,80 +2645,69 @@
               446
             ],
             [
-              490,
+              489,
               445
             ]
           ],
           "identity": "same_carton",
-          "notes": "Current frame 288 visual detections. c0 is the left and c1 the right physical corner of the Cream-initial-C short end. p0-p3 are distributed interior plane samples on the same printed broad face, not texture correspondences. b0 identifies the large floor medallion; b1 identifies the smaller bottle-side rear inner-wall rosette. These marks and the unchanged upright bowl support stationarity for the stated above-lip noncontact scope. The opposite carton end is robot-occluded and is not inferred. Placement and release are not established."
+          "notes": "Fresh frame-306 selections, not historical projections. p0-p3 sample the same printed face interior, away from seams and fingers; they are not texture correspondences. c0/c1 mark visible physical corners; validate boundary depth, especially c1 after its earlier depth failure. b0 is the large floor medallion center; b1 is the smaller bottle-side rear inner-wall rosette, not another repeated motif. The bowl appears same, upright and unchanged; returned landmarks permit metric stationarity revalidation. Regions include silhouettes and background and require segmentation. Table samples measure surfaces, not free space. Opposite carton corners are self-occluded and are not inferred. Placement and release are not established."
         },
-        "measurement_errors": [
-          {
-            "name": "c1",
-            "error": "Invalid or discontinuous surface depth"
-          }
-        ]
+        "measurement_errors": []
       },
       "bowl_validation": {
-        "frame_id": 288,
-        "mode": "landmarks",
-        "mark_names": [
-          "b0",
-          "b1"
-        ],
-        "discrepancy_m": 0.0013044440853638508
+        "frame_id": 306,
+        "discrepancy_m": 0.0,
+        "mode": "landmarks"
       },
-      "retention_tests": [
-        {
-          "phase": "raise",
-          "before_frame": 234,
-          "after_frame": 255,
-          "actual_hand_translation_m": [
-            -0.0006514345917577116,
-            0.0006371298438403172,
-            0.0529154426660019
+      "closed_space": "clear",
+      "objective_reference": {
+        "phase": "remaining_tilt_reduced_rate",
+        "state": {
+          "frame_id": 306,
+          "native_steps": 306,
+          "tcp_position_world_m": [
+            -0.07064181434492284,
+            0.1449600172513511,
+            1.0240085784185258
           ],
-          "observed_end_translation_m": [
-            -0.000650019625129443,
-            0.0006481577983250553,
-            0.05291743944895022
+          "tcp_quaternion_xyzw": [
+            0.8934089247345971,
+            -0.004671958463448145,
+            -0.44921697595251636,
+            0.0016656904764472402
           ],
-          "attachment_error_m": 1.9170249374424764e-05,
-          "allowance_m": 0.0036,
-          "normal_error_rad": 0.00035135647924056703,
-          "predicted_anchor_motion_m": 0.052918315089732694,
-          "differential_motion_observable": true
+          "gripper_qpos_m": [
+            0.021191188758312524,
+            -0.021025786533994232
+          ],
+          "last_gripper_command": "close"
         },
-        {
-          "phase": "tilt_0.5",
-          "before_frame": 255,
-          "after_frame": 288,
-          "actual_hand_translation_m": [
-            -0.00027317890089947894,
-            -2.470186347416914e-05,
-            0.0011911509285567057
-          ],
-          "observed_end_translation_m": [
-            -0.006430452391799773,
-            -0.00045819424212484305,
-            -0.020844448644136815
-          ],
-          "attachment_error_m": 5.3030739673163226e-05,
-          "allowance_m": 0.0036,
-          "normal_error_rad": 0.00021616400382613952,
-          "predicted_anchor_motion_m": 0.02184571332945452,
-          "differential_motion_observable": true
-        }
-      ]
+        "carton_frame": 306
+      },
+      "pending": {
+        "target_tcp_world_m": [
+          -0.07064181434492284,
+          0.1449600172513511,
+          1.0240085784185258
+        ],
+        "quaternion_xyzw": [
+          0.8088284936287635,
+          -0.0038096661131060113,
+          -0.5879642826816197,
+          0.008941847069848267
+        ],
+        "gripper": "close",
+        "chunk": 1
+      }
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "place.revision": {
     "key": "place.revision",
-    "frame_id": 234,
-    "method_number": 5,
-    "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
-    "bytes": 3995,
+    "frame_id": 306,
+    "method_number": 6,
+    "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+    "bytes": 8751,
     "value": {
       "previous_progress_record": {
         "key": "place.progress",
@@ -2753,16 +2842,238 @@
           "source_sha256": "5a116a66873f7f9c88a78dccb47e89c9f5aa9d718341f202e6984cfe6fb67530"
         },
         "correction": "corridor=clear and tilt_grasp=supported authorize only the assessed CLOSED route; opening_sweep=unknown is deferred, not treated as obstruction or release permission."
+      },
+      "interrupted_run": {
+        "phase": "tilt_1.0",
+        "entry": {
+          "frame_id": 234,
+          "native_steps": 234,
+          "tcp_position_world_m": [
+            -0.052079271964960185,
+            0.14630321205232666,
+            0.9710701462042386
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999711545227261,
+            0.007398647746313991,
+            0.0014026799739744358,
+            0.0009912733744994022
+          ],
+          "gripper_qpos_m": [
+            0.02118506207827258,
+            -0.02103588604034721
+          ],
+          "last_gripper_command": "close"
+        },
+        "pending": {
+          "target_tcp_world_m": [
+            -0.053003885457617375,
+            0.1469156400326928,
+            1.0251767397987972
+          ],
+          "quaternion_xyzw": [
+            0.8261028109504303,
+            -0.0036191967776047886,
+            -0.5634394662961949,
+            0.008775817588225864
+          ],
+          "gripper": "close"
+        },
+        "release_started": false,
+        "last_review": {
+          "frame_id": 288,
+          "parameters": {
+            "bowl": "same_upright_unchanged",
+            "bowl_mode": "landmarks",
+            "end_camera": "robot0_eye_in_hand",
+            "end_ids_match": true,
+            "end_pixels": [
+              [
+                280,
+                446
+              ],
+              [
+                490,
+                445
+              ]
+            ],
+            "identity": "same_carton",
+            "notes": "Current frame 288 visual detections. c0 is the left and c1 the right physical corner of the Cream-initial-C short end. p0-p3 are distributed interior plane samples on the same printed broad face, not texture correspondences. b0 identifies the large floor medallion; b1 identifies the smaller bottle-side rear inner-wall rosette. These marks and the unchanged upright bowl support stationarity for the stated above-lip noncontact scope. The opposite carton end is robot-occluded and is not inferred. Placement and release are not established."
+          },
+          "measurement_errors": [
+            {
+              "name": "c1",
+              "error": "Invalid or discontinuous surface depth"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "phase": "raise",
+            "before": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ]
+            },
+            "after": {
+              "frame_id": 255,
+              "native_steps": 255,
+              "tcp_position_world_m": [
+                -0.052730706556717896,
+                0.14694034189616698,
+                1.0239855888702405
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999708408503525,
+                0.007474219191384801,
+                0.0012848223463617135,
+                0.0008959509230666211
+              ]
+            },
+            "receipt": {
+              "frame_id": 255,
+              "status": "reached",
+              "lease_calls": 7,
+              "acknowledged_steps": 3,
+              "position_error_m": 0.0013009307489144535,
+              "rotation_error_rad": 0.00033875024370580507
+            },
+            "gripper_choice": "close"
+          },
+          {
+            "phase": "tilt_0.5",
+            "before": {
+              "frame_id": 255,
+              "native_steps": 255,
+              "tcp_position_world_m": [
+                -0.052730706556717896,
+                0.14694034189616698,
+                1.0239855888702405
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999708408503525,
+                0.007474219191384801,
+                0.0012848223463617135,
+                0.0008959509230666211
+              ]
+            },
+            "after": {
+              "frame_id": 288,
+              "native_steps": 288,
+              "tcp_position_world_m": [
+                -0.053003885457617375,
+                0.1469156400326928,
+                1.0251767397987972
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9546664211259903,
+                0.002828390876466414,
+                -0.297643147181648,
+                0.0035470431837541375
+              ]
+            },
+            "receipt": {
+              "frame_id": 288,
+              "status": "reached",
+              "lease_calls": 11,
+              "acknowledged_steps": 3,
+              "position_error_m": 0.001222324600324008,
+              "rotation_error_rad": 0.007949568527987895
+            },
+            "gripper_choice": "close"
+          }
+        ],
+        "retention_tests": [
+          {
+            "phase": "raise",
+            "before_frame": 234,
+            "after_frame": 255,
+            "actual_hand_translation_m": [
+              -0.0006514345917577116,
+              0.0006371298438403172,
+              0.0529154426660019
+            ],
+            "observed_end_translation_m": [
+              -0.000650019625129443,
+              0.0006481577983250553,
+              0.05291743944895022
+            ],
+            "attachment_error_m": 1.9170249374424764e-05,
+            "allowance_m": 0.0036,
+            "normal_error_rad": 0.00035135647924056703,
+            "predicted_anchor_motion_m": 0.052918315089732694,
+            "differential_motion_observable": true
+          },
+          {
+            "phase": "tilt_0.5",
+            "before_frame": 255,
+            "after_frame": 288,
+            "actual_hand_translation_m": [
+              -0.00027317890089947894,
+              -2.470186347416914e-05,
+              0.0011911509285567057
+            ],
+            "observed_end_translation_m": [
+              -0.006430452391799773,
+              -0.00045819424212484305,
+              -0.020844448644136815
+            ],
+            "attachment_error_m": 5.3030739673163226e-05,
+            "allowance_m": 0.0036,
+            "normal_error_rad": 0.00021616400382613952,
+            "predicted_anchor_motion_m": 0.02184571332945452,
+            "differential_motion_observable": true
+          }
+        ]
+      },
+      "repair_entry": {
+        "state": {
+          "frame_id": 306,
+          "native_steps": 306,
+          "tcp_position_world_m": [
+            -0.07064181434492284,
+            0.1449600172513511,
+            1.0240085784185258
+          ],
+          "tcp_quaternion_xyzw": [
+            0.8934089247345971,
+            -0.004671958463448145,
+            -0.44921697595251636,
+            0.0016656904764472402
+          ],
+          "gripper_qpos_m": [
+            0.021191188758312524,
+            -0.021025786533994232
+          ],
+          "last_gripper_command": "close"
+        },
+        "geometry_provenance": {
+          "key": "place.geometry",
+          "frame_id": 288,
+          "method_number": 5,
+          "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98"
+        },
+        "policy_change": "Do not replay the interrupted fixed pivot. Revalidate actual retention and clearance; reset only the remaining tilt pivot to the measured entry TCP, reduce rotation limit, increase translation authority, and check each three-call lease."
       }
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "place.geometry": {
     "key": "place.geometry",
-    "frame_id": 288,
-    "method_number": 5,
-    "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
-    "bytes": 9306,
+    "frame_id": 315,
+    "method_number": 6,
+    "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+    "bytes": 9957,
     "value": {
       "position_tolerance_m": 0.0015,
       "rotation_tolerance_rad": 0.015,
@@ -3016,83 +3327,83 @@
         0.9092307280870592
       ],
       "reference_frame": 234,
-      "bowl_u_m": 0.006748600873555744,
+      "bowl_u_m": 0.005444156788191893,
       "current_carton": {
         "box_world_m": [
           [
-            -0.02141661057060229,
-            0.16707802751936396,
-            1.0039662961628084
+            -0.04731108836045343,
+            0.16459584806049876,
+            0.9937111352351182
           ],
           [
-            -0.020509642856421983,
-            0.12678810196939508,
-            1.004564328905678
+            -0.04690034579335438,
+            0.12450953813505551,
+            0.9941676320872177
           ],
           [
-            -0.08519305552999842,
-            0.12600880497605083,
-            1.050160409421165
+            -0.09351408526952645,
+            0.12476025878665603,
+            1.0581258228721453
           ],
           [
-            -0.08610002324417873,
-            0.1662987305260197,
-            1.0495623766782953
+            -0.09392482783662551,
+            0.1648465687120993,
+            1.0576693260200458
           ],
           [
-            -0.03327025133239374,
-            0.1665614581832328,
-            0.9871416812104503
+            -0.06394739312521462,
+            0.16428732327429765,
+            0.9815875430399794
           ],
           [
-            -0.03236328361821343,
-            0.12627153263326393,
-            0.9877397139533199
+            -0.06353665055811557,
+            0.1242010133488544,
+            0.9820440398920789
           ],
           [
-            -0.09704669629178987,
-            0.12549223563991968,
-            1.0333357944688069
+            -0.11015039003428764,
+            0.12445173400045492,
+            1.0460022306770065
           ],
           [
-            -0.09795366400597018,
-            0.16578216118988856,
-            1.0327377617259372
+            -0.1105611326013867,
+            0.1645380439258982,
+            1.045545733824907
           ]
-        ],
-        "center_world_m": [
-          -0.05923165343119608,
-          0.14628513157964185,
-          1.0186510453158075
         ],
         "anchors_world_m": [
           [
-            -0.02141661057060229,
-            0.16707802751936396,
-            1.0039662961628084
+            -0.04731108836045343,
+            0.16459584806049876,
+            0.9937111352351182
           ],
           [
-            -0.020509642856421983,
-            0.12678810196939508,
-            1.004564328905678
+            -0.04690034579335438,
+            0.12450953813505551,
+            0.9941676320872177
           ]
         ],
-        "short_axis_world": [
-          0.022502850722066686,
-          -0.9996366641049903,
-          0.014837839681940326
+        "center_world_m": [
+          -0.07873073919737053,
+          0.14452379103047683,
+          1.0198566829560625
         ],
         "normal_world": [
-          0.5757700817527451,
-          0.02509146133851947,
-          0.8172265484713125
+          0.8080797070673585,
+          0.014986057443748238,
+          0.5888825053507913
         ],
-        "normal_u_rad": 0.031026713088451518,
+        "short_axis_world": [
+          0.010245252837175214,
+          -0.9998826841740271,
+          0.011386513217184578
+        ],
+        "normal_u_rad": 0.03103126640451793,
         "edge_u_m": 0.0004,
-        "u_m": 0.006828944267948282,
-        "frame_id": 288,
-        "plane_rms_m": 7.887038693197509e-05,
-        "plane_spread_m": 0.012892116508109407
+        "u_m": 0.006838107366360447,
+        "frame_id": 306,
+        "plane_rms_m": 7.909265822561238e-05,
+        "plane_spread_m": 0.012890224806995402
       },
       "candidate_tests": [
         {
@@ -3290,6 +3601,36 @@
         "final_centered_fit_m": 0.0037222942932444315,
         "sweep_vertical_margin_m": 0.01536093418738673,
         "fraction": 1.0
+      },
+      "repair_tilt_check": {
+        "frame_id": 306,
+        "candidates": [
+          {
+            "extra_tilt_rad": 0.0,
+            "remaining_angle_rad": 0.2657405551774646,
+            "predicted_centered_fit_m": 0.005083316717142236,
+            "sweep_margin_m": 0.00893583681942876
+          },
+          {
+            "extra_tilt_rad": 0.06,
+            "remaining_angle_rad": 0.3256801753786559,
+            "predicted_centered_fit_m": 0.006591161968215344,
+            "sweep_margin_m": 0.008707508489933579
+          }
+        ],
+        "selected_quaternion_xyzw": [
+          0.8088284936287635,
+          -0.0038096661131060113,
+          -0.5879642826816197,
+          0.008941847069848267
+        ],
+        "predicted_fit_requirement_m": 0.006500000000000001,
+        "drift_reserve_m": 0.008,
+        "new_pivot_world_m": [
+          -0.07064181434492284,
+          0.1449600172513511,
+          1.0240085784185258
+        ]
       }
     },
     "source": "program-supplied historical data; not a fresh measurement"

@@ -1,0 +1,18 @@
+{
+  "action": "revise",
+  "evidence": [
+    "The stage yielded on no_pose_progress, with no live continuation and no stage_complete result.",
+    "Despite positive x corrections, acknowledged TCP x continued decreasing away from the revised pivot.",
+    "From frame 315 to 324, position error increased from 5.19 to 11.16 mm and rotation error increased from 0.268 to 0.274 rad. Position drift exceeds the recorded 8 mm reserve.",
+    "Current wrist images show the carton remaining between the fingers in a similar relative position; the upright bowl remains visibly separate and empty. No release is acknowledged.",
+    "The latest metric carton and retention observations are from frame 306, before the subsequent drift; later checkpoint writes do not refresh those measurements."
+  ],
+  "invalidated_assumptions": [
+    "The reduced-rate fixed-pivot tilt converges while keeping drift within the reserve used by the local clearance assessment."
+  ],
+  "plan_valid": "yes",
+  "reason": "The placement subgoal remains appropriate, but the revised local controller has again diverged. Preserve the executed lift and partial tilt, reassess retention and affected clearance from the actual pose, and reconsider local reachability using a materially different motion strategy or candidate rather than another rate-only fixed-pivot retry. This failure does not establish an obstacle or global infeasibility.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

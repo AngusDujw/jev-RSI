@@ -1,0 +1,21 @@
+{
+  "index": 380,
+  "method_number": 6,
+  "request": {
+    "kind": "rpc",
+    "method": "state",
+    "args": [],
+    "kwargs": {}
+  },
+  "frame_before": 324,
+  "response": {
+    "error": "Stage supervision required",
+    "handoff": {
+      "trigger": "no_pose_progress",
+      "position_error_m": 0.011164897889090586,
+      "rotation_error_rad": 0.2743180745950304
+    },
+    "scope": "Any acknowledged effects already persisted; do not replay this RPC"
+  },
+  "frame_after": 324
+}

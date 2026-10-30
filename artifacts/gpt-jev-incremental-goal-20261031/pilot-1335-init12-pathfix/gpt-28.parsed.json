@@ -1,0 +1,22 @@
+{
+  "explanation": "The pickup, lift and partial tilt already occurred; no release occurred. Frame 324 shows the carton between the fingers and the upright bowl still separate. Repeated fixed-pivot tilt attempts diverged beyond their clearance reserve, invalidating that approach, not proving placement impossible. Frame-306 object measurements and later checkpoint copies require fresh validation. Two remaining stages leave seven of the eleven calls beyond mandatory method and supervision calls for observations and corrections.",
+  "goal_evidence": "After release, gripper separation and settling, successive public images and depth show the same cream cheese package resting inside the upright bowl without robot support, rather than outside or balanced on the rim.",
+  "stages": [
+    {
+      "id": "restage",
+      "objective": "Bring the retained carton to an observable, controllable approach above the bowl using a materially different staging configuration or placement attitude, not another rate-only fixed-pivot tilt retry.",
+      "entry_evidence": "At frame 324 the carton is visible between closed fingers after an acknowledged lift and partial tilt. The bowl appears upright and separate. Recent commands produced increasing pose error; current metric retention and clearance are not yet established.",
+      "success_evidence": "Fresh RGB-D observations show the carton retained clear of surrounding surfaces and physically moved to a suitable approach above the bowl. Observed carton extent and bowl opening support a placement fit with uncertainty accounted for, and actual motion demonstrates progress without renewed divergence.",
+      "handoff_requirements": "Preserve completed pickup and partial motion. Provide fresh carton-to-hand retention evidence, bowl opening evidence, actual robot state and relevant clearance bounds. Where occlusion or uncertain depth prevents assessment, use another visible feature, camera, or safely attainable view within observed clearance. Identify a supported placement and finger-clearance option before handing off; historical targets and clearance claims are not authorization.",
+      "replan_conditions": "Retention changes, the bowl moves, motion again diverges, or the chosen fit or clearance cannot be supported. Reassess the actual resulting state and consider a different reachable staging or attitude; one failed margin check is not global infeasibility. Do not replay the pickup or failed tilt."
+    },
+    {
+      "id": "place_check",
+      "objective": "Place and release the carton into the bowl, leave the gripper clear, and assess stable containment after settling.",
+      "entry_evidence": "Fresh observations establish retained carton alignment at the bowl approach and support the intended placement, opening and withdrawal clearances. Revalidate these against this stage's actual starting state.",
+      "success_evidence": "Following acknowledged release and gripper separation, successive images and depth show the carton settled inside the upright bowl, not following the hand, outside the bowl or balanced on its rim.",
+      "handoff_requirements": "Authorize release only from current evidence of an appropriate placement state and finger clearance. Report post-settling object and bowl observations with the gripper visibly separate. Resolve an obscured final relationship using another available camera or a safely attainable view; commanded opening alone is not success.",
+      "replan_conditions": "The carton slips before placement, remains attached, catches on the rim, falls outside, or displaces the bowl. If support or containment remains ambiguous, acquire fresh evidence before judging success. Any correction must start from the actual post-action state without repeating an acknowledged release."
+    }
+  ]
+}

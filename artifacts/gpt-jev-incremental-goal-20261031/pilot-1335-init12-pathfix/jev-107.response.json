@@ -1,0 +1,79 @@
+{
+  "model": "jev-1.13.0",
+  "answers": {
+    "x": {
+      "type": "choice",
+      "choice": "positive",
+      "confidence": 1.0,
+      "probabilities": {
+        "negative": 0.0,
+        "hold": 0.0,
+        "positive": 1.0
+      }
+    },
+    "y": {
+      "type": "choice",
+      "choice": "positive",
+      "confidence": 0.98,
+      "probabilities": {
+        "negative": 0.0,
+        "hold": 0.01,
+        "positive": 0.99
+      }
+    },
+    "z": {
+      "type": "choice",
+      "choice": "positive",
+      "confidence": 0.98,
+      "probabilities": {
+        "negative": 0.0,
+        "hold": 0.01,
+        "positive": 0.99
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "choice": "negative",
+      "confidence": 1.0,
+      "probabilities": {
+        "negative": 1.0,
+        "hold": 0.0,
+        "positive": 0.0
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "choice": "positive",
+      "confidence": 1.0,
+      "probabilities": {
+        "negative": 0.0,
+        "hold": 0.0,
+        "positive": 1.0
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "choice": "positive",
+      "confidence": 0.98,
+      "probabilities": {
+        "negative": 0.0,
+        "hold": 0.01,
+        "positive": 0.99
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "choice": "close",
+      "confidence": 0.97,
+      "probabilities": {
+        "open": 0.0,
+        "close": 0.98,
+        "keep": 0.02
+      }
+    }
+  },
+  "usage": {
+    "input_tokens": 2235,
+    "output_tokens": 249
+  }
+}

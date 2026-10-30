@@ -1,0 +1,169 @@
+{
+  "index": 350,
+  "method_number": 6,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "place.effect",
+      {
+        "frame_id": 306,
+        "parameters": {
+          "bowl": "same_upright_unchanged",
+          "bowl_mode": "landmarks",
+          "closed_space": "clear",
+          "end_camera": "robot0_eye_in_hand",
+          "end_ids_match": true,
+          "end_pixels": [
+            [
+              280,
+              446
+            ],
+            [
+              489,
+              445
+            ]
+          ],
+          "identity": "same_carton",
+          "notes": "Fresh frame-306 selections, not historical projections. p0-p3 sample the same printed face interior, away from seams and fingers; they are not texture correspondences. c0/c1 mark visible physical corners; validate boundary depth, especially c1 after its earlier depth failure. b0 is the large floor medallion center; b1 is the smaller bottle-side rear inner-wall rosette, not another repeated motif. The bowl appears same, upright and unchanged; returned landmarks permit metric stationarity revalidation. Regions include silhouettes and background and require segmentation. Table samples measure surfaces, not free space. Opposite carton corners are self-occluded and are not inferred. Placement and release are not established."
+        },
+        "points": {
+          "p0": {
+            "world_m": [
+              -0.050590285008307964,
+              0.15903836130516594,
+              0.998485494436366
+            ],
+            "depth_m": 0.0960904136300087,
+            "frame_id": 306,
+            "pixel": [
+              309,
+              476
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p1": {
+            "world_m": [
+              -0.0505032649434998,
+              0.1302838189148505,
+              0.9988304052493919
+            ],
+            "depth_m": 0.09577761590480804,
+            "frame_id": 306,
+            "pixel": [
+              459,
+              476
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p2": {
+            "world_m": [
+              -0.06596766855288991,
+              0.15909120480617667,
+              1.0193179429323378
+            ],
+            "depth_m": 0.09602572023868561,
+            "frame_id": 306,
+            "pixel": [
+              310,
+              611
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p3": {
+            "world_m": [
+              -0.06549553804749894,
+              0.13059181099392883,
+              1.0196651309084255
+            ],
+            "depth_m": 0.09540262818336487,
+            "frame_id": 306,
+            "pixel": [
+              459,
+              611
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c0": {
+            "world_m": [
+              -0.04743473879939575,
+              0.16462555478952864,
+              0.9936408139746115
+            ],
+            "depth_m": 0.09645045548677444,
+            "frame_id": 306,
+            "pixel": [
+              280,
+              446
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c1": {
+            "world_m": [
+              -0.04746218506402755,
+              0.1243767510230243,
+              0.9938496010072086
+            ],
+            "depth_m": 0.09629575163125992,
+            "frame_id": 306,
+            "pixel": [
+              489,
+              445
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b0": {
+            "world_m": [
+              -0.12069322344689914,
+              0.006766388130185493,
+              0.9113687037892098
+            ],
+            "depth_m": 1.0454723834991455,
+            "frame_id": 306,
+            "pixel": [
+              390,
+              432
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b1": {
+            "world_m": [
+              -0.12691070243057512,
+              -0.019013194341648897,
+              0.9327994531859265
+            ],
+            "depth_m": 1.036843180656433,
+            "frame_id": 306,
+            "pixel": [
+              367,
+              414
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 306,
+  "response": {
+    "result": {
+      "key": "place.effect",
+      "frame_id": 306,
+      "method_number": 6,
+      "source_sha256": "90492e464ff01e24749bda88fc8a84e6771a74cac390453aa81ab2e77fb66c28",
+      "bytes": 2874,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 306
+}

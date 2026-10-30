@@ -293,3 +293,18 @@ This rules out a simple wrong Jev direction label for these controls, but does
 not identify coupling versus reachability/contact or another control-model
 issue. No alternative control was executed and no diagnostic was injected into
 the active method6 repair. See tilt-control-diagnostic.json.
+
+## Repeated tilt divergence triggered remaining-plan revision
+
+Method6 delivered352 lines in1128.399 seconds (host reconnects1). It raised
+translation authority3→16mm and reduced rotation cap0.10→0.035rad, preserving
+current partial tilt and checking three-call leases. Six real controls advanced
+306→324/108Jev, then no_pose_progress yielded. Error rose5.19→11.16mm and
+rotation0.268→0.274rad; drift exceeded its8mm reserve. Supervisor27 requested
+revision; the max-local-revision rule escalated to plan-level reconsideration.
+Plan28 now has restage and place_check, explicitly reserving seven of eleven
+remaining calls beyond two builders/two supervisors. Current method generation
+jobc40079c89aad4c50a8b9a5cea14474d1 / thread01a18e77-9405-77d3-bd7e-d1f2b554e5ff
+is active. No release or terminal native result. Preserve
+remaining-plan-revision.json. Still the frozen c8 pilot; candidate branch is
+not deployed.
