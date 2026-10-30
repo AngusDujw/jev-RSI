@@ -1,0 +1,160 @@
+{
+  "index": 197,
+  "method_number": 7,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.05117782608344875,
+        0.17395806926763802,
+        1.005309996016187
+      ],
+      [
+        0.9840897958324522,
+        0.0017826528425609056,
+        -0.002416137972240079,
+        0.17764644146333114
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world axis x, read state.processed_features.axes.x.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+          "criteria": {
+            "negative": "Decrease this world translation or world rotation-vector component.",
+            "hold": "Keep this component inside its deadband.",
+            "positive": "Increase this world translation or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world axis y, read state.processed_features.axes.y.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+          "criteria": {
+            "negative": "Decrease this world translation or world rotation-vector component.",
+            "hold": "Keep this component inside its deadband.",
+            "positive": "Increase this world translation or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world axis z, read state.processed_features.axes.z.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+          "criteria": {
+            "negative": "Decrease this world translation or world rotation-vector component.",
+            "hold": "Keep this component inside its deadband.",
+            "positive": "Increase this world translation or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world axis rx, read state.processed_features.axes.rx.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+          "criteria": {
+            "negative": "Decrease this world translation or world rotation-vector component.",
+            "hold": "Keep this component inside its deadband.",
+            "positive": "Increase this world translation or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world axis ry, read state.processed_features.axes.ry.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+          "criteria": {
+            "negative": "Decrease this world translation or world rotation-vector component.",
+            "hold": "Keep this component inside its deadband.",
+            "positive": "Increase this world translation or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world axis rz, read state.processed_features.axes.rz.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+          "criteria": {
+            "negative": "Decrease this world translation or world rotation-vector component.",
+            "hold": "Keep this component inside its deadband.",
+            "positive": "Increase this world translation or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper. Deliver exactly open, close, or keep as requested. Closure is not evidence of retention.",
+          "criteria": {
+            "open": "Deliver the requested opening.",
+            "close": "Deliver the requested closing.",
+            "keep": "Preserve the previous gripper command."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "action": "empty-hand observation rise only",
+        "review_frame": 216,
+        "excluded_route": {
+          "frame": 216,
+          "family": "near-horizontal long-side entry at +/-88 and +/-90 degrees",
+          "established_obstruction": "Palm intersects counter during descent; high alignment alone was clear.",
+          "original_long_axis_world": [
+            -0.9999910963969977,
+            -0.004219849135968157,
+            0.0
+          ],
+          "model_checkpoint": "alt.model",
+          "guard_floor_m": 0.001741372874978718,
+          "prior_plane_quality_passed": true
+        }
+      },
+      "tool_point": "pad_center",
+      "max_calls": 16,
+      "translation_limit": 0.008,
+      "rotation_limit": 0.08,
+      "steps": 3,
+      "position_tolerance": 0.002,
+      "rotation_tolerance": 0.01
+    }
+  },
+  "frame_before": 216,
+  "response": {
+    "result": {
+      "decision": 77,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "positive",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "action": [
+        0.0,
+        0.0,
+        0.035489812790434394,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        -0.051912443232962846,
+        0.17276160662035034,
+        0.9992214710075089
+      ],
+      "after": [
+        -0.051990396159004734,
+        0.17258159548697466,
+        1.0009510927216922
+      ],
+      "target_tcp": [
+        -0.051190899974477365,
+        0.1725484640111384,
+        1.001951456606773
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 234,
+      "frame_id": 234,
+      "status": "reached",
+      "position_error_m": 0.0012810229296694707,
+      "rotation_error_rad": 0.005195053432332476,
+      "lease_calls": 6
+    }
+  },
+  "frame_after": 234
+}

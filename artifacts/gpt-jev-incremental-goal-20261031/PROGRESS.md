@@ -599,3 +599,11 @@ with upright tool, reacquires geometry and optionally independently reviews
 an observation rise. It removes the previous recovered-pixel approach.
 Review33 live, still72Jev216steps and zero completed stages; new contact
 feasibility and native success remain unproven.
+
+## Short-end observation rise executed through Jev
+
+Review33 corrected9regions above max8 through same-thread continuation.
+It independently authorized a useful30mm empty-hand rise. Method07
+executed6Jev18steps, frame216to234; actual TCP rise28.971mm, open hand.
+Review34 reacquires short-end geometry. Total78Jev234steps, zero completed
+stages. This is observation motion, not pickup or native success.

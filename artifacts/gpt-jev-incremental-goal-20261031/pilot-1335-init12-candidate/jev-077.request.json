@@ -1,0 +1,178 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 231,
+      "native_steps": 231,
+      "budgets": {
+        "gpt_remaining": 6,
+        "jev_remaining": 123,
+        "native_steps_remaining": 369,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0519124,
+        0.172762,
+        0.999221
+      ],
+      "tcp_quaternion_xyzw": [
+        0.984375,
+        0.00183271,
+        -0.000395865,
+        0.176076
+      ],
+      "gripper_qpos_m": [
+        0.0396881,
+        -0.0400144
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          -1.28904e-06,
+          -0.000146319,
+          -0.00363944
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160001,
+          0.0947025,
+          0.0160002
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0104962,
+          -0.0664009,
+          -0.0445078
+        ],
+        "finger_high_offset_tool_m": [
+          0.0104936,
+          0.0661084,
+          0.00920968
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "action": "empty-hand observation rise only",
+        "review_frame": 216,
+        "excluded_route": {
+          "frame": 216,
+          "family": "near-horizontal long-side entry at +/-88 and +/-90 degrees",
+          "established_obstruction": "Palm intersects counter during descent; high alignment alone was clear.",
+          "original_long_axis_world": [
+            -0.999991,
+            -0.00421985,
+            0.0
+          ],
+          "model_checkpoint": "alt.model",
+          "guard_floor_m": 0.00174137,
+          "prior_plane_quality_passed": true
+        }
+      },
+      "objective": {
+        "gripper": "keep",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        0.000721543,
+        -0.000213143,
+        0.00272999
+      ],
+      "rotation_error_world_rad": [
+        -0.0031993,
+        0.00395426,
+        -0.000807704
+      ],
+      "axes": {
+        "x": {
+          "error": 0.000721543,
+          "goal_relation": "within_tolerance"
+        },
+        "y": {
+          "error": -0.000213143,
+          "goal_relation": "within_tolerance"
+        },
+        "z": {
+          "error": 0.00272999,
+          "goal_relation": "increase"
+        },
+        "rx": {
+          "error": -0.0031993,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": 0.00395426,
+          "goal_relation": "within_tolerance"
+        },
+        "rz": {
+          "error": -0.000807704,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis x, read state.processed_features.axes.x.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+      "criteria": {
+        "negative": "Decrease this world translation or world rotation-vector component.",
+        "hold": "Keep this component inside its deadband.",
+        "positive": "Increase this world translation or world rotation-vector component."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis y, read state.processed_features.axes.y.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+      "criteria": {
+        "negative": "Decrease this world translation or world rotation-vector component.",
+        "hold": "Keep this component inside its deadband.",
+        "positive": "Increase this world translation or world rotation-vector component."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis z, read state.processed_features.axes.z.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+      "criteria": {
+        "negative": "Decrease this world translation or world rotation-vector component.",
+        "hold": "Keep this component inside its deadband.",
+        "positive": "Increase this world translation or world rotation-vector component."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis rx, read state.processed_features.axes.rx.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+      "criteria": {
+        "negative": "Decrease this world translation or world rotation-vector component.",
+        "hold": "Keep this component inside its deadband.",
+        "positive": "Increase this world translation or world rotation-vector component."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis ry, read state.processed_features.axes.ry.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+      "criteria": {
+        "negative": "Decrease this world translation or world rotation-vector component.",
+        "hold": "Keep this component inside its deadband.",
+        "positive": "Increase this world translation or world rotation-vector component."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis rz, read state.processed_features.axes.rz.goal_relation. Choose positive for increase, negative for decrease, and hold for within_tolerance. Follow the bounded local pose objective only; program features are measured gate results, not unseen clearance.",
+      "criteria": {
+        "negative": "Decrease this world translation or world rotation-vector component.",
+        "hold": "Keep this component inside its deadband.",
+        "positive": "Increase this world translation or world rotation-vector component."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read state.processed_features.objective.gripper. Deliver exactly open, close, or keep as requested. Closure is not evidence of retention.",
+      "criteria": {
+        "open": "Deliver the requested opening.",
+        "close": "Deliver the requested closing.",
+        "keep": "Preserve the previous gripper command."
+      }
+    }
+  }
+}

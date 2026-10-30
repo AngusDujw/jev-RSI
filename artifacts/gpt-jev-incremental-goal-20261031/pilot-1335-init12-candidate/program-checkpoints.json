@@ -2586,5 +2586,104 @@
       }
     },
     "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "alt.progress": {
+    "key": "alt.progress",
+    "frame_id": 234,
+    "method_number": 7,
+    "source_sha256": "0ca81fe3969470ea204cadd403532ad499b57dcf5e80e1211cbe2c173f1f1431",
+    "bytes": 2281,
+    "value": {
+      "phases": [
+        {
+          "phase": "new_contact_observation_authorization",
+          "frame": 216,
+          "parameters": {
+            "empty_open_hand": true,
+            "retreat_clear": "clear",
+            "new_view_useful": "yes",
+            "notes": "Clear is scoped to this 30 mm vertical observation move, not arbitrary arm motion or hidden global geometry. Wrist-image end occlusion is robot self-occlusion, not an external obstruction. Complete end exposure must be checked in the resulting view. All rejected descents remain blocked. Earlier image frames are unavailable here; supplied historical records are not additional images."
+          },
+          "excluded_route": {
+            "frame": 216,
+            "family": "near-horizontal long-side entry at +/-88 and +/-90 degrees",
+            "established_obstruction": "Palm intersects counter during descent; high alignment alone was clear.",
+            "original_long_axis_world": [
+              -0.9999910963969977,
+              -0.004219849135968157,
+              0.0
+            ],
+            "model_checkpoint": "alt.model",
+            "guard_floor_m": 0.001741372874978718,
+            "prior_plane_quality_passed": true
+          }
+        },
+        {
+          "phase": "end_wall_observation_retreat",
+          "status": "reached",
+          "lease_calls": 6,
+          "before": {
+            "frame_id": 216,
+            "tcp_position_world_m": [
+              -0.051186833667093146,
+              0.17258251451771828,
+              0.9719803645112318
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9840897958324522,
+              0.0017826528425609056,
+              -0.002416137972240079,
+              0.17764644146333114
+            ],
+            "gripper_qpos_m": [
+              0.03974770365249626,
+              -0.0400145659407872
+            ],
+            "last_gripper_command": "open"
+          },
+          "after": {
+            "frame_id": 234,
+            "tcp_position_world_m": [
+              -0.051990396159004734,
+              0.17258159548697466,
+              1.0009510927216922
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9843875040478433,
+              0.0018716946504550025,
+              -0.0004275838155919573,
+              0.17600441984698514
+            ],
+            "gripper_qpos_m": [
+              0.03968088783158064,
+              -0.04001434586701341
+            ],
+            "last_gripper_command": "open"
+          },
+          "position_gain_m": 0.028692391672726504,
+          "rotation_gain_rad": -0.0051950534321751705,
+          "position_error_m": 0.001307608327273521,
+          "rotation_error_rad": 0.0051950534321751705,
+          "minimum_position_gain_m": 0.0003,
+          "minimum_rotation_gain_rad": 0.003,
+          "position_gain_margin_m": 0.028392391672726502,
+          "rotation_gain_margin_rad": -0.008195053432175171,
+          "lease_number": 1,
+          "maximum_leases": 3
+        }
+      ],
+      "target_pad_world_m": [
+        -0.05117782608344875,
+        0.17395806926763802,
+        1.005309996016187
+      ],
+      "target_quaternion_xyzw": [
+        0.9840897958324522,
+        0.0017826528425609056,
+        -0.002416137972240079,
+        0.17764644146333114
+      ]
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
   }
 }

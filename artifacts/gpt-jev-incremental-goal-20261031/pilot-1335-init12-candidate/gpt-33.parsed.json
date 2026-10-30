@@ -1,0 +1,120 @@
+{
+  "status": "continue",
+  "explanation": "Authorize only the 30 mm vertical empty-hand rise with unchanged orientation and open gripper. Both current views support a clear local sweep: the palm and fingers rise away from the package and counter, the bowl is lateral, and no external obstacle intersects the visible wrist or arm sweep. The package remains on the counter, outside the open fingers. Independently, the rise should expose the package end currently hidden by the wrist-camera palm mask: that end is visible in agentview, and increasing camera height should move its wrist-image projection above the mask. Confirm end-to-end visibility after the rise; this is not authorization for a grasp or descent.",
+  "parameters": {
+    "empty_open_hand": true,
+    "retreat_clear": "clear",
+    "new_view_useful": "yes",
+    "notes": "Clear is scoped to this 30 mm vertical observation move, not arbitrary arm motion or hidden global geometry. Wrist-image end occlusion is robot self-occlusion, not an external obstruction. Complete end exposure must be checked in the resulting view. All rejected descents remain blocked. Earlier image frames are unavailable here; supplied historical records are not additional images."
+  },
+  "points": [
+    {
+      "name": "package_end_visible_in_agentview_hidden_in_wrist_view",
+      "camera": "agentview",
+      "pixel": [
+        515,
+        450
+      ],
+      "radius": 2
+    },
+    {
+      "name": "package_exposed_opposite_end",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        401,
+        420
+      ],
+      "radius": 2
+    }
+  ],
+  "regions": [
+    {
+      "name": "visible_package_top",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        351,
+        429,
+        456,
+        633
+      ],
+      "stride": 5
+    },
+    {
+      "name": "visible_palm_surface",
+      "camera": "agentview",
+      "box": [
+        545,
+        391,
+        625,
+        415
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_left_finger",
+      "camera": "agentview",
+      "box": [
+        503,
+        415,
+        514,
+        427
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_right_finger",
+      "camera": "agentview",
+      "box": [
+        587,
+        438,
+        595,
+        449
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_wrist_surface",
+      "camera": "agentview",
+      "box": [
+        603,
+        260,
+        650,
+        309
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_forearm_surface",
+      "camera": "agentview",
+      "box": [
+        574,
+        86,
+        614,
+        139
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_bowl_inner_surface",
+      "camera": "agentview",
+      "box": [
+        363,
+        415,
+        415,
+        439
+      ],
+      "stride": 4
+    },
+    {
+      "name": "counter_beside_package",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        482,
+        430,
+        555,
+        565
+      ],
+      "stride": 5
+    }
+  ]
+}
