@@ -374,3 +374,16 @@ not an unrecovered stream. Earlier recoveries and all failed intermediate
 methods remain included. audit.json and summary.json are authoritative.
 Candidate4712d43b remains untested on physics and must be separately admitted.
 The declared six-case qualification has not begun; no stable-success claim.
+
+## Candidate68799bb5 admitted as independent cold pilot
+
+EXP054 freezes isolated candidate68799bb5 on c8 baseline. Exact stage patches,
+numeric correction feedback, action-scoped gates and bounded budget-pressure
+remaining-plan reconsideration are active. Same40GPT/200Jev/600steps and
+revision limits; no archived task source. Budget callback checks4/4 passed,
+not a physics result. Initial request hashes and ASCII text verified.
+Server unit gpt-jev-incremental-pilot-candidate-20261031, PID1977789; local
+bridge gpt-jev-incremental-bridge-candidate-20261031, PID937525, candidate-relay.
+Existing7921 SSH tunnel retained. Actual native child938713 observed live.
+Candidate manifest/preflight and pilot-1335-init12-candidate preserve evidence.
+Previous pathfix failure remains unchanged; candidate still pending.

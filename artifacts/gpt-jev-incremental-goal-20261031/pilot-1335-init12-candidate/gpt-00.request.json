@@ -1,0 +1,126 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Plan the remaining robot task using current public images, robot state and\nacknowledged execution. Submit submit_stage_plan. All text must be English ASCII.\n\nReturn a concise overall plan of one to eight observable subgoals. Each stage\nneeds a unique short ASCII id, objective, entry_evidence, success_evidence,\nhandoff_requirements and replan_conditions. goal_evidence describes observable\nevidence for the whole task. The final stage must assess that goal after the\nrelevant physical effects. Do not write executable code, coordinates, complete\nfuture-stage methods or a fixed manipulation recipe. Detailed current-stage\nprocessing is generated separately from its actual starting observations.\n\nThe runtime provides public RGB-D/calibration, own robot geometry, numerical\nhelpers, model observation reviews and real finite-choice Jev control. It has no\nhidden object poses, contact oracle, force sensor or collision planner. Choose\nsubgoals whose evidence can be obtained through this interface. A reached robot\npose or commanded gripper state is not proof of an independent object effect.\n\nOn replanning, plan remaining work from the actual current physical state.\nExecuted actions are not undone by a new plan. Prior stage completions and\ncheckpoints are historical receipts; identify invalidated assumptions and require\nfresh evidence where needed. Do not silently repeat earlier physical actions.\nAn uncertain measurement or failed local margin check does not by itself prove\nthe task impossible. Include feasible evidence-acquisition alternatives when\ncurrent observations support them, without assuming unknown clearance is free.\nKeep this plan compact; do not solve every future numerical problem now.\n\nThe supplied planning_budget and response schema bound the remaining stage count.\nEvery stage costs at least one method-generation call and one supervision call;\nobservation reviews, corrections and replanning require additional calls. This\nminimum is not an adequate execution reserve. Prefer a few meaningful physical\nsubgoals and combine closely related evidence checks with their local action,\nwhile keeping each generated method limited to the current stage. Account for\nthe actual remaining budget when replanning; do not add separate bookkeeping or\nobservation-only stages that leave no room to perform and verify the task.\n",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "4fd58ad4171e5178d105b6f8739fb9233b5891308631a6cbf21709a25df473e0",
+            "characters": 102939
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "8c905c12f36042e193ba35dbf4666c373ea2b223527ef4145bf841db15797062",
+            "characters": 105807
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Plan the remaining subgoals from the current observations.\",\"robot\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":39,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.207198,-0.00268411,1.1834],\"tcp_quaternion_xyzw\":[0.999614,-0.000163778,-0.0277874,0.000255883],\"gripper_qpos_m\":[0.0387218,-0.0387238],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[4.17768e-06,-1.23337e-06,-0.00360314],\"pad_extent_in_tool_m\":[0.0160013,0.0924457,0.0160008],\"finger_low_offset_tool_m\":[-0.0104903,-0.0651272,-0.0444717],\"finger_high_offset_tool_m\":[0.0105003,0.0651249,0.00924596]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.000305154,-0.998454,-0.0555898,-0.151879],[-1.0,0.000333475,-0.000500194,-0.00265203],[0.000517958,0.0555897,-0.998454,1.27747],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[],\"recent_program_feedback\":[],\"program_checkpoint_manifest\":[],\"hierarchical_context\":{\"trigger\":\"initial_plan\",\"completed\":[],\"current_state\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":40,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.207198,-0.00268411,1.1834],\"tcp_quaternion_xyzw\":[0.999614,-0.000163778,-0.0277874,0.000255883],\"gripper_qpos_m\":[0.0387218,-0.0387238],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[4.17768e-06,-1.23337e-06,-0.00360314],\"pad_extent_in_tool_m\":[0.0160013,0.0924457,0.0160008],\"finger_low_offset_tool_m\":[-0.0104903,-0.0651272,-0.0444717],\"finger_high_offset_tool_m\":[0.0105003,0.0651249,0.00924596]}},\"planning_budget\":{\"calls_after_plan\":39,\"maximum_stages\":8,\"minimum_calls_per_stage\":2,\"scope\":\"One method and one supervisor per stage are mandatory; observations and repairs cost extra. Reserve room for them.\"}}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_stage_plan",
+      "description": "Return remaining observable subgoals without source code",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "explanation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "goal_evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "objective": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "entry_evidence": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "success_evidence": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "handoff_requirements": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "replan_conditions": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                }
+              },
+              "required": [
+                "id",
+                "objective",
+                "entry_evidence",
+                "success_evidence",
+                "handoff_requirements",
+                "replan_conditions"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 8
+          }
+        },
+        "required": [
+          "explanation",
+          "goal_evidence",
+          "stages"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_stage_plan"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

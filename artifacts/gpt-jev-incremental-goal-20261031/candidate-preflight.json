@@ -1,0 +1,25 @@
+{
+  "hash_matches": {
+    "code/scripts/run_gpt_jev_program.py": true,
+    "code/scripts/gpt_jev_review_contract.py": true,
+    "code/scripts/gpt_jev_stage_protocol.py": true,
+    "code/prompts/gpt_jev_stage_plan_v1.txt": true,
+    "code/prompts/gpt_jev_stage_method_v1.txt": true,
+    "code/prompts/gpt_jev_stage_supervisor_v1.txt": true
+  },
+  "first_request_ascii": true,
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_stage_plan"
+  },
+  "processes": {
+    "remote_pilot": 1977789,
+    "local_bridge": 937525,
+    "native_child": 938713
+  },
+  "scope": "Deployment and actual first-request checks only; no physical success claim"
+}
