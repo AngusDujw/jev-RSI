@@ -11,7 +11,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-from libero_skill_memory import freeze, load, refine
+from libero_skill_memory import file_hashes, freeze, load, read_files, refine
 
 
 def write(path, value):
@@ -87,8 +87,11 @@ def main():
                 results.append(episode(args, root, f"episode-{index}", index, "playground", memory))
                 revision = root / f"revision-{index+1}"
                 if revision.exists():
-                    if not args.resume or not (revision / "lineage.json").exists():
+                    receipt = root / f"refine-{index}" / "revision.json"
+                    if not args.resume or not (revision / "lineage.json").exists() or not receipt.exists():
                         raise ValueError("Untracked existing revision")
+                    if json.loads(receipt.read_text())["files"] != file_hashes(read_files(revision)):
+                        raise ValueError("Refined knowledge changed before resume")
                 else:
                     refine(memory, revision, [root / f"episode-{index}"], root / f"refine-{index}")
                 write(root / "acquisition.json", dict(completed=index+1, summaries=results))
