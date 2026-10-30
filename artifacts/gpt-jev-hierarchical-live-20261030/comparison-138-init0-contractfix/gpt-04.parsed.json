@@ -1,0 +1,125 @@
+{
+  "status": "continue",
+  "explanation": "Four overlapping objects/surfaces: high0 bowl, high1 bottle, high2 plate, and high3 stone worktop. The complete bowl rim, bottle cork top, and plate rim are observable across the two views and support upper-extremum selections; the exposed worktop supports a locally level planar upper surface. The plate overlaps the positive-X end of the supplied XY envelope. No external object occupies the high finger volume. The visible hand/palm has a clear short high sweep; this assessment excludes descent and hidden arm clearance.",
+  "parameters": {
+    "count": 4,
+    "coverage": "complete",
+    "high0": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        281,
+        331
+      ],
+      "visible": true
+    },
+    "high1": {
+      "camera": "agentview",
+      "pixel": [
+        341,
+        282
+      ],
+      "visible": true
+    },
+    "high2": {
+      "camera": "agentview",
+      "pixel": [
+        365,
+        504
+      ],
+      "visible": true
+    },
+    "high3": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        300,
+        400
+      ],
+      "visible": true
+    },
+    "robot_clear": "visible_clear"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "high0",
+      "pixel": [
+        281,
+        331
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "high1",
+      "pixel": [
+        341,
+        282
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "high2",
+      "pixel": [
+        365,
+        504
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "high3",
+      "pixel": [
+        300,
+        400
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "bowl_upper_rim_and_outline",
+      "box": [
+        250,
+        177,
+        434,
+        361
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "bottle_cork_upper_surface",
+      "box": [
+        337,
+        280,
+        346,
+        285
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "plate_upper_rim_and_outline",
+      "box": [
+        294,
+        501,
+        438,
+        613
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "exposed_worktop_patch",
+      "box": [
+        275,
+        369,
+        386,
+        404
+      ],
+      "stride": 4
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "explanation": "The actual frame-72 change does not expose identifiable centers of either opposing inner contact face. Agentview shows the near finger exterior; the wrist view exposes partial finger surfaces, with the centers obscured by robot self-occlusion. Neither pad has an obtainable center measurement. The schema requires pixel pairs even when visible=false; those pairs are unused and must not be sampled or interpreted as pad locations. Compared with the earlier images, the same patterned bowl remains upright on its original counter, and the hand remains visibly clear of external objects. Calibration is incomplete. The recorded execution-bound stop is not evidence of collision, and the target orientation was not achieved.",
+  "parameters": {
+    "bowl": "same_upright_on_counter",
+    "faces": "not_both_visible",
+    "hand": "visibly_clear",
+    "pad_a": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        0,
+        0
+      ],
+      "visible": false
+    },
+    "pad_b": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        0,
+        0
+      ],
+      "visible": false
+    }
+  },
+  "points": [],
+  "regions": [],
+  "status": "stop"
+}

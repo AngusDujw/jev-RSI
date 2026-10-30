@@ -1,0 +1,17 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Frame 120 images show the cream cheese still on the table outside the bowl, between open fingers, with no visible lift.",
+    "The stage returned yield during descent, not stage_complete; no closure or attachment test is acknowledged.",
+    "The last five acknowledged controls changed TCP height by only about 0.034 mm. Final position error is 0.945 mm against a 0.5 mm tolerance.",
+    "Package and table depth measurements are from frame 75; actual contact margins remain unverified after the subsequent descent."
+  ],
+  "invalidated_assumptions": [
+    "Repeating the unchanged small descent controls provides meaningful endpoint convergence."
+  ],
+  "plan_valid": "yes",
+  "reason": "The grasp subgoal and overall ordering remain suitable. Local recovery needs fresh precontact geometry and diagnosis of near-stalled endpoint convergence, preserving the actual low, open-gripper state rather than restarting from the old hover. Evaluate actual pad overlap and table clearance before selecting a justified endpoint or correcting the control method; do not simply relax thresholds or repeat the same commands. No physical obstacle or global infeasibility has been established.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

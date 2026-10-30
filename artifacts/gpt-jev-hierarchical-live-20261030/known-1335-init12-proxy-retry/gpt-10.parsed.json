@@ -1,0 +1,113 @@
+{
+  "status": "continue",
+  "explanation": "The current and earlier views show the same labeled cream cheese package, still flat on the table. Its complete top boundary is visible in the wrist camera. All requested names need fresh frame-54 samples; the retained current set is empty. Top samples are separated and inset, and table samples are on bare surrounding table. The side sample is on the narrow visible long wall in agentview, not the top or short end. These are measurement selections only, not authorization for contact.",
+  "parameters": {
+    "boundary": "full_top_rectangle",
+    "camera": "robot0_eye_in_hand",
+    "corners": [
+      [
+        333,
+        405
+      ],
+      [
+        433,
+        403
+      ],
+      [
+        433,
+        602
+      ],
+      [
+        330,
+        599
+      ]
+    ],
+    "identity": "same_cream_cheese",
+    "side_identity": "visible_long_side",
+    "support": "flat_on_table"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        356,
+        443
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        409,
+        443
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        410,
+        564
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t3",
+      "pixel": [
+        357,
+        563
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s0",
+      "pixel": [
+        274,
+        347
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s1",
+      "pixel": [
+        466,
+        346
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s2",
+      "pixel": [
+        468,
+        625
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s3",
+      "pixel": [
+        276,
+        626
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "side",
+      "pixel": [
+        500,
+        476
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": []
+}

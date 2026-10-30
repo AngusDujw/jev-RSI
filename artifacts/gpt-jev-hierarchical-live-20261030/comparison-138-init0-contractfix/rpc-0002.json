@@ -1,0 +1,966 @@
+{
+  "index": 2,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Observe only; no task completion claim. Identify patterned bowl and the upper horizontal dark cabinet table 1 at left, not the counter or cabinet side. Return typed pixel selectors, not metric estimates; the program will depth-sample radius=1. Mark visible=false if unavailable. rim0..rim7: eight cyclic, evenly distributed points on actual upper OUTER rim material, using the overhead view where useful, not background or inner floor. table0..table3: cyclic corners of the largest fully visible clear convex INTERIOR tabletop quadrilateral, inside real edges, never invent an image-clipped boundary. table4: an independent central surface sample inside that patch. inner and outer: corresponding visible inner and outer wall surfaces at one front-facing accessible rim section, approximately 6-15 mm below the lip, same radial section and height; choose respective cameras as needed. band0 and band1: actual lip endpoints of a continuous unobstructed approximately 35-45 mm tangential rim section centered on those wall samples. Do not project an occluded wall or infer a hidden contact point. The outline classification requires the visible bowl silhouette to lie inside its outer mouth footprint, with no outward extension. The table_patch classification requires the entire chosen interior area to be visible and vacant. Return unknown if that is not supported. Request no clouds."
+    ],
+    "kwargs": {
+      "context": {
+        "previous_gaps": [],
+        "previous_measured_geometry": {}
+      },
+      "fields": {
+        "rim0": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "rim1": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "rim2": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "rim3": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "rim4": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "rim5": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "rim6": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "rim7": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "table0": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "table1": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "table2": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "table3": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "table4": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "inner": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "outer": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "band0": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "band1": {
+          "type": "object",
+          "properties": {
+            "visible": {
+              "type": "boolean"
+            },
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "required": [
+            "visible",
+            "camera",
+            "pixel"
+          ],
+          "additionalProperties": false
+        },
+        "target": [
+          "confirmed",
+          "ambiguous",
+          "wrong"
+        ],
+        "bowl": [
+          "confirmed",
+          "ambiguous"
+        ],
+        "table_patch": [
+          "clear_visible_planar_convex",
+          "obstructed",
+          "occluded",
+          "unknown"
+        ],
+        "rim": [
+          "level_outer_rim",
+          "unknown"
+        ],
+        "outline": [
+          "rim_encloses_visible_bowl_outline",
+          "unknown"
+        ],
+        "grasp_band": [
+          "both_walls_and_continuous_rim_visible",
+          "obstructed",
+          "occluded",
+          "unknown"
+        ]
+      }
+    }
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The patterned bowl and the upper horizontal dark cabinet tabletop at left are identified. The tabletop quadrilateral is wholly on visible vacant top surface, not the cabinet side or counter; its left selectors are interior samples, not an invented image-clipped physical edge. Eight cyclic rim samples and both lip endpoints select visible upper rim material. The wrist-view inner wall sample corresponds to the agentview front outer wall sample. Their below-lip height correspondence and the band's requested length are approximate visual selections, not metric measurements. Both walls and the continuous front rim band are visible without an observed external obstruction. The overhead bowl silhouette stays within the outer mouth footprint. Observation only; no completion or global clearance claim.",
+      "parameters": {
+        "bowl": "confirmed",
+        "target": "confirmed",
+        "rim": "level_outer_rim",
+        "outline": "rim_encloses_visible_bowl_outline",
+        "table_patch": "clear_visible_planar_convex",
+        "grasp_band": "both_walls_and_continuous_rim_visible",
+        "rim0": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            339,
+            180
+          ],
+          "visible": true
+        },
+        "rim1": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            404,
+            205
+          ],
+          "visible": true
+        },
+        "rim2": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            430,
+            269
+          ],
+          "visible": true
+        },
+        "rim3": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            405,
+            332
+          ],
+          "visible": true
+        },
+        "rim4": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            343,
+            357
+          ],
+          "visible": true
+        },
+        "rim5": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            279,
+            332
+          ],
+          "visible": true
+        },
+        "rim6": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            254,
+            269
+          ],
+          "visible": true
+        },
+        "rim7": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            279,
+            205
+          ],
+          "visible": true
+        },
+        "table0": {
+          "camera": "agentview",
+          "pixel": [
+            25,
+            294
+          ],
+          "visible": true
+        },
+        "table1": {
+          "camera": "agentview",
+          "pixel": [
+            212,
+            294
+          ],
+          "visible": true
+        },
+        "table2": {
+          "camera": "agentview",
+          "pixel": [
+            190,
+            465
+          ],
+          "visible": true
+        },
+        "table3": {
+          "camera": "agentview",
+          "pixel": [
+            8,
+            465
+          ],
+          "visible": true
+        },
+        "table4": {
+          "camera": "agentview",
+          "pixel": [
+            111,
+            380
+          ],
+          "visible": true
+        },
+        "inner": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            342,
+            192
+          ],
+          "visible": true
+        },
+        "outer": {
+          "camera": "agentview",
+          "pixel": [
+            394,
+            459
+          ],
+          "visible": true
+        },
+        "band0": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            317,
+            183
+          ],
+          "visible": true
+        },
+        "band1": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            366,
+            183
+          ],
+          "visible": true
+        }
+      },
+      "points": {
+        "rim0": {
+          "world_m": [
+            -0.04608979029423023,
+            0.01168870707270657,
+            0.9498577881567551
+          ],
+          "depth_m": 0.3066096901893616,
+          "frame_id": 0,
+          "pixel": [
+            339,
+            180
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "rim1": {
+          "world_m": [
+            -0.061046912451409654,
+            -0.02817259079562029,
+            0.9495147035250557
+          ],
+          "depth_m": 0.3078356087207794,
+          "frame_id": 0,
+          "pixel": [
+            404,
+            205
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "rim2": {
+          "world_m": [
+            -0.09990980221499253,
+            -0.04437709579498543,
+            0.949129559392718
+          ],
+          "depth_m": 0.3104751706123352,
+          "frame_id": 0,
+          "pixel": [
+            430,
+            269
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "rim4": {
+          "world_m": [
+            -0.15437793889500376,
+            0.009808822646978129,
+            0.9502365573041979
+          ],
+          "depth_m": 0.3124951422214508,
+          "frame_id": 0,
+          "pixel": [
+            343,
+            357
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "rim6": {
+          "world_m": [
+            -0.10004183374245293,
+            0.06448064810887918,
+            0.9503769062793523
+          ],
+          "depth_m": 0.3091873526573181,
+          "frame_id": 0,
+          "pixel": [
+            254,
+            269
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "rim7": {
+          "world_m": [
+            -0.06118133242544317,
+            0.04858112808304575,
+            0.9501468649056712
+          ],
+          "depth_m": 0.3071768879890442,
+          "frame_id": 0,
+          "pixel": [
+            279,
+            205
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "table0": {
+          "world_m": [
+            -0.07463440520796172,
+            -0.338456729846823,
+            1.1272255782997493
+          ],
+          "depth_m": 0.8740084171295166,
+          "frame_id": 0,
+          "pixel": [
+            25,
+            294
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "table1": {
+          "world_m": [
+            -0.0746308048985952,
+            -0.16215674565453736,
+            1.1272279507707952
+          ],
+          "depth_m": 0.8740041255950928,
+          "frame_id": 0,
+          "pixel": [
+            212,
+            294
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "table2": {
+          "world_m": [
+            0.11734017645707251,
+            -0.1566547524277276,
+            1.0891369822711796
+          ],
+          "depth_m": 0.7485981583595276,
+          "frame_id": 0,
+          "pixel": [
+            190,
+            465
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "table3": {
+          "world_m": [
+            0.1561959770124448,
+            -0.2818233716149104,
+            1.12655725802929
+          ],
+          "depth_m": 0.6948580145835876,
+          "frame_id": 0,
+          "pixel": [
+            8,
+            465
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "table4": {
+          "world_m": [
+            0.054625748891672155,
+            -0.22783561243236275,
+            1.1268512458799105
+          ],
+          "depth_m": 0.773688018321991,
+          "frame_id": 0,
+          "pixel": [
+            111,
+            380
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "inner": {
+          "world_m": [
+            -0.05088669368879667,
+            0.010507286334138614,
+            0.9423001152112187
+          ],
+          "depth_m": 0.31443268060684204,
+          "frame_id": 0,
+          "pixel": [
+            342,
+            192
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "outer": {
+          "world_m": [
+            -0.05174593730374866,
+            0.010538288562677727,
+            0.9350428333227304
+          ],
+          "depth_m": 0.9769604802131653,
+          "frame_id": 0,
+          "pixel": [
+            394,
+            459
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "band0": {
+          "world_m": [
+            -0.0479316902086743,
+            0.025162301545284146,
+            0.9500106286827262
+          ],
+          "depth_m": 0.30655741691589355,
+          "frame_id": 0,
+          "pixel": [
+            317,
+            183
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "band1": {
+          "world_m": [
+            -0.04790636462115368,
+            -0.004848876147701376,
+            0.9498775229944156
+          ],
+          "depth_m": 0.3067026734352112,
+          "frame_id": 0,
+          "pixel": [
+            366,
+            183
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [
+        {
+          "name": "rim3",
+          "error": "Invalid or discontinuous surface depth"
+        },
+        {
+          "name": "rim5",
+          "error": "Invalid or discontinuous surface depth"
+        }
+      ],
+      "frame_id": 0
+    }
+  },
+  "frame_after": 0
+}

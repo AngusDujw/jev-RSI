@@ -1,0 +1,177 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 9,
+      "native_steps": 9,
+      "budgets": {
+        "gpt_remaining": 17,
+        "jev_remaining": 197,
+        "native_steps_remaining": 591,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.178145,
+        0.00553909,
+        1.16592
+      ],
+      "tcp_quaternion_xyzw": [
+        0.995342,
+        -0.0950382,
+        -0.0160631,
+        -0.0018459
+      ],
+      "gripper_qpos_m": [
+        0.0392343,
+        -0.0391683
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          0.000156587,
+          -7.39297e-05,
+          -0.00361095
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160844,
+          0.0934171,
+          0.0160026
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0103736,
+          -0.0656871,
+          -0.0444806
+        ],
+        "finger_high_offset_tool_m": [
+          0.0106843,
+          0.0655407,
+          0.00923935
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "source": "Historical same-entry-frame visible obstacle depths plus current own robot geometry.",
+        "phase": "high_alignment_only",
+        "reference_frame": 0,
+        "obstacle_top_z_m": 1.05834,
+        "current_height_margin_after_allowance_m": 0.0929569,
+        "required_height_margin_m": 0.02,
+        "target_pad_world_m": [
+          -0.0501065,
+          0.0104902,
+          1.17284
+        ],
+        "world_yaw_rad": -1.56112,
+        "descent_authorized": false,
+        "closure_authorized": false
+      },
+      "objective": {
+        "gripper": "keep",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        0.12796,
+        0.00531563,
+        0.00332919
+      ],
+      "rotation_error_world_rad": [
+        0.02047,
+        0.0186508,
+        -1.37148
+      ],
+      "axes": {
+        "x": {
+          "error": 0.12796,
+          "goal_relation": "increase"
+        },
+        "y": {
+          "error": 0.00531563,
+          "goal_relation": "increase"
+        },
+        "z": {
+          "error": 0.00332919,
+          "goal_relation": "increase"
+        },
+        "rx": {
+          "error": 0.02047,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": 0.0186508,
+          "goal_relation": "within_tolerance"
+        },
+        "rz": {
+          "error": -1.37148,
+          "goal_relation": "decrease"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For x, read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no correction within its supplied tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For y, read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no correction within its supplied tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For z, read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no correction within its supplied tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For rx, read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no correction within its supplied tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For ry, read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no correction within its supplied tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For rz, read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no correction within its supplied tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read state.processed_features.objective.gripper. This slice requires keep; preserve the existing open command without initiating closure or reopening.",
+      "criteria": {
+        "open": "Only deliver an explicitly supplied open objective.",
+        "close": "Only deliver an explicitly supplied close objective.",
+        "keep": "Preserve the existing gripper command as required."
+      }
+    }
+  }
+}

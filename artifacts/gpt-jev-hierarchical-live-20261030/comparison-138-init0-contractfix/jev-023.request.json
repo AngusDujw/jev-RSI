@@ -1,0 +1,200 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 69,
+      "native_steps": 69,
+      "budgets": {
+        "gpt_remaining": 13,
+        "jev_remaining": 177,
+        "native_steps_remaining": 531,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0485006,
+        0.00960767,
+        1.17068
+      ],
+      "tcp_quaternion_xyzw": [
+        0.721469,
+        -0.691966,
+        -0.0237605,
+        -0.0100684
+      ],
+      "gripper_qpos_m": [
+        0.0399314,
+        -0.039955
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          -4.95588e-06,
+          -1.29762e-05,
+          -0.0036011
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160444,
+          0.0948942,
+          0.0160017
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0105107,
+          -0.0663637,
+          -0.0444702
+        ],
+        "finger_high_offset_tool_m": [
+          0.0105006,
+          0.0663392,
+          0.00924889
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "source": "Fresh pre-turn RGB-D top samples and current proprioception; no hidden-object sensing.",
+        "phase": "high_pad_observation_turn",
+        "clearance": {
+          "frame_id": 69,
+          "visible_top_z_m": 0.949473,
+          "sphere_height_margin_m": 0.130631,
+          "required_margin_m": 0.02,
+          "scope": "High diagnostic turn only; visible stationary scene assumption."
+        },
+        "view_plan": {
+          "tcp_target_world_m": [
+            -0.0485006,
+            0.00960767,
+            1.17068
+          ],
+          "quaternion_target_xyzw": [
+            0.919217,
+            -0.00787905,
+            0.393446,
+            0.0133563
+          ],
+          "world_yaw_rad": 1.50361,
+          "tool_y_tilt_rad": 0.857332,
+          "camera_direction_world": [
+            0.849136,
+            -0.0115376,
+            0.528049
+          ],
+          "finger_sphere_radius_m": 0.0855743,
+          "tcp_drift_bound_m": 0.004,
+          "geometry_growth_bound_m": 0.001,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02
+        },
+        "current_tcp_drift_m": 0.0,
+        "descent_authorized": false,
+        "closure_authorized": false
+      },
+      "objective": {
+        "gripper": "keep",
+        "tool_point": "tcp"
+      },
+      "translation_error_world_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_error_world_rad": [
+        -0.659438,
+        -0.670867,
+        1.41865
+      ],
+      "axes": {
+        "x": {
+          "error": 0.0,
+          "goal_relation": "within_tolerance"
+        },
+        "y": {
+          "error": 0.0,
+          "goal_relation": "within_tolerance"
+        },
+        "z": {
+          "error": 0.0,
+          "goal_relation": "within_tolerance"
+        },
+        "rx": {
+          "error": -0.659438,
+          "goal_relation": "decrease"
+        },
+        "ry": {
+          "error": -0.670867,
+          "goal_relation": "decrease"
+        },
+        "rz": {
+          "error": 1.41865,
+          "goal_relation": "increase"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For x, use state.processed_features.axes.x.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no component correction within tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For y, use state.processed_features.axes.y.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no component correction within tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For z, use state.processed_features.axes.z.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no component correction within tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For rx, use state.processed_features.axes.rx.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no component correction within tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For ry, use state.processed_features.axes.ry.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no component correction within tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For rz, use state.processed_features.axes.rz.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "Apply no component correction within tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Use state.processed_features.objective.gripper. This diagnostic turn requires keep, preserving the existing open command. Neither closure nor a new opening is requested.",
+      "criteria": {
+        "open": "Deliver only an explicitly supplied open objective.",
+        "close": "Deliver only an explicitly supplied close objective.",
+        "keep": "Preserve the existing gripper command, as required here."
+      }
+    }
+  }
+}

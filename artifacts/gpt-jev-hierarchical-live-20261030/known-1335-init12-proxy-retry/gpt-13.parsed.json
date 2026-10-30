@@ -1,0 +1,141 @@
+{
+  "status": "continue",
+  "explanation": "The current views show the labeled cream cheese lying flat, with empty, open fingers above it. Both bare side passages are visible. The bowl, bottle and plate are outside the proposed local vertical descent. Visible spacing, together with the supplied package scale and finger dimensions, supports at least 10 mm external separation for the approach ending with pads 25 mm above the top. This does not authorize contact, closure or transport. The lower wrist-image occlusion is the robot itself, not an observed external obstruction. All seven requested points are returned anew. The printed quartet extends beyond the preferred larger-world-x half to obtain approximately 62 mm longitudinal and 19 mm transverse spans. These are image selections for depth sampling, not newly measured metric coordinates. The table samples are noncollinear and include both finger approach areas.",
+  "parameters": {
+    "gripper": "empty_open",
+    "identity": "same_cream_cheese",
+    "labels": [
+      "p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.",
+      "p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.",
+      "p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.",
+      "p3: Bottom terminal stroke of the final lowercase e in Cheese."
+    ],
+    "marks_identified": "four_distinct",
+    "passages": "both_visible",
+    "route": "visible_clear",
+    "slip": "none_visible",
+    "support": "flat_on_table"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p0",
+      "pixel": [
+        389,
+        434
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p1",
+      "pixel": [
+        356,
+        480
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p2",
+      "pixel": [
+        403,
+        518
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p3",
+      "pixel": [
+        372,
+        589
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s0",
+      "pixel": [
+        268,
+        495
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s1",
+      "pixel": [
+        501,
+        493
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s2",
+      "pixel": [
+        384,
+        362
+      ],
+      "radius": 4
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "left_bare_descent_passage",
+      "box": [
+        218,
+        447,
+        326,
+        555
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "right_bare_descent_passage",
+      "box": [
+        439,
+        447,
+        548,
+        555
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "bowl_and_adjacent_table",
+      "box": [
+        337,
+        392,
+        443,
+        476
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "bottle_and_adjacent_table",
+      "box": [
+        330,
+        286,
+        371,
+        411
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "plate_and_adjacent_table",
+      "box": [
+        288,
+        498,
+        434,
+        607
+      ],
+      "stride": 4
+    }
+  ]
+}

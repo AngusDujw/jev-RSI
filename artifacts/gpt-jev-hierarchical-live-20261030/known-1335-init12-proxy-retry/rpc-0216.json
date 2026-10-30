@@ -1,0 +1,43 @@
+{
+  "index": 216,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "track_init",
+    "args": [
+      "robot0_eye_in_hand",
+      [
+        [
+          337.925,
+          414.725
+        ],
+        [
+          427.925,
+          412.925
+        ],
+        [
+          427.925,
+          592.025
+        ],
+        [
+          335.225,
+          589.325
+        ]
+      ]
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 54,
+  "response": {
+    "result": {
+      "handle": "patch_2",
+      "frame_id": 54,
+      "reference_features": 198,
+      "camera": "robot0_eye_in_hand",
+      "method_number": 2,
+      "source_sha256": "c1a0fd841907a62d7f2486b8148dd7655789228cd860c510254c64a2cc155a1f",
+      "source": "caller-selected visible RGB-D patch; not an object identity oracle"
+    }
+  },
+  "frame_after": 54
+}

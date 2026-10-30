@@ -1,0 +1,273 @@
+{
+  "index": 250,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "lift.turn_v4",
+      {
+        "stage": "lift",
+        "phase": "single_face_observation_repair",
+        "entry_state": {
+          "frame_id": 72,
+          "native_steps": 72,
+          "budgets": {
+            "gpt_remaining": 7,
+            "jev_remaining": 176,
+            "native_steps_remaining": 528,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.7306565427597409,
+            -0.6827073192257166,
+            -0.003415033535744021,
+            -0.0063301140565056885
+          ],
+          "gripper_qpos_m": [
+            0.03994083924486617,
+            -0.03995965235438093
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              5.008693418707792e-06,
+              -4.908901678488814e-05,
+              -0.0036354615141295315
+            ],
+            "pad_extent_in_tool_m": [
+              0.01606144447560691,
+              0.09491505462697265,
+              0.01604347694271286
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010533107090902837,
+              -0.06638224484231006,
+              -0.044525079882200974
+            ],
+            "finger_high_offset_tool_m": [
+              0.010517121776116118,
+              0.06631358253073606,
+              0.009236193728665626
+            ]
+          }
+        },
+        "calls": 16,
+        "retention_established": false,
+        "updates": [
+          {
+            "frame_id": 99,
+            "recenter": true,
+            "displacement_m": 0.0036453274864356217,
+            "excursion_m": 0.0014234877480735447,
+            "rotation_remaining_rad": 0.6691621082141316,
+            "status": "moved"
+          },
+          {
+            "frame_id": 102,
+            "recenter": false,
+            "displacement_m": 0.0011280963526718328,
+            "excursion_m": 0.0025192449917097394,
+            "rotation_remaining_rad": 0.6062457680387127,
+            "status": "moved"
+          },
+          {
+            "frame_id": 105,
+            "recenter": false,
+            "displacement_m": 0.00049364040539397,
+            "excursion_m": 0.0029627945153859053,
+            "rotation_remaining_rad": 0.5379580278352231,
+            "status": "moved"
+          },
+          {
+            "frame_id": 108,
+            "recenter": false,
+            "displacement_m": 0.0006255845166371107,
+            "excursion_m": 0.0026151233548359918,
+            "rotation_remaining_rad": 0.46841488311454577,
+            "status": "moved"
+          },
+          {
+            "frame_id": 111,
+            "recenter": false,
+            "displacement_m": 0.0007167332114735588,
+            "excursion_m": 0.0023355126434863086,
+            "rotation_remaining_rad": 0.3981124501014201,
+            "status": "moved"
+          },
+          {
+            "frame_id": 114,
+            "recenter": false,
+            "displacement_m": 0.0013965707770648749,
+            "excursion_m": 0.0030288904131213,
+            "rotation_remaining_rad": 0.3278156702263887,
+            "status": "moved"
+          },
+          {
+            "frame_id": 117,
+            "recenter": false,
+            "displacement_m": 0.003648366050287372,
+            "excursion_m": 0.006431381980556583,
+            "rotation_remaining_rad": 0.25841674974579765,
+            "status": "moved"
+          },
+          {
+            "frame_id": 120,
+            "recenter": true,
+            "displacement_m": 0.007293242811009309,
+            "excursion_m": 0.013163392176978844,
+            "rotation_remaining_rad": 0.2076650836258999,
+            "status": "moved"
+          }
+        ],
+        "plan": {
+          "anchor_tcp_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "target_quaternion_xyzw": [
+            0.6004932422209138,
+            -0.6127369682135009,
+            0.36133362738287017,
+            -0.36523866656458964
+          ],
+          "yaw_rad": -0.07987504311241267,
+          "roll_rad": 1.0745128994008635,
+          "preferred_finger_tool_y_sign": 1.0,
+          "camera_direction_world": [
+            0.8495522154394485,
+            -0.010264041691691409,
+            0.5274046669210237
+          ],
+          "previous_three_step_displacement_m": 0.004894412485043354,
+          "recenter_trigger_m": 0.004,
+          "per_update_displacement_allowance_m": 0.009788824970086709,
+          "maximum_tcp_excursion_m": 0.013788824970086709,
+          "finger_growth_allowance_m": 0.001,
+          "finger_sphere_radius_m": 0.09541159789318336,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02,
+          "basis": "Twice the measured previous displacement is an engineering transient allowance, not a certified dynamics bound. Freshly review this entire envelope. The original 4 mm limit remains the stop-rotation/recenter trigger."
+        },
+        "clearance": {
+          "frame_id": 72,
+          "highest_sample_z_m": 0.9507128437493553,
+          "available_margin_m": 0.12258794029063769,
+          "required_margin_m": 0.02,
+          "scope": "High-turn envelope only; visible complete coverage and stationary scene required."
+        },
+        "last_receipt": {
+          "decision": 39,
+          "choices": {
+            "x": "hold",
+            "y": "negative",
+            "z": "negative",
+            "rx": "hold",
+            "ry": "hold",
+            "rz": "hold",
+            "gripper": "keep"
+          },
+          "action": [
+            0.0,
+            -0.05509002804406596,
+            -0.023771596709182725,
+            0.0,
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "before": [
+            -0.0442296642536619,
+            0.014584897173764728,
+            1.1757039413066246
+          ],
+          "after": [
+            -0.04494525216400569,
+            0.021656542864274153,
+            1.1740695754140509
+          ],
+          "target_tcp": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "acknowledged_steps": 3,
+          "native_steps": 120,
+          "frame_id": 120,
+          "status": "moved",
+          "position_error_m": 0.013163392176978844,
+          "rotation_error_rad": 0.05240874504218684
+        },
+        "last_acknowledged_state": {
+          "frame_id": 120,
+          "native_steps": 120,
+          "budgets": {
+            "gpt_remaining": 6,
+            "jev_remaining": 160,
+            "native_steps_remaining": 480,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04494525216400569,
+            0.021656542864274153,
+            1.1740695754140509
+          ],
+          "tcp_quaternion_xyzw": [
+            0.6304167189282921,
+            -0.6513539280496855,
+            0.29924915092773,
+            -0.2979308083749726
+          ],
+          "gripper_qpos_m": [
+            0.04003070503607536,
+            -0.03952691438340836
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -0.00010658850147361905,
+              0.0002918987281789083,
+              -0.0035877440934911726
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600818135793741,
+              0.09456635777324698,
+              0.016046770928278227
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010599894287075225,
+              -0.06587150215172174,
+              -0.04447730130474865
+            ],
+            "finger_high_offset_tool_m": [
+              0.010382131980760812,
+              0.06649430327271305,
+              0.009287642357155531
+            ]
+          }
+        },
+        "remaining_rotation_rad": 0.2076650836258999,
+        "tcp_excursion_m": 0.013163392176978844
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 120,
+  "response": {
+    "result": {
+      "key": "lift.turn_v4",
+      "frame_id": 120,
+      "method_number": 4,
+      "source_sha256": "6afbc8a24d4380a6cd746ddf547b0cd6a47fae9732bc5954dc9b6b988f40aaab",
+      "bytes": 5256,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 120
+}

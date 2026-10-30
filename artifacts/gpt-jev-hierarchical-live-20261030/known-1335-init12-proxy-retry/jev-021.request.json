@@ -1,0 +1,195 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 63,
+      "native_steps": 63,
+      "budgets": {
+        "gpt_remaining": 10,
+        "jev_remaining": 179,
+        "native_steps_remaining": 537,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0496953,
+        0.144614,
+        0.980185
+      ],
+      "tcp_quaternion_xyzw": [
+        0.999994,
+        0.00186353,
+        -0.00233148,
+        -0.00190952
+      ],
+      "gripper_qpos_m": [
+        0.0399348,
+        -0.0399155
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          -1.03056e-05,
+          1.14254e-05,
+          -0.00340125
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160005,
+          0.0948504,
+          0.0160013
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0105059,
+          -0.0663167,
+          -0.0442703
+        ],
+        "finger_high_offset_tool_m": [
+          0.0104838,
+          0.0663403,
+          0.00944842
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "source": "Independent GPT-identified RGB-D material points, visible passage review, frame-54 boundary model and measured own finger geometry; rejected tracker transforms are unused.",
+        "phase": "approach_precontact",
+        "geometry": {
+          "center_world_m": [
+            -0.0524409,
+            0.144632,
+            0.918062
+          ],
+          "top_z_m": 0.917919,
+          "table_z_m": 0.89998,
+          "allowance_m": 0.001,
+          "validated_frame_id": 54,
+          "width_m": 0.0400384,
+          "length_m": 0.0797186,
+          "maximum_material_mark_drift_m": 0.0
+        },
+        "candidate": {
+          "frame_id": 54,
+          "low_pad_z_m": 0.920049,
+          "high_pad_z_m": 0.921762,
+          "target_pad_z_m": 0.920905,
+          "interval_m": 0.00171282,
+          "finger_bottom_relative_pad_m": -0.0130687,
+          "common_pad_bottom_m": -0.00784261,
+          "common_pad_top_m": 0.00784261,
+          "required_table_clearance_m": 0.006,
+          "required_overlap_m": 0.003,
+          "end_reserve_m": 0.0006,
+          "surface_allowance_m": 0.001
+        },
+        "observation_frame_id": 54,
+        "retention_not_inferred_from_closure": true
+      },
+      "objective": {
+        "gripper": "keep",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        -0.00274335,
+        3.92423e-05,
+        -0.0406675
+      ],
+      "rotation_error_world_rad": [
+        -0.000884266,
+        -0.00231513,
+        -0.000935553
+      ],
+      "axes": {
+        "x": {
+          "error": -0.00274335,
+          "goal_relation": "decrease"
+        },
+        "y": {
+          "error": 3.92423e-05,
+          "goal_relation": "within_tolerance"
+        },
+        "z": {
+          "error": -0.0406675,
+          "goal_relation": "decrease"
+        },
+        "rx": {
+          "error": -0.000884266,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": -0.00231513,
+          "goal_relation": "within_tolerance"
+        },
+        "rz": {
+          "error": -0.000935553,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For this world translation component, read state.processed_features.axes.x.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance.",
+        "positive": "Increase this world component."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For this world translation component, read state.processed_features.axes.y.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance.",
+        "positive": "Increase this world component."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For this world translation component, read state.processed_features.axes.z.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance.",
+        "positive": "Increase this world component."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For this world rotation-vector component, read state.processed_features.axes.rx.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance.",
+        "positive": "Increase this world component."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For this world rotation-vector component, read state.processed_features.axes.ry.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance.",
+        "positive": "Increase this world component."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For this world rotation-vector component, read state.processed_features.axes.rz.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+      "criteria": {
+        "negative": "Decrease this world component.",
+        "hold": "This component is within tolerance.",
+        "positive": "Increase this world component."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read state.processed_features.objective.gripper and deliver that command exactly. Keep preserves the previous command, including a previous close; it never means reopen.",
+      "criteria": {
+        "open": "Deliver requested opening.",
+        "close": "Deliver requested closing.",
+        "keep": "Preserve the existing command."
+      }
+    }
+  }
+}

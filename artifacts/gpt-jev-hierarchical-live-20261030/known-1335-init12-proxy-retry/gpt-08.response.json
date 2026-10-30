@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-339faff7-f584-4c4a-b8fe-bc4ec36a410a",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-339faff7-f584-4c4a-b8fe-bc4ec36a410a",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The labeled cream-cheese package has a fully visible rectangular top and appears flat on the table. Corners are clockwise in the wrist image. All requested names are supplied because no same-frame samples are retained. Top points are inset in four separated quadrants; table points avoid objects and shadows. The wrist image provides a wider visible long-side wall than agentview, so side is selected inside that wall. These are measurement requests, not contact authorization or a clearance certificate.\", \"parameters\": {\"boundary\": \"full_top_rectangle\", \"camera\": \"robot0_eye_in_hand\", \"corners\": [[190, 222], [255, 221], [254, 348], [189, 347]], \"identity\": \"same_cream_cheese\", \"side_identity\": \"visible_long_side\", \"support\": \"flat_on_table\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [205, 246], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t1\", \"pixel\": [238, 246], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t2\", \"pixel\": [238, 322], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t3\", \"pixel\": [205, 322], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s0\", \"pixel\": [160, 194], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s1\", \"pixel\": [285, 194], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s2\", \"pixel\": [285, 376], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s3\", \"pixel\": [160, 376], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"side\", \"pixel\": [257, 285], \"radius\": 1}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 34925,
+    "output_tokens": 2323,
+    "output_tokens_details": {
+      "reasoning_tokens": 1887
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b7f-8364-7933-a466-9e87d463606d",
+    "turn_ids": [
+      "01a18b7f-836a-7bd2-8131-93d40b5fd736"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

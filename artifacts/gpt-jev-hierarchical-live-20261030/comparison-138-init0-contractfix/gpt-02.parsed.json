@@ -1,0 +1,304 @@
+{
+  "status": "continue",
+  "explanation": "The patterned bowl and the upper horizontal dark cabinet tabletop at left are identified. The tabletop quadrilateral is wholly on visible vacant top surface, not the cabinet side or counter; its left selectors are interior samples, not an invented image-clipped physical edge. Eight cyclic rim samples and both lip endpoints select visible upper rim material. The wrist-view inner wall sample corresponds to the agentview front outer wall sample. Their below-lip height correspondence and the band's requested length are approximate visual selections, not metric measurements. Both walls and the continuous front rim band are visible without an observed external obstruction. The overhead bowl silhouette stays within the outer mouth footprint. Observation only; no completion or global clearance claim.",
+  "parameters": {
+    "bowl": "confirmed",
+    "target": "confirmed",
+    "rim": "level_outer_rim",
+    "outline": "rim_encloses_visible_bowl_outline",
+    "table_patch": "clear_visible_planar_convex",
+    "grasp_band": "both_walls_and_continuous_rim_visible",
+    "rim0": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        339,
+        180
+      ],
+      "visible": true
+    },
+    "rim1": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        404,
+        205
+      ],
+      "visible": true
+    },
+    "rim2": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        430,
+        269
+      ],
+      "visible": true
+    },
+    "rim3": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        405,
+        332
+      ],
+      "visible": true
+    },
+    "rim4": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        343,
+        357
+      ],
+      "visible": true
+    },
+    "rim5": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        279,
+        332
+      ],
+      "visible": true
+    },
+    "rim6": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        254,
+        269
+      ],
+      "visible": true
+    },
+    "rim7": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        279,
+        205
+      ],
+      "visible": true
+    },
+    "table0": {
+      "camera": "agentview",
+      "pixel": [
+        25,
+        294
+      ],
+      "visible": true
+    },
+    "table1": {
+      "camera": "agentview",
+      "pixel": [
+        212,
+        294
+      ],
+      "visible": true
+    },
+    "table2": {
+      "camera": "agentview",
+      "pixel": [
+        190,
+        465
+      ],
+      "visible": true
+    },
+    "table3": {
+      "camera": "agentview",
+      "pixel": [
+        8,
+        465
+      ],
+      "visible": true
+    },
+    "table4": {
+      "camera": "agentview",
+      "pixel": [
+        111,
+        380
+      ],
+      "visible": true
+    },
+    "inner": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        342,
+        192
+      ],
+      "visible": true
+    },
+    "outer": {
+      "camera": "agentview",
+      "pixel": [
+        394,
+        459
+      ],
+      "visible": true
+    },
+    "band0": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        317,
+        183
+      ],
+      "visible": true
+    },
+    "band1": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        366,
+        183
+      ],
+      "visible": true
+    }
+  },
+  "points": [
+    {
+      "name": "rim0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        339,
+        180
+      ],
+      "radius": 1
+    },
+    {
+      "name": "rim1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        404,
+        205
+      ],
+      "radius": 1
+    },
+    {
+      "name": "rim2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        430,
+        269
+      ],
+      "radius": 1
+    },
+    {
+      "name": "rim3",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        405,
+        332
+      ],
+      "radius": 1
+    },
+    {
+      "name": "rim4",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        343,
+        357
+      ],
+      "radius": 1
+    },
+    {
+      "name": "rim5",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        279,
+        332
+      ],
+      "radius": 1
+    },
+    {
+      "name": "rim6",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        254,
+        269
+      ],
+      "radius": 1
+    },
+    {
+      "name": "rim7",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        279,
+        205
+      ],
+      "radius": 1
+    },
+    {
+      "name": "table0",
+      "camera": "agentview",
+      "pixel": [
+        25,
+        294
+      ],
+      "radius": 1
+    },
+    {
+      "name": "table1",
+      "camera": "agentview",
+      "pixel": [
+        212,
+        294
+      ],
+      "radius": 1
+    },
+    {
+      "name": "table2",
+      "camera": "agentview",
+      "pixel": [
+        190,
+        465
+      ],
+      "radius": 1
+    },
+    {
+      "name": "table3",
+      "camera": "agentview",
+      "pixel": [
+        8,
+        465
+      ],
+      "radius": 1
+    },
+    {
+      "name": "table4",
+      "camera": "agentview",
+      "pixel": [
+        111,
+        380
+      ],
+      "radius": 1
+    },
+    {
+      "name": "inner",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        342,
+        192
+      ],
+      "radius": 1
+    },
+    {
+      "name": "outer",
+      "camera": "agentview",
+      "pixel": [
+        394,
+        459
+      ],
+      "radius": 1
+    },
+    {
+      "name": "band0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        317,
+        183
+      ],
+      "radius": 1
+    },
+    {
+      "name": "band1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        366,
+        183
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": []
+}

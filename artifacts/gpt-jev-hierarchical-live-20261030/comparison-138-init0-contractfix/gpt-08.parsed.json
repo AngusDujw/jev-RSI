@@ -1,0 +1,18 @@
+{
+  "action": "revise",
+  "stage_satisfied": "no",
+  "task_satisfied": "no",
+  "plan_valid": "yes",
+  "recovery_available": "yes",
+  "invalidated_assumptions": [
+    "Both opposing inner finger contact-face centers can be measured from the current aligned views."
+  ],
+  "evidence": [
+    "Frame 69 images show the patterned bowl upright on the counter, not on the cabinet tabletop, and the open hand visibly separated above it.",
+    "Acknowledged execution establishes high alignment and rotation only; no descent or closure was executed.",
+    "Current depth observations identify the selected bowl wall and rim band, but neither opposing inner finger contact-face center is identifiable; pad_a and pad_b have no valid depth measurements.",
+    "The stage returned blocked, with no observed bowl-hand co-motion or bowl separation from the counter.",
+    "No obstruction of the selected visible rim band is observed; finger-entry and descent clearance remain unverified."
+  ],
+  "reason": "The lift objective remains suitable, but its sensing method needs correction. Continue from the executed high alignment, not the initial pose. A complementary view obtained within revalidated clear high space is a justified local recovery candidate; repeating samples of occluded faces is not. Resolve contact geometry and local descent clearance without treating placeholder pixels, gripper opening, or historical clearance as proof. This measurement gap does not invalidate the overall plan or establish that recovery is impossible."
+}

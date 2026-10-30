@@ -1,0 +1,184 @@
+{
+  "index": 216,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "control",
+    "args": [
+      [
+        -0.04482368327809973,
+        0.008498559453882266,
+        1.1737123819331763
+      ],
+      [
+        0.6004932422209138,
+        -0.6127369682135009,
+        0.36133362738287017,
+        -0.36523866656458964
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For x, read state.processed_features.axes.x.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Follow only the provided observation or recentering target. Do not infer clearance or object effects.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Make no correction on this component within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For y, read state.processed_features.axes.y.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Follow only the provided observation or recentering target. Do not infer clearance or object effects.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Make no correction on this component within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For z, read state.processed_features.axes.z.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Follow only the provided observation or recentering target. Do not infer clearance or object effects.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Make no correction on this component within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For rx, read state.processed_features.axes.rx.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Follow only the provided observation or recentering target. Do not infer clearance or object effects.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Make no correction on this component within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For ry, read state.processed_features.axes.ry.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Follow only the provided observation or recentering target. Do not infer clearance or object effects.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Make no correction on this component within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For rz, read state.processed_features.axes.rz.goal_relation: increase selects positive, decrease selects negative, within_tolerance selects hold. Follow only the provided observation or recentering target. Do not infer clearance or object effects.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Make no correction on this component within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper. This observation maneuver requests keep only, preserving the existing command.",
+          "criteria": {
+            "open": "Deliver an explicit open objective only.",
+            "close": "Deliver an explicit close objective only.",
+            "keep": "Preserve the existing command as requested here."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "source": "Current proprioception, fresh RGB-D top samples and visual coverage; historical acknowledged displacement.",
+        "mode": "single_face_high_turn",
+        "plan": {
+          "anchor_tcp_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "target_quaternion_xyzw": [
+            0.6004932422209138,
+            -0.6127369682135009,
+            0.36133362738287017,
+            -0.36523866656458964
+          ],
+          "yaw_rad": -0.07987504311241267,
+          "roll_rad": 1.0745128994008635,
+          "preferred_finger_tool_y_sign": 1.0,
+          "camera_direction_world": [
+            0.8495522154394485,
+            -0.010264041691691409,
+            0.5274046669210237
+          ],
+          "previous_three_step_displacement_m": 0.004894412485043354,
+          "recenter_trigger_m": 0.004,
+          "per_update_displacement_allowance_m": 0.009788824970086709,
+          "maximum_tcp_excursion_m": 0.013788824970086709,
+          "finger_growth_allowance_m": 0.001,
+          "finger_sphere_radius_m": 0.09541159789318336,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02,
+          "basis": "Twice the measured previous displacement is an engineering transient allowance, not a certified dynamics bound. Freshly review this entire envelope. The original 4 mm limit remains the stop-rotation/recenter trigger."
+        },
+        "clearance": {
+          "frame_id": 72,
+          "highest_sample_z_m": 0.9507128437493553,
+          "available_margin_m": 0.12258794029063769,
+          "required_margin_m": 0.02,
+          "scope": "High-turn envelope only; visible complete coverage and stationary scene required."
+        },
+        "current_tcp_excursion_m": 0.003284143483398498,
+        "descent_authorized": false,
+        "closure_authorized": false
+      },
+      "translation_limit": 0.003,
+      "rotation_limit": 0.1,
+      "steps": 3,
+      "position_tolerance": 0.002,
+      "rotation_tolerance": 0.025
+    }
+  },
+  "frame_before": 93,
+  "response": {
+    "result": {
+      "decision": 31,
+      "choices": {
+        "x": "negative",
+        "y": "positive",
+        "z": "negative",
+        "rx": "hold",
+        "ry": "negative",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "action": [
+        -0.02255911510499016,
+        0.01758998993188272,
+        -0.031692975764036735,
+        0.0,
+        -0.2,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        -0.04308836673156202,
+        0.007145483305275903,
+        1.1761503031457945
+      ],
+      "after": [
+        -0.04192453880646443,
+        0.008142514811320337,
+        1.1778079578310359
+      ],
+      "target_tcp": [
+        -0.04482368327809973,
+        0.008498559453882266,
+        1.1737123819331763
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 96,
+      "frame_id": 96,
+      "status": "moved",
+      "position_error_m": 0.005030462045382998,
+      "rotation_error_rad": 0.7210663895213012
+    }
+  },
+  "frame_after": 96
+}

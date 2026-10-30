@@ -1,0 +1,170 @@
+{
+  "status": "continue",
+  "parameters": {
+    "gripper": "visibly_empty",
+    "identity": "same_package",
+    "support": "on_table",
+    "sweep": "visibly_clear"
+  },
+  "explanation": "Authorize only the remaining open-gripper, observation-producing approach from the current pose to hover_target with the supplied orientation and finger envelope. Both current views support at least 10 mm separation from the visible bottle, bowl, stove and cabinet along this high sweep. The bowl and stove are below it; the bottle is initially below and then laterally away from it; the cabinet is well outside it. The final finger-envelope minimum height is about 1.014 m, not the package top. The labeled cream-cheese package remains flat on the table, and the open fingers visibly hold nothing. Current distributed surface and boundary evidence supports this assessment; the rejected tracker is not used. Regions supply visible obstacle geometry, not hidden surfaces or a global clearance certificate. No contact descent, closure or placement is authorized.",
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        205,
+        246
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        238,
+        246
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        238,
+        322
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t3",
+      "pixel": [
+        205,
+        322
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s0",
+      "pixel": [
+        160,
+        194
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s1",
+      "pixel": [
+        285,
+        194
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s2",
+      "pixel": [
+        285,
+        376
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s3",
+      "pixel": [
+        160,
+        376
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "side",
+      "pixel": [
+        257,
+        285
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "bottle_cap",
+      "pixel": [
+        349,
+        293
+      ],
+      "radius": 2
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "package_top_interior",
+      "box": [
+        193,
+        225,
+        251,
+        344
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "bottle_visible_extent",
+      "box": [
+        331,
+        286,
+        370,
+        411
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "bowl_visible_extent",
+      "box": [
+        338,
+        392,
+        442,
+        475
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "bowl_visible_rim_and_interior",
+      "box": [
+        346,
+        242,
+        542,
+        438
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "stove_visible_extent",
+      "box": [
+        465,
+        307,
+        643,
+        418
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "cabinet_visible_extent_and_handles",
+      "box": [
+        1,
+        284,
+        260,
+        643
+      ],
+      "stride": 4
+    }
+  ]
+}

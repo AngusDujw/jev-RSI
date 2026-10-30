@@ -1,0 +1,113 @@
+{
+  "status": "continue",
+  "explanation": "The labeled cream-cheese package has a fully visible rectangular top and appears flat on the table. Corners are clockwise in the wrist image. All requested names are supplied because no same-frame samples are retained. Top points are inset in four separated quadrants; table points avoid objects and shadows. The wrist image provides a wider visible long-side wall than agentview, so side is selected inside that wall. These are measurement requests, not contact authorization or a clearance certificate.",
+  "parameters": {
+    "boundary": "full_top_rectangle",
+    "camera": "robot0_eye_in_hand",
+    "corners": [
+      [
+        190,
+        222
+      ],
+      [
+        255,
+        221
+      ],
+      [
+        254,
+        348
+      ],
+      [
+        189,
+        347
+      ]
+    ],
+    "identity": "same_cream_cheese",
+    "side_identity": "visible_long_side",
+    "support": "flat_on_table"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        205,
+        246
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        238,
+        246
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        238,
+        322
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t3",
+      "pixel": [
+        205,
+        322
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s0",
+      "pixel": [
+        160,
+        194
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s1",
+      "pixel": [
+        285,
+        194
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s2",
+      "pixel": [
+        285,
+        376
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s3",
+      "pixel": [
+        160,
+        376
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "side",
+      "pixel": [
+        257,
+        285
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": []
+}

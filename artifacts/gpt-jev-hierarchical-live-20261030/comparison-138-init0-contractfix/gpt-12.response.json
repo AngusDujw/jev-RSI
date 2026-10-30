@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-b08c96c6-af82-419b-9e43-82298e91ca73",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-b08c96c6-af82-419b-9e43-82298e91ca73",
+      "arguments": "{\"action\": \"revise\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\", \"plan_valid\": \"yes\", \"recovery_available\": \"yes\", \"invalidated_assumptions\": [\"The diagnostic turn keeps TCP drift within its admitted fixed-position bound.\"], \"evidence\": [\"Frame 72 images show the patterned bowl upright on the counter, not on the cabinet tabletop, with the hand visibly separated above it.\", \"Acknowledged execution added one partial high observation turn; no descent, closure, or bowl acquisition was executed.\", \"Measured TCP drift was 0.00489441 m against the assumed 0.004 m bound, and the target orientation was not reached.\", \"Neither opposing inner contact-face center is identifiable in the current views; the review returned no valid pad measurements.\", \"The stage returned blocked. No bowl-hand co-motion or separation of the bowl from the counter is observed.\", \"The execution-bound violation is not an observed collision; the frame 69 clearance samples are historical.\"], \"reason\": \"The lift objective and overall ordering remain suitable. Revise the local sensing and execution-envelope method from the actual frame 72 pose, preserving the executed motion. Revalidate relevant scene clearance and measured hand geometry, and account for observed drift before a bounded observation maneuver that can expose a different useful view. Do not merely relax thresholds, resample invisible faces, or treat placeholder pixels as measurements. The partial turn provides new execution evidence and does not establish that alternate sensing is impossible. Contact geometry and descent clearance remain unresolved, so neither lift-stage advancement nor task completion is supported.\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 47185,
+    "output_tokens": 772,
+    "output_tokens_details": {
+      "reasoning_tokens": 373
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18bff-3c67-7e03-bb98-04a86e241f26",
+    "turn_ids": [
+      "01a18bff-3c6e-71c3-931c-460f9c8f2c7d"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

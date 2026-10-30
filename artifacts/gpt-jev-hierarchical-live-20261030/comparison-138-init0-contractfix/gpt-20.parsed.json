@@ -1,0 +1,46 @@
+{
+  "explanation": "At frame 120 the bowl remains upright on the counter, separate from the elevated open hand. The observation turn and unsuccessful recentering have physically changed the robot pose; no grasp or lift occurred. Failed face checks invalidate the contact-geometry inference, and reversed recentering invalidates assumed progress toward the old anchor. Replace that repeated routine with an explicit grasp-feasibility stage from the actual pose. Earlier observation completion and clearance are historical, not authorization for new motion.",
+  "goal_evidence": "After release, withdrawal, and settling, successive fresh observations show the patterned bowl upright and stationary on the dark cabinet table 1 at left, its base supported within the tabletop boundary, with no robot support.",
+  "stages": [
+    {
+      "id": "resolve",
+      "objective": "Establish trustworthy grasp and approach evidence from the current robot configuration.",
+      "entry_evidence": "Frame 120 shows the bowl supported on the counter and the open hand clear; contact-face checks failed and recent recentering increased deviation.",
+      "success_evidence": "Current RGB-D, calibration, robot geometry, and reported opening consistently bound an accessible bowl rim grasp and the relevant robot approach clearance; the bowl remains undisturbed.",
+      "handoff_requirements": "Carry fresh grasp-region, opening, clearance, and uncertainty evidence. Check surface identity and frame transforms rather than assuming a constant-coordinate face. Use alternative visible patches or a complementary view with freshly assessed sensing-motion clearance if needed. Do not infer aperture from one face, relax failed tolerances, or automatically repeat the old turn or recentering.",
+      "replan_conditions": "Evidence remains inconsistent, required clearance is occluded, or motion again stalls or reverses. Reconsider the rim sector, observation view, or approach using actual state; a failed local check alone does not establish impossibility."
+    },
+    {
+      "id": "acquire",
+      "objective": "Acquire the bowl and establish retained separation from the counter.",
+      "entry_evidence": "Fresh evidence supports a feasible rim grasp and relevant approach clearance; the bowl is still supported and not already retained.",
+      "success_evidence": "Observations show the bowl moving with the hand, visibly separated from the counter, with stable orientation and no apparent slip or unintended contact.",
+      "handoff_requirements": "Provide acknowledged execution and fresh bowl-hand relative extent, orientation, retention, and support-separation evidence. Gripper closure or a reached robot pose is insufficient.",
+      "replan_conditions": "The bowl does not follow the hand, tips, slips, contacts nearby objects, or becomes unobservable. Establish its actual support and retention state before any retry."
+    },
+    {
+      "id": "transfer",
+      "objective": "Bring the retained bowl above a suitable landing area on cabinet table 1.",
+      "entry_evidence": "The bowl is visibly retained off the counter. Current observations revalidate the cabinet identity, available landing area, and relevant travel clearance.",
+      "success_evidence": "The retained bowl is visibly above the cabinet top, with its support footprint within the landing boundary and adequate observed placement clearance.",
+      "handoff_requirements": "Refresh tabletop vacancy and boundary evidence rather than relying on frame 0 measurements. Account for the observed bowl extent and robot geometry; obtain a safe complementary view when needed.",
+      "replan_conditions": "Retention changes, travel clearance is unsupported, or the landing area is unsuitable. Reobserve or select another evidenced route or landing area without assuming unknown space is free."
+    },
+    {
+      "id": "release",
+      "objective": "Establish tabletop support, release the bowl, and withdraw clear.",
+      "entry_evidence": "The retained bowl is above the verified landing area with a supported placement approach.",
+      "success_evidence": "Post-release images show the bowl remaining upright on the tabletop while the hand visibly separates and withdraws without carrying or disturbing it.",
+      "handoff_requirements": "Preserve release and withdrawal receipts and independent object observations. Allow settling and obtain a view suitable for assessing support and separation.",
+      "replan_conditions": "The bowl remains attached, follows withdrawal, tips, slides, or appears unsupported. Reassess current physical state before correction."
+    },
+    {
+      "id": "assess",
+      "objective": "Assess the whole-task goal after release, withdrawal, and settling.",
+      "entry_evidence": "Release and withdrawal are acknowledged and fresh observations show the bowl on the intended cabinet top.",
+      "success_evidence": "Successive observations confirm the bowl stationary and upright, its base supported within cabinet table 1's top boundary, and the robot clear.",
+      "handoff_requirements": "Report completion only from independent object evidence. If support or separation is occluded, obtain a complementary observation using assessed-clear motion.",
+      "replan_conditions": "The bowl moves, has inadequate support, is on the wrong surface, or cannot yet be assessed. Plan only the remaining observation or recovery from its actual state."
+    }
+  ]
+}

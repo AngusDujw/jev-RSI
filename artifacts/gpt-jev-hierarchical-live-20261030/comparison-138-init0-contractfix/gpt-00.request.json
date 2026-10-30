@@ -1,0 +1,126 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Plan the remaining robot task using current public images, robot state and\nacknowledged execution. Submit submit_stage_plan. All text must be English ASCII.\n\nReturn a concise overall plan of one to eight observable subgoals. Each stage\nneeds a unique short ASCII id, objective, entry_evidence, success_evidence,\nhandoff_requirements and replan_conditions. goal_evidence describes observable\nevidence for the whole task. The final stage must assess that goal after the\nrelevant physical effects. Do not write executable code, coordinates, complete\nfuture-stage methods or a fixed manipulation recipe. Detailed current-stage\nprocessing is generated separately from its actual starting observations.\n\nThe runtime provides public RGB-D/calibration, own robot geometry, numerical\nhelpers, model observation reviews and real finite-choice Jev control. It has no\nhidden object poses, contact oracle, force sensor or collision planner. Choose\nsubgoals whose evidence can be obtained through this interface. A reached robot\npose or commanded gripper state is not proof of an independent object effect.\n\nOn replanning, plan remaining work from the actual current physical state.\nExecuted actions are not undone by a new plan. Prior stage completions and\ncheckpoints are historical receipts; identify invalidated assumptions and require\nfresh evidence where needed. Do not silently repeat earlier physical actions.\nAn uncertain measurement or failed local margin check does not by itself prove\nthe task impossible. Include feasible evidence-acquisition alternatives when\ncurrent observations support them, without assuming unknown clearance is free.\nKeep this plan compact; do not solve every future numerical problem now.\n",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "b81116cfe62553becb28d0ee9369012518d66f6a9b6e001f43c108043a270976",
+            "characters": 106835
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "831c47efb7d55bb330b8e43dd783ccf79fd794c7bda1be890d8542a45fed1da9",
+            "characters": 106259
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"put the bowl on top of the cabinet table 1\",\"question\":\"Plan the remaining subgoals from the current observations.\",\"robot\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":23,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.000816963,-0.998326,-0.0578338,-0.153158],[-1.0,0.000845045,-0.000461105,-0.015635],[0.000509205,0.0578334,-0.998326,1.2632],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[],\"recent_program_feedback\":[],\"program_checkpoint_manifest\":[],\"hierarchical_context\":{\"trigger\":\"initial_plan\",\"completed\":[],\"current_state\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":24,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}}}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_stage_plan",
+      "description": "Return remaining observable subgoals without source code",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "explanation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "goal_evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1600
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                },
+                "objective": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "entry_evidence": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "success_evidence": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "handoff_requirements": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                },
+                "replan_conditions": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1600
+                }
+              },
+              "required": [
+                "id",
+                "objective",
+                "entry_evidence",
+                "success_evidence",
+                "handoff_requirements",
+                "replan_conditions"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "maxItems": 8
+          }
+        },
+        "required": [
+          "explanation",
+          "goal_evidence",
+          "stages"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_stage_plan"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

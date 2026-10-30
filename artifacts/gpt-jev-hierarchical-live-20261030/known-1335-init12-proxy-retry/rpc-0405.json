@@ -1,0 +1,284 @@
+{
+  "index": 405,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "reassess_v1",
+      {
+        "stage": "reassess",
+        "phase": "fresh_assessment",
+        "receipts": [],
+        "observations": [
+          {
+            "frame_id": 120,
+            "point_names": [
+              "t0",
+              "t1",
+              "t2",
+              "s0",
+              "s1",
+              "s2"
+            ],
+            "measurement_errors": [],
+            "purpose": "Evaluate actual frame and physical contact margins, not the old target residual."
+          }
+        ],
+        "pending": null,
+        "inherited": {
+          "checkpoint": "grasp_direct_v4",
+          "last_receipt": {
+            "decision": 39,
+            "choices": {
+              "x": "negative",
+              "y": "negative",
+              "z": "negative",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "action": [
+              -0.006159387653559888,
+              -0.00573649639793225,
+              -0.009054742826858586,
+              0.0,
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              -0.05176834492413848,
+              0.14513869086084372,
+              0.918118915189574
+            ],
+            "after": [
+              -0.051769610989242085,
+              0.14513502023951208,
+              0.9181133228573986
+            ],
+            "target_tcp": [
+              -0.05224214397441232,
+              0.14469742190715662,
+              0.9174223965105849
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 120,
+            "frame_id": 120,
+            "status": "moved",
+            "position_error_m": 0.0009445416556592177,
+            "rotation_error_rad": 0.003656848052114852
+          },
+          "rejected_trackers": [
+            "patch_1",
+            "patch_2"
+          ],
+          "old_target_not_replayed": true
+        },
+        "entry_state": {
+          "frame_id": 120,
+          "native_steps": 120,
+          "budgets": {
+            "gpt_remaining": 6,
+            "jev_remaining": 160,
+            "native_steps_remaining": 480,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.051769610989242085,
+            0.14513502023951208,
+            0.9181133228573986
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999956197147855,
+            0.001876300114903584,
+            0.0004055958234359011,
+            -0.0022528961691954566
+          ],
+          "gripper_qpos_m": [
+            0.039999228224640256,
+            -0.039988466977778914
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -1.9196472712638968e-08,
+              5.429691319093488e-06,
+              -0.003599921497828537
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000029533840998,
+              0.09498770014396324,
+              0.016000002101416368
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010494819327255945,
+              -0.06639180334828597,
+              -0.04446822685263374
+            ],
+            "finger_high_offset_tool_m": [
+              0.01049478417598947,
+              0.06640266191209838,
+              0.009249114021964025
+            ]
+          }
+        },
+        "observation": {
+          "frame_id": 120,
+          "parameters": {
+            "identity": "same_cream_cheese",
+            "support": "flat_on_table",
+            "gripper": "empty_open",
+            "top_labels": {
+              "t0": "Lower-facing terminal of the right-hand curl of the large initial C in Cream.",
+              "t1": "Upper white stroke of the initial subtitle letter in Fresh inside the blue badge.",
+              "t2": "Lower-right white stroke of the final m in Cream, above the hand occlusion."
+            },
+            "edges": [
+              {
+                "id": "b0",
+                "camera": "agentview",
+                "u": 500,
+                "v": 462
+              },
+              {
+                "id": "b1",
+                "camera": "robot0_eye_in_hand",
+                "u": 493,
+                "v": 575
+              },
+              {
+                "id": "b2",
+                "camera": "robot0_eye_in_hand",
+                "u": 284,
+                "v": 574
+              },
+              {
+                "id": "b3",
+                "camera": "agentview",
+                "u": 538,
+                "v": 462
+              }
+            ],
+            "boundary_band": "occluded",
+            "closure_corridor": "unknown",
+            "upward_sweep_30mm": "visible_clear",
+            "alternate_measurement": "available",
+            "occlusions": "The wrist-view hand bridge hides the lower image portion of the package and the central inner-pad contact areas. Agentview supplies complementary exposed top edges but not both complete opposing side contact bands. These are robot self-occlusions and unobserved contact geometry, not observed external obstructions. fp and fm are unavailable; no hidden pad points are inferred."
+          },
+          "points": {
+            "t0": {
+              "world_m": [
+                -0.025051269460213098,
+                0.14213005742007964,
+                0.9179809590107866
+              ],
+              "depth_m": 0.09714018553495407,
+              "frame_id": 120,
+              "pixel": [
+                400,
+                504
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t1": {
+              "world_m": [
+                -0.04361903943631491,
+                0.15508524984870173,
+                0.9178412666634178
+              ],
+              "depth_m": 0.09732336550951004,
+              "frame_id": 120,
+              "pixel": [
+                333,
+                599
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t2": {
+              "world_m": [
+                -0.04839035839070971,
+                0.13856636823402788,
+                0.9182270003615495
+              ],
+              "depth_m": 0.09685935080051422,
+              "frame_id": 120,
+              "pixel": [
+                418,
+                625
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s0": {
+              "world_m": [
+                -0.053539169887162986,
+                0.11052329393893101,
+                0.900000509494306
+              ],
+              "depth_m": 0.1149551197886467,
+              "frame_id": 120,
+              "pixel": [
+                535,
+                610
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s1": {
+              "world_m": [
+                -0.05393427957059712,
+                0.17883622136210583,
+                0.9000005232752265
+              ],
+              "depth_m": 0.11526269465684891,
+              "frame_id": 120,
+              "pixel": [
+                238,
+                610
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s2": {
+              "world_m": [
+                0.005148045326190935,
+                0.14543023597880406,
+                0.9000005070785092
+              ],
+              "depth_m": 0.11515956372022629,
+              "frame_id": 120,
+              "pixel": [
+                384,
+                354
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": [],
+          "explanation": "Reassessment only; no closure or lift. The same printed cream cheese package is flat on the table, between open, empty fingers. The returned top and table selections are current visible surfaces, not reused historical measurements. Four visible top-edge samples bracket the pad footprint approximately 5 mm beyond its ends; they do not establish visibility of the vertical contact bands. fp and fm ar",
+          "status": "continue"
+        },
+        "boundary_records": {},
+        "metrics": {}
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 120,
+  "response": {
+    "result": {
+      "key": "reassess_v1",
+      "frame_id": 120,
+      "method_number": 4,
+      "source_sha256": "c327c94ed5fc894d119f3df62a766b686f74b1e9f7beca440578f173654d4aed",
+      "bytes": 5085,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 120
+}

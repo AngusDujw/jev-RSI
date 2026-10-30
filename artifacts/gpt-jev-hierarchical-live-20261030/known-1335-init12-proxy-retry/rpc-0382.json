@@ -1,0 +1,550 @@
+{
+  "index": 382,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "grasp_direct_v4",
+      {
+        "phase": "descend_to_grasp_height",
+        "calls": 20,
+        "pending": null,
+        "alternative_measurements": 0,
+        "inherited_execution": {
+          "frame_id": 54,
+          "native_steps": 54,
+          "last_receipt": {
+            "decision": 17,
+            "choices": {
+              "x": "positive",
+              "y": "positive",
+              "z": "negative",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "action": [
+              0.09904624515131535,
+              0.04883466210045842,
+              -0.059761080456958826,
+              0.0,
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              -0.06080215333360871,
+              0.14028487157698344,
+              1.024028281827404
+            ],
+            "after": [
+              -0.05488376824843178,
+              0.14358073397741883,
+              1.021503989296411
+            ],
+            "target_tcp": [
+              -0.05318321139889214,
+              0.14404138404624947,
+              1.0194312756384072
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 54,
+            "frame_id": 54,
+            "status": "reached",
+            "position_error_m": 0.0027203371100850116,
+            "rotation_error_rad": 0.0038376984997894503
+          },
+          "closure_acknowledged": false,
+          "source_checkpoint": "grasp_recovery_v3"
+        },
+        "tracker_diagnosis": {
+          "handle": "patch_2",
+          "registration": {
+            "status": "tracked",
+            "frame_id": 54,
+            "reference_frame_id": 54,
+            "accepted": false,
+            "camera": "robot0_eye_in_hand",
+            "matches": 120,
+            "inliers": 120,
+            "rms_m": 9.23377082126491e-18,
+            "inlier_spread_m": [
+              0.01706868210932446,
+              0.0044426447564895844,
+              5.122854767208e-05
+            ],
+            "uncertainty_floor_m": 0.0015,
+            "transform_initial_world_to_current_world": [
+              [
+                1.0000000000000004,
+                4.0750019356229074e-18,
+                2.6187308665850183e-19,
+                2.0816681711721685e-17
+              ],
+              [
+                -5.084726572445029e-18,
+                1.0,
+                3.168416586703536e-18,
+                0.0
+              ],
+              [
+                -5.534316388143402e-20,
+                -2.3878903418140755e-18,
+                0.9999999999999999,
+                1.1102230246251565e-16
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "failed_checks": [
+              "distributed_support"
+            ]
+          },
+          "use": "Rejected, not relaxed or reinitialized. Narrow automatic texture support is replaced by independent named depth correspondences."
+        },
+        "frame54_geometry": {
+          "reference_frame_id": 54,
+          "top_corners_world_m": [
+            [
+              -0.013528726173578904,
+              0.1644548987347843,
+              0.9180619446270558
+            ],
+            [
+              -0.012611303692133612,
+              0.12442701652918692,
+              0.9180619446270558
+            ],
+            [
+              -0.09232948899113716,
+              0.12418584778571012,
+              0.9180619446270558
+            ],
+            [
+              -0.09129412719984462,
+              0.16545934852484334,
+              0.9180619446270558
+            ]
+          ],
+          "top_center_world_m": [
+            -0.05244091151417357,
+            0.14463177789363119,
+            0.9180619446270558
+          ],
+          "top_z_m": 0.9180619446270558,
+          "table_z_m": 0.8999806627152522,
+          "width_m": 0.04003839429690758,
+          "length_m": 0.07971855009801103,
+          "long_axis_world": [
+            -0.9999954239131665,
+            -0.003025252506227043,
+            0.0
+          ],
+          "side": {
+            "world_m": [
+              -0.04681915848101137,
+              0.12335104883732542,
+              0.9148646634672034
+            ],
+            "depth_m": 0.9858067035675049,
+            "frame_id": 54,
+            "pixel": [
+              500,
+              476
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "side_valid": true
+        },
+        "geometry": {
+          "center_world_m": [
+            -0.052233684517491684,
+            0.14468136760402533,
+            0.9182637112824412
+          ],
+          "top_z_m": 0.9181206928908878,
+          "table_z_m": 0.8999758560050605,
+          "allowance_m": 0.001,
+          "validated_frame_id": 75,
+          "width_m": 0.04003839429690758,
+          "length_m": 0.07971855009801103,
+          "maximum_material_mark_drift_m": 0.0011474587516637576
+        },
+        "candidate": {
+          "frame_id": 75,
+          "low_pad_z_m": 0.9201757808458723,
+          "high_pad_z_m": 0.9218687541912233,
+          "target_pad_z_m": 0.9210222675185478,
+          "interval_m": 0.001692973345351012,
+          "finger_bottom_relative_pad_m": -0.013199924840811776,
+          "common_pad_bottom_m": -0.0077480613003354315,
+          "common_pad_top_m": 0.0077480613003354315,
+          "required_table_clearance_m": 0.006,
+          "required_overlap_m": 0.003,
+          "end_reserve_m": 0.0006,
+          "surface_allowance_m": 0.001
+        },
+        "last_review": {
+          "frame_id": 75,
+          "parameters": {
+            "gripper": "empty_open",
+            "identity": "same_cream_cheese",
+            "labels": [
+              "p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.",
+              "p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.",
+              "p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.",
+              "p3: Bottom terminal stroke of the final lowercase e in Cheese."
+            ],
+            "marks_identified": "same_four",
+            "passages": "both_visible",
+            "route": "visible_clear",
+            "slip": "none_visible",
+            "support": "flat_on_table"
+          },
+          "measurement_errors": [],
+          "explanation": "The same package remains flat on the table, with open, empty fingers and no visible displacement. p0, p1 and p2 are visible in the wrist camera. p3 is hidden by the robot in that camera but visible at the far printed end in agentview; its image resolution is much lower. Both bare side passages are visible and clear of other objects. The bowl and bottle are outside the remaining local vertical descent. The table is below both passages; use the returned current table measurements to recompute and check the finite-pad endpoint clearance. This review covers only open-finger descent, not closure, r"
+        },
+        "last_state": {
+          "frame_id": 114,
+          "native_steps": 114,
+          "budgets": {
+            "gpt_remaining": 9,
+            "jev_remaining": 162,
+            "native_steps_remaining": 486,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.05176688403379247,
+            0.14514265448083388,
+            0.9181250530592818
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999955718786252,
+            0.0018994813929736347,
+            0.00041095626789833245,
+            -0.002253732132494466
+          ],
+          "gripper_qpos_m": [
+            0.03999753301282513,
+            -0.039986460159352206
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -2.4482863775383834e-08,
+              5.5981502543947514e-06,
+              -0.0035999047335057797
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600003265243688,
+              0.09498399878604596,
+              0.016000003738829236
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010494822486709087,
+              -0.06638978471219496,
+              -0.04446821089856614
+            ],
+            "finger_high_offset_tool_m": [
+              0.010494777842778729,
+              0.06640097911494569,
+              0.009249131629562793
+            ]
+          }
+        },
+        "last_observation": {
+          "frame_id": 75,
+          "mode": "precontact",
+          "parameters": {
+            "gripper": "empty_open",
+            "identity": "same_cream_cheese",
+            "labels": [
+              "p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.",
+              "p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.",
+              "p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.",
+              "p3: Bottom terminal stroke of the final lowercase e in Cheese."
+            ],
+            "marks_identified": "same_four",
+            "passages": "both_visible",
+            "route": "visible_clear",
+            "slip": "none_visible",
+            "support": "flat_on_table"
+          },
+          "point_records": {
+            "p0": {
+              "world_m": [
+                -0.02502898248905229,
+                0.1420888648714316,
+                0.9179569242772636
+              ],
+              "depth_m": 0.11895522475242615,
+              "frame_id": 75,
+              "pixel": [
+                393,
+                477
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p1": {
+              "world_m": [
+                -0.043669321178248684,
+                0.1551125037310006,
+                0.9178159783581036
+              ],
+              "depth_m": 0.11911378800868988,
+              "frame_id": 75,
+              "pixel": [
+                338,
+                555
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p2": {
+              "world_m": [
+                -0.05855727264003638,
+                0.13629351273374074,
+                0.918284759770967
+              ],
+              "depth_m": 0.11851605027914047,
+              "frame_id": 75,
+              "pixel": [
+                417,
+                619
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p3": {
+              "world_m": [
+                -0.08663869470854135,
+                0.1488346019859855,
+                0.9184251091572172
+              ],
+              "depth_m": 1.0145463943481445,
+              "frame_id": 75,
+              "pixel": [
+                520,
+                448
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s0": {
+              "world_m": [
+                -0.052657815934770785,
+                0.1946377307906718,
+                0.899975743265087
+              ],
+              "depth_m": 0.13712498545646667,
+              "frame_id": 75,
+              "pixel": [
+                200,
+                565
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s1": {
+              "world_m": [
+                -0.05212186809748829,
+                0.09289296820698437,
+                0.8999762374963756
+              ],
+              "depth_m": 0.13662777841091156,
+              "frame_id": 75,
+              "pixel": [
+                572,
+                565
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s2": {
+              "world_m": [
+                0.004506861861381577,
+                0.14441982256905755,
+                0.899975587253719
+              ],
+              "depth_m": 0.1370207965373993,
+              "frame_id": 75,
+              "pixel": [
+                384,
+                357
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "points": [
+            [
+              -0.02502898248905229,
+              0.1420888648714316,
+              0.9179569242772636
+            ],
+            [
+              -0.043669321178248684,
+              0.1551125037310006,
+              0.9178159783581036
+            ],
+            [
+              -0.05855727264003638,
+              0.13629351273374074,
+              0.918284759770967
+            ],
+            [
+              -0.08663869470854135,
+              0.1488346019859855,
+              0.9184251091572172
+            ]
+          ],
+          "top_fit": {
+            "coefficients": [
+              0.009720446168251705,
+              0.017572377782650826,
+              0.9997983418996823,
+              -0.9199739878980485
+            ],
+            "center_world_m": [
+              -0.05347356775396968,
+              0.1455823708305396,
+              0.9181206928908878
+            ],
+            "rms_m": 4.551565340601445e-05,
+            "in_plane_spread_m": [
+              0.022547573402679762,
+              0.0070273394418470065
+            ]
+          },
+          "table_fit": {
+            "coefficients": [
+              7.028942112437143e-06,
+              4.8945854530582345e-06,
+              0.9999999999633186,
+              -0.8999763257743403
+            ],
+            "center_world_m": [
+              -0.03342427405695916,
+              0.14398350718890457,
+              0.8999758560050605
+            ],
+            "rms_m": 1.1102230246251565e-16,
+            "in_plane_spread_m": [
+              0.04153827907749649,
+              0.02682224360158328
+            ]
+          },
+          "table_z_m": 0.8999758560050605
+        },
+        "reference": {
+          "frame_id": 54,
+          "labels": [
+            "p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.",
+            "p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.",
+            "p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.",
+            "p3: Bottom terminal stroke of the final lowercase e in Cheese."
+          ],
+          "points": [
+            [
+              -0.025083987178913178,
+              0.1419987543356908,
+              0.9179667995378635
+            ],
+            [
+              -0.043589555368901876,
+              0.15517792214624018,
+              0.9178215043587963
+            ],
+            [
+              -0.05864180484075981,
+              0.1363065758345885,
+              0.9182930878805324
+            ],
+            [
+              -0.0874078316140314,
+              0.14864787216406242,
+              0.9175943131648174
+            ]
+          ],
+          "identity": "Four individually named printed landmarks on the same cream cheese top; not a tracker or arbitrary pixel samples."
+        },
+        "target_pad_world_m": [
+          -0.052233684517491684,
+          0.14468136760402533,
+          0.9210222675185478
+        ],
+        "target_quaternion_xyzw": [
+          0.9999972602698068,
+          0.001396935102135288,
+          -0.0011738483196514643,
+          -0.0014663237442624046
+        ],
+        "objective_gripper": "keep",
+        "last_receipt": {
+          "decision": 37,
+          "choices": {
+            "x": "negative",
+            "y": "negative",
+            "z": "negative",
+            "rx": "hold",
+            "ry": "hold",
+            "rz": "hold",
+            "gripper": "keep"
+          },
+          "action": [
+            -0.0061990777873456235,
+            -0.005842362947781732,
+            -0.009220486344620693,
+            0.0,
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "before": [
+            -0.05176528693114179,
+            0.1451470281133308,
+            0.9181316841340643
+          ],
+          "after": [
+            -0.05176688403379247,
+            0.14514265448083388,
+            0.9181250530592818
+          ],
+          "target_tcp": [
+            -0.052242139068629914,
+            0.14469761557888605,
+            0.9174224159537089
+          ],
+          "acknowledged_steps": 3,
+          "native_steps": 114,
+          "frame_id": 114,
+          "status": "moved",
+          "position_error_m": 0.0009579279067410028,
+          "rotation_error_rad": 0.0036792249890776514
+        },
+        "measured_finger_table_clearance_m": 0.00759871587541472
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 114,
+  "response": {
+    "result": {
+      "key": "grasp_direct_v4",
+      "frame_id": 114,
+      "method_number": 3,
+      "source_sha256": "9d56c0bf62f2ecce11971efe27a1bc40ebeb3201af272939c0e9a546f41636aa",
+      "bytes": 10550,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 114
+}

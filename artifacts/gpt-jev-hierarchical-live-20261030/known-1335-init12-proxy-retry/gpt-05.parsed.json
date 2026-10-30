@@ -1,0 +1,135 @@
+{
+  "status": "continue",
+  "parameters": {
+    "identity": "same_package",
+    "scene": "unchanged",
+    "sweep": "visibly_clear"
+  },
+  "explanation": "For the proposed straight free-air transfer and small yaw adjustment only, the visible obstacle geometry supports at least 10 mm separation from the supplied finger envelope. The route passes above the bowl and stove, clears the bottle, and stays laterally away from the cabinet and its handles. Initial hand occlusion is robot self-occlusion, not an observed external obstruction. No hidden-surface clearance or later descent is certified. The registered patch lies on the labeled cream-cheese top. No displacement is apparent in the frame-0 views, with no intervening execution reported. The visible flat top and tabletop support the local finite-pad model assumptions; side contact and final table clearance still require the closer-view check.",
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "cream_cheese_registered_top_center",
+      "pixel": [
+        176,
+        216
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "agentview",
+      "name": "bottle_cap_top",
+      "pixel": [
+        349,
+        294
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "agentview",
+      "name": "bowl_rim_package_side",
+      "pixel": [
+        438,
+        423
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "bowl_rim_package_side_wrist",
+      "pixel": [
+        285,
+        257
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "agentview",
+      "name": "stove_visible_near_top_corner",
+      "pixel": [
+        479,
+        400
+      ],
+      "radius": 2
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "cream_cheese_registered_top_interior",
+      "box": [
+        154,
+        174,
+        197,
+        258
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "bowl_visible_rim_and_interior",
+      "box": [
+        283,
+        173,
+        455,
+        346
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "bowl_visible_outer_surface_and_rim",
+      "box": [
+        338,
+        392,
+        442,
+        474
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "bottle_visible_silhouette_and_cap",
+      "box": [
+        332,
+        287,
+        371,
+        412
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "stove_visible_top_and_near_edges",
+      "box": [
+        465,
+        307,
+        644,
+        418
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "stove_rear_black_feature",
+      "box": [
+        497,
+        245,
+        566,
+        308
+      ],
+      "stride": 4
+    },
+    {
+      "camera": "agentview",
+      "name": "cabinet_near_boundary_and_protruding_handles",
+      "box": [
+        174,
+        285,
+        254,
+        560
+      ],
+      "stride": 4
+    }
+  ]
+}

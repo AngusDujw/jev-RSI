@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-eff224f0-63b9-4af9-a0a5-0e8b72faf741",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_plan",
+      "call_id": "exec-eff224f0-63b9-4af9-a0a5-0e8b72faf741",
+      "arguments": "{\"explanation\": \"Initial plan from frame 0: the cream cheese package is on the table beside the visibly empty bowl; the gripper is open and no actions have been acknowledged.\", \"goal_evidence\": \"Fresh observations after release and settling show the cream cheese package resting inside the bowl, not on the rim or table, with the gripper clear and no longer supporting it.\", \"stages\": [{\"id\": \"grasp\", \"objective\": \"Obtain a visually verified, stable grasp of the cream cheese package.\", \"entry_evidence\": \"Both views identify the package and bowl separately on the table; the robot reports an open gripper.\", \"success_evidence\": \"The package is visibly clear of the table and moves with the gripper without apparent slipping.\", \"handoff_requirements\": \"Preserve fresh package-to-gripper geometry and observed clearance from the table and nearby objects.\", \"replan_conditions\": \"If grasp geometry or clearance is uncertain, use available RGB-D or another safely reachable view before contact. If the package slips or moves independently, reobserve its actual location rather than repeating the grasp blindly.\"}, {\"id\": \"align\", \"objective\": \"Bring the held package to a verified placement position over the bowl interior.\", \"entry_evidence\": \"Fresh observations confirm the package remains held and establish the bowl opening, rim and relevant obstacles.\", \"success_evidence\": \"The held package is visibly over the bowl interior with sufficient observed clearance for placement, rather than over the rim.\", \"handoff_requirements\": \"Provide current package orientation, bowl opening evidence and clearance for both package and fingers.\", \"replan_conditions\": \"If occlusion or uncertain margins prevent confirmation, obtain an additional safe view or revise alignment using observed free space. Reassess if the bowl shifts or the package slips.\"}, {\"id\": \"deposit\", \"objective\": \"Leave the package inside the bowl and disengage the gripper.\", \"entry_evidence\": \"Current observations confirm a held package and a feasible placement geometry within the bowl.\", \"success_evidence\": \"The package is visibly released within the bowl and the fingers are separated from it without displacing the bowl.\", \"handoff_requirements\": \"Leave the bowl and package observable for a settling and support check, with the gripper clear.\", \"replan_conditions\": \"If the package catches on the rim, remains attached, falls outside or shifts the bowl, reobserve the resulting state and plan recovery from that state; an open command alone is not release evidence.\"}, {\"id\": \"verify\", \"objective\": \"Assess whether the settled physical result satisfies the user's request.\", \"entry_evidence\": \"Release and gripper disengagement have been observed.\", \"success_evidence\": \"Fresh observations after settling show the package resting inside the bowl independently of the gripper, with no continued motion or rim bridging.\", \"handoff_requirements\": \"Report completion only with observed containment, settling and independent support.\", \"replan_conditions\": \"If the result is occluded, acquire a safe confirming view. If the package is outside, unstable or rim-supported, plan only the necessary correction from its current state.\"}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 17069,
+    "output_tokens": 1111,
+    "output_tokens_details": {
+      "reasoning_tokens": 385
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b49-68ec-7733-ab1e-860a9001bd9f",
+    "turn_ids": [
+      "01a18b49-68f2-7bc3-bd57-0b9c0a163bb1"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

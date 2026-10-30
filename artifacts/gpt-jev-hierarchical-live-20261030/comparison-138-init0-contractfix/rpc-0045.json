@@ -1,0 +1,152 @@
+{
+  "index": 45,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "observe.clearance0",
+      {
+        "frame_id": 0,
+        "interpretation": {
+          "count": 4,
+          "coverage": "complete",
+          "high0": {
+            "camera": "robot0_eye_in_hand",
+            "pixel": [
+              281,
+              331
+            ],
+            "visible": true
+          },
+          "high1": {
+            "camera": "agentview",
+            "pixel": [
+              341,
+              282
+            ],
+            "visible": true
+          },
+          "high2": {
+            "camera": "agentview",
+            "pixel": [
+              365,
+              504
+            ],
+            "visible": true
+          },
+          "high3": {
+            "camera": "robot0_eye_in_hand",
+            "pixel": [
+              300,
+              400
+            ],
+            "visible": true
+          },
+          "robot_clear": "visible_clear"
+        },
+        "points": {
+          "high0": {
+            "world_m": [
+              -0.1382015232148654,
+              0.048239160242712006,
+              0.9506059119831256
+            ],
+            "depth_m": 0.31117314100265503,
+            "frame_id": 0,
+            "pixel": [
+              281,
+              331
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "high1": {
+            "world_m": [
+              -0.20298316413795703,
+              -0.04717819549359659,
+              1.0583422373625002
+            ],
+            "depth_m": 1.0171377658843994,
+            "frame_id": 0,
+            "pixel": [
+              341,
+              282
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "high2": {
+            "world_m": [
+              -0.004217358901043133,
+              -0.019501080103820137,
+              0.9167082712929462
+            ],
+            "depth_m": 0.9515069723129272,
+            "frame_id": 0,
+            "pixel": [
+              365,
+              504
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "high3": {
+            "world_m": [
+              -0.18582122787861322,
+              0.04538672599609561,
+              0.8999638894797674
+            ],
+            "depth_m": 0.3644857406616211,
+            "frame_id": 0,
+            "pixel": [
+              300,
+              400
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": [],
+        "envelope": {
+          "pad_start_world_m": [
+            -0.2084757576902651,
+            -0.015634511418593604,
+            1.172844736940837
+          ],
+          "high_pad_alignment_world_m": [
+            -0.05010654023793723,
+            0.010490195649138685,
+            1.172844736940837
+          ],
+          "xy_min_m": [
+            -0.27987590039831,
+            -0.0870346541266385
+          ],
+          "xy_max_m": [
+            0.021293602470107656,
+            0.08189033835718357
+          ],
+          "yaw_invariant_finger_xy_radius_m": 0.07140014270804489,
+          "lowest_finger_z_m": 1.1593766305223767,
+          "required_height_margin_m": 0.02,
+          "height_measurement_allowance_m": 0.005,
+          "scope": "Open fingers, high alignment and downward-tool world-yaw rotation only; no descent."
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "observe.clearance0",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2",
+      "bytes": 1945,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

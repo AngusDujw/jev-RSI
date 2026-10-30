@@ -1,0 +1,15 @@
+{
+  "index": 1,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": []
+  },
+  "frame_after": 0
+}

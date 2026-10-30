@@ -1,0 +1,229 @@
+{
+  "index": 27,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "grasp_stage_v2",
+      {
+        "phase": "hover",
+        "origin_frame_id": 0,
+        "quaternion": [
+          0.9999955794193083,
+          0.002973405764775145,
+          0.0,
+          0.0
+        ],
+        "geometry": {
+          "reference_frame_id": 0,
+          "source_checkpoint": "grasp_stage_v1.partial",
+          "camera": "robot0_eye_in_hand",
+          "top_samples_world_m": [
+            [
+              -0.024648209434632112,
+              0.15534774083734487,
+              0.91784209742433
+            ],
+            [
+              -0.02893711990763581,
+              0.1320672058750963,
+              0.9182903253580973
+            ],
+            [
+              -0.07737731402321552,
+              0.15530225439816395,
+              0.9177550467792035
+            ],
+            [
+              -0.07890263226771263,
+              0.13170985040795335,
+              0.9183473039807548
+            ]
+          ],
+          "table_samples_world_m": [
+            [
+              0.008307254674057324,
+              0.18972728939282332,
+              0.89995950355432
+            ],
+            [
+              0.0047140693805642064,
+              0.10745749501642089,
+              0.8999599246788591
+            ],
+            [
+              -0.10913378152186604,
+              0.19018604861893704,
+              0.8999632145434258
+            ],
+            [
+              -0.11063950658323872,
+              0.10716834624167748,
+              0.8999631832841901
+            ]
+          ],
+          "top_corners_world_m": [
+            [
+              -0.013051257011466838,
+              0.16477599901497839,
+              0.9180586933855965
+            ],
+            [
+              -0.012370295241546536,
+              0.1233816038633098,
+              0.9180586933855965
+            ],
+            [
+              -0.0935742604398418,
+              0.12289869278257175,
+              0.9180586933855965
+            ],
+            [
+              -0.09215959815519481,
+              0.16405941034277952,
+              0.9180586933855965
+            ]
+          ],
+          "top_center_world_m": [
+            -0.052788852712012495,
+            0.14377892650090987,
+            0.9180586933855965
+          ],
+          "top_z_m": 0.9180586933855965,
+          "table_z_m": 0.8999614565151988,
+          "contact_top_z_m": 0.9180586933855965,
+          "contact_table_z_m": 0.8999614565151988,
+          "width_m": 0.04118502081401439,
+          "length_m": 0.0812054010952341,
+          "surface_allowance_m": 0.001,
+          "assumptions": "Observed flat package and horizontal tabletop; full own pad extents give a common contact-height band. Allowance is an engineering reserve, not calibrated confidence. No unseen package bottom or obstacle clearance is asserted."
+        },
+        "model": {
+          "finger_bottom_relative_to_pad_m": -0.012849107009252606,
+          "common_pad_bottom_relative_m": -0.008000395919625645,
+          "common_pad_top_relative_m": 0.008000395919625645,
+          "minimum_pad_center_z_m": 0.9198105635244513,
+          "maximum_pad_center_z_m": 0.9220590893052222,
+          "feasible_interval_m": 0.002248525780770838,
+          "target_z_m": 0.9209348264148367,
+          "required_table_clearance_m": 0.006,
+          "required_vertical_overlap_m": 0.003,
+          "surface_allowance_m": 0.001,
+          "pose_reserve_each_end_m": 0.0006
+        },
+        "audit": {
+          "previous_error": "Requiring the pad CENTER below the package top ignored the finite 16 mm pad height.",
+          "table_to_top_m": 0.01809723687039777,
+          "old_center_only_target_z_m": 0.9188105635244513,
+          "finite_pad_candidate": {
+            "finger_bottom_relative_to_pad_m": -0.012849107009252606,
+            "common_pad_bottom_relative_m": -0.008000395919625645,
+            "common_pad_top_relative_m": 0.008000395919625645,
+            "minimum_pad_center_z_m": 0.9198105635244513,
+            "maximum_pad_center_z_m": 0.9220590893052222,
+            "feasible_interval_m": 0.002248525780770838,
+            "target_z_m": 0.9209348264148367,
+            "required_table_clearance_m": 0.006,
+            "required_vertical_overlap_m": 0.003,
+            "surface_allowance_m": 0.001,
+            "pose_reserve_each_end_m": 0.0006
+          },
+          "motion_before_revision": "None: same frame and native-step count confirmed.",
+          "required_clearance_unchanged_m": 0.006
+        },
+        "hover_target": [
+          -0.052788852712012495,
+          0.14377892650090987,
+          0.9930586933855965
+        ],
+        "tracker": {
+          "handle": "patch_0",
+          "camera": "robot0_eye_in_hand",
+          "polygon": [
+            [
+              151.875,
+              170.595
+            ],
+            [
+              197.895,
+              169.815
+            ],
+            [
+              200.235,
+              261.075
+            ],
+            [
+              154.995,
+              259.515
+            ]
+          ],
+          "reference_frame_id": 0,
+          "identity": "Cream cheese textured top interior, not table or gripper."
+        },
+        "last_state": {
+          "frame_id": 0,
+          "native_steps": 0,
+          "budgets": {
+            "gpt_remaining": 19,
+            "jev_remaining": 200,
+            "native_steps_remaining": 600,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.2071984982582204,
+            -0.002684108235936964,
+            1.1833957456431763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9996138089570381,
+            -0.0001637781149644857,
+            -0.027787418789059465,
+            0.00025588312349679454
+          ],
+          "gripper_qpos_m": [
+            0.03872178294129007,
+            -0.03872379800220578
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              4.177684213122965e-06,
+              -1.233369511719623e-06,
+              -0.003603143886142522
+            ],
+            "pad_extent_in_tool_m": [
+              0.016001340332578606,
+              0.09244574820685311,
+              0.01600079183925129
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010490259555384143,
+              -0.06512722856056685,
+              -0.044471733171043505
+            ],
+            "finger_high_offset_tool_m": [
+              0.010500258927625426,
+              0.06512494646865309,
+              0.009245963123110084
+            ]
+          }
+        },
+        "slice_calls": 0
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "grasp_stage_v2",
+      "frame_id": 0,
+      "method_number": 1,
+      "source_sha256": "e9cd24fa2f85db9e3623450e1baac90452391a1b13a3d1bd3009e4b5c4bf59e6",
+      "bytes": 4199,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

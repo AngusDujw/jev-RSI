@@ -91,3 +91,22 @@ silently upgraded to this host repair. Its eventual score cannot establish the
 physical effectiveness of the new error-routing repair. The original two admitted
 episodes remain0/2 native successes with0 dispatches; they demonstrate automatic
 method revision but not successful manipulation or improved token/latency cost.
+
+## Final adjudication (2026-10-31)
+
+All four admitted episodes finished; none passed terminal LIBERO. Conditions remain separate. Both additional cases passed saved provenance/dispatch audits.
+
+| Condition | Native success | Seconds | GPT | Jev dispatches / steps | Exit |
+|---|---|---:|---:|---:|---|
+| Original 1335/init12 | false | 2824.613 | 7 | 0 / 0 | Proxy omission: provider region rejection |
+| Original 138/init0 | false | 2121.745 | 7 | 0 / 0 | Observation contract failure escaped supervision |
+| Proxy-fixed 1335/init12, a3 | false | 7713.756 | 20 | 40 / 120 | Observation contract repair exhausted, HTTP502 |
+| Contract-fixed 138/init0, f4 | false | 8159.331 | 24 | 40 / 120 | GPT call budget exhausted |
+
+The a3 retry produced five accepted methods and two plans, but confirmed no stages. Its failed observation submission is a contract failure, not evidence of a network disconnect. The f4 case produced six methods and two plans, confirmed the observation stage, and routed two actual exhausted observation submissions into execution_error supervision and revise. It still did not establish task completion. Geometry/aperture evidence and sensing-motion consistency repeatedly blocked lift preparation.
+
+GPT relay elapsed totals were 7627.461 and 8071.321 seconds for the additional cases; Jev request totals were 17.216 and 17.534 seconds. Relay elapsed includes inference, delivery, retries and waiting; pure inference/network time cannot be separated from these records. Known GPT token totals were 1345629/133247 and 1159759/135317 input/output, with 3 and 2 unknown-usage accounting records respectively. Do not interpret those record counts as provider HTTP attempts.
+
+Generic design gaps observed, not yet repaired: a routine control-slice yield consumes a full method revision; revision-count exhaustion can label progress unproductive; remaining plans are not checked against minimum builder/supervisor call cost. No source was hand-edited to solve either task. Task138 was previously tested, so this batch is not unseen-task generalization evidence. No frozen successful method or token/latency benefit has been established.
+
+See final-results.json and each case audit.json, stage-journal.json and summary.json. The original batch observer raced service completion; saved terminal summaries and audits provide the reconciled result without replacing the original batch record.

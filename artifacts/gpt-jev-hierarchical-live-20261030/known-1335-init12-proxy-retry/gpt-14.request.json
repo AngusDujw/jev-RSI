@@ -1,0 +1,275 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 75; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "d315783e150702625fbb91130bc0478a6fc0aa1736bcdd7e594301742982ce12",
+            "characters": 108747
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 75; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "6b9f3b30692287d5dbdbcc13cec0e97c7a0b779511029c81f7a8ff6a2a908905",
+            "characters": 48823
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review agentview"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "33342c87d2cb1d0c540078234e7d448b92fbb17bfe45fd42f77239ab206ac25c",
+            "characters": 108359
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review robot0_eye_in_hand"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "ad2f364727f5004418f65e5e82c49ce4fab1d793d8bf4dc08c5d7641f5b44763",
+            "characters": 73703
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Current grasp stage only. Reacquire the same four marks and table AFTER the approach. Assess only the remaining vertical open-finger descent to the recomputed finite-pad contact height. Both finger passages beside the package must be visible and clear of other objects; no closure is requested yet. Request depth points p0,p1,p2,p3 on four uniquely identifiable printed material landmarks of the SAME cream cheese top, and s0,s1,s2 on separated bare local TABLE patches, including the finger approach area. Use whichever current camera genuinely sees each landmark. Table points must be noncollinear and distributed, not bowl, robot or stove. Reidentify precisely the stored four physical print landmarks, with the same p0 through p3 identities. Do not substitute different marks or image quadrants. Historical projections are only hypotheses. Return the stored label descriptions. Report only current visible evidence. passages concerns the two bare descent passages beside the package, not invented hidden wall surfaces. route excludes intended package contact but must include nearby bowl, bottle and table obstacles. If retrying, use the other camera or a genuinely different depth-valid patch for a table point, not the same failed measurement. On initial selection only, a rejected quartet may be replaced as a whole before a reference is established.\",\"robot\":{\"frame_id\":75,\"native_steps\":75,\"budgets\":{\"gpt_remaining\":9,\"jev_remaining\":175,\"native_steps_remaining\":525,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0529799,0.144023,0.939878],\"tcp_quaternion_xyzw\":[0.999995,0.00175325,0.00124548,-0.00244767],\"gripper_qpos_m\":[0.0399638,-0.0399478],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.4527e-06,7.63807e-06,-0.00357494],\"pad_extent_in_tool_m\":[0.0160002,0.0949116,0.0160006],\"finger_low_offset_tool_m\":[-0.0104991,-0.0663517,-0.0444435],\"finger_high_offset_tool_m\":[0.0104905,0.0663666,0.00927439]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.00351221,-0.999991,0.0024748,-0.00322481],[-0.999982,-0.00350006,0.00489499,0.143723],[-0.00488628,-0.00249195,-0.999985,1.03698],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":20,\"choices\":{\"x\":\"negative\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0385515,0.0,-0.398138,0.0,0.0,0.0,-1.0],\"before\":[-0.0494851,0.144625,0.995297],\"after\":[-0.0496953,0.144614,0.980185],\"target_tcp\":[-0.0524644,0.144653,0.939515],\"acknowledged_steps\":3,\"native_steps\":63,\"frame_id\":63},{\"decision\":21,\"choices\":{\"x\":\"negative\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0355227,0.0,-0.39842,0.0,0.0,0.0,-1.0],\"before\":[-0.0496953,0.144614,0.980185],\"after\":[-0.0508644,0.144453,0.964623],\"target_tcp\":[-0.0524386,0.144653,0.939518],\"acknowledged_steps\":3,\"native_steps\":66,\"frame_id\":66},{\"decision\":22,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.326287,0.0,0.0,0.0,-1.0],\"before\":[-0.0508644,0.144453,0.964623],\"after\":[-0.051763,0.144196,0.950697],\"target_tcp\":[-0.0524298,0.144655,0.939524],\"acknowledged_steps\":3,\"native_steps\":69,\"frame_id\":69},{\"decision\":23,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.14564,0.0,0.0,0.0,-1.0],\"before\":[-0.051763,0.144196,0.950697],\"after\":[-0.05251,0.144053,0.942819],\"target_tcp\":[-0.0524379,0.144655,0.939494],\"acknowledged_steps\":3,\"native_steps\":72,\"frame_id\":72},{\"decision\":24,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.0444546,0.0,0.0,0.0,-1.0],\"before\":[-0.05251,0.144053,0.942819],\"after\":[-0.0529799,0.144023,0.939878],\"target_tcp\":[-0.0524411,0.144652,0.939399],\"acknowledged_steps\":3,\"native_steps\":75,\"frame_id\":75}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":72,\"native_steps\":72,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":176,\"native_steps_remaining\":528,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.05251,0.144053,0.942819],\"tcp_quaternion_xyzw\":[0.999994,0.00170504,0.00137294,-0.00264801],\"gripper_qpos_m\":[0.0399578,-0.0399413],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-8.15192e-06,1.00908e-05,-0.00351986],\"pad_extent_in_tool_m\":[0.0160002,0.0948991,0.0160001],\"finger_low_offset_tool_m\":[-0.0105029,-0.0663428,-0.0443882],\"finger_high_offset_tool_m\":[0.0104865,0.0663631,0.00932922]}}},\"frame_id\":72},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"grasp_direct_v4\",{\"phase\":\"approach_precontact\",\"calls\":6,\"pending\":{\"phase\":\"approach_precontact\",\"before_frame_id\":72,\"target_pad_world_m\":[-0.0524409,0.144632,0.942919],\"quaternion_xyzw\":[0.999997,0.00139694,-0.00117385,-0.00146632],\"gripper\":\"keep\"},\"alternative_measurements\":0,\"inherited_execution\":{\"frame_id\":54,\"native_steps\":54,\"last_receipt\":{\"decision\":17,\"choices\":{\"x\":\"positive\",\"y\":\"positive\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0990462,0.0488347,-0.0597611,0.0,0.0,0.0,-1.0],\"before\":[-0.0608022,0.140285,1.02403],\"after\":[-0.0548838,0.143581,1.0215],\"target_tcp\":[-0.0531832,0.144041,1.01943],\"acknowledged_steps\":3,\"native_steps\":54,\"frame_id\":54,\"status\":\"reached\",\"position_error_m\":0.00272034,\"rotation_error_rad\":0.0038377},\"closure_acknowledged\":false,\"source_checkpoint\":\"grasp_recovery_v3\"},\"tracker_diagnosis\":{\"handle\":\"patch_2\",\"registration\":{\"status\":\"tracked\",\"frame_id\":54,\"reference_frame_id\":54,\"accepted\":false,\"camera\":\"robot0_eye_in_hand\",\"matches\":120,\"inliers\":120,\"rms_m\":9.23377e-18,\"inlier_spread_m\":[0.0170687,0.00444264,5.12285e-05],\"uncertainty_floor_m\":0.0015,\"transform_initial_world_to_current_world\":[[1.0,4.075e-18,2.61873e-19,2.08167e-17],[-5.08473e-18,1.0,3.16842e-18,0.0],[-5.53432e-20,-2.38789e-18,1.0,1.11022e-16],[0.0,0.0,0.0,1.0]],\"failed_checks\":[\"distributed_support\"]},\"use\":\"Rejected, not relaxed or reinitialized. Narrow automatic texture support is replaced by independent named depth correspondences.\"},\"frame54_geometry\":{\"reference_frame_id\":54,\"top_corners_world_m\":[[-0.0135287,0.164455,0.918062],[-0.0126113,0.124427,0.918062],[-0.0923295,0.124186,0.918062],[-0.0912941,0.165459,0.918062]],\"top_center_world_m\":[-0.0524409,0.144632,0.918062],\"top_z_m\":0.918062,\"table_z_m\":0.899981,\"width_m\":0.0400384,\"length_m\":0.0797186,\"long_axis_world\":[-0.999995,-0.00302525,0.0],\"side\":{\"world_m\":[-0.0468192,0.123351,0.914865],\"depth_m\":0.985807,\"frame_id\":54,\"pixel\":[500,476],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"side_valid\":true},\"geometry\":{\"center_world_m\":[-0.0524409,0.144632,0.918062],\"top_z_m\":0.917919,\"table_z_m\":0.89998,\"allowance_m\":0.001,\"validated_frame_id\":54,\"width_m\":0.0400384,\"length_m\":0.0797186,\"maximum_material_mark_drift_m\":0.0},\"candidate\":{\"frame_id\":54,\"low_pad_z_m\":0.920049,\"high_pad_z_m\":0.921762,\"target_pad_z_m\":0.920905,\"interval_m\":0.00171282,\"finger_bottom_relative_pad_m\":-0.0130687,\"common_pad_bottom_m\":-0.00784261,\"common_pad_top_m\":0.00784261,\"required_table_clearance_m\":0.006,\"required_overlap_m\":0.003,\"end_reserve_m\":0.0006,\"surface_allowance_m\":0.001},\"last_review\":{\"frame_id\":54,\"parameters\":{\"gripper\":\"empty_open\",\"identity\":\"same_cream_cheese\",\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"marks_identified\":\"four_distinct\",\"passages\":\"both_visible\",\"route\":\"visible_clear\",\"slip\":\"none_visible\",\"support\":\"flat_on_table\"},\"measurement_errors\":[],\"explanation\":\"The current views show the labeled cream cheese lying flat, with empty, open fingers above it. Both bare side passages are visible. The bowl, bottle and plate are outside the proposed local vertical descent. Visible spacing, together with the supplied package scale and finger dimensions, supports at least 10 mm external separation for the approach ending with pads 25 mm above the top. This does not authorize contact, closure or transport. The lower wrist-image occlusion is the robot itself, not an observed external obstruction. All seven requested points are returned anew. The printed quartet \"},\"last_state\":{\"frame_id\":72,\"native_steps\":72,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":176,\"native_steps_remaining\":528,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.05251,0.144053,0.942819],\"tcp_quaternion_xyzw\":[0.999994,0.00170504,0.00137294,-0.00264801],\"gripper_qpos_m\":[0.0399578,-0.0399413],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-8.15192e-06,1.00908e-05,-0.00351986],\"pad_extent_in_tool_m\":[0.0160002,0.0948991,0.0160001],\"finger_low_offset_tool_m\":[-0.0105029,-0.0663428,-0.0443882],\"finger_high_offset_tool_m\":[0.0104865,0.0663631,0.00932922]}},\"last_observation\":{\"frame_id\":54,\"mode\":\"initial\",\"parameters\":{\"gripper\":\"empty_open\",\"identity\":\"same_cream_cheese\",\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"marks_identified\":\"four_distinct\",\"passages\":\"both_visible\",\"route\":\"visible_clear\",\"slip\":\"none_visible\",\"support\":\"flat_on_table\"},\"point_records\":{\"p0\":{\"world_m\":[-0.025084,0.141999,0.917967],\"depth_m\":0.200442,\"frame_id\":54,\"pixel\":[389,434],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p1\":{\"world_m\":[-0.0435896,0.155178,0.917822],\"depth_m\":0.20067,\"frame_id\":54,\"pixel\":[356,480],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p2\":{\"world_m\":[-0.0586418,0.136307,0.918293],\"depth_m\":0.200179,\"frame_id\":54,\"pixel\":[403,518],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p3\":{\"world_m\":[-0.0874078,0.148648,0.917594],\"depth_m\":0.200982,\"frame_id\":54,\"pixel\":[372,589],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s0\":{\"world_m\":[-0.0537456,0.194657,0.89998],\"depth_m\":0.21865,\"frame_id\":54,\"pixel\":[268,495],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s1\":{\"world_m\":[-0.0525214,0.0929281,0.899981],\"depth_m\":0.218349,\"frame_id\":54,\"pixel\":[501,493],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s2\":{\"world_m\":[0.00449369,0.144137,0.899979],\"depth_m\":0.218365,\"frame_id\":54,\"pixel\":[384,362],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"points\":[[-0.025084,0.141999,0.917967],[-0.0435896,0.155178,0.917822],[-0.0586418,0.136307,0.918293],[-0.0874078,0.148648,0.917594]],\"top_fit\":{\"coefficients\":[-0.00374507,0.0266343,0.999638,-0.921664],\"center_world_m\":[-0.0536808,0.145533,0.917919],\"rms_m\":0.000135261,\"in_plane_spread_m\":[0.0228248,0.00704229]},\"table_fit\":{\"coefficients\":[3.23576e-05,6.26506e-06,1.0,-0.89998],\"center_world_m\":[-0.0339244,0.143907,0.89998],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0415342,0.0271653]},\"table_z_m\":0.89998},\"reference\":{\"frame_id\":54,\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"points\":[[-0.025084,0.141999,0.917967],[-0.0435896,0.155178,0.917822],[-0.0586418,0.136307,0.918293],[-0.0874078,0.148648,0.917594]],\"identity\":\"Four individually named printed landmarks on the same cream cheese top; not a tracker or arbitrary pixel samples.\"},\"target_pad_world_m\":[-0.0524409,0.144632,0.942919],\"target_quaternion_xyzw\":[0.999997,0.00139694,-0.00117385,-0.00146632],\"objective_gripper\":\"keep\",\"last_receipt\":{\"decision\":23,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.14564,0.0,0.0,0.0,-1.0],\"before\":[-0.051763,0.144196,0.950697],\"after\":[-0.05251,0.144053,0.942819],\"target_tcp\":[-0.0524379,0.144655,0.939494],\"acknowledged_steps\":3,\"native_steps\":72,\"frame_id\":72,\"status\":\"moved\",\"position_error_m\":0.00337974,\"rotation_error_rad\":0.00564887},\"measured_finger_table_clearance_m\":0.0321295}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"grasp_direct_v4\",\"frame_id\":72,\"method_number\":3,\"source_sha256\":\"9d56c0bf62f2ecce11971efe27a1bc40ebeb3201af272939c0e9a546f41636aa\",\"bytes\":10739,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":72},{\"request\":{\"kind\":\"rpc\",\"method\":\"control\",\"args\":[[-0.0524409,0.144632,0.942919],[0.999997,0.00139694,-0.00117385,-0.00146632],\"keep\",{\"x\":{\"type\":\"choice\",\"instructions\":\"For this world translation component, read state.processed_features.axes.x.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.\",\"criteria\":{\"negative\":\"Decrease this world component.\",\"hold\":\"This component is within tolerance.\",\"positive\":\"Increase this world component.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"For this world translation component, read state.processed_features.axes.y.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.\",\"criteria\":{\"negative\":\"Decrease this world component.\",\"hold\":\"This component is within tolerance.\",\"positive\":\"Increase this world component.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"For this world translation component, read state.processed_features.axes.z.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.\",\"criteria\":{\"negative\":\"Decrease this world component.\",\"hold\":\"This component is within tolerance.\",\"positive\":\"Increase this world component.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"For this world rotation-vector component, read state.processed_features.axes.rx.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.\",\"criteria\":{\"negative\":\"Decrease this world component.\",\"hold\":\"This component is within tolerance.\",\"positive\":\"Increase this world component.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"For this world rotation-vector component, read state.processed_features.axes.ry.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.\",\"criteria\":{\"negative\":\"Decrease this world component.\",\"hold\":\"This component is within tolerance.\",\"positive\":\"Increase this world component.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"For this world rotation-vector component, read state.processed_features.axes.rz.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.\",\"criteria\":{\"negative\":\"Decrease this world component.\",\"hold\":\"This component is within tolerance.\",\"positive\":\"Increase this world component.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Read state.processed_features.objective.gripper and deliver that command exactly. Keep preserves the previous command, including a previous close; it never means reopen.\",\"criteria\":{\"open\":\"Deliver requested opening.\",\"close\":\"Deliver requested closing.\",\"keep\":\"Preserve the existing command.\"}}}],\"kwargs\":{\"features\":{\"source\":\"Independent GPT-identified RGB-D material points, visible passage review, frame-54 boundary model and measured own finger geometry; rejected tracker transforms are unused.\",\"phase\":\"approach_precontact\",\"geometry\":{\"center_world_m\":[-0.0524409,0.144632,0.918062],\"top_z_m\":0.917919,\"table_z_m\":0.89998,\"allowance_m\":0.001,\"validated_frame_id\":54,\"width_m\":0.0400384,\"length_m\":0.0797186,\"maximum_material_mark_drift_m\":0.0},\"candidate\":{\"frame_id\":54,\"low_pad_z_m\":0.920049,\"high_pad_z_m\":0.921762,\"target_pad_z_m\":0.920905,\"interval_m\":0.00171282,\"finger_bottom_relative_pad_m\":-0.0130687,\"common_pad_bottom_m\":-0.00784261,\"common_pad_top_m\":0.00784261,\"required_table_clearance_m\":0.006,\"required_overlap_m\":0.003,\"end_reserve_m\":0.0006,\"surface_allowance_m\":0.001},\"observation_frame_id\":54,\"retention_not_inferred_from_closure\":true},\"tool_point\":\"pad_center\",\"translation_limit\":0.02,\"rotation_limit\":0.03,\"steps\":3,\"position_tolerance\":0.003,\"rotation_tolerance\":0.01}},\"response\":{\"result\":{\"decision\":24,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.0444546,0.0,0.0,0.0,-1.0],\"before\":[-0.05251,0.144053,0.942819],\"after\":[-0.0529799,0.144023,0.939878],\"target_tcp\":[-0.0524411,0.144652,0.939399],\"acknowledged_steps\":3,\"native_steps\":75,\"frame_id\":75,\"status\":\"reached\",\"position_error_m\":0.000957028,\"rotation_error_rad\":0.00526998}},\"frame_id\":75},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":75,\"native_steps\":75,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":175,\"native_steps_remaining\":525,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0529799,0.144023,0.939878],\"tcp_quaternion_xyzw\":[0.999995,0.00175325,0.00124548,-0.00244767],\"gripper_qpos_m\":[0.0399638,-0.0399478],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.4527e-06,7.63807e-06,-0.00357494],\"pad_extent_in_tool_m\":[0.0160002,0.0949116,0.0160006],\"finger_low_offset_tool_m\":[-0.0104991,-0.0663517,-0.0444435],\"finger_high_offset_tool_m\":[0.0104905,0.0663666,0.00927439]}}},\"frame_id\":75},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"grasp_direct_v4\",{\"phase\":\"approach_precontact\",\"calls\":7,\"pending\":null,\"alternative_measurements\":0,\"inherited_execution\":{\"frame_id\":54,\"native_steps\":54,\"last_receipt\":{\"decision\":17,\"choices\":{\"x\":\"positive\",\"y\":\"positive\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0990462,0.0488347,-0.0597611,0.0,0.0,0.0,-1.0],\"before\":[-0.0608022,0.140285,1.02403],\"after\":[-0.0548838,0.143581,1.0215],\"target_tcp\":[-0.0531832,0.144041,1.01943],\"acknowledged_steps\":3,\"native_steps\":54,\"frame_id\":54,\"status\":\"reached\",\"position_error_m\":0.00272034,\"rotation_error_rad\":0.0038377},\"closure_acknowledged\":false,\"source_checkpoint\":\"grasp_recovery_v3\"},\"tracker_diagnosis\":{\"handle\":\"patch_2\",\"registration\":{\"status\":\"tracked\",\"frame_id\":54,\"reference_frame_id\":54,\"accepted\":false,\"camera\":\"robot0_eye_in_hand\",\"matches\":120,\"inliers\":120,\"rms_m\":9.23377e-18,\"inlier_spread_m\":[0.0170687,0.00444264,5.12285e-05],\"uncertainty_floor_m\":0.0015,\"transform_initial_world_to_current_world\":[[1.0,4.075e-18,2.61873e-19,2.08167e-17],[-5.08473e-18,1.0,3.16842e-18,0.0],[-5.53432e-20,-2.38789e-18,1.0,1.11022e-16],[0.0,0.0,0.0,1.0]],\"failed_checks\":[\"distributed_support\"]},\"use\":\"Rejected, not relaxed or reinitialized. Narrow automatic texture support is replaced by independent named depth correspondences.\"},\"frame54_geometry\":{\"reference_frame_id\":54,\"top_corners_world_m\":[[-0.0135287,0.164455,0.918062],[-0.0126113,0.124427,0.918062],[-0.0923295,0.124186,0.918062],[-0.0912941,0.165459,0.918062]],\"top_center_world_m\":[-0.0524409,0.144632,0.918062],\"top_z_m\":0.918062,\"table_z_m\":0.899981,\"width_m\":0.0400384,\"length_m\":0.0797186,\"long_axis_world\":[-0.999995,-0.00302525,0.0],\"side\":{\"world_m\":[-0.0468192,0.123351,0.914865],\"depth_m\":0.985807,\"frame_id\":54,\"pixel\":[500,476],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"side_valid\":true},\"geometry\":{\"center_world_m\":[-0.0524409,0.144632,0.918062],\"top_z_m\":0.917919,\"table_z_m\":0.89998,\"allowance_m\":0.001,\"validated_frame_id\":54,\"width_m\":0.0400384,\"length_m\":0.0797186,\"maximum_material_mark_drift_m\":0.0},\"candidate\":{\"frame_id\":54,\"low_pad_z_m\":0.920049,\"high_pad_z_m\":0.921762,\"target_pad_z_m\":0.920905,\"interval_m\":0.00171282,\"finger_bottom_relative_pad_m\":-0.0130687,\"common_pad_bottom_m\":-0.00784261,\"common_pad_top_m\":0.00784261,\"required_table_clearance_m\":0.006,\"required_overlap_m\":0.003,\"end_reserve_m\":0.0006,\"surface_allowance_m\":0.001},\"last_review\":{\"frame_id\":54,\"parameters\":{\"gripper\":\"empty_open\",\"identity\":\"same_cream_cheese\",\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"marks_identified\":\"four_distinct\",\"passages\":\"both_visible\",\"route\":\"visible_clear\",\"slip\":\"none_visible\",\"support\":\"flat_on_table\"},\"measurement_errors\":[],\"explanation\":\"The current views show the labeled cream cheese lying flat, with empty, open fingers above it. Both bare side passages are visible. The bowl, bottle and plate are outside the proposed local vertical descent. Visible spacing, together with the supplied package scale and finger dimensions, supports at least 10 mm external separation for the approach ending with pads 25 mm above the top. This does not authorize contact, closure or transport. The lower wrist-image occlusion is the robot itself, not an observed external obstruction. All seven requested points are returned anew. The printed quartet \"},\"last_state\":{\"frame_id\":75,\"native_steps\":75,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":175,\"native_steps_remaining\":525,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0529799,0.144023,0.939878],\"tcp_quaternion_xyzw\":[0.999995,0.00175325,0.00124548,-0.00244767],\"gripper_qpos_m\":[0.0399638,-0.0399478],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.4527e-06,7.63807e-06,-0.00357494],\"pad_extent_in_tool_m\":[0.0160002,0.0949116,0.0160006],\"finger_low_offset_tool_m\":[-0.0104991,-0.0663517,-0.0444435],\"finger_high_offset_tool_m\":[0.0104905,0.0663666,0.00927439]}},\"last_observation\":{\"frame_id\":54,\"mode\":\"initial\",\"parameters\":{\"gripper\":\"empty_open\",\"identity\":\"same_cream_cheese\",\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"marks_identified\":\"four_distinct\",\"passages\":\"both_visible\",\"route\":\"visible_clear\",\"slip\":\"none_visible\",\"support\":\"flat_on_table\"},\"point_records\":{\"p0\":{\"world_m\":[-0.025084,0.141999,0.917967],\"depth_m\":0.200442,\"frame_id\":54,\"pixel\":[389,434],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p1\":{\"world_m\":[-0.0435896,0.155178,0.917822],\"depth_m\":0.20067,\"frame_id\":54,\"pixel\":[356,480],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p2\":{\"world_m\":[-0.0586418,0.136307,0.918293],\"depth_m\":0.200179,\"frame_id\":54,\"pixel\":[403,518],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p3\":{\"world_m\":[-0.0874078,0.148648,0.917594],\"depth_m\":0.200982,\"frame_id\":54,\"pixel\":[372,589],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s0\":{\"world_m\":[-0.0537456,0.194657,0.89998],\"depth_m\":0.21865,\"frame_id\":54,\"pixel\":[268,495],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s1\":{\"world_m\":[-0.0525214,0.0929281,0.899981],\"depth_m\":0.218349,\"frame_id\":54,\"pixel\":[501,493],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s2\":{\"world_m\":[0.00449369,0.144137,0.899979],\"depth_m\":0.218365,\"frame_id\":54,\"pixel\":[384,362],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"points\":[[-0.025084,0.141999,0.917967],[-0.0435896,0.155178,0.917822],[-0.0586418,0.136307,0.918293],[-0.0874078,0.148648,0.917594]],\"top_fit\":{\"coefficients\":[-0.00374507,0.0266343,0.999638,-0.921664],\"center_world_m\":[-0.0536808,0.145533,0.917919],\"rms_m\":0.000135261,\"in_plane_spread_m\":[0.0228248,0.00704229]},\"table_fit\":{\"coefficients\":[3.23576e-05,6.26506e-06,1.0,-0.89998],\"center_world_m\":[-0.0339244,0.143907,0.89998],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0415342,0.0271653]},\"table_z_m\":0.89998},\"reference\":{\"frame_id\":54,\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"points\":[[-0.025084,0.141999,0.917967],[-0.0435896,0.155178,0.917822],[-0.0586418,0.136307,0.918293],[-0.0874078,0.148648,0.917594]],\"identity\":\"Four individually named printed landmarks on the same cream cheese top; not a tracker or arbitrary pixel samples.\"},\"target_pad_world_m\":[-0.0524409,0.144632,0.942919],\"target_quaternion_xyzw\":[0.999997,0.00139694,-0.00117385,-0.00146632],\"objective_gripper\":\"keep\",\"last_receipt\":{\"decision\":24,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,-0.0444546,0.0,0.0,0.0,-1.0],\"before\":[-0.05251,0.144053,0.942819],\"after\":[-0.0529799,0.144023,0.939878],\"target_tcp\":[-0.0524411,0.144652,0.939399],\"acknowledged_steps\":3,\"native_steps\":75,\"frame_id\":75,\"status\":\"reached\",\"position_error_m\":0.000957028,\"rotation_error_rad\":0.00526998},\"measured_finger_table_clearance_m\":0.0321295}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"grasp_direct_v4\",\"frame_id\":75,\"method_number\":3,\"source_sha256\":\"9d56c0bf62f2ecce11971efe27a1bc40ebeb3201af272939c0e9a546f41636aa\",\"bytes\":10468,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":75},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":75,\"native_steps\":75,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":175,\"native_steps_remaining\":525,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0529799,0.144023,0.939878],\"tcp_quaternion_xyzw\":[0.999995,0.00175325,0.00124548,-0.00244767],\"gripper_qpos_m\":[0.0399638,-0.0399478],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.4527e-06,7.63807e-06,-0.00357494],\"pad_extent_in_tool_m\":[0.0160002,0.0949116,0.0160006],\"finger_low_offset_tool_m\":[-0.0104991,-0.0663517,-0.0444435],\"finger_high_offset_tool_m\":[0.0104905,0.0663666,0.00927439]}}},\"frame_id\":75},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":75,\"native_steps\":75,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":175,\"native_steps_remaining\":525,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0529799,0.144023,0.939878],\"tcp_quaternion_xyzw\":[0.999995,0.00175325,0.00124548,-0.00244767],\"gripper_qpos_m\":[0.0399638,-0.0399478],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.4527e-06,7.63807e-06,-0.00357494],\"pad_extent_in_tool_m\":[0.0160002,0.0949116,0.0160006],\"finger_low_offset_tool_m\":[-0.0104991,-0.0663517,-0.0444435],\"finger_high_offset_tool_m\":[0.0104905,0.0663666,0.00927439]}}},\"frame_id\":75},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":75,\"native_steps\":75,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":175,\"native_steps_remaining\":525,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0529799,0.144023,0.939878],\"tcp_quaternion_xyzw\":[0.999995,0.00175325,0.00124548,-0.00244767],\"gripper_qpos_m\":[0.0399638,-0.0399478],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.4527e-06,7.63807e-06,-0.00357494],\"pad_extent_in_tool_m\":[0.0160002,0.0949116,0.0160006],\"finger_low_offset_tool_m\":[-0.0104991,-0.0663517,-0.0444435],\"finger_high_offset_tool_m\":[0.0104905,0.0663666,0.00927439]}}},\"frame_id\":75}],\"program_checkpoint_manifest\":[{\"key\":\"grasp_stage_v1\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"b9faa11b93285d127579f67e9cef68b4d65aa1d9f3a18ca7e7e17aca9823ce95\",\"bytes\":4043,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"grasp_stage_v2\",\"frame_id\":15,\"method_number\":1,\"source_sha256\":\"e9cd24fa2f85db9e3623450e1baac90452391a1b13a3d1bd3009e4b5c4bf59e6\",\"bytes\":7839,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"grasp_recovery_v3\",\"frame_id\":54,\"method_number\":2,\"source_sha256\":\"c1a0fd841907a62d7f2486b8148dd7655789228cd860c510254c64a2cc155a1f\",\"bytes\":10754,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"grasp_direct_v4\",\"frame_id\":75,\"method_number\":3,\"source_sha256\":\"9d56c0bf62f2ecce11971efe27a1bc40ebeb3201af272939c0e9a546f41636aa\",\"bytes\":10468,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"historical_named_observations\":{\"initial\":{\"frame_id\":54,\"parameters\":{\"gripper\":\"empty_open\",\"identity\":\"same_cream_cheese\",\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"marks_identified\":\"four_distinct\",\"passages\":\"both_visible\",\"route\":\"visible_clear\",\"slip\":\"none_visible\",\"support\":\"flat_on_table\"},\"points\":{\"p0\":{\"world_m\":[-0.025084,0.141999,0.917967],\"depth_m\":0.200442,\"frame_id\":54,\"pixel\":[389,434],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p1\":{\"world_m\":[-0.0435896,0.155178,0.917822],\"depth_m\":0.20067,\"frame_id\":54,\"pixel\":[356,480],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p2\":{\"world_m\":[-0.0586418,0.136307,0.918293],\"depth_m\":0.200179,\"frame_id\":54,\"pixel\":[403,518],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p3\":{\"world_m\":[-0.0874078,0.148648,0.917594],\"depth_m\":0.200982,\"frame_id\":54,\"pixel\":[372,589],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s0\":{\"world_m\":[-0.0537456,0.194657,0.89998],\"depth_m\":0.21865,\"frame_id\":54,\"pixel\":[268,495],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s1\":{\"world_m\":[-0.0525214,0.0929281,0.899981],\"depth_m\":0.218349,\"frame_id\":54,\"pixel\":[501,493],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s2\":{\"world_m\":[0.00449369,0.144137,0.899979],\"depth_m\":0.218365,\"frame_id\":54,\"pixel\":[384,362],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"previous\":{\"frame_id\":54,\"parameters\":{\"gripper\":\"empty_open\",\"identity\":\"same_cream_cheese\",\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"marks_identified\":\"four_distinct\",\"passages\":\"both_visible\",\"route\":\"visible_clear\",\"slip\":\"none_visible\",\"support\":\"flat_on_table\"},\"points\":{\"p0\":{\"world_m\":[-0.025084,0.141999,0.917967],\"depth_m\":0.200442,\"frame_id\":54,\"pixel\":[389,434],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p1\":{\"world_m\":[-0.0435896,0.155178,0.917822],\"depth_m\":0.20067,\"frame_id\":54,\"pixel\":[356,480],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p2\":{\"world_m\":[-0.0586418,0.136307,0.918293],\"depth_m\":0.200179,\"frame_id\":54,\"pixel\":[403,518],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"p3\":{\"world_m\":[-0.0874078,0.148648,0.917594],\"depth_m\":0.200982,\"frame_id\":54,\"pixel\":[372,589],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s0\":{\"world_m\":[-0.0537456,0.194657,0.89998],\"depth_m\":0.21865,\"frame_id\":54,\"pixel\":[268,495],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s1\":{\"world_m\":[-0.0525214,0.0929281,0.899981],\"depth_m\":0.218349,\"frame_id\":54,\"pixel\":[501,493],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"s2\":{\"world_m\":[0.00449369,0.144137,0.899979],\"depth_m\":0.218365,\"frame_id\":54,\"pixel\":[384,362],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"scope\":\"Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.\"},\"historical_point_projections_if_stationary\":{\"p0\":{\"agentview\":[520.141,488.574],\"robot0_eye_in_hand\":[393.379,477.241]},\"p1\":{\"agentview\":[530.58,476.154],\"robot0_eye_in_hand\":[337.724,554.671]},\"p2\":{\"agentview\":[511.274,465.921],\"robot0_eye_in_hand\":[416.946,619.373]},\"p3\":{\"agentview\":[519.68,448.078],\"robot0_eye_in_hand\":[364.532,738.613]},\"s0\":{\"agentview\":[564.36,481.341],\"robot0_eye_in_hand\":[199.906,568.979]},\"s1\":{\"agentview\":[470.185,482.146],\"robot0_eye_in_hand\":[571.874,566.47]},\"s2\":{\"agentview\":[523.884,521.473],\"robot0_eye_in_hand\":[385.034,357.051]}},\"program_supplied_review_context\":{\"mode\":\"precontact\",\"reference\":{\"frame_id\":54,\"labels\":[\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\",\"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\",\"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\",\"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"],\"points\":[[-0.025084,0.141999,0.917967],[-0.0435896,0.155178,0.917822],[-0.0586418,0.136307,0.918293],[-0.0874078,0.148648,0.917594]],\"identity\":\"Four individually named printed landmarks on the same cream cheese top; not a tracker or arbitrary pixel samples.\"},\"frame54_geometry\":{\"reference_frame_id\":54,\"top_corners_world_m\":[[-0.0135287,0.164455,0.918062],[-0.0126113,0.124427,0.918062],[-0.0923295,0.124186,0.918062],[-0.0912941,0.165459,0.918062]],\"top_center_world_m\":[-0.0524409,0.144632,0.918062],\"top_z_m\":0.918062,\"table_z_m\":0.899981,\"width_m\":0.0400384,\"length_m\":0.0797186,\"long_axis_world\":[-0.999995,-0.00302525,0.0],\"side\":{\"world_m\":[-0.0468192,0.123351,0.914865],\"depth_m\":0.985807,\"frame_id\":54,\"pixel\":[500,476],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"side_valid\":true},\"candidate\":{\"frame_id\":54,\"low_pad_z_m\":0.920049,\"high_pad_z_m\":0.921762,\"target_pad_z_m\":0.920905,\"interval_m\":0.00171282,\"finger_bottom_relative_pad_m\":-0.0130687,\"common_pad_bottom_m\":-0.00784261,\"common_pad_top_m\":0.00784261,\"required_table_clearance_m\":0.006,\"required_overlap_m\":0.003,\"end_reserve_m\":0.0006,\"surface_allowance_m\":0.001},\"state\":{\"frame_id\":75,\"native_steps\":75,\"budgets\":{\"gpt_remaining\":10,\"jev_remaining\":175,\"native_steps_remaining\":525,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0529799,0.144023,0.939878],\"tcp_quaternion_xyzw\":[0.999995,0.00175325,0.00124548,-0.00244767],\"gripper_qpos_m\":[0.0399638,-0.0399478],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.4527e-06,7.63807e-06,-0.00357494],\"pad_extent_in_tool_m\":[0.0160002,0.0949116,0.0160006],\"finger_low_offset_tool_m\":[-0.0104991,-0.0663517,-0.0444435],\"finger_high_offset_tool_m\":[0.0104905,0.0663666,0.00927439]}},\"gap\":\"\",\"retained_same_frame_points\":{}}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_cream_cheese",
+                  "wrong",
+                  "unknown"
+                ]
+              },
+              "marks_identified": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "four_distinct",
+                  "same_four",
+                  "ambiguous",
+                  "unavailable"
+                ]
+              },
+              "labels": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 240
+                },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "support": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "flat_on_table",
+                  "clear_of_table",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "gripper": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "empty_open",
+                  "straddling_open",
+                  "opposing_contacts",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "route": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_clear",
+                  "obstructed",
+                  "unknown"
+                ]
+              },
+              "passages": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "both_visible",
+                  "obstructed",
+                  "unknown"
+                ]
+              },
+              "slip": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "none_visible",
+                  "visible",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "identity",
+              "marks_identified",
+              "labels",
+              "support",
+              "gripper",
+              "route",
+              "passages",
+              "slip"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

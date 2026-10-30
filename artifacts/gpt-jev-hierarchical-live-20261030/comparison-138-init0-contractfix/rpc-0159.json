@@ -1,0 +1,133 @@
+{
+  "index": 159,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "lift.view_samples",
+      {
+        "before_turn": {
+          "frame_id": 69,
+          "parameters": {
+            "bowl": "same_upright_on_counter",
+            "h0": {
+              "camera": "robot0_eye_in_hand",
+              "pixel": [
+                455,
+                366
+              ],
+              "visible": true
+            },
+            "h1": {
+              "camera": "robot0_eye_in_hand",
+              "pixel": [
+                400,
+                391
+              ],
+              "visible": true
+            },
+            "h2": {
+              "camera": "robot0_eye_in_hand",
+              "pixel": [
+                375,
+                448
+              ],
+              "visible": true
+            },
+            "h3": {
+              "camera": "robot0_eye_in_hand",
+              "pixel": [
+                402,
+                511
+              ],
+              "visible": true
+            },
+            "height_coverage": "all_relevant_tops_visible",
+            "proximal_hand": "visible_clear_turn",
+            "turn_space": "visibly_accounted"
+          },
+          "points": {
+            "h0": {
+              "world_m": [
+                -0.09563015007628743,
+                -0.04310405990922573,
+                0.9473917550669524
+              ],
+              "depth_m": 0.3184496760368347,
+              "frame_id": 69,
+              "pixel": [
+                455,
+                366
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "h1": {
+              "world_m": [
+                -0.06131486020269253,
+                -0.02576959611328205,
+                0.9475439445106036
+              ],
+              "depth_m": 0.31842175126075745,
+              "frame_id": 69,
+              "pixel": [
+                400,
+                391
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "h2": {
+              "world_m": [
+                -0.04689970478763018,
+                0.011014494472459488,
+                0.9494244567925756
+              ],
+              "depth_m": 0.31799453496932983,
+              "frame_id": 69,
+              "pixel": [
+                375,
+                448
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "h3": {
+              "world_m": [
+                -0.06581913103804661,
+                0.050918074866483795,
+                0.9494728145242961
+              ],
+              "depth_m": 0.32022273540496826,
+              "frame_id": 69,
+              "pixel": [
+                402,
+                511
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": [],
+          "interpretation": "The visible scene supports this fixed-TCP high observation turn, not descent. The finger-box corner radius is about 0.0806 m; the supplied 0.0855743 m sphere accommodates the stated drift and growth bounds, with a lower extent of 1.0851 m before the height allowance. h0-h3 select visible bowl rim surfaces within its XY column. The bowl rim is the highest visible relevant surface; plate and exposed counter portions are lower. The nearby carton is also supplied for depth-based column filtering. The cabinet, handles, wooden rack, bottle and hotplate are lateral to the column, not unseen overhead surfaces inside it; their visible regions are returned for checking. Neither view reveals an obscured relevant top that prevents a local height bound. The visible proximal hand and wrist are separated from external objects with room for this high turn. Pad-face occlusion is robot self-occlusion and does not prohibit this observation-producing action. The patterned bowl is upright on the counter wi",
+          "fallbacks": [],
+          "valid": {}
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 69,
+  "response": {
+    "result": {
+      "key": "lift.view_samples",
+      "frame_id": 69,
+      "method_number": 2,
+      "source_sha256": "b50475c5643eae1de8d41b370a69a34124edfdbd9aefd1ca7fec3ca3f9d1722f",
+      "bytes": 2543,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 69
+}

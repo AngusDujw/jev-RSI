@@ -1,0 +1,206 @@
+[
+  {
+    "run": null,
+    "native_success": false,
+    "termination": "HTTP Error 502: Bad Gateway",
+    "gpt_calls": 7,
+    "jev_calls": 1,
+    "dispatches": 0,
+    "native_steps": 0,
+    "elapsed_s": 2824.6126168810297,
+    "hierarchical": {
+      "plan_versions": 1,
+      "updates": 1,
+      "confirmed_stages": 0,
+      "termination": null,
+      "rejected_source_returns": 0,
+      "scope": "Model-return provenance and transition rules, not observation truth"
+    },
+    "models": {
+      "gpt": {
+        "attempts": 0,
+        "unknown_usage": 0,
+        "completed_input": 924071,
+        "completed_output": 68408,
+        "relay_seconds": 2794.110753059387,
+        "matched_requests": 7,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 7,
+        "request_models": [
+          "gpt-6-astra"
+        ],
+        "transport_source_hashes": [
+          "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+        ]
+      },
+      "jev": {
+        "attempts": 1,
+        "unknown_usage": 1,
+        "completed_input": 0,
+        "completed_output": 0,
+        "relay_seconds": 0.8805900309962453,
+        "matched_requests": 1,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 0,
+        "request_models": [
+          "jev-1.13.0"
+        ],
+        "transport_source_hashes": [
+          "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+        ]
+      }
+    }
+  },
+  {
+    "run": null,
+    "native_success": false,
+    "termination": "HTTP Error 502: Bad Gateway",
+    "gpt_calls": 7,
+    "jev_calls": 0,
+    "dispatches": 0,
+    "native_steps": 0,
+    "elapsed_s": 2121.7445555680897,
+    "hierarchical": {
+      "plan_versions": 1,
+      "updates": 1,
+      "confirmed_stages": 0,
+      "termination": null,
+      "rejected_source_returns": 0,
+      "scope": "Model-return provenance and transition rules, not observation truth"
+    },
+    "models": {
+      "gpt": {
+        "attempts": 0,
+        "unknown_usage": 1,
+        "completed_input": 364837,
+        "completed_output": 45174,
+        "relay_seconds": 2088.057889699936,
+        "matched_requests": 7,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 7,
+        "request_models": [
+          "gpt-6-astra"
+        ],
+        "transport_source_hashes": [
+          "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+        ]
+      },
+      "jev": {
+        "attempts": 0,
+        "unknown_usage": 0,
+        "completed_input": 0,
+        "completed_output": 0,
+        "relay_seconds": 0.0,
+        "matched_requests": 0,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 0,
+        "request_models": [],
+        "transport_source_hashes": []
+      }
+    }
+  },
+  {
+    "run": null,
+    "native_success": false,
+    "termination": "HTTP Error 502: Bad Gateway",
+    "gpt_calls": 20,
+    "jev_calls": 40,
+    "dispatches": 40,
+    "native_steps": 120,
+    "elapsed_s": 7713.756233816966,
+    "hierarchical": {
+      "plan_versions": 2,
+      "updates": 4,
+      "confirmed_stages": 0,
+      "termination": null,
+      "rejected_source_returns": 0,
+      "scope": "Model-return provenance and transition rules, not observation truth"
+    },
+    "models": {
+      "gpt": {
+        "attempts": 0,
+        "unknown_usage": 3,
+        "completed_input": 1345629,
+        "completed_output": 133247,
+        "relay_seconds": 7627.460638046265,
+        "matched_requests": 20,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 22,
+        "request_models": [
+          "gpt-6-astra"
+        ],
+        "transport_source_hashes": [
+          "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+        ]
+      },
+      "jev": {
+        "attempts": 40,
+        "unknown_usage": 0,
+        "completed_input": 95527,
+        "completed_output": 9960,
+        "relay_seconds": 17.215674352948554,
+        "matched_requests": 40,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 0,
+        "request_models": [
+          "jev-1.13.0"
+        ],
+        "transport_source_hashes": [
+          "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+        ]
+      }
+    }
+  },
+  {
+    "run": null,
+    "native_success": false,
+    "termination": "gpt_budget",
+    "gpt_calls": 24,
+    "jev_calls": 40,
+    "dispatches": 40,
+    "native_steps": 120,
+    "elapsed_s": 8159.331143533811,
+    "hierarchical": {
+      "plan_versions": 2,
+      "updates": 6,
+      "confirmed_stages": 1,
+      "termination": "gpt_budget",
+      "rejected_source_returns": 0,
+      "scope": "Model-return provenance and transition rules, not observation truth"
+    },
+    "models": {
+      "gpt": {
+        "attempts": 0,
+        "unknown_usage": 2,
+        "completed_input": 1159759,
+        "completed_output": 135317,
+        "relay_seconds": 8071.320689916611,
+        "matched_requests": 24,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 24,
+        "request_models": [
+          "gpt-6-astra"
+        ],
+        "transport_source_hashes": [
+          "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+        ]
+      },
+      "jev": {
+        "attempts": 40,
+        "unknown_usage": 0,
+        "completed_input": 98273,
+        "completed_output": 9960,
+        "relay_seconds": 17.533927465978195,
+        "matched_requests": 40,
+        "undelivered_or_missing_responses": 0,
+        "native_accounting_records": 0,
+        "request_models": [
+          "jev-1.13.0"
+        ],
+        "transport_source_hashes": [
+          "f7d968f295daa35a8c48b77ddf8d220f81cb242cbc95a470af2b086700e7c470"
+        ]
+      }
+    }
+  }
+]

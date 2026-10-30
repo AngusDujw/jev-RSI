@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-a3b1ac66-5741-4d21-b1d7-70e3c520d24e",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-a3b1ac66-5741-4d21-b1d7-70e3c520d24e",
+      "arguments": "{\"action\": \"revise\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\", \"plan_valid\": \"yes\", \"recovery_available\": \"yes\", \"invalidated_assumptions\": [\"The selected face samples satisfy the declared contact-face geometry checks.\", \"The latest recentering attempt reduces TCP deviation from the observation anchor.\"], \"evidence\": [\"Frame 120 shows the patterned bowl upright on the counter, separate from the elevated hand and not on the cabinet tabletop.\", \"The observation turn executed 48 additional native steps; the gripper remains open and no bowl lift or retention is visible.\", \"The current stage returned blocked on face-geometry checks, not the earlier review-schema error; the current review returned four depth points and zero regions.\", \"The selected samples span 0.00834 m in tool-y and failed the declared geometry checks; their visual face label does not establish valid contact geometry.\", \"The latest recentering increased anchor deviation from 0.00643 m to 0.01316 m. The hand appears clear, but fresh swept-motion clearance is not established.\"], \"reason\": \"The lift objective and overall task ordering remain suitable. New measurements support a local correction rather than another identical retry or a claim of impossibility. Revise surface selection and check the face model and coordinate transform using obtainable fresh measurements at the actual frame 120 pose. Do not relax tolerances or infer aperture from one face. Any alternative sensing motion needs its own current clearance assessment, not automatic reuse of frame 72 clearance. The failed recentering and partial turn must remain accounted for; neither advancement nor whole-task completion is supported.\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 45568,
+    "output_tokens": 1118,
+    "output_tokens_details": {
+      "reasoning_tokens": 701
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18c1e-7ad6-7330-aa54-26a6863ab76f",
+    "turn_ids": [
+      "01a18c1e-7adc-74e3-af40-4c5b612ae648"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

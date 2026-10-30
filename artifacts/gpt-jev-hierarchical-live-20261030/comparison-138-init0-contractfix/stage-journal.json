@@ -1,0 +1,1569 @@
+{
+  "version": 1,
+  "plans": [
+    {
+      "explanation": "Initial plan from frame 0: the patterned bowl is on the counter beside the bottle; the target is the dark cabinet tabletop at left. The gripper is open and no execution is acknowledged. All manipulation remains to be done.",
+      "goal_evidence": "After release, withdrawal, and settling, fresh RGB-D observations show the bowl upright and stationary on the top of cabinet table 1, with its base within the tabletop boundary and no support from the robot.",
+      "stages": [
+        {
+          "id": "observe",
+          "objective": "Establish the bowl grasp region, cabinet tabletop landing area, and relevant clearances.",
+          "entry_evidence": "Frame 0 views show the bowl, dark cabinet with handles, bottle, plate, package, and nearby rack; robot state reports an open gripper.",
+          "success_evidence": "Public RGB-D and robot geometry establish an accessible bowl grasp region and a clear tabletop area large enough to support its base, with sufficient observed clearance for the next approach.",
+          "handoff_requirements": "Carry forward observed bowl and tabletop geometry, nearby obstacles, and remaining uncertainty. If boundaries or clearance are unclear, acquire a complementary view from an observed-clear robot configuration before committing.",
+          "replan_conditions": "Target identity remains ambiguous, the selected region is obstructed, or new observations invalidate the approach clearance; revise the region or gather further evidence rather than assume unknown space is free."
+        },
+        {
+          "id": "lift",
+          "objective": "Acquire the bowl and lift it clear of its current support.",
+          "entry_evidence": "Fresh observations support the selected grasp region and approach clearance; the bowl remains on the counter.",
+          "success_evidence": "Images show the bowl moving with the gripper and visibly separated from the counter, without apparent slipping or collision.",
+          "handoff_requirements": "Confirm actual bowl retention and orientation, and update its observed extent relative to the gripper before transport.",
+          "replan_conditions": "The bowl fails to move with the gripper, slips, tips, or becomes unobservable. Establish its actual state before any retry; a close command alone is not grasp evidence."
+        },
+        {
+          "id": "transfer",
+          "objective": "Bring the retained bowl above a suitable landing area on cabinet table 1.",
+          "entry_evidence": "The bowl is visibly retained off the counter, and relevant obstacle geometry is available.",
+          "success_evidence": "Fresh observations show the retained bowl above the selected tabletop area with its base footprint inside the support boundary and an observed-clear placement approach.",
+          "handoff_requirements": "Reconfirm bowl retention, tabletop vacancy, and clearance for both bowl and robot using current observations; acquire another safe view if occlusion prevents assessment.",
+          "replan_conditions": "Retention changes, an obstacle blocks progress, or landing clearance is uncertain. Reobserve or select a different supported route or landing area without treating unobserved clearance as free."
+        },
+        {
+          "id": "place",
+          "objective": "Set the bowl onto the cabinet tabletop, release it, and withdraw without disturbing it.",
+          "entry_evidence": "The retained bowl is above the verified landing area with a clear placement approach.",
+          "success_evidence": "Post-release observations show the bowl remaining upright at tabletop height as the gripper visibly separates and withdraws.",
+          "handoff_requirements": "Obtain an unobstructed view after withdrawal and allow settling before final assessment; do not infer placement from robot pose or gripper command.",
+          "replan_conditions": "The bowl remains attached, moves with withdrawal, tips, slides, or appears unsupported. Reassess its actual physical state before corrective action."
+        },
+        {
+          "id": "verify",
+          "objective": "Assess the completed placement after release and settling.",
+          "entry_evidence": "Release and withdrawal have been acknowledged, with a fresh view of the bowl and cabinet top.",
+          "success_evidence": "Successive observations show the bowl stationary and upright, its base supported within cabinet table 1's tabletop boundary, and the robot clear of it.",
+          "handoff_requirements": "Report completion only with this independent object evidence; obtain a complementary safe view if support or separation remains occluded.",
+          "replan_conditions": "The bowl shifts, is not on the intended tabletop, lacks adequate support, or cannot yet be assessed. Plan only the remaining observation or recovery from its current state."
+        }
+      ]
+    },
+    {
+      "explanation": "At frame 120 the bowl remains upright on the counter, separate from the elevated open hand. The observation turn and unsuccessful recentering have physically changed the robot pose; no grasp or lift occurred. Failed face checks invalidate the contact-geometry inference, and reversed recentering invalidates assumed progress toward the old anchor. Replace that repeated routine with an explicit grasp-feasibility stage from the actual pose. Earlier observation completion and clearance are historical, not authorization for new motion.",
+      "goal_evidence": "After release, withdrawal, and settling, successive fresh observations show the patterned bowl upright and stationary on the dark cabinet table 1 at left, its base supported within the tabletop boundary, with no robot support.",
+      "stages": [
+        {
+          "id": "resolve",
+          "objective": "Establish trustworthy grasp and approach evidence from the current robot configuration.",
+          "entry_evidence": "Frame 120 shows the bowl supported on the counter and the open hand clear; contact-face checks failed and recent recentering increased deviation.",
+          "success_evidence": "Current RGB-D, calibration, robot geometry, and reported opening consistently bound an accessible bowl rim grasp and the relevant robot approach clearance; the bowl remains undisturbed.",
+          "handoff_requirements": "Carry fresh grasp-region, opening, clearance, and uncertainty evidence. Check surface identity and frame transforms rather than assuming a constant-coordinate face. Use alternative visible patches or a complementary view with freshly assessed sensing-motion clearance if needed. Do not infer aperture from one face, relax failed tolerances, or automatically repeat the old turn or recentering.",
+          "replan_conditions": "Evidence remains inconsistent, required clearance is occluded, or motion again stalls or reverses. Reconsider the rim sector, observation view, or approach using actual state; a failed local check alone does not establish impossibility."
+        },
+        {
+          "id": "acquire",
+          "objective": "Acquire the bowl and establish retained separation from the counter.",
+          "entry_evidence": "Fresh evidence supports a feasible rim grasp and relevant approach clearance; the bowl is still supported and not already retained.",
+          "success_evidence": "Observations show the bowl moving with the hand, visibly separated from the counter, with stable orientation and no apparent slip or unintended contact.",
+          "handoff_requirements": "Provide acknowledged execution and fresh bowl-hand relative extent, orientation, retention, and support-separation evidence. Gripper closure or a reached robot pose is insufficient.",
+          "replan_conditions": "The bowl does not follow the hand, tips, slips, contacts nearby objects, or becomes unobservable. Establish its actual support and retention state before any retry."
+        },
+        {
+          "id": "transfer",
+          "objective": "Bring the retained bowl above a suitable landing area on cabinet table 1.",
+          "entry_evidence": "The bowl is visibly retained off the counter. Current observations revalidate the cabinet identity, available landing area, and relevant travel clearance.",
+          "success_evidence": "The retained bowl is visibly above the cabinet top, with its support footprint within the landing boundary and adequate observed placement clearance.",
+          "handoff_requirements": "Refresh tabletop vacancy and boundary evidence rather than relying on frame 0 measurements. Account for the observed bowl extent and robot geometry; obtain a safe complementary view when needed.",
+          "replan_conditions": "Retention changes, travel clearance is unsupported, or the landing area is unsuitable. Reobserve or select another evidenced route or landing area without assuming unknown space is free."
+        },
+        {
+          "id": "release",
+          "objective": "Establish tabletop support, release the bowl, and withdraw clear.",
+          "entry_evidence": "The retained bowl is above the verified landing area with a supported placement approach.",
+          "success_evidence": "Post-release images show the bowl remaining upright on the tabletop while the hand visibly separates and withdraws without carrying or disturbing it.",
+          "handoff_requirements": "Preserve release and withdrawal receipts and independent object observations. Allow settling and obtain a view suitable for assessing support and separation.",
+          "replan_conditions": "The bowl remains attached, follows withdrawal, tips, slides, or appears unsupported. Reassess current physical state before correction."
+        },
+        {
+          "id": "assess",
+          "objective": "Assess the whole-task goal after release, withdrawal, and settling.",
+          "entry_evidence": "Release and withdrawal are acknowledged and fresh observations show the bowl on the intended cabinet top.",
+          "success_evidence": "Successive observations confirm the bowl stationary and upright, its base supported within cabinet table 1's top boundary, and the robot clear.",
+          "handoff_requirements": "Report completion only from independent object evidence. If support or separation is occluded, obtain a complementary observation using assessed-clear motion.",
+          "replan_conditions": "The bowl moves, has inadequate support, is on the wrong surface, or cannot yet be assessed. Plan only the remaining observation or recovery from its actual state."
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "update": 0,
+      "stage": "observe",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 0,
+      "trigger": "stage_returned",
+      "source_sha256": "370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2",
+      "outcome": {
+        "stage_status": "stage_complete",
+        "reason": "Fresh visible RGB-D establishes a measured rim-pinch region, a vacant tabletop patch enclosing the conservative bowl mouth footprint with margin, and observed clearance for high open-hand alignment only.",
+        "evidence": {
+          "start_frame": 0,
+          "end_frame": 0,
+          "native_steps_start": 0,
+          "native_steps_end": 0,
+          "physical_commands": 0,
+          "geometry": {
+            "frame_id": 0,
+            "sample_checkpoint": "observe.samples1",
+            "bowl": {
+              "center_xy_m": [
+                -0.09990971220536583,
+                0.01004998248671844
+              ],
+              "rim_z_m": 0.9498821725147537,
+              "outer_rim_radius_m": 0.054322750100800926,
+              "allowance_m": 0.003,
+              "plane": [
+                0.0023051207557154858,
+                -0.012410132815644395,
+                0.999920334337591,
+                -0.949449140179431
+              ],
+              "plane_rms_m": 0.0001844158156646552,
+              "circle_rms_m": 0.0002445795070330067,
+              "largest_angular_gap_rad": 0.8075318190497441
+            },
+            "table": {
+              "plane": [
+                0.00289983103269987,
+                9.570178865459504e-10,
+                0.9999957954811519,
+                -1.1270049189522393
+              ],
+              "rms_m": 2.8639136014143248e-09,
+              "visible_interior_polygon_world_m": [
+                [
+                  -0.07975049088163966,
+                  -0.33999422443757127,
+                  1.1272409229057596
+                ],
+                [
+                  -0.07975049088163966,
+                  -0.16100005056932346,
+                  1.1272409229057596
+                ],
+                [
+                  0.16046768248820004,
+                  -0.15963425142751986,
+                  1.1265443281750742
+                ],
+                [
+                  0.16046768248820004,
+                  -0.28346268945073616,
+                  1.1265443281750742
+                ]
+              ],
+              "landing_center_world_m": [
+                0.04035859580328019,
+                -0.2360228039712877,
+                1.1268926241108486
+              ],
+              "inscribed_xy_radius_m": 0.07369252488538681,
+              "remaining_margin_m": 0.01336977478458589,
+              "allowance_m": 0.003
+            },
+            "grasp_region": {
+              "inner_world_m": [
+                -0.05088669368879667,
+                0.010507286334138614,
+                0.9423001152112187
+              ],
+              "outer_world_m": [
+                -0.04932638678707779,
+                0.010473104964138755,
+                0.9416644009717989
+              ],
+              "band_world_m": [
+                [
+                  -0.04970461572958487,
+                  0.030089987200839174,
+                  0.9499396180053225
+                ],
+                [
+                  -0.04967707308617317,
+                  -0.009746346265383987,
+                  0.9497779052733157
+                ]
+              ],
+              "candidate_center_world_m": [
+                -0.05010654023793723,
+                0.010490195649138685,
+                0.9419822580915088
+              ],
+              "outward_radial_xy": [
+                0.9999609378092035,
+                0.008838713466234473
+              ],
+              "measured_wall_thickness_m": 0.0015599438333776694,
+              "wall_thickness_allowance_m": 0.006,
+              "tangent_span_m": 0.039835020813297886,
+              "actuator_qpos_m": [
+                0.03872148686420614,
+                -0.03872403656789437
+              ],
+              "aperture_certified": false
+            },
+            "next_approach_envelope": {
+              "pad_start_world_m": [
+                -0.2084757576902651,
+                -0.015634511418593604,
+                1.172844736940837
+              ],
+              "high_pad_alignment_world_m": [
+                -0.05010654023793723,
+                0.010490195649138685,
+                1.172844736940837
+              ],
+              "xy_min_m": [
+                -0.27987590039831,
+                -0.0870346541266385
+              ],
+              "xy_max_m": [
+                0.021293602470107656,
+                0.08189033835718357
+              ],
+              "yaw_invariant_finger_xy_radius_m": 0.07140014270804489,
+              "lowest_finger_z_m": 1.1593766305223767,
+              "required_height_margin_m": 0.02,
+              "height_measurement_allowance_m": 0.005,
+              "scope": "Open fingers, high alignment and downward-tool world-yaw rotation only; no descent.",
+              "measured_height_margin_m": 0.0960343931598765,
+              "extrema_checkpoint": "observe.clearance0"
+            }
+          },
+          "diagnostics": [
+            {
+              "measurement_attempt": 0,
+              "frame_id": 0,
+              "gaps": [
+                "Missing or invalid named surface depths; see observe.samples0"
+              ]
+            },
+            {
+              "measurement_attempt": 1,
+              "frame_id": 0,
+              "gaps": []
+            },
+            {
+              "clearance_attempt": 0,
+              "coverage": "complete",
+              "robot_clear": "visible_clear",
+              "measurement_errors": [],
+              "available_height_margin_m": 0.0960343931598765
+            }
+          ]
+        },
+        "handoff": {
+          "checkpoint_keys": [
+            "observe.samples0",
+            "observe.samples1",
+            "observe.clearance0",
+            "observe.result"
+          ],
+          "reference_frame": 0,
+          "coordinate_frame": "world meters, xyzw tool-to-world quaternions",
+          "assumptions": [
+            "All positions are world meters; pixels have top-left origin and their saved camera/frame.",
+            "Measurements are visible surfaces, not hidden collision geometry.",
+            "Uncertainty margins are conservative engineering allowances, not calibrated confidence bounds.",
+            "No motion, grasp, retention, or base contact is established by this observation stage.",
+            "Landing size uses the rim-enclosed visible bowl silhouette, not an invented hidden base; recheck the bowl extent after lifting."
+          ],
+          "scope": "References concern the identified patterned bowl and dark cabinet table 1. Revalidate affected references after any motion. The high alignment envelope is not clearance for descent, closure, lifting, transport, or release. Exact aperture, lower contact geometry, hidden bowl base, and subsequent retention must be assessed by the next method.",
+          "next_observation": "Use the saved rim section and visible inner/outer contact samples to plan a rim pinch, not an across-mouth grasp. No action has been taken."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "advance",
+        "stage_satisfied": "yes",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [],
+        "evidence": [
+          "Current frame 0 views show the patterned bowl on the counter and a vacant dark cabinet tabletop.",
+          "Same-frame RGB-D identifies a visible rim-pinch region and a tabletop patch with 0.0737 m inscribed radius versus the measured 0.0543 m bowl rim radius.",
+          "Observed obstacle heights and robot geometry support the limited high-alignment envelope, with a reported 0.0960 m height margin.",
+          "No physical commands or native steps occurred; the bowl has not been lifted or placed.",
+          "Exact aperture and descent clearance remain unverified; the observed clearance applies only to high open-hand alignment and yaw."
+        ],
+        "reason": "The stage returned stage_complete, and current images with same-frame measurements support its observation objective. Advance with the stated clearance limits, not as authorization for unverified descent or evidence of task completion."
+      }
+    },
+    {
+      "update": 1,
+      "stage": "lift",
+      "plan_revision": 0,
+      "stage_index": 1,
+      "frame_id": 69,
+      "trigger": "stage_returned",
+      "source_sha256": "6ae04e63cf69b2ba4a9b9071b8ca0f076d91df82b890542e5853e025f8788807",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "High movement is acknowledged, but local pinch/aperture depths remain unresolved after a bounded smaller-depth-patch attempt. Do not descend from these data.",
+        "evidence": {
+          "stage": "lift",
+          "phase": "high_alignment",
+          "start_state": {
+            "frame_id": 0,
+            "native_steps": 0,
+            "budgets": {
+              "gpt_remaining": 17,
+              "jev_remaining": 200,
+              "native_steps_remaining": 600,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.2086836015473623,
+              -0.01563769288461891,
+              1.1692507325745694
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9995811388826321,
+              -0.0004247927204744095,
+              -0.028936258121053476,
+              0.00024353068945456684
+            ],
+            "gripper_qpos_m": [
+              0.03872148686420614,
+              -0.03872403656789437
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -4.1323462401758604e-07,
+                -1.5169204806188274e-06,
+                -0.003600010292151782
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600192363610598,
+                0.09244583465487474,
+                0.016000343678641955
+              ],
+              "finger_low_offset_tool_m": [
+                -0.01049654566452086,
+                -0.06512742303013508,
+                -0.04446851543861229
+              ],
+              "finger_high_offset_tool_m": [
+                0.01049505769542847,
+                0.06512448566422156,
+                0.0092491642634655
+              ]
+            }
+          },
+          "calls_used": 23,
+          "descent_executed": false,
+          "closure_executed": false,
+          "retention_established": false,
+          "target_pad_world_m": [
+            -0.05010654023793723,
+            0.010490195649138685,
+            1.172844736940837
+          ],
+          "target_quaternion_xyzw": [
+            0.7099222328946184,
+            -0.7036853394100765,
+            -0.020731121461376227,
+            -0.020188782632902996
+          ],
+          "world_yaw_rad": -1.561122362185197,
+          "obstacle_top_z_m": 1.0583422373625002,
+          "reference_frame": 0,
+          "authority": "High open-hand alignment and downward-tool world yaw only.",
+          "last_receipt": {
+            "decision": 22,
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "negative",
+              "gripper": "keep"
+            },
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              -0.09766225146604517,
+              -1.0
+            ],
+            "before": [
+              -0.048525478120392214,
+              0.00884992626822663,
+              1.1706011846401132
+            ],
+            "after": [
+              -0.0485005917401647,
+              0.009607674944944989,
+              1.170678328446036
+            ],
+            "target_tcp": [
+              -0.050121827473821316,
+              0.010696080044577993,
+              1.169249714603364
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 69,
+            "frame_id": 69,
+            "status": "reached",
+            "position_error_m": 0.0024194975669477982,
+            "rotation_error_rad": 0.03910484474199653
+          },
+          "last_acknowledged_state": {
+            "frame_id": 69,
+            "native_steps": 69,
+            "budgets": {
+              "gpt_remaining": 17,
+              "jev_remaining": 177,
+              "native_steps_remaining": 531,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.0485005917401647,
+              0.009607674944944989,
+              1.170678328446036
+            ],
+            "tcp_quaternion_xyzw": [
+              0.7214691917225284,
+              -0.6919655117444141,
+              -0.023760519812408162,
+              -0.010068448230825757
+            ],
+            "gripper_qpos_m": [
+              0.03993139547984039,
+              -0.03995502028019476
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -4.955876948770609e-06,
+                -1.2976238025541598e-05,
+                -0.0036011023441315355
+              ],
+              "pad_extent_in_tool_m": [
+                0.01604441596541452,
+                0.09489416526390367,
+                0.01600168612369821
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010510676380483933,
+                -0.06636369619600974,
+                -0.0444701698369272
+              ],
+              "finger_high_offset_tool_m": [
+                0.010500648278158515,
+                0.0663391589653596,
+                0.009248885836632387
+              ]
+            }
+          },
+          "final_height_margin_m": 0.09637510239176172,
+          "post_review": {
+            "frame_id": 69,
+            "bowl": "same_upright_on_counter",
+            "hand": "clear_above_bowl",
+            "band": "same_accessible_pinch_band",
+            "pad_faces": "unknown"
+          },
+          "measurement_gap": {
+            "missing_valid_depth": [
+              "pad_a",
+              "pad_b"
+            ],
+            "pad_faces": "unknown"
+          },
+          "end_state": {
+            "frame_id": 69,
+            "native_steps": 69,
+            "budgets": {
+              "gpt_remaining": 16,
+              "jev_remaining": 177,
+              "native_steps_remaining": 531,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.0485005917401647,
+              0.009607674944944989,
+              1.170678328446036
+            ],
+            "tcp_quaternion_xyzw": [
+              0.7214691917225284,
+              -0.6919655117444141,
+              -0.023760519812408162,
+              -0.010068448230825757
+            ],
+            "gripper_qpos_m": [
+              0.03993139547984039,
+              -0.03995502028019476
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -4.955876948770609e-06,
+                -1.2976238025541598e-05,
+                -0.0036011023441315355
+              ],
+              "pad_extent_in_tool_m": [
+                0.01604441596541452,
+                0.09489416526390367,
+                0.01600168612369821
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010510676380483933,
+                -0.06636369619600974,
+                -0.0444701698369272
+              ],
+              "finger_high_offset_tool_m": [
+                0.010500648278158515,
+                0.0663391589653596,
+                0.009248885836632387
+              ]
+            }
+          },
+          "acknowledged_native_steps": 69
+        },
+        "handoff": {
+          "checkpoint_keys": [
+            "observe.result",
+            "observe.samples1",
+            "observe.clearance0",
+            "lift.alignment",
+            "lift.measurements"
+          ],
+          "coordinate_frame": "World meters; tool-to-world xyzw quaternions; pixels retain their camera and acquisition frame.",
+          "current_phase": "high_alignment",
+          "assumptions": [
+            "Historical bowl and obstacle geometry is not a current object pose after movement.",
+            "No descent, closure, grasp, retention, or support separation is established by this slice.",
+            "A measured local aperture is not clearance for fingers entering the bowl."
+          ],
+          "remaining_lift_evidence": "Validate the next descent segment, acquire the rim pinch, and measure bowl-hand co-motion and visible counter separation. Revalidate affected geometry and any saved tracker before use; do not reopen a possibly held object."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "stage_satisfied": "no",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [
+          "Both opposing inner finger contact-face centers can be measured from the current aligned views."
+        ],
+        "evidence": [
+          "Frame 69 images show the patterned bowl upright on the counter, not on the cabinet tabletop, and the open hand visibly separated above it.",
+          "Acknowledged execution establishes high alignment and rotation only; no descent or closure was executed.",
+          "Current depth observations identify the selected bowl wall and rim band, but neither opposing inner finger contact-face center is identifiable; pad_a and pad_b have no valid depth measurements.",
+          "The stage returned blocked, with no observed bowl-hand co-motion or bowl separation from the counter.",
+          "No obstruction of the selected visible rim band is observed; finger-entry and descent clearance remain unverified."
+        ],
+        "reason": "The lift objective remains suitable, but its sensing method needs correction. Continue from the executed high alignment, not the initial pose. A complementary view obtained within revalidated clear high space is a justified local recovery candidate; repeating samples of occluded faces is not. Resolve contact geometry and local descent clearance without treating placeholder pixels, gripper opening, or historical clearance as proof. This measurement gap does not invalidate the overall plan or establish that recovery is impossible."
+      }
+    },
+    {
+      "update": 2,
+      "stage": "lift",
+      "plan_revision": 0,
+      "stage_index": 1,
+      "frame_id": 72,
+      "trigger": "stage_returned",
+      "source_sha256": "b50475c5643eae1de8d41b370a69a34124edfdbd9aefd1ca7fec3ca3f9d1722f",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "Post-turn measured hand geometry leaves the admitted bounds.",
+        "evidence": {
+          "stage": "lift",
+          "phase": "complementary_high_view",
+          "start_state": {
+            "frame_id": 69,
+            "native_steps": 69,
+            "budgets": {
+              "gpt_remaining": 14,
+              "jev_remaining": 177,
+              "native_steps_remaining": 531,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.0485005917401647,
+              0.009607674944944989,
+              1.170678328446036
+            ],
+            "tcp_quaternion_xyzw": [
+              0.7214691917225284,
+              -0.6919655117444141,
+              -0.023760519812408162,
+              -0.010068448230825757
+            ],
+            "gripper_qpos_m": [
+              0.03993139547984039,
+              -0.03995502028019476
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -4.955876948770609e-06,
+                -1.2976238025541598e-05,
+                -0.0036011023441315355
+              ],
+              "pad_extent_in_tool_m": [
+                0.01604441596541452,
+                0.09489416526390367,
+                0.01600168612369821
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010510676380483933,
+                -0.06636369619600974,
+                -0.0444701698369272
+              ],
+              "finger_high_offset_tool_m": [
+                0.010500648278158515,
+                0.0663391589653596,
+                0.009248885836632387
+              ]
+            }
+          },
+          "prior_native_steps": 69,
+          "calls": 1,
+          "retention_established": false,
+          "view_plan": {
+            "tcp_target_world_m": [
+              -0.0485005917401647,
+              0.009607674944944989,
+              1.170678328446036
+            ],
+            "quaternion_target_xyzw": [
+              0.9192169880715125,
+              -0.007879047003109287,
+              0.3934458767877422,
+              0.013356328005273274
+            ],
+            "world_yaw_rad": 1.5036100901981708,
+            "tool_y_tilt_rad": 0.8573318094611184,
+            "camera_direction_world": [
+              0.8491358210517739,
+              -0.011537567706876261,
+              0.5280485223330704
+            ],
+            "finger_sphere_radius_m": 0.08557425454881162,
+            "tcp_drift_bound_m": 0.004,
+            "geometry_growth_bound_m": 0.001,
+            "height_allowance_m": 0.005,
+            "required_margin_m": 0.02
+          },
+          "clearance": {
+            "frame_id": 69,
+            "visible_top_z_m": 0.9494728145242961,
+            "sphere_height_margin_m": 0.1306312593729283,
+            "required_margin_m": 0.02,
+            "scope": "High diagnostic turn only; visible stationary scene assumption."
+          },
+          "last_receipt": {
+            "decision": 23,
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "negative",
+              "ry": "negative",
+              "rz": "positive",
+              "gripper": "keep"
+            },
+            "action": [
+              0.0,
+              0.0,
+              0.0,
+              -0.11547005383792515,
+              -0.11547005383792515,
+              0.11547005383792515,
+              -1.0
+            ],
+            "before": [
+              -0.0485005917401647,
+              0.009607674944944989,
+              1.170678328446036
+            ],
+            "after": [
+              -0.04482368327809973,
+              0.008498559453882266,
+              1.1737123819331763
+            ],
+            "target_tcp": [
+              -0.0485005917401647,
+              0.009607674944944989,
+              1.170678328446036
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 72,
+            "frame_id": 72,
+            "status": "moved",
+            "position_error_m": 0.004894412485043354,
+            "rotation_error_rad": 1.6580828521763629
+          },
+          "last_acknowledged_state": {
+            "frame_id": 72,
+            "native_steps": 72,
+            "budgets": {
+              "gpt_remaining": 13,
+              "jev_remaining": 176,
+              "native_steps_remaining": 528,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.04482368327809973,
+              0.008498559453882266,
+              1.1737123819331763
+            ],
+            "tcp_quaternion_xyzw": [
+              0.7306565427597409,
+              -0.6827073192257166,
+              -0.003415033535744021,
+              -0.0063301140565056885
+            ],
+            "gripper_qpos_m": [
+              0.03994083924486617,
+              -0.03995965235438093
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                5.008693418707792e-06,
+                -4.908901678488814e-05,
+                -0.0036354615141295315
+              ],
+              "pad_extent_in_tool_m": [
+                0.01606144447560691,
+                0.09491505462697265,
+                0.01604347694271286
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010533107090902837,
+                -0.06638224484231006,
+                -0.044525079882200974
+              ],
+              "finger_high_offset_tool_m": [
+                0.010517121776116118,
+                0.06631358253073606,
+                0.009236193728665626
+              ]
+            }
+          },
+          "pose_errors": {
+            "tcp_drift_m": 0.004894412485043354,
+            "rotation_rad": 1.658082852176363
+          },
+          "post_review": {
+            "frame_id": 72,
+            "parameters": {
+              "bowl": "same_upright_on_counter",
+              "faces": "not_both_visible",
+              "hand": "visibly_clear",
+              "pad_a": {
+                "camera": "robot0_eye_in_hand",
+                "pixel": [
+                  0,
+                  0
+                ],
+                "visible": false
+              },
+              "pad_b": {
+                "camera": "robot0_eye_in_hand",
+                "pixel": [
+                  0,
+                  0
+                ],
+                "visible": false
+              }
+            },
+            "stop": "Post-turn measured hand geometry leaves the admitted bounds."
+          },
+          "end_state": {
+            "frame_id": 72,
+            "native_steps": 72,
+            "budgets": {
+              "gpt_remaining": 12,
+              "jev_remaining": 176,
+              "native_steps_remaining": 528,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.04482368327809973,
+              0.008498559453882266,
+              1.1737123819331763
+            ],
+            "tcp_quaternion_xyzw": [
+              0.7306565427597409,
+              -0.6827073192257166,
+              -0.003415033535744021,
+              -0.0063301140565056885
+            ],
+            "gripper_qpos_m": [
+              0.03994083924486617,
+              -0.03995965235438093
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                5.008693418707792e-06,
+                -4.908901678488814e-05,
+                -0.0036354615141295315
+              ],
+              "pad_extent_in_tool_m": [
+                0.01606144447560691,
+                0.09491505462697265,
+                0.01604347694271286
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010533107090902837,
+                -0.06638224484231006,
+                -0.044525079882200974
+              ],
+              "finger_high_offset_tool_m": [
+                0.010517121776116118,
+                0.06631358253073606,
+                0.009236193728665626
+              ]
+            }
+          },
+          "new_native_steps": 3
+        },
+        "handoff": {
+          "checkpoint_keys": [
+            "observe.result",
+            "lift.alignment",
+            "lift.measurements",
+            "lift.view_recovery",
+            "lift.view_samples"
+          ],
+          "frames": "World meters; tool-to-world xyzw; image samples retain camera and acquisition frame.",
+          "provenance": "lift.alignment and lift.measurements preserve the earlier 69 acknowledged steps and bowl samples. lift.view_recovery records this turn's measured envelope, orientation target, receipts, and any tool-frame pad calibration. lift.view_samples preserves valid partial RGB-D samples and errors.",
+          "scope": "Only a high observation-producing turn was requested. No approach descent, closure, or bowl lift was requested; inspect receipts for actual choices. No retention is established.",
+          "reference_rules": "Pad calibration, if present, is expressed in the measured tool frame, not reusable pixels. Revalidate unchanged finger qpos, own geometry and face identity before propagating it to a new orientation. Reobserve the bowl and local finger-entry corridor before descent. Historical clearance is not descent authorization. Never reopen automatically after an unexpected gripper choice.",
+          "remaining_effect": "The lift stage still requires acquisition, observed bowl-hand co-motion, visible counter separation, and updated retained-bowl extent. No transfer or placement is authorized by this result."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "stage_satisfied": "no",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [
+          "The diagnostic turn keeps TCP drift within its admitted fixed-position bound."
+        ],
+        "evidence": [
+          "Frame 72 images show the patterned bowl upright on the counter, not on the cabinet tabletop, with the hand visibly separated above it.",
+          "Acknowledged execution added one partial high observation turn; no descent, closure, or bowl acquisition was executed.",
+          "Measured TCP drift was 0.00489441 m against the assumed 0.004 m bound, and the target orientation was not reached.",
+          "Neither opposing inner contact-face center is identifiable in the current views; the review returned no valid pad measurements.",
+          "The stage returned blocked. No bowl-hand co-motion or separation of the bowl from the counter is observed.",
+          "The execution-bound violation is not an observed collision; the frame 69 clearance samples are historical."
+        ],
+        "reason": "The lift objective and overall ordering remain suitable. Revise the local sensing and execution-envelope method from the actual frame 72 pose, preserving the executed motion. Revalidate relevant scene clearance and measured hand geometry, and account for observed drift before a bounded observation maneuver that can expose a different useful view. Do not merely relax thresholds, resample invisible faces, or treat placeholder pixels as measurements. The partial turn provides new execution evidence and does not establish that alternate sensing is impossible. Contact geometry and descent clearance remain unresolved, so neither lift-stage advancement nor task completion is supported."
+      }
+    },
+    {
+      "update": 3,
+      "stage": "lift",
+      "plan_revision": 0,
+      "stage_index": 1,
+      "frame_id": 72,
+      "trigger": "execution_error",
+      "source_sha256": "5803cccdf2acfc92b90f36aac0bf9ce3c60ad02e364a35b7b1bfab7184aa06f5",
+      "outcome": {
+        "stage_status": "blocked",
+        "completion_proposed": false,
+        "error": "Planner output contract repair exhausted; no valid observation was delivered. Review the method-declared fields and question before retrying. {\"error\": {\"type\": \"ValueError\", \"message\": \"Native submission validation repair budget exhausted\"}, \"validation_errors\": [\"submit_review.regions: length outside schema (actual=11, min=0, max=8)\", \"submit_review.regions: length outside schema (actual=11, min=0, max=8)\", \"submit_review.regions: length outside schema (actual=11, min=0, max=8)\"]}"
+      },
+      "decision": {
+        "action": "revise",
+        "stage_satisfied": "no",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [
+          "The observation review fits the submission schema: 11 regions exceeded the maximum of 8.",
+          "The earlier diagnostic turn stayed within its assumed TCP drift bound."
+        ],
+        "evidence": [
+          "Frame 72 images show the bowl upright on the counter, separate from the elevated hand and not on the cabinet tabletop.",
+          "Public state remains at frame 72 and 72 native steps with the gripper open; no additional physical execution is acknowledged after the partial observation turn.",
+          "The current stage returned blocked because the observation submission repeatedly contained 11 regions where at most 8 are permitted; no valid new observation was delivered.",
+          "The opposing inner pad centers remain unidentifiable in the supplied views; no bowl retention or lift is visible.",
+          "The earlier turn exceeded its assumed drift bound and did not reach its target orientation; this does not establish collision or rule out alternate sensing."
+        ],
+        "reason": "Revise the local observation contract and sensing method, not the task ordering. A concrete schema failure explains this retry, so correct the review to at most eight relevant regions without dropping necessary clearance coverage; separate additional measurements if supported. Continue from the actual frame 72 configuration, revalidating geometry and clearance before any further sensing motion. Do not reuse invisible pad placeholders, treat historical checkpoints as fresh observations, or weaken safety margins. The lift objective remains suitable, and neither advancement nor task completion is supported."
+      }
+    },
+    {
+      "update": 4,
+      "stage": "lift",
+      "plan_revision": 0,
+      "stage_index": 1,
+      "frame_id": 120,
+      "trigger": "stage_returned",
+      "source_sha256": "6afbc8a24d4380a6cd746ddf547b0cd6a47fae9732bc5954dc9b6b988f40aaab",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "Face samples fail same-side, own-finger bounds, width/height spread or constant-tool-y checks; partial evidence is preserved.",
+        "evidence": {
+          "stage": "lift",
+          "phase": "single_face_observation_repair",
+          "entry_state": {
+            "frame_id": 72,
+            "native_steps": 72,
+            "budgets": {
+              "gpt_remaining": 7,
+              "jev_remaining": 176,
+              "native_steps_remaining": 528,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.04482368327809973,
+              0.008498559453882266,
+              1.1737123819331763
+            ],
+            "tcp_quaternion_xyzw": [
+              0.7306565427597409,
+              -0.6827073192257166,
+              -0.003415033535744021,
+              -0.0063301140565056885
+            ],
+            "gripper_qpos_m": [
+              0.03994083924486617,
+              -0.03995965235438093
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                5.008693418707792e-06,
+                -4.908901678488814e-05,
+                -0.0036354615141295315
+              ],
+              "pad_extent_in_tool_m": [
+                0.01606144447560691,
+                0.09491505462697265,
+                0.01604347694271286
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010533107090902837,
+                -0.06638224484231006,
+                -0.044525079882200974
+              ],
+              "finger_high_offset_tool_m": [
+                0.010517121776116118,
+                0.06631358253073606,
+                0.009236193728665626
+              ]
+            }
+          },
+          "calls": 16,
+          "retention_established": false,
+          "updates": [
+            {
+              "frame_id": 99,
+              "recenter": true,
+              "displacement_m": 0.0036453274864356217,
+              "excursion_m": 0.0014234877480735447,
+              "rotation_remaining_rad": 0.6691621082141316,
+              "status": "moved"
+            },
+            {
+              "frame_id": 102,
+              "recenter": false,
+              "displacement_m": 0.0011280963526718328,
+              "excursion_m": 0.0025192449917097394,
+              "rotation_remaining_rad": 0.6062457680387127,
+              "status": "moved"
+            },
+            {
+              "frame_id": 105,
+              "recenter": false,
+              "displacement_m": 0.00049364040539397,
+              "excursion_m": 0.0029627945153859053,
+              "rotation_remaining_rad": 0.5379580278352231,
+              "status": "moved"
+            },
+            {
+              "frame_id": 108,
+              "recenter": false,
+              "displacement_m": 0.0006255845166371107,
+              "excursion_m": 0.0026151233548359918,
+              "rotation_remaining_rad": 0.46841488311454577,
+              "status": "moved"
+            },
+            {
+              "frame_id": 111,
+              "recenter": false,
+              "displacement_m": 0.0007167332114735588,
+              "excursion_m": 0.0023355126434863086,
+              "rotation_remaining_rad": 0.3981124501014201,
+              "status": "moved"
+            },
+            {
+              "frame_id": 114,
+              "recenter": false,
+              "displacement_m": 0.0013965707770648749,
+              "excursion_m": 0.0030288904131213,
+              "rotation_remaining_rad": 0.3278156702263887,
+              "status": "moved"
+            },
+            {
+              "frame_id": 117,
+              "recenter": false,
+              "displacement_m": 0.003648366050287372,
+              "excursion_m": 0.006431381980556583,
+              "rotation_remaining_rad": 0.25841674974579765,
+              "status": "moved"
+            },
+            {
+              "frame_id": 120,
+              "recenter": true,
+              "displacement_m": 0.007293242811009309,
+              "excursion_m": 0.013163392176978844,
+              "rotation_remaining_rad": 0.2076650836258999,
+              "status": "moved"
+            }
+          ],
+          "plan": {
+            "anchor_tcp_world_m": [
+              -0.04482368327809973,
+              0.008498559453882266,
+              1.1737123819331763
+            ],
+            "target_quaternion_xyzw": [
+              0.6004932422209138,
+              -0.6127369682135009,
+              0.36133362738287017,
+              -0.36523866656458964
+            ],
+            "yaw_rad": -0.07987504311241267,
+            "roll_rad": 1.0745128994008635,
+            "preferred_finger_tool_y_sign": 1.0,
+            "camera_direction_world": [
+              0.8495522154394485,
+              -0.010264041691691409,
+              0.5274046669210237
+            ],
+            "previous_three_step_displacement_m": 0.004894412485043354,
+            "recenter_trigger_m": 0.004,
+            "per_update_displacement_allowance_m": 0.009788824970086709,
+            "maximum_tcp_excursion_m": 0.013788824970086709,
+            "finger_growth_allowance_m": 0.001,
+            "finger_sphere_radius_m": 0.09541159789318336,
+            "height_allowance_m": 0.005,
+            "required_margin_m": 0.02,
+            "basis": "Twice the measured previous displacement is an engineering transient allowance, not a certified dynamics bound. Freshly review this entire envelope. The original 4 mm limit remains the stop-rotation/recenter trigger."
+          },
+          "clearance": {
+            "frame_id": 72,
+            "highest_sample_z_m": 0.9507128437493553,
+            "available_margin_m": 0.12258794029063769,
+            "required_margin_m": 0.02,
+            "scope": "High-turn envelope only; visible complete coverage and stationary scene required."
+          },
+          "last_receipt": {
+            "decision": 39,
+            "choices": {
+              "x": "hold",
+              "y": "negative",
+              "z": "negative",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "action": [
+              0.0,
+              -0.05509002804406596,
+              -0.023771596709182725,
+              0.0,
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              -0.0442296642536619,
+              0.014584897173764728,
+              1.1757039413066246
+            ],
+            "after": [
+              -0.04494525216400569,
+              0.021656542864274153,
+              1.1740695754140509
+            ],
+            "target_tcp": [
+              -0.04482368327809973,
+              0.008498559453882266,
+              1.1737123819331763
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 120,
+            "frame_id": 120,
+            "status": "moved",
+            "position_error_m": 0.013163392176978844,
+            "rotation_error_rad": 0.05240874504218684
+          },
+          "last_acknowledged_state": {
+            "frame_id": 120,
+            "native_steps": 120,
+            "budgets": {
+              "gpt_remaining": 6,
+              "jev_remaining": 160,
+              "native_steps_remaining": 480,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.04494525216400569,
+              0.021656542864274153,
+              1.1740695754140509
+            ],
+            "tcp_quaternion_xyzw": [
+              0.6304167189282921,
+              -0.6513539280496855,
+              0.29924915092773,
+              -0.2979308083749726
+            ],
+            "gripper_qpos_m": [
+              0.04003070503607536,
+              -0.03952691438340836
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -0.00010658850147361905,
+                0.0002918987281789083,
+                -0.0035877440934911726
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600818135793741,
+                0.09456635777324698,
+                0.016046770928278227
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010599894287075225,
+                -0.06587150215172174,
+                -0.04447730130474865
+              ],
+              "finger_high_offset_tool_m": [
+                0.010382131980760812,
+                0.06649430327271305,
+                0.009287642357155531
+              ]
+            }
+          },
+          "remaining_rotation_rad": 0.2076650836258999,
+          "tcp_excursion_m": 0.013163392176978844,
+          "execution_stop": "Stalled, repeatedly inadequate or materially reversed progress; no blind retry.",
+          "observed_rotation_rad": 0.8733345054944877,
+          "fresh_effect_review": {
+            "frame_id": 120,
+            "parameters": {
+              "bowl": "same_upright_supported",
+              "face": "one_actual_inward_contact_face",
+              "hand": "visibly_clear"
+            }
+          },
+          "single_face": {
+            "frame_id": 120,
+            "finger_tool_y_sign": 1.0,
+            "sample_names": [
+              "m0",
+              "m1",
+              "m2",
+              "m3"
+            ],
+            "points_tool_m": [
+              [
+                0.004299633237008299,
+                0.049382055561393634,
+                -0.012411643612346368
+              ],
+              [
+                -0.0032254922151840476,
+                0.049467472142407876,
+                -0.012482685031481533
+              ],
+              [
+                0.004134798772594692,
+                0.04112769360644419,
+                -4.0484279333008466e-05
+              ],
+              [
+                -0.0032999393390859347,
+                0.04112896317505499,
+                -8.603708631049756e-05
+              ]
+            ],
+            "mean_tool_y_m": 0.04527654612132517,
+            "spans_tool_m": [
+              0.007599572576094234,
+              0.008339778535963682,
+              0.012442200752148525
+            ],
+            "per_sample_allowance_m": 0.003,
+            "gripper_qpos_m": [
+              0.04003070503607536,
+              -0.03952691438340836
+            ],
+            "checks_passed": false,
+            "scope": "One identified inner face patch, not an aperture, center or retention certificate."
+          },
+          "end_state": {
+            "frame_id": 120,
+            "native_steps": 120,
+            "budgets": {
+              "gpt_remaining": 5,
+              "jev_remaining": 160,
+              "native_steps_remaining": 480,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.04494525216400569,
+              0.021656542864274153,
+              1.1740695754140509
+            ],
+            "tcp_quaternion_xyzw": [
+              0.6304167189282921,
+              -0.6513539280496855,
+              0.29924915092773,
+              -0.2979308083749726
+            ],
+            "gripper_qpos_m": [
+              0.04003070503607536,
+              -0.03952691438340836
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -0.00010658850147361905,
+                0.0002918987281789083,
+                -0.0035877440934911726
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600818135793741,
+                0.09456635777324698,
+                0.016046770928278227
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010599894287075225,
+                -0.06587150215172174,
+                -0.04447730130474865
+              ],
+              "finger_high_offset_tool_m": [
+                0.010382131980760812,
+                0.06649430327271305,
+                0.009287642357155531
+              ]
+            }
+          },
+          "new_native_steps": 48
+        },
+        "handoff": {
+          "checkpoint_keys": [
+            "observe.result",
+            "lift.alignment",
+            "lift.measurements",
+            "lift.view_recovery",
+            "lift.view_samples",
+            "lift.turn_v4",
+            "lift.face_v4"
+          ],
+          "frames": "World meters; xyzw tool-to-world orientations. Each sample retains its camera and acquisition frame.",
+          "provenance": "lift.turn_v4 records the actual entry, historical measured displacement, newly reviewed envelope, target, acknowledged execution and any measured single-face tool coordinates. lift.face_v4 records current review parameters, valid partial depths and errors. Earlier checkpoints remain historical and unchanged.",
+          "scope": "High observation turn only. No descent or gripper change was requested. Retention and lift are NOT established. Continue from the saved actual state, not a commanded pose.",
+          "dependencies": "The observed face belongs to the recorded positive- or negative-tool-y finger at the saved opening. It is not an opposing-face measurement, aperture certificate, pad center or descent clearance. Revalidate opening, identity and geometry before propagation. Reacquire image landmarks after movement. Bowl and cabinet references require identity and stationarity checks.",
+          "remaining_effect": "Acquire the bowl only after resolving approach/contact geometry. Lift-stage completion still requires fresh bowl-hand co-motion, visible counter separation, orientation and retained extent. No later-stage control code is supplied."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "stage_satisfied": "no",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [
+          "The selected face samples satisfy the declared contact-face geometry checks.",
+          "The latest recentering attempt reduces TCP deviation from the observation anchor."
+        ],
+        "evidence": [
+          "Frame 120 shows the patterned bowl upright on the counter, separate from the elevated hand and not on the cabinet tabletop.",
+          "The observation turn executed 48 additional native steps; the gripper remains open and no bowl lift or retention is visible.",
+          "The current stage returned blocked on face-geometry checks, not the earlier review-schema error; the current review returned four depth points and zero regions.",
+          "The selected samples span 0.00834 m in tool-y and failed the declared geometry checks; their visual face label does not establish valid contact geometry.",
+          "The latest recentering increased anchor deviation from 0.00643 m to 0.01316 m. The hand appears clear, but fresh swept-motion clearance is not established."
+        ],
+        "reason": "The lift objective and overall task ordering remain suitable. New measurements support a local correction rather than another identical retry or a claim of impossibility. Revise surface selection and check the face model and coordinate transform using obtainable fresh measurements at the actual frame 120 pose. Do not relax tolerances or infer aperture from one face. Any alternative sensing motion needs its own current clearance assessment, not automatic reuse of frame 72 clearance. The failed recentering and partial turn must remain accounted for; neither advancement nor whole-task completion is supported."
+      },
+      "host_override": "Repeated unproductive revisions require a plan-level reconsideration"
+    },
+    {
+      "update": 5,
+      "stage": "resolve",
+      "plan_revision": 1,
+      "stage_index": 0,
+      "frame_id": 120,
+      "trigger": "execution_error",
+      "source_sha256": "ed8c2fc252d4775d78ba4806e02dea5468071040485e4891c7a3f944fe14fdc8",
+      "outcome": {
+        "stage_status": "blocked",
+        "completion_proposed": false,
+        "error": "Planner output contract repair exhausted; no valid observation was delivered. Review the method-declared fields and question before retrying. {\"error\": {\"type\": \"ValueError\", \"message\": \"Native submission validation repair budget exhausted\"}, \"validation_errors\": [\"submit_review.points[8].radius: numeric value outside schema\", \"submit_review.points[8].radius: numeric value outside schema\", \"submit_review.points[8].radius: numeric value outside schema\"]}"
+      },
+      "decision": {
+        "action": "revise",
+        "stage_satisfied": "no",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [
+          "The attempted observation submission conforms to the declared point-radius schema."
+        ],
+        "evidence": [
+          "Frame 120 shows the patterned bowl upright on the counter, separate from the elevated open hand and not on the cabinet tabletop.",
+          "The current resolve stage returned blocked after submit_review.points[8].radius repeatedly failed schema validation; no valid new observation was delivered.",
+          "Frame and native step count remain 120, matching resolve-stage entry; no additional physical execution is acknowledged.",
+          "Earlier face samples failed geometry checks and do not establish aperture or approach clearance. Historical high-turn clearance is not fresh approach evidence."
+        ],
+        "reason": "The current failure is an observation-output contract error, not new evidence invalidating the revised plan. Keep the resolve objective and correct measurement selection and submission against the actual declared fields and radius constraints before retrying current-view observations. Preserve the already changed robot pose; do not repeat the old turn or recentering, relax geometry tolerances, or invent missing measurements. An alternative view requires fresh sensing-motion clearance. The stage lacks consistent grasp and approach evidence, so advancement is unsupported."
+      }
+    }
+  ],
+  "completed": [
+    {
+      "update": 0,
+      "stage": "observe",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 0,
+      "trigger": "stage_returned",
+      "source_sha256": "370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2",
+      "outcome": {
+        "stage_status": "stage_complete",
+        "reason": "Fresh visible RGB-D establishes a measured rim-pinch region, a vacant tabletop patch enclosing the conservative bowl mouth footprint with margin, and observed clearance for high open-hand alignment only.",
+        "evidence": {
+          "start_frame": 0,
+          "end_frame": 0,
+          "native_steps_start": 0,
+          "native_steps_end": 0,
+          "physical_commands": 0,
+          "geometry": {
+            "frame_id": 0,
+            "sample_checkpoint": "observe.samples1",
+            "bowl": {
+              "center_xy_m": [
+                -0.09990971220536583,
+                0.01004998248671844
+              ],
+              "rim_z_m": 0.9498821725147537,
+              "outer_rim_radius_m": 0.054322750100800926,
+              "allowance_m": 0.003,
+              "plane": [
+                0.0023051207557154858,
+                -0.012410132815644395,
+                0.999920334337591,
+                -0.949449140179431
+              ],
+              "plane_rms_m": 0.0001844158156646552,
+              "circle_rms_m": 0.0002445795070330067,
+              "largest_angular_gap_rad": 0.8075318190497441
+            },
+            "table": {
+              "plane": [
+                0.00289983103269987,
+                9.570178865459504e-10,
+                0.9999957954811519,
+                -1.1270049189522393
+              ],
+              "rms_m": 2.8639136014143248e-09,
+              "visible_interior_polygon_world_m": [
+                [
+                  -0.07975049088163966,
+                  -0.33999422443757127,
+                  1.1272409229057596
+                ],
+                [
+                  -0.07975049088163966,
+                  -0.16100005056932346,
+                  1.1272409229057596
+                ],
+                [
+                  0.16046768248820004,
+                  -0.15963425142751986,
+                  1.1265443281750742
+                ],
+                [
+                  0.16046768248820004,
+                  -0.28346268945073616,
+                  1.1265443281750742
+                ]
+              ],
+              "landing_center_world_m": [
+                0.04035859580328019,
+                -0.2360228039712877,
+                1.1268926241108486
+              ],
+              "inscribed_xy_radius_m": 0.07369252488538681,
+              "remaining_margin_m": 0.01336977478458589,
+              "allowance_m": 0.003
+            },
+            "grasp_region": {
+              "inner_world_m": [
+                -0.05088669368879667,
+                0.010507286334138614,
+                0.9423001152112187
+              ],
+              "outer_world_m": [
+                -0.04932638678707779,
+                0.010473104964138755,
+                0.9416644009717989
+              ],
+              "band_world_m": [
+                [
+                  -0.04970461572958487,
+                  0.030089987200839174,
+                  0.9499396180053225
+                ],
+                [
+                  -0.04967707308617317,
+                  -0.009746346265383987,
+                  0.9497779052733157
+                ]
+              ],
+              "candidate_center_world_m": [
+                -0.05010654023793723,
+                0.010490195649138685,
+                0.9419822580915088
+              ],
+              "outward_radial_xy": [
+                0.9999609378092035,
+                0.008838713466234473
+              ],
+              "measured_wall_thickness_m": 0.0015599438333776694,
+              "wall_thickness_allowance_m": 0.006,
+              "tangent_span_m": 0.039835020813297886,
+              "actuator_qpos_m": [
+                0.03872148686420614,
+                -0.03872403656789437
+              ],
+              "aperture_certified": false
+            },
+            "next_approach_envelope": {
+              "pad_start_world_m": [
+                -0.2084757576902651,
+                -0.015634511418593604,
+                1.172844736940837
+              ],
+              "high_pad_alignment_world_m": [
+                -0.05010654023793723,
+                0.010490195649138685,
+                1.172844736940837
+              ],
+              "xy_min_m": [
+                -0.27987590039831,
+                -0.0870346541266385
+              ],
+              "xy_max_m": [
+                0.021293602470107656,
+                0.08189033835718357
+              ],
+              "yaw_invariant_finger_xy_radius_m": 0.07140014270804489,
+              "lowest_finger_z_m": 1.1593766305223767,
+              "required_height_margin_m": 0.02,
+              "height_measurement_allowance_m": 0.005,
+              "scope": "Open fingers, high alignment and downward-tool world-yaw rotation only; no descent.",
+              "measured_height_margin_m": 0.0960343931598765,
+              "extrema_checkpoint": "observe.clearance0"
+            }
+          },
+          "diagnostics": [
+            {
+              "measurement_attempt": 0,
+              "frame_id": 0,
+              "gaps": [
+                "Missing or invalid named surface depths; see observe.samples0"
+              ]
+            },
+            {
+              "measurement_attempt": 1,
+              "frame_id": 0,
+              "gaps": []
+            },
+            {
+              "clearance_attempt": 0,
+              "coverage": "complete",
+              "robot_clear": "visible_clear",
+              "measurement_errors": [],
+              "available_height_margin_m": 0.0960343931598765
+            }
+          ]
+        },
+        "handoff": {
+          "checkpoint_keys": [
+            "observe.samples0",
+            "observe.samples1",
+            "observe.clearance0",
+            "observe.result"
+          ],
+          "reference_frame": 0,
+          "coordinate_frame": "world meters, xyzw tool-to-world quaternions",
+          "assumptions": [
+            "All positions are world meters; pixels have top-left origin and their saved camera/frame.",
+            "Measurements are visible surfaces, not hidden collision geometry.",
+            "Uncertainty margins are conservative engineering allowances, not calibrated confidence bounds.",
+            "No motion, grasp, retention, or base contact is established by this observation stage.",
+            "Landing size uses the rim-enclosed visible bowl silhouette, not an invented hidden base; recheck the bowl extent after lifting."
+          ],
+          "scope": "References concern the identified patterned bowl and dark cabinet table 1. Revalidate affected references after any motion. The high alignment envelope is not clearance for descent, closure, lifting, transport, or release. Exact aperture, lower contact geometry, hidden bowl base, and subsequent retention must be assessed by the next method.",
+          "next_observation": "Use the saved rim section and visible inner/outer contact samples to plan a rim pinch, not an across-mouth grasp. No action has been taken."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "advance",
+        "stage_satisfied": "yes",
+        "task_satisfied": "no",
+        "plan_valid": "yes",
+        "recovery_available": "yes",
+        "invalidated_assumptions": [],
+        "evidence": [
+          "Current frame 0 views show the patterned bowl on the counter and a vacant dark cabinet tabletop.",
+          "Same-frame RGB-D identifies a visible rim-pinch region and a tabletop patch with 0.0737 m inscribed radius versus the measured 0.0543 m bowl rim radius.",
+          "Observed obstacle heights and robot geometry support the limited high-alignment envelope, with a reported 0.0960 m height margin.",
+          "No physical commands or native steps occurred; the bowl has not been lifted or placed.",
+          "Exact aperture and descent clearance remain unverified; the observed clearance applies only to high open-hand alignment and yaw."
+        ],
+        "reason": "The stage returned stage_complete, and current images with same-frame measurements support its observation objective. Advance with the stated clearance limits, not as authorization for unverified descent or evidence of task completion."
+      }
+    }
+  ],
+  "current_stage": {
+    "plan_revision": 1,
+    "index": 0,
+    "definition": {
+      "id": "resolve",
+      "objective": "Establish trustworthy grasp and approach evidence from the current robot configuration.",
+      "entry_evidence": "Frame 120 shows the bowl supported on the counter and the open hand clear; contact-face checks failed and recent recentering increased deviation.",
+      "success_evidence": "Current RGB-D, calibration, robot geometry, and reported opening consistently bound an accessible bowl rim grasp and the relevant robot approach clearance; the bowl remains undisturbed.",
+      "handoff_requirements": "Carry fresh grasp-region, opening, clearance, and uncertainty evidence. Check surface identity and frame transforms rather than assuming a constant-coordinate face. Use alternative visible patches or a complementary view with freshly assessed sensing-motion clearance if needed. Do not infer aperture from one face, relax failed tolerances, or automatically repeat the old turn or recentering.",
+      "replan_conditions": "Evidence remains inconsistent, required clearance is occluded, or motion again stalls or reverses. Reconsider the rim sector, observation view, or approach using actual state; a failed local check alone does not establish impossibility."
+    }
+  },
+  "termination": "gpt_budget"
+}

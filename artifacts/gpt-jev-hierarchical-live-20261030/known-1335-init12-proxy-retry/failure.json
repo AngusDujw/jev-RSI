@@ -1,0 +1,5 @@
+{
+  "type": "HTTPError",
+  "error": "HTTP Error 502: Bad Gateway",
+  "native_steps": 120
+}

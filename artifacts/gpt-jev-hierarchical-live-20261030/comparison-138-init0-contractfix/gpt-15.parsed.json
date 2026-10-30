@@ -1,0 +1,19 @@
+{
+  "action": "revise",
+  "stage_satisfied": "no",
+  "task_satisfied": "no",
+  "plan_valid": "yes",
+  "recovery_available": "yes",
+  "invalidated_assumptions": [
+    "The observation review fits the submission schema: 11 regions exceeded the maximum of 8.",
+    "The earlier diagnostic turn stayed within its assumed TCP drift bound."
+  ],
+  "evidence": [
+    "Frame 72 images show the bowl upright on the counter, separate from the elevated hand and not on the cabinet tabletop.",
+    "Public state remains at frame 72 and 72 native steps with the gripper open; no additional physical execution is acknowledged after the partial observation turn.",
+    "The current stage returned blocked because the observation submission repeatedly contained 11 regions where at most 8 are permitted; no valid new observation was delivered.",
+    "The opposing inner pad centers remain unidentifiable in the supplied views; no bowl retention or lift is visible.",
+    "The earlier turn exceeded its assumed drift bound and did not reach its target orientation; this does not establish collision or rule out alternate sensing."
+  ],
+  "reason": "Revise the local observation contract and sensing method, not the task ordering. A concrete schema failure explains this retry, so correct the review to at most eight relevant regions without dropping necessary clearance coverage; separate additional measurements if supported. Continue from the actual frame 72 configuration, revalidating geometry and clearance before any further sensing motion. Do not reuse invisible pad placeholders, treat historical checkpoints as fresh observations, or weaken safety margins. The lift objective remains suitable, and neither advancement nor task completion is supported."
+}

@@ -1,0 +1,17 @@
+{
+  "action": "revise",
+  "stage_satisfied": "no",
+  "task_satisfied": "no",
+  "plan_valid": "yes",
+  "recovery_available": "yes",
+  "invalidated_assumptions": [
+    "The attempted observation submission conforms to the declared point-radius schema."
+  ],
+  "evidence": [
+    "Frame 120 shows the patterned bowl upright on the counter, separate from the elevated open hand and not on the cabinet tabletop.",
+    "The current resolve stage returned blocked after submit_review.points[8].radius repeatedly failed schema validation; no valid new observation was delivered.",
+    "Frame and native step count remain 120, matching resolve-stage entry; no additional physical execution is acknowledged.",
+    "Earlier face samples failed geometry checks and do not establish aperture or approach clearance. Historical high-turn clearance is not fresh approach evidence."
+  ],
+  "reason": "The current failure is an observation-output contract error, not new evidence invalidating the revised plan. Keep the resolve objective and correct measurement selection and submission against the actual declared fields and radius constraints before retrying current-view observations. Preserve the already changed robot pose; do not repeat the old turn or recentering, relax geometry tolerances, or invent missing measurements. An alternative view requires fresh sensing-motion clearance. The stage lacks consistent grasp and approach evidence, so advancement is unsupported."
+}

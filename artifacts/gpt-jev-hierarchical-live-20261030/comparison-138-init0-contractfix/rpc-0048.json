@@ -1,0 +1,255 @@
+{
+  "index": 48,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "observe.result",
+      {
+        "evidence": {
+          "start_frame": 0,
+          "end_frame": 0,
+          "native_steps_start": 0,
+          "native_steps_end": 0,
+          "physical_commands": 0,
+          "geometry": {
+            "frame_id": 0,
+            "sample_checkpoint": "observe.samples1",
+            "bowl": {
+              "center_xy_m": [
+                -0.09990971220536583,
+                0.01004998248671844
+              ],
+              "rim_z_m": 0.9498821725147537,
+              "outer_rim_radius_m": 0.054322750100800926,
+              "allowance_m": 0.003,
+              "plane": [
+                0.0023051207557154858,
+                -0.012410132815644395,
+                0.999920334337591,
+                -0.949449140179431
+              ],
+              "plane_rms_m": 0.0001844158156646552,
+              "circle_rms_m": 0.0002445795070330067,
+              "largest_angular_gap_rad": 0.8075318190497441
+            },
+            "table": {
+              "plane": [
+                0.00289983103269987,
+                9.570178865459504e-10,
+                0.9999957954811519,
+                -1.1270049189522393
+              ],
+              "rms_m": 2.8639136014143248e-09,
+              "visible_interior_polygon_world_m": [
+                [
+                  -0.07975049088163966,
+                  -0.33999422443757127,
+                  1.1272409229057596
+                ],
+                [
+                  -0.07975049088163966,
+                  -0.16100005056932346,
+                  1.1272409229057596
+                ],
+                [
+                  0.16046768248820004,
+                  -0.15963425142751986,
+                  1.1265443281750742
+                ],
+                [
+                  0.16046768248820004,
+                  -0.28346268945073616,
+                  1.1265443281750742
+                ]
+              ],
+              "landing_center_world_m": [
+                0.04035859580328019,
+                -0.2360228039712877,
+                1.1268926241108486
+              ],
+              "inscribed_xy_radius_m": 0.07369252488538681,
+              "remaining_margin_m": 0.01336977478458589,
+              "allowance_m": 0.003
+            },
+            "grasp_region": {
+              "inner_world_m": [
+                -0.05088669368879667,
+                0.010507286334138614,
+                0.9423001152112187
+              ],
+              "outer_world_m": [
+                -0.04932638678707779,
+                0.010473104964138755,
+                0.9416644009717989
+              ],
+              "band_world_m": [
+                [
+                  -0.04970461572958487,
+                  0.030089987200839174,
+                  0.9499396180053225
+                ],
+                [
+                  -0.04967707308617317,
+                  -0.009746346265383987,
+                  0.9497779052733157
+                ]
+              ],
+              "candidate_center_world_m": [
+                -0.05010654023793723,
+                0.010490195649138685,
+                0.9419822580915088
+              ],
+              "outward_radial_xy": [
+                0.9999609378092035,
+                0.008838713466234473
+              ],
+              "measured_wall_thickness_m": 0.0015599438333776694,
+              "wall_thickness_allowance_m": 0.006,
+              "tangent_span_m": 0.039835020813297886,
+              "actuator_qpos_m": [
+                0.03872148686420614,
+                -0.03872403656789437
+              ],
+              "aperture_certified": false
+            },
+            "next_approach_envelope": {
+              "pad_start_world_m": [
+                -0.2084757576902651,
+                -0.015634511418593604,
+                1.172844736940837
+              ],
+              "high_pad_alignment_world_m": [
+                -0.05010654023793723,
+                0.010490195649138685,
+                1.172844736940837
+              ],
+              "xy_min_m": [
+                -0.27987590039831,
+                -0.0870346541266385
+              ],
+              "xy_max_m": [
+                0.021293602470107656,
+                0.08189033835718357
+              ],
+              "yaw_invariant_finger_xy_radius_m": 0.07140014270804489,
+              "lowest_finger_z_m": 1.1593766305223767,
+              "required_height_margin_m": 0.02,
+              "height_measurement_allowance_m": 0.005,
+              "scope": "Open fingers, high alignment and downward-tool world-yaw rotation only; no descent.",
+              "measured_height_margin_m": 0.0960343931598765,
+              "extrema_checkpoint": "observe.clearance0"
+            }
+          },
+          "diagnostics": [
+            {
+              "measurement_attempt": 0,
+              "frame_id": 0,
+              "gaps": [
+                "Missing or invalid named surface depths; see observe.samples0"
+              ]
+            },
+            {
+              "measurement_attempt": 1,
+              "frame_id": 0,
+              "gaps": []
+            },
+            {
+              "clearance_attempt": 0,
+              "coverage": "complete",
+              "robot_clear": "visible_clear",
+              "measurement_errors": [],
+              "available_height_margin_m": 0.0960343931598765
+            }
+          ]
+        },
+        "assumptions": [
+          "All positions are world meters; pixels have top-left origin and their saved camera/frame.",
+          "Measurements are visible surfaces, not hidden collision geometry.",
+          "Uncertainty margins are conservative engineering allowances, not calibrated confidence bounds.",
+          "No motion, grasp, retention, or base contact is established by this observation stage.",
+          "Landing size uses the rim-enclosed visible bowl silhouette, not an invented hidden base; recheck the bowl extent after lifting."
+        ],
+        "control_questions": {
+          "x": {
+            "type": "choice",
+            "instructions": "For world axis x, use its supplied goal_relation only: increase means positive, decrease means negative, within_tolerance means hold. Do not infer clearance from pose residuals.",
+            "criteria": {
+              "negative": "Decrease this world coordinate or world rotation-vector component.",
+              "hold": "No correction within the supplied tolerance.",
+              "positive": "Increase this world coordinate or world rotation-vector component."
+            }
+          },
+          "y": {
+            "type": "choice",
+            "instructions": "For world axis y, use its supplied goal_relation only: increase means positive, decrease means negative, within_tolerance means hold. Do not infer clearance from pose residuals.",
+            "criteria": {
+              "negative": "Decrease this world coordinate or world rotation-vector component.",
+              "hold": "No correction within the supplied tolerance.",
+              "positive": "Increase this world coordinate or world rotation-vector component."
+            }
+          },
+          "z": {
+            "type": "choice",
+            "instructions": "For world axis z, use its supplied goal_relation only: increase means positive, decrease means negative, within_tolerance means hold. Do not infer clearance from pose residuals.",
+            "criteria": {
+              "negative": "Decrease this world coordinate or world rotation-vector component.",
+              "hold": "No correction within the supplied tolerance.",
+              "positive": "Increase this world coordinate or world rotation-vector component."
+            }
+          },
+          "rx": {
+            "type": "choice",
+            "instructions": "For world axis rx, use its supplied goal_relation only: increase means positive, decrease means negative, within_tolerance means hold. Do not infer clearance from pose residuals.",
+            "criteria": {
+              "negative": "Decrease this world coordinate or world rotation-vector component.",
+              "hold": "No correction within the supplied tolerance.",
+              "positive": "Increase this world coordinate or world rotation-vector component."
+            }
+          },
+          "ry": {
+            "type": "choice",
+            "instructions": "For world axis ry, use its supplied goal_relation only: increase means positive, decrease means negative, within_tolerance means hold. Do not infer clearance from pose residuals.",
+            "criteria": {
+              "negative": "Decrease this world coordinate or world rotation-vector component.",
+              "hold": "No correction within the supplied tolerance.",
+              "positive": "Increase this world coordinate or world rotation-vector component."
+            }
+          },
+          "rz": {
+            "type": "choice",
+            "instructions": "For world axis rz, use its supplied goal_relation only: increase means positive, decrease means negative, within_tolerance means hold. Do not infer clearance from pose residuals.",
+            "criteria": {
+              "negative": "Decrease this world coordinate or world rotation-vector component.",
+              "hold": "No correction within the supplied tolerance.",
+              "positive": "Increase this world coordinate or world rotation-vector component."
+            }
+          },
+          "gripper": {
+            "type": "choice",
+            "instructions": "Use state.processed_features.objective.gripper; do not infer possession from closure.",
+            "criteria": {
+              "open": "Deliver the explicitly authorized open objective.",
+              "close": "Deliver the explicitly authorized close objective.",
+              "keep": "Preserve the existing command."
+            }
+          }
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "observe.result",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2",
+      "bytes": 6541,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

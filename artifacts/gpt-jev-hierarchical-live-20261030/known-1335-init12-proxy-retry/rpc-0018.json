@@ -1,0 +1,279 @@
+{
+  "index": 18,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "grasp_stage_v1"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "grasp_stage_v1",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "b9faa11b93285d127579f67e9cef68b4d65aa1d9f3a18ca7e7e17aca9823ce95",
+      "bytes": 4043,
+      "value": {
+        "phase": "setup",
+        "initial_state": {
+          "frame_id": 0,
+          "native_steps": 0,
+          "budgets": {
+            "gpt_remaining": 22,
+            "jev_remaining": 200,
+            "native_steps_remaining": 600,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.2071984982582204,
+            -0.002684108235936964,
+            1.1833957456431763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9996138089570381,
+            -0.0001637781149644857,
+            -0.027787418789059465,
+            0.00025588312349679454
+          ],
+          "gripper_qpos_m": [
+            0.03872178294129007,
+            -0.03872379800220578
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              4.177684213122965e-06,
+              -1.233369511719623e-06,
+              -0.003603143886142522
+            ],
+            "pad_extent_in_tool_m": [
+              0.016001340332578606,
+              0.09244574820685311,
+              0.01600079183925129
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010490259555384143,
+              -0.06512722856056685,
+              -0.044471733171043505
+            ],
+            "finger_high_offset_tool_m": [
+              0.010500258927625426,
+              0.06512494646865309,
+              0.009245963123110084
+            ]
+          }
+        },
+        "partial": {
+          "frame_id": 0,
+          "points": {
+            "t0": {
+              "world_m": [
+                -0.024648209434632112,
+                0.15534774083734487,
+                0.91784209742433
+              ],
+              "depth_m": 0.35191914439201355,
+              "frame_id": 0,
+              "pixel": [
+                159,
+                175
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t1": {
+              "world_m": [
+                -0.02893711990763581,
+                0.1320672058750963,
+                0.9182903253580973
+              ],
+              "depth_m": 0.3517216742038727,
+              "frame_id": 0,
+              "pixel": [
+                192,
+                181
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t2": {
+              "world_m": [
+                -0.07737731402321552,
+                0.15530225439816395,
+                0.9177550467792035
+              ],
+              "depth_m": 0.35493728518486023,
+              "frame_id": 0,
+              "pixel": [
+                161,
+                251
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t3": {
+              "world_m": [
+                -0.07890263226771263,
+                0.13170985040795335,
+                0.9183473039807548
+              ],
+              "depth_m": 0.3544425368309021,
+              "frame_id": 0,
+              "pixel": [
+                194,
+                253
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s0": {
+              "world_m": [
+                0.008307254674057324,
+                0.18972728939282332,
+                0.89995950355432
+              ],
+              "depth_m": 0.36792489886283875,
+              "frame_id": 0,
+              "pixel": [
+                122,
+                138
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s1": {
+              "world_m": [
+                0.0047140693805642064,
+                0.10745749501642089,
+                0.8999599246788591
+              ],
+              "depth_m": 0.36816537380218506,
+              "frame_id": 0,
+              "pixel": [
+                234,
+                143
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s2": {
+              "world_m": [
+                -0.10913378152186604,
+                0.19018604861893704,
+                0.8999632145434258
+              ],
+              "depth_m": 0.3744494915008545,
+              "frame_id": 0,
+              "pixel": [
+                126,
+                299
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s3": {
+              "world_m": [
+                -0.11063950658323872,
+                0.10716834624167748,
+                0.8999631832841901
+              ],
+              "depth_m": 0.37457475066185,
+              "frame_id": 0,
+              "pixel": [
+                237,
+                301
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": [],
+          "parameters": {
+            "camera": "robot0_eye_in_hand",
+            "identity": "cream_cheese",
+            "boundary": "full_rectangle",
+            "support": "flat_on_table",
+            "corners": [
+              [
+                145,
+                158
+              ],
+              [
+                204,
+                157
+              ],
+              [
+                207,
+                274
+              ],
+              [
+                149,
+                272
+              ]
+            ]
+          }
+        },
+        "state": {
+          "frame_id": 0,
+          "native_steps": 0,
+          "budgets": {
+            "gpt_remaining": 21,
+            "jev_remaining": 200,
+            "native_steps_remaining": 600,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.2071984982582204,
+            -0.002684108235936964,
+            1.1833957456431763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9996138089570381,
+            -0.0001637781149644857,
+            -0.027787418789059465,
+            0.00025588312349679454
+          ],
+          "gripper_qpos_m": [
+            0.03872178294129007,
+            -0.03872379800220578
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              4.177684213122965e-06,
+              -1.233369511719623e-06,
+              -0.003603143886142522
+            ],
+            "pad_extent_in_tool_m": [
+              0.016001340332578606,
+              0.09244574820685311,
+              0.01600079183925129
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010490259555384143,
+              -0.06512722856056685,
+              -0.044471733171043505
+            ],
+            "finger_high_offset_tool_m": [
+              0.010500258927625426,
+              0.06512494646865309,
+              0.009245963123110084
+            ]
+          }
+        },
+        "slice_calls": 0,
+        "error": {
+          "message": "No pad engagement with 6 mm finger/table clearance; do not relax margin.",
+          "phase": "setup",
+          "recovery_motion": "none"
+        }
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}

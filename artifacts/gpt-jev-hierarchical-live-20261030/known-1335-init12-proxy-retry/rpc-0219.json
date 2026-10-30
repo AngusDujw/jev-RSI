@@ -1,0 +1,702 @@
+{
+  "index": 219,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "grasp_recovery_v3",
+      {
+        "phase": "measure_closer",
+        "prior_execution": {
+          "checkpoint": "grasp_stage_v2",
+          "frame_id": 15,
+          "native_steps": 15,
+          "approach_controls": 5,
+          "last_receipt": {
+            "decision": 4,
+            "choices": {
+              "x": "positive",
+              "y": "positive",
+              "z": "negative",
+              "rx": "hold",
+              "ry": "positive",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "action": [
+              0.23094010767585027,
+              0.23094010767585027,
+              -0.23094010767585027,
+              0.0,
+              0.0085896913567976,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              -0.17498918163542057,
+              0.03070658642156027,
+              1.1472881324421416
+            ],
+            "after": [
+              -0.16726400086959864,
+              0.03971456071965945,
+              1.1369620914074983
+            ],
+            "target_tcp": [
+              -0.05288781430811271,
+              0.14369307524229966,
+              0.9895942557413284
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 15,
+            "frame_id": 15,
+            "status": "moved",
+            "position_error_m": 0.21356666997360327,
+            "rotation_error_rad": 0.008966505901629358
+          },
+          "contact_or_closure_acknowledged": false
+        },
+        "tracker_initializations": 2,
+        "old_registration_diagnosis": {
+          "status": "tracked",
+          "frame_id": 15,
+          "reference_frame_id": 0,
+          "accepted": false,
+          "camera": "robot0_eye_in_hand",
+          "matches": 57,
+          "inliers": 56,
+          "rms_m": 0.00013815080798639003,
+          "inlier_spread_m": [
+            0.016763848203273053,
+            0.005536278741936699,
+            4.484651171393079e-05
+          ],
+          "uncertainty_floor_m": 0.0016583123951777001,
+          "transform_initial_world_to_current_world": [
+            [
+              0.9999991659354431,
+              0.0012913921379777353,
+              2.085098159814983e-05,
+              -0.00011927810650139148
+            ],
+            [
+              -0.0012913796346291086,
+              0.9999989927517542,
+              -0.0005889262397426767,
+              0.0005965273994934517
+            ],
+            [
+              -2.161149531188667e-05,
+              0.0005888988220071901,
+              0.9999998263655453,
+              -0.00018095266023909762
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "failed_checks": [
+            "distributed_support"
+          ]
+        },
+        "last_review": {
+          "frame_id": 54,
+          "parameters": {
+            "boundary": "full_top_rectangle",
+            "camera": "robot0_eye_in_hand",
+            "corners": [
+              [
+                333,
+                405
+              ],
+              [
+                433,
+                403
+              ],
+              [
+                433,
+                602
+              ],
+              [
+                330,
+                599
+              ]
+            ],
+            "identity": "same_cream_cheese",
+            "side_identity": "visible_long_side",
+            "support": "flat_on_table"
+          },
+          "measurement_errors": [],
+          "explanation": "The current and earlier views show the same labeled cream cheese package, still flat on the table. Its complete top boundary is visible in the wrist camera. All requested names need fresh frame-54 samples; the retained current set is empty. Top samples are separated and inset, and table samples are on bare surrounding table. The side sample is on the narrow visible long wall in agentview, not the top or short end. These are measurement selections only, not authorization for contact."
+        },
+        "last_state": {
+          "frame_id": 54,
+          "native_steps": 54,
+          "budgets": {
+            "gpt_remaining": 13,
+            "jev_remaining": 182,
+            "native_steps_remaining": 546,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.05488376824843178,
+            0.14358073397741883,
+            1.021503989296411
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999972602698068,
+            0.001396935102135288,
+            -0.0011738483196514643,
+            -0.0014663237442624046
+          ],
+          "gripper_qpos_m": [
+            0.039903493774114944,
+            -0.03987437682945744
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              6.81166136526877e-05,
+              -1.9554722491998272e-05,
+              -0.0035809011547932247
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600074542855638,
+              0.09477799394557565,
+              0.016001096639618108
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010426027960430339,
+              -0.06631208434270772,
+              -0.04444980820740112
+            ],
+            "finger_high_offset_tool_m": [
+              0.010563828616503857,
+              0.06627250865293118,
+              0.009268625985122273
+            ]
+          }
+        },
+        "slice_calls": 13,
+        "geometry": {
+          "reference_frame_id": 54,
+          "camera": "robot0_eye_in_hand",
+          "corner_pixels": [
+            [
+              333,
+              405
+            ],
+            [
+              433,
+              403
+            ],
+            [
+              433,
+              602
+            ],
+            [
+              330,
+              599
+            ]
+          ],
+          "top_samples_world_m": [
+            [
+              -0.028742197281661167,
+              0.1552141472811337,
+              0.9178768509590373
+            ],
+            [
+              -0.028632586133074008,
+              0.13399141265009662,
+              0.9182331494904277
+            ],
+            [
+              -0.07702618837689326,
+              0.13345614537806927,
+              0.9183506830062256
+            ],
+            [
+              -0.07691070002476885,
+              0.1546900542156019,
+              0.9177870950525325
+            ]
+          ],
+          "table_samples_world_m": [
+            [
+              0.010913742612479217,
+              0.19218091848990887,
+              0.8999782478644828
+            ],
+            [
+              0.011566141768985926,
+              0.10839556413631411,
+              0.8999787265432244
+            ],
+            [
+              -0.1102406172399941,
+              0.10713574789576855,
+              0.899983075511759
+            ],
+            [
+              -0.11103188995788504,
+              0.19102831289145156,
+              0.8999826009415421
+            ]
+          ],
+          "top_corners_world_m": [
+            [
+              -0.013528726173578904,
+              0.1644548987347843,
+              0.9180619446270558
+            ],
+            [
+              -0.012611303692133612,
+              0.12442701652918692,
+              0.9180619446270558
+            ],
+            [
+              -0.09232948899113716,
+              0.12418584778571012,
+              0.9180619446270558
+            ],
+            [
+              -0.09129412719984462,
+              0.16545934852484334,
+              0.9180619446270558
+            ]
+          ],
+          "top_center_world_m": [
+            -0.05244091151417357,
+            0.14463177789363119,
+            0.9180619446270558
+          ],
+          "top_z_m": 0.9180619446270558,
+          "table_z_m": 0.8999806627152522,
+          "width_m": 0.04003839429690758,
+          "length_m": 0.07971855009801103,
+          "long_axis_world": [
+            -0.9999954239131665,
+            -0.003025252506227043,
+            0.0
+          ],
+          "top_fit": {
+            "coefficients": [
+              5.493659749340499e-05,
+              0.02166291337834452,
+              0.9997653300479732,
+              -0.9209703811773432
+            ],
+            "center_world_m": [
+              -0.05282791795409932,
+              0.14433793988122537,
+              0.9180619446270558
+            ],
+            "rms_m": 5.17467295179719e-05,
+            "in_plane_spread_m": [
+              0.024142402999549596,
+              0.010615839857898523
+            ]
+          },
+          "table_fit": {
+            "coefficients": [
+              3.5641047536998494e-05,
+              5.991862663720501e-06,
+              0.9999999993469065,
+              -0.8999797877259276
+            ],
+            "center_world_m": [
+              -0.0496981557041035,
+              0.1496851358533608,
+              0.8999806627152522
+            ],
+            "rms_m": 4.967075811813594e-11,
+            "in_plane_spread_m": [
+              0.060941137396888286,
+              0.04192097642183637
+            ]
+          },
+          "boundary_drift_m": 0.001830601357324995,
+          "surface_allowance_m": 0.001,
+          "point_provenance": {
+            "t0": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                356,
+                443
+              ]
+            },
+            "t1": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                409,
+                443
+              ]
+            },
+            "t2": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                410,
+                564
+              ]
+            },
+            "t3": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                357,
+                563
+              ]
+            },
+            "s0": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                274,
+                347
+              ]
+            },
+            "s1": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                466,
+                346
+              ]
+            },
+            "s2": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                468,
+                625
+              ]
+            },
+            "s3": {
+              "camera": "robot0_eye_in_hand",
+              "frame_id": 54,
+              "source": "current_depth_patch_backprojection",
+              "pixel": [
+                276,
+                626
+              ]
+            }
+          },
+          "side_valid": true,
+          "assumptions": "Same visible flat package on a locally horizontal table. Boundary rays intersect a validated horizontal top approximation. Surface allowance is an engineering reserve, not calibrated accuracy; no hidden bottom or side is reconstructed.",
+          "side": {
+            "world_m": [
+              -0.04681915848101137,
+              0.12335104883732542,
+              0.9148646634672034
+            ],
+            "depth_m": 0.9858067035675049,
+            "frame_id": 54,
+            "pixel": [
+              500,
+              476
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "side_plane_residual_m": 0.001278441747840895
+        },
+        "initial_reference": {
+          "reference_frame_id": 15,
+          "top_corners_world_m": [
+            [
+              -0.013537174553841028,
+              0.16482315028082153,
+              0.9179535522837351
+            ],
+            [
+              -0.01262504293571752,
+              0.12355318545171676,
+              0.9179535522837351
+            ],
+            [
+              -0.0932257594505051,
+              0.12339124723589462,
+              0.9179535522837351
+            ],
+            [
+              -0.09290120020418285,
+              0.16458948141540833,
+              0.9179535522837351
+            ]
+          ],
+          "top_z_m": 0.9179535522837351,
+          "table_z_m": 0.899874908768223,
+          "width_m": 0.04119951259680659,
+          "length_m": 0.08060087919298954
+        },
+        "tracker": {
+          "handle": "patch_2",
+          "camera": "robot0_eye_in_hand",
+          "polygon": [
+            [
+              337.925,
+              414.725
+            ],
+            [
+              427.925,
+              412.925
+            ],
+            [
+              427.925,
+              592.025
+            ],
+            [
+              335.225,
+              589.325
+            ]
+          ],
+          "reference_frame_id": 54,
+          "reference_top_samples_world_m": [
+            [
+              -0.028742197281661167,
+              0.1552141472811337,
+              0.9178768509590373
+            ],
+            [
+              -0.028632586133074008,
+              0.13399141265009662,
+              0.9182331494904277
+            ],
+            [
+              -0.07702618837689326,
+              0.13345614537806927,
+              0.9183506830062256
+            ],
+            [
+              -0.07691070002476885,
+              0.1546900542156019,
+              0.9177870950525325
+            ]
+          ],
+          "identity": "The same cream cheese printed top interior, freshly bounded in this camera/frame; not table or gripper."
+        },
+        "registration": {
+          "status": "tracked",
+          "frame_id": 54,
+          "reference_frame_id": 54,
+          "accepted": false,
+          "camera": "robot0_eye_in_hand",
+          "matches": 120,
+          "inliers": 120,
+          "rms_m": 9.23377082126491e-18,
+          "inlier_spread_m": [
+            0.01706868210932446,
+            0.0044426447564895844,
+            5.122854767208e-05
+          ],
+          "uncertainty_floor_m": 0.0015,
+          "transform_initial_world_to_current_world": [
+            [
+              1.0000000000000004,
+              4.0750019356229074e-18,
+              2.6187308665850183e-19,
+              2.0816681711721685e-17
+            ],
+            [
+              -5.084726572445029e-18,
+              1.0,
+              3.168416586703536e-18,
+              0.0
+            ],
+            [
+              -5.534316388143402e-20,
+              -2.3878903418140755e-18,
+              0.9999999999999999,
+              1.1102230246251565e-16
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "failed_checks": [
+            "distributed_support"
+          ]
+        },
+        "tracker_history": [
+          {
+            "handle": "patch_1",
+            "camera": "robot0_eye_in_hand",
+            "polygon": [
+              [
+                193.2,
+                228.25
+              ],
+              [
+                251.7,
+                227.35
+              ],
+              [
+                250.8,
+                341.65
+              ],
+              [
+                192.3,
+                340.75
+              ]
+            ],
+            "reference_frame_id": 15,
+            "reference_top_samples_world_m": [
+              [
+                -0.028682468916360726,
+                0.15519849307529004,
+                0.9177702232898424
+              ],
+              [
+                -0.02864029947720584,
+                0.13413182687827926,
+                0.9181288459333146
+              ],
+              [
+                -0.07686511265884766,
+                0.13360851563039905,
+                0.9182439109186413
+              ],
+              [
+                -0.0769442402907923,
+                0.1547184639743233,
+                0.9176712289931421
+              ]
+            ],
+            "identity": "The same cream cheese printed top interior, freshly bounded in this camera/frame; not table or gripper."
+          },
+          {
+            "handle": "patch_2",
+            "camera": "robot0_eye_in_hand",
+            "polygon": [
+              [
+                337.925,
+                414.725
+              ],
+              [
+                427.925,
+                412.925
+              ],
+              [
+                427.925,
+                592.025
+              ],
+              [
+                335.225,
+                589.325
+              ]
+            ],
+            "reference_frame_id": 54,
+            "reference_top_samples_world_m": [
+              [
+                -0.028742197281661167,
+                0.1552141472811337,
+                0.9178768509590373
+              ],
+              [
+                -0.028632586133074008,
+                0.13399141265009662,
+                0.9182331494904277
+              ],
+              [
+                -0.07702618837689326,
+                0.13345614537806927,
+                0.9183506830062256
+              ],
+              [
+                -0.07691070002476885,
+                0.1546900542156019,
+                0.9177870950525325
+              ]
+            ],
+            "identity": "The same cream cheese printed top interior, freshly bounded in this camera/frame; not table or gripper."
+          }
+        ],
+        "quaternion": [
+          0.999999495420383,
+          0.0010045690515680342,
+          0.0,
+          0.0
+        ],
+        "hover_target": [
+          -0.053072294286061625,
+          0.14408926609596032,
+          1.0229535522837352
+        ],
+        "pending": null,
+        "receipt": {
+          "decision": 17,
+          "choices": {
+            "x": "positive",
+            "y": "positive",
+            "z": "negative",
+            "rx": "hold",
+            "ry": "hold",
+            "rz": "hold",
+            "gripper": "keep"
+          },
+          "action": [
+            0.09904624515131535,
+            0.04883466210045842,
+            -0.059761080456958826,
+            0.0,
+            0.0,
+            0.0,
+            -1.0
+          ],
+          "before": [
+            -0.06080215333360871,
+            0.14028487157698344,
+            1.024028281827404
+          ],
+          "after": [
+            -0.05488376824843178,
+            0.14358073397741883,
+            1.021503989296411
+          ],
+          "target_tcp": [
+            -0.05318321139889214,
+            0.14404138404624947,
+            1.0194312756384072
+          ],
+          "acknowledged_steps": 3,
+          "native_steps": 54,
+          "frame_id": 54,
+          "status": "reached",
+          "position_error_m": 0.0027203371100850116,
+          "rotation_error_rad": 0.0038376984997894503
+        },
+        "measured_finger_table_clearance_m": 0.11114119190342742
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 54,
+  "response": {
+    "result": {
+      "key": "grasp_recovery_v3",
+      "frame_id": 54,
+      "method_number": 2,
+      "source_sha256": "c1a0fd841907a62d7f2486b8148dd7655789228cd860c510254c64a2cc155a1f",
+      "bytes": 10621,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 54
+}

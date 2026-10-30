@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-a1943428-3258-4935-9a49-93b7422bc6ca",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-a1943428-3258-4935-9a49-93b7422bc6ca",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The blue rectangular package labeled Cream Cheese is separate from, and left of, the round patterned bowl in the wrist view. Its entire rectangular top boundary is visible. The corners exclude the dark right side and lower edge beneath the top face. Both views support that the package rests flat on the tabletop. Points t0-t3 sample separated interior top patches; s0-s3 sample visible tabletop around the package.\", \"parameters\": {\"camera\": \"robot0_eye_in_hand\", \"identity\": \"cream_cheese\", \"boundary\": \"full_rectangle\", \"support\": \"flat_on_table\", \"corners\": [[145, 158], [204, 157], [207, 274], [149, 272]]}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [159, 175], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t1\", \"pixel\": [192, 181], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t2\", \"pixel\": [161, 251], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t3\", \"pixel\": [194, 253], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s0\", \"pixel\": [122, 138], \"radius\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s1\", \"pixel\": [234, 143], \"radius\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s2\", \"pixel\": [126, 299], \"radius\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s3\", \"pixel\": [237, 301], \"radius\": 5}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 17831,
+    "output_tokens": 899,
+    "output_tokens_details": {
+      "reasoning_tokens": 516
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b59-eb50-7303-a503-c868625ddb00",
+    "turn_ids": [
+      "01a18b59-eb59-70b3-aa52-7a5e6eb2e7a0"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

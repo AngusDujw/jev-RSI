@@ -1,0 +1,175 @@
+{
+  "index": 266,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "control",
+    "args": [
+      [
+        -0.05244091151417357,
+        0.14463177789363119,
+        0.9429189262355024
+      ],
+      [
+        0.9999972602698068,
+        0.001396935102135288,
+        -0.0011738483196514643,
+        -0.0014663237442624046
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For this world translation component, read state.processed_features.axes.x.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For this world translation component, read state.processed_features.axes.y.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For this world translation component, read state.processed_features.axes.z.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For this world rotation-vector component, read state.processed_features.axes.rx.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For this world rotation-vector component, read state.processed_features.axes.ry.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For this world rotation-vector component, read state.processed_features.axes.rz.goal_relation. Choose negative for decrease, positive for increase, and hold for within_tolerance. Geometry and object effects are not yours to infer.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper and deliver that command exactly. Keep preserves the previous command, including a previous close; it never means reopen.",
+          "criteria": {
+            "open": "Deliver requested opening.",
+            "close": "Deliver requested closing.",
+            "keep": "Preserve the existing command."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "source": "Independent GPT-identified RGB-D material points, visible passage review, frame-54 boundary model and measured own finger geometry; rejected tracker transforms are unused.",
+        "phase": "approach_precontact",
+        "geometry": {
+          "center_world_m": [
+            -0.05244091151417357,
+            0.14463177789363119,
+            0.9180619446270558
+          ],
+          "top_z_m": 0.9179189262355024,
+          "table_z_m": 0.8999800602694785,
+          "allowance_m": 0.001,
+          "validated_frame_id": 54,
+          "width_m": 0.04003839429690758,
+          "length_m": 0.07971855009801103,
+          "maximum_material_mark_drift_m": 0.0
+        },
+        "candidate": {
+          "frame_id": 54,
+          "low_pad_z_m": 0.9200487225554431,
+          "high_pad_z_m": 0.9217615382234357,
+          "target_pad_z_m": 0.9209051303894393,
+          "interval_m": 0.0017128156679925288,
+          "finger_bottom_relative_pad_m": -0.013068662285964558,
+          "common_pad_bottom_m": -0.00784261198793322,
+          "common_pad_top_m": 0.00784261198793322,
+          "required_table_clearance_m": 0.006,
+          "required_overlap_m": 0.003,
+          "end_reserve_m": 0.0006,
+          "surface_allowance_m": 0.001
+        },
+        "observation_frame_id": 54,
+        "retention_not_inferred_from_closure": true
+      },
+      "tool_point": "pad_center",
+      "translation_limit": 0.02,
+      "rotation_limit": 0.03,
+      "steps": 3,
+      "position_tolerance": 0.003,
+      "rotation_tolerance": 0.01
+    }
+  },
+  "frame_before": 66,
+  "response": {
+    "result": {
+      "decision": 22,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "negative",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "action": [
+        0.0,
+        0.0,
+        -0.3262873805026806,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        -0.05086437280207262,
+        0.14445307153406942,
+        0.9646231995305494
+      ],
+      "after": [
+        -0.05176296795049078,
+        0.14419596166405302,
+        0.9506968031631204
+      ],
+      "target_tcp": [
+        -0.05242984378392942,
+        0.14465466296039153,
+        0.9395241702611125
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 69,
+      "frame_id": 69,
+      "status": "moved",
+      "position_error_m": 0.011201913060701662,
+      "rotation_error_rad": 0.004609240096881073
+    }
+  },
+  "frame_after": 69
+}

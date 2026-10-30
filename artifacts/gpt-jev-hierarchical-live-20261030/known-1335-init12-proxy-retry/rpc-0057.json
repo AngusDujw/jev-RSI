@@ -1,0 +1,202 @@
+{
+  "index": 57,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "control",
+    "args": [
+      [
+        -0.052788852712012495,
+        0.14377892650090987,
+        0.9930586933855965
+      ],
+      [
+        0.9999955794193083,
+        0.002973405764775145,
+        0.0,
+        0.0
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world translation x, use state.processed_features.axes.x.goal_relation. Choose negative for decrease, positive for increase, hold for within_tolerance. Do not infer scene geometry.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world translation y, use state.processed_features.axes.y.goal_relation. Choose negative for decrease, positive for increase, hold for within_tolerance. Do not infer scene geometry.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world translation z, use state.processed_features.axes.z.goal_relation. Choose negative for decrease, positive for increase, hold for within_tolerance. Do not infer scene geometry.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component rx, use state.processed_features.axes.rx.goal_relation. Choose negative for decrease, positive for increase, hold for within_tolerance. Do not infer scene geometry.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component ry, use state.processed_features.axes.ry.goal_relation. Choose negative for decrease, positive for increase, hold for within_tolerance. Do not infer scene geometry.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world rotation-vector component rz, use state.processed_features.axes.rz.goal_relation. Choose negative for decrease, positive for increase, hold for within_tolerance. Do not infer scene geometry.",
+          "criteria": {
+            "negative": "Decrease this world component.",
+            "hold": "This component is within tolerance.",
+            "positive": "Increase this world component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Deliver state.processed_features.objective.gripper exactly. Keep preserves the previous command; it does not reopen. Closing is not proof of retention.",
+          "criteria": {
+            "open": "Requested opening.",
+            "close": "Requested closing.",
+            "keep": "Preserve the existing command."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "source": "Program RGB-D top/side measurements, own finger/pad geometry, accepted patch registration and typed visible-corridor reviews.",
+        "phase": "hover",
+        "contact_model": {
+          "finger_bottom_relative_to_pad_m": -0.012849107009252606,
+          "common_pad_bottom_relative_m": -0.008000395919625645,
+          "common_pad_top_relative_m": 0.008000395919625645,
+          "minimum_pad_center_z_m": 0.9198105635244513,
+          "maximum_pad_center_z_m": 0.9220590893052222,
+          "feasible_interval_m": 0.002248525780770838,
+          "target_z_m": 0.9209348264148367,
+          "required_table_clearance_m": 0.006,
+          "required_vertical_overlap_m": 0.003,
+          "surface_allowance_m": 0.001,
+          "pose_reserve_each_end_m": 0.0006
+        },
+        "package_width_m": 0.04118502081401439,
+        "package_length_m": 0.0812054010952341,
+        "registration": {
+          "frame_id": 6,
+          "reference_frame_id": 0,
+          "camera": "robot0_eye_in_hand",
+          "matches": 33,
+          "inliers": 33,
+          "rms_m": 0.00020638388483915397,
+          "inlier_spread_m": [
+            0.016326278473555934,
+            0.006497169510918753,
+            5.278194552723676e-05
+          ],
+          "uncertainty_floor_m": 0.0015,
+          "transform_initial_world_to_current_world": [
+            [
+              0.9999965500654224,
+              0.0025960885592323096,
+              -0.0004002267439335956,
+              0.0001092841169956782
+            ],
+            [
+              -0.00259645685466672,
+              0.9999962037322084,
+              -0.0009224602830876427,
+              0.0008386105648627573
+            ],
+            [
+              0.0003978304359784274,
+              0.0009234962721327565,
+              0.9999994944426619,
+              -0.00018394214980221868
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "retention": null,
+        "meaning": "Directions and requested command only; Jev is not a sensor or an effect judge."
+      },
+      "tool_point": "pad_center",
+      "translation_limit": 0.02,
+      "rotation_limit": 0.1,
+      "steps": 3,
+      "position_tolerance": 0.003,
+      "rotation_tolerance": 0.01
+    }
+  },
+  "frame_before": 6,
+  "response": {
+    "result": {
+      "decision": 2,
+      "choices": {
+        "x": "positive",
+        "y": "positive",
+        "z": "negative",
+        "rx": "hold",
+        "ry": "negative",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "action": [
+        0.23094010767585027,
+        0.23094010767585027,
+        -0.23094010767585027,
+        0.0,
+        -0.01853536035283923,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        -0.1903591442739663,
+        0.012726078882002697,
+        1.1679312292212105
+      ],
+      "after": [
+        -0.18268327824912284,
+        0.021711458144510472,
+        1.1576182540180766
+      ],
+      "target_tcp": [
+        -0.052898341935622706,
+        0.1436972064669234,
+        0.9895842951295994
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 9,
+      "frame_id": 9,
+      "status": "moved",
+      "position_error_m": 0.24486744133798757,
+      "rotation_error_rad": 0.002448518765971162
+    }
+  },
+  "frame_after": 9
+}

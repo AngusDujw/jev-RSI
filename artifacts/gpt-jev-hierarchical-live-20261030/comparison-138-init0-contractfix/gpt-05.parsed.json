@@ -1,0 +1,16 @@
+{
+  "action": "advance",
+  "stage_satisfied": "yes",
+  "task_satisfied": "no",
+  "plan_valid": "yes",
+  "recovery_available": "yes",
+  "invalidated_assumptions": [],
+  "evidence": [
+    "Current frame 0 views show the patterned bowl on the counter and a vacant dark cabinet tabletop.",
+    "Same-frame RGB-D identifies a visible rim-pinch region and a tabletop patch with 0.0737 m inscribed radius versus the measured 0.0543 m bowl rim radius.",
+    "Observed obstacle heights and robot geometry support the limited high-alignment envelope, with a reported 0.0960 m height margin.",
+    "No physical commands or native steps occurred; the bowl has not been lifted or placed.",
+    "Exact aperture and descent clearance remain unverified; the observed clearance applies only to high open-hand alignment and yaw."
+  ],
+  "reason": "The stage returned stage_complete, and current images with same-frame measurements support its observation objective. Advance with the stated clearance limits, not as authorization for unverified descent or evidence of task completion."
+}

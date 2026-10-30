@@ -1,0 +1,48 @@
+{
+  "status": "continue",
+  "explanation": "The changed agentview exposes one inward contact face on the lower-projecting far finger, below the nearer finger. All four points sample separated interior locations on that same visible face, avoiding its edges and rounded tip. The same bowl remains upright and supported in its earlier position. The hand is visibly clear of external objects. Complete swept-envelope coverage remains unknown; these face samples do not certify future motion clearance.",
+  "parameters": {
+    "bowl": "same_upright_supported",
+    "face": "one_actual_inward_contact_face",
+    "hand": "visibly_clear"
+  },
+  "points": [
+    {
+      "camera": "agentview",
+      "name": "m0",
+      "pixel": [
+        404,
+        272
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "m1",
+      "pixel": [
+        412,
+        272
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "m2",
+      "pixel": [
+        404,
+        282
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "m3",
+      "pixel": [
+        412,
+        282
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": []
+}

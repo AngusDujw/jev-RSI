@@ -1,0 +1,109 @@
+{
+  "index": 184,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "lift.turn_v4",
+      {
+        "stage": "lift",
+        "phase": "single_face_observation_repair",
+        "entry_state": {
+          "frame_id": 72,
+          "native_steps": 72,
+          "budgets": {
+            "gpt_remaining": 7,
+            "jev_remaining": 176,
+            "native_steps_remaining": 528,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.7306565427597409,
+            -0.6827073192257166,
+            -0.003415033535744021,
+            -0.0063301140565056885
+          ],
+          "gripper_qpos_m": [
+            0.03994083924486617,
+            -0.03995965235438093
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              5.008693418707792e-06,
+              -4.908901678488814e-05,
+              -0.0036354615141295315
+            ],
+            "pad_extent_in_tool_m": [
+              0.01606144447560691,
+              0.09491505462697265,
+              0.01604347694271286
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010533107090902837,
+              -0.06638224484231006,
+              -0.044525079882200974
+            ],
+            "finger_high_offset_tool_m": [
+              0.010517121776116118,
+              0.06631358253073606,
+              0.009236193728665626
+            ]
+          }
+        },
+        "calls": 0,
+        "retention_established": false,
+        "updates": [],
+        "plan": {
+          "anchor_tcp_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "target_quaternion_xyzw": [
+            0.6004932422209138,
+            -0.6127369682135009,
+            0.36133362738287017,
+            -0.36523866656458964
+          ],
+          "yaw_rad": -0.07987504311241267,
+          "roll_rad": 1.0745128994008635,
+          "preferred_finger_tool_y_sign": 1.0,
+          "camera_direction_world": [
+            0.8495522154394485,
+            -0.010264041691691409,
+            0.5274046669210237
+          ],
+          "previous_three_step_displacement_m": 0.004894412485043354,
+          "recenter_trigger_m": 0.004,
+          "per_update_displacement_allowance_m": 0.009788824970086709,
+          "maximum_tcp_excursion_m": 0.013788824970086709,
+          "finger_growth_allowance_m": 0.001,
+          "finger_sphere_radius_m": 0.09541159789318336,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02,
+          "basis": "Twice the measured previous displacement is an engineering transient allowance, not a certified dynamics bound. Freshly review this entire envelope. The original 4 mm limit remains the stop-rotation/recenter trigger."
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 72,
+  "response": {
+    "result": {
+      "key": "lift.turn_v4",
+      "frame_id": 72,
+      "method_number": 4,
+      "source_sha256": "6afbc8a24d4380a6cd746ddf547b0cd6a47fae9732bc5954dc9b6b988f40aaab",
+      "bytes": 1967,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 72
+}

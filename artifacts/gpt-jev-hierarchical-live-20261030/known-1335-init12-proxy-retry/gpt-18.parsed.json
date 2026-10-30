@@ -1,0 +1,147 @@
+{
+  "status": "continue",
+  "explanation": "Reassessment only; no closure or lift. The same printed cream cheese package is flat on the table, between open, empty fingers. The returned top and table selections are current visible surfaces, not reused historical measurements. Four visible top-edge samples bracket the pad footprint approximately 5 mm beyond its ends; they do not establish visibility of the vertical contact bands. fp and fm are omitted because the actual inner pad faces within their central contact bands cannot be identified reliably through the hand's self-occlusion; the conspicuous gray finger-link faces are not substitutes. Bare lateral passages show no external obstacle, but self-occlusion prevents certification of the entire inward finger sweep. Independently, the current views support a clear 30 mm world +Z observation retreat with unchanged orientation, open fingers and 2 mm lateral variation: the hand moves away from the table and package, and the bowl and bottle are outside that upward sweep. This is not a grasp, retention or placement claim.",
+  "parameters": {
+    "identity": "same_cream_cheese",
+    "support": "flat_on_table",
+    "gripper": "empty_open",
+    "top_labels": {
+      "t0": "Lower-facing terminal of the right-hand curl of the large initial C in Cream.",
+      "t1": "Upper white stroke of the initial subtitle letter in Fresh inside the blue badge.",
+      "t2": "Lower-right white stroke of the final m in Cream, above the hand occlusion."
+    },
+    "edges": [
+      {
+        "id": "b0",
+        "camera": "agentview",
+        "u": 500,
+        "v": 462
+      },
+      {
+        "id": "b1",
+        "camera": "robot0_eye_in_hand",
+        "u": 493,
+        "v": 575
+      },
+      {
+        "id": "b2",
+        "camera": "robot0_eye_in_hand",
+        "u": 284,
+        "v": 574
+      },
+      {
+        "id": "b3",
+        "camera": "agentview",
+        "u": 538,
+        "v": 462
+      }
+    ],
+    "boundary_band": "occluded",
+    "closure_corridor": "unknown",
+    "upward_sweep_30mm": "visible_clear",
+    "alternate_measurement": "available",
+    "occlusions": "The wrist-view hand bridge hides the lower image portion of the package and the central inner-pad contact areas. Agentview supplies complementary exposed top edges but not both complete opposing side contact bands. These are robot self-occlusions and unobserved contact geometry, not observed external obstructions. fp and fm are unavailable; no hidden pad points are inferred."
+  },
+  "points": [
+    {
+      "name": "t0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        400,
+        504
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        333,
+        599
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        418,
+        625
+      ],
+      "radius": 2
+    },
+    {
+      "name": "s0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        535,
+        610
+      ],
+      "radius": 3
+    },
+    {
+      "name": "s1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        238,
+        610
+      ],
+      "radius": 3
+    },
+    {
+      "name": "s2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        384,
+        354
+      ],
+      "radius": 3
+    }
+  ],
+  "regions": [
+    {
+      "name": "visible_printed_top",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        295,
+        450,
+        480,
+        632
+      ],
+      "stride": 8
+    },
+    {
+      "name": "positive_tool_y_table_passage",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        510,
+        555,
+        560,
+        630
+      ],
+      "stride": 5
+    },
+    {
+      "name": "negative_tool_y_table_passage",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        210,
+        555,
+        270,
+        630
+      ],
+      "stride": 5
+    },
+    {
+      "name": "forward_bare_table",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        340,
+        320,
+        430,
+        390
+      ],
+      "stride": 8
+    }
+  ]
+}

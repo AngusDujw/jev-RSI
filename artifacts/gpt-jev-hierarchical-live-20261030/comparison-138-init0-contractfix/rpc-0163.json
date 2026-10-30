@@ -1,0 +1,179 @@
+{
+  "index": 163,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "control",
+    "args": [
+      [
+        -0.0485005917401647,
+        0.009607674944944989,
+        1.170678328446036
+      ],
+      [
+        0.9192169880715125,
+        -0.007879047003109287,
+        0.3934458767877422,
+        0.013356328005273274
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For x, use state.processed_features.axes.x.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no component correction within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For y, use state.processed_features.axes.y.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no component correction within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For z, use state.processed_features.axes.z.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no component correction within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For rx, use state.processed_features.axes.rx.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no component correction within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For ry, use state.processed_features.axes.ry.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no component correction within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For rz, use state.processed_features.axes.rz.goal_relation: increase means positive, decrease means negative, within_tolerance means hold. Correct only the supplied fixed-TCP diagnostic orientation. Do not infer scene clearance.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no component correction within tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Use state.processed_features.objective.gripper. This diagnostic turn requires keep, preserving the existing open command. Neither closure nor a new opening is requested.",
+          "criteria": {
+            "open": "Deliver only an explicitly supplied open objective.",
+            "close": "Deliver only an explicitly supplied close objective.",
+            "keep": "Preserve the existing gripper command, as required here."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "source": "Fresh pre-turn RGB-D top samples and current proprioception; no hidden-object sensing.",
+        "phase": "high_pad_observation_turn",
+        "clearance": {
+          "frame_id": 69,
+          "visible_top_z_m": 0.9494728145242961,
+          "sphere_height_margin_m": 0.1306312593729283,
+          "required_margin_m": 0.02,
+          "scope": "High diagnostic turn only; visible stationary scene assumption."
+        },
+        "view_plan": {
+          "tcp_target_world_m": [
+            -0.0485005917401647,
+            0.009607674944944989,
+            1.170678328446036
+          ],
+          "quaternion_target_xyzw": [
+            0.9192169880715125,
+            -0.007879047003109287,
+            0.3934458767877422,
+            0.013356328005273274
+          ],
+          "world_yaw_rad": 1.5036100901981708,
+          "tool_y_tilt_rad": 0.8573318094611184,
+          "camera_direction_world": [
+            0.8491358210517739,
+            -0.011537567706876261,
+            0.5280485223330704
+          ],
+          "finger_sphere_radius_m": 0.08557425454881162,
+          "tcp_drift_bound_m": 0.004,
+          "geometry_growth_bound_m": 0.001,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02
+        },
+        "current_tcp_drift_m": 0.0,
+        "descent_authorized": false,
+        "closure_authorized": false
+      },
+      "translation_limit": 0.003,
+      "rotation_limit": 0.1,
+      "steps": 3,
+      "position_tolerance": 0.002,
+      "rotation_tolerance": 0.025
+    }
+  },
+  "frame_before": 69,
+  "response": {
+    "result": {
+      "decision": 23,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "hold",
+        "rx": "negative",
+        "ry": "negative",
+        "rz": "positive",
+        "gripper": "keep"
+      },
+      "action": [
+        0.0,
+        0.0,
+        0.0,
+        -0.11547005383792515,
+        -0.11547005383792515,
+        0.11547005383792515,
+        -1.0
+      ],
+      "before": [
+        -0.0485005917401647,
+        0.009607674944944989,
+        1.170678328446036
+      ],
+      "after": [
+        -0.04482368327809973,
+        0.008498559453882266,
+        1.1737123819331763
+      ],
+      "target_tcp": [
+        -0.0485005917401647,
+        0.009607674944944989,
+        1.170678328446036
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 72,
+      "frame_id": 72,
+      "status": "moved",
+      "position_error_m": 0.004894412485043354,
+      "rotation_error_rad": 1.6580828521763629
+    }
+  },
+  "frame_after": 72
+}

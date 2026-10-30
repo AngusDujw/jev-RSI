@@ -1,0 +1,15 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Both current views show the cream cheese package on the table outside the empty bowl.",
+    "Public state reports frame 0, zero native steps and an open gripper; no execution is acknowledged.",
+    "The stage returned blocked during setup after its pad engagement and table clearance check; no grasp or lift was observed.",
+    "Recorded same-frame depth samples place the package top about 18 mm above the surrounding table, but do not establish all possible contact geometries."
+  ],
+  "invalidated_assumptions": [],
+  "plan_valid": "yes",
+  "reason": "The grasp subgoal remains suitable. Audit the tool-to-world pad and finger clearance calculation, then use targeted edge or side measurements to assess a different grasp candidate if needed. Retain the required clearance margin. One rejected candidate does not establish global infeasibility, and no action has changed the scene.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

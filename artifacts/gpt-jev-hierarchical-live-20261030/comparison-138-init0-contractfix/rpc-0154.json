@@ -1,0 +1,228 @@
+{
+  "index": 154,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "lift.measurements"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 69,
+  "response": {
+    "result": {
+      "key": "lift.measurements",
+      "frame_id": 69,
+      "method_number": 1,
+      "source_sha256": "6ae04e63cf69b2ba4a9b9071b8ca0f076d91df82b890542e5853e025f8788807",
+      "bytes": 3819,
+      "value": {
+        "frame_id": 69,
+        "parameters": {
+          "band": "same_accessible_pinch_band",
+          "band0": {
+            "camera": "robot0_eye_in_hand",
+            "pixel": [
+              378,
+              478
+            ],
+            "visible": true
+          },
+          "band1": {
+            "camera": "robot0_eye_in_hand",
+            "pixel": [
+              381,
+              416
+            ],
+            "visible": true
+          },
+          "bowl": "same_upright_on_counter",
+          "hand": "clear_above_bowl",
+          "inner": {
+            "camera": "robot0_eye_in_hand",
+            "pixel": [
+              381,
+              446
+            ],
+            "visible": true
+          },
+          "outer": {
+            "camera": "agentview",
+            "pixel": [
+              394,
+              456
+            ],
+            "visible": true
+          },
+          "pad_a": {
+            "camera": "robot0_eye_in_hand",
+            "pixel": [
+              0,
+              0
+            ],
+            "visible": false
+          },
+          "pad_b": {
+            "camera": "robot0_eye_in_hand",
+            "pixel": [
+              0,
+              0
+            ],
+            "visible": false
+          },
+          "pad_faces": "unknown",
+          "patch_camera": "robot0_eye_in_hand",
+          "patch_identity": "patterned_bowl_only",
+          "patch_polygon": [
+            [
+              433,
+              411
+            ],
+            [
+              504,
+              411
+            ],
+            [
+              504,
+              487
+            ],
+            [
+              433,
+              487
+            ]
+          ]
+        },
+        "points": {
+          "inner": {
+            "world_m": [
+              -0.05078535424791147,
+              0.010725016635991985,
+              0.9428388106901067
+            ],
+            "depth_m": 0.32463669776916504,
+            "frame_id": 69,
+            "pixel": [
+              381,
+              446
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "outer": {
+            "world_m": [
+              -0.04933025469248997,
+              0.010473162186160888,
+              0.9416607471935373
+            ],
+            "depth_m": 0.9709228873252869,
+            "frame_id": 69,
+            "pixel": [
+              394,
+              456
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "band0": {
+            "world_m": [
+              -0.04958230495446569,
+              0.02997557600775451,
+              0.9503126260504866
+            ],
+            "depth_m": 0.3180610239505768,
+            "frame_id": 69,
+            "pixel": [
+              378,
+              478
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "band1": {
+            "world_m": [
+              -0.0498602155364027,
+              -0.009563237263398541,
+              0.9496352639327816
+            ],
+            "depth_m": 0.3168686330318451,
+            "frame_id": 69,
+            "pixel": [
+              381,
+              416
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": [],
+        "interpretation": "The same patterned bowl remains upright at the same counter location in the fixed agentview images. The current hand is visibly separated above it. The historical world +x sector is the front rim in agentview and the left rim in the CURRENT wrist view; its continuous band remains visible without an observed external obstruction. inner samples the visible inner wall in wrist view; outer samples the visible exterior in agentview. Their approximately 8 mm below-rim level, matching height, and the approximately 40 mm band span require depth verification. Neither actual opposing inner contact-face center is identifiable: the current wrist view self-occludes the centers at its lower margin, and agentview does not resolve them. Both pad measurements are unavailable. Their [0,0] pixels are schema placeholders only, not surface selections; no pad depth points are supplied. The reference polygon and region contain only visible textured bowl material away from the pinch sector. This observation does not certify unseen descent space, possession, retention, or task completion.",
+        "fallbacks": [],
+        "valid_points": {
+          "inner": {
+            "world_m": [
+              -0.05078535424791147,
+              0.010725016635991985,
+              0.9428388106901067
+            ],
+            "depth_m": 0.32463669776916504,
+            "frame_id": 69,
+            "pixel": [
+              381,
+              446
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "outer": {
+            "world_m": [
+              -0.04933025469248997,
+              0.010473162186160888,
+              0.9416607471935373
+            ],
+            "depth_m": 0.9709228873252869,
+            "frame_id": 69,
+            "pixel": [
+              394,
+              456
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "band0": {
+            "world_m": [
+              -0.04958230495446569,
+              0.02997557600775451,
+              0.9503126260504866
+            ],
+            "depth_m": 0.3180610239505768,
+            "frame_id": 69,
+            "pixel": [
+              378,
+              478
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "band1": {
+            "world_m": [
+              -0.0498602155364027,
+              -0.009563237263398541,
+              0.9496352639327816
+            ],
+            "depth_m": 0.3168686330318451,
+            "frame_id": 69,
+            "pixel": [
+              381,
+              416
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        }
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 69
+}

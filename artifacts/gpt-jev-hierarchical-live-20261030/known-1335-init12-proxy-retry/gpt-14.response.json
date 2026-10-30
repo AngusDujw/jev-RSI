@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-9f31dc04-be00-41bc-a2a2-ec31a529225f",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-9f31dc04-be00-41bc-a2a2-ec31a529225f",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The same package remains flat on the table, with open, empty fingers and no visible displacement. p0, p1 and p2 are visible in the wrist camera. p3 is hidden by the robot in that camera but visible at the far printed end in agentview; its image resolution is much lower. Both bare side passages are visible and clear of other objects. The bowl and bottle are outside the remaining local vertical descent. The table is below both passages; use the returned current table measurements to recompute and check the finite-pad endpoint clearance. This review covers only open-finger descent, not closure, retention or transport.\", \"parameters\": {\"gripper\": \"empty_open\", \"identity\": \"same_cream_cheese\", \"labels\": [\"p0: Lower-facing terminal of the right-hand curl of the initial large capital C in Cream.\", \"p1: Upper terminal of the first small white subtitle letter inside the blue badge, to the left of the large lettering.\", \"p2: Right-hand curl terminal of the large capital C starting Cheese, distinct from the capital C in Cream.\", \"p3: Bottom terminal stroke of the final lowercase e in Cheese.\"], \"marks_identified\": \"same_four\", \"passages\": \"both_visible\", \"route\": \"visible_clear\", \"slip\": \"none_visible\", \"support\": \"flat_on_table\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [393, 477], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [338, 555], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [417, 619], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"p3\", \"pixel\": [520, 448], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s0\", \"pixel\": [200, 565], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s1\", \"pixel\": [572, 565], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s2\", \"pixel\": [384, 357], \"radius\": 3}], \"regions\": [{\"camera\": \"agentview\", \"name\": \"left_finger_descent_table\", \"box\": [462, 468, 490, 510], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"right_finger_descent_table\", \"box\": [546, 468, 583, 510], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"left_passage_visible_table\", \"box\": [150, 445, 285, 575], \"stride\": 5}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"right_passage_visible_table\", \"box\": [485, 445, 620, 575], \"stride\": 5}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 68988,
+    "output_tokens": 3293,
+    "output_tokens_details": {
+      "reasoning_tokens": 1956
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b9f-cb0d-7d50-b8e5-e381616bd1a0",
+    "turn_ids": [
+      "01a18b9f-cb13-7c73-9842-519a707911fd"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

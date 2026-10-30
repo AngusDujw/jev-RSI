@@ -1,0 +1,157 @@
+{
+  "index": 99,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "control",
+    "args": [
+      [
+        -0.05010654023793723,
+        0.010490195649138685,
+        1.172844736940837
+      ],
+      [
+        0.7099222328946184,
+        -0.7036853394100765,
+        -0.020731121461376227,
+        -0.020188782632902996
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For x, read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no correction within its supplied tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For y, read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no correction within its supplied tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For z, read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no correction within its supplied tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For rx, read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no correction within its supplied tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For ry, read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no correction within its supplied tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For rz, read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "Apply no correction within its supplied tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper. This slice requires keep; preserve the existing open command without initiating closure or reopening.",
+          "criteria": {
+            "open": "Only deliver an explicitly supplied open objective.",
+            "close": "Only deliver an explicitly supplied close objective.",
+            "keep": "Preserve the existing gripper command as required."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "source": "Historical same-entry-frame visible obstacle depths plus current own robot geometry.",
+        "phase": "high_alignment_only",
+        "reference_frame": 0,
+        "obstacle_top_z_m": 1.0583422373625002,
+        "current_height_margin_after_allowance_m": 0.09305650995495063,
+        "required_height_margin_m": 0.02,
+        "target_pad_world_m": [
+          -0.05010654023793723,
+          0.010490195649138685,
+          1.172844736940837
+        ],
+        "world_yaw_rad": -1.561122362185197,
+        "descent_authorized": false,
+        "closure_authorized": false
+      },
+      "tool_point": "pad_center",
+      "translation_limit": 0.02,
+      "rotation_limit": 0.1,
+      "steps": 3,
+      "position_tolerance": 0.004,
+      "rotation_tolerance": 0.04
+    }
+  },
+  "frame_before": 33,
+  "response": {
+    "result": {
+      "decision": 11,
+      "choices": {
+        "x": "positive",
+        "y": "hold",
+        "z": "positive",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "negative",
+        "gripper": "keep"
+      },
+      "action": [
+        0.13980126522523026,
+        0.0,
+        0.0339793369978485,
+        0.0,
+        0.0,
+        -0.2,
+        -1.0
+      ],
+      "before": [
+        -0.060941467440639475,
+        0.009592273908565648,
+        1.1666455924362134
+      ],
+      "after": [
+        -0.0522778877096568,
+        0.009365886990654042,
+        1.169000627672132
+      ],
+      "target_tcp": [
+        -0.05018752396177561,
+        0.010807879558826231,
+        1.169259387589894
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 36,
+      "frame_id": 36,
+      "status": "moved",
+      "position_error_m": 0.0025526299888859504,
+      "rotation_error_rad": 0.7563273668500683
+    }
+  },
+  "frame_after": 36
+}

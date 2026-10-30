@@ -1,0 +1,9 @@
+{
+  "error_type": "PlannerSubmissionFailure",
+  "elapsed_s": 372.11054970906116,
+  "usage_unknown": true,
+  "model_request_attempted": true,
+  "physical_dispatch": false,
+  "dispatched": false,
+  "dispatch_scope": "physical_control_only"
+}

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-060ca995-839a-4ece-b148-640a40ace004",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_plan",
+      "call_id": "exec-060ca995-839a-4ece-b148-640a40ace004",
+      "arguments": "{\"explanation\": \"Initial plan from frame 0: the patterned bowl is on the counter beside the bottle; the target is the dark cabinet tabletop at left. The gripper is open and no execution is acknowledged. All manipulation remains to be done.\", \"goal_evidence\": \"After release, withdrawal, and settling, fresh RGB-D observations show the bowl upright and stationary on the top of cabinet table 1, with its base within the tabletop boundary and no support from the robot.\", \"stages\": [{\"id\": \"observe\", \"objective\": \"Establish the bowl grasp region, cabinet tabletop landing area, and relevant clearances.\", \"entry_evidence\": \"Frame 0 views show the bowl, dark cabinet with handles, bottle, plate, package, and nearby rack; robot state reports an open gripper.\", \"success_evidence\": \"Public RGB-D and robot geometry establish an accessible bowl grasp region and a clear tabletop area large enough to support its base, with sufficient observed clearance for the next approach.\", \"handoff_requirements\": \"Carry forward observed bowl and tabletop geometry, nearby obstacles, and remaining uncertainty. If boundaries or clearance are unclear, acquire a complementary view from an observed-clear robot configuration before committing.\", \"replan_conditions\": \"Target identity remains ambiguous, the selected region is obstructed, or new observations invalidate the approach clearance; revise the region or gather further evidence rather than assume unknown space is free.\"}, {\"id\": \"lift\", \"objective\": \"Acquire the bowl and lift it clear of its current support.\", \"entry_evidence\": \"Fresh observations support the selected grasp region and approach clearance; the bowl remains on the counter.\", \"success_evidence\": \"Images show the bowl moving with the gripper and visibly separated from the counter, without apparent slipping or collision.\", \"handoff_requirements\": \"Confirm actual bowl retention and orientation, and update its observed extent relative to the gripper before transport.\", \"replan_conditions\": \"The bowl fails to move with the gripper, slips, tips, or becomes unobservable. Establish its actual state before any retry; a close command alone is not grasp evidence.\"}, {\"id\": \"transfer\", \"objective\": \"Bring the retained bowl above a suitable landing area on cabinet table 1.\", \"entry_evidence\": \"The bowl is visibly retained off the counter, and relevant obstacle geometry is available.\", \"success_evidence\": \"Fresh observations show the retained bowl above the selected tabletop area with its base footprint inside the support boundary and an observed-clear placement approach.\", \"handoff_requirements\": \"Reconfirm bowl retention, tabletop vacancy, and clearance for both bowl and robot using current observations; acquire another safe view if occlusion prevents assessment.\", \"replan_conditions\": \"Retention changes, an obstacle blocks progress, or landing clearance is uncertain. Reobserve or select a different supported route or landing area without treating unobserved clearance as free.\"}, {\"id\": \"place\", \"objective\": \"Set the bowl onto the cabinet tabletop, release it, and withdraw without disturbing it.\", \"entry_evidence\": \"The retained bowl is above the verified landing area with a clear placement approach.\", \"success_evidence\": \"Post-release observations show the bowl remaining upright at tabletop height as the gripper visibly separates and withdraws.\", \"handoff_requirements\": \"Obtain an unobstructed view after withdrawal and allow settling before final assessment; do not infer placement from robot pose or gripper command.\", \"replan_conditions\": \"The bowl remains attached, moves with withdrawal, tips, slides, or appears unsupported. Reassess its actual physical state before corrective action.\"}, {\"id\": \"verify\", \"objective\": \"Assess the completed placement after release and settling.\", \"entry_evidence\": \"Release and withdrawal have been acknowledged, with a fresh view of the bowl and cabinet top.\", \"success_evidence\": \"Successive observations show the bowl stationary and upright, its base supported within cabinet table 1's tabletop boundary, and the robot clear of it.\", \"handoff_requirements\": \"Report completion only with this independent object evidence; obtain a complementary safe view if support or separation remains occluded.\", \"replan_conditions\": \"The bowl shifts, is not on the intended tabletop, lacks adequate support, or cannot yet be assessed. Plan only the remaining observation or recovery from its current state.\"}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 17229,
+    "output_tokens": 1257,
+    "output_tokens_details": {
+      "reasoning_tokens": 299
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18bbf-66f4-7831-bb39-7cc2be5e9f07",
+    "turn_ids": [
+      "01a18bbf-66fc-7410-a503-f0a5404b5175"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

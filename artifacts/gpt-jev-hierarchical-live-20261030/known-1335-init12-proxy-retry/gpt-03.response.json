@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-43e28f74-ed1f-447e-8dee-adc8d3bf8578",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-43e28f74-ed1f-447e-8dee-adc8d3bf8578",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Both current views show the cream cheese package on the table outside the empty bowl.\", \"Public state reports frame 0, zero native steps and an open gripper; no execution is acknowledged.\", \"The stage returned blocked during setup after its pad engagement and table clearance check; no grasp or lift was observed.\", \"Recorded same-frame depth samples place the package top about 18 mm above the surrounding table, but do not establish all possible contact geometries.\"], \"invalidated_assumptions\": [], \"plan_valid\": \"yes\", \"reason\": \"The grasp subgoal remains suitable. Audit the tool-to-world pad and finger clearance calculation, then use targeted edge or side measurements to assess a different grasp candidate if needed. Retain the required clearance margin. One rejected candidate does not establish global infeasibility, and no action has changed the scene.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 28184,
+    "output_tokens": 1086,
+    "output_tokens_details": {
+      "reasoning_tokens": 825
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b5a-9bdb-7271-b1a3-7ca2ae471f90",
+    "turn_ids": [
+      "01a18b5a-9be0-7d61-a853-0e8d32faa868"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

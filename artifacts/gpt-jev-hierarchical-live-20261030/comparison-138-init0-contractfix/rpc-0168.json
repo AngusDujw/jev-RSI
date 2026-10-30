@@ -1,0 +1,252 @@
+{
+  "index": 168,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Assess the ACTUALLY EXECUTED changed high view, not the target pose. Request pad_a and pad_b at the centers of the two actual opposing inner finger contact faces, in either order and whichever current view exposes each. Do not use silhouettes, outer faces, fingertips, or placeholder pixels. Set visible false for an unidentifiable center; no extrapolated depth. Check that the same patterned bowl remains upright on its original counter and the hand remains visibly clear. This is a pad-geometry calibration, not a grasp or lift assessment. Report all declared fields even when the turn is partial or stopped."
+    ],
+    "kwargs": {
+      "context": {
+        "state": {
+          "frame_id": 72,
+          "native_steps": 72,
+          "budgets": {
+            "gpt_remaining": 13,
+            "jev_remaining": 176,
+            "native_steps_remaining": 528,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.7306565427597409,
+            -0.6827073192257166,
+            -0.003415033535744021,
+            -0.0063301140565056885
+          ],
+          "gripper_qpos_m": [
+            0.03994083924486617,
+            -0.03995965235438093
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              5.008693418707792e-06,
+              -4.908901678488814e-05,
+              -0.0036354615141295315
+            ],
+            "pad_extent_in_tool_m": [
+              0.01606144447560691,
+              0.09491505462697265,
+              0.01604347694271286
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010533107090902837,
+              -0.06638224484231006,
+              -0.044525079882200974
+            ],
+            "finger_high_offset_tool_m": [
+              0.010517121776116118,
+              0.06631358253073606,
+              0.009236193728665626
+            ]
+          }
+        },
+        "view_plan": {
+          "tcp_target_world_m": [
+            -0.0485005917401647,
+            0.009607674944944989,
+            1.170678328446036
+          ],
+          "quaternion_target_xyzw": [
+            0.9192169880715125,
+            -0.007879047003109287,
+            0.3934458767877422,
+            0.013356328005273274
+          ],
+          "world_yaw_rad": 1.5036100901981708,
+          "tool_y_tilt_rad": 0.8573318094611184,
+          "camera_direction_world": [
+            0.8491358210517739,
+            -0.011537567706876261,
+            0.5280485223330704
+          ],
+          "finger_sphere_radius_m": 0.08557425454881162,
+          "tcp_drift_bound_m": 0.004,
+          "geometry_growth_bound_m": 0.001,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02
+        },
+        "execution_stop": "Post-turn measured hand geometry leaves the admitted bounds.",
+        "historical_bowl_points_frame": 69,
+        "historical_bowl_points": {
+          "inner": {
+            "world_m": [
+              -0.05078535424791147,
+              0.010725016635991985,
+              0.9428388106901067
+            ],
+            "depth_m": 0.32463669776916504,
+            "frame_id": 69,
+            "pixel": [
+              381,
+              446
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "outer": {
+            "world_m": [
+              -0.04933025469248997,
+              0.010473162186160888,
+              0.9416607471935373
+            ],
+            "depth_m": 0.9709228873252869,
+            "frame_id": 69,
+            "pixel": [
+              394,
+              456
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "band0": {
+            "world_m": [
+              -0.04958230495446569,
+              0.02997557600775451,
+              0.9503126260504866
+            ],
+            "depth_m": 0.3180610239505768,
+            "frame_id": 69,
+            "pixel": [
+              378,
+              478
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "band1": {
+            "world_m": [
+              -0.0498602155364027,
+              -0.009563237263398541,
+              0.9496352639327816
+            ],
+            "depth_m": 0.3168686330318451,
+            "frame_id": 69,
+            "pixel": [
+              381,
+              416
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        }
+      },
+      "fields": {
+        "pad_a": {
+          "type": "object",
+          "properties": {
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "visible": {
+              "type": "boolean"
+            }
+          }
+        },
+        "pad_b": {
+          "type": "object",
+          "properties": {
+            "camera": {
+              "type": "string",
+              "enum": [
+                "agentview",
+                "robot0_eye_in_hand"
+              ]
+            },
+            "pixel": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 767
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "visible": {
+              "type": "boolean"
+            }
+          }
+        },
+        "faces": [
+          "two_actual_inner_face_centers",
+          "not_both_visible",
+          "unknown"
+        ],
+        "bowl": [
+          "same_upright_on_counter",
+          "disturbed",
+          "unknown"
+        ],
+        "hand": [
+          "visibly_clear",
+          "contact_or_collision",
+          "unknown"
+        ]
+      }
+    }
+  },
+  "frame_before": 72,
+  "response": {
+    "result": {
+      "status": "stop",
+      "explanation": "The actual frame-72 change does not expose identifiable centers of either opposing inner contact face. Agentview shows the near finger exterior; the wrist view exposes partial finger surfaces, with the centers obscured by robot self-occlusion. Neither pad has an obtainable center measurement. The schema requires pixel pairs even when visible=false; those pairs are unused and must not be sampled or interpreted as pad locations. Compared with the earlier images, the same patterned bowl remains upright on its original counter, and the hand remains visibly clear of external objects. Calibration is incomplete. The recorded execution-bound stop is not evidence of collision, and the target orientation was not achieved.",
+      "parameters": {
+        "bowl": "same_upright_on_counter",
+        "faces": "not_both_visible",
+        "hand": "visibly_clear",
+        "pad_a": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            0,
+            0
+          ],
+          "visible": false
+        },
+        "pad_b": {
+          "camera": "robot0_eye_in_hand",
+          "pixel": [
+            0,
+            0
+          ],
+          "visible": false
+        }
+      },
+      "points": {},
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 72
+    }
+  },
+  "frame_after": 72
+}

@@ -1,0 +1,170 @@
+{
+  "status": "continue",
+  "explanation": "The visible scene supports this fixed-TCP high observation turn, not descent. The finger-box corner radius is about 0.0806 m; the supplied 0.0855743 m sphere accommodates the stated drift and growth bounds, with a lower extent of 1.0851 m before the height allowance. h0-h3 select visible bowl rim surfaces within its XY column. The bowl rim is the highest visible relevant surface; plate and exposed counter portions are lower. The nearby carton is also supplied for depth-based column filtering. The cabinet, handles, wooden rack, bottle and hotplate are lateral to the column, not unseen overhead surfaces inside it; their visible regions are returned for checking. Neither view reveals an obscured relevant top that prevents a local height bound. The visible proximal hand and wrist are separated from external objects with room for this high turn. Pad-face occlusion is robot self-occlusion and does not prohibit this observation-producing action. The patterned bowl is upright on the counter with the open hand separated from it and no visible disturbance. Earlier images are not supplied here, so untouched history is not independently reverified. Current selected depths, not historical height values, should establish the numerical margin. No future pad visibility, retention or placement success is claimed.",
+  "parameters": {
+    "bowl": "same_upright_on_counter",
+    "h0": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        455,
+        366
+      ],
+      "visible": true
+    },
+    "h1": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        400,
+        391
+      ],
+      "visible": true
+    },
+    "h2": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        375,
+        448
+      ],
+      "visible": true
+    },
+    "h3": {
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        402,
+        511
+      ],
+      "visible": true
+    },
+    "height_coverage": "all_relevant_tops_visible",
+    "proximal_hand": "visible_clear_turn",
+    "turn_space": "visibly_accounted"
+  },
+  "points": [
+    {
+      "name": "h0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        455,
+        366
+      ],
+      "radius": 1
+    },
+    {
+      "name": "h1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        400,
+        391
+      ],
+      "radius": 1
+    },
+    {
+      "name": "h2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        375,
+        448
+      ],
+      "radius": 1
+    },
+    {
+      "name": "h3",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        402,
+        511
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "name": "bowl_surface_and_rim",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        370,
+        361,
+        548,
+        538
+      ],
+      "stride": 4
+    },
+    {
+      "name": "plate_column_side",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        240,
+        292,
+        322,
+        494
+      ],
+      "stride": 4
+    },
+    {
+      "name": "carton_column_boundary",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        329,
+        560,
+        449,
+        635
+      ],
+      "stride": 4
+    },
+    {
+      "name": "counter_and_column_surfaces",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        319,
+        235,
+        560,
+        559
+      ],
+      "stride": 4
+    },
+    {
+      "name": "lateral_cabinet_and_handles",
+      "camera": "agentview",
+      "box": [
+        3,
+        284,
+        253,
+        642
+      ],
+      "stride": 4
+    },
+    {
+      "name": "lateral_wooden_rack",
+      "camera": "agentview",
+      "box": [
+        48,
+        75,
+        265,
+        361
+      ],
+      "stride": 4
+    },
+    {
+      "name": "lateral_bottle",
+      "camera": "agentview",
+      "box": [
+        324,
+        277,
+        366,
+        406
+      ],
+      "stride": 4
+    },
+    {
+      "name": "lateral_hotplate_and_control",
+      "camera": "agentview",
+      "box": [
+        465,
+        244,
+        644,
+        418
+      ],
+      "stride": 4
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-29e13147-530d-4ddc-863f-9950f19084c4",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-29e13147-530d-4ddc-863f-9950f19084c4",
+      "arguments": "{\"explanation\": \"The actual frame-72 change does not expose identifiable centers of either opposing inner contact face. Agentview shows the near finger exterior; the wrist view exposes partial finger surfaces, with the centers obscured by robot self-occlusion. Neither pad has an obtainable center measurement. The schema requires pixel pairs even when visible=false; those pairs are unused and must not be sampled or interpreted as pad locations. Compared with the earlier images, the same patterned bowl remains upright on its original counter, and the hand remains visibly clear of external objects. Calibration is incomplete. The recorded execution-bound stop is not evidence of collision, and the target orientation was not achieved.\", \"parameters\": {\"bowl\": \"same_upright_on_counter\", \"faces\": \"not_both_visible\", \"hand\": \"visibly_clear\", \"pad_a\": {\"camera\": \"robot0_eye_in_hand\", \"pixel\": [0, 0], \"visible\": false}, \"pad_b\": {\"camera\": \"robot0_eye_in_hand\", \"pixel\": [0, 0], \"visible\": false}}, \"points\": [], \"regions\": [], \"status\": \"stop\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 54510,
+    "output_tokens": 1365,
+    "output_tokens_details": {
+      "reasoning_tokens": 879
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18bfe-5126-7373-bc3b-c7e46a1aab18",
+    "turn_ids": [
+      "01a18bfe-512c-78a3-8f31-baee26aa8637"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "index": 186,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "lift.face_v4",
+      {
+        "clearance_0": {
+          "frame_id": 72,
+          "parameters": {
+            "bowl": "same_upright_supported",
+            "coverage": "complete_visible_height_bound",
+            "proximal_turn": "visibly_clear"
+          },
+          "valid": {
+            "h0": {
+              "world_m": [
+                -0.096697070133687,
+                -0.044167419108785924,
+                0.94847808857757
+              ],
+              "depth_m": 0.32133379578590393,
+              "frame_id": 72,
+              "pixel": [
+                472,
+                381
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "h1": {
+              "world_m": [
+                -0.046612262935237965,
+                0.01390648827943771,
+                0.9497736212774683
+              ],
+              "depth_m": 0.32101738452911377,
+              "frame_id": 72,
+              "pixel": [
+                388,
+                466
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "h2": {
+              "world_m": [
+                -0.10395423740169524,
+                0.06381242728121746,
+                0.9507128437493553
+              ],
+              "depth_m": 0.3205127716064453,
+              "frame_id": 72,
+              "pixel": [
+                472,
+                550
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": [],
+          "explanation": "For the supplied expanded XY box, the highest relevant visible surface is the bowl's upper rim; h0, h1 and h2 select three distinct rim locations inside that box. The overlapping plate, package edge and counter are visibly lower. The bottle, cabinet, rack and hotplate are lateral to this finger envelope. Both views together reveal the relevant tops without a remaining top occlusion. The visible proximal hand and wrist have open space for the proposed high turn, assessed separately from the finger sphere; this is not a full-arm certificate. The patterned bowl remains upright and supported on the counter, not retained by the gripper. These observations concern only the proposed high observation turn, not descent or placement. They do not certify the assumed transient displacement bound."
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 72,
+  "response": {
+    "result": {
+      "key": "lift.face_v4",
+      "frame_id": 72,
+      "method_number": 4,
+      "source_sha256": "6afbc8a24d4380a6cd746ddf547b0cd6a47fae9732bc5954dc9b6b988f40aaab",
+      "bytes": 1710,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 72
+}

@@ -1,0 +1,46 @@
+{
+  "explanation": "Replan from frame 120: the package remains on the table between open fingers; no closure or lift is acknowledged. Descent has already occurred and must not be replayed from the old hover. Repeated tiny controls are nearly stalled, so endpoint recovery is now a separate subgoal. Historical depth and checkpoint margins are not fresh clearance evidence; rejected trackers remain rejected. Neither stalled convergence nor a failed local margin establishes infeasibility.",
+  "goal_evidence": "Fresh observations after release, withdrawal and settling show the same cream cheese package resting inside the bowl, not bridging its rim or resting on the table, independently of the clear gripper.",
+  "stages": [
+    {
+      "id": "reassess",
+      "objective": "Establish an observation-supported, attainable grasp-ready configuration from the current low, open-gripper state.",
+      "entry_evidence": "Frame 120 shows the package outside the bowl between open fingers. Acknowledged descent has nearly stopped progressing; current contact margins are unverified.",
+      "success_evidence": "Fresh RGB-D and actual finger geometry support adequate opposing pad overlap and table clearance, including uncertainty, at the current or a newly attained configuration. Readiness is justified by physical margins, not merely proximity to the old target.",
+      "handoff_requirements": "Provide fresh package identity, support and boundary evidence, actual pad relationship, closure clearance, unresolved occlusions and latest acknowledged state. Preserve open-gripper status until grasp readiness is established.",
+      "replan_conditions": "Do not repeat unchanged ineffective descent or relax safety margins to accept it. If evidence is insufficient, use complementary camera depth or a safely reachable clearer view. If current geometry fails, reconsider the endpoint or grasp approach using observed clearance; any retreat or adjustment requires its own current clearance evidence."
+    },
+    {
+      "id": "retain",
+      "objective": "Obtain a grasp that visibly lifts and retains the package.",
+      "entry_evidence": "Fresh evidence establishes grasp readiness at the actual robot configuration, with no intervening package displacement.",
+      "success_evidence": "The package is visibly separated from the table and remains consistently located relative to the fingers across fresh observations during a limited verified-clear movement.",
+      "handoff_requirements": "Carry forward observed package-to-gripper geometry, retention evidence, surrounding clearance and acknowledged gripper command.",
+      "replan_conditions": "Closure alone is not retention. If the package shifts, slips or stays on the table, inspect its actual support and location before recovery. If interrupted after closure or lift, preserve the actual command and do not blindly reopen or repeat acknowledged actions."
+    },
+    {
+      "id": "position",
+      "objective": "Bring the retained package to an observed feasible placement position over the bowl interior.",
+      "entry_evidence": "Fresh evidence confirms retention and identifies the bowl opening, rim and relevant nearby obstacles.",
+      "success_evidence": "The package remains held over the bowl interior, with observed geometry supporting fit and clearance for the package and fingers through placement and disengagement.",
+      "handoff_requirements": "Provide current bowl and package geometry, retention evidence and the observed clear placement region.",
+      "replan_conditions": "If fit, passage or rim clearance is uncertain, obtain complementary observations or a safely reachable view before proceeding. Reassess from the actual state if the package slips or the bowl moves; unknown space is not free space."
+    },
+    {
+      "id": "release",
+      "objective": "Leave the package within the bowl and disengage the gripper.",
+      "entry_evidence": "Current observations confirm retention and feasible placement and disengagement geometry.",
+      "success_evidence": "Observations show the package released inside the bowl and separated from the fingers, with the gripper clear.",
+      "handoff_requirements": "Preserve release observations and leave the package and bowl observable for the final settling check.",
+      "replan_conditions": "An open command is not release evidence. If the package catches on the rim, remains attached, falls outside or displaces the bowl, inspect the resulting physical state and plan only the needed recovery."
+    },
+    {
+      "id": "verify",
+      "objective": "Assess the user's goal after release, withdrawal and settling.",
+      "entry_evidence": "Release and gripper separation have been observed.",
+      "success_evidence": "Successive fresh observations show the package stationary inside the bowl, supported independently of the gripper and not bridging the rim or resting outside.",
+      "handoff_requirements": "Report completion only with observable containment, settling and independent support.",
+      "replan_conditions": "If occluded, obtain a safe confirming view. If unstable, outside or rim-supported, plan a correction from its current location rather than repeating the original sequence."
+    }
+  ]
+}

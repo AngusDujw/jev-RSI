@@ -1,0 +1,786 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "b81116cfe62553becb28d0ee9369012518d66f6a9b6e001f43c108043a270976",
+            "characters": 106835
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "831c47efb7d55bb330b8e43dd783ccf79fd794c7bda1be890d8542a45fed1da9",
+            "characters": 106259
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"put the bowl on top of the cabinet table 1\",\"question\":\"Observe only; no task completion claim. Identify patterned bowl and the upper horizontal dark cabinet table 1 at left, not the counter or cabinet side. Return typed pixel selectors, not metric estimates; the program will depth-sample radius=1. Mark visible=false if unavailable. rim0..rim7: eight cyclic, evenly distributed points on actual upper OUTER rim material, using the overhead view where useful, not background or inner floor. table0..table3: cyclic corners of the largest fully visible clear convex INTERIOR tabletop quadrilateral, inside real edges, never invent an image-clipped boundary. table4: an independent central surface sample inside that patch. inner and outer: corresponding visible inner and outer wall surfaces at one front-facing accessible rim section, approximately 6-15 mm below the lip, same radial section and height; choose respective cameras as needed. band0 and band1: actual lip endpoints of a continuous unobstructed approximately 35-45 mm tangential rim section centered on those wall samples. Do not project an occluded wall or infer a hidden contact point. The outline classification requires the visible bowl silhouette to lie inside its outer mouth footprint, with no outward extension. The table_patch classification requires the entire chosen interior area to be visible and vacant. Return unknown if that is not supported. Request no clouds.\",\"robot\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":21,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.000816963,-0.998326,-0.0578338,-0.153158],[-1.0,0.000845045,-0.000461105,-0.015635],[0.000509205,0.0578334,-0.998326,1.2632],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":22,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}}},\"frame_id\":0}],\"program_checkpoint_manifest\":[],\"program_supplied_review_context\":{\"previous_gaps\":[],\"previous_measured_geometry\":{}}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "rim0": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "rim1": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "rim2": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "rim3": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "rim4": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "rim5": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "rim6": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "rim7": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "table0": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "table1": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "table2": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "table3": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "table4": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "inner": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "outer": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "band0": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "band1": {
+                "type": "object",
+                "properties": {
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                },
+                "required": [
+                  "visible",
+                  "camera",
+                  "pixel"
+                ],
+                "additionalProperties": false
+              },
+              "target": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "confirmed",
+                  "ambiguous",
+                  "wrong"
+                ]
+              },
+              "bowl": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "confirmed",
+                  "ambiguous"
+                ]
+              },
+              "table_patch": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "clear_visible_planar_convex",
+                  "obstructed",
+                  "occluded",
+                  "unknown"
+                ]
+              },
+              "rim": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "level_outer_rim",
+                  "unknown"
+                ]
+              },
+              "outline": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "rim_encloses_visible_bowl_outline",
+                  "unknown"
+                ]
+              },
+              "grasp_band": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "both_walls_and_continuous_rim_visible",
+                  "obstructed",
+                  "occluded",
+                  "unknown"
+                ]
+              }
+            },
+            "required": [
+              "rim0",
+              "rim1",
+              "rim2",
+              "rim3",
+              "rim4",
+              "rim5",
+              "rim6",
+              "rim7",
+              "table0",
+              "table1",
+              "table2",
+              "table3",
+              "table4",
+              "inner",
+              "outer",
+              "band0",
+              "band1",
+              "target",
+              "bowl",
+              "table_patch",
+              "rim",
+              "outline",
+              "grasp_band"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

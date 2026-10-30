@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-f06ca09c-6855-4920-aecf-45ed1d4e5a63",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-f06ca09c-6855-4920-aecf-45ed1d4e5a63",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The changed agentview exposes one inward contact face on the lower-projecting far finger, below the nearer finger. All four points sample separated interior locations on that same visible face, avoiding its edges and rounded tip. The same bowl remains upright and supported in its earlier position. The hand is visibly clear of external objects. Complete swept-envelope coverage remains unknown; these face samples do not certify future motion clearance.\", \"parameters\": {\"bowl\": \"same_upright_supported\", \"face\": \"one_actual_inward_contact_face\", \"hand\": \"visibly_clear\"}, \"points\": [{\"camera\": \"agentview\", \"name\": \"m0\", \"pixel\": [404, 272], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"m1\", \"pixel\": [412, 272], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"m2\", \"pixel\": [404, 282], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"m3\", \"pixel\": [412, 282], \"radius\": 1}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 39614,
+    "output_tokens": 3164,
+    "output_tokens_details": {
+      "reasoning_tokens": 2893
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18c1b-8bc0-7f23-997c-faa2d8465800",
+    "turn_ids": [
+      "01a18c1b-8bc7-7462-8d2c-893254f6f5fa"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

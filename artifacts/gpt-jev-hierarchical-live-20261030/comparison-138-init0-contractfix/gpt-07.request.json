@@ -1,0 +1,461 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 69; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "aefdd918513273af27079bb020974d1a52645b76ccf83e72bfe3c344540fc544",
+            "characters": 106095
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 69; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "e1d5291961b086d6efbb609aa1496cfcff0c0949998ad693324cb440dc75d549",
+            "characters": 102615
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review agentview"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "b81116cfe62553becb28d0ee9369012518d66f6a9b6e001f43c108043a270976",
+            "characters": 106835
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Earlier review robot0_eye_in_hand"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "831c47efb7d55bb330b8e43dd783ccf79fd794c7bda1be890d8542a45fed1da9",
+            "characters": 106259
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"put the bowl on top of the cabinet table 1\",\"question\":\"Fresh post-high-alignment observation, not a grasp assessment. Check that the same patterned bowl remains upright on the counter and the robot is visibly clear. Request six named depth points: inner and outer are the opposed bowl wall surfaces at the historical world +x rim-pinch sector, about 8 mm below its rim, at matching height; band0 and band1 are the ends of the same continuous approximately 40 mm tangential rim band. Preserve physical sector identity, not screen direction. pad_a and pad_b are the centers of the actual two opposing inner finger contact faces on the CURRENT open hand, not its silhouette or outer faces. Mark unavailable faces invisible instead of guessing. Select a 3-16 vertex polygon wholly within visible textured bowl material away from this pinch sector, excluding robot, rim boundaries and background, for a future motion reference; otherwise patch_identity unknown and polygon empty. Return all declared parameters and named depth measurements. Do not certify unseen descent space, possession, or retention.\",\"robot\":{\"frame_id\":69,\"native_steps\":69,\"budgets\":{\"gpt_remaining\":16,\"jev_remaining\":177,\"native_steps_remaining\":531,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485006,0.00960767,1.17068],\"tcp_quaternion_xyzw\":[0.721469,-0.691966,-0.0237605,-0.0100684],\"gripper_qpos_m\":[0.0399314,-0.039955],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.95588e-06,-1.29762e-05,-0.0036011],\"pad_extent_in_tool_m\":[0.0160444,0.0948942,0.0160017],\"finger_low_offset_tool_m\":[-0.0105107,-0.0663637,-0.0444702],\"finger_high_offset_tool_m\":[0.0105006,0.0663392,0.00924889]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.998962,-0.0407712,-0.0203335,-0.0444886],[-0.0416972,0.998005,0.0474092,-0.0448863],[0.01836,0.0482078,-0.998669,1.26514],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":18,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"negative\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,-0.0300275,-0.197733,-1.0],\"before\":[-0.0484519,0.00906846,1.17089],\"after\":[-0.0473036,0.00897395,1.17157],\"target_tcp\":[-0.0501159,0.0106975,1.16926],\"acknowledged_steps\":3,\"native_steps\":57,\"frame_id\":57},{\"decision\":19,\"choices\":{\"x\":\"negative\",\"y\":\"hold\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[-0.0367194,0.0,-0.0303469,0.0,0.0,-0.2,-1.0],\"before\":[-0.0473036,0.00897395,1.17157],\"after\":[-0.048182,0.00883608,1.17085],\"target_tcp\":[-0.0501282,0.0107014,1.16924],\"acknowledged_steps\":3,\"native_steps\":60,\"frame_id\":60},{\"decision\":20,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,0.0,-0.2,-1.0],\"before\":[-0.048182,0.00883608,1.17085],\"after\":[-0.0485155,0.00874661,1.17059],\"target_tcp\":[-0.0501046,0.0106942,1.16926],\"acknowledged_steps\":3,\"native_steps\":63,\"frame_id\":63},{\"decision\":21,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,0.0,-0.180914,-1.0],\"before\":[-0.0485155,0.00874661,1.17059],\"after\":[-0.0485255,0.00884993,1.1706],\"target_tcp\":[-0.0501185,0.0106968,1.16925],\"acknowledged_steps\":3,\"native_steps\":66,\"frame_id\":66},{\"decision\":22,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,0.0,-0.0976623,-1.0],\"before\":[-0.0485255,0.00884993,1.1706],\"after\":[-0.0485006,0.00960767,1.17068],\"target_tcp\":[-0.0501218,0.0106961,1.16925],\"acknowledged_steps\":3,\"native_steps\":69,\"frame_id\":69}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"control\",\"args\":[[-0.0501065,0.0104902,1.17284],[0.709922,-0.703685,-0.0207311,-0.0201888],\"keep\",{\"x\":{\"type\":\"choice\",\"instructions\":\"For x, read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"For y, read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"For z, read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"For rx, read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"For ry, read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"For rz, read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Read state.processed_features.objective.gripper. This slice requires keep; preserve the existing open command without initiating closure or reopening.\",\"criteria\":{\"open\":\"Only deliver an explicitly supplied open objective.\",\"close\":\"Only deliver an explicitly supplied close objective.\",\"keep\":\"Preserve the existing gripper command as required.\"}}}],\"kwargs\":{\"features\":{\"source\":\"Historical same-entry-frame visible obstacle depths plus current own robot geometry.\",\"phase\":\"high_alignment_only\",\"reference_frame\":0,\"obstacle_top_z_m\":1.05834,\"current_height_margin_after_allowance_m\":0.0962643,\"required_height_margin_m\":0.02,\"target_pad_world_m\":[-0.0501065,0.0104902,1.17284],\"world_yaw_rad\":-1.56112,\"descent_authorized\":false,\"closure_authorized\":false},\"tool_point\":\"pad_center\",\"translation_limit\":0.02,\"rotation_limit\":0.1,\"steps\":3,\"position_tolerance\":0.004,\"rotation_tolerance\":0.04}},\"response\":{\"result\":{\"decision\":21,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,0.0,-0.180914,-1.0],\"before\":[-0.0485155,0.00874661,1.17059],\"after\":[-0.0485255,0.00884993,1.1706],\"target_tcp\":[-0.0501185,0.0106968,1.16925],\"acknowledged_steps\":3,\"native_steps\":66,\"frame_id\":66,\"status\":\"moved\",\"position_error_m\":0.00278745,\"rotation_error_rad\":0.0776406}},\"frame_id\":66},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":66,\"native_steps\":66,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":178,\"native_steps_remaining\":534,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485255,0.00884993,1.1706],\"tcp_quaternion_xyzw\":[0.735729,-0.676767,-0.0242702,-0.0100071],\"gripper_qpos_m\":[0.0399244,-0.0399459],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-2.29901e-06,-1.16282e-05,-0.00360093],\"pad_extent_in_tool_m\":[0.0160775,0.094884,0.0160036],\"finger_low_offset_tool_m\":[-0.0105275,-0.0663571,-0.0444708],\"finger_high_offset_tool_m\":[0.0105229,0.0663369,0.00925018]}}},\"frame_id\":66},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"lift.alignment\",{\"stage\":\"lift\",\"phase\":\"high_alignment\",\"start_state\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}},\"calls_used\":22,\"descent_executed\":false,\"closure_executed\":false,\"retention_established\":false,\"target_pad_world_m\":[-0.0501065,0.0104902,1.17284],\"target_quaternion_xyzw\":[0.709922,-0.703685,-0.0207311,-0.0201888],\"world_yaw_rad\":-1.56112,\"obstacle_top_z_m\":1.05834,\"reference_frame\":0,\"authority\":\"High open-hand alignment and downward-tool world yaw only.\",\"last_receipt\":{\"decision\":21,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,0.0,-0.180914,-1.0],\"before\":[-0.0485155,0.00874661,1.17059],\"after\":[-0.0485255,0.00884993,1.1706],\"target_tcp\":[-0.0501185,0.0106968,1.16925],\"acknowledged_steps\":3,\"native_steps\":66,\"frame_id\":66,\"status\":\"moved\",\"position_error_m\":0.00278745,\"rotation_error_rad\":0.0776406},\"last_acknowledged_state\":{\"frame_id\":66,\"native_steps\":66,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":178,\"native_steps_remaining\":534,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485255,0.00884993,1.1706],\"tcp_quaternion_xyzw\":[0.735729,-0.676767,-0.0242702,-0.0100071],\"gripper_qpos_m\":[0.0399244,-0.0399459],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-2.29901e-06,-1.16282e-05,-0.00360093],\"pad_extent_in_tool_m\":[0.0160775,0.094884,0.0160036],\"finger_low_offset_tool_m\":[-0.0105275,-0.0663571,-0.0444708],\"finger_high_offset_tool_m\":[0.0105229,0.0663369,0.00925018]}}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"lift.alignment\",\"frame_id\":66,\"method_number\":1,\"source_sha256\":\"6ae04e63cf69b2ba4a9b9071b8ca0f076d91df82b890542e5853e025f8788807\",\"bytes\":2903,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":66},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":66,\"native_steps\":66,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":178,\"native_steps_remaining\":534,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485255,0.00884993,1.1706],\"tcp_quaternion_xyzw\":[0.735729,-0.676767,-0.0242702,-0.0100071],\"gripper_qpos_m\":[0.0399244,-0.0399459],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-2.29901e-06,-1.16282e-05,-0.00360093],\"pad_extent_in_tool_m\":[0.0160775,0.094884,0.0160036],\"finger_low_offset_tool_m\":[-0.0105275,-0.0663571,-0.0444708],\"finger_high_offset_tool_m\":[0.0105229,0.0663369,0.00925018]}}},\"frame_id\":66},{\"request\":{\"kind\":\"rpc\",\"method\":\"control\",\"args\":[[-0.0501065,0.0104902,1.17284],[0.709922,-0.703685,-0.0207311,-0.0201888],\"keep\",{\"x\":{\"type\":\"choice\",\"instructions\":\"For x, read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"y\":{\"type\":\"choice\",\"instructions\":\"For y, read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"z\":{\"type\":\"choice\",\"instructions\":\"For z, read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"rx\":{\"type\":\"choice\",\"instructions\":\"For rx, read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"ry\":{\"type\":\"choice\",\"instructions\":\"For ry, read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"rz\":{\"type\":\"choice\",\"instructions\":\"For rz, read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, hold for within_tolerance. This corrects only the authorized high pose; do not infer clearance or possession.\",\"criteria\":{\"negative\":\"Decrease this world coordinate or world rotation-vector component.\",\"hold\":\"Apply no correction within its supplied tolerance.\",\"positive\":\"Increase this world coordinate or world rotation-vector component.\"}},\"gripper\":{\"type\":\"choice\",\"instructions\":\"Read state.processed_features.objective.gripper. This slice requires keep; preserve the existing open command without initiating closure or reopening.\",\"criteria\":{\"open\":\"Only deliver an explicitly supplied open objective.\",\"close\":\"Only deliver an explicitly supplied close objective.\",\"keep\":\"Preserve the existing gripper command as required.\"}}}],\"kwargs\":{\"features\":{\"source\":\"Historical same-entry-frame visible obstacle depths plus current own robot geometry.\",\"phase\":\"high_alignment_only\",\"reference_frame\":0,\"obstacle_top_z_m\":1.05834,\"current_height_margin_after_allowance_m\":0.0963004,\"required_height_margin_m\":0.02,\"target_pad_world_m\":[-0.0501065,0.0104902,1.17284],\"world_yaw_rad\":-1.56112,\"descent_authorized\":false,\"closure_authorized\":false},\"tool_point\":\"pad_center\",\"translation_limit\":0.02,\"rotation_limit\":0.1,\"steps\":3,\"position_tolerance\":0.004,\"rotation_tolerance\":0.04}},\"response\":{\"result\":{\"decision\":22,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,0.0,-0.0976623,-1.0],\"before\":[-0.0485255,0.00884993,1.1706],\"after\":[-0.0485006,0.00960767,1.17068],\"target_tcp\":[-0.0501218,0.0106961,1.16925],\"acknowledged_steps\":3,\"native_steps\":69,\"frame_id\":69,\"status\":\"reached\",\"position_error_m\":0.0024195,\"rotation_error_rad\":0.0391048}},\"frame_id\":69},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":69,\"native_steps\":69,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":177,\"native_steps_remaining\":531,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485006,0.00960767,1.17068],\"tcp_quaternion_xyzw\":[0.721469,-0.691966,-0.0237605,-0.0100684],\"gripper_qpos_m\":[0.0399314,-0.039955],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.95588e-06,-1.29762e-05,-0.0036011],\"pad_extent_in_tool_m\":[0.0160444,0.0948942,0.0160017],\"finger_low_offset_tool_m\":[-0.0105107,-0.0663637,-0.0444702],\"finger_high_offset_tool_m\":[0.0105006,0.0663392,0.00924889]}}},\"frame_id\":69},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"lift.alignment\",{\"stage\":\"lift\",\"phase\":\"high_alignment\",\"start_state\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}},\"calls_used\":23,\"descent_executed\":false,\"closure_executed\":false,\"retention_established\":false,\"target_pad_world_m\":[-0.0501065,0.0104902,1.17284],\"target_quaternion_xyzw\":[0.709922,-0.703685,-0.0207311,-0.0201888],\"world_yaw_rad\":-1.56112,\"obstacle_top_z_m\":1.05834,\"reference_frame\":0,\"authority\":\"High open-hand alignment and downward-tool world yaw only.\",\"last_receipt\":{\"decision\":22,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"negative\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.0,0.0,0.0,-0.0976623,-1.0],\"before\":[-0.0485255,0.00884993,1.1706],\"after\":[-0.0485006,0.00960767,1.17068],\"target_tcp\":[-0.0501218,0.0106961,1.16925],\"acknowledged_steps\":3,\"native_steps\":69,\"frame_id\":69,\"status\":\"reached\",\"position_error_m\":0.0024195,\"rotation_error_rad\":0.0391048},\"last_acknowledged_state\":{\"frame_id\":69,\"native_steps\":69,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":177,\"native_steps_remaining\":531,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485006,0.00960767,1.17068],\"tcp_quaternion_xyzw\":[0.721469,-0.691966,-0.0237605,-0.0100684],\"gripper_qpos_m\":[0.0399314,-0.039955],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.95588e-06,-1.29762e-05,-0.0036011],\"pad_extent_in_tool_m\":[0.0160444,0.0948942,0.0160017],\"finger_low_offset_tool_m\":[-0.0105107,-0.0663637,-0.0444702],\"finger_high_offset_tool_m\":[0.0105006,0.0663392,0.00924889]}}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"lift.alignment\",\"frame_id\":69,\"method_number\":1,\"source_sha256\":\"6ae04e63cf69b2ba4a9b9071b8ca0f076d91df82b890542e5853e025f8788807\",\"bytes\":2901,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":69},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":69,\"native_steps\":69,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":177,\"native_steps_remaining\":531,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485006,0.00960767,1.17068],\"tcp_quaternion_xyzw\":[0.721469,-0.691966,-0.0237605,-0.0100684],\"gripper_qpos_m\":[0.0399314,-0.039955],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.95588e-06,-1.29762e-05,-0.0036011],\"pad_extent_in_tool_m\":[0.0160444,0.0948942,0.0160017],\"finger_low_offset_tool_m\":[-0.0105107,-0.0663637,-0.0444702],\"finger_high_offset_tool_m\":[0.0105006,0.0663392,0.00924889]}}},\"frame_id\":69}],\"program_checkpoint_manifest\":[{\"key\":\"observe.samples0\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2\",\"bytes\":5971,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"observe.samples1\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2\",\"bytes\":6150,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"observe.clearance0\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2\",\"bytes\":1945,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"observe.result\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"370c4fa538fe272114f903e6d65cf90e0a1e7318ed03bac9a2be72957852fdd2\",\"bytes\":6541,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"lift.alignment\",\"frame_id\":69,\"method_number\":1,\"source_sha256\":\"6ae04e63cf69b2ba4a9b9071b8ca0f076d91df82b890542e5853e025f8788807\",\"bytes\":2901,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"program_supplied_review_context\":{\"historical_frame\":0,\"historical_grasp_region\":{\"inner_world_m\":[-0.0508867,0.0105073,0.9423],\"outer_world_m\":[-0.0493264,0.0104731,0.941664],\"band_world_m\":[[-0.0497046,0.03009,0.94994],[-0.0496771,-0.00974635,0.949778]],\"candidate_center_world_m\":[-0.0501065,0.0104902,0.941982],\"outward_radial_xy\":[0.999961,0.00883871],\"measured_wall_thickness_m\":0.00155994,\"wall_thickness_allowance_m\":0.006,\"tangent_span_m\":0.039835,\"actuator_qpos_m\":[0.0387215,-0.038724],\"aperture_certified\":false},\"historical_bowl\":{\"center_xy_m\":[-0.0999097,0.01005],\"rim_z_m\":0.949882,\"outer_rim_radius_m\":0.0543228,\"allowance_m\":0.003,\"plane\":[0.00230512,-0.0124101,0.99992,-0.949449],\"plane_rms_m\":0.000184416,\"circle_rms_m\":0.00024458,\"largest_angular_gap_rad\":0.807532},\"current_hand\":{\"frame_id\":69,\"native_steps\":69,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":177,\"native_steps_remaining\":531,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0485006,0.00960767,1.17068],\"tcp_quaternion_xyzw\":[0.721469,-0.691966,-0.0237605,-0.0100684],\"gripper_qpos_m\":[0.0399314,-0.039955],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.95588e-06,-1.29762e-05,-0.0036011],\"pad_extent_in_tool_m\":[0.0160444,0.0948942,0.0160017],\"finger_low_offset_tool_m\":[-0.0105107,-0.0663637,-0.0444702],\"finger_high_offset_tool_m\":[0.0105006,0.0663392,0.00924889]}},\"authorized_motion\":\"High open-hand alignment and downward-tool world yaw only.\",\"stop_reason\":\"\"}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "inner": {
+                "type": "object",
+                "properties": {
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "camera",
+                  "pixel",
+                  "visible"
+                ],
+                "additionalProperties": false
+              },
+              "outer": {
+                "type": "object",
+                "properties": {
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "camera",
+                  "pixel",
+                  "visible"
+                ],
+                "additionalProperties": false
+              },
+              "band0": {
+                "type": "object",
+                "properties": {
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "camera",
+                  "pixel",
+                  "visible"
+                ],
+                "additionalProperties": false
+              },
+              "band1": {
+                "type": "object",
+                "properties": {
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "camera",
+                  "pixel",
+                  "visible"
+                ],
+                "additionalProperties": false
+              },
+              "pad_a": {
+                "type": "object",
+                "properties": {
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "camera",
+                  "pixel",
+                  "visible"
+                ],
+                "additionalProperties": false
+              },
+              "pad_b": {
+                "type": "object",
+                "properties": {
+                  "camera": {
+                    "type": "string",
+                    "maxLength": 6000,
+                    "enum": [
+                      "agentview",
+                      "robot0_eye_in_hand"
+                    ]
+                  },
+                  "pixel": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 767
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "camera",
+                  "pixel",
+                  "visible"
+                ],
+                "additionalProperties": false
+              },
+              "bowl": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_upright_on_counter",
+                  "moved_or_tipped",
+                  "unknown"
+                ]
+              },
+              "hand": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "clear_above_bowl",
+                  "contact_or_collision",
+                  "unknown"
+                ]
+              },
+              "band": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_accessible_pinch_band",
+                  "changed_or_obstructed",
+                  "unknown"
+                ]
+              },
+              "pad_faces": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "both_inner_contact_faces_visible",
+                  "unknown"
+                ]
+              },
+              "patch_identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "patterned_bowl_only",
+                  "unknown"
+                ]
+              },
+              "patch_camera": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "agentview",
+                  "robot0_eye_in_hand"
+                ]
+              },
+              "patch_polygon": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 767
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 0,
+                "maxItems": 16
+              }
+            },
+            "required": [
+              "inner",
+              "outer",
+              "band0",
+              "band1",
+              "pad_a",
+              "pad_b",
+              "bowl",
+              "hand",
+              "band",
+              "pad_faces",
+              "patch_identity",
+              "patch_camera",
+              "patch_polygon"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

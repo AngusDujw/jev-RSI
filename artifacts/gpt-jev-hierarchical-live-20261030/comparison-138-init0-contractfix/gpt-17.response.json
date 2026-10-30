@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-05757957-5188-425e-b8a6-91537a22734c",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-05757957-5188-425e-b8a6-91537a22734c",
+      "arguments": "{\"status\": \"continue\", \"parameters\": {\"bowl\": \"same_upright_supported\", \"coverage\": \"complete_visible_height_bound\", \"proximal_turn\": \"visibly_clear\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"h0\", \"pixel\": [472, 381], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"h1\", \"pixel\": [388, 466], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"h2\", \"pixel\": [472, 550], \"radius\": 1}], \"regions\": [], \"explanation\": \"For the supplied expanded XY box, the highest relevant visible surface is the bowl's upper rim; h0, h1 and h2 select three distinct rim locations inside that box. The overlapping plate, package edge and counter are visibly lower. The bottle, cabinet, rack and hotplate are lateral to this finger envelope. Both views together reveal the relevant tops without a remaining top occlusion. The visible proximal hand and wrist have open space for the proposed high turn, assessed separately from the finger sphere; this is not a full-arm certificate. The patterned bowl remains upright and supported on the counter, not retained by the gripper. These observations concern only the proposed high observation turn, not descent or placement. They do not certify the assumed transient displacement bound.\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 29711,
+    "output_tokens": 4402,
+    "output_tokens_details": {
+      "reasoning_tokens": 4085
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18c17-3b08-7610-9704-3e9cb2c6e2ea",
+    "turn_ids": [
+      "01a18c17-3b0e-7e33-805d-fa5a2f1342f6"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

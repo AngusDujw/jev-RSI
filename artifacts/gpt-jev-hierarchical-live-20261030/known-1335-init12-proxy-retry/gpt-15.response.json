@@ -1,0 +1,30 @@
+{
+  "object": "response",
+  "id": "exec-29479f7d-b015-4565-a9f7-93467ac9662f",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-29479f7d-b015-4565-a9f7-93467ac9662f",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 120 images show the cream cheese still on the table outside the bowl, between open fingers, with no visible lift.\", \"The stage returned yield during descent, not stage_complete; no closure or attachment test is acknowledged.\", \"The last five acknowledged controls changed TCP height by only about 0.034 mm. Final position error is 0.945 mm against a 0.5 mm tolerance.\", \"Package and table depth measurements are from frame 75; actual contact margins remain unverified after the subsequent descent.\"], \"invalidated_assumptions\": [\"Repeating the unchanged small descent controls provides meaningful endpoint convergence.\"], \"plan_valid\": \"yes\", \"reason\": \"The grasp subgoal and overall ordering remain suitable. Local recovery needs fresh precontact geometry and diagnosis of near-stalled endpoint convergence, preserving the actual low, open-gripper state rather than restarting from the old hover. Evaluate actual pad overlap and table clearance before selecting a justified endpoint or correcting the control method; do not simply relax thresholds or repeat the same commands. No physical obstacle or global infeasibility has been established.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 62575,
+    "output_tokens": 939,
+    "output_tokens_details": {
+      "reasoning_tokens": 624
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18ba2-a4b3-7361-a417-cc7e20755668",
+    "turn_ids": [
+      "01a18ba2-a4b9-7801-923c-889ffc83027e",
+      "01a18ba2-fe08-7b60-b5c3-733eaa14f1f3"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

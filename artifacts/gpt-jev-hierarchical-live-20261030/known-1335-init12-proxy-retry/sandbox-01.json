@@ -1,0 +1,4 @@
+{
+  "kind": "sandbox",
+  "isolation": "separate_process_default_deny_seccomp"
+}

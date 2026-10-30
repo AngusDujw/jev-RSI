@@ -1,0 +1,210 @@
+{
+  "index": 4,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Identify the cream cheese separately from the bowl. Return four cyclic true TOP FACE corner pixels in the declared camera if its entire rectangular top boundary is visible, not shadows or lower-side corners. Request named RGB-D points t0,t1,t2,t3 on widely separated interior textured patches of that top and s0,s1,s2,s3 on noncollinear visible tabletop around the package. Avoid depth mixtures. Confirm whether the package rests flat on that table. On retry use different interior depth patches or the other camera, not the same failed pixels."
+    ],
+    "kwargs": {
+      "context": {
+        "attempt": 0,
+        "previous_partial": null
+      },
+      "fields": {
+        "identity": [
+          "cream_cheese",
+          "ambiguous",
+          "not_visible"
+        ],
+        "support": [
+          "flat_on_table",
+          "other",
+          "unknown"
+        ],
+        "boundary": [
+          "full_rectangle",
+          "partial",
+          "unknown"
+        ],
+        "camera": [
+          "agentview",
+          "robot0_eye_in_hand"
+        ],
+        "corners": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 4,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 767
+            }
+          }
+        }
+      }
+    }
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The blue rectangular package labeled Cream Cheese is separate from, and left of, the round patterned bowl in the wrist view. Its entire rectangular top boundary is visible. The corners exclude the dark right side and lower edge beneath the top face. Both views support that the package rests flat on the tabletop. Points t0-t3 sample separated interior top patches; s0-s3 sample visible tabletop around the package.",
+      "parameters": {
+        "camera": "robot0_eye_in_hand",
+        "identity": "cream_cheese",
+        "boundary": "full_rectangle",
+        "support": "flat_on_table",
+        "corners": [
+          [
+            145,
+            158
+          ],
+          [
+            204,
+            157
+          ],
+          [
+            207,
+            274
+          ],
+          [
+            149,
+            272
+          ]
+        ]
+      },
+      "points": {
+        "t0": {
+          "world_m": [
+            -0.024648209434632112,
+            0.15534774083734487,
+            0.91784209742433
+          ],
+          "depth_m": 0.35191914439201355,
+          "frame_id": 0,
+          "pixel": [
+            159,
+            175
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t1": {
+          "world_m": [
+            -0.02893711990763581,
+            0.1320672058750963,
+            0.9182903253580973
+          ],
+          "depth_m": 0.3517216742038727,
+          "frame_id": 0,
+          "pixel": [
+            192,
+            181
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t2": {
+          "world_m": [
+            -0.07737731402321552,
+            0.15530225439816395,
+            0.9177550467792035
+          ],
+          "depth_m": 0.35493728518486023,
+          "frame_id": 0,
+          "pixel": [
+            161,
+            251
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t3": {
+          "world_m": [
+            -0.07890263226771263,
+            0.13170985040795335,
+            0.9183473039807548
+          ],
+          "depth_m": 0.3544425368309021,
+          "frame_id": 0,
+          "pixel": [
+            194,
+            253
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s0": {
+          "world_m": [
+            0.008307254674057324,
+            0.18972728939282332,
+            0.89995950355432
+          ],
+          "depth_m": 0.36792489886283875,
+          "frame_id": 0,
+          "pixel": [
+            122,
+            138
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s1": {
+          "world_m": [
+            0.0047140693805642064,
+            0.10745749501642089,
+            0.8999599246788591
+          ],
+          "depth_m": 0.36816537380218506,
+          "frame_id": 0,
+          "pixel": [
+            234,
+            143
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s2": {
+          "world_m": [
+            -0.10913378152186604,
+            0.19018604861893704,
+            0.8999632145434258
+          ],
+          "depth_m": 0.3744494915008545,
+          "frame_id": 0,
+          "pixel": [
+            126,
+            299
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s3": {
+          "world_m": [
+            -0.11063950658323872,
+            0.10716834624167748,
+            0.8999631832841901
+          ],
+          "depth_m": 0.37457475066185,
+          "frame_id": 0,
+          "pixel": [
+            237,
+            301
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 0
+    }
+  },
+  "frame_after": 0
+}

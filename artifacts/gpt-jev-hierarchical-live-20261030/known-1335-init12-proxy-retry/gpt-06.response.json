@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-e49e7827-effe-45ca-9fe5-72febecd50e6",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-e49e7827-effe-45ca-9fe5-72febecd50e6",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 15 views show the cream cheese on the table outside the empty bowl, separate from the gripper.\", \"Five approach motions totaling 15 native steps are acknowledged. The gripper remains open and the hover target has not been reached.\", \"The stage returned blocked during registration validation, with no observed contact, lift or retention.\", \"Current registration reports 56 inliers, but narrow spatial support and a 1.66 mm uncertainty floor do not establish contact clearance.\"], \"invalidated_assumptions\": [], \"plan_valid\": \"yes\", \"reason\": \"The grasp subgoal remains suitable. Revise local measurement selection to obtain fresh, distributed package boundary, side and table evidence, diagnose the registration rejection, and reassess the remaining approach from the already executed pose. Preserve clearance and acceptance thresholds; historical checkpoints are not fresh contact evidence. This local sensing failure does not establish grasp infeasibility.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 52811,
+    "output_tokens": 792,
+    "output_tokens_details": {
+      "reasoning_tokens": 516
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b6f-7e6c-7433-99a2-cffb699b4d06",
+    "turn_ids": [
+      "01a18b6f-7e73-77f0-9bee-f95c5b93e964"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

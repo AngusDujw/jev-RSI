@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-0d611950-8777-43be-ae79-b1da0d8fc705",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-0d611950-8777-43be-ae79-b1da0d8fc705",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 54 images show the cream cheese flat on the table outside the bowl, with no visible lift or grasp.\", \"Acknowledged approach motion has reached the closer hover; the current gripper remains open.\", \"New frame-54 depth samples cover separated top and table locations, and the package boundary is visible.\", \"The stage returned blocked: the reinitialized tracker still fails distributed support despite 120 inliers. Its same-frame identity fit does not demonstrate object motion or retention.\"], \"invalidated_assumptions\": [\"Closer-view reinitialization alone resolves the tracker support failure.\"], \"plan_valid\": \"yes\", \"reason\": \"The grasp subgoal and overall ordering remain suitable, and new geometry was obtained. Revise the local validation method rather than repeat the same tracker restart: diagnose the failed support condition and obtain independently checked, distributed boundary/depth correspondences or a justified alternate view. Preserve safety thresholds and reassess contact geometry and clearance from the actual current hover; neither the old contact candidate nor the new self-registration authorizes contact.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 56097,
+    "output_tokens": 832,
+    "output_tokens_details": {
+      "reasoning_tokens": 516
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b85-ab17-7121-87a6-8bf0f9dc385f",
+    "turn_ids": [
+      "01a18b85-ab1e-7163-88bc-5908f348ae55"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "index": 208,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Measure the SAME cream cheese, not the bowl or table texture. Supply four visible TOP boundary corners in cyclic order and their camera; use an empty corners array if unavailable. Request t0,t1,t2,t3 on four separated top-interior quadrants, inset from edges, and s0,s1,s2,s3 on distributed bare TABLE patches around the package, not stove or shadows. Request side on a visible LONG SIDE wall interior, preferably from the oblique agentview, not its top or mixed-depth silhouette. Side depth is optional for the distant free-air approach but required for the closer sensing handoff. Only request missing/rejected point names from the retained same-frame samples. A retry must use different interior patches or the other camera, resolving the supplied gap; do not repeat failed edge pixels. These are measurements, not authorization for contact."
+    ],
+    "kwargs": {
+      "context": {
+        "attempt": 0,
+        "require_side": true,
+        "historical_reference": {
+          "reference_frame_id": 15,
+          "top_corners_world_m": [
+            [
+              -0.013537174553841028,
+              0.16482315028082153,
+              0.9179535522837351
+            ],
+            [
+              -0.01262504293571752,
+              0.12355318545171676,
+              0.9179535522837351
+            ],
+            [
+              -0.0932257594505051,
+              0.12339124723589462,
+              0.9179535522837351
+            ],
+            [
+              -0.09290120020418285,
+              0.16458948141540833,
+              0.9179535522837351
+            ]
+          ],
+          "top_z_m": 0.9179535522837351,
+          "table_z_m": 0.899874908768223,
+          "width_m": 0.04119951259680659,
+          "length_m": 0.08060087919298954
+        },
+        "retained_current_points": {},
+        "gap": "",
+        "state": {
+          "frame_id": 54,
+          "native_steps": 54,
+          "budgets": {
+            "gpt_remaining": 14,
+            "jev_remaining": 182,
+            "native_steps_remaining": 546,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.05488376824843178,
+            0.14358073397741883,
+            1.021503989296411
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999972602698068,
+            0.001396935102135288,
+            -0.0011738483196514643,
+            -0.0014663237442624046
+          ],
+          "gripper_qpos_m": [
+            0.039903493774114944,
+            -0.03987437682945744
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              6.81166136526877e-05,
+              -1.9554722491998272e-05,
+              -0.0035809011547932247
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600074542855638,
+              0.09477799394557565,
+              0.016001096639618108
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010426027960430339,
+              -0.06631208434270772,
+              -0.04444980820740112
+            ],
+            "finger_high_offset_tool_m": [
+              0.010563828616503857,
+              0.06627250865293118,
+              0.009268625985122273
+            ]
+          }
+        }
+      },
+      "fields": {
+        "identity": [
+          "same_cream_cheese",
+          "wrong",
+          "unknown"
+        ],
+        "support": [
+          "flat_on_table",
+          "changed",
+          "unknown"
+        ],
+        "boundary": [
+          "full_top_rectangle",
+          "occluded",
+          "unknown"
+        ],
+        "camera": [
+          "agentview",
+          "robot0_eye_in_hand"
+        ],
+        "corners": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 4,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 767
+            }
+          }
+        },
+        "side_identity": [
+          "visible_long_side",
+          "unavailable",
+          "unknown"
+        ]
+      }
+    }
+  },
+  "frame_before": 54,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The current and earlier views show the same labeled cream cheese package, still flat on the table. Its complete top boundary is visible in the wrist camera. All requested names need fresh frame-54 samples; the retained current set is empty. Top samples are separated and inset, and table samples are on bare surrounding table. The side sample is on the narrow visible long wall in agentview, not the top or short end. These are measurement selections only, not authorization for contact.",
+      "parameters": {
+        "boundary": "full_top_rectangle",
+        "camera": "robot0_eye_in_hand",
+        "corners": [
+          [
+            333,
+            405
+          ],
+          [
+            433,
+            403
+          ],
+          [
+            433,
+            602
+          ],
+          [
+            330,
+            599
+          ]
+        ],
+        "identity": "same_cream_cheese",
+        "side_identity": "visible_long_side",
+        "support": "flat_on_table"
+      },
+      "points": {
+        "t0": {
+          "world_m": [
+            -0.028742197281661167,
+            0.1552141472811337,
+            0.9178768509590373
+          ],
+          "depth_m": 0.20057892799377441,
+          "frame_id": 54,
+          "pixel": [
+            356,
+            443
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t1": {
+          "world_m": [
+            -0.028632586133074008,
+            0.13399141265009662,
+            0.9182331494904277
+          ],
+          "depth_m": 0.20016032457351685,
+          "frame_id": 54,
+          "pixel": [
+            409,
+            443
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t2": {
+          "world_m": [
+            -0.07702618837689326,
+            0.13345614537806927,
+            0.9183506830062256
+          ],
+          "depth_m": 0.20015671849250793,
+          "frame_id": 54,
+          "pixel": [
+            410,
+            564
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t3": {
+          "world_m": [
+            -0.07691070002476885,
+            0.1546900542156019,
+            0.9177870950525325
+          ],
+          "depth_m": 0.20078210532665253,
+          "frame_id": 54,
+          "pixel": [
+            357,
+            563
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s0": {
+          "world_m": [
+            0.010913742612479217,
+            0.19218091848990887,
+            0.8999782478644828
+          ],
+          "depth_m": 0.2184908390045166,
+          "frame_id": 54,
+          "pixel": [
+            274,
+            347
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s1": {
+          "world_m": [
+            0.011566141768985926,
+            0.10839556413631411,
+            0.8999787265432244
+          ],
+          "depth_m": 0.21824385225772858,
+          "frame_id": 54,
+          "pixel": [
+            466,
+            346
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s2": {
+          "world_m": [
+            -0.1102406172399941,
+            0.10713574789576855,
+            0.899983075511759
+          ],
+          "depth_m": 0.21852651238441467,
+          "frame_id": 54,
+          "pixel": [
+            468,
+            625
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s3": {
+          "world_m": [
+            -0.11103188995788504,
+            0.19102831289145156,
+            0.8999826009415421
+          ],
+          "depth_m": 0.21877413988113403,
+          "frame_id": 54,
+          "pixel": [
+            276,
+            626
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "side": {
+          "world_m": [
+            -0.04681915848101137,
+            0.12335104883732542,
+            0.9148646634672034
+          ],
+          "depth_m": 0.9858067035675049,
+          "frame_id": 54,
+          "pixel": [
+            500,
+            476
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 54
+    }
+  },
+  "frame_after": 54
+}

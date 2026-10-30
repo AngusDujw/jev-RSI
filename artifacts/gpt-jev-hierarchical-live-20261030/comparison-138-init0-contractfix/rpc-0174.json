@@ -1,0 +1,279 @@
+{
+  "index": 174,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "lift.view_recovery"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 72,
+  "response": {
+    "result": {
+      "key": "lift.view_recovery",
+      "frame_id": 72,
+      "method_number": 2,
+      "source_sha256": "b50475c5643eae1de8d41b370a69a34124edfdbd9aefd1ca7fec3ca3f9d1722f",
+      "bytes": 4657,
+      "value": {
+        "stage": "lift",
+        "phase": "complementary_high_view",
+        "start_state": {
+          "frame_id": 69,
+          "native_steps": 69,
+          "budgets": {
+            "gpt_remaining": 14,
+            "jev_remaining": 177,
+            "native_steps_remaining": 531,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.0485005917401647,
+            0.009607674944944989,
+            1.170678328446036
+          ],
+          "tcp_quaternion_xyzw": [
+            0.7214691917225284,
+            -0.6919655117444141,
+            -0.023760519812408162,
+            -0.010068448230825757
+          ],
+          "gripper_qpos_m": [
+            0.03993139547984039,
+            -0.03995502028019476
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -4.955876948770609e-06,
+              -1.2976238025541598e-05,
+              -0.0036011023441315355
+            ],
+            "pad_extent_in_tool_m": [
+              0.01604441596541452,
+              0.09489416526390367,
+              0.01600168612369821
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010510676380483933,
+              -0.06636369619600974,
+              -0.0444701698369272
+            ],
+            "finger_high_offset_tool_m": [
+              0.010500648278158515,
+              0.0663391589653596,
+              0.009248885836632387
+            ]
+          }
+        },
+        "prior_native_steps": 69,
+        "calls": 1,
+        "retention_established": false,
+        "view_plan": {
+          "tcp_target_world_m": [
+            -0.0485005917401647,
+            0.009607674944944989,
+            1.170678328446036
+          ],
+          "quaternion_target_xyzw": [
+            0.9192169880715125,
+            -0.007879047003109287,
+            0.3934458767877422,
+            0.013356328005273274
+          ],
+          "world_yaw_rad": 1.5036100901981708,
+          "tool_y_tilt_rad": 0.8573318094611184,
+          "camera_direction_world": [
+            0.8491358210517739,
+            -0.011537567706876261,
+            0.5280485223330704
+          ],
+          "finger_sphere_radius_m": 0.08557425454881162,
+          "tcp_drift_bound_m": 0.004,
+          "geometry_growth_bound_m": 0.001,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02
+        },
+        "clearance": {
+          "frame_id": 69,
+          "visible_top_z_m": 0.9494728145242961,
+          "sphere_height_margin_m": 0.1306312593729283,
+          "required_margin_m": 0.02,
+          "scope": "High diagnostic turn only; visible stationary scene assumption."
+        },
+        "last_receipt": {
+          "decision": 23,
+          "choices": {
+            "x": "hold",
+            "y": "hold",
+            "z": "hold",
+            "rx": "negative",
+            "ry": "negative",
+            "rz": "positive",
+            "gripper": "keep"
+          },
+          "action": [
+            0.0,
+            0.0,
+            0.0,
+            -0.11547005383792515,
+            -0.11547005383792515,
+            0.11547005383792515,
+            -1.0
+          ],
+          "before": [
+            -0.0485005917401647,
+            0.009607674944944989,
+            1.170678328446036
+          ],
+          "after": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "target_tcp": [
+            -0.0485005917401647,
+            0.009607674944944989,
+            1.170678328446036
+          ],
+          "acknowledged_steps": 3,
+          "native_steps": 72,
+          "frame_id": 72,
+          "status": "moved",
+          "position_error_m": 0.004894412485043354,
+          "rotation_error_rad": 1.6580828521763629
+        },
+        "last_acknowledged_state": {
+          "frame_id": 72,
+          "native_steps": 72,
+          "budgets": {
+            "gpt_remaining": 13,
+            "jev_remaining": 176,
+            "native_steps_remaining": 528,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.7306565427597409,
+            -0.6827073192257166,
+            -0.003415033535744021,
+            -0.0063301140565056885
+          ],
+          "gripper_qpos_m": [
+            0.03994083924486617,
+            -0.03995965235438093
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              5.008693418707792e-06,
+              -4.908901678488814e-05,
+              -0.0036354615141295315
+            ],
+            "pad_extent_in_tool_m": [
+              0.01606144447560691,
+              0.09491505462697265,
+              0.01604347694271286
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010533107090902837,
+              -0.06638224484231006,
+              -0.044525079882200974
+            ],
+            "finger_high_offset_tool_m": [
+              0.010517121776116118,
+              0.06631358253073606,
+              0.009236193728665626
+            ]
+          }
+        },
+        "pose_errors": {
+          "tcp_drift_m": 0.004894412485043354,
+          "rotation_rad": 1.658082852176363
+        },
+        "post_review": {
+          "frame_id": 72,
+          "parameters": {
+            "bowl": "same_upright_on_counter",
+            "faces": "not_both_visible",
+            "hand": "visibly_clear",
+            "pad_a": {
+              "camera": "robot0_eye_in_hand",
+              "pixel": [
+                0,
+                0
+              ],
+              "visible": false
+            },
+            "pad_b": {
+              "camera": "robot0_eye_in_hand",
+              "pixel": [
+                0,
+                0
+              ],
+              "visible": false
+            }
+          },
+          "stop": "Post-turn measured hand geometry leaves the admitted bounds."
+        },
+        "end_state": {
+          "frame_id": 72,
+          "native_steps": 72,
+          "budgets": {
+            "gpt_remaining": 12,
+            "jev_remaining": 176,
+            "native_steps_remaining": 528,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.7306565427597409,
+            -0.6827073192257166,
+            -0.003415033535744021,
+            -0.0063301140565056885
+          ],
+          "gripper_qpos_m": [
+            0.03994083924486617,
+            -0.03995965235438093
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              5.008693418707792e-06,
+              -4.908901678488814e-05,
+              -0.0036354615141295315
+            ],
+            "pad_extent_in_tool_m": [
+              0.01606144447560691,
+              0.09491505462697265,
+              0.01604347694271286
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010533107090902837,
+              -0.06638224484231006,
+              -0.044525079882200974
+            ],
+            "finger_high_offset_tool_m": [
+              0.010517121776116118,
+              0.06631358253073606,
+              0.009236193728665626
+            ]
+          }
+        },
+        "new_native_steps": 3
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 72
+}

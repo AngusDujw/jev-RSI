@@ -1,0 +1,190 @@
+{
+  "index": 252,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "HARD MEASUREMENT CONTRACT: submit regions=[]; request ZERO regions/clouds. Request only these named current depth points when genuinely visible: ['m0', 'm1', 'm2', 'm3']. Do not add other measurements. Both images remain available for qualitative coverage, identity and visibility assessment. If this limited evidence cannot establish coverage, return unknown rather than adding regions or claiming hidden clearance. Assess the ACTUAL changed view, not target attainment. Identify ONE actual inward finger contact face, preferably the intended far finger; either finger is acceptable if unambiguous. Request m0,m1,m2,m3 at separated interior surface locations spanning the width and height of that SAME face. They are surface samples, NOT estimated centers. Never sample outer faces, tips, silhouettes, hidden faces or placeholder pixels. If no face is identifiable, return no face points. Confirm the same bowl remains upright supported and the hand clear of external objects."
+    ],
+    "kwargs": {
+      "context": {
+        "state": {
+          "frame_id": 120,
+          "native_steps": 120,
+          "budgets": {
+            "gpt_remaining": 6,
+            "jev_remaining": 160,
+            "native_steps_remaining": 480,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04494525216400569,
+            0.021656542864274153,
+            1.1740695754140509
+          ],
+          "tcp_quaternion_xyzw": [
+            0.6304167189282921,
+            -0.6513539280496855,
+            0.29924915092773,
+            -0.2979308083749726
+          ],
+          "gripper_qpos_m": [
+            0.04003070503607536,
+            -0.03952691438340836
+          ],
+          "last_gripper_command": "open",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -0.00010658850147361905,
+              0.0002918987281789083,
+              -0.0035877440934911726
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600818135793741,
+              0.09456635777324698,
+              0.016046770928278227
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010599894287075225,
+              -0.06587150215172174,
+              -0.04447730130474865
+            ],
+            "finger_high_offset_tool_m": [
+              0.010382131980760812,
+              0.06649430327271305,
+              0.009287642357155531
+            ]
+          }
+        },
+        "plan": {
+          "anchor_tcp_world_m": [
+            -0.04482368327809973,
+            0.008498559453882266,
+            1.1737123819331763
+          ],
+          "target_quaternion_xyzw": [
+            0.6004932422209138,
+            -0.6127369682135009,
+            0.36133362738287017,
+            -0.36523866656458964
+          ],
+          "yaw_rad": -0.07987504311241267,
+          "roll_rad": 1.0745128994008635,
+          "preferred_finger_tool_y_sign": 1.0,
+          "camera_direction_world": [
+            0.8495522154394485,
+            -0.010264041691691409,
+            0.5274046669210237
+          ],
+          "previous_three_step_displacement_m": 0.004894412485043354,
+          "recenter_trigger_m": 0.004,
+          "per_update_displacement_allowance_m": 0.009788824970086709,
+          "maximum_tcp_excursion_m": 0.013788824970086709,
+          "finger_growth_allowance_m": 0.001,
+          "finger_sphere_radius_m": 0.09541159789318336,
+          "height_allowance_m": 0.005,
+          "required_margin_m": 0.02,
+          "basis": "Twice the measured previous displacement is an engineering transient allowance, not a certified dynamics bound. Freshly review this entire envelope. The original 4 mm limit remains the stop-rotation/recenter trigger."
+        },
+        "execution_stop": "Stalled, repeatedly inadequate or materially reversed progress; no blind retry.",
+        "remaining_rotation_rad": 0.2076650836258999
+      },
+      "fields": {
+        "face": [
+          "one_actual_inward_contact_face",
+          "not_visible",
+          "ambiguous"
+        ],
+        "bowl": [
+          "same_upright_supported",
+          "disturbed",
+          "unknown"
+        ],
+        "hand": [
+          "visibly_clear",
+          "contact_or_collision",
+          "unknown"
+        ]
+      }
+    }
+  },
+  "frame_before": 120,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The changed agentview exposes one inward contact face on the lower-projecting far finger, below the nearer finger. All four points sample separated interior locations on that same visible face, avoiding its edges and rounded tip. The same bowl remains upright and supported in its earlier position. The hand is visibly clear of external objects. Complete swept-envelope coverage remains unknown; these face samples do not certify future motion clearance.",
+      "parameters": {
+        "bowl": "same_upright_supported",
+        "face": "one_actual_inward_contact_face",
+        "hand": "visibly_clear"
+      },
+      "points": {
+        "m0": {
+          "world_m": [
+            -0.08631373385615948,
+            0.018821335073698073,
+            1.144207668678689
+          ],
+          "depth_m": 0.8724234700202942,
+          "frame_id": 120,
+          "pixel": [
+            404,
+            272
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "m1": {
+          "world_m": [
+            -0.08621515395788781,
+            0.02634638203172513,
+            1.1442693633293686
+          ],
+          "depth_m": 0.8723080158233643,
+          "frame_id": 120,
+          "pixel": [
+            412,
+            272
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "m2": {
+          "world_m": [
+            -0.07153300522389916,
+            0.018595490682386015,
+            1.1425686749821877
+          ],
+          "depth_m": 0.861954927444458,
+          "frame_id": 120,
+          "pixel": [
+            404,
+            282
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "m3": {
+          "world_m": [
+            -0.07136331139822893,
+            0.026027636337296666,
+            1.1426774059760514
+          ],
+          "depth_m": 0.8617545962333679,
+          "frame_id": 120,
+          "pixel": [
+            412,
+            282
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 120
+    }
+  },
+  "frame_after": 120
+}

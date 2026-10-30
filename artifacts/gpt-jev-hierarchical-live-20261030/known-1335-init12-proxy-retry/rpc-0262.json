@@ -1,0 +1,62 @@
+{
+  "index": 262,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "state",
+    "args": [],
+    "kwargs": {}
+  },
+  "frame_before": 66,
+  "response": {
+    "result": {
+      "frame_id": 66,
+      "native_steps": 66,
+      "budgets": {
+        "gpt_remaining": 10,
+        "jev_remaining": 178,
+        "native_steps_remaining": 534,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.05086437280207262,
+        0.14445307153406942,
+        0.9646231995305494
+      ],
+      "tcp_quaternion_xyzw": [
+        0.9999952129918293,
+        0.001836213546941301,
+        -0.0009559778944173482,
+        -0.002299656387699696
+      ],
+      "gripper_qpos_m": [
+        0.03994329626524455,
+        -0.039925439075991546
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          -1.9087601058365503e-05,
+          1.2887266736059944e-05,
+          -0.0033947730304737626
+        ],
+        "pad_extent_in_tool_m": [
+          0.01600067985628985,
+          0.09486889358530579,
+          0.01600146517849598
+        ],
+        "finger_low_offset_tool_m": [
+          -0.01051471239647974,
+          -0.06632449964711946,
+          -0.044263854693299076
+        ],
+        "finger_high_offset_tool_m": [
+          0.010474835289773624,
+          0.06635101626433215,
+          0.009454953205439164
+        ]
+      }
+    }
+  },
+  "frame_after": 66
+}
