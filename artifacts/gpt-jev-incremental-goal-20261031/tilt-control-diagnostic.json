@@ -1,0 +1,57 @@
+{
+  "scope": "Read-only saved request and dispatch diagnosis; no new control or injected repair hint",
+  "records": [
+    {
+      "index": 97,
+      "frame": 294,
+      "x_choice": "positive",
+      "x_action": 0.04416925188508449,
+      "ry_action": 0.19953206618301295,
+      "x_before": -0.05640152021800849,
+      "x_after": -0.05959651972346203,
+      "target_x": -0.053003885457617375
+    },
+    {
+      "index": 98,
+      "frame": 297,
+      "x_choice": "positive",
+      "x_action": 0.05560525299937687,
+      "ry_action": 0.2,
+      "x_before": -0.05959651972346203,
+      "x_after": -0.06207692514591219,
+      "target_x": -0.053003885457617375
+    },
+    {
+      "index": 99,
+      "frame": 300,
+      "x_choice": "positive",
+      "x_action": 0.05474337730244715,
+      "ry_action": 0.1996073935513076,
+      "x_before": -0.06207692514591219,
+      "x_after": -0.06450749668494492,
+      "target_x": -0.053003885457617375
+    },
+    {
+      "index": 100,
+      "frame": 303,
+      "x_choice": "positive",
+      "x_action": 0.05346918351228195,
+      "ry_action": 0.19961044319506188,
+      "x_before": -0.06450749668494492,
+      "x_after": -0.06728849118578428,
+      "target_x": -0.053003885457617375
+    },
+    {
+      "index": 101,
+      "frame": 306,
+      "x_choice": "positive",
+      "x_action": 0.05318373963757893,
+      "ry_action": 0.2,
+      "x_before": -0.06728849118578428,
+      "x_after": -0.07064181434492284,
+      "target_x": -0.053003885457617375
+    }
+  ],
+  "axis_choice_mismatches": [],
+  "interpretation": "Requested translational correction and observed motion disagree during tilt. This alone does not distinguish controller coupling, reachability, contact or model error."
+}

@@ -283,3 +283,13 @@ Third placement repair job1d983066ca08412486636ae45191de94 / thread
 tilt-drift-supervision.json. Method5 native aggregate421470 input/24488 output
 (13991 reasoning), not a one-request prompt-size estimate. No terminal native
 result yet; do not restart active episode or substitute candidate branch.
+
+## Tilt control direction audit
+
+Saved dispatches97..101 and their exact Jev requests show zero mismatches over
+30 axis choices. All five x commands were positive toward the fixed target,
+while actual x moved from-0.056402m to-0.070642m during positive ry commands.
+This rules out a simple wrong Jev direction label for these controls, but does
+not identify coupling versus reachability/contact or another control-model
+issue. No alternative control was executed and no diagnostic was injected into
+the active method6 repair. See tilt-control-diagnostic.json.
