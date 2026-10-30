@@ -1,0 +1,46 @@
+{
+  "index": 183,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "plane_point",
+    "args": [
+      "agentview",
+      [
+        389,
+        399
+      ],
+      [
+        -0.014393628100988107,
+        0.0038771553915448132,
+        0.9998888893952969,
+        -0.9501394198992936
+      ]
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "world_m": [
+        -0.1345335202381227,
+        0.005571613544503842,
+        0.948286757145394
+      ],
+      "pixel": [
+        389,
+        399
+      ],
+      "camera": "agentview",
+      "plane": [
+        -0.014393628100988107,
+        0.0038771553915448132,
+        0.9998888893952969,
+        -0.9501394198992936
+      ],
+      "frame_id": 234,
+      "source": "calibrated_ray_intersection_with_program_supplied_plane"
+    }
+  },
+  "frame_after": 234
+}

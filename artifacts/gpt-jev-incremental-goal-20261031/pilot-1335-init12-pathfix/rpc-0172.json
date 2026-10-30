@@ -1,0 +1,250 @@
+{
+  "index": 172,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "place.effect",
+      {
+        "frame_id": 234,
+        "status": "continue",
+        "parameters": {
+          "bowl": "same_upright_unchanged",
+          "bowl_reference_mode": "landmarks",
+          "end_camera": "robot0_eye_in_hand",
+          "end_ids_match": true,
+          "end_pixels": [
+            [
+              280,
+              446
+            ],
+            [
+              490,
+              445
+            ]
+          ],
+          "history_matches": true,
+          "identity": "same_retained_carton",
+          "rim_camera": "agentview",
+          "rim_model": "circular_horizontal_inner_lip",
+          "rim_pixels": [
+            [
+              389,
+              397
+            ],
+            [
+              420,
+              406
+            ],
+            [
+              436,
+              427
+            ],
+            [
+              422,
+              447
+            ],
+            [
+              389,
+              456
+            ],
+            [
+              356,
+              446
+            ],
+            [
+              343,
+              427
+            ],
+            [
+              356,
+              406
+            ]
+          ]
+        },
+        "points": {
+          "p0": {
+            "world_m": [
+              -0.019769908237147436,
+              0.1609909096993623,
+              0.9720522014039175
+            ],
+            "depth_m": 0.09609612077474594,
+            "frame_id": 234,
+            "pixel": [
+              310,
+              475
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p1": {
+            "world_m": [
+              -0.019297368618452757,
+              0.13261950233413272,
+              0.9724039751075902
+            ],
+            "depth_m": 0.09580137580633163,
+            "frame_id": 234,
+            "pixel": [
+              458,
+              475
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p2": {
+            "world_m": [
+              -0.04565080262262,
+              0.16059511241198293,
+              0.9720673788416375
+            ],
+            "depth_m": 0.0960087850689888,
+            "frame_id": 234,
+            "pixel": [
+              310,
+              610
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p3": {
+            "world_m": [
+              -0.044954739421968495,
+              0.13230131623333852,
+              0.9727430095641126
+            ],
+            "depth_m": 0.09539066255092621,
+            "frame_id": 234,
+            "pixel": [
+              458,
+              610
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "s0": {
+            "world_m": [
+              -0.14303447301790928,
+              0.0056065835102766725,
+              0.9484925757784247
+            ],
+            "depth_m": 1.0395256280899048,
+            "frame_id": 234,
+            "pixel": [
+              389,
+              394
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "s1": {
+            "world_m": [
+              -0.08742593144210342,
+              0.0580339862968735,
+              0.9484186116668333
+            ],
+            "depth_m": 0.9963124394416809,
+            "frame_id": 234,
+            "pixel": [
+              438,
+              427
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "s2": {
+            "world_m": [
+              -0.03594527180410523,
+              0.00515193943523978,
+              0.9500652218845044
+            ],
+            "depth_m": 0.9552293419837952,
+            "frame_id": 234,
+            "pixel": [
+              389,
+              459
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "s3": {
+            "world_m": [
+              -0.08695855361146032,
+              -0.04725732699217783,
+              0.9488333364266109
+            ],
+            "depth_m": 0.995688259601593,
+            "frame_id": 234,
+            "pixel": [
+              340,
+              427
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "floor": {
+            "world_m": [
+              -0.11467045152945066,
+              0.0056206324811265695,
+              0.9092307280870592
+            ],
+            "depth_m": 1.042130470275879,
+            "frame_id": 234,
+            "pixel": [
+              389,
+              437
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b0": {
+            "world_m": [
+              -0.12069322344689914,
+              0.006766388130185493,
+              0.9113687037892098
+            ],
+            "depth_m": 1.0454723834991455,
+            "frame_id": 234,
+            "pixel": [
+              390,
+              432
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b1": {
+            "world_m": [
+              -0.12691070243057512,
+              -0.019013194341648897,
+              0.9327994531859265
+            ],
+            "depth_m": 1.036843180656433,
+            "frame_id": 234,
+            "pixel": [
+              367,
+              414
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "key": "place.effect",
+      "frame_id": 234,
+      "method_number": 4,
+      "source_sha256": "5a116a66873f7f9c88a78dccb47e89c9f5aa9d718341f202e6984cfe6fb67530",
+      "bytes": 3017,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 234
+}

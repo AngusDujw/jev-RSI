@@ -234,3 +234,15 @@ not checkpointed before this gate failed, so the rejection itself carries less
 numeric detail than the saved measurements; consider preserving numerical gate
 operands before blocked returns in a future generic prompt, without hand-fixing
 this task. Active placement repair09522dc0 remains generating.
+
+## First placement repair delivered; tilted candidate review
+
+Placement repair method4 delivered394 lines in910.300 seconds, no reconnect or
+native recovery. It preserves the acceptance margin and evaluates short-edge
+tilts through1.20rad with additional normal/rotation uncertainty, rather than
+repeating flat placement or yaw-only rotation. Fresh review18 supported candidate
+construction. Chosen candidate angle-1.2rad has predicted clearance5.028mm;
+planned raise53.844mm. Review19 joba59d60f256f84d219c467f0e0a1ad0d7 is active
+under bridge child719387, checking local route, rotation sweep and opening.
+No new controls yet: frame234/78Jev, no release or terminal native score.
+Candidate computation is not measured physical success.

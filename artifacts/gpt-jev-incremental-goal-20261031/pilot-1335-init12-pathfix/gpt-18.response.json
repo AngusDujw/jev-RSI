@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-0289271b-9e12-4a48-bed7-95709385de75",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-0289271b-9e12-4a48-bed7-95709385de75",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The exposed Cream-initial-C short end has c0 on image-left and c1 on image-right. Its print, straight edges and visible planar face are consistent with the supplied approximately 79 x 41 mm historical rectangle and corner ordering. history_matches denotes this consistency, not fresh observation of the entire rectangle: earlier images are not supplied here, and current c2/c3 are robot-occluded. The visible suspended carton and supplied measured lift co-motion support retention; closed fingers alone would not. The bowl remains upright and consistent with the supplied pattern identities. The previous boundary selections hugged the outer lip in places; the returned boundary pixels move to the visible inner opening edge, not a lower wall contour. s0-s3 remain separate top-lip material samples, with depth validity supported by the supplied measurements from this same frame. b0 is the large floor medallion center; b1 is the smaller bottle-side rear-wall rosette center. The visible lip supports a local circular horizontal opening hypothesis. These measurements support evaluating the proposed short-edge tilt with the existing margin, but do not establish tilted fit, hidden-wall clearance, or placement completion. No hidden corners or missing boundary segments are reconstructed.\", \"parameters\": {\"bowl\": \"same_upright_unchanged\", \"bowl_reference_mode\": \"landmarks\", \"end_camera\": \"robot0_eye_in_hand\", \"end_ids_match\": true, \"end_pixels\": [[280, 446], [490, 445]], \"history_matches\": true, \"identity\": \"same_retained_carton\", \"rim_camera\": \"agentview\", \"rim_model\": \"circular_horizontal_inner_lip\", \"rim_pixels\": [[389, 397], [420, 406], [436, 427], [422, 447], [389, 456], [356, 446], [343, 427], [356, 406]]}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [310, 475], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [458, 475], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [310, 610], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p3\", \"pixel\": [458, 610], \"radius\": 3}, {\"camera\": \"agentview\", \"name\": \"s0\", \"pixel\": [389, 394], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"s1\", \"pixel\": [438, 427], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"s2\", \"pixel\": [389, 459], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"s3\", \"pixel\": [340, 427], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"floor\", \"pixel\": [389, 437], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"b0\", \"pixel\": [390, 432], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"b1\", \"pixel\": [367, 414], \"radius\": 1}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 86343,
+    "output_tokens": 4248,
+    "output_tokens_details": {
+      "reasoning_tokens": 2862
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e4e-0a9c-73c1-8fda-f70196ae3584",
+    "turn_ids": [
+      "01a18e4e-0aa3-7bf1-9312-90df63498f3b"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
