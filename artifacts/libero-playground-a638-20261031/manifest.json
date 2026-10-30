@@ -57,7 +57,7 @@
   "training": "Sequential episode, Pro refinement, next revision; all prior acquisition evidence retained",
   "scoring": "terminal native LIBERO success; retain all failures and unknown usage",
   "initial_skill_count": 0,
-  "refinement_commit": "7a1a373d",
+  "refinement_commit": "b3ccf3e7",
   "orchestrator_commit": "779714a3",
   "preflight": {
     "render_shape": [
@@ -71,5 +71,6 @@
   },
   "local_bridge": "http://127.0.0.1:7941",
   "remote_bridge": "http://127.0.0.1:7921",
-  "known_limit": "Existing generic host lessons are shared by both conditions; empty means no newly learned Playground skills."
+  "known_limit": "Existing generic host lessons are shared by both conditions; empty means no newly learned Playground skills.",
+  "refinement_evidence_scope": "Deduplicated stage events, unchanged effect measurements, complete selected source; omitted large checkpoints and sources explicitly hashed. Patched before the first refinement; active episode control code unchanged."
 }
