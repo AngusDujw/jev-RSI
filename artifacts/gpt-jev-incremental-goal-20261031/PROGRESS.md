@@ -541,3 +541,13 @@ current-stage method, not a patch to the old stage: request
 216565ec7cdb46f2b6e0887bf8e42fc6 / thread
 01a18ef7-dad9-7ca2-8227-f6dc6475dbb6, actual child1112817 observed.
 No physics evidence for the new plan yet;72Jev216steps, gripper open.
+
+## Alternate pickup method delivered
+
+Builder23 completed in1263.820s with zero reconnects/recoveries and one
+native turn. Fresh method04 proposes substantially rotated side-entry
+configurations, local geometry and independently reviewed actions, followed
+by a differential retained-lift test. Review24 now measures current geometry.
+At delivery,72Jev216steps and zero completed stages; no terminal score.
+Delivery success does not establish grasp feasibility or faster generation.
+See candidate-alternate-pickup-delivery.json and saved method04.

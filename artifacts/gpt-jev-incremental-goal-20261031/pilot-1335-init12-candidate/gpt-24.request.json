@@ -1,0 +1,241 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 216; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "97ec40f7005ee24fd39f80eff1371d5d952c194dc167de27d75e93c63f5e1adb",
+            "characters": 112279
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 216; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "d3e8b344e44037a3cb3db876a6fcf3e800431a103f157b8dfb9d2d06abc490a4",
+            "characters": 66739
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Assess a NEW side-entry pinch: substantially rotate the tool about the package's short/closing axis, with the palm behind either end, rather than repeating the failed vertical height search. Select a visible local segment near an exposed package end, long enough for approximately 20 mm of pad contact. Request t0..t3: four noncollinear recognizable printed top landmarks, preferably away from the proposed finger envelope, and describe their persistent physical IDs in top_ids. They need not be corners or all inside the contact strip. Request c0..c2: noncollinear counter samples bracketing this local segment. Request a0,a1 and b0,b1: depth-valid upper and lower samples on each of the two opposing long sidewalls (use complementary cameras and radius 1 for narrow walls). local_walls must describe visible continuous wall strips, not extrapolated hidden faces. Give four current top-edge pixels in one declared camera, ordered A-end1,A-end2,B-end2,B-end1, bounding only this local segment, not necessarily material corners. This is measurement, not approach or closure permission.\",\"robot\":{\"frame_id\":216,\"native_steps\":216,\"budgets\":{\"gpt_remaining\":15,\"jev_remaining\":128,\"native_steps_remaining\":384,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0511868,0.172583,0.97198],\"tcp_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646],\"gripper_qpos_m\":[0.0397477,-0.0400146],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-5.28974e-06,-0.000124542,-0.00360044],\"pad_extent_in_tool_m\":[0.0160007,0.0947626,0.0160018],\"finger_low_offset_tool_m\":[-0.0105,-0.0664084,-0.0444696],\"finger_high_offset_tool_m\":[0.010489,0.0661607,0.00924958]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.00436103,-0.999982,-0.00411291,-0.000793996],[-0.936883,-0.00264781,-0.349633,0.206621],[0.349615,0.00537808,-0.936878,1.06259],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":67,\"choices\":{\"x\":\"positive\",\"y\":\"negative\",\"z\":\"positive\",\"rx\":\"negative\",\"ry\":\"positive\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0378034,-0.0302919,0.0251321,-0.010893,0.01141,0.0,-1.0],\"before\":[-0.0556583,0.173639,0.968901],\"after\":[-0.053766,0.175265,0.97007],\"target_tcp\":[-0.0527503,0.171309,0.970835],\"acknowledged_steps\":3,\"native_steps\":204,\"frame_id\":204},{\"decision\":68,\"choices\":{\"x\":\"hold\",\"y\":\"negative\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,-0.0511927,0.0,0.0,0.0,0.0,-1.0],\"before\":[-0.053766,0.175265,0.97007],\"after\":[-0.0524092,0.174966,0.970891],\"target_tcp\":[-0.0527547,0.171327,0.970836],\"acknowledged_steps\":3,\"native_steps\":207,\"frame_id\":207},{\"decision\":69,\"choices\":{\"x\":\"hold\",\"y\":\"negative\",\"z\":\"hold\",\"rx\":\"positive\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,-0.0473098,0.0,0.0112159,0.0,0.0,-1.0],\"before\":[-0.0524092,0.174966,0.970891],\"after\":[-0.0516905,0.174263,0.971285],\"target_tcp\":[-0.0527428,0.171327,0.970849],\"acknowledged_steps\":3,\"native_steps\":210,\"frame_id\":210},{\"decision\":70,\"choices\":{\"x\":\"hold\",\"y\":\"negative\",\"z\":\"hold\",\"rx\":\"positive\",\"ry\":\"negative\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,-0.0382398,0.0,0.0101271,-0.00761586,0.0,-1.0],\"before\":[-0.0516905,0.174263,0.971285],\"after\":[-0.0510659,0.173295,0.971669],\"target_tcp\":[-0.052733,0.171322,0.970859],\"acknowledged_steps\":3,\"native_steps\":213,\"frame_id\":213},{\"decision\":71,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"hold\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0216857,-0.0257979,0.0,0.0,0.0,0.0,-1.0],\"before\":[-0.0510659,0.173295,0.971669],\"after\":[-0.0511868,0.172583,0.97198],\"target_tcp\":[-0.052734,0.17131,0.970861],\"acknowledged_steps\":3,\"native_steps\":216,\"frame_id\":216}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.refinement\",{\"frame\":216,\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"candidate_path\":\"clear\",\"edge_pixels\":[[344,530],[344,450],[464,444],[464,518]],\"empty_open_hand\":true,\"identity\":\"same_package_unchanged\",\"local_boundary\":\"visible\",\"notes\":\"Retry uses different samples, including a wider noncollinear top triangle. All requested names are returned. Wall samples use minimum-radius patches; validate depths and height separation and reject top/counter mixing, especially on the narrow opposite wall. Both visible wall strips support only the supplied local contact segment, not hidden geometry or global clearance. Edge samples retain the supplied endpoint order and are not material corners. Lower wrist-image occlusion is robot self-occlusion, not an external obstacle. Earlier raw images are unavailable for direct comparison. No contact, retention, closure authorization, or completion is established.\",\"sidewall_evidence\":\"consistent\",\"support\":\"same_support\"},\"points\":{\"u0\":{\"world_m\":[-0.0433005,0.161123,0.91778],\"depth_m\":0.151754,\"frame_id\":216,\"pixel\":[357,522],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.0220884,0.146474,0.917807],\"depth_m\":0.156763,\"frame_id\":216,\"pixel\":[402,450],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0437921,0.129818,0.918452],\"depth_m\":0.162071,\"frame_id\":216,\"pixel\":[450,515],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0358997,0.175069,0.899959],\"depth_m\":0.163543,\"frame_id\":216,\"pixel\":[300,489],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0418473,0.101749,0.899951],\"depth_m\":0.18921,\"frame_id\":216,\"pixel\":[493,491],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"a0\":{\"world_m\":[-0.0301693,0.165437,0.915057],\"depth_m\":0.152742,\"frame_id\":216,\"pixel\":[341,478],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"a1\":{\"world_m\":[-0.0375463,0.165319,0.906375],\"depth_m\":0.160949,\"frame_id\":216,\"pixel\":[334,496],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"b0\":{\"world_m\":[-0.0363,0.123377,0.914921],\"depth_m\":0.977588,\"frame_id\":216,\"pixel\":[501,483],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"},\"b1\":{\"world_m\":[-0.0299123,0.12342,0.906474],\"depth_m\":0.977927,\"frame_id\":216,\"pixel\":[501,493],\"camera\":\"agentview\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[],\"reference_frame\":0,\"model_check\":{\"top_residual_m\":1.11022e-16,\"support_residual_m\":9.96085e-06,\"threshold_m\":0.00174137,\"guard_provenance\":\"Unchanged design floor or twice measured fit RMS; not a calibrated confidence bound.\",\"residual_margin_m\":0.00173141}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.refinement\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":3420,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":216},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.candidate\",{\"frame\":216,\"reference_frame\":0,\"trials\":[{\"position_tolerance_m\":0.002,\"lower_pad_z_m\":0.919552,\"upper_pad_z_m\":0.916658,\"required_nominal_overlap_m\":0.00874137,\"interval_width_m\":-0.00289441,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00309441},{\"position_tolerance_m\":0.001,\"lower_pad_z_m\":0.918552,\"upper_pad_z_m\":0.917658,\"required_nominal_overlap_m\":0.00774137,\"interval_width_m\":-0.000894407,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00109441},{\"position_tolerance_m\":0.0005,\"lower_pad_z_m\":0.918052,\"upper_pad_z_m\":0.918158,\"required_nominal_overlap_m\":0.00724137,\"interval_width_m\":0.000105593,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-9.4407e-05}],\"chosen\":null,\"top_floor_world_z_m\":0.917398,\"counter_ceiling_world_z_m\":0.899961,\"finger_bottom_offset_m\":-0.01285,\"half_pad_z_m\":0.00800089,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"preserved_nominal_overlap_floor_m\":0.007,\"guard_accounting\":\"Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.\",\"candidate_change\":\"Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold.\"}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.candidate\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":1822,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":216},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":216,\"native_steps\":216,\"budgets\":{\"gpt_remaining\":19,\"jev_remaining\":128,\"native_steps_remaining\":384,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0511868,0.172583,0.97198],\"tcp_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646],\"gripper_qpos_m\":[0.0397477,-0.0400146],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-5.28974e-06,-0.000124542,-0.00360044],\"pad_extent_in_tool_m\":[0.0160007,0.0947626,0.0160018],\"finger_low_offset_tool_m\":[-0.0105,-0.0664084,-0.0444696],\"finger_high_offset_tool_m\":[0.010489,0.0661607,0.00924958]}}},\"frame_id\":216},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.failure\",{\"gate\":\"lower_grasp_feasible_interval\",\"prevented_action\":\"approach for lower grasp\",\"operands_and_margins\":{\"frame\":216,\"reference_frame\":0,\"trials\":[{\"position_tolerance_m\":0.002,\"lower_pad_z_m\":0.919552,\"upper_pad_z_m\":0.916658,\"required_nominal_overlap_m\":0.00874137,\"interval_width_m\":-0.00289441,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00309441},{\"position_tolerance_m\":0.001,\"lower_pad_z_m\":0.918552,\"upper_pad_z_m\":0.917658,\"required_nominal_overlap_m\":0.00774137,\"interval_width_m\":-0.000894407,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00109441},{\"position_tolerance_m\":0.0005,\"lower_pad_z_m\":0.918052,\"upper_pad_z_m\":0.918158,\"required_nominal_overlap_m\":0.00724137,\"interval_width_m\":0.000105593,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-9.4407e-05}],\"chosen\":null,\"top_floor_world_z_m\":0.917398,\"counter_ceiling_world_z_m\":0.899961,\"finger_bottom_offset_m\":-0.01285,\"half_pad_z_m\":0.00800089,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"preserved_nominal_overlap_floor_m\":0.007,\"guard_accounting\":\"Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.\",\"candidate_change\":\"Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold.\"},\"observation_frame\":216,\"reason\":\"No alternate height meets the preserved margins within allowed pose tolerances.\"}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.failure\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":2056,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":216},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":216,\"native_steps\":216,\"budgets\":{\"gpt_remaining\":19,\"jev_remaining\":128,\"native_steps_remaining\":384,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0511868,0.172583,0.97198],\"tcp_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646],\"gripper_qpos_m\":[0.0397477,-0.0400146],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-5.28974e-06,-0.000124542,-0.00360044],\"pad_extent_in_tool_m\":[0.0160007,0.0947626,0.0160018],\"finger_low_offset_tool_m\":[-0.0105,-0.0664084,-0.0444696],\"finger_high_offset_tool_m\":[0.010489,0.0661607,0.00924958]}}},\"frame_id\":216},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[\"secure.candidate\"],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.candidate\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":1822,\"value\":{\"frame\":216,\"reference_frame\":0,\"trials\":[{\"position_tolerance_m\":0.002,\"lower_pad_z_m\":0.919552,\"upper_pad_z_m\":0.916658,\"required_nominal_overlap_m\":0.00874137,\"interval_width_m\":-0.00289441,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00309441},{\"position_tolerance_m\":0.001,\"lower_pad_z_m\":0.918552,\"upper_pad_z_m\":0.917658,\"required_nominal_overlap_m\":0.00774137,\"interval_width_m\":-0.000894407,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00109441},{\"position_tolerance_m\":0.0005,\"lower_pad_z_m\":0.918052,\"upper_pad_z_m\":0.918158,\"required_nominal_overlap_m\":0.00724137,\"interval_width_m\":0.000105593,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-9.4407e-05}],\"chosen\":null,\"top_floor_world_z_m\":0.917398,\"counter_ceiling_world_z_m\":0.899961,\"finger_bottom_offset_m\":-0.01285,\"half_pad_z_m\":0.00800089,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"preserved_nominal_overlap_floor_m\":0.007,\"guard_accounting\":\"Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.\",\"candidate_change\":\"Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold.\"},\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":216},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":216,\"native_steps\":216,\"budgets\":{\"gpt_remaining\":16,\"jev_remaining\":128,\"native_steps_remaining\":384,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0511868,0.172583,0.97198],\"tcp_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646],\"gripper_qpos_m\":[0.0397477,-0.0400146],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-5.28974e-06,-0.000124542,-0.00360044],\"pad_extent_in_tool_m\":[0.0160007,0.0947626,0.0160018],\"finger_low_offset_tool_m\":[-0.0105,-0.0664084,-0.0444696],\"finger_high_offset_tool_m\":[0.010489,0.0661607,0.00924958]}}},\"frame_id\":216},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":216,\"native_steps\":216,\"budgets\":{\"gpt_remaining\":16,\"jev_remaining\":128,\"native_steps_remaining\":384,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0511868,0.172583,0.97198],\"tcp_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646],\"gripper_qpos_m\":[0.0397477,-0.0400146],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-5.28974e-06,-0.000124542,-0.00360044],\"pad_extent_in_tool_m\":[0.0160007,0.0947626,0.0160018],\"finger_low_offset_tool_m\":[-0.0105,-0.0664084,-0.0444696],\"finger_high_offset_tool_m\":[0.010489,0.0661607,0.00924958]}}},\"frame_id\":216}],\"program_checkpoint_manifest\":[{\"key\":\"secure.partial\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2273,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.plane_check\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":985,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.geometry\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2275,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.failure\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":2056,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.repair_reference\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":4910,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.refinement\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":3420,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.candidate\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":1822,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.progress\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":1976,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.alignment\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1122,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.stall\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":4268,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.pose_gate\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1203,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.view\",\"frame_id\":216,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":11145,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"program_supplied_review_context\":{\"historical_failure\":{\"frame\":216,\"reference_frame\":0,\"trials\":[{\"position_tolerance_m\":0.002,\"lower_pad_z_m\":0.919552,\"upper_pad_z_m\":0.916658,\"required_nominal_overlap_m\":0.00874137,\"interval_width_m\":-0.00289441,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00309441},{\"position_tolerance_m\":0.001,\"lower_pad_z_m\":0.918552,\"upper_pad_z_m\":0.917658,\"required_nominal_overlap_m\":0.00774137,\"interval_width_m\":-0.000894407,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-0.00109441},{\"position_tolerance_m\":0.0005,\"lower_pad_z_m\":0.918052,\"upper_pad_z_m\":0.918158,\"required_nominal_overlap_m\":0.00724137,\"interval_width_m\":0.000105593,\"minimum_interval_width_m\":0.0002,\"residual_margin_m\":-9.4407e-05}],\"chosen\":null,\"top_floor_world_z_m\":0.917398,\"counter_ceiling_world_z_m\":0.899961,\"finger_bottom_offset_m\":-0.01285,\"half_pad_z_m\":0.00800089,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"preserved_nominal_overlap_floor_m\":0.007,\"guard_accounting\":\"Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.\",\"candidate_change\":\"Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold.\"},\"start\":{\"frame_id\":216,\"native_steps\":216,\"budgets\":{\"gpt_remaining\":16,\"jev_remaining\":128,\"native_steps_remaining\":384,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0511868,0.172583,0.97198],\"tcp_quaternion_xyzw\":[0.98409,0.00178265,-0.00241614,0.177646],\"gripper_qpos_m\":[0.0397477,-0.0400146],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-5.28974e-06,-0.000124542,-0.00360044],\"pad_extent_in_tool_m\":[0.0160007,0.0947626,0.0160018],\"finger_low_offset_tool_m\":[-0.0105,-0.0664084,-0.0444696],\"finger_high_offset_tool_m\":[0.010489,0.0661607,0.00924958]}},\"attempt\":0}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_on_counter",
+                  "changed",
+                  "unknown"
+                ]
+              },
+              "empty_open_hand": {
+                "type": "boolean"
+              },
+              "local_walls": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_parallel_sidewalls",
+                  "other",
+                  "unknown"
+                ]
+              },
+              "top_boundary": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_local_edges",
+                  "unknown"
+                ]
+              },
+              "camera": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "agentview",
+                  "robot0_eye_in_hand"
+                ]
+              },
+              "edge_pixels": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 767
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "top_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 240
+                },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "notes": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 600
+              }
+            },
+            "required": [
+              "identity",
+              "empty_open_hand",
+              "local_walls",
+              "top_boundary",
+              "camera",
+              "edge_pixels",
+              "top_ids",
+              "notes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

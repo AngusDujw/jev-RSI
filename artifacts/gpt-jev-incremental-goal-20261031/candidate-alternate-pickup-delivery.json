@@ -1,0 +1,23 @@
+{
+  "request_index": 23,
+  "method_index": 4,
+  "stage": "alternate_pickup",
+  "elapsed_s": 1263.8204542738385,
+  "reconnects": 0,
+  "recoveries": [],
+  "turns": [
+    {
+      "id": "01a18ef7-dad9-7ca2-8227-f6dc6475dbb6",
+      "continuation": false
+    }
+  ],
+  "source_sha256": "83ea0f277126a4a53c5e399c4435d5b7cd9ba528024e510c9f0ff53543461edc",
+  "source_lines": 260,
+  "strategy": "Fresh local geometry and substantially rotated side-entry candidates; action-specific reviews and differential retained lift before stage completion.",
+  "last_verified_physics": {
+    "frame": 216,
+    "jev_calls": 72,
+    "completed_stages": 0
+  },
+  "terminal_result": null
+}
