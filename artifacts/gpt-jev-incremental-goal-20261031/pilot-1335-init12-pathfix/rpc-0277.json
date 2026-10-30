@@ -1,0 +1,767 @@
+{
+  "index": 277,
+  "method_number": 5,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "After the acknowledged motion, locate the same retained cream-cheese carton. Request p0,p1,p2,p3 distributed over the interior of its SAME printed broad face, away from fingers and seams. These are plane samples, not alleged texture correspondences. Return end_pixels in order for the two independently identifiable physical corners c0,c1 of the Cream-initial-C short end. Use the wrist view when useful; no opposite hidden corners are needed. Reidentify the upright bowl. Prefer b0 and b1 at the supplied physical pattern identities. At least one clearly identified pattern mark plus the visible unchanged upright bowl can validate stationarity along this above-lip noncontact route. If both are occluded, use bowl_mode=rim_samples and request v0,v1,v2 on well-separated actual INNER top-lip points, not the outer silhouette or lower wall. Use English ASCII. Unknown is allowed; historical projections are not current detections."
+    ],
+    "kwargs": {
+      "context": {
+        "geometry": {
+          "position_tolerance_m": 0.0015,
+          "rotation_tolerance_rad": 0.015,
+          "required_margin_m": 0.0035,
+          "length_m": 0.07914261644195739,
+          "width_m": 0.041028237497574255,
+          "thickness_upper_m": 0.020587455196884985,
+          "historical_extent_u_m": 0.0015,
+          "historical_corners_world_m": [
+            [
+              -0.013445658288917892,
+              0.16491364032726827,
+              0.9174083168692055
+            ],
+            [
+              -0.012384888064361405,
+              0.12424753601852344,
+              0.9183968597499659
+            ],
+            [
+              -0.09223861275042228,
+              0.12374819206729754,
+              0.918560264373429
+            ],
+            [
+              -0.09187508714219986,
+              0.1650988413340849,
+              0.9175523496382086
+            ]
+          ],
+          "support_world_m": [
+            -0.024283101127603225,
+            0.18497820995495837,
+            0.899972809176544
+          ],
+          "historical_paths": [
+            [
+              "secure.geometry",
+              "precontact",
+              "corners_world_m",
+              "0"
+            ],
+            [
+              "secure.geometry",
+              "precontact",
+              "corners_world_m",
+              "1"
+            ],
+            [
+              "secure.geometry",
+              "precontact",
+              "corners_world_m",
+              "2"
+            ],
+            [
+              "secure.geometry",
+              "precontact",
+              "corners_world_m",
+              "3"
+            ]
+          ],
+          "uncertainty_path": [
+            "secure.geometry",
+            "coarse",
+            "uncertainty_m"
+          ],
+          "corner_ids": [
+            "c0_Cream_initial_C_end_side_A",
+            "c1_Cream_initial_C_end_side_B",
+            "c2_opposite_short_end_side_B",
+            "c3_opposite_short_end_side_A"
+          ],
+          "bowl_mark_ids": [
+            "b0: center of the large pale radial flower/star medallion on the visible interior floor.",
+            "b1: center of the separate smaller pale floral rosette on the bottle-side rear inner wall, above and beside the floor medallion."
+          ],
+          "historical_provenance": [
+            {
+              "key": "secure.geometry",
+              "frame_id": 96,
+              "method_number": 1,
+              "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055"
+            },
+            {
+              "key": "secure.observations",
+              "frame_id": 96,
+              "method_number": 1,
+              "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055"
+            },
+            {
+              "key": "secure.local",
+              "frame_id": 192,
+              "method_number": 2,
+              "source_sha256": "ffa09a95886bc3d9bcb289e2ef70e6fe35846f91ab2310e5081a273b80780675"
+            }
+          ],
+          "rim_fit": {
+            "radius_m": 0.04880685600860314,
+            "rms_m": 0.0008139462251439273,
+            "max_radial_error_m": 0.0015339976729427107,
+            "largest_angular_gap_rad": 0.8398826717333918,
+            "center_xy_m": [
+              -0.08937249109243209,
+              0.005568413805384537
+            ]
+          },
+          "bowl_center_xy_m": [
+            -0.08937249109243209,
+            0.005568413805384537
+          ],
+          "bowl_radius_m": 0.04880685600860314,
+          "rim_plane": {
+            "coefficients": [
+              -0.014393628100988107,
+              0.0038771553915448132,
+              0.9998888893952969,
+              -0.9501394198992936
+            ],
+            "center_world_m": [
+              -0.08834105746889456,
+              0.005383795562553032,
+              0.9489524364390933
+            ],
+            "rms_m": 0.0003431006584775917,
+            "in_plane_spread_m": [
+              0.037921755789139554,
+              0.03718773449851333
+            ]
+          },
+          "rim_high_m": 0.9496363579627182,
+          "rim_world_m": [
+            [
+              -0.1380813414681068,
+              0.005586672425111143,
+              0.9482356270593258
+            ],
+            [
+              -0.12242463643519352,
+              0.039748799937990256,
+              0.9483285422958513
+            ],
+            [
+              -0.0870235090888618,
+              0.05585443405886763,
+              0.948775698594871
+            ],
+            [
+              -0.05492192320271594,
+              0.03977956008267191,
+              0.9493001399388681
+            ],
+            [
+              -0.04088723876444422,
+              0.005174127853818073,
+              0.9496363579627182
+            ],
+            [
+              -0.05619040357160532,
+              -0.029336319300884775,
+              0.9495498826576428
+            ],
+            [
+              -0.08657990432054719,
+              -0.04401287219408365,
+              0.949169328478262
+            ],
+            [
+              -0.12209587475624262,
+              -0.03090271972841575,
+              0.9486072322549974
+            ]
+          ],
+          "rim_depth_samples": [
+            {
+              "world_m": [
+                -0.14303447301790928,
+                0.0056065835102766725,
+                0.9484925757784247
+              ],
+              "depth_m": 1.0395256280899048,
+              "frame_id": 234,
+              "pixel": [
+                389,
+                394
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            {
+              "world_m": [
+                -0.08742593144210342,
+                0.0580339862968735,
+                0.9484186116668333
+              ],
+              "depth_m": 0.9963124394416809,
+              "frame_id": 234,
+              "pixel": [
+                438,
+                427
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            {
+              "world_m": [
+                -0.03594527180410523,
+                0.00515193943523978,
+                0.9500652218845044
+              ],
+              "depth_m": 0.9552293419837952,
+              "frame_id": 234,
+              "pixel": [
+                389,
+                459
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            {
+              "world_m": [
+                -0.08695855361146032,
+                -0.04725732699217783,
+                0.9488333364266109
+              ],
+              "depth_m": 0.995688259601593,
+              "frame_id": 234,
+              "pixel": [
+                340,
+                427
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            }
+          ],
+          "bowl_base_u_m": 0.005444156788191893,
+          "bowl_marks_world_m": [
+            [
+              -0.12069322344689914,
+              0.006766388130185493,
+              0.9113687037892098
+            ],
+            [
+              -0.12691070243057512,
+              -0.019013194341648897,
+              0.9327994531859265
+            ]
+          ],
+          "floor_world_m": [
+            -0.11467045152945066,
+            0.0056206324811265695,
+            0.9092307280870592
+          ],
+          "reference_frame": 234,
+          "bowl_u_m": 0.005444156788191893,
+          "current_carton": {
+            "box_world_m": [
+              [
+                -0.014315439385119753,
+                0.16688001511801476,
+                0.9718274725086236
+              ],
+              [
+                -0.013449870008046089,
+                0.12660618725834383,
+                0.9725571709502357
+              ],
+              [
+                -0.09257250082824646,
+                0.12491568533414837,
+                0.973109649559193
+              ],
+              [
+                -0.09343807020532012,
+                0.1651895131938193,
+                0.9723799511175808
+              ],
+              [
+                -0.01445113502987106,
+                0.16650415668539081,
+                0.9512438958365685
+              ],
+              [
+                -0.013585565652797397,
+                0.12623032882571988,
+                0.9519735942781807
+              ],
+              [
+                -0.09270819647299777,
+                0.12453982690152442,
+                0.952526072887138
+              ],
+              [
+                -0.09357376585007143,
+                0.16481365476119536,
+                0.9517963744455258
+              ]
+            ],
+            "center_world_m": [
+              -0.05351181792905876,
+              0.14570992100976957,
+              0.9621767726978808
+            ],
+            "anchors_world_m": [
+              [
+                -0.014315439385119753,
+                0.16688001511801476,
+                0.9718274725086236
+              ],
+              [
+                -0.013449870008046089,
+                0.12660618725834383,
+                0.9725571709502357
+              ]
+            ],
+            "short_axis_world": [
+              0.021483619618680075,
+              -0.9996051399722007,
+              0.01811127353989768
+            ],
+            "plane": {
+              "coefficients": [
+                0.006591181059222867,
+                0.01825667276647301,
+                0.9998116073699796,
+                -0.9745967055494957
+              ],
+              "center_world_m": [
+                -0.03241820472504717,
+                0.14662671016970413,
+                0.9723166412293145
+              ],
+              "rms_m": 8.167237606141775e-05,
+              "in_plane_spread_m": [
+                0.01417313904287979,
+                0.01288459040984515
+              ]
+            },
+            "normal_u_rad": 0.031044836294862654,
+            "u_m": 0.006837004177979309,
+            "edge_u_m": 0.0004,
+            "frame_id": 234
+          },
+          "candidate_tests": [
+            {
+              "angle_rad": 0.0,
+              "quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "predicted_margin_m": -0.008022357389876705,
+              "visible_end_mean_z_m": 0.9721923217294297
+            },
+            {
+              "angle_rad": -0.45,
+              "quaternion_xyzw": [
+                0.9751039566338748,
+                0.0033993297274430593,
+                -0.22168397728153616,
+                0.004114915674191071
+              ],
+              "predicted_margin_m": -0.008373469032154735,
+              "visible_end_mean_z_m": 0.9554695669519595
+            },
+            {
+              "angle_rad": 0.45,
+              "quaternion_xyzw": [
+                0.9744280207014873,
+                0.011024986719328533,
+                0.22441862562700401,
+                -0.0021823407862783463
+              ],
+              "predicted_margin_m": -0.008467869523277358,
+              "visible_end_mean_z_m": 0.9886930916442966
+            },
+            {
+              "angle_rad": -0.7,
+              "quaternion_xyzw": [
+                0.9398650477032524,
+                0.0010900553119674835,
+                -0.3414955440160529,
+                0.005770381474403584
+              ],
+              "predicted_margin_m": -0.005558799762290634,
+              "visible_end_mean_z_m": 0.9473268338814436
+            },
+            {
+              "angle_rad": 0.7,
+              "quaternion_xyzw": [
+                0.938826184683025,
+                0.012810120297746756,
+                0.344130822600871,
+                -0.003908031156449825
+              ],
+              "predicted_margin_m": -0.005769440579961688,
+              "visible_end_mean_z_m": 0.9965334504077741
+            },
+            {
+              "angle_rad": -0.9,
+              "quaternion_xyzw": [
+                0.9010800268898974,
+                -0.0007713545737224456,
+                -0.4335951493452684,
+                0.007031117726074768
+              ],
+              "predicted_margin_m": -0.00193876889780997,
+              "visible_end_mean_z_m": 0.9418544247013714
+            },
+            {
+              "angle_rad": 0.9,
+              "quaternion_xyzw": [
+                0.8997622301626019,
+                0.014095536422715639,
+                0.4361212275814552,
+                -0.005245939250660076
+              ],
+              "predicted_margin_m": -0.002224944927129155,
+              "visible_end_mean_z_m": 1.0016864777796866
+            },
+            {
+              "angle_rad": -1.05,
+              "quaternion_xyzw": [
+                0.8660582328877721,
+                -0.002163370151459204,
+                -0.49987553717203737,
+                0.007931230286950598
+              ],
+              "predicted_margin_m": 0.0013863898315319865,
+              "visible_end_mean_z_m": 0.9385044114084898
+            },
+            {
+              "angle_rad": 1.05,
+              "quaternion_xyzw": [
+                0.8645397289939251,
+                0.014967824212499429,
+                0.5023030822998675,
+                -0.006215685119655202
+              ],
+              "predicted_margin_m": 0.0010600535486460878,
+              "visible_end_mean_z_m": 1.0047599068309387
+            },
+            {
+              "angle_rad": -1.2,
+              "quaternion_xyzw": [
+                0.8261671444495111,
+                -0.0035432224752232153,
+                -0.5633454428863091,
+                0.00878675058596525
+              ],
+              "predicted_margin_m": 0.005028137032362562,
+              "visible_end_mean_z_m": 0.9358859174998556
+            },
+            {
+              "angle_rad": 1.2,
+              "quaternion_xyzw": [
+                0.8244564709703988,
+                0.01575595744963154,
+                0.5656608063639924,
+                -0.007150484145793138
+              ],
+              "predicted_margin_m": 0.004682276818015095,
+              "visible_end_mean_z_m": 1.0070768996776227
+            }
+          ],
+          "chosen_candidate": {
+            "angle_rad": -1.2,
+            "quaternion_xyzw": [
+              0.8261671444495111,
+              -0.0035432224752232153,
+              -0.5633454428863091,
+              0.00878675058596525
+            ],
+            "predicted_margin_m": 0.005028137032362562,
+            "visible_end_mean_z_m": 0.9358859174998556
+          },
+          "end_identity_reference": {
+            "frame_id": 234,
+            "observed_end_corners": {
+              "c0_Cream_initial_C_end_side_A": {
+                "world_m": [
+                  -0.014370465378092072,
+                  0.16697044349904783,
+                  0.9713838566313399
+                ],
+                "depth_m": 0.09676793962717056,
+                "frame_id": 234,
+                "pixel": [
+                  280,
+                  446
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "c1_Cream_initial_C_end_side_B": {
+                "world_m": [
+                  -0.013587108980472946,
+                  0.12635100313874031,
+                  0.9713734454671944
+                ],
+                "depth_m": 0.09686029702425003,
+                "frame_id": 234,
+                "pixel": [
+                  490,
+                  445
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              }
+            },
+            "scope": "Physical identity reference only; after movement these pixels are not current measurements."
+          },
+          "preparation": {
+            "rise_m": 0.05384394648840686,
+            "sampled_low_z_m": 0.9280224337189731,
+            "inter_sample_reserve_m": 0.004948861278490605,
+            "closed_route_review_frame": 234,
+            "release_not_authorized": true
+          }
+        },
+        "before": {
+          "frame_id": 234,
+          "native_steps": 234,
+          "tcp_position_world_m": [
+            -0.052079271964960185,
+            0.14630321205232666,
+            0.9710701462042386
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999711545227261,
+            0.007398647746313991,
+            0.0014026799739744358,
+            0.0009912733744994022
+          ],
+          "gripper_qpos_m": [
+            0.02118506207827258,
+            -0.02103588604034721
+          ],
+          "last_gripper_command": "close"
+        },
+        "after": {
+          "frame_id": 255,
+          "native_steps": 255,
+          "tcp_position_world_m": [
+            -0.052730706556717896,
+            0.14694034189616698,
+            1.0239855888702405
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999708408503525,
+            0.007474219191384801,
+            0.0012848223463617135,
+            0.0008959509230666211
+          ],
+          "gripper_qpos_m": [
+            0.02118169347120675,
+            -0.021036389003085597
+          ],
+          "last_gripper_command": "close"
+        },
+        "phase": "raise"
+      },
+      "fields": {
+        "identity": [
+          "same_carton",
+          "lost",
+          "unknown"
+        ],
+        "end_ids_match": "boolean",
+        "end_camera": [
+          "agentview",
+          "robot0_eye_in_hand"
+        ],
+        "end_pixels": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 767
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "maxItems": 2
+        },
+        "bowl": [
+          "same_upright_unchanged",
+          "changed",
+          "unknown"
+        ],
+        "bowl_mode": [
+          "landmarks",
+          "rim_samples",
+          "unknown"
+        ],
+        "notes": {
+          "type": "string",
+          "maxLength": 900
+        }
+      }
+    }
+  },
+  "frame_before": 255,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The same printed carton face remains stable relative to the fingers in the wrist views while the carton rises with the hand in agentview, supporting continued retention. The bowl remains upright and visually unchanged; both specified interior pattern marks are visible.",
+      "parameters": {
+        "bowl": "same_upright_unchanged",
+        "bowl_mode": "landmarks",
+        "end_camera": "robot0_eye_in_hand",
+        "end_ids_match": true,
+        "end_pixels": [
+          [
+            280,
+            446
+          ],
+          [
+            490,
+            445
+          ]
+        ],
+        "identity": "same_carton",
+        "notes": "Current frame 255 detections. End pixels are ordered c0, the left corner, then c1, the right corner, of the Cream-initial-C short end. p0-p3 sample the interior of the same printed broad face, not texture correspondences. b0 is the large floor medallion; b1 is the smaller bottle-side rear inner-wall rosette. Their current visibility and the unchanged upright bowl support stationarity for the stated above-lip noncontact scope. The opposite carton end is robot-occluded and is not inferred. Placement and release are not established."
+      },
+      "points": {
+        "p0": {
+          "world_m": [
+            -0.020423017361561845,
+            0.16163688258793382,
+            1.0249666875713175
+          ],
+          "depth_m": 0.09609726071357727,
+          "frame_id": 255,
+          "pixel": [
+            310,
+            475
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p1": {
+          "world_m": [
+            -0.019936922924646404,
+            0.13288534376996258,
+            1.025333021232167
+          ],
+          "depth_m": 0.09578312933444977,
+          "frame_id": 255,
+          "pixel": [
+            460,
+            475
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p2": {
+          "world_m": [
+            -0.046303593066392604,
+            0.16123696840374685,
+            1.024989144226471
+          ],
+          "depth_m": 0.09600868076086044,
+          "frame_id": 255,
+          "pixel": [
+            310,
+            610
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p3": {
+          "world_m": [
+            -0.04559177660814693,
+            0.1325640048371376,
+            1.0256724386654004
+          ],
+          "depth_m": 0.09537803381681442,
+          "frame_id": 255,
+          "pixel": [
+            460,
+            610
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c0": {
+          "world_m": [
+            -0.01501123632438289,
+            0.16759553974586014,
+            1.0244055189197487
+          ],
+          "depth_m": 0.09666184335947037,
+          "frame_id": 255,
+          "pixel": [
+            280,
+            446
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "c1": {
+          "world_m": [
+            -0.01422007575945952,
+            0.1270253870232383,
+            1.0244086905943977
+          ],
+          "depth_m": 0.09673260152339935,
+          "frame_id": 255,
+          "pixel": [
+            490,
+            445
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b0": {
+          "world_m": [
+            -0.11960979618429546,
+            0.006763130718354734,
+            0.9108283489878657
+          ],
+          "depth_m": 1.044969081878662,
+          "frame_id": 255,
+          "pixel": [
+            390,
+            433
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "b1": {
+          "world_m": [
+            -0.12668824766924336,
+            -0.019024830471996965,
+            0.9315141700064395
+          ],
+          "depth_m": 1.037477731704712,
+          "frame_id": 255,
+          "pixel": [
+            367,
+            415
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 255
+    }
+  },
+  "frame_after": 255
+}

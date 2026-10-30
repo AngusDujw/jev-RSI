@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-4dad0a26-9b86-40c3-83ed-a309180ac1e1",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-4dad0a26-9b86-40c3-83ed-a309180ac1e1",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The same Cream-labeled carton remains visible between the fingers. Its printed face and identifiable short end remain stable in the wrist view while the background and agentview hand orientation change, supporting retention through the acknowledged tilt. The same upright bowl and both specified pattern marks remain visible and unchanged.\", \"parameters\": {\"bowl\": \"same_upright_unchanged\", \"bowl_mode\": \"landmarks\", \"end_camera\": \"robot0_eye_in_hand\", \"end_ids_match\": true, \"end_pixels\": [[280, 446], [490, 445]], \"identity\": \"same_carton\", \"notes\": \"Current frame 288 visual detections. c0 is the left and c1 the right physical corner of the Cream-initial-C short end. p0-p3 are distributed interior plane samples on the same printed broad face, not texture correspondences. b0 identifies the large floor medallion; b1 identifies the smaller bottle-side rear inner-wall rosette. These marks and the unchanged upright bowl support stationarity for the stated above-lip noncontact scope. The opposite carton end is robot-occluded and is not inferred. Placement and release are not established.\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [310, 475], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [460, 475], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [310, 610], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p3\", \"pixel\": [460, 610], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c0\", \"pixel\": [280, 446], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"c1\", \"pixel\": [490, 445], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"b0\", \"pixel\": [390, 433], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"b1\", \"pixel\": [367, 415], \"radius\": 2}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 48885,
+    "output_tokens": 1138,
+    "output_tokens_details": {
+      "reasoning_tokens": 663
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e61-8911-7dd2-b37a-37b77332d6f8",
+    "turn_ids": [
+      "01a18e61-8918-7593-b28b-2b7f4d97b14e"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

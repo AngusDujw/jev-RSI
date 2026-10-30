@@ -1,0 +1,43 @@
+{
+  "scope": "Actual supervised partial placement execution; no task success",
+  "method_number": 5,
+  "method_generation_seconds": 759.6325085761491,
+  "method_source_lines": 323,
+  "dispatches": 102,
+  "native_steps": 306,
+  "event": {
+    "update": 5,
+    "stage": "place",
+    "plan_revision": 0,
+    "stage_index": 1,
+    "frame_id": 306,
+    "trigger": "control_slice_limit",
+    "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+    "outcome": {
+      "stage_status": "yield",
+      "completion_proposed": false,
+      "evidence": {
+        "trigger": "control_slice_limit"
+      }
+    },
+    "decision": {
+      "action": "revise",
+      "evidence": [
+        "The current run yielded at control_slice_limit with a live continuation; it did not return stage_complete.",
+        "During the five shown controls, TCP x moved from -0.0564 to -0.0706 m despite positive x corrections toward the unchanged -0.0530 m target.",
+        "Current position error is approximately 17.8 mm, exceeding the recorded 1.5 mm tolerance, although orientation has progressed toward the tilt target.",
+        "The current wrist image shows the carton still between the fingers in a similar image-relative position. The bowl remains upright and visibly separate from the carton.",
+        "No release is acknowledged. The last depth-based retention and geometry checks are from frame 288, before the subsequent tilt and translation drift."
+      ],
+      "invalidated_assumptions": [
+        "The ongoing tilt maintains the fixed TCP pivot within the positional tolerance used by the local geometry assessment."
+      ],
+      "plan_valid": "yes",
+      "reason": "Placement remains appropriate, but systematic position divergence does not support resuming the unchanged local method. Revision should account for the already executed raise and partial tilt, reassess retention and affected clearance from the actual pose, and correct coupled pose tracking or assess an alternative reachable tilt candidate. The drift does not establish an obstacle or global infeasibility.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    }
+  },
+  "next_repair_job": "1d983066ca08412486636ae45191de94"
+}

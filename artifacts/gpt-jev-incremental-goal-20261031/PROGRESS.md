@@ -268,3 +268,18 @@ unknown is never clear, and an established obstruction cannot be postponed.
 No task coordinates or trajectories. Candidate branch now4712d43b; live remote
 stillc8dedfa8. ASCII, root/candidate byte equality and whitespace checks pass;
 no empirical efficacy claim. See gate-scope-candidate.json.
+
+## Placement progressed; partial tilt drift required revision
+
+Second placement repair method5 delivered323 lines in759.633 seconds, no
+reconnect/recovery. It corrected the early opening prerequisite and actually
+raised and tilted, passing reviews at frames255 and288. At frame306/102Jev
+normal slice supervision rejected continuation: position error17.8mm and
+systematic x drift while orientation progressed invalidated the fixed-pivot
+assumption. No release occurred. This is evidence-triggered revision, not an
+automatic rewrite on a normal slice. Preserve actual partial tilt and grasp.
+Third placement repair job1d983066ca08412486636ae45191de94 / thread
+01a18e63-3300-7311-8fac-1f43ee23cc80 is generating. Save
+tilt-drift-supervision.json. Method5 native aggregate421470 input/24488 output
+(13991 reasoning), not a one-request prompt-size estimate. No terminal native
+result yet; do not restart active episode or substitute candidate branch.

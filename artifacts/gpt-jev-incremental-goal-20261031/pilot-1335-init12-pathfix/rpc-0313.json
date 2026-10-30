@@ -1,0 +1,159 @@
+{
+  "index": 313,
+  "method_number": 5,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "place.effect",
+      {
+        "frame_id": 288,
+        "status": "continue",
+        "parameters": {
+          "bowl": "same_upright_unchanged",
+          "bowl_mode": "landmarks",
+          "end_camera": "robot0_eye_in_hand",
+          "end_ids_match": true,
+          "end_pixels": [
+            [
+              280,
+              446
+            ],
+            [
+              490,
+              445
+            ]
+          ],
+          "identity": "same_carton",
+          "notes": "Current frame 288 visual detections. c0 is the left and c1 the right physical corner of the Cream-initial-C short end. p0-p3 are distributed interior plane samples on the same printed broad face, not texture correspondences. b0 identifies the large floor medallion; b1 identifies the smaller bottle-side rear inner-wall rosette. These marks and the unchanged upright bowl support stationarity for the stated above-lip noncontact scope. The opposite carton end is robot-occluded and is not inferred. Placement and release are not established."
+        },
+        "points": {
+          "p0": {
+            "world_m": [
+              -0.025805081797269938,
+              0.16125158315580948,
+              1.0073330239696698
+            ],
+            "depth_m": 0.09614252299070358,
+            "frame_id": 288,
+            "pixel": [
+              310,
+              475
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p1": {
+            "world_m": [
+              -0.02535950539155339,
+              0.13248661573835865,
+              1.007709478803616
+            ],
+            "depth_m": 0.09582365304231644,
+            "frame_id": 288,
+            "pixel": [
+              460,
+              475
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p2": {
+            "world_m": [
+              -0.04706610720960733,
+              0.16115522813185718,
+              1.0221230814976012
+            ],
+            "depth_m": 0.09606210142374039,
+            "frame_id": 288,
+            "pixel": [
+              310,
+              610
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p3": {
+            "world_m": [
+              -0.046256775552347376,
+              0.13246518287561368,
+              1.022626990644928
+            ],
+            "depth_m": 0.09543096274137497,
+            "frame_id": 288,
+            "pixel": [
+              460,
+              610
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c0": {
+            "world_m": [
+              -0.021579266959363158,
+              0.1671261783238766,
+              1.0037839477269284
+            ],
+            "depth_m": 0.0966101661324501,
+            "frame_id": 288,
+            "pixel": [
+              280,
+              446
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b0": {
+            "world_m": [
+              -0.11960979618429546,
+              0.006763130718354734,
+              0.9108283489878657
+            ],
+            "depth_m": 1.044969081878662,
+            "frame_id": 288,
+            "pixel": [
+              390,
+              433
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "b1": {
+            "world_m": [
+              -0.12668824766924336,
+              -0.019024830471996965,
+              0.9315141700064395
+            ],
+            "depth_m": 1.037477731704712,
+            "frame_id": 288,
+            "pixel": [
+              367,
+              415
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": [
+          {
+            "name": "c1",
+            "error": "Invalid or discontinuous surface depth"
+          }
+        ]
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 288,
+  "response": {
+    "result": {
+      "key": "place.effect",
+      "frame_id": 288,
+      "method_number": 5,
+      "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+      "bytes": 2516,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 288
+}

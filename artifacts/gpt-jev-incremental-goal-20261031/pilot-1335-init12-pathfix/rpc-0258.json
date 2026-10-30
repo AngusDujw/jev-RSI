@@ -1,0 +1,160 @@
+{
+  "index": 258,
+  "method_number": 5,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "place.revision",
+      {
+        "previous_progress_record": {
+          "key": "place.progress",
+          "frame_id": 234,
+          "method_number": 3,
+          "source_sha256": "5d3c1672e734d486c50315fa93512d93c1f2b11647dba0e5fc010e34f583edc5",
+          "bytes": 945,
+          "value": {
+            "phase": "entry",
+            "actions": [],
+            "release_started": false,
+            "entry": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "failure_status": "blocked",
+            "state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "stage_status": "blocked",
+            "reason": "Measured carton-to-inner-opening fit margin is insufficient at the declared uncertainty and 1.5 mm controller tolerance."
+          },
+          "source": "program-supplied historical data; not a fresh measurement"
+        },
+        "entry": {
+          "frame_id": 234,
+          "native_steps": 234,
+          "tcp_position_world_m": [
+            -0.052079271964960185,
+            0.14630321205232666,
+            0.9710701462042386
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999711545227261,
+            0.007398647746313991,
+            0.0014026799739744358,
+            0.0009912733744994022
+          ],
+          "gripper_qpos_m": [
+            0.02118506207827258,
+            -0.02103588604034721
+          ],
+          "last_gripper_command": "close"
+        },
+        "revision": "Test measured short-edge tilt while preserving previous fit and stopping margins.",
+        "latest_no_action_audit": {
+          "progress": {
+            "phase": "entry_audit",
+            "actions": [],
+            "release_started": false,
+            "entry": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "failure_status": "blocked",
+            "state": {
+              "frame_id": 234,
+              "native_steps": 234,
+              "tcp_position_world_m": [
+                -0.052079271964960185,
+                0.14630321205232666,
+                0.9710701462042386
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999711545227261,
+                0.007398647746313991,
+                0.0014026799739744358,
+                0.0009912733744994022
+              ],
+              "gripper_qpos_m": [
+                0.02118506207827258,
+                -0.02103588604034721
+              ],
+              "last_gripper_command": "close"
+            },
+            "stage_status": "blocked",
+            "reason": "The new candidate route or tilted pinch is not supported: Clear applies to the supplied local carton/finger envelope against visible external obstacles, not hidden geometry or whole-arm clearance. Visible lateral space has no observed external obstruction, but the robot self-occludes part of the bowl-side opening zone. The exact full-opening envelope and final lowering endpoint are not supplied. Complete opening clearance is therefore unobserved, not obstructed, and needs a fresh check before release. Opposing fingers visibly flank the carton; hidden contact areas, friction and future slip remain unknown. Closed fingers alone do not prove retention. The opposite short end and its corners are self-occluded and cannot be returned as current visible measurements. No earlier actual images are available here to independently verify retention during the logged lift. All returned pixels are selected on the current images, not inferred from historical projections. Bounding regions include multiple surfaces and require segmentation. Table regions measure visible surfaces, not free-space volumes."
+          },
+          "geometry_provenance": {
+            "key": "place.geometry",
+            "frame_id": 234,
+            "method_number": 4,
+            "source_sha256": "5a116a66873f7f9c88a78dccb47e89c9f5aa9d718341f202e6984cfe6fb67530"
+          },
+          "correction": "corridor=clear and tilt_grasp=supported authorize only the assessed CLOSED route; opening_sweep=unknown is deferred, not treated as obstruction or release permission."
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "key": "place.revision",
+      "frame_id": 234,
+      "method_number": 5,
+      "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+      "bytes": 3995,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 234
+}

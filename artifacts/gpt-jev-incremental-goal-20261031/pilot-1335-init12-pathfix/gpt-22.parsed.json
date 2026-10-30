@@ -1,0 +1,97 @@
+{
+  "status": "continue",
+  "explanation": "The same printed carton face remains stable relative to the fingers in the wrist views while the carton rises with the hand in agentview, supporting continued retention. The bowl remains upright and visually unchanged; both specified interior pattern marks are visible.",
+  "parameters": {
+    "bowl": "same_upright_unchanged",
+    "bowl_mode": "landmarks",
+    "end_camera": "robot0_eye_in_hand",
+    "end_ids_match": true,
+    "end_pixels": [
+      [
+        280,
+        446
+      ],
+      [
+        490,
+        445
+      ]
+    ],
+    "identity": "same_carton",
+    "notes": "Current frame 255 detections. End pixels are ordered c0, the left corner, then c1, the right corner, of the Cream-initial-C short end. p0-p3 sample the interior of the same printed broad face, not texture correspondences. b0 is the large floor medallion; b1 is the smaller bottle-side rear inner-wall rosette. Their current visibility and the unchanged upright bowl support stationarity for the stated above-lip noncontact scope. The opposite carton end is robot-occluded and is not inferred. Placement and release are not established."
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p0",
+      "pixel": [
+        310,
+        475
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p1",
+      "pixel": [
+        460,
+        475
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p2",
+      "pixel": [
+        310,
+        610
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p3",
+      "pixel": [
+        460,
+        610
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "c0",
+      "pixel": [
+        280,
+        446
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "c1",
+      "pixel": [
+        490,
+        445
+      ],
+      "radius": 1
+    },
+    {
+      "camera": "agentview",
+      "name": "b0",
+      "pixel": [
+        390,
+        433
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "agentview",
+      "name": "b1",
+      "pixel": [
+        367,
+        415
+      ],
+      "radius": 2
+    }
+  ],
+  "regions": []
+}

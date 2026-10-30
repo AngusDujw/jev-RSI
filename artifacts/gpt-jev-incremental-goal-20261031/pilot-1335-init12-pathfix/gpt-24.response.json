@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-06516dd4-dead-4c43-9301-7989e328f529",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-06516dd4-dead-4c43-9301-7989e328f529",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"The current run yielded at control_slice_limit with a live continuation; it did not return stage_complete.\", \"During the five shown controls, TCP x moved from -0.0564 to -0.0706 m despite positive x corrections toward the unchanged -0.0530 m target.\", \"Current position error is approximately 17.8 mm, exceeding the recorded 1.5 mm tolerance, although orientation has progressed toward the tilt target.\", \"The current wrist image shows the carton still between the fingers in a similar image-relative position. The bowl remains upright and visibly separate from the carton.\", \"No release is acknowledged. The last depth-based retention and geometry checks are from frame 288, before the subsequent tilt and translation drift.\"], \"invalidated_assumptions\": [\"The ongoing tilt maintains the fixed TCP pivot within the positional tolerance used by the local geometry assessment.\"], \"plan_valid\": \"yes\", \"reason\": \"Placement remains appropriate, but systematic position divergence does not support resuming the unchanged local method. Revision should account for the already executed raise and partial tilt, reassess retention and affected clearance from the actual pose, and correct coupled pose tracking or assess an alternative reachable tilt candidate. The drift does not establish an obstacle or global infeasibility.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 61119,
+    "output_tokens": 1344,
+    "output_tokens_details": {
+      "reasoning_tokens": 990
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18e62-3d1c-76a2-a2b2-1a84e6539bfb",
+    "turn_ids": [
+      "01a18e62-3d22-7b40-abf9-2173cec4130c"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

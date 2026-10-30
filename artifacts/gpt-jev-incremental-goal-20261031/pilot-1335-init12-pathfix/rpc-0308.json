@@ -1,0 +1,151 @@
+{
+  "index": 308,
+  "method_number": 5,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.052730706556717896,
+        0.14694034189616698,
+        1.0239855888702405
+      ],
+      [
+        0.955722759774485,
+        0.0020176254427947227,
+        -0.2942181369332801,
+        0.0050619695894505165
+      ],
+      "close",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world axis x, read state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Use the host residual, not an imagined object measurement.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within the declared deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world axis y, read state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Use the host residual, not an imagined object measurement.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within the declared deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world axis z, read state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Use the host residual, not an imagined object measurement.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within the declared deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world axis rx, read state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Use the host residual, not an imagined object measurement.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within the declared deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world axis ry, read state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Use the host residual, not an imagined object measurement.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within the declared deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world axis rz, read state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Use the host residual, not an imagined object measurement.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within the declared deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper. Close maintains the existing grasp. Open is requested only after this program authorizes release. Keep preserves the preceding command. Do not infer a grasp from closure.",
+          "criteria": {
+            "open": "The objective requests the authorized opening.",
+            "close": "The objective requests continued closure.",
+            "keep": "The objective requests keep."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "phase": "tilt_0.5",
+        "geometry_frame": 255,
+        "carton_uncertainty_m": 0.006833694326224773,
+        "bowl_uncertainty_m": 0.006748600873555744,
+        "required_margin_m": 0.0035,
+        "release_authorized": false
+      },
+      "max_calls": 24,
+      "tool_point": "tcp",
+      "translation_limit": 0.003,
+      "rotation_limit": 0.1,
+      "steps": 3,
+      "position_tolerance": 0.0015,
+      "rotation_tolerance": 0.015
+    }
+  },
+  "frame_before": 255,
+  "response": {
+    "result": {
+      "decision": 95,
+      "choices": {
+        "x": "positive",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "positive",
+        "rz": "hold",
+        "gripper": "close"
+      },
+      "action": [
+        0.06,
+        0.0,
+        0.0,
+        0.0,
+        0.016757966373330272,
+        0.0,
+        1.0
+      ],
+      "before": [
+        -0.05852647875797714,
+        0.14650755221993395,
+        1.0243059693964411
+      ],
+      "after": [
+        -0.053003885457617375,
+        0.1469156400326928,
+        1.0251767397987972
+      ],
+      "target_tcp": [
+        -0.052730706556717896,
+        0.14694034189616698,
+        1.0239855888702405
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 288,
+      "frame_id": 288,
+      "status": "reached",
+      "position_error_m": 0.001222324600324008,
+      "rotation_error_rad": 0.007949568527987895,
+      "lease_calls": 11
+    }
+  },
+  "frame_after": 288
+}

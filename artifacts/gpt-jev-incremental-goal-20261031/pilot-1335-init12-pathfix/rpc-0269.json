@@ -1,0 +1,49 @@
+{
+  "index": 269,
+  "method_number": 5,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "place.progress",
+      {
+        "phase": "audit",
+        "actions": [],
+        "release_started": false,
+        "entry": {
+          "frame_id": 234,
+          "native_steps": 234,
+          "tcp_position_world_m": [
+            -0.052079271964960185,
+            0.14630321205232666,
+            0.9710701462042386
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999711545227261,
+            0.007398647746313991,
+            0.0014026799739744358,
+            0.0009912733744994022
+          ],
+          "gripper_qpos_m": [
+            0.02118506207827258,
+            -0.02103588604034721
+          ],
+          "last_gripper_command": "close"
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 234,
+  "response": {
+    "result": {
+      "key": "place.progress",
+      "frame_id": 234,
+      "method_number": 5,
+      "source_sha256": "6e35be6293a253d4d5e3980cd4cb4680e6d0ec5f76606da3844c75de265b1f98",
+      "bytes": 407,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 234
+}
