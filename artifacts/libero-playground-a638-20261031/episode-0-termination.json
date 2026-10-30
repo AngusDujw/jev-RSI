@@ -1,0 +1,27 @@
+{
+  "experiment": "EXP-2026W44-049",
+  "episode": 0,
+  "native_success": false,
+  "termination": "HTTP Error 502: Bad Gateway",
+  "failed_job": "04ec4dd24ef14b91bd36851f13cc6581",
+  "failed_purpose": "submit_review",
+  "failure": {
+    "status": "failed",
+    "job_id": "04ec4dd24ef14b91bd36851f13cc6581",
+    "error": {
+      "type": "RuntimeError",
+      "message": "Native planner exhausted automatic same-thread continuations"
+    },
+    "validation_errors": [
+      "submit_review.regions[0].stride: numeric value outside schema",
+      "submit_review.regions[0].stride: numeric value outside schema"
+    ]
+  },
+  "invalid_submission_errors": [
+    "submit_review.regions[0].stride: numeric value outside schema",
+    "submit_review.regions[0].stride: numeric value outside schema"
+  ],
+  "communication_interruption_also_observed": true,
+  "causal_scope": "Recorded terminal model failure is exhausted same-thread continuations after two stride schema errors. Communication interruption also occurred; no claim that it caused those schema errors.",
+  "audit_scope": "All 81 dispatched actions matched saved JEV choices and acknowledgements; saved native result false, no independent simulator replay."
+}
