@@ -117,6 +117,9 @@ def main():
             results = []
             tasks = args.test_tasks if args.test_tasks is not None else [args.task_id]
             initials = args.test_inits if args.test_inits is not None else list(range(3, 13))
+            for task_id in tasks:
+                for initial in initials:
+                    load(root / "frozen", "test", suite=args.suite, task_id=task_id, init_index=initial)
             selection = dict(suite=args.suite, tasks=tasks, initial_states=initials,
                 knowledge_sha256=load(root / "frozen", "test")[1]["snapshot_sha256"])
             # Each selection has its own report; previous task groups stay intact.
