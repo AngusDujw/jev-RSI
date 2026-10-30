@@ -1,0 +1,10 @@
+{
+  "scope": "Offline real orchestration callbacks with synthetic effects; not robot success or a runtime cost guarantee.",
+  "checks": [
+    "tight multi-stage budget reconsidered before an extra builder; preserved completion checks",
+    "ample budget keeps original two stages",
+    "single remaining stage does not consume a needless replanning call",
+    "replanning cap respected"
+  ],
+  "reserve": "3 calls per remaining stage plus 2 repair/reconsideration calls; triggers bounded plan reconsideration, not evidence bypass"
+}
