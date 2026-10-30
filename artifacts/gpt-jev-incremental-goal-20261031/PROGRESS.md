@@ -141,3 +141,14 @@ generated for that slice. Save live-continuation-evidence.json; full terminal
 auditing still pending. Current next work is close-view observation/grasp; no
 stage or task success yet. The first repair used native-reported279665 input /
 33535 output tokens (24186 reasoning); no recovery recorded for that request.
+
+## Frame192 local correction pending
+
+Saved journal confirms live continuations at frames72 and144, both on method1.
+At frame192 the open-finger descent returned blocked after32 lease calls, with
+1.72mm residual against0.75mm tolerance and approximately0.12mm motion over the
+last five controls. Supervisor chose revise, not another unchanged descent;
+retention remains false. Current native repair job4d53c77b5f5e41dba2fe414b7e7b9afe
+is generating on thread01a18e19-281f-71d3-a8cf-b59b1c09b9a6.
+64 Jev calls/192 native steps are acknowledged; no terminal result exists yet.
+This is a local execution limitation, not evidence of a communication dropout.

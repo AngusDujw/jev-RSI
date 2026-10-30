@@ -240,6 +240,216 @@
         "task_satisfied": "no"
       },
       "live_continuation": true
+    },
+    {
+      "update": 1,
+      "stage": "secure",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 144,
+      "trigger": "control_slice_limit",
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "outcome": {
+        "stage_status": "yield",
+        "completion_proposed": false,
+        "reason": "Control slice ended before the next unexecuted control; worker stack remains live."
+      },
+      "decision": {
+        "action": "continue",
+        "evidence": [
+          "Current images show the carton still on the table outside the upright bowl, beneath the open gripper.",
+          "Recent acknowledged controls show steady downward approach with nearly unchanged lateral position and no stalled motion.",
+          "The stage yielded at a normal control_slice_limit with live continuation available; it did not return completion or an error.",
+          "No package lift or retained motion is observed."
+        ],
+        "invalidated_assumptions": [],
+        "plan_valid": "yes",
+        "reason": "Acknowledged progress and current alignment support the unchanged local approach. No new obstruction or carton displacement is evident. The earlier rejected candidate was reassessed before this descent; the historical blocked outcome is not the current yield. Stage and task completion remain unsupported.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      },
+      "live_continuation": true
+    },
+    {
+      "update": 1,
+      "stage": "secure",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 192,
+      "trigger": "stage_returned",
+      "source_sha256": "8cf041348443ebf02a39735c19101f8d92bb32e71bc0a29ef10b3c7f406b3055",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "Descent stopped without a contact retry or closure.",
+        "evidence": [
+          {
+            "phase": "high_observation_alignment",
+            "before_frame": 0,
+            "after_frame": 45,
+            "actual_native_steps": 45,
+            "before_tcp": [
+              -0.2071984982582204,
+              -0.002684108235936964,
+              1.1833957456431763
+            ],
+            "after_tcp": [
+              -0.054976695117082267,
+              0.14336463488325185,
+              1.1839033316440388
+            ],
+            "status": "reached",
+            "lease_calls": 15
+          },
+          {
+            "phase": "noncontact_close_view",
+            "before_frame": 45,
+            "after_frame": 96,
+            "actual_native_steps": 51,
+            "before_tcp": [
+              -0.054976695117082267,
+              0.14336463488325185,
+              1.1839033316440388
+            ],
+            "after_tcp": [
+              -0.05444439442004571,
+              0.1428734514285779,
+              1.0058592587817903
+            ],
+            "status": "reached",
+            "lease_calls": 17
+          },
+          {
+            "phase": "single_open_finger_descent",
+            "before_frame": 96,
+            "after_frame": 192,
+            "actual_native_steps": 96,
+            "before_tcp": [
+              -0.05444439442004571,
+              0.1428734514285779,
+              1.0058592587817903
+            ],
+            "after_tcp": [
+              -0.0516940761071097,
+              0.1454607053600719,
+              0.9163560621132343
+            ],
+            "status": "lease_exhausted",
+            "lease_calls": 32
+          }
+        ],
+        "handoff": {
+          "checkpoint_keys": [
+            "secure.measurements",
+            "secure.progress",
+            "secure.geometry",
+            "secure.observations",
+            "secure.tracker"
+          ],
+          "state": {
+            "frame_id": 192,
+            "native_steps": 192,
+            "budgets": {
+              "gpt_remaining": 32,
+              "jev_remaining": 136,
+              "native_steps_remaining": 408,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.0516940761071097,
+              0.1454607053600719,
+              0.9163560621132343
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999664735984628,
+              0.008078528600004131,
+              0.0010181793672277505,
+              0.0008673900448293228
+            ],
+            "gripper_qpos_m": [
+              0.039998091171475084,
+              -0.04000007278503834
+            ],
+            "last_gripper_command": "open",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -8.251815934636614e-08,
+                -8.473634581021572e-07,
+                -0.0035997627245979848
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000032094301286,
+                0.09499817114892152,
+                0.016000020960570734
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010494877821424574,
+                -0.06640332099752026,
+                -0.04446807733430203
+              ],
+              "finger_high_offset_tool_m": [
+                0.01049472738250715,
+                0.06640161269661489,
+                0.0092492826004915
+              ]
+            }
+          },
+          "retention_established": false,
+          "bowl_reference": {
+            "world_m": [
+              -0.08588048565662317,
+              0.00813503036303026,
+              0.9062501543075401
+            ],
+            "depth_m": 0.3669706881046295,
+            "frame_id": 0,
+            "pixel": [
+              369,
+              266
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "bowl_reference_is_current": false,
+          "visible_extent": null,
+          "frames": "World metres; xyzw tool-to-world quaternions. Pixels and observations carry camera/frame IDs. Checkpoint receipts carry method/source provenance.",
+          "assumptions": [
+            "Only acquisition and a vertical retention test were attempted; no transfer or release.",
+            "Preserve the actual gripper state. Checkpoint geometry is historical, not a current detection.",
+            "The carton top is treated as a rigid surface. Reobserve the bowl opening, object extent and relevant corridor before transfer."
+          ],
+          "references": {
+            "secure.measurements": "Original frame-0 partial measurements, preserved unchanged.",
+            "secure.geometry": "Coarse and close-view top/table geometry, uncertainty derivation and revised pinch interval.",
+            "secure.observations": "Bounded close-view measurement attempts, including valid partial results.",
+            "secure.tracker": "Optional top-surface tracker identity, ROI and reference frame.",
+            "secure.preclosure": "Fresh open-pinch review, valid partial landmarks and measured own-geometry margins.",
+            "secure.baseline": "Postclosure differential reference, partial measurements and actual hand state.",
+            "secure.effect_observation": "Fresh post-test named measurements, identity and separation review.",
+            "secure.retention": "Fresh motion comparison and separation evidence.",
+            "secure.progress": "Acknowledged phases, actual states and terminal gap."
+          }
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "evidence": [
+          "Frame 192 shows the cream cheese carton on the table outside the bowl, with open fingers beside it; no retained lift is visible.",
+          "Acknowledged execution shows alignment and open-finger descent, not closure or a retention test.",
+          "The descent exhausted its lease with 1.72 mm position error against a 0.75 mm tolerance. The last five acknowledged controls moved the TCP only about 0.12 mm in total.",
+          "The stage returned blocked, and live continuation is unavailable.",
+          "The grasp measurements are from frame 96 and the bowl reference is from frame 0; neither establishes current clearance or retention."
+        ],
+        "invalidated_assumptions": [
+          "The unchanged descent method reaches the modeled pinch pose within the required tolerance."
+        ],
+        "plan_valid": "yes",
+        "reason": "Acquisition remains the appropriate subgoal, but the near-stalled approach needs local correction. Fresh measurements of carton side overlap and finger/table clearance at the actual pose can distinguish a usable pose from a candidate needing adjustment. The cause of slow motion is unresolved, not confirmed contact. Do not repeat the same descent or relax margins merely to force progress; preserve the executed approach and current open-gripper state.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      }
     }
   ],
   "completed": [],
