@@ -1,0 +1,11 @@
+{
+  "live_snapshot_not_terminal": true,
+  "duplicated_core_bytes": 208311,
+  "packed_bytes": 125280,
+  "events_preserved": 5,
+  "failure_and_success_reasons_preserved": true,
+  "effect_measurements_unchanged": true,
+  "complete_selected_source_unchanged": true,
+  "raw_receipts_unchanged": true,
+  "no_model_calls": true
+}

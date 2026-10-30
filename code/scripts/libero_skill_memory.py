@@ -179,10 +179,11 @@ def pack_episode_evidence(directory, summary):
     source_budget = 90000
     # Prefer complete demonstrated stage methods, then the latest revision.
     priority = sorted(range(len(methods)), key=lambda i: (
-        digest(methods[i]["data"].get("source", "").encode()) in successful_hashes, i), reverse=True)
+        digest(methods[i]["data"].get("source", "").encode()) in successful_hashes
+        if isinstance(methods[i]["data"], dict) else False, i), reverse=True)
     for index in priority:
         data = methods[index]["data"]
-        if "source" not in data:
+        if not isinstance(data, dict) or "source" not in data:
             continue
         source = data["source"]
         if len(source) <= source_budget:
