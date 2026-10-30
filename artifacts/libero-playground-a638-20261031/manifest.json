@@ -1,5 +1,5 @@
 {
-  "status": "episode-0-live",
+  "status": "episode-1-terminal-native-false; refinement-1-resuming",
   "commit": "7a57e644",
   "server": "5880-jump",
   "gpu": 0,
@@ -57,7 +57,7 @@
   "training": "Sequential episode, Pro refinement, next revision; all prior acquisition evidence retained",
   "scoring": "terminal native LIBERO success; retain all failures and unknown usage",
   "initial_skill_count": 0,
-  "refinement_commit": "2762b51b",
+  "refinement_commit": "99643feb",
   "orchestrator_commit": "779714a3",
   "preflight": {
     "render_shape": [
@@ -73,5 +73,6 @@
   "remote_bridge": "http://127.0.0.1:7921",
   "known_limit": "Existing generic host lessons are shared by both conditions; empty means no newly learned Playground skills.",
   "refinement_evidence_scope": "Deduplicated stage events, unchanged effect measurements, complete selected source; omitted large checkpoints and sources explicitly hashed. Patched before the first refinement; active episode control code unchanged.",
-  "refinement_format_recovery": "First response retained; README/references paths rejected. At most two model corrections; exact saved request equality required to resume; all attempt usages retained. Robot host unchanged."
+  "refinement_format_recovery": "First response retained; README/references paths rejected. At most two model corrections; exact saved request equality required to resume; all attempt usages retained. Robot host unchanged.",
+  "refinement_capacity_recovery": "Whole-source allowance adapts to retained evidence; terminal episode1 331901->288135 chars, events unchanged. Deployed after terminal; no robot host change or episode replay."
 }

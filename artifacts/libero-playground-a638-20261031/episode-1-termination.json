@@ -1,0 +1,48 @@
+{
+  "episode": 1,
+  "phase": "playground",
+  "native_success": false,
+  "termination": "gpt_budget",
+  "gpt_calls": 39,
+  "jev_calls": 65,
+  "native_steps": 195,
+  "elapsed_s": 13827.936090851028,
+  "completed_stage": "retain",
+  "containment_actions_executed": false,
+  "final_local_failure": "unknown encoding: unicode_escape in recovery persistence",
+  "earlier_containment_failures": [
+    "mixed lip/interior depth samples",
+    "horizontal candidate lacked robust clearance",
+    "full review checkpoint exceeded16384bytes before tilt motion"
+  ],
+  "last_supervisor": {
+    "action": "revise",
+    "evidence": [
+      "The stage returned blocked with 'unknown encoding: unicode_escape'; live_continuation_available is false.",
+      "Frame 195 images show the cream-cheese package between the fingers, above the table and outside the bowl.",
+      "Acknowledged state remains at native step 195 with the close command. No candidate rise, rotation, transfer, release or withdrawal is acknowledged.",
+      "Recovery evidence contains empty baseline_points and records, with pending, opened and withdrawn false. Its handoff narrative does not independently establish successful resampling or persistence.",
+      "The supplied checkpoint manifest still identifies earlier writes; the failed oversized review write did not establish a fresh retain.observation checkpoint.",
+      "The horizontal candidate remains rejected. The alternative has only a limited rise-and-rotation review, not verified placement or final support."
+    ],
+    "invalidated_assumptions": [
+      "The recovery method's unicode_escape encoding dependency is supported by this runtime."
+    ],
+    "plan_valid": "yes",
+    "reason": "Containment remains suitable; the immediate failure is local persistence compatibility, not observed physical infeasibility. Revise serialization to supported, compact ASCII records and verify size and write acknowledgements before further motion. Reconcile records against actual state and supplied receipts, retaining original measurement provenance and distinguishing the latest review from stale checkpoints. Do not replay acquisition or assume the unexecuted prefix occurred. Preserve the close command and unchanged safety margins. Reconsider the persistence approach rather than repeating failed writes, and require adequate observation resources before committing to placement.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "refinement_packet": {
+    "old_chars": 331901,
+    "fitted_chars": 288135,
+    "whole_sources": [
+      "method-06.json",
+      "method-10.json"
+    ],
+    "stage_events_unchanged": true,
+    "helper_commit": "99643feb"
+  },
+  "scope": "Saved receipts audit and native terminal summary; no independent simulator replay. Retention is stage evidence, not task success or causal skill benefit."
+}
