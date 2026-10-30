@@ -1,0 +1,13 @@
+{
+  "scope": "Offline saved-candidate validation only; no new model or physical calls",
+  "checks": {
+    "real_rejections_identify_actual_and_allowed_lengths": true,
+    "diagnostic_does_not_coerce_observations": true,
+    "valid_bounded_observation_still_accepted": true
+  },
+  "errors": [
+    "submit_review.parameters.note: length outside schema (actual=782, min=0, max=600)",
+    "submit_review.parameters.note: length outside schema (actual=915, min=0, max=600)",
+    "submit_review.parameters.note: length outside schema (actual=968, min=0, max=600)"
+  ]
+}

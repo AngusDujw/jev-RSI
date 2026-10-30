@@ -57,3 +57,37 @@ The initial batch observer saw an inactive service between a pre-terminal file
 probe and its next poll, so it marked the first episode unsummarized. The actual
 terminal summary and failure receipts were subsequently recovered and audited;
 the original observer record is retained alongside the reconciled report.
+
+## Second terminal result and a separate host repair
+
+Task138 ended after2121.745 seconds with native=false,7 GPT requests,0 Jev and0
+policy steps. Six GPT requests completed. Its first165-line establish method
+blocked on grasp-approach evidence; supervision requested revision and a113-line
+revision was delivered. The next typed review declared note maxLength600, but
+three candidates contained782/915/968 characters. The adapter rejected them
+without coercion and exhausted its repair budget. The host exposed the terminal
+HTTP502 instead of sending this observation failure to stage supervision. The
+failed request's usage remains unknown; no physical control was evaluated.
+
+A separate local repair converts only native submission-validation exhaustion
+to PlannerSubmissionFailure (RuntimeError), which reaches the existing stage
+execution-error supervisor. Relay failure receipts add at most three validation
+errors without rejected candidate contents. Length errors now report actual and
+allowed lengths. Authentication/region failures keep their separate terminal
+classification; transient polling failures keep the same request ID. No schema
+is relaxed and no reply is truncated or used as a valid observation.
+
+Twenty offline checks passed:10 actual-host/restricted-worker checks replaying
+the observed failure with mock models/dynamics,7 failure-boundary/relay checks,
+and3 checks on the real rejected candidates. They are software evidence only.
+One initial replay fixture failed because its mock health handler expected a
+Request rather than a URL string; that fixture setup was corrected and retained
+under a distinct run directory. No real model or task trial was repeated for
+that mock failure. Test drivers were inline and generated mock .py files were
+removed after checking.
+
+The already running proxy-only cold retry remains on frozen a3f3ac3a and is not
+silently upgraded to this host repair. Its eventual score cannot establish the
+physical effectiveness of the new error-routing repair. The original two admitted
+episodes remain0/2 native successes with0 dispatches; they demonstrate automatic
+method revision but not successful manipulation or improved token/latency cost.

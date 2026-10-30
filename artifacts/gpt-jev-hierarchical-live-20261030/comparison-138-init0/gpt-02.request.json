@@ -1,0 +1,259 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "b81116cfe62553becb28d0ee9369012518d66f6a9b6e001f43c108043a270976",
+            "characters": 106835
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "831c47efb7d55bb330b8e43dd783ccf79fd794c7bda1be890d8542a45fed1da9",
+            "characters": 106259
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"put the bowl on top of the cabinet table 1\",\"question\":\"Establish geometry only; no robot action. Identify the patterned bowl and the dark cabinet table 1 at the left, NOT the white hotplate. Request named depth points lip0..lip5 on actual uppermost lip material, distributed around the rim, radius=1, using either current camera. Do not substitute inner-wall or background depths. Request top0..top3, in perimeter order, as vertices of the largest convex, entirely visible, unobstructed patch on the cabinet TOP. These are measured interior support vertices, not guessed hidden cabinet corners. Request check0..check2 spread inside that patch, and counter0..counter2 on noncollinear exposed counter near the bowl. Provide eight outer-lip boundary pixels in rim_camera, ordered around the perimeter with index 0 on the side nearest the cabinet; use [] when unknown. These pixels will only be intersected with a measured horizontal lip plane. Select grasp_index for a lip sector with visible interior and exterior finger neighborhoods, away from bottle, package, plate and cabinet; -1 if none. Assess the declared identity, uprightness, visible body profile and patch fields conservatively. Unknown or failed depth must remain unknown. Do not certify hidden space.\",\"robot\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":21,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.000816963,-0.998326,-0.0578338,-0.153158],[-1.0,0.000845045,-0.000461105,-0.015635],[0.000509205,0.0578334,-0.998326,1.2632],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":22,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}}},\"frame_id\":0}],\"program_checkpoint_manifest\":[],\"program_supplied_review_context\":{\"previous_gap\":\"No adequate geometry acquired.\",\"previous_observations\":[],\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "bowl_identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "patterned_bowl",
+                  "unknown"
+                ]
+              },
+              "cabinet_identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "cabinet_table_1",
+                  "unknown"
+                ]
+              },
+              "bowl_upright": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "yes",
+                  "no",
+                  "unknown"
+                ]
+              },
+              "safe_patch": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "fully_visible_clear",
+                  "not_clear",
+                  "unknown"
+                ]
+              },
+              "outer_rim": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "entire_visible_circular_lip",
+                  "unknown"
+                ]
+              },
+              "body_profile": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "narrows_below_rim",
+                  "unknown"
+                ]
+              },
+              "rim_camera": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "agentview",
+                  "robot0_eye_in_hand"
+                ]
+              },
+              "rim_pixels": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 767
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 0,
+                "maxItems": 8
+              },
+              "grasp_index": {
+                "type": "integer",
+                "minimum": -1,
+                "maximum": 7
+              },
+              "note": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 400
+              }
+            },
+            "required": [
+              "bowl_identity",
+              "cabinet_identity",
+              "bowl_upright",
+              "safe_patch",
+              "outer_rim",
+              "body_profile",
+              "rim_camera",
+              "rim_pixels",
+              "grasp_index",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

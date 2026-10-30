@@ -1,0 +1,38 @@
+{
+  "explanation": "Initial frame 0 shows the patterned bowl on the counter, the dark cabinet table 1 on the left, and an open gripper. No physical actions have been acknowledged.",
+  "goal_evidence": "Fresh observations after release and settling show the bowl upright and fully supported on the upper horizontal surface of cabinet table 1, with the gripper separated and no visible sliding, tipping, or falling.",
+  "stages": [
+    {
+      "id": "establish",
+      "objective": "Establish the bowl grasp region, cabinet top support region, and relevant approach clearances from public observations.",
+      "entry_evidence": "Frame 0 shows the patterned bowl between the bottle and cream cheese package, the cabinet on the left, and the robot state reports an open gripper.",
+      "success_evidence": "Calibrated RGB-D observations identify accessible bowl geometry and a cabinet top region large enough to support the bowl, with relevant visible obstacles and uncertain areas distinguished.",
+      "handoff_requirements": "Carry forward current bowl and support estimates, observation uncertainty, and clearance constraints for the actual robot geometry.",
+      "replan_conditions": "If coverage or margins are insufficient, seek complementary camera evidence or a clearance-checked viewpoint. Do not treat occluded space as free; revise the grasp region or destination region if needed."
+    },
+    {
+      "id": "acquire",
+      "objective": "Acquire the bowl and establish a stable grasp clear of its original support.",
+      "entry_evidence": "Fresh bowl geometry supports a feasible grasp approach with checked finger and surrounding-object clearances.",
+      "success_evidence": "Observed bowl motion follows the gripper during a controlled lift, with the bowl visibly clear of the counter and no visible slipping, tipping, or unintended neighboring-object displacement.",
+      "handoff_requirements": "Provide fresh evidence of bowl retention, its orientation relative to the gripper, and its actual clearance from surrounding objects.",
+      "replan_conditions": "If grasp closure does not establish retention, the bowl shifts, or clearance becomes uncertain, inspect the actual resulting state before selecting another approach. Do not repeat the original grasp blindly."
+    },
+    {
+      "id": "position",
+      "objective": "Bring the retained bowl into a release-ready placement on the cabinet top.",
+      "entry_evidence": "The bowl is visibly retained and clear of the counter; fresh observations support a usable cabinet top region.",
+      "success_evidence": "The bowl is upright with its footprint inside the observed support boundaries and its base at the cabinet top surface, with sufficient finger clearance for release and withdrawal.",
+      "handoff_requirements": "Preserve the latest bowl-to-top relationship and release clearances. Treat independent support as unverified until release.",
+      "replan_conditions": "If retention changes, placement margins fail, or the top is occluded, obtain additional evidence or revise the placement region using checked clearances. Reassess from the actual bowl location."
+    },
+    {
+      "id": "verify",
+      "objective": "Release the bowl, separate the gripper safely, and assess the completed task after settling.",
+      "entry_evidence": "Fresh observations establish a release-ready bowl placement and a clearance-checked gripper withdrawal.",
+      "success_evidence": "After release, withdrawal, and settling, observations show the bowl stationary and upright on the cabinet top, fully supported within its boundaries and independent of the gripper.",
+      "handoff_requirements": "Record final public visual evidence of bowl support, stability, and gripper separation; report completion only when these are established.",
+      "replan_conditions": "If the bowl moves, tips, remains attached, or support is ambiguous, inspect the resulting state and plan only the remaining recovery or evidence acquisition. A commanded opening or reached robot pose is not completion evidence."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "Offline real-host/restricted-worker integration; actual failure body replayed, mock models and dynamics; no new actual inference or physical success",
+  "checks": {
+    "actual_failure_routed_to_supervision": true,
+    "field_error_preserved_for_planner": true,
+    "invalid_observation_not_accepted": true,
+    "current_stage_revised_before_advancement": true,
+    "schema_not_silently_relaxed": true,
+    "state_and_checkpoint_retained": true,
+    "failed_request_cost_retained": true,
+    "real_restricted_workers": true,
+    "final_proposal_is_not_native_score": true,
+    "source_and_stage_audit_passed": true
+  }
+}

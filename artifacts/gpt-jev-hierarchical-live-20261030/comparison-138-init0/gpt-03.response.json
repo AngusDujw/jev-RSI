@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-516bfeca-a79d-4090-b910-71d849ca8ca0",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-516bfeca-a79d-4090-b910-71d849ca8ca0",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The selected sector remains the lower-left lip of the patterned bowl in the wrist view. Inner and outer target visible bowl interior and counter, respectively, approximately 42 mm inward and outward along the supplied radial axis near its tangent center. The full projected envelope also overlaps the raised cooktop corner at its outward/tangential edge in both views. That is observed external intrusion and occlusion of the counter beneath it, not robot self-occlusion or a certified finger collision. No bottle, package, or cabinet intrusion into this local envelope is apparent. The support polygon remains on the same visibly clear cabinet top.\", \"parameters\": {\"approach_visibility\": \"occluded\", \"candidate_identity\": \"same_bowl_lip\", \"hand_state\": \"empty_open\", \"inner_surface\": \"visible_bowl_interior\", \"note\": \"The two approach crops are unsegmented and include the entire projected local envelope and nearby obstacle portions. The outer center sample is clear counter despite the cooktop intrusion near the envelope edge. Point depths must be obtained from the selected visible surfaces; offsets are approximate pending depth. Cabinet support is visible in agentview, outside the wrist view. No hidden under-lip geometry, clearance for later motion, retention, or task completion is established.\", \"outer_surface\": \"visible_counter\", \"support_still_valid\": \"yes\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"inner\", \"pixel\": [333, 292], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"outer\", \"pixel\": [253, 376], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip2\", \"pixel\": [280, 331], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top0\", \"pixel\": [24, 289], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top1\", \"pixel\": [216, 289], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top2\", \"pixel\": [172, 469], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top3\", \"pixel\": [4, 469], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"check0\", \"pixel\": [65, 325], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"check1\", \"pixel\": [175, 325], \"radius\": 2}, {\"camera\": \"agentview\", \"name\": \"check2\", \"pixel\": [95, 436], \"radius\": 2}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"approach_eye\", \"box\": [140, 200, 430, 460], \"stride\": 4}, {\"camera\": \"agentview\", \"name\": \"approach_agent\", \"box\": [320, 335, 530, 505], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 71488,
+    "output_tokens": 5207,
+    "output_tokens_details": {
+      "reasoning_tokens": 3867
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b39-81c4-7ce2-8b71-01bd26912122",
+    "turn_ids": [
+      "01a18b39-81ca-73c0-8308-2ee81b67859b"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

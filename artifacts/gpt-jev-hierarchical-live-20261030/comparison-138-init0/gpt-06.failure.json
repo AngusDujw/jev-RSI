@@ -1,0 +1,9 @@
+{
+  "error_type": "HTTPError",
+  "elapsed_s": 173.10992405400611,
+  "usage_unknown": true,
+  "model_request_attempted": true,
+  "physical_dispatch": false,
+  "dispatched": false,
+  "dispatch_scope": "physical_control_only"
+}

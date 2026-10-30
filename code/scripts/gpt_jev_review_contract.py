@@ -126,7 +126,9 @@ def validate_value(value, schema, path="parameters"):
     elif actual in ("array", "string"):
         low, high = ("minItems", "maxItems") if actual == "array" else ("minLength", "maxLength")
         if not schema.get(low, 0) <= len(value) <= schema.get(high, math.inf):
-            raise ValueError(path+": length outside schema")
+            raise ValueError(path+": length outside schema (actual="+str(len(value))+
+                ", min="+str(schema.get(low, 0))+", max="+
+                str(schema.get(high, "unbounded"))+")")
         if actual == "array":
             for i, item in enumerate(value):
                 validate_value(item, schema["items"], path+"["+str(i)+"]")

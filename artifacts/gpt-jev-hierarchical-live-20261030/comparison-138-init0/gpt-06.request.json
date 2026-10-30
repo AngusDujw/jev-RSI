@@ -1,0 +1,240 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "b81116cfe62553becb28d0ee9369012518d66f6a9b6e001f43c108043a270976",
+            "characters": 106835
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 0; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "831c47efb7d55bb330b8e43dd783ccf79fd794c7bda1be890d8542a45fed1da9",
+            "characters": 106259
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"put the bowl on top of the cabinet table 1\",\"question\":\"Inspect this NEW sector, not old sector 3. Request points lip on its actual uppermost lip material (radius=1), inner on visible bowl interior 35-50 mm radially inward, outer on visible counter 35-50 mm radially outward, both near the tangent center, and support on the supplied cabinet-top anchor. Use current pixels and successful visible depth, not hidden surfaces or substituted background. Request regions local_eye and local_agent using the exact camera, box and stride entries in regions_to_request. Inspect the whole padded envelope in both images for unobserved portions, overhangs and neighboring objects. visible_no_overhang describes observed coverage only, never hidden-space certification. A visible low plate or counter under the envelope is not automatically a collision; measured heights will be tested. Confirm the same upright patterned bowl, same fully visible clear cabinet support polygon and empty-open hand. Return all declared fields; distinguish unknown from changed.\",\"robot\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":17,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.000816963,-0.998326,-0.0578338,-0.153158],[-1.0,0.000845045,-0.000461105,-0.015635],[0.000509205,0.0578334,-0.998326,1.2632],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"establish.geometry\",{\"frame_id\":0,\"native_steps\":0,\"bowl\":{\"circle\":{\"center_xy_m\":[-0.100195,0.0105144],\"radius_m\":0.0553153,\"rms_m\":0.000560388,\"max_radial_error_m\":0.000977665,\"largest_angular_gap_rad\":0.815825},\"lip_plane\":[0.0,0.0,1.0,-0.949963],\"lip_fit\":{\"coefficients\":[0.0044188,-0.0152681,0.999874,-0.949241],\"center_world_m\":[-0.0997321,0.0105631,0.949963],\"rms_m\":7.54149e-05,\"in_plane_spread_m\":[0.0440809,0.0317563]},\"rim_world_m\":[[-0.09944,-0.0449168,0.949963],[-0.138853,-0.0301405,0.949963],[-0.155004,0.00920946,0.949963],[-0.13879,0.0496245,0.949963],[-0.0993592,0.0658139,0.949963],[-0.0605236,0.0504531,0.949963],[-0.0455266,0.0116759,0.949963],[-0.0605755,-0.0275396,0.949963]],\"rim_pixels\":[[431,268],[407,332],[344,358],[279,332],[252,268],[276,204],[339,179],[403,204]],\"rim_camera\":\"robot0_eye_in_hand\",\"radius_bound_m\":0.060293},\"support\":{\"polygon_xy_m\":[[0.160468,-0.283463],[0.160468,-0.158142],[-0.0831872,-0.159589],[-0.0831909,-0.341979]],\"plane\":[0.0,0.0,1.0,-1.12691],\"fit\":{\"coefficients\":[0.00289848,-1.14932e-05,0.999996,-1.12701],\"center_world_m\":[0.0328305,-0.234735,1.12691],\"rms_m\":6.82371e-07,\"in_plane_spread_m\":[0.104169,0.064153]},\"candidate_center_xy_m\":[-0.00197134,-0.242401],\"inscribed_radius_m\":0.0778589,\"remaining_margin_m\":0.0175659},\"counter\":{\"plane\":[0.0,0.0,1.0,-0.900787],\"fit\":{\"coefficients\":[0.000589254,2.54942e-05,1.0,-0.900704],\"center_world_m\":[-0.140685,0.0125467,0.900787],\"rms_m\":1.11022e-16,\"in_plane_spread_m\":[0.0835178,0.0734143]}},\"uncertainty_floor_m\":0.004,\"grasp_index\":3,\"selected_depth_points\":{\"lip0\":{\"world_m\":[-0.099298,-0.0443736,0.949138],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[430,268],\"frame_id\":0},\"lip1\":{\"world_m\":[-0.154379,0.00918821,0.950189],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[344,357],\"frame_id\":0},\"lip2\":{\"world_m\":[-0.138209,0.0488266,0.950772],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[280,331],\"frame_id\":0},\"lip3\":{\"world_m\":[-0.0994865,0.0650048,0.950702],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[253,268],\"frame_id\":0},\"lip4\":{\"world_m\":[-0.0460898,0.0116887,0.949858],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[339,180],\"frame_id\":0},\"lip5\":{\"world_m\":[-0.0609308,-0.0269565,0.949122],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[402,205],\"frame_id\":0},\"top0\":{\"world_m\":[-0.0831909,-0.341979,1.12725],\"camera\":\"agentview\",\"pixel\":[24,289],\"frame_id\":0},\"top1\":{\"world_m\":[-0.0831872,-0.159589,1.12725],\"camera\":\"agentview\",\"pixel\":[216,289],\"frame_id\":0},\"top2\":{\"world_m\":[0.160468,-0.158142,1.12654],\"camera\":\"agentview\",\"pixel\":[172,469],\"frame_id\":0},\"top3\":{\"world_m\":[0.160468,-0.283463,1.12654],\"camera\":\"agentview\",\"pixel\":[4,469],\"frame_id\":0},\"check0\":{\"world_m\":[-0.0243498,-0.287317,1.12708],\"camera\":\"agentview\",\"pixel\":[65,325],\"frame_id\":0},\"check1\":{\"world_m\":[-0.0243467,-0.188241,1.12708],\"camera\":\"agentview\",\"pixel\":[175,325],\"frame_id\":0},\"check2\":{\"world_m\":[0.123953,-0.224415,1.12665],\"camera\":\"agentview\",\"pixel\":[95,436],\"frame_id\":0},\"counter0\":{\"world_m\":[-0.129079,-0.0947813,0.900783],\"camera\":\"agentview\",\"pixel\":[301,434],\"frame_id\":0},\"counter1\":{\"world_m\":[-0.0474609,0.0654829,0.90073],\"camera\":\"agentview\",\"pixel\":[445,485],\"frame_id\":0},\"counter2\":{\"world_m\":[-0.245514,0.0669387,0.900847],\"camera\":\"agentview\",\"pixel\":[438,371],\"frame_id\":0}},\"clearance_review\":{\"frame_id\":0,\"parameters\":{\"approach_visibility\":\"occluded\",\"candidate_identity\":\"same_bowl_lip\",\"hand_state\":\"empty_open\",\"inner_surface\":\"visible_bowl_interior\",\"note\":\"The two approach crops are unsegmented and include the entire projected local envelope and nearby obstacle portions. The outer center sample is clear counter despite the cooktop intrusion near the envelope edge. Point depths must be obtained from the selected visible surfaces; offsets are approximate pending depth. Cabinet support is visible in agentview, outside the wrist view. No hidden under-lip geometry, clearance for later motion, retention, or task completion is established.\",\"outer_surface\":\"visible_counter\",\"support_still_valid\":\"yes\"},\"points\":{\"inner\":{\"world_m\":[-0.108723,0.0201498,0.906738],\"depth_m\":0.353276,\"frame_id\":0,\"pixel\":[333,292],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"outer\":{\"world_m\":[-0.1683,0.0793346,0.899964],\"depth_m\":0.363456,\"frame_id\":0,\"pixel\":[253,376],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[]}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"establish.geometry\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"3f50f93ffdbf81ee346c194584ecf87b5717c6ae527b4def4939c0897cf0edc1\",\"bytes\":6154,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":0},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"establish.geometry\",{\"frame_id\":0,\"native_steps\":0,\"bowl\":{\"circle\":{\"center_xy_m\":[-0.100195,0.0105144],\"radius_m\":0.0553153,\"rms_m\":0.000560388,\"max_radial_error_m\":0.000977665,\"largest_angular_gap_rad\":0.815825},\"lip_plane\":[0.0,0.0,1.0,-0.949963],\"lip_fit\":{\"coefficients\":[0.0044188,-0.0152681,0.999874,-0.949241],\"center_world_m\":[-0.0997321,0.0105631,0.949963],\"rms_m\":7.54149e-05,\"in_plane_spread_m\":[0.0440809,0.0317563]},\"rim_world_m\":[[-0.09944,-0.0449168,0.949963],[-0.138853,-0.0301405,0.949963],[-0.155004,0.00920946,0.949963],[-0.13879,0.0496245,0.949963],[-0.0993592,0.0658139,0.949963],[-0.0605236,0.0504531,0.949963],[-0.0455266,0.0116759,0.949963],[-0.0605755,-0.0275396,0.949963]],\"rim_pixels\":[[431,268],[407,332],[344,358],[279,332],[252,268],[276,204],[339,179],[403,204]],\"rim_camera\":\"robot0_eye_in_hand\",\"radius_bound_m\":0.060293},\"support\":{\"polygon_xy_m\":[[0.160468,-0.283463],[0.160468,-0.158142],[-0.0831872,-0.159589],[-0.0831909,-0.341979]],\"plane\":[0.0,0.0,1.0,-1.12691],\"fit\":{\"coefficients\":[0.00289848,-1.14932e-05,0.999996,-1.12701],\"center_world_m\":[0.0328305,-0.234735,1.12691],\"rms_m\":6.82371e-07,\"in_plane_spread_m\":[0.104169,0.064153]},\"candidate_center_xy_m\":[-0.00197134,-0.242401],\"inscribed_radius_m\":0.0778589,\"remaining_margin_m\":0.0175659},\"counter\":{\"plane\":[0.0,0.0,1.0,-0.900787],\"fit\":{\"coefficients\":[0.000589254,2.54942e-05,1.0,-0.900704],\"center_world_m\":[-0.140685,0.0125467,0.900787],\"rms_m\":1.11022e-16,\"in_plane_spread_m\":[0.0835178,0.0734143]}},\"uncertainty_floor_m\":0.004,\"grasp_index\":3,\"selected_depth_points\":{\"lip0\":{\"world_m\":[-0.099298,-0.0443736,0.949138],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[430,268],\"frame_id\":0},\"lip1\":{\"world_m\":[-0.154379,0.00918821,0.950189],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[344,357],\"frame_id\":0},\"lip2\":{\"world_m\":[-0.138209,0.0488266,0.950772],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[280,331],\"frame_id\":0},\"lip3\":{\"world_m\":[-0.0994865,0.0650048,0.950702],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[253,268],\"frame_id\":0},\"lip4\":{\"world_m\":[-0.0460898,0.0116887,0.949858],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[339,180],\"frame_id\":0},\"lip5\":{\"world_m\":[-0.0609308,-0.0269565,0.949122],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[402,205],\"frame_id\":0},\"top0\":{\"world_m\":[-0.0831909,-0.341979,1.12725],\"camera\":\"agentview\",\"pixel\":[24,289],\"frame_id\":0},\"top1\":{\"world_m\":[-0.0831872,-0.159589,1.12725],\"camera\":\"agentview\",\"pixel\":[216,289],\"frame_id\":0},\"top2\":{\"world_m\":[0.160468,-0.158142,1.12654],\"camera\":\"agentview\",\"pixel\":[172,469],\"frame_id\":0},\"top3\":{\"world_m\":[0.160468,-0.283463,1.12654],\"camera\":\"agentview\",\"pixel\":[4,469],\"frame_id\":0},\"check0\":{\"world_m\":[-0.0243498,-0.287317,1.12708],\"camera\":\"agentview\",\"pixel\":[65,325],\"frame_id\":0},\"check1\":{\"world_m\":[-0.0243467,-0.188241,1.12708],\"camera\":\"agentview\",\"pixel\":[175,325],\"frame_id\":0},\"check2\":{\"world_m\":[0.123953,-0.224415,1.12665],\"camera\":\"agentview\",\"pixel\":[95,436],\"frame_id\":0},\"counter0\":{\"world_m\":[-0.129079,-0.0947813,0.900783],\"camera\":\"agentview\",\"pixel\":[301,434],\"frame_id\":0},\"counter1\":{\"world_m\":[-0.0474609,0.0654829,0.90073],\"camera\":\"agentview\",\"pixel\":[445,485],\"frame_id\":0},\"counter2\":{\"world_m\":[-0.245514,0.0669387,0.900847],\"camera\":\"agentview\",\"pixel\":[438,371],\"frame_id\":0}},\"clearance_review\":{\"frame_id\":0,\"parameters\":{\"approach_visibility\":\"occluded\",\"candidate_identity\":\"same_bowl_lip\",\"hand_state\":\"empty_open\",\"inner_surface\":\"visible_bowl_interior\",\"note\":\"The two approach crops are unsegmented and include the entire projected local envelope and nearby obstacle portions. The outer center sample is clear counter despite the cooktop intrusion near the envelope edge. Point depths must be obtained from the selected visible surfaces; offsets are approximate pending depth. Cabinet support is visible in agentview, outside the wrist view. No hidden under-lip geometry, clearance for later motion, retention, or task completion is established.\",\"outer_surface\":\"visible_counter\",\"support_still_valid\":\"yes\"},\"points\":{\"inner\":{\"world_m\":[-0.108723,0.0201498,0.906738],\"depth_m\":0.353276,\"frame_id\":0,\"pixel\":[333,292],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"outer\":{\"world_m\":[-0.1683,0.0793346,0.899964],\"depth_m\":0.363456,\"frame_id\":0,\"pixel\":[253,376],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[]},\"latest_gap\":\"Selected lip, local visibility, exterior clearance or support confirmation is unresolved: {'approach_visibility': 'occluded', 'candidate_identity': 'same_bowl_lip', 'hand_state': 'empty_open', 'inner_surface': 'visible_bowl_interior', 'note': 'The two approach crops are unsegmented and include the entire projected local envelope and nearby obstacle portions. The outer center sample is clear counter despite the cooktop intrusion near the envelope edge. Point depths must be obtained from the selected visible surfaces; offsets are approximate pending depth. Cabinet support is visible in agentview, outside the wrist view. No hidden under-lip geometry, clearance for later motion, retention, or task completion is established.', 'outer_surface': 'visible_counter', 'support_still_valid': 'yes'}\"}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"establish.geometry\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"3f50f93ffdbf81ee346c194584ecf87b5717c6ae527b4def4939c0897cf0edc1\",\"bytes\":6969,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":0},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}}},\"frame_id\":0},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[\"establish.geometry\"],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"establish.geometry\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"3f50f93ffdbf81ee346c194584ecf87b5717c6ae527b4def4939c0897cf0edc1\",\"bytes\":6969,\"value\":{\"frame_id\":0,\"native_steps\":0,\"bowl\":{\"circle\":{\"center_xy_m\":[-0.100195,0.0105144],\"radius_m\":0.0553153,\"rms_m\":0.000560388,\"max_radial_error_m\":0.000977665,\"largest_angular_gap_rad\":0.815825},\"lip_plane\":[0.0,0.0,1.0,-0.949963],\"lip_fit\":{\"coefficients\":[0.0044188,-0.0152681,0.999874,-0.949241],\"center_world_m\":[-0.0997321,0.0105631,0.949963],\"rms_m\":7.54149e-05,\"in_plane_spread_m\":[0.0440809,0.0317563]},\"rim_world_m\":[[-0.09944,-0.0449168,0.949963],[-0.138853,-0.0301405,0.949963],[-0.155004,0.00920946,0.949963],[-0.13879,0.0496245,0.949963],[-0.0993592,0.0658139,0.949963],[-0.0605236,0.0504531,0.949963],[-0.0455266,0.0116759,0.949963],[-0.0605755,-0.0275396,0.949963]],\"rim_pixels\":[[431,268],[407,332],[344,358],[279,332],[252,268],[276,204],[339,179],[403,204]],\"rim_camera\":\"robot0_eye_in_hand\",\"radius_bound_m\":0.060293},\"support\":{\"polygon_xy_m\":[[0.160468,-0.283463],[0.160468,-0.158142],[-0.0831872,-0.159589],[-0.0831909,-0.341979]],\"plane\":[0.0,0.0,1.0,-1.12691],\"fit\":{\"coefficients\":[0.00289848,-1.14932e-05,0.999996,-1.12701],\"center_world_m\":[0.0328305,-0.234735,1.12691],\"rms_m\":6.82371e-07,\"in_plane_spread_m\":[0.104169,0.064153]},\"candidate_center_xy_m\":[-0.00197134,-0.242401],\"inscribed_radius_m\":0.0778589,\"remaining_margin_m\":0.0175659},\"counter\":{\"plane\":[0.0,0.0,1.0,-0.900787],\"fit\":{\"coefficients\":[0.000589254,2.54942e-05,1.0,-0.900704],\"center_world_m\":[-0.140685,0.0125467,0.900787],\"rms_m\":1.11022e-16,\"in_plane_spread_m\":[0.0835178,0.0734143]}},\"uncertainty_floor_m\":0.004,\"grasp_index\":3,\"selected_depth_points\":{\"lip0\":{\"world_m\":[-0.099298,-0.0443736,0.949138],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[430,268],\"frame_id\":0},\"lip1\":{\"world_m\":[-0.154379,0.00918821,0.950189],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[344,357],\"frame_id\":0},\"lip2\":{\"world_m\":[-0.138209,0.0488266,0.950772],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[280,331],\"frame_id\":0},\"lip3\":{\"world_m\":[-0.0994865,0.0650048,0.950702],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[253,268],\"frame_id\":0},\"lip4\":{\"world_m\":[-0.0460898,0.0116887,0.949858],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[339,180],\"frame_id\":0},\"lip5\":{\"world_m\":[-0.0609308,-0.0269565,0.949122],\"camera\":\"robot0_eye_in_hand\",\"pixel\":[402,205],\"frame_id\":0},\"top0\":{\"world_m\":[-0.0831909,-0.341979,1.12725],\"camera\":\"agentview\",\"pixel\":[24,289],\"frame_id\":0},\"top1\":{\"world_m\":[-0.0831872,-0.159589,1.12725],\"camera\":\"agentview\",\"pixel\":[216,289],\"frame_id\":0},\"top2\":{\"world_m\":[0.160468,-0.158142,1.12654],\"camera\":\"agentview\",\"pixel\":[172,469],\"frame_id\":0},\"top3\":{\"world_m\":[0.160468,-0.283463,1.12654],\"camera\":\"agentview\",\"pixel\":[4,469],\"frame_id\":0},\"check0\":{\"world_m\":[-0.0243498,-0.287317,1.12708],\"camera\":\"agentview\",\"pixel\":[65,325],\"frame_id\":0},\"check1\":{\"world_m\":[-0.0243467,-0.188241,1.12708],\"camera\":\"agentview\",\"pixel\":[175,325],\"frame_id\":0},\"check2\":{\"world_m\":[0.123953,-0.224415,1.12665],\"camera\":\"agentview\",\"pixel\":[95,436],\"frame_id\":0},\"counter0\":{\"world_m\":[-0.129079,-0.0947813,0.900783],\"camera\":\"agentview\",\"pixel\":[301,434],\"frame_id\":0},\"counter1\":{\"world_m\":[-0.0474609,0.0654829,0.90073],\"camera\":\"agentview\",\"pixel\":[445,485],\"frame_id\":0},\"counter2\":{\"world_m\":[-0.245514,0.0669387,0.900847],\"camera\":\"agentview\",\"pixel\":[438,371],\"frame_id\":0}},\"clearance_review\":{\"frame_id\":0,\"parameters\":{\"approach_visibility\":\"occluded\",\"candidate_identity\":\"same_bowl_lip\",\"hand_state\":\"empty_open\",\"inner_surface\":\"visible_bowl_interior\",\"note\":\"The two approach crops are unsegmented and include the entire projected local envelope and nearby obstacle portions. The outer center sample is clear counter despite the cooktop intrusion near the envelope edge. Point depths must be obtained from the selected visible surfaces; offsets are approximate pending depth. Cabinet support is visible in agentview, outside the wrist view. No hidden under-lip geometry, clearance for later motion, retention, or task completion is established.\",\"outer_surface\":\"visible_counter\",\"support_still_valid\":\"yes\"},\"points\":{\"inner\":{\"world_m\":[-0.108723,0.0201498,0.906738],\"depth_m\":0.353276,\"frame_id\":0,\"pixel\":[333,292],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"outer\":{\"world_m\":[-0.1683,0.0793346,0.899964],\"depth_m\":0.363456,\"frame_id\":0,\"pixel\":[253,376],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[]},\"latest_gap\":\"Selected lip, local visibility, exterior clearance or support confirmation is unresolved: {'approach_visibility': 'occluded', 'candidate_identity': 'same_bowl_lip', 'hand_state': 'empty_open', 'inner_surface': 'visible_bowl_interior', 'note': 'The two approach crops are unsegmented and include the entire projected local envelope and nearby obstacle portions. The outer center sample is clear counter despite the cooktop intrusion near the envelope edge. Point depths must be obtained from the selected visible surfaces; offsets are approximate pending depth. Cabinet support is visible in agentview, outside the wrist view. No hidden under-lip geometry, clearance for later motion, retention, or task completion is established.', 'outer_surface': 'visible_counter', 'support_still_valid': 'yes'}\"},\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":0},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":0,\"native_steps\":0,\"budgets\":{\"gpt_remaining\":18,\"jev_remaining\":200,\"native_steps_remaining\":600,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.208684,-0.0156377,1.16925],\"tcp_quaternion_xyzw\":[0.999581,-0.000424793,-0.0289363,0.000243531],\"gripper_qpos_m\":[0.0387215,-0.038724],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-4.13235e-07,-1.51692e-06,-0.00360001],\"pad_extent_in_tool_m\":[0.0160019,0.0924458,0.0160003],\"finger_low_offset_tool_m\":[-0.0104965,-0.0651274,-0.0444685],\"finger_high_offset_tool_m\":[0.0104951,0.0651245,0.00924916]}}},\"frame_id\":0},{\"request\":{\"kind\":\"rpc\",\"method\":\"compose\",\"args\":[[0.999581,-0.000424793,-0.0289363,0.000243531],[0.0,0.0,0.806382]],\"kwargs\":{}},\"response\":{\"result\":[0.919595,0.391801,-0.0265204,0.0115773]},\"frame_id\":0},{\"request\":{\"kind\":\"rpc\",\"method\":\"camera\",\"args\":[\"robot0_eye_in_hand\"],\"kwargs\":{}},\"response\":{\"result\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[-0.000816963,-0.998326,-0.0578338,-0.153158],[-1.0,0.000845045,-0.000461105,-0.015635],[0.000509205,0.0578334,-0.998326,1.2632],[0.0,0.0,0.0,1.0]],\"frame_id\":0}},\"frame_id\":0},{\"request\":{\"kind\":\"rpc\",\"method\":\"camera\",\"args\":[\"agentview\"],\"kwargs\":{}},\"response\":{\"result\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]],\"frame_id\":0}},\"frame_id\":0}],\"program_checkpoint_manifest\":[{\"key\":\"establish.partial\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"3f50f93ffdbf81ee346c194584ecf87b5717c6ae527b4def4939c0897cf0edc1\",\"bytes\":3324,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"establish.geometry\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"3f50f93ffdbf81ee346c194584ecf87b5717c6ae527b4def4939c0897cf0edc1\",\"bytes\":6969,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"program_supplied_review_context\":{\"candidate_sector_index\":7,\"candidate_lip_world_m\":[-0.0605755,-0.0275396,0.949963],\"bowl_center_xy_m\":[-0.100195,0.0105144],\"radial_world_xy\":[0.72121,-0.692717],\"tangent_world_xy\":[-0.692717,-0.72121],\"padded_envelope_local_xy_m\":[[-0.0228421,-0.0751471],[0.0212219,0.0751329]],\"local_coordinates\":\"First tangent, second radial, centered on the selected lip.\",\"support_polygon_xy_m\":[[0.160468,-0.283463],[0.160468,-0.158142],[-0.0831872,-0.159589],[-0.0831909,-0.341979]],\"support_plane\":[0.0,0.0,1.0,-1.12691],\"support_anchor\":{\"world_m\":[-0.0243467,-0.188241,1.12708],\"camera\":\"agentview\",\"pixel\":[175,325],\"frame_id\":0},\"regions_to_request\":{\"local_eye\":{\"camera\":\"robot0_eye_in_hand\",\"box\":[242,0,583,329],\"stride\":4},\"local_agent\":{\"camera\":\"agentview\",\"box\":[278,321,431,534],\"stride\":4}},\"previous_failure\":\"Sector 3 had observed cooktop intrusion at the envelope edge. It is excluded; this is a different physical rim sector.\",\"uncertainty_floor_m\":0.004}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "bowl_identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_upright_bowl",
+                  "changed",
+                  "unknown"
+                ]
+              },
+              "support_identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_clear_patch",
+                  "changed",
+                  "unknown"
+                ]
+              },
+              "hand_state": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "empty_open",
+                  "possibly_holding",
+                  "unknown"
+                ]
+              },
+              "lip_identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "selected_bowl_lip",
+                  "unknown"
+                ]
+              },
+              "inner_surface": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_bowl_interior",
+                  "unknown"
+                ]
+              },
+              "outer_surface": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_counter",
+                  "obstructed",
+                  "unknown"
+                ]
+              },
+              "local_visibility": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_no_overhang",
+                  "occluded_or_overhang",
+                  "unknown"
+                ]
+              },
+              "note": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 600
+              }
+            },
+            "required": [
+              "bowl_identity",
+              "support_identity",
+              "hand_state",
+              "lip_identity",
+              "inner_surface",
+              "outer_surface",
+              "local_visibility",
+              "note"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

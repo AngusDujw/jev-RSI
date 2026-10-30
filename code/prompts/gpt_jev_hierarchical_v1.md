@@ -56,6 +56,14 @@ last stage. Stop requires evidence and recovery_available=no. Invalid plans
 force replanning. Global budgets still terminate; transport errors remain in
 the persistent transport recovery path rather than source-repair policy.
 
+Native observation submissions that exhaust their bounded schema correction
+budget are classified separately from connection/authentication failures. They
+raise PlannerSubmissionFailure in the worker host and reach stage supervision
+with the declared-field errors, so the method/question can be revised. No invalid
+reply becomes an observation, no string is truncated, and no schema is relaxed.
+Validation feedback includes actual length and allowed limits. This recovery is
+still bounded by the global GPT and stage-update budgets.
+
 ## Host options
 
 Append the following flags on one line to the existing host invocation:

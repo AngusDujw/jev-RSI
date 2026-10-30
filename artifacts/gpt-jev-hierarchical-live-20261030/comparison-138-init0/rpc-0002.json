@@ -1,0 +1,1270 @@
+{
+  "index": 2,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Establish geometry only; no robot action. Identify the patterned bowl and the dark cabinet table 1 at the left, NOT the white hotplate. Request named depth points lip0..lip5 on actual uppermost lip material, distributed around the rim, radius=1, using either current camera. Do not substitute inner-wall or background depths. Request top0..top3, in perimeter order, as vertices of the largest convex, entirely visible, unobstructed patch on the cabinet TOP. These are measured interior support vertices, not guessed hidden cabinet corners. Request check0..check2 spread inside that patch, and counter0..counter2 on noncollinear exposed counter near the bowl. Provide eight outer-lip boundary pixels in rim_camera, ordered around the perimeter with index 0 on the side nearest the cabinet; use [] when unknown. These pixels will only be intersected with a measured horizontal lip plane. Select grasp_index for a lip sector with visible interior and exterior finger neighborhoods, away from bottle, package, plate and cabinet; -1 if none. Assess the declared identity, uprightness, visible body profile and patch fields conservatively. Unknown or failed depth must remain unknown. Do not certify hidden space."
+    ],
+    "kwargs": {
+      "context": {
+        "previous_gap": "No adequate geometry acquired.",
+        "previous_observations": [],
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            -4.1323462401758604e-07,
+            -1.5169204806188274e-06,
+            -0.003600010292151782
+          ],
+          "pad_extent_in_tool_m": [
+            0.01600192363610598,
+            0.09244583465487474,
+            0.016000343678641955
+          ],
+          "finger_low_offset_tool_m": [
+            -0.01049654566452086,
+            -0.06512742303013508,
+            -0.04446851543861229
+          ],
+          "finger_high_offset_tool_m": [
+            0.01049505769542847,
+            0.06512448566422156,
+            0.0092491642634655
+          ]
+        }
+      },
+      "fields": {
+        "bowl_identity": [
+          "patterned_bowl",
+          "unknown"
+        ],
+        "cabinet_identity": [
+          "cabinet_table_1",
+          "unknown"
+        ],
+        "bowl_upright": [
+          "yes",
+          "no",
+          "unknown"
+        ],
+        "safe_patch": [
+          "fully_visible_clear",
+          "not_clear",
+          "unknown"
+        ],
+        "outer_rim": [
+          "entire_visible_circular_lip",
+          "unknown"
+        ],
+        "body_profile": [
+          "narrows_below_rim",
+          "unknown"
+        ],
+        "rim_camera": [
+          "agentview",
+          "robot0_eye_in_hand"
+        ],
+        "rim_pixels": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 767
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "minItems": 0,
+          "maxItems": 8
+        },
+        "grasp_index": {
+          "type": "integer",
+          "minimum": -1,
+          "maximum": 7
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 400
+        }
+      }
+    }
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The patterned bowl is upright on the counter, and its visible outer body narrows below the lip. The target is the dark cabinet at the left in agentview, not the white hotplate. The cabinet-top vertices bound a broad, convex, visibly clear interior support patch without extrapolating hidden or cropped corners. Rim index 0 faces the cabinet; indices proceed clockwise in the wrist image. Sector 3 has visible interior and exposed counter outside the lip, away from the bottle, package, plate and cabinet. These are image-based geometry selections, not validated depths or motion clearance.",
+      "parameters": {
+        "body_profile": "narrows_below_rim",
+        "bowl_identity": "patterned_bowl",
+        "bowl_upright": "yes",
+        "cabinet_identity": "cabinet_table_1",
+        "grasp_index": 3,
+        "note": "Lip points target visible uppermost rim material. Depths are not yet measured; failed samples must remain unknown, not use inner-wall or background depths. The patch includes visible cabinet-top support only. Sector 3 indicates visible neighborhoods, not hidden under-lip geometry, finger clearance at depth, retention, or permission for motion.",
+        "outer_rim": "entire_visible_circular_lip",
+        "rim_camera": "robot0_eye_in_hand",
+        "rim_pixels": [
+          [
+            431,
+            268
+          ],
+          [
+            407,
+            332
+          ],
+          [
+            344,
+            358
+          ],
+          [
+            279,
+            332
+          ],
+          [
+            252,
+            268
+          ],
+          [
+            276,
+            204
+          ],
+          [
+            339,
+            179
+          ],
+          [
+            403,
+            204
+          ]
+        ],
+        "safe_patch": "fully_visible_clear"
+      },
+      "points": {
+        "lip0": {
+          "world_m": [
+            -0.09929804591449673,
+            -0.044373558833917144,
+            0.9491380607897472
+          ],
+          "depth_m": 0.3104313015937805,
+          "frame_id": 0,
+          "pixel": [
+            430,
+            268
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "lip1": {
+          "world_m": [
+            -0.15437863763173823,
+            0.009188214873225083,
+            0.9501885237153807
+          ],
+          "depth_m": 0.31254342198371887,
+          "frame_id": 0,
+          "pixel": [
+            344,
+            357
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "lip2": {
+          "world_m": [
+            -0.1382089854934013,
+            0.048826591819676385,
+            0.9507721711079375
+          ],
+          "depth_m": 0.3110073208808899,
+          "frame_id": 0,
+          "pixel": [
+            280,
+            331
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "lip3": {
+          "world_m": [
+            -0.09948652678956035,
+            0.06500481059926025,
+            0.9507018267255156
+          ],
+          "depth_m": 0.3088306188583374,
+          "frame_id": 0,
+          "pixel": [
+            253,
+            268
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "lip4": {
+          "world_m": [
+            -0.04608979029423023,
+            0.01168870707270657,
+            0.9498577881567551
+          ],
+          "depth_m": 0.3066096901893616,
+          "frame_id": 0,
+          "pixel": [
+            339,
+            180
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "lip5": {
+          "world_m": [
+            -0.060930754696742806,
+            -0.02695646374884441,
+            0.9491219300662868
+          ],
+          "depth_m": 0.30822044610977173,
+          "frame_id": 0,
+          "pixel": [
+            402,
+            205
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "top0": {
+          "world_m": [
+            -0.08319085304571006,
+            -0.3419786635266592,
+            1.127248796307331
+          ],
+          "depth_m": 0.8806501626968384,
+          "frame_id": 0,
+          "pixel": [
+            24,
+            289
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "top1": {
+          "world_m": [
+            -0.08318718798630487,
+            -0.1595892544725015,
+            1.1272511834732768
+          ],
+          "depth_m": 0.8806458115577698,
+          "frame_id": 0,
+          "pixel": [
+            216,
+            289
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "top2": {
+          "world_m": [
+            0.16046768248820004,
+            -0.15814234253567389,
+            1.1265443281750742
+          ],
+          "depth_m": 0.6915430426597595,
+          "frame_id": 0,
+          "pixel": [
+            172,
+            469
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "top3": {
+          "world_m": [
+            0.16046768248820004,
+            -0.28346268945073616,
+            1.1265443281750742
+          ],
+          "depth_m": 0.6915430426597595,
+          "frame_id": 0,
+          "pixel": [
+            4,
+            469
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "check0": {
+          "world_m": [
+            -0.024349833319575187,
+            -0.28731676520762073,
+            1.127079612910398
+          ],
+          "depth_m": 0.83498215675354,
+          "frame_id": 0,
+          "pixel": [
+            65,
+            325
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "check1": {
+          "world_m": [
+            -0.024346664444860333,
+            -0.18824114514478563,
+            1.1270818555081397
+          ],
+          "depth_m": 0.8349782824516296,
+          "frame_id": 0,
+          "pixel": [
+            175,
+            325
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "check2": {
+          "world_m": [
+            0.12395264961986019,
+            -0.22441532255191454,
+            1.1266506808010746
+          ],
+          "depth_m": 0.7198824286460876,
+          "frame_id": 0,
+          "pixel": [
+            95,
+            436
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "counter0": {
+          "world_m": [
+            -0.12907913109001234,
+            -0.09478131092209677,
+            0.900782505375542
+          ],
+          "depth_m": 1.058647871017456,
+          "frame_id": 0,
+          "pixel": [
+            301,
+            434
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "counter1": {
+          "world_m": [
+            -0.047460898113404815,
+            0.06548287170785687,
+            0.9007303256700391
+          ],
+          "depth_m": 0.9951872229576111,
+          "frame_id": 0,
+          "pixel": [
+            445,
+            485
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "counter2": {
+          "world_m": [
+            -0.24551432671280515,
+            0.06693868591255708,
+            0.9008469923970724
+          ],
+          "depth_m": 1.1491860151290894,
+          "frame_id": 0,
+          "pixel": [
+            438,
+            371
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {
+        "sector3_visible_interior": {
+          "world_m": [
+            [
+              -0.11958572361555977,
+              0.049331947077578625,
+              0.931273168118625
+            ],
+            [
+              -0.11902291151402342,
+              0.04774813420058646,
+              0.9256884408567636
+            ],
+            [
+              -0.11850436713065629,
+              0.04599709952082945,
+              0.9205407658444992
+            ],
+            [
+              -0.11820099987731328,
+              0.04379864721793374,
+              0.917520290247573
+            ],
+            [
+              -0.11795520761980348,
+              0.04145893927912775,
+              0.9150688266303917
+            ],
+            [
+              -0.11774508325559496,
+              0.039025312795353304,
+              0.9129698191573952
+            ],
+            [
+              -0.12240448335945754,
+              0.04893460679810911,
+              0.933465854224251
+            ],
+            [
+              -0.12193553322895209,
+              0.04726701677632977,
+              0.9284159439938279
+            ],
+            [
+              -0.12152409761720494,
+              0.045408396332896575,
+              0.9239821124412286
+            ],
+            [
+              -0.12114869018418621,
+              0.04341302609222365,
+              0.9199340629924821
+            ],
+            [
+              -0.12082586149156413,
+              0.04126095178274815,
+              0.9164493698091144
+            ],
+            [
+              -0.12062677347944299,
+              0.03884638791890889,
+              0.9142913778499443
+            ],
+            [
+              -0.12527151298224903,
+              0.04835229542619736,
+              0.9366006348780432
+            ],
+            [
+              -0.12482973853204912,
+              0.04673666051698362,
+              0.931402834387965
+            ],
+            [
+              -0.12441968580063437,
+              0.04497171262777022,
+              0.9265758551478638
+            ],
+            [
+              -0.12403887341021279,
+              0.043071271265538086,
+              0.9220907097128124
+            ],
+            [
+              -0.12375910656876085,
+              0.04090536694874057,
+              0.9187886761056905
+            ],
+            [
+              -0.1235039642379727,
+              0.03864201432870508,
+              0.9157746661735919
+            ],
+            [
+              -0.12808207298449248,
+              0.04779315242622992,
+              0.939614276652071
+            ],
+            [
+              -0.12774155984530813,
+              0.04605449671233931,
+              0.9351940808728076
+            ],
+            [
+              -0.12750249796370636,
+              0.04400987398863865,
+              0.9320825381666262
+            ],
+            [
+              -0.1269877893793097,
+              0.04252852121105423,
+              0.9254126431914664
+            ],
+            [
+              -0.12672600323594746,
+              0.040405129856623465,
+              0.9220064918138129
+            ],
+            [
+              -0.12643023335222853,
+              0.03829626750831551,
+              0.918161088651302
+            ],
+            [
+              -0.13080059169711655,
+              0.04736535456982065,
+              0.9419553568669609
+            ],
+            [
+              -0.1305889923682311,
+              0.04539033934167293,
+              0.938886031759969
+            ],
+            [
+              -0.13031293315639697,
+              0.04353357662607388,
+              0.9348897954057156
+            ],
+            [
+              -0.1300889621567257,
+              0.041484434500029574,
+              0.9316414800971936
+            ],
+            [
+              -0.1296245396075987,
+              0.0399517017828967,
+              0.9249364005879921
+            ],
+            [
+              -0.12937647004094532,
+              0.03782620644896277,
+              0.921340199093988
+            ]
+          ],
+          "rgb": [
+            [
+              58,
+              58,
+              58
+            ],
+            [
+              80,
+              82,
+              84
+            ],
+            [
+              77,
+              78,
+              78
+            ],
+            [
+              81,
+              83,
+              83
+            ],
+            [
+              126,
+              129,
+              131
+            ],
+            [
+              132,
+              136,
+              138
+            ],
+            [
+              52,
+              53,
+              53
+            ],
+            [
+              40,
+              40,
+              40
+            ],
+            [
+              60,
+              61,
+              61
+            ],
+            [
+              103,
+              106,
+              107
+            ],
+            [
+              82,
+              84,
+              85
+            ],
+            [
+              100,
+              103,
+              105
+            ],
+            [
+              108,
+              110,
+              110
+            ],
+            [
+              38,
+              38,
+              38
+            ],
+            [
+              60,
+              61,
+              60
+            ],
+            [
+              59,
+              60,
+              61
+            ],
+            [
+              53,
+              54,
+              55
+            ],
+            [
+              80,
+              81,
+              81
+            ],
+            [
+              78,
+              78,
+              79
+            ],
+            [
+              75,
+              77,
+              78
+            ],
+            [
+              63,
+              64,
+              65
+            ],
+            [
+              78,
+              78,
+              79
+            ],
+            [
+              64,
+              64,
+              65
+            ],
+            [
+              58,
+              59,
+              60
+            ],
+            [
+              94,
+              95,
+              96
+            ],
+            [
+              94,
+              95,
+              97
+            ],
+            [
+              56,
+              57,
+              58
+            ],
+            [
+              60,
+              61,
+              62
+            ],
+            [
+              88,
+              89,
+              88
+            ],
+            [
+              74,
+              75,
+              75
+            ]
+          ],
+          "pixels": [
+            [
+              285,
+              304
+            ],
+            [
+              289,
+              304
+            ],
+            [
+              293,
+              304
+            ],
+            [
+              297,
+              304
+            ],
+            [
+              301,
+              304
+            ],
+            [
+              305,
+              304
+            ],
+            [
+              285,
+              308
+            ],
+            [
+              289,
+              308
+            ],
+            [
+              293,
+              308
+            ],
+            [
+              297,
+              308
+            ],
+            [
+              301,
+              308
+            ],
+            [
+              305,
+              308
+            ],
+            [
+              285,
+              312
+            ],
+            [
+              289,
+              312
+            ],
+            [
+              293,
+              312
+            ],
+            [
+              297,
+              312
+            ],
+            [
+              301,
+              312
+            ],
+            [
+              305,
+              312
+            ],
+            [
+              285,
+              316
+            ],
+            [
+              289,
+              316
+            ],
+            [
+              293,
+              316
+            ],
+            [
+              297,
+              316
+            ],
+            [
+              301,
+              316
+            ],
+            [
+              305,
+              316
+            ],
+            [
+              285,
+              320
+            ],
+            [
+              289,
+              320
+            ],
+            [
+              293,
+              320
+            ],
+            [
+              297,
+              320
+            ],
+            [
+              301,
+              320
+            ],
+            [
+              305,
+              320
+            ]
+          ],
+          "frame_id": 0,
+          "camera": "robot0_eye_in_hand",
+          "box": [
+            285,
+            304,
+            309,
+            323
+          ],
+          "stride": 4,
+          "source": "current_visible_depth_region_backprojection"
+        },
+        "sector3_visible_exterior_counter": {
+          "world_m": [
+            [
+              -0.14368546293857484,
+              0.07821840025522256,
+              0.8999648782018538
+            ],
+            [
+              -0.14368778880636263,
+              0.07532504461078529,
+              0.8999648865573193
+            ],
+            [
+              -0.14369011391385542,
+              0.0724316728713486,
+              0.8999648650238826
+            ],
+            [
+              -0.14369243981998106,
+              0.06953827029963233,
+              0.8999648734032438
+            ],
+            [
+              -0.14369476496620096,
+              0.06664485115649749,
+              0.8999648518939454
+            ],
+            [
+              -0.1436970909106645,
+              0.06375140165750218,
+              0.8999648602972021
+            ],
+            [
+              -0.14657130155223863,
+              0.07826419704191377,
+              0.8999645348311156
+            ],
+            [
+              -0.14657364016470703,
+              0.07536950481362076,
+              0.8999645445422302
+            ],
+            [
+              -0.14657597825469135,
+              0.07247479649052958,
+              0.8999645243782188
+            ],
+            [
+              -0.14657831690549764,
+              0.0695800573349575,
+              0.899964534113229
+            ],
+            [
+              -0.14658065503420906,
+              0.06668530160816821,
+              0.8999645139733559
+            ],
+            [
+              -0.14658299372335323,
+              0.06379051552531712,
+              0.8999645237322615
+            ],
+            [
+              -0.14945981465791025,
+              0.07830984928678794,
+              0.8999649136561887
+            ],
+            [
+              -0.14946216601136175,
+              0.07541382500062037,
+              0.8999649247206474
+            ],
+            [
+              -0.14946451708014,
+              0.07251778461985595,
+              0.8999649059237569
+            ],
+            [
+              -0.1494668684719294,
+              0.06962171340640934,
+              0.8999649170121111
+            ],
+            [
+              -0.14946921957943474,
+              0.06672562562194678,
+              0.8999648982393589
+            ],
+            [
+              -0.149471571009562,
+              0.06382950748122111,
+              0.8999649093516089
+            ],
+            [
+              -0.1523509855168555,
+              0.07835572785316726,
+              0.8999645806260903
+            ],
+            [
+              -0.15235334961693373,
+              0.07545836460104852,
+              0.8999645930474109
+            ],
+            [
+              -0.15235571367014958,
+              0.07256098525453422,
+              0.8999645756211588
+            ],
+            [
+              -0.15235807774282628,
+              0.06966358208706608,
+              0.8999645582070364
+            ],
+            [
+              -0.15236044190050865,
+              0.06676614832492402,
+              0.8999645706642612
+            ],
+            [
+              -0.15236280601191243,
+              0.06386869775375777,
+              0.899964553274277
+            ],
+            [
+              -0.15524483087440377,
+              0.0784016550430949,
+              0.8999642233956746
+            ],
+            [
+              -0.15524720772227638,
+              0.07550295139576778,
+              0.899964237174585
+            ],
+            [
+              -0.15524958476109746,
+              0.07260423165424638,
+              0.899964221119699
+            ],
+            [
+              -0.15525196164730795,
+              0.06970548107964021,
+              0.899964234922505
+            ],
+            [
+              -0.15525433872485614,
+              0.0668067139344207,
+              0.8999642188917572
+            ],
+            [
+              -0.1552567158218652,
+              0.06390792296824736,
+              0.8999642028731392
+            ]
+          ],
+          "rgb": [
+            [
+              60,
+              60,
+              60
+            ],
+            [
+              59,
+              59,
+              59
+            ],
+            [
+              60,
+              60,
+              60
+            ],
+            [
+              59,
+              59,
+              59
+            ],
+            [
+              58,
+              58,
+              58
+            ],
+            [
+              56,
+              56,
+              56
+            ],
+            [
+              59,
+              59,
+              59
+            ],
+            [
+              55,
+              55,
+              55
+            ],
+            [
+              54,
+              54,
+              54
+            ],
+            [
+              54,
+              54,
+              54
+            ],
+            [
+              52,
+              52,
+              52
+            ],
+            [
+              50,
+              50,
+              50
+            ],
+            [
+              50,
+              50,
+              50
+            ],
+            [
+              50,
+              50,
+              50
+            ],
+            [
+              49,
+              49,
+              49
+            ],
+            [
+              49,
+              49,
+              49
+            ],
+            [
+              49,
+              49,
+              49
+            ],
+            [
+              49,
+              49,
+              49
+            ],
+            [
+              56,
+              56,
+              56
+            ],
+            [
+              52,
+              52,
+              52
+            ],
+            [
+              50,
+              50,
+              50
+            ],
+            [
+              49,
+              49,
+              49
+            ],
+            [
+              50,
+              50,
+              50
+            ],
+            [
+              53,
+              53,
+              53
+            ],
+            [
+              58,
+              58,
+              58
+            ],
+            [
+              53,
+              53,
+              53
+            ],
+            [
+              51,
+              51,
+              51
+            ],
+            [
+              52,
+              52,
+              52
+            ],
+            [
+              54,
+              54,
+              54
+            ],
+            [
+              57,
+              57,
+              57
+            ]
+          ],
+          "pixels": [
+            [
+              254,
+              342
+            ],
+            [
+              258,
+              342
+            ],
+            [
+              262,
+              342
+            ],
+            [
+              266,
+              342
+            ],
+            [
+              270,
+              342
+            ],
+            [
+              274,
+              342
+            ],
+            [
+              254,
+              346
+            ],
+            [
+              258,
+              346
+            ],
+            [
+              262,
+              346
+            ],
+            [
+              266,
+              346
+            ],
+            [
+              270,
+              346
+            ],
+            [
+              274,
+              346
+            ],
+            [
+              254,
+              350
+            ],
+            [
+              258,
+              350
+            ],
+            [
+              262,
+              350
+            ],
+            [
+              266,
+              350
+            ],
+            [
+              270,
+              350
+            ],
+            [
+              274,
+              350
+            ],
+            [
+              254,
+              354
+            ],
+            [
+              258,
+              354
+            ],
+            [
+              262,
+              354
+            ],
+            [
+              266,
+              354
+            ],
+            [
+              270,
+              354
+            ],
+            [
+              274,
+              354
+            ],
+            [
+              254,
+              358
+            ],
+            [
+              258,
+              358
+            ],
+            [
+              262,
+              358
+            ],
+            [
+              266,
+              358
+            ],
+            [
+              270,
+              358
+            ],
+            [
+              274,
+              358
+            ]
+          ],
+          "frame_id": 0,
+          "camera": "robot0_eye_in_hand",
+          "box": [
+            254,
+            342,
+            277,
+            359
+          ],
+          "stride": 4,
+          "source": "current_visible_depth_region_backprojection"
+        }
+      },
+      "measurement_errors": [],
+      "frame_id": 0
+    }
+  },
+  "frame_after": 0
+}

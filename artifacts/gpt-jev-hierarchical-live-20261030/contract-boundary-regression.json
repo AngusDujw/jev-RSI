@@ -1,0 +1,12 @@
+{
+  "scope": "Offline local HTTP/classification and relay failure replay; no model/robot calls",
+  "checks": {
+    "original_failure_without_new_metadata_recovers": true,
+    "authentication_failure_remains_terminal": true,
+    "jev_region_failure_not_misclassified_as_source": true,
+    "transient_gateway_keeps_same_request_id": true,
+    "relay_limits_errors_and_omits_invalid_arguments": true,
+    "broken_diagnostics_do_not_mask_original_failure": true,
+    "repeated_error_polls_do_not_duplicate_cost_ledger": true
+  }
+}

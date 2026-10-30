@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-bc51403d-32d4-4865-8931-4c9736d7a73e",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-bc51403d-32d4-4865-8931-4c9736d7a73e",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The patterned bowl is upright on the counter, and its visible outer body narrows below the lip. The target is the dark cabinet at the left in agentview, not the white hotplate. The cabinet-top vertices bound a broad, convex, visibly clear interior support patch without extrapolating hidden or cropped corners. Rim index 0 faces the cabinet; indices proceed clockwise in the wrist image. Sector 3 has visible interior and exposed counter outside the lip, away from the bottle, package, plate and cabinet. These are image-based geometry selections, not validated depths or motion clearance.\", \"parameters\": {\"body_profile\": \"narrows_below_rim\", \"bowl_identity\": \"patterned_bowl\", \"bowl_upright\": \"yes\", \"cabinet_identity\": \"cabinet_table_1\", \"grasp_index\": 3, \"note\": \"Lip points target visible uppermost rim material. Depths are not yet measured; failed samples must remain unknown, not use inner-wall or background depths. The patch includes visible cabinet-top support only. Sector 3 indicates visible neighborhoods, not hidden under-lip geometry, finger clearance at depth, retention, or permission for motion.\", \"outer_rim\": \"entire_visible_circular_lip\", \"rim_camera\": \"robot0_eye_in_hand\", \"rim_pixels\": [[431, 268], [407, 332], [344, 358], [279, 332], [252, 268], [276, 204], [339, 179], [403, 204]], \"safe_patch\": \"fully_visible_clear\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip0\", \"pixel\": [430, 268], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip1\", \"pixel\": [344, 357], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip2\", \"pixel\": [280, 331], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip3\", \"pixel\": [253, 268], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip4\", \"pixel\": [339, 180], \"radius\": 1}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"lip5\", \"pixel\": [402, 205], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top0\", \"pixel\": [24, 289], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top1\", \"pixel\": [216, 289], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top2\", \"pixel\": [172, 469], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"top3\", \"pixel\": [4, 469], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"check0\", \"pixel\": [65, 325], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"check1\", \"pixel\": [175, 325], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"check2\", \"pixel\": [95, 436], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"counter0\", \"pixel\": [301, 434], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"counter1\", \"pixel\": [445, 485], \"radius\": 1}, {\"camera\": \"agentview\", \"name\": \"counter2\", \"pixel\": [438, 371], \"radius\": 1}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"sector3_visible_interior\", \"box\": [285, 304, 309, 323], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"sector3_visible_exterior_counter\", \"box\": [254, 342, 277, 359], \"stride\": 4}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 47734,
+    "output_tokens": 5295,
+    "output_tokens_details": {
+      "reasoning_tokens": 3645
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b36-0855-7e12-9705-90e9aa230d49",
+    "turn_ids": [
+      "01a18b36-085b-71c3-8cc6-21d5f9d0e7a6"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

@@ -71,6 +71,13 @@ class SessionJobs:
             record["native_accounting"] = [dict(usage=None, kind="native_failed_job")]
             result = dict(status="failed", job_id=ident,
                 error=dict(type=type(error).__name__, message=str(error)[:600]))
+            session = folder / "session.json"
+            try:
+                state = json.loads(session.read_text()) if session.exists() else {}
+                result["validation_errors"] = [item["error"] for item in
+                    state.get("invalid_submissions", [])[-3:] if "error" in item]
+            except (OSError, ValueError, KeyError, TypeError):
+                result["validation_errors"] = []  # Diagnostics cannot mask the original failure.
         record["elapsed_s"] = time.time()-meta["started"]
         atomic(folder / "receipt.json", record)
         # Exactly one receipt per job. Polling and duplicate POSTs never add calls.

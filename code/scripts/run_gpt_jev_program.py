@@ -26,6 +26,17 @@ from run_gpt_jev_generic import save, scrub
 from gpt_jev_stage_protocol import KINDS as STAGE_KINDS, StageYield, run_stages
 
 
+class PlannerSubmissionFailure(RuntimeError):
+    """A completed validation failure is evidence for bounded stage revision."""
+    def __init__(self, detail):
+        self.detail = detail
+        reason = dict(error=detail.get("error"),
+            validation_errors=detail.get("validation_errors", [])[-3:])
+        super().__init__("Planner output contract repair exhausted; no valid observation was delivered. "
+            "Review the method-declared fields and question before retrying. "+
+            json.dumps(reason, ensure_ascii=True)[:1600])
+
+
 def model_wire_numbers(value, *, preserve_tools=False):
     """Compact model inputs only; simulator, program data and receipts stay exact."""
     if isinstance(value, dict):
@@ -96,6 +107,9 @@ def post(url, payload, path, timeout=1800):
                         detail = json.loads(body)
                     except (ValueError, UnicodeError):
                         detail = {}
+                    if detail.get("terminal") and detail.get("error", {}).get("message") == (
+                            "Native submission validation repair budget exhausted"):
+                        raise PlannerSubmissionFailure(detail) from error
                     if detail.get("terminal") or error.code not in (404, 408, 502, 503, 504):
                         raise
                     # Repost after a bridge restart: it resumes the same saved thread.

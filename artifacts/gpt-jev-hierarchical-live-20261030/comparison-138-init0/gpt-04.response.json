@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-5464e069-a466-4aaf-a5c0-0b37de36e722",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-5464e069-a466-4aaf-a5c0-0b37de36e722",
+      "arguments": "{\"action\": \"revise\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\", \"plan_valid\": \"yes\", \"recovery_available\": \"yes\", \"invalidated_assumptions\": [], \"evidence\": [\"The stage returned blocked, not stage_complete; selected approach clearance remains unresolved.\", \"Current images show the patterned bowl upright on the counter, not on the visibly clear cabinet top.\", \"Frame 0 depth observations identify the bowl rim and cabinet top; the derived support estimate has a positive footprint margin.\", \"The selected approach envelope overlaps the raised cooktop corner in both views. The clear outer center sample does not resolve this edge intrusion; projected overlap alone does not establish a finger collision.\", \"No physical actions are acknowledged, and native_steps is zero.\"], \"reason\": \"The overall plan remains suitable, but the selected grasp approach is not established. Local revision can use targeted cooktop-edge depth and the actual three-dimensional finger envelope, or evaluate another visible rim sector with complementary measurements. Preserve uncertainty margins and distinguish observed intrusion from unmeasured space. Remaining sensing budget supports recovery; this single unresolved candidate does not justify stopping or global replanning.\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 44910,
+    "output_tokens": 736,
+    "output_tokens_details": {
+      "reasoning_tokens": 435
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18b3c-9d0e-7410-af10-51007597935b",
+    "turn_ids": [
+      "01a18b3c-9d13-7c20-af53-1b839e208190"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
