@@ -1,6 +1,7 @@
 # LIBERO Playground skill transfer
 
-Status: software integration, not a learned or validated robot skill library.
+Status: real Playground acquisition in progress. Revision 1 contains learned
+skills and lessons; physical success and transfer reliability remain unvalidated.
 Reference: local EmbodiedEvo snapshot `470278c`, especially its README,
 `tasks/RoboDojo/Workspace/test.md` and skill/lesson format guides.
 
@@ -79,5 +80,18 @@ existing LIBERO-plus environment passed actual rendering, so acquisition runs
 there in an independent snapshot. No reboot or driver changes were needed.
 The reference chat route was denied403. Zotero's token note supplied the Jev
 credential without printing it or transferring it to the server. Episode0 was
-admitted with empty learned knowledge and has begun real Pro synthesis.
-No physical success claim is made. See the campaign manifest and EXP-2026W44-049.
+admitted with empty learned knowledge and terminated with native success false.
+All81 dispatched actions matched saved Jev choices and acknowledgements; this
+audit does not independently replay the simulator. The terminal planner failure
+was exhausted same-thread continuations after review stride schema errors.
+See [termination evidence](../../../artifacts/libero-playground-a638-20261031/episode-0-termination.json).
+
+Pro distilled that attempt into seven skills and two lessons in
+[revision1](../../../artifacts/libero-playground-a638-20261031/revision-1/).
+All nine file hashes and complete contents were checked against episode1's
+actual initial planning request; see the
+[transfer check](../../../artifacts/libero-playground-a638-20261031/episode-1-transfer-check.json).
+This establishes that learned knowledge reached the planner, not a causal
+performance improvement. Episode1 is still acquisition, not a frozen test.
+No whole-task physical success or held-out reliability claim is made.
+See the campaign manifest and EXP-2026W44-049.
