@@ -1,0 +1,227 @@
+{
+  "scope": "Completed pathfix pilot requests only; elapsed times include transport, execution and recovery waiting, not pure inference timing. In-flight requests excluded. No terminal success claim.",
+  "total_elapsed_s": 11597.59869817947,
+  "pending_requests": [
+    "gpt-38"
+  ],
+  "groups": {
+    "submit_stage_plan": {
+      "count": 2,
+      "elapsed_s": 107.84276143787429,
+      "fraction": 0.009298714694689588,
+      "requests": [
+        {
+          "request": "gpt-00",
+          "elapsed_s": 55.662483975989744,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-28",
+          "elapsed_s": 52.18027746188454,
+          "reconnects": 0
+        }
+      ]
+    },
+    "submit_method": {
+      "count": 10,
+      "elapsed_s": 8679.856272056233,
+      "fraction": 0.7484184009073146,
+      "requests": [
+        {
+          "request": "gpt-01",
+          "elapsed_s": 1166.486920668045,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-04",
+          "elapsed_s": 1358.2597703710198,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-09",
+          "elapsed_s": 660.6267948120367,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-14",
+          "elapsed_s": 953.8813277850859,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-17",
+          "elapsed_s": 910.2997882419731,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-21",
+          "elapsed_s": 759.6325085761491,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-25",
+          "elapsed_s": 1128.3993142340332,
+          "reconnects": 1
+        },
+        {
+          "request": "gpt-29",
+          "elapsed_s": 775.2295413829852,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-32",
+          "elapsed_s": 427.79444309091195,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-35",
+          "elapsed_s": 539.245862893993,
+          "reconnects": 0
+        }
+      ]
+    },
+    "submit_review": {
+      "count": 14,
+      "elapsed_s": 2226.1537254394498,
+      "fraction": 0.19194953915666177,
+      "requests": [
+        {
+          "request": "gpt-02",
+          "elapsed_s": 97.43425867985934,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-06",
+          "elapsed_s": 143.57855560816824,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-10",
+          "elapsed_s": 157.34821108402684,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-11",
+          "elapsed_s": 67.8838501481805,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-12",
+          "elapsed_s": 53.04050910798833,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-15",
+          "elapsed_s": 551.1429527879227,
+          "reconnects": 27
+        },
+        {
+          "request": "gpt-18",
+          "elapsed_s": 143.56135659501888,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-19",
+          "elapsed_s": 255.01427845610306,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-22",
+          "elapsed_s": 47.56411964306608,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-23",
+          "elapsed_s": 41.56041414197534,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-26",
+          "elapsed_s": 95.67019115597941,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-30",
+          "elapsed_s": 124.91887884191237,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-33",
+          "elapsed_s": 169.2903743730858,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-36",
+          "elapsed_s": 278.1457748161629,
+          "reconnects": 0
+        }
+      ]
+    },
+    "submit_stage_decision": {
+      "count": 12,
+      "elapsed_s": 583.7459392459132,
+      "fraction": 0.05033334524133401,
+      "requests": [
+        {
+          "request": "gpt-03",
+          "elapsed_s": 25.953417356824502,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-05",
+          "elapsed_s": 23.353064199211076,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-07",
+          "elapsed_s": 37.88143310486339,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-08",
+          "elapsed_s": 47.750315284123644,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-13",
+          "elapsed_s": 28.268580784788355,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-16",
+          "elapsed_s": 70.85296859196387,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-20",
+          "elapsed_s": 56.76226745499298,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-24",
+          "elapsed_s": 63.12754162005149,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-27",
+          "elapsed_s": 53.34366773907095,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-31",
+          "elapsed_s": 39.588251647073776,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-34",
+          "elapsed_s": 73.96440696297213,
+          "reconnects": 0
+        },
+        {
+          "request": "gpt-37",
+          "elapsed_s": 62.90002449997701,
+          "reconnects": 0
+        }
+      ]
+    }
+  }
+}

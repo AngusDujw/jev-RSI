@@ -348,3 +348,12 @@ impossibility is established. Current method request c56308baea5d4f47b25bf2461c7
 is live, generating with no recovery observed. Keep40 logicalGPT limit;
 only one call slot remains after charging builder38 (indices start at0).
 Save restage-clearance-gap.json. No terminal native result.
+
+## Completed-request timing checkpoint before builder38
+
+38 returned requests total11597.60 seconds of host elapsed time: 10 complete
+method generations8679.86s (74.84%), 14 reviews2226.15s, two plans107.84s,
+12 supervisors583.75s. These are end-to-end waits including recovery, not
+pure inference or network attribution. Pending builder38 excluded. This
+supports testing the isolated exact-patch candidate; it does not establish
+that candidate speed or robot success. Save request-timing-checkpoint.json.
