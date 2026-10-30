@@ -1,0 +1,83 @@
+{
+  "index": 63,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.alignment",
+      {
+        "frame": 144,
+        "reference_frame": 0,
+        "end_reference_world_m": [
+          [
+            -0.013207663758022181,
+            0.1239580198055842,
+            0.9184525556420551
+          ],
+          [
+            -0.01348537605800565,
+            0.16509900756325271,
+            0.9174048789633263
+          ]
+        ],
+        "current_end_world_m": [
+          [
+            -0.013081526556571747,
+            0.1241559172478147,
+            0.9183612359970451
+          ],
+          [
+            -0.013497957977459271,
+            0.1649804527784336,
+            0.9176195273647807
+          ]
+        ],
+        "fresh_top": {
+          "coefficients": [
+            0.002957671599012219,
+            0.01819529008495927,
+            0.9998300773618668,
+            -0.9204255477035853
+          ],
+          "center_world_m": [
+            -0.029271851555753958,
+            0.14771256164021604,
+            0.9179804369769519
+          ],
+          "rms_m": 1.1102230246251565e-16,
+          "in_plane_spread_m": [
+            0.013429340252737844,
+            0.008601640149090027
+          ]
+        },
+        "old_guard_m": 0.0015,
+        "top_model_residual_m": 0.00020210787557606302,
+        "support_model_residual_m": 3.926499940265504e-05,
+        "endpoint_error_m": 0.00025181991342201296,
+        "endpoint_threshold_m": 0.003,
+        "margins": {
+          "endpoint_m": 0.002748180086577987,
+          "model_m": 0.001297892124423937,
+          "fit_m": 0.001499999999999778,
+          "spread_m": 0.0026016401490900273,
+          "horizontal": 0.014830077361866811
+        },
+        "scope": "Local plane/end check of historical rigid footprint; no hidden-corner recovery."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": {
+      "key": "secure.alignment",
+      "frame_id": 144,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 1122,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 144
+}

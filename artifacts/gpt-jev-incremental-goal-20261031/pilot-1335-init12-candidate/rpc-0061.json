@@ -1,0 +1,46 @@
+{
+  "index": 61,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "plane_point",
+    "args": [
+      "robot0_eye_in_hand",
+      [
+        500,
+        442
+      ],
+      [
+        0.002957671599012219,
+        0.01819529008495927,
+        0.9998300773618668,
+        -0.9204255477035853
+      ]
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": {
+      "world_m": [
+        -0.013081526556571747,
+        0.1241559172478147,
+        0.9183612359970451
+      ],
+      "pixel": [
+        500,
+        442
+      ],
+      "camera": "robot0_eye_in_hand",
+      "plane": [
+        0.002957671599012219,
+        0.01819529008495927,
+        0.9998300773618668,
+        -0.9204255477035853
+      ],
+      "frame_id": 144,
+      "source": "calibrated_ray_intersection_with_program_supplied_plane"
+    }
+  },
+  "frame_after": 144
+}

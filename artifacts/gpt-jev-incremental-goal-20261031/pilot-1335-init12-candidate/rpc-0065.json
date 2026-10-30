@@ -1,0 +1,68 @@
+{
+  "index": 65,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.candidate",
+      {
+        "frame": 144,
+        "reference_frame": 0,
+        "trials": [
+          {
+            "position_tolerance_m": 0.002,
+            "lower_pad_z_m": 0.9195902101013985,
+            "upper_pad_z_m": 0.9166635167794649,
+            "required_nominal_overlap_m": 0.008741372874978719,
+            "interval_width_m": -0.0029266933219336266,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -0.0031266933219336267
+          },
+          {
+            "position_tolerance_m": 0.001,
+            "lower_pad_z_m": 0.9185902101013985,
+            "upper_pad_z_m": 0.9176635167794649,
+            "required_nominal_overlap_m": 0.007741372874978719,
+            "interval_width_m": -0.0009266933219336249,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -0.001126693321933625
+          },
+          {
+            "position_tolerance_m": 0.0005,
+            "lower_pad_z_m": 0.9180902101013985,
+            "upper_pad_z_m": 0.9181635167794648,
+            "required_nominal_overlap_m": 0.007241372874978719,
+            "interval_width_m": 7.330667806637603e-05,
+            "minimum_interval_width_m": 0.0002,
+            "residual_margin_m": -0.00012669332193362398
+          }
+        ],
+        "chosen": null,
+        "top_floor_world_z_m": 0.9174048789633263,
+        "counter_ceiling_world_z_m": 0.8999997917295539,
+        "finger_bottom_offset_m": -0.01284904549686598,
+        "half_pad_z_m": 0.008000010691117242,
+        "guard_m": 0.001741372874978718,
+        "required_guarded_counter_clearance_m": 0.003,
+        "required_guarded_overlap_m": 0.005,
+        "preserved_nominal_overlap_floor_m": 0.007,
+        "guard_accounting": "Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.",
+        "candidate_change": "Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": {
+      "key": "secure.candidate",
+      "frame_id": 144,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 1823,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 144
+}

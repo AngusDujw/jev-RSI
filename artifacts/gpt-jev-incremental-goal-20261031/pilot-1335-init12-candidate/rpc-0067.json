@@ -1,0 +1,115 @@
+{
+  "index": 67,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.geometry",
+      {
+        "frame": 0,
+        "top_plane": {
+          "coefficients": [
+            0.0013159665065336714,
+            0.025466123005968726,
+            0.9996748195344317,
+            -0.9212932421492191
+          ],
+          "center_world_m": [
+            -0.05247271198046069,
+            0.14203749674062818,
+            0.9180436799885064
+          ],
+          "rms_m": 8.913391855220807e-06,
+          "in_plane_spread_m": [
+            0.026847504859059537,
+            0.011092592813459843
+          ]
+        },
+        "counter_plane": {
+          "coefficients": [
+            3.075373226061315e-05,
+            -1.9603336791128971e-07,
+            0.9999999995270847,
+            -0.8999596780156999
+          ],
+          "center_world_m": [
+            -0.04508884299536059,
+            0.15066043095813744,
+            0.8999610946259823
+          ],
+          "rms_m": 0.0,
+          "in_plane_spread_m": [
+            0.0552985987630027,
+            0.028579200842378374
+          ]
+        },
+        "upper_corners_world_m": [
+          [
+            -0.01348537605800565,
+            0.16509900756325271,
+            0.9174048789633263
+          ],
+          [
+            -0.013207663758022181,
+            0.1239580198055842,
+            0.9184525556420551
+          ],
+          [
+            -0.09365736503233514,
+            0.12342873702331593,
+            0.9185719423570584
+          ],
+          [
+            -0.09277215079410261,
+            0.16504346203831227,
+            0.9175106666325441
+          ]
+        ],
+        "center_world_m": [
+          -0.05328063891061639,
+          0.14438230660761628,
+          0.917985010898746
+        ],
+        "width_m": 0.041141925061890246,
+        "length_m": 0.0804514423449934,
+        "height_m": 0.01740508723377243,
+        "quaternion_xyzw": [
+          0.9999945896700556,
+          0.0032894726958937305,
+          0.0,
+          0.0
+        ],
+        "grasp_pad_z_m": 0.9181078636078817,
+        "guard_m": 0.001741372874978718,
+        "grasp_tolerance_m": 0.0005,
+        "finger_bottom_offset_m": -0.01284904549686598,
+        "side_overlap_m": 0.007297026046561905,
+        "nominal_usable_aperture_m": 0.06399514732991503,
+        "required_aperture_m": 0.047630313841160093,
+        "aperture_assumption": "Symmetric prismatic joint separation less one transverse pad-size allowance is a conservative screening model, not measured inner-face clearance; fresh visible straddling is also required.",
+        "p0_identity": "White curled capital C beginning Cream near the upper end of the printed blue logo.",
+        "top_floor_world_z_m": 0.9174048789633263,
+        "counter_ceiling_world_z_m": 0.8999997917295539,
+        "required_nominal_overlap_m": 0.007000000000000001,
+        "candidate_checkpoint": "secure.candidate",
+        "refinement_checkpoint": "secure.refinement",
+        "geometry_scope": "Revalidated historical footprint; target is historical, NOT correction authority. Actual-pose gates control closure; retreat requires its own review.",
+        "guard_provenance": "Historical guard, never reduced, plus measured top/support disagreement; current fit floor also retained."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": {
+      "key": "secure.geometry",
+      "frame_id": 144,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 2275,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 144
+}

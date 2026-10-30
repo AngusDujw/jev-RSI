@@ -1,0 +1,129 @@
+{
+  "index": 52,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.refinement",
+      {
+        "frame": 144,
+        "parameters": {
+          "camera": "robot0_eye_in_hand",
+          "closure": "unknown",
+          "contact_assessment": "unresolved",
+          "empty_open_hand": true,
+          "end_boundary": "identified",
+          "end_pixels": [
+            [
+              500,
+              442
+            ],
+            [
+              285,
+              442
+            ]
+          ],
+          "identity": "same_package_unchanged",
+          "notes": "End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.",
+          "package_state": "unchanged",
+          "sidewall_evidence": "unknown",
+          "support": "same_support",
+          "upward_retreat": "clear"
+        },
+        "points": {
+          "u0": {
+            "world_m": [
+              -0.026969160515301606,
+              0.14448132046895126,
+              0.9179658270941116
+            ],
+            "depth_m": 0.09507080912590027,
+            "frame_id": 144,
+            "pixel": [
+              392,
+              514
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u1": {
+            "world_m": [
+              -0.018371952848667123,
+              0.15957432693391913,
+              0.9178414024138528
+            ],
+            "depth_m": 0.09515435993671417,
+            "frame_id": 144,
+            "pixel": [
+              313,
+              468
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u2": {
+            "world_m": [
+              -0.046178199357107305,
+              0.1295875400379329,
+              0.9184975513275326
+            ],
+            "depth_m": 0.09456995874643326,
+            "frame_id": 144,
+            "pixel": [
+              470,
+              617
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c0": {
+            "world_m": [
+              -0.033002120521391606,
+              0.17771038304668638,
+              0.8999997798388069
+            ],
+            "depth_m": 0.11292474716901779,
+            "frame_id": 144,
+            "pixel": [
+              243,
+              519
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c1": {
+            "world_m": [
+              -0.03248780507065801,
+              0.1101735247237691,
+              0.8999997298513835
+            ],
+            "depth_m": 0.11314208805561066,
+            "frame_id": 144,
+            "pixel": [
+              542,
+              519
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": [],
+        "reference_frame": 0
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": {
+      "key": "secure.refinement",
+      "frame_id": 144,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 2116,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 144
+}

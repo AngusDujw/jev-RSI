@@ -1,0 +1,129 @@
+{
+  "index": 59,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.refinement",
+      {
+        "frame": 144,
+        "parameters": {
+          "camera": "robot0_eye_in_hand",
+          "closure": "unknown",
+          "contact_assessment": "unresolved",
+          "empty_open_hand": true,
+          "end_boundary": "identified",
+          "end_pixels": [
+            [
+              500,
+              442
+            ],
+            [
+              285,
+              442
+            ]
+          ],
+          "identity": "same_package_unchanged",
+          "notes": "End corners are returned in reference order: image-right then image-left at the exposed top-face end, not the outer dark rim. Retry samples u0,u1,u2 use different, widely separated, noncollinear interior top patches. c0,c1 are visible counter patches outside opposing long sides. Current placement agrees with supplied frame-144 observations; no earlier image is available for direct temporal comparison. Hidden long-side walls are not established. Closure assessment includes no descent. Retreat assessment is independent and local, not a hidden-clearance certificate. Ineffective descent does not establish contact or its cause; metric margins remain for code to check.",
+          "package_state": "unchanged",
+          "sidewall_evidence": "unknown",
+          "support": "same_support",
+          "upward_retreat": "clear"
+        },
+        "points": {
+          "u0": {
+            "world_m": [
+              -0.043626710289807566,
+              0.15688497675564947,
+              0.9178559780327402
+            ],
+            "depth_m": 0.09512613713741302,
+            "frame_id": 144,
+            "pixel": [
+              326,
+              601
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u1": {
+            "world_m": [
+              -0.020059363531681855,
+              0.15576154124696154,
+              0.9178067064231801
+            ],
+            "depth_m": 0.09519980847835541,
+            "frame_id": 144,
+            "pixel": [
+              333,
+              477
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "u2": {
+            "world_m": [
+              -0.024129480845772457,
+              0.1304911669180371,
+              0.9182786264749351
+            ],
+            "depth_m": 0.09480543434619904,
+            "frame_id": 144,
+            "pixel": [
+              466,
+              500
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c0": {
+            "world_m": [
+              -0.02601371224917907,
+              0.1784477259045605,
+              0.8999997784411765
+            ],
+            "depth_m": 0.11292854696512222,
+            "frame_id": 144,
+            "pixel": [
+              240,
+              488
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "c1": {
+            "world_m": [
+              -0.03904389992174251,
+              0.11034602752553035,
+              0.8999997917295539
+            ],
+            "depth_m": 0.1131356880068779,
+            "frame_id": 144,
+            "pixel": [
+              541,
+              548
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": [],
+        "reference_frame": 0
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": {
+      "key": "secure.refinement",
+      "frame_id": 144,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 2283,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 144
+}

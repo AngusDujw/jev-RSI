@@ -474,3 +474,13 @@ diagnostic retreat can gather evidence, with checkpointed no-repeat state;
 it must not infer contact cause from retreat response. Review12 job
 1b52599caa8e4b6f9073fc5fc2bffc99 active. Still48Jev144steps, no grasp.
 Longer patch latency retained; patch format is not a speed guarantee.
+
+## Candidate actual-pose overlap failed; diagnostic retreat executed
+
+Reviews12/13 supplied fresh local measurements atframe144. Actual-pose
+closure gate found overlap margin -0.786938mm, counter clearance margin
++1.797309mm and lateral opening margin +7.977151mm. No closure. Separately
+supported one-shot upward retreat used4Jev/12steps, reachingframe156/52Jev;
+actualTCP rise10.656967mm with open gripper. This does not establish contact
+as stall cause. Review14 assesses post-retreat scene; no return descent,
+no grasp or native result. Save candidate-diagnostic-retreat.json.

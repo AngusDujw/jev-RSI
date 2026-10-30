@@ -1,0 +1,83 @@
+{
+  "index": 56,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "secure.alignment",
+      {
+        "frame": 144,
+        "reference_frame": 0,
+        "end_reference_world_m": [
+          [
+            -0.013207663758022181,
+            0.1239580198055842,
+            0.9184525556420551
+          ],
+          [
+            -0.01348537605800565,
+            0.16509900756325271,
+            0.9174048789633263
+          ]
+        ],
+        "current_end_world_m": [
+          [
+            -0.013216982269778884,
+            0.12387315679546022,
+            0.917163783685558
+          ],
+          [
+            -0.013485350708802555,
+            0.1649595333612002,
+            0.9177276474118973
+          ]
+        ],
+        "fresh_top": {
+          "coefficients": [
+            0.03809753204296687,
+            -0.013463807234723244,
+            0.9991833184891455,
+            -0.9142434142708117
+          ],
+          "center_world_m": [
+            -0.03050643757369201,
+            0.14454772914693445,
+            0.9181015936118323
+          ],
+          "rms_m": 0.0,
+          "in_plane_spread_m": [
+            0.0167815353901264,
+            0.0018579199513142242
+          ]
+        },
+        "old_guard_m": 0.0015,
+        "top_model_residual_m": 0.000289258733764286,
+        "support_model_residual_m": 3.905162193995615e-05,
+        "endpoint_error_m": 0.0012915965782712847,
+        "endpoint_threshold_m": 0.003,
+        "margins": {
+          "endpoint_m": 0.0017084034217287154,
+          "model_m": 0.001210741266235714,
+          "fit_m": 0.0015,
+          "spread_m": -0.004142080048685776,
+          "horizontal": 0.014183318489145558
+        },
+        "scope": "Local plane/end check of historical rigid footprint; no hidden-corner recovery."
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 144,
+  "response": {
+    "result": {
+      "key": "secure.alignment",
+      "frame_id": 144,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 1086,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 144
+}

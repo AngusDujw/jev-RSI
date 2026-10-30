@@ -1,0 +1,109 @@
+{
+  "explanation": "The visible cream package and exposed end match the supplied reference, with the package still resting on the counter. The hand is visibly open and not retaining the package. Fingers flank the package, but proximal package surfaces and contact interfaces are self-occluded, leaving current-pose closure and contact unresolved. No external obstruction is visible for the separately scoped 12 mm straight upward open-hand retreat at unchanged orientation. This is not a hidden-clearance certificate or an explanation of the ineffective descent.",
+  "parameters": {
+    "camera": "robot0_eye_in_hand",
+    "closure": "unknown",
+    "contact_assessment": "unresolved",
+    "empty_open_hand": true,
+    "end_boundary": "identified",
+    "end_pixels": [
+      [
+        500,
+        442
+      ],
+      [
+        285,
+        442
+      ]
+    ],
+    "identity": "same_package_unchanged",
+    "notes": "End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.",
+    "package_state": "unchanged",
+    "sidewall_evidence": "unknown",
+    "support": "same_support",
+    "upward_retreat": "clear"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "u0",
+      "pixel": [
+        392,
+        514
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "u1",
+      "pixel": [
+        313,
+        468
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "u2",
+      "pixel": [
+        470,
+        617
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "c0",
+      "pixel": [
+        243,
+        519
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "c1",
+      "pixel": [
+        542,
+        519
+      ],
+      "radius": 3
+    }
+  ],
+  "regions": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "exposed_package_top",
+      "box": [
+        301,
+        455,
+        482,
+        628
+      ],
+      "stride": 10
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "counter_outside_left_long_side",
+      "box": [
+        214,
+        470,
+        263,
+        555
+      ],
+      "stride": 8
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "counter_outside_right_long_side",
+      "box": [
+        519,
+        470,
+        559,
+        555
+      ],
+      "stride": 8
+    }
+  ],
+  "status": "continue"
+}

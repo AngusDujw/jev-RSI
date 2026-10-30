@@ -1,0 +1,279 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 144; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "e365f49b867a92920ca18ffc4b6130ec7bedf82ea604549e0381f616d1fa8fc5",
+            "characters": 108771
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 144; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "f246da3352a668970cb88654f102337767140b8f5e99f03c478aae92cf06b9f8",
+            "characters": 47523
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Request u0 on an exposed interior package-top patch, and c0,c1 on supporting counter outside the opposing long sides. Check package identity, unchanged support and whether the hand is actually empty/open. Do not invent hidden sidewalls. On retry use different valid patches or the other view. Restart after ineffective descent: request separated interior top samples u1,u2. Return the two supplied physical end-corner pixels in reference order, or []/unknown if occluded. Independently assess current-pose closure (side placement/interference, NO descent) and a 12 mm straight upward OPEN-hand retreat at unchanged orientation. Unknown closure must not veto a clear retreat. Assess contact without certifying hidden clearance or diagnosing controller physics; code checks metric margins.\",\"robot\":{\"frame_id\":144,\"native_steps\":144,\"budgets\":{\"gpt_remaining\":26,\"jev_remaining\":152,\"native_steps_remaining\":456,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522826,0.14578,0.91601],\"tcp_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"gripper_qpos_m\":[0.0399951,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-7.89937e-08,-2.35033e-06,-0.00359975],\"pad_extent_in_tool_m\":[0.016,0.0949952,0.016],\"finger_low_offset_tool_m\":[-0.0104949,-0.0664033,-0.0444681],\"finger_high_offset_tool_m\":[0.0104947,0.0663986,0.00924929]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.00848039,-0.999964,0.000882282,-0.00237008],[-0.999959,-0.00848318,-0.00321065,0.146516],[0.00321802,-0.000855018,-0.999994,1.01305],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":43,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0131966,-0.0192312,-0.0205073,0.0,0.0,0.0,-1.0],\"before\":[-0.0522655,0.14586,0.916086],\"after\":[-0.052264,0.145852,0.916082],\"target_tcp\":[-0.0532806,0.14438,0.914508],\"acknowledged_steps\":3,\"native_steps\":132,\"frame_id\":132},{\"decision\":44,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0132166,-0.019135,-0.0204695,0.0,0.0,0.0,-1.0],\"before\":[-0.052264,0.145852,0.916082],\"after\":[-0.0522629,0.145841,0.916078],\"target_tcp\":[-0.0532807,0.14438,0.914508],\"acknowledged_steps\":3,\"native_steps\":135,\"frame_id\":135},{\"decision\":45,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0132296,-0.018992,-0.0204078,0.0,0.0,0.0,-1.0],\"before\":[-0.0522629,0.145841,0.916078],\"after\":[-0.0522716,0.145811,0.916047],\"target_tcp\":[-0.0532805,0.14438,0.914508],\"acknowledged_steps\":3,\"native_steps\":138,\"frame_id\":138},{\"decision\":46,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0131163,-0.0186046,-0.0200092,0.0,0.0,0.0,-1.0],\"before\":[-0.0522716,0.145811,0.916047],\"after\":[-0.0522774,0.145794,0.916028],\"target_tcp\":[-0.0532805,0.14438,0.914508],\"acknowledged_steps\":3,\"native_steps\":141,\"frame_id\":141},{\"decision\":47,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0130415,-0.0183817,-0.019752,0.0,0.0,0.0,-1.0],\"before\":[-0.0522774,0.145794,0.916028],\"after\":[-0.0522826,0.14578,0.91601],\"target_tcp\":[-0.0532805,0.14438,0.914508],\"acknowledged_steps\":3,\"native_steps\":144,\"frame_id\":144}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":144,\"native_steps\":144,\"budgets\":{\"gpt_remaining\":28,\"jev_remaining\":152,\"native_steps_remaining\":456,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522826,0.14578,0.91601],\"tcp_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"gripper_qpos_m\":[0.0399951,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-7.89937e-08,-2.35033e-06,-0.00359975],\"pad_extent_in_tool_m\":[0.016,0.0949952,0.016],\"finger_low_offset_tool_m\":[-0.0104949,-0.0664033,-0.0444681],\"finger_high_offset_tool_m\":[0.0104947,0.0663986,0.00924929]}}},\"frame_id\":144},{\"request\":{\"kind\":\"rpc\",\"method\":\"review\",\"args\":[\"Request u0 on an exposed interior package-top patch, and c0,c1 on supporting counter outside the opposing long sides. Check package identity, unchanged support and whether the hand is actually empty/open. Do not invent hidden sidewalls. On retry use different valid patches or the other view. Restart after ineffective descent: request separated interior top samples u1,u2. Return the two supplied physical end-corner pixels in reference order, or []/unknown if occluded. Independently assess current-pose closure (side placement/interference, NO descent) and a 12 mm straight upward OPEN-hand retreat at unchanged orientation. Unknown closure must not veto a clear retreat. Assess contact without certifying hidden clearance or diagnosing controller physics; code checks metric margins.\"],\"kwargs\":{\"context\":{\"attempt\":0,\"center_world_m\":[-0.0532806,0.144382,0.917985],\"top_plane\":{\"coefficients\":[0.00131597,0.0254661,0.999675,-0.921293],\"center_world_m\":[-0.0524727,0.142037,0.918044],\"rms_m\":8.91339e-06,\"in_plane_spread_m\":[0.0268475,0.0110926]},\"counter_plane\":{\"coefficients\":[3.07537e-05,-1.96033e-07,1.0,-0.89996],\"center_world_m\":[-0.0450888,0.15066,0.899961],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0552986,0.0285792]},\"quaternion_xyzw\":[0.999995,0.00328947,0.0,0.0],\"end_reference_world_m\":[[-0.0132077,0.123958,0.918453],[-0.0134854,0.165099,0.917405]],\"state\":{\"frame_id\":144,\"native_steps\":144,\"budgets\":{\"gpt_remaining\":28,\"jev_remaining\":152,\"native_steps_remaining\":456,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522826,0.14578,0.91601],\"tcp_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"gripper_qpos_m\":[0.0399951,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-7.89937e-08,-2.35033e-06,-0.00359975],\"pad_extent_in_tool_m\":[0.016,0.0949952,0.016],\"finger_low_offset_tool_m\":[-0.0104949,-0.0664033,-0.0444681],\"finger_high_offset_tool_m\":[0.0104947,0.0663986,0.00924929]}},\"restart_after_stall\":true,\"prior_rejection_checkpoint\":\"secure.repair_reference\"},\"fields\":{\"identity\":[\"same_package_unchanged\",\"changed\",\"unknown\"],\"support\":[\"same_support\",\"different_surface\",\"unknown\"],\"sidewall_evidence\":[\"consistent\",\"contradicts\",\"unknown\"],\"empty_open_hand\":\"boolean\",\"notes\":\"string\",\"camera\":[\"agentview\",\"robot0_eye_in_hand\"],\"end_boundary\":[\"identified\",\"unknown\"],\"end_pixels\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"type\":\"integer\",\"minimum\":0,\"maximum\":767},\"minItems\":2,\"maxItems\":2},\"minItems\":0,\"maxItems\":2},\"closure\":[\"safe\",\"blocked\",\"unknown\"],\"package_state\":[\"unchanged\",\"moved\",\"unknown\"],\"upward_retreat\":[\"clear\",\"blocked\",\"unknown\"],\"contact_assessment\":[\"visible_contact\",\"no_visible_contact\",\"unresolved\"]}}},\"response\":{\"result\":{\"status\":\"continue\",\"explanation\":\"The visible cream package and exposed end match the supplied reference, with the package still resting on the counter. The hand is visibly open and not retaining the package. Fingers flank the package, but proximal package surfaces and contact interfaces are self-occluded, leaving current-pose closure and contact unresolved. No external obstruction is visible for the separately scoped 12 mm straight upward open-hand retreat at unchanged orientation. This is not a hidden-clearance certificate or an explanation of the ineffective descent.\",\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"closure\":\"unknown\",\"contact_assessment\":\"unresolved\",\"empty_open_hand\":true,\"end_boundary\":\"identified\",\"end_pixels\":[[500,442],[285,442]],\"identity\":\"same_package_unchanged\",\"notes\":\"End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.\",\"package_state\":\"unchanged\",\"sidewall_evidence\":\"unknown\",\"support\":\"same_support\",\"upward_retreat\":\"clear\"},\"points\":{\"u0\":{\"world_m\":[-0.0269692,0.144481,0.917966],\"depth_m\":0.0950708,\"frame_id\":144,\"pixel\":[392,514],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.018372,0.159574,0.917841],\"depth_m\":0.0951544,\"frame_id\":144,\"pixel\":[313,468],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0461782,0.129588,0.918498],\"depth_m\":0.09457,\"frame_id\":144,\"pixel\":[470,617],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0330021,0.17771,0.9],\"depth_m\":0.112925,\"frame_id\":144,\"pixel\":[243,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0324878,0.110174,0.9],\"depth_m\":0.113142,\"frame_id\":144,\"pixel\":[542,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"regions\":{\"exposed_package_top\":{\"visible_world_summary\":{\"count\":342,\"minimum\":[-0.0482448,0.127505,0.917682],\"median\":[-0.0318443,0.14463,0.917964],\"maximum\":[-0.0156096,0.161877,0.918549]},\"frame_id\":144,\"camera\":\"robot0_eye_in_hand\",\"box\":[301,455,482,628],\"stride\":10,\"source\":\"current_visible_depth_region_backprojection\"},\"counter_outside_left_long_side\":{\"visible_world_summary\":{\"count\":77,\"minimum\":[-0.0400435,0.173366,0.9],\"median\":[-0.0309804,0.178855,0.9],\"maximum\":[-0.0219133,0.184344,0.9]},\"frame_id\":144,\"camera\":\"robot0_eye_in_hand\",\"box\":[214,470,263,555],\"stride\":8,\"source\":\"current_visible_depth_region_backprojection\"},\"counter_outside_right_long_side\":{\"visible_world_summary\":{\"count\":55,\"minimum\":[-0.0395328,0.108079,0.9],\"median\":[-0.0304657,0.111774,0.9],\"maximum\":[-0.0213954,0.115469,0.9]},\"frame_id\":144,\"camera\":\"robot0_eye_in_hand\",\"box\":[519,470,559,555],\"stride\":8,\"source\":\"current_visible_depth_region_backprojection\"}},\"measurement_errors\":[],\"frame_id\":144}},\"frame_id\":144},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.refinement\",{\"frame\":144,\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"closure\":\"unknown\",\"contact_assessment\":\"unresolved\",\"empty_open_hand\":true,\"end_boundary\":\"identified\",\"end_pixels\":[[500,442],[285,442]],\"identity\":\"same_package_unchanged\",\"notes\":\"End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.\",\"package_state\":\"unchanged\",\"sidewall_evidence\":\"unknown\",\"support\":\"same_support\",\"upward_retreat\":\"clear\"},\"points\":{\"u0\":{\"world_m\":[-0.0269692,0.144481,0.917966],\"depth_m\":0.0950708,\"frame_id\":144,\"pixel\":[392,514],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.018372,0.159574,0.917841],\"depth_m\":0.0951544,\"frame_id\":144,\"pixel\":[313,468],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0461782,0.129588,0.918498],\"depth_m\":0.09457,\"frame_id\":144,\"pixel\":[470,617],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0330021,0.17771,0.9],\"depth_m\":0.112925,\"frame_id\":144,\"pixel\":[243,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0324878,0.110174,0.9],\"depth_m\":0.113142,\"frame_id\":144,\"pixel\":[542,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[],\"reference_frame\":0}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.refinement\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2116,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":144},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.refinement\",{\"frame\":144,\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"closure\":\"unknown\",\"contact_assessment\":\"unresolved\",\"empty_open_hand\":true,\"end_boundary\":\"identified\",\"end_pixels\":[[500,442],[285,442]],\"identity\":\"same_package_unchanged\",\"notes\":\"End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.\",\"package_state\":\"unchanged\",\"sidewall_evidence\":\"unknown\",\"support\":\"same_support\",\"upward_retreat\":\"clear\"},\"points\":{\"u0\":{\"world_m\":[-0.0269692,0.144481,0.917966],\"depth_m\":0.0950708,\"frame_id\":144,\"pixel\":[392,514],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.018372,0.159574,0.917841],\"depth_m\":0.0951544,\"frame_id\":144,\"pixel\":[313,468],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0461782,0.129588,0.918498],\"depth_m\":0.09457,\"frame_id\":144,\"pixel\":[470,617],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0330021,0.17771,0.9],\"depth_m\":0.112925,\"frame_id\":144,\"pixel\":[243,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0324878,0.110174,0.9],\"depth_m\":0.113142,\"frame_id\":144,\"pixel\":[542,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[],\"reference_frame\":0,\"model_check\":{\"top_residual_m\":1.7969e-05,\"support_residual_m\":3.90516e-05,\"threshold_m\":0.0015,\"guard_provenance\":\"Unchanged design floor or twice measured fit RMS; not a calibrated confidence bound.\",\"residual_margin_m\":0.00146095}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.refinement\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2395,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":144},{\"request\":{\"kind\":\"rpc\",\"method\":\"plane_point\",\"args\":[\"robot0_eye_in_hand\",[500,442],[0.0380975,-0.0134638,0.999183,-0.914243]],\"kwargs\":{}},\"response\":{\"result\":{\"world_m\":[-0.013217,0.123873,0.917164],\"pixel\":[500,442],\"camera\":\"robot0_eye_in_hand\",\"plane\":[0.0380975,-0.0134638,0.999183,-0.914243],\"frame_id\":144,\"source\":\"calibrated_ray_intersection_with_program_supplied_plane\"}},\"frame_id\":144},{\"request\":{\"kind\":\"rpc\",\"method\":\"plane_point\",\"args\":[\"robot0_eye_in_hand\",[285,442],[0.0380975,-0.0134638,0.999183,-0.914243]],\"kwargs\":{}},\"response\":{\"result\":{\"world_m\":[-0.0134854,0.16496,0.917728],\"pixel\":[285,442],\"camera\":\"robot0_eye_in_hand\",\"plane\":[0.0380975,-0.0134638,0.999183,-0.914243],\"frame_id\":144,\"source\":\"calibrated_ray_intersection_with_program_supplied_plane\"}},\"frame_id\":144},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.alignment\",{\"frame\":144,\"reference_frame\":0,\"end_reference_world_m\":[[-0.0132077,0.123958,0.918453],[-0.0134854,0.165099,0.917405]],\"current_end_world_m\":[[-0.013217,0.123873,0.917164],[-0.0134854,0.16496,0.917728]],\"fresh_top\":{\"coefficients\":[0.0380975,-0.0134638,0.999183,-0.914243],\"center_world_m\":[-0.0305064,0.144548,0.918102],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0167815,0.00185792]},\"old_guard_m\":0.0015,\"top_model_residual_m\":0.000289259,\"support_model_residual_m\":3.90516e-05,\"endpoint_error_m\":0.0012916,\"endpoint_threshold_m\":0.003,\"margins\":{\"endpoint_m\":0.0017084,\"model_m\":0.00121074,\"fit_m\":0.0015,\"spread_m\":-0.00414208,\"horizontal\":0.0141833},\"scope\":\"Local plane/end check of historical rigid footprint; no hidden-corner recovery.\"}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.alignment\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1086,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":144},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":144,\"native_steps\":144,\"budgets\":{\"gpt_remaining\":27,\"jev_remaining\":152,\"native_steps_remaining\":456,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522826,0.14578,0.91601],\"tcp_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"gripper_qpos_m\":[0.0399951,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-7.89937e-08,-2.35033e-06,-0.00359975],\"pad_extent_in_tool_m\":[0.016,0.0949952,0.016],\"finger_low_offset_tool_m\":[-0.0104949,-0.0664033,-0.0444681],\"finger_high_offset_tool_m\":[0.0104947,0.0663986,0.00924929]}}},\"frame_id\":144}],\"program_checkpoint_manifest\":[{\"key\":\"secure.partial\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2273,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.plane_check\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":985,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.geometry\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":2156,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.failure\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2105,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.repair_reference\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":4910,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.refinement\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2395,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.candidate\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":2066,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.progress\",\"frame_id\":90,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":1972,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.alignment\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1086,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.stall\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1283,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"historical_named_observations\":{\"initial\":{\"frame_id\":144,\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"closure\":\"unknown\",\"contact_assessment\":\"unresolved\",\"empty_open_hand\":true,\"end_boundary\":\"identified\",\"end_pixels\":[[500,442],[285,442]],\"identity\":\"same_package_unchanged\",\"notes\":\"End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.\",\"package_state\":\"unchanged\",\"sidewall_evidence\":\"unknown\",\"support\":\"same_support\",\"upward_retreat\":\"clear\"},\"points\":{\"u0\":{\"world_m\":[-0.0269692,0.144481,0.917966],\"depth_m\":0.0950708,\"frame_id\":144,\"pixel\":[392,514],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.018372,0.159574,0.917841],\"depth_m\":0.0951544,\"frame_id\":144,\"pixel\":[313,468],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0461782,0.129588,0.918498],\"depth_m\":0.09457,\"frame_id\":144,\"pixel\":[470,617],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0330021,0.17771,0.9],\"depth_m\":0.112925,\"frame_id\":144,\"pixel\":[243,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0324878,0.110174,0.9],\"depth_m\":0.113142,\"frame_id\":144,\"pixel\":[542,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"previous\":{\"frame_id\":144,\"parameters\":{\"camera\":\"robot0_eye_in_hand\",\"closure\":\"unknown\",\"contact_assessment\":\"unresolved\",\"empty_open_hand\":true,\"end_boundary\":\"identified\",\"end_pixels\":[[500,442],[285,442]],\"identity\":\"same_package_unchanged\",\"notes\":\"End pixels follow the supplied reference order: image-right then image-left upper-face end corner, not the outer dark rim. u0,u1,u2 sample exposed interior top; c0,c1 sample counter outside opposing long sides. Visible appearance and placement agree with the historical reference data; no earlier image was supplied for direct image comparison. Opposing long-side wall geometry and hidden contact are not established. Closure assessment assumes no additional descent; retreat assessment is independent.\",\"package_state\":\"unchanged\",\"sidewall_evidence\":\"unknown\",\"support\":\"same_support\",\"upward_retreat\":\"clear\"},\"points\":{\"u0\":{\"world_m\":[-0.0269692,0.144481,0.917966],\"depth_m\":0.0950708,\"frame_id\":144,\"pixel\":[392,514],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.018372,0.159574,0.917841],\"depth_m\":0.0951544,\"frame_id\":144,\"pixel\":[313,468],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0461782,0.129588,0.918498],\"depth_m\":0.09457,\"frame_id\":144,\"pixel\":[470,617],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0330021,0.17771,0.9],\"depth_m\":0.112925,\"frame_id\":144,\"pixel\":[243,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0324878,0.110174,0.9],\"depth_m\":0.113142,\"frame_id\":144,\"pixel\":[542,519],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}}},\"scope\":\"Historical model labels and public measurements, not current object states. Preserve physical landmark identity across camera motion.\"},\"historical_point_projections_if_stationary\":{\"u0\":{\"agentview\":[522.311,487.283],\"robot0_eye_in_hand\":[392.0,514.0]},\"u1\":{\"agentview\":[537.809,493.293],\"robot0_eye_in_hand\":[313.0,468.0]},\"u2\":{\"agentview\":[506.21,473.975],\"robot0_eye_in_hand\":[470.0,617.0]},\"c0\":{\"agentview\":[551.359,495.198],\"robot0_eye_in_hand\":[243.0,519.0]},\"c1\":{\"agentview\":[487.798,495.548],\"robot0_eye_in_hand\":[542.0,519.0]}},\"program_supplied_review_context\":{\"attempt\":1,\"center_world_m\":[-0.0532806,0.144382,0.917985],\"top_plane\":{\"coefficients\":[0.00131597,0.0254661,0.999675,-0.921293],\"center_world_m\":[-0.0524727,0.142037,0.918044],\"rms_m\":8.91339e-06,\"in_plane_spread_m\":[0.0268475,0.0110926]},\"counter_plane\":{\"coefficients\":[3.07537e-05,-1.96033e-07,1.0,-0.89996],\"center_world_m\":[-0.0450888,0.15066,0.899961],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0552986,0.0285792]},\"quaternion_xyzw\":[0.999995,0.00328947,0.0,0.0],\"end_reference_world_m\":[[-0.0132077,0.123958,0.918453],[-0.0134854,0.165099,0.917405]],\"state\":{\"frame_id\":144,\"native_steps\":144,\"budgets\":{\"gpt_remaining\":27,\"jev_remaining\":152,\"native_steps_remaining\":456,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522826,0.14578,0.91601],\"tcp_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"gripper_qpos_m\":[0.0399951,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-7.89937e-08,-2.35033e-06,-0.00359975],\"pad_extent_in_tool_m\":[0.016,0.0949952,0.016],\"finger_low_offset_tool_m\":[-0.0104949,-0.0664033,-0.0444681],\"finger_high_offset_tool_m\":[0.0104947,0.0663986,0.00924929]}},\"restart_after_stall\":true,\"prior_rejection_checkpoint\":\"secure.repair_reference\"}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_unchanged",
+                  "changed",
+                  "unknown"
+                ]
+              },
+              "support": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_support",
+                  "different_surface",
+                  "unknown"
+                ]
+              },
+              "sidewall_evidence": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "consistent",
+                  "contradicts",
+                  "unknown"
+                ]
+              },
+              "empty_open_hand": {
+                "type": "boolean"
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 6000
+              },
+              "camera": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "agentview",
+                  "robot0_eye_in_hand"
+                ]
+              },
+              "end_boundary": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "identified",
+                  "unknown"
+                ]
+              },
+              "end_pixels": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 767
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "minItems": 0,
+                "maxItems": 2
+              },
+              "closure": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "safe",
+                  "blocked",
+                  "unknown"
+                ]
+              },
+              "package_state": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "unchanged",
+                  "moved",
+                  "unknown"
+                ]
+              },
+              "upward_retreat": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "clear",
+                  "blocked",
+                  "unknown"
+                ]
+              },
+              "contact_assessment": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "visible_contact",
+                  "no_visible_contact",
+                  "unresolved"
+                ]
+              }
+            },
+            "required": [
+              "identity",
+              "support",
+              "sidewall_evidence",
+              "empty_open_hand",
+              "notes",
+              "camera",
+              "end_boundary",
+              "end_pixels",
+              "closure",
+              "package_state",
+              "upward_retreat",
+              "contact_assessment"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}
