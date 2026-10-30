@@ -1,0 +1,61 @@
+{
+  "index": 87,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "secure.pose_gate"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 156,
+  "response": {
+    "result": {
+      "key": "secure.pose_gate",
+      "frame_id": 144,
+      "method_number": 2,
+      "source_sha256": "92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a",
+      "bytes": 1203,
+      "value": {
+        "frame": 144,
+        "surface_validation_frame": 144,
+        "surface_measurement_frame": 144,
+        "actual_pad_world_m": [
+          -0.05228587569703348,
+          0.14579430384237718,
+          0.9196100933222343
+        ],
+        "actual_quaternion_xyzw": [
+          0.9999896205422898,
+          0.004241138049698056,
+          0.0004344995916160352,
+          0.001607098576787441
+        ],
+        "finger_bottom_world_z_m": 0.9065384738677811,
+        "counter_ceiling_world_z_m": 0.8999997917295539,
+        "top_floor_world_z_m": 0.9174048789633263,
+        "overlap_m": 0.005954434993573732,
+        "guard_m": 0.001741372874978718,
+        "required_guarded_counter_clearance_m": 0.003,
+        "required_guarded_overlap_m": 0.005,
+        "margins_m": {
+          "counter": 0.001797309263248452,
+          "overlap": -0.000786937881404986,
+          "lateral_opening": 0.00797715096577657
+        },
+        "scope": "Actual proprioceptive finger envelope versus freshly validated local surfaces. Commanded-position tolerance is no longer an unobserved pose error; the unchanged measurement guard remains. This is not a hidden-clearance certificate.",
+        "current_aperture": {
+          "usable_m": 0.06399514732991503,
+          "projected_half_width_m": 0.020880776328854468,
+          "center_offset_m": 0.0013982734953477574,
+          "guard_m": 0.001741372874978718,
+          "frame": 144,
+          "model": "Prismatic opening screen, not visible-straddling evidence."
+        }
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 156
+}

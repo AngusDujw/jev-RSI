@@ -1,0 +1,195 @@
+{
+  "model": "gpt-6-astra",
+  "reasoning": {
+    "effort": "xhigh"
+  },
+  "instructions": "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. Return submit_review only, all text English ASCII. parameters must match the method-declared strict schema exactly. Use the declared field names, types and enum literals. Schema adherence does not establish observation truth. The caller receives only measurements selected in this response; historical points shown in your context are not automatically returned to the program. Return all requested obtainable named points and regions, even if they were selected earlier. If a requested measurement is unavailable, explain the gap rather than silently assuming the caller has it. Apply the caller's evidence definitions at the scope of its proposed local action. Distinguish observed external obstruction, unobserved geometry, and robot self-occlusion; an unavailable global clearance certificate is not itself an observed obstruction. Assess a separately scoped observation-producing action using its current evidence rather than requiring evidence about a later action. When asked to check a local geometric-model hypothesis, report whether visible features support its stated assumptions and limits; do not invent hidden surfaces or a full-scene certificate. Do not invent hidden geometry or treat closed fingers as retention. A completion claim is not native success. The caller can process point clouds; use regions if a single point cannot represent the required geometry. No task recipes or hidden evaluator access exist.",
+  "input": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "input_text",
+          "text": "Current agentview; frame 156; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "de689900ded2da0adad80f480bf4b9b0fe13830d1edac869a9505dd74f496017",
+            "characters": 108715
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "Current robot0_eye_in_hand; frame 156; 768x768"
+        },
+        {
+          "type": "input_image",
+          "image_url": {
+            "image_sha256": "1698bf1a547c7394f4a91e3871ad5a23e333de9fc01ce0abdfb5e2c1ceb34d05",
+            "characters": 47851
+          },
+          "detail": "high"
+        },
+        {
+          "type": "input_text",
+          "text": "{\"instruction\":\"could you put the cream cheese into the bowl\",\"question\":\"Authorize only a straight upward open-hand observation move to this target, keeping actual orientation. The prior retreat is finished; this is an additional view-producing rise. Check empty hand, unchanged package support and this path only. Unknown later grasp gates do not veto a clear rise. No closure/descent.\",\"robot\":{\"frame_id\":156,\"native_steps\":156,\"budgets\":{\"gpt_remaining\":22,\"jev_remaining\":148,\"native_steps_remaining\":444,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522065,0.146456,0.926667],\"tcp_quaternion_xyzw\":[0.999992,0.00362927,0.000886784,0.00158112],\"gripper_qpos_m\":[0.0399957,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-6.6194e-07,-4.02916e-06,-0.00362039],\"pad_extent_in_tool_m\":[0.0160001,0.0949959,0.0160001],\"finger_low_offset_tool_m\":[-0.0104955,-0.0664053,-0.0444887],\"finger_high_offset_tool_m\":[0.0104942,0.0663973,0.00922868]}},\"cameras\":{\"agentview\":{\"K\":[[927.058,0.0,384.0],[0.0,927.058,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.0,0.628348,-0.777932,0.6586],[1.0,0.0,0.0,0.0],[0.0,-0.777932,-0.628348,1.6104],[0.0,0.0,0.0,1.0]]},\"robot0_eye_in_hand\":{\"K\":[[500.439,0.0,384.0],[0.0,500.439,384.0],[0.0,0.0,1.0]],\"camera_to_world_opencv\":[[0.00725611,-0.999972,0.00178633,-0.00238185],[-0.999969,-0.00726172,-0.00315529,0.147127],[0.00316817,-0.00176338,-0.999993,1.02378],[0.0,0.0,0.0,1.0]]}},\"recent_acknowledged_execution\":[{\"decision\":47,\"choices\":{\"x\":\"negative\",\"y\":\"negative\",\"z\":\"negative\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[-0.0130415,-0.0183817,-0.019752,0.0,0.0,0.0,-1.0],\"before\":[-0.0522774,0.145794,0.916028],\"after\":[-0.0522826,0.14578,0.91601],\"target_tcp\":[-0.0532805,0.14438,0.914508],\"acknowledged_steps\":3,\"native_steps\":144,\"frame_id\":144},{\"decision\":48,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.08,0.0,0.0,0.0,-1.0],\"before\":[-0.0522826,0.14578,0.91601],\"after\":[-0.0521533,0.145939,0.918519],\"target_tcp\":[-0.0522826,0.14578,0.92801],\"acknowledged_steps\":3,\"native_steps\":147,\"frame_id\":147},{\"decision\":49,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.08,0.0,0.0,0.0,-1.0],\"before\":[-0.0521533,0.145939,0.918519],\"after\":[-0.0521235,0.146107,0.921649],\"target_tcp\":[-0.0522836,0.145778,0.927969],\"acknowledged_steps\":3,\"native_steps\":150,\"frame_id\":150},{\"decision\":50,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.08,0.0,0.0,0.0,-1.0],\"before\":[-0.0521235,0.146107,0.921649],\"after\":[-0.0521528,0.146296,0.924751],\"target_tcp\":[-0.0522826,0.145778,0.92797],\"acknowledged_steps\":3,\"native_steps\":153,\"frame_id\":153},{\"decision\":51,\"choices\":{\"x\":\"hold\",\"y\":\"hold\",\"z\":\"positive\",\"rx\":\"hold\",\"ry\":\"hold\",\"rz\":\"hold\",\"gripper\":\"keep\"},\"action\":[0.0,0.0,0.041849,0.0,0.0,0.0,-1.0],\"before\":[-0.0521528,0.146296,0.924751],\"after\":[-0.0522065,0.146456,0.926667],\"target_tcp\":[-0.0522821,0.145778,0.92797],\"acknowledged_steps\":3,\"native_steps\":156,\"frame_id\":156}],\"recent_program_feedback\":[{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.stall\",{\"retreat_status\":\"finished\",\"failed_gate\":\"actual_open_grasp_pose\",\"failure_checkpoint\":\"secure.failure\",\"before_state\":{\"frame_id\":144,\"native_steps\":144,\"budgets\":{\"gpt_remaining\":26,\"jev_remaining\":152,\"native_steps_remaining\":456,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522826,0.14578,0.91601],\"tcp_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"gripper_qpos_m\":[0.0399951,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-7.89937e-08,-2.35033e-06,-0.00359975],\"pad_extent_in_tool_m\":[0.016,0.0949952,0.016],\"finger_low_offset_tool_m\":[-0.0104949,-0.0664033,-0.0444681],\"finger_high_offset_tool_m\":[0.0104947,0.0663986,0.00924929]}},\"review_frame\":144,\"target_pad_world_m\":[-0.0522859,0.145794,0.93161],\"command\":\"keep open actuation; upward only; no return descent\",\"reference_checkpoint\":\"secure.refinement\",\"after_state\":{\"frame_id\":156,\"native_steps\":156,\"budgets\":{\"gpt_remaining\":26,\"jev_remaining\":148,\"native_steps_remaining\":444,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522065,0.146456,0.926667],\"tcp_quaternion_xyzw\":[0.999992,0.00362927,0.000886784,0.00158112],\"gripper_qpos_m\":[0.0399957,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-6.6194e-07,-4.02916e-06,-0.00362039],\"pad_extent_in_tool_m\":[0.0160001,0.0949959,0.0160001],\"finger_low_offset_tool_m\":[-0.0104955,-0.0664053,-0.0444887],\"finger_high_offset_tool_m\":[0.0104942,0.0663973,0.00922868]}},\"drive_error\":null,\"actual_tcp_delta_world_m\":[7.61313e-05,0.00067571,0.010657],\"fresh_review\":{\"frame\":156,\"parameters\":{\"empty_open_hand\":\"yes\",\"finger_clearance\":\"clear\",\"package_support\":\"counter\"},\"notes\":\"Clearance describes the visible fingers only; the gripper body self-occludes part of the package. No retention or grasp is demonstrated. u0,u1,u2 are separated, noncollinear current interior top samples; c0,c1 are adjacent visible counter samples. These are depth sampling locations, not material correspondences. Review is limited to the upward retreat; no downward retry or closure is authorized, and bowl placement is not complete.\",\"points\":{\"u0\":{\"world_m\":[-0.0479314,0.157876,0.917879],\"depth_m\":0.10578,\"frame_id\":156,\"pixel\":[330,600],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.0204545,0.15597,0.917838],\"depth_m\":0.105876,\"frame_id\":156,\"pixel\":[340,470],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0265004,0.129346,0.918381],\"depth_m\":0.105406,\"frame_id\":156,\"pixel\":[466,500],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0285817,0.179643,0.900021],\"depth_m\":0.123604,\"frame_id\":156,\"pixel\":[250,490],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0380095,0.109117,0.900021],\"depth_m\":0.12381,\"frame_id\":156,\"pixel\":[535,530],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[]},\"upward_response\":{\"actual_rise_m\":0.010657,\"diagnostic_threshold_m\":0.008,\"target_rise_m\":0.012,\"position_tolerance_m\":0.0025,\"residual_margin_m\":0.00265697,\"scope\":\"Robot response only, not contact identification or retention.\"}}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.stall\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":4268,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":156},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":156,\"native_steps\":156,\"budgets\":{\"gpt_remaining\":25,\"jev_remaining\":148,\"native_steps_remaining\":444,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522065,0.146456,0.926667],\"tcp_quaternion_xyzw\":[0.999992,0.00362927,0.000886784,0.00158112],\"gripper_qpos_m\":[0.0399957,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-6.6194e-07,-4.02916e-06,-0.00362039],\"pad_extent_in_tool_m\":[0.0160001,0.0949959,0.0160001],\"finger_low_offset_tool_m\":[-0.0104955,-0.0664053,-0.0444887],\"finger_high_offset_tool_m\":[0.0104942,0.0663973,0.00922868]}}},\"frame_id\":156},{\"request\":{\"kind\":\"rpc\",\"method\":\"state\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":{\"frame_id\":156,\"native_steps\":156,\"budgets\":{\"gpt_remaining\":23,\"jev_remaining\":148,\"native_steps_remaining\":444,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522065,0.146456,0.926667],\"tcp_quaternion_xyzw\":[0.999992,0.00362927,0.000886784,0.00158112],\"gripper_qpos_m\":[0.0399957,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-6.6194e-07,-4.02916e-06,-0.00362039],\"pad_extent_in_tool_m\":[0.0160001,0.0949959,0.0160001],\"finger_low_offset_tool_m\":[-0.0104955,-0.0664053,-0.0444887],\"finger_high_offset_tool_m\":[0.0104942,0.0663973,0.00922868]}}},\"frame_id\":156},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[],\"kwargs\":{}},\"response\":{\"result\":[{\"key\":\"secure.partial\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2273,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.plane_check\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":985,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.geometry\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2275,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.failure\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1422,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.repair_reference\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":4910,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.refinement\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":3179,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.candidate\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1823,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.progress\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1986,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.alignment\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1122,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.stall\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":4268,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.pose_gate\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1203,\"source\":\"program-supplied historical data; not a fresh measurement\"}]},\"frame_id\":156},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[\"secure.stall\"],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.stall\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":4268,\"value\":{\"retreat_status\":\"finished\",\"failed_gate\":\"actual_open_grasp_pose\",\"failure_checkpoint\":\"secure.failure\",\"before_state\":{\"frame_id\":144,\"native_steps\":144,\"budgets\":{\"gpt_remaining\":26,\"jev_remaining\":152,\"native_steps_remaining\":456,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522826,0.14578,0.91601],\"tcp_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"gripper_qpos_m\":[0.0399951,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-7.89937e-08,-2.35033e-06,-0.00359975],\"pad_extent_in_tool_m\":[0.016,0.0949952,0.016],\"finger_low_offset_tool_m\":[-0.0104949,-0.0664033,-0.0444681],\"finger_high_offset_tool_m\":[0.0104947,0.0663986,0.00924929]}},\"review_frame\":144,\"target_pad_world_m\":[-0.0522859,0.145794,0.93161],\"command\":\"keep open actuation; upward only; no return descent\",\"reference_checkpoint\":\"secure.refinement\",\"after_state\":{\"frame_id\":156,\"native_steps\":156,\"budgets\":{\"gpt_remaining\":26,\"jev_remaining\":148,\"native_steps_remaining\":444,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522065,0.146456,0.926667],\"tcp_quaternion_xyzw\":[0.999992,0.00362927,0.000886784,0.00158112],\"gripper_qpos_m\":[0.0399957,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-6.6194e-07,-4.02916e-06,-0.00362039],\"pad_extent_in_tool_m\":[0.0160001,0.0949959,0.0160001],\"finger_low_offset_tool_m\":[-0.0104955,-0.0664053,-0.0444887],\"finger_high_offset_tool_m\":[0.0104942,0.0663973,0.00922868]}},\"drive_error\":null,\"actual_tcp_delta_world_m\":[7.61313e-05,0.00067571,0.010657],\"fresh_review\":{\"frame\":156,\"parameters\":{\"empty_open_hand\":\"yes\",\"finger_clearance\":\"clear\",\"package_support\":\"counter\"},\"notes\":\"Clearance describes the visible fingers only; the gripper body self-occludes part of the package. No retention or grasp is demonstrated. u0,u1,u2 are separated, noncollinear current interior top samples; c0,c1 are adjacent visible counter samples. These are depth sampling locations, not material correspondences. Review is limited to the upward retreat; no downward retry or closure is authorized, and bowl placement is not complete.\",\"points\":{\"u0\":{\"world_m\":[-0.0479314,0.157876,0.917879],\"depth_m\":0.10578,\"frame_id\":156,\"pixel\":[330,600],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u1\":{\"world_m\":[-0.0204545,0.15597,0.917838],\"depth_m\":0.105876,\"frame_id\":156,\"pixel\":[340,470],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"u2\":{\"world_m\":[-0.0265004,0.129346,0.918381],\"depth_m\":0.105406,\"frame_id\":156,\"pixel\":[466,500],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c0\":{\"world_m\":[-0.0285817,0.179643,0.900021],\"depth_m\":0.123604,\"frame_id\":156,\"pixel\":[250,490],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"},\"c1\":{\"world_m\":[-0.0380095,0.109117,0.900021],\"depth_m\":0.12381,\"frame_id\":156,\"pixel\":[535,530],\"camera\":\"robot0_eye_in_hand\",\"source\":\"current_depth_patch_backprojection\"}},\"measurement_errors\":[]},\"upward_response\":{\"actual_rise_m\":0.010657,\"diagnostic_threshold_m\":0.008,\"target_rise_m\":0.012,\"position_tolerance_m\":0.0025,\"residual_margin_m\":0.00265697,\"scope\":\"Robot response only, not contact identification or retention.\"}},\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":156},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[\"secure.geometry\"],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.geometry\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2275,\"value\":{\"frame\":0,\"top_plane\":{\"coefficients\":[0.00131597,0.0254661,0.999675,-0.921293],\"center_world_m\":[-0.0524727,0.142037,0.918044],\"rms_m\":8.91339e-06,\"in_plane_spread_m\":[0.0268475,0.0110926]},\"counter_plane\":{\"coefficients\":[3.07537e-05,-1.96033e-07,1.0,-0.89996],\"center_world_m\":[-0.0450888,0.15066,0.899961],\"rms_m\":0.0,\"in_plane_spread_m\":[0.0552986,0.0285792]},\"upper_corners_world_m\":[[-0.0134854,0.165099,0.917405],[-0.0132077,0.123958,0.918453],[-0.0936574,0.123429,0.918572],[-0.0927722,0.165043,0.917511]],\"center_world_m\":[-0.0532806,0.144382,0.917985],\"width_m\":0.0411419,\"length_m\":0.0804514,\"height_m\":0.0174051,\"quaternion_xyzw\":[0.999995,0.00328947,0.0,0.0],\"grasp_pad_z_m\":0.918108,\"guard_m\":0.00174137,\"grasp_tolerance_m\":0.0005,\"finger_bottom_offset_m\":-0.012849,\"side_overlap_m\":0.00729703,\"nominal_usable_aperture_m\":0.0639951,\"required_aperture_m\":0.0476303,\"aperture_assumption\":\"Symmetric prismatic joint separation less one transverse pad-size allowance is a conservative screening model, not measured inner-face clearance; fresh visible straddling is also required.\",\"p0_identity\":\"White curled capital C beginning Cream near the upper end of the printed blue logo.\",\"top_floor_world_z_m\":0.917405,\"counter_ceiling_world_z_m\":0.9,\"required_nominal_overlap_m\":0.007,\"candidate_checkpoint\":\"secure.candidate\",\"refinement_checkpoint\":\"secure.refinement\",\"geometry_scope\":\"Revalidated historical footprint; target is historical, NOT correction authority. Actual-pose gates control closure; retreat requires its own review.\",\"guard_provenance\":\"Historical guard, never reduced, plus measured top/support disagreement; current fit floor also retained.\"},\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":156},{\"request\":{\"kind\":\"rpc\",\"method\":\"recall\",\"args\":[\"secure.pose_gate\"],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.pose_gate\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1203,\"value\":{\"frame\":144,\"surface_validation_frame\":144,\"surface_measurement_frame\":144,\"actual_pad_world_m\":[-0.0522859,0.145794,0.91961],\"actual_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"finger_bottom_world_z_m\":0.906538,\"counter_ceiling_world_z_m\":0.9,\"top_floor_world_z_m\":0.917405,\"overlap_m\":0.00595443,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"margins_m\":{\"counter\":0.00179731,\"overlap\":-0.000786938,\"lateral_opening\":0.00797715},\"scope\":\"Actual proprioceptive finger envelope versus freshly validated local surfaces. Commanded-position tolerance is no longer an unobserved pose error; the unchanged measurement guard remains. This is not a hidden-clearance certificate.\",\"current_aperture\":{\"usable_m\":0.0639951,\"projected_half_width_m\":0.0208808,\"center_offset_m\":0.00139827,\"guard_m\":0.00174137,\"frame\":144,\"model\":\"Prismatic opening screen, not visible-straddling evidence.\"}},\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":156},{\"request\":{\"kind\":\"rpc\",\"method\":\"checkpoint\",\"args\":[\"secure.view\",{\"phase\":\"assessment\",\"entry_state\":{\"frame_id\":156,\"native_steps\":156,\"budgets\":{\"gpt_remaining\":23,\"jev_remaining\":148,\"native_steps_remaining\":444,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522065,0.146456,0.926667],\"tcp_quaternion_xyzw\":[0.999992,0.00362927,0.000886784,0.00158112],\"gripper_qpos_m\":[0.0399957,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-6.6194e-07,-4.02916e-06,-0.00362039],\"pad_extent_in_tool_m\":[0.0160001,0.0949959,0.0160001],\"finger_low_offset_tool_m\":[-0.0104955,-0.0664053,-0.0444887],\"finger_high_offset_tool_m\":[0.0104942,0.0663973,0.00922868]}},\"retreat_checkpoint\":\"secure.stall\",\"prior_pose_gate\":{\"frame\":144,\"surface_validation_frame\":144,\"surface_measurement_frame\":144,\"actual_pad_world_m\":[-0.0522859,0.145794,0.91961],\"actual_quaternion_xyzw\":[0.99999,0.00424114,0.0004345,0.0016071],\"finger_bottom_world_z_m\":0.906538,\"counter_ceiling_world_z_m\":0.9,\"top_floor_world_z_m\":0.917405,\"overlap_m\":0.00595443,\"guard_m\":0.00174137,\"required_guarded_counter_clearance_m\":0.003,\"required_guarded_overlap_m\":0.005,\"margins_m\":{\"counter\":0.00179731,\"overlap\":-0.000786938,\"lateral_opening\":0.00797715},\"scope\":\"Actual proprioceptive finger envelope versus freshly validated local surfaces. Commanded-position tolerance is no longer an unobserved pose error; the unchanged measurement guard remains. This is not a hidden-clearance certificate.\",\"current_aperture\":{\"usable_m\":0.0639951,\"projected_half_width_m\":0.0208808,\"center_offset_m\":0.00139827,\"guard_m\":0.00174137,\"frame\":144,\"model\":\"Prismatic opening screen, not visible-straddling evidence.\"}},\"guard_m\":0.00174137}],\"kwargs\":{}},\"response\":{\"result\":{\"key\":\"secure.view\",\"frame_id\":156,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":2199,\"source\":\"program-supplied historical data; not a fresh measurement\"}},\"frame_id\":156}],\"program_checkpoint_manifest\":[{\"key\":\"secure.partial\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":2273,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.plane_check\",\"frame_id\":0,\"method_number\":0,\"source_sha256\":\"8f2b6f1e27b41c4ec6612c992944ed7ae33595ae92c88a362bdee3e35f4011a0\",\"bytes\":985,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.geometry\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":2275,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.failure\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1422,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.repair_reference\",\"frame_id\":0,\"method_number\":1,\"source_sha256\":\"bfdabcd1a0737d6cbcd292c46191ef3eed86e266b85f8162a1b987513e75bc29\",\"bytes\":4910,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.refinement\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":3179,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.candidate\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1823,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.progress\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1986,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.alignment\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1122,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.stall\",\"frame_id\":156,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":4268,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.pose_gate\",\"frame_id\":144,\"method_number\":2,\"source_sha256\":\"92f91da0c1ac4810913b159b241d1dc22288624e6fed2351fe0b37c7ff755e2a\",\"bytes\":1203,\"source\":\"program-supplied historical data; not a fresh measurement\"},{\"key\":\"secure.view\",\"frame_id\":156,\"method_number\":3,\"source_sha256\":\"a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52\",\"bytes\":2199,\"source\":\"program-supplied historical data; not a fresh measurement\"}],\"program_supplied_review_context\":{\"state\":{\"frame_id\":156,\"native_steps\":156,\"budgets\":{\"gpt_remaining\":23,\"jev_remaining\":148,\"native_steps_remaining\":444,\"wall_seconds_remaining\":1000000000000.0},\"tcp_position_world_m\":[-0.0522065,0.146456,0.926667],\"tcp_quaternion_xyzw\":[0.999992,0.00362927,0.000886784,0.00158112],\"gripper_qpos_m\":[0.0399957,-0.0400001],\"last_gripper_command\":\"open\",\"own_geometry\":{\"pad_center_in_tool_m\":[-6.6194e-07,-4.02916e-06,-0.00362039],\"pad_extent_in_tool_m\":[0.0160001,0.0949959,0.0160001],\"finger_low_offset_tool_m\":[-0.0104955,-0.0664053,-0.0444887],\"finger_high_offset_tool_m\":[0.0104942,0.0663973,0.00922868]}},\"target_pad_world_m\":[-0.0522136,0.146472,0.975572],\"prior_retreat_frame\":156}}"
+        }
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "name": "submit_review",
+      "description": "Return the requested executable method, unique method patch, or observation review",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "continue",
+              "complete",
+              "stop"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "points": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "pixel": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "radius": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 6
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "pixel",
+                "radius"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "regions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "camera": {
+                  "type": "string",
+                  "enum": [
+                    "agentview",
+                    "robot0_eye_in_hand"
+                  ]
+                },
+                "box": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "stride": {
+                  "type": "integer",
+                  "minimum": 4,
+                  "maximum": 32
+                }
+              },
+              "required": [
+                "name",
+                "camera",
+                "box",
+                "stride"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "identity": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "same_package_on_counter",
+                  "changed",
+                  "unknown"
+                ]
+              },
+              "empty_open_hand": {
+                "type": "boolean"
+              },
+              "clear": {
+                "type": "string",
+                "maxLength": 6000,
+                "enum": [
+                  "clear",
+                  "blocked",
+                  "unknown"
+                ]
+              },
+              "notes": {
+                "type": "string",
+                "maxLength": 6000
+              }
+            },
+            "required": [
+              "identity",
+              "empty_open_hand",
+              "clear",
+              "notes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "status",
+          "explanation",
+          "points",
+          "regions",
+          "parameters"
+        ],
+        "additionalProperties": false
+      },
+      "strict": true
+    }
+  ],
+  "tool_choice": {
+    "type": "function",
+    "name": "submit_review"
+  },
+  "parallel_tool_calls": false,
+  "store": false
+}

@@ -494,3 +494,15 @@ replaying failed descent or weakening margins. Third local patch request16
 uses submit_method_patch, jobc7590d76b9ce49e889b89bc3feecbd41 / native
 thread01a18ee0-80fc-7030-b25a-81bac10e68a0, actual child1058049 observed.
 No new control beyond52Jev156steps. Grasp/whole-task success unproven.
+
+## Candidate third patch delivered; alternate observation and contact station
+
+Builder16 returned12 replacements in901.261s without reconnect/recovery.
+Unique replacement replay matches method3,475 lines. It resumesframe156,
+proposes separately reviewed upward clearance then elevated lateral/oblique
+view, and a different observed contact segment near the exposed end. Old
+failed operands retained; local observed sidewalls/top replace historical
+height bounds only at the new segment. Existing uncertainty/overlap/counter
+margins remain. No task-specific edits from the outer agent. Review17 job
+1880f19308f54ab7ac1de82905cea169 is active; actual child1090064 observed.
+Still52Jev156steps; proposed moves and grasp remain unvalidated.

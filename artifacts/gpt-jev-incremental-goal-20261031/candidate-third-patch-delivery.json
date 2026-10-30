@@ -1,0 +1,12 @@
+{
+  "elapsed_s": 901.2605298759881,
+  "replacements": 12,
+  "assembled_lines": 475,
+  "source_sha256": "a94730dbb591f9514d0ff4b01434b193d5afea04a0202ed906cf63d14ce70a52",
+  "assembly_replay_matches": true,
+  "reconnects": 0,
+  "frame": 156,
+  "jev_calls": 52,
+  "next_review": "1880f19308f54ab7ac1de82905cea169",
+  "scope": "Actual patch delivery and assembly; proposed alternate view and grasp station are unexecuted, no native success."
+}

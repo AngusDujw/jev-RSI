@@ -1,0 +1,475 @@
+def main(api):
+    logs, keys = [], []
+    s0 = api.state()
+    def save(key, value):
+        api.checkpoint(key, value)
+        if key not in keys: keys.append(key)
+    def result(status, reason, extra=None):
+        return {"stage_status": status, "reason": reason, "evidence": {"events": logs[-10:], "detail": extra}, "handoff": {"stage": "secure", "checkpoint_keys": keys, "state": api.state(), "frames": "All metric coordinates are world meters; quaternions are tool-to-world xyzw.", "assumptions": "Do not reopen. Check actual holding state before further motion. Geometry in secure.geometry is historical after contact. Current patch observations are not a complete package pose. Bowl observations do not authorize transport or release."}, "completion_proposed": False}
+    def fail(gate, action, operands, reason, status="blocked"):
+        d = {"gate": gate, "prevented_action": action, "operands_and_margins": operands, "observation_frame": api.state()["frame_id"], "reason": reason}
+        save("secure.failure", d)
+        return result(status, reason, d)
+    def valid(r, name):
+        return name in r["points"] and not any(e["name"] == name for e in r["measurement_errors"])
+    def points(r, names):
+        return np.array([r["points"][n]["world_m"] for n in names], dtype=float)
+    def review(question, context, fields):
+        r = api.review(question, context=context, fields=fields)
+        logs.append({"review_frame": r["frame_id"], "parameters": r["parameters"], "measurement_errors": r["measurement_errors"]})
+        return r
+    questions = {}
+    for axis in ["x", "y", "z", "rx", "ry", "rz"]:
+        subject = "world translation " + axis if len(axis) == 1 else "world rotation-vector " + axis[1]
+        questions[axis] = {"type": "choice", "instructions": "Control " + subject + " using its supplied goal_relation only. Select negative for decrease, positive for increase, and hold for within_tolerance. The program, not you, measured geometry and authorized this local action. Do not infer object pose or contact.", "criteria": {"negative": "Decrease this world component when its goal_relation is decrease.", "hold": "Zero this component when its goal_relation is within_tolerance.", "positive": "Increase this world component when its goal_relation is increase."}}
+    questions["gripper"] = {"type": "choice", "instructions": "Use state.processed_features.objective.gripper exactly. This is a commanded actuator choice, not a grasp assessment.", "criteria": {"open": "Open only for objective gripper open.", "close": "Close only for objective gripper close.", "keep": "Preserve the previous gripper actuation for objective gripper keep."}}
+    def errors(s, target, q):
+        p = float(np.linalg.norm(geo.pad_position(s) - np.array(target)))
+        a = 2 * math.acos(min(1.0, abs(float(np.dot(s["tcp_quaternion_xyzw"], q)))))
+        return p, a
+    def drive(target, q, phase, cap, reserve, tol=0.003, speed=0.02):
+        used = 0
+        for lease in range(5):
+            before = api.state(); b = before["budgets"]
+            n = min(24, cap-used, int(b["jev_remaining"])-reserve, int((b["native_steps_remaining"]-3*reserve)//3))
+            if n < 1: return {"phase": phase, "reason": "No remaining bounded control allowance; no new motion authorized.", "used": used}
+            eb = errors(before, target, q)
+            receipt = api.drive(target, q, "keep", questions, features={"source": "program_measured_geometry_and_proprioception", "phase": phase, "authorized_local_target_world_m": target, "geometry_checkpoint": "secure.geometry", "guard_m": guard, "no_object_effect_inferred_from_pose": True}, max_calls=n, tool_point="pad_center", translation_limit=speed, rotation_limit=0.08, steps=3, position_tolerance=tol, rotation_tolerance=0.01)
+            after = api.state(); ea = errors(after, target, q); used += receipt["lease_calls"]
+            progress = {"phase": phase, "receipt_status": receipt["status"], "lease_calls": receipt["lease_calls"], "before_state": before, "after_state": after, "position_gain_m": eb[0]-ea[0], "rotation_gain_rad": eb[1]-ea[1], "remaining_position_error_m": ea[0]}
+            save("secure.progress", progress); logs.append(progress)
+            if receipt["choices"]["gripper"] != "keep": return {"phase": phase, "reason": "Gripper command mismatch; inspect actual state.", "receipt": receipt}
+            if receipt["status"] == "reached": return None
+            if receipt["status"] == "stalled": return {"phase": phase, "reason": "Stalled local motion; do not repeat contact.", "progress": progress}
+            if receipt["status"] != "lease_exhausted" or (eb[0]-ea[0] < 0.0005 and eb[1]-ea[1] < 0.005):
+                return {"phase": phase, "reason": "No independent whole-lease progress toward the authorized pose.", "progress": progress}
+        return {"phase": phase, "reason": "Finite feedback allowance ended; actual progress is checkpointed."}
+    pixel = {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 767}, "minItems": 2, "maxItems": 2}
+    fields = {"identity": ["cream_cheese_on_counter", "different_state", "unknown"], "top_boundary": ["four_visible_corners", "unknown"], "camera": ["agentview", "robot0_eye_in_hand"], "corners": {"type": "array", "items": pixel, "minItems": 4, "maxItems": 4}, "p0_identity": "string", "same_counter_support": "boolean", "empty_open_hand": "boolean", "notes": "string"}
+    geometry_ok = False
+    manifest = [m["key"] for m in api.recall()]
+    resume = s0["native_steps"] > 0
+    alternate = False
+    if resume:
+        keys = list(manifest)
+        if s0["last_gripper_command"] != "open" or abs(s0["gripper_qpos_m"][0]-s0["gripper_qpos_m"][1]) < 0.07:
+            return fail("restart_actuation", "replay approach", {"actual_state":s0}, "Unexpected holding/actuation state; do not reopen.", "needs_replan")
+        if not all(k in manifest for k in ["secure.geometry","secure.partial"]):
+            return fail("restart_reference", "contact", {"available_keys":manifest}, "Missing historical reference; no replay.")
+        if "secure.stall" in manifest:
+            previous_stall = api.recall("secure.stall")["value"]
+            if previous_stall.get("retreat_status") == "started":
+                return fail("unfinished_retreat", "repeat recovery", {"checkpoint":"secure.stall","actual_state":s0}, "Inspect the acknowledged partial retreat; no replay.")
+            if previous_stall.get("retreat_status") == "finished":
+                if "secure.view" in manifest:
+                    return fail("alternate_attempt_already_recorded", "replay alternate approach", {"checkpoint":"secure.view","actual_state":s0}, "Use the recorded actual view/contact progress in a new revision, not another automatic attempt.")
+                old_geom = api.recall("secure.geometry")["value"]
+                guard = float(old_geom["guard_m"])
+                view = {"phase":"assessment", "entry_state":s0, "retreat_checkpoint":"secure.stall", "prior_pose_gate":api.recall("secure.pose_gate")["value"], "guard_m":guard}
+                save("secure.view",view)
+                if s0["budgets"]["gpt_remaining"] < 4:
+                    return fail("observation_budget","alternate contact strategy",{"remaining":s0["budgets"],"reserved_reviews":4},"Insufficient observations for the two view actions and bounded replacement measurements.")
+                vf = {"identity":["same_package_on_counter","changed","unknown"],"empty_open_hand":"boolean","clear":["clear","blocked","unknown"],"notes":"string"}
+                top_z = float(max(pt[2] for pt in old_geom["upper_corners_world_m"]))
+                target_up = geo.pad_position(s0).copy()
+                target_up[2] = max(float(target_up[2]),top_z+0.057)
+                vr = review("Authorize only a straight upward open-hand observation move to this target, keeping actual orientation. The prior retreat is finished; this is an additional view-producing rise. Check empty hand, unchanged package support and this path only. Unknown later grasp gates do not veto a clear rise. No closure/descent.", {"state":s0,"target_pad_world_m":target_up.tolist(),"prior_retreat_frame":previous_stall["after_state"]["frame_id"]},vf)
+                if vr["status"] == "stop": return result("abort","Observation requested stop.")
+                vp = vr["parameters"]
+                if vp["identity"] == "changed" or not vp["empty_open_hand"]:
+                    return result("needs_replan","Actual package or holding state changed; do not reopen.",vp)
+                if vp["identity"] != "same_package_on_counter" or vp["clear"] != "clear":
+                    return fail("upward_observation_path","additional upward view move",vp,"The new upward observation path is not supported.")
+                view.update({"phase":"upward_started","upward_review_frame":vr["frame_id"],"target_pad_world_m":target_up.tolist()})
+                save("secure.view",view)
+                err = drive(target_up.tolist(),s0["tcp_quaternion_xyzw"],"alternate_view_raise",28,65,0.0025,0.008)
+                st = api.state()
+                view.update({"phase":"upward_finished","raised_state":st,"drive_error":err})
+                save("secure.view",view)
+                if err is not None: return result("blocked",err["reason"],{"checkpoint":"secure.view","drive_error":err})
+                og = st["own_geometry"]; low = og["finger_low_offset_tool_m"]; high = og["finger_high_offset_tool_m"]
+                env = np.array([[x,y,z] for x in [low[0],high[0]] for y in [low[1],high[1]] for z in [low[2],high[2]]])-np.array(og["pad_center_in_tool_m"])
+                radius = float(np.max(np.linalg.norm(env,axis=1)))
+                angle = 0.35
+                swept_low = float(geo.pad_position(st)[2]+np.min(env.dot(geo.rotation(st["tcp_quaternion_xyzw"]).T)[:,2])-2*radius*math.sin((angle+0.02)/2)-0.0025)
+                swept = {"frame":st["frame_id"],"own_envelope_radius_m":radius,"rotation_bound_rad":angle+0.02,"pose_allowance_m":0.0025,"finger_lower_bound_z_m":swept_low,"historical_package_top_z_m":top_z,"guard_m":guard,"clearance_threshold_m":0.003,"residual_margin_m":swept_low-top_z-guard-0.003,"scope":"Own-finger bound above reidentified stationary package only; other obstacles still require current path review."}
+                view["tilt_envelope_gate"] = swept; save("secure.view",view)
+                if swept["residual_margin_m"] < 0:
+                    return fail("observation_tilt_height","oblique view motion",swept,"Insufficient measured height for the bounded tilt; no lateral motion or contact.")
+                view_target = geo.pad_position(st)+np.array([0.0,0.025,0.0])
+                view_q = api.compose(st["tcp_quaternion_xyzw"],[-angle,0.0,0.0])
+                vr = review("Authorize only this elevated observation pose: translate the pad 25 mm in positive world y and tilt -0.35 rad about world x, keeping OPEN actuation. Check swept hand clearance from bowl/bottle/cabinet and view utility. Wrist should expose the positive-y side, agentview the opposite. No hidden-clearance certificate or grasp authorization.",{"state":st,"target_pad_world_m":view_target.tolist(),"target_quaternion_xyzw":view_q,"package_only_envelope_gate":swept},vf)
+                if vr["status"] == "stop": return result("abort","Observation requested stop.")
+                vp = vr["parameters"]
+                if vp["identity"] == "changed" or not vp["empty_open_hand"]:
+                    return result("needs_replan","Package or holding state changed during observation ascent.",vp)
+                if vp["identity"] != "same_package_on_counter" or vp["clear"] != "clear":
+                    return fail("oblique_observation_path","elevated lateral tilt",vp,"Oblique observation path is not supported; do not descend.")
+                view.update({"phase":"oblique_started","oblique_review_frame":vr["frame_id"],"view_target_pad_world_m":view_target.tolist(),"view_quaternion_xyzw":view_q})
+                save("secure.view",view)
+                err = drive(view_target.tolist(),view_q,"alternate_oblique_view",34,60,0.0025,0.008)
+                st = api.state()
+                view.update({"phase":"oblique_finished","oblique_state":st,"drive_error":err})
+                save("secure.view",view)
+                if err is not None: return result("blocked",err["reason"],{"checkpoint":"secure.view","drive_error":err})
+                oc = np.array(old_geom["upper_corners_world_m"]); origin = np.mean(oc,axis=0)
+                end = oc[np.argsort(oc[:,0])[-2:]].mean(axis=0)
+                along = end-origin; along[2] = 0.0; along = along/np.linalg.norm(along)
+                across = np.array([-along[1],along[0],0.0])
+                shift = min(0.020,0.25*float(old_geom["length_m"]))
+                alternate_center = origin+shift*along
+                half_zone = max(0.012,float(st["own_geometry"]["pad_extent_in_tool_m"][0])/2+guard+0.001)
+                expected = np.array([alternate_center+a*half_zone*along+b*float(old_geom["width_m"])/2*across for a,b in [(-1,1),(1,1),(1,-1),(-1,-1)]])
+                af = {"identity":["same_package_unchanged","changed","unknown"],"support":["same_support","different_surface","unknown"],"empty_open_hand":"boolean","sidewall_evidence":["consistent","contradicts","unknown"],"candidate_path":["clear","blocked","unknown"],"local_boundary":["visible","unknown"],"camera":["agentview","robot0_eye_in_hand"],"edge_pixels":{"type":"array","items":pixel,"minItems":0,"maxItems":4},"notes":{"type":"string","maxLength":900}}
+                observed = False
+                for attempt in range(2):
+                    ar = review("Assess a DIFFERENT grasp station shifted toward the exposed positive-world-x end, not the failed central descent. Request separated noncollinear interior top points u0,u1,u2 near this station and adjacent counter points c0,c1. Request a0,a1 at two separated heights on the positive-across long wall, and b0,b1 on the opposite wall, within the supplied contact segment. Use both views, depth-valid wall interiors and different heights, not fingers/background. consistent requires visible wall continuity from top toward support on BOTH local sides; unknown is not clear. Return edge_pixels at the four supplied upper-edge cross-section endpoints IN ORDER in one camera, or []/unknown. These are sampling locations, not material corners. Assess this changed open-finger approach independently; do not claim the prior stall cause is known. On retry use different samples or view. No contact yet.",{"attempt":attempt,"candidate_center_world_m":alternate_center.tolist(),"long_axis_world":along.tolist(),"positive_across_world":across.tolist(),"expected_upper_segment_world_m":expected.tolist(),"historical_geometry":old_geom,"actual_state":st,"failed_pose_checkpoint":"secure.pose_gate"},af)
+                    if ar["status"] == "stop": return result("abort","Observation requested stop.")
+                    ap = ar["parameters"]
+                    view.update({"phase":"candidate_observed","candidate_frame":ar["frame_id"],"parameters":ap,"points":ar["points"],"measurement_errors":ar["measurement_errors"],"candidate_center_world_m":alternate_center.tolist(),"shift_from_failed_station_m":shift})
+                    save("secure.view",view)
+                    if ap["identity"] == "changed" or ap["support"] == "different_surface" or not ap["empty_open_hand"]:
+                        return result("needs_replan","The new view invalidates the stationary-package entry relation.",{"checkpoint":"secure.view"})
+                    if ap["candidate_path"] == "blocked" or ap["sidewall_evidence"] == "contradicts":
+                        return fail("different_station_interference","alternate grasp approach",{"checkpoint":"secure.view","parameters":ap},"The alternate candidate has an established obstruction; no contact.")
+                    names = ["u0","u1","u2","c0","c1","a0","a1","b0","b1"]
+                    if ap["identity"] != "same_package_unchanged" or ap["support"] != "same_support" or not all(valid(ar,n) for n in names) or ap["local_boundary"] != "visible" or len(ap["edge_pixels"]) != 4: continue
+                    try:
+                        fresh = geo.plane(points(ar,["u0","u1","u2"]))
+                        pq = {"horizontal":float(fresh["coefficients"][2])-0.985,"fit_m":guard-2*float(fresh["rms_m"]),"spread_m":min(fresh["in_plane_spread_m"])-4*guard}
+                        view["local_plane_gate"] = {"frame":ar["frame_id"],"plane":fresh,"guard_m":guard,"thresholds":{"normal_z_min":0.985,"rms_max_m":guard/2,"spread_min_m":4*guard},"margins":pq}
+                        save("secure.view",view)
+                        if not all(v >= 0 for v in pq.values()): continue
+                        walls = [points(ar,ns) for ns in [["a0","a1"],["b0","b1"]]]
+                        local_upper = np.array([api.plane_point(ap["camera"],px,fresh["coefficients"])["world_m"] for px in ap["edge_pixels"]])
+                    except Exception as exc:
+                        view["measurement_exception"] = str(exc); save("secure.view",view); continue
+                    nt = np.array(old_geom["top_plane"]["coefficients"]); nc = np.array(old_geom["counter_plane"]["coefficients"])
+                    top_res = float(np.max(np.abs(points(ar,["u0","u1","u2"]).dot(nt[:3])+nt[3])))
+                    support_res = float(np.max(np.abs(points(ar,["c0","c1"]).dot(nc[:3])+nc[3])))
+                    edge_error = float(np.max(np.linalg.norm((local_upper-expected)[:,:2],axis=1)))
+                    alternate_guard = max(guard,2*float(fresh["rms_m"]))
+                    margins = {"top_reference_m":guard-top_res,"support_reference_m":guard-support_res,"local_boundary_xy_m":2*guard-edge_error,"top_horizontal":float(fresh["coefficients"][2])-0.985,"top_fit_m":guard-2*float(fresh["rms_m"]),"top_spread_m":min(fresh["in_plane_spread_m"])-4*guard,"end_inset_m":float(old_geom["length_m"])/2-shift-half_zone-2*guard}
+                    for i,w in enumerate(walls):
+                        side = 1.0 if i == 0 else -1.0
+                        lateral_res = float(np.max(np.abs((w-origin).dot(across)-side*float(old_geom["width_m"])/2)))
+                        margins["wall_location_"+str(i)] = 2*guard-lateral_res
+                        margins["wall_vertical_signal_"+str(i)] = abs(float(w[0,2]-w[1,2]))-2*guard
+                        margins["wall_locality_"+str(i)] = half_zone-float(np.max(np.abs((w-alternate_center).dot(along))))
+                        margins["wall_height_"+str(i)] = guard-float(max(0.0,np.max(w[:,2])-np.max(local_upper[:,2])))
+                    view["candidate_geometry"] = {"frame":ar["frame_id"],"historical_reference_frame":old_geom["frame"],"top":fresh,"sidewall_points_world_m":[w.tolist() for w in walls],"local_upper_world_m":local_upper.tolist(),"expected_upper_segment_world_m":expected.tolist(),"top_reference_residual_m":top_res,"support_reference_residual_m":support_res,"boundary_xy_error_m":edge_error,"guard_m":alternate_guard,"thresholds":{"reference_m":guard,"boundary_and_wall_m":2*guard,"wall_vertical_signal_m":2*guard,"contact_half_zone_m":half_zone,"half_package_length_m":float(old_geom["length_m"])/2,"station_shift_m":shift},"margins":margins,"guard_provenance":"Guard never reduced. Current local heights replace global heights only for the observed segment; old-model residuals validate stationarity, not propagated old heights."}
+                    save("secure.view",view)
+                    if top_res > guard or support_res > guard or edge_error > 2*guard:
+                        return fail("alternate_station_reference","contact",view["candidate_geometry"],"Fresh measurements disagree with the retained package/support reference.","needs_replan")
+                    if all(v >= 0 for v in margins.values()) and ap["identity"] == "same_package_unchanged" and ap["support"] == "same_support" and ap["sidewall_evidence"] == "consistent" and ap["candidate_path"] == "clear":
+                        alternate_floor = float(np.min(local_upper[:,2]))
+                        fn = fresh["coefficients"]; alternate_center[2] = -(fn[0]*alternate_center[0]+fn[1]*alternate_center[1]+fn[3])/fn[2]
+                        alternate_observation = ar
+                        observed = True
+                        break
+                if not observed:
+                    return fail("alternate_station_measurement","new grasp approach",{"checkpoint":"secure.view","parameters":ar["parameters"],"measurement_errors":ar["measurement_errors"],"diagnostics":view.get("candidate_geometry")},"New view acquired, but local sidewall/segment evidence or unchanged margins do not support this different candidate.")
+                if api.state()["budgets"]["gpt_remaining"] < 9:
+                    return fail("remaining_contact_observations","alternate contact sequence",{"remaining":api.state()["budgets"],"required_reviews":9,"view_checkpoint":"secure.view"},"Useful new geometry is saved, but insufficient observations remain for approach, closure and effect checks.")
+                alternate = True
+                s0 = api.state()
+                view["phase"] = "different_candidate_accepted"
+                save("secure.view",view)
+        old_geom = api.recall("secure.geometry")["value"]
+        cached = api.recall("secure.partial")["value"]
+        r = {"frame_id":old_geom["frame"],"parameters":cached["parameters"],"points":cached["points"],"measurement_errors":cached["measurement_errors"]}
+        p = r["parameters"]; top = old_geom["top_plane"]; table = old_geom["counter_plane"]
+        guard = alternate_guard if alternate else float(old_geom["guard_m"]); corners = np.array(old_geom["upper_corners_world_m"])
+        if alternate: top = view["candidate_geometry"]["top"]
+        geometry_ok = True
+        if not alternate: save("secure.stall", {"retreat_status":"not_started","restart_state":s0,"historical_stall":{"frames":[129,144],"native_steps":15,"tcp_before_world_m":[-0.0522655,0.14586,0.916086],"tcp_after_world_m":[-0.0522826,0.14578,0.91601],"displacement_m":0.0001117,"uncompleted_action":"open_descent; acknowledged controls must not be replayed"},"interpretation":"Ineffective descent; contact and overlap remain unestablished."})
+    resume = resume and not alternate
+    cached_keys = ["secure.partial", "secure.plane_check", "secure.geometry", "secure.failure"]
+    if s0["native_steps"] == 0 and s0["last_gripper_command"] == "open" and all(k in manifest for k in cached_keys):
+        cached = api.recall("secure.partial")["value"]
+        pc = api.recall("secure.plane_check")["value"]
+        old_geom = api.recall("secure.geometry")["value"]
+        if cached["frame"] == s0["frame_id"] and pc["frame"] == s0["frame_id"] and old_geom["frame"] == s0["frame_id"]:
+            r = {"frame_id": cached["frame"], "parameters": cached["parameters"], "points": cached["points"], "measurement_errors": cached["measurement_errors"]}
+            p = r["parameters"]
+            if all(valid(r,n) for n in ["p0","p1","p2","p3","t0","t1","t2"]) and all(v >= 0 for v in pc["residual_margins"].values()):
+                top, table, guard = pc["top"], pc["table"], float(pc["guard_m"])
+                corners = np.array(old_geom["upper_corners_world_m"], dtype=float)
+                geometry_ok = True
+                for k in cached_keys:
+                    if k not in keys: keys.append(k)
+                save("secure.repair_reference", {"prior_geometry":old_geom, "prior_failure":api.recall("secure.failure")["value"], "validated_state":s0, "reuse_basis":"Same observation frame and zero native steps; no prior action to undo. A different local support observation follows before any motion."})
+    for attempt in range(0 if geometry_ok else 2):
+        r = review("Measure only the cream cheese package grasp geometry. Request p0,p1,p2,p3 as named depth points well distributed on the flat upper face, safely inside its edges. Make p0 a distinctive printed physical landmark and describe it in p0_identity. Request t0,t1,t2 as named depth points on the counter supporting this package, distributed around it, not on nearby objects. Identify the four actual upper-face corners in clockwise order as corners pixel pairs in camera; mixed-depth corner pixels will be ray-intersected with the measured face plane. Do not invent hidden corners. Check the hand is empty and open. On this replacement attempt use the other useful view or different valid interior depth patches rather than repeating a failed sample.", {"attempt": attempt, "state": s0}, fields)
+        if r["status"] == "stop": return result("abort", "Observation requested stop.")
+        save("secure.partial", {"frame": r["frame_id"], "parameters": r["parameters"], "points": r["points"], "measurement_errors": r["measurement_errors"]})
+        p = r["parameters"]
+        if p["identity"] == "different_state" or not p["empty_open_hand"]: return result("needs_replan", "Entry condition is not an empty open hand with the package on the counter.")
+        names = ["p0", "p1", "p2", "p3", "t0", "t1", "t2"]
+        if p["identity"] != "cream_cheese_on_counter" or p["top_boundary"] != "four_visible_corners" or not p["same_counter_support"] or not all(valid(r,n) for n in names): continue
+        try:
+            top, table = geo.plane(points(r,names[:4])), geo.plane(points(r,names[4:]))
+            guard = max(0.0015, 2*float(top["rms_m"]), 2*float(table["rms_m"]))
+            margins = {"top_horizontal": float(top["coefficients"][2])-0.985, "counter_horizontal": float(table["coefficients"][2])-0.995, "residual_guard_limit_m": 0.003-guard, "top_spread_vs_guard_m": min(top["in_plane_spread_m"])-4*guard, "table_spread_vs_guard_m": min(table["in_plane_spread_m"])-4*guard}
+            save("secure.plane_check", {"frame": r["frame_id"], "top": top, "table": table, "guard_m": guard, "guard_provenance": "Design depth/landmark guard 0.0015 m or twice measured fit RMS, whichever is larger; not a calibrated confidence bound.", "residual_margins": margins})
+            if not all(v >= 0 for v in margins.values()): continue
+            corners = np.array([api.plane_point(p["camera"], px, top["coefficients"])["world_m"] for px in p["corners"]])
+            geometry_ok = True
+            break
+        except Exception as exc:
+            save("secure.measurement_error", {"frame": r["frame_id"], "error": str(exc), "action_not_authorized": "grasp approach"})
+    if not geometry_ok: return fail("identity_depth_or_plane_quality", "grasp approach", {"last_partial": "secure.partial", "plane_diagnostics": "secure.plane_check", "attempts": 2}, "No quality-checked current upper face and supporting counter geometry.")
+    center = alternate_center.copy() if alternate else np.mean(corners, axis=0)
+    edges = np.roll(corners,-1,axis=0)-corners
+    lengths = np.linalg.norm(edges[:,:2],axis=1)
+    width, length = float(min(lengths)), float(max(lengths))
+    rectangle_error = max(float(np.linalg.norm(corners[0]+corners[2]-corners[1]-corners[3])), abs(float(np.dot(edges[0,:2],edges[1,:2])))/max(length,0.0001), abs(float(lengths[0]-lengths[2])), abs(float(lengths[1]-lengths[3])))
+    if rectangle_error > 3*guard+0.002: return fail("rectangular_face_model", "side grasp", {"error_m": rectangle_error, "threshold_m": 3*guard+0.002, "residual_margin_m": 3*guard+0.002-rectangle_error, "corners_world_m": corners.tolist(), "frame": r["frame_id"]}, "Visible boundary does not support the proposed rectangular side grasp.")
+    long_axis = edges[int(np.argmax(lengths)),:2]
+    if float(np.dot(long_axis,geo.rotation(s0["tcp_quaternion_xyzw"])[:2,0])) < 0: long_axis = -long_axis
+    yaw = math.atan2(float(long_axis[1]),float(long_axis[0]))
+    q = api.compose([1.0,0.0,0.0,0.0],[0.0,0.0,yaw]); rot = geo.rotation(q)
+    tp = table["coefficients"]; table_z = -(tp[0]*center[0]+tp[1]*center[1]+tp[3])/tp[2]
+    height = float(center[2]-table_z); own = s0["own_geometry"]
+    lo, hi, off = np.array(own["finger_low_offset_tool_m"]), np.array(own["finger_high_offset_tool_m"]), np.array(own["pad_center_in_tool_m"])
+    envelope = np.array([[x,y,z] for x in [lo[0],hi[0]] for y in [lo[1],hi[1]] for z in [lo[2],hi[2]]])
+    bottom_offset = float(np.min((envelope-off).dot(rot.T)[:,2]))
+    half_pad_z = float(np.dot(np.abs(rot[2]),np.array(own["pad_extent_in_tool_m"]))/2)
+    refine_fields = {"identity":["same_package_unchanged","changed","unknown"], "support":["same_support","different_surface","unknown"], "sidewall_evidence":["consistent","contradicts","unknown"], "empty_open_hand":"boolean", "notes":"string"}
+    end_ref = corners[np.argsort(corners[:,0])[-2:]]
+    end_ref = end_ref[np.argsort(end_ref[:,1])]
+    if resume:
+        refine_fields.update({"camera":["agentview","robot0_eye_in_hand"],"end_boundary":["identified","unknown"],"end_pixels":{"type":"array","items":pixel,"minItems":0,"maxItems":2},"closure":["safe","blocked","unknown"],"package_state":["unchanged","moved","unknown"],"upward_retreat":["clear","blocked","unknown"],"contact_assessment":["visible_contact","no_visible_contact","unresolved"]})
+    def diagnostic_retreat(obs, gate, operands, why):
+        failed = {"gate":gate,"prevented_action":"closure or repeated downward correction","operands_and_margins":operands,"observation_frame":obs["frame_id"],"reason":why}
+        save("secure.failure",failed)
+        op = obs["parameters"]
+        if op.get("upward_retreat") != "clear" or not op["empty_open_hand"] or op["identity"] != "same_package_unchanged" or op["support"] != "same_support":
+            return result("blocked",why+" Retreat is also unauthorized.",{"failure":failed,"review":op})
+        st = api.state()
+        if st["last_gripper_command"] != "open" or st["budgets"]["gpt_remaining"] < 1:
+            return result("blocked",why+" No observable recovery allowance.",failed)
+        target_up = geo.pad_position(st)+np.array([0.0,0.0,0.012])
+        recovery = {"retreat_status":"started","failed_gate":gate,"failure_checkpoint":"secure.failure","before_state":st,"review_frame":obs["frame_id"],"target_pad_world_m":target_up.tolist(),"command":"keep open actuation; upward only; no return descent","reference_checkpoint":"secure.refinement"}
+        save("secure.stall",recovery)
+        error = drive(target_up.tolist(),st["tcp_quaternion_xyzw"],"stall_diagnostic_retreat",12,8,0.0025,0.004)
+        sa = api.state()
+        recovery.update({"retreat_status":"finished","after_state":sa,"drive_error":error,"actual_tcp_delta_world_m":(np.array(sa["tcp_position_world_m"])-np.array(st["tcp_position_world_m"])).tolist()})
+        save("secure.stall",recovery)
+        ar = review("Assess the one upward retreat, not a grasp. Is the package still on the counter, did it follow/touch the hand, and are open fingers empty/clear? Request separated interior top depth points u0,u1,u2 and adjacent support points c0,c1. These are not material correspondences. Describe contact uncertainty: upward response cannot identify the prior stall cause. No downward retry or closure.", {"recovery":recovery,"historical_geometry":old_geom}, {"package_support":["counter","followed_hand","other","unknown"],"empty_open_hand":["yes","no","unknown"],"finger_clearance":["clear","contact","unknown"],"notes":"string"})
+        recovery["fresh_review"] = {"frame":ar["frame_id"],"parameters":{k:v for k,v in ar["parameters"].items() if k != "notes"},"notes":ar["parameters"]["notes"][:800],"points":{n:ar["points"][n] for n in ["u0","u1","u2","c0","c1"] if valid(ar,n)},"measurement_errors":ar["measurement_errors"]}
+        recovery["upward_response"] = {"actual_rise_m":float(sa["tcp_position_world_m"][2]-st["tcp_position_world_m"][2]),"diagnostic_threshold_m":0.008,"target_rise_m":0.012,"position_tolerance_m":0.0025,"residual_margin_m":float(sa["tcp_position_world_m"][2]-st["tcp_position_world_m"][2])-0.008,"scope":"Robot response only, not contact identification or retention."}
+        save("secure.stall",recovery)
+        if ar["status"] == "stop": return result("abort","Observation requested stop after diagnostic retreat.",{"checkpoint":"secure.stall"})
+        if ar["parameters"]["package_support"] in ["followed_hand","other"] or ar["parameters"]["empty_open_hand"] == "no":
+            return result("needs_replan","Changed package/hand relation; no reopening or descent replay.",{"checkpoint":"secure.stall"})
+        return result("blocked",why+" One authorized upward retreat was assessed; revise contact strategy from secure.stall. No descent replay.",{"failure":failed,"recovery_checkpoint":"secure.stall","drive_error":error})
+    refined = False
+    for attempt in range(2):
+        question = "Request u0 on an exposed interior package-top patch, and c0,c1 on supporting counter outside the opposing long sides. Check package identity, unchanged support and whether the hand is actually empty/open. Do not invent hidden sidewalls. On retry use different valid patches or the other view."
+        if resume:
+            question += " Restart after ineffective descent: request separated interior top samples u1,u2. Return the two supplied physical end-corner pixels in reference order, or []/unknown if occluded. Independently assess current-pose closure (side placement/interference, NO descent) and a 12 mm straight upward OPEN-hand retreat at unchanged orientation. Unknown closure must not veto a clear retreat. Assess contact without certifying hidden clearance or diagnosing controller physics; code checks metric margins."
+        rr = alternate_observation if alternate and attempt == 0 else review(question, {"attempt":attempt,"center_world_m":center.tolist(),"top_plane":top,"counter_plane":table,"quaternion_xyzw":q,"end_reference_world_m":end_ref.tolist(),"state":api.state(),"restart_after_stall":resume,"prior_rejection_checkpoint":"secure.repair_reference"}, refine_fields)
+        if rr["status"] == "stop": return result("abort","Observation requested stop.")
+        rp = rr["parameters"]
+        rd = {"frame":rr["frame_id"],"parameters":rp,"points":rr["points"],"measurement_errors":rr["measurement_errors"],"reference_frame":r["frame_id"]}
+        save("secure.refinement",rd)
+        if (resume and rp["package_state"] == "moved") or rp["identity"] == "changed" or rp["support"] == "different_surface" or rp["sidewall_evidence"] == "contradicts" or not rp["empty_open_hand"]:
+            return result("needs_replan","Fresh local support or sidewall evidence invalidates the empty-hand stationary-package candidate.",rd)
+        if rp["identity"] != "same_package_unchanged" or rp["support"] != "same_support" or not all(valid(rr,n) for n in ["u0","c0","c1"]): continue
+        up = points(rr,["u0"])[0]; cp = points(rr,["c0","c1"])
+        nt = np.array(top["coefficients"]); nc = np.array(table["coefficients"])
+        top_residual = abs(float(np.dot(nt[:3],up)+nt[3]))
+        support_residual = float(np.max(np.abs(cp.dot(nc[:3])+nc[3])))
+        rd["model_check"] = {"top_residual_m":top_residual,"support_residual_m":support_residual,"threshold_m":guard,"guard_provenance":"Unchanged design floor or twice measured fit RMS; not a calibrated confidence bound.","residual_margin_m":guard-max(top_residual,support_residual)}
+        save("secure.refinement",rd)
+        if max(top_residual,support_residual) > guard:
+            return fail("local_surface_consistency","lower grasp candidate",rd,"New local samples disagree with the retained surface model; no margin was reduced.","needs_replan")
+        if resume:
+            if rp["end_boundary"] != "identified" or len(rp["end_pixels"]) != 2 or not all(valid(rr,n) for n in ["u1","u2"]): continue
+            try:
+                fresh_points = points(rr,["u0","u1","u2"])
+                fresh_top = geo.plane(fresh_points)
+                current_end = np.array([api.plane_point(rp["camera"],px,fresh_top["coefficients"])["world_m"] for px in rp["end_pixels"]])
+            except Exception as exc:
+                rd["replacement_measurement_error"] = str(exc); save("secure.refinement",rd)
+                continue
+            local_residual = float(np.max(np.abs(fresh_points.dot(nt[:3])+nt[3])))
+            endpoint_error = float(np.max(np.linalg.norm(current_end-end_ref,axis=1)))
+            alignment = {"frame":rr["frame_id"],"reference_frame":r["frame_id"],"end_reference_world_m":end_ref.tolist(),"current_end_world_m":current_end.tolist(),"fresh_top":fresh_top,"old_guard_m":guard,"top_model_residual_m":local_residual,"support_model_residual_m":support_residual,"endpoint_error_m":endpoint_error,"endpoint_threshold_m":2*guard,"margins":{"endpoint_m":2*guard-endpoint_error,"model_m":guard-local_residual,"fit_m":guard-2*float(fresh_top["rms_m"]),"spread_m":min(fresh_top["in_plane_spread_m"])-4*guard,"horizontal":float(fresh_top["coefficients"][2])-0.985},"scope":"Local plane/end check of historical rigid footprint; no hidden-corner recovery."}
+            save("secure.alignment",alignment)
+            if endpoint_error > 2*guard or local_residual > guard:
+                return fail("current_package_reference","closure",alignment,"Fresh surface/end invalidates the reference.", "needs_replan")
+            if not all(v >= 0 for v in alignment["margins"].values()): continue
+            guard = max(guard,2*float(fresh_top["rms_m"]))+local_residual+support_residual
+            rd.update({"current_end_world_m":current_end.tolist(),"fresh_top":fresh_top,"guard_m":guard,"guard_provenance":"Historical guard, never reduced, plus measured top/support disagreement; current fit floor also retained."})
+            save("secure.refinement",rd)
+        table_z = float(max(table_z,float(np.max(cp[:,2]))))
+        top_floor = float(min(alternate_floor if alternate else float(np.min(corners[:,2])),float(up[2])))
+        height = top_floor-table_z
+        refined = True
+        break
+    if not refined:
+        operands = {"refinement_checkpoint":"secure.refinement","alignment_checkpoint":"secure.alignment","attempts":2,"measurement_errors":rr["measurement_errors"],"parameters":rr["parameters"]}
+        if resume: return diagnostic_retreat(rr,"fresh_local_geometry",operands,"Current geometry does not authorize closure.")
+        return fail("local_support_measurement","lower grasp candidate",operands,"No valid additional local support measurement; do not repeat the rejected candidate.")
+    trials, chosen = [], None
+    for tolerance in [0.002,0.001,0.0005]:
+        required = max(0.007,0.005+guard+tolerance)
+        low = table_z-bottom_offset+guard+tolerance+0.003
+        high_z = top_floor+half_pad_z-required
+        trial = {"position_tolerance_m":tolerance,"lower_pad_z_m":low,"upper_pad_z_m":high_z,"required_nominal_overlap_m":required,"interval_width_m":high_z-low,"minimum_interval_width_m":0.0002,"residual_margin_m":high_z-low-0.0002}
+        trials.append(trial)
+        if chosen is None and trial["residual_margin_m"] >= 0: chosen = trial
+    candidate = {"frame":rr["frame_id"],"reference_frame":r["frame_id"],"trials":trials,"chosen":chosen,"top_floor_world_z_m":top_floor,"counter_ceiling_world_z_m":table_z,"finger_bottom_offset_m":bottom_offset,"half_pad_z_m":half_pad_z,"guard_m":guard,"required_guarded_counter_clearance_m":0.003,"required_guarded_overlap_m":0.005,"preserved_nominal_overlap_floor_m":0.007,"guard_accounting":"Counter bound includes guard plus pose tolerance plus the original 3 mm clearance. Overlap includes guard plus pose tolerance above 5 mm and never lowers the rejected candidate's 7 mm nominal threshold. Top floor uses the lowest measured upper corner, not the higher center. The interval is for the planned orientation; actual finger orientation and margins are rechecked before closure.","candidate_change":"Choose a lower height inside a measured feasible interval with a tighter pose deadband, not a lowered clearance or overlap threshold."}
+    save("secure.candidate",candidate)
+    if chosen is None and not resume: return fail("lower_grasp_feasible_interval","approach for lower grasp",candidate,"No alternate height meets the preserved margins within allowed pose tolerances.")
+    grasp_tol = old_geom["grasp_tolerance_m"] if resume else chosen["position_tolerance_m"]
+    required_overlap = old_geom["required_nominal_overlap_m"] if resume else chosen["required_nominal_overlap_m"]
+    grasp_z = float(old_geom["grasp_pad_z_m"]) if resume else float((chosen["lower_pad_z_m"]+chosen["upper_pad_z_m"])/2)
+    overlap = float(min(top_floor,grasp_z+half_pad_z)-max(table_z,grasp_z-half_pad_z))
+    aperture = abs(float(s0["gripper_qpos_m"][0]-s0["gripper_qpos_m"][1]))-max(own["pad_extent_in_tool_m"][0],own["pad_extent_in_tool_m"][2])
+    needed_aperture = width+2*(guard+grasp_tol)+length*0.025/2+0.001
+    geom = {"frame": r["frame_id"], "top_plane": top, "counter_plane": table, "upper_corners_world_m": corners.tolist(), "center_world_m": center.tolist(), "width_m": width, "length_m": length, "height_m": height, "quaternion_xyzw": q, "grasp_pad_z_m": grasp_z, "guard_m": guard, "grasp_tolerance_m": grasp_tol, "finger_bottom_offset_m": bottom_offset, "side_overlap_m": overlap, "nominal_usable_aperture_m": aperture, "required_aperture_m": needed_aperture, "aperture_assumption": "Symmetric prismatic joint separation less one transverse pad-size allowance is a conservative screening model, not measured inner-face clearance; fresh visible straddling is also required.", "p0_identity": p["p0_identity"]}
+    geom.update({"top_floor_world_z_m":top_floor,"counter_ceiling_world_z_m":table_z,"required_nominal_overlap_m":required_overlap,"candidate_checkpoint":"secure.candidate","refinement_checkpoint":"secure.refinement","geometry_scope":"Original same-frame upper boundary and planes, independently checked local top/support samples, and a new lower grasp target; actual pose margins must pass before closure."})
+    if alternate:
+        geom.update({"local_surface_frame":alternate_observation["frame_id"],"local_surface_checkpoint":"secure.view","grasp_station_shift_m":shift,"geometry_scope":"Different longitudinal grasp station with newly measured local upper edges and opposing sidewalls. Historical footprint only supplies the validated XY reference. Unchanged overlap, clearance, uncertainty guard and feasible-interval thresholds apply."})
+    save("secure.geometry", geom)
+    gm = {"positive_height_m": height-3*guard, "side_overlap_m": overlap-required_overlap, "counter_clearance_m":grasp_z+bottom_offset-table_z-guard-grasp_tol-0.003, "aperture_screen_m": aperture-needed_aperture}
+    if not resume and not all(v >= 0 for v in gm.values()): return fail("grasp_geometry", "descent and closure", {"geometry": geom, "residual_margins_m": gm}, "The measured package and own finger geometry do not support this grasp margin.")
+    if resume:
+        geom["geometry_scope"] = "Revalidated historical footprint; target is historical, NOT correction authority. Actual-pose gates control closure; retreat requires its own review."
+        geom["guard_provenance"] = rd["guard_provenance"]
+        save("secure.geometry",geom)
+    high = geo.pad_position(api.state()).tolist(); high[0], high[1] = float(center[0]), float(center[1])
+    pre = [float(center[0]),float(center[1]),float(center[2]+0.065)]
+    action_fields = {"clear": ["clear", "blocked", "unknown"], "package_state": ["unchanged", "moved", "unknown"], "notes": "string"}
+    for phase, target, cap, reserve in ([] if resume else [("high_alignment",high,48,60),("vertical_pregrasp",pre,55,40)]):
+        ar = review("Authorize ONLY "+phase+". Assess the actual open hand swept path to this pad-center target and orientation, including fingers and nearby bowl, bottle, stove and cabinet. The high alignment stays at current altitude; vertical_pregrasp stops 65 mm above the package top. Do not require retention or later bowl fit. Confirm the measured package has not moved. Unknown is not clear.", {"geometry": geom, "target_pad_world_m": target, "target_quaternion_xyzw": q, "state": api.state()}, action_fields)
+        if ar["status"] == "stop": return result("abort", "Observation requested stop.")
+        if ar["parameters"]["package_state"] == "moved": return result("needs_replan", "Package moved before contact.")
+        if ar["parameters"]["clear"] != "clear" or ar["parameters"]["package_state"] != "unchanged": return fail("local_approach_review",phase,ar["parameters"],"This local approach is not supported by current visible evidence.")
+        error = drive(target,q,phase,cap,reserve)
+        if error is not None: return result("blocked",error["reason"],error)
+    descent_fields = {"clear": ["clear", "blocked", "unknown"], "straddling": ["yes", "no", "unknown"], "package_state": ["unchanged", "moved", "unknown"], "notes": "string"}
+    descent_ok = resume
+    if resume: dr = rr
+    for attempt in range(0 if resume else 2):
+        dr = review("Authorize only the straight vertical descent to the supplied grasp pad height, still keeping the gripper open. Confirm open fingers align outside the two short-width opposing sides, with unobstructed side gaps and no bowl/stove/counter interference along the supplied own-finger envelope. Request named top_center as a valid depth point at the supplied candidate center XY on the top face, NOT the whole-package center if the grasp station is shifted. If its depth is occluded, request the previously identified printed landmark as named p0 instead; do not sample the hand. On a retry use the other view, not the same occluded point.", {"geometry": geom, "target_pad_world_m": [float(center[0]),float(center[1]),grasp_z], "attempt": attempt}, descent_fields)
+        if dr["status"] == "stop": return result("abort","Observation requested stop.")
+        if dr["parameters"]["package_state"] == "moved": return result("needs_replan","Package has shifted; old grasp alignment is stale.")
+        sample = "top_center" if valid(dr,"top_center") else ("p0" if valid(dr,"p0") else None)
+        if sample is None: continue
+        reference = center if sample == "top_center" else np.array(r["points"]["p0"]["world_m"])
+        delta = np.array(dr["points"][sample]["world_m"])-reference
+        drift_limit = guard+0.003
+        check = {"sample": sample, "delta_world_m": delta.tolist(), "threshold_m": drift_limit, "residual_margin_m": drift_limit-float(np.linalg.norm(delta)), "reference_frame": r["frame_id"], "current_frame": dr["frame_id"], "uncertainty_guard_m": guard}
+        save("secure.alignment",check)
+        if float(np.linalg.norm(delta)) > drift_limit: return fail("current_package_alignment","descent",check,"Fresh package measurement disagrees with the planned grasp; update its actual geometry.","needs_replan")
+        if dr["parameters"]["clear"] == "clear" and dr["parameters"]["straddling"] == "yes" and dr["parameters"]["package_state"] == "unchanged": descent_ok = True; break
+        if dr["parameters"]["clear"] == "blocked" or dr["parameters"]["straddling"] == "no": break
+    if not descent_ok: return fail("open_finger_descent","descent",dr["parameters"],"Current side clearance or alignment remains unresolved.")
+    target = [float(center[0]),float(center[1]),grasp_z]
+    error = None if resume else drive(target,q,"open_descent",28,22,grasp_tol,0.01)
+    if error is not None: return result("blocked",error["reason"],error)
+    actual = api.state(); actual_rot = geo.rotation(actual["tcp_quaternion_xyzw"]); actual_pad = geo.pad_position(actual)
+    ao = actual["own_geometry"]; al = ao["finger_low_offset_tool_m"]; ah = ao["finger_high_offset_tool_m"]
+    ae = np.array([[x,y,z] for x in [al[0],ah[0]] for y in [al[1],ah[1]] for z in [al[2],ah[2]]])
+    actual_bottom = float(actual_pad[2]+np.min((ae-np.array(ao["pad_center_in_tool_m"])).dot(actual_rot.T)[:,2]))
+    actual_half = float(np.dot(np.abs(actual_rot[2]),np.array(ao["pad_extent_in_tool_m"]))/2)
+    actual_overlap = float(min(top_floor,actual_pad[2]+actual_half)-max(table_z,actual_pad[2]-actual_half))
+    pose_gate = {"frame":actual["frame_id"],"surface_validation_frame":dr["frame_id"],"surface_measurement_frame":rr["frame_id"],"actual_pad_world_m":actual_pad.tolist(),"actual_quaternion_xyzw":actual["tcp_quaternion_xyzw"],"finger_bottom_world_z_m":actual_bottom,"counter_ceiling_world_z_m":table_z,"top_floor_world_z_m":top_floor,"overlap_m":actual_overlap,"guard_m":guard,"required_guarded_counter_clearance_m":0.003,"required_guarded_overlap_m":0.005,"margins_m":{"counter":actual_bottom-table_z-guard-0.003,"overlap":actual_overlap-guard-0.005},"scope":"Actual proprioceptive finger envelope versus freshly validated local surfaces. Commanded-position tolerance is no longer an unobserved pose error; the unchanged measurement guard remains. This is not a hidden-clearance certificate."}
+    if resume or alternate:
+        lateral = abs(float(np.dot(actual_pad-center,actual_rot[:,1])))
+        projected = corners.dot(actual_rot[:,1])
+        half_width = float(np.max(projected)-np.min(projected))/2
+        usable = abs(float(actual["gripper_qpos_m"][0]-actual["gripper_qpos_m"][1]))-max(ao["pad_extent_in_tool_m"][0],ao["pad_extent_in_tool_m"][2])
+        pose_gate["current_aperture"] = {"usable_m":usable,"projected_half_width_m":half_width,"center_offset_m":lateral,"guard_m":guard,"frame":actual["frame_id"],"model":"Prismatic opening screen, not visible-straddling evidence."}
+        pose_gate["margins_m"]["lateral_opening"] = usable/2-half_width-lateral-guard
+    save("secure.pose_gate",pose_gate)
+    if not all(v >= 0 for v in pose_gate["margins_m"].values()):
+        if resume: return diagnostic_retreat(rr,"actual_open_grasp_pose",pose_gate,"Actual grasp margin fails; no descent replay or closure.")
+        return fail("actual_open_grasp_pose","closure",pose_gate,"Actual orientation or height misses a preserved physical margin; do not lower again or close.")
+    if resume and rr["parameters"]["closure"] != "safe":
+        return diagnostic_retreat(rr,"current_closure_interference",{"pose_gate":pose_gate,"review":rr["parameters"]},"Visible finger placement does not authorize closure.")
+    cr = rr if resume else review("Authorize closure only, with no further descent. Are opposing pads alongside the cream cheese package, rather than over its top, under it, or against the counter or another object? Has the package remained at the measured location? Do not call this retention.", {"geometry": geom, "state": api.state()}, {"closure": ["safe", "blocked", "unknown"], "package_state": ["unchanged", "moved", "unknown"], "notes": "string"})
+    if cr["status"] == "stop": return result("abort","Observation requested stop.")
+    if cr["parameters"]["package_state"] == "moved": return result("needs_replan","Contact changed package location before closure.")
+    if cr["parameters"]["closure"] != "safe" or cr["parameters"]["package_state"] != "unchanged": return fail("closure_clearance","close fingers",cr["parameters"],"Closure is not supported; no blind contact retry.")
+    if api.state()["budgets"]["jev_remaining"] < 16: return result("blocked","Insufficient control budget reserved for closure and retention test.")
+    for dwell in range(3):
+        st = api.state(); command = "close" if dwell == 0 else "keep"
+        rc = api.control(geo.pad_position(st).tolist(),st["tcp_quaternion_xyzw"],command,questions,features={"source": "program_closure_gate", "phase": "close_then_two_fixed_pose_settling_updates", "closure_review_frame": cr["frame_id"], "dwell_index": dwell},tool_point="pad_center",translation_limit=0.001,rotation_limit=0.01,steps=3,position_tolerance=grasp_tol,rotation_tolerance=0.01)
+        save("secure.progress",{"phase":"closure_dwell","dwell":dwell,"receipt":rc,"state":api.state()})
+        if rc["status"] == "stalled" or rc["choices"]["gripper"] != command: return result("blocked","Closure feedback or command mismatch requires inspection; do not reopen.",rc)
+    patch_fields = {"candidate_contact": ["yes", "no", "unknown"], "lift_path": ["clear", "blocked", "unknown"], "patch_identity": ["package", "unknown"], "camera": ["agentview", "robot0_eye_in_hand"], "polygon": {"type": "array", "items": pixel, "minItems": 0, "maxItems": 16}, "landmark_ids": {"type": "array", "items": {"type": "string"}, "minItems": 3, "maxItems": 3}, "notes": "string"}
+    def quality(t):
+        if t["status"] != "tracked": return {"ok":False,"reason":t.get("reason","unknown registration")}
+        u = max(0.001,float(t["rms_m"]),float(t["uncertainty_floor_m"]))
+        spreads = sorted(np.atleast_1d(t["inlier_spread_m"]).tolist(),reverse=True)
+        ok = t["inliers"] >= 12 and t["inliers"]/max(1,t["matches"]) >= 0.6 and u <= 0.003 and len(spreads) >= 2 and spreads[0] >= 4*u and spreads[1] >= 2*u
+        return {"ok":bool(ok),"guard_m":u,"rms_m":float(t["rms_m"]),"spread_m":spreads,"inliers":t["inliers"],"matches":t["matches"],"frame":t["frame_id"]}
+    handle, tb, qb, baseline, mark_names = None, None, None, None, []
+    for attempt in range(2):
+        br = review("Assess a candidate grasp, NOT proven retention, and authorize only a 55 mm straight upward test with unchanged orientation and closed actuation. Identify a CURRENT visible textured surface patch belonging to this package, even if the perimeter is occluded; give a tight 3-16 vertex polygon excluding fingers/background, or [] if unavailable. Request b0,b1,b2 as depth points at independently recognizable physical printed or shape landmarks on any currently visible package surface; describe identities in matching landmark_ids. They need not be historical corners. Two separated valid landmarks can replace tracking. On retry use a different exposed patch or the other view, not unchanged occluded evidence.", {"geometry":geom,"attempt":attempt,"state":api.state()},patch_fields)
+        if br["status"] == "stop": return result("abort","Observation requested stop.")
+        if br["parameters"]["candidate_contact"] == "no": return result("needs_replan","Closure did not establish a credible contact candidate; do not blindly retry.")
+        if br["parameters"]["lift_path"] == "blocked": return fail("test_lift_clearance","55 mm test lift",br["parameters"],"Established obstruction prevents the lift.")
+        mark_names = [n for n in ["b0","b1","b2"] if valid(br,n) and br["parameters"]["landmark_ids"][int(n[1])]]
+        baseline = {"frame":br["frame_id"],"landmark_ids":br["parameters"]["landmark_ids"],"points":{n:br["points"][n] for n in mark_names},"parameters":br["parameters"]}
+        save("secure.baseline",baseline)
+        if br["parameters"]["patch_identity"] == "package" and len(br["parameters"]["polygon"]) >= 3:
+            try:
+                init = api.track_init(br["parameters"]["camera"],br["parameters"]["polygon"]); handle = init["handle"]
+                tb = api.track_update(handle); qb = quality(tb)
+                save("secure.tracker",{"handle":handle,"identity":"Current cream cheese surface selected after closure","camera":br["parameters"]["camera"],"polygon":br["parameters"]["polygon"],"creation_receipt":init,"current_quality":qb})
+            except Exception as exc:
+                qb = {"ok":False,"reason":str(exc)}
+        landmark_ok = len(mark_names) >= 2 and float(np.max(np.linalg.norm(points(br,mark_names)-np.mean(points(br,mark_names),axis=0),axis=1))) >= 0.005
+        if br["parameters"]["candidate_contact"] == "yes" and br["parameters"]["lift_path"] == "clear" and ((qb is not None and qb["ok"]) or landmark_ok): break
+        handle, tb, qb = None, None, None
+    else:
+        return fail("observable_differential_baseline","test lift",{"baseline_checkpoint":"secure.baseline","tracking_quality":qb},"No adequate current patch or independent landmark baseline, or no safe lift evidence.")
+    before = api.state()
+    lift_target = geo.pad_position(before)+np.array([0.0,0.0,0.055])
+    save("secure.test",{"before_state":before,"baseline_frame":br["frame_id"],"target_pad_world_m":lift_target.tolist(),"test":"55 mm upward translation; keep actual orientation and gripper actuation"})
+    error = drive(lift_target.tolist(),before["tcp_quaternion_xyzw"],"retention_test_lift",32,4,0.0025,0.01)
+    if error is not None: return result("blocked",error["reason"],error)
+    after = api.state(); ta = None; qa = {"ok":False,"reason":"No usable baseline tracker"}
+    if handle is not None and qb is not None and qb["ok"]:
+        ta = api.track_update(handle); qa = quality(ta)
+    final_fields = {"package_identity": ["confirmed", "unknown"], "held_between_fingers": ["yes", "no", "unknown"], "clear_of_counter": ["yes", "no", "unknown"], "slip_or_other_contact": ["yes", "no", "unknown"], "same_landmarks": ["yes", "unknown"], "nearby_clearance": ["clear", "contact", "unknown"], "bowl_observation": "string", "notes": "string"}
+    measured = None
+    for attempt in range(2):
+        fr = review("Fresh effect check after the upward test: is this the cream cheese package retained between fingers and clear of its counter support, with no visible slip or other support/contact? Request the same physical b0,b1,b2 landmarks that are visible using baseline identities, not screen positions; omit occluded ones rather than inventing them. Report same_landmarks=yes only for correctly identified returned samples. Describe the current bowl and request one named bowl_rim point if available; bowl fit/transport clearance is NOT this stage's gate. If a replacement observation is needed, use the other view or another already identified baseline landmark. Do not infer retention from a closed gripper or tracker alone.", {"baseline":baseline,"before_state":before,"after_state":after,"tracking_quality":qa,"attempt":attempt},final_fields)
+        if fr["status"] == "stop": return result("abort","Observation requested stop.")
+        fp = fr["parameters"]
+        if fp["held_between_fingers"] == "no" or fp["clear_of_counter"] == "no" or fp["slip_or_other_contact"] == "yes" or fp["nearby_clearance"] == "contact": return result("needs_replan","Fresh evidence contradicts a stable lifted grasp.",fp)
+        if qa["ok"]:
+            refs = np.array(tb["reference_inlier_world_m"]); ids = [int(np.argmin(refs[:,0])),int(np.argmax(refs[:,0])),int(np.argmin(refs[:,1])),int(np.argmax(refs[:,1]))]
+            anchors = refs[ids]
+            pb = geo.transform(anchors,np.array(tb["transform_initial_world_to_current_world"]))
+            pa = geo.transform(anchors,np.array(ta["transform_initial_world_to_current_world"]))
+            uncertainty = qb["guard_m"]+qa["guard_m"]+0.0015
+            measured = {"mode":"quality_checked_patch_registration","before_points":pb.tolist(),"after_points":pa.tolist(),"uncertainty_m":uncertainty,"before_quality":qb,"after_quality":qa}
+        else:
+            common = [n for n in mark_names if valid(fr,n)]
+            if fp["same_landmarks"] == "yes" and len(common) >= 2:
+                pb = np.array([baseline["points"][n]["world_m"] for n in common]); pa = points(fr,common)
+                spread = float(np.max(np.linalg.norm(pb-np.mean(pb,axis=0),axis=1)))
+                if spread >= 2*0.0025:
+                    uncertainty = 2*0.0025+0.0015
+                    measured = {"mode":"independent_current_landmarks","names":common,"before_points":pb.tolist(),"after_points":pa.tolist(),"uncertainty_m":uncertainty,"landmark_guard_each_m":0.0025,"registration_floor_m":0.0015,"spread_m":spread}
+        if measured is not None and fp["package_identity"] == "confirmed" and fp["held_between_fingers"] == "yes" and fp["clear_of_counter"] == "yes" and fp["slip_or_other_contact"] == "no": break
+        if attempt == 0 and qa["ok"]: break
+    if measured is None: return fail("post_lift_correspondence","declare secure grasp",{"baseline_checkpoint":"secure.baseline","tracker_quality":qa,"current_frame":fr["frame_id"]},"No current corresponding surface measurement; actual hand lift alone is not retention.")
+    attachment = float(geo.attachment_error(pb,pa,before,after))
+    rise = float(np.min(pa[:,2]-pb[:,2])); hand_rise = float(after["tcp_position_world_m"][2]-before["tcp_position_world_m"][2])
+    threshold = min(0.004+uncertainty,0.25*max(hand_rise,0))
+    effect = {"before_frame":before["frame_id"],"after_frame":after["frame_id"],"measurement":measured,"attachment_error_m":attachment,"attachment_threshold_m":threshold,"object_min_rise_m":rise,"hand_rise_m":hand_rise,"uncertainty_guard_m":uncertainty,"required_guarded_object_rise_m":0.030,"margins_m":{"attachment":threshold-attachment,"object_rise":rise-uncertainty-0.030,"hand_rise":hand_rise-0.035,"signal_to_guard":hand_rise-4*uncertainty},"visual_review":fr["parameters"],"bowl_rim":fr["points"]["bowl_rim"] if valid(fr,"bowl_rim") else None,"actual_state":after}
+    save("secure.retention",effect)
+    if not all(v >= 0 for v in effect["margins_m"].values()): return fail("differential_retention_effect","declare secure grasp",effect,"Object motion does not establish retention with the measured hand motion and uncertainty.")
+    fp = fr["parameters"]
+    if fp["package_identity"] != "confirmed" or fp["held_between_fingers"] != "yes" or fp["clear_of_counter"] != "yes" or fp["slip_or_other_contact"] != "no": return fail("fresh_grasp_effect_review","declare secure grasp",effect,"Numerical motion evidence is available but the current grasp/support interpretation remains unresolved.")
+    logs.append({"stage_effect":"Package moved with actual hand and is freshly observed retained above the counter.","retention_checkpoint":"secure.retention"})
+    return result("stage_complete","Stable lifted grasp supported by differential object/hand motion and fresh visual evidence.",{"retention_checkpoint":"secure.retention","geometry_checkpoint":"secure.geometry","next_stage_gate":"Reobserve bowl opening, current package extent, retention and transport/rim clearance before positioning. No transport or release was attempted."})
