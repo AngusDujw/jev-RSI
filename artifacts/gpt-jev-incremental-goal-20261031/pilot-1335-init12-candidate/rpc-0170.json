@@ -1,0 +1,415 @@
+{
+  "index": 170,
+  "method_number": 6,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "alt.model",
+      {
+        "phase": "plane_support_refinement",
+        "observation": {
+          "frame_id": 216,
+          "status": "continue",
+          "parameters": {
+            "identity": "same_package_on_counter",
+            "empty_open_hand": true,
+            "local_walls": "visible_parallel_sidewalls",
+            "top_boundary": "visible_local_edges",
+            "camera": "robot0_eye_in_hand",
+            "edge_pixels": [
+              [
+                344,
+                430
+              ],
+              [
+                344,
+                510
+              ],
+              [
+                464,
+                500
+              ],
+              [
+                464,
+                426
+              ]
+            ],
+            "top_ids": [
+              "t0: inner curl of the large initial capital C in the printed word Cream, toward the exposed short end.",
+              "t1: inner curl of the large initial capital C in the printed word Cheese, below Cream in this view.",
+              "t2: initial F of the smaller printed Fresh Taste line, left of the large lettering in this view.",
+              "t3: terminal e of the smaller printed Fresh Taste line, toward the inward end of that line."
+            ],
+            "notes": "A is the wrist-view left long wall; B is the opposing agentview strip. End1 is exposed and end2 inward. Edge endpoints delimit a local segment, not material corners. The review identified an empty open hand and counter-supported package. All action-specific clearance gates remain unresolved."
+          },
+          "points": {
+            "t0": {
+              "world_m": [
+                -0.022060765259667374,
+                0.14714610540420853,
+                0.9177943739823764
+              ],
+              "depth_m": 0.1565396934747696,
+              "frame_id": 216,
+              "pixel": [
+                400,
+                450
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t1": {
+              "world_m": [
+                -0.055648951228217135,
+                0.14302236985697014,
+                0.9181054911394796
+              ],
+              "depth_m": 0.15782815217971802,
+              "frame_id": 216,
+              "pixel": [
+                412,
+                556
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t2": {
+              "world_m": [
+                -0.042913580451531666,
+                0.15534611444984242,
+                0.9178042382959574
+              ],
+              "depth_m": 0.1537492275238037,
+              "frame_id": 216,
+              "pixel": [
+                375,
+                519
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t3": {
+              "world_m": [
+                -0.06454293059844862,
+                0.1548998786929291,
+                0.9177431818207977
+              ],
+              "depth_m": 0.15405140817165375,
+              "frame_id": 216,
+              "pixel": [
+                376,
+                589
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c0": {
+              "world_m": [
+                -0.035899705526331246,
+                0.17506880013369258,
+                0.8999593377808986
+              ],
+              "depth_m": 0.16354317963123322,
+              "frame_id": 216,
+              "pixel": [
+                300,
+                489
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c1": {
+              "world_m": [
+                -0.04184726688937794,
+                0.10174939535428751,
+                0.8999510244976457
+              ],
+              "depth_m": 0.18921028077602386,
+              "frame_id": 216,
+              "pixel": [
+                493,
+                491
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "c2": {
+              "world_m": [
+                -0.0025453558033429503,
+                0.1399264650374339,
+                0.8999559176164649
+              ],
+              "depth_m": 0.17569610476493835,
+              "frame_id": 216,
+              "pixel": [
+                400,
+                387
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "a0": {
+              "world_m": [
+                -0.030169328686803606,
+                0.1654374333174657,
+                0.9150570464878005
+              ],
+              "depth_m": 0.15274234116077423,
+              "frame_id": 216,
+              "pixel": [
+                341,
+                478
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "a1": {
+              "world_m": [
+                -0.03754633262447169,
+                0.16531868023175927,
+                0.9063746209110367
+              ],
+              "depth_m": 0.16094857454299927,
+              "frame_id": 216,
+              "pixel": [
+                334,
+                496
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "b0": {
+              "world_m": [
+                -0.0363000437207317,
+                0.12337720258045522,
+                0.914920860415984
+              ],
+              "depth_m": 0.9775882363319397,
+              "frame_id": 216,
+              "pixel": [
+                501,
+                483
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            },
+            "b1": {
+              "world_m": [
+                -0.02991226374118905,
+                0.12341989998171671,
+                0.9064739959394548
+              ],
+              "depth_m": 0.9779265522956848,
+              "frame_id": 216,
+              "pixel": [
+                501,
+                493
+              ],
+              "camera": "agentview",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": [],
+          "measurement_error_count": 0,
+          "omitted_region_names": [],
+          "provenance": "Recovered frame-216 semantic review from the supplied execution record; depths freshly reacquired at that same physical frame. No approach or closure authorization."
+        },
+        "supplemental_top_plane_support": {
+          "1_s0": {
+            "world_m": [
+              -0.017482905257184718,
+              0.16188039833677967,
+              0.9178205888224953
+            ],
+            "depth_m": 0.15134471654891968,
+            "frame_id": 216,
+            "pixel": [
+              355,
+              437
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection",
+            "surface_identity": "same_package_top",
+            "review_frame_id": 216,
+            "selection_pass": 1
+          },
+          "1_s1": {
+            "world_m": [
+              -0.017921673243451723,
+              0.129406156760216,
+              0.9180951214912336
+            ],
+            "depth_m": 0.1624433696269989,
+            "frame_id": 216,
+            "pixel": [
+              451,
+              435
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection",
+            "surface_identity": "same_package_top",
+            "review_frame_id": 216,
+            "selection_pass": 1
+          },
+          "1_s2": {
+            "world_m": [
+              -0.07332265774287178,
+              0.16189714610473407,
+              0.9176276045016969
+            ],
+            "depth_m": 0.15174932777881622,
+            "frame_id": 216,
+            "pixel": [
+              354,
+              621
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection",
+            "surface_identity": "same_package_top",
+            "review_frame_id": 216,
+            "selection_pass": 1
+          },
+          "1_s3": {
+            "world_m": [
+              -0.07830378305774421,
+              0.12923908842692378,
+              0.918406404563396
+            ],
+            "depth_m": 0.16245849430561066,
+            "frame_id": 216,
+            "pixel": [
+              451,
+              621
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection",
+            "surface_identity": "same_package_top",
+            "review_frame_id": 216,
+            "selection_pass": 1
+          }
+        },
+        "plane_quality": {
+          "frame": 216,
+          "guard_m": 0.001741372874978718,
+          "guard_provenance": "At least the inherited guard and twice each observed fit RMS; never reduced during refinement. Operational allowance, not a calibrated confidence interval.",
+          "top_rms_m": 6.213389856321618e-05,
+          "counter_rms_m": 1.1102230246251565e-16,
+          "top_spread_m": 0.005080927164365157,
+          "counter_spread_m": 0.016950770482551995,
+          "normal_z": [
+            0.9996938239174114,
+            0.9999999935930465
+          ],
+          "rms_limit_m": 0.0015,
+          "spread_noise_ratio_min": 3.0,
+          "spread_threshold_m": 0.005224118624936155,
+          "top_spread_margin_m": -0.00014319146057099798,
+          "counter_spread_margin_m": 0.01172665185761584,
+          "horizontal_normal_z_min": 0.98,
+          "rms_margin_m": 0.0014378661014367838,
+          "normal_margin": 0.01969382391741137,
+          "failed_components": [
+            "top_spread"
+          ],
+          "top_sample_count": 4,
+          "supplemental_accepted_count": 0,
+          "refinement_reviews": 0,
+          "support_checkpoint": "alt.model",
+          "scope": "Plane support only; does not authorize alignment, descent or closure."
+        },
+        "historical_guard_floor_m": 0.001741372874978718,
+        "last_refinement": {
+          "frame_id": 216,
+          "status": "continue",
+          "parameters": {
+            "s0_surface": "same_package_top",
+            "s1_surface": "same_package_top",
+            "s2_surface": "same_package_top",
+            "s3_surface": "same_package_top",
+            "notes": "New supplemental samples only; original t0..t3 identities remain unchanged. Small patches stay inside visible edges. No hidden corners or full perimeter are assumed. Measurement only with the robot stationary; no approach, descent, or closure permission."
+          },
+          "points": {
+            "s0": {
+              "world_m": [
+                -0.017482905257184718,
+                0.16188039833677967,
+                0.9178205888224953
+              ],
+              "depth_m": 0.15134471654891968,
+              "frame_id": 216,
+              "pixel": [
+                355,
+                437
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s1": {
+              "world_m": [
+                -0.017921673243451723,
+                0.129406156760216,
+                0.9180951214912336
+              ],
+              "depth_m": 0.1624433696269989,
+              "frame_id": 216,
+              "pixel": [
+                451,
+                435
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s2": {
+              "world_m": [
+                -0.07332265774287178,
+                0.16189714610473407,
+                0.9176276045016969
+              ],
+              "depth_m": 0.15174932777881622,
+              "frame_id": 216,
+              "pixel": [
+                354,
+                621
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "s3": {
+              "world_m": [
+                -0.07830378305774421,
+                0.12923908842692378,
+                0.918406404563396
+              ],
+              "depth_m": 0.16245849430561066,
+              "frame_id": 216,
+              "pixel": [
+                451,
+                621
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": [],
+          "measurement_error_count": 0,
+          "omitted_region_names": [],
+          "provenance": "Current review interpretation with named depth receipts; unused region clouds omitted."
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 216,
+  "response": {
+    "result": {
+      "key": "alt.model",
+      "frame_id": 216,
+      "method_number": 6,
+      "source_sha256": "3576fba664533ff5b6ac0a59bdf53870bd88acacbd3d247fc8c7fe185fa0e5ed",
+      "bytes": 7885,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 216
+}

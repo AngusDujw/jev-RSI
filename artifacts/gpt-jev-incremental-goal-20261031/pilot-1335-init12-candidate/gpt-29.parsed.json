@@ -1,0 +1,50 @@
+{
+  "status": "continue",
+  "explanation": "The four selected locations lie on the same visible cream-cheese top face, forming a broad rectangle across opposite interior side strips. They avoid the original central landmarks, visible walls, counter, and robot occlusion. Depth validity and resulting spread remain for measurement verification.",
+  "parameters": {
+    "s0_surface": "same_package_top",
+    "s1_surface": "same_package_top",
+    "s2_surface": "same_package_top",
+    "s3_surface": "same_package_top",
+    "notes": "New supplemental samples only; original t0..t3 identities remain unchanged. Small patches stay inside visible edges. No hidden corners or full perimeter are assumed. Measurement only with the robot stationary; no approach, descent, or closure permission."
+  },
+  "points": [
+    {
+      "name": "s0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        355,
+        437
+      ],
+      "radius": 2
+    },
+    {
+      "name": "s1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        451,
+        435
+      ],
+      "radius": 2
+    },
+    {
+      "name": "s2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        354,
+        621
+      ],
+      "radius": 2
+    },
+    {
+      "name": "s3",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        451,
+        621
+      ],
+      "radius": 2
+    }
+  ],
+  "regions": []
+}

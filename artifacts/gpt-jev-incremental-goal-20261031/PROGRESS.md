@@ -571,3 +571,12 @@ Generated frame216 shortcut is valid only for this unchanged episode, not
 a portable frozen method. Fresh plane spread5.080927mm falls below
 3*guard=5.224119mm, margin-0.143191mm. Method blocks before action;
 supervisor27 live. Still72Jev216steps, zero completed stages.
+
+## Wider measured samples pass plane-quality gate
+
+Patch28 delivered252.448s, three replacements exactly replay to method06.
+Review29 returned29.439s and supplied four additional top points. Actual
+measured spread12.301492mm exceeds unchanged5.224119mm threshold,
+margin7.077373mm; all plane components pass. alt.model saves14070bytes.
+Review30 now evaluates next action; no new action yet,72Jev216steps.
+Passing measurement quality is not pickup or native terminal success.

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-9554e7ea-c699-4266-9b34-47df939dd05a",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-9554e7ea-c699-4266-9b34-47df939dd05a",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The four selected locations lie on the same visible cream-cheese top face, forming a broad rectangle across opposite interior side strips. They avoid the original central landmarks, visible walls, counter, and robot occlusion. Depth validity and resulting spread remain for measurement verification.\", \"parameters\": {\"s0_surface\": \"same_package_top\", \"s1_surface\": \"same_package_top\", \"s2_surface\": \"same_package_top\", \"s3_surface\": \"same_package_top\", \"notes\": \"New supplemental samples only; original t0..t3 identities remain unchanged. Small patches stay inside visible edges. No hidden corners or full perimeter are assumed. Measurement only with the robot stationary; no approach, descent, or closure permission.\"}, \"points\": [{\"name\": \"s0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [355, 437], \"radius\": 2}, {\"name\": \"s1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [451, 435], \"radius\": 2}, {\"name\": \"s2\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [354, 621], \"radius\": 2}, {\"name\": \"s3\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [451, 621], \"radius\": 2}], \"regions\": []}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 27405,
+    "output_tokens": 723,
+    "output_tokens_details": {
+      "reasoning_tokens": 410
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f15-d715-7d51-8048-9876e57a8b07",
+    "turn_ids": [
+      "01a18f15-d71b-7ff2-a0fc-0c5b0dcae417"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

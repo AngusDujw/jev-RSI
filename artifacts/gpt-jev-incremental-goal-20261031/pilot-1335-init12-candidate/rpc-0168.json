@@ -1,0 +1,216 @@
+{
+  "index": 168,
+  "method_number": 6,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Repair ONLY the insufficient top-plane sample coverage, without moving the robot. Request s0,s1,s2,s3 as NEW depth-valid points on the same visible cream-cheese top face, spread in BOTH its long and short directions. Prefer a broad rectangular distribution near opposite interior side strips, safely inside visible edges so depth patches do not mix the wall, counter or fingers. Do not repeat the existing central printed landmarks, invent hidden corners, or require the entire perimeter. For each exact sN_surface field independently state same_package_top, other, or unknown. Samples need surface identity, not persistent texture IDs; original t0..t3 IDs remain unchanged. Geometry will calculate the spread against the unchanged uncertainty. On the second attempt use different visible interior locations or the complementary camera rather than repeating unsuccessful pixels. This is measurement only, with no approach or closure permission."
+    ],
+    "kwargs": {
+      "context": {
+        "plane_quality": {
+          "frame": 216,
+          "guard_m": 0.001741372874978718,
+          "guard_provenance": "At least the inherited guard and twice each observed fit RMS; never reduced during refinement. Operational allowance, not a calibrated confidence interval.",
+          "top_rms_m": 6.213389856321618e-05,
+          "counter_rms_m": 1.1102230246251565e-16,
+          "top_spread_m": 0.005080927164365157,
+          "counter_spread_m": 0.016950770482551995,
+          "normal_z": [
+            0.9996938239174114,
+            0.9999999935930465
+          ],
+          "rms_limit_m": 0.0015,
+          "spread_noise_ratio_min": 3.0,
+          "spread_threshold_m": 0.005224118624936155,
+          "top_spread_margin_m": -0.00014319146057099798,
+          "counter_spread_margin_m": 0.01172665185761584,
+          "horizontal_normal_z_min": 0.98,
+          "rms_margin_m": 0.0014378661014367838,
+          "normal_margin": 0.01969382391741137,
+          "failed_components": [
+            "top_spread"
+          ],
+          "top_sample_count": 4,
+          "supplemental_accepted_count": 0,
+          "refinement_reviews": 0,
+          "support_checkpoint": "alt.model",
+          "scope": "Plane support only; does not authorize alignment, descent or closure."
+        },
+        "original_top_landmarks": {
+          "t0": {
+            "world_m": [
+              -0.022060765259667374,
+              0.14714610540420853,
+              0.9177943739823764
+            ],
+            "depth_m": 0.1565396934747696,
+            "frame_id": 216,
+            "pixel": [
+              400,
+              450
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t1": {
+            "world_m": [
+              -0.055648951228217135,
+              0.14302236985697014,
+              0.9181054911394796
+            ],
+            "depth_m": 0.15782815217971802,
+            "frame_id": 216,
+            "pixel": [
+              412,
+              556
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t2": {
+            "world_m": [
+              -0.042913580451531666,
+              0.15534611444984242,
+              0.9178042382959574
+            ],
+            "depth_m": 0.1537492275238037,
+            "frame_id": 216,
+            "pixel": [
+              375,
+              519
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t3": {
+            "world_m": [
+              -0.06454293059844862,
+              0.1548998786929291,
+              0.9177431818207977
+            ],
+            "depth_m": 0.15405140817165375,
+            "frame_id": 216,
+            "pixel": [
+              376,
+              589
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "accepted_supplemental_points": {},
+        "attempt": 1,
+        "maximum_refinement_reviews": 2,
+        "previous_refinement": null
+      },
+      "fields": {
+        "notes": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "s0_surface": [
+          "same_package_top",
+          "other",
+          "unknown"
+        ],
+        "s1_surface": [
+          "same_package_top",
+          "other",
+          "unknown"
+        ],
+        "s2_surface": [
+          "same_package_top",
+          "other",
+          "unknown"
+        ],
+        "s3_surface": [
+          "same_package_top",
+          "other",
+          "unknown"
+        ]
+      }
+    }
+  },
+  "frame_before": 216,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The four selected locations lie on the same visible cream-cheese top face, forming a broad rectangle across opposite interior side strips. They avoid the original central landmarks, visible walls, counter, and robot occlusion. Depth validity and resulting spread remain for measurement verification.",
+      "parameters": {
+        "s0_surface": "same_package_top",
+        "s1_surface": "same_package_top",
+        "s2_surface": "same_package_top",
+        "s3_surface": "same_package_top",
+        "notes": "New supplemental samples only; original t0..t3 identities remain unchanged. Small patches stay inside visible edges. No hidden corners or full perimeter are assumed. Measurement only with the robot stationary; no approach, descent, or closure permission."
+      },
+      "points": {
+        "s0": {
+          "world_m": [
+            -0.017482905257184718,
+            0.16188039833677967,
+            0.9178205888224953
+          ],
+          "depth_m": 0.15134471654891968,
+          "frame_id": 216,
+          "pixel": [
+            355,
+            437
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s1": {
+          "world_m": [
+            -0.017921673243451723,
+            0.129406156760216,
+            0.9180951214912336
+          ],
+          "depth_m": 0.1624433696269989,
+          "frame_id": 216,
+          "pixel": [
+            451,
+            435
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s2": {
+          "world_m": [
+            -0.07332265774287178,
+            0.16189714610473407,
+            0.9176276045016969
+          ],
+          "depth_m": 0.15174932777881622,
+          "frame_id": 216,
+          "pixel": [
+            354,
+            621
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s3": {
+          "world_m": [
+            -0.07830378305774421,
+            0.12923908842692378,
+            0.918406404563396
+          ],
+          "depth_m": 0.16245849430561066,
+          "frame_id": 216,
+          "pixel": [
+            451,
+            621
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 216
+    }
+  },
+  "frame_after": 216
+}
