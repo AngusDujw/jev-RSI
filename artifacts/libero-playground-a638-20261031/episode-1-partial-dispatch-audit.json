@@ -1,0 +1,9 @@
+{
+  "episode": 1,
+  "partial": true,
+  "dispatches": 36,
+  "acknowledged_steps": 108,
+  "checks": "Raw JEV choices, semantic directions, gripper carry, action bounds and acknowledgements",
+  "result": "passed",
+  "scope": "Only the copied dispatch prefix. Not a terminal audit or physical success claim."
+}
