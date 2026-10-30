@@ -212,6 +212,28 @@ def run_stages(plan_call, method_call, supervise, execute, state, persist,
             return finish("stage_update_budget")
         if state()["budgets"]["gpt_remaining"] < 2:
             return finish("gpt_budget")
+        stages_left = len(plan["stages"])-cursor
+        remaining_calls = state()["budgets"]["gpt_remaining"]
+        # Operational reserve: method + one observation + supervisor per stage,
+        # plus two calls for reconsideration/repair. This is a planning signal,
+        # never permission to skip evidence or extend the hard episode budget.
+        reserve = 3*stages_left+2
+        if stages_left > 1 and 3 <= remaining_calls < reserve and replans < max_replans:
+            replans += 1
+            budget_event = dict(trigger="remaining_plan_budget_pressure",
+                calls_remaining=remaining_calls, stages_remaining=stages_left,
+                operational_reserve=reserve, latest_outcome=outcome)
+            journal.setdefault("budget_replans", []).append(budget_event)
+            persist(journal)
+            plan = obtain_plan(dict(trigger="remaining_plan_budget_pressure",
+                budget_pressure=budget_event, previous_plan=plan,
+                latest_event=journal["events"][-1:] if journal["events"] else [],
+                completed=journal["completed"][-8:], current_state=state(),
+                scope="Replan only remaining physical work within the actual budget. Consolidate related remaining effects and their verification where feasible; never omit necessary evidence, replay completed actions, or assume success."))
+            journal["plans"].append(plan)
+            cursor = revisions = no_new_evidence = 0
+            prior_signature = None
+            method = None
         stage = plan["stages"][cursor]
         journal["current_stage"] = dict(plan_revision=len(journal["plans"])-1, index=cursor, definition=stage)
         context = dict(overall_plan=plan, plan_revision=len(journal["plans"])-1, current_stage=stage, stage_index=cursor,
