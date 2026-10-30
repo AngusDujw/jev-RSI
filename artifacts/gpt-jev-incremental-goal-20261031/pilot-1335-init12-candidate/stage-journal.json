@@ -1102,6 +1102,38 @@
         "task_satisfied": "no"
       },
       "host_override": "Repeated unproductive revisions require a plan-level reconsideration"
+    },
+    {
+      "update": 4,
+      "stage": "alternate_pickup",
+      "plan_revision": 1,
+      "stage_index": 0,
+      "frame_id": 216,
+      "trigger": "execution_error",
+      "source_sha256": "83ea0f277126a4a53c5e399c4435d5b7cd9ba528024e510c9f0ff53543461edc",
+      "outcome": {
+        "stage_status": "blocked",
+        "completion_proposed": false,
+        "error": "RuntimeError: ValueError: Checkpoint value exceeds 16384 bytes"
+      },
+      "decision": {
+        "action": "revise",
+        "evidence": [
+          "Frame 216 shows the cream cheese package on the counter outside the bowl and open, empty fingers; no lift or retention is observed.",
+          "Acknowledged execution already reached the raised, oblique observation pose. No subsequent physical action is reported.",
+          "The new frame-216 review provides local top, counter, and opposing wall samples for a different contact configuration, but does not establish approach clearance or grasp feasibility.",
+          "The alternate method failed while saving alt.model: the checkpoint exceeded 16384 bytes. That checkpoint is not listed as saved.",
+          "The trigger is execution_error, live continuation is unavailable, and the stage did not return stage_complete."
+        ],
+        "invalidated_assumptions": [
+          "The complete nested observation response fits within one checkpoint's size limit."
+        ],
+        "plan_valid": "yes",
+        "reason": "The alternate-pickup subgoal and overall ordering remain suitable. Correct checkpoint handling with a bounded summary preserving measurement provenance, landmark identity, and unresolved checks. Assess the different contact configuration from the actual current pose without replaying executed observation moves. Preserve clearance and overlap requirements; the rejected height-only geometry does not rule out this alternative, and the new samples do not yet authorize contact.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      }
     }
   ],
   "completed": [],

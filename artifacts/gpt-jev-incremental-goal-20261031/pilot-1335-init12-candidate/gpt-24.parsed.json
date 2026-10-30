@@ -1,0 +1,172 @@
+{
+  "status": "continue",
+  "explanation": "Current complementary views support a local two-parallel-wall model near the exposed short end. The selected wrist-image segment is approximately 24 mm long using the supplied frame-216 scale, allowing measurement of a roughly 20 mm contact strip for the substantially rotated, palm-behind-end hypothesis. This is measurement only, not approach, rotation, or closure permission. The failed vertical height search does not evaluate this different orientation. The bowl is a separate nearby object; no swept-volume clearance is established. Earlier raw images are unavailable for independent temporal comparison. No hidden geometry, retention, or completion is established.",
+  "parameters": {
+    "camera": "robot0_eye_in_hand",
+    "edge_pixels": [
+      [
+        344,
+        430
+      ],
+      [
+        344,
+        510
+      ],
+      [
+        464,
+        500
+      ],
+      [
+        464,
+        426
+      ]
+    ],
+    "empty_open_hand": true,
+    "identity": "same_package_on_counter",
+    "local_walls": "visible_parallel_sidewalls",
+    "notes": "A is the wrist-image left long wall; B is the opposing strip in agentview. End1 faces the exposed short end; end2 is inward. These are local edge endpoints, not material corners. a0/b0 are upper and a1/b1 lower wall samples. These visible locations have reported valid frame-216 depths; request fresh depths and reject top/counter mixing. Three printed landmarks are inward of the strip; t0 overlaps its length. The lower wrist occlusion is robot self-occlusion, not an external obstruction. The hand is open and empty; the package is on the counter.",
+    "top_boundary": "visible_local_edges",
+    "top_ids": [
+      "t0: inner curl of the large initial capital C in the printed word Cream, toward the exposed short end.",
+      "t1: inner curl of the large initial capital C in the printed word Cheese, below Cream in this view.",
+      "t2: initial F of the smaller printed Fresh Taste line, left of the large lettering in this view.",
+      "t3: terminal e of the smaller printed Fresh Taste line, toward the inward end of that line."
+    ]
+  },
+  "points": [
+    {
+      "name": "t0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        400,
+        450
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        412,
+        556
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        375,
+        519
+      ],
+      "radius": 2
+    },
+    {
+      "name": "t3",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        376,
+        589
+      ],
+      "radius": 2
+    },
+    {
+      "name": "c0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        300,
+        489
+      ],
+      "radius": 3
+    },
+    {
+      "name": "c1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        493,
+        491
+      ],
+      "radius": 3
+    },
+    {
+      "name": "c2",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        400,
+        387
+      ],
+      "radius": 3
+    },
+    {
+      "name": "a0",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        341,
+        478
+      ],
+      "radius": 1
+    },
+    {
+      "name": "a1",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        334,
+        496
+      ],
+      "radius": 1
+    },
+    {
+      "name": "b0",
+      "camera": "agentview",
+      "pixel": [
+        501,
+        483
+      ],
+      "radius": 1
+    },
+    {
+      "name": "b1",
+      "camera": "agentview",
+      "pixel": [
+        501,
+        493
+      ],
+      "radius": 1
+    }
+  ],
+  "regions": [
+    {
+      "name": "printed_top_inward_of_segment",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        350,
+        540,
+        458,
+        632
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_A_wall_strip",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        335,
+        446,
+        340,
+        507
+      ],
+      "stride": 4
+    },
+    {
+      "name": "visible_B_wall_strip",
+      "camera": "agentview",
+      "box": [
+        501,
+        488,
+        502,
+        494
+      ],
+      "stride": 4
+    }
+  ]
+}

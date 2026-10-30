@@ -551,3 +551,13 @@ by a differential retained-lift test. Review24 now measures current geometry.
 At delivery,72Jev216steps and zero completed stages; no terminal score.
 Delivery success does not establish grasp feasibility or faster generation.
 See candidate-alternate-pickup-delivery.json and saved method04.
+
+## Alternate pickup checkpoint overflow recovered into repair
+
+Review24 returned in175.664s, no reconnect. Method04 then failed before
+physical action: saving the nested observation in alt.model exceeded the
+documented16384-byte value limit. Supervisor25 returned revise in36.180s,
+plan_valid=yes, requesting a bounded provenance-preserving summary.
+Builder26 patch48cb980c31344ec086c60c4c289f764b is live. This demonstrates
+error routing, not successful repair or robot completion. Frame216/72Jev,
+zero completed stages, no native terminal result.
