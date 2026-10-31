@@ -1,0 +1,180 @@
+{
+  "episode": 2,
+  "suite": "libero_goal",
+  "task_id": 1335,
+  "init_index": 2,
+  "summary": {
+    "termination": "plan_revision_budget",
+    "native_success": false,
+    "native_steps": 219,
+    "settling_steps": 10,
+    "jev_calls": 73,
+    "gpt_calls": 36,
+    "rpc_calls": 221,
+    "elapsed_s": 8882.888205198018,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "20eecfded317c92edad434906bbbdf013930ed8f3e8c3802d5e4e9663cf75787",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 1,
+        "source_sha256": "3a54ea30a800cd7318aa0c3971e8c1d806f48098584b9759b5c2d58df1f7762f",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 2,
+        "source_sha256": "1fbd0a9767da428721cb8e7b58f18bb6db9ae64d5d4d4737f9772c13e4389ac5",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 3,
+        "source_sha256": "16e5b6e6a98f00a2b0f46dc3ee2422a5ff1d046bdbf45f5052d3c2986668c49d",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 4,
+        "source_sha256": "f6e348699ddf78902d4cfce078b667db83695ae3806d98c549a962cc044af958",
+        "stage_id": "recover_hold"
+      },
+      {
+        "number": 5,
+        "source_sha256": "043d678303bd638d7a12a931e1d0ad35e2683ad96bb39cdae380c8f9b90165c7",
+        "stage_id": "recover_hold"
+      },
+      {
+        "number": 6,
+        "source_sha256": "7b141b40a73981aee6460013c196686859625754325e9eabdfa71151004ef62f",
+        "stage_id": "retain"
+      },
+      {
+        "number": 7,
+        "source_sha256": "2ba222e0bacc2244d32d531ee9d8ea41f724e113802a0c4b2306eaefab47fe06",
+        "stage_id": "retain"
+      },
+      {
+        "number": 8,
+        "source_sha256": "4b5592183b3fa2ef036731cb7bf050fef66d5316b57c2878a8fa8756b0bb2f8b",
+        "stage_id": "finish"
+      }
+    ],
+    "last_method_error": null
+  },
+  "final_event": {
+    "update": 8,
+    "stage": "finish",
+    "plan_revision": 3,
+    "stage_index": 0,
+    "frame_id": 219,
+    "trigger": "stage_returned",
+    "source_sha256": "4b5592183b3fa2ef036731cb7bf050fef66d5316b57c2878a8fa8756b0bb2f8b",
+    "outcome": {
+      "stage_status": "needs_replan",
+      "reason": "Lift visibly failed, slipped, or disturbed the scene.",
+      "completion_proposed": false,
+      "evidence": {
+        "phase": "retention_and_fit",
+        "current": {
+          "frame_id": 219,
+          "native_steps": 219,
+          "tcp_position_world_m": [
+            -0.06254765872227011,
+            0.13517800775549693,
+            1.0154780334813664
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999923972528848,
+            0.003767713693892838,
+            0.0006386374440325961,
+            -0.0007758299842879766
+          ],
+          "gripper_qpos_m": [
+            0.021126385659147602,
+            -0.021070975837629232
+          ],
+          "last_gripper_command": "close"
+        },
+        "log": [
+          {
+            "phase": "closed_baseline",
+            "frame": 189,
+            "parameters": {
+              "flat_table_support": "yes",
+              "package_identity": "yes",
+              "patch_camera": "robot0_eye_in_hand",
+              "test_contact_safe": "yes",
+              "upward_corridor": "clear"
+            },
+            "measurement_errors": []
+          },
+          {
+            "phase": "retention_and_fit",
+            "frame": 219,
+            "parameters": {
+              "cavity_clear": "yes",
+              "disturbance": "yes",
+              "edge_camera": "robot0_eye_in_hand",
+              "inner_boundary_identity": "yes",
+              "lip_identity": "yes",
+              "outward_normal_up": "yes",
+              "retained": "yes",
+              "same_material": "yes",
+              "shape_valid": "yes",
+              "support_separated": "yes",
+              "transfer_corridor": "clear"
+            },
+            "measurement_errors": [
+              {
+                "name": "r4",
+                "error": "Invalid or discontinuous surface depth"
+              }
+            ]
+          }
+        ]
+      },
+      "handoff": {
+        "checkpoint_keys": [
+          "retain.test",
+          "retain.progress",
+          "finish.evidence"
+        ],
+        "original_shape_keys": [
+          "acquire.geometry",
+          "acquire.local",
+          "acquire.result"
+        ],
+        "frames": "All coordinates are world meters; quaternions are tool-to-world xyzw. Every stored measurement retains its acquisition frame.",
+        "provenance": "retain.test contains baseline, historical-shape paths, model uncertainties and latest geometry. retain.progress contains pre-dispatch intent and acknowledged whole-operation endpoints. finish.evidence contains bounded review/effect summaries. These overwrite only stage-owned continuation records; original acquisition records are unchanged.",
+        "phase": "retention_and_fit",
+        "pending": null,
+        "assumptions": [
+          "Rigid rectangular package; historical dimensions require current visible-edge validation.",
+          "Thickness is conditional on the reviewed initial flat table support.",
+          "Clearances are bounded local checks, not hidden-space certificates."
+        ],
+        "actual_command": "close",
+        "warning": "Do not replay a completed lift, closure, release or withdrawal. Reconcile current state and pending intent before a repaired method."
+      }
+    },
+    "decision": {
+      "action": "replan",
+      "evidence": [
+        "The current trigger is stage_returned with needs_replan and no live continuation.",
+        "The acknowledged lift spans frames 189 to 219 and 30 native steps. Whole-lift TCP rise is 99.08 mm; four reidentified material points rose 99.17-99.24 mm. The current review reports finger retention and table-support separation.",
+        "The blocking review finding is disturbance=yes, described as bowl movement relative to the plate and bottle. The supplied retention evidence does not establish a failed or slipped grasp.",
+        "Lip sample r4 has invalid depth. Five other lip samples and visible boundary selections are available, but feasible containment has not been established. Horizontal transfer approval excludes descent and release.",
+        "The package remains held outside the bowl. No transfer, release, withdrawal or settled interior support is established. The latest budget lists 4 GPT calls, 127 Jev calls and 381 native steps."
+      ],
+      "invalidated_assumptions": [
+        "The bowl remained undisturbed through the retention lift, allowing stationary-target dependencies to remain valid."
+      ],
+      "plan_valid": "no",
+      "reason": "Replan from the actual lifted state, preserving the close command and acknowledged progress without repeating closure or lift. Reconcile the reported bowl movement and refresh affected target dependencies. Assess valid lip samples or obtain a genuinely different depth-safe replacement without reducing margins. Rebudget geometry, release, withdrawal and final-effect verification before further physical commitments; neither the disturbance report nor one invalid sample proves placement impossible.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    }
+  },
+  "interpretation": "Whole task failed. Retention observations followed one lift, but disturbance was reported and no transfer/release/withdrawal/settled containment occurred. Native outcome is saved terminal summary, not independent replay."
+}
