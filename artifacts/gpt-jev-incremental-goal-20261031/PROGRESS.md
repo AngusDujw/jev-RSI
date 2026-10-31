@@ -728,3 +728,7 @@ Method3 admission passed with1.405 mm departure margin. Three Jev decisions lift
 ## Both co-motion tests pass; separation estimator is underconstrained
 
 Review16 confirms second interval identified-depth effect: hand18.414 mm, object18.402 mm, attachment residual0.0274 mm. Both interval tests pass. Method3 still returns needs_replan at frame240: final top landmarks have minimum in-plane spread2.469 mm, yielding angular allowance0.9402 rad and conservative separation lower bound -61.127 mm despite measured top height54.344 mm. This is poor orientation conditioning of the sampled patch, not evidence of dropped object or negative physical clearance. Supervisor17 0a069668f3b44260b01fdc20f07d9951 active; confirmed stages remain0 and no terminal LIBERO result.
+
+## Separation failure leads to evidence-directed replan
+
+Supervisor17 selects replan atframe240, retaining acknowledged grasp/lift and explicitly prohibiting replay. It accepts existing stable co-motion evidence but does not establish full-package tabletop separation. It identifies the0.940 rad small-angle allowance from2.47 mm spread as inconclusive and requests widely separated face/support measurements or a visible lower-edge gap, with justified uncertainty. Remaining calls22, controls120, steps360. Plan18 36d6ee36a78b4929b9727dbe7b763d40 is live. Supervisor proposes two-call separation repair; actual subsequent allocation must still be checked.

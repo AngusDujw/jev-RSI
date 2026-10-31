@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-65813660-bfc0-49ad-b99f-73476ec909a5",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-65813660-bfc0-49ad-b99f-73476ec909a5",
+      "arguments": "{\"action\": \"replan\", \"evidence\": [\"At frame 240 the labeled package remains between the fingers beside, not inside, the bowl.\", \"Fresh frame-240 RGB-D tracking has 120 inliers and measures package-patch ascent of 36.8 mm since frame 222. The acknowledged TCP ascent is also 36.8 mm; recorded intermediate landmarks support stable co-motion across both lift intervals.\", \"The separation gate reports a negative lower bound using a 0.940 rad small-angle allowance from a 2.47 mm sample spread. This is an inconclusive geometric bound, not observed tabletop contact, collision or slip.\", \"The program returned needs_replan, not stage_complete; live continuation is unavailable. Full-package tabletop separation remains unverified.\", \"Current remaining resources are 22 model calls, 120 control calls and 360 native steps. The original three-call retention allowance has been exceeded; the 27-call allocation snapshot is no longer current.\"], \"invalidated_assumptions\": [\"The existing narrow-sample separation estimator can finish retention verification within the original three-call repair allocation.\"], \"plan_valid\": \"no\", \"reason\": \"Replan the verification method and budget, retaining the suitable retain-deliver-place ordering and the already executed closed grasp and lift. Do not reopen, repeat contact or replay the lift. Require the angular gate's physical rationale and uncertainty accounting, including whether its small-angle treatment is valid. Replace the inconclusive estimator with an independently testable criterion using fresh, widely separated package-face and tabletop measurements, or a visible lower-edge/table gap; validate any historical extent used. Do not merely lower thresholds or treat hidden geometry as an obstacle or free space. Allocate at most two remaining model calls to replacement separation measurement and review, preserving the 20-call reserve: eight for delivery, eight for placement and outcome verification, and four for planning or contingencies. This bounded recovery must produce separation evidence, not another unchanged fit; otherwise reconsider the recovery route before further motion.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"unknown\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 44460,
+    "output_tokens": 2051,
+    "output_tokens_details": {
+      "reasoning_tokens": 1552
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f78-a137-7e00-bc0c-515f3ef35d17",
+    "turn_ids": [
+      "01a18f78-a13d-7a92-826d-16392a16580a"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
