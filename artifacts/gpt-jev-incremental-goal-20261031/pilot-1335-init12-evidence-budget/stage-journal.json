@@ -126,6 +126,139 @@
         "stage_satisfied": "no",
         "task_satisfied": "no"
       }
+    },
+    {
+      "update": 1,
+      "stage": "pick",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 222,
+      "trigger": "stage_returned",
+      "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "Stationary closure hold or command failure",
+        "evidence": {
+          "failure": {
+            "gate": "Stationary closure hold or command failure",
+            "prevented_action": "Continue the single contact attempt",
+            "operands": {
+              "status": "moved",
+              "position_error_m": 0.0005493930130357769,
+              "position_limit_m": 0.0005,
+              "pose_margin_m": -4.939301303577689e-05,
+              "rotation_error_rad": 0.0008479027328109482,
+              "rotation_limit_rad": 0.01,
+              "rotation_margin_rad": 0.009152097267189052,
+              "frame_id": 222,
+              "contact_geometry_checkpoint": "pick_reference",
+              "choices": {
+                "x": "hold",
+                "y": "hold",
+                "z": "hold",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "close"
+              }
+            },
+            "frame_id": 222,
+            "threshold_provenance": "Operational heuristics unless explicitly labeled measured geometry or runtime budget.",
+            "stage_status": "blocked"
+          },
+          "recent_progress": [
+            {
+              "phase": "Resume after acknowledged descent; old target pursuit cancelled",
+              "state": {
+                "frame_id": 216,
+                "native_steps": 216,
+                "tcp_position_world_m": [
+                  -0.05188004471778103,
+                  0.14528509893274125,
+                  0.915813634662112
+                ],
+                "tcp_quaternion_xyzw": [
+                  0.9999960354002284,
+                  0.002042148603967897,
+                  0.0018092222086258086,
+                  -0.000696798324049704
+                ],
+                "gripper_qpos_m": [
+                  0.04000005803653318,
+                  -0.03999827106106124
+                ],
+                "last_gripper_command": "open"
+              },
+              "prior_completed_lease_frame": 177,
+              "old_pad_target_world_m": [
+                -0.05310881278872921,
+                0.14386107544312834,
+                0.9178851966152449
+              ],
+              "actual_pad_world_m": [
+                -0.051893201038961785,
+                0.1452790014571862,
+                0.9194133608543101
+              ],
+              "old_target_residual_m": 0.002413195402173717,
+              "acknowledged_frame_201_to_216_tcp_motion_m": 0.00011356794187036687,
+              "provenance": "Current proprioception and supplied acknowledged receipts. Small progress does not identify a collision."
+            }
+          ]
+        },
+        "handoff": {
+          "stage": "pick",
+          "frame_convention": "World meters; tool quaternions xyzw; landmark identities refer to the same cream cheese package.",
+          "checkpoint_keys": [
+            "pick_reference",
+            "pick_progress",
+            "pick_test",
+            "pick_result",
+            "pick_gate",
+            "pick_observation"
+          ],
+          "warning": "Only keys actually written exist. Never reopen a possibly held package. Revalidate references after motion.",
+          "last_acknowledged_state": {
+            "frame_id": 222,
+            "native_steps": 222,
+            "tcp_position_world_m": [
+              -0.05158204445663956,
+              0.1454786440583446,
+              0.9162279362353932
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999950164673371,
+              0.0020986360720701147,
+              0.0022080005756088925,
+              -0.0008291565505960303
+            ],
+            "gripper_qpos_m": [
+              0.021409679162323583,
+              -0.021086241557201693
+            ],
+            "last_gripper_command": "close"
+          },
+          "recovery_requirement": "Inspect written checkpoints and fresh views. Preserve the actual gripper state; do not repeat contact or open blindly."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "evidence": [
+          "Frame 222 shows the package between the inward-moved fingers beside the bowl; no retained lift or tabletop separation is established.",
+          "Two closure deliveries were acknowledged. Jaw positions narrowed from approximately +/-0.034 m to +/-0.021 m; this establishes closure motion, not retention.",
+          "The program returned blocked, not stage_complete. Its stationary-pose gate rejected 0.549 mm error against a 0.500 mm operational limit despite all pose-axis choices being hold.",
+          "Current budgets are 30 model calls, 126 control calls and 378 native steps; the historical 33-call allocation is not the current remaining budget."
+        ],
+        "invalidated_assumptions": [
+          "The stationary 0.500 mm pose gate is a demonstrated physical prerequisite for proceeding after closure."
+        ],
+        "plan_valid": "yes",
+        "reason": "The pick objective remains suitable, but the returned method needs correction, not continuation. Preserve the already executed closure without blind reopening or repeated contact. Reconcile per-axis hold decisions with the aggregate error gate, requiring its physical rationale and uncertainty accounting rather than merely relaxing it. A replacement criterion should use current contact geometry and clearance, followed by a bounded lift test with independently observed package co-motion and tabletop separation if supported. Limit pick repair and verification to five model calls, reserving 25 for transfer, placement verification and contingencies; reconsider the plan if that bound cannot be met.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      }
     }
   ],
   "completed": [],

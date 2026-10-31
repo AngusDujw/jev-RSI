@@ -1,0 +1,17 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Frame 222 shows the package between the inward-moved fingers beside the bowl; no retained lift or tabletop separation is established.",
+    "Two closure deliveries were acknowledged. Jaw positions narrowed from approximately +/-0.034 m to +/-0.021 m; this establishes closure motion, not retention.",
+    "The program returned blocked, not stage_complete. Its stationary-pose gate rejected 0.549 mm error against a 0.500 mm operational limit despite all pose-axis choices being hold.",
+    "Current budgets are 30 model calls, 126 control calls and 378 native steps; the historical 33-call allocation is not the current remaining budget."
+  ],
+  "invalidated_assumptions": [
+    "The stationary 0.500 mm pose gate is a demonstrated physical prerequisite for proceeding after closure."
+  ],
+  "plan_valid": "yes",
+  "reason": "The pick objective remains suitable, but the returned method needs correction, not continuation. Preserve the already executed closure without blind reopening or repeated contact. Reconcile per-axis hold decisions with the aggregate error gate, requiring its physical rationale and uncertainty accounting rather than merely relaxing it. A replacement criterion should use current contact geometry and clearance, followed by a bounded lift test with independently observed package co-motion and tabletop separation if supported. Limit pick repair and verification to five model calls, reserving 25 for transfer, placement verification and contingencies; reconsider the plan if that bound cannot be met.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

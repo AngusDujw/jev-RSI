@@ -704,3 +704,7 @@ Builder7 completed in 580.673 s without host reconnects or recorded native recov
 ## Actual closure followed by hold-gate failure
 
 Method1 review8 completed and admitted current-pose closure. Two real Jev close deliveries advanced frame216 to222 (74 calls total). The second hold receipt had position error0.000549393 m versus the model-selected0.0005 m bound, failing by0.000049393 m; rotation error0.000847903 rad remained below0.01. Program returned blocked and supervisor9 78d4338183634e37b355e4461255c4c2 is running. This is an operational hold-gate failure, not evidence of collision or failed retention. No independent lift test has occurred; do not label closure as successful grasp.
+
+## Closed-state second repair and budget mismatch
+
+Supervisor9 selects revise, preserving actual closure and asking for physically justified contact/clearance plus an independent bounded lift test. Builder10 11b409195a5845afb1125a9a32e9028e is live. Actual input has30 model calls remaining,28 reserved, only1 review after builder. Supervisor prose suggests five calls with25 reserved, which does not override the actual persisted stage allocation. This is an observed supervisor/allocation inconsistency; await whether the generated method respects the authoritative budget or yields for replanning. No new physical steps beyond222.
