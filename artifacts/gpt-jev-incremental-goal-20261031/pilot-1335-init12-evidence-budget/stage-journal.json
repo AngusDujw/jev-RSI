@@ -60,6 +60,28 @@
           "replan_conditions": "Reassess the actual resulting state if the package catches on the rim, follows the gripper, falls outside or tips the bowl. Resolve occlusion using an observed-clear alternative view before declaring success; do not replay placement blindly."
         }
       ]
+    },
+    {
+      "explanation": "Continue from frame 240 without reopening, repeating contact or replaying the completed lift. Package landmarks and acknowledged motion support retained co-motion; whole-package tabletop separation remains unresolved. The failed narrow-sample angular bound does not establish contact or impossibility. Replace that estimator rather than relaxing its threshold. Combine clearance recovery with delivery to avoid an observation-only stage. Budget the current 21 post-plan calls as at most two for replacement separation measurement and review, eight for delivery, eight for placement and outcome verification, and three for contingencies, including mandatory generation and supervision. Historical larger allocations are obsolete; 120 control calls and 360 native steps remain.",
+      "goal_evidence": "Fresh RGB-D observations after release, settling and gripper withdrawal show the cream cheese package resting inside the upright patterned bowl, not balanced on its rim, independently supported and separated from the gripper.",
+      "stages": [
+        {
+          "id": "clear_deliver",
+          "objective": "Resolve separation uncertainty at the existing held state and bring the retained package to a placement-ready position above the bowl interior.",
+          "entry_evidence": "Frame 240 shows the labeled package between closed fingers beside the bowl. Two acknowledged lift intervals and corresponding package landmarks support stable co-motion. Full-package tabletop separation, lateral clearance and bowl fit are not established; prior clearance reviews cover only upward departure.",
+          "success_evidence": "Fresh evidence establishes whole-package tabletop clearance before lateral transport. Subsequent observations show retained package motion to above the bowl, with package fit and clearance for placement, release and withdrawal supported by current bowl, obstacle and robot geometry.",
+          "handoff_requirements": "Provide current package-to-gripper geometry, separation evidence and uncertainty, bowl opening and rim bounds, relevant obstacle bounds, retention evidence and remaining budgets. Replace the narrow-sample bound using widely separated package-face and tabletop evidence with validated extents, or a visible lower-edge/table gap. Account for angular uncertainty without an unjustified small-angle approximation.",
+          "replan_conditions": "Limit replacement separation measurement and review to two calls. Use the other existing camera or an observed-clear alternative viewpoint if needed; unknown space is not free. If separation remains unresolved, reconsider the recovery route before further manipulation rather than repeating the same estimator. Replan for slip, nonresponse, changed obstacles, unsupported transport clearance or uncertain fit; reassess orientation only with supporting clearance evidence."
+        },
+        {
+          "id": "place_assess",
+          "objective": "Place and release the package into the bowl, withdraw safely and assess the settled task outcome.",
+          "entry_evidence": "Fresh observations establish the package retained above the identified bowl with evidence supporting fit, placement, release and withdrawal clearance. Revalidate affected geometry if the scene or grasp changes.",
+          "success_evidence": "After actual release, settling and withdrawal, fresh observations establish the whole goal: the package rests inside the upright bowl, is not rim-supported and remains separated from the gripper.",
+          "handoff_requirements": "Report post-effect visual and depth evidence of containment, independent support, stability and gripper separation. A reached pose or commanded opening alone is insufficient; distinguish confirmed success from unresolved occlusion.",
+          "replan_conditions": "Reassess the actual resulting state if the package catches on the rim, follows the gripper, falls outside or destabilizes the bowl. Resolve ambiguous containment with existing camera views or an observed-clear alternative viewpoint. Do not blindly replay release or placement; preserve budget for final outcome verification."
+        }
+      ]
     }
   ],
   "events": [
@@ -659,15 +681,15 @@
   ],
   "completed": [],
   "current_stage": {
-    "plan_revision": 1,
+    "plan_revision": 2,
     "index": 0,
     "definition": {
-      "id": "retain",
-      "objective": "Establish a verified retained lift from the already closed grasp, using a physically justified departure assessment.",
-      "entry_evidence": "Frame 222 shows the package between the fingers beside the bowl. Closure was executed; no lift or independent package co-motion is acknowledged. Reported negative margins include operational minima and uncertainty allowances, not observed collision or grasp loss.",
-      "success_evidence": "Fresh observations demonstrate package co-motion with the gripper, separation from the tabletop and stable retention across the lift, rather than only robot motion or a close command.",
-      "handoff_requirements": "Provide current package-to-gripper geometry, observed tabletop separation, relevant obstacle bounds and remaining budget. Justify departure using motion direction, current closed geometry and uncertainty, without merely lowering failed thresholds.",
-      "replan_conditions": "Resolve consequential uncertainty with fresh local RGB-D from existing cameras or a clearance-supported alternative view. Replan for slip, package nonresponse, robot nonresponse, unresolved departure safety or exhaustion of the three-call repair allowance. Do not blindly reopen, repeat contact or pursue the stalled target."
+      "id": "clear_deliver",
+      "objective": "Resolve separation uncertainty at the existing held state and bring the retained package to a placement-ready position above the bowl interior.",
+      "entry_evidence": "Frame 240 shows the labeled package between closed fingers beside the bowl. Two acknowledged lift intervals and corresponding package landmarks support stable co-motion. Full-package tabletop separation, lateral clearance and bowl fit are not established; prior clearance reviews cover only upward departure.",
+      "success_evidence": "Fresh evidence establishes whole-package tabletop clearance before lateral transport. Subsequent observations show retained package motion to above the bowl, with package fit and clearance for placement, release and withdrawal supported by current bowl, obstacle and robot geometry.",
+      "handoff_requirements": "Provide current package-to-gripper geometry, separation evidence and uncertainty, bowl opening and rim bounds, relevant obstacle bounds, retention evidence and remaining budgets. Replace the narrow-sample bound using widely separated package-face and tabletop evidence with validated extents, or a visible lower-edge/table gap. Account for angular uncertainty without an unjustified small-angle approximation.",
+      "replan_conditions": "Limit replacement separation measurement and review to two calls. Use the other existing camera or an observed-clear alternative viewpoint if needed; unknown space is not free. If separation remains unresolved, reconsider the recovery route before further manipulation rather than repeating the same estimator. Replan for slip, nonresponse, changed obstacles, unsupported transport clearance or uncertain fit; reassess orientation only with supporting clearance evidence."
     }
   },
   "budget_replans": [

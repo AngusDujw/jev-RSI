@@ -732,3 +732,7 @@ Review16 confirms second interval identified-depth effect: hand18.414 mm, object
 ## Separation failure leads to evidence-directed replan
 
 Supervisor17 selects replan atframe240, retaining acknowledged grasp/lift and explicitly prohibiting replay. It accepts existing stable co-motion evidence but does not establish full-package tabletop separation. It identifies the0.940 rad small-angle allowance from2.47 mm spread as inconclusive and requests widely separated face/support measurements or a visible lower-edge gap, with justified uncertainty. Remaining calls22, controls120, steps360. Plan18 36d6ee36a78b4929b9727dbe7b763d40 is live. Supervisor proposes two-call separation repair; actual subsequent allocation must still be checked.
+
+## Second replan combines separation repair with delivery
+
+Plan18 returned two stages clear_deliver/place_assess from frame240, with21 post-plan calls and120 Jev/360 native steps. It combines separation evidence repair with actual delivery, preserves completed grasp/lift, and requires fresh clearance before lateral transport. Builder19 064236887823436387c68db4ea6d7e1b is live. This is a changed executable-stage scope, not achieved delivery; no new physical action or confirmed stage.
