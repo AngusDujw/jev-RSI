@@ -1,0 +1,23 @@
+{
+  "index": 150,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "point",
+    "args": [
+      "agentview",
+      [
+        386,
+        457
+      ]
+    ],
+    "kwargs": {
+      "radius": 1
+    }
+  },
+  "frame_before": 240,
+  "response": {
+    "error": "ValueError: Invalid or discontinuous surface depth"
+  },
+  "frame_after": 240
+}

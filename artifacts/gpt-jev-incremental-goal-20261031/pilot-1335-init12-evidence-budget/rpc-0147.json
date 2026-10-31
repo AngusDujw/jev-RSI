@@ -1,0 +1,37 @@
+{
+  "index": 147,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "point",
+    "args": [
+      "agentview",
+      [
+        417,
+        403
+      ]
+    ],
+    "kwargs": {
+      "radius": 1
+    }
+  },
+  "frame_before": 240,
+  "response": {
+    "result": {
+      "world_m": [
+        -0.12981448872604506,
+        0.036683394639029865,
+        0.946434788741278
+      ],
+      "depth_m": 1.0305343866348267,
+      "frame_id": 240,
+      "pixel": [
+        417,
+        403
+      ],
+      "camera": "agentview",
+      "source": "current_depth_patch_backprojection"
+    }
+  },
+  "frame_after": 240
+}

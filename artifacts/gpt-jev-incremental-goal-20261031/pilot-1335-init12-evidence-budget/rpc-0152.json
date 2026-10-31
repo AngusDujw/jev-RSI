@@ -1,0 +1,27 @@
+{
+  "index": 152,
+  "method_number": 4,
+  "request": {
+    "kind": "rpc",
+    "method": "point",
+    "args": [
+      "agentview",
+      [
+        340,
+        425
+      ]
+    ],
+    "kwargs": {
+      "radius": 1
+    }
+  },
+  "frame_before": 240,
+  "response": {
+    "error": "Stage supervision required",
+    "handoff": {
+      "trigger": "repeated_measurement_failure"
+    },
+    "scope": "Any acknowledged effects already persisted; do not replay this RPC"
+  },
+  "frame_after": 240
+}

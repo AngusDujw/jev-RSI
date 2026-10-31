@@ -741,3 +741,8 @@ Plan18 returned two stages clear_deliver/place_assess from frame240, with21 post
 ## Delivery method returned without transport recovery
 
 Builder19 completed in1304.116 s with zero host reconnects and no native recoveries. Method4 requests fresh wide-face/table, short-edge and inner-rim measurements, computes package separation/envelope and bowl fit, and defines bounded departure and lateral delivery with independent retention reviews. It preserves the closed grasp and reserves13 model calls; no release is included in this stage. Review20 9c39c65f90bb4ed8a012cf5b4669b596 is executing from frame240. No additional physical dispatch or terminal success has yet been established. This long completed request is generation latency, not a recorded network restart; upstream internal latency decomposition remains unknown.
+
+
+## Delivery geometry review triggers local repair before motion
+
+Review20 completed in175.676 s without reconnects. Method4 obtained wide-face/table and edge measurements, then four bowl-boundary point depths before two invalid/discontinuous depth errors; the next point RPC was interrupted by repeated_measurement_failure. No dispatch beyond frame240/80Jev occurred. Supervisor21 chose revise, preserving grasp/lift and overall plan. It identifies mixed rim/wall/floor samples spanning0.9123..0.9484 m, not one horizontal inner boundary, and asks for depth-valid named rim sectors or another camera with bounded remaining review use. Builder22 0e4ef2601ecd48bcbc7a435f74dc987f is live. Actual remaining18 model calls,120 controls,360steps before repair. This verifies automatic error-to-repair routing, not successful geometry repair or LIBERO completion.

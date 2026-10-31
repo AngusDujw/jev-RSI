@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-ebd6cf91-3e7a-425d-9529-ca31c503cfd9",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-ebd6cf91-3e7a-425d-9529-ca31c503cfd9",
+      "arguments": "{\"status\": \"continue\", \"explanation\": \"The visible printing, straight margins and exposed short end support identity with the cream-cheese package in pick_reference. No deformation or damage is visible; hidden surfaces are not inspected. The saved 0.0811203 by 0.040338 m full face has a diagonal of approximately 0.0905961 m, so the 0.0945961 m bound covers that full face with allowance, not merely the currently visible patch. The 0.0209709 m thickness bound is the original table-supported height 0.0179709 m plus allowance, not the current tabletop separation. These bounds remain supported under the unchanged rigid rectangular-package model; the occluded full extent is not freshly measured. f0-f5 and printed_face_region span both directions on the planar printed face, excluding seams and fingers, and replace the narrow normal fit. t0-t3 sample the same visible tabletop. p0 is the outline apex above C; p1 is the light oval in the right C curl; p2 and p3 are the light counters of e and a. The edge pixels mark the complete exposed short boundary of the printed top face. The eight rim pixels follow the inner opening boundary, avoiding its robot-occluded rightmost segment; floor samples the visible interior bottom. No slip is indicated by the supplied tracked co-motion measurements; closed fingers alone do not establish retention. Earlier images are not supplied here, so bowl stationarity cannot be independently compared. No movement, reopening, placement or completion is certified.\", \"parameters\": {\"identity\": \"correct\", \"extent_model\": \"supported\", \"face_model\": \"planar_package_face\", \"table_model\": \"same_horizontal_table\", \"edge_identity\": \"complete_short_end\", \"edge_camera\": \"robot0_eye_in_hand\", \"edge_pixels\": [[281, 445], [492, 444]], \"rim_identity\": \"horizontal_circular_inner_boundary\", \"rim_camera\": \"agentview\", \"rim_pixels\": [[386, 394], [417, 403], [430, 435], [417, 448], [386, 457], [353, 447], [340, 425], [353, 403]], \"bowl_stationary\": \"unknown\", \"slip\": \"none\", \"valid_landmarks\": [true, true, true, true], \"surface_exclusions\": [], \"upward\": \"unknown\", \"upward_observation_gain\": \"unknown\", \"lateral\": \"unknown\", \"placement\": \"unknown\", \"release\": \"unknown\", \"withdrawal\": \"unknown\", \"hazards\": \"The gripper self-occludes the near portion of the package, finger contacts and part of the bowl's right rim. The package underside and some rear geometry are unobserved. These are visibility limitations, not observed external obstructions. This stationary replacement measurement does not assess later transport or placement corridors.\"}, \"points\": [{\"name\": \"f0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [295, 457], \"radius\": 3}, {\"name\": \"f1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [476, 457], \"radius\": 3}, {\"name\": \"f2\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [295, 541], \"radius\": 3}, {\"name\": \"f3\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [476, 541], \"radius\": 3}, {\"name\": \"f4\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [295, 629], \"radius\": 3}, {\"name\": \"f5\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [476, 629], \"radius\": 3}, {\"name\": \"t0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [225, 355], \"radius\": 5}, {\"name\": \"t1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [552, 355], \"radius\": 5}, {\"name\": \"t2\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [185, 547], \"radius\": 5}, {\"name\": \"t3\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [594, 547], \"radius\": 5}, {\"name\": \"p0\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [364, 460], \"radius\": 2}, {\"name\": \"p1\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [393, 496], \"radius\": 2}, {\"name\": \"p2\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [370, 551], \"radius\": 2}, {\"name\": \"p3\", \"camera\": \"robot0_eye_in_hand\", \"pixel\": [379, 579], \"radius\": 2}, {\"name\": \"floor\", \"camera\": \"agentview\", \"pixel\": [386, 434], \"radius\": 3}], \"regions\": [{\"name\": \"printed_face_region\", \"camera\": \"robot0_eye_in_hand\", \"box\": [293, 453, 479, 635], \"stride\": 10}]}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 38592,
+    "output_tokens": 5155,
+    "output_tokens_details": {
+      "reasoning_tokens": 4142
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f8e-a2ae-7421-8e7c-39102453d090",
+    "turn_ids": [
+      "01a18f8e-a2b4-7113-a6f1-77ce87c1b3ed"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

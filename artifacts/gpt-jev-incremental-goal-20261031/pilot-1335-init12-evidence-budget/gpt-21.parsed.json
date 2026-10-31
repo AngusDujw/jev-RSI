@@ -1,0 +1,18 @@
+{
+  "action": "revise",
+  "evidence": [
+    "Frame 240 shows the package between the fingers beside the bowl, not above its interior. No lateral transfer or release is acknowledged.",
+    "Recorded package-landmark ascent matched the acknowledged lift, supporting retention. The current images still occlude the package underside.",
+    "Two bowl-boundary depth queries failed as invalid or discontinuous; the next query was interrupted. Successful proposed rim samples span heights from 0.9123 to 0.9484 m and do not establish one horizontal opening boundary.",
+    "The current stage yielded for repeated_measurement_failure, not stage_complete, and live continuation is unavailable.",
+    "The newest supplied budget is 18 model calls, 120 control calls and 360 native steps; the 21-call allocation snapshot is outdated."
+  ],
+  "invalidated_assumptions": [
+    "The selected bowl pixels reliably identify one horizontal inner-rim boundary with usable depth."
+  ],
+  "plan_valid": "yes",
+  "reason": "The subgoal and ordering remain suitable, but local measurement selection needs correction. Preserve the executed grasp and lift. Assess separation using the already acquired wider face/table samples, validated extents and justified angular uncertainty; the old failed heuristic is not observed contact. Recover opening geometry from depth-valid, visibly identified inner-rim sectors or the other camera, rather than fitting mixed rim, wall and floor samples. Do not infer transport or placement clearance from visibility alone. Within the current 18-call ceiling, cap repair and delivery at five calls: one revised builder, one combined geometry review, up to two transport reviews and one completion supervision. Preserve ten calls for placement and outcome verification and three for contingencies. If prerequisite geometry cannot be established within that allocation, replan before further manipulation rather than repeating unchanged sensing.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}
