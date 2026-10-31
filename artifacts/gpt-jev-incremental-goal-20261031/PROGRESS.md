@@ -708,3 +708,7 @@ Method1 review8 completed and admitted current-pose closure. Two real Jev close 
 ## Closed-state second repair and budget mismatch
 
 Supervisor9 selects revise, preserving actual closure and asking for physically justified contact/clearance plus an independent bounded lift test. Builder10 11b409195a5845afb1125a9a32e9028e is live. Actual input has30 model calls remaining,28 reserved, only1 review after builder. Supervisor prose suggests five calls with25 reserved, which does not override the actual persisted stage allocation. This is an observed supervisor/allocation inconsistency; await whether the generated method respects the authoritative budget or yields for replanning. No new physical steps beyond222.
+
+## Second patch delivered; geometry gate blocks lift
+
+Builder10 delivered9 replacements in1035.843 s, zero host reconnects/recorded native recoveries. Method2 explicitly follows the authoritative one-review allocation rather than supervisor prose, preserves already executed closure and removes obsolete stationary-hold prerequisite. It measures current closed-finger geometry and fresh local depth before a bounded lift; exact frame222 visual admission is episode-specific, not portable reuse. Execution blocks before any new action: computed contact margin -0.000532767 m and table margin -0.000288980 m, with model-selected uncertainty/minimum-overlap allowances. These are gate failures, not demonstrated physical impossibility. Supervisor11 f02328b1260b43d59a6e1504b5140cdf is live; frame222 unchanged, no lift proof or terminal success.

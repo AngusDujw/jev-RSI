@@ -1,0 +1,37 @@
+{
+  "index": 64,
+  "method_number": 2,
+  "request": {
+    "kind": "rpc",
+    "method": "point",
+    "args": [
+      "robot0_eye_in_hand",
+      [
+        310,
+        468
+      ]
+    ],
+    "kwargs": {
+      "radius": 3
+    }
+  },
+  "frame_before": 222,
+  "response": {
+    "result": {
+      "world_m": [
+        -0.017733110164719065,
+        0.1597921538369445,
+        0.9175452902747099
+      ],
+      "depth_m": 0.09586287289857864,
+      "frame_id": 222,
+      "pixel": [
+        310,
+        468
+      ],
+      "camera": "robot0_eye_in_hand",
+      "source": "current_depth_patch_backprojection"
+    }
+  },
+  "frame_after": 222
+}
