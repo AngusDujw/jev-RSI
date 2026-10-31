@@ -47,7 +47,77 @@
       "note": "Explicitly reduce the former 15-call downstream reserve to 14 by consuming one generic contingency, not a mandatory effect check. Optional replacement only with surplus."
     },
     "review_job": "c18d4eb644f5462fa73ffa162e11b389",
-    "review_status_at_recording": "generating",
-    "effect_verified": false
+    "review_status_at_recording": "completed",
+    "effect_verified": false,
+    "review_result": {
+      "frame": 216,
+      "valid_points": [
+        "t0",
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "s0",
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "measurement_errors": [],
+      "parameters": {
+        "boundaries": "yes",
+        "boundary_camera": "robot0_eye_in_hand",
+        "boundary_pixels": [
+          [
+            298,
+            500
+          ],
+          [
+            299,
+            600
+          ],
+          [
+            503,
+            498
+          ],
+          [
+            504,
+            598
+          ]
+        ],
+        "bowl_change": "unknown",
+        "bracketed": "no",
+        "edge_a_description": "A0/A1 lie on the visible long lateral top edge at wrist-image left, the positive-world-y side away from the bowl, not a short end face.",
+        "edge_b_description": "B0/B1 lie on the opposed visible long lateral top edge at wrist-image right, the negative-world-y side facing the bowl, not a short end face.",
+        "empty": "yes",
+        "identity": "yes",
+        "membership": "yes",
+        "supported": "yes",
+        "sweep": "unknown"
+      },
+      "stage_status": "blocked",
+      "reason": "sweep=unknown; required clear",
+      "new_actions": 0
+    },
+    "following_supervision": {
+      "action": "revise",
+      "evidence": [
+        "The current trigger is stage_returned with stage_status=blocked, reason sweep=unknown; required clear, and live_continuation_available=false.",
+        "The repaired frame-216 review reports valid top/table samples and two visible long-edge boundaries, but bracketed=no and sweep=unknown. The earlier description-cardinality error is not the current failure.",
+        "Current images show the package outside the bowl. The review identifies table support and an empty hand; the public gripper command remains open.",
+        "The latest method records no actions or pending intent. Earlier descent commands were acknowledged, but the old target remains unestablished; no closing or retention lift is established.",
+        "The latest budget is 17 GPT calls, 128 Jev calls and 384 native steps. Frame-102 corners remain historical conditional geometry, not newly measured contact coverage."
+      ],
+      "reason": "The grasp subgoal and overall ordering remain suitable. Use the newly observed strip for a bounded candidate-specific geometry and clearance correction, not another unchanged query or descent retry. Resolve bracketing, contact coverage and the full-finger sweep before dependent motion; if these remain unobservable, consider a different visible region or separately clearance-supported sensing route. Unknown clearance is neither an obstacle nor permission. Preserve the actual open-hand endpoint and acknowledged history, retain uncertainty margins, and reconcile acquisition costs with mandatory downstream evidence before further work.",
+      "stage_satisfied": "no",
+      "task_satisfied": "no",
+      "plan_valid": "yes",
+      "invalidated_assumptions": [
+        "The selected exposed strip is already bracketed at the current hand configuration.",
+        "The available observations establish clearance for the proposed local sweep."
+      ],
+      "recovery_available": "yes"
+    },
+    "next_method_job": "0063946047164ccb9a5d3df5fdda42d2"
   }
 }
