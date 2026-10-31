@@ -1,0 +1,427 @@
+{
+  "episode": "test-07-learned",
+  "frame_id": 105,
+  "new_valid_anchors": 2,
+  "preserved_unique_anchors": 3,
+  "plane_recompute_max_error": 3.469446951953614e-18,
+  "circle": {
+    "center_xy_m": [
+      -0.09198935856762172,
+      -0.004050122944001349
+    ],
+    "radius_m": 0.05594498272954667,
+    "rms_m": 0.00043747297973012776,
+    "max_radial_error_m": 0.0008290291269964709,
+    "largest_angular_gap_rad": 2.2340734193193414
+  },
+  "bowl_uncertainty_m": 0.0033657975883494683,
+  "candidate": {
+    "frame_id": 105,
+    "chosen": {
+      "target": [
+        -0.037554052799960796,
+        0.11153051300764634,
+        0.9190434120561572
+      ],
+      "above": [
+        -0.037554052799960796,
+        0.11153051300764634,
+        0.9804544456861668
+      ],
+      "interval": {
+        "low_m": 0.9166629266246485,
+        "high_m": 0.9214238974876661,
+        "floor_gap_m": 0.06379151906151825,
+        "overlap_m": -0.056498549352698046,
+        "required_overlap_m": 0.0025319988458026963
+      },
+      "offset_m": 0.026281627353600085,
+      "shift_sweep": {
+        "finger_box_low_world_m": [
+          -0.07712777283916826,
+          0.04329913573492916,
+          0.967577240336595
+        ],
+        "finger_box_high_world_m": [
+          -0.02639677180093693,
+          0.17802772214379864,
+          1.021350921441215
+        ],
+        "horizontal_gap_m": -0.011656896951057344,
+        "vertical_gap_m": 0.010693068759386732,
+        "separation_m": 0.010693068759386732,
+        "required_clearance_m": 0.002
+      },
+      "descent_sweep": {
+        "finger_box_low_world_m": [
+          -0.04870688612376198,
+          0.04502221306082696,
+          0.9061662067065854
+        ],
+        "finger_box_high_world_m": [
+          -0.02639677180093693,
+          0.17802772214379864,
+          1.021350921441215
+        ],
+        "horizontal_gap_m": 0.004149222225899495,
+        "vertical_gap_m": -0.050717964870622814,
+        "separation_m": 0.004149222225899495,
+        "required_clearance_m": 0.002
+      },
+      "margin_m": 0.004149222225899495
+    },
+    "tolerance_m": 0.0011862628455595325,
+    "offset_bounds_m": [
+      -0.026344563417728204,
+      0.026281627353600085
+    ],
+    "candidate_margins_m": [
+      -0.012298308671023918,
+      -0.012292874280527465,
+      -0.012287439890031011,
+      -0.012279206544262254,
+      -0.012128468718117735,
+      -0.01175926167172503,
+      -0.0111764144332588,
+      -0.010387266061058179,
+      -0.009401229413793656,
+      -0.008229281088592465,
+      -0.006883435080949858,
+      -0.005376248567335082,
+      -0.00372039334389531,
+      -0.0019283104756183662,
+      -1.1952001582576487e-05,
+      0.0020173962356139987,
+      0.004149222225899495
+    ]
+  },
+  "independently_recomputed_descent_horizontal_gap_m": 0.004149222225899495,
+  "clearance_evidence": {
+    "preserved": {
+      "frame_id": 105,
+      "points": {
+        "r0": {
+          "world_m": [
+            -0.13884046040695364,
+            -0.03017018926773321,
+            0.9490575293223457
+          ],
+          "depth_m": 1.0359079837799072,
+          "frame_id": 105,
+          "pixel": [
+            357,
+            396
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "r1": {
+          "world_m": [
+            -0.09737185155799788,
+            -0.0574068749828316,
+            0.9482723867831149
+          ],
+          "depth_m": 1.0041415691375732,
+          "frame_id": 105,
+          "pixel": [
+            331,
+            421
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "r2": {
+          "world_m": [
+            -0.037526660300585046,
+            -0.006190632873770002,
+            0.9499807539648838
+          ],
+          "depth_m": 0.9565126299858093,
+          "frame_id": 105,
+          "pixel": [
+            378,
+            458
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "measurement_errors": [
+        {
+          "name": "r3",
+          "error": "Invalid or discontinuous surface depth"
+        }
+      ],
+      "scope": "Three distinct original anchors; repeated same-frame observations counted once."
+    },
+    "new_points": {
+      "new_crest_0": {
+        "world_m": [
+          -0.13372767874462155,
+          -0.03784847808692212,
+          0.9489594790905322
+        ],
+        "depth_m": 1.0319921970367432,
+        "frame_id": 105,
+        "pixel": [
+          350,
+          399
+        ],
+        "camera": "agentview",
+        "source": "current_depth_patch_backprojection"
+      },
+      "new_crest_1": {
+        "world_m": [
+          -0.11023746911003496,
+          -0.0546852541624635,
+          0.9486258354795168
+        ],
+        "depth_m": 1.0139280557632446,
+        "frame_id": 105,
+        "pixel": [
+          334,
+          413
+        ],
+        "camera": "agentview",
+        "source": "current_depth_patch_backprojection"
+      }
+    },
+    "new_errors": [],
+    "review_frame": 105,
+    "parameters": {
+      "identity": "yes",
+      "camera": "agentview",
+      "new_pixels": [
+        [
+          350,
+          399
+        ],
+        [
+          334,
+          413
+        ]
+      ],
+      "crest_identity": "yes",
+      "rim_camera": "agentview",
+      "rim_pixels": [
+        [
+          374,
+          391
+        ],
+        [
+          346,
+          399
+        ],
+        [
+          329,
+          422
+        ],
+        [
+          344,
+          450
+        ],
+        [
+          380,
+          459
+        ],
+        [
+          426,
+          440
+        ]
+      ],
+      "boundary_identity": "yes",
+      "model_current": "yes",
+      "supported": "yes",
+      "upright_envelope": "yes"
+    },
+    "interrupted_write_reconciled": true,
+    "fit_diagnostic": {
+      "plane": {
+        "coefficients": [
+          -0.001551215027964887,
+          -0.02854506083331536,
+          0.9995913031004018,
+          -0.949815563281706
+        ],
+        "center_world_m": [
+          -0.10354082402403861,
+          -0.03726028587474409,
+          0.9489791969280785
+        ],
+        "rms_m": 0.00010064654223536659,
+        "in_plane_spread_m": [
+          0.03794254677846596,
+          0.015012888615587043
+        ]
+      },
+      "circle": {
+        "center_xy_m": [
+          -0.09198935856762172,
+          -0.004050122944001356
+        ],
+        "radius_m": 0.05594498272954667,
+        "rms_m": 0.0004374729797301305,
+        "max_radial_error_m": 0.0008290291269964639,
+        "largest_angular_gap_rad": 2.2340734193193414
+      },
+      "uncertainty_m": 0.0033657975883494683
+    },
+    "accepted": {
+      "frame_id": 105,
+      "plane_fit": {
+        "coefficients": [
+          -0.001551215027964887,
+          -0.02854506083331536,
+          0.9995913031004018,
+          -0.949815563281706
+        ],
+        "center_world_m": [
+          -0.10354082402403861,
+          -0.03726028587474409,
+          0.9489791969280785
+        ],
+        "rms_m": 0.00010064654223536659,
+        "in_plane_spread_m": [
+          0.03794254677846596,
+          0.015012888615587043
+        ]
+      },
+      "circle": {
+        "center_xy_m": [
+          -0.09198935856762172,
+          -0.004050122944001356
+        ],
+        "radius_m": 0.05594498272954667,
+        "rms_m": 0.0004374729797301305,
+        "max_radial_error_m": 0.0008290291269964639,
+        "largest_angular_gap_rad": 2.2340734193193414
+      },
+      "uncertainty_m": 0.0033657975883494683,
+      "top_bound_m": 0.9549112574671954,
+      "boundary_measurements": [
+        {
+          "world_m": [
+            -0.1469214139763414,
+            -0.01123790521315128,
+            0.9496549909389524
+          ],
+          "pixel": [
+            374,
+            391
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.001551215027964887,
+            -0.02854506083331536,
+            0.9995913031004018,
+            -0.949815563281706
+          ],
+          "frame_id": 105,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.13393337136618666,
+            -0.04231222184932438,
+            0.9487877654947496
+          ],
+          "pixel": [
+            346,
+            399
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.001551215027964887,
+            -0.02854506083331536,
+            0.9995913031004018,
+            -0.949815563281706
+          ],
+          "frame_id": 105,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.0956352944174671,
+            -0.05948988371451098,
+            0.9483566604530448
+          ],
+          "pixel": [
+            329,
+            422
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.001551215027964887,
+            -0.02854506083331536,
+            0.9995913031004018,
+            -0.949815563281706
+          ],
+          "frame_id": 105,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.05072227453199496,
+            -0.041742206303781546,
+            0.9489331743552262
+          ],
+          "pixel": [
+            344,
+            450
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.001551215027964887,
+            -0.02854506083331536,
+            0.9995913031004018,
+            -0.949815563281706
+          ],
+          "frame_id": 105,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.03598193362083113,
+            -0.00412176910574152,
+            0.9500303658807336
+          ],
+          "pixel": [
+            380,
+            459
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.001551215027964887,
+            -0.02854506083331536,
+            0.9995913031004018,
+            -0.949815563281706
+          ],
+          "frame_id": 105,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.06350684882717894,
+            0.04421058638426529,
+            0.9513678654782404
+          ],
+          "pixel": [
+            426,
+            440
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.001551215027964887,
+            -0.02854506083331536,
+            0.9995913031004018,
+            -0.949815563281706
+          ],
+          "frame_id": 105,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      ],
+      "assumption": "Locally reviewed upright flared bowl body within and below the OUTER lip projection; not an opening or global collision certificate."
+    }
+  },
+  "scope": "Conditional local outer-bowl and full-finger box calculation only. Wrist sweep review pending; no grasp, motion approval, retention or success established."
+}
