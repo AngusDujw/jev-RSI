@@ -1,0 +1,270 @@
+{
+  "episode": "test-07-learned",
+  "frame_id": 129,
+  "verified_jev_calls": 43,
+  "verified_native_steps": 129,
+  "sensing_motion": {
+    "key": "acquire.progress",
+    "frame_id": 129,
+    "method_number": 3,
+    "source_sha256": "ebc027497061d4b039df1390b00b8ce24cf3c2f123a53111000d43bf1656c7e9",
+    "bytes": 1477,
+    "value": {
+      "inherited_motion_key": "acquire.motion",
+      "history": [
+        {
+          "phase": "sensing_strip_shift",
+          "before": {
+            "frame_id": 105,
+            "native_steps": 105,
+            "tcp_position_world_m": [
+              -0.06597278471218104,
+              0.109811565498166,
+              0.9768975727891022
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999877492807357,
+              0.004945267269293896,
+              -7.641893694463962e-05,
+              -0.00019944981770875467
+            ],
+            "gripper_qpos_m": [
+              0.03998965748205424,
+              -0.03998659371017801
+            ],
+            "last_gripper_command": "open"
+          },
+          "target_pad_world_m": [
+            -0.037554052799960796,
+            0.11153051300764634,
+            0.9804544456861668
+          ],
+          "quaternion_xyzw": [
+            0.9999877492807357,
+            0.004945267269293896,
+            -7.641893694463962e-05,
+            -0.00019944981770875467
+          ],
+          "gripper": "open",
+          "pending_effect": false,
+          "after": {
+            "frame_id": 129,
+            "native_steps": 129,
+            "tcp_position_world_m": [
+              -0.038069250164120584,
+              0.11241072789696539,
+              0.9767035343650224
+            ],
+            "tcp_quaternion_xyzw": [
+              0.999989507921252,
+              0.004478932331080876,
+              -0.0009193101928946773,
+              0.0002794304120852629
+            ],
+            "gripper_qpos_m": [
+              0.03999658605238586,
+              -0.03999512073896008
+            ],
+            "last_gripper_command": "open"
+          },
+          "whole_native_steps": 24,
+          "receipt": {
+            "status": "reached",
+            "choices": {
+              "x": "positive",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "open"
+            },
+            "acknowledged_steps": 3,
+            "position_error_m": 0.0010106712967025125,
+            "rotation_error_rad": 0.0021515235744598207,
+            "frame_id": 129
+          },
+          "effect_frame": 129,
+          "effect": "Fresh shifted view obtained without observed disturbance; this does not authorize descent."
+        }
+      ],
+      "pending": null
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "wrist_evidence": {
+    "key": "acquire.wrist",
+    "frame_id": 129,
+    "method_number": 3,
+    "source_sha256": "ebc027497061d4b039df1390b00b8ce24cf3c2f123a53111000d43bf1656c7e9",
+    "bytes": 2028,
+    "value": {
+      "prior_frame": 105,
+      "prior_parameters": {
+        "identity": "yes",
+        "model_current": "yes",
+        "bracketed": "yes",
+        "shift": "clear",
+        "descent": "unknown",
+        "disturbance": "none",
+        "unwanted_contact": "none"
+      },
+      "prior_gap": "Finger-only descent separation did not bound palm/wrist against bowl and white appliance.",
+      "scope": "Only the separately approved open high shift is executable before fresh clearance evidence.",
+      "measurement_frame": 129,
+      "state": {
+        "frame_id": 129,
+        "native_steps": 129,
+        "tcp_position_world_m": [
+          -0.038069250164120584,
+          0.11241072789696539,
+          0.9767035343650224
+        ],
+        "tcp_quaternion_xyzw": [
+          0.999989507921252,
+          0.004478932331080876,
+          -0.0009193101928946773,
+          0.0002794304120852629
+        ],
+        "gripper_qpos_m": [
+          0.03999658605238586,
+          -0.03999512073896008
+        ],
+        "last_gripper_command": "open"
+      },
+      "parameters": {
+        "appliance_points": [
+          {
+            "camera": "agentview",
+            "pixel": [
+              582,
+              315
+            ]
+          },
+          {
+            "camera": "agentview",
+            "pixel": [
+              614,
+              335
+            ]
+          }
+        ],
+        "appliance_upper_bound": "unknown",
+        "body_lower_bound": "unknown",
+        "body_points": [
+          {
+            "camera": "agentview",
+            "pixel": [
+              424,
+              422
+            ]
+          },
+          {
+            "camera": "agentview",
+            "pixel": [
+              499,
+              422
+            ]
+          },
+          {
+            "camera": "agentview",
+            "pixel": [
+              581,
+              422
+            ]
+          }
+        ],
+        "bound_basis": "Radius-1 current agentview patches: body_left_lower_rim (424,422), body_center_lower_rim (499,422), body_right_lower_rim (581,422), appliance_rear_top (582,315), appliance_right_top (614,335). Body pixels lie just inside the lowest visible front palm rim, excluding fingers. Neither view exposes the relevant rear/underside contour; this rim alone cannot bound all overlapping non-finger body through descent with 0.01 rad tolerance. White appliance pixels select exposed top patches, but the hand hides intervening relevant top geometry. They cannot bound all relevant protrusions. Both bounds remain unknown rather than assuming hidden surfaces.",
+        "bracketed": "yes",
+        "descent": "unknown",
+        "disturbance": "none",
+        "identity": "yes",
+        "model_current": "yes",
+        "scene_unchanged": "yes",
+        "unwanted_contact": "none"
+      },
+      "points": {},
+      "measurement_errors": [],
+      "review_status": "continue"
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "review": {
+    "explanation": "The package and surrounding objects remain visibly unchanged after the open high shift. The shifted fingers are aligned to bracket the package's long faces across its short dimension near one end, without contact. The missing palm/wrist clearance is still unresolved: robot self-occlusion hides relevant underside geometry and part of the appliance top. This is not an observed external obstruction. Positive clearance evidence for the complete remaining descent to the supplied endpoint, including orientation tolerance, is unavailable. No descent, closure, or lift permission is established.",
+    "parameters": {
+      "appliance_points": [
+        {
+          "camera": "agentview",
+          "pixel": [
+            582,
+            315
+          ]
+        },
+        {
+          "camera": "agentview",
+          "pixel": [
+            614,
+            335
+          ]
+        }
+      ],
+      "appliance_upper_bound": "unknown",
+      "body_lower_bound": "unknown",
+      "body_points": [
+        {
+          "camera": "agentview",
+          "pixel": [
+            424,
+            422
+          ]
+        },
+        {
+          "camera": "agentview",
+          "pixel": [
+            499,
+            422
+          ]
+        },
+        {
+          "camera": "agentview",
+          "pixel": [
+            581,
+            422
+          ]
+        }
+      ],
+      "bound_basis": "Radius-1 current agentview patches: body_left_lower_rim (424,422), body_center_lower_rim (499,422), body_right_lower_rim (581,422), appliance_rear_top (582,315), appliance_right_top (614,335). Body pixels lie just inside the lowest visible front palm rim, excluding fingers. Neither view exposes the relevant rear/underside contour; this rim alone cannot bound all overlapping non-finger body through descent with 0.01 rad tolerance. White appliance pixels select exposed top patches, but the hand hides intervening relevant top geometry. They cannot bound all relevant protrusions. Both bounds remain unknown rather than assuming hidden surfaces.",
+      "bracketed": "yes",
+      "descent": "unknown",
+      "disturbance": "none",
+      "identity": "yes",
+      "model_current": "yes",
+      "scene_unchanged": "yes",
+      "unwanted_contact": "none"
+    },
+    "points": [],
+    "regions": [],
+    "status": "continue"
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 129 shows the cream cheese package still on the tabletop outside the bowl, with open fingers above it. Retention and table separation are not established.",
+      "The open high shift completed over 24 acknowledged native steps. No contact descent, closure or retention lift followed; the actual gripper command remains open.",
+      "The frame-129 review confirms package identity, long-face bracketing and unchanged visible surroundings, with no observed disturbance or unwanted contact.",
+      "Self-occlusion still hides relevant palm underside and appliance geometry. Body lower bound, appliance upper bound and complete descent clearance remain unknown; selected pixels supplied no accepted depth bounds.",
+      "The current stage returned blocked with live continuation unavailable. The older frame-105 abort does not supersede the acknowledged shift.",
+      "Public budgets retain 21 GPT calls, 157 Jev calls and 471 native steps. No evidence establishes that all alternative measurements or acquisition candidates are unavailable."
+    ],
+    "invalidated_assumptions": [
+      "The high-shift view would sufficiently expose the relevant palm underside and appliance top to certify this descent."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains suitable, but the sensing method needs correction. Revise from the actual shifted open pose without replaying the approach or shift. Evaluate a genuinely different, separately clearance-reviewed sensing view or acquisition candidate, including scoped lateral separation where measurable rather than unsupported hidden-surface bounds. The new review is informative but does not authorize descent or closure. Do not repeat the unchanged query, lower margins or infer collision from unknown clearance. Reserve independent retention and final-verification resources.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "next_job": "f926b03562744e15a07ae53d4597b3f2",
+  "scope": "Sensing shift executed, but full-hand descent clearance remains unknown. No descent, closure or retention lift executed. Episode active and frozen Test memory unchanged."
+}
