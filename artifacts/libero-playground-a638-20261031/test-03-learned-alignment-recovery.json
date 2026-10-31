@@ -346,5 +346,244 @@
     "acknowledged_steps": 216,
     "next_method_job": "eb9af5c4c453429ba613325136a657c2",
     "note": "Earlier reached receipts remain valid for alignment/standoff only. No closing or retention. Possible disturbance is unmeasured, not a collision diagnosis."
+  },
+  "endpoint_review_and_recovery": {
+    "frame": 216,
+    "method_source_sha256": "fddc98cee3612350ab213c426c96a64137114a12f85b672d331889a208a90a75",
+    "entry_review": {
+      "status": "continue",
+      "explanation": "The cream cheese package appears table-supported, with its exposed end and edges consistent with the historical pose. The fingers are open but asymmetric and bracket the short dimension. Agentview exposes both long-edge contours over the central pad-length strip plus allowance; hidden continuation is not established. Points select current visible surface interiors, not historical projected pixels. Earlier actual bowl and table images are unavailable here, so their change comparisons remain unknown. Robot self-occlusion at the bowl-side hand/rim overlap prevents confirming full-hand/package bowl clearance and excluding unintended contact; no definite adverse contact is visible. Clearance of the specified local segment, including continued opening to the previous envelope, remains unknown specifically at that bowl-side sweep, not an observed obstruction or a demand for global clearance. This does not authorize closing or establish retention.",
+      "parameters": {
+        "approach_route": "unknown",
+        "bowl_change": "unknown",
+        "bowl_relation": "unknown",
+        "bracketed": "yes",
+        "current_contact": "unknown",
+        "empty_open": "yes",
+        "identity": "yes",
+        "pose_same": "yes",
+        "sample_membership": "yes",
+        "side_coverage": "yes",
+        "supported": "yes",
+        "table_same": "unknown"
+      },
+      "points": [
+        {
+          "camera": "robot0_eye_in_hand",
+          "name": "top0",
+          "pixel": [
+            325,
+            480
+          ],
+          "radius": 3
+        },
+        {
+          "camera": "robot0_eye_in_hand",
+          "name": "top1",
+          "pixel": [
+            475,
+            480
+          ],
+          "radius": 3
+        },
+        {
+          "camera": "robot0_eye_in_hand",
+          "name": "top2",
+          "pixel": [
+            475,
+            615
+          ],
+          "radius": 3
+        },
+        {
+          "camera": "robot0_eye_in_hand",
+          "name": "top3",
+          "pixel": [
+            325,
+            615
+          ],
+          "radius": 3
+        },
+        {
+          "camera": "agentview",
+          "name": "table0",
+          "pixel": [
+            434,
+            468
+          ],
+          "radius": 2
+        },
+        {
+          "camera": "agentview",
+          "name": "table1",
+          "pixel": [
+            568,
+            460
+          ],
+          "radius": 2
+        },
+        {
+          "camera": "agentview",
+          "name": "table2",
+          "pixel": [
+            572,
+            492
+          ],
+          "radius": 2
+        },
+        {
+          "camera": "agentview",
+          "name": "table3",
+          "pixel": [
+            434,
+            492
+          ],
+          "radius": 2
+        }
+      ],
+      "regions": []
+    },
+    "method_result": {
+      "key": "acquire.resume_result",
+      "frame_id": 216,
+      "method_number": 2,
+      "source_sha256": "fddc98cee3612350ab213c426c96a64137114a12f85b672d331889a208a90a75",
+      "bytes": 3061,
+      "value": {
+        "stage_status": "blocked",
+        "reason": "No motion: current endpoint permission gaps are ['table_same', 'current_contact', 'bowl_relation', 'approach_route', 'historical bowl displacement unresolved']. No repeated unchanged semantic query or inferred hidden clearance.",
+        "evidence": {
+          "reconciliation": {
+            "frame": 216,
+            "prior_steps": 72,
+            "finger_qpos_change_m": [
+              -0.002832585573419491,
+              -8.994292830730166e-07
+            ],
+            "old_target_reached": "not established",
+            "closing_or_lift_acknowledged": false
+          },
+          "entry_audit": {
+            "frame": 216,
+            "parameters": {
+              "approach_route": "unknown",
+              "bowl_change": "unknown",
+              "bowl_relation": "unknown",
+              "bracketed": "yes",
+              "current_contact": "unknown",
+              "empty_open": "yes",
+              "identity": "yes",
+              "pose_same": "yes",
+              "sample_membership": "yes",
+              "side_coverage": "yes",
+              "supported": "yes",
+              "table_same": "unknown"
+            }
+          },
+          "exception_or_stop": {
+            "reason": "No motion: current endpoint permission gaps are ['table_same', 'current_contact', 'bowl_relation', 'approach_route', 'historical bowl displacement unresolved']. No repeated unchanged semantic query or inferred hidden clearance.",
+            "actual_state": {
+              "frame_id": 216,
+              "native_steps": 216,
+              "tcp_position_world_m": [
+                -0.06463485734397946,
+                0.12380028810368443,
+                0.9184776734397987
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999638968629297,
+                -0.005406838655641455,
+                -0.0028196427251899105,
+                -0.005917827418772209
+              ],
+              "gripper_qpos_m": [
+                0.03716798016010032,
+                -0.03998706672753465
+              ],
+              "last_gripper_command": "open"
+            },
+            "pending_intent": null
+          }
+        },
+        "handoff": {
+          "stage": "acquire",
+          "current_state": {
+            "frame_id": 216,
+            "native_steps": 216,
+            "tcp_position_world_m": [
+              -0.06463485734397946,
+              0.12380028810368443,
+              0.9184776734397987
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999638968629297,
+              -0.005406838655641455,
+              -0.0028196427251899105,
+              -0.005917827418772209
+            ],
+            "gripper_qpos_m": [
+              0.03716798016010032,
+              -0.03998706672753465
+            ],
+            "last_gripper_command": "open"
+          },
+          "budgets": {
+            "gpt_remaining": 28,
+            "jev_remaining": 128,
+            "native_steps_remaining": 384,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "checkpoint_keys": [
+            "acquire.local",
+            "acquire.repair_progress",
+            "acquire.resume_progress",
+            "acquire.resume_observation",
+            "acquire.resume_data",
+            "acquire.resume_result"
+          ],
+          "current_geometry_key": null,
+          "progress_key": "acquire.resume_progress",
+          "baseline_key": null,
+          "effect_key": null,
+          "frames": {
+            "shape": 102,
+            "prior_planes": 144,
+            "entry_audit": 216
+          },
+          "assumptions": [
+            "World meters; tool-to-world xyzw; camera-local pixels. Write receipts are provenance, not sensing.",
+            "Frame-102 perimeter and frame-144 geometry are historical conditional models. Current exposed patches validate only the stated local use; hidden corners are not recovered.",
+            "The interrupted descent through frame 216 is acknowledged, not replayed or declared reached. No new high alignment or standoff is performed.",
+            "Keep preserves the persistent close command and can continue closing. Never replay a recorded close or lift or reopen automatically.",
+            "No bowl positioning or release is authorized. Revalidate retained material and bowl geometry before a later stage."
+          ]
+        },
+        "completion_proposed": false
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    },
+    "supervision": {
+      "action": "revise",
+      "evidence": [
+        "The stage returned blocked; live_continuation_available is false. The returned repair executed no additional motion.",
+        "At frame 216 the package remains table-supported outside the bowl. The review identifies empty open fingers and short-dimension bracketing; no closing, lift or retention test is acknowledged.",
+        "One finger changed by about 2.83 mm since frame 144 despite the open command. The aperture is asymmetric; its cause is unmeasured.",
+        "Fresh package-top and table points were returned without measurement errors. Bowl-side contact and the proposed local sweep remain unknown because of self-occlusion.",
+        "Historical bowl and table change comparisons remain unknown because earlier actual views were unavailable. No definite adverse contact was observed.",
+        "The latest budget provides 27 GPT calls, 128 Jev calls and 384 native steps."
+      ],
+      "reason": "Acquisition remains suitable, but the local sensing and recovery method needs correction. Reconcile the acknowledged endpoint and actual open command without replaying descent. Use genuinely different, targeted bowl-side measurements, or a separately cleared sensing view, to assess current contact and the full opening sweep. Fresh geometry can establish current baselines without inventing historical stationarity; retain unresolved disturbance explicitly. Unknown clearance is neither obstruction nor permission. Further contact motion remains gated on supported local geometry and reserved effect-check resources.",
+      "stage_satisfied": "no",
+      "task_satisfied": "no",
+      "plan_valid": "yes",
+      "invalidated_assumptions": [
+        "The earlier symmetric fully open finger geometry remains unchanged at the current endpoint.",
+        "The handoff's persistent-close description matches the current command; public state records open."
+      ],
+      "recovery_available": "yes"
+    },
+    "new_actions": 0,
+    "next_method_job": "03b1601f750946af8d3001ba5521e969",
+    "limitation": "Unknown current bowl-side clearance and unavailable historical image comparison; no confirmed collision or global infeasibility. Review request contains two input images."
   }
 }
