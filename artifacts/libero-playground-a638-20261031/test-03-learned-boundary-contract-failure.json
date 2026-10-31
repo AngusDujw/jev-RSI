@@ -27,5 +27,27 @@
     ],
     "recovery_available": "yes"
   },
-  "next_method_job": "b15fdc3deff04f9b9805a3f70502a082"
+  "next_method_job": "b15fdc3deff04f9b9805a3f70502a082",
+  "repair_method_05": {
+    "job": "b15fdc3deff04f9b9805a3f70502a082",
+    "source_sha256": "11f823e6e7d6d5e7ddcf89e66baf3d577268e6d000238665439381f09aa8ea97",
+    "contract": "Two scalar physical-side descriptions and exactly four ordered endpoint pixels; unavailable boundaries permit null pixels and unknown.",
+    "checkpoint_schema": "grasp_v5",
+    "preserved_prior": true,
+    "actual_frame": 216,
+    "new_actions_at_first_review": 0,
+    "checkpoint_bytes": 3965,
+    "budget_policy": {
+      "local_reviews": 4,
+      "outer_review": 1,
+      "position_reserve": 7,
+      "finish_reserve": 7,
+      "maximum_local_jev": 74,
+      "downstream_jev_reserve": 50,
+      "note": "Explicitly reduce the former 15-call downstream reserve to 14 by consuming one generic contingency, not a mandatory effect check. Optional replacement only with surplus."
+    },
+    "review_job": "c18d4eb644f5462fa73ffa162e11b389",
+    "review_status_at_recording": "generating",
+    "effect_verified": false
+  }
 }
