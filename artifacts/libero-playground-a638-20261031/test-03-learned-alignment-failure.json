@@ -1,0 +1,386 @@
+{
+  "episode": "test-03-learned",
+  "phase": "test",
+  "frame": 72,
+  "verified_dispatches": 24,
+  "acknowledged_steps": 72,
+  "audit_scope": "Saved JEV request/response/action consistency, not independent simulation replay.",
+  "initial_target_rotation_rad": 3.1386339440634288,
+  "initial_target_rotation_deg": 179.83047843133417,
+  "progress": {
+    "key": "acquire.progress",
+    "frame_id": 72,
+    "method_number": 0,
+    "source_sha256": "914ec3a706f2bbb99088610b05221f03737d9ddac6911f4177080dbe5b39c18c",
+    "bytes": 2079,
+    "value": {
+      "entry": {
+        "frame_id": 0,
+        "native_steps": 0,
+        "tcp_position_world_m": [
+          -0.21013476332838385,
+          0.011275593384936609,
+          1.1652929799052523
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9996074905978509,
+          0.0016264039728355328,
+          -0.02796742432577458,
+          0.00020670599117644968
+        ],
+        "gripper_qpos_m": [
+          0.03872233292832026,
+          -0.03872324050815768
+        ],
+        "last_gripper_command": "open"
+      },
+      "motions": [
+        {
+          "intent": {
+            "phase": "high_alignment",
+            "target_pad_world_m": [
+              -0.06929336736626272,
+              0.12025860943653287,
+              1.1688870483044471
+            ],
+            "quaternion_xyzw": [
+              0.003106969861237595,
+              -0.9999951733574924,
+              0.0,
+              0.0
+            ],
+            "gripper": "open",
+            "position_tolerance_m": 0.004,
+            "rotation_tolerance_rad": 0.01,
+            "start": {
+              "frame_id": 0,
+              "native_steps": 0,
+              "tcp_position_world_m": [
+                -0.21013476332838385,
+                0.011275593384936609,
+                1.1652929799052523
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9996074905978509,
+                0.0016264039728355328,
+                -0.02796742432577458,
+                0.00020670599117644968
+              ],
+              "gripper_qpos_m": [
+                0.03872233292832026,
+                -0.03872324050815768
+              ],
+              "last_gripper_command": "open"
+            }
+          },
+          "end": {
+            "frame_id": 72,
+            "native_steps": 72,
+            "tcp_position_world_m": [
+              -0.0658424063392462,
+              0.11864213897544099,
+              1.1688058398992505
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9547025009530774,
+              -0.2930264088124724,
+              -0.0290742969640331,
+              0.04281756261690316
+            ],
+            "gripper_qpos_m": [
+              0.03994970464376257,
+              -0.0399496684737131
+            ],
+            "last_gripper_command": "open"
+          },
+          "whole_native_steps": 72,
+          "receipt": {
+            "decision": 23,
+            "choices": {
+              "x": "negative",
+              "y": "hold",
+              "z": "negative",
+              "rx": "negative",
+              "ry": "negative",
+              "rz": "negative",
+              "gripper": "open"
+            },
+            "action": [
+              -0.047068112665145795,
+              0.0,
+              -0.04819936073484943,
+              -0.057735026918962574,
+              -0.057735026918962574,
+              -0.057735026918962574,
+              -1.0
+            ],
+            "before": [
+              -0.0656787441044824,
+              0.1184125896041413,
+              1.1689786476750703
+            ],
+            "after": [
+              -0.0658424063392462,
+              0.11864213897544099,
+              1.1688058398992505
+            ],
+            "target_tcp": [
+              -0.06929936815564747,
+              0.12024729257246936,
+              1.1652710045416204
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 72,
+            "frame_id": 72,
+            "status": "lease_exhausted",
+            "position_error_m": 0.005198284724374125,
+            "rotation_error_rad": 2.540606497061451,
+            "lease_calls": 24
+          }
+        }
+      ],
+      "pending": null
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "result": {
+    "key": "acquire.result",
+    "frame_id": 72,
+    "method_number": 0,
+    "source_sha256": "914ec3a706f2bbb99088610b05221f03737d9ddac6911f4177080dbe5b39c18c",
+    "bytes": 559,
+    "value": {
+      "stage_status": "blocked",
+      "reason": "Bounded high_alignment lease stopped as lease_exhausted; no automatic retry.",
+      "evidence": {},
+      "current_state": {
+        "frame_id": 72,
+        "native_steps": 72,
+        "tcp_position_world_m": [
+          -0.0658424063392462,
+          0.11864213897544099,
+          1.1688058398992505
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9547025009530774,
+          -0.2930264088124724,
+          -0.0290742969640331,
+          0.04281756261690316
+        ],
+        "gripper_qpos_m": [
+          0.03994970464376257,
+          -0.0399496684737131
+        ],
+        "last_gripper_command": "open"
+      },
+      "checkpoint_keys": [
+        "acquire.initial0",
+        "acquire.geometry",
+        "acquire.progress"
+      ]
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "geometry": {
+    "key": "acquire.geometry",
+    "frame_id": 0,
+    "method_number": 0,
+    "source_sha256": "914ec3a706f2bbb99088610b05221f03737d9ddac6911f4177080dbe5b39c18c",
+    "bytes": 3021,
+    "value": {
+      "identity": "cream cheese package on table beside patterned bowl",
+      "shape_frame": 0,
+      "frame": 0,
+      "top": {
+        "coefficients": [
+          -0.0005561971504035905,
+          0.021085685555219714,
+          0.9997775175054678,
+          -0.9203830266376558
+        ],
+        "center_world_m": [
+          -0.06882939122438525,
+          0.12007012576220083,
+          0.9180172257724086
+        ],
+        "rms_m": 5.373715376382014e-05,
+        "in_plane_spread_m": [
+          0.027746490005736837,
+          0.011490243977166439
+        ]
+      },
+      "table": {
+        "coefficients": [
+          -3.6648868212387187e-06,
+          -1.2060364588822738e-06,
+          0.999999999992557,
+          -0.899965588873704
+        ],
+        "center_world_m": [
+          -0.08587243166487067,
+          0.12246641044183926,
+          0.8999654218666154
+        ],
+        "rms_m": 2.6435650889457426e-08,
+        "in_plane_spread_m": [
+          0.08755308611639398,
+          0.07016698388590127
+        ]
+      },
+      "corners": [
+        [
+          -0.029886791601119136,
+          0.14064964247783984,
+          0.9176048605729659
+        ],
+        [
+          -0.1086106259047348,
+          0.14007578474162272,
+          0.9175731677333347
+        ],
+        [
+          -0.10926356607628573,
+          0.09994873951715877,
+          0.9184190990326407
+        ],
+        [
+          -0.029412485882911232,
+          0.10036027100951013,
+          0.9184548425045539
+        ]
+      ],
+      "corner_rays": [
+        {
+          "world_m": [
+            -0.029886791601119136,
+            0.14064964247783984,
+            0.9176048605729659
+          ],
+          "pixel": [
+            191,
+            168
+          ],
+          "camera": "robot0_eye_in_hand",
+          "plane": [
+            -0.0005561971504035905,
+            0.021085685555219714,
+            0.9997775175054678,
+            -0.9203830266376558
+          ],
+          "frame_id": 0,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.1086106259047348,
+            0.14007578474162272,
+            0.9175731677333347
+          ],
+          "pixel": [
+            194,
+            287
+          ],
+          "camera": "robot0_eye_in_hand",
+          "plane": [
+            -0.0005561971504035905,
+            0.021085685555219714,
+            0.9997775175054678,
+            -0.9203830266376558
+          ],
+          "frame_id": 0,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.10926356607628573,
+            0.09994873951715877,
+            0.9184190990326407
+          ],
+          "pixel": [
+            253,
+            288
+          ],
+          "camera": "robot0_eye_in_hand",
+          "plane": [
+            -0.0005561971504035905,
+            0.021085685555219714,
+            0.9997775175054678,
+            -0.9203830266376558
+          ],
+          "frame_id": 0,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        },
+        {
+          "world_m": [
+            -0.029412485882911232,
+            0.10036027100951013,
+            0.9184548425045539
+          ],
+          "pixel": [
+            251,
+            167
+          ],
+          "camera": "robot0_eye_in_hand",
+          "plane": [
+            -0.0005561971504035905,
+            0.021085685555219714,
+            0.9997775175054678,
+            -0.9203830266376558
+          ],
+          "frame_id": 0,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      ],
+      "corner_descriptions": [
+        "A: upper-left visible top-face corner, at the plate-facing end of the long side away from the bowl.",
+        "B: lower-left visible top-face corner, at the hotplate-facing end of the long side away from the bowl.",
+        "C: lower-right visible top-face corner, at the hotplate-facing end of the bowl-facing long side.",
+        "D: upper-right visible top-face corner, at the plate-facing end of the bowl-facing long side. AB and CD are long sides; BC and DA are short sides."
+      ],
+      "center": [
+        -0.06929336736626272,
+        0.12025860943653287,
+        0.9180129924608738
+      ],
+      "length_m": 0.07985214064893892,
+      "width_m": 0.04029216324829662,
+      "u_top": 0.001,
+      "u_table": 0.001,
+      "u_xy": 0.0018720516156200393,
+      "conditional_min_thickness_m": 0.01760780796208017,
+      "overlap_required_m": 0.002641171194312025
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "The program returned blocked after high_alignment exhausted 24 calls and 72 acknowledged native steps; no live continuation is available.",
+      "The final receipt reports position error 0.00519828 m and rotation error 2.54061 rad, both above the requested tolerances.",
+      "Current views show the cream cheese package still on the table outside the bowl, separated from the open hand.",
+      "No closing or retention test executed. Frame-0 geometry is historical, not fresh contact validation.",
+      "Public remaining budgets include 36 GPT calls, 176 Jev calls and 528 native steps."
+    ],
+    "reason": "Acquisition remains suitable, but the returned alignment method needs correction. Reconcile the acknowledged endpoint, reassess orientation selection including a symmetry-equivalent grasp if supported, and review the remaining sweep and bounded control allocation. Do not replay the approach, blindly extend the exhausted lease, or descend before alignment and fresh contact checks pass.",
+    "stage_satisfied": "no",
+    "task_satisfied": "no",
+    "plan_valid": "yes",
+    "invalidated_assumptions": [
+      "The allocated high-alignment lease was sufficient to reach the selected pose."
+    ],
+    "recovery_available": "yes"
+  },
+  "checkpoint_bytes": {
+    "acquire.initial0": 3375,
+    "acquire.geometry": 3021,
+    "acquire.progress": 2079,
+    "acquire.result": 559
+  },
+  "source_hashes": {
+    "method-00.py": "914ec3a706f2bbb99088610b05221f03737d9ddac6911f4177080dbe5b39c18c",
+    "protocol.json": "4854b9f046728b6ebf205e8f0f0a3589a15c45cbfe3b794d8d4979f28ba361c9",
+    "gpt-02.parsed.json": "179b8acc72d61310ed19bfaba3079336ba92584463bc95ba8affadd95007a1f1",
+    "gpt-03.parsed.json": "3922c19e928c2b48ebee29544809fafef64cacaba5746e53b717497b54212f78"
+  },
+  "limitation": "Near-half-turn target is measured from saved quaternions. Symmetry-equivalent recovery requires current evidence; no collision diagnosis, retention, placement or causal skill benefit established."
+}
