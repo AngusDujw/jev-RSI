@@ -1,0 +1,423 @@
+{
+  "episode": "test-06-empty",
+  "frame": 402,
+  "audited_dispatches": 134,
+  "audited_steps": 402,
+  "method_source_sha256": "aca1fd6b55d335bbe323ab0d95024711cb362dc9aa6123fcbd8fbe74c3f7ab4c",
+  "executed_actions": [
+    {
+      "phase": "opening_observation_waypoint",
+      "frames": [
+        228,
+        297
+      ],
+      "hand_before": [
+        -0.04455896877802325,
+        0.14164855818646177,
+        1.0257695104988127
+      ],
+      "hand_after": [
+        -0.1622381097463571,
+        -0.006294217444005802,
+        1.0254097150387438
+      ],
+      "native_steps": 69,
+      "lease_calls": 23,
+      "status": "reached",
+      "choices": {
+        "x": "hold",
+        "y": "negative",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "close"
+      },
+      "position_error_m": 0.0012253550986253765,
+      "rotation_error_rad": 0.0018575102023954332
+    },
+    {
+      "phase": "center_above_bowl",
+      "frames": [
+        297,
+        330
+      ],
+      "hand_before": [
+        -0.1622381097463571,
+        -0.006294217444005802,
+        1.0254097150387438
+      ],
+      "hand_after": [
+        -0.07625713063695178,
+        -0.005689042283618971,
+        1.02588369702493
+      ],
+      "native_steps": 33,
+      "lease_calls": 11,
+      "status": "reached",
+      "choices": {
+        "x": "positive",
+        "y": "positive",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "close"
+      },
+      "position_error_m": 0.0010595135315846307,
+      "rotation_error_rad": 0.005205102321280975
+    },
+    {
+      "phase": "lower_above_rim",
+      "frames": [
+        330,
+        360
+      ],
+      "hand_before": [
+        -0.07625713063695178,
+        -0.005689042283618971,
+        1.02588369702493
+      ],
+      "hand_after": [
+        -0.07703335779373856,
+        -0.005764197320667977,
+        0.974788765613118
+      ],
+      "native_steps": 30,
+      "lease_calls": 10,
+      "status": "reached",
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "negative",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "close"
+      },
+      "position_error_m": 0.0008416641790939395,
+      "rotation_error_rad": 0.0008285714527783152
+    },
+    {
+      "phase": "open_dwell_0",
+      "frames": [
+        360,
+        363
+      ],
+      "hand_before": [
+        -0.07703335779373856,
+        -0.005764197320667977,
+        0.974788765613118
+      ],
+      "hand_after": [
+        -0.07707339081824552,
+        -0.0057588966637917086,
+        0.9746158725024524
+      ],
+      "native_steps": 3,
+      "lease_calls": 1,
+      "status": "reached",
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "position_error_m": 0.0001775465227204424,
+      "rotation_error_rad": 0.0008539493924930951
+    },
+    {
+      "phase": "open_dwell_1",
+      "frames": [
+        363,
+        366
+      ],
+      "hand_before": [
+        -0.07707339081824552,
+        -0.0057588966637917086,
+        0.9746158725024524
+      ],
+      "hand_after": [
+        -0.07707434448254172,
+        -0.005755105796284195,
+        0.974614901996059
+      ],
+      "native_steps": 3,
+      "lease_calls": 1,
+      "status": "reached",
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "position_error_m": 4.027658713064356e-06,
+      "rotation_error_rad": 0.0008483428267571641
+    },
+    {
+      "phase": "open_dwell_2",
+      "frames": [
+        366,
+        369
+      ],
+      "hand_before": [
+        -0.07707434448254172,
+        -0.005755105796284195,
+        0.974614901996059
+      ],
+      "hand_after": [
+        -0.0770744527439493,
+        -0.005751990412997476,
+        0.9746148088024191
+      ],
+      "native_steps": 3,
+      "lease_calls": 1,
+      "status": "reached",
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "position_error_m": 3.1186565392908354e-06,
+      "rotation_error_rad": 0.0008427339650649198
+    },
+    {
+      "phase": "open_dwell_3",
+      "frames": [
+        369,
+        372
+      ],
+      "hand_before": [
+        -0.0770744527439493,
+        -0.005751990412997476,
+        0.9746148088024191
+      ],
+      "hand_after": [
+        -0.07707455721921375,
+        -0.0057489861141657135,
+        0.974614719172703
+      ],
+      "native_steps": 3,
+      "lease_calls": 1,
+      "status": "reached",
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "position_error_m": 3.0074507539467956e-06,
+      "rotation_error_rad": 0.0008373130812776515
+    },
+    {
+      "phase": "withdraw_open",
+      "frames": [
+        372,
+        402
+      ],
+      "hand_before": [
+        -0.07707455721921375,
+        -0.0057489861141657135,
+        0.974614719172703
+      ],
+      "hand_after": [
+        -0.07795919150432942,
+        -0.006110106748692607,
+        1.053817393564243
+      ],
+      "native_steps": 30,
+      "lease_calls": 10,
+      "status": "reached",
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "positive",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "position_error_m": 0.0012444734054970995,
+      "rotation_error_rad": 0.001159658214400091
+    }
+  ],
+  "release_review": {
+    "status": "continue",
+    "parameters": {
+      "caught": "no",
+      "fingers": "open",
+      "object": "in_bowl",
+      "withdraw": "clear"
+    },
+    "points": [],
+    "regions": [],
+    "explanation": "The fingers are visibly open, with gaps on both sides of the package. Compared with the earlier images, the package has dropped lower into the bowl. No finger catch, rim catch, or fall outside is visible. The local straight UP withdrawal is visibly unobstructed; settling need not precede it. The wrist view's lower edge is robot-occluded, not an observed obstruction. A settled final result is not established."
+  },
+  "final_observation_attempts": [
+    {
+      "status": "continue",
+      "explanation": "The carton remains stationary inside the same patterned bowl as the open fingers withdraw, with clear separation and no visible rim perching. This supports bowl support; underside contact is hidden. F0 and F1 establish sample-0 printed identities for exact matching at sample 1. Check pixels mark opposite visible inner rim boundaries for plane intersection. Six support pixels sample separated visible lip crown sectors, inside the band.",
+      "parameters": {
+        "bowl": "same",
+        "bowl_camera": "robot0_eye_in_hand",
+        "camera": "robot0_eye_in_hand",
+        "check_pixels": [
+          [
+            251,
+            508
+          ],
+          [
+            515,
+            506
+          ]
+        ],
+        "identity": "target",
+        "labels": [
+          "F0: center of the blue enclosed counter in the initial capital C of Cream.",
+          "F1: center of the blue enclosed counter in the initial capital C of Cheese."
+        ],
+        "matching": "identified",
+        "relation": "inside_not_on_rim",
+        "separation": "clear",
+        "support": "bowl",
+        "support_rim_pixels": [
+          [
+            383,
+            372
+          ],
+          [
+            478,
+            411
+          ],
+          [
+            517,
+            506
+          ],
+          [
+            478,
+            602
+          ],
+          [
+            248,
+            508
+          ],
+          [
+            287,
+            411
+          ]
+        ],
+        "surface_pixels": [
+          [
+            375,
+            433
+          ],
+          [
+            396,
+            524
+          ]
+        ]
+      },
+      "points": [],
+      "regions": []
+    },
+    {
+      "explanation": "The oblique agentview supports interior placement: the package is surrounded by the bowl interior and its lower end is behind the near bowl wall, not bridging the lip. Both fingers have visible separation from the package. Bowl support is visually supported, although the contact surface is hidden. F0 and F1 preserve the previous printed landmark identities and are now selected in agentview. Rim measurements use the clearer wrist view. These pixels require geometric validation; RGB alone does not establish numerical below-rim penetration.",
+      "parameters": {
+        "bowl": "same",
+        "bowl_camera": "robot0_eye_in_hand",
+        "camera": "agentview",
+        "check_pixels": [
+          [
+            251,
+            508
+          ],
+          [
+            515,
+            506
+          ]
+        ],
+        "identity": "target",
+        "labels": [
+          "F0: center of the blue enclosed counter in the initial capital C of Cream.",
+          "F1: center of the blue enclosed counter in the initial capital C of Cheese."
+        ],
+        "matching": "identified",
+        "relation": "inside_not_on_rim",
+        "separation": "clear",
+        "support": "bowl",
+        "support_rim_pixels": [
+          [
+            383,
+            372
+          ],
+          [
+            478,
+            411
+          ],
+          [
+            517,
+            506
+          ],
+          [
+            478,
+            602
+          ],
+          [
+            248,
+            508
+          ],
+          [
+            287,
+            411
+          ]
+        ],
+        "surface_pixels": [
+          [
+            382,
+            456
+          ],
+          [
+            374,
+            432
+          ]
+        ]
+      },
+      "points": [],
+      "regions": [],
+      "status": "continue"
+    }
+  ],
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 402 shows the cream cheese package within the patterned bowl opening, with visible space between the package and rim.",
+      "The current views show the open gripper separated from the package.",
+      "Acknowledged execution includes release dwells followed by open-gripper withdrawal.",
+      "The stage returned blocked because final measurements did not resolve the placement checks; live continuation is unavailable."
+    ],
+    "invalidated_assumptions": [
+      "The existing final measurements are sufficient to resolve all placement verification checks."
+    ],
+    "plan_valid": "yes",
+    "reason": "The images support apparent placement, not a demonstrated physical failure. Revise only final verification: preserve the released scene, obtain a fresh observation of persistence after withdrawal, and correct camera-specific surface and rim measurements where needed. Do not replay grasp, release, or placement, or weaken thresholds merely to pass verification.",
+    "recovery_available": "yes",
+    "stage_satisfied": "unknown",
+    "task_satisfied": "unknown"
+  },
+  "native_success": "not yet terminal/scored",
+  "verification": "Program numerical final checks failed despite visual support for placement. Current stage unknown; final-only revision underway. Do not infer evaluator success from model labels.",
+  "next_method_job": "fefacc33415f45b38d9ed254c22b418e"
+}
