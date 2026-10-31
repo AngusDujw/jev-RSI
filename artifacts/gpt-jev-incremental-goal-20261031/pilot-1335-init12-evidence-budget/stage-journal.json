@@ -30,6 +30,36 @@
           "replan_conditions": "If the package catches on the rim, follows the gripper, falls outside, or the bowl tips, reassess the resulting physical state before recovery. If the result is occluded, obtain an alternative safe view and recheck after settling."
         }
       ]
+    },
+    {
+      "explanation": "Replan from frame 222: closure is acknowledged, but package retention and lifting are unproved. The initial open-gripper state is obsolete; historical checkpoints are not fresh observations. Failed heuristic margins and stationary-pose tolerance do not establish that upward departure is infeasible. Preserve the executed closure without blind reopening or repeated contact. Three physical stages use six mandatory calls, leaving execution and correction reserve within 27 post-plan calls, 126 control calls and 378 native steps. Limit retention repair and verification to three model calls, preserving 24 for subsequent work and contingencies.",
+      "goal_evidence": "Fresh observations after release, settling and gripper withdrawal show the cream cheese package resting inside the upright patterned bowl, not perched on its rim, independently supported and separated from the gripper.",
+      "stages": [
+        {
+          "id": "retain",
+          "objective": "Establish a verified retained lift from the already closed grasp, using a physically justified departure assessment.",
+          "entry_evidence": "Frame 222 shows the package between the fingers beside the bowl. Closure was executed; no lift or independent package co-motion is acknowledged. Reported negative margins include operational minima and uncertainty allowances, not observed collision or grasp loss.",
+          "success_evidence": "Fresh observations demonstrate package co-motion with the gripper, separation from the tabletop and stable retention across the lift, rather than only robot motion or a close command.",
+          "handoff_requirements": "Provide current package-to-gripper geometry, observed tabletop separation, relevant obstacle bounds and remaining budget. Justify departure using motion direction, current closed geometry and uncertainty, without merely lowering failed thresholds.",
+          "replan_conditions": "Resolve consequential uncertainty with fresh local RGB-D from existing cameras or a clearance-supported alternative view. Replan for slip, package nonresponse, robot nonresponse, unresolved departure safety or exhaustion of the three-call repair allowance. Do not blindly reopen, repeat contact or pursue the stalled target."
+        },
+        {
+          "id": "deliver",
+          "objective": "Bring the retained package to a placement-ready position over the bowl interior.",
+          "entry_evidence": "Fresh evidence establishes retained lifting; current observations identify the bowl, package and relevant obstacles.",
+          "success_evidence": "The package remains retained above the bowl, with observed fit and clearance supporting placement, release and withdrawal for both the package and relevant robot geometry.",
+          "handoff_requirements": "Provide fresh bowl opening and rim bounds, package pose relative to the gripper, retention evidence and placement-clearance evidence.",
+          "replan_conditions": "If fit or clearance is uncertain, obtain additional RGB-D or a safely accessible alternative view, and reassess orientation if needed. Do not assume occluded space is free. Replan upon slipping, obstacle movement or an unsupported placement approach."
+        },
+        {
+          "id": "place_check",
+          "objective": "Place and release the package into the bowl, withdraw safely and assess the settled task outcome.",
+          "entry_evidence": "The package is observably retained at a placement-ready position with current evidence supporting fit, release and withdrawal clearance.",
+          "success_evidence": "After release, settling and withdrawal, fresh observations establish the whole goal: the package rests inside the upright bowl, is not rim-supported and remains separated from the gripper.",
+          "handoff_requirements": "Report post-effect visual and depth evidence of containment, settling and gripper separation; distinguish confirmed success from unresolved occlusion.",
+          "replan_conditions": "Reassess the actual resulting state if the package catches on the rim, follows the gripper, falls outside or tips the bowl. Resolve occlusion using an observed-clear alternative view before declaring success; do not replay placement blindly."
+        }
+      ]
     }
   ],
   "events": [
@@ -259,19 +289,363 @@
         "stage_satisfied": "no",
         "task_satisfied": "no"
       }
+    },
+    {
+      "update": 2,
+      "stage": "pick",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 222,
+      "trigger": "stage_returned",
+      "source_sha256": "bb88b9078327cd6c466427bff79b487945b0bd9f7cb4c48b067b3ba83180c97e",
+      "outcome": {
+        "stage_status": "blocked",
+        "reason": "Post-closure local contact geometry inadequate",
+        "evidence": {
+          "failure": {
+            "gate": "Post-closure local contact geometry inadequate",
+            "prevented_action": "Begin the bounded upward differential test",
+            "operands": {
+              "frame_id": 222,
+              "top_plane": {
+                "coefficients": [
+                  0.007991563794488555,
+                  0.02603358357369502,
+                  0.9996291249430611,
+                  -0.92114705752039
+                ],
+                "center_world_m": [
+                  -0.03054687639909191,
+                  0.14609133141850292,
+                  0.9179283306678819
+                ],
+                "rms_m": 9.023421432484497e-05,
+                "in_plane_spread_m": [
+                  0.01340163899372202,
+                  0.010618910125581787
+                ]
+              },
+              "table_plane": {
+                "coefficients": [
+                  0.0005738951599417208,
+                  1.5910462303082533e-05,
+                  0.9999998351955877,
+                  -0.9007078379025464
+                ],
+                "center_world_m": [
+                  0.008625324457540126,
+                  0.24749542934026122,
+                  0.9006990985430742
+                ],
+                "rms_m": 0.0,
+                "in_plane_spread_m": [
+                  0.04820938364703901,
+                  0.021578979095612478
+                ]
+              },
+              "pad_world_m": [
+                -0.051592374349896095,
+                0.14530917902860555,
+                0.9198342216771518
+              ],
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  4.8974635354680565e-06,
+                  0.00016347300994808828,
+                  -0.0036065734957585888
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000493322832342,
+                  0.05749602353800609,
+                  0.01600024975501793
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010489990393979118,
+                  -0.04748787979109607,
+                  -0.04447502498598003
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010499258446648367,
+                  0.04781491525698497,
+                  0.009242561636380785
+                ]
+              },
+              "overlap_m": 0.004874564083245825,
+              "finger_table_clearance_m": 0.006118351796642774,
+              "vertical_allowance_m": 0.0017708541599049737,
+              "normal_disagreement_allowance_m": 0.0006701828581049396,
+              "pixel_slope_allowance_m": 1.0437087475188968e-05,
+              "rotation_sweep_m": 0.0006364772538412577,
+              "rotation_tolerance_rad": 0.01,
+              "side_overlap_min_m": 0.003,
+              "table_gap_min_m": 0.004,
+              "contact_margin_m": -0.0005327673305004065,
+              "table_margin_m": -0.0002889796171034577,
+              "prior_hold_failure": {
+                "gate": "Stationary closure hold or command failure",
+                "prevented_action": "Continue the single contact attempt",
+                "operands": {
+                  "status": "moved",
+                  "position_error_m": 0.0005493930130357769,
+                  "position_limit_m": 0.0005,
+                  "pose_margin_m": -4.939301303577689e-05,
+                  "rotation_error_rad": 0.0008479027328109482,
+                  "rotation_limit_rad": 0.01,
+                  "rotation_margin_rad": 0.009152097267189052,
+                  "frame_id": 222,
+                  "contact_geometry_checkpoint": "pick_reference",
+                  "choices": {
+                    "x": "hold",
+                    "y": "hold",
+                    "z": "hold",
+                    "rx": "hold",
+                    "ry": "hold",
+                    "rz": "hold",
+                    "gripper": "close"
+                  }
+                },
+                "frame_id": 222,
+                "threshold_provenance": "Operational heuristics unless explicitly labeled measured geometry or runtime budget.",
+                "stage_status": "blocked"
+              },
+              "provenance": "Current closed geometry; 3/4 mm minima and allowances are heuristics. Upward test only; no new hold, descent or closure."
+            },
+            "frame_id": 222,
+            "threshold_provenance": "Operational heuristics unless explicitly labeled measured geometry or runtime budget.",
+            "stage_status": "blocked"
+          },
+          "recent_progress": []
+        },
+        "handoff": {
+          "stage": "pick",
+          "frame_convention": "World meters; tool quaternions xyzw; landmark identities refer to the same cream cheese package.",
+          "checkpoint_keys": [
+            "pick_reference",
+            "pick_progress",
+            "pick_test",
+            "pick_result",
+            "pick_gate",
+            "pick_observation"
+          ],
+          "warning": "Only keys actually written exist. Never reopen a possibly held package. Revalidate references after motion.",
+          "last_acknowledged_state": {
+            "frame_id": 222,
+            "native_steps": 222,
+            "tcp_position_world_m": [
+              -0.05158204445663956,
+              0.1454786440583446,
+              0.9162279362353932
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999950164673371,
+              0.0020986360720701147,
+              0.0022080005756088925,
+              -0.0008291565505960303
+            ],
+            "gripper_qpos_m": [
+              0.021409679162323583,
+              -0.021086241557201693
+            ],
+            "last_gripper_command": "close"
+          },
+          "recovery_requirement": "Inspect written checkpoints and fresh views. Preserve the actual gripper state; do not repeat contact or open blindly."
+        },
+        "completion_proposed": false
+      },
+      "decision": {
+        "action": "revise",
+        "evidence": [
+          "Frame 222 shows the package between the fingers beside the bowl; retained motion and separation from the tabletop are not established.",
+          "Closure was acknowledged, but no subsequent lift is acknowledged. The returned method is blocked and live continuation is unavailable.",
+          "The returned geometry reports 4.875 mm overlap and 6.118 mm table clearance. Negative margins arise after operational minima and allowances; they do not establish collision or lost retention.",
+          "The post-closure measurements add geometric evidence, not an observed grasp effect. Rewriting historical checkpoints does not refresh their underlying measurements.",
+          "The latest remaining budget is 28 model calls, 126 control calls and 378 native steps."
+        ],
+        "invalidated_assumptions": [
+          "Failure of the heuristic 3 mm overlap and 4 mm table-gap gates establishes that an upward retention test is physically infeasible."
+        ],
+        "plan_valid": "yes",
+        "reason": "The pick objective and stage ordering remain suitable, but the local gate needs correction. Preserve the executed closure without blind reopening, repeated contact or stalled target pursuit. Require the gate's physical rationale and uncertainty accounting, rather than simply lowering thresholds. Evaluate a direction-sensitive recovery criterion using current closed geometry and local support and obstacle bounds; obtain a different local support measurement only if needed to resolve that criterion. If supported, a bounded retention test must independently demonstrate package co-motion and tabletop separation, with slip and nonresponse checks. Allocate at most three further model calls to pick correction and verification, reserving 25 for transfer, placement and contingencies. Replan if that bounded repair cannot establish the pick effect.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      }
     }
   ],
   "completed": [],
   "current_stage": {
-    "plan_revision": 0,
+    "plan_revision": 1,
     "index": 0,
     "definition": {
-      "id": "pick",
-      "objective": "Secure the cream cheese package and lift it clear of the tabletop.",
-      "entry_evidence": "Frame 0 shows the cream cheese package separate from the bowl on the tabletop; the robot reports an open gripper and no prior execution.",
-      "success_evidence": "Observed package motion with the gripper and visible separation from the tabletop establish a retained grasp, rather than merely a closed-gripper command.",
-      "handoff_requirements": "Provide fresh package and gripper observations, lift evidence, and observed nearby obstacle bounds for carrying the package.",
-      "replan_conditions": "If grasp geometry or approach clearance is uncertain, obtain additional RGB-D or an alternative safe view before contact. Reassess from actual observations if the package shifts, remains on the table, slips, or nearby objects move."
+      "id": "retain",
+      "objective": "Establish a verified retained lift from the already closed grasp, using a physically justified departure assessment.",
+      "entry_evidence": "Frame 222 shows the package between the fingers beside the bowl. Closure was executed; no lift or independent package co-motion is acknowledged. Reported negative margins include operational minima and uncertainty allowances, not observed collision or grasp loss.",
+      "success_evidence": "Fresh observations demonstrate package co-motion with the gripper, separation from the tabletop and stable retention across the lift, rather than only robot motion or a close command.",
+      "handoff_requirements": "Provide current package-to-gripper geometry, observed tabletop separation, relevant obstacle bounds and remaining budget. Justify departure using motion direction, current closed geometry and uncertainty, without merely lowering failed thresholds.",
+      "replan_conditions": "Resolve consequential uncertainty with fresh local RGB-D from existing cameras or a clearance-supported alternative view. Replan for slip, package nonresponse, robot nonresponse, unresolved departure safety or exhaustion of the three-call repair allowance. Do not blindly reopen, repeat contact or pursue the stalled target."
     }
-  }
+  },
+  "budget_replans": [
+    {
+      "trigger": "remaining_plan_budget_pressure",
+      "calls_remaining": 28,
+      "stages_remaining": 3,
+      "operational_reserve": 11,
+      "stage_allocation_spent": true,
+      "latest_outcome": {
+        "stage_status": "blocked",
+        "reason": "Post-closure local contact geometry inadequate",
+        "evidence": {
+          "failure": {
+            "gate": "Post-closure local contact geometry inadequate",
+            "prevented_action": "Begin the bounded upward differential test",
+            "operands": {
+              "frame_id": 222,
+              "top_plane": {
+                "coefficients": [
+                  0.007991563794488555,
+                  0.02603358357369502,
+                  0.9996291249430611,
+                  -0.92114705752039
+                ],
+                "center_world_m": [
+                  -0.03054687639909191,
+                  0.14609133141850292,
+                  0.9179283306678819
+                ],
+                "rms_m": 9.023421432484497e-05,
+                "in_plane_spread_m": [
+                  0.01340163899372202,
+                  0.010618910125581787
+                ]
+              },
+              "table_plane": {
+                "coefficients": [
+                  0.0005738951599417208,
+                  1.5910462303082533e-05,
+                  0.9999998351955877,
+                  -0.9007078379025464
+                ],
+                "center_world_m": [
+                  0.008625324457540126,
+                  0.24749542934026122,
+                  0.9006990985430742
+                ],
+                "rms_m": 0.0,
+                "in_plane_spread_m": [
+                  0.04820938364703901,
+                  0.021578979095612478
+                ]
+              },
+              "pad_world_m": [
+                -0.051592374349896095,
+                0.14530917902860555,
+                0.9198342216771518
+              ],
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  4.8974635354680565e-06,
+                  0.00016347300994808828,
+                  -0.0036065734957585888
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000493322832342,
+                  0.05749602353800609,
+                  0.01600024975501793
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010489990393979118,
+                  -0.04748787979109607,
+                  -0.04447502498598003
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010499258446648367,
+                  0.04781491525698497,
+                  0.009242561636380785
+                ]
+              },
+              "overlap_m": 0.004874564083245825,
+              "finger_table_clearance_m": 0.006118351796642774,
+              "vertical_allowance_m": 0.0017708541599049737,
+              "normal_disagreement_allowance_m": 0.0006701828581049396,
+              "pixel_slope_allowance_m": 1.0437087475188968e-05,
+              "rotation_sweep_m": 0.0006364772538412577,
+              "rotation_tolerance_rad": 0.01,
+              "side_overlap_min_m": 0.003,
+              "table_gap_min_m": 0.004,
+              "contact_margin_m": -0.0005327673305004065,
+              "table_margin_m": -0.0002889796171034577,
+              "prior_hold_failure": {
+                "gate": "Stationary closure hold or command failure",
+                "prevented_action": "Continue the single contact attempt",
+                "operands": {
+                  "status": "moved",
+                  "position_error_m": 0.0005493930130357769,
+                  "position_limit_m": 0.0005,
+                  "pose_margin_m": -4.939301303577689e-05,
+                  "rotation_error_rad": 0.0008479027328109482,
+                  "rotation_limit_rad": 0.01,
+                  "rotation_margin_rad": 0.009152097267189052,
+                  "frame_id": 222,
+                  "contact_geometry_checkpoint": "pick_reference",
+                  "choices": {
+                    "x": "hold",
+                    "y": "hold",
+                    "z": "hold",
+                    "rx": "hold",
+                    "ry": "hold",
+                    "rz": "hold",
+                    "gripper": "close"
+                  }
+                },
+                "frame_id": 222,
+                "threshold_provenance": "Operational heuristics unless explicitly labeled measured geometry or runtime budget.",
+                "stage_status": "blocked"
+              },
+              "provenance": "Current closed geometry; 3/4 mm minima and allowances are heuristics. Upward test only; no new hold, descent or closure."
+            },
+            "frame_id": 222,
+            "threshold_provenance": "Operational heuristics unless explicitly labeled measured geometry or runtime budget.",
+            "stage_status": "blocked"
+          },
+          "recent_progress": []
+        },
+        "handoff": {
+          "stage": "pick",
+          "frame_convention": "World meters; tool quaternions xyzw; landmark identities refer to the same cream cheese package.",
+          "checkpoint_keys": [
+            "pick_reference",
+            "pick_progress",
+            "pick_test",
+            "pick_result",
+            "pick_gate",
+            "pick_observation"
+          ],
+          "warning": "Only keys actually written exist. Never reopen a possibly held package. Revalidate references after motion.",
+          "last_acknowledged_state": {
+            "frame_id": 222,
+            "native_steps": 222,
+            "tcp_position_world_m": [
+              -0.05158204445663956,
+              0.1454786440583446,
+              0.9162279362353932
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999950164673371,
+              0.0020986360720701147,
+              0.0022080005756088925,
+              -0.0008291565505960303
+            ],
+            "gripper_qpos_m": [
+              0.021409679162323583,
+              -0.021086241557201693
+            ],
+            "last_gripper_command": "close"
+          },
+          "recovery_requirement": "Inspect written checkpoints and fresh views. Preserve the actual gripper state; do not repeat contact or open blindly."
+        },
+        "completion_proposed": false
+      }
+    }
+  ]
 }

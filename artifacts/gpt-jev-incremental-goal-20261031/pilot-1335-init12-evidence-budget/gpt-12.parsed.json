@@ -1,0 +1,30 @@
+{
+  "explanation": "Replan from frame 222: closure is acknowledged, but package retention and lifting are unproved. The initial open-gripper state is obsolete; historical checkpoints are not fresh observations. Failed heuristic margins and stationary-pose tolerance do not establish that upward departure is infeasible. Preserve the executed closure without blind reopening or repeated contact. Three physical stages use six mandatory calls, leaving execution and correction reserve within 27 post-plan calls, 126 control calls and 378 native steps. Limit retention repair and verification to three model calls, preserving 24 for subsequent work and contingencies.",
+  "goal_evidence": "Fresh observations after release, settling and gripper withdrawal show the cream cheese package resting inside the upright patterned bowl, not perched on its rim, independently supported and separated from the gripper.",
+  "stages": [
+    {
+      "id": "retain",
+      "objective": "Establish a verified retained lift from the already closed grasp, using a physically justified departure assessment.",
+      "entry_evidence": "Frame 222 shows the package between the fingers beside the bowl. Closure was executed; no lift or independent package co-motion is acknowledged. Reported negative margins include operational minima and uncertainty allowances, not observed collision or grasp loss.",
+      "success_evidence": "Fresh observations demonstrate package co-motion with the gripper, separation from the tabletop and stable retention across the lift, rather than only robot motion or a close command.",
+      "handoff_requirements": "Provide current package-to-gripper geometry, observed tabletop separation, relevant obstacle bounds and remaining budget. Justify departure using motion direction, current closed geometry and uncertainty, without merely lowering failed thresholds.",
+      "replan_conditions": "Resolve consequential uncertainty with fresh local RGB-D from existing cameras or a clearance-supported alternative view. Replan for slip, package nonresponse, robot nonresponse, unresolved departure safety or exhaustion of the three-call repair allowance. Do not blindly reopen, repeat contact or pursue the stalled target."
+    },
+    {
+      "id": "deliver",
+      "objective": "Bring the retained package to a placement-ready position over the bowl interior.",
+      "entry_evidence": "Fresh evidence establishes retained lifting; current observations identify the bowl, package and relevant obstacles.",
+      "success_evidence": "The package remains retained above the bowl, with observed fit and clearance supporting placement, release and withdrawal for both the package and relevant robot geometry.",
+      "handoff_requirements": "Provide fresh bowl opening and rim bounds, package pose relative to the gripper, retention evidence and placement-clearance evidence.",
+      "replan_conditions": "If fit or clearance is uncertain, obtain additional RGB-D or a safely accessible alternative view, and reassess orientation if needed. Do not assume occluded space is free. Replan upon slipping, obstacle movement or an unsupported placement approach."
+    },
+    {
+      "id": "place_check",
+      "objective": "Place and release the package into the bowl, withdraw safely and assess the settled task outcome.",
+      "entry_evidence": "The package is observably retained at a placement-ready position with current evidence supporting fit, release and withdrawal clearance.",
+      "success_evidence": "After release, settling and withdrawal, fresh observations establish the whole goal: the package rests inside the upright bowl, is not rim-supported and remains separated from the gripper.",
+      "handoff_requirements": "Report post-effect visual and depth evidence of containment, settling and gripper separation; distinguish confirmed success from unresolved occlusion.",
+      "replan_conditions": "Reassess the actual resulting state if the package catches on the rim, follows the gripper, falls outside or tips the bowl. Resolve occlusion using an observed-clear alternative view before declaring success; do not replay placement blindly."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-0c2ab717-1924-4291-aeb7-7fc12f820930",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-0c2ab717-1924-4291-aeb7-7fc12f820930",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"Frame 222 shows the package between the fingers beside the bowl; retained motion and separation from the tabletop are not established.\", \"Closure was acknowledged, but no subsequent lift is acknowledged. The returned method is blocked and live continuation is unavailable.\", \"The returned geometry reports 4.875 mm overlap and 6.118 mm table clearance. Negative margins arise after operational minima and allowances; they do not establish collision or lost retention.\", \"The post-closure measurements add geometric evidence, not an observed grasp effect. Rewriting historical checkpoints does not refresh their underlying measurements.\", \"The latest remaining budget is 28 model calls, 126 control calls and 378 native steps.\"], \"invalidated_assumptions\": [\"Failure of the heuristic 3 mm overlap and 4 mm table-gap gates establishes that an upward retention test is physically infeasible.\"], \"plan_valid\": \"yes\", \"reason\": \"The pick objective and stage ordering remain suitable, but the local gate needs correction. Preserve the executed closure without blind reopening, repeated contact or stalled target pursuit. Require the gate's physical rationale and uncertainty accounting, rather than simply lowering thresholds. Evaluate a direction-sensitive recovery criterion using current closed geometry and local support and obstacle bounds; obtain a different local support measurement only if needed to resolve that criterion. If supported, a bounded retention test must independently demonstrate package co-motion and tabletop separation, with slip and nonresponse checks. Allocate at most three further model calls to pick correction and verification, reserving 25 for transfer, placement and contingencies. Replan if that bounded repair cannot establish the pick effect.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 34440,
+    "output_tokens": 1422,
+    "output_tokens_details": {
+      "reasoning_tokens": 1034
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f6a-eb2f-7430-9436-3fbe5404d42c",
+    "turn_ids": [
+      "01a18f6a-eb35-7a61-8cd2-3ee968ce5731"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
