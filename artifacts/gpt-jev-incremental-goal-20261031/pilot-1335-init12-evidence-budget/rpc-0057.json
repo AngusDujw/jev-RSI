@@ -1,0 +1,49 @@
+{
+  "index": 57,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_progress",
+      {
+        "phase": "closure dwell",
+        "dwell": 1,
+        "state": {
+          "frame_id": 222,
+          "native_steps": 222,
+          "tcp_position_world_m": [
+            -0.05158204445663956,
+            0.1454786440583446,
+            0.9162279362353932
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999950164673371,
+            0.0020986360720701147,
+            0.0022080005756088925,
+            -0.0008291565505960303
+          ],
+          "gripper_qpos_m": [
+            0.021409679162323583,
+            -0.021086241557201693
+          ],
+          "last_gripper_command": "close"
+        },
+        "receipt_status": "moved"
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 222,
+  "response": {
+    "result": {
+      "key": "pick_progress",
+      "frame_id": 222,
+      "method_number": 1,
+      "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
+      "bytes": 415,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 222
+}

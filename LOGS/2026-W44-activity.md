@@ -335,3 +335,4 @@
 - 【Agent】【2026-10-31 08:15】[op] EXP-2026W44-055: second continuation executed contact descent; identified supervisor tolerance statement 3 mm versus generated drive 1.5 mm, preserve frozen run and diagnose actual input later.
 - 【Agent】【2026-10-31 08:16】[op] EXP-2026W44-055: supervisor6 identified stall and requested local patch7 at frame216; actual request5 had only old hover tolerance while request6 had contact tolerance, isolating stale active-action context.
 - 【Agent】【2026-10-31 08:26】[op] EXP-2026W44-055: patch7 delivered in 580.673 s, method1 revalidates closure at actual frame216 pose instead of repeating descent; review8 active, no grasp or terminal success yet.
+- 【Agent】【2026-10-31 08:28】[op] EXP-2026W44-055: method1 executed two Jev close deliveries to frame222, then 0.549 mm hold error exceeded its 0.5 mm heuristic gate; supervisor9 active, retained grasp unproven.

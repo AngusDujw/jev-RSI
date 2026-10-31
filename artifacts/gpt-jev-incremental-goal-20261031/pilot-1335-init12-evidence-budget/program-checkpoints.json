@@ -1,45 +1,45 @@
 {
   "pick_observation": {
     "key": "pick_observation",
-    "frame_id": 105,
-    "method_number": 0,
-    "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
-    "bytes": 850,
+    "frame_id": 216,
+    "method_number": 1,
+    "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
+    "bytes": 946,
     "value": {
-      "frame_id": 105,
+      "frame_id": 216,
       "parameters": {
         "unchanged": "yes",
-        "contact_route": "clear",
         "jaw_fit": "fits",
-        "reason": "Current visible geometry supports the saved package model, short-width jaw alignment, and positive modeled table clearance for the specified vertical-only descent. No external blocker is visible in that local route."
+        "closure_route": "clear",
+        "reason": "The package printing and visible upper-face boundaries agree with the saved projected geometry, with no visible shift or attitude change. The open fingers straddle the short dimension. No non-package obstruction is observed along their inward closure at this fixed pose; the bowl is outside that local path."
       },
       "consumed_points": {
-        "center": {
+        "top_now": {
           "world_m": [
-            -0.0531245216551475,
-            0.14376275315597686,
-            0.9180833875165683
+            -0.021129513469860754,
+            0.13045784081427414,
+            0.9182049453819278
           ],
-          "depth_m": 0.1494610458612442,
-          "frame_id": 105,
+          "depth_m": 0.09469886124134064,
+          "frame_id": 216,
           "pixel": [
-            381,
-            546
+            463,
+            486
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
         },
-        "support": {
+        "support_now": {
           "world_m": [
-            -0.026273937712457944,
-            0.10718017495103707,
-            0.8999809930848994
+            -0.0246880446142105,
+            0.11136276580631248,
+            0.900000597512493
           ],
-          "depth_m": 0.16760985553264618,
-          "frame_id": 105,
+          "depth_m": 0.1128634586930275,
+          "frame_id": 216,
           "pixel": [
-            491,
-            449
+            535,
+            486
           ],
           "camera": "robot0_eye_in_hand",
           "source": "current_depth_patch_backprojection"
@@ -51,10 +51,10 @@
   },
   "pick_reference": {
     "key": "pick_reference",
-    "frame_id": 105,
-    "method_number": 0,
-    "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
-    "bytes": 2340,
+    "frame_id": 216,
+    "method_number": 1,
+    "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
+    "bytes": 4443,
     "value": {
       "frame_id": 0,
       "identity": "cream cheese rectangular package",
@@ -153,11 +153,11 @@
       ],
       "contact_pad_z_m": 0.9178851966152449,
       "finger_low_relative_to_pad_m": -0.012849107009252611,
-      "finger_table_clearance_m": 0.005073372121526553,
-      "pad_side_overlap_m": 0.0075951765669313165,
-      "contact_overlap_margin_m": 0.002021804445404763,
+      "finger_table_clearance_m": 0.006432652837252362,
+      "pad_side_overlap_m": 0.00593754344093711,
+      "contact_overlap_margin_m": 0.0006820028949391412,
       "provenance": "Visible depth planes, identified projected top boundary, measured own geometry. Pixel/depth allowances and contact margins are operational heuristics.",
-      "validated_frame_id": 105,
+      "validated_frame_id": 216,
       "fresh_center": {
         "world_m": [
           -0.0531245216551475,
@@ -187,52 +187,163 @@
         ],
         "camera": "robot0_eye_in_hand",
         "source": "current_depth_patch_backprojection"
+      },
+      "current_contact": {
+        "frame_id": 216,
+        "historical_shape_frame": 0,
+        "depth_receipts": {
+          "top_now": {
+            "world_m": [
+              -0.021129513469860754,
+              0.13045784081427414,
+              0.9182049453819278
+            ],
+            "depth_m": 0.09469886124134064,
+            "frame_id": 216,
+            "pixel": [
+              463,
+              486
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "support_now": {
+            "world_m": [
+              -0.0246880446142105,
+              0.11136276580631248,
+              0.900000597512493
+            ],
+            "depth_m": 0.1128634586930275,
+            "frame_id": 216,
+            "pixel": [
+              535,
+              486
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "validated_planes": {
+          "top": [
+            -0.001799547824312402,
+            0.01859415754963026,
+            0.9998254942401937,
+            -0.9205084905459547
+          ],
+          "table": [
+            3.162108236990274e-05,
+            -2.2136778946374365e-06,
+            0.9999999994976033,
+            -0.8999995698763504
+          ]
+        },
+        "actual_pad_world_m": [
+          -0.051893201038961785,
+          0.1452790014571862,
+          0.9194133608543101
+        ],
+        "actual_quaternion_xyzw": [
+          0.9999960354002284,
+          0.002042148603967897,
+          0.0018092222086258086,
+          -0.000696798324049704
+        ],
+        "overlap_m": 0.00593754344093711,
+        "common_pad_vertical_half_span_m": 0.007905136715567472,
+        "finger_table_clearance_m": 0.006432652837252362,
+        "minimum_side_overlap_m": 0.003,
+        "minimum_table_gap_m": 0.004,
+        "vertical_uncertainty_m": 0.0010804434453858998,
+        "pixel_slope_contribution_m": 7.0713238593468174e-06,
+        "position_hold_budget_m": 0.0005,
+        "rotation_hold_budget_rad": 0.01,
+        "rotation_vertical_sweep_m": 0.0006750971006120693,
+        "contact_residual_margin_m": 0.0006820028949391412,
+        "table_residual_margin_m": 0.0001771122912543931,
+        "validation": {
+          "source_frame": 0,
+          "fresh_frame": 216,
+          "uncertainty_m": 0.0010733721215265529,
+          "threshold_m": 0.003073372121526553,
+          "errors_m": {
+            "top": 3.420371308404668e-05,
+            "table": 4.015005550439543e-05
+          },
+          "margins_m": {
+            "top": 0.0030391684084425065,
+            "table": 0.0030332220660221577
+          }
+        },
+        "provenance": "Dimensions and normals are historical, freshly checked for stationarity; plane offsets are current depth. Own bounds and pose are measured. All allowances and the unchanged 3 mm side/4 mm table minima are operational heuristics, not external constraints or calibrated confidence bounds."
       }
     },
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "pick_progress": {
     "key": "pick_progress",
-    "frame_id": 216,
+    "frame_id": 222,
     "method_number": 1,
     "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
-    "bytes": 874,
+    "bytes": 415,
     "value": {
-      "phase": "Resume after acknowledged descent; old target pursuit cancelled",
+      "phase": "closure dwell",
+      "dwell": 1,
       "state": {
-        "frame_id": 216,
-        "native_steps": 216,
+        "frame_id": 222,
+        "native_steps": 222,
         "tcp_position_world_m": [
-          -0.05188004471778103,
-          0.14528509893274125,
-          0.915813634662112
+          -0.05158204445663956,
+          0.1454786440583446,
+          0.9162279362353932
         ],
         "tcp_quaternion_xyzw": [
-          0.9999960354002284,
-          0.002042148603967897,
-          0.0018092222086258086,
-          -0.000696798324049704
+          0.9999950164673371,
+          0.0020986360720701147,
+          0.0022080005756088925,
+          -0.0008291565505960303
         ],
         "gripper_qpos_m": [
-          0.04000005803653318,
-          -0.03999827106106124
+          0.021409679162323583,
+          -0.021086241557201693
         ],
-        "last_gripper_command": "open"
+        "last_gripper_command": "close"
       },
-      "prior_completed_lease_frame": 177,
-      "old_pad_target_world_m": [
-        -0.05310881278872921,
-        0.14386107544312834,
-        0.9178851966152449
-      ],
-      "actual_pad_world_m": [
-        -0.051893201038961785,
-        0.1452790014571862,
-        0.9194133608543101
-      ],
-      "old_target_residual_m": 0.002413195402173717,
-      "acknowledged_frame_201_to_216_tcp_motion_m": 0.00011356794187036687,
-      "provenance": "Current proprioception and supplied acknowledged receipts. Small progress does not identify a collision."
+      "receipt_status": "moved"
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "pick_gate": {
+    "key": "pick_gate",
+    "frame_id": 222,
+    "method_number": 1,
+    "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
+    "bytes": 713,
+    "value": {
+      "gate": "Stationary closure hold or command failure",
+      "prevented_action": "Continue the single contact attempt",
+      "operands": {
+        "status": "moved",
+        "position_error_m": 0.0005493930130357769,
+        "position_limit_m": 0.0005,
+        "pose_margin_m": -4.939301303577689e-05,
+        "rotation_error_rad": 0.0008479027328109482,
+        "rotation_limit_rad": 0.01,
+        "rotation_margin_rad": 0.009152097267189052,
+        "frame_id": 222,
+        "contact_geometry_checkpoint": "pick_reference",
+        "choices": {
+          "x": "hold",
+          "y": "hold",
+          "z": "hold",
+          "rx": "hold",
+          "ry": "hold",
+          "rz": "hold",
+          "gripper": "close"
+        }
+      },
+      "frame_id": 222,
+      "threshold_provenance": "Operational heuristics unless explicitly labeled measured geometry or runtime budget.",
+      "stage_status": "blocked"
     },
     "source": "program-supplied historical data; not a fresh measurement"
   }

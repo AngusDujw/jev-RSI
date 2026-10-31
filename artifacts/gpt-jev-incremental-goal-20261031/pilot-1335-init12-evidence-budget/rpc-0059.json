@@ -1,0 +1,51 @@
+{
+  "index": 59,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_gate",
+      {
+        "gate": "Stationary closure hold or command failure",
+        "prevented_action": "Continue the single contact attempt",
+        "operands": {
+          "status": "moved",
+          "position_error_m": 0.0005493930130357769,
+          "position_limit_m": 0.0005,
+          "pose_margin_m": -4.939301303577689e-05,
+          "rotation_error_rad": 0.0008479027328109482,
+          "rotation_limit_rad": 0.01,
+          "rotation_margin_rad": 0.009152097267189052,
+          "frame_id": 222,
+          "contact_geometry_checkpoint": "pick_reference",
+          "choices": {
+            "x": "hold",
+            "y": "hold",
+            "z": "hold",
+            "rx": "hold",
+            "ry": "hold",
+            "rz": "hold",
+            "gripper": "close"
+          }
+        },
+        "frame_id": 222,
+        "threshold_provenance": "Operational heuristics unless explicitly labeled measured geometry or runtime budget.",
+        "stage_status": "blocked"
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 222,
+  "response": {
+    "result": {
+      "key": "pick_gate",
+      "frame_id": 222,
+      "method_number": 1,
+      "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
+      "bytes": 713,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 222
+}

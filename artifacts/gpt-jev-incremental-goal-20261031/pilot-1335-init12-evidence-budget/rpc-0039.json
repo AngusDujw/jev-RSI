@@ -1,0 +1,66 @@
+{
+  "index": 39,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_observation",
+      {
+        "frame_id": 216,
+        "parameters": {
+          "unchanged": "yes",
+          "jaw_fit": "fits",
+          "closure_route": "clear",
+          "reason": "The package printing and visible upper-face boundaries agree with the saved projected geometry, with no visible shift or attitude change. The open fingers straddle the short dimension. No non-package obstruction is observed along their inward closure at this fixed pose; the bowl is outside that local path."
+        },
+        "consumed_points": {
+          "top_now": {
+            "world_m": [
+              -0.021129513469860754,
+              0.13045784081427414,
+              0.9182049453819278
+            ],
+            "depth_m": 0.09469886124134064,
+            "frame_id": 216,
+            "pixel": [
+              463,
+              486
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "support_now": {
+            "world_m": [
+              -0.0246880446142105,
+              0.11136276580631248,
+              0.900000597512493
+            ],
+            "depth_m": 0.1128634586930275,
+            "frame_id": 216,
+            "pixel": [
+              535,
+              486
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 216,
+  "response": {
+    "result": {
+      "key": "pick_observation",
+      "frame_id": 216,
+      "method_number": 1,
+      "source_sha256": "ab707cb3eb733dfb5205e6c0fb3eaa4271d50e3ec6cfd6274d27ad381b4eb41e",
+      "bytes": 946,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 216
+}

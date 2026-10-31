@@ -1,0 +1,147 @@
+{
+  "index": 52,
+  "method_number": 1,
+  "request": {
+    "kind": "rpc",
+    "method": "control",
+    "args": [
+      [
+        -0.051893201038961785,
+        0.1452790014571862,
+        0.9194133608543101
+      ],
+      [
+        0.9999960354002284,
+        0.002042148603967897,
+        0.0018092222086258086,
+        -0.000696798324049704
+      ],
+      "close",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world axis x, read the trusted state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world axis y, read the trusted state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world axis z, read the trusted state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world axis rx, read the trusted state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world axis ry, read the trusted state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world axis rz, read the trusted state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper and deliver that exact requested choice. Closure is an attempted contact, not evidence of retention.",
+          "criteria": {
+            "open": "The requested objective is open.",
+            "close": "The requested objective is close.",
+            "keep": "The requested objective is keep."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "phase": "One closure attempt; two three-step settling deliveries, no reopening or retry.",
+        "retention": "not yet tested",
+        "pad_side_overlap_m": 0.00593754344093711,
+        "finger_table_clearance_m": 0.006432652837252362
+      },
+      "tool_point": "pad_center",
+      "translation_limit": 0.001,
+      "rotation_limit": 0.01,
+      "steps": 3,
+      "position_tolerance": 0.0005,
+      "rotation_tolerance": 0.01
+    }
+  },
+  "frame_before": 216,
+  "response": {
+    "result": {
+      "decision": 72,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "close"
+      },
+      "action": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "before": [
+        -0.05188004471778103,
+        0.14528509893274125,
+        0.915813634662112
+      ],
+      "after": [
+        -0.0517110610843062,
+        0.1454553399352875,
+        0.916049378390557
+      ],
+      "target_tcp": [
+        -0.05188004471778103,
+        0.14528509893274125,
+        0.915813634662112
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 219,
+      "frame_id": 219,
+      "status": "reached",
+      "position_error_m": 0.0003363221265862215,
+      "rotation_error_rad": 0.0005251255282962815
+    }
+  },
+  "frame_after": 219
+}

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-edcc6f25-98e0-477b-b5d8-86efb8e79d32",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-edcc6f25-98e0-477b-b5d8-86efb8e79d32",
+      "arguments": "{\"status\": \"continue\", \"parameters\": {\"unchanged\": \"yes\", \"jaw_fit\": \"fits\", \"closure_route\": \"clear\", \"reason\": \"The package printing and visible upper-face boundaries agree with the saved projected geometry, with no visible shift or attitude change. The open fingers straddle the short dimension. No non-package obstruction is observed along their inward closure at this fixed pose; the bowl is outside that local path.\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"top_now\", \"pixel\": [463, 486], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"support_now\", \"pixel\": [535, 486], \"radius\": 5}], \"regions\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"upper_face_patch_now\", \"box\": [448, 456, 482, 520], \"stride\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"adjacent_table_patch_now\", \"box\": [514, 452, 554, 546], \"stride\": 5}], \"explanation\": \"top_now selects a smooth exposed interior patch, not the hidden center or a perimeter corner. support_now selects adjacent bare tabletop. The visible far edge and lateral boundaries support consistency with the saved geometry; earlier images are not supplied here for direct comparison. The center and lower corners are robot-occluded, not evidence of an external obstruction. This review covers only inward closure without descent or translation, not retention, a future lift corridor, or task completion.\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 28305,
+    "output_tokens": 1933,
+    "output_tokens_details": {
+      "reasoning_tokens": 1552
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f59-2f27-7c20-b614-89c95a52065c",
+    "turn_ids": [
+      "01a18f59-2f2d-76c1-9ea8-d65e75c84cfe"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
