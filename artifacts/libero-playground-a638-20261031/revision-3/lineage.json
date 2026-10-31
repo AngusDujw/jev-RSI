@@ -1,0 +1,31 @@
+{
+  "episodes": [
+    {
+      "episode": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031/code/runs/playground-a638/episode-0",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 0,
+      "seed": 0,
+      "protocol_sha256": "7fb2fbeb9eb67839f98f568e37954c51edbf8e1512c61e0beb25a1621db8aa18",
+      "summary_sha256": "93c0f971398989915eb5d6c13fdaa67d86a185ffeaca72e13c26636a79f619bd"
+    },
+    {
+      "episode": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031/code/runs/playground-a638/episode-1",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 1,
+      "seed": 0,
+      "protocol_sha256": "8de54b21fe8099e7810e2bfc96bcd3c212205e5b0387e0852c4663fb3493416f",
+      "summary_sha256": "a10e0c10a92f657fe173557551fb0e3a33911a04ee330d680cff0270c11e7a43"
+    },
+    {
+      "episode": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031/code/runs/playground-a638/episode-2",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 2,
+      "seed": 0,
+      "protocol_sha256": "57295c0ff15bf9c7dcda286a18ffb10306bab82704f9f017fe185043a5ccb9ba",
+      "summary_sha256": "c251b0975d32e2062ff0a4948f9b308ddb136b534ff5739b6d5e8997ce37339a"
+    }
+  ]
+}

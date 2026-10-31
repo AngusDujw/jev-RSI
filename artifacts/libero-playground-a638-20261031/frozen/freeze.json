@@ -1,0 +1,47 @@
+{
+  "version": "libero-playground-memory-v1",
+  "files": {
+    "skills/libero-bounded-checkpoints.md": "27cf0ced87e683b483ac7b16093320735fa4d13579cf21f72a03321535e2ef81",
+    "skills/libero-bounded-jev-control.md": "d6d4d2e86bce1942ee0a1096c3440d0d38a468605c7a9b51bb847123b0e3e9c3",
+    "skills/libero-contained-release.md": "cbbee88bd497d2e094afadf1bb5ff42ef45c3de9f70b8045f96e6fb8dcd10297",
+    "skills/libero-continuation-recovery.md": "44d14cbc4f2e1ccb947b1c678f42744cd03cbf27c7ab28169fc4f9014525f730",
+    "skills/libero-differential-retention.md": "8318d55cac838c67f4bb21c06ec578e6d3a9c283abd0e5db17a24a30a27f8dca",
+    "skills/libero-evidence-budget.md": "c25bd7d0313a91448820826202d22e1c2d7797e3426356954d274cbc4779d8db",
+    "skills/libero-measured-surface-geometry.md": "c82e614ef4012370ad2c05fb226c1421a6a1a9144f60277bba917e21d94c6cb3",
+    "skills/libero-observable-stages.md": "bd2bb29db3c86f91e3b26639cdacc65a399f4f15dc543d613091607deda02ce9",
+    "skills/libero-pad-band-pinch.md": "b09f1511299ee4bb4cceeff4aea6fe7db6fd9a74fa7232d451483255eef0c257",
+    "skills/libero-review-gates.md": "17b31136cd66f8b405a099dd107c3f2e9623b86606ef1cb364e68b675607f4a2",
+    "lessons/libero-evidence.md": "a262e6474a563d0ac55c285804e4dc6714783749dc7efe8ef4808f81fcf9bfff",
+    "lessons/libero-knowledge-index.md": "984863c2ceda8dd5f4cd003902d04d7cdd2b10043dd679e052c04a0c5be506bc"
+  },
+  "playground": [
+    {
+      "episode": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031/code/runs/playground-a638/episode-0",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 0,
+      "seed": 0,
+      "protocol_sha256": "7fb2fbeb9eb67839f98f568e37954c51edbf8e1512c61e0beb25a1621db8aa18",
+      "summary_sha256": "93c0f971398989915eb5d6c13fdaa67d86a185ffeaca72e13c26636a79f619bd"
+    },
+    {
+      "episode": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031/code/runs/playground-a638/episode-1",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 1,
+      "seed": 0,
+      "protocol_sha256": "8de54b21fe8099e7810e2bfc96bcd3c212205e5b0387e0852c4663fb3493416f",
+      "summary_sha256": "a10e0c10a92f657fe173557551fb0e3a33911a04ee330d680cff0270c11e7a43"
+    },
+    {
+      "episode": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/playground-a638-20261031/code/runs/playground-a638/episode-2",
+      "suite": "libero_goal",
+      "task_id": 1335,
+      "init_index": 2,
+      "seed": 0,
+      "protocol_sha256": "57295c0ff15bf9c7dcda286a18ffb10306bab82704f9f017fe185043a5ccb9ba",
+      "summary_sha256": "c251b0975d32e2062ff0a4948f9b308ddb136b534ff5739b6d5e8997ce37339a"
+    }
+  ],
+  "transfer": "Only skills and lessons; no episode source, state, images, or evaluator inputs"
+}

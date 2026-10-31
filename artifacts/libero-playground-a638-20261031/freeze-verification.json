@@ -1,0 +1,40 @@
+{
+  "snapshot_sha256": "0835ee2a80f1f6b3cf6d7a845117411579fe16e9eccad0732e4a0502c9c4ec10",
+  "freeze_sha256": "4d212a0f2bbefec1360791d2a319a9624c2e309bcac8022a33e44f41df2c0862",
+  "file_count": 12,
+  "characters": 51785,
+  "ascii": true,
+  "revision_matches_frozen": true,
+  "lineage": [
+    {
+      "episode": 0,
+      "protocol_matches": true,
+      "summary_matches": true
+    },
+    {
+      "episode": 1,
+      "protocol_matches": true,
+      "summary_matches": true
+    },
+    {
+      "episode": 2,
+      "protocol_matches": true,
+      "summary_matches": true
+    }
+  ],
+  "test_initial_states": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "native_playground_successes": 0,
+  "native_playground_total": 3,
+  "scope": "File integrity and provenance only; learned effectiveness unproven"
+}

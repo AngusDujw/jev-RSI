@@ -1,5 +1,5 @@
 {
-  "status": "All three acquisition episodes terminal native_false; final Pro refinement pending",
+  "status": "Frozen revision3 verified; matched initial-state Test started",
   "commit": "7a57e644",
   "server": "5880-jump",
   "gpu": 0,
@@ -74,5 +74,8 @@
   "known_limit": "Existing generic host lessons are shared by both conditions; empty means no newly learned Playground skills.",
   "refinement_evidence_scope": "Deduplicated stage events, unchanged effect measurements, complete selected source; omitted large checkpoints and sources explicitly hashed. Patched before the first refinement; active episode control code unchanged.",
   "refinement_format_recovery": "First response retained; README/references paths rejected. At most two model corrections; exact saved request equality required to resume; all attempt usages retained. Robot host unchanged.",
-  "refinement_capacity_recovery": "Whole-source allowance adapts to retained evidence; terminal episode1 331901->288135 chars, events unchanged. Deployed after terminal; no robot host change or episode replay."
+  "refinement_capacity_recovery": "Whole-source allowance adapts to retained evidence; terminal episode1 331901->288135 chars, events unchanged. Deployed after terminal; no robot host change or episode replay.",
+  "frozen_snapshot_sha256": "0835ee2a80f1f6b3cf6d7a845117411579fe16e9eccad0732e4a0502c9c4ec10",
+  "frozen_files": 12,
+  "frozen_characters": 51785
 }
