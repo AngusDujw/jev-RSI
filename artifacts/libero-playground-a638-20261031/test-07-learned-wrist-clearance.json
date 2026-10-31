@@ -1,0 +1,42 @@
+{
+  "episode": "test-07-learned",
+  "frame_id": 105,
+  "native_steps": 105,
+  "jev_calls": 35,
+  "review": {
+    "status": "stop",
+    "parameters": {
+      "identity": "yes",
+      "model_current": "yes",
+      "bracketed": "yes",
+      "shift": "clear",
+      "descent": "unknown",
+      "disturbance": "none",
+      "unwanted_contact": "none"
+    },
+    "explanation": "The labeled cream cheese package and visible rectangular top support the current package model; its bottom and unseen sides remain conditional. The proposed finger alignment brackets the LONG lateral faces across the SHORT dimension, near one longitudinal end after shifting. Currently the fingers remain above the package, not in contact. The short open-hand shift at current height is visibly above the bowl and moves away from the rear white appliance; no external obstruction is observed for that shift. Descent is not approved: the supplied 4.15 mm separation bounds complete fingers only. The wider palm/wrist overhang and its partly self-occluded underside must also clear the bowl and adjacent appliance during lowering; the images and supplied geometry do not establish that clearance. This is unknown wrist clearance, not an observed collision or a rejection of the measured outer-bowl model. No unwanted contact or disturbance is visible. No closure or lift is assessed.",
+    "points": [],
+    "regions": []
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 105 shows the cream cheese package on the tabletop outside the bowl, with open fingers above it. Retention and table separation are not established.",
+      "Acknowledged approach/standoff motion ended at frame 105. This revision reports no executed shift, contact descent, closure or retention lift.",
+      "Two new crest samples returned valid depth and supplemented three preserved anchors. The resulting conditional outer-bowl model is not an inner-opening or full-hand clearance certificate.",
+      "The current review confirms package identity, model validity and proposed long-face bracketing. It marks the high shift clear, descent unknown, and reports no visible unwanted contact or disturbance.",
+      "The candidate reports 4.15 mm finger-only descent separation. Palm/wrist clearance against the bowl and adjacent appliance remains unestablished, not observably blocked.",
+      "The stage returned abort with live continuation unavailable. Public budgets retain 24 GPT calls, 165 Jev calls and 495 native steps."
+    ],
+    "invalidated_assumptions": [
+      "Finger-only separation is sufficient evidence to approve the complete hand/wrist descent sweep."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains suitable, and the repaired measurements provide new evidence supporting bounded local recovery. Revise the clearance method from the actual open standoff without replaying approach. Obtain supported palm/wrist sweep bounds or a separately assessed sensing action, potentially using the reviewed high-shift scope, then reassess descent and contact geometry. Preserve valid measurements and exact review predicates; do not treat unknown clearance as either collision or permission, lower margins, or repeat an unchanged review. Reserve resources for retention and final verification.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "next_method_job": "588599425a2d4127bece4c5dd0e230de",
+  "scope": "Finger clearance computation passed, but full palm/wrist descent remained unknown. No shift or contact executed. Episode continues with third acquisition revision; frozen memory unchanged."
+}
