@@ -1,0 +1,235 @@
+{
+  "episode": "test-07-learned",
+  "frame_id": 105,
+  "verified_dispatches": 35,
+  "verified_native_steps": 105,
+  "persistent_gripper_command": "open",
+  "review": {
+    "status": "continue",
+    "parameters": {
+      "identity": "yes",
+      "bracketed": "yes",
+      "descent": "unknown",
+      "model_scope": "yes",
+      "disturbance": "none"
+    },
+    "explanation": "The visible label identifies cream cheese. For the proposed contact_target, the package long axis aligns with tool X and the opposing fingers lie across its short dimension along tool Y; this supports long-face bracketing, not just aperture width. The pads are still above the package now. The bowl-facing outer finger passes close to the visible bowl rim; robot self-occlusion and unmeasured rim/wrist clearance prevent confirming the complete local sweep. No definite external obstruction is established. The rectangular top and surrounding tabletop support the stated local rigid-package model, with bottom and unseen sides conditional; these planes do not certify bowl clearance. No obvious disturbance is visible, but earlier images are unavailable for direct comparison.",
+    "points": [],
+    "regions": []
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 105 shows the cream cheese package on the tabletop outside the bowl, with the open gripper above it; acquisition and retention are not established.",
+      "Recent acknowledged controls lowered the open hand toward standoff. No closing or retention lift is reported.",
+      "The frame-105 review confirms identity, long-face bracketing and local package/table model scope, but reports descent clearance as unknown because bowl-rim and full finger/wrist clearance are unmeasured and partly occluded.",
+      "No definite obstruction or obvious disturbance is established; temporal stationarity was not independently verified.",
+      "The stage returned blocked and live continuation is unavailable. Public budgets retain 32 GPT calls, 165 Jev calls and 495 native steps."
+    ],
+    "invalidated_assumptions": [],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains suitable, but its local clearance assessment needs revision. Recover from the acknowledged open standoff without replaying approach. Obtain different depth-safe bowl-rim and nearby clearance measurements, or a separately clearance-checked sensing view, then reassess the complete descent sweep and contact margins. Top/table geometry alone does not certify bowl clearance; unknown clearance is neither approval nor an observed obstacle. Preserve resources for independent retention and downstream verification.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "method_result": {
+    "key": "acquire.result",
+    "frame_id": 105,
+    "method_number": 0,
+    "source_sha256": "5e0da8b99c62e0af86649504c7d5115a43fcc465727db5acbd9ef68d68385e6c",
+    "bytes": 560,
+    "value": {
+      "stage_status": "blocked",
+      "reason": "Contact descent lacks supported local geometry or clearance.",
+      "actual": {
+        "frame_id": 105,
+        "native_steps": 105,
+        "tcp_position_world_m": [
+          -0.06597278471218104,
+          0.109811565498166,
+          0.9768975727891022
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999877492807357,
+          0.004945267269293896,
+          -7.641893694463962e-05,
+          -0.00019944981770875467
+        ],
+        "gripper_qpos_m": [
+          0.03998965748205424,
+          -0.03998659371017801
+        ],
+        "last_gripper_command": "open"
+      },
+      "evidence_keys": [
+        "acquire.measurements",
+        "acquire.geometry",
+        "acquire.motion"
+      ],
+      "completion_proposed": false
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "motion": {
+    "key": "acquire.motion",
+    "frame_id": 105,
+    "method_number": 0,
+    "source_sha256": "5e0da8b99c62e0af86649504c7d5115a43fcc465727db5acbd9ef68d68385e6c",
+    "bytes": 2480,
+    "value": {
+      "history": [
+        {
+          "phase": "high_approach",
+          "target_pad_world_m": [
+            -0.06453390210581589,
+            0.1113533686037333,
+            1.175544477715243
+          ],
+          "quaternion_xyzw": [
+            0.9999957968805945,
+            0.0028993484000405796,
+            0.0,
+            0.0
+          ],
+          "gripper": "open",
+          "before": {
+            "frame_id": 0,
+            "native_steps": 0,
+            "tcp_position_world_m": [
+              -0.20419282842325612,
+              0.004147935697177214,
+              1.171950168692875
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9995846967959837,
+              0.000996687500496973,
+              -0.028799965944130153,
+              5.006919729337067e-05
+            ],
+            "gripper_qpos_m": [
+              0.03872242801109955,
+              -0.03872315830469418
+            ],
+            "last_gripper_command": "open"
+          },
+          "pending_effect": true,
+          "after": {
+            "frame_id": 51,
+            "native_steps": 51,
+            "tcp_position_world_m": [
+              -0.06620837616635007,
+              0.11124930780869964,
+              1.1719164406971199
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999918957873398,
+              0.0031772999193067086,
+              -0.0020798283725407575,
+              -0.0013369513101715905
+            ],
+            "gripper_qpos_m": [
+              0.03988278316418378,
+              -0.0398638722629104
+            ],
+            "last_gripper_command": "open"
+          },
+          "receipt": {
+            "status": "reached",
+            "choices": {
+              "x": "positive",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "open"
+            },
+            "position_error_m": 0.0015603484528030071,
+            "rotation_error_rad": 0.004976103023051949,
+            "acknowledged_steps": 3,
+            "frame_id": 51
+          },
+          "whole_native_steps": 51
+        },
+        {
+          "phase": "standoff",
+          "target_pad_world_m": [
+            -0.06453390210581589,
+            0.1113533686037333,
+            0.9785469915672345
+          ],
+          "quaternion_xyzw": [
+            0.9999957968805945,
+            0.0028993484000405796,
+            0.0,
+            0.0
+          ],
+          "gripper": "open",
+          "before": {
+            "frame_id": 51,
+            "native_steps": 51,
+            "tcp_position_world_m": [
+              -0.06620837616635007,
+              0.11124930780869964,
+              1.1719164406971199
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999918957873398,
+              0.0031772999193067086,
+              -0.0020798283725407575,
+              -0.0013369513101715905
+            ],
+            "gripper_qpos_m": [
+              0.03988278316418378,
+              -0.0398638722629104
+            ],
+            "last_gripper_command": "open"
+          },
+          "pending_effect": true,
+          "after": {
+            "frame_id": 105,
+            "native_steps": 105,
+            "tcp_position_world_m": [
+              -0.06597278471218104,
+              0.109811565498166,
+              0.9768975727891022
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999877492807357,
+              0.004945267269293896,
+              -7.641893694463962e-05,
+              -0.00019944981770875467
+            ],
+            "gripper_qpos_m": [
+              0.03998965748205424,
+              -0.03998659371017801
+            ],
+            "last_gripper_command": "open"
+          },
+          "receipt": {
+            "status": "reached",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "negative",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "open"
+            },
+            "position_error_m": 0.0028075376851714544,
+            "rotation_error_rad": 0.004114107611256485,
+            "acknowledged_steps": 3,
+            "frame_id": 105
+          },
+          "whole_native_steps": 54
+        }
+      ],
+      "pending": null
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "next_method_job": "449ecc5d385849b5a85068ab05b53d4c",
+  "scope": "Local method blocked by unresolved bowl/full-finger sweep clearance; episode continues with revision. No contact, grasp or success established. Test evidence is not fed into frozen memory."
+}
