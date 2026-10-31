@@ -27,5 +27,446 @@
   },
   "numeric_recomputation": "Recomputed geo.attachment_error from saved fresh baseline/effect points and actual TCP transforms; agrees within1e-10m.",
   "scope": "The216-to228 independent test passes. It does not resolve the192-to216 historical discrepancy. Bowl V1 depth remains invalid; package-patch validity is assessed independently. No transit, release or task success yet.",
-  "next_review_job": "e4cee9067d2148e699d7efeffbc355c7"
+  "next_review_job": "e4cee9067d2148e699d7efeffbc355c7",
+  "observation_transit": {
+    "geometry_frame": 297,
+    "actions": [
+      {
+        "phase": "opening_observation_waypoint",
+        "frames": [
+          228,
+          297
+        ],
+        "hand_before": [
+          -0.04455896877802325,
+          0.14164855818646177,
+          1.0257695104988127
+        ],
+        "hand_after": [
+          -0.1622381097463571,
+          -0.006294217444005802,
+          1.0254097150387438
+        ],
+        "native_steps": 69,
+        "lease_calls": 23,
+        "status": "reached",
+        "choices": {
+          "x": "hold",
+          "y": "negative",
+          "z": "hold",
+          "rx": "hold",
+          "ry": "hold",
+          "rz": "hold",
+          "gripper": "close"
+        },
+        "position_error_m": 0.0012253550986253765,
+        "rotation_error_rad": 0.0018575102023954332
+      }
+    ],
+    "attachment_test": {
+      "test": "attachment",
+      "frames": [
+        228,
+        297
+      ],
+      "actual_hand_delta_m": [
+        -0.11767914096833386,
+        -0.14794277563046757,
+        -0.0003597954600689235
+      ],
+      "object_delta_m": [
+        -0.11762564884145049,
+        -0.14795135491768166,
+        -7.044189955007774e-05
+      ],
+      "error_m": 0.0004115348511326705,
+      "allowance_m": 0.0015696890191736058,
+      "resolved_motion": true
+    },
+    "geometry": {
+      "object": {
+        "frame_id": 297,
+        "points": [
+          [
+            -0.12556437058777803,
+            -0.0006271755218821224,
+            1.0276944860515815
+          ],
+          [
+            -0.14096069976807044,
+            0.004794910852721594,
+            1.027614439270422
+          ],
+          [
+            -0.14828393297394588,
+            -0.00605862429817142,
+            1.027598233788387
+          ]
+        ],
+        "labels": [
+          "P0: Apex of the thin outer blue outline over the initial capital C in Cream, on the side facing the package's exposed short edge.",
+          "P1: Tip of the small blue medallion scallop beside the initial C, where the scallop joins the long border beside Fresh.",
+          "P2: Center of the enclosed light counter of the lowercase a in Cream."
+        ],
+        "state": {
+          "frame_id": 297,
+          "native_steps": 297,
+          "budgets": {
+            "gpt_remaining": 12,
+            "jev_remaining": 101,
+            "native_steps_remaining": 303,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.1622381097463571,
+            -0.006294217444005802,
+            1.0254097150387438
+          ],
+          "tcp_quaternion_xyzw": [
+            0.999991060843875,
+            0.0026073770021337035,
+            0.00314985686187945,
+            -0.0010762059559783035
+          ],
+          "gripper_qpos_m": [
+            0.021177646288681868,
+            -0.02104328190327558
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              -1.187861906239672e-06,
+              8.931821428399128e-05,
+              -0.0035993247660936227
+            ],
+            "pad_extent_in_tool_m": [
+              0.01600041687073367,
+              0.057221095680075905,
+              0.016000301941802388
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010495695680293548,
+              -0.04742476520934665,
+              -0.04446776785275989
+            ],
+            "finger_high_offset_tool_m": [
+              0.010493488933301194,
+              0.04760305610396813,
+              0.00924987934251603
+            ]
+          }
+        },
+        "localization": 0.0005232296730578686,
+        "plane": [
+          -0.005688233435744281,
+          0.010111916512766788,
+          0.9999326943073814,
+          -1.0284304649931748
+        ],
+        "uncertainty": 0.00153677,
+        "bottom_z": 1.0095551119161508,
+        "center": [
+          -0.1623473087136993,
+          -0.006891417939274412,
+          1.0276458474619332
+        ],
+        "corners": [
+          [
+            -0.12299190503238855,
+            0.013824588997603547,
+            1.02766023262061
+          ],
+          [
+            -0.12216613609417291,
+            -0.025951764251125678,
+            1.0280671723396875
+          ],
+          [
+            -0.20170271239501006,
+            -0.027607424876152375,
+            1.0276314623032563
+          ],
+          [
+            -0.2025284813332257,
+            0.012168928372576852,
+            1.0272245225841787
+          ]
+        ],
+        "radius": 0.04447472026137663,
+        "edge": [
+          {
+            "world_m": [
+              -0.12299190503238855,
+              0.013824588997603547,
+              1.02766023262061
+            ],
+            "pixel": [
+              279,
+              440
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.005688233435744281,
+              0.010111916512766788,
+              0.9999326943073814,
+              -1.0284304649931748
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.12216613609417291,
+              -0.025951764251125678,
+              1.0280671723396875
+            ],
+            "pixel": [
+              489,
+              437
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.005688233435744281,
+              0.010111916512766788,
+              0.9999326943073814,
+              -1.0284304649931748
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          }
+        ],
+        "width": 0.03978700506499549,
+        "extent_source": "Frame-96 dimensions, current intact identity and exposed short edge; hidden corners are derived."
+      },
+      "bowl": {
+        "frame_id": 297,
+        "center": [
+          -0.07688832177502927,
+          -0.005495398815723639
+        ],
+        "radius": 0.05295949490457421,
+        "rim_z": 0.9503658983904962,
+        "rim_low_z": 0.9490550504204707,
+        "plane": [
+          -0.0004996300322168285,
+          -0.012378533764296188,
+          0.999923258191186,
+          -0.9497444085511881
+        ],
+        "uncertainty": 0.001151991023092829,
+        "support_points": [
+          [
+            -0.022714200067006293,
+            -0.0050811981148029366,
+            0.9498850220882157
+          ],
+          [
+            -0.037959590809090074,
+            -0.04369634427910338,
+            0.9493666746233818
+          ],
+          [
+            -0.0763624573816096,
+            -0.05959437787942028,
+            0.9488466628671103
+          ],
+          [
+            -0.11502550243424621,
+            -0.04400821890858697,
+            0.9492901460333695
+          ],
+          [
+            -0.07722073766316731,
+            0.048774211369128934,
+            0.9504841951950848
+          ],
+          [
+            -0.03855322020092425,
+            0.0332740410275178,
+            0.9499766263614889
+          ]
+        ],
+        "boundary": [
+          {
+            "world_m": [
+              -0.024031366005920332,
+              -0.005087494717634782,
+              0.94974231097673
+            ],
+            "pixel": [
+              383,
+              131
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.038966970081715596,
+              -0.0426797368443113,
+              0.9492694755756999
+            ],
+            "pixel": [
+              491,
+              175
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.07641115549097399,
+              -0.05848940089814368,
+              0.9490550504204707
+            ],
+            "pixel": [
+              536,
+              283
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.11399233678302599,
+              -0.04297869053274475,
+              0.9492282868800965
+            ],
+            "pixel": [
+              491,
+              391
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.12305077956993202,
+              -0.03156647049289657,
+              0.9493650380556565
+            ],
+            "pixel": [
+              458,
+              417
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.12328948795391825,
+              0.020275800928227738,
+              0.9500066993392307
+            ],
+            "pixel": [
+              308,
+              417
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.0771896759522305,
+              0.047430764636011216,
+              0.9503658983904962
+            ],
+            "pixel": [
+              230,
+              283
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.039683302026039355,
+              0.03217899935216134,
+              0.9501958301584343
+            ],
+            "pixel": [
+              275,
+              175
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              -0.0004996300322168285,
+              -0.012378533764296188,
+              0.999923258191186,
+              -0.9497444085511881
+            ],
+            "frame_id": 297,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          }
+        ],
+        "fit": {
+          "rms_m": 0.00011175107052020923,
+          "max_radial_error_m": 0.00021762266195327062,
+          "largest_angular_gap_rad": 1.0581230304478504
+        }
+      },
+      "opening_margin_m": 0.00579601362010475,
+      "required_margin_m": 0.00175,
+      "dimensions_m": [
+        0.079555,
+        0.0404146,
+        0.0176706
+      ],
+      "dimension_source": "grasp.validation frame 96, validated by current intact identity and exposed edge"
+    },
+    "centering_started_at": 300,
+    "dispatches_audited": 100,
+    "steps_audited": 300,
+    "release_executed": false,
+    "next_supervision_job": "5061a0ad2981447ab8c1abbf1ab264f8"
+  }
 }
