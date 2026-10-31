@@ -761,3 +761,8 @@ Candidate021dbd95 on gpt-jev-bounded-sensing-20261031 adds bounded distinct sens
 ## Builder22 reaches submission validation and corrects in the same session
 
 After about15 minutes, native session0e4ef2601ecd48bcbc7a435f74dc987f changes from generating to correcting_invalid_submission. One submit_method_patch contains13 replacements, exceeding schema maximum12. The native tool receipt rejects it and the same running process continues correction; no reconnect/recovery or robot action is recorded. This is schema delivery overhead, not observed network failure, and the unvalidated patch has not been executed.
+
+
+## User-requested pause, 2026-10-31
+
+User asked to stop and summarize. Remote pilot3157041, local bridge and owned reverse tunnel were stopped and verified inactive/MainPID0; goal status is paused. Builder22 completed in925.144 s, zero reconnects, with one corrected13-versus12 replacement submission. Method5 executed through checkpoint deliver_ref: newly spread measurements yield table-separation lower bound22.5765 mm and20.5765 mm residual margin. Review23 7587e61f47024c45bd3e54d7e03efef0 was interrupted while acquiring replacement rim geometry. No lateral movement or release occurred:80Jev,240native steps,23completed logical GPT requests plus1interrupted request,6generated method versions. Terminal native success is unavailable, not a passed episode; retain as user-interrupted, not a natural task failure. Six-case qualification has not started. Checkpoints and source are saved, but the stopped simulator process/live Python stack are not resumable without separate restoration validation. Candidate021dbd95 is pushed but not deployed.

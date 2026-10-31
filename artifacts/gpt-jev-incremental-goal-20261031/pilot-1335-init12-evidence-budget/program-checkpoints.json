@@ -1806,5 +1806,316 @@
       ]
     },
     "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "deliver_ref": {
+    "key": "deliver_ref",
+    "frame_id": 240,
+    "method_number": 5,
+    "source_sha256": "7f40108fa3eb6b89c3418712177fbdf398a0c8cc73d862d87787ad7bfe179046",
+    "bytes": 5921,
+    "value": {
+      "geometry": {
+        "pose_tolerance_m": 0.002,
+        "separation": {
+          "lower_m": 0.022576507858016348,
+          "threshold_m": 0.002,
+          "residual_margin_m": 0.020576507858016346,
+          "bottom_lower_world_z_m": 0.9235336904732294,
+          "table_upper_world_z_m": 0.9009571826152131,
+          "face_uncertainty_m": 0.0009949528686633994,
+          "table_uncertainty_m": 0.0009250407339428844,
+          "normal_sine_uncertainty": 0.07456292120751043,
+          "tilt_upper_rad": 0.0940000423054865,
+          "spread_m": 0.013343802154618127,
+          "frame_id": 240,
+          "dimensions": {
+            "thickness_upper_m": 0.02097091329421374,
+            "diagonal_upper_m": 0.09459608284527625,
+            "source": "retain_gate measured/model bounds, already validated by frame-240 review against pick_reference; not external thresholds"
+          }
+        },
+        "package_center_world_m": [
+          -0.056862156826067316,
+          0.1460552222563634,
+          0.9548810830599066
+        ],
+        "package_radius_upper_m": 0.053812484578717436,
+        "package_center_uncertainty_m": 0.003689023709294362,
+        "face_plane": {
+          "coefficients": [
+            0.005276321773600502,
+            0.018634039390532237,
+            0.999812448914562,
+            -0.9571235698048772
+          ],
+          "center_world_m": [
+            -0.03221563942291234,
+            0.14660460210574858,
+            0.9547407766231105
+          ],
+          "rms_m": 0.00011210813462775856,
+          "in_plane_spread_m": [
+            0.017254679488198917,
+            0.013343802154618127
+          ]
+        },
+        "short_edge": [
+          {
+            "world_m": [
+              -0.013813704465693372,
+              0.16664185854465738,
+              0.9542702188136306
+            ],
+            "pixel": [
+              281,
+              445
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              0.005276321773600502,
+              0.018634039390532237,
+              0.999812448914562,
+              -0.9571235698048772
+            ],
+            "frame_id": 240,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          },
+          {
+            "world_m": [
+              -0.013406530962163085,
+              0.1263426012975394,
+              0.9550191488448005
+            ],
+            "pixel": [
+              492,
+              444
+            ],
+            "camera": "robot0_eye_in_hand",
+            "plane": [
+              0.005276321773600502,
+              0.018634039390532237,
+              0.999812448914562,
+              -0.9571235698048772
+            ],
+            "frame_id": 240,
+            "source": "calibrated_ray_intersection_with_program_supplied_plane"
+          }
+        ],
+        "face_points_world_m": [
+          [
+            -0.016080140829445963,
+            0.16391462618783892,
+            0.9544469905459884
+          ],
+          [
+            -0.015917188674976494,
+            0.12934035208278777,
+            0.9548034219120021
+          ],
+          [
+            -0.032137692772026785,
+            0.1638528798088994,
+            0.9544346270185375
+          ],
+          [
+            -0.031792632775376486,
+            0.1293725576448772,
+            0.9551568041774593
+          ],
+          [
+            -0.048953937672219075,
+            0.16379597301355564,
+            0.9543785031931694
+          ],
+          [
+            -0.04841224381342923,
+            0.12935122389653259,
+            0.9552243128915069
+          ]
+        ],
+        "table_points_world_m": [
+          [
+            0.0068127031770331085,
+            0.1948258198431762,
+            0.9000321418812702
+          ],
+          [
+            0.00709828468760627,
+            0.09661089374710824,
+            0.9000320568680359
+          ],
+          [
+            -0.050830533920996145,
+            0.20655719916444548,
+            0.9000321326509716
+          ],
+          [
+            -0.050391425901424876,
+            0.08396958695478024,
+            0.9000320887575808
+          ]
+        ],
+        "floor": {
+          "floor": {
+            "world_m": [
+              -0.11834965760170979,
+              0.002252776746919525,
+              0.910448652153955
+            ],
+            "depth_m": 1.0442273616790771,
+            "frame_id": 240,
+            "pixel": [
+              386,
+              434
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "dimensions": {
+          "thickness_upper_m": 0.02097091329421374,
+          "diagonal_upper_m": 0.09459608284527625,
+          "source": "retain_gate measured/model bounds, already validated by frame-240 review against pick_reference; not external thresholds"
+        },
+        "frame_id": 240
+      },
+      "initial_state": {
+        "frame_id": 240,
+        "native_steps": 240,
+        "budgets": {
+          "gpt_remaining": 17,
+          "jev_remaining": 120,
+          "native_steps_remaining": 360,
+          "wall_seconds_remaining": 1000000000000.0
+        },
+        "tcp_position_world_m": [
+          -0.052045534121727126,
+          0.14676926395485845,
+          0.9529950464510211
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999948036084392,
+          0.0015066256528733502,
+          0.0027095112558457295,
+          -0.0008839592839380887
+        ],
+        "gripper_qpos_m": [
+          0.021110086411541672,
+          -0.020933933476672727
+        ],
+        "last_gripper_command": "close",
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            -7.256359359497644e-07,
+            8.69854054116239e-05,
+            -0.003630482625103518
+          ],
+          "pad_extent_in_tool_m": [
+            0.016000081320073058,
+            0.057044049536306804,
+            0.016000049072247707
+          ],
+          "finger_low_offset_tool_m": [
+            -0.01049557012290438,
+            -0.047338367646810764,
+            -0.04449879395996561
+          ],
+          "finger_high_offset_tool_m": [
+            0.010494153669670905,
+            0.04751239105393252,
+            0.009218570636849756
+          ]
+        }
+      },
+      "initial_landmarks": {
+        "p0": {
+          "world_m": [
+            -0.01662512548405414,
+            0.15070661418087036,
+            0.9543485310097796
+          ],
+          "depth_m": 0.09587583690881729,
+          "frame_id": 240,
+          "pixel": [
+            364,
+            460
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p1": {
+          "world_m": [
+            -0.0234433567552776,
+            0.14513474887222305,
+            0.9545851009952188
+          ],
+          "depth_m": 0.0955924466252327,
+          "frame_id": 240,
+          "pixel": [
+            393,
+            496
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p2": {
+          "world_m": [
+            -0.03394360657495667,
+            0.149494858858803,
+            0.9545931364992999
+          ],
+          "depth_m": 0.0955352932214737,
+          "frame_id": 240,
+          "pixel": [
+            370,
+            551
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p3": {
+          "world_m": [
+            -0.039249686567759665,
+            0.14775971833983467,
+            0.9546495862135385
+          ],
+          "depth_m": 0.09544702619314194,
+          "frame_id": 240,
+          "pixel": [
+            379,
+            579
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "route": {
+        "departure": [
+          -0.052045534121727126,
+          0.14676926395485845,
+          1.0354185385930046
+        ],
+        "above_bowl": [
+          -0.1135330348973696,
+          0.002966818445414604,
+          1.0354185385930046
+        ],
+        "center_refinement_radius_m": 0.025,
+        "anchor_world_xy_m": [
+          -0.11834965760170979,
+          0.002252776746919525
+        ],
+        "proposal_only_rim_ceiling_world_z_m": 0.980957182615213,
+        "scope": "Vertical departure then ONE straight elevated lateral segment to any endpoint in this 25 mm XY disk. Review the complete wrist/finger/package swept tube. Floor anchor is NOT a bowl center; the 80 mm table-relative height window and disk are proposed admission scope, not measured bounds. Final endpoint is selected only from fresh opening geometry."
+      },
+      "labels": [
+        "p0: apex of thin blue outline above capital C in Cream",
+        "p1: center of light oval inside right curl of capital C",
+        "p2: center of light counter of lowercase e in Cream",
+        "p3: center of light counter of lowercase a in Cream"
+      ],
+      "provenance": "Unchanged frame-240 face/table data retained; failed rim/wall/floor boundary depths discarded."
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
   }
 }

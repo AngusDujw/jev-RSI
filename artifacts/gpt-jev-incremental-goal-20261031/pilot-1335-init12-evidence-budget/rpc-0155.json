@@ -1,0 +1,329 @@
+{
+  "index": 155,
+  "method_number": 5,
+  "request": {
+    "kind": "rpc",
+    "method": "recall",
+    "args": [
+      "deliver_measure"
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 240,
+  "response": {
+    "result": {
+      "key": "deliver_measure",
+      "frame_id": 240,
+      "method_number": 4,
+      "source_sha256": "05a3454b6813b924614a0d6472c91e8c1377c27fa300d6ec0a45e73edf6ec9c0",
+      "bytes": 4649,
+      "value": {
+        "observations": [
+          {
+            "frame_id": 240,
+            "parameters": {
+              "identity": "correct",
+              "extent_model": "supported",
+              "face_model": "planar_package_face",
+              "table_model": "same_horizontal_table",
+              "edge_identity": "complete_short_end",
+              "edge_camera": "robot0_eye_in_hand",
+              "edge_pixels": [
+                [
+                  281,
+                  445
+                ],
+                [
+                  492,
+                  444
+                ]
+              ],
+              "rim_identity": "horizontal_circular_inner_boundary",
+              "rim_camera": "agentview",
+              "rim_pixels": [
+                [
+                  386,
+                  394
+                ],
+                [
+                  417,
+                  403
+                ],
+                [
+                  430,
+                  435
+                ],
+                [
+                  417,
+                  448
+                ],
+                [
+                  386,
+                  457
+                ],
+                [
+                  353,
+                  447
+                ],
+                [
+                  340,
+                  425
+                ],
+                [
+                  353,
+                  403
+                ]
+              ],
+              "bowl_stationary": "unknown",
+              "slip": "none",
+              "valid_landmarks": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "surface_exclusions": [],
+              "upward": "unknown",
+              "upward_observation_gain": "unknown",
+              "lateral": "unknown",
+              "placement": "unknown",
+              "release": "unknown",
+              "withdrawal": "unknown",
+              "hazards": "The gripper self-occludes the near portion of the package, finger contacts and part of the bowl's right rim. The package underside and some rear geometry are unobserved. These are visibility limitations, not observed external obstructions. This stationary replacement measurement does not assess later transport or placement corridors."
+            },
+            "points": {
+              "f0": {
+                "world_m": [
+                  -0.016080140829445963,
+                  0.16391462618783892,
+                  0.9544469905459884
+                ],
+                "depth_m": 0.09580379724502563,
+                "frame_id": 240,
+                "pixel": [
+                  295,
+                  457
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "f1": {
+                "world_m": [
+                  -0.015917188674976494,
+                  0.12934035208278777,
+                  0.9548034219120021
+                ],
+                "depth_m": 0.09538682550191879,
+                "frame_id": 240,
+                "pixel": [
+                  476,
+                  457
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "f2": {
+                "world_m": [
+                  -0.032137692772026785,
+                  0.1638528798088994,
+                  0.9544346270185375
+                ],
+                "depth_m": 0.09572909027338028,
+                "frame_id": 240,
+                "pixel": [
+                  295,
+                  541
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "f3": {
+                "world_m": [
+                  -0.031792632775376486,
+                  0.1293725576448772,
+                  0.9551568041774593
+                ],
+                "depth_m": 0.09494753181934357,
+                "frame_id": 240,
+                "pixel": [
+                  476,
+                  541
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "f4": {
+                "world_m": [
+                  -0.048953937672219075,
+                  0.16379597301355564,
+                  0.9543785031931694
+                ],
+                "depth_m": 0.09569404274225235,
+                "frame_id": 240,
+                "pixel": [
+                  295,
+                  629
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "f5": {
+                "world_m": [
+                  -0.04841224381342923,
+                  0.12935122389653259,
+                  0.9552243128915069
+                ],
+                "depth_m": 0.09478998184204102,
+                "frame_id": 240,
+                "pixel": [
+                  476,
+                  629
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t0": {
+                "world_m": [
+                  0.0068127031770331085,
+                  0.1948258198431762,
+                  0.9000321418812702
+                ],
+                "depth_m": 0.1503966599702835,
+                "frame_id": 240,
+                "pixel": [
+                  225,
+                  355
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t1": {
+                "world_m": [
+                  0.00709828468760627,
+                  0.09661089374710824,
+                  0.9000320568680359
+                ],
+                "depth_m": 0.15022379159927368,
+                "frame_id": 240,
+                "pixel": [
+                  552,
+                  355
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t2": {
+                "world_m": [
+                  -0.050830533920996145,
+                  0.20655719916444548,
+                  0.9000321326509716
+                ],
+                "depth_m": 0.1501053422689438,
+                "frame_id": 240,
+                "pixel": [
+                  185,
+                  547
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t3": {
+                "world_m": [
+                  -0.050391425901424876,
+                  0.08396958695478024,
+                  0.9000320887575808
+                ],
+                "depth_m": 0.1498899608850479,
+                "frame_id": 240,
+                "pixel": [
+                  594,
+                  547
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p0": {
+                "world_m": [
+                  -0.01662512548405414,
+                  0.15070661418087036,
+                  0.9543485310097796
+                ],
+                "depth_m": 0.09587583690881729,
+                "frame_id": 240,
+                "pixel": [
+                  364,
+                  460
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p1": {
+                "world_m": [
+                  -0.0234433567552776,
+                  0.14513474887222305,
+                  0.9545851009952188
+                ],
+                "depth_m": 0.0955924466252327,
+                "frame_id": 240,
+                "pixel": [
+                  393,
+                  496
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p2": {
+                "world_m": [
+                  -0.03394360657495667,
+                  0.149494858858803,
+                  0.9545931364992999
+                ],
+                "depth_m": 0.0955352932214737,
+                "frame_id": 240,
+                "pixel": [
+                  370,
+                  551
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p3": {
+                "world_m": [
+                  -0.039249686567759665,
+                  0.14775971833983467,
+                  0.9546495862135385
+                ],
+                "depth_m": 0.09544702619314194,
+                "frame_id": 240,
+                "pixel": [
+                  379,
+                  579
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "floor": {
+                "world_m": [
+                  -0.11834965760170979,
+                  0.002252776746919525,
+                  0.910448652153955
+                ],
+                "depth_m": 1.0442273616790771,
+                "frame_id": 240,
+                "pixel": [
+                  386,
+                  434
+                ],
+                "camera": "agentview",
+                "source": "current_depth_patch_backprojection"
+              }
+            },
+            "measurement_errors": []
+          }
+        ]
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 240
+}
