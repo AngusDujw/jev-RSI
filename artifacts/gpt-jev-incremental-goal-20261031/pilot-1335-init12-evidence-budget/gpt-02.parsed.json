@@ -1,0 +1,96 @@
+{
+  "explanation": "The cream cheese package is the labeled rectangular carton left of the bowl in the wrist view. Its exposed flat upper face and adjacent tabletop support the requested measurements. Corner pixels describe the outer upper face; depth patches stay strictly inside surfaces.",
+  "parameters": {
+    "corners": [
+      [
+        146,
+        159
+      ],
+      [
+        203,
+        157
+      ],
+      [
+        207,
+        274
+      ],
+      [
+        149,
+        273
+      ]
+    ],
+    "high_route": "clear",
+    "hover_route": "clear",
+    "identity": "cream_cheese_box",
+    "reason": "Both views support a clear local rotation and translation at the current pad height, above the visible objects. Including the open fingers, the separate vertical descent to 0.055 m above the package top has visible lateral separation from the bowl and stove. These assessments cover only the specified local motions, not contact descent or hidden/global clearance.",
+    "resting": "on_table",
+    "top_camera": "robot0_eye_in_hand"
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        156,
+        170
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t1",
+      "pixel": [
+        194,
+        169
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t2",
+      "pixel": [
+        196,
+        262
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t3",
+      "pixel": [
+        158,
+        262
+      ],
+      "radius": 3
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s0",
+      "pixel": [
+        123,
+        180
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s1",
+      "pixel": [
+        235,
+        186
+      ],
+      "radius": 4
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "s2",
+      "pixel": [
+        179,
+        305
+      ],
+      "radius": 4
+    }
+  ],
+  "regions": [],
+  "status": "continue"
+}

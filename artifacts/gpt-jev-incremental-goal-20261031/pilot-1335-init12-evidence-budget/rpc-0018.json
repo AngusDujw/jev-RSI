@@ -1,0 +1,74 @@
+{
+  "index": 18,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_progress",
+      {
+        "phase": "high approach",
+        "lease": 0,
+        "status": "reached",
+        "lease_calls": 15,
+        "before": {
+          "frame_id": 0,
+          "native_steps": 0,
+          "tcp_position_world_m": [
+            -0.2071984982582204,
+            -0.002684108235936964,
+            1.1833957456431763
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9996138089570381,
+            -0.0001637781149644857,
+            -0.027787418789059465,
+            0.00025588312349679454
+          ],
+          "gripper_qpos_m": [
+            0.03872178294129007,
+            -0.03872379800220578
+          ],
+          "last_gripper_command": "open"
+        },
+        "after": {
+          "frame_id": 45,
+          "native_steps": 45,
+          "tcp_position_world_m": [
+            -0.05467338217086822,
+            0.14329675118040477,
+            1.1818622489875141
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999983595095613,
+            0.0017001620200811636,
+            -0.0006241175736472119,
+            3.0075669658956385e-05
+          ],
+          "gripper_qpos_m": [
+            0.03985373270925102,
+            -0.03981681498666991
+          ],
+          "last_gripper_command": "open"
+        },
+        "position_error_m": 0.0021570912987717286,
+        "rotation_error_rad": 0.0036101557002584357,
+        "whole_lease_pose_progress_m_equivalent": 0.21413647863957028,
+        "objective_improvement_m_equivalent": 0.21328091932261214
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 45,
+  "response": {
+    "result": {
+      "key": "pick_progress",
+      "frame_id": 45,
+      "method_number": 0,
+      "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
+      "bytes": 982,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 45
+}

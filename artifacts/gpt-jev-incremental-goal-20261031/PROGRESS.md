@@ -680,3 +680,7 @@ across same-stage repairs. Zero physical actions or success so far.
 ## Evidence-budget first executable stage delivered
 
 Builder1 completed in 950.425 s, zero host reconnects and zero recorded native recoveries. Generated method-00.py supplies pick observation, real Jev axis/gripper questions, bounded feedback leases, closure, and independent landmark co-motion verification. It explicitly reserves 28 model calls and caps local reviews at 8; operational contact thresholds are labeled as heuristics. These source checks do not establish physical feasibility. Review2 fc93cafd6cb24fb898e10ae619509bf1 is now running before the first physical action. Remote pilot remains active; no terminal LIBERO result yet.
+
+## Evidence-budget first physical slice
+
+Review2 completed; the generated method passed initial geometry admission and dispatched 24 real Jev calls / 72 native steps with the gripper open. Supervisor3 request 274520e1662d4017be4e8fbca8200283 has trigger control_slice_limit and live_continuation_available=true. No stage is confirmed complete. Journal position residual at calls10/20 was 0.0660/0.1638 m; objectives may differ, so these two samples alone do not establish divergence. Await the supervisor and phase-specific receipts before diagnosis.

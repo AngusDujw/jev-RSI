@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-402c937d-60df-449e-8976-07bb844c44ef",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-402c937d-60df-449e-8976-07bb844c44ef",
+      "arguments": "{\"explanation\": \"The cream cheese package is the labeled rectangular carton left of the bowl in the wrist view. Its exposed flat upper face and adjacent tabletop support the requested measurements. Corner pixels describe the outer upper face; depth patches stay strictly inside surfaces.\", \"parameters\": {\"corners\": [[146, 159], [203, 157], [207, 274], [149, 273]], \"high_route\": \"clear\", \"hover_route\": \"clear\", \"identity\": \"cream_cheese_box\", \"reason\": \"Both views support a clear local rotation and translation at the current pad height, above the visible objects. Including the open fingers, the separate vertical descent to 0.055 m above the package top has visible lateral separation from the bowl and stove. These assessments cover only the specified local motions, not contact descent or hidden/global clearance.\", \"resting\": \"on_table\", \"top_camera\": \"robot0_eye_in_hand\"}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [156, 170], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t1\", \"pixel\": [194, 169], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t2\", \"pixel\": [196, 262], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t3\", \"pixel\": [158, 262], \"radius\": 3}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s0\", \"pixel\": [123, 180], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s1\", \"pixel\": [235, 186], \"radius\": 4}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"s2\", \"pixel\": [179, 305], \"radius\": 4}], \"regions\": [], \"status\": \"continue\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 19482,
+    "output_tokens": 2100,
+    "output_tokens_details": {
+      "reasoning_tokens": 1699
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f4b-01f2-7cf2-b0f4-5d2c09d032ce",
+    "turn_ids": [
+      "01a18f4b-01f8-7e42-82b8-cf10ac29e951"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

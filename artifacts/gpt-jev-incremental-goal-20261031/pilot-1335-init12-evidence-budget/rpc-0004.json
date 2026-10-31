@@ -1,0 +1,161 @@
+{
+  "index": 4,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_observation",
+      {
+        "frame_id": 0,
+        "parameters": {
+          "corners": [
+            [
+              146,
+              159
+            ],
+            [
+              203,
+              157
+            ],
+            [
+              207,
+              274
+            ],
+            [
+              149,
+              273
+            ]
+          ],
+          "high_route": "clear",
+          "hover_route": "clear",
+          "identity": "cream_cheese_box",
+          "reason": "Both views support a clear local rotation and translation at the current pad height, above the visible objects. Including the open fingers, the separate vertical descent to 0.055 m above the package top has visible lateral separation from the bowl and stove. These assessments cover only the specified local motions, not contact descent or hidden/global clearance.",
+          "resting": "on_table",
+          "top_camera": "robot0_eye_in_hand"
+        },
+        "consumed_points": {
+          "t0": {
+            "world_m": [
+              -0.021197602787920433,
+              0.15738188958169316,
+              0.9178126218667333
+            ],
+            "depth_m": 0.3517557382583618,
+            "frame_id": 0,
+            "pixel": [
+              156,
+              170
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t1": {
+            "world_m": [
+              -0.02064192174870705,
+              0.13053162840312021,
+              0.9181651367183288
+            ],
+            "depth_m": 0.35138630867004395,
+            "frame_id": 0,
+            "pixel": [
+              194,
+              169
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t2": {
+            "world_m": [
+              -0.08517353804960008,
+              0.13048314718523077,
+              0.9181958711867209
+            ],
+            "depth_m": 0.3549429476261139,
+            "frame_id": 0,
+            "pixel": [
+              196,
+              262
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "t3": {
+            "world_m": [
+              -0.08504684054263999,
+              0.15771945508070953,
+              0.9175438772736094
+            ],
+            "depth_m": 0.35557326674461365,
+            "frame_id": 0,
+            "pixel": [
+              158,
+              262
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "s0": {
+            "world_m": [
+              -0.021933186989489428,
+              0.1898774820047621,
+              0.8999605341516803
+            ],
+            "depth_m": 0.36960485577583313,
+            "frame_id": 0,
+            "pixel": [
+              123,
+              180
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "s1": {
+            "world_m": [
+              -0.02628672510232452,
+              0.10724423580153299,
+              0.8999604888918771
+            ],
+            "depth_m": 0.3698882460594177,
+            "frame_id": 0,
+            "pixel": [
+              235,
+              186
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "s2": {
+            "world_m": [
+              -0.11360102180165718,
+              0.15064031766410876,
+              0.8999633459293936
+            ],
+            "depth_m": 0.37471747398376465,
+            "frame_id": 0,
+            "pixel": [
+              179,
+              305
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 0,
+  "response": {
+    "result": {
+      "key": "pick_observation",
+      "frame_id": 0,
+      "method_number": 0,
+      "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
+      "bytes": 2277,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 0
+}
