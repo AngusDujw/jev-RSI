@@ -1,0 +1,165 @@
+{
+  "index": 96,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "retain_reference",
+      {
+        "state": {
+          "frame_id": 222,
+          "native_steps": 222,
+          "budgets": {
+            "gpt_remaining": 26,
+            "jev_remaining": 126,
+            "native_steps_remaining": 378,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.05158204445663956,
+            0.1454786440583446,
+            0.9162279362353932
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999950164673371,
+            0.0020986360720701147,
+            0.0022080005756088925,
+            -0.0008291565505960303
+          ],
+          "gripper_qpos_m": [
+            0.021409679162323583,
+            -0.021086241557201693
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              4.8974635354680565e-06,
+              0.00016347300994808828,
+              -0.0036065734957585888
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000493322832342,
+              0.05749602353800609,
+              0.01600024975501793
+            ],
+            "finger_low_offset_tool_m": [
+              -0.010489990393979118,
+              -0.04748787979109607,
+              -0.04447502498598003
+            ],
+            "finger_high_offset_tool_m": [
+              0.010499258446648367,
+              0.04781491525698497,
+              0.009242561636380785
+            ]
+          }
+        },
+        "point_world_m": {
+          "p0": [
+            -0.016354248032246478,
+            0.15022070130925264,
+            0.9175207033834792
+          ],
+          "p1": [
+            -0.02370819394093321,
+            0.142919644955123,
+            0.9178600065102006
+          ],
+          "p2": [
+            -0.033462030433869104,
+            0.14764947990943572,
+            0.9178180853538525
+          ],
+          "p3": [
+            -0.0389371054336266,
+            0.14533657896213295,
+            0.9179175134689351
+          ],
+          "t0": [
+            -0.02534428869174803,
+            0.10848985748800205,
+            0.9000079863482229
+          ]
+        },
+        "point_uncertainties_m": {
+          "p0": 0.0011331742742584547,
+          "p1": 0.0011316395490444723,
+          "p2": 0.0011316661689727112,
+          "p3": 0.0011311565789817893,
+          "t0": 0.0012027257150867476
+        },
+        "labels": [
+          "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+          "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+          "p2: Center of the light counter inside the lowercase e in Cream.",
+          "p3: Center of the light counter inside the lowercase a in Cream."
+        ],
+        "table_plane": [
+          0.0005738951599417208,
+          1.5910462303082533e-05,
+          0.9999998351955877,
+          -0.8999950191821111
+        ],
+        "admission": {
+          "frame_id": 222,
+          "finger_clearance_m": 0.006831169508746626,
+          "support_uncertainty_m": 0.0017708541599049737,
+          "reverse_correction_allowance_m": 0.002,
+          "rotation_sweep_m": 0.0016535054423227867,
+          "lateral_slope_allowance_m": 1.722346996611791e-06,
+          "threshold_m": 0.005426081949224372,
+          "residual_margin_m": 0.0014050875595222542,
+          "table_normal_z": 0.9999998351955877,
+          "normal_z_minimum": 0.98,
+          "normal_margin": 0.01999983519558768,
+          "action": "At most 40 mm upward, fixed orientation, keep gripper",
+          "rationale": "Positive conservative finger clearance plus positive departure direction; no required pre-existing retention or renewed closure overlap."
+        },
+        "tracker": {
+          "handle": "patch_0",
+          "camera": "robot0_eye_in_hand",
+          "polygon": [
+            [
+              302,
+              454
+            ],
+            [
+              475,
+              454
+            ],
+            [
+              475,
+              627
+            ],
+            [
+              302,
+              627
+            ]
+          ],
+          "reference_frame_id": 222,
+          "identity": "Printed planar top of this cream cheese package"
+        },
+        "dimensions_source": "pick_reference: historical initial box dimensions, not newly measured perimeter",
+        "dimensions_m": [
+          0.0811202577880017,
+          0.04033799701666291,
+          0.01797091329421374
+        ]
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 222,
+  "response": {
+    "result": {
+      "key": "retain_reference",
+      "frame_id": 222,
+      "method_number": 3,
+      "source_sha256": "c07d67cc00e7514220da004d302e59727c3f2e7024fcb51462c81e2f8ad08d21",
+      "bytes": 2906,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 222
+}

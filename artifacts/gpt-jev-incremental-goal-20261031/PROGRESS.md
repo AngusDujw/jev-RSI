@@ -720,3 +720,7 @@ After supervisor11 requested another correction, persisted stage allocation trig
 ## Replanned retain method delivered
 
 Builder13 completed in566.101 s with no reconnect/recovery recorded. Method3 is171 lines and implements upward-direction clearance admission, two20 mm lift intervals, independent package co-motion checks with optional tracking or identified RGB-D points, and final tabletop separation geometry. Actual input budget27remaining/20reserved/6reviews; generated method proposes3reviews. Source includes real Jev drive and preserves close via keep; no new action yet. Review14 a636c245096f4053b92b6d313bf9781c is active. Final geometry heuristics still require physical validation; no confirmed retained lift.
+
+## Actual two-interval lift starts; first independent effect passes
+
+Method3 admission passed with1.405 mm departure margin. Three Jev decisions lifted TCP18.353 mm from frame222 to231; review15 identified-depth landmarks measured package18.383 mm rise and0.188 mm attachment residual, passing the first independent co-motion test. Three more decisions lifted TCP18.414 mm toframe240 (80 Jev calls total). Review16 ecc2561d4b5449019afdbbf1a547ea10 is now evaluating final effect. No stage completion or LIBERO success yet; do not conflate this local retention evidence with placement success.

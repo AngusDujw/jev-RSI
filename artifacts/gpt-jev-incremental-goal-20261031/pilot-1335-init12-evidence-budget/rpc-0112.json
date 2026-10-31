@@ -1,0 +1,163 @@
+{
+  "index": 112,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.05166050211541448,
+        0.1461394700432416,
+        0.954581236356469
+      ],
+      [
+        0.9999950164673371,
+        0.0020986360720701147,
+        0.0022080005756088925,
+        -0.0008291565505960303
+      ],
+      "keep",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For the x world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+            "hold": "No component correction when its relation is within_tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For the y world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+            "hold": "No component correction when its relation is within_tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For the z world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+            "hold": "No component correction when its relation is within_tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For the rx world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+            "hold": "No component correction when its relation is within_tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For the ry world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+            "hold": "No component correction when its relation is within_tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For the rz world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+            "hold": "No component correction when its relation is within_tolerance.",
+            "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read objective.gripper. Preserve the already executed grasp throughout this test; do not infer retention from closure.",
+          "criteria": {
+            "open": "Deliver open only for an explicit open objective.",
+            "close": "Deliver close only for an explicit close objective.",
+            "keep": "Preserve the current gripper command for the keep objective."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "source": "Fresh admission depth and review; current pose supplied by host",
+        "phase": 2,
+        "departure_gate": {
+          "frame_id": 222,
+          "finger_clearance_m": 0.006831169508746626,
+          "support_uncertainty_m": 0.0017708541599049737,
+          "reverse_correction_allowance_m": 0.002,
+          "rotation_sweep_m": 0.0016535054423227867,
+          "lateral_slope_allowance_m": 1.722346996611791e-06,
+          "threshold_m": 0.005426081949224372,
+          "residual_margin_m": 0.0014050875595222542,
+          "table_normal_z": 0.9999998351955877,
+          "normal_z_minimum": 0.98,
+          "normal_margin": 0.01999983519558768,
+          "action": "At most 40 mm upward, fixed orientation, keep gripper",
+          "rationale": "Positive conservative finger clearance plus positive departure direction; no required pre-existing retention or renewed closure overlap."
+        },
+        "objective": "Upward differential retention test; no lateral transport, reopening or repeated closure"
+      },
+      "max_calls": 12,
+      "tool_point": "tcp",
+      "translation_limit": 0.02,
+      "rotation_limit": 0.05,
+      "steps": 3,
+      "position_tolerance": 0.002,
+      "rotation_tolerance": 0.02
+    }
+  },
+  "frame_before": 231,
+  "response": {
+    "result": {
+      "decision": 79,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "positive",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "action": [
+        0.0,
+        0.0,
+        0.061581913245243314,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "before": [
+        -0.051956319519144395,
+        0.14668812046134228,
+        0.9498441661068349
+      ],
+      "after": [
+        -0.052045534121727126,
+        0.14676926395485845,
+        0.9529950464510211
+      ],
+      "target_tcp": [
+        -0.05166050211541448,
+        0.1461394700432416,
+        0.954581236356469
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 240,
+      "frame_id": 240,
+      "status": "reached",
+      "position_error_m": 0.0017495394917347864,
+      "rotation_error_rad": 0.0015556255516301644,
+      "lease_calls": 3
+    }
+  },
+  "frame_after": 240
+}

@@ -635,5 +635,556 @@
       "stage_status": "blocked"
     },
     "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "retain_measurements": {
+    "key": "retain_measurements",
+    "frame_id": 231,
+    "method_number": 3,
+    "source_sha256": "c07d67cc00e7514220da004d302e59727c3f2e7024fcb51462c81e2f8ad08d21",
+    "bytes": 4314,
+    "value": {
+      "observations": [
+        {
+          "phase": "admission",
+          "frame_id": 222,
+          "parameters": {
+            "box_model": "unchanged",
+            "corridor": "clear",
+            "hazards": "Contacts and the lower portion of the package are robot-occluded. Hidden surfaces are unverified. Closed fingers do not establish retention. Slip is unknown without temporal image evidence. Clearance assessment is limited to the specified upward departure, not subsequent transport.",
+            "identity": "correct",
+            "labels": [
+              "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+              "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+              "p2: Center of the light counter inside the lowercase e in Cream.",
+              "p3: Center of the light counter inside the lowercase a in Cream."
+            ],
+            "patch_camera": "robot0_eye_in_hand",
+            "patch_polygon": [
+              [
+                302,
+                454
+              ],
+              [
+                475,
+                454
+              ],
+              [
+                475,
+                627
+              ],
+              [
+                302,
+                627
+              ]
+            ],
+            "slip": "unknown",
+            "table_same": "yes",
+            "valid_landmarks": [
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "measurements": {
+            "p0": {
+              "world_m": [
+                -0.016354248032246478,
+                0.15022070130925264,
+                0.9175207033834792
+              ],
+              "depth_m": 0.09587758779525757,
+              "frame_id": 222,
+              "pixel": [
+                360,
+                461
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p1": {
+              "world_m": [
+                -0.02370819394093321,
+                0.142919644955123,
+                0.9178600065102006
+              ],
+              "depth_m": 0.09549356997013092,
+              "frame_id": 222,
+              "pixel": [
+                398,
+                500
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p2": {
+              "world_m": [
+                -0.033462030433869104,
+                0.14764947990943572,
+                0.9178180853538525
+              ],
+              "depth_m": 0.09550023078918457,
+              "frame_id": 222,
+              "pixel": [
+                373,
+                551
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p3": {
+              "world_m": [
+                -0.0389371054336266,
+                0.14533657896213295,
+                0.9179175134689351
+              ],
+              "depth_m": 0.09537272155284882,
+              "frame_id": 222,
+              "pixel": [
+                385,
+                580
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t0": {
+              "world_m": [
+                -0.02534428869174803,
+                0.10848985748800205,
+                0.9000079863482229
+              ],
+              "depth_m": 0.11328069865703583,
+              "frame_id": 222,
+              "pixel": [
+                548,
+                490
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": []
+        },
+        {
+          "phase": "first effect and next upward admission",
+          "frame_id": 231,
+          "parameters": {
+            "box_model": "unchanged",
+            "corridor": "clear",
+            "hazards": "Contacts, the lower package portion and some rear surfaces are robot-occluded; their geometry is unverified, not an observed external obstruction. Clearance applies only to the specified remaining upward departure of package, fingers and wrist, not lateral transport or placement. Closed fingers alone do not establish retention.",
+            "identity": "correct",
+            "labels": [
+              "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+              "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+              "p2: Center of the light counter inside the lowercase e in Cream.",
+              "p3: Center of the light counter inside the lowercase a in Cream."
+            ],
+            "patch_camera": "none",
+            "patch_polygon": [],
+            "slip": "none",
+            "table_same": "yes",
+            "valid_landmarks": [
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "measurements": {
+            "p0": {
+              "world_m": [
+                -0.016435152229872758,
+                0.15084425274607324,
+                0.9359278104314159
+              ],
+              "depth_m": 0.09587971121072769,
+              "frame_id": 231,
+              "pixel": [
+                360,
+                461
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p1": {
+              "world_m": [
+                -0.023804712925447526,
+                0.1435506246991257,
+                0.9362301568304252
+              ],
+              "depth_m": 0.09552575647830963,
+              "frame_id": 231,
+              "pixel": [
+                398,
+                500
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p2": {
+              "world_m": [
+                -0.03354813372261561,
+                0.14810183738977015,
+                0.9362029312249239
+              ],
+              "depth_m": 0.09550909698009491,
+              "frame_id": 231,
+              "pixel": [
+                374,
+                551
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "p3": {
+              "world_m": [
+                -0.039029757706863386,
+                0.14579520766772242,
+                0.9362888408851302
+              ],
+              "depth_m": 0.09539014846086502,
+              "frame_id": 231,
+              "pixel": [
+                386,
+                580
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "t0": {
+              "world_m": [
+                -0.02530301253960536,
+                0.10839655347911523,
+                0.9000328977321582
+              ],
+              "depth_m": 0.13165418803691864,
+              "frame_id": 231,
+              "pixel": [
+                528,
+                475
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": []
+        }
+      ]
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "retain_reference": {
+    "key": "retain_reference",
+    "frame_id": 222,
+    "method_number": 3,
+    "source_sha256": "c07d67cc00e7514220da004d302e59727c3f2e7024fcb51462c81e2f8ad08d21",
+    "bytes": 2906,
+    "value": {
+      "state": {
+        "frame_id": 222,
+        "native_steps": 222,
+        "budgets": {
+          "gpt_remaining": 26,
+          "jev_remaining": 126,
+          "native_steps_remaining": 378,
+          "wall_seconds_remaining": 1000000000000.0
+        },
+        "tcp_position_world_m": [
+          -0.05158204445663956,
+          0.1454786440583446,
+          0.9162279362353932
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999950164673371,
+          0.0020986360720701147,
+          0.0022080005756088925,
+          -0.0008291565505960303
+        ],
+        "gripper_qpos_m": [
+          0.021409679162323583,
+          -0.021086241557201693
+        ],
+        "last_gripper_command": "close",
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            4.8974635354680565e-06,
+            0.00016347300994808828,
+            -0.0036065734957585888
+          ],
+          "pad_extent_in_tool_m": [
+            0.016000493322832342,
+            0.05749602353800609,
+            0.01600024975501793
+          ],
+          "finger_low_offset_tool_m": [
+            -0.010489990393979118,
+            -0.04748787979109607,
+            -0.04447502498598003
+          ],
+          "finger_high_offset_tool_m": [
+            0.010499258446648367,
+            0.04781491525698497,
+            0.009242561636380785
+          ]
+        }
+      },
+      "point_world_m": {
+        "p0": [
+          -0.016354248032246478,
+          0.15022070130925264,
+          0.9175207033834792
+        ],
+        "p1": [
+          -0.02370819394093321,
+          0.142919644955123,
+          0.9178600065102006
+        ],
+        "p2": [
+          -0.033462030433869104,
+          0.14764947990943572,
+          0.9178180853538525
+        ],
+        "p3": [
+          -0.0389371054336266,
+          0.14533657896213295,
+          0.9179175134689351
+        ],
+        "t0": [
+          -0.02534428869174803,
+          0.10848985748800205,
+          0.9000079863482229
+        ]
+      },
+      "point_uncertainties_m": {
+        "p0": 0.0011331742742584547,
+        "p1": 0.0011316395490444723,
+        "p2": 0.0011316661689727112,
+        "p3": 0.0011311565789817893,
+        "t0": 0.0012027257150867476
+      },
+      "labels": [
+        "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+        "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+        "p2: Center of the light counter inside the lowercase e in Cream.",
+        "p3: Center of the light counter inside the lowercase a in Cream."
+      ],
+      "table_plane": [
+        0.0005738951599417208,
+        1.5910462303082533e-05,
+        0.9999998351955877,
+        -0.8999950191821111
+      ],
+      "admission": {
+        "frame_id": 222,
+        "finger_clearance_m": 0.006831169508746626,
+        "support_uncertainty_m": 0.0017708541599049737,
+        "reverse_correction_allowance_m": 0.002,
+        "rotation_sweep_m": 0.0016535054423227867,
+        "lateral_slope_allowance_m": 1.722346996611791e-06,
+        "threshold_m": 0.005426081949224372,
+        "residual_margin_m": 0.0014050875595222542,
+        "table_normal_z": 0.9999998351955877,
+        "normal_z_minimum": 0.98,
+        "normal_margin": 0.01999983519558768,
+        "action": "At most 40 mm upward, fixed orientation, keep gripper",
+        "rationale": "Positive conservative finger clearance plus positive departure direction; no required pre-existing retention or renewed closure overlap."
+      },
+      "tracker": {
+        "handle": "patch_0",
+        "camera": "robot0_eye_in_hand",
+        "polygon": [
+          [
+            302,
+            454
+          ],
+          [
+            475,
+            454
+          ],
+          [
+            475,
+            627
+          ],
+          [
+            302,
+            627
+          ]
+        ],
+        "reference_frame_id": 222,
+        "identity": "Printed planar top of this cream cheese package"
+      },
+      "dimensions_source": "pick_reference: historical initial box dimensions, not newly measured perimeter",
+      "dimensions_m": [
+        0.0811202577880017,
+        0.04033799701666291,
+        0.01797091329421374
+      ]
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "retain_progress": {
+    "key": "retain_progress",
+    "frame_id": 240,
+    "method_number": 3,
+    "source_sha256": "c07d67cc00e7514220da004d302e59727c3f2e7024fcb51462c81e2f8ad08d21",
+    "bytes": 2916,
+    "value": {
+      "used_calls": 6,
+      "leases": [
+        {
+          "frames": [
+            222,
+            231
+          ],
+          "status": "reached",
+          "calls": 3,
+          "delta_world_m": [
+            -7.845765877492056e-05,
+            0.0006608259848970011,
+            0.018353300121075722
+          ],
+          "target_progress_m": 0.018223918054315974,
+          "lateral_drift_m": 0.0006654671941843063,
+          "rotation_drift_rad": 0.001453653463900206,
+          "actual_state": {
+            "frame_id": 231,
+            "native_steps": 231,
+            "budgets": {
+              "gpt_remaining": 25,
+              "jev_remaining": 123,
+              "native_steps_remaining": 369,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.05166050211541448,
+              0.1461394700432416,
+              0.934581236356469
+            ],
+            "tcp_quaternion_xyzw": [
+              0.999994956476319,
+              0.0015241445092852306,
+              0.0026525949868813317,
+              -0.0008530798764751975
+            ],
+            "gripper_qpos_m": [
+              0.021112678468986693,
+              -0.020937818997629223
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -1.3120571899323183e-06,
+                8.612870757110543e-05,
+                -0.0036313049408223863
+              ],
+              "pad_extent_in_tool_m": [
+                0.01600005752457554,
+                0.0570505246141885,
+                0.01600013245885265
+              ],
+              "finger_low_offset_tool_m": [
+                -0.010496202903753082,
+                -0.04734243849716838,
+                -0.04449967482990706
+              ],
+              "finger_high_offset_tool_m": [
+                0.010493447373941764,
+                0.04751481886526438,
+                0.009217798182712709
+              ]
+            }
+          }
+        },
+        {
+          "frames": [
+            231,
+            240
+          ],
+          "status": "reached",
+          "calls": 3,
+          "delta_world_m": [
+            -0.0003850320063126453,
+            0.0006297939116168549,
+            0.01841381009455212
+          ],
+          "target_progress_m": 0.01825046050826523,
+          "lateral_drift_m": 0.001371321401758326,
+          "rotation_drift_rad": 0.0015556255513832615,
+          "actual_state": {
+            "frame_id": 240,
+            "native_steps": 240,
+            "budgets": {
+              "gpt_remaining": 24,
+              "jev_remaining": 120,
+              "native_steps_remaining": 360,
+              "wall_seconds_remaining": 1000000000000.0
+            },
+            "tcp_position_world_m": [
+              -0.052045534121727126,
+              0.14676926395485845,
+              0.9529950464510211
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999948036084392,
+              0.0015066256528733502,
+              0.0027095112558457295,
+              -0.0008839592839380887
+            ],
+            "gripper_qpos_m": [
+              0.021110086411541672,
+              -0.020933933476672727
+            ],
+            "last_gripper_command": "close",
+            "own_geometry": {
+              "pad_center_in_tool_m": [
+                -7.256359359497644e-07,
+                8.69854054116239e-05,
+                -0.003630482625103518
+              ],
+              "pad_extent_in_tool_m": [
+                0.016000081320073058,
+                0.057044049536306804,
+                0.016000049072247707
+              ],
+              "finger_low_offset_tool_m": [
+                -0.01049557012290438,
+                -0.047338367646810764,
+                -0.04449879395996561
+              ],
+              "finger_high_offset_tool_m": [
+                0.010494153669670905,
+                0.04751239105393252,
+                0.009218570636849756
+              ]
+            }
+          }
+        }
+      ],
+      "effects": [
+        {
+          "valid": true,
+          "passed": true,
+          "method": "identified_depth_landmarks",
+          "frames": [
+            222,
+            231
+          ],
+          "hand_up_m": 0.01835326258394717,
+          "object_up_m": 0.01838331214547978,
+          "attachment_error_m": 0.00018838114488519192,
+          "uncertainty_before_m": 0.0011612725332140698,
+          "uncertainty_after_m": 0.0011604225830026498,
+          "slip_allowance_m": 0.001,
+          "attachment_limit_m": 0.00332169511621672,
+          "minimum_hand_motion_m": 0.01328678046486688,
+          "margins": {
+            "excitation_m": 0.005066482119080291,
+            "attachment_m": 0.0031333139713315278,
+            "nonresponse_exclusion_m": 0.006884985737289476
+          }
+        }
+      ]
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
   }
 }

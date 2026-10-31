@@ -1,0 +1,181 @@
+{
+  "index": 114,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "retain_progress",
+      {
+        "used_calls": 6,
+        "leases": [
+          {
+            "frames": [
+              222,
+              231
+            ],
+            "status": "reached",
+            "calls": 3,
+            "delta_world_m": [
+              -7.845765877492056e-05,
+              0.0006608259848970011,
+              0.018353300121075722
+            ],
+            "target_progress_m": 0.018223918054315974,
+            "lateral_drift_m": 0.0006654671941843063,
+            "rotation_drift_rad": 0.001453653463900206,
+            "actual_state": {
+              "frame_id": 231,
+              "native_steps": 231,
+              "budgets": {
+                "gpt_remaining": 25,
+                "jev_remaining": 123,
+                "native_steps_remaining": 369,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.05166050211541448,
+                0.1461394700432416,
+                0.934581236356469
+              ],
+              "tcp_quaternion_xyzw": [
+                0.999994956476319,
+                0.0015241445092852306,
+                0.0026525949868813317,
+                -0.0008530798764751975
+              ],
+              "gripper_qpos_m": [
+                0.021112678468986693,
+                -0.020937818997629223
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -1.3120571899323183e-06,
+                  8.612870757110543e-05,
+                  -0.0036313049408223863
+                ],
+                "pad_extent_in_tool_m": [
+                  0.01600005752457554,
+                  0.0570505246141885,
+                  0.01600013245885265
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.010496202903753082,
+                  -0.04734243849716838,
+                  -0.04449967482990706
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010493447373941764,
+                  0.04751481886526438,
+                  0.009217798182712709
+                ]
+              }
+            }
+          },
+          {
+            "frames": [
+              231,
+              240
+            ],
+            "status": "reached",
+            "calls": 3,
+            "delta_world_m": [
+              -0.0003850320063126453,
+              0.0006297939116168549,
+              0.01841381009455212
+            ],
+            "target_progress_m": 0.01825046050826523,
+            "lateral_drift_m": 0.001371321401758326,
+            "rotation_drift_rad": 0.0015556255513832615,
+            "actual_state": {
+              "frame_id": 240,
+              "native_steps": 240,
+              "budgets": {
+                "gpt_remaining": 24,
+                "jev_remaining": 120,
+                "native_steps_remaining": 360,
+                "wall_seconds_remaining": 1000000000000.0
+              },
+              "tcp_position_world_m": [
+                -0.052045534121727126,
+                0.14676926395485845,
+                0.9529950464510211
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999948036084392,
+                0.0015066256528733502,
+                0.0027095112558457295,
+                -0.0008839592839380887
+              ],
+              "gripper_qpos_m": [
+                0.021110086411541672,
+                -0.020933933476672727
+              ],
+              "last_gripper_command": "close",
+              "own_geometry": {
+                "pad_center_in_tool_m": [
+                  -7.256359359497644e-07,
+                  8.69854054116239e-05,
+                  -0.003630482625103518
+                ],
+                "pad_extent_in_tool_m": [
+                  0.016000081320073058,
+                  0.057044049536306804,
+                  0.016000049072247707
+                ],
+                "finger_low_offset_tool_m": [
+                  -0.01049557012290438,
+                  -0.047338367646810764,
+                  -0.04449879395996561
+                ],
+                "finger_high_offset_tool_m": [
+                  0.010494153669670905,
+                  0.04751239105393252,
+                  0.009218570636849756
+                ]
+              }
+            }
+          }
+        ],
+        "effects": [
+          {
+            "valid": true,
+            "passed": true,
+            "method": "identified_depth_landmarks",
+            "frames": [
+              222,
+              231
+            ],
+            "hand_up_m": 0.01835326258394717,
+            "object_up_m": 0.01838331214547978,
+            "attachment_error_m": 0.00018838114488519192,
+            "uncertainty_before_m": 0.0011612725332140698,
+            "uncertainty_after_m": 0.0011604225830026498,
+            "slip_allowance_m": 0.001,
+            "attachment_limit_m": 0.00332169511621672,
+            "minimum_hand_motion_m": 0.01328678046486688,
+            "margins": {
+              "excitation_m": 0.005066482119080291,
+              "attachment_m": 0.0031333139713315278,
+              "nonresponse_exclusion_m": 0.006884985737289476
+            }
+          }
+        ]
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 240,
+  "response": {
+    "result": {
+      "key": "retain_progress",
+      "frame_id": 240,
+      "method_number": 3,
+      "source_sha256": "c07d67cc00e7514220da004d302e59727c3f2e7024fcb51462c81e2f8ad08d21",
+      "bytes": 2916,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 240
+}

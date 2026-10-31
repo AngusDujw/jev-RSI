@@ -1,0 +1,181 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 228,
+      "native_steps": 228,
+      "budgets": {
+        "gpt_remaining": 25,
+        "jev_remaining": 124,
+        "native_steps_remaining": 372,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0515515,
+        0.14603,
+        0.931327
+      ],
+      "tcp_quaternion_xyzw": [
+        0.999995,
+        0.00156882,
+        0.00248543,
+        -0.000696773
+      ],
+      "gripper_qpos_m": [
+        0.0211134,
+        -0.0209388
+      ],
+      "last_gripper_command": "close",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          -9.45985e-07,
+          8.46473e-05,
+          -0.0036794
+        ],
+        "pad_extent_in_tool_m": [
+          0.0160003,
+          0.0570523,
+          0.0160003
+        ],
+        "finger_low_offset_tool_m": [
+          -0.0104958,
+          -0.0473448,
+          -0.0445478
+        ],
+        "finger_high_offset_tool_m": [
+          0.0104936,
+          0.0475143,
+          0.00916977
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "source": "Fresh admission depth and review; current pose supplied by host",
+        "phase": 1,
+        "departure_gate": {
+          "frame_id": 222,
+          "finger_clearance_m": 0.00683117,
+          "support_uncertainty_m": 0.00177085,
+          "reverse_correction_allowance_m": 0.002,
+          "rotation_sweep_m": 0.00165351,
+          "lateral_slope_allowance_m": 1.72235e-06,
+          "threshold_m": 0.00542608,
+          "residual_margin_m": 0.00140509,
+          "table_normal_z": 1.0,
+          "normal_z_minimum": 0.98,
+          "normal_margin": 0.0199998,
+          "action": "At most 40 mm upward, fixed orientation, keep gripper",
+          "rationale": "Positive conservative finger clearance plus positive departure direction; no required pre-existing retention or renewed closure overlap."
+        },
+        "objective": "Upward differential retention test; no lateral transport, reopening or repeated closure"
+      },
+      "objective": {
+        "gripper": "keep",
+        "tool_point": "tcp"
+      },
+      "translation_error_world_m": [
+        -3.05406e-05,
+        -0.00055101,
+        0.00490047
+      ],
+      "rotation_error_world_rad": [
+        0.000261262,
+        0.000554527,
+        0.00106067
+      ],
+      "axes": {
+        "x": {
+          "error": -3.05406e-05,
+          "goal_relation": "within_tolerance"
+        },
+        "y": {
+          "error": -0.00055101,
+          "goal_relation": "within_tolerance"
+        },
+        "z": {
+          "error": 0.00490047,
+          "goal_relation": "increase"
+        },
+        "rx": {
+          "error": 0.000261262,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": 0.000554527,
+          "goal_relation": "within_tolerance"
+        },
+        "rz": {
+          "error": 0.00106067,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the x world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+        "hold": "No component correction when its relation is within_tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the y world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+        "hold": "No component correction when its relation is within_tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the z world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+        "hold": "No component correction when its relation is within_tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the rx world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+        "hold": "No component correction when its relation is within_tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the ry world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+        "hold": "No component correction when its relation is within_tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For the rz world axis, read its trusted goal_relation and pose residual. Follow increase/decrease/within_tolerance. This is an admitted upward-only local test, not permission to find objects or change goals.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component when its relation is decrease.",
+        "hold": "No component correction when its relation is within_tolerance.",
+        "positive": "Increase this world coordinate or world rotation-vector component when its relation is increase."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read objective.gripper. Preserve the already executed grasp throughout this test; do not infer retention from closure.",
+      "criteria": {
+        "open": "Deliver open only for an explicit open objective.",
+        "close": "Deliver close only for an explicit close objective.",
+        "keep": "Preserve the current gripper command for the keep objective."
+      }
+    }
+  }
+}

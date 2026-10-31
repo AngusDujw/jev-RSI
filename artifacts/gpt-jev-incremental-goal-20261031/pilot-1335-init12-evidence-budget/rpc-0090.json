@@ -1,0 +1,218 @@
+{
+  "index": 90,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "review",
+    "args": [
+      "Review only this retained-lift test. Identify the cream cheese package, not fingers or background. Request named depth points p0,p1,p2,p3 at four independently identifiable printed landmarks on its exposed planar top face, spread in two directions, away from silhouettes. Initially name their physical identities in labels; subsequently preserve those exact IDs and strings from context, not screen positions. Mark unavailable or ambiguous IDs false; never substitute a different landmark. Request t0 on the actual nearby tabletop beside the package, away from rims and shadows. table_same concerns that same stationary support. box_model asks whether the same undamaged rectangular package supports reuse of historical dimensions, not whether it is held. Assess corridor ONLY for the remaining straight world +z departure up to the supplied total height, with fixed orientation and 3 mm lateral drift, for package and fingers/wrist. Do not infer hidden clearance. Report visible slip, obstruction and uncertainty separately. Initial phase: optionally supply a 3..16-vertex textured polygon strictly inside this same exposed printed face for tracking; otherwise empty polygon and none. Later: polygon is unnecessary. Effect reviews must identify the current package independently; robot movement is not package retention.  Phase: admission"
+    ],
+    "kwargs": {
+      "context": {
+        "initial_frame": 222,
+        "maximum_total_world_z_departure_m": 0.04,
+        "historical_dimensions_m": [
+          0.0811202577880017,
+          0.04033799701666291,
+          0.01797091329421374
+        ],
+        "executed_state": "Already closed; never reopen or repeat closure.",
+        "old_gate_reassessment": "3 mm overlap was a precontact heuristic, not a retention sensor. 4 mm table gap was a descent heuristic. This action is upward departure, with measured positive finger clearance and independent co-motion tests."
+      },
+      "fields": {
+        "identity": [
+          "correct",
+          "wrong",
+          "unknown"
+        ],
+        "box_model": [
+          "unchanged",
+          "changed",
+          "unknown"
+        ],
+        "corridor": [
+          "clear",
+          "obstructed",
+          "unknown"
+        ],
+        "slip": [
+          "observed",
+          "none",
+          "unknown"
+        ],
+        "table_same": [
+          "yes",
+          "no",
+          "unknown"
+        ],
+        "valid_landmarks": {
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "patch_camera": [
+          "robot0_eye_in_hand",
+          "agentview",
+          "none"
+        ],
+        "patch_polygon": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 767
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "maxItems": 16
+        },
+        "hazards": {
+          "type": "string",
+          "maxLength": 700
+        }
+      }
+    }
+  },
+  "frame_before": 222,
+  "response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The blue-and-white package bearing Cream is independently visible between the fingers. Its exposed planar rectangular face shows no visible damage, supporting local reuse of the historical box dimensions, not retention. The nearby tabletop is the apparent same stationary support. No external obstruction is visible in the specified 40 mm straight world +z departure with fixed orientation and 3 mm lateral drift; the bowl is lateral to this departure. Robot self-occlusion hides contacts and part of the package, not an observed external obstruction. This admission view establishes printed landmarks only; no earlier actual image is supplied to assess slip or co-motion.",
+      "parameters": {
+        "box_model": "unchanged",
+        "corridor": "clear",
+        "hazards": "Contacts and the lower portion of the package are robot-occluded. Hidden surfaces are unverified. Closed fingers do not establish retention. Slip is unknown without temporal image evidence. Clearance assessment is limited to the specified upward departure, not subsequent transport.",
+        "identity": "correct",
+        "labels": [
+          "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+          "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+          "p2: Center of the light counter inside the lowercase e in Cream.",
+          "p3: Center of the light counter inside the lowercase a in Cream."
+        ],
+        "patch_camera": "robot0_eye_in_hand",
+        "patch_polygon": [
+          [
+            302,
+            454
+          ],
+          [
+            475,
+            454
+          ],
+          [
+            475,
+            627
+          ],
+          [
+            302,
+            627
+          ]
+        ],
+        "slip": "unknown",
+        "table_same": "yes",
+        "valid_landmarks": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "points": {
+        "p0": {
+          "world_m": [
+            -0.016354248032246478,
+            0.15022070130925264,
+            0.9175207033834792
+          ],
+          "depth_m": 0.09587758779525757,
+          "frame_id": 222,
+          "pixel": [
+            360,
+            461
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p1": {
+          "world_m": [
+            -0.02370819394093321,
+            0.142919644955123,
+            0.9178600065102006
+          ],
+          "depth_m": 0.09549356997013092,
+          "frame_id": 222,
+          "pixel": [
+            398,
+            500
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p2": {
+          "world_m": [
+            -0.033462030433869104,
+            0.14764947990943572,
+            0.9178180853538525
+          ],
+          "depth_m": 0.09550023078918457,
+          "frame_id": 222,
+          "pixel": [
+            373,
+            551
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "p3": {
+          "world_m": [
+            -0.0389371054336266,
+            0.14533657896213295,
+            0.9179175134689351
+          ],
+          "depth_m": 0.09537272155284882,
+          "frame_id": 222,
+          "pixel": [
+            385,
+            580
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t0": {
+          "world_m": [
+            -0.02534428869174803,
+            0.10848985748800205,
+            0.9000079863482229
+          ],
+          "depth_m": 0.11328069865703583,
+          "frame_id": 222,
+          "pixel": [
+            548,
+            490
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [],
+      "frame_id": 222
+    }
+  },
+  "frame_after": 222
+}

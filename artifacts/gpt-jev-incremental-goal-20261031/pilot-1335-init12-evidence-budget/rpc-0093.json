@@ -1,0 +1,149 @@
+{
+  "index": 93,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "retain_measurements",
+      {
+        "observations": [
+          {
+            "phase": "admission",
+            "frame_id": 222,
+            "parameters": {
+              "box_model": "unchanged",
+              "corridor": "clear",
+              "hazards": "Contacts and the lower portion of the package are robot-occluded. Hidden surfaces are unverified. Closed fingers do not establish retention. Slip is unknown without temporal image evidence. Clearance assessment is limited to the specified upward departure, not subsequent transport.",
+              "identity": "correct",
+              "labels": [
+                "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+                "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+                "p2: Center of the light counter inside the lowercase e in Cream.",
+                "p3: Center of the light counter inside the lowercase a in Cream."
+              ],
+              "patch_camera": "robot0_eye_in_hand",
+              "patch_polygon": [
+                [
+                  302,
+                  454
+                ],
+                [
+                  475,
+                  454
+                ],
+                [
+                  475,
+                  627
+                ],
+                [
+                  302,
+                  627
+                ]
+              ],
+              "slip": "unknown",
+              "table_same": "yes",
+              "valid_landmarks": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            "measurements": {
+              "p0": {
+                "world_m": [
+                  -0.016354248032246478,
+                  0.15022070130925264,
+                  0.9175207033834792
+                ],
+                "depth_m": 0.09587758779525757,
+                "frame_id": 222,
+                "pixel": [
+                  360,
+                  461
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p1": {
+                "world_m": [
+                  -0.02370819394093321,
+                  0.142919644955123,
+                  0.9178600065102006
+                ],
+                "depth_m": 0.09549356997013092,
+                "frame_id": 222,
+                "pixel": [
+                  398,
+                  500
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p2": {
+                "world_m": [
+                  -0.033462030433869104,
+                  0.14764947990943572,
+                  0.9178180853538525
+                ],
+                "depth_m": 0.09550023078918457,
+                "frame_id": 222,
+                "pixel": [
+                  373,
+                  551
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "p3": {
+                "world_m": [
+                  -0.0389371054336266,
+                  0.14533657896213295,
+                  0.9179175134689351
+                ],
+                "depth_m": 0.09537272155284882,
+                "frame_id": 222,
+                "pixel": [
+                  385,
+                  580
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              },
+              "t0": {
+                "world_m": [
+                  -0.02534428869174803,
+                  0.10848985748800205,
+                  0.9000079863482229
+                ],
+                "depth_m": 0.11328069865703583,
+                "frame_id": 222,
+                "pixel": [
+                  548,
+                  490
+                ],
+                "camera": "robot0_eye_in_hand",
+                "source": "current_depth_patch_backprojection"
+              }
+            },
+            "measurement_errors": []
+          }
+        ]
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 222,
+  "response": {
+    "result": {
+      "key": "retain_measurements",
+      "frame_id": 222,
+      "method_number": 3,
+      "source_sha256": "c07d67cc00e7514220da004d302e59727c3f2e7024fcb51462c81e2f8ad08d21",
+      "bytes": 2158,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 222
+}

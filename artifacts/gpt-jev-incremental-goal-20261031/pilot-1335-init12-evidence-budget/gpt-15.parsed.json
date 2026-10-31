@@ -1,0 +1,74 @@
+{
+  "explanation": "The current blue-and-white Cream package is independently identifiable by its printed face and the four original landmarks. Compared with the earlier images, that face remains stable relative to the wrist while the package rises in agentview, supporting retention during this lift; no visible slip is observed. The visible rectangular package remains undamaged, supporting reuse of historical dimensions. No external obstruction is visible for the remaining 21.65 mm straight upward departure at fixed orientation with 3 mm lateral drift.",
+  "parameters": {
+    "box_model": "unchanged",
+    "corridor": "clear",
+    "hazards": "Contacts, the lower package portion and some rear surfaces are robot-occluded; their geometry is unverified, not an observed external obstruction. Clearance applies only to the specified remaining upward departure of package, fingers and wrist, not lateral transport or placement. Closed fingers alone do not establish retention.",
+    "identity": "correct",
+    "labels": [
+      "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+      "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+      "p2: Center of the light counter inside the lowercase e in Cream.",
+      "p3: Center of the light counter inside the lowercase a in Cream."
+    ],
+    "patch_camera": "none",
+    "patch_polygon": [],
+    "slip": "none",
+    "table_same": "yes",
+    "valid_landmarks": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "points": [
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p0",
+      "pixel": [
+        360,
+        461
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p1",
+      "pixel": [
+        398,
+        500
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p2",
+      "pixel": [
+        374,
+        551
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "p3",
+      "pixel": [
+        386,
+        580
+      ],
+      "radius": 2
+    },
+    {
+      "camera": "robot0_eye_in_hand",
+      "name": "t0",
+      "pixel": [
+        528,
+        475
+      ],
+      "radius": 4
+    }
+  ],
+  "regions": [],
+  "status": "continue"
+}

@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-56316b35-9e76-44e0-8281-e42d22a9dd89",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_review",
+      "call_id": "exec-56316b35-9e76-44e0-8281-e42d22a9dd89",
+      "arguments": "{\"explanation\": \"The blue-and-white package bearing Cream is independently visible between the fingers. Its exposed planar rectangular face shows no visible damage, supporting local reuse of the historical box dimensions, not retention. The nearby tabletop is the apparent same stationary support. No external obstruction is visible in the specified 40 mm straight world +z departure with fixed orientation and 3 mm lateral drift; the bowl is lateral to this departure. Robot self-occlusion hides contacts and part of the package, not an observed external obstruction. This admission view establishes printed landmarks only; no earlier actual image is supplied to assess slip or co-motion.\", \"parameters\": {\"box_model\": \"unchanged\", \"corridor\": \"clear\", \"hazards\": \"Contacts and the lower portion of the package are robot-occluded. Hidden surfaces are unverified. Closed fingers do not establish retention. Slip is unknown without temporal image evidence. Clearance assessment is limited to the specified upward departure, not subsequent transport.\", \"identity\": \"correct\", \"labels\": [\"p0: Apex of the thin blue outer outline above the capital C in Cream.\", \"p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.\", \"p2: Center of the light counter inside the lowercase e in Cream.\", \"p3: Center of the light counter inside the lowercase a in Cream.\"], \"patch_camera\": \"robot0_eye_in_hand\", \"patch_polygon\": [[302, 454], [475, 454], [475, 627], [302, 627]], \"slip\": \"unknown\", \"table_same\": \"yes\", \"valid_landmarks\": [true, true, true, true]}, \"points\": [{\"camera\": \"robot0_eye_in_hand\", \"name\": \"p0\", \"pixel\": [360, 461], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p1\", \"pixel\": [398, 500], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p2\", \"pixel\": [373, 551], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"p3\", \"pixel\": [385, 580], \"radius\": 2}, {\"camera\": \"robot0_eye_in_hand\", \"name\": \"t0\", \"pixel\": [548, 490], \"radius\": 4}], \"regions\": [], \"status\": \"continue\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 32755,
+    "output_tokens": 3211,
+    "output_tokens_details": {
+      "reasoning_tokens": 2701
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f75-70db-77c0-96c6-1a82c3fa5313",
+    "turn_ids": [
+      "01a18f75-70e2-75f3-bea7-cfbe113c636d"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}
