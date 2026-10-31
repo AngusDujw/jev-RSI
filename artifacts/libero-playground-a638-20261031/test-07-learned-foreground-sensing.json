@@ -1,0 +1,125 @@
+{
+  "session": "sess_a638580288974596",
+  "experiment": "EXP-2026W44-049",
+  "episode": "test-07-learned",
+  "method_number": 4,
+  "source_sha256": "ac017118838f3da597a1b08b912d4f00e02d512d963b5e890ae4f082b64dcb04",
+  "review": {
+    "status": "continue",
+    "explanation": "The package appears table-supported. The new upward/foreground sensing excursion is visibly clear and likely to improve the appliance/palm separating view. This assesses the visible complete hand/wrist departure, including initial projected overlaps, not descent or certified hidden-surface clearance. No disturbance or unwanted contact is visible. No points or regions requested.",
+    "parameters": {
+      "identity": "yes",
+      "supported_package": "yes",
+      "sensing_route": "clear",
+      "view_gain": "yes",
+      "disturbance": "none",
+      "unwanted_contact": "none",
+      "basis": "Current views show the cream cheese resting on the table between open fingers, not retained. The upward/world +x departure leads toward visible open foreground tabletop, away from the appliance. No external blocker is apparent along the visible palm, wrist and finger sweep. Initial projected overlap with appliance and bowl does not demonstrate contact; the appliance-facing palm contour is robot-occluded. Translation is likely to expose that relation or yield lateral separation, rather than repeat the underside query. Hidden contours and metric clearance margins for the 2 mm/0.01 rad tolerances remain unmeasured."
+    },
+    "points": [],
+    "regions": []
+  },
+  "motion": {
+    "frame_before": 129,
+    "frame_after": 165,
+    "result": {
+      "decision": 54,
+      "choices": {
+        "x": "positive",
+        "y": "negative",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "action": [
+        0.03675762305612419,
+        -0.015946121311715092,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        0.03030483191100824,
+        0.11363746663989237,
+        0.9941686007303876
+      ],
+      "after": [
+        0.03374781795857386,
+        0.11360952317629279,
+        0.9951814658864103
+      ],
+      "target_tcp": [
+        0.033132341376863945,
+        0.11241084192360659,
+        0.9947002025596818
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 165,
+      "frame_id": 165,
+      "status": "reached",
+      "position_error_m": 0.0014308258307105179,
+      "rotation_error_rad": 0.004137943744149952,
+      "lease_calls": 12
+    }
+  },
+  "current_state": {
+    "frame_id": 165,
+    "native_steps": 165,
+    "budgets": {
+      "gpt_remaining": 18,
+      "jev_remaining": 145,
+      "native_steps_remaining": 435,
+      "wall_seconds_remaining": 1000000000000.0
+    },
+    "tcp_position_world_m": [
+      0.03374781795857386,
+      0.11360952317629279,
+      0.9951814658864103
+    ],
+    "tcp_quaternion_xyzw": [
+      0.9999909320685179,
+      0.0033580270339221277,
+      -0.002617285243420798,
+      -9.619319585399126e-05
+    ],
+    "gripper_qpos_m": [
+      0.03999992417970855,
+      -0.03999814728962022
+    ],
+    "last_gripper_command": "open",
+    "own_geometry": {
+      "pad_center_in_tool_m": [
+        3.8422313783700174e-05,
+        2.572359211954617e-06,
+        -0.003614749906255596
+      ],
+      "pad_extent_in_tool_m": [
+        0.016000488649199007,
+        0.09499817979200922,
+        0.016001027581570577
+      ],
+      "finger_low_offset_tool_m": [
+        -0.010455750022229508,
+        -0.06640010511508727,
+        -0.044483602103578275
+      ],
+      "finger_high_offset_tool_m": [
+        0.010533825952835953,
+        0.0664047415868079,
+        0.009234766473517148
+      ]
+    }
+  },
+  "audit": {
+    "dispatches": 55,
+    "acknowledged_steps": 165,
+    "last_gripper": -1,
+    "all_raw_choices_semantics_bounds_and_gripper_checks_passed": true
+  },
+  "next_review_job": "53756ed178174bc3a5cfc91275d4d671",
+  "scope": "New upward/foreground sensing excursion only. No contact descent, closure, attachment or placement established. Frozen Test memory unchanged."
+}
