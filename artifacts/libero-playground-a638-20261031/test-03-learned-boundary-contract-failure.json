@@ -1,0 +1,31 @@
+{
+  "episode": "test-03-learned",
+  "frame": 216,
+  "new_actions": 0,
+  "accepted_observation": false,
+  "validation_errors": [
+    "submit_review.parameters.edge_descriptions: length outside schema (actual=2, min=4, max=4)",
+    "submit_review.parameters.edge_descriptions: length outside schema (actual=2, min=4, max=4)",
+    "submit_review.parameters.edge_descriptions: length outside schema (actual=2, min=4, max=4)"
+  ],
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "The current trigger is execution_error with live_continuation_available=false; no stage_complete result was returned.",
+      "The review failed validation because edge_descriptions contained two entries while its schema required exactly four. No valid new observation was delivered.",
+      "The robot remains at frame 216 with the open command. The current method records no new motion; the earlier acknowledged descent remains executed but its target is unestablished.",
+      "Current images show the package outside the bowl. The prior frame-216 review affirmed identity, table support and an empty hand, but left contact-side coverage and local sweeps unknown.",
+      "No closing, retention lift or acquisition effect is established. The older blocked outcome and overwritten checkpoint fields are not new effect evidence.",
+      "The latest supplied budget is 20 GPT calls, 128 Jev calls and 384 native steps."
+    ],
+    "reason": "The grasp subgoal and overall ordering remain suitable; this failure requires local review-contract repair, not a physical retry. Align the question and declared description cardinality with obtainable observations, without inventing hidden edges or treating unknown clearance as approval. Reconcile the changed checkpoint layout and preserve earlier execution history. Obtain a bounded, genuinely different contact-boundary measurement from the actual open-hand endpoint, with any sensing motion separately cleared. Recalculate remaining acquisition and downstream evidence reserves before dependent motion.",
+    "stage_satisfied": "no",
+    "task_satisfied": "no",
+    "plan_valid": "yes",
+    "invalidated_assumptions": [
+      "The current review output conforms to the declared edge_descriptions cardinality."
+    ],
+    "recovery_available": "yes"
+  },
+  "next_method_job": "b15fdc3deff04f9b9805a3f70502a082"
+}
