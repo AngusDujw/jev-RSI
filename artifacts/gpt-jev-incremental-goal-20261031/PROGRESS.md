@@ -736,3 +736,8 @@ Supervisor17 selects replan atframe240, retaining acknowledged grasp/lift and ex
 ## Second replan combines separation repair with delivery
 
 Plan18 returned two stages clear_deliver/place_assess from frame240, with21 post-plan calls and120 Jev/360 native steps. It combines separation evidence repair with actual delivery, preserves completed grasp/lift, and requires fresh clearance before lateral transport. Builder19 064236887823436387c68db4ea6d7e1b is live. This is a changed executable-stage scope, not achieved delivery; no new physical action or confirmed stage.
+
+
+## Delivery method returned without transport recovery
+
+Builder19 completed in1304.116 s with zero host reconnects and no native recoveries. Method4 requests fresh wide-face/table, short-edge and inner-rim measurements, computes package separation/envelope and bowl fit, and defines bounded departure and lateral delivery with independent retention reviews. It preserves the closed grasp and reserves13 model calls; no release is included in this stage. Review20 9c39c65f90bb4ed8a012cf5b4669b596 is executing from frame240. No additional physical dispatch or terminal success has yet been established. This long completed request is generation latency, not a recorded network restart; upstream internal latency decomposition remains unknown.
