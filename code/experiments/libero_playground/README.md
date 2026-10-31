@@ -1,7 +1,9 @@
 # LIBERO Playground skill transfer
 
-Status: real Playground acquisition in progress. Revision 1 contains learned
-skills and lessons; physical success and transfer reliability remain unvalidated.
+Status: three real Playground episodes completed with zero native task successes.
+Revision 3 is frozen with ten skills and two lessons (51,785 ASCII characters).
+Matched empty/frozen-skill Test episodes have started on 5880-jump GPU 0;
+physical success and transfer reliability remain unvalidated.
 Reference: local EmbodiedEvo snapshot `470278c`, especially its README,
 `tasks/RoboDojo/Workspace/test.md` and skill/lesson format guides.
 
@@ -19,7 +21,8 @@ authorized Jev service; local ChatGPT Pro handles planning and distillation.
    while preserving physical state. A new episode is an explicit reset attempt.
 2. Run `libero_skill_memory.py refine` with the revision, terminal Playground
    episode directories, a fresh output revision and fresh refinement receipts.
-   The local port7921 bridge must identify ChatGPT/native-session/Astra/xhigh.
+   The bridge must identify ChatGPT/native-session/Astra/xhigh. This campaign
+   uses local port7941, forwarded to remote loopback port7921.
    This produces English Markdown skills and lessons with evidence and limits.
    No manually fabricated successful skill is seeded.
 3. Feed the new revision to the next declared Playground episode. Retain every
@@ -100,3 +103,24 @@ This establishes that learned knowledge reached the planner, not a causal
 performance improvement. Episode1 is still acquisition, not a frozen test.
 No whole-task physical success or held-out reliability claim is made.
 See the campaign manifest and EXP-2026W44-049.
+
+All three acquisition episodes are now terminal. Episode1 exhausted its GPT
+budget after195 physical steps; episode2 exhausted its plan-revision budget
+after219 steps. Episode2 produced observed lift/co-motion, but stopped at a
+reported scene-disturbance guard before numerical retention acceptance or
+placement. These partial effects do not establish task success.
+
+The [frozen package](../../../artifacts/libero-playground-a638-20261031/frozen/)
+contains revision3 knowledge only. Its
+[verification receipt](../../../artifacts/libero-playground-a638-20261031/freeze-verification.json)
+matches all three source protocol/summary hashes and the complete revision3
+content. The snapshot hash is
+`0835ee2a80f1f6b3cf6d7a845117411579fe16e9eccad0732e4a0502c9c4ec10`.
+This verifies provenance and integrity, not skill effectiveness.
+
+The running matched Test uses task1335, initial states3 through12, with the
+same original robot host and40 GPT /200 Jev /600 native-step budgets in both
+conditions. The first actual planning request for test-03-empty has no skill
+memory or prior episode checkpoints. The learned-condition input still requires
+verification when admitted. Separate held-out-task evaluation remains pending;
+this same-task comparison alone cannot establish task-general reliability.
