@@ -1,0 +1,17 @@
+{
+  "action": "revise",
+  "evidence": [
+    "At frame 216 the gripper remains open; the package is visible on the tabletop beside the bowl, without observed lift or retention.",
+    "The last five acknowledged controls moved the TCP only about 0.11 mm over 15 native steps. Remaining target error is about 2.42 mm against the supplied 1.5 mm position tolerance.",
+    "The stage yielded at a control slice limit; it did not return stage_complete.",
+    "Current public budgets provide 33 model calls, 128 control calls and 384 native steps; the historical stage allocation is not the tighter current limit."
+  ],
+  "invalidated_assumptions": [
+    "Earlier whole-lease descent progress establishes useful ongoing convergence of the unchanged local controller."
+  ],
+  "plan_valid": "yes",
+  "reason": "The pick objective remains suitable, but descent is effectively stalled near its pose gate, so live continuation is not justified. Local revision should reconcile controller convergence, tool-point geometry and the gate's physical rationale using current contact-overlap and table-clearance evidence. Do not automatically relax tolerance or infer collision from slow motion. Bound the repair to preserve capacity for retained-lift verification and the remaining stages; account for the already executed descent.",
+  "recovery_available": "yes",
+  "stage_satisfied": "no",
+  "task_satisfied": "no"
+}

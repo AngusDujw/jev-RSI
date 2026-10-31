@@ -1,0 +1,29 @@
+{
+  "object": "response",
+  "id": "exec-220e0a41-0ada-4b52-b230-c4b26dfff023",
+  "status": "completed",
+  "model": "gpt-6-astra",
+  "output": [
+    {
+      "type": "function_call",
+      "name": "submit_stage_decision",
+      "call_id": "exec-220e0a41-0ada-4b52-b230-c4b26dfff023",
+      "arguments": "{\"action\": \"revise\", \"evidence\": [\"At frame 216 the gripper remains open; the package is visible on the tabletop beside the bowl, without observed lift or retention.\", \"The last five acknowledged controls moved the TCP only about 0.11 mm over 15 native steps. Remaining target error is about 2.42 mm against the supplied 1.5 mm position tolerance.\", \"The stage yielded at a control slice limit; it did not return stage_complete.\", \"Current public budgets provide 33 model calls, 128 control calls and 384 native steps; the historical stage allocation is not the tighter current limit.\"], \"invalidated_assumptions\": [\"Earlier whole-lease descent progress establishes useful ongoing convergence of the unchanged local controller.\"], \"plan_valid\": \"yes\", \"reason\": \"The pick objective remains suitable, but descent is effectively stalled near its pose gate, so live continuation is not justified. Local revision should reconcile controller convergence, tool-point geometry and the gate's physical rationale using current contact-overlap and table-clearance evidence. Do not automatically relax tolerance or infer collision from slow motion. Bound the repair to preserve capacity for retained-lift verification and the remaining stages; account for the already executed descent.\", \"recovery_available\": \"yes\", \"stage_satisfied\": \"no\", \"task_satisfied\": \"no\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 34911,
+    "output_tokens": 1325,
+    "output_tokens_details": {
+      "reasoning_tokens": 983
+    }
+  },
+  "transport": {
+    "kind": "codex_app_server",
+    "thread_id": "01a18f4f-67fe-70a3-aee1-5f0893948706",
+    "turn_ids": [
+      "01a18f4f-6804-7f70-b3c7-ebb470b41d87"
+    ],
+    "envelope_source": "validated native dynamic-tool call; not a raw Responses response"
+  }
+}

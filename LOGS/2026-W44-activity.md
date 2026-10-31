@@ -333,3 +333,4 @@
 - 【Agent】【2026-10-31 08:12】[op] EXP-2026W44-055: real Jev reached 24 calls and 72 native steps; first slice supervisor active with live worker continuation available, no confirmed stage or terminal success.
 - 【Agent】【2026-10-31 08:14】[op] EXP-2026W44-055: supervisor continue resumed unchanged method0 from frame72 to observation hover frame105, 2.299 mm residual; contact review4 live, no grasp success yet.
 - 【Agent】【2026-10-31 08:15】[op] EXP-2026W44-055: second continuation executed contact descent; identified supervisor tolerance statement 3 mm versus generated drive 1.5 mm, preserve frozen run and diagnose actual input later.
+- 【Agent】【2026-10-31 08:16】[op] EXP-2026W44-055: supervisor6 identified stall and requested local patch7 at frame216; actual request5 had only old hover tolerance while request6 had contact tolerance, isolating stale active-action context.

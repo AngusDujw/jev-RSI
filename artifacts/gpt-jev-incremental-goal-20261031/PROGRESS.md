@@ -692,3 +692,7 @@ Supervisor3 returned continue at frame72 with no invalidated assumptions. The ex
 ## Second continuation and tolerance discrepancy
 
 Supervisor5 continued at frame144, describing a 2.95 mm residual as within supplied 3 mm tolerance. Actual generated contact descent uses 1.5 mm, and its first 24-call lease ended at frame177 with lease_exhausted and 2.735 mm residual. This discrepancy needs input-path diagnosis after the frozen run; do not change this candidate mid-episode. Physical execution reached frame216/72 Jev calls and supervisor6 (8f9b7a91b440427b9f406ab7beb4bbcd) is active. No closure or lift proof yet.
+
+## Stall triggers automatic local revision; stale tolerance input identified
+
+Supervisor6 correctly cites the active 1.5 mm gate and only about 0.11 mm TCP progress over the last 15 steps, then selects revise at frame216. Patch builder7 db31928adc4f41e99c7df595d8821dd1 is active with physical state preserved. Inspecting actual supervisor request5 finds only the previous observation-hover drive tolerance0.003, while request6 contains the completed contact-descent lease tolerance0.0015. Thus request5 supplied stale completed-RPC tolerance rather than the active suspended drive contract. Current dispatch receipts omit tolerance; diagnose and fix this generic active-action context in a subsequent frozen candidate, not mid-run. Neither contact nor retained lift is established.
