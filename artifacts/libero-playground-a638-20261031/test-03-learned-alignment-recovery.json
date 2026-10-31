@@ -320,5 +320,31 @@
     "scope": "Raw Jev choices, semantic directions, gripper persistence, action bounds, acknowledged steps; not physics or visual truth replay."
   },
   "pending_review_job": "aaaa8673dc9f4b56af1e3c9e885d4754",
-  "freeze_unchanged": true
+  "freeze_unchanged": true,
+  "subsequent_descent_supervision": {
+    "frame": 216,
+    "review_job": "35f4dacee3974693ba6a4cb90c8eccaf",
+    "decision": {
+      "action": "revise",
+      "evidence": [
+        "Frame 216 is a normal control_slice_limit with a live worker; recent acknowledged controls still produce motion, not a demonstrated stall.",
+        "Despite the persistent open command, one finger qpos decreased from 0.0400006 m at frame 144 to 0.037168 m at frame 216; the opposite finger remained nearly unchanged.",
+        "The bowl's visible rim appears shifted between the supplied agent views. Its current contact relation needs verification; displacement and cause are unmeasured.",
+        "The frame-144 review cleared only the scoped open-hand descent, not current endpoint contact or closing.",
+        "The package remains outside the bowl with no independently observed lift, retention or support separation. Thirty GPT calls and 128 Jev calls remain."
+      ],
+      "reason": "Acquisition remains suitable, but asymmetric aperture change and possible bowl disturbance require fresh local contact, clearance and destination checks before further descent or closing. Reconcile the actual endpoint and command without replaying acknowledged motion. Do not diagnose collision from slow progress, relax tolerances, or reuse the old clearance as a fresh observation.",
+      "stage_satisfied": "no",
+      "task_satisfied": "no",
+      "plan_valid": "yes",
+      "invalidated_assumptions": [
+        "The frame-144 open-hand geometry remains unchanged during descent."
+      ],
+      "recovery_available": "yes"
+    },
+    "dispatch_count": 72,
+    "acknowledged_steps": 216,
+    "next_method_job": "eb9af5c4c453429ba613325136a657c2",
+    "note": "Earlier reached receipts remain valid for alignment/standoff only. No closing or retention. Possible disturbance is unmeasured, not a collision diagnosis."
+  }
 }
