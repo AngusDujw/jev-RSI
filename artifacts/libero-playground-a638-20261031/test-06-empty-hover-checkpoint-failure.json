@@ -1,0 +1,118 @@
+{
+  "episode": "test-06-empty",
+  "frame": 96,
+  "audited_dispatches": 32,
+  "audited_native_steps": 96,
+  "confirmed_grasp": false,
+  "approach": [
+    {
+      "phase": "high_transit",
+      "status": "reached",
+      "lease_calls": 16,
+      "before_pad_world_m": [
+        -0.20788349983343632,
+        -0.008354642167764157,
+        1.1654956500297784
+      ],
+      "after_pad_world_m": [
+        -0.0438544040662138,
+        0.13982172690963418,
+        1.1665852407466122
+      ],
+      "frame_id": 48,
+      "native_steps": 48,
+      "choices": {
+        "x": "positive",
+        "y": "hold",
+        "z": "hold",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "position_error_m": 0.0010895698970709296,
+      "rotation_error_rad": 0.015785771397189355
+    },
+    {
+      "phase": "hover",
+      "status": "reached",
+      "lease_calls": 16,
+      "before_pad_world_m": [
+        -0.0438544040662138,
+        0.13982172690963418,
+        1.1665852407466122
+      ],
+      "after_pad_world_m": [
+        -0.04574088024796931,
+        0.1391115307129432,
+        0.9978550411392766
+      ],
+      "frame_id": 96,
+      "native_steps": 96,
+      "choices": {
+        "x": "hold",
+        "y": "hold",
+        "z": "negative",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "position_error_m": 0.002484387642063653,
+      "rotation_error_rad": 0.015888587169234355
+    }
+  ],
+  "accepted_review": {
+    "valid_points": [
+      "C",
+      "C_agentview_backup",
+      "T0",
+      "T1",
+      "T2",
+      "T3",
+      "B0",
+      "B1",
+      "B2",
+      "B3"
+    ],
+    "measurement_errors": [],
+    "parameters": {
+      "jaw_corridors": "unknown",
+      "lift_corridor": "clear",
+      "same_pose": "yes",
+      "table_unchanged": "yes"
+    },
+    "regions": [
+      "package_top_and_boundary",
+      "short_axis_left_entry_table",
+      "short_axis_right_entry_table",
+      "visible_left_inner_finger_edge",
+      "visible_right_inner_finger_edge",
+      "opposed_fingers_agentview"
+    ]
+  },
+  "failure": {
+    "checkpoint": "grasp.partial",
+    "payload_bytes_standard_json": 304383,
+    "error": "ValueError: Checkpoint value exceeds 16384 bytes"
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 96 shows the cream cheese package flat on the tabletop, outside the bowl, with the open gripper above it.",
+      "Acknowledged execution reached the hover; no grasp or package lift is observed.",
+      "The current review confirms unchanged package pose and visible unobstructed lateral table corridors, but does not establish the required inner-aperture margin.",
+      "Execution failed because the checkpoint payload exceeded 16384 bytes; live continuation is unavailable."
+    ],
+    "invalidated_assumptions": [
+      "The full review payload fits within the checkpoint size limit."
+    ],
+    "plan_valid": "yes",
+    "reason": "The grasp subgoal remains suitable. Revise checkpoint storage to retain compact evidence and recover from the current hover without replaying executed motion. Resolve aperture uncertainty with targeted inner-finger depth measurements or an alternate safe view before contact; distinguish closure across the narrow dimension from contact on the short end faces.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "next_method_job": "c64d840e2df84d7eb2f394d1dfd3d017",
+  "frozen_skills_changed": false
+}
