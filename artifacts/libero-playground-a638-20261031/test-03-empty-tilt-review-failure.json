@@ -845,5 +845,176 @@
     "gpt-31.failure.json": "4fbcee00f00e870b52184d146d1d99ada6d7793eec12695ad879e17be9715c41",
     "gpt-32.parsed.json": "8224efa9b0df11dc2eb9f3bcdab376294ea9230dd62b6a5c6e503f7dcbae6aff"
   },
-  "limitation": "Schema failure is not a physics outcome. Tilt fit is conditional on measured extent and transformed geometry; no task success or skill benefit proven."
+  "limitation": "Schema failure is not a physics outcome. Tilt fit is conditional on measured extent and transformed geometry; no task success or skill benefit proven.",
+  "subsequent_valid_clearance_review": {
+    "method": "method-07.py",
+    "method_sha256": "2970ede2dbb296c708230d190ca74982a6d7ac9e7190bd6117e07f03a0429952",
+    "review": {
+      "explanation": "The cream-cheese box is held outside the upright patterned bowl; visible printed features support the saved box association. No external obstruction is observed. Robot self-occlusion leaves portions of the proposed rise, rotation, and lateral swept corridor unobserved, so clearance for the full sequence remains unknown. Projected fit does not resolve this gap. No descent or release is authorized.",
+      "parameters": {
+        "bowl": "upright_unchanged",
+        "containment": "outside",
+        "correspondence": "established",
+        "grasp": "held_no_slip",
+        "identity": "cream_cheese",
+        "landmark_ids": [
+          "p0: leftmost bend of outer blue logo outline",
+          "p1: upper-right shoulder of inner blue logo outline",
+          "p2: blue diagonal stroke below the large left curl",
+          "p3: outer blue outline beside lower-right white loop"
+        ],
+        "path": "unknown",
+        "separation": "contact",
+        "shape": "same_rigid_box",
+        "support": "hand"
+      },
+      "points": [],
+      "regions": [],
+      "status": "stop"
+    },
+    "progress": {
+      "key": "place.progress",
+      "frame_id": 255,
+      "method_number": 7,
+      "source_sha256": "2970ede2dbb296c708230d190ca74982a6d7ac9e7190bd6117e07f03a0429952",
+      "bytes": 2530,
+      "value": {
+        "phase": "authorize_measured_tilt_corridor",
+        "reason": "abort: observation review requested stopping.",
+        "evidence": {
+          "phase": "authorize_measured_tilt_corridor",
+          "state": {
+            "frame_id": 255,
+            "native_steps": 255,
+            "tcp_position_world_m": [
+              -0.047949030772849045,
+              0.12371568044532032,
+              0.9960482089836379
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999745488505877,
+              0.007052319029578591,
+              0.0007072090301055802,
+              -0.0008162737019637012
+            ],
+            "gripper_qpos_m": [
+              0.02112509076741068,
+              -0.02109432793728199
+            ],
+            "last_gripper_command": "close"
+          },
+          "budgets": {
+            "gpt_remaining": 5,
+            "jev_remaining": 115,
+            "native_steps_remaining": 345,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "geometry": {
+            "rim_fit_diagnostic": {
+              "plane": {
+                "coefficients": [
+                  0.006679605181942071,
+                  -0.007953712320999926,
+                  0.9999460592126599,
+                  -0.9447962592430724
+                ],
+                "center_world_m": [
+                  -0.11693338438392113,
+                  0.010893160641394548,
+                  0.9457149817600689
+                ],
+                "rms_m": 1.1102230246251565e-16,
+                "in_plane_spread_m": [
+                  0.0414328410325913,
+                  0.025484795729097346
+                ]
+              },
+              "circle": {
+                "center_xy_m": [
+                  -0.104398462103645,
+                  0.011320725106579822
+                ],
+                "radius_m": 0.04919211077777745,
+                "rms_m": 0.0011999838300400646,
+                "max_radial_error_m": 0.00206133590307446,
+                "largest_angular_gap_rad": 1.7770827475743756
+              },
+              "frame_id": 255
+            },
+            "reference_frame": 255,
+            "bowl_center_xy_m": [
+              -0.104398462103645,
+              0.011320725106579822
+            ],
+            "inner_radius_m": 0.04919211077777745,
+            "bowl_u_m": 0.0025,
+            "rim_upper_z_m": 0.9484732094382596,
+            "package_dimensions_m": [
+              0.040748737217810874,
+              0.07961871035888443,
+              0.02230010023697423
+            ],
+            "package_u_m": 0.0025,
+            "fit_reserve_m": 0.007500000000000001,
+            "candidate_validation_reserve_m": 0.002,
+            "position_tolerance_m": 0.0015,
+            "extent_provenance": {
+              "short_edge": "fresh plane-intersected visible corners",
+              "long_extent": "historical measured outer-corner dimensions",
+              "historical_key": "secure.initial",
+              "historical_frame": 0,
+              "thickness_key": "acquire.effect",
+              "supported_thickness_m": 0.01780010023697423,
+              "thickness_allowance_m": 0.0045
+            },
+            "current_relation": {
+              "frame_id": 255,
+              "center_world_m": [
+                -0.07000705019142028,
+                0.1228097879989375,
+                0.9863907402323832
+              ],
+              "projected_radius_m": 0.044920272707394925,
+              "centering_error_m": 0.11667296326884134,
+              "remaining_fit_m": -0.11240112519845882,
+              "required_fit_m": 0.007500000000000001,
+              "bottom_lower_z_m": 0.9719092317486904,
+              "finger_lower_z_m": 0.9852247034739623
+            },
+            "fresh_flat_margin_m": 0.004271838070382526,
+            "candidate_projected_margin_m": 0.013555045826197758,
+            "candidate_rotation_rad": -1.05
+          },
+          "tests": [],
+          "actions": [],
+          "acknowledged_phases": [],
+          "single_release_receipt": null
+        }
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    },
+    "supervision": {
+      "action": "revise",
+      "evidence": [
+        "The program returned abort, not stage_complete; live continuation is unavailable.",
+        "Frame 255 shows the cream cheese retained between the fingers, outside the upright patterned bowl.",
+        "No placement movement, release or withdrawal was acknowledged; the acquired lift remains the current configuration.",
+        "The accepted review reports no observed external obstruction, but robot self-occlusion leaves parts of the combined rise, rotation and transfer corridor unknown.",
+        "The flat candidate fails the retained fit reserve. The tilted candidate has a larger computed projected margin, which does not establish swept clearance or interior support."
+      ],
+      "invalidated_assumptions": [
+        "The current observation coverage is sufficient to authorize the entire combined rise, rotation and lateral transfer."
+      ],
+      "plan_valid": "yes",
+      "reason": "Placement remains suitable, but the clearance assessment needs a different local method. Preserve the held configuration and assess an individually observable next segment using targeted calibrated measurements. If necessary, obtain a different sensing view only through independently supported clear space. Do not repeat the unchanged full-sequence review, replay acquisition, relax margins or infer clearance from projected fit. Unknown clearance alone does not justify stopping.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    },
+    "interpretation": "Format corrected; combined corridor remains unknown due to self-occlusion. No placement action. Supervisor requests separately observable next segment, not relaxed fit or assumed clearance.",
+    "source_hashes": {
+      "gpt-34.parsed.json": "1dbe38148ed61d5022627fdd2505f891913006dea5c7cef00b8d992abb001217",
+      "gpt-35.parsed.json": "d2ceff136d9f68112f320f3b99052937177143f931ab8f5449ff565467cc9b93"
+    }
+  }
 }
