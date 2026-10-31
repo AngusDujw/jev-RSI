@@ -1,0 +1,279 @@
+{
+  "episode": "test-07-learned",
+  "frame_id": 105,
+  "method_source_sha256": "2fb2c12aaef64d44d98bbdf51c8aff1c36b54e9946a072a5bc54301fda54afdc",
+  "native_steps": 105,
+  "jev_calls": 35,
+  "new_actions_this_method": 0,
+  "reviews": [
+    {
+      "status": "continue",
+      "explanation": "The labeled cream-cheese package rests on the tabletop. Its visible rectangular shape and position remain consistent with the supplied package/table model; unseen sides and bottom remain conditional. r0-r3 select upper outer lip crest surfaces using the smallest permitted sampling radius. The six boundary pixels are separate silhouette measurements, not depth-plane anchors, spanning more than half the circumference. No inner opening or hidden arc is selected. The robot obscures part of the far-right rim. The visible upright, flared, handle-free bowl supports the outer lip's vertical projection as a conservative local body envelope, with no visible higher protrusion. This supports the requested local model, not a hidden-surface or global-clearance certificate.",
+      "parameters": {
+        "identity": "yes",
+        "outer_lip_identity": "yes",
+        "package_model_current": "yes",
+        "package_supported": "yes",
+        "rim_camera": "agentview",
+        "rim_pixels": [
+          [
+            374,
+            391
+          ],
+          [
+            346,
+            399
+          ],
+          [
+            329,
+            422
+          ],
+          [
+            344,
+            450
+          ],
+          [
+            380,
+            459
+          ],
+          [
+            426,
+            440
+          ]
+        ],
+        "upright_body_envelope": "yes"
+      },
+      "points": [
+        {
+          "camera": "agentview",
+          "name": "r0",
+          "pixel": [
+            357,
+            396
+          ],
+          "radius": 1
+        },
+        {
+          "camera": "agentview",
+          "name": "r1",
+          "pixel": [
+            331,
+            421
+          ],
+          "radius": 1
+        },
+        {
+          "camera": "agentview",
+          "name": "r2",
+          "pixel": [
+            378,
+            458
+          ],
+          "radius": 1
+        },
+        {
+          "camera": "agentview",
+          "name": "r3",
+          "pixel": [
+            426,
+            438
+          ],
+          "radius": 1
+        }
+      ],
+      "regions": []
+    },
+    {
+      "status": "continue",
+      "explanation": "The labeled cream-cheese package remains supported on the tabletop and visually consistent with the supplied rectangular package/table model; unseen sides and bottom remain conditional. All four crest anchors are requested here. r0-r2 repeat the previously depth-valid visible crest locations; r3 is relocated to the visible front-left crest to address the prior invalid/discontinuous depth result. Sampling must establish its depth validity. The six rim_pixels are separate outer lip boundary measurements, not depth-plane anchors, and span more than half the circumference. No hidden arc or inner opening is selected. The right rear rim is robot-occluded, not an observed external obstruction. The visible upright, flared, handle-free bowl supports the outer lip's vertical projection as a conservative local body envelope, with no visible higher protrusion. This is the requested local operational model, not a hidden-surface or global-clearance certificate.",
+      "parameters": {
+        "identity": "yes",
+        "outer_lip_identity": "yes",
+        "package_model_current": "yes",
+        "package_supported": "yes",
+        "rim_camera": "agentview",
+        "rim_pixels": [
+          [
+            374,
+            391
+          ],
+          [
+            346,
+            399
+          ],
+          [
+            329,
+            422
+          ],
+          [
+            344,
+            450
+          ],
+          [
+            380,
+            459
+          ],
+          [
+            426,
+            440
+          ]
+        ],
+        "upright_body_envelope": "yes"
+      },
+      "points": [
+        {
+          "camera": "agentview",
+          "name": "r0",
+          "pixel": [
+            357,
+            396
+          ],
+          "radius": 1
+        },
+        {
+          "camera": "agentview",
+          "name": "r1",
+          "pixel": [
+            331,
+            421
+          ],
+          "radius": 1
+        },
+        {
+          "camera": "agentview",
+          "name": "r2",
+          "pixel": [
+            378,
+            458
+          ],
+          "radius": 1
+        },
+        {
+          "camera": "agentview",
+          "name": "r3",
+          "pixel": [
+            349,
+            451
+          ],
+          "radius": 1
+        }
+      ],
+      "regions": []
+    }
+  ],
+  "second_measurement_response": {
+    "result": {
+      "status": "continue",
+      "explanation": "The labeled cream-cheese package remains supported on the tabletop and visually consistent with the supplied rectangular package/table model; unseen sides and bottom remain conditional. All four crest anchors are requested here. r0-r2 repeat the previously depth-valid visible crest locations; r3 is relocated to the visible front-left crest to address the prior invalid/discontinuous depth result. Sampling must establish its depth validity. The six rim_pixels are separate outer lip boundary measurements, not depth-plane anchors, and span more than half the circumference. No hidden arc or inner opening is selected. The right rear rim is robot-occluded, not an observed external obstruction. The visible upright, flared, handle-free bowl supports the outer lip's vertical projection as a conservative local body envelope, with no visible higher protrusion. This is the requested local operational model, not a hidden-surface or global-clearance certificate.",
+      "parameters": {
+        "identity": "yes",
+        "outer_lip_identity": "yes",
+        "package_model_current": "yes",
+        "package_supported": "yes",
+        "rim_camera": "agentview",
+        "rim_pixels": [
+          [
+            374,
+            391
+          ],
+          [
+            346,
+            399
+          ],
+          [
+            329,
+            422
+          ],
+          [
+            344,
+            450
+          ],
+          [
+            380,
+            459
+          ],
+          [
+            426,
+            440
+          ]
+        ],
+        "upright_body_envelope": "yes"
+      },
+      "points": {
+        "r0": {
+          "world_m": [
+            -0.13884046040695364,
+            -0.03017018926773321,
+            0.9490575293223457
+          ],
+          "depth_m": 1.0359079837799072,
+          "frame_id": 105,
+          "pixel": [
+            357,
+            396
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "r1": {
+          "world_m": [
+            -0.09737185155799788,
+            -0.0574068749828316,
+            0.9482723867831149
+          ],
+          "depth_m": 1.0041415691375732,
+          "frame_id": 105,
+          "pixel": [
+            331,
+            421
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "r2": {
+          "world_m": [
+            -0.037526660300585046,
+            -0.006190632873770002,
+            0.9499807539648838
+          ],
+          "depth_m": 0.9565126299858093,
+          "frame_id": 105,
+          "pixel": [
+            378,
+            458
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "regions": {},
+      "measurement_errors": [
+        {
+          "name": "r3",
+          "error": "Invalid or discontinuous surface depth"
+        }
+      ],
+      "frame_id": 105
+    }
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 105 shows the cream cheese package supported on the tabletop outside the bowl; the gripper is open above it. Retention and table separation are not established.",
+      "Acknowledged approach and standoff motion ended at frame 105. Both subsequent clearance reviews remained at that frame; no closing or retention lift is reported.",
+      "Three outer-lip crest anchors returned valid depth. The fourth anchor failed twice with invalid or discontinuous depth, including after relocation. Repeated same-frame anchors are not independent corroboration.",
+      "The review supports a conditional local bowl-body envelope, but complete descent clearance remains unverified. The robot-occluded rim is not an observed obstruction.",
+      "The current outcome is yield for repeated_measurement_failure, not stage_complete, and live continuation is unavailable. Public budgets retain 28 GPT calls, 165 Jev calls and 495 native steps."
+    ],
+    "invalidated_assumptions": [
+      "The selected r3 patches provide a usable fourth crest-depth anchor."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains suitable; the local measurement method needs correction, not another unchanged retry. Preserve the three valid anchors and current open standoff. Obtain a genuinely different depth-safe measurement, or a separately clearance-checked sensing view, and validate model support, uncertainty and the full finger/wrist descent sweep before contact. Do not weaken margins or infer clearance from missing evidence. Reconcile the interrupted checkpoint write without replaying its RPC or the completed approach. The new partial measurements support bounded local recovery; reserve resources for retention and final verification.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "next_method_job": "f5a48bf6099d42ddbaedce716b80d1b8",
+  "scope": "Method01 interrupted by repeated_measurement_failure; episode remains active. Three retained anchors are same-frame evidence, not independent corroboration. No candidate clearance, contact or retention established. Frozen memory unchanged."
+}
