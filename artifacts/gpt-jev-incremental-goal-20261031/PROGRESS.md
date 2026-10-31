@@ -684,3 +684,7 @@ Builder1 completed in 950.425 s, zero host reconnects and zero recorded native r
 ## Evidence-budget first physical slice
 
 Review2 completed; the generated method passed initial geometry admission and dispatched 24 real Jev calls / 72 native steps with the gripper open. Supervisor3 request 274520e1662d4017be4e8fbca8200283 has trigger control_slice_limit and live_continuation_available=true. No stage is confirmed complete. Journal position residual at calls10/20 was 0.0660/0.1638 m; objectives may differ, so these two samples alone do not establish divergence. Await the supervisor and phase-specific receipts before diagnosis.
+
+## First live continuation confirmed
+
+Supervisor3 returned continue at frame72 with no invalidated assumptions. The existing method0/source c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6 resumed and reached observation hover at frame105 (35 Jev calls), residual 0.002299 m. This directly supports stack-preserving normal-slice continuation, not grasp success. Review4 755f01223a5e44bdbbbbf30ba845f80a now checks unchanged geometry, jaw fit and contact route.

@@ -1,0 +1,74 @@
+{
+  "index": 22,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_progress",
+      {
+        "phase": "observation hover",
+        "lease": 0,
+        "status": "reached",
+        "lease_calls": 20,
+        "before": {
+          "frame_id": 45,
+          "native_steps": 45,
+          "tcp_position_world_m": [
+            -0.05467338217086822,
+            0.14329675118040477,
+            1.1818622489875141
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999983595095613,
+            0.0017001620200811636,
+            -0.0006241175736472119,
+            3.0075669658956385e-05
+          ],
+          "gripper_qpos_m": [
+            0.03985373270925102,
+            -0.03981681498666991
+          ],
+          "last_gripper_command": "open"
+        },
+        "after": {
+          "frame_id": 105,
+          "native_steps": 105,
+          "tcp_position_world_m": [
+            -0.054985091682534064,
+            0.14274385924450733,
+            0.9705550150510741
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999944321008494,
+            0.002069232174970015,
+            0.002375473805428246,
+            -0.0011005315559651247
+          ],
+          "gripper_qpos_m": [
+            0.03999189002110788,
+            -0.03998436880532185
+          ],
+          "last_gripper_command": "open"
+        },
+        "position_error_m": 0.002298625601374291,
+        "rotation_error_rad": 0.0058679136052845055,
+        "whole_lease_pose_progress_m_equivalent": 0.21171583387203202,
+        "objective_improvement_m_equivalent": 0.20965416324979652
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 105,
+  "response": {
+    "result": {
+      "key": "pick_progress",
+      "frame_id": 105,
+      "method_number": 0,
+      "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
+      "bytes": 986,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 105
+}

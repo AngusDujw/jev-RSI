@@ -257,36 +257,16 @@
   },
   "pick_progress": {
     "key": "pick_progress",
-    "frame_id": 45,
+    "frame_id": 105,
     "method_number": 0,
     "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
-    "bytes": 982,
+    "bytes": 986,
     "value": {
-      "phase": "high approach",
+      "phase": "observation hover",
       "lease": 0,
       "status": "reached",
-      "lease_calls": 15,
+      "lease_calls": 20,
       "before": {
-        "frame_id": 0,
-        "native_steps": 0,
-        "tcp_position_world_m": [
-          -0.2071984982582204,
-          -0.002684108235936964,
-          1.1833957456431763
-        ],
-        "tcp_quaternion_xyzw": [
-          0.9996138089570381,
-          -0.0001637781149644857,
-          -0.027787418789059465,
-          0.00025588312349679454
-        ],
-        "gripper_qpos_m": [
-          0.03872178294129007,
-          -0.03872379800220578
-        ],
-        "last_gripper_command": "open"
-      },
-      "after": {
         "frame_id": 45,
         "native_steps": 45,
         "tcp_position_world_m": [
@@ -306,10 +286,30 @@
         ],
         "last_gripper_command": "open"
       },
-      "position_error_m": 0.0021570912987717286,
-      "rotation_error_rad": 0.0036101557002584357,
-      "whole_lease_pose_progress_m_equivalent": 0.21413647863957028,
-      "objective_improvement_m_equivalent": 0.21328091932261214
+      "after": {
+        "frame_id": 105,
+        "native_steps": 105,
+        "tcp_position_world_m": [
+          -0.054985091682534064,
+          0.14274385924450733,
+          0.9705550150510741
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999944321008494,
+          0.002069232174970015,
+          0.002375473805428246,
+          -0.0011005315559651247
+        ],
+        "gripper_qpos_m": [
+          0.03999189002110788,
+          -0.03998436880532185
+        ],
+        "last_gripper_command": "open"
+      },
+      "position_error_m": 0.002298625601374291,
+      "rotation_error_rad": 0.0058679136052845055,
+      "whole_lease_pose_progress_m_equivalent": 0.21171583387203202,
+      "objective_improvement_m_equivalent": 0.20965416324979652
     },
     "source": "program-supplied historical data; not a fresh measurement"
   }
