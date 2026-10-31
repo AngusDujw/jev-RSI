@@ -716,3 +716,7 @@ Builder10 delivered9 replacements in1035.843 s, zero host reconnects/recorded na
 ## Early budget replan exercised in real episode
 
 After supervisor11 requested another correction, persisted stage allocation triggered remaining_plan_budget_pressure at28 remaining calls (stage_allocation_spent=true). Plan12 returned retain/deliver/place_check from the actual closed frame222 state, leaving27 post-plan calls; no reset or physical action occurred. Builder13 14c62d0782c146aa8040b3bc51596f2f is generating retain. This validates early budget-trigger mechanics in the real run, not allocation optimality or physical success. The plan prose requests a three-call retention allowance; subsequent actual method budget must be checked separately.
+
+## Replanned retain method delivered
+
+Builder13 completed in566.101 s with no reconnect/recovery recorded. Method3 is171 lines and implements upward-direction clearance admission, two20 mm lift intervals, independent package co-motion checks with optional tracking or identified RGB-D points, and final tabletop separation geometry. Actual input budget27remaining/20reserved/6reviews; generated method proposes3reviews. Source includes real Jev drive and preserves close via keep; no new action yet. Review14 a636c245096f4053b92b6d313bf9781c is active. Final geometry heuristics still require physical validation; no confirmed retained lift.
