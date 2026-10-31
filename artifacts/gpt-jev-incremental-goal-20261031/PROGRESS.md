@@ -756,3 +756,8 @@ Frozen protocol after_rpc sets repeated_measurement_failure after two consecutiv
 ## Isolated follow-up candidate prepared while frozen pilot continues
 
 Candidate021dbd95 on gpt-jev-bounded-sensing-20261031 adds bounded distinct sensing recovery (identical failed query twice or eight consecutive failures escalates; two unresolved failures still block actuation), current active RPC in planner context, and explicit tolerances/limits in dispatch receipts. Four direct watchdog checks, AST parse and diff checks pass. This is software evidence only; active RPC integration and LIBERO behavior still require validation. No task trajectory or prompt coordinate added. Current pilot remains a0fd40ad and builder22 is still live; no redeploy/restart.
+
+
+## Builder22 reaches submission validation and corrects in the same session
+
+After about15 minutes, native session0e4ef2601ecd48bcbc7a435f74dc987f changes from generating to correcting_invalid_submission. One submit_method_patch contains13 replacements, exceeding schema maximum12. The native tool receipt rejects it and the same running process continues correction; no reconnect/recovery or robot action is recorded. This is schema delivery overhead, not observed network failure, and the unvalidated patch has not been executed.
