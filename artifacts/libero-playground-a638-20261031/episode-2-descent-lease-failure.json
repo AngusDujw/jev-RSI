@@ -1,0 +1,135 @@
+{
+  "status": "partial_not_success",
+  "episode": 2,
+  "task_id": 1335,
+  "init_index": 2,
+  "frame_id": 183,
+  "source_sha256": "1fbd0a9767da428721cb8e7b58f18bb6db9ae64d5d4d4737f9772c13e4389ac5",
+  "trigger": "stage_returned",
+  "outcome_reason": "Stopped open_descent: lease_exhausted; do not repeat.",
+  "actual_state": {
+    "frame_id": 183,
+    "native_steps": 183,
+    "tcp_position_world_m": [
+      -0.061071787694133656,
+      0.13390860269322366,
+      0.9161512039735166
+    ],
+    "tcp_quaternion_xyzw": [
+      0.9999917498097826,
+      0.00400960004512807,
+      0.00030913671878814543,
+      -0.0005725856588394342
+    ],
+    "gripper_qpos_m": [
+      0.040000047483268124,
+      -0.03999818882148922
+    ],
+    "last_gripper_command": "open"
+  },
+  "descent": {
+    "phase": "open_descent",
+    "before": {
+      "frame_id": 75,
+      "native_steps": 75,
+      "tcp_position_world_m": [
+        -0.05999537027218106,
+        0.13323210261832863,
+        1.0070742918038627
+      ],
+      "tcp_quaternion_xyzw": [
+        0.999989936490213,
+        0.004097250395192875,
+        -0.0018273594423936358,
+        1.466176251101192e-05
+      ],
+      "gripper_qpos_m": [
+        0.039960268705436015,
+        -0.03995122404349682
+      ],
+      "last_gripper_command": "open"
+    },
+    "after": {
+      "frame_id": 183,
+      "native_steps": 183,
+      "tcp_position_world_m": [
+        -0.061071787694133656,
+        0.13390860269322366,
+        0.9161512039735166
+      ],
+      "tcp_quaternion_xyzw": [
+        0.9999917498097826,
+        0.00400960004512807,
+        0.00030913671878814543,
+        -0.0005725856588394342
+      ],
+      "gripper_qpos_m": [
+        0.040000047483268124,
+        -0.03999818882148922
+      ],
+      "last_gripper_command": "open"
+    },
+    "whole_action_native_steps": 108,
+    "receipt": {
+      "status": "lease_exhausted",
+      "choices": {
+        "x": "negative",
+        "y": "negative",
+        "z": "negative",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "keep"
+      },
+      "acknowledged_steps": 3,
+      "native_steps": 183,
+      "lease_calls": 36,
+      "frame_id": 183,
+      "position_error_m": 0.001614069153163892,
+      "rotation_error_rad": 0.0021811056917362694
+    }
+  },
+  "diagnostic": {
+    "contact_band": {
+      "L_m": 0.917281871346753,
+      "U_m": 0.920438059644523,
+      "tolerance_m": 0.0007890470744424949,
+      "u_m": 0.0016829081491207037,
+      "clearance_required_m": 0.002,
+      "overlap_required_m": 0.003,
+      "rotation_reserve_rad": 0.01,
+      "xy_reserve_m": 0.002,
+      "target_pad_world_m": [
+        -0.061543670990959955,
+        0.13264700913416255,
+        0.918859965495638
+      ]
+    }
+  },
+  "decision": {
+    "action": "revise",
+    "evidence": [
+      "At frame 183 the package remains outside the bowl, between visibly open fingers; retention and table separation are not established.",
+      "The acknowledged descent lowered the TCP about 90.9 mm over 108 native steps. No closure or retention lift is recorded.",
+      "The descent returned lease_exhausted with 1.614 mm position error against a 0.789 mm tolerance.",
+      "The last five deliveries moved the TCP only about 0.105 mm total; the cause of this small progress is unresolved.",
+      "The current trigger is stage_returned, the outcome is blocked, and live_continuation_available is false.",
+      "Remaining resources include 26 GPT calls, 139 Jev calls and 417 native steps."
+    ],
+    "invalidated_assumptions": [
+      "The existing descent controller and allocated lease suffice to reach the required contact precision."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains appropriate, but the local recovery method needs correction. Reconcile the acknowledged descent and current open-hand state without replaying the approach or descent. Obtain fresh contact geometry and full-finger clearance evidence, then assess the actual pose and diagnose the diminishing progress before selecting a bounded correction or a different supported candidate. Do not infer collision from lease exhaustion, treat historical clearance as current, extend the same lease blindly, or relax margins to accept the residual. Preserve the placement and effect-verification reserves.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "remaining_budgets": {
+    "gpt_remaining": 27,
+    "jev_remaining": 139,
+    "native_steps_remaining": 417,
+    "wall_seconds_remaining": 1000000000000.0
+  },
+  "interpretation": "Open descent exhausted its 36-call lease. No closure or retained lift occurred. Small endpoint progress does not identify collision or controller cause; current geometry is required before correction."
+}
