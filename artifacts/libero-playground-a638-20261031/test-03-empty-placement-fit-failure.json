@@ -1,0 +1,1041 @@
+{
+  "episode": "test-03-empty",
+  "phase": "test",
+  "frame": 255,
+  "jev_calls": 85,
+  "native_steps": 255,
+  "failure": "Measured package-opening fit margin is insufficient; no transfer or release performed.",
+  "recomputed_geometry": {
+    "circle": {
+      "center_xy_m": [
+        -0.10176439475696764,
+        0.010786721602601227
+      ],
+      "radius_m": 0.051266996685791544,
+      "rms_m": 0.0010472971838234196,
+      "max_radial_error_m": 0.0019283912515606003,
+      "largest_angular_gap_rad": 1.8326227665922945
+    },
+    "package_dimensions_m": [
+      0.041237002654243654,
+      0.07961871035888443
+    ],
+    "package_radius_m": 0.04472023765606054,
+    "package_u_m": 0.0025,
+    "bowl_u_m": 0.0025,
+    "fit_margin_m": 0.006546759029731002,
+    "required_margin_m": 0.007500000000000001,
+    "scope": "Recomputation of method05 from saved measurements; failure is not proof of physical impossibility."
+  },
+  "method_progress": {
+    "key": "place.progress",
+    "frame_id": 255,
+    "method_number": 5,
+    "source_sha256": "30c2f07ec9271d4574f38ecc1936d8ca685852a5bf48f7d5924cd74d8e1f6e0b",
+    "bytes": 2736,
+    "value": {
+      "phase": "entry",
+      "state": {
+        "frame_id": 255,
+        "native_steps": 255,
+        "budgets": {
+          "gpt_remaining": 12,
+          "jev_remaining": 115,
+          "native_steps_remaining": 345,
+          "wall_seconds_remaining": 1000000000000.0
+        },
+        "tcp_position_world_m": [
+          -0.047949030772849045,
+          0.12371568044532032,
+          0.9960482089836379
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999745488505877,
+          0.007052319029578591,
+          0.0007072090301055802,
+          -0.0008162737019637012
+        ],
+        "gripper_qpos_m": [
+          0.02112509076741068,
+          -0.02109432793728199
+        ],
+        "last_gripper_command": "close",
+        "own_geometry": {
+          "pad_center_in_tool_m": [
+            7.025189019717326e-07,
+            1.4483863379852885e-05,
+            -0.0036175984024060244
+          ],
+          "pad_extent_in_tool_m": [
+            0.016000082048691924,
+            0.05721944193386248,
+            0.01600008241971889
+          ],
+          "finger_low_offset_tool_m": [
+            -0.010494084471026571,
+            -0.04749857015275415,
+            -0.04448591176568487
+          ],
+          "finger_high_offset_tool_m": [
+            0.010495604299554984,
+            0.047527597444552205,
+            0.009231448583170073
+          ]
+        }
+      },
+      "events": [
+        {
+          "phase": "initial_geometry",
+          "frame_id": 255,
+          "parameters": {
+            "boundary_evidence": "identified_visible_adjacent_corners",
+            "bowl": "upright_unchanged",
+            "containment": "outside",
+            "correspondence": "established",
+            "edge_camera": "robot0_eye_in_hand",
+            "edge_identity": "Short outer edge of the pale printed top face above the large blue logo curl, adjoining the narrow end face",
+            "edge_pixels": [
+              [
+                278,
+                552
+              ],
+              [
+                490,
+                550
+              ]
+            ],
+            "hand_separation": "contact",
+            "history_key": "secure.initial",
+            "history_paths": [
+              [
+                "corners_world_m",
+                "0"
+              ],
+              [
+                "corners_world_m",
+                "1"
+              ],
+              [
+                "corners_world_m",
+                "2"
+              ],
+              [
+                "corners_world_m",
+                "3"
+              ]
+            ],
+            "holding": "retained_no_slip",
+            "identity": "cream_cheese",
+            "interference": "none_observed",
+            "landmark_ids": [
+              "p0: leftmost bend of outer blue logo outline",
+              "p1: upper-right shoulder of inner blue logo outline",
+              "p2: blue diagonal stroke below the large left curl",
+              "p3: outer blue outline beside lower-right white loop"
+            ],
+            "outline_camera": "robot0_eye_in_hand",
+            "outline_pixels": [],
+            "outline_source": "historical_measured",
+            "path": "unknown",
+            "rim_camera": "agentview",
+            "rim_correspondence": "established",
+            "rim_evidence": "visible_circular_inner_lip",
+            "rim_landmark_ids": [
+              "r0: patterned bowl rear upper-lip patch on the bottle-side arc",
+              "r1: patterned bowl cabinet-facing upper-lip patch",
+              "r2: patterned bowl striped-plate-facing upper-lip patch",
+              "r3: patterned bowl package-facing upper-lip patch"
+            ],
+            "rim_pixels": [
+              [
+                393,
+                389
+              ],
+              [
+                368,
+                395
+              ],
+              [
+                349,
+                407
+              ],
+              [
+                347,
+                425
+              ],
+              [
+                364,
+                442
+              ],
+              [
+                395,
+                449
+              ],
+              [
+                425,
+                442
+              ],
+              [
+                441,
+                425
+              ]
+            ],
+            "shape": "rigid_rectangular_face_up",
+            "support": "hand"
+          },
+          "measurement_errors": []
+        },
+        {
+          "phase": "initial_geometry",
+          "attempt": 0,
+          "gap": "Measured package-opening fit margin is insufficient; do not relax it."
+        }
+      ],
+      "tests": [],
+      "reason": "Measured package-opening fit margin is insufficient; do not relax it."
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "fresh_review": {
+    "key": "place.measurements",
+    "frame_id": 255,
+    "method_number": 5,
+    "source_sha256": "30c2f07ec9271d4574f38ecc1936d8ca685852a5bf48f7d5924cd74d8e1f6e0b",
+    "bytes": 3483,
+    "value": {
+      "phase": "initial_geometry",
+      "review": {
+        "frame_id": 255,
+        "parameters": {
+          "boundary_evidence": "identified_visible_adjacent_corners",
+          "bowl": "upright_unchanged",
+          "containment": "outside",
+          "correspondence": "established",
+          "edge_camera": "robot0_eye_in_hand",
+          "edge_identity": "Short outer edge of the pale printed top face above the large blue logo curl, adjoining the narrow end face",
+          "edge_pixels": [
+            [
+              278,
+              552
+            ],
+            [
+              490,
+              550
+            ]
+          ],
+          "hand_separation": "contact",
+          "history_key": "secure.initial",
+          "history_paths": [
+            [
+              "corners_world_m",
+              "0"
+            ],
+            [
+              "corners_world_m",
+              "1"
+            ],
+            [
+              "corners_world_m",
+              "2"
+            ],
+            [
+              "corners_world_m",
+              "3"
+            ]
+          ],
+          "holding": "retained_no_slip",
+          "identity": "cream_cheese",
+          "interference": "none_observed",
+          "landmark_ids": [
+            "p0: leftmost bend of outer blue logo outline",
+            "p1: upper-right shoulder of inner blue logo outline",
+            "p2: blue diagonal stroke below the large left curl",
+            "p3: outer blue outline beside lower-right white loop"
+          ],
+          "outline_camera": "robot0_eye_in_hand",
+          "outline_pixels": [],
+          "outline_source": "historical_measured",
+          "path": "unknown",
+          "rim_camera": "agentview",
+          "rim_correspondence": "established",
+          "rim_evidence": "visible_circular_inner_lip",
+          "rim_landmark_ids": [
+            "r0: patterned bowl rear upper-lip patch on the bottle-side arc",
+            "r1: patterned bowl cabinet-facing upper-lip patch",
+            "r2: patterned bowl striped-plate-facing upper-lip patch",
+            "r3: patterned bowl package-facing upper-lip patch"
+          ],
+          "rim_pixels": [
+            [
+              393,
+              389
+            ],
+            [
+              368,
+              395
+            ],
+            [
+              349,
+              407
+            ],
+            [
+              347,
+              425
+            ],
+            [
+              364,
+              442
+            ],
+            [
+              395,
+              449
+            ],
+            [
+              425,
+              442
+            ],
+            [
+              441,
+              425
+            ]
+          ],
+          "shape": "rigid_rectangular_face_up",
+          "support": "hand"
+        },
+        "points": {
+          "p0": {
+            "world_m": [
+              -0.0374846236641437,
+              0.13481324597047156,
+              0.9969668668306702
+            ],
+            "depth_m": 0.096131831407547,
+            "frame_id": 255,
+            "pixel": [
+              327,
+              589
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p1": {
+            "world_m": [
+              -0.03616969703913897,
+              0.12368918440432289,
+              0.9969638255105875
+            ],
+            "depth_m": 0.09611843526363373,
+            "frame_id": 255,
+            "pixel": [
+              385,
+              583
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p2": {
+            "world_m": [
+              -0.04660739022692442,
+              0.1314104258789435,
+              0.9970490687853248
+            ],
+            "depth_m": 0.09603126347064972,
+            "frame_id": 255,
+            "pixel": [
+              344,
+              637
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "p3": {
+            "world_m": [
+              -0.04533059822718336,
+              0.11724261885483368,
+              0.9972650419326624
+            ],
+            "depth_m": 0.09579379856586456,
+            "frame_id": 255,
+            "pixel": [
+              418,
+              632
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "r0": {
+            "world_m": [
+              -0.15450337037917905,
+              0.010182535136231236,
+              0.9478255916266314
+            ],
+            "depth_m": 1.0488667488098145,
+            "frame_id": 255,
+            "pixel": [
+              393,
+              388
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "r1": {
+            "world_m": [
+              -0.09917673321409548,
+              -0.041220804082651524,
+              0.948132419427936
+            ],
+            "depth_m": 1.0056335926055908,
+            "frame_id": 255,
+            "pixel": [
+              346,
+              420
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "r2": {
+            "world_m": [
+              -0.04809141554595786,
+              0.012487759659806192,
+              0.9499672131483721
+            ],
+            "depth_m": 0.9647397994995117,
+            "frame_id": 255,
+            "pixel": [
+              396,
+              451
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "r3": {
+            "world_m": [
+              -0.09047899784118385,
+              0.06349457276834568,
+              0.9500211820153384
+            ],
+            "depth_m": 0.9976805448532104,
+            "frame_id": 255,
+            "pixel": [
+              443,
+              424
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      },
+      "previous_review": []
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "historical_outline": {
+    "key": "secure.initial",
+    "frame_id": 0,
+    "method_number": 1,
+    "source_sha256": "6a7093a8ab327e8ed6450c8f1810fc6a4e405fb1fcefc1210ad31e22784b1909",
+    "bytes": 1604,
+    "value": {
+      "frame_id": 0,
+      "corners_world_m": [
+        [
+          -0.029229132689970072,
+          0.14131240586571878,
+          0.9175860026232532
+        ],
+        [
+          -0.028762762687354698,
+          0.10035164991402284,
+          0.9184588550778908
+        ],
+        [
+          -0.10860224606372836,
+          0.09924774660862519,
+          0.9184908802264311
+        ],
+        [
+          -0.10861736340592074,
+          0.140739619374517,
+          0.9176066612611207
+        ]
+      ],
+      "top_plane": [
+        0.00010644199905516442,
+        0.021305855743727103,
+        0.9997729988257977,
+        -0.9203853800500861
+      ],
+      "table_plane": [
+        -6.547604745680267e-06,
+        -1.7943379198093317e-06,
+        0.9999999999769548,
+        -0.8999655383604301
+      ],
+      "top_z": 0.9180273769536665,
+      "table_z": 0.8999654386813402,
+      "length_m": 0.07961870580378833,
+      "width_m": 0.04122764318888032,
+      "height_m": 0.018061938272326383,
+      "u_m": 0.0026441882328075,
+      "diameter_allowance_m": 0.10660278341652538,
+      "long_axis_world": [
+        0.9999044271862746,
+        0.013825212233015482,
+        -0.0
+      ],
+      "pad_target": [
+        -0.048303125002497574,
+        0.12069629594111894,
+        0.9194588779353094
+      ],
+      "quaternion": [
+        0.9999761065111192,
+        0.006912771286731616,
+        0.0,
+        0.0
+      ],
+      "finger_below_pad_m": 0.01284925102116179,
+      "rim": {
+        "world_m": [
+          -0.04707292926438861,
+          0.011125892980459871,
+          0.9494822626291001
+        ],
+        "depth_m": 0.3033553659915924,
+        "frame_id": 0,
+        "camera": "robot0_eye_in_hand",
+        "pixel": [
+          385,
+          178
+        ]
+      },
+      "interpretation": {
+        "identity": "cream_cheese",
+        "table_supported": "yes",
+        "camera": "robot0_eye_in_hand",
+        "corners": [
+          [
+            190,
+            167
+          ],
+          [
+            251,
+            166
+          ],
+          [
+            254,
+            287
+          ],
+          [
+            193,
+            287
+          ]
+        ],
+        "grasp_pixel": [
+          222,
+          196
+        ],
+        "access": "visible_clear",
+        "high_route": "visible_clear",
+        "lift_column": "unknown",
+        "notes": "Identity and elevated open-finger route from acknowledged frame-0 review; depth resampled now, with zero intervening physical steps."
+      }
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "The placement program returned blocked at its entry fit check; live continuation is unavailable.",
+      "Frame 255 shows the package between the fingers, outside the upright patterned bowl. No placement, release or withdrawal is recorded.",
+      "Acquisition landmark motion agreed with acknowledged hand motion; no subsequent physical movement is recorded.",
+      "The rejected fit used historical package corners and selected rim samples. No accepted placement geometry or clearance test was returned.",
+      "One insufficient fit margin does not establish that every placement candidate is infeasible. Measurement and control budget remain."
+    ],
+    "invalidated_assumptions": [],
+    "plan_valid": "yes",
+    "reason": "Placement remains the appropriate subgoal, but the current candidate is not authorized by its fit evidence. Revise the local geometry assessment using fresh package boundaries and inner-rim measurements, validating any historical transformations. An alternate calibrated view or independently supported candidate may resolve the uncertainty. Preserve the acquired grasp and executed lift; do not replay acquisition, relax margins, or presume transfer clearance.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "plane_intersections": [
+    {
+      "index": 184,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            393,
+            389
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.15264003003854676,
+            0.010168090549618303,
+            0.9478865982934636
+          ],
+          "pixel": [
+            393,
+            389
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 185,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            368,
+            395
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.14231723446920486,
+            -0.01794078362476046,
+            0.9476307446997962
+          ],
+          "pixel": [
+            368,
+            395
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 186,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            349,
+            407
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.12145313962054649,
+            -0.038630913139485405,
+            0.9477055356598616
+          ],
+          "pixel": [
+            349,
+            407
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 187,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            347,
+            425
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.09081130715289198,
+            -0.03987228875767628,
+            0.948292953154341
+          ],
+          "pixel": [
+            347,
+            425
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 188,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            364,
+            442
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.06280989460286945,
+            -0.021070941075671836,
+            0.9491564247783782
+          ],
+          "pixel": [
+            364,
+            442
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 189,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            395,
+            449
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.05118967044823619,
+            0.01147606192128414,
+            0.9499202268487624
+          ],
+          "pixel": [
+            395,
+            449
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 190,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            425,
+            442
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.06163686269727231,
+            0.043125192274621235,
+            0.9502316246292664
+          ],
+          "pixel": [
+            425,
+            442
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 191,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "agentview",
+          [
+            441,
+            425
+          ],
+          [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.08889239637523616,
+            0.0612675953423141,
+            0.9499883163494613
+          ],
+          "pixel": [
+            441,
+            425
+          ],
+          "camera": "agentview",
+          "plane": [
+            -0.019827728650675305,
+            -0.016380825020161256,
+            0.9996692101631489,
+            -0.9504329904250136
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 192,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "robot0_eye_in_hand",
+          [
+            278,
+            552
+          ],
+          [
+            0.015324523981288102,
+            0.010818639911445086,
+            0.9998240425170889,
+            -0.9976230376734958
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.030607324321145324,
+            0.14438506323365735,
+            0.9967054081161582
+          ],
+          "pixel": [
+            278,
+            552
+          ],
+          "camera": "robot0_eye_in_hand",
+          "plane": [
+            0.015324523981288102,
+            0.010818639911445086,
+            0.9998240425170889,
+            -0.9976230376734958
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    },
+    {
+      "index": 193,
+      "method_number": 5,
+      "request": {
+        "kind": "rpc",
+        "method": "plane_point",
+        "args": [
+          "robot0_eye_in_hand",
+          [
+            490,
+            550
+          ],
+          [
+            0.015324523981288102,
+            0.010818639911445086,
+            0.9998240425170889,
+            -0.9976230376734958
+          ]
+        ],
+        "kwargs": {}
+      },
+      "frame_before": 255,
+      "response": {
+        "result": {
+          "world_m": [
+            -0.02948583984786656,
+            0.10365396371003532,
+            0.9971289515250281
+          ],
+          "pixel": [
+            490,
+            550
+          ],
+          "camera": "robot0_eye_in_hand",
+          "plane": [
+            0.015324523981288102,
+            0.010818639911445086,
+            0.9998240425170889,
+            -0.9976230376734958
+          ],
+          "frame_id": 255,
+          "source": "calibrated_ray_intersection_with_program_supplied_plane"
+        }
+      },
+      "frame_after": 255
+    }
+  ],
+  "source_hashes": {
+    "method-05.py": "30c2f07ec9271d4574f38ecc1936d8ca685852a5bf48f7d5924cd74d8e1f6e0b",
+    "gpt-27.parsed.json": "281a75d7ea7bf4ba556f28c0719dc3e37a1e2102dccee34fe2205daea117b45e",
+    "gpt-28.parsed.json": "b127d2d3b8870b3fa8a4322bef288d6638b516ec636d3f284bb10c9f8b693d6d",
+    "rpc-0184.json": "2a51a29963b748d9cfd787d72204e55fda82156e60db62bf46e10b6930483b44",
+    "rpc-0185.json": "922c92316bac877cf8a39b648faf91c49ca2998945ac482687b236261a1dc22e",
+    "rpc-0186.json": "7a0fc03edf50eecb54edd27b8dca23617d11fce0cddeb980ed336821955daa0c",
+    "rpc-0187.json": "fd0578c8b26c29e94e4b0fdc151566fd77e5e6026c76fe8ecedd0e562e24a7f1",
+    "rpc-0188.json": "15b07423a65a2f5390e845c32210d70e83f8e5dc1a97f61640d822a066664511",
+    "rpc-0189.json": "b5e03126b5d65f60cd8f5b525bbb27dcd848b824f85a72c14905958a4941ed62",
+    "rpc-0190.json": "d782aff84c67a58b8fea4178625b1c24d7290410266ede51481cd6ace6608ea8",
+    "rpc-0191.json": "d86d0df67a6388828d840ca96dd49855be6b95061efac5357f7c3fb597375c34",
+    "rpc-0192.json": "bb175bdae543ef66de64218dc82a802b15b4febb87c65c78f303a3a77c3545d2",
+    "rpc-0193.json": "03c776406c7b70b08faf0bb72bccb2da91626175d73224047cc690afb254a9ee"
+  },
+  "limitation": "This rejects one measured placement candidate, not physical feasibility or all candidates. Empty-skill baseline only; no learned-skill effectiveness claim."
+}
