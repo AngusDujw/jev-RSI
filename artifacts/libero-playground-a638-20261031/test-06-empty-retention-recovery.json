@@ -1,0 +1,31 @@
+{
+  "episode": "test-06-empty",
+  "method_source_sha256": "aca1fd6b55d335bbe323ab0d95024711cb362dc9aa6123fcbd8fbe74c3f7ab4c",
+  "method_number": 5,
+  "frame": 228,
+  "total_dispatches_audited": 76,
+  "total_steps_audited": 228,
+  "new_independent_retention_test": {
+    "test": "attachment",
+    "frames": [
+      216,
+      228
+    ],
+    "actual_hand_delta_m": [
+      -3.266776080916578e-05,
+      0.0005693461228882812,
+      0.011496880329750603
+    ],
+    "object_delta_m": [
+      -1.7065360443390548e-05,
+      0.0005667654783524934,
+      0.011558105079182868
+    ],
+    "error_m": 9.720907205334013e-05,
+    "allowance_m": 0.0014164709309646296,
+    "resolved_motion": true
+  },
+  "numeric_recomputation": "Recomputed geo.attachment_error from saved fresh baseline/effect points and actual TCP transforms; agrees within1e-10m.",
+  "scope": "The216-to228 independent test passes. It does not resolve the192-to216 historical discrepancy. Bowl V1 depth remains invalid; package-patch validity is assessed independently. No transit, release or task success yet.",
+  "next_review_job": "e4cee9067d2148e699d7efeffbc355c7"
+}
