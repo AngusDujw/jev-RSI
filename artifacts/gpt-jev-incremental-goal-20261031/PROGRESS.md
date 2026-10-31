@@ -724,3 +724,7 @@ Builder13 completed in566.101 s with no reconnect/recovery recorded. Method3 is1
 ## Actual two-interval lift starts; first independent effect passes
 
 Method3 admission passed with1.405 mm departure margin. Three Jev decisions lifted TCP18.353 mm from frame222 to231; review15 identified-depth landmarks measured package18.383 mm rise and0.188 mm attachment residual, passing the first independent co-motion test. Three more decisions lifted TCP18.414 mm toframe240 (80 Jev calls total). Review16 ecc2561d4b5449019afdbbf1a547ea10 is now evaluating final effect. No stage completion or LIBERO success yet; do not conflate this local retention evidence with placement success.
+
+## Both co-motion tests pass; separation estimator is underconstrained
+
+Review16 confirms second interval identified-depth effect: hand18.414 mm, object18.402 mm, attachment residual0.0274 mm. Both interval tests pass. Method3 still returns needs_replan at frame240: final top landmarks have minimum in-plane spread2.469 mm, yielding angular allowance0.9402 rad and conservative separation lower bound -61.127 mm despite measured top height54.344 mm. This is poor orientation conditioning of the sampled patch, not evidence of dropped object or negative physical clearance. Supervisor17 0a069668f3b44260b01fdc20f07d9951 active; confirmed stages remain0 and no terminal LIBERO result.

@@ -1,0 +1,120 @@
+{
+  "index": 126,
+  "method_number": 3,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "retain_result",
+      {
+        "stage_status": "needs_replan",
+        "reason": "Final tabletop separation gate",
+        "evidence": {
+          "gate": "Final tabletop separation gate",
+          "prevented_action": "Declare retained lift established",
+          "operands": {
+            "separation": {
+              "frame_id": 240,
+              "observed_top_height_m": 0.05434446157155837,
+              "historical_thickness_upper_m": 0.02097091329421374,
+              "historical_diagonal_upper_m": 0.09459608284527625,
+              "measured_tilt_sine": 0.027775592938539175,
+              "angular_allowance_rad_small_angle": 0.9402311139693794,
+              "patch_spread_m": 0.0024685838475586334,
+              "top_uncertainty_m": 0.0011605196704584353,
+              "table_uncertainty_m": 0.0017708541599049737,
+              "separation_lower_m": -0.061127468194463304,
+              "threshold_m": 0.002,
+              "residual_margin_m": -0.0631274681944633,
+              "provenance": "Conservative rectangular-box bound from current top depth, historical dimensions, current identity and orientation uncertainty; not an unseen-bottom measurement."
+            },
+            "parameters": {
+              "box_model": "unchanged",
+              "corridor": "clear",
+              "hazards": "Finger contacts, the lower package portion and some rear surfaces are robot-occluded. Hidden geometry remains unverified; this is not an observed external obstruction. No external obstruction is visible in the narrowly scoped remaining upward corridor for package, fingers and wrist. No clearance claim is made for lateral transport or placement.",
+              "identity": "correct",
+              "labels": [
+                "p0: Apex of the thin blue outer outline above the capital C in Cream.",
+                "p1: Center of the small light oval inside the right-hand curl of the capital C in Cream.",
+                "p2: Center of the light counter inside the lowercase e in Cream.",
+                "p3: Center of the light counter inside the lowercase a in Cream."
+              ],
+              "patch_camera": "none",
+              "patch_polygon": [],
+              "slip": "none",
+              "table_same": "yes",
+              "valid_landmarks": [
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            "effects": [
+              {
+                "valid": true,
+                "passed": true,
+                "method": "identified_depth_landmarks",
+                "frames": [
+                  222,
+                  231
+                ],
+                "hand_up_m": 0.01835326258394717,
+                "object_up_m": 0.01838331214547978,
+                "attachment_error_m": 0.00018838114488519192,
+                "uncertainty_before_m": 0.0011612725332140698,
+                "uncertainty_after_m": 0.0011604225830026498,
+                "slip_allowance_m": 0.001,
+                "attachment_limit_m": 0.00332169511621672,
+                "minimum_hand_motion_m": 0.01328678046486688,
+                "margins": {
+                  "excitation_m": 0.005066482119080291,
+                  "attachment_m": 0.0031333139713315278,
+                  "nonresponse_exclusion_m": 0.006884985737289476
+                }
+              },
+              {
+                "valid": true,
+                "passed": true,
+                "method": "identified_depth_landmarks",
+                "frames": [
+                  231,
+                  240
+                ],
+                "hand_up_m": 0.01841359611218241,
+                "object_up_m": 0.018402396566104297,
+                "attachment_error_m": 2.7378517084798398e-05,
+                "uncertainty_before_m": 0.0011604225830026498,
+                "uncertainty_after_m": 0.0011605196704584353,
+                "slip_allowance_m": 0.001,
+                "attachment_limit_m": 0.003320942253461085,
+                "minimum_hand_motion_m": 0.01328376901384434,
+                "margins": {
+                  "excitation_m": 0.00512982709833807,
+                  "attachment_m": 0.0032935637363762866,
+                  "nonresponse_exclusion_m": 0.006874656256552007
+                }
+              }
+            ]
+          },
+          "frame_id": 240,
+          "provenance": "Sensor geometry and runtime budgets are measured; pixel/noise allowances, drift limits and effect tolerances are operational heuristics, not external constraints."
+        },
+        "frame_id": 240
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 240,
+  "response": {
+    "result": {
+      "key": "retain_result",
+      "frame_id": 240,
+      "method_number": 3,
+      "source_sha256": "c07d67cc00e7514220da004d302e59727c3f2e7024fcb51462c81e2f8ad08d21",
+      "bytes": 3140,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 240
+}
