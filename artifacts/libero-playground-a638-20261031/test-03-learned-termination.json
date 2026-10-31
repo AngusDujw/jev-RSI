@@ -1,0 +1,86 @@
+{
+  "episode": "test-03-learned",
+  "summary": {
+    "termination": "HTTP Error 502: Bad Gateway",
+    "native_success": false,
+    "result": null,
+    "native_steps": 216,
+    "settling_steps": 10,
+    "jev_calls": 72,
+    "gpt_calls": 24,
+    "rpc_calls": 137,
+    "elapsed_s": 17335.01401391797,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "914ec3a706f2bbb99088610b05221f03737d9ddac6911f4177080dbe5b39c18c",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 1,
+        "source_sha256": "2b6eae3afdd770b1c61083c65916799020b3270ace999128b0c4ce7c28ac4fa0",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 2,
+        "source_sha256": "fddc98cee3612350ab213c426c96a64137114a12f85b672d331889a208a90a75",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 3,
+        "source_sha256": "03460a3e8dbc0eb79eff44093c7cc1c5544226cb3355dfd0715442ad0f32c520",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 4,
+        "source_sha256": "e909946e62e21bc59ec063f57f25ce0f718303649701640bedcdcb9955c6cd39",
+        "stage_id": "grasp"
+      },
+      {
+        "number": 5,
+        "source_sha256": "11f823e6e7d6d5e7ddcf89e66baf3d577268e6d000238665439381f09aa8ea97",
+        "stage_id": "grasp"
+      }
+    ],
+    "last_method_error": null
+  },
+  "failed_job": "0063946047164ccb9a5d3df5fdda42d2",
+  "job_result": {
+    "status": "failed",
+    "job_id": "0063946047164ccb9a5d3df5fdda42d2",
+    "error": {
+      "type": "RuntimeError",
+      "message": "Native planner exhausted automatic same-thread continuations"
+    },
+    "validation_errors": []
+  },
+  "recovery_kinds": [
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "same_thread_continue",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "same_thread_continue",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error",
+    "native_stream_error"
+  ],
+  "failure_classification": "Native planner transport disconnected (TLS EOF and connection failures); automatic same-thread continuations exhausted. Terminal episode is retained, not rerun.",
+  "interpretation": "No native success; no confirmed acquisition. Infrastructure-truncated result does not isolate skill quality. Baseline also failed, due to GPT budget exhaustion. No success-rate improvement established.",
+  "frozen_skills_changed": false
+}
