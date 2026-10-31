@@ -1,0 +1,43 @@
+{
+  "episode": "test-06-empty",
+  "frame": 192,
+  "placement_method_source_sha256": "007861a34e972d9021d52320ab0918439492613b3b657aed0705d61e4ff56b2c",
+  "initial_geometry_review_job": "637fa8001b75462d88594fada1560c7b",
+  "program_reported_adjusted_radial_margin_m": 0.0008534995395510991,
+  "margin_source": "gpt-14.request.json program_supplied_review_context.previous_gap; program-derived, not ground truth",
+  "repeat_review_failure": {
+    "status": "failed",
+    "job_id": "5925d1cdefaf440da71ea01dc9661554",
+    "error": {
+      "type": "ValueError",
+      "message": "Native submission validation repair budget exhausted"
+    },
+    "validation_errors": [
+      "submit_review.points[3].radius: numeric value outside schema",
+      "submit_review.points[3].radius: numeric value outside schema",
+      "submit_review.points[3].radius: numeric value outside schema"
+    ]
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 192 shows the cream cheese package between the fingers, outside the visibly empty bowl.",
+      "The public frame and native step count remain 192; no placement, release or withdrawal is acknowledged.",
+      "The stage returned blocked on an execution error: submit_review.points[3].radius was outside the schema, and no valid observation was delivered.",
+      "Live continuation is unavailable. The validation failure does not establish a physical obstruction or impossible fit."
+    ],
+    "invalidated_assumptions": [
+      "The attempted placement review satisfied the declared observation schema."
+    ],
+    "plan_valid": "yes",
+    "reason": "The placement subgoal remains suitable. Revise the observation submission to satisfy the declared schema and obtain valid current package, bowl and gripper-clearance evidence before placement. Preserve the existing grasp and executed lift; do not replay them or relax physical safety margins to bypass validation.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "next_method_job": "7ed615c1d920464d847b5b41730c21dd",
+  "next_method_status": "generating",
+  "placement_actions_executed": 0,
+  "task_success": false,
+  "frozen_skill_memory_changed": false
+}
