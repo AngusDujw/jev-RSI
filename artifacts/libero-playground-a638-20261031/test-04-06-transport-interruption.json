@@ -100,5 +100,16 @@
     "active_plan_completed": true,
     "active_method_job": "e2417db8aa5a4e518c71a5f78f767b0e"
   },
-  "frozen_skills_changed": false
+  "frozen_skills_changed": false,
+  "recovery_verified": {
+    "method_job": "e2417db8aa5a4e518c71a5f78f767b0e",
+    "method_source_sha256": "b345faa47a9ef40ea5bc2e8c167b34703004cdd5b2e57927f7e57b3d6e14f7ce",
+    "review_job": "3efe0a203d224f2294e072e87bba2c8b",
+    "review_completed": true,
+    "partial_dispatches_audited": 18,
+    "partial_native_steps_audited": 54,
+    "physical_phase": "high open-hand transit before grasp",
+    "success_established": false,
+    "parent_resumed": "SIGCONT1250034, process state S verified; same child1259712 retained"
+  }
 }
