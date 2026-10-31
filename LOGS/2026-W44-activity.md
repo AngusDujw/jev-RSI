@@ -347,3 +347,4 @@
 - 【Agent】【2026-10-31 09:24】[op] EXP-2026W44-055 builder19 completed in1304.116 s, reconnects0, no native recovery; method4 delivered and review20 active atframe240; no LIBERO success yet.
 - 【Agent】【2026-10-31 09:29】[op] EXP-2026W44-055 review20 completed; repeated rim-depth errors trigger supervisor21 revise and builder22 at frame240, preserving grasp/lift; no lateral dispatch or native success.
 - 【Agent】【2026-10-31 09:30】[op] Diagnosed frozen stage watchdog terminating generated local sensing recovery after two errors; retained exact code evidence and next-version test requirements without changing active pilot.
+- 【Agent】【2026-10-31 09:33】[op] Prepared isolated candidate021dbd95 bounded sensing recovery and active RPC/dispatch contracts; four watchdog checks pass; pushed candidate branch, active pilot unchanged.

@@ -1,0 +1,13 @@
+{
+  "candidate_commit": "021dbd95",
+  "checks": {
+    "distinct_fallback_success": true,
+    "identical_failure_escalation": true,
+    "eight_failure_bound": true,
+    "unresolved_actuation_blocked": true,
+    "python_ast": true,
+    "git_diff_check": true
+  },
+  "scope": "Direct StageWatchdog calls with simulated RPC results; no robot or planner request integration proof. No test script created.",
+  "deployment": "Not deployed; current frozen pilot remains a0fd40ad."
+}
