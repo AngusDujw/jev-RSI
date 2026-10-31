@@ -175,5 +175,111 @@
     "next_review_job": "c1ea00389cfc44f6b1d8e1ef12c57f29",
     "retention_after_new_lift": "pending observation",
     "release_executed": false
+  },
+  "retention_review_after_raise": {
+    "frame": 216,
+    "gpt17": {
+      "explanation": "The cream cheese package moves with the raised gripper in agentview and retains its wrist-relative print landmarks and rectangular outline. This supports retention and unchanged rigid shape, not merely closed fingers. The three ordered print landmarks and exposed far short-edge endpoints are visible. No external obstruction is visible in the specified high straight translation to the observation waypoint; the bowl is below this local route. The near end is self-occluded by the gripper. This assessment does not certify later placement or hidden clearance.",
+      "parameters": {
+        "correspondence": "reliable",
+        "corridor": "clear",
+        "edge_camera": "robot0_eye_in_hand",
+        "edge_identity": "exposed_short_edge",
+        "edge_pixels": [
+          [
+            282,
+            431
+          ],
+          [
+            487,
+            428
+          ]
+        ],
+        "object_camera": "robot0_eye_in_hand",
+        "object_pixels": [
+          [
+            355,
+            454
+          ],
+          [
+            326,
+            535
+          ],
+          [
+            383,
+            574
+          ]
+        ],
+        "shape": "unchanged",
+        "target": "held_target"
+      },
+      "points": [],
+      "regions": [],
+      "status": "continue"
+    },
+    "gpt18": {
+      "explanation": "The cream-cheese package is visible between the fingers, with an intact rigid rectangular shape. The returned wrist pixels identify visible L0, L1, L2 and the exposed short edge, but are not independent evidence resolving the reported hand/object motion mismatch. Agentview does not reliably resolve all three print identities, and no earlier actual image is supplied for a new motion comparison. Correspondence therefore remains unknown; stop pending distinct evidence. The specified high translation corridor shows no external obstruction. Robot self-occlusion is not an observed obstruction, and future placement clearance is not assessed.",
+      "parameters": {
+        "correspondence": "unknown",
+        "corridor": "clear",
+        "edge_camera": "robot0_eye_in_hand",
+        "edge_identity": "exposed_short_edge",
+        "edge_pixels": [
+          [
+            282,
+            431
+          ],
+          [
+            487,
+            428
+          ]
+        ],
+        "object_camera": "robot0_eye_in_hand",
+        "object_pixels": [
+          [
+            355,
+            454
+          ],
+          [
+            326,
+            535
+          ],
+          [
+            383,
+            574
+          ]
+        ],
+        "shape": "unchanged",
+        "target": "held_target"
+      },
+      "points": [],
+      "regions": [],
+      "status": "stop"
+    },
+    "supervision": {
+      "action": "revise",
+      "evidence": [
+        "Frame 216 shows the intact cream-cheese package between the fingers and outside the bowl.",
+        "Acknowledged execution raised the hand with the gripper closed. No release or withdrawal is acknowledged.",
+        "The attachment check exceeded its allowance; the repeated same-frame review left landmark correspondence unknown and did not resolve the discrepancy.",
+        "The stage returned abort and live continuation is unavailable. No external obstruction was identified in the reviewed local corridor."
+      ],
+      "invalidated_assumptions": [
+        "The current landmark measurements establish unchanged package-to-gripper attachment through the latest raise."
+      ],
+      "plan_valid": "yes",
+      "reason": "The placement subgoal remains suitable, but retention verification needs distinct evidence. Establish fresh depth-supported observations with consistent physical landmark identities and actual hand transforms, using a clearance-supported local sensing action if needed. Preserve the already raised grasp without replaying the lift or automatically reopening. Revalidate affected placement geometry before proceeding; do not relax thresholds merely to pass the failed check.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    },
+    "independently_recomputed_landmark_error_m": [
+      0.00047328416104012994,
+      0.005450187676948014,
+      0.0007823453032099699
+    ],
+    "method_attachment_allowance_m": 0.004610301311695946,
+    "interpretation": "Maximum residual exceeds allowance. Discrepancy is concentrated in L1; evidence does not distinguish changed landmark correspondence from physical slip. No lateral transit or release occurred.",
+    "next_method_job": "e2d9530df5f747c1b0f0b24a44652faa"
   }
 }
