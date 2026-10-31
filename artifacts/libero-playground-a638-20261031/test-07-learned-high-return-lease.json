@@ -1,0 +1,149 @@
+{
+  "session": "sess_a638580288974596",
+  "experiment": "EXP-2026W44-049",
+  "episode": "test-07-learned",
+  "source_sha256": "e5179f006868c2cd852b3e81949249e7120ef85df978621e68f13a8fb1bb9db0",
+  "method_elapsed_s": 1109.858012857032,
+  "motion": {
+    "phase": "reviewed_high_return",
+    "before": {
+      "frame_id": 165,
+      "native_steps": 165,
+      "tcp_position_world_m": [
+        0.03374781795857386,
+        0.11360952317629279,
+        0.9951814658864103
+      ],
+      "tcp_quaternion_xyzw": [
+        0.9999909320685179,
+        0.0033580270339221277,
+        -0.002617285243420798,
+        -9.619319585399126e-05
+      ],
+      "gripper_qpos_m": [
+        0.03999992417970855,
+        -0.03999814728962022
+      ],
+      "last_gripper_command": "open"
+    },
+    "target_pad_world_m": [
+      -0.037554052799960796,
+      0.11153051300764634,
+      0.998795964564618
+    ],
+    "quaternion_xyzw": [
+      0.9999909320685179,
+      0.0033580270339221277,
+      -0.002617285243420798,
+      -9.619319585399126e-05
+    ],
+    "gripper": "open",
+    "pending_effect": true,
+    "after": {
+      "frame_id": 213,
+      "native_steps": 213,
+      "tcp_position_world_m": [
+        -0.03848726099573138,
+        0.1108174350671662,
+        0.9945727625619738
+      ],
+      "tcp_quaternion_xyzw": [
+        0.9999837749516766,
+        0.005061557831614438,
+        -0.0018984799640326387,
+        0.001796173582425403
+      ],
+      "gripper_qpos_m": [
+        0.039996776746004006,
+        -0.040000155216143626
+      ],
+      "last_gripper_command": "open"
+    },
+    "whole_native_steps": 48,
+    "receipt": {
+      "decision": 70,
+      "choices": {
+        "x": "positive",
+        "y": "hold",
+        "z": "positive",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "action": [
+        0.01864160425407172,
+        0.0,
+        0.013015248476318408,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        -0.039014619810441416,
+        0.11089197195547347,
+        0.9941892071456481
+      ],
+      "after": [
+        -0.03848726099573138,
+        0.1108174350671662,
+        0.9945727625619738
+      ],
+      "target_tcp": [
+        -0.0375806502524359,
+        0.11152803344382381,
+        0.9951903801053649
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 213,
+      "frame_id": 213,
+      "status": "lease_exhausted",
+      "position_error_m": 0.0013070365422097594,
+      "rotation_error_rad": 0.005291429122392178,
+      "lease_calls": 16
+    }
+  },
+  "result": {
+    "key": "recover.result",
+    "frame_id": 213,
+    "method_number": 6,
+    "source_sha256": "e5179f006868c2cd852b3e81949249e7120ef85df978621e68f13a8fb1bb9db0",
+    "bytes": 517,
+    "value": {
+      "stage_status": "blocked",
+      "reason": "reviewed_high_return stopped at lease_exhausted; do not extend the lease",
+      "actual": {
+        "frame_id": 213,
+        "native_steps": 213,
+        "tcp_position_world_m": [
+          -0.03848726099573138,
+          0.1108174350671662,
+          0.9945727625619738
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999837749516766,
+          0.005061557831614438,
+          -0.0018984799640326387,
+          0.001796173582425403
+        ],
+        "gripper_qpos_m": [
+          0.039996776746004006,
+          -0.040000155216143626
+        ],
+        "last_gripper_command": "open"
+      },
+      "effect_accepted": false,
+      "completion_proposed": false
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "audit": {
+    "dispatches": 71,
+    "acknowledged_steps": 213,
+    "last_gripper": -1,
+    "all_raw_choices_semantics_bounds_and_gripper_checks_passed": true
+  },
+  "scope": "Reviewed high return exhausted16-call lease at1.3070365mm >1.2mm tolerance; no lease extension, new measurement review, descent, closure or retention. Frozen Test memory unchanged.",
+  "next_job": "1a8e636942944a089d8d7053609b6beb"
+}
