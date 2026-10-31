@@ -1,0 +1,44 @@
+{
+  "episode": 2,
+  "job": "16185efeb5a14fc3aa0d67bd581fc65d",
+  "status": "failed",
+  "invalid_submission_errors": [
+    "submit_review.regions[1].stride: numeric value outside schema",
+    "submit_review.regions[1].stride: numeric value outside schema",
+    "submit_review.regions[1].stride: numeric value outside schema"
+  ],
+  "event": {
+    "update": 7,
+    "stage": "retain",
+    "plan_revision": 2,
+    "stage_index": 0,
+    "frame_id": 189,
+    "trigger": "execution_error",
+    "source_sha256": "2ba222e0bacc2244d32d531ee9d8ea41f724e113802a0c4b2306eaefab47fe06",
+    "outcome": {
+      "stage_status": "blocked",
+      "completion_proposed": false,
+      "error": "Planner output contract repair exhausted; no valid observation was delivered. Review the method-declared fields and question before retrying. {\"error\": {\"type\": \"ValueError\", \"message\": \"Native submission validation repair budget exhausted\"}, \"validation_errors\": [\"submit_review.regions[1].stride: numeric value outside schema\", \"submit_review.regions[1].stride: numeric value outside schema\", \"submit_review.regions[1].stride: numeric value outside schema\"]}"
+    },
+    "decision": {
+      "action": "replan",
+      "evidence": [
+        "The trigger is execution_error with no live continuation. The observation failed schema validation because regions[1].stride was outside the allowed range; no valid review was delivered.",
+        "The current state remains at frame 189 and native step 189, with the close command preserved. No subsequent lift or other physical action is acknowledged.",
+        "The package is visible between the fingers and outside the bowl. No differential co-motion test or independently observed table-support separation establishes retention.",
+        "The same-frame diagnostic retains the rejected side-segment coverage. Its checkpoint write does not establish new contact geometry or a retention effect.",
+        "The latest budget is 9 GPT calls. The plan protects 8 for placement, but retention still requires method repair, valid measurements and effect verification."
+      ],
+      "invalidated_assumptions": [
+        "The current observation request and response contract produce schema-valid region fields.",
+        "The existing evidence allocation can complete unresolved retention while preserving the protected placement allocation."
+      ],
+      "plan_valid": "no",
+      "reason": "The retention objective remains appropriate, but the overall evidence allocation needs reconsideration before another local retry. Replan from the actual partially closed state, accounting for schema repair, distinct obtainable contact-side measurements, retention verification and final placement evidence. Preserve rejected geometry and safety margins. Do not replay descent, blindly repeat closure, or treat the contract error as physical failure. A repaired review must use documented field constraints; checkpoint names do not substitute for missing effects.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    }
+  },
+  "interpretation": "No valid observation delivered and no new physical action. Preserve contract failure and all correction costs; no retention success."
+}
