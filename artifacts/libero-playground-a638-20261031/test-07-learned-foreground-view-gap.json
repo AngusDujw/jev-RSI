@@ -1,0 +1,244 @@
+{
+  "session": "sess_a638580288974596",
+  "experiment": "EXP-2026W44-049",
+  "episode": "test-07-learned",
+  "frame_id": 165,
+  "review": {
+    "status": "continue",
+    "explanation": "The cream cheese remains table-supported, not retained. Four inset top patches are available, but the palm hides the negative-x end. Only c2 and c3 are currently visible material corners. The schema requires four entries: c0 and c1 therefore contain explicitly invalid [0,0] placeholders, NOT measured corners. Do not use them to reconstruct a rectangle. Earlier views support rectangular rigidity, but the requested current four-corner model is incomplete. The bowl has unchanged visible placement and appearance; its body narrows below the rim, supporting the historical OUTER model's identity, stationarity and flared-body premise, not a fresh numerical fit or opening model. The visible lower palm contour and upper bowl rim support a local zp comparison. Appliance samples cover only an exposed front strip. The limiting rear palm contour and appliance boundary across the full finger sweep are robot-occluded, so pa0 and pa1 are unavailable and both appliance bounds remain unknown. No external obstruction, disturbance or unwanted contact is observed along the open reverse of this sensing excursion to the saved entry pad. This does not replay the old shift or authorize descent. Recompute the target and clearance before any descent permission.",
+    "parameters": {
+      "identity": "yes",
+      "supported_package": "yes",
+      "rigid_rectangle": "unknown",
+      "corners": [
+        {
+          "camera": "agentview",
+          "description": "c0 unavailable: negative-x end is palm-occluded. [0,0] is an INVALID placeholder, not a corner.",
+          "pixel": [
+            0,
+            0
+          ]
+        },
+        {
+          "camera": "agentview",
+          "description": "c1 unavailable: negative-x end is palm-occluded. [0,0] is an INVALID placeholder, not a corner.",
+          "pixel": [
+            0,
+            0
+          ]
+        },
+        {
+          "camera": "agentview",
+          "description": "c2: visible positive-x, positive-y material corner joining printed top and near end face.",
+          "pixel": [
+            509,
+            489
+          ]
+        },
+        {
+          "camera": "agentview",
+          "description": "c3: visible positive-x, negative-y material corner joining printed top and near end face; cyclic after c2.",
+          "pixel": [
+            470,
+            490
+          ]
+        }
+      ],
+      "palm_rigid": "yes",
+      "bowl_model_current": "yes",
+      "palm_bowl_bound": "yes",
+      "palm_appliance_bound": "unknown",
+      "finger_appliance_bound": "unknown",
+      "bowl_axis": "zp",
+      "appliance_axis": "xp",
+      "finger_appliance_axis": "xp",
+      "bound_basis": "pb0 and pb1 sample the visible lower contour of the rigid silver palm housing, excluding fingers and articulated arm parts. ob0 and ob1 sample the visible outer upper bowl rim. These support a local fixed-orientation vertical comparison, not an unseen whole-body bound or a numerical clearance conclusion. oa and fa sample only the exposed appliance front strip suggesting an xp normal; robot self-occlusion prevents establishing the limiting palm contour and full-finger-sweep appliance bound. Top and table samples are inset material patches. Only c2 and c3 are observed boundary annotations; c0 and c1 are explicitly invalid placeholders required by the four-entry schema. No historical point measurements are assumed to be returned.",
+      "reverse_route": "clear",
+      "disturbance": "none",
+      "unwanted_contact": "none"
+    },
+    "points": [
+      {
+        "name": "t0",
+        "camera": "agentview",
+        "pixel": [
+          477,
+          468
+        ],
+        "radius": 1
+      },
+      {
+        "name": "t1",
+        "camera": "agentview",
+        "pixel": [
+          499,
+          468
+        ],
+        "radius": 1
+      },
+      {
+        "name": "t2",
+        "camera": "agentview",
+        "pixel": [
+          500,
+          482
+        ],
+        "radius": 1
+      },
+      {
+        "name": "t3",
+        "camera": "agentview",
+        "pixel": [
+          477,
+          482
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s0",
+        "camera": "agentview",
+        "pixel": [
+          454,
+          510
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s1",
+        "camera": "agentview",
+        "pixel": [
+          528,
+          510
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s2",
+        "camera": "agentview",
+        "pixel": [
+          526,
+          475
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s3",
+        "camera": "agentview",
+        "pixel": [
+          459,
+          496
+        ],
+        "radius": 1
+      },
+      {
+        "name": "pb0",
+        "camera": "agentview",
+        "pixel": [
+          416,
+          460
+        ],
+        "radius": 1
+      },
+      {
+        "name": "pb1",
+        "camera": "agentview",
+        "pixel": [
+          606,
+          460
+        ],
+        "radius": 1
+      },
+      {
+        "name": "ob0",
+        "camera": "agentview",
+        "pixel": [
+          367,
+          394
+        ],
+        "radius": 1
+      },
+      {
+        "name": "ob1",
+        "camera": "agentview",
+        "pixel": [
+          331,
+          423
+        ],
+        "radius": 1
+      },
+      {
+        "name": "oa0",
+        "camera": "agentview",
+        "pixel": [
+          638,
+          403
+        ],
+        "radius": 1
+      },
+      {
+        "name": "oa1",
+        "camera": "agentview",
+        "pixel": [
+          637,
+          414
+        ],
+        "radius": 1
+      },
+      {
+        "name": "fa0",
+        "camera": "agentview",
+        "pixel": [
+          638,
+          403
+        ],
+        "radius": 1
+      },
+      {
+        "name": "fa1",
+        "camera": "agentview",
+        "pixel": [
+          637,
+          414
+        ],
+        "radius": 1
+      }
+    ],
+    "regions": []
+  },
+  "result": {
+    "key": "recover.result",
+    "frame_id": 165,
+    "method_number": 4,
+    "source_sha256": "ac017118838f3da597a1b08b912d4f00e02d512d963b5e890ae4f082b64dcb04",
+    "bytes": 499,
+    "value": {
+      "stage_status": "blocked",
+      "reason": "Required current relation unresolved: rigid_rectangle",
+      "actual": {
+        "frame_id": 165,
+        "native_steps": 165,
+        "tcp_position_world_m": [
+          0.03374781795857386,
+          0.11360952317629279,
+          0.9951814658864103
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999909320685179,
+          0.0033580270339221277,
+          -0.002617285243420798,
+          -9.619319585399126e-05
+        ],
+        "gripper_qpos_m": [
+          0.03999992417970855,
+          -0.03999814728962022
+        ],
+        "last_gripper_command": "open"
+      },
+      "completion_proposed": false,
+      "effect_checkpoint": null
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "scope": "Method04 stopped before return/descent because rigid_rectangle unknown: two material corners occluded. Schema forced four corner entries; c0/c1 explicitly invalid placeholders, not geometry evidence. Appliance bounds also unknown. No new actions beyond55JEV165steps open. No observed external collision. Test memory remains frozen.",
+  "next_job": "a928b9e404064fcc8bb1bcce47a02ae6"
+}
