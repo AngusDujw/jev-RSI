@@ -1,0 +1,58 @@
+{
+  "episode": "test-06-empty",
+  "stage": "grasp",
+  "frame": 192,
+  "audited_dispatches": 64,
+  "audited_native_steps": 192,
+  "effect_metrics": {
+    "frame_id": 192,
+    "actual_hand_delta_world_m": [
+      -0.0004718260713109587,
+      0.0005663999587971758,
+      0.03944919195486252
+    ],
+    "object_delta_world_m": [
+      -0.0004711154855666511,
+      0.0002025087603205559,
+      0.03943382539057964
+    ],
+    "attachment_error_m": 0.0003811218919436642,
+    "attachment_limit_m": 0.004610301311695946,
+    "rigidity_error_m": 3.166233538139454e-05,
+    "hand_rotation_change_rad": 0.001428125787285283,
+    "resolved_lift_margin_m": 0.03599453585512156,
+    "visual_parameters": {
+      "identity": "target",
+      "relation": "between_fingers",
+      "separation": "clear",
+      "slip": "none_visible",
+      "nearby": "unchanged",
+      "correspondence": "reliable",
+      "descriptions": [
+        "L0: Uppermost apex of the thin outer blue outline of the initial capital C in Cream.",
+        "L1: Leftmost tip of the small upper-left blue medallion scallop below the capital C, before the long descending oval border.",
+        "L2: Center of the enclosed light counter of the lowercase a in Cream."
+      ]
+    }
+  },
+  "numeric_recomputation": "Attachment error and whole-hand/material translations independently recomputed from saved pre/post states and points; agree within1e-10m.",
+  "visual_scope": "Saved model observations report finger retention, table separation, no visible slip or nearby movement; not an evaluator-ground-truth recheck.",
+  "supervision": {
+    "action": "advance",
+    "evidence": [
+      "The current stage returned stage_complete.",
+      "Frame 192 shows the cream cheese package between the fingers, elevated clear of the tabletop and outside the bowl.",
+      "Recorded corresponding surface landmarks rose about 39.4 mm from frame 162 to frame 192, matching the measured hand lift with about 0.38 mm attachment error.",
+      "The current images support retained alignment after the acknowledged settling hold; no visible slipping is apparent.",
+      "No placement or release has occurred."
+    ],
+    "invalidated_assumptions": [],
+    "plan_valid": "yes",
+    "reason": "The grasp success evidence is supported. Advance to placement verification from the current held state without replaying the grasp. Current bowl geometry and held-object clearance still need validation before placement; historical geometry is not fresh clearance evidence.",
+    "recovery_available": "yes",
+    "stage_satisfied": "yes",
+    "task_satisfied": "no"
+  },
+  "task_success": false,
+  "next_method_job": "a2f348e15d924a4baa9b1afd268203c6"
+}
