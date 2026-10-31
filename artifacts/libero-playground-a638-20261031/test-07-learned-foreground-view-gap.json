@@ -240,5 +240,24 @@
     "source": "program-supplied historical data; not a fresh measurement"
   },
   "scope": "Method04 stopped before return/descent because rigid_rectangle unknown: two material corners occluded. Schema forced four corner entries; c0/c1 explicitly invalid placeholders, not geometry evidence. Appliance bounds also unknown. No new actions beyond55JEV165steps open. No observed external collision. Test memory remains frozen.",
-  "next_job": "a928b9e404064fcc8bb1bcce47a02ae6"
+  "next_job": "9b01565010d84687a305744eb16a1d0e",
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 165 shows the cream cheese still table-supported outside the bowl. The gripper remains open; retention and table-support separation are not established.",
+      "The new sensing excursion completed over 36 acknowledged native steps from frame 129 to frame 165. No return, contact descent, closure or retention lift followed.",
+      "The fresh review supplies four package-top and four table samples, but only two visible package corners. The other two entries are explicitly invalid placeholders, not measurements.",
+      "The palm/bowl samples support only a local vertical comparison. Palm/appliance and full-finger/appliance bounds remain unknown. No disturbance or unwanted contact was observed.",
+      "The reviewed clear reverse route covers only the new sensing excursion, not contact descent. The frame-105 candidate remains historical.",
+      "The stage returned blocked on rigid_rectangle with no live continuation. Current budgets are 16 GPT calls, 145 Jev calls and 435 native steps."
+    ],
+    "invalidated_assumptions": [
+      "The new sensing pose would expose all four package corners and the limiting palm/appliance geometry needed by this local method."
+    ],
+    "plan_valid": "yes",
+    "reason": "Acquisition remains suitable, and new partial measurements support a bounded local correction rather than another unchanged query. Revise the observation contract to distinguish rectangular rigidity from complete corner visibility and represent unavailable landmarks explicitly. Preserve valid samples; revalidate historical geometry through current correspondence or obtain a genuinely different, separately reviewed view or candidate. Resolve appliance-side full-hand clearance independently before contact. Resume planning from the actual frame-165 open pose without replaying completed motions. Unknown bounds neither authorize descent nor prove obstruction. Preflight remaining sensing, retention and final-verification costs; do not lower margins or fabricate missing geometry.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  }
 }
