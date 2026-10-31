@@ -1,0 +1,74 @@
+{
+  "index": 30,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_progress",
+      {
+        "phase": "contact descent",
+        "lease": 0,
+        "status": "lease_exhausted",
+        "lease_calls": 24,
+        "before": {
+          "frame_id": 105,
+          "native_steps": 105,
+          "tcp_position_world_m": [
+            -0.054985091682534064,
+            0.14274385924450733,
+            0.9705550150510741
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999944321008494,
+            0.002069232174970015,
+            0.002375473805428246,
+            -0.0011005315559651247
+          ],
+          "gripper_qpos_m": [
+            0.03999189002110788,
+            -0.03998436880532185
+          ],
+          "last_gripper_command": "open"
+        },
+        "after": {
+          "frame_id": 177,
+          "native_steps": 177,
+          "tcp_position_world_m": [
+            -0.05173693428793865,
+            0.14544876681205088,
+            0.9160416987905413
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999952942479418,
+            0.0021823044229571376,
+            0.0020085187234573604,
+            -0.0007841440655363547
+          ],
+          "gripper_qpos_m": [
+            0.04000006556231602,
+            -0.03999750006263387
+          ],
+          "last_gripper_command": "open"
+        },
+        "position_error_m": 0.0027353360950383328,
+        "rotation_error_rad": 0.004946256220825106,
+        "whole_lease_pose_progress_m_equivalent": 0.05471299910175586,
+        "objective_improvement_m_equivalent": 0.05361932107087558
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 177,
+  "response": {
+    "result": {
+      "key": "pick_progress",
+      "frame_id": 177,
+      "method_number": 0,
+      "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
+      "bytes": 993,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 177
+}

@@ -1,0 +1,65 @@
+{
+  "status": "continue",
+  "explanation": "The package has the same position, orientation, and visible outline in the fixed agentview. Its geometric upper-face center is visible in the wrist view. The wrist housing hides the far end, not an external obstruction; agentview still shows that end. The open fingers align across the package's short dimension and visibly straddle it. For ONLY the supplied vertical pad descent, nearby objects are outside the local finger corridor. The unchanged top/table model supports approximately 5 mm finger-to-table clearance at the target; this is model-based clearance, not a hidden-surface certificate. Closing and retention are not assessed.",
+  "parameters": {
+    "unchanged": "yes",
+    "contact_route": "clear",
+    "jaw_fit": "fits",
+    "reason": "Current visible geometry supports the saved package model, short-width jaw alignment, and positive modeled table clearance for the specified vertical-only descent. No external blocker is visible in that local route."
+  },
+  "points": [
+    {
+      "name": "center",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        381,
+        546
+      ],
+      "radius": 3
+    },
+    {
+      "name": "support",
+      "camera": "robot0_eye_in_hand",
+      "pixel": [
+        491,
+        449
+      ],
+      "radius": 4
+    }
+  ],
+  "regions": [
+    {
+      "name": "package_upper_face_visible",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        320,
+        420,
+        438,
+        630
+      ],
+      "stride": 8
+    },
+    {
+      "name": "left_table_clearance",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        224,
+        427,
+        294,
+        567
+      ],
+      "stride": 8
+    },
+    {
+      "name": "right_table_clearance",
+      "camera": "robot0_eye_in_hand",
+      "box": [
+        464,
+        427,
+        540,
+        567
+      ],
+      "stride": 8
+    }
+  ]
+}

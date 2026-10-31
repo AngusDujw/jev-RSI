@@ -1,0 +1,158 @@
+{
+  "index": 26,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_reference",
+      {
+        "frame_id": 0,
+        "identity": "cream cheese rectangular package",
+        "top_plane": {
+          "coefficients": [
+            -0.001799547824312402,
+            0.01859415754963026,
+            0.9998254942401937,
+            -0.9205426942590388
+          ],
+          "center_world_m": [
+            -0.053014975782216894,
+            0.1440290300626884,
+            0.9179293767613481
+          ],
+          "rms_m": 7.337212152644177e-05,
+          "in_plane_spread_m": [
+            0.032096161917286994,
+            0.013523901048593823
+          ]
+        },
+        "table_plane": {
+          "coefficients": [
+            3.162108236990274e-05,
+            -2.2136778946374365e-06,
+            0.9999999994976033,
+            -0.899959419820846
+          ],
+          "center_world_m": [
+            -0.05394031129782371,
+            0.14925401182346795,
+            0.8999614563243169
+          ],
+          "rms_m": 1.1102230246251565e-16,
+          "in_plane_spread_m": [
+            0.04223027553541172,
+            0.033741162589223654
+          ]
+        },
+        "corners_world_m": [
+          [
+            -0.013569472031843943,
+            0.16429491446834255,
+            0.9176234804036034
+          ],
+          [
+            -0.012493129222101856,
+            0.12397128009007473,
+            0.9183753325470976
+          ],
+          [
+            -0.09360538187334347,
+            0.12283167777654593,
+            0.9182505353364436
+          ],
+          [
+            -0.09276726802762757,
+            0.16434642943755015,
+            0.9174799772625506
+          ]
+        ],
+        "corner_pixels": [
+          [
+            146,
+            159
+          ],
+          [
+            203,
+            157
+          ],
+          [
+            207,
+            274
+          ],
+          [
+            149,
+            273
+          ]
+        ],
+        "corner_camera": "robot0_eye_in_hand",
+        "center_world_m": [
+          -0.05310881278872921,
+          0.14386107544312834,
+          0.9179323313874238
+        ],
+        "long_side_m": 0.0811202577880017,
+        "short_side_m": 0.04033799701666291,
+        "top_to_table_height_m": 0.01797091329421374,
+        "xy_allowance_m": 0.0014210466863384574,
+        "vertical_allowance_m": 0.0010733721215265529,
+        "quaternion_xyzw": [
+          0.999994241593966,
+          0.003393638004984539,
+          0.0,
+          0.0
+        ],
+        "contact_pad_z_m": 0.9178851966152449,
+        "finger_low_relative_to_pad_m": -0.012849107009252611,
+        "finger_table_clearance_m": 0.005073372121526553,
+        "pad_side_overlap_m": 0.0075951765669313165,
+        "contact_overlap_margin_m": 0.002021804445404763,
+        "provenance": "Visible depth planes, identified projected top boundary, measured own geometry. Pixel/depth allowances and contact margins are operational heuristics.",
+        "validated_frame_id": 105,
+        "fresh_center": {
+          "world_m": [
+            -0.0531245216551475,
+            0.14376275315597686,
+            0.9180833875165683
+          ],
+          "depth_m": 0.1494610458612442,
+          "frame_id": 105,
+          "pixel": [
+            381,
+            546
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "fresh_support": {
+          "world_m": [
+            -0.026273937712457944,
+            0.10718017495103707,
+            0.8999809930848994
+          ],
+          "depth_m": 0.16760985553264618,
+          "frame_id": 105,
+          "pixel": [
+            491,
+            449
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        }
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 105,
+  "response": {
+    "result": {
+      "key": "pick_reference",
+      "frame_id": 105,
+      "method_number": 0,
+      "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
+      "bytes": 2340,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 105
+}

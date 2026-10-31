@@ -1,0 +1,171 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "robot": {
+      "frame_id": 180,
+      "native_steps": 180,
+      "budgets": {
+        "gpt_remaining": 34,
+        "jev_remaining": 140,
+        "native_steps_remaining": 420,
+        "wall_seconds_remaining": 1000000000000.0
+      },
+      "tcp_position_world_m": [
+        -0.0517496,
+        0.145434,
+        0.916022
+      ],
+      "tcp_quaternion_xyzw": [
+        0.999995,
+        0.00216983,
+        0.00199018,
+        -0.000775658
+      ],
+      "gripper_qpos_m": [
+        0.0400001,
+        -0.0399976
+      ],
+      "last_gripper_command": "open",
+      "own_geometry": {
+        "pad_center_in_tool_m": [
+          -1.99407e-07,
+          1.45387e-06,
+          -0.00359969
+        ],
+        "pad_extent_in_tool_m": [
+          0.016,
+          0.0949977,
+          0.016
+        ],
+        "finger_low_offset_tool_m": [
+          -0.010495,
+          -0.0664008,
+          -0.044468
+        ],
+        "finger_high_offset_tool_m": [
+          0.0104946,
+          0.0664037,
+          0.00924936
+        ]
+      }
+    },
+    "processed_features": {
+      "program": {
+        "phase": "contact descent",
+        "source": "Program geometry in pick_reference; current residuals are host supplied.",
+        "reference_frame": 0,
+        "contact_overlap_margin_m": 0.0020218,
+        "package_short_side_m": 0.040338,
+        "position_tolerance_m": 0.0015,
+        "translation_limit_m": 0.007,
+        "retention_unproven_until_effect_test": true
+      },
+      "objective": {
+        "gripper": "open",
+        "tool_point": "pad_center"
+      },
+      "translation_error_world_m": [
+        -0.00135902,
+        -0.00157181,
+        -0.00173682
+      ],
+      "rotation_error_world_rad": [
+        -0.00156482,
+        0.00397508,
+        0.00244761
+      ],
+      "axes": {
+        "x": {
+          "error": -0.00135902,
+          "goal_relation": "decrease"
+        },
+        "y": {
+          "error": -0.00157181,
+          "goal_relation": "decrease"
+        },
+        "z": {
+          "error": -0.00173682,
+          "goal_relation": "decrease"
+        },
+        "rx": {
+          "error": -0.00156482,
+          "goal_relation": "within_tolerance"
+        },
+        "ry": {
+          "error": 0.00397508,
+          "goal_relation": "within_tolerance"
+        },
+        "rz": {
+          "error": 0.00244761,
+          "goal_relation": "within_tolerance"
+        }
+      }
+    },
+    "feature_source": "GPT-authored program; not an independent sensor"
+  },
+  "questions": {
+    "x": {
+      "type": "choice",
+      "instructions": "For axis x, read state.processed_features.axes.x.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis x, read the trusted state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "This axis is within its supplied deadband.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "y": {
+      "type": "choice",
+      "instructions": "For axis y, read state.processed_features.axes.y.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis y, read the trusted state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "This axis is within its supplied deadband.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "z": {
+      "type": "choice",
+      "instructions": "For axis z, read state.processed_features.axes.z.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis z, read the trusted state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "This axis is within its supplied deadband.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "rx": {
+      "type": "choice",
+      "instructions": "For axis rx, read state.processed_features.axes.rx.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis rx, read the trusted state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "This axis is within its supplied deadband.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "ry": {
+      "type": "choice",
+      "instructions": "For axis ry, read state.processed_features.axes.ry.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis ry, read the trusted state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "This axis is within its supplied deadband.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "rz": {
+      "type": "choice",
+      "instructions": "For axis rz, read state.processed_features.axes.rz.goal_relation only. Choose positive for increase, negative for decrease, and hold for within_tolerance. Other axes do not determine this answer. Program-authored policy: For world axis rz, read the trusted state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+      "criteria": {
+        "negative": "Decrease this world coordinate or world rotation-vector component.",
+        "hold": "This axis is within its supplied deadband.",
+        "positive": "Increase this world coordinate or world rotation-vector component."
+      }
+    },
+    "gripper": {
+      "type": "choice",
+      "instructions": "For the gripper question, read state.processed_features.objective.gripper and deliver that requirement. Program-authored policy: Read state.processed_features.objective.gripper and deliver that exact requested choice. Closure is an attempted contact, not evidence of retention.",
+      "criteria": {
+        "open": "The requested objective is open.",
+        "close": "The requested objective is close.",
+        "keep": "The requested objective is keep."
+      }
+    }
+  }
+}

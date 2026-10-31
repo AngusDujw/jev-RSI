@@ -63,6 +63,36 @@
         "task_satisfied": "no"
       },
       "live_continuation": true
+    },
+    {
+      "update": 0,
+      "stage": "pick",
+      "plan_revision": 0,
+      "stage_index": 0,
+      "frame_id": 144,
+      "trigger": "control_slice_limit",
+      "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
+      "outcome": {
+        "stage_status": "yield",
+        "completion_proposed": false,
+        "reason": "Control slice ended before the next unexecuted control; worker stack remains live."
+      },
+      "decision": {
+        "action": "continue",
+        "evidence": [
+          "The stage yielded at a normal control_slice_limit with live continuation available.",
+          "Acknowledged descent moved the TCP from height 0.970555 m to 0.916228 m; the latest target residual is approximately 2.95 mm, within the supplied 3 mm position tolerance.",
+          "Current images show the package still on the tabletop between the open fingers, with no visible displacement or new obstruction.",
+          "No closure, package lift, or retained object motion has been observed; the package is not in the bowl."
+        ],
+        "invalidated_assumptions": [],
+        "plan_valid": "yes",
+        "reason": "The approach has converged to its supplied tolerance rather than demonstrated a stall. Current evidence supports the unchanged local method and resuming the suspended program without repeating executed motion. The pick and overall task remain incomplete.",
+        "recovery_available": "yes",
+        "stage_satisfied": "no",
+        "task_satisfied": "no"
+      },
+      "live_continuation": true
     }
   ],
   "completed": [],

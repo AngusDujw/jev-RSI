@@ -1,0 +1,153 @@
+{
+  "index": 28,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "drive",
+    "args": [
+      [
+        -0.05310881278872921,
+        0.14386107544312834,
+        0.9178851966152449
+      ],
+      [
+        0.999994241593966,
+        0.003393638004984539,
+        0.0,
+        0.0
+      ],
+      "open",
+      {
+        "x": {
+          "type": "choice",
+          "instructions": "For world axis x, read the trusted state.processed_features.axes.x.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "y": {
+          "type": "choice",
+          "instructions": "For world axis y, read the trusted state.processed_features.axes.y.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "z": {
+          "type": "choice",
+          "instructions": "For world axis z, read the trusted state.processed_features.axes.z.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rx": {
+          "type": "choice",
+          "instructions": "For world axis rx, read the trusted state.processed_features.axes.rx.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "ry": {
+          "type": "choice",
+          "instructions": "For world axis ry, read the trusted state.processed_features.axes.ry.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "rz": {
+          "type": "choice",
+          "instructions": "For world axis rz, read the trusted state.processed_features.axes.rz.goal_relation. Select positive for increase, negative for decrease, and hold for within_tolerance. Do not infer contact, image geometry, or grasp success.",
+          "criteria": {
+            "negative": "Decrease this world coordinate or world rotation-vector component.",
+            "hold": "This axis is within its supplied deadband.",
+            "positive": "Increase this world coordinate or world rotation-vector component."
+          }
+        },
+        "gripper": {
+          "type": "choice",
+          "instructions": "Read state.processed_features.objective.gripper and deliver that exact requested choice. Closure is an attempted contact, not evidence of retention.",
+          "criteria": {
+            "open": "The requested objective is open.",
+            "close": "The requested objective is close.",
+            "keep": "The requested objective is keep."
+          }
+        }
+      }
+    ],
+    "kwargs": {
+      "features": {
+        "phase": "contact descent",
+        "source": "Program geometry in pick_reference; current residuals are host supplied.",
+        "reference_frame": 0,
+        "contact_overlap_margin_m": 0.002021804445404763,
+        "package_short_side_m": 0.04033799701666291,
+        "position_tolerance_m": 0.0015,
+        "translation_limit_m": 0.007,
+        "retention_unproven_until_effect_test": true
+      },
+      "tool_point": "pad_center",
+      "max_calls": 24,
+      "translation_limit": 0.007,
+      "rotation_limit": 0.07,
+      "steps": 3,
+      "position_tolerance": 0.0015,
+      "rotation_tolerance": 0.03
+    }
+  },
+  "frame_before": 105,
+  "response": {
+    "result": {
+      "decision": 58,
+      "choices": {
+        "x": "negative",
+        "y": "negative",
+        "z": "negative",
+        "rx": "hold",
+        "ry": "hold",
+        "rz": "hold",
+        "gripper": "open"
+      },
+      "action": [
+        -0.01800359415811153,
+        -0.02081472454694691,
+        -0.023090747450416615,
+        0.0,
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "before": [
+        -0.051723771787415884,
+        0.14546372080767675,
+        0.9160616472327043
+      ],
+      "after": [
+        -0.05173693428793865,
+        0.14544876681205088,
+        0.9160416987905413
+      ],
+      "target_tcp": [
+        -0.053108663645732156,
+        0.1438625881502193,
+        0.9142854358903646
+      ],
+      "acknowledged_steps": 3,
+      "native_steps": 177,
+      "frame_id": 177,
+      "status": "lease_exhausted",
+      "position_error_m": 0.0027353360950383328,
+      "rotation_error_rad": 0.004946256220825106,
+      "lease_calls": 24
+    }
+  },
+  "frame_after": 177
+}

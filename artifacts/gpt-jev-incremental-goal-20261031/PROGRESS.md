@@ -688,3 +688,7 @@ Review2 completed; the generated method passed initial geometry admission and di
 ## First live continuation confirmed
 
 Supervisor3 returned continue at frame72 with no invalidated assumptions. The existing method0/source c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6 resumed and reached observation hover at frame105 (35 Jev calls), residual 0.002299 m. This directly supports stack-preserving normal-slice continuation, not grasp success. Review4 755f01223a5e44bdbbbbf30ba845f80a now checks unchanged geometry, jaw fit and contact route.
+
+## Second continuation and tolerance discrepancy
+
+Supervisor5 continued at frame144, describing a 2.95 mm residual as within supplied 3 mm tolerance. Actual generated contact descent uses 1.5 mm, and its first 24-call lease ended at frame177 with lease_exhausted and 2.735 mm residual. This discrepancy needs input-path diagnosis after the frozen run; do not change this candidate mid-episode. Physical execution reached frame216/72 Jev calls and supervisor6 (8f9b7a91b440427b9f406ab7beb4bbcd) is active. No closure or lift proof yet.

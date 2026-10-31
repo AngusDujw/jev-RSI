@@ -1,0 +1,66 @@
+{
+  "index": 25,
+  "method_number": 0,
+  "request": {
+    "kind": "rpc",
+    "method": "checkpoint",
+    "args": [
+      "pick_observation",
+      {
+        "frame_id": 105,
+        "parameters": {
+          "unchanged": "yes",
+          "contact_route": "clear",
+          "jaw_fit": "fits",
+          "reason": "Current visible geometry supports the saved package model, short-width jaw alignment, and positive modeled table clearance for the specified vertical-only descent. No external blocker is visible in that local route."
+        },
+        "consumed_points": {
+          "center": {
+            "world_m": [
+              -0.0531245216551475,
+              0.14376275315597686,
+              0.9180833875165683
+            ],
+            "depth_m": 0.1494610458612442,
+            "frame_id": 105,
+            "pixel": [
+              381,
+              546
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          },
+          "support": {
+            "world_m": [
+              -0.026273937712457944,
+              0.10718017495103707,
+              0.8999809930848994
+            ],
+            "depth_m": 0.16760985553264618,
+            "frame_id": 105,
+            "pixel": [
+              491,
+              449
+            ],
+            "camera": "robot0_eye_in_hand",
+            "source": "current_depth_patch_backprojection"
+          }
+        },
+        "measurement_errors": []
+      }
+    ],
+    "kwargs": {}
+  },
+  "frame_before": 105,
+  "response": {
+    "result": {
+      "key": "pick_observation",
+      "frame_id": 105,
+      "method_number": 0,
+      "source_sha256": "c0e021f7803da03dcbadec5b2e65c61ad133888c92f75fc25150cfd5e86da1d6",
+      "bytes": 850,
+      "source": "program-supplied historical data; not a fresh measurement"
+    }
+  },
+  "frame_after": 105
+}
