@@ -1,0 +1,104 @@
+{
+  "classification": "Infrastructure-truncated episodes; retained as failed end-to-end attempts, not clean evidence of skill quality.",
+  "episodes": [
+    {
+      "episode": "test-04-learned",
+      "summary": {
+        "termination": "HTTP Error 502: Bad Gateway",
+        "native_success": false,
+        "result": null,
+        "native_steps": 0,
+        "settling_steps": 10,
+        "jev_calls": 0,
+        "gpt_calls": 2,
+        "rpc_calls": 0,
+        "elapsed_s": 1655.9832177009666,
+        "methods": [],
+        "last_method_error": null
+      },
+      "audit": "test-04-learned-audit.json"
+    },
+    {
+      "episode": "test-04-empty",
+      "summary": {
+        "termination": "HTTP Error 502: Bad Gateway",
+        "native_success": false,
+        "result": null,
+        "native_steps": 0,
+        "settling_steps": 10,
+        "jev_calls": 0,
+        "gpt_calls": 1,
+        "rpc_calls": 0,
+        "elapsed_s": 37.49659309000708,
+        "methods": [],
+        "last_method_error": null
+      },
+      "audit": "test-04-empty-audit.json"
+    },
+    {
+      "episode": "test-05-empty",
+      "summary": {
+        "termination": "HTTP Error 502: Bad Gateway",
+        "native_success": false,
+        "result": null,
+        "native_steps": 0,
+        "settling_steps": 10,
+        "jev_calls": 0,
+        "gpt_calls": 1,
+        "rpc_calls": 0,
+        "elapsed_s": 37.526432220009156,
+        "methods": [],
+        "last_method_error": null
+      },
+      "audit": "test-05-empty-audit.json"
+    },
+    {
+      "episode": "test-05-learned",
+      "summary": {
+        "termination": "HTTP Error 502: Bad Gateway",
+        "native_success": false,
+        "result": null,
+        "native_steps": 0,
+        "settling_steps": 10,
+        "jev_calls": 0,
+        "gpt_calls": 1,
+        "rpc_calls": 0,
+        "elapsed_s": 37.53411414998118,
+        "methods": [],
+        "last_method_error": null
+      },
+      "audit": "test-05-learned-audit.json"
+    },
+    {
+      "episode": "test-06-learned",
+      "summary": {
+        "termination": "HTTP Error 502: Bad Gateway",
+        "native_success": false,
+        "result": null,
+        "native_steps": 0,
+        "settling_steps": 10,
+        "jev_calls": 0,
+        "gpt_calls": 1,
+        "rpc_calls": 0,
+        "elapsed_s": 37.65350292797666,
+        "methods": [],
+        "last_method_error": null
+      },
+      "audit": "test-06-learned-audit.json"
+    }
+  ],
+  "causes": [
+    "test04-learned native stream connection failure exhausted same-thread continuations",
+    "Subsequent four native account/read workspace routing discovery timeouts"
+  ],
+  "admission_control": {
+    "campaign_pid": 1250034,
+    "signal": "SIGSTOP",
+    "reason": "Stop admitting new trials during repeated infrastructure errors",
+    "active_child_pid": 1259712,
+    "active_episode": "test-06-empty",
+    "active_plan_completed": true,
+    "active_method_job": "e2417db8aa5a4e518c71a5f78f767b0e"
+  },
+  "frozen_skills_changed": false
+}
