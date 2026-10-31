@@ -348,3 +348,4 @@
 - 【Agent】【2026-10-31 09:29】[op] EXP-2026W44-055 review20 completed; repeated rim-depth errors trigger supervisor21 revise and builder22 at frame240, preserving grasp/lift; no lateral dispatch or native success.
 - 【Agent】【2026-10-31 09:30】[op] Diagnosed frozen stage watchdog terminating generated local sensing recovery after two errors; retained exact code evidence and next-version test requirements without changing active pilot.
 - 【Agent】【2026-10-31 09:33】[op] Prepared isolated candidate021dbd95 bounded sensing recovery and active RPC/dispatch contracts; four watchdog checks pass; pushed candidate branch, active pilot unchanged.
+- 【Agent】【2026-10-31 09:34】[op] Validated candidate021dbd95 actual host/lease/payload code under fake IPC: live slice receives active1.5mm tolerance distinct from prior3mm and clears active RPC after completion; no robot claim.

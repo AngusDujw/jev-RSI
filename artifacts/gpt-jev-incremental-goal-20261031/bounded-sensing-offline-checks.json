@@ -6,8 +6,10 @@
     "eight_failure_bound": true,
     "unresolved_actuation_blocked": true,
     "python_ast": true,
-    "git_diff_check": true
+    "git_diff_check": true,
+    "active_rpc_survives_live_control_slice_to_serialized_payload": true,
+    "active_rpc_cleared_after_completion": true
   },
-  "scope": "Direct StageWatchdog calls with simulated RPC results; no robot or planner request integration proof. No test script created.",
+  "scope": "Direct watchdog checks plus actual extracted host execute_method/control_lease/payload-expression execution with fake IPC and simulated control; serialized current tolerance1.5mm remains distinct from previous3mm. No model, Jev or LIBERO success claim. No test script created.",
   "deployment": "Not deployed; current frozen pilot remains a0fd40ad."
 }
