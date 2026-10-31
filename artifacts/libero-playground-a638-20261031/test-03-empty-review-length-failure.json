@@ -1,0 +1,65 @@
+{
+  "episode": "test-03-empty",
+  "phase": "test",
+  "frame": 210,
+  "jev_calls": 70,
+  "native_steps": 210,
+  "job_id": "44c023172d1a430f82cdff73d6f07cc6",
+  "failure": {
+    "status": "failed",
+    "job_id": "44c023172d1a430f82cdff73d6f07cc6",
+    "error": {
+      "type": "ValueError",
+      "message": "Native submission validation repair budget exhausted"
+    },
+    "validation_errors": [
+      "submit_review.parameters.notes: length outside schema (actual=865, min=0, max=500)",
+      "submit_review.parameters.notes: length outside schema (actual=937, min=0, max=500)",
+      "submit_review.parameters.notes: length outside schema (actual=796, min=0, max=500)"
+    ]
+  },
+  "supervision": {
+    "action": "revise",
+    "evidence": [
+      "Frame 210 shows the cream cheese package outside the bowl, with the gripper open and no observed retained lift.",
+      "The latest error reports three rejected observation reviews because notes exceeded the 500-character limit.",
+      "No robot motion after frame 210 is acknowledged; the previous descent ended near-stalled with its target unreached.",
+      "Frame-210 measurements support reassessing local finger/table clearance and side overlap, but do not establish retention.",
+      "The stage returned blocked, and live continuation is unavailable."
+    ],
+    "invalidated_assumptions": [
+      "The observation review output conforms to the required field-length contract."
+    ],
+    "plan_valid": "yes",
+    "reason": "The secure subgoal remains appropriate. Correct the review schema violation with concise notes and obtain an accepted assessment of the actual configuration. Preserve the executed approach and descent; do not replay stalled motion, relax geometric thresholds, or infer grasp success from checkpoint assertions. Any acquisition recovery must use current geometry and independently verify retention and tabletop separation.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "last_accepted_review": {
+    "identity": "cream_cheese",
+    "interference": "none_observed",
+    "jaws_straddle": "yes",
+    "lift_110mm": "visible_clear",
+    "notes": "All samples are current frame 210. Top samples avoid seams, perimeter and hand masking; table samples are bare. Current alignment supports the recorded section, but temporal pose invariance is unverified without earlier images. Central contact masking is own-hand occlusion, not an observed external obstruction. Clearance is local and includes the stated tolerances. Retreat means only the OPEN hand rising 25 mm along the approach. No force, controller cause, retention or placement is inferred.",
+    "retreat_25mm": "visible_clear",
+    "table_supported": "yes",
+    "unchanged_pose_section": "unknown"
+  },
+  "current_margins": {
+    "finger_table_gap_m": 0.0071777136992168256,
+    "required_gap_m": 0.004689457244192301,
+    "side_overlap_m": 0.005910723792302898,
+    "required_overlap_m": 0.005312035466661304,
+    "historical_top_residual_m": 0.0002873139918575518,
+    "historical_table_residual_m": 1.5096991841878626e-05,
+    "former_target_error_m": 0.0020134086790521595
+  },
+  "hashes": {
+    "gpt-15.parsed.json": "cb545dab1434083059960031b8928f80093472f2fc953a95a81fcbb07fdd6667",
+    "gpt-16.request.json": "09043b401d1ec39b3768c56e194aeecdba6ea69bf1744e4aaf818a16129ce7e6",
+    "gpt-17.parsed.json": "3424c5c72fc7b67bb676a427b7284a83dc45f1e6f69149ba74add366ef8edad5",
+    "method-03.py": "f9e7c14d205bb84e2cb29afa2fdc85fd77e7dc5f6038e9f61455c58d958c5507"
+  },
+  "scope": "All three invalid notes submissions retained in relay receipt. No accepted replacement observation or new robot action. Geometric margins alone do not override unknown temporal pose/section assessment. Stage revision budget routes next call to stage planning. No Test-to-skill updates."
+}
