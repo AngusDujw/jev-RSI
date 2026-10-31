@@ -1,0 +1,19 @@
+{
+  "episode": "test-07-learned",
+  "frame_id": 0,
+  "method_source_sha256": "5e0da8b99c62e0af86649504c7d5115a43fcc465727db5acbd9ef68d68385e6c",
+  "method_job": "1dd357e5e92a405aa74608ddee94426a",
+  "generation_elapsed_s": 1118.574789762497,
+  "valid_depth_points": 8,
+  "plane_coefficient_recompute_max_abs_error": {
+    "top_fit": 3.469446951953614e-18,
+    "table_fit": 3.7015339795012925e-19
+  },
+  "measured_geometry": {
+    "short_width_m": 0.04032922652718844,
+    "thickness_m": 0.017573583995057374,
+    "uncertainty_m": 0.0007280151372236382,
+    "boundary_uncertainty_m": 0.0014560302744472764
+  },
+  "scope": "Independent recomputation of initial top/table plane fits only. Conditional bottom is inferred from tabletop support; no grasp, clearance, retention or task success certified."
+}
