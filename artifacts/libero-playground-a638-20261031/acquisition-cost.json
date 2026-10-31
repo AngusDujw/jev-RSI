@@ -1,0 +1,104 @@
+{
+  "scope": "Acquisition only: three Playground episodes plus all five saved refinement/correction response receipts; excludes Test, preflight and outer-agent work. Known token sums are lower bounds where usage is missing. Local Pro usage is not API dollar cost. Native accounting records are not HTTP attempt counts.",
+  "episodes": 3,
+  "native_successes": 0,
+  "episode_calls": {
+    "gpt": 91,
+    "jev": 219
+  },
+  "native_steps": 657,
+  "episode_elapsed_s_sum": 27010.889819680044,
+  "episode_gpt_usage": {
+    "completed_input": 11446753,
+    "completed_output": 768651,
+    "unknown_usage": 4,
+    "native_accounting_records": 92
+  },
+  "episode_jev_usage": {
+    "completed_input": 491702,
+    "completed_output": 54531,
+    "unknown_usage": 0,
+    "attempts": 219
+  },
+  "refinement_requests": 5,
+  "refinement_usage": {
+    "input_tokens": 888756,
+    "output_tokens": 81453
+  },
+  "known_combined_gpt_tokens": {
+    "input": 12335509,
+    "output": 850104
+  },
+  "refinement_receipts": [
+    {
+      "receipt": "code/runs/2026-10-31-libero-playground/evidence/refine-0/correction-1.response.json",
+      "sha256": "42ab182aa4c907f0a44a8672725e6570ea26c2a8352843c46c51cb3c79ff750b",
+      "usage": {
+        "input_tokens": 124531,
+        "output_tokens": 6958,
+        "output_tokens_details": {
+          "reasoning_tokens": 516
+        }
+      },
+      "status": "completed"
+    },
+    {
+      "receipt": "code/runs/2026-10-31-libero-playground/evidence/refine-0/refinement.response.json",
+      "sha256": "ce441e39fdf44f185a9c1c73b6e38cac0c154e0ac11baa53ed9938fd7aefd956",
+      "usage": {
+        "input_tokens": 114029,
+        "output_tokens": 10391,
+        "output_tokens_details": {
+          "reasoning_tokens": 3986
+        }
+      },
+      "status": "completed"
+    },
+    {
+      "receipt": "code/runs/2026-10-31-libero-playground/evidence/refine-1/refinement.response.json",
+      "sha256": "4b5f4ffa34529da7d9f846a7c680fc6dfe1e1f2dfe4d27d31d8e43cc36ad2413",
+      "usage": {
+        "input_tokens": 170903,
+        "output_tokens": 14845,
+        "output_tokens_details": {
+          "reasoning_tokens": 3653
+        }
+      },
+      "status": "completed"
+    },
+    {
+      "receipt": "code/runs/2026-10-31-libero-playground/evidence/refine-2/correction-1.response.json",
+      "sha256": "697dd9395ae36aeb99d9a327efb1201a668543d188997729f48f5531421c21cd",
+      "usage": {
+        "input_tokens": 196023,
+        "output_tokens": 12163,
+        "output_tokens_details": {
+          "reasoning_tokens": 1552
+        }
+      },
+      "status": "completed"
+    },
+    {
+      "receipt": "code/runs/2026-10-31-libero-playground/evidence/refine-2/refinement.response.json",
+      "sha256": "a325b058ade4b4ca0fbae1d1320d93afc812b825b1567198020521283110c098",
+      "usage": {
+        "input_tokens": 283270,
+        "output_tokens": 37096,
+        "output_tokens_details": {
+          "reasoning_tokens": 5430
+        }
+      },
+      "status": "completed"
+    }
+  ],
+  "episode_audit_sha256": {
+    "0": "3580bcf0e6f742ae522fa3e72f453b313808981d35693d41aa6dc3ece61acb6b",
+    "1": "1d734e8fe95f73de1c3698e6488f6aa3de4c104c859c521ae154d3416cd7a266",
+    "2": "6a358773e9440224fa6d50d4d5a753d96fde091cf0619598ea827a13cd653302"
+  },
+  "limitations": [
+    "No transfer success is established by these costs.",
+    "Episode wall time excludes refinement and inter-episode idle time; it is not end-to-end campaign wall time.",
+    "Missing native retry token usage cannot be reconstructed from these receipts."
+  ]
+}
