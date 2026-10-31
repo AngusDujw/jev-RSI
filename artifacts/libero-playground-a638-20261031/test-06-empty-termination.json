@@ -1,0 +1,290 @@
+{
+  "episode": "test-06-empty",
+  "condition": "empty learned-skill memory baseline",
+  "native_success": true,
+  "termination": "completion_proposed",
+  "gpt_calls": 40,
+  "jev_calls": 140,
+  "native_steps": 420,
+  "elapsed_s": 8204.98354361899,
+  "program_result_contract_valid": true,
+  "final_review": {
+    "status": "complete",
+    "explanation": "Both current views support the same cream-cheese package resting inside the patterned bowl, without rim bridging or finger support. Placement appears unchanged from the supplied earlier frame-402 images.",
+    "parameters": {
+      "identity": "same_target_and_patterned_bowl",
+      "placement": "inside_not_bridging_rim",
+      "separation": "clear_gap",
+      "support": "resting_in_bowl",
+      "temporal_visual": "direct_comparison_stable",
+      "correspondence": "M0_M1_reidentified",
+      "wrist_evidence": "interior_margin_visible",
+      "agent_evidence": "nested_package_and_separate_fingers",
+      "observations": "Wrist view shows patterned interior between the package and rim on both long sides and beyond both short ends; the package does not span the rim. Agentview shows the package nested within the bowl, with its lower portion behind the front rim, and visible gaps between the package and both withdrawn fingers. Neither finger visibly supports it. Direct comparison with both supplied earlier images shows unchanged package orientation and placement relative to the bowl. M0 is the blue inner counter of the initial C in Cream; M1 is the blue inner counter of the initial C in Cheese. Both landmarks are identifiable in the current wrist image.",
+      "uncertainties": "The package underside and exact bowl contact surfaces are hidden. Resting support is an operational inference from nesting, visual persistence and absence of hand support, not a claim of observed underside contact or a numerical below-rim certificate."
+    },
+    "points": [
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "M0",
+        "pixel": [
+          375,
+          433
+        ],
+        "radius": 2
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "M1",
+        "pixel": [
+          396,
+          524
+        ],
+        "radius": 2
+      }
+    ],
+    "regions": []
+  },
+  "final_supervision": {
+    "action": "advance",
+    "evidence": [
+      "The verification stage returned stage_complete at frame 420.",
+      "Frame-420 robot0_eye_in_hand shows the cream cheese package inside the patterned bowl, with visible interior margins on all sides and no rim bridging.",
+      "Frame-420 agentview shows the package nested behind the front rim and visibly separated from both withdrawn fingers.",
+      "Execution acknowledges 18 additional settling steps without renewed grasp, placement or release.",
+      "Corresponding wrist-camera depth landmarks at frames 402 and 420 differ by approximately 0.15 mm each, consistent with persistence within the declared 3 mm localization allowance."
+    ],
+    "invalidated_assumptions": [],
+    "plan_valid": "yes",
+    "reason": "Current complementary views and measured persistence support the final-stage goal and a whole-task completion proposal. Resting support is inferred from nesting, persistence and absence of hand support; the underside and exact contact patches remain unobserved.",
+    "recovery_available": "unknown",
+    "stage_satisfied": "yes",
+    "task_satisfied": "yes"
+  },
+  "effect": {
+    "key": "verify.effect",
+    "frame_id": 420,
+    "method_number": 6,
+    "source_sha256": "ff05f6b779d1e1641dbb5bd885b617fb075443d9f8dc9a78ebcb4207bd72ffcd",
+    "bytes": 4689,
+    "value": {
+      "stage_status": "stage_complete",
+      "reason": "Fresh complementary views resolve interior bowl placement and finger separation after acknowledged additional settling; temporal evidence supports persistence.",
+      "evidence": {
+        "entry_frame_id": 402,
+        "historical_actions": "Release at 360-372 and withdrawal at 372-402 acknowledged; not repeated.",
+        "actions": [
+          {
+            "phase": "settle_keep",
+            "index": 0,
+            "frames": [
+              402,
+              405
+            ],
+            "acknowledged_steps": 3,
+            "actual_step_delta": 3,
+            "status": "reached",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "hand_drift_m": 0.00026330085287410327,
+            "hand_rotation_rad": 5.4166448577165e-05
+          },
+          {
+            "phase": "settle_keep",
+            "index": 1,
+            "frames": [
+              405,
+              408
+            ],
+            "acknowledged_steps": 3,
+            "actual_step_delta": 3,
+            "status": "reached",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "hand_drift_m": 0.0002643428188363733,
+            "hand_rotation_rad": 9.297090862251903e-05
+          },
+          {
+            "phase": "settle_keep",
+            "index": 2,
+            "frames": [
+              408,
+              411
+            ],
+            "acknowledged_steps": 3,
+            "actual_step_delta": 3,
+            "status": "reached",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "hand_drift_m": 0.0002656986397117833,
+            "hand_rotation_rad": 0.0001226674704522047
+          },
+          {
+            "phase": "settle_keep",
+            "index": 3,
+            "frames": [
+              411,
+              414
+            ],
+            "acknowledged_steps": 3,
+            "actual_step_delta": 3,
+            "status": "reached",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "hand_drift_m": 0.0002667088574171502,
+            "hand_rotation_rad": 0.00014516548499646508
+          },
+          {
+            "phase": "settle_keep",
+            "index": 4,
+            "frames": [
+              414,
+              417
+            ],
+            "acknowledged_steps": 3,
+            "actual_step_delta": 3,
+            "status": "reached",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "hand_drift_m": 0.0002671430575361902,
+            "hand_rotation_rad": 0.0001622247859498498
+          },
+          {
+            "phase": "settle_keep",
+            "index": 5,
+            "frames": [
+              417,
+              420
+            ],
+            "acknowledged_steps": 3,
+            "actual_step_delta": 3,
+            "status": "reached",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "hold",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "hand_drift_m": 0.00026713228052650264,
+            "hand_rotation_rad": 0.00017589360488090433
+          }
+        ],
+        "measurement_issues": [],
+        "review": {
+          "frame_id": 420,
+          "cameras": [
+            "agentview",
+            "robot0_eye_in_hand"
+          ],
+          "status": "complete",
+          "parameters": {
+            "identity": "same_target_and_patterned_bowl",
+            "placement": "inside_not_bridging_rim",
+            "separation": "clear_gap",
+            "support": "resting_in_bowl",
+            "temporal_visual": "direct_comparison_stable",
+            "correspondence": "M0_M1_reidentified",
+            "wrist_evidence": "interior_margin_visible",
+            "agent_evidence": "nested_package_and_separate_fingers",
+            "observations": "Wrist view shows patterned interior between the package and rim on both long sides and beyond both short ends; the package does not span the rim. Agentview shows the package nested within the bowl, with its lower portion behind the front rim, and visible gaps between the package and both withdrawn fingers. Neither finger visibly supports it. Direct comparison with both supplied earlier images shows unchanged package orientation and placement relative to the bowl. M0 is the blue inner counter of the initial C in Cream; M1 is the blue inner counter of the initial C in Cheese. Both landmarks are identifiable in the current wrist image.",
+            "uncertainties": "The package underside and exact bowl contact surfaces are hidden. Resting support is an operational inference from nesting, visual persistence and absence of hand support, not a claim of observed underside contact or a numerical below-rim certificate."
+          },
+          "points": {
+            "M0": {
+              "world_m": [
+                -0.04711352894690918,
+                -0.0022550882158108923,
+                0.9501402841168941
+              ],
+              "depth_m": 0.20110172033309937,
+              "frame_id": 420,
+              "pixel": [
+                375,
+                433
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            },
+            "M1": {
+              "world_m": [
+                -0.08391047103707774,
+                -0.010879197768490483,
+                0.9489467331852222
+              ],
+              "depth_m": 0.20207586884498596,
+              "frame_id": 420,
+              "pixel": [
+                396,
+                524
+              ],
+              "camera": "robot0_eye_in_hand",
+              "source": "current_depth_patch_backprojection"
+            }
+          },
+          "measurement_errors": []
+        },
+        "persistence": {
+          "checks": [
+            {
+              "name": "M0",
+              "displacement_m": 0.00014531055104295354,
+              "allowance_m": 0.003,
+              "consistent": true
+            },
+            {
+              "name": "M1",
+              "displacement_m": 0.0001485903468208525,
+              "allowance_m": 0.003,
+              "consistent": true
+            }
+          ],
+          "frames": [
+            402,
+            420
+          ],
+          "rule": "Two corresponding surface landmarks within summed localization allowances, or direct temporal image comparison if numeric evidence is unavailable. Any valid contradictory metric prevents acceptance."
+        }
+      }
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "limitations": "One baseline success does not establish learned-skill benefit or high success rate. Prior zero-action transport failures remain in end-to-end records. Frozen revision3 remains unchanged; no Test-to-memory update."
+}
