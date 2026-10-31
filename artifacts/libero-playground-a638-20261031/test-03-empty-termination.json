@@ -1,0 +1,382 @@
+{
+  "episode": "test-03-empty",
+  "phase": "test",
+  "summary": {
+    "termination": "gpt_budget",
+    "native_success": false,
+    "result": null,
+    "native_steps": 327,
+    "settling_steps": 10,
+    "jev_calls": 109,
+    "gpt_calls": 40,
+    "rpc_calls": 270,
+    "elapsed_s": 11482.560447213997,
+    "methods": [
+      {
+        "number": 0,
+        "source_sha256": "ef146d817bdb30acee1062622422dc64922041311e03469fa7f730676896aea9",
+        "stage_id": "secure"
+      },
+      {
+        "number": 1,
+        "source_sha256": "6a7093a8ab327e8ed6450c8f1810fc6a4e405fb1fcefc1210ad31e22784b1909",
+        "stage_id": "secure"
+      },
+      {
+        "number": 2,
+        "source_sha256": "e54b29f80c825a8e0bd3fccaa79810a14d4c11aa5cf714dd24d92873004a74d6",
+        "stage_id": "secure"
+      },
+      {
+        "number": 3,
+        "source_sha256": "f9e7c14d205bb84e2cb29afa2fdc85fd77e7dc5f6038e9f61455c58d958c5507",
+        "stage_id": "secure"
+      },
+      {
+        "number": 4,
+        "source_sha256": "dc5db0eaf8500c09606cf5b8db850f24ae2d0ebf8a8ba64188e376751d347bbc",
+        "stage_id": "acquire"
+      },
+      {
+        "number": 5,
+        "source_sha256": "30c2f07ec9271d4574f38ecc1936d8ca685852a5bf48f7d5924cd74d8e1f6e0b",
+        "stage_id": "place_check"
+      },
+      {
+        "number": 6,
+        "source_sha256": "7d49c6a73932535e0febcd5afe34c79f88d855cf405938238915163f23034706",
+        "stage_id": "place_check"
+      },
+      {
+        "number": 7,
+        "source_sha256": "2970ede2dbb296c708230d190ca74982a6d7ac9e7190bd6117e07f03a0429952",
+        "stage_id": "place_check"
+      },
+      {
+        "number": 8,
+        "source_sha256": "89e12375cdf3360735ea60cbacedb4598909d94a5d392edcf742c18ff46199d6",
+        "stage_id": "place_check"
+      }
+    ],
+    "last_method_error": null
+  },
+  "last_supervision": {
+    "action": "revise",
+    "evidence": [
+      "The current stage yielded at control_slice_limit, not stage_complete; live continuation is unavailable.",
+      "The package remains visible between the fingers outside the patterned bowl. The bowl appears upright; released, settled containment is not observed.",
+      "The partial tilt has already executed. Current TCP position is approximately 9.2 mm from the intended fixed tilt position, exceeding the supplied 1.5 mm position tolerance.",
+      "Across the last five acknowledged controls, TCP x moved approximately 5.4 mm opposite the requested positive correction.",
+      "The frame-273 local assessment predates this tracking deviation and is not fresh clearance evidence for the resulting configuration."
+    ],
+    "invalidated_assumptions": [
+      "The tilt controller preserves the assessed in-place position within tolerance.",
+      "The unchanged local control method is correcting the observed position error."
+    ],
+    "plan_valid": "yes",
+    "reason": "Placement remains suitable, but local tracking requires correction. Preserve the achieved lift and partial tilt without replaying the interrupted RPC. Reassess current retention and nearby geometry, then revise the local motion method from the actual configuration. The deviation does not by itself establish collision or global infeasibility.",
+    "recovery_available": "yes",
+    "stage_satisfied": "no",
+    "task_satisfied": "no"
+  },
+  "last_local_checkpoint": {
+    "key": "place.local",
+    "frame_id": 273,
+    "method_number": 8,
+    "source_sha256": "89e12375cdf3360735ea60cbacedb4598909d94a5d392edcf742c18ff46199d6",
+    "bytes": 2585,
+    "value": {
+      "source_key": "place.geometry",
+      "reference_frame": 255,
+      "data": {
+        "reference_frame": 255,
+        "rise_m": 0.04284534536797968,
+        "raw_sweep_radius_m": 0.06842034491335783,
+        "inflated_sweep_radius_m": 0.07242034491335783,
+        "package_uncertainty_m": 0.0025,
+        "bowl_uncertainty_m": 0.0025,
+        "rim_upper_z_m": 0.9484732094382596,
+        "fit_reserve_m": 0.007500000000000001,
+        "flat_margin_m": 0.004271838070382526,
+        "position_tolerance_m": 0.0015,
+        "scope": "Upward sensing segment, then separately assessed in-place tilt only. No transfer, descent or release.",
+        "last_witness": {
+          "frame_id": 255,
+          "identity": "Package-facing patterned bowl upper lip.",
+          "point": {
+            "world_m": [
+              -0.09507068243000893,
+              0.0617182282493649,
+              0.9459732094382596
+            ],
+            "depth_m": 1.003796100616455,
+            "frame_id": 255,
+            "pixel": [
+              441,
+              424
+            ],
+            "camera": "agentview",
+            "source": "current_depth_patch_backprojection"
+          },
+          "separation_diagnostic_m": 0.025936022310430795,
+          "scope": "Point consistency plus local visual assessment only; not hidden clearance."
+        },
+        "last_effect": {
+          "phase": "rise",
+          "before_frame": 255,
+          "after_frame": 273,
+          "actual_hand_delta_world_m": [
+            -0.0004170804825396682,
+            0.0006727540401876148,
+            0.042022083192847615
+          ],
+          "actual_hand_quaternion_xyzw": [
+            0.9999750671636569,
+            0.006999024121601416,
+            0.0006125091703692174,
+            -0.0007096089779449041
+          ],
+          "object_mean_delta_world_m": [
+            -0.0004166086836003176,
+            0.0006675411963874382,
+            0.04202089474155271
+          ],
+          "attachment_error_m": 5.110657551690307e-06,
+          "limit_m": 0.0046,
+          "predicted_landmark_signal_m": 0.04203043858345101,
+          "observed_landmark_signal_m": 0.04203107930816082,
+          "required_signal_m": 0.0108,
+          "bowl_witness_drift_m": 0.0
+        }
+      },
+      "tests": [
+        {
+          "phase": "rise",
+          "before_frame": 255,
+          "after_frame": 273,
+          "actual_hand_delta_world_m": [
+            -0.0004170804825396682,
+            0.0006727540401876148,
+            0.042022083192847615
+          ],
+          "actual_hand_quaternion_xyzw": [
+            0.9999750671636569,
+            0.006999024121601416,
+            0.0006125091703692174,
+            -0.0007096089779449041
+          ],
+          "object_mean_delta_world_m": [
+            -0.0004166086836003176,
+            0.0006675411963874382,
+            0.04202089474155271
+          ],
+          "attachment_error_m": 5.110657551690307e-06,
+          "limit_m": 0.0046,
+          "predicted_landmark_signal_m": 0.04203043858345101,
+          "observed_landmark_signal_m": 0.04203107930816082,
+          "required_signal_m": 0.0108,
+          "bowl_witness_drift_m": 0.0
+        }
+      ],
+      "current_state": {
+        "frame_id": 273,
+        "native_steps": 273,
+        "tcp_position_world_m": [
+          -0.048366111255388713,
+          0.12438843448550793,
+          1.0380702921764855
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999750671636569,
+          0.006999024121601416,
+          0.0006125091703692174,
+          -0.0007096089779449041
+        ],
+        "gripper_qpos_m": [
+          0.021125241431863694,
+          -0.021092583266111124
+        ],
+        "last_gripper_command": "close"
+      }
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "last_progress": {
+    "key": "place.progress",
+    "frame_id": 273,
+    "method_number": 8,
+    "source_sha256": "89e12375cdf3360735ea60cbacedb4598909d94a5d392edcf742c18ff46199d6",
+    "bytes": 2035,
+    "value": {
+      "phase": "separately_authorized_in_place_tilt_requested",
+      "before": {
+        "frame_id": 273,
+        "native_steps": 273,
+        "tcp_position_world_m": [
+          -0.048366111255388713,
+          0.12438843448550793,
+          1.0380702921764855
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999750671636569,
+          0.006999024121601416,
+          0.0006125091703692174,
+          -0.0007096089779449041
+        ],
+        "gripper_qpos_m": [
+          0.021125241431863694,
+          -0.021092583266111124
+        ],
+        "last_gripper_command": "close"
+      },
+      "target_world_m": [
+        -0.048366111255388713,
+        0.12438843448550793,
+        1.0380702921764855
+      ],
+      "quaternion_xyzw": [
+        0.8657042269488177,
+        0.0004938579846418796,
+        -0.5004643733988325,
+        0.009558164350706952
+      ],
+      "gripper": "keep",
+      "previous_actions": [
+        {
+          "phase": "rise_for_local_observation",
+          "before": {
+            "frame_id": 255,
+            "native_steps": 255,
+            "tcp_position_world_m": [
+              -0.047949030772849045,
+              0.12371568044532032,
+              0.9960482089836379
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999745488505877,
+              0.007052319029578591,
+              0.0007072090301055802,
+              -0.0008162737019637012
+            ],
+            "gripper_qpos_m": [
+              0.02112509076741068,
+              -0.02109432793728199
+            ],
+            "last_gripper_command": "close"
+          },
+          "after": {
+            "frame_id": 273,
+            "native_steps": 273,
+            "tcp_position_world_m": [
+              -0.048366111255388713,
+              0.12438843448550793,
+              1.0380702921764855
+            ],
+            "tcp_quaternion_xyzw": [
+              0.9999750671636569,
+              0.006999024121601416,
+              0.0006125091703692174,
+              -0.0007096089779449041
+            ],
+            "gripper_qpos_m": [
+              0.021125241431863694,
+              -0.021092583266111124
+            ],
+            "last_gripper_command": "close"
+          },
+          "receipt": {
+            "decision": 90,
+            "choices": {
+              "x": "hold",
+              "y": "negative",
+              "z": "positive",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "keep"
+            },
+            "action": [
+              0.0,
+              -0.011751554764061783,
+              0.03662333020632058,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "before": [
+              -0.04838260986020301,
+              0.12461964619640199,
+              1.0360763751049775
+            ],
+            "after": [
+              -0.048366111255388713,
+              0.12438843448550793,
+              1.0380702921764855
+            ],
+            "target_tcp": [
+              -0.047949030772849045,
+              0.12371568044532032,
+              1.0388935543516176
+            ],
+            "acknowledged_steps": 3,
+            "native_steps": 273,
+            "frame_id": 273,
+            "status": "reached",
+            "position_error_m": 0.0011420659948126741,
+            "rotation_error_rad": 0.0003045392762428229,
+            "lease_calls": 6
+          }
+        }
+      ]
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "last_dispatch": {
+    "decision": 108,
+    "choices": {
+      "x": "positive",
+      "y": "positive",
+      "z": "positive",
+      "rx": "negative",
+      "ry": "positive",
+      "rz": "hold",
+      "gripper": "keep"
+    },
+    "action": [
+      0.09421473012473565,
+      0.015538910152365276,
+      0.014128348919991261,
+      -0.01312597156797565,
+      0.15946068126781815,
+      0.0,
+      1.0
+    ],
+    "before": [
+      -0.055613398188060686,
+      0.12319313370455676,
+      1.036983496105717
+    ],
+    "after": [
+      -0.05737906632258706,
+      0.12279342038888322,
+      1.0369045096049725
+    ],
+    "target_tcp": [
+      -0.048366111255388713,
+      0.12438843448550793,
+      1.0380702921764855
+    ],
+    "acknowledged_steps": 3,
+    "native_steps": 327,
+    "frame_id": 327
+  },
+  "source_hashes": {
+    "protocol.json": "84cdbd26da90171a39f3b11f894127765d7f1f956de135c6e80927468aae8b90",
+    "summary.json": "f6003db5368aa4012d479c71153dc2daa275473fad32b592934605272a089aec",
+    "gpt-39.parsed.json": "d6925085d0db9b5f1837d2c6405bd2b6ee9e8ef16484332cad13f6b7a6af92dc",
+    "program-checkpoints.json": "b10965638b4117ba197d582005e011f8f618a0ed6466ef8f33340f8da6632982",
+    "method-08.py": "89e12375cdf3360735ea60cbacedb4598909d94a5d392edcf742c18ff46199d6"
+  },
+  "scope": "Saved native outcome and execution evidence. Partial tilt and retained lift are not placement; control deviation does not prove collision."
+}

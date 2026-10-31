@@ -121,6 +121,20 @@ This verifies provenance and integrity, not skill effectiveness.
 The running matched Test uses task1335, initial states3 through12, with the
 same original robot host and40 GPT /200 Jev /600 native-step budgets in both
 conditions. The first actual planning request for test-03-empty has no skill
-memory or prior episode checkpoints. The learned-condition input still requires
-verification when admitted. Separate held-out-task evaluation remains pending;
-this same-task comparison alone cannot establish task-general reliability.
+memory or prior episode checkpoints. The first empty Test terminated at its40 GPT budget after109 Jev calls and327
+native steps (11482.56 seconds), with native success false. It verified retained
+lifts but did not transfer or release; the final supervisor observed position
+tracking deviation during a partial tilt. The complete saved-receipt
+[audit](../../../artifacts/libero-playground-a638-20261031/test-03-empty-audit.json)
+and [termination evidence](../../../artifacts/libero-playground-a638-20261031/test-03-empty-termination.json)
+retain that failure.
+
+The paired learned Test is now running. Its
+[transfer check](../../../artifacts/libero-playground-a638-20261031/test-03-learned-transfer-check.json)
+verifies all12 frozen file hashes and complete contents in the actual first
+planning request. The entire initial request matches the empty condition except
+for appended knowledge instructions, including identical image inputs and robot
+state. Protocols differ only in output directory and skill-memory path. This
+establishes delivery and initial matching, not effectiveness. Separate held-out-task
+evaluation remains pending; this same-task comparison alone cannot establish
+task-general reliability.

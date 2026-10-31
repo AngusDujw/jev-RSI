@@ -1,0 +1,104 @@
+{
+  "episode": "test-03-learned",
+  "paired_baseline": "test-03-empty",
+  "phase": "test",
+  "snapshot_sha256": "0835ee2a80f1f6b3cf6d7a845117411579fe16e9eccad0732e4a0502c9c4ec10",
+  "freeze_sha256": "4d212a0f2bbefec1360791d2a319a9624c2e309bcac8022a33e44f41df2c0862",
+  "file_count": 12,
+  "total_characters": 51785,
+  "files": [
+    {
+      "path": "lessons/libero-evidence.md",
+      "sha256": "a262e6474a563d0ac55c285804e4dc6714783749dc7efe8ef4808f81fcf9bfff",
+      "characters": 7763,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "lessons/libero-knowledge-index.md",
+      "sha256": "984863c2ceda8dd5f4cd003902d04d7cdd2b10043dd679e052c04a0c5be506bc",
+      "characters": 1851,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-bounded-checkpoints.md",
+      "sha256": "27cf0ced87e683b483ac7b16093320735fa4d13579cf21f72a03321535e2ef81",
+      "characters": 4341,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-bounded-jev-control.md",
+      "sha256": "d6d4d2e86bce1942ee0a1096c3440d0d38a468605c7a9b51bb847123b0e3e9c3",
+      "characters": 4141,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-contained-release.md",
+      "sha256": "cbbee88bd497d2e094afadf1bb5ff42ef45c3de9f70b8045f96e6fb8dcd10297",
+      "characters": 4657,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-continuation-recovery.md",
+      "sha256": "44d14cbc4f2e1ccb947b1c678f42744cd03cbf27c7ab28169fc4f9014525f730",
+      "characters": 4326,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-differential-retention.md",
+      "sha256": "8318d55cac838c67f4bb21c06ec578e6d3a9c283abd0e5db17a24a30a27f8dca",
+      "characters": 5944,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-evidence-budget.md",
+      "sha256": "c25bd7d0313a91448820826202d22e1c2d7797e3426356954d274cbc4779d8db",
+      "characters": 3443,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-measured-surface-geometry.md",
+      "sha256": "c82e614ef4012370ad2c05fb226c1421a6a1a9144f60277bba917e21d94c6cb3",
+      "characters": 3259,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-observable-stages.md",
+      "sha256": "bd2bb29db3c86f91e3b26639cdacc65a399f4f15dc543d613091607deda02ce9",
+      "characters": 2996,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-pad-band-pinch.md",
+      "sha256": "b09f1511299ee4bb4cceeff4aea6fe7db6fd9a74fa7232d451483255eef0c257",
+      "characters": 4632,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    },
+    {
+      "path": "skills/libero-review-gates.md",
+      "sha256": "17b31136cd66f8b405a099dd107c3f2e9623b86606ef1cb364e68b675607f4a2",
+      "characters": 4432,
+      "complete_content_in_learned_request": true,
+      "complete_content_absent_from_empty_request": true
+    }
+  ],
+  "matched_protocol": "All fields identical except output directory and skill_memory path.",
+  "matched_first_request": "All fields including full input images, robot state, schemas and task are identical except instructions; learned instructions preserve the entire empty prefix and contain all12 frozen files.",
+  "source_hashes": {
+    "empty/protocol.json": "84cdbd26da90171a39f3b11f894127765d7f1f956de135c6e80927468aae8b90",
+    "empty/gpt-00.request.json": "bd2edbfca1af21da95070a6817f5d78bbfb274b8aee0a26fd8c5498bd537b68b",
+    "learned/protocol.json": "4854b9f046728b6ebf205e8f0f0a3589a15c45cbfe3b794d8d4979f28ba361c9",
+    "learned/gpt-00.request.json": "04f5802e9e14a0f88107e4304c1d30993c20539c0bc69317a2a315c94fa9eae3"
+  },
+  "scope": "Verifies exact frozen knowledge delivery and initial matching, not causal improvement, physical success or task-general transfer."
+}
