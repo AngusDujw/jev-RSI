@@ -1,0 +1,58 @@
+{
+  "episode": "test-03-empty",
+  "condition": "empty",
+  "phase": "test",
+  "task_id": 1335,
+  "init_index": 3,
+  "native_steps_at_failure": 0,
+  "failure": "checkpoint_byte_limit",
+  "checkpoint_key": "secure.partial",
+  "serialized_value_bytes": 17625,
+  "host_limit_bytes": 16384,
+  "host_response": {
+    "error": "ValueError: Checkpoint value exceeds 16384 bytes"
+  },
+  "stage_event": {
+    "update": 0,
+    "stage": "secure",
+    "plan_revision": 0,
+    "stage_index": 0,
+    "frame_id": 0,
+    "trigger": "api_contract_error",
+    "source_sha256": "ef146d817bdb30acee1062622422dc64922041311e03469fa7f730676896aea9",
+    "outcome": {
+      "stage_status": "yield",
+      "completion_proposed": false,
+      "evidence": {
+        "trigger": "api_contract_error",
+        "error": "ValueError: Checkpoint value exceeds 16384 bytes"
+      }
+    },
+    "decision": {
+      "action": "revise",
+      "evidence": [
+        "Current frame 0 views show the cream cheese package resting on the tabletop outside the upright bowl.",
+        "Native steps remain zero, the gripper is open, and no robot actions are acknowledged.",
+        "The checkpoint request failed with ValueError: Checkpoint value exceeds 16384 bytes; the checkpoint manifest is empty.",
+        "The stage yielded on api_contract_error, with no completion proposal and no live continuation available."
+      ],
+      "invalidated_assumptions": [
+        "The full review response can be stored within the checkpoint size limit."
+      ],
+      "plan_valid": "yes",
+      "reason": "The secure subgoal remains appropriate, but checkpoint handling requires correction. Store only compact essential measurements and provenance within the size limit rather than the full review response. Recover from the observed unchanged scene without replaying the failed RPC or treating the checkpoint as saved.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    }
+  },
+  "evidence_sha256": {
+    "protocol.json": "84cdbd26da90171a39f3b11f894127765d7f1f956de135c6e80927468aae8b90",
+    "gpt-02.parsed.json": "31af6f1fd391312341edb2bb2b04e8a7392cd3a0962eaaaf73635fc0dbc7650a",
+    "rpc-0004.json": "f9b67dab55cfa1193dedd29f86893a1f01e1d58a3c610beafff78c4117db0ffd",
+    "gpt-03.parsed.json": "d69561f56e5bb56315e807b33be8e570d9cf268cb5c11747ba62838a5fccfc03",
+    "method-00.py": "ef146d817bdb30acee1062622422dc64922041311e03469fa7f730676896aea9"
+  },
+  "scope": "Intermediate Test failure, not terminal task outcome. No physical actions before failure. Supervision requested a fresh method on the unchanged state. No frozen skill update or host modification.",
+  "frozen_knowledge_comparison": "Existing frozen bounded-checkpoints skill describes this failure class from acquisition. This does not establish that the learned condition will avoid it."
+}
