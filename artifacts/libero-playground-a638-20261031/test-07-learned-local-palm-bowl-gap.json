@@ -1,0 +1,599 @@
+{
+  "session": "sess_a638580288974596",
+  "experiment": "EXP-2026W44-049",
+  "episode": "test-07-learned",
+  "review": {
+    "status": "continue",
+    "parameters": {
+      "identity": "yes",
+      "supported_package": "yes",
+      "rigid_package": "yes",
+      "long_side_segments": "yes",
+      "samples_current": "yes",
+      "palm_rigid": "yes",
+      "bowl_model_current": "yes",
+      "palm_bowl_bound": "unknown",
+      "palm_appliance_bound": "yes",
+      "finger_appliance_bound": "yes",
+      "bowl_axis": "zp",
+      "appliance_axis": "yp",
+      "finger_appliance_axis": "yp",
+      "high_route": "clear",
+      "disturbance": "none",
+      "unwanted_contact": "none",
+      "sides": [
+        {
+          "id": "la",
+          "camera": "agentview",
+          "pixel": [
+            469,
+            465
+          ],
+          "description": "Negative-y long top/lateral boundary, lower-x endpoint. Use ray/top-plane intersection, not edge depth."
+        },
+        {
+          "id": "lb",
+          "camera": "agentview",
+          "pixel": [
+            470,
+            488
+          ],
+          "description": "Negative-y long boundary, higher-x endpoint. This visible straight segment spans the proposed pad strip."
+        },
+        {
+          "id": "ra",
+          "camera": "agentview",
+          "pixel": [
+            507,
+            465
+          ],
+          "description": "Positive-y long top/lateral boundary, lower-x endpoint. Use ray/top-plane intersection, not edge depth."
+        },
+        {
+          "id": "rb",
+          "camera": "agentview",
+          "pixel": [
+            509,
+            488
+          ],
+          "description": "Positive-y long boundary, higher-x endpoint. This visible straight segment spans the proposed pad strip."
+        }
+      ],
+      "basis": "Visible planar top, straight long sides and rectangular near end support local rigidity without hidden corners. Same-frame top/table samples remain valid and are returned. pa samples the rigid palm's appliance-facing contour; oa/fa sample gray handles on the black appliance at image left. These support local +y bounds for palm and complete finger sweeps, not a global certificate. The visible bowl agrees with the historical outer envelope/location and narrows below its rim. pb/ob provide z extrema, but the proposed descent lowers the palm samples to about 0.952-0.953 m, below the historical bowl top bound; no horizontal separating bound is established. The exact new high horizontal return has no apparent external blocker for fingers, palm or articulated wrist at the stated tolerances. This is neither automatic reverse nor descent/closing permission."
+    },
+    "points": [
+      {
+        "name": "t0",
+        "camera": "agentview",
+        "pixel": [
+          477,
+          468
+        ],
+        "radius": 1
+      },
+      {
+        "name": "t1",
+        "camera": "agentview",
+        "pixel": [
+          499,
+          468
+        ],
+        "radius": 1
+      },
+      {
+        "name": "t2",
+        "camera": "agentview",
+        "pixel": [
+          500,
+          482
+        ],
+        "radius": 1
+      },
+      {
+        "name": "t3",
+        "camera": "agentview",
+        "pixel": [
+          477,
+          482
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s0",
+        "camera": "agentview",
+        "pixel": [
+          454,
+          510
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s1",
+        "camera": "agentview",
+        "pixel": [
+          528,
+          510
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s2",
+        "camera": "agentview",
+        "pixel": [
+          526,
+          475
+        ],
+        "radius": 1
+      },
+      {
+        "name": "s3",
+        "camera": "agentview",
+        "pixel": [
+          459,
+          496
+        ],
+        "radius": 1
+      },
+      {
+        "name": "pa0",
+        "camera": "agentview",
+        "pixel": [
+          401,
+          432
+        ],
+        "radius": 1
+      },
+      {
+        "name": "pa1",
+        "camera": "agentview",
+        "pixel": [
+          402,
+          451
+        ],
+        "radius": 1
+      },
+      {
+        "name": "oa0",
+        "camera": "agentview",
+        "pixel": [
+          244,
+          376
+        ],
+        "radius": 1
+      },
+      {
+        "name": "oa1",
+        "camera": "agentview",
+        "pixel": [
+          253,
+          437
+        ],
+        "radius": 1
+      },
+      {
+        "name": "fa0",
+        "camera": "agentview",
+        "pixel": [
+          257,
+          487
+        ],
+        "radius": 1
+      },
+      {
+        "name": "fa1",
+        "camera": "agentview",
+        "pixel": [
+          247,
+          553
+        ],
+        "radius": 1
+      },
+      {
+        "name": "pb0",
+        "camera": "agentview",
+        "pixel": [
+          416,
+          460
+        ],
+        "radius": 1
+      },
+      {
+        "name": "pb1",
+        "camera": "agentview",
+        "pixel": [
+          606,
+          460
+        ],
+        "radius": 1
+      },
+      {
+        "name": "ob0",
+        "camera": "agentview",
+        "pixel": [
+          367,
+          394
+        ],
+        "radius": 1
+      },
+      {
+        "name": "ob1",
+        "camera": "agentview",
+        "pixel": [
+          331,
+          423
+        ],
+        "radius": 1
+      }
+    ],
+    "regions": [],
+    "explanation": "The package remains table-supported between open fingers, not retained or placed in the bowl. Visible long-side segments support the local short-dimension pinch model without hidden negative-x corners. All preserved top/table measurement pixels are returned. Appliance points are on the black unit's gray handles, replacing the historical image-right misidentification. Observable +y separation supports the local palm/appliance and finger/appliance bounds. Bowl-model validation is consistency of the visible outer silhouette, location and narrowing with the supplied historical model, not a fresh fit or opening certificate. The returned lower-palm and upper-rim samples do not establish clearance throughout the approximately 79 mm descent: their propagated vertical bounds overlap. An adequate horizontal separating contour pair is not established; robot self-occlusion is not an external obstruction. Thus palm/bowl descent clearance remains unknown, not observed blocked. Separately, the exact high horizontal return from the actual sensing pad to above_pad, at current orientation with at most 1.2 mm position and 0.01 rad rotation error, is visibly clear including the articulated wrist. This does not authorize descent or closing. No disturbance or unwanted contact is observed."
+  },
+  "measurements": {
+    "key": "recover.review",
+    "frame_id": 165,
+    "method_number": 5,
+    "source_sha256": "2845df56587823878d745f64274f4a7276b9e6314cb7d4e5ef5d934ff1d38baf",
+    "bytes": 6895,
+    "value": {
+      "frame_id": 165,
+      "parameters": {
+        "identity": "yes",
+        "supported_package": "yes",
+        "rigid_package": "yes",
+        "long_side_segments": "yes",
+        "samples_current": "yes",
+        "palm_rigid": "yes",
+        "bowl_model_current": "yes",
+        "palm_bowl_bound": "unknown",
+        "palm_appliance_bound": "yes",
+        "finger_appliance_bound": "yes",
+        "bowl_axis": "zp",
+        "appliance_axis": "yp",
+        "finger_appliance_axis": "yp",
+        "high_route": "clear",
+        "disturbance": "none",
+        "unwanted_contact": "none",
+        "sides": [
+          {
+            "id": "la",
+            "camera": "agentview",
+            "pixel": [
+              469,
+              465
+            ],
+            "description": "Negative-y long top/lateral boundary, lower-x endpoint. Use ray/top-plane intersection, not edge depth."
+          },
+          {
+            "id": "lb",
+            "camera": "agentview",
+            "pixel": [
+              470,
+              488
+            ],
+            "description": "Negative-y long boundary, higher-x endpoint. This visible straight segment spans the proposed pad strip."
+          },
+          {
+            "id": "ra",
+            "camera": "agentview",
+            "pixel": [
+              507,
+              465
+            ],
+            "description": "Positive-y long top/lateral boundary, lower-x endpoint. Use ray/top-plane intersection, not edge depth."
+          },
+          {
+            "id": "rb",
+            "camera": "agentview",
+            "pixel": [
+              509,
+              488
+            ],
+            "description": "Positive-y long boundary, higher-x endpoint. This visible straight segment spans the proposed pad strip."
+          }
+        ],
+        "basis": "Visible planar top, straight long sides and rectangular near end support local rigidity without hidden corners. Same-frame top/table samples remain valid and are returned. pa samples the rigid palm's appliance-facing contour; oa/fa sample gray handles on the black appliance at image left. These support local +y bounds for palm and complete finger sweeps, not a global certificate. The visible bowl agrees with the historical outer envelope/location and narrows below its rim. pb/ob provide z extrema, but the proposed descent lowers the palm samples to about 0.952-0.953 m, below the historical bowl top bound; no horizontal separating bound is established. The exact new high horizontal return has no apparent external blocker for fingers, palm or articulated wrist at the stated tolerances. This is neither automatic reverse nor descent/closing permission."
+      },
+      "points": {
+        "t0": {
+          "world_m": [
+            -0.05460546917242015,
+            0.09923314206695816,
+            0.919116565909896
+          ],
+          "depth_m": 0.9891922473907471,
+          "frame_id": 165,
+          "pixel": [
+            477,
+            468
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t1": {
+          "world_m": [
+            -0.055164786452942316,
+            0.12280387983863007,
+            0.9185744405517241
+          ],
+          "depth_m": 0.9899680018424988,
+          "frame_id": 165,
+          "pixel": [
+            499,
+            468
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t2": {
+          "world_m": [
+            -0.03416240192810249,
+            0.12183024230994674,
+            0.9185377946961644
+          ],
+          "depth_m": 0.9736526012420654,
+          "frame_id": 165,
+          "pixel": [
+            500,
+            482
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t3": {
+          "world_m": [
+            -0.033795053179848655,
+            0.097622452601689,
+            0.9189046661002348
+          ],
+          "depth_m": 0.973136305809021,
+          "frame_id": 165,
+          "pixel": [
+            477,
+            482
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s0": {
+          "world_m": [
+            -0.010919892317383884,
+            0.07299877143632102,
+            0.9007112448023756
+          ],
+          "depth_m": 0.9667727947235107,
+          "frame_id": 165,
+          "pixel": [
+            454,
+            510
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s1": {
+          "world_m": [
+            -0.010919892317383884,
+            0.15016890124043183,
+            0.9007112448023756
+          ],
+          "depth_m": 0.9667727947235107,
+          "frame_id": 165,
+          "pixel": [
+            528,
+            510
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s2": {
+          "world_m": [
+            -0.06268261310508005,
+            0.1542482512258281,
+            0.9007414923231258
+          ],
+          "depth_m": 1.0070216655731201,
+          "frame_id": 165,
+          "pixel": [
+            526,
+            475
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s3": {
+          "world_m": [
+            -0.03112193532666896,
+            0.0794838769370857,
+            0.9007214549268687
+          ],
+          "depth_m": 0.9824821949005127,
+          "frame_id": 165,
+          "pixel": [
+            459,
+            496
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "pa0": {
+          "world_m": [
+            0.04911973373172285,
+            0.01499385566264038,
+            1.063692075786359
+          ],
+          "depth_m": 0.8176572918891907,
+          "frame_id": 165,
+          "pixel": [
+            401,
+            432
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "pa1": {
+          "world_m": [
+            0.053562980650648684,
+            0.01603717701257866,
+            1.044967512711907
+          ],
+          "depth_m": 0.8259662985801697,
+          "frame_id": 165,
+          "pixel": [
+            402,
+            451
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "oa0": {
+          "world_m": [
+            0.006976770438991253,
+            -0.12562019185410803,
+            1.0933006051645489
+          ],
+          "depth_m": 0.8318371772766113,
+          "frame_id": 165,
+          "pixel": [
+            244,
+            376
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "fa0": {
+          "world_m": [
+            0.006254076579253032,
+            -0.1262025072617419,
+            0.9519185627538588
+          ],
+          "depth_m": 0.9212365746498108,
+          "frame_id": 165,
+          "pixel": [
+            257,
+            487
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "fa1": {
+          "world_m": [
+            0.08600661874501003,
+            -0.12755390374916326,
+            0.9456430611149476
+          ],
+          "depth_m": 0.8631377220153809,
+          "frame_id": 165,
+          "pixel": [
+            247,
+            553
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "pb0": {
+          "world_m": [
+            0.051932601763949315,
+            0.028827425011675508,
+            1.0323756102711323
+          ],
+          "depth_m": 0.8351467251777649,
+          "frame_id": 165,
+          "pixel": [
+            416,
+            460
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "pb1": {
+          "world_m": [
+            0.05043457706854004,
+            0.20048409066999842,
+            1.0309483128543264
+          ],
+          "depth_m": 0.8372089266777039,
+          "frame_id": 165,
+          "pixel": [
+            606,
+            460
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "ob0": {
+          "world_m": [
+            -0.14272090410276683,
+            -0.019054927455395835,
+            0.9487514887866896
+          ],
+          "depth_m": 1.039119005203247,
+          "frame_id": 165,
+          "pixel": [
+            367,
+            394
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "ob1": {
+          "world_m": [
+            -0.09446432540784078,
+            -0.05728923769255176,
+            0.9479474300271994
+          ],
+          "depth_m": 1.0020838975906372,
+          "frame_id": 165,
+          "pixel": [
+            331,
+            423
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "measurement_errors": [
+        {
+          "name": "oa1",
+          "error": "Invalid or discontinuous surface depth"
+        }
+      ],
+      "explanation": "The package remains table-supported between open fingers, not retained or placed in the bowl. Visible long-side segments support the local short-dimension pinch model without hidden negative-x corners. All preserved top/table measurement pixels are returned. Appliance points are on the black unit's gray handles, replacing the historical image-right misidentification. Observable +y separation supports the local palm/appliance and finger/appliance bounds. Bowl-model validation is consistency of the visible outer silhouette, location and narrowing with the supplied historical model, not a fresh fit or opening certificate. The returned lower-palm and upper-rim samples do not establish clearance throughout the approximately 79 mm descent: their propagated vertical bounds overlap. An adequate horizontal separating contour pair is not established; robot self-occlusion is not an external obstruc"
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "result": {
+    "key": "recover.result",
+    "frame_id": 165,
+    "method_number": 5,
+    "source_sha256": "2845df56587823878d745f64274f4a7276b9e6314cb7d4e5ef5d934ff1d38baf",
+    "bytes": 490,
+    "value": {
+      "stage_status": "blocked",
+      "reason": "Required relation unresolved: palm_bowl_bound",
+      "actual": {
+        "frame_id": 165,
+        "native_steps": 165,
+        "tcp_position_world_m": [
+          0.03374781795857386,
+          0.11360952317629279,
+          0.9951814658864103
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999909320685179,
+          0.0033580270339221277,
+          -0.002617285243420798,
+          -9.619319585399126e-05
+        ],
+        "gripper_qpos_m": [
+          0.03999992417970855,
+          -0.03999814728962022
+        ],
+        "last_gripper_command": "open"
+      },
+      "effect_accepted": false,
+      "completion_proposed": false
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "next_job": "e2de685880664607a4735463df0e987c",
+  "scope": "Method05 stopped at165 before any new motion: palm_bowl_bound unknown. Visible side annotations accepted but not yet plane-intersected or numerically validated. Appliance identity corrected and visual +y relations accepted; oa1 native depth invalid, so not a complete metric certificate. No collision observed. Frozen Test memory unchanged;55JEV165steps open."
+}
