@@ -1,0 +1,20 @@
+{
+  "episode": "test-07-empty",
+  "native_success": false,
+  "termination": "HTTP Error 502: Bad Gateway",
+  "gpt_calls": 2,
+  "jev_calls": 0,
+  "native_steps": 0,
+  "elapsed_s": 1442.843845467025,
+  "failure": {
+    "status": "failed",
+    "job_id": "232860d14e40414a946bff11c2d4611c",
+    "error": {
+      "type": "RuntimeError",
+      "message": "Native planner exhausted automatic same-thread continuations"
+    },
+    "validation_errors": []
+  },
+  "classification": "Infrastructure-truncated, zero physical controls; retain in end-to-end results and label unsuitable for a clean skill-ability paired comparison.",
+  "recovery": "Bridge43289 survived. Tunnel13288 and campaignSSH62219 exited255. Remote parent1250034/child1299387 still existed. Held parent admission viaSIGSTOP, restored same remote7921->local7941 tunnel98909, checked native-session ChatGPT health; child finalized. Resumed parent; test07-learned child1301602 observed live. No episode reset/replay or frozen-memory changes."
+}
