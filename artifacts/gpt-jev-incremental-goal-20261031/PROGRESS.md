@@ -676,3 +676,7 @@ Plan0 delivered48.650s, three stages pick/transfer/place_verify. Builder1
 ASCII request contains new gate-provenance guidance and model_call_budget:
 39remaining,28reserved,10reviews after builder. This allocation persists
 across same-stage repairs. Zero physical actions or success so far.
+
+## Evidence-budget first executable stage delivered
+
+Builder1 completed in 950.425 s, zero host reconnects and zero recorded native recoveries. Generated method-00.py supplies pick observation, real Jev axis/gripper questions, bounded feedback leases, closure, and independent landmark co-motion verification. It explicitly reserves 28 model calls and caps local reviews at 8; operational contact thresholds are labeled as heuristics. These source checks do not establish physical feasibility. Review2 fc93cafd6cb24fb898e10ae619509bf1 is now running before the first physical action. Remote pilot remains active; no terminal LIBERO result yet.
