@@ -114,5 +114,156 @@
     "task_satisfied": "no"
   },
   "next_method_job": "c64d840e2df84d7eb2f394d1dfd3d017",
-  "frozen_skills_changed": false
+  "frozen_skills_changed": false,
+  "repair_outcome": {
+    "source_sha256": "e7ed51b60eadc9982491a8c6f4ae112ad9cd53c8c36d490f9237b8349012bc9d",
+    "compact_review_checkpoint_bytes": 2149,
+    "validation_checkpoint_bytes": 3684,
+    "aperture_side_margins_m": [
+      0.019992464831670227,
+      0.019770319366486856
+    ],
+    "actions": [
+      {
+        "phase": "descend_open",
+        "status": "reached",
+        "lease_calls": 18,
+        "before_pad_world_m": [
+          -0.04574088024796931,
+          0.1391115307129432,
+          0.9978550411392766
+        ],
+        "after_pad_world_m": [
+          -0.04356634621072813,
+          0.1396254998507443,
+          0.9196590430300942
+        ],
+        "native_steps": 54,
+        "frame_id": 150,
+        "choices": {
+          "x": "hold",
+          "y": "positive",
+          "z": "negative",
+          "rx": "hold",
+          "ry": "hold",
+          "rz": "hold",
+          "gripper": "open"
+        },
+        "position_error_m": 0.0008924298926160803
+      },
+      {
+        "phase": "close_dwell_0",
+        "status": "reached",
+        "lease_calls": 1,
+        "before_pad_world_m": [
+          -0.04356634621072813,
+          0.1396254998507443,
+          0.9196590430300942
+        ],
+        "after_pad_world_m": [
+          -0.04353384673345888,
+          0.13963049303822114,
+          0.9195427965025599
+        ],
+        "native_steps": 3,
+        "frame_id": 153,
+        "choices": {
+          "x": "hold",
+          "y": "hold",
+          "z": "hold",
+          "rx": "hold",
+          "ry": "hold",
+          "rz": "hold",
+          "gripper": "close"
+        },
+        "position_error_m": 0.0008158628309660055
+      },
+      {
+        "phase": "close_dwell_1",
+        "status": "reached",
+        "lease_calls": 1,
+        "before_pad_world_m": [
+          -0.04353384673345888,
+          0.13963049303822114,
+          0.9195427965025599
+        ],
+        "after_pad_world_m": [
+          -0.04349197198623655,
+          0.13969848595914908,
+          0.9195862511460499
+        ],
+        "native_steps": 3,
+        "frame_id": 156,
+        "choices": {
+          "x": "hold",
+          "y": "hold",
+          "z": "hold",
+          "rx": "hold",
+          "ry": "hold",
+          "rz": "hold",
+          "gripper": "close"
+        },
+        "position_error_m": 0.0008522790090182208
+      },
+      {
+        "phase": "close_dwell_2",
+        "status": "reached",
+        "lease_calls": 1,
+        "before_pad_world_m": [
+          -0.04349197198623655,
+          0.13969848595914908,
+          0.9195862511460499
+        ],
+        "after_pad_world_m": [
+          -0.04342994121197275,
+          0.13964261888470977,
+          0.9196884152371988
+        ],
+        "native_steps": 3,
+        "frame_id": 159,
+        "choices": {
+          "x": "hold",
+          "y": "hold",
+          "z": "hold",
+          "rx": "hold",
+          "ry": "hold",
+          "rz": "hold",
+          "gripper": "close"
+        },
+        "position_error_m": 0.0008553552739364073
+      },
+      {
+        "phase": "close_dwell_3",
+        "status": "reached",
+        "lease_calls": 1,
+        "before_pad_world_m": [
+          -0.04342994121197275,
+          0.13964261888470977,
+          0.9196884152371988
+        ],
+        "after_pad_world_m": [
+          -0.043412739978333115,
+          0.13964406814510724,
+          0.9197169923191582
+        ],
+        "native_steps": 3,
+        "frame_id": 162,
+        "choices": {
+          "x": "hold",
+          "y": "hold",
+          "z": "hold",
+          "rx": "hold",
+          "ry": "hold",
+          "rz": "hold",
+          "gripper": "close"
+        },
+        "position_error_m": 0.0009126366514988152
+      }
+    ],
+    "audited_dispatches": 54,
+    "audited_steps": 162,
+    "confirmed_grasp": false,
+    "next_review_job": "a126bd01d5fa48adbaad7e81be3e27ff",
+    "admission": "SIGCONT parent1250034 after completed method and review; same child1259712"
+  }
 }
