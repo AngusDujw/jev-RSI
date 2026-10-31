@@ -36,8 +36,144 @@
     "task_satisfied": "no"
   },
   "next_method_job": "7ed615c1d920464d847b5b41730c21dd",
-  "next_method_status": "generating",
+  "next_method_status": "completed",
   "placement_actions_executed": 0,
   "task_success": false,
-  "frozen_skill_memory_changed": false
+  "frozen_skill_memory_changed": false,
+  "recovery": {
+    "method_source_sha256": "7c5b22722678e61ac3cd0fcc27e1a43697edbd0fde58cb9eef6bba40106074f1",
+    "method_number": 3,
+    "approach": "Typed review pixel arrays; explicit radius=1 depth calls. Preserve same-frame accepted observation; closed lift and calibrated wrist observation transit before tighter release measurement.",
+    "minimum_adjusted_margin_m": 0.00175,
+    "progress": {
+      "key": "place.progress",
+      "frame_id": 216,
+      "method_number": 3,
+      "source_sha256": "7c5b22722678e61ac3cd0fcc27e1a43697edbd0fde58cb9eef6bba40106074f1",
+      "bytes": 1901,
+      "value": {
+        "phase": "raise_for_observation",
+        "opening_acknowledged": false,
+        "actions": [
+          {
+            "phase": "raise_for_observation",
+            "frames": [
+              192,
+              216
+            ],
+            "native_steps": 24,
+            "hand_before": [
+              -0.04386328008025627,
+              0.14021795602522288,
+              0.9555665497450214
+            ],
+            "hand_after": [
+              -0.04452630101721408,
+              0.1410792120635735,
+              1.014272630169062
+            ],
+            "q_before": [
+              0.999993706611316,
+              0.001855930644126536,
+              0.002922647982486278,
+              -0.0007748470662680457
+            ],
+            "q_after": [
+              0.9999939808061918,
+              0.001867241730025393,
+              0.002835168591173048,
+              -0.0007166441006632274
+            ],
+            "status": "reached",
+            "calls": 8,
+            "gripper": "close",
+            "choices": {
+              "x": "hold",
+              "y": "hold",
+              "z": "positive",
+              "rx": "hold",
+              "ry": "hold",
+              "rz": "hold",
+              "gripper": "close"
+            },
+            "position_error_m": 0.00127847711169283
+          }
+        ],
+        "tests": [
+          {
+            "test": "hand_object_motion",
+            "frame_id": 192,
+            "actual_hand_delta_m": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "object_delta_m": [
+              1.0398673364747646e-07,
+              -4.647616019815004e-08,
+              3.060143199951071e-07
+            ],
+            "attachment_error_m": 9.795725317544788e-07,
+            "allowance_m": 0.004610301311695946,
+            "resolved_motion": false
+          }
+        ],
+        "state": {
+          "frame_id": 216,
+          "native_steps": 216,
+          "budgets": {
+            "gpt_remaining": 23,
+            "jev_remaining": 128,
+            "native_steps_remaining": 384,
+            "wall_seconds_remaining": 1000000000000.0
+          },
+          "tcp_position_world_m": [
+            -0.04452630101721408,
+            0.1410792120635735,
+            1.014272630169062
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999939808061918,
+            0.001867241730025393,
+            0.002835168591173048,
+            -0.0007166441006632274
+          ],
+          "gripper_qpos_m": [
+            0.021151391205117723,
+            -0.02106488888176317
+          ],
+          "last_gripper_command": "close",
+          "own_geometry": {
+            "pad_center_in_tool_m": [
+              5.001386714637013e-07,
+              4.276552773411178e-05,
+              -0.003614758144636102
+            ],
+            "pad_extent_in_tool_m": [
+              0.016000025436298117,
+              0.057216302526272425,
+              0.016000103637599995
+            ],
+            "finger_low_offset_tool_m": [
+              -0.01049428429131813,
+              -0.047468699708803776,
+              -0.044483079212199086
+            ],
+            "finger_high_offset_tool_m": [
+              0.010495353432726945,
+              0.04755434387450408,
+              0.009234317415157978
+            ]
+          }
+        }
+      },
+      "source": "program-supplied historical data; not a fresh measurement"
+    },
+    "total_dispatches_audited": 72,
+    "total_steps_audited": 216,
+    "dispatch_checks": "All raw Jev choices, semantic directions, action signs, gripper commands and action bounds passed.",
+    "next_review_job": "c1ea00389cfc44f6b1d8e1ef12c57f29",
+    "retention_after_new_lift": "pending observation",
+    "release_executed": false
+  }
 }
