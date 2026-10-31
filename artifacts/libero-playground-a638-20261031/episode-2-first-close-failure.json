@@ -1,0 +1,263 @@
+{
+  "status": "partial_not_success",
+  "episode": 2,
+  "event": {
+    "update": 3,
+    "stage": "acquire",
+    "plan_revision": 0,
+    "stage_index": 0,
+    "frame_id": 186,
+    "trigger": "stage_returned",
+    "source_sha256": "16e5b6e6a98f00a2b0f46dc3ee2422a5ff1d046bdbf45f5052d3c2986668c49d",
+    "outcome": {
+      "stage_status": "blocked",
+      "reason": "Actual closing drift/margins failed; preserve command and do not repeat.",
+      "evidence": {
+        "actual_state": {
+          "frame_id": 186,
+          "native_steps": 186,
+          "tcp_position_world_m": [
+            -0.06100676384926951,
+            0.13407529563689677,
+            0.9162874148603065
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999913079743781,
+            0.004095462256906047,
+            0.00042456011646526445,
+            -0.0006564398697352521
+          ],
+          "gripper_qpos_m": [
+            0.03399367536517269,
+            -0.03399061904963366
+          ],
+          "last_gripper_command": "close"
+        },
+        "phase": "fixed_pose_close_0",
+        "new_actions": [
+          {
+            "phase": "fixed_pose_close_0",
+            "before": {
+              "frame_id": 183,
+              "native_steps": 183,
+              "tcp_position_world_m": [
+                -0.061071787694133656,
+                0.13390860269322366,
+                0.9161512039735166
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999917498097826,
+                0.00400960004512807,
+                0.00030913671878814543,
+                -0.0005725856588394342
+              ],
+              "gripper_qpos_m": [
+                0.040000047483268124,
+                -0.03999818882148922
+              ],
+              "last_gripper_command": "open"
+            },
+            "after": {
+              "frame_id": 186,
+              "native_steps": 186,
+              "tcp_position_world_m": [
+                -0.06100676384926951,
+                0.13407529563689677,
+                0.9162874148603065
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999913079743781,
+                0.004095462256906047,
+                0.00042456011646526445,
+                -0.0006564398697352521
+              ],
+              "gripper_qpos_m": [
+                0.03399367536517269,
+                -0.03399061904963366
+              ],
+              "last_gripper_command": "close"
+            },
+            "whole_action_native_steps": 3,
+            "receipt": {
+              "status": "reached",
+              "choices": {
+                "x": "hold",
+                "y": "hold",
+                "z": "hold",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "close"
+              },
+              "acknowledged_steps": 3,
+              "frame_id": 186,
+              "native_steps": 186,
+              "lease_calls": null,
+              "position_error_m": 0.00022487339449438188,
+              "rotation_error_rad": 0.00033302614978577975
+            }
+          }
+        ],
+        "diagnostic": {
+          "reconciliation": {
+            "state": {
+              "frame_id": 183,
+              "native_steps": 183,
+              "tcp_position_world_m": [
+                -0.061071787694133656,
+                0.13390860269322366,
+                0.9161512039735166
+              ],
+              "tcp_quaternion_xyzw": [
+                0.9999917498097826,
+                0.00400960004512807,
+                0.00030913671878814543,
+                -0.0005725856588394342
+              ],
+              "gripper_qpos_m": [
+                0.040000047483268124,
+                -0.03999818882148922
+              ],
+              "last_gripper_command": "open"
+            },
+            "previous_motion_key": "acquire.motion",
+            "previous_result": {
+              "status": "lease_exhausted",
+              "choices": {
+                "x": "negative",
+                "y": "negative",
+                "z": "negative",
+                "rx": "hold",
+                "ry": "hold",
+                "rz": "hold",
+                "gripper": "keep"
+              },
+              "acknowledged_steps": 3,
+              "native_steps": 183,
+              "lease_calls": 36,
+              "frame_id": 183,
+              "position_error_m": 0.001614069153163892,
+              "rotation_error_rad": 0.0021811056917362694
+            },
+            "whole_descent_native_steps": 108,
+            "tail": {
+              "decisions": [
+                56,
+                60
+              ],
+              "native_steps": 15,
+              "approx_tcp_displacement_m": 0.000105,
+              "source": "Supplied acknowledged receipts, rounded display; not a sensing precision estimate."
+            },
+            "diagnosis": "Diminishing progress is real; cause unresolved. Lease exhaustion is not collision evidence. Do not pursue the old residual. Test the achieved pose as a distinct fixed-pose closing candidate using fresh margins."
+          },
+          "contact": {
+            "validation_frame": 183,
+            "actual_band": {
+              "L_m": 0.917363238090427,
+              "U_m": 0.9203781476371921,
+              "room_m": 0.0006271551108157913,
+              "actual_pad_world_m": [
+                -0.06107404565436477,
+                0.1339033371823518,
+                0.9197509925263763
+              ],
+              "centering_error_m": 0.0013412338056577506,
+              "clearance_m": 0.004387754435949317,
+              "overlap_m": 0.003627155110815794,
+              "surface_band_world_m": [
+                0.9016459630409313,
+                0.9159256834987947
+              ],
+              "pad_band_world_m": [
+                0.9122985283879789,
+                0.9272034566647737
+              ],
+              "vertical_available_m": 0.01427972045786341,
+              "pad_available_m": 0.014904928276794726,
+              "u_m": 0.0016829081491207037,
+              "clearance_required_m": 0.002,
+              "overlap_required_m": 0.003,
+              "angular_reserve_rad": 0.01,
+              "xy_reserve_m": 0.002
+            },
+            "hold_tolerance_m": 0.0005017240886526331,
+            "interpretation": "Fresh actual-pose gate, not acceptance of the old target residual. No additional descent or realignment."
+          }
+        },
+        "effect": {}
+      },
+      "handoff": {
+        "stage": "acquire",
+        "checkpoint_keys": [
+          "acquire.geometry",
+          "acquire.progress",
+          "acquire.measurements",
+          "acquire.local",
+          "acquire.motion",
+          "acquire.review",
+          "acquire.result",
+          "acquire.recovery",
+          "acquire.contact"
+        ],
+        "actual_state": {
+          "frame_id": 186,
+          "native_steps": 186,
+          "tcp_position_world_m": [
+            -0.06100676384926951,
+            0.13407529563689677,
+            0.9162874148603065
+          ],
+          "tcp_quaternion_xyzw": [
+            0.9999913079743781,
+            0.004095462256906047,
+            0.00042456011646526445,
+            -0.0006564398697352521
+          ],
+          "gripper_qpos_m": [
+            0.03399367536517269,
+            -0.03399061904963366
+          ],
+          "last_gripper_command": "close"
+        },
+        "remaining_budgets": {
+          "gpt_remaining": 24,
+          "jev_remaining": 138,
+          "native_steps_remaining": 414,
+          "wall_seconds_remaining": 1000000000000.0
+        },
+        "protected_reserve": {
+          "gpt": 16,
+          "jev": 90,
+          "native_steps": 270
+        },
+        "frames": "World meters, tool-to-world xyzw, camera-specific current pixels.",
+        "provenance": "Original acquire.geometry and acquire.local retain original shape and frame-75 surface validation. acquire.motion retains the acknowledged approach and exhausted descent through frame 183. acquire.recovery records reconciliation and NEW fixed-pose closure/lift intent and full endpoints. acquire.contact stores fresh surface validation and actual contact margins. acquire.baseline stores post-close physical landmark identities and simultaneous hand/depth references. acquire.effect stores actual-hand/material comparison. acquire.review retains the latest two compact observations including partial depths and errors.",
+        "assumptions": "Rigid identified package; historical footprint remains conditional on the pre-close unchanged-pose validation. Underside was inferred from table support, not observed after lifting. No placement, opening or release occurs here. Revalidate affected geometry and attachment before later action; preserve actual gripper command.",
+        "pending": "Actual closing drift/margins failed; preserve command and do not repeat."
+      },
+      "completion_proposed": false
+    },
+    "decision": {
+      "action": "revise",
+      "evidence": [
+        "Frame 186 shows the identified package outside the bowl and between the fingers; retained acquisition and table separation are not established.",
+        "One fixed-pose closing delivery was acknowledged over three native steps. Finger separation decreased from about 80.0 mm to 68.0 mm; the current command is close.",
+        "The closing receipt reports reached with 0.225 mm position error, below the requested 0.502 mm tolerance. This does not establish contact margins or retention.",
+        "The current stage returned blocked for closing drift/margins. The supplied diagnostic contains frame-183 pre-close margins, but no numerical post-close margin breakdown.",
+        "No retention lift is acknowledged. The trigger is stage_returned and live_continuation_available is false.",
+        "There are 23 reported GPT calls, 138 Jev calls and 414 native steps remaining."
+      ],
+      "invalidated_assumptions": [
+        "The pre-close contact authorization can be carried forward unchanged after the first closing delivery."
+      ],
+      "plan_valid": "yes",
+      "reason": "Acquisition remains suitable, but the local closing gate and recovery require correction. Reconcile the frame-186 partially closed state rather than the older open-hand outcome. Inspect the exact failed predicate and obtain current contact evidence to recompute full-finger clearance, robust pad overlap and drift allowances. Preserve the actual command without automatically repeating descent, closing or reopening. Do not dismiss the margin failure merely because pose tolerance passed, or reduce margins to force acceptance. A distinct supported local recovery remains available for assessment while protecting placement and verification reserves.",
+      "recovery_available": "yes",
+      "stage_satisfied": "no",
+      "task_satisfied": "no"
+    },
+    "host_override": "Repeated unproductive revisions require a plan-level reconsideration"
+  },
+  "interpretation": "One close delivery, three acknowledged steps, no lift. Post-close margin predicate failed without a numerical breakdown in the returned diagnostic; do not treat pose reached as retention or dismiss the failure."
+}
