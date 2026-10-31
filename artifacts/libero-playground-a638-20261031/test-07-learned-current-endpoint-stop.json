@@ -1,0 +1,530 @@
+{
+  "session": "sess_a638580288974596",
+  "experiment": "EXP-2026W44-049",
+  "episode": "test-07-learned",
+  "review": {
+    "status": "stop",
+    "explanation": "Reviewed the actual frame-213 endpoint, not the frame-165 target. The visible package top, straight lateral boundaries and table support the local planar, rigid-package model. Open fingers bracket the package with visible margin for the stated centering and pose allowances; numerical height and pad-overlap checks remain necessary. The appliance-side bound supports palm and full open-finger sweep. The local articulated wrist descent has no visible external obstruction; other visible body portions are above or outside this interaction. Palm/bowl clearance remains unresolved: the visible front palm contour is not the limiting rear/underside contour, which is self-occluded. No observable separating axis establishes lower-palm clearance throughout descent. This is missing geometry, not an observed collision. pb0 and pb1 are omitted rather than replaced with front-face samples; no valid alternate view is available. The historical bowl envelope is visually compatible with the current outer silhouette and location, but earlier actual images are absent here, so temporal stationarity and continued applicability cannot be independently validated. No descent, closure, lift or task completion is approved.",
+    "parameters": {
+      "appliance_axis": "yp",
+      "backup": [],
+      "basis": "All pixels are from frame 213. t0..t3 sample inset package top; s0..s3 sample table around the projected full finger footprint. Side pairs sample visible straight top/lateral boundaries, not hidden vertical faces, span the current pad cross-section, and increase in world x. pa0/pa1 sample the appliance-facing palm contour; oa0/oa1 sample protruding handles. Visible separation supports the local +y palm and finger bounds. ob0/ob1 sample the positive-x outer bowl rim. The corresponding limiting rear lower-palm contour is hidden; the visible front cannot substitute for it or establish vertical clearance. Historical bowl data are not an opening model.",
+      "bowl_axis": "unknown",
+      "bowl_outer_current": "unknown",
+      "disturbance": "unknown",
+      "finger_appliance_support": "yes",
+      "identity": "yes",
+      "open_bracketed": "yes",
+      "palm_appliance_support": "yes",
+      "palm_bowl_support": "unknown",
+      "planar_surfaces": "yes",
+      "rigid_package": "yes",
+      "side_segments": "yes",
+      "sides": [
+        {
+          "camera": "robot0_eye_in_hand",
+          "description": "Negative-world-y long top/lateral boundary, lower world-x endpoint.",
+          "id": "la",
+          "pixel": [
+            438,
+            607
+          ]
+        },
+        {
+          "camera": "robot0_eye_in_hand",
+          "description": "Negative-world-y long top/lateral boundary, higher world-x endpoint.",
+          "id": "lb",
+          "pixel": [
+            438,
+            502
+          ]
+        },
+        {
+          "camera": "robot0_eye_in_hand",
+          "description": "Positive-world-y long top/lateral boundary, lower world-x endpoint.",
+          "id": "ra",
+          "pixel": [
+            325,
+            607
+          ]
+        },
+        {
+          "camera": "robot0_eye_in_hand",
+          "description": "Positive-world-y long top/lateral boundary, higher world-x endpoint.",
+          "id": "rb",
+          "pixel": [
+            325,
+            502
+          ]
+        }
+      ],
+      "supported_package": "yes",
+      "unwanted_contact": "none",
+      "wrist_descent": "clear"
+    },
+    "points": [
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "t0",
+        "pixel": [
+          338,
+          504
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "t1",
+        "pixel": [
+          423,
+          504
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "t2",
+        "pixel": [
+          337,
+          623
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "t3",
+        "pixel": [
+          422,
+          623
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "s0",
+        "pixel": [
+          190,
+          468
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "s1",
+        "pixel": [
+          585,
+          468
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "s2",
+        "pixel": [
+          190,
+          568
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "s3",
+        "pixel": [
+          585,
+          568
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "la",
+        "pixel": [
+          438,
+          607
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "lb",
+        "pixel": [
+          438,
+          502
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "ra",
+        "pixel": [
+          325,
+          607
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "robot0_eye_in_hand",
+        "name": "rb",
+        "pixel": [
+          325,
+          502
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "agentview",
+        "name": "ob0",
+        "pixel": [
+          370,
+          457
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "agentview",
+        "name": "ob1",
+        "pixel": [
+          393,
+          457
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "agentview",
+        "name": "pa0",
+        "pixel": [
+          399,
+          375
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "agentview",
+        "name": "pa1",
+        "pixel": [
+          400,
+          399
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "agentview",
+        "name": "oa0",
+        "pixel": [
+          244,
+          378
+        ],
+        "radius": 1
+      },
+      {
+        "camera": "agentview",
+        "name": "oa1",
+        "pixel": [
+          255,
+          493
+        ],
+        "radius": 1
+      }
+    ],
+    "regions": []
+  },
+  "measurement_record": {
+    "key": "recover.review",
+    "frame_id": 213,
+    "method_number": 7,
+    "source_sha256": "f613c3f0872ffd0f4d735b3652e124ec729e081ec31de4e7d353be835e7594d4",
+    "bytes": 5455,
+    "value": {
+      "frame_id": 213,
+      "parameters": {
+        "appliance_axis": "yp",
+        "backup": [],
+        "basis": "All pixels are from frame 213. t0..t3 sample inset package top; s0..s3 sample table around the projected full finger footprint. Side pairs sample visible straight top/lateral boundaries, not hidden vertical faces, span the current pad cross-section, and increase in world x. pa0/pa1 sample the appliance-facing palm contour; oa0/oa1 sample protruding handles. Visible separation supports the local +y palm and finger bounds. ob0/ob1 sample the positive-x outer bowl rim. The corresponding limiting rear lower-palm contour is hidden; the visible front cannot substitute for it or establish vertical clearance. Historical bowl data are not an opening model.",
+        "bowl_axis": "unknown",
+        "bowl_outer_current": "unknown",
+        "disturbance": "unknown",
+        "finger_appliance_support": "yes",
+        "identity": "yes",
+        "open_bracketed": "yes",
+        "palm_appliance_support": "yes",
+        "palm_bowl_support": "unknown",
+        "planar_surfaces": "yes",
+        "rigid_package": "yes",
+        "side_segments": "yes",
+        "sides": [
+          {
+            "camera": "robot0_eye_in_hand",
+            "description": "Negative-world-y long top/lateral boundary, lower world-x endpoint.",
+            "id": "la",
+            "pixel": [
+              438,
+              607
+            ]
+          },
+          {
+            "camera": "robot0_eye_in_hand",
+            "description": "Negative-world-y long top/lateral boundary, higher world-x endpoint.",
+            "id": "lb",
+            "pixel": [
+              438,
+              502
+            ]
+          },
+          {
+            "camera": "robot0_eye_in_hand",
+            "description": "Positive-world-y long top/lateral boundary, lower world-x endpoint.",
+            "id": "ra",
+            "pixel": [
+              325,
+              607
+            ]
+          },
+          {
+            "camera": "robot0_eye_in_hand",
+            "description": "Positive-world-y long top/lateral boundary, higher world-x endpoint.",
+            "id": "rb",
+            "pixel": [
+              325,
+              502
+            ]
+          }
+        ],
+        "supported_package": "yes",
+        "unwanted_contact": "none",
+        "wrist_descent": "clear"
+      },
+      "points": {
+        "t0": {
+          "world_m": [
+            -0.030569848651781653,
+            0.12658358062466643,
+            0.9178502097848917
+          ],
+          "depth_m": 0.17363961040973663,
+          "frame_id": 213,
+          "pixel": [
+            338,
+            504
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t1": {
+          "world_m": [
+            -0.03022676344001625,
+            0.0971077876809395,
+            0.9181385527616976
+          ],
+          "depth_m": 0.17345653474330902,
+          "frame_id": 213,
+          "pixel": [
+            423,
+            504
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t2": {
+          "world_m": [
+            -0.07195935477110253,
+            0.12653044339512454,
+            0.9178032823157944
+          ],
+          "depth_m": 0.1738436222076416,
+          "frame_id": 213,
+          "pixel": [
+            337,
+            623
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "t3": {
+          "world_m": [
+            -0.07137381286439914,
+            0.0970549379636445,
+            0.9185039051413784
+          ],
+          "depth_m": 0.1732473522424698,
+          "frame_id": 213,
+          "pixel": [
+            422,
+            623
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s0": {
+          "world_m": [
+            -0.021689847213167343,
+            0.1847893196684951,
+            0.900002773380016
+          ],
+          "depth_m": 0.19124270975589752,
+          "frame_id": 213,
+          "pixel": [
+            190,
+            468
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s1": {
+          "world_m": [
+            -0.02025192950447878,
+            0.03362874356375262,
+            0.9000033486425196
+          ],
+          "depth_m": 0.19178317487239838,
+          "frame_id": 213,
+          "pixel": [
+            585,
+            468
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s2": {
+          "world_m": [
+            -0.059957364143079325,
+            0.1844583314303147,
+            0.9000032355646795
+          ],
+          "depth_m": 0.19138850271701813,
+          "frame_id": 213,
+          "pixel": [
+            190,
+            568
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "s3": {
+          "world_m": [
+            -0.05862657428161974,
+            0.03318125919708165,
+            0.9000038185154964
+          ],
+          "depth_m": 0.19192978739738464,
+          "frame_id": 213,
+          "pixel": [
+            585,
+            568
+          ],
+          "camera": "robot0_eye_in_hand",
+          "source": "current_depth_patch_backprojection"
+        },
+        "pa0": {
+          "world_m": [
+            -0.020475483334636002,
+            0.01401420814997844,
+            1.072708376535281
+          ],
+          "depth_m": 0.8661322593688965,
+          "frame_id": 213,
+          "pixel": [
+            399,
+            375
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "pa1": {
+          "world_m": [
+            -0.017967642570589026,
+            0.015208832691827576,
+            1.0455967425378565
+          ],
+          "depth_m": 0.8812168836593628,
+          "frame_id": 213,
+          "pixel": [
+            400,
+            399
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "oa0": {
+          "world_m": [
+            0.009330204657981067,
+            -0.1253834688491499,
+            1.0928816191351138
+          ],
+          "depth_m": 0.8302696347236633,
+          "frame_id": 213,
+          "pixel": [
+            244,
+            378
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        },
+        "oa1": {
+          "world_m": [
+            0.015620927876331958,
+            -0.12707911919398993,
+            0.9530265401937615
+          ],
+          "depth_m": 0.9132536053657532,
+          "frame_id": 213,
+          "pixel": [
+            255,
+            493
+          ],
+          "camera": "agentview",
+          "source": "current_depth_patch_backprojection"
+        }
+      },
+      "measurement_errors": [
+        {
+          "name": "ob0",
+          "error": "Invalid or discontinuous surface depth"
+        },
+        {
+          "name": "ob1",
+          "error": "Invalid or discontinuous surface depth"
+        }
+      ],
+      "replacements": [],
+      "replacement_errors": [],
+      "explanation": "Reviewed the actual frame-213 endpoint, not the frame-165 target. The visible package top, straight lateral boundaries and table support the local planar, rigid-package model. Open fingers bracket the package with visible margin for the stated centering and pose allowances; numerical height and pad-overlap checks remain necessary. The appliance-side bound supports palm and full open-finger sweep. The local articulated wrist descent has no visible external obstruction; other visible body portions are above or outside this interaction. Palm/bowl clearance remains unresolved: the visible front palm contour is not the limiting rear/underside contour, which is self-occluded. No observable separat"
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "result": {
+    "key": "recover.result",
+    "frame_id": 213,
+    "method_number": 7,
+    "source_sha256": "f613c3f0872ffd0f4d735b3652e124ec729e081ec31de4e7d353be835e7594d4",
+    "bytes": 475,
+    "value": {
+      "stage_status": "abort",
+      "reason": "Fresh observation requested stop",
+      "actual": {
+        "frame_id": 213,
+        "native_steps": 213,
+        "tcp_position_world_m": [
+          -0.03848726099573138,
+          0.1108174350671662,
+          0.9945727625619738
+        ],
+        "tcp_quaternion_xyzw": [
+          0.9999837749516766,
+          0.005061557831614438,
+          -0.0018984799640326387,
+          0.001796173582425403
+        ],
+        "gripper_qpos_m": [
+          0.039996776746004006,
+          -0.040000155216143626
+        ],
+        "last_gripper_command": "open"
+      },
+      "effect_accepted": false,
+      "completion_proposed": false
+    },
+    "source": "program-supplied historical data; not a fresh measurement"
+  },
+  "scope": "Fresh213 review stops method07: limiting rear/lower palm hidden, no full-descent separating bound; historical bowl temporal stationarity unvalidated because earlier images absent. No observed collision. No new motion after71JEV213steps open. Frozen Test memory unchanged.",
+  "next_job": "a34a3316f99842c6b9ac1568a4874cd0"
+}
