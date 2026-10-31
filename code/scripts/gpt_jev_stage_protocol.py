@@ -61,6 +61,7 @@ class StageWatchdog:
         self.target = self.error = None
         self.last_rpc = time.monotonic()
         self.measurements = set()
+        self.failed_measurements = {}
         self.on_slice = None
         self.suspended_decision = None
         self.review_floor = review_floor
@@ -78,6 +79,9 @@ class StageWatchdog:
             raise StageYield(self.pending)
 
     def before_control(self, state):
+        if self.measurement_failures >= 2:
+            self.event("repeated_measurement_failure",
+                       scope="Unresolved sensing failures require supervision before actuation.")
         if state["budgets"]["gpt_remaining"] <= 0:
             self.event("verification_budget_reserve")
         if state["native_steps"]-self.start["native_steps"] >= self.steps or (
@@ -126,6 +130,11 @@ class StageWatchdog:
             result = response.get("result", {})
             unknown = "error" in response or result.get("status") == "unknown" or bool(result.get("measurement_errors"))
             self.measurement_failures = self.measurement_failures+1 if unknown else 0
+            key = fingerprint(dict(method=name, args=message["args"], kwargs=message["kwargs"], frame=frame))
+            if unknown:
+                self.failed_measurements[key] = self.failed_measurements.get(key, 0)+1
+            else:
+                self.failed_measurements.clear()
             if name == "review":
                 selected = dict(points=sorted((x["camera"], x["pixel"]) for x in result.get("points", {}).values()),
                     regions=sorted((x["camera"], x["box"], x["stride"]) for x in result.get("regions", {}).values()))
@@ -133,8 +142,13 @@ class StageWatchdog:
                     self.measurements.add(fingerprint(dict(method=name, frame=frame, selected=selected)))
             elif not unknown:
                 self.measurements.add(fingerprint(dict(method=name, args=message["args"], kwargs=message["kwargs"], frame=frame)))
-            if self.measurement_failures >= 2:
-                self.event("repeated_measurement_failure")
+            # Allow bounded alternate sensing and the method's own fallback to run.
+            # Identical failing queries still escalate promptly; no failed evidence
+            # is converted into permission to move.
+            if self.failed_measurements.get(key, 0) >= 2 or self.measurement_failures >= 8:
+                self.event("repeated_measurement_failure",
+                           consecutive=self.measurement_failures,
+                           identical_attempts=self.failed_measurements.get(key, 0))
         elif "error" in response:
             self.event("api_contract_error", error=response["error"])
 

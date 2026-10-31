@@ -451,6 +451,7 @@ def main():
     history, methods, previous = [], [], None
     previous_frame = None
     rpc_feedback = []
+    active_program_rpc = None
     annotation_initial = annotation_last = None
     trackers = {}
     program_memory = ProgramMemory()
@@ -574,6 +575,7 @@ def main():
                     dict(type="input_image", image_url="data:image/jpeg;base64,"+base64.b64encode(encoded).decode(), detail="high")])
         payload_state = dict(instruction=task.language, question=question, robot=state(), cameras=cameras,
             recent_acknowledged_execution=history[-5:], recent_program_feedback=rpc_feedback[-8:],
+            active_program_rpc=compact_feedback(active_program_rpc),
             program_checkpoint_manifest=program_memory.manifest())
         if annotation_last:
             payload_state["historical_named_observations"] = dict(initial=annotation_initial, previous=annotation_last,
@@ -771,7 +773,11 @@ def main():
             after = obs["robot0_eef_pos"].copy()
             receipt = dict(decision=decision["decision"], choices=choices, action=action.tolist(), before=before.tolist(),
                 after=after.tolist(), target_tcp=target.tolist(), acknowledged_steps=acknowledged,
-                native_steps=native_steps, frame_id=native_steps)
+                native_steps=native_steps, frame_id=native_steps,
+                control_contract=dict(quaternion_xyzw=quaternion.tolist(), gripper=gripper, tool_point=tool_point,
+                    position_tolerance_m=position_tolerance, rotation_tolerance_rad=rotation_tolerance,
+                    translation_limit_m=translation_limit, rotation_limit_rad=rotation_limit,
+                    requested_steps=steps))
             save(out / f"dispatch-{decision['decision']:03d}.json", receipt)
             history.append(receipt)
         last_grip = grip
@@ -793,7 +799,7 @@ def main():
             video.write(cv2.cvtColor(np.ascontiguousarray(obs[camera+"_image"][::-1]), cv2.COLOR_RGB2BGR))
 
     def execute_method(method, number):
-        nonlocal worker, rpc_calls, annotation_initial, annotation_last
+        nonlocal worker, rpc_calls, annotation_initial, annotation_last, active_program_rpc
         annotation_initial = annotation_last = None
         validate_source(method["source"])
         path = out / f"method-{number:02d}.py"
@@ -841,6 +847,9 @@ def main():
                     raise ValueError("Invalid worker message")
                 rpc_calls += 1
                 record = dict(index=rpc_calls, method_number=number, request=message, frame_before=native_steps)
+                active_program_rpc = dict(index=rpc_calls, method_number=number, request=message,
+                    frame_started=native_steps,
+                    scope="Currently executing RPC, possibly partially acknowledged. Its arguments govern this action; do not substitute a previous completed RPC's tolerances or replay acknowledged effects.")
                 yielded = None
                 try:
                     if stage_watchdog is not None:
@@ -858,6 +867,7 @@ def main():
                 record.update(response=response, frame_after=native_steps)
                 save(out / f"rpc-{rpc_calls:04d}.json", record)
                 rpc_feedback.append(compact_feedback(dict(request=message, response=response, frame_id=native_steps)))
+                active_program_rpc = None
                 if yielded is not None:
                     raise yielded
                 if stage_watchdog is not None:
@@ -866,6 +876,7 @@ def main():
                 worker.stdin.flush()
             raise RuntimeError("rpc_budget")
         finally:
+            active_program_rpc = None
             selector.close()
             if worker.poll() is None:
                 worker.terminate()

@@ -40,7 +40,12 @@ current-stage source; replanning creates remaining work from current evidence.
 - On a stage return: fresh supervision assesses effects or routes recovery.
 - On runtime/contract error: supervision receives the actual error and scene.
 - Before the next action after two stalls, three non-improving pose updates,
-  command mismatch, or two measurement failures. Rotation progress counts.
+  command mismatch, or repeated measurement failures. Rotation progress counts.
+  Distinct replacement sensing can recover locally: two identical failed queries
+  at the same frame or eight consecutive sensing failures trigger supervision.
+  Two unresolved sensing failures also require supervision before actuation.
+  Successful sensing clears the failure streak; the method remains responsible
+  for validating all evidence needed for its proposed action.
 - At a slice limit (default24 Jev calls/72 policy steps),180 RPCs, or90 seconds
   of worker silence. Model/network waiting is not worker silence.
 - Repeated same-frame revisions without different successful measurements
