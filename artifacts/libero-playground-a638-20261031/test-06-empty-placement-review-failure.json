@@ -278,8 +278,9 @@
       0.005450187676948014,
       0.0007823453032099699
     ],
-    "method_attachment_allowance_m": 0.004610301311695946,
+    "method_attachment_allowance_m": 0.0012168960594220644,
     "interpretation": "Maximum residual exceeds allowance. Discrepancy is concentrated in L1; evidence does not distinguish changed landmark correspondence from physical slip. No lateral transit or release occurred.",
-    "next_method_job": "e2d9530df5f747c1b0f0b24a44652faa"
+    "next_method_job": "e2d9530df5f747c1b0f0b24a44652faa",
+    "allowance_correction": "Earlier4.610301mm was the grasp-stage allowance, incorrectly attributed to method03. Method03 uses3*max(localization_before,localization_after), about1.21690mm; see rpc-0148 object.localization and method04 historical_failed_test. The5.45019mm failure conclusion remains unchanged."
   }
 }
