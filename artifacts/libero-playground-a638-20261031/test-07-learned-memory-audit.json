@@ -1,0 +1,62 @@
+{
+  "episode": "test-07-learned",
+  "scope": "Actual GPT00 request contains every frozen skill and lesson; this does not prove task success or skill benefit.",
+  "snapshot_sha256": "0835ee2a80f1f6b3cf6d7a845117411579fe16e9eccad0732e4a0502c9c4ec10",
+  "freeze_sha256": "4d212a0f2bbefec1360791d2a319a9624c2e309bcac8022a33e44f41df2c0862",
+  "files": {
+    "skills/libero-bounded-checkpoints.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-bounded-jev-control.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-contained-release.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-continuation-recovery.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-differential-retention.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-evidence-budget.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-measured-surface-geometry.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-observable-stages.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-pad-band-pinch.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "skills/libero-review-gates.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "lessons/libero-evidence.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    },
+    "lessons/libero-knowledge-index.md": {
+      "sha256_matches": true,
+      "exact_content_in_instructions": true
+    }
+  },
+  "file_count": 12,
+  "characters": 51785,
+  "instructions_ascii": true,
+  "request_sha256": "c02fe105bdca2b336f65f4ce70c3760885f9f8e4e3db10ea64fe63654d0bd6e0",
+  "plan_job": "90d853db701c4b049afffc3c1fcd7de0",
+  "method_job": "1dd357e5e92a405aa74608ddee94426a"
+}
