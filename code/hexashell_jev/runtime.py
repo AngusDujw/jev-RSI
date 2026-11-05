@@ -9,7 +9,7 @@ import sys
 import time
 import uuid
 
-from judgments import Decisions, Evidence, ascii_wire, plain
+from judgments import Decisions, Evidence, JudgmentServiceError, ascii_wire
 
 PIN = "e0190ddb757955131578e9f9071f4ee8e7113f7a"
 
@@ -181,6 +181,7 @@ def run_episode(args, memory_text=""):
                              env_file=str(args.sim_env), egl_device=args.gpu)
             self.evidence_log = Evidence()
             self.decisions = None
+            self.infrastructure_failure = None
 
         def snapshot(self):
             return self.evidence_log.snapshot(step=self.step, instruction=self.instruction,
@@ -196,6 +197,12 @@ def run_episode(args, memory_text=""):
                     receipt = self.decisions.choose(self.snapshot(), *a, **kw)
                     self.rec.event(dict(kind="local_judgment", **receipt))
                     return receipt
+                except JudgmentServiceError as exc:
+                    self.infrastructure_failure = "local_judgment_service: " + str(exc)[:800]
+                    self.errors.append(self.infrastructure_failure)
+                    self.finished = True
+                    self.rec.event(dict(kind="local_judgment_service_failure", error=self.infrastructure_failure))
+                    raise Stop("Judgment service failed; episode stopped without executing a branch") from exc
                 except Exception as exc:
                     self.rec.event(dict(kind="local_judgment_error", error=str(exc)[:1000]))
                     raise CallFailed("RobotError", "Local judgment failed; no branch was executed: " + str(exc)[:800]) from exc
@@ -211,9 +218,19 @@ def run_episode(args, memory_text=""):
         def frames(self):
             return {}  # retain requested observation evidence, not per-motion media
 
+        def report(self, finish):
+            return dict(super().report(finish), infrastructure_failure=self.infrastructure_failure,
+                local_judgments=dict(backend=args.judgment_backend,
+                    attempted=self.decisions.count if self.decisions else 0))
+
     class NativeEpisode(Episode):
         def _setup(self):
             session, s = self.session, self.s
+            self.rec.write_json("implementation.json", dict(upstream_commit=PIN,
+                judgment_backend=args.judgment_backend, phase=args.phase, memory_sha256=hashlib.sha256(
+                    memory_text.encode()).hexdigest(), native_scoring=True, generic_motion="upstream",
+                integration_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                    for p in Path(__file__).parent.glob("*.py")}))
             session.open(s, self.rec, self._attach)
             if not session.perception:
                 raise RuntimeError("SAM3 perception is required for this implementation test")
@@ -239,11 +256,6 @@ def run_episode(args, memory_text=""):
             self.conv.user(text, pictures)
             self.rec.write_text("prompt.md", self.conv.messages[0]["content"] + COOPERATION + "\n" + text)
             self.rec.event(dict(kind="start", settings=self._settings_record(), perception=session.perception))
-            self.rec.write_json("implementation.json", dict(upstream_commit=PIN,
-                judgment_backend=args.judgment_backend, phase=args.phase, memory_sha256=hashlib.sha256(
-                    memory_text.encode()).hexdigest(), native_scoring=True, generic_motion="upstream",
-                integration_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-                    for p in Path(__file__).parent.glob("*.py")}))
 
     settings = Settings(model="gpt-6-astra", reasoning_effort="xhigh", skills=False,
         max_turns=args.max_turns, budget_s=args.budget_seconds, images_max=20, images_low=14,

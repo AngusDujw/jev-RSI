@@ -57,7 +57,7 @@ def main():
         (out / "campaign.json").write_text(json.dumps(dict(config=vars(args) | {"out": str(out)},
                                                           episodes=results), indent=2)+"\n")
         print(json.dumps(dict(event="episode", **summary)), flush=True)
-        if result["end"] in ("error", "gateway_error"):
+        if result["end"] in ("error", "gateway_error") or result.get("infrastructure_failure"):
             raise RuntimeError("Infrastructure/contract failure recorded; campaign stopped before learning or admitting another episode")
         return paths[0].parent
 

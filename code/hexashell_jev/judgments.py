@@ -14,6 +14,10 @@ import re
 import unicodedata
 
 
+class JudgmentServiceError(RuntimeError):
+    """No valid model judgment exists; no physical branch may be inferred."""
+
+
 def plain(value):
     if value is None or isinstance(value, (str, bool, int)):
         return value
@@ -136,19 +140,25 @@ class Decisions:
         if self.backend == "jev":
             request = ascii_wire(dict(model="jev-1.13.0", state=state, questions=dict(
                 branch=dict(type="choice", instructions=instructions, criteria=options))))
-            raw = self.post(self.bridge + "/systemone", request, folder, timeout=300)
+            try:
+                raw = self.post(self.bridge + "/systemone", request, folder, timeout=300)
+            except Exception as exc:
+                raise JudgmentServiceError(type(exc).__name__ + ": " + str(exc)[:600]) from exc
             answer = raw.get("answers", {}).get("branch", {})
             choice = answer.get("choice")
             if raw.get("model") != "jev-1.13.0":
-                raise ValueError("JEV returned an unexpected model")
+                raise JudgmentServiceError("JEV returned an unexpected model")
         else:
             schema = dict(type="object", properties=dict(choice=dict(type="string", enum=list(options))),
                           required=["choice"], additionalProperties=False)
-            answer, raw = self.pro_submit("submit_judgment", schema, instructions,
-                [dict(type="input_text", text=json.dumps(ascii_wire(dict(state=state, options=options))))], folder)
+            try:
+                answer, raw = self.pro_submit("submit_judgment", schema, instructions,
+                    [dict(type="input_text", text=json.dumps(ascii_wire(dict(state=state, options=options))))], folder)
+            except Exception as exc:
+                raise JudgmentServiceError(type(exc).__name__ + ": " + str(exc)[:600]) from exc
             choice = answer.get("choice")
         if choice not in options:
-            raise ValueError("Judgment returned an undeclared branch")
+            raise JudgmentServiceError("Judgment returned an undeclared branch")
         receipt = dict(decision_id=ident, backend=self.backend, choice=choice,
             evidence_step=evidence["step"], evidence_sha256=hashlib.sha256(
                 json.dumps(evidence, sort_keys=True).encode()).hexdigest(),
