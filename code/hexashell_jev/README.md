@@ -50,6 +50,13 @@ are required or permitted. Start the upstream SAM3 service from its own
 environment and the existing native-session bridge on the workstation.
 Forward only their required loopback ports over SSH.
 
+`code/scripts/serve_hexashell_sam3.sh GPU PORT OUTPUT` launches the unchanged
+upstream SAM3 service with its ordinary CUDA caching allocator. The upstream
+default enables expandable segments, which may be unsupported by a vGPU's
+virtual-memory interface. Choose a GPU authorized for the task before launch;
+the script does not select or evict another job. The 16-image CPU cache bounds
+RAM use and does not change masks or model weights.
+
 From the project root, each command below is one command; the shell joins
 the explicitly backslash-continued lines:
 
