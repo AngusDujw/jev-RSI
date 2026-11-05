@@ -12,6 +12,15 @@ venv/
 .env.local
 .private/
 
+# Pinned external runtime and project-local HexaShell environments/tools.
+/baseline/HexaShell-runtime/
+/baseline/sam3/
+/.venv-hexashell/
+/.venv-hexashell-sam3/
+/.venv-libero-pro/
+/.tools/uv/
+/.tools/hexashell-python/
+
 # Jupyter
 .ipynb_checkpoints/
 
