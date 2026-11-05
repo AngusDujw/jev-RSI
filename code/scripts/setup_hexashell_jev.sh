@@ -41,8 +41,12 @@ fi
 "$UV" pip install --python "$SAM_PY" -e "$ROOT/baseline/sam3" \
   'setuptools<81' einops pycocotools psutil opencv-python-headless pillow
 mkdir -p "$ROOT/code/checkpoints/hexashell"
-"$SAM_PY" -c 'from huggingface_hub import hf_hub_download; import sys; print(hf_hub_download("facebook/sam3", "sam3.pt", local_dir=sys.argv[1]))' \
-  "$ROOT/code/checkpoints/hexashell"
+if ! test -f "$ROOT/code/checkpoints/hexashell/sam3.pt"; then
+  "$SAM_PY" -c 'from huggingface_hub import hf_hub_download; import sys; print(hf_hub_download("facebook/sam3", "sam3.pt", revision="3c879f39826c281e95690f02c7821c4de09afae7", local_dir=sys.argv[1]))' \
+    "$ROOT/code/checkpoints/hexashell"
+fi
+printf '%s  %s\n' 9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e \
+  "$ROOT/code/checkpoints/hexashell/sam3.pt" | sha256sum -c -
 "$SAM_PY" -m pip freeze > "$ROOT/code/runs/hexashell-setup/sam3-freeze.txt"
 "$ROOT/.venv-hexashell/bin/python" -m pip freeze > "$ROOT/code/runs/hexashell-setup/policy-freeze.txt"
 git -C "$ROOT/baseline/sam3" rev-parse HEAD > "$ROOT/code/runs/hexashell-setup/sam3-revision.txt"

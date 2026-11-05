@@ -16,3 +16,4 @@
 - 【Agent】【2026-11-05 12:03】[op] 新建实验块 EXP-2026W45-001：实现并实测 HexaShell code-as-policy 与 JEV 程序内判断协作  ↪ `EXP-2026W45-001`
 - 【User】【2026-11-05 12:05】[intent] 用户追问：为何分阶段后生成仍慢，是否仍传入长上下文；本轮仅检查已暂停EXP055请求与耗时，不恢复实验。
 - 【Agent】【2026-11-05 12:05】[note] 只读复核EXP055：request1/19/22固定说明加文本分别32825/71197/94030字符（不含图片/schema），每次2图；stage builder每次附完整manual，repair附完整previous_method；耗时950.425/1304.116/925.144秒且重连0。分阶段输出没有同步压缩上下文，不能仅归因为网络或任务难。
+- 【Agent】【2026-11-05 12:18】[op] 已实现并推送 HexaShell 代码策略集成：宿主直采带时标证据、JEV/GPT 同契约判断、沙箱 robot.decide RPC、本机原生 Pro 适配、Playground 修订与冻结、独立 Test、审计入口。内联证据/冻结检查及真实沙箱 RPC 通过；真实 JEV 返回 unknown，真实 Pro 动态工具调用通过。5880-jump GPU0 空闲；新工作区 hexashell-jev-20261105 正按上游安装三个项目内环境。网络 TLS 故障后改用 SSH 拉代码并临时转发代理；未动驱动。
