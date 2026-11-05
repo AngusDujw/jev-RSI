@@ -12,3 +12,5 @@
 - 【Agent】【2026-11-04 12:31】[note] 方法来源续：PyRUA-Lean e8f01dca744421d70684adbbc1713fd4d92f8aca，https://github.com/DAGroup-PKU/PyRUA-Lean ：持久 Python cell 组合动作、局部检查/重试与按需观测。其 PyRUA_RSI 每任务固定程序在 seed0 自测82.82%、held-out seed2自测80.73%；不是榜单同项，且含任务/资产常量。R2SI 3edfe6afa69978d9d50e59e91e115143a8b486a9，https://github.com/manifoldai-research/R2SI ：内层执行、外层收集/反思/候选/配对验证/启用，训练可选。
 - 【Agent】【2026-11-04 12:31】[note] 建议而非已实施：以新版 HexaShell 通用执行底座结合 EmbodiedEvo Playground 冻结流程，在代码内让 JEV Choice 承担状态判别、候选选择、恢复/升级路由；不要求每个运动轴都调用 JEV。当前 run_gpt_jev_program.py:688 review 请求GPT，:716 choose已有通用JEV调用，:730 control主要残差选方向。JEV现有输入是结构化状态，不是图像；不让GPT先给最终判断再让JEV复述。下一步应在同底座同初态比较GPT/JEV判断及空/学习技能，统计全部调用、延时与接口中断。原生结果独立评分。保持实验与目标暂停，未改代码或科学锚点。
 - 【Agent】【2026-11-04 12:31】[note] 代码定位复核：run_gpt_jev_program.py 的 review 定义在688行、choose在718行、control在733行；上条草记的716/730为邻近行，准确跳转以本条为准。调研记录已保存，未改实验实现。
+- 【User】【2026-11-05 12:05】[intent] 用户追问：为何分阶段后生成仍慢，是否仍传入长上下文；本轮仅检查已暂停EXP055请求与耗时，不恢复实验。
+- 【Agent】【2026-11-05 12:05】[note] 只读复核EXP055：request1/19/22固定说明加文本分别32825/71197/94030字符（不含图片/schema），每次2图；stage builder每次附完整manual，repair附完整previous_method；耗时950.425/1304.116/925.144秒且重连0。分阶段输出没有同步压缩上下文，不能仅归因为网络或任务难。
