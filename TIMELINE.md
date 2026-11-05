@@ -204,6 +204,10 @@ graph LR
     T_2026W44_029["📊 libero-generic-vision<br/>分阶段pilot成功交付40请求但预算耗尽…"]:::experiment
     T_2026W44_030["📊 libero-generic-vision<br/>Candidate68799bb5 nat…"]:::experiment
   end
+  subgraph wk_2026_W45["2026-W45"]
+    direction TB
+    T_2026W45_001["📊 libero-generic-vision<br/>Code-policy/JEV local…"]:::experiment
+  end
   T_2026W39_001 --> T_2026W39_002
   T_2026W39_002 --> T_2026W39_003
   T_2026W39_003 --> T_2026W39_004
@@ -358,6 +362,7 @@ graph LR
   T_2026W44_026 --> T_2026W44_028
   T_2026W44_028 --> T_2026W44_029
   T_2026W44_029 --> T_2026W44_030
+  T_2026W44_030 --> T_2026W45_001
   T_2026W39_005 ==> T_2026W40_001
   T_2026W40_001 ==> T_2026W40_006
   T_2026W40_006 ==> T_2026W40_023
@@ -543,6 +548,7 @@ graph LR
 | `T-2026W44-028` | 2026-10-31 | note | libero-generic-vision | T-2026W44-027主题键误写gpt-jev-method；该secure完成与place生成证据属于既有libero-generic-vision，后续继续使用此主题，不是新议题 | `EXP-2026W44-048` | - |
 | `T-2026W44-029` | 2026-10-31 | experiment | libero-generic-vision | 分阶段pilot成功交付40请求但预算耗尽，nativefalse，仅抓取阶段完成；需修订耗时与预算配合 | `EXP-2026W44-048` | - |
 | `T-2026W44-030` | 2026-10-31 | experiment | libero-generic-vision | Candidate68799bb5 nativefalse:40GPT78Jev234steps,0stages; delivery succeeds but geometry/review budget prevents completion | `EXP-2026W44-054` | - |
+| `T-2026W45-001` | 2026-11-05 | experiment | libero-generic-vision | Code-policy/JEV local-judgment integration:16 runtime/sandbox checks and2 real model probes pass;0 physical episodes yet;fixed new upstream and transfer protocol | `EXP-2026W45-001` | - |
 <!-- TIMELINE:TABLE:END -->
 
 ---
