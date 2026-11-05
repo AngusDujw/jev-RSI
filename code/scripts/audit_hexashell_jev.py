@@ -32,10 +32,10 @@ def audit(root):
         if (value["choice"] != expected or value["choice"] not in options or
                 value["model"] != expected_model or value["evidence_step"] != evidence["step"]):
             errors.append("Decision receipt differs from model response: " + path.name)
-        # post() rounds float wire inputs. Compare the actual wire evidence
-        # timestamp/content separately from the pre-wire snapshot receipt hash.
-        decisions.append(dict(**value, wire_evidence_sha256=hashlib.sha256(
-            json.dumps(evidence, sort_keys=True).encode()).hexdigest()))
+        wire_hash = hashlib.sha256(json.dumps(evidence, sort_keys=True).encode()).hexdigest()
+        if value["evidence_sha256"] != wire_hash:
+            errors.append("Evidence receipt differs from actual wire input: " + path.name)
+        decisions.append(dict(**value, wire_evidence_sha256=wire_hash))
     called = sum(call["name"] == "decide" for cell in cells for call in cell["calls"])
     if len(decisions) > called:
         errors.append("More completed decisions than actual sandbox decide calls")

@@ -20,3 +20,5 @@
 - 【Agent】【2026-11-05 12:25】[result] EXP-2026W45-001：HexaShell上游运行时/沙箱16/16通过；内联时序证据、unknown、冻结完整性/Test来源隔离、沙箱RPC和会话图片转换检查通过；真实本机Pro1次、JEV1次接入通过，物理任务0次。初测缺离线key占位值已定位；首轮上游pytest漏设TMPDIR，已改项目内临时目录且未再次查看或清理默认临时目录。本机HF账号已获SAM3权限，官方固定版本权重正在流式传至服务器，凭据不迁移。
 - 【Agent】【2026-11-05 12:29】[op] 新建实验块 EXP-2026W45-002：真实 LIBERO-PRO Playground 经验获取与冻结后 JEV/GPT 局部判断小样本对照  ↪ `EXP-2026W45-002`
 - 【Agent】【2026-11-05 12:34】[decision] EXP-2026W45-002 固定小样本协议：libero_goal_swap_t6（官方注册指令 Put the cream cheese on the bowl）；Playground初态0/1，共2回合；冻结后Test初态20/21，各跑JEV空经验/JEV冻结经验/GPT同证据判断冻结经验，共6回合。每回合30规划回复/40局部判断/300原生步/7200秒agent预算。只有任务检查器判成功；接口异常单列并停止后续准入。此为实现pilot，不作整套benchmark或统计优势结论。GPU渲染与官方环境smoke已通过，SAM3权重双端官方SHA校验通过。
+- 【Agent】【2026-11-05 12:40】[run] 5880-jump 图形双上下文渲染检查通过（bad_depth=0），但真实SAM3与最小torch.zeros(cuda)均报operation not supported；nvidia-smi -q显示vGPU License Status=Unlicensed。依用户此前明确授权重启5880进行恢复，未修改驱动/系统CUDA版本或许可证配置。此时真实策略回合尚未开始，模型权重/资产已完整落盘并校验。
+- 【Agent】【2026-11-05 12:42】[result] 按既有授权重启5880后，torch.zeros(device=cuda)成功，识别RTX5880-Ada-24Q；未修改驱动或系统CUDA。重新建立本轮专用环回转发并启动SAM3，开始真实Playground前复核服务健康。原生图形环境smoke已完成，官方SAM3权重SHA256双端一致。

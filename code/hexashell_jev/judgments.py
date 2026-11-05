@@ -125,6 +125,10 @@ class Decisions:
 
     def choose(self, evidence, question, options, context=None):
         spec = validate_question(question, options, context)
+        from run_gpt_jev_program import model_wire_numbers
+        # Normalize once before either backend. GPT embeds this as JSON text,
+        # whereas JEV receives structured JSON; both must see identical values.
+        evidence = model_wire_numbers(ascii_wire(evidence))
         if self.count >= self.max_calls:
             raise RuntimeError("Local judgment budget exhausted")
         ident = self.count
