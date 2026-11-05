@@ -1,0 +1,18 @@
+{
+  "experiment": "EXP-2026W45-002",
+  "task": "libero_goal_swap_t6",
+  "instruction_from_installed_registry": "Put the cream cheese on the bowl",
+  "playground_initial_states": [0, 1],
+  "test_initial_states": [20, 21],
+  "test_conditions": ["jev_empty", "jev_frozen", "gpt_frozen"],
+  "upstream_commit": "e0190ddb757955131578e9f9071f4ee8e7113f7a",
+  "planner": {"model": "gpt-6-astra", "effort": "xhigh", "auth": "local native ChatGPT"},
+  "jev": "jev-1.13.0, real official Choice endpoint",
+  "gpt_judgment_control": "Same text evidence and choices; local Pro, without images for this judgment",
+  "budgets_per_episode": {"planner_replies": 30, "local_judgments": 40, "agent_seconds": 7200, "native_steps": 300},
+  "upstream_task_skills": false,
+  "freeze": "Only learned English Markdown under skills/ and lessons/; hash checked before every Test",
+  "scoring": "Native LIBERO-PRO success checker; never infer success from a model statement",
+  "infra_policy": "Stop the campaign on terminal infrastructure/contract errors before learning from them or admitting another episode",
+  "scope": "Implementation pilot on one task; does not establish benchmark-wide success or a statistically reliable backend advantage"
+}
