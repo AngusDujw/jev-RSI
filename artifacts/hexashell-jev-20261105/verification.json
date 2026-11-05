@@ -1,0 +1,41 @@
+{
+  "implementation_commit": "74a41a91",
+  "upstream_runtime_and_sandbox_tests": {"passed": 16, "failed": 0, "log": "runtime-tests-isolated.txt"},
+  "inline_checks_passed": [
+    "Sandbox proxy calls host decide RPC and retains upstream confinement",
+    "Temporal object/TCP deltas and stale observation ages",
+    "Unknown branch required by question validation",
+    "Frozen knowledge mutation rejected",
+    "Test episode rejected as training provenance",
+    "Conversation text, images and Python tool conversion",
+    "Judgment service failure distinguished from repairable policy argument error",
+    "GPT/JEV evidence normalized identically and receipt SHA256 matches actual wire state"
+  ],
+  "real_model_transport_probes": {
+    "native_chatgpt_pro": {"completed": 1, "model": "gpt-6-astra", "effort": "xhigh", "input_tokens": 11008, "output_tokens": 35, "seconds": 10.027},
+    "jev": {"completed": 1, "model": "jev-1.13.0", "choice": "unknown", "input_tokens": 439, "output_tokens": 31},
+    "scope": "Nonphysical transport checks, not task-success or judgment-quality evidence"
+  },
+  "physical_environment_smoke": {
+    "server": "5880-jump",
+    "gpu_render_check": "gpu-render-check.json",
+    "official_simulator_smoke": "object_swap: RGB-D, camera geometry, OSC actions, native success/horizon API and reset determinism exercised",
+    "scope": "Environment diagnostics; not a GPT/JEV task episode and not transferred into learned knowledge"
+  },
+  "sam3_weights": {
+    "source": "facebook/sam3",
+    "revision": "3c879f39826c281e95690f02c7821c4de09afae7",
+    "bytes": 3450062241,
+    "sha256": "9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e",
+    "verification": "Official metadata matched; local authorized stream and server receiver both verified bytes/SHA256; credential stayed local"
+  },
+  "gpu_recovery": {
+    "before_reboot": "vGPU Unlicensed; ordinary CUDA allocation failed",
+    "action": "User-authorized server reboot; no driver or system CUDA version change",
+    "after_reboot": "Ordinary CUDA allocation, matmul and SAM3 position-encoding cache passed",
+    "remaining_service_issue": "Upstream service startup still failed with expandable_segments=True; launcher now overrides False, full service retest pending resource permission"
+  },
+  "policy_episodes": {"playground": 0, "test": 0, "learned_knowledge_snapshots": 0},
+  "pending": "Both authorized GPUs have other jobs. Await user clarification on sharing, or a fully idle card, before SAM3 service and the fixed pilot protocol.",
+  "execution_note": "First upstream pytest invocation omitted TMPDIR and used upstream defaults. Subsequent invocations explicitly used the project-local test directory; default temporary-directory contents were not revisited or cleaned. No new test scripts were retained."
+}
