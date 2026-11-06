@@ -1,0 +1,7 @@
+{
+  "compute_client_excluded": true,
+  "nonzero_utilization_excluded": true,
+  "background_allocation_excluded": true,
+  "genuinely_empty_device_selected": true,
+  "scope": "Pure admission parser with simulated nvidia-smi output; no GPU allocation."
+}

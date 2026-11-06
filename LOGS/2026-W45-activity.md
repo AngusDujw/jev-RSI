@@ -26,3 +26,8 @@
 - 【Agent】【2026-11-06 12:23】[op] [run] 用户2026-11-06确认5880空闲并明确要求再次重启运行；重启前后GPU均46MiB/无计算进程，已按授权sudo reboot，未改驱动/CUDA。已恢复本机ChatGPT原生Pro/JEV桥及7951转发，启动普通分配器SAM3，随后按固定2 Playground+6 Test协议运行。
 - 【Agent】【2026-11-06 12:28】[op] [result] 5880第二次重启后SAM3普通分配器完整加载/预热成功，health正常约3.3GB；正式pilot-20261106已启动。首个Playground s0已有真实动作及JEV grasp阶段判断，任务尚无终局。旧占用阻塞解除，固定协议不变。
 - 【Agent】【2026-11-06 12:34】[op] [run] 正式pilot s0已完成4次真实JEV判断（grasp、tilted_reapproach、lift_clear、outward_clearance），已有94仿真步，仍无终局；批次继续自动执行。启动记录artifacts/hexashell-jev-20261106/launch.json，后台服务/转发保留，仅本轮运行目录新增。
+- 【Agent】【2026-11-06 14:01】[op] 新建实验块 EXP-2026W45-003：--help  ↪ `EXP-2026W45-003`
+- 【User】【2026-11-06 14:01】[prompt] 改一下再测试，用空的卡来跑
+- 【Agent】【2026-11-06 14:05】[op] EXP-W45-003 隔离候选：实际planner构造3/3通过；历史请求回放首阶段32746→14106字符、搬运71114→19857、修正93947→23274，固定契约10645字符；临时测试脚本已删除。服务器尚无空卡，未启动GPU任务。
+- 【Agent】【2026-11-06 14:07】[op] 候选db521981已通过SSH推送；服务器无GitHub SSH写权限且HTTPS TLS失败，改用含提交历史的小型Git bundle在同挂载盘部署独立工作区。尚无GPU准入，未调用真实模型或机器人。
+- 【Agent】【2026-11-06 14:10】[run] 候选d3cb6ed6空卡等待队列已启动，远端PID2844026，双端Pro health确认ChatGPT/native-session；无空卡则不启动仿真或模型请求，最多等待3600秒。GPU7共享许可仍待用户答复；物理回合0。

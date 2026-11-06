@@ -1,0 +1,9 @@
+{
+  "actual_planner_calls": 3,
+  "current_stage_only": true,
+  "repair_uses_full_new_stage_not_old_source_patch": true,
+  "no_full_previous_source": true,
+  "english_full_payload": true,
+  "model_reasoning_unchanged": true,
+  "scope": "Actual planner function with fake sensing and post; no provider or robot success."
+}

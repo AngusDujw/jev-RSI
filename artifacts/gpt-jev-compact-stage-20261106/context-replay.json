@@ -1,0 +1,48 @@
+{
+  "fixed_chars": 10645,
+  "historical_request_replay": [
+    {
+      "request": 0,
+      "old_chars": 4558,
+      "new_chars": 3966,
+      "sent_context_chars": 1622
+    },
+    {
+      "request": 1,
+      "old_chars": 32746,
+      "new_chars": 14106,
+      "sent_context_chars": 3461
+    },
+    {
+      "request": 18,
+      "old_chars": 41192,
+      "new_chars": 5801,
+      "sent_context_chars": 3457
+    },
+    {
+      "request": 19,
+      "old_chars": 71114,
+      "new_chars": 19857,
+      "sent_context_chars": 9212
+    },
+    {
+      "request": 20,
+      "old_chars": 30598,
+      "new_chars": 8672,
+      "sent_context_chars": 7089
+    },
+    {
+      "request": 21,
+      "old_chars": 37490,
+      "new_chars": 13031,
+      "sent_context_chars": 9453
+    },
+    {
+      "request": 22,
+      "old_chars": 93947,
+      "new_chars": 23274,
+      "sent_context_chars": 12629
+    }
+  ],
+  "scope": "Offline saved-request transformation only; no model or physical outcome."
+}

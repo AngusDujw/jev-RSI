@@ -1,0 +1,56 @@
+{
+  "commit": "d3cb6ed6",
+  "base": "021dbd95",
+  "condition": "Independent cold staged compact context, complete current-stage source replacement on repair. No archived task method supplied.",
+  "server": "company-server-2-ykj",
+  "pilot": {
+    "task_id": 1335,
+    "init_index": 12,
+    "seed": 0
+  },
+  "model": "gpt-6-astra/xhigh/local ChatGPT Pro native-session",
+  "executor": "real jev-1.13.0/official systemone via existing authorized Jev credential",
+  "budgets": {
+    "max_gpt": 40,
+    "max_jev": 200,
+    "max_native_steps": 600,
+    "max_stage_updates": 24,
+    "max_plan_revisions": 3,
+    "max_stage_revisions": 3,
+    "stage_control_calls": 24,
+    "stage_policy_steps": 72,
+    "wall_limit": null
+  },
+  "gpu_admission": "No computing processes unless user explicitly allows GPU7 existing background allocations. No physical admission yet.",
+  "success": "Terminal native LIBERO score only. Retain all admitted failures and unknown usage. Offline checks do not establish success or speedup.",
+  "comparison": "Prior paused EXP055 is incomplete; latency comparison is descriptive, not paired causal proof. Base also includes previously prepared bounded sensing and active RPC fixes.",
+  "declared_epoch": 1793945191.9103,
+  "hashes": {
+    "code/scripts/gpt_jev_compact_context.py": "d87b679a5c14d9226f25abb30db3dbce204634b51d7b34e5d5e7e7b4ee66ca75",
+    "code/scripts/run_gpt_jev_program.py": "7f534bfeaab4a604be7527eb66228f6d2cb88ae7770dae261d22a59ddf36c428",
+    "code/scripts/gpt_jev_stage_protocol.py": "594ed2f2741ce5ca105e693652cbc35ec7f6511358e6a177a845778ea76cc3ad",
+    "code/prompts/gpt_jev_stage_compact_v1.txt": "a1c6393439496514c4e9c38ce35b3783ba233c1ebaa0cce9750d7033adc93f20",
+    "code/prompts/gpt_jev_program_api_compact_v1.md": "8c985e76b7f966d2c845004f44c688668e0a21bdf27350a244399103d56c4f7c",
+    "baseline/roboicl/reproduction/pro_session_client.py": "8ad5f11d4b130350f73f9b83952c2d35a6ecd4480e196ab6dfef659769e1fd19"
+  },
+  "deployment": {
+    "remote_path": "/home/ykj/project/jev-rsi-roboicl/.worktrees/gpt-jev-compact-stage-20261106",
+    "method": "Git bundle after remote HTTPS/TLS failure and SSH publickey rejection",
+    "remote_cli_help": true
+  },
+  "queue": {
+    "unit": "gpt-jev-compact-stage-pilot-20261106.service",
+    "pid": 2844026,
+    "wait_seconds": 3600,
+    "status": "waiting_for_empty_gpu",
+    "bridge": "gpt-jev-compact-stage-bridge-20261106.service",
+    "tunnel": "gpt-jev-compact-stage-tunnel-20261106.service",
+    "port": 7925,
+    "account_health": {
+      "auth": "ChatGPT",
+      "transport": "native-session",
+      "model": "gpt-6-astra",
+      "effort": "xhigh"
+    }
+  }
+}
