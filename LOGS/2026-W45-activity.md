@@ -23,3 +23,5 @@
 - 【Agent】【2026-11-05 12:40】[run] 5880-jump 图形双上下文渲染检查通过（bad_depth=0），但真实SAM3与最小torch.zeros(cuda)均报operation not supported；nvidia-smi -q显示vGPU License Status=Unlicensed。依用户此前明确授权重启5880进行恢复，未修改驱动/系统CUDA版本或许可证配置。此时真实策略回合尚未开始，模型权重/资产已完整落盘并校验。
 - 【Agent】【2026-11-05 12:42】[result] 按既有授权重启5880后，torch.zeros(device=cuda)成功，识别RTX5880-Ada-24Q；未修改驱动或系统CUDA。重新建立本轮专用环回转发并启动SAM3，开始真实Playground前复核服务健康。原生图形环境smoke已完成，官方SAM3权重SHA256双端一致。
 - 【Agent】【2026-11-05 12:51】[note] 当前资源等待：5880重启后自动恢复其他训练约5.6GB；v4090同机跳板可用但GPU已有其他任务约8GB/48GB。已通过异步问题请用户确认是否共享，未把等待视为同意，未启动占用繁忙GPU的SAM3重测或策略回合。关闭上游expandable_segments的启动器已实现，但尚未完整启动验证。源代码/依赖/权重/协议/软件测试与原生模型接入均已准备，实际Playground和Test仍各0。
+- 【Agent】【2026-11-06 12:23】[op] [run] 用户2026-11-06确认5880空闲并明确要求再次重启运行；重启前后GPU均46MiB/无计算进程，已按授权sudo reboot，未改驱动/CUDA。已恢复本机ChatGPT原生Pro/JEV桥及7951转发，启动普通分配器SAM3，随后按固定2 Playground+6 Test协议运行。
+- 【Agent】【2026-11-06 12:28】[op] [result] 5880第二次重启后SAM3普通分配器完整加载/预热成功，health正常约3.3GB；正式pilot-20261106已启动。首个Playground s0已有真实动作及JEV grasp阶段判断，任务尚无终局。旧占用阻塞解除，固定协议不变。
