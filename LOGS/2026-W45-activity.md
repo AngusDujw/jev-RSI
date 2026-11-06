@@ -25,3 +25,4 @@
 - 【Agent】【2026-11-05 12:51】[note] 当前资源等待：5880重启后自动恢复其他训练约5.6GB；v4090同机跳板可用但GPU已有其他任务约8GB/48GB。已通过异步问题请用户确认是否共享，未把等待视为同意，未启动占用繁忙GPU的SAM3重测或策略回合。关闭上游expandable_segments的启动器已实现，但尚未完整启动验证。源代码/依赖/权重/协议/软件测试与原生模型接入均已准备，实际Playground和Test仍各0。
 - 【Agent】【2026-11-06 12:23】[op] [run] 用户2026-11-06确认5880空闲并明确要求再次重启运行；重启前后GPU均46MiB/无计算进程，已按授权sudo reboot，未改驱动/CUDA。已恢复本机ChatGPT原生Pro/JEV桥及7951转发，启动普通分配器SAM3，随后按固定2 Playground+6 Test协议运行。
 - 【Agent】【2026-11-06 12:28】[op] [result] 5880第二次重启后SAM3普通分配器完整加载/预热成功，health正常约3.3GB；正式pilot-20261106已启动。首个Playground s0已有真实动作及JEV grasp阶段判断，任务尚无终局。旧占用阻塞解除，固定协议不变。
+- 【Agent】【2026-11-06 12:34】[op] [run] 正式pilot s0已完成4次真实JEV判断（grasp、tilted_reapproach、lift_clear、outward_clearance），已有94仿真步，仍无终局；批次继续自动执行。启动记录artifacts/hexashell-jev-20261106/launch.json，后台服务/转发保留，仅本轮运行目录新增。

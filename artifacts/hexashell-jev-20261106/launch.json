@@ -1,0 +1,29 @@
+{
+  "status": "running",
+  "date": "2026-11-06",
+  "authorization": "User confirmed 5880 idle and explicitly requested reboot and execution",
+  "server": "5880-jump",
+  "remote_root": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/hexashell-jev-20261105",
+  "runtime_commit": "74a41a91",
+  "protocol": "artifacts/hexashell-jev-20261105/plan.json",
+  "campaign": "code/runs/hexashell-jev-pilot-20261106",
+  "launch_log": "code/runs/hexashell-jev-launch-20261106/campaign.log",
+  "sam3_log": "code/runs/hexashell-services-20261106/sam3.log",
+  "planner": "Local ChatGPT Pro gpt-6-astra xhigh via native session",
+  "jev": "jev-1.13.0",
+  "services": {
+    "bridge_port": 7951,
+    "sam3_port": 18350,
+    "sam3_pid": 2500
+  },
+  "verified": {
+    "gpu_idle_before_and_after_reboot": true,
+    "sam3_load_and_warmup": true,
+    "sam3_health": true,
+    "real_policy_execution": true,
+    "completed_jev_judgments_at_observation": 4
+  },
+  "completed_episodes_at_observation": 0,
+  "learned_snapshots_at_observation": 0,
+  "result_note": "In progress; no task success or learned-skill claim. Campaign automatically learns only from Playground, freezes knowledge, runs six fresh tests, and stops on infrastructure failure."
+}
