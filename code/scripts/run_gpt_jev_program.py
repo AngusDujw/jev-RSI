@@ -24,6 +24,7 @@ from gpt_jev_program_worker import validate_source
 from gpt_jev_review_contract import compile_fields, validate_value
 from run_gpt_jev_generic import save, scrub
 from gpt_jev_stage_protocol import KINDS as STAGE_KINDS, StageYield, run_stages, budgeted_plan_schema
+from gpt_jev_compact_context import compact_state, size as context_size
 
 
 class PlannerSubmissionFailure(RuntimeError):
@@ -324,6 +325,8 @@ def planner_request_timeout(kind, staged_design=False, method_request_seconds=No
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--compact-stage-context", action="store_true",
+                   help="Bound staged context and use the compact exact API reference; repairs regenerate the current stage only")
     p.add_argument("--libero-root", type=Path, required=True)
     p.add_argument("--suite", default="libero_goal")
     p.add_argument("--task-id", type=int, required=True)
@@ -409,18 +412,24 @@ def main():
     design_prompt = (repo / "code/prompts/gpt_jev_design_v1.txt").read_text() if args.staged_design else None
     prompt += "\n\n"+lessons
     manual = (repo / "code/prompts/gpt_jev_program_api_v2.md").read_text()
+    if args.compact_stage_context:
+        if not args.hierarchical:
+            raise ValueError("Compact stage context requires --hierarchical")
+        manual = (repo / "code/prompts/gpt_jev_program_api_compact_v1.md").read_text()
     english([prompt, manual])
     stage_prompts = {}
     if args.hierarchical:
         for name in ("gpt_jev_stage_plan_v1.txt", "gpt_jev_stage_method_v1.txt", "gpt_jev_stage_supervisor_v1.txt"):
             stage_prompts[name] = (repo / "code/prompts" / name).read_text()
+        if args.compact_stage_context:
+            stage_prompts["gpt_jev_stage_method_v1.txt"] = (repo / "code/prompts/gpt_jev_stage_compact_v1.txt").read_text()
         english(stage_prompts)
     if design_prompt is not None:
         english(design_prompt)
     save(out / "protocol.json", dict(arguments={k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()},
         prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(), manual_sha256=hashlib.sha256(manual.encode()).hexdigest(),
         implementation_sha256={name: hashlib.sha256((repo / "code/scripts" / name).read_bytes()).hexdigest()
-            for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "gpt_jev_review_contract.py", "jev_rgbd_tracking.py", "gpt_jev_stage_protocol.py")},
+            for name in ("run_gpt_jev_program.py", "gpt_jev_program_worker.py", "gpt_jev_geometry.py", "gpt_jev_review_contract.py", "jev_rgbd_tracking.py", "gpt_jev_stage_protocol.py", "gpt_jev_compact_context.py")},
         planner="gpt-6-astra/xhigh/local ChatGPT Pro", executor="real jev-1.13.0/official systemone",
         native_evaluation="terminal only; never in policy input", task_recipes=False, stage_templates=False,
         model_wire_numeric_precision="data: 6 significant digits; tool schema constraints, internal calculations and receipts retain full precision",
@@ -598,6 +607,12 @@ def main():
         if kind == "method" and method_design is not None:
             payload_state["method_design"] = dict(proposal=method_design,
                 scope="Earlier model design, not sensor truth or executed actions; implementation must acquire runtime evidence")
+        if args.compact_stage_context:
+            raw_context_chars = context_size(payload_state)
+            payload_state = compact_state(payload_state, kind)
+            save(out / f"gpt-{index:02d}.context-audit.json", dict(raw_context_chars=raw_context_chars,
+                sent_context_chars=context_size(payload_state), kind=kind,
+                scope="Full sources and receipts remain archived, not included automatically in model input."))
         content.append(dict(type="input_text", text=json.dumps(model_wire_numbers(payload_state), separators=(",", ":"))))
         instructions = prompt+"\n\n"+manual if kind == "method" else (
             "Review the actual current and earlier robot images. Answer the requested evidence question and supply named visible surface points or regions when useful. "
@@ -615,7 +630,7 @@ def main():
                 "Correct design defects when needed. A design is not a measurement receipt. Acquire current runtime evidence; "
                 "do not embed this episode's pixels, measurements or frame-counter shortcuts as reusable observations. "
                 "Return complete executable source, not stubs, pseudocode or a plan awaiting another coding step.")
-        patching = kind in {"method", "stage_method"} and failed_method is not None
+        patching = kind in {"method", "stage_method"} and failed_method is not None and not args.compact_stage_context
         response_schema = DESIGN_SCHEMA if kind == "design" else PATCH_SCHEMA if patching else METHOD_SCHEMA if kind == "method" else REVIEW_SCHEMA
         if parameter_schema is not None:
             response_schema = json.loads(json.dumps(REVIEW_SCHEMA))

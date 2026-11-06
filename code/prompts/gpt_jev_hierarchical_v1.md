@@ -5,6 +5,23 @@ and event-triggered supervision. It is separate from legacy whole-method
 generation and the older design-then-whole-program mode. No task ID, stage
 template, object recipe or trajectory is built into this orchestration.
 
+## Optional compact request mode
+
+`--compact-stage-context` uses the exact compact runtime reference and short
+current-stage builder prompt. Request state retains current robot/calibration,
+stage/budgets, recent receipts, bounded failure diagnostics, checkpoint metadata
+and explicit caller review context. Large excerpts are labelled incomplete;
+old automatic annotation dumps and full previous source are not transmitted.
+Raw observations, methods and receipts remain archived. Each request saves a
+context-audit.json with before/after context sizes. Images are still current.
+
+Repair in this mode returns a complete new current-stage method, using diagnostic
+source excerpts and persistent episode checkpoints, instead of exact replacements
+against a full old source. This changes repair semantics and must be reported;
+it does not reset the physical scene or authorize replay. Normal live control
+slice continuation still uses the same source and stack. Compact mode is a
+separate experimental condition; historical whole-method mode remains available.
+
 ## Model roles
 
 - Overall planner: submit_stage_plan defines remaining observable subgoals and

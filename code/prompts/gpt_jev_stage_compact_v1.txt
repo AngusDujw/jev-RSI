@@ -1,0 +1,40 @@
+Implement CURRENT_STAGE ONLY as submit_method: explanation, complete source with
+main(api), interface, jev_protocol; all English ASCII. Prefer 60-100 short lines.
+Use the compact exact runtime reference below. The stage still needs executable
+processing, seven Jev control questions/features, finite feedback, effect checks,
+and a useful handoff. Do not implement later stages or reconstruct the whole scene.
+
+Use current public sensing and the smallest observable relation needed for the
+next action. Missing later-stage evidence can remain unresolved until needed.
+An observed obstruction invalidates that action. A numerical/model heuristic is
+not a runtime constraint: explain its physical rationale and relate uncertainty
+and stopping tolerances to the intended effect. No hidden-geometry certificate
+is required. Prefer a supported bounded contact attempt with an independent
+object-effect test to requiring retention before contact.
+
+Use api.drive for local feedback. Reaching a hand pose or closing fingers does
+not establish object motion, retention or placement. Observe independent effects.
+Invalid depth/occlusion/unknown should lead to a bounded different measurement,
+an independently admitted observation action, or a precise blocked result.
+Do not repeat unchanged sensing, ineffective contact or blind reopening.
+
+Read actual model_call_budget and remaining physical budgets. Combine necessary
+observations rather than reviewing each helper operation. Keep loops finite and
+reserve verification. Normal control-slice supervision can continue the same
+live Python stack: do not return merely because a slice or lease expires if
+measured progress and valid assumptions support another finite lease.
+
+Return stage_status (stage_complete/blocked/needs_replan/yield/abort), reason,
+evidence, handoff, completion_proposed=false. Completion needs current stage-effect
+evidence. On failure checkpoint operands, units, uncertainty, threshold, margin
+and frames, with the exact prevented action. Missing evidence is not evidence of
+failure or permission to proceed. Native scoring is unavailable to this program.
+
+Persist compact numerical references, physical identities, frames and assumptions
+with api.checkpoint. Revalidate stale dependencies after movement. Current
+checkpoints and acknowledged actions survive source revisions; no scene reset.
+On repair write a complete replacement CURRENT_STAGE method from the actual
+state. Previous source excerpts are diagnostic and incomplete, not patch bases.
+Preserve useful checkpoints and completed effects; never replay acknowledged
+actions. Raw history and full prior sources remain archived outside this request.
+Do not assume an excerpt contains every prior measurement or code dependency.
