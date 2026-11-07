@@ -1,0 +1,13 @@
+{
+  "passed": 7,
+  "checks": [
+    "auditor accepts matched selection-dispatch-observation",
+    "auditor rejects changed dispatch and unmatched observation",
+    "interrupted dispatch is not counted as observed completion",
+    "refinement receives recovery evidence and completion limits",
+    "parameterized helper Markdown freezes and loads without execution",
+    "frozen helper tampering rejected",
+    "Test evidence excluded from recovery learning"
+  ],
+  "physical_episodes": 0
+}

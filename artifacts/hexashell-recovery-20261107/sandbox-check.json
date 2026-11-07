@@ -1,0 +1,84 @@
+{
+  "output": "RECOVERY_SANDBOX_OK\n",
+  "error": null,
+  "events": [
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "start",
+      "methods": {
+        "first": {
+          "description": "A test method",
+          "max_uses": 1
+        },
+        "second": {
+          "description": "A test method",
+          "max_uses": 1
+        }
+      },
+      "max_attempts": 3,
+      "selector": "configured_model"
+    },
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "selected",
+      "attempt": 0,
+      "options": {
+        "first": "A test method",
+        "second": "A test method",
+        "unknown": "No available method is supported; return to GPT without motion."
+      },
+      "receipt": {
+        "choice": "first",
+        "backend": "jev",
+        "decision_id": 0
+      }
+    },
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "dispatch",
+      "attempt": 0,
+      "method": "first"
+    },
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "observed",
+      "attempt": 0,
+      "method": "first",
+      "uses": 1
+    },
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "selected",
+      "attempt": 1,
+      "options": {
+        "second": "A test method",
+        "unknown": "No available method is supported; return to GPT without motion."
+      },
+      "receipt": {
+        "choice": "second",
+        "backend": "jev",
+        "decision_id": 1
+      }
+    },
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "dispatch",
+      "attempt": 1,
+      "method": "second"
+    },
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "observed",
+      "attempt": 1,
+      "method": "second",
+      "uses": 1
+    },
+    {
+      "recovery_id": "406284aee21c46dc989ed756d0e228e6",
+      "event": "finish",
+      "reason": "resolved",
+      "attempts": 2
+    }
+  ],
+  "sandbox": "landlock ABI 4: files limited to 10 trees, TCP blocked; seccomp: 48 instructions (no network, programs, processes or signals)"
+}

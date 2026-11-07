@@ -1,0 +1,23 @@
+{
+  "implementation": "8a54b27d",
+  "protocol": "method-selection-v1",
+  "phase": "development",
+  "task": "libero_goal_swap_t6",
+  "seed": 2,
+  "max_turns": 12,
+  "budget_seconds": 1800,
+  "max_decisions": 40,
+  "memory": null,
+  "server": "5880-jump",
+  "remote_root": "/home/user/ykj/project/gpt6/jev-RSI/.worktrees/hexashell-jev-20261105",
+  "out": "code/runs/hexashell-recovery-pilot-20261107",
+  "purpose": "Integration admission only; no generalization or matched selector-ablation claim",
+  "tests": {
+    "logic": 12,
+    "audit_memory": 7,
+    "real_sandbox_with_fake_selector": 1,
+    "upstream_runtime_sandbox": 16
+  },
+  "prior_failure": "First sandbox import was denied; helper now preloaded without relaxing sandbox",
+  "rule_control": "Callable shares executor; fixed method-library physical comparison not yet run"
+}
