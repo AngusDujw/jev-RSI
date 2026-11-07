@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-07",
+  "implementation": "d51599f3",
+  "task": "libero_goal_swap_t6",
+  "seed": 2,
+  "phase": "development",
+  "backend": "jev",
+  "memory": null,
+  "max_turns": 12,
+  "max_decisions": 40,
+  "budget_seconds": 1800,
+  "reason": "User requested real effect test; fresh retry of infrastructure-interrupted admission after authorized idle-server reboot",
+  "out": "code/runs/hexashell-recovery-test-20261107",
+  "metrics": [
+    "native success",
+    "native steps",
+    "completed planner turns",
+    "actual JEV choices",
+    "recovery selected/dispatch/observed events",
+    "same-cell multiple recovery dispatches",
+    "handoff reasons"
+  ],
+  "limits": "Single development scene, not generalization or matched selector comparison; preserve all failures, no outcome-selected reruns."
+}
