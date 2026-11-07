@@ -1,0 +1,779 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "observations": {
+      "schema": "hexashell-jev-evidence-v1",
+      "step": 66,
+      "instruction": "Put the cream cheese on the bowl",
+      "frame": "fixed arm base; metres; TCP rotation matrix",
+      "robot": {
+        "tcp": [
+          [
+            0.010437,
+            -0.003063,
+            0.999941,
+            0.241682
+          ],
+          [
+            0.017778,
+            0.999838,
+            0.002877,
+            0.192353
+          ],
+          [
+            -0.999787,
+            0.017747,
+            0.01049,
+            0.000881
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "width": 0.079869,
+        "joints": [
+          0.761604,
+          0.463994,
+          -0.352786,
+          -2.68177,
+          -1.59142,
+          3.30842,
+          2.82095
+        ],
+        "width_heuristic_holding": false
+      },
+      "observation_history": [
+        {
+          "call": "measure",
+          "step": 0,
+          "robot": {
+            "tcp": [
+              [
+                -0.056777,
+                -0.000492,
+                0.998387,
+                0.451535
+              ],
+              [
+                0.0,
+                1.0,
+                0.000493,
+                0.0
+              ],
+              [
+                -0.998387,
+                2.8e-05,
+                -0.056777,
+                0.261279
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.077392,
+            "joints": [
+              0.0,
+              -0.161037,
+              0.0,
+              -2.4446,
+              0.0,
+              2.22675,
+              0.785398
+            ]
+          },
+          "result": {
+            "id": 0,
+            "label": "cream cheese",
+            "found": false,
+            "center_xyz": null,
+            "top": null,
+            "size": null,
+            "grip_yaw": null,
+            "on": "table",
+            "on_z": null,
+            "views": [],
+            "err_mm": null,
+            "warning": null,
+            "why_missing": "no 'cream cheese' outlined in agentview, wrist",
+            "seq": 0,
+            "round": false,
+            "step": null,
+            "frame_ids": {}
+          },
+          "age_steps": 66
+        },
+        {
+          "call": "measure",
+          "step": 0,
+          "robot": {
+            "tcp": [
+              [
+                -0.056777,
+                -0.000492,
+                0.998387,
+                0.451535
+              ],
+              [
+                0.0,
+                1.0,
+                0.000493,
+                0.0
+              ],
+              [
+                -0.998387,
+                2.8e-05,
+                -0.056777,
+                0.261279
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.077392,
+            "joints": [
+              0.0,
+              -0.161037,
+              0.0,
+              -2.4446,
+              0.0,
+              2.22675,
+              0.785398
+            ]
+          },
+          "result": {
+            "id": 1,
+            "label": "bowl",
+            "found": true,
+            "center_xyz": [
+              0.4729,
+              -0.0493,
+              0.0157
+            ],
+            "top": 0.0368,
+            "size": [
+              0.0944,
+              0.094,
+              0.0423
+            ],
+            "grip_yaw": null,
+            "on": "z -0.005",
+            "on_z": -0.0054,
+            "views": [
+              "agentview",
+              "wrist"
+            ],
+            "err_mm": null,
+            "warning": null,
+            "why_missing": null,
+            "seq": 0,
+            "round": true,
+            "step": 0,
+            "frame_ids": {}
+          },
+          "age_steps": 66
+        },
+        {
+          "call": "measure",
+          "step": 0,
+          "robot": {
+            "tcp": [
+              [
+                -0.056777,
+                -0.000492,
+                0.998387,
+                0.451535
+              ],
+              [
+                0.0,
+                1.0,
+                0.000493,
+                0.0
+              ],
+              [
+                -0.998387,
+                2.8e-05,
+                -0.056777,
+                0.261279
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.077392,
+            "joints": [
+              0.0,
+              -0.161037,
+              0.0,
+              -2.4446,
+              0.0,
+              2.22675,
+              0.785398
+            ]
+          },
+          "result": {
+            "id": 2,
+            "label": "at (355, 196)",
+            "found": true,
+            "center_xyz": [
+              0.2533,
+              0.1998,
+              -0.0004
+            ],
+            "top": 0.0071,
+            "size": [
+              0.0711,
+              0.0369,
+              0.0151
+            ],
+            "grip_yaw": 1.6,
+            "on": "z -0.008",
+            "on_z": -0.0079,
+            "views": [
+              "agentview"
+            ],
+            "err_mm": null,
+            "warning": null,
+            "why_missing": null,
+            "seq": 0,
+            "round": false,
+            "step": 0,
+            "frame_ids": {}
+          },
+          "age_steps": 66
+        },
+        {
+          "call": "goto",
+          "step": 0,
+          "robot": {
+            "tcp": [
+              [
+                -0.056777,
+                -0.000492,
+                0.998387,
+                0.451535
+              ],
+              [
+                0.0,
+                1.0,
+                0.000493,
+                0.0
+              ],
+              [
+                -0.998387,
+                2.8e-05,
+                -0.056777,
+                0.261279
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.077392,
+            "joints": [
+              0.0,
+              -0.161037,
+              0.0,
+              -2.4446,
+              0.0,
+              2.22675,
+              0.785398
+            ]
+          },
+          "result": {
+            "reached": true,
+            "moved": false,
+            "target": [
+              0.2533,
+              0.1998,
+              0.1471
+            ],
+            "target_angles": [
+              90.0,
+              1.6,
+              0.0
+            ],
+            "at": [
+              0.4515,
+              0.0,
+              0.2613
+            ],
+            "angles": [
+              86.75,
+              0.03,
+              0.0
+            ],
+            "err_mm": 0.0,
+            "err_deg": 0.0,
+            "steps": 0,
+            "blocked": false,
+            "dry_run": true,
+            "why": "",
+            "steps_left": 300
+          },
+          "age_steps": 66
+        },
+        {
+          "call": "goto",
+          "step": 39,
+          "robot": {
+            "tcp": [
+              [
+                0.006652,
+                -0.027118,
+                0.99961,
+                0.252284
+              ],
+              [
+                0.004005,
+                0.999625,
+                0.027091,
+                0.197343
+              ],
+              [
+                -0.99997,
+                0.003823,
+                0.006758,
+                0.146293
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.079572,
+            "joints": [
+              0.226561,
+              -0.318445,
+              0.540227,
+              -2.9684,
+              0.361799,
+              2.67414,
+              1.1785
+            ]
+          },
+          "result": {
+            "reached": true,
+            "moved": true,
+            "target": [
+              0.2533,
+              0.1998,
+              0.1471
+            ],
+            "target_angles": [
+              90.0,
+              1.6,
+              0.0
+            ],
+            "at": [
+              0.2523,
+              0.1973,
+              0.1463
+            ],
+            "angles": [
+              89.56,
+              1.55,
+              0.0
+            ],
+            "err_mm": 2.8,
+            "err_deg": 0.4,
+            "steps": 39,
+            "blocked": false,
+            "dry_run": false,
+            "why": "",
+            "steps_left": 261
+          },
+          "age_steps": 27
+        },
+        {
+          "call": "measure",
+          "step": 39,
+          "robot": {
+            "tcp": [
+              [
+                0.006652,
+                -0.027118,
+                0.99961,
+                0.252284
+              ],
+              [
+                0.004005,
+                0.999625,
+                0.027091,
+                0.197343
+              ],
+              [
+                -0.99997,
+                0.003823,
+                0.006758,
+                0.146293
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.079572,
+            "joints": [
+              0.226561,
+              -0.318445,
+              0.540227,
+              -2.9684,
+              0.361799,
+              2.67414,
+              1.1785
+            ]
+          },
+          "result": {
+            "id": 2,
+            "label": "at (355, 196)",
+            "found": true,
+            "center_xyz": [
+              0.2495,
+              0.2013,
+              0.0057
+            ],
+            "top": 0.0066,
+            "size": [
+              0.0757,
+              0.0372,
+              0.0017
+            ],
+            "grip_yaw": 0.1,
+            "on": "z 0.005",
+            "on_z": 0.0049,
+            "views": [
+              "agentview",
+              "wrist"
+            ],
+            "err_mm": null,
+            "warning": null,
+            "why_missing": null,
+            "seq": 39,
+            "round": false,
+            "step": 39,
+            "frame_ids": {}
+          },
+          "age_steps": 27
+        },
+        {
+          "call": "measure",
+          "step": 39,
+          "robot": {
+            "tcp": [
+              [
+                0.006652,
+                -0.027118,
+                0.99961,
+                0.252284
+              ],
+              [
+                0.004005,
+                0.999625,
+                0.027091,
+                0.197343
+              ],
+              [
+                -0.99997,
+                0.003823,
+                0.006758,
+                0.146293
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.079572,
+            "joints": [
+              0.226561,
+              -0.318445,
+              0.540227,
+              -2.9684,
+              0.361799,
+              2.67414,
+              1.1785
+            ]
+          },
+          "result": {
+            "id": 2,
+            "label": "at (355, 196)",
+            "found": true,
+            "center_xyz": [
+              0.2495,
+              0.2013,
+              0.0058
+            ],
+            "top": 0.0066,
+            "size": [
+              0.0757,
+              0.0372,
+              0.0016
+            ],
+            "grip_yaw": 0.1,
+            "on": "z 0.005",
+            "on_z": 0.005,
+            "views": [
+              "agentview",
+              "wrist"
+            ],
+            "err_mm": null,
+            "warning": null,
+            "why_missing": null,
+            "seq": 39,
+            "round": false,
+            "step": 39,
+            "frame_ids": {}
+          },
+          "age_steps": 27
+        },
+        {
+          "call": "goto",
+          "step": 66,
+          "robot": {
+            "tcp": [
+              [
+                0.010437,
+                -0.003063,
+                0.999941,
+                0.241682
+              ],
+              [
+                0.017778,
+                0.999838,
+                0.002877,
+                0.192353
+              ],
+              [
+                -0.999787,
+                0.017747,
+                0.01049,
+                0.000881
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.079869,
+            "joints": [
+              0.761604,
+              0.463994,
+              -0.352786,
+              -2.68177,
+              -1.59142,
+              3.30842,
+              2.82095
+            ]
+          },
+          "result": {
+            "reached": false,
+            "moved": true,
+            "target": [
+              0.2495,
+              0.2013,
+              0.002
+            ],
+            "target_angles": [
+              90.0,
+              0.0,
+              0.0
+            ],
+            "at": [
+              0.2417,
+              0.1924,
+              0.0009
+            ],
+            "angles": [
+              88.82,
+              0.17,
+              0.0
+            ],
+            "err_mm": 11.9,
+            "err_deg": 1.2,
+            "steps": 27,
+            "blocked": false,
+            "dry_run": false,
+            "why": "",
+            "steps_left": 234
+          },
+          "age_steps": 0
+        },
+        {
+          "call": "measure",
+          "step": 66,
+          "robot": {
+            "tcp": [
+              [
+                0.010437,
+                -0.003063,
+                0.999941,
+                0.241682
+              ],
+              [
+                0.017778,
+                0.999838,
+                0.002877,
+                0.192353
+              ],
+              [
+                -0.999787,
+                0.017747,
+                0.01049,
+                0.000881
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "width": 0.079869,
+            "joints": [
+              0.761604,
+              0.463994,
+              -0.352786,
+              -2.68177,
+              -1.59142,
+              3.30842,
+              2.82095
+            ]
+          },
+          "result": {
+            "id": 2,
+            "label": "at (355, 196)",
+            "found": true,
+            "center_xyz": [
+              0.2641,
+              0.2016,
+              0.0062
+            ],
+            "top": 0.0066,
+            "size": [
+              0.0395,
+              0.0148,
+              0.0009
+            ],
+            "grip_yaw": 7.2,
+            "on": "z 0.006",
+            "on_z": 0.0057,
+            "views": [
+              "agentview",
+              "wrist"
+            ],
+            "err_mm": null,
+            "warning": "its depth points lie level with the surface around it (z 0.006): it is flat, or the depth picture sees through it (clear plastic, glass) - then its walls and top are not measured: judge them from the colour pictures",
+            "why_missing": null,
+            "seq": 66,
+            "round": false,
+            "step": 66,
+            "frame_ids": {}
+          },
+          "age_steps": 0
+        }
+      ],
+      "temporal_measurements": [
+        {
+          "label": "at (355, 196)",
+          "from_step": 0,
+          "to_step": 39,
+          "age_steps": 27,
+          "object_delta_m": [
+            -0.0038,
+            0.0015,
+            0.0061
+          ],
+          "tcp_delta_m": [
+            -0.199251,
+            0.197343,
+            -0.114986
+          ],
+          "relative_delta_m": [
+            0.195451,
+            -0.195843,
+            0.121086
+          ],
+          "source": "Difference of two SAM3/RGB-D surface measurements; correspondence is not guaranteed"
+        },
+        {
+          "label": "at (355, 196)",
+          "from_step": 39,
+          "to_step": 66,
+          "age_steps": 0,
+          "object_delta_m": [
+            0.0146,
+            0.0003,
+            0.0004
+          ],
+          "tcp_delta_m": [
+            -0.010602,
+            -0.00499,
+            -0.145412
+          ],
+          "relative_delta_m": [
+            0.025202,
+            0.00529,
+            0.145812
+          ],
+          "source": "Difference of two SAM3/RGB-D surface measurements; correspondence is not guaranteed"
+        }
+      ],
+      "limitations": [
+        "No raw images, object ground truth, contact forces or native success signal",
+        "Gripper holding is a width heuristic, not proof of intended-object retention",
+        "Measured centers describe visible surfaces; occlusion and correspondence can shift them",
+        "Age is native motion steps, not a guarantee that a prior object observation is current"
+      ]
+    },
+    "program_context": {
+      "policy_context": {
+        "goal": "Grasp and lift the blue cream cheese package for transfer to the bowl",
+        "target": "cream cheese package",
+        "previous_motion": "The descent ended short of its requested pose; no close command has been executed."
+      },
+      "recovery_id": "ae6af75f07214572b8efe34bae956f05",
+      "attempt": 0,
+      "method_history": [],
+      "uses": {
+        "pinch_current_pose": 0,
+        "recenter_above_table": 0
+      },
+      "scope": "Choose a useful available recovery or observation method; no diagnosis is assumed."
+    },
+    "context_source": "GPT-authored policy; not an independent sensor"
+  },
+  "questions": {
+    "branch": {
+      "type": "choice",
+      "instructions": "Select one local robot-policy branch using the supplied observations. Program context describes intent, never independent evidence. Distinguish measured feedback from requested commands and heuristics. Use unknown when evidence is missing, stale or contradictory for this question. Do not invent visual or contact observations. Confidence is distribution concentration, not correctness. Question: Which available method best addresses the current execution difficulty, given measured history and previous attempts? Choose unknown if none is supported.",
+      "criteria": {
+        "pinch_current_pose": "Close at the present low pose only when the measured package fits between the open fingers with lateral clearance, then lift vertically to inspect whether the package rose.",
+        "recenter_above_table": "Raise clear of the table, open and realign over the measured package at a slightly higher grasp height, then close and lift if the descent reaches its target.",
+        "unknown": "No available method is supported; return to GPT without motion."
+      }
+    }
+  }
+}

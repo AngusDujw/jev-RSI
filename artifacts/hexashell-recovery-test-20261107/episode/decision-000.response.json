@@ -1,0 +1,19 @@
+{
+  "model": "jev-1.13.0",
+  "answers": {
+    "branch": {
+      "type": "choice",
+      "choice": "recenter_above_table",
+      "confidence": 0.62,
+      "probabilities": {
+        "pinch_current_pose": 0.19,
+        "recenter_above_table": 0.75,
+        "unknown": 0.06
+      }
+    }
+  },
+  "usage": {
+    "input_tokens": 5220,
+    "output_tokens": 49
+  }
+}

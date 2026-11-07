@@ -1,0 +1,18 @@
+print(robot.state())
+bowl = robot.measure(bowl)
+print(bowl)
+package_offset_xy = package_reference[:2] - np.array(actual[:2], dtype=float)
+print('Estimated package offset from grasp point:', package_offset_xy)
+if robot.state().holding and bowl.size is not None and max(bowl.size) < 0.15:
+    carry_target = (float(bowl.center[0] - package_offset_xy[0]), float(bowl.center[1] - package_offset_xy[1]), 0.175)
+    feasible = robot.goto(carry_target, pitch=110, yaw=0, dry_run=True)
+    print(feasible)
+    if feasible.ok:
+        carry = robot.goto(carry_target, pitch=110, yaw=0)
+        print(carry)
+        bowl = robot.measure(bowl)
+        print(bowl)
+        cheese = robot.measure(cheese)
+        print(cheese)
+        print(robot.state())
+robot.look('all', tile=True)

@@ -1,0 +1,93 @@
+{
+ "bench": "libero",
+ "task": "libero_goal_swap_t6",
+ "seed": 2,
+ "suite": "libero_goal_swap",
+ "task_index": 6,
+ "init_state": 2,
+ "robot": "MountedPanda",
+ "instruction": "Put the cream cheese on the bowl",
+ "success": true,
+ "progress": null,
+ "step": 205,
+ "step_limit": 300,
+ "verdict": {
+  "success": true,
+  "step": 205,
+  "step_limit": 300,
+  "finished": true
+ },
+ "end": "episode_over",
+ "finish": null,
+ "turns": 7,
+ "cells": 7,
+ "robot_calls": {
+  "task": 1,
+  "measure": 13,
+  "goto": 11,
+  "look": 5,
+  "recovery_event": 5,
+  "state": 11,
+  "decide": 1,
+  "gripper": 2
+ },
+ "tokens": {
+  "prompt": 262250,
+  "completion": 9306,
+  "cached": 0,
+  "reasoning": 0
+ },
+ "pictures": {
+  "shown": 7,
+  "dropped": 0
+ },
+ "seconds": 523.7,
+ "open_s": 139.7,
+ "gateway_lost_s": 0.0,
+ "settings": {
+  "api": "openai",
+  "api_base": "https://api.example.com/v1",
+  "ca_file": "",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "xhigh",
+  "thinking_display": "summarized",
+  "max_tokens": 8192,
+  "skills": false,
+  "ladder": true,
+  "max_turns": 12,
+  "budget_s": 1800.0,
+  "nudges": 3,
+  "images_max": 20,
+  "images_low": 14,
+  "images_bytes_max": 10000000,
+  "jpeg_quality": 90,
+  "cell_cpu_s": 120.0,
+  "cell_idle_s": 1830,
+  "cell_total_s": 1800.0,
+  "sam3_url": "http://127.0.0.1:18350",
+  "depth": false,
+  "request_timeout_s": 900.0,
+  "stream": true,
+  "history_reasoning": false,
+  "motion": "v1",
+  "script": "",
+  "sent": {
+   "model": "gpt-6-astra",
+   "reasoning_effort": "xhigh",
+   "auth": "local ChatGPT",
+   "transport": "native-session",
+   "policy_contract": "submit_policy -> one Python cell or finish"
+  }
+ },
+ "card": {
+  "task": "libero_goal_swap_t6",
+  "skill": false
+ },
+ "errors": [],
+ "hexashell": "1.5.0",
+ "infrastructure_failure": null,
+ "local_judgments": {
+  "backend": "jev",
+  "attempted": 1
+ }
+}

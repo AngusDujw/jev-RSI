@@ -1,0 +1,18 @@
+{
+  "decision_id": 0,
+  "backend": "jev",
+  "choice": "recenter_above_table",
+  "evidence_step": 66,
+  "evidence_sha256": "14ea5ddefc2ad04a295ab294713e2f33a623e50b2fb312239ca316185302a192",
+  "model": "jev-1.13.0",
+  "confidence": 0.62,
+  "probabilities": {
+    "pinch_current_pose": 0.19,
+    "recenter_above_table": 0.75,
+    "unknown": 0.06
+  },
+  "usage": {
+    "input_tokens": 5220,
+    "output_tokens": 49
+  }
+}

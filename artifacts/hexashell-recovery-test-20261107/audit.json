@@ -1,0 +1,33 @@
+{
+  "record": "code/runs/hexashell-recovery-test-20261107/libero_goal_swap_t6_s2-20261107T174240",
+  "success": true,
+  "end": "episode_over",
+  "steps": 205,
+  "planner_turns": 7,
+  "backend": "jev",
+  "phase": "development",
+  "decide_calls": 1,
+  "completed_decisions": 1,
+  "recovery": {
+    "selections": 1,
+    "dispatches": 1,
+    "observed_returns": 1,
+    "unfinished_dispatches": 0,
+    "finishes": [
+      {
+        "recovery_id": "ae6af75f07214572b8efe34bae956f05",
+        "reason": "no_eligible_method",
+        "attempts": 1
+      }
+    ]
+  },
+  "choices": [
+    {
+      "decision_id": 0,
+      "choice": "recenter_above_table",
+      "evidence_step": 66
+    }
+  ],
+  "errors": [],
+  "limitations": "Checks saved request/answer/call consistency; does not independently prove physical predicates or causality"
+}

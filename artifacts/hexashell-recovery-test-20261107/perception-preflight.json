@@ -1,0 +1,12 @@
+{
+  "source": "prior Playground service preflight only",
+  "image": {
+    "image_id": "f8f58f54c5d02be7146cfa8cc90f1cad8da1b67db048bac9ef83b9314157f776",
+    "cached": false,
+    "h": 512,
+    "w": 512,
+    "ms": 580.2
+  },
+  "mask_count": 2,
+  "inference_completed": true
+}

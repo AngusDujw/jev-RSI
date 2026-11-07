@@ -1,0 +1,16 @@
+{
+ "upstream_commit": "e0190ddb757955131578e9f9071f4ee8e7113f7a",
+ "recovery_protocol": "method-selection-v1",
+ "judgment_backend": "jev",
+ "phase": "development",
+ "memory_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+ "native_scoring": true,
+ "generic_motion": "upstream",
+ "integration_sha256": {
+  "runtime.py": "f48bfeb2d58c132c1cc4acb26ec5d29f19ee408e0d64429d4f7cc3a8dd075662",
+  "memory.py": "b77602a80088c82fa1022042762ee4e7fa4fb0cff15cc306b16b1baf86918e0a",
+  "judgments.py": "2b1886d7e5a93c64a2bfbfa523089bd366e85f5ff0870e6ea7153c5aef868497",
+  "jev_proxy.py": "1725dfdff665f4d5c0cf9c8252eea63fb22a4ba96ab11a5d2829d37a8a9763a3",
+  "recovery.py": "8ed2ae40489b782e3cf37cdf9f919ccd1586b5d210cd498b9c3346fa78d3ea82"
+ }
+}
