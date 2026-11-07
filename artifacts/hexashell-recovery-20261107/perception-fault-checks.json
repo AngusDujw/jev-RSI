@@ -1,0 +1,18 @@
+{
+  "passed": 3,
+  "checks": [
+    {
+      "error": "SAM3 refused the request: CUDA error: device doesn't have valid Grid license",
+      "infrastructure_stop": true
+    },
+    {
+      "error": "SAM3 refused the request: CUDA out of memory",
+      "infrastructure_stop": true
+    },
+    {
+      "error": "Target not found",
+      "infrastructure_stop": false
+    }
+  ],
+  "physical_episodes": 0
+}

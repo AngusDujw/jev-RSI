@@ -16,8 +16,23 @@
     "logic": 12,
     "audit_memory": 7,
     "real_sandbox_with_fake_selector": 1,
-    "upstream_runtime_sandbox": 16
+    "upstream_runtime_sandbox": 16,
+    "perception_faults": 3
   },
   "prior_failure": "First sandbox import was denied; helper now preloaded without relaxing sandbox",
-  "rule_control": "Callable shares executor; fixed method-library physical comparison not yet run"
+  "rule_control": "Callable shares executor; fixed method-library physical comparison not yet run",
+  "status": "implemented; software verified; physical admission interrupted",
+  "physical_result": {
+    "end": "manual interrupt after SAM3 CUDA Grid license failure",
+    "steps": 38,
+    "completed_planner_replies": 3,
+    "jev_calls": 0,
+    "recovery_calls": 0,
+    "native_success": false,
+    "valid_task_failure": false,
+    "next_request_interrupted": true,
+    "note": "Service health was green but inference failed. No learned snapshot. No automatic replay; retained original result without relabeling it."
+  },
+  "latest_runtime_commit": "831604c6",
+  "own_bridge_tunnel_pilot_stopped": true
 }
