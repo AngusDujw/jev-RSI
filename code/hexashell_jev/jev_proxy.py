@@ -3,6 +3,13 @@ from hexashell.benches.libero.proxy import Robot as LiberoRobot
 
 
 class Robot(LiberoRobot):
+    def recover(self, methods, *, observe, resolved, context=None, max_attempts=3,
+                rule_selector=None):
+        """Run bounded method selection locally; see recovery.py for the contract."""
+        from hexashell.recovery import recover
+        return recover(self, methods, observe=observe, resolved=resolved,
+                       context=context, max_attempts=max_attempts, rule_selector=rule_selector)
+
     def decide(self, question, options, *, context=None):
         """Choose a local branch from host-recorded measurements and action feedback.
 

@@ -1,5 +1,52 @@
 # Code-as-policy with local judgments
 
+## Recovery method selection (2026-11-07)
+
+The default planner contract now assigns numerical predicates to Python and
+ambiguous recovery-method selection to the configured JEV/GPT backend. It no
+longer asks for model approval at every material phase boundary. The existing
+`decide` API remains available; this is not a replay of the previous pilot.
+
+`robot.recover(methods, observe=..., resolved=..., context=..., max_attempts=3)`
+runs inside the persistent sandbox. GPT defines alternative parameterized methods
+before calling it. Each method has `description`, pure `eligible(obs)` and bounded
+`run(obs)` callables, and `max_uses` (default 1). The callback `observe()` refreshes
+public measurements; `resolved(obs)` is a Python bool for the LOCAL recovery goal,
+not environment success. Callbacks capture the current task parameters in closures.
+
+The helper selects, rechecks the guard, invokes the chosen callable, observes and
+selects again without another GPT planner turn. It returns a reason and history.
+`unknown`, no eligible methods, changed guards and budget exhaustion return control
+to the generated policy, which must hand unresolved cases back to GPT. It does not
+make contact diagnoses or compute geometry. Methods may obtain new evidence instead
+of moving. Physical and service exceptions propagate, without automatic replay or
+post-terminal observation. Attempt limits bound repeated no-progress behavior;
+there is no universal physical progress detector or universal recovery motion.
+
+Candidate availability, preconditions and recovery completion remain generated
+policy responsibilities; this API is not a security boundary against malicious or
+incorrect generated code. Methods must not invoke nested recovery/model calls.
+Their source remains visible in saved cells, and the host logs each selection,
+dispatch entry and returned observation. Dispatch is not proof of completion:
+native termination can legitimately interrupt a method.
+
+For an explicit rule control, pass a pure
+`rule_selector(evidence, options, context) -> method_name`. It shares the executor,
+eligibility filtering and attempt budget. For JEV vs GPT use the existing backend
+switch. A valid selector comparison must reuse the SAME method source, guards,
+observations and initial state; independently generated episode code is a system
+comparison, not a controlled selector ablation. No fixed-method physical comparison
+is claimed by the software checks.
+
+Playground refinement now includes recovery event traces and requests executable
+parameterized helpers in Markdown code blocks plus applicability/failure lessons.
+Knowledge remains hash-frozen Markdown, never auto-imported or executed at loading.
+Test agents explicitly instantiate the helpers. No Test record is used for learning.
+
+Implementation: `recovery.py`, `jev_proxy.py`, `runtime.py`, `memory.py`.
+The episode auditor reports selection/dispatch/observation counts, unfinished
+dispatches and handoff reasons and binds model selections to saved receipts.
+
 Upstream: HexaFuture/HexaShell, pinned at
 `e0190ddb757955131578e9f9071f4ee8e7113f7a` (2026-11-03).
 The checkout belongs under `baseline/HexaShell-runtime`; it is an independent

@@ -89,8 +89,11 @@ def refine(pro, records, target, previous=None):
             receipts.append(dict(request=json.loads(path.read_text()),
                 receipt=json.loads(path.with_name(path.name.replace(".request", ".receipt")).read_text())
                 if path.with_name(path.name.replace(".request", ".receipt")).exists() else None))
+        events_path = record / "events.jsonl"
+        recovery = [json.loads(line) for line in events_path.read_text().splitlines()
+                    if line and json.loads(line).get("kind") == "recovery"] if events_path.exists() else []
         packets.append(dict(result=json.loads((record / "result.json").read_text()),
-                            cells=cells[-70000:], judgments=receipts[-20:]))
+                            cells=cells[-70000:], judgments=receipts[-20:], recovery=recovery[-80:]))
         pictures.extend(sorted((record / "pictures").glob("*.jpg"))[-2:])
     instruction = (
         "Refine reusable robot code-policy skills and diagnostic lessons from Playground only. "
@@ -104,7 +107,16 @@ def refine(pro, records, target, previous=None):
         "Do not claim task success unless the native result says success. Do not turn the host's "
         "holding heuristic into proof. Do not claim JEV sees images. Do not use test knowledge, "
         "private simulator state or benchmark-checker code. Keep the entire snapshot below 65000 "
-        "characters. No model weights are trained. Prefer concise practical procedures.")
+        "characters. No model weights are trained. Prefer concise practical procedures. "
+        "For recovery, preserve reusable parameterized Python method definitions in Markdown "
+        "code blocks, their applicability and expected effects, evidence requirements and failure "
+        "exits. Methods are registered with robot.recover before selection. Distinguish candidate "
+        "selection, dispatch entry, completed observation and verified recovery; a dispatch event "
+        "does not prove action completion. Keep unsuccessful method choices and alternative choices "
+        "visible. Do not convert an uncertain cause into fact or train on a model's diagnosis alone. "
+        "Extract cross-scene method-selection lessons rather than scene-specific thresholds. "
+        "If the record contains no executed recovery selection, say so; do not invent a method's "
+        "validation or claim recovery generalization. Numerical checks remain Python's job.")
     text = dict(prior_knowledge=load(previous) if previous else "", playground=packets)
     content = [dict(type="input_text", text=json.dumps(ascii_wire(text)))]
     import base64

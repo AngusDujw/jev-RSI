@@ -9,7 +9,7 @@ import sys
 import time
 import uuid
 
-from judgments import Decisions, Evidence, JudgmentServiceError, ascii_wire
+from judgments import Decisions, Evidence, JudgmentServiceError, ascii_wire, plain
 
 PIN = "e0190ddb757955131578e9f9071f4ee8e7113f7a"
 
@@ -84,12 +84,38 @@ descriptions and must include unknown. This invokes the configured local
 judgment backend; it never moves the robot or changes your program.
 robot.evidence() returns the host-recorded evidence available to that backend.
 
-Write code as the closed-loop policy: compose whole bounded phases with local
-checks, branching and at most a small number of retries in one cell. At material
-phase boundaries delegate a useful local judgment to robot.decide: whether the
-intended object follows the hand, whether to continue the current approach,
-whether to retry/reobserve after a failure, or which prepared recovery fits.
-Execute the selected branch in Python. Decisions have a separate finite budget.
+Keep exact geometry, feasibility checks, numerical thresholds and routine phase
+transitions in Python. Do not ask a model to approve a condition Python already
+determines. Use the decision model to choose among alternative executable recovery
+or observation methods when execution history admits different useful responses.
+
+robot.recover(methods, observe=refresh, resolved=recovery_goal_met,
+              context={...}, max_attempts=3, rule_selector=None) -> dict
+Register 2..10 methods BEFORE selection. Each entry is
+name: {"description": English applicability and expected effect,
+       "eligible": callable(obs)->bool, "run": callable(obs), "max_uses": 1}.
+observe() refreshes public measurements and returns an observation object;
+resolved(obs) and eligible(obs) are pure Python bool predicates, without motion.
+resolved means the local recovery goal, never native task success. run(obs)
+executes one bounded method with numerical guards and returns; it must not hide
+another planner or decision call. Describe missing prerequisites honestly.
+Use distinct alternatives such as reobservation, changed approach, or reacquisition
+only when those methods can actually be implemented from current public geometry.
+Do not invent task-independent motions or forcibly create unsafe alternatives.
+The helper calls the configured selector, dispatches its choice immediately,
+refreshes measurements, and selects again in the SAME cell without a GPT turn.
+It rechecks eligibility, limits attempts (1..6) and per-method uses (1..3), and
+returns on resolved, unknown, unavailable methods, changed guard or exhausted
+budget. Service errors and terminal exceptions propagate without replay. A
+method that partially moved and then failed must never be silently retried.
+Inspect the returned reason; resume the task only after the local goal is met.
+Do not repeatedly restart recovery loops after exhaustion; return to GPT.
+The optional rule_selector(evidence, options, context)->name is ONLY for an
+explicit rule-control experiment; leave it None in normal model-selected runs.
+Decisions have a separate finite budget. The helper records selection and actual
+dispatch separately. Prefer reusable parameterized helper definitions and learned
+method applicability over scene constants. Never put your final diagnosis into
+context as if it were sensor evidence. Unknown must remain a valid choice.
 The host independently supplies recorded measurements, robot feedback and
 temporal differences. Re-measure the target before and after relevant motion
 to make retention/progress observable. A close command, holding heuristic or
@@ -188,6 +214,16 @@ def run_episode(args, memory_text=""):
                 proprio=dict(self.host.proprio, width_heuristic_holding=self.host.holding))
 
         def dispatch(self, name, a, kw):
+            if name == "recovery_event":
+                if self.over:
+                    raise Stop(self.over_reason())
+                payload = ascii_wire(plain(a[0]))
+                if (payload.get("event") not in ("start", "selected", "dispatch", "observed", "finish")
+                        or len(json.dumps(payload)) > 16000):
+                    raise CallFailed("RobotError", "Invalid recovery event")
+                self.rec.event(dict(kind="recovery", step=self.step, payload=payload,
+                                    source="sandbox helper; dispatch records entry, not physical completion"))
+                return None
             if name in ("evidence", "decide"):
                 if self.over:
                     raise Stop(self.over_reason())
@@ -227,6 +263,7 @@ def run_episode(args, memory_text=""):
         def _setup(self):
             session, s = self.session, self.s
             self.rec.write_json("implementation.json", dict(upstream_commit=PIN,
+                recovery_protocol="method-selection-v1",
                 judgment_backend=args.judgment_backend, phase=args.phase, memory_sha256=hashlib.sha256(
                     memory_text.encode()).hexdigest(), native_scoring=True, generic_motion="upstream",
                 integration_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest()

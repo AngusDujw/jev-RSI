@@ -39,9 +39,44 @@ def audit(root):
     called = sum(call["name"] == "decide" for cell in cells for call in cell["calls"])
     if len(decisions) > called:
         errors.append("More completed decisions than actual sandbox decide calls")
+    recovery_events = []
+    events_path = root / "events.jsonl"
+    if events_path.exists():
+        recovery_events = [json.loads(line) for line in events_path.read_text().splitlines()
+                           if line and json.loads(line).get("kind") == "recovery"]
+    selected, dispatched, observed, finished = {}, {}, set(), []
+    decision_map = {d["decision_id"]: d for d in decisions}
+    for event in recovery_events:
+        payload = event["payload"]
+        key = (payload["recovery_id"], payload.get("attempt"))
+        kind = payload["event"]
+        if kind == "selected":
+            receipt = payload["receipt"]
+            selected[key] = receipt["choice"]
+            if receipt["choice"] not in payload["options"]:
+                errors.append("Recovery selected an unavailable method")
+            if receipt["backend"] != "rules":
+                original = decision_map.get(receipt.get("decision_id"))
+                if original is None or any(receipt.get(k) != original.get(k) for k in
+                        ("choice", "backend", "evidence_sha256", "evidence_step")):
+                    errors.append("Recovery selection has no matching model receipt")
+        elif kind == "dispatch":
+            if key in dispatched or selected.get(key) != payload["method"] or payload["method"] == "unknown":
+                errors.append("Recovery dispatch differs from selected method")
+            dispatched[key] = payload["method"]
+        elif kind == "observed":
+            if dispatched.get(key) != payload["method"]:
+                errors.append("Recovery observation has no matching dispatch")
+            observed.add(key)
+        elif kind == "finish":
+            finished.append(dict(recovery_id=payload["recovery_id"], reason=payload["reason"],
+                                 attempts=payload["attempts"]))
     return dict(record=str(root), success=result["success"], end=result["end"],
         steps=result.get("step"), planner_turns=result["turns"], backend=impl["judgment_backend"],
         phase=impl["phase"], decide_calls=called, completed_decisions=len(decisions),
+        recovery=dict(selections=len(selected), dispatches=len(dispatched),
+            observed_returns=len(observed), unfinished_dispatches=len(set(dispatched)-observed),
+            finishes=finished),
         choices=[dict(decision_id=d["decision_id"], choice=d["choice"], evidence_step=d["evidence_step"])
                  for d in decisions], errors=errors,
         limitations="Checks saved request/answer/call consistency; does not independently prove physical predicates or causality")

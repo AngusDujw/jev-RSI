@@ -1,0 +1,18 @@
+{
+  "passed": 12,
+  "checks": [
+    "two direct dispatches in one call",
+    "selected-dispatch-observed trace",
+    "unknown performs no method",
+    "ineligible methods excluded without model call",
+    "exhausted method cannot replay",
+    "attempt budget bounds execution",
+    "already resolved needs no selector",
+    "rule control shares executor",
+    "terminal propagates with no post-motion calls",
+    "invalid branch never dispatched",
+    "guard rechecked before dispatch",
+    "nonboolean guards rejected"
+  ],
+  "physical_episodes": 0
+}
