@@ -247,6 +247,14 @@ def run_episode(args, memory_text=""):
             except Exception as exc:
                 if self.host is not None:
                     self.evidence_log.add(name, None, step=self.step, proprio=self.host.proprio, error=exc)
+                message = str(exc)
+                if "SAM3" in message and any(marker in message for marker in (
+                        "CUDA error:", "CUDA out of memory", "doesn't have valid Grid license")):
+                    self.infrastructure_failure = "perception_service: " + message[:800]
+                    self.errors.append(self.infrastructure_failure)
+                    self.finished = True
+                    self.rec.event(dict(kind="perception_service_failure", error=self.infrastructure_failure))
+                    raise Stop("Perception infrastructure failed; no fallback policy admitted") from exc
                 raise
             self.evidence_log.add(name, result, step=self.step, proprio=self.host.proprio)
             return result
